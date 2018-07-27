@@ -1,0 +1,32 @@
+{
+  "properties": [
+    {
+      "name": "spring.cloud.sentinel.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "enable or disable sentinel auto configure."
+    },
+    {
+      "name": "spring.cloud.sentinel.port",
+      "type": "java.lang.String",
+      "defaultValue": "8721",
+      "description": "sentinel api port."
+    },
+    {
+      "name": "spring.cloud.sentinel.dashboard",
+      "type": "java.lang.String",
+      "description": "sentinel dashboard address, won't try to connect dashboard when address is empty."
+    },
+    {
+      "name": "spring.cloud.sentinel.filter.order",
+      "type": "java.lang.Integer",
+      "defaultValue": "Integer.MIN_VALUE",
+      "description": "Sentinel filter chain order, will be set to FilterRegistrationBean."
+    },
+    {
+      "name": "spring.cloud.sentinel.filter.urlPatterns",
+      "type": "java.util.List",
+      "description": "URL pattern for Sentinel filter, default contains '/*'."
+    }
+  ]
+}
