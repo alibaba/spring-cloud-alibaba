@@ -6,11 +6,11 @@
     <parent>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>2.0.0.RELEASE</version>
+        <version>1.3.3.BUILD-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-    <version>0.2.0.BUILD-SNAPSHOT</version>
+    <version>0.1.0.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Dependencies</name>
     <description>Spring Cloud Alibaba Dependencies</description>

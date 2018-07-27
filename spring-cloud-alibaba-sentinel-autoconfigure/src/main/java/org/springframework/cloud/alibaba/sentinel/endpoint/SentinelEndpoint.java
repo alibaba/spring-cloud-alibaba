@@ -27,21 +27,23 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
 
 /**
  * Endpoint for Sentinel, contains ans properties and rules
  * @author xiaojing
  */
-@Endpoint(id = "sentinel")
-public class SentinelEndpoint {
+public class SentinelEndpoint extends AbstractEndpoint<Map<String, Object>> {
 
 	@Autowired
 	private SentinelProperties sentinelProperties;
 
-	@ReadOperation
+	public SentinelEndpoint() {
+		super("sentinel");
+	}
+
+	@Override
 	public Map<String, Object> invoke() {
 		Map<String, Object> result = new HashMap<>();
 

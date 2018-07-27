@@ -71,8 +71,8 @@ public class SentinelWebAutoConfiguration {
 
 	@Bean
 	@ConditionalOnWebApplication
-	public FilterRegistrationBean<Filter> servletRequestListener() {
-		FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
+	public FilterRegistrationBean servletRequestListener() {
+		FilterRegistrationBean registration = new FilterRegistrationBean();
 
 		SentinelProperties.Filter filterConfig = properties.getFilter();
 

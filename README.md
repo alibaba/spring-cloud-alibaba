@@ -46,7 +46,7 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 * 0.2.x for Spring Boot 2
 
 During the incubation period，the version management of the project will follow these rules：
-* Functional updates will be reflected in the 3rd number of the version, for example, the next version of 0.1.0 will be 0.1.1。
+* Functional updates will be reflected in the 3rd number of the version, for example, the next version of 0.1.0 will be 0.1.1 .
 * Emergency fixes for bugs that block the main business process will be reflected in version numbers such as 0.1.1.fix. However, it is our duty to improve the test regression process to avoid such scenarios.
 
 

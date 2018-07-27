@@ -16,12 +16,14 @@
 
 package org.springframework.cloud.alibaba.sentinel;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelAspect;
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelCustomAspectAutoConfiguration;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,35 +33,42 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SentinelAutoConfigurationTests {
 
-    private WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
-            .withConfiguration(
-                    AutoConfigurations.of(SentinelCustomAspectAutoConfiguration.class, SentinelWebAutoConfiguration.class))
-                    .withPropertyValues("spring.cloud.sentinel.port=8888")
-                    .withPropertyValues("spring.cloud.sentinel.filter.order=123")
-                    .withPropertyValues("spring.cloud.sentinel.filter.urlPatterns=/*,/test");
+    private final AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+
+    @Before
+    public void init() {
+        context.register(SentinelCustomAspectAutoConfiguration.class, SentinelWebAutoConfiguration.class);
+        EnvironmentTestUtils.addEnvironment(this.context,
+            "spring.cloud.sentinel.port=8888",
+            "spring.cloud.sentinel.filter.order=123",
+            "spring.cloud.sentinel.filter.urlPatterns=/*,/test");
+        this.context.refresh();
+    }
+
+    @After
+    public void closeContext() {
+        this.context.close();
+    }
 
     @Test
     public void testSentinelAspect() {
-        this.contextRunner.run(context -> assertThat(context).hasSingleBean(SentinelAspect.class));
+        assertThat(context.getBean(SentinelAspect.class)).isNotNull();
     }
 
     @Test
     public void testFilter() {
-        this.contextRunner.run(context -> {
-            assertThat(context.getBean(
-                    "servletRequestListener").getClass() == FilterRegistrationBean.class).isTrue();
-        });
+        assertThat(context.getBean(
+            "servletRequestListener").getClass() == FilterRegistrationBean.class).isTrue();
     }
 
     @Test
     public void testProperties() {
-        this.contextRunner.run(context -> {
-            SentinelProperties sentinelProperties = context.getBean(SentinelProperties.class);
-            assertThat(sentinelProperties.getPort()).isEqualTo("8888");
-            assertThat(sentinelProperties.getFilter().getUrlPatterns().size()).isEqualTo(2);
-            assertThat(sentinelProperties.getFilter().getUrlPatterns().get(0)).isEqualTo("/*");
-            assertThat(sentinelProperties.getFilter().getUrlPatterns().get(1)).isEqualTo("/test");
-        });
+        SentinelProperties sentinelProperties = context.getBean(SentinelProperties.class);
+        assertThat(sentinelProperties).isNotNull();
+        assertThat(sentinelProperties.getPort()).isEqualTo("8888");
+        assertThat(sentinelProperties.getFilter().getUrlPatterns().size()).isEqualTo(2);
+        assertThat(sentinelProperties.getFilter().getUrlPatterns().get(0)).isEqualTo("/*");
+        assertThat(sentinelProperties.getFilter().getUrlPatterns().get(1)).isEqualTo("/test");
     }
 
 
