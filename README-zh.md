@@ -34,7 +34,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目clone�
 
 Example 列表：
 
-[sentinel example](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/spring-cloud-alibaba-examples/sentinel-example/readme-zh.md)
+[sentinel example](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/spring-cloud-alibaba-examples/sentinel-example/readme-zh.md)
 
 
 ## 版本管理规范
