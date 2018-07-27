@@ -20,7 +20,7 @@ Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解�
 ## 如何构建
 
 * master 分支对应的是 Spring Boot 2.x，最低支持 JDK 1.8。
-* support_spring_boot_1 分支对应的是 Spring Boot 1.x，最低支持 JDK 1.7。
+* 1.x 分支对应的是 Spring Boot 1.x，最低支持 JDK 1.7。
 
 Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目clone到本地，然后执行以下命令：
 

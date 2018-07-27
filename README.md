@@ -22,7 +22,7 @@ For more features please refer to [Roadmap](https://github.com/spring-cloud-incu
 ## How to build
 
 * **master branch**: Corresponds to Spring Boot 2.x. JDK 1.8 or later versions are supported.
-* **support_spring_boot_1 branch**: Corresponds to Spring Boot 1.x，JDK 1.7 or later versions are supported.
+* **1.x branch**: Corresponds to Spring Boot 1.x，JDK 1.7 or later versions are supported.
 
 Spring Cloud uses Maven for most build-related activities, and you should be able to get off the ground quite quickly by cloning the project you are interested in and typing:
 
