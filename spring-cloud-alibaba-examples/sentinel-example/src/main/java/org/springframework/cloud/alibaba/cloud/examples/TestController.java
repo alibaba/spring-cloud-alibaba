@@ -1,9 +1,10 @@
 package org.springframework.cloud.alibaba.cloud.examples;
 
-import org.springframework.cloud.alibaba.sentinel.custom.EnableSentinel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author xiaojing
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
+	@Autowired
+	private RestTemplate restTemplate;
+
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
-	@EnableSentinel("resource")
 	public String hello() {
 		return "Hello";
 	}
@@ -20,6 +23,11 @@ public class TestController {
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	public String test1() {
 		return "Hello test";
+	}
+
+	@RequestMapping(value = "/template", method = RequestMethod.GET)
+	public String client() {
+		return restTemplate.getForObject("http://www.taobao.com/test", String.class);
 	}
 
 }
