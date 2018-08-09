@@ -16,11 +16,12 @@
 
 package org.springframework.cloud.alibaba.sentinel;
 
-import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import javax.annotation.PostConstruct;
+import javax.servlet.Filter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +34,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.Filter;
+import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 
 /**
  * @author xiaojing
  */
 @Configuration
-@ConditionalOnWebApplication
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelWebAutoConfiguration {
