@@ -16,15 +16,31 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
+import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 
 /**
  * @author xiaojing
  */
-public class SentinelCustomAspectAutoConfiguration {
+@Configuration
+public class SentinelAutoConfiguration {
 
 	@Bean
-	public SentinelAspect sentinelAspect() {
-		return new SentinelAspect();
+	@ConditionalOnMissingBean
+	public SentinelResourceAspect sentinelResourceAspect() {
+		return new SentinelResourceAspect();
 	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnClass(value = RestTemplate.class)
+	public SentinelBeanPostProcessor sentinelBeanPostProcessor() {
+		return new SentinelBeanPostProcessor();
+	}
+
 }
