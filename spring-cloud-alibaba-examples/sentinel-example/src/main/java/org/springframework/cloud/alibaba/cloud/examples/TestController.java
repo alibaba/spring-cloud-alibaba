@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+
 /**
  * @author xiaojing
  */
@@ -16,6 +18,7 @@ public class TestController {
 	private RestTemplate restTemplate;
 
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	@SentinelResource("resource")
 	public String hello() {
 		return "Hello";
 	}

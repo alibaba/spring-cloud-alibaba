@@ -20,20 +20,20 @@
             <artifactId>spring-cloud-starter-sentinel</artifactId>
         </dependency>
 	
-1. 接入限流埋点
+2. 接入限流埋点
 
 	1. HTTP埋点
 		Sentinel starter 默认为所有的 HTTP 服务提供了限流埋点，如果只想对 HTTP 服务进行限流，那么只需要引入依赖，无需修改代码。
 		
-	1. 自定义埋点
-		如果需要对某个特定的方法进行限流或降级，可以通过 @EnableSentinel 来完成限流的埋点，示例代码如下
+	2. 自定义埋点
+		如果需要对某个特定的方法进行限流或降级，可以通过 @SentinelResource 来完成限流的埋点，示例代码如下
 	
-			@EnableSentinel("resource")
+			@SentinelResource("resource")
 			public String hello() {
 				return "Hello";
 			}
 		  
-1. 配置限流规则
+3. 配置限流规则
 	
 	Sentinel提供了两种配置限流规则的方式，代码配置 和 控制台配置，本示例使用的方式为通过控制台配置。
 
@@ -58,7 +58,7 @@
 	1. 直接下载：[下载 Sentinel 控制台](http://edas-public.oss-cn-hangzhou.aliyuncs.com/install_package/demo/sentinel-dashboard.jar) 
 	2. 源码构建：进入 Sentinel [Github 项目页面](https://github.com/alibaba/Sentinel)，将代码 git clone 到本地自行编译打包，[参考此文档](https://github.com/alibaba/Sentinel/tree/master/sentinel-dashboard)。
 
-1. 启动控制台，执行 Java 命令 `java -jar sentinel-dashboard.jar`完成 Sentinel 控制台的启动。
+2. 启动控制台，执行 Java 命令 `java -jar sentinel-dashboard.jar`完成 Sentinel 控制台的启动。
 	控制台默认的监听端口为 8080。Sentinel 控制台使用 Spring Boot 编程模型开发，如果需要指定其他端口，请使用 Spring Boot 容器配置的标准方式，详情请参考 [Spring Boot 文档](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-customizing-embedded-containers)。
 
 ### 应用启动
@@ -69,10 +69,10 @@
 		server.port=18083
 		spring.cloud.sentinel.dashboard=localhost:8080
 		
-1. 启动应用，支持 IDE 直接启动和编译打包后启动。
+2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
 	1. IDE直接启动：找到主类 `ServiceApplication`，执行 main 方法启动应用。
-	1. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar sentinel-example.jar`启动应用。
+	2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar sentinel-example.jar`启动应用。
 
 ### 调用服务
 
@@ -89,18 +89,18 @@
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532315951819-9ffd959e-0547-4f61-8f06-91374cfe7f21.png" width="1000" heigh='400' ></p>
 
 
-1. 配置 URL 限流规则：点击新增流控规则，资源名填写需要限流的 URL 相对路径，单机阈值选择需要限流的阈值，点击新增进行确认。(为了便于演示效果，这里将值设置成了 1)。
+2. 配置 URL 限流规则：点击新增流控规则，资源名填写需要限流的 URL 相对路径，单机阈值选择需要限流的阈值，点击新增进行确认。(为了便于演示效果，这里将值设置成了 1)。
 
 <p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532078717483-62ab74cd-e5da-4241-a45d-66166b1bde99.png" width="480" heigh='180' ></p>
 
 
-1. 配置自定义限流规则：点击新增流控规则，资源名填写 @EnableSentinel 注解 value 字段的值，单机阈值选择需要限流的阈值，点击新增进行确认。(为了便于演示效果，这里将值设置成了 1)。
+3. 配置自定义限流规则：点击新增流控规则，资源名填写 @SentinelResource 注解 value 字段的值，单机阈值选择需要限流的阈值，点击新增进行确认。(为了便于演示效果，这里将值设置成了 1)。
 
 
 <p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532080384317-2943ce0a-daaf-495d-8afc-79a0248a119a.png" width="480" heigh='180' ></p>
 
 
-1. 访问 URL，当 QPS 超过 1 时,可以看到限流效果如下。
+4. 访问 URL，当 QPS 超过 1 时,可以看到限流效果如下。
 
 <p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532080652178-be119c4a-2a08-4f67-be70-fe5ed9a248a3.png" width="480" heigh='180' ></p>
 
@@ -124,24 +124,21 @@
 
 
 
-1. 自定义限流触发后，默认的处理逻辑是抛出异常。
-	如果需要自定义处理逻辑，需要实现 SentinelExceptionHandler 接口，将其注册到 HandlerUtil 中，并在 @EnableSentinel 注解中 handler 字段进行指定。示例实现如下
+2. 自定义限流触发后，默认的处理逻辑是抛出异常。
+	如果需要自定义处理逻辑，填写@SentinelResource注解的blockHandler和blockHandlerClass属性，指定后会去blockHandlerClass类里找对应的blockHandler静态方法。示例实现如下
 
-		public class CustomBlockHandler implements SentinelBlockHandler {
-			@Override
-			public Object handler(BlockException e) {
-				//todo add your logic
-				return null;
-			}
-		}
-		
-		HandlerUtil.addHandler("myhandler", new CustomBlockHandler());
-		
-		
-		@EnableSentinel(value = "resource",handler = "myhandler")
+		@SentinelResource(value = "resource", blockHandler = "", blockHandlerClass = ExceptionUtil.class)
     	public String hello() {
         	return "Hello";
     	}
+    	
+    	// ExceptionUtil.java
+    	public class ExceptionUtil {
+        	public static void handleException(BlockException ex) {
+        		System.out.println("Oops: " + ex.getClass().getCanonicalName());
+        	}
+        }
+    	
 
 ## Endpoint 信息查看
 
@@ -157,9 +154,46 @@ Spring Boot1.x 可以通过访问 http://127.0.0.1:18083/sentinel 来查看 Sent
 
 ## 查看实时监控
 Sentinel 控制台支持实时监控查看，您可以通过 Sentinel 控制台查看各链路的请求的通过数和被限流数等信息。
-其中 p_qps 为通过(pase) 流控的 QPS，b_qps 为被限流 (block) 的 QPS。
+其中 p_qps 为通过(pass) 流控的 QPS，b_qps 为被限流 (block) 的 QPS。
 
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532313595369-8428cd7d-9eb7-4786-a149-acf0da4a2daf.png" width="480" heigh='180' ></p>
+
+## Dubbo支持
+
+[Dubbo](http://dubbo.apache.org/)是一款高性能Java RPC框架。
+
+Sentinel提供了[sentinel-dubbo-adapter](https://github.com/alibaba/Sentinel/tree/master/sentinel-adapter/sentinel-dubbo-adapter)模块用来支持Dubbo服务调用的限流降级。sentinel-starter默认也集成了该功能。
+
+比如有个FooService服务，定义如下：
+
+    package org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService;
+    public interface FooService {
+        String hello(String name);
+    }
+
+该服务在Sentinel下对应的资源名是 `org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` 。
+
+在Consumer端进行限流的话，需要处理SentinelRpcException。
+
+    FooService service = applicationContext.getBean(FooService.class);
+   
+    for (int i = 0; i < 15; i++) {
+        try {
+            String message = service.hello("Jim");
+        } catch (SentinelRpcException ex) {
+            System.out.println("Blocked");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+在Provider端进行限流的话，Consumer端调用的话会抛出RpcException。因为Provider端被限流抛出了SentinelRpcException。
+
+### 应用启动 
+
+在启动ServiceApplication的前提下，再启动ConsumerApplication。
+
+ConsumerApplication在Consumer端设置的限流规则，所以启动完成后查看控制台的打印信息，会发现部分调用被Block。
 
 ## More
 Sentinel 是一款功能强大的中间件，从流量控制，熔断降级，系统负载保护等多个维度保护服务的稳定性。此 Demo 仅演示了 使用 Sentinel 作为限流工具的使用，更多 Sentinel 相关的信息，请参考 [Sentinel 项目](https://github.com/alibaba/Sentinel)。
