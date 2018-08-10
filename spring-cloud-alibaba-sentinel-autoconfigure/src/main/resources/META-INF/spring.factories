@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.springframework.cloud.alibaba.sentinel.SentinelWebAutoConfiguration,\
 org.springframework.cloud.alibaba.sentinel.endpoint.SentinelEndpointAutoConfiguration,\
-org.springframework.cloud.alibaba.sentinel.custom.SentinelCustomAspectAutoConfiguration
+org.springframework.cloud.alibaba.sentinel.custom.SentinelAutoConfiguration

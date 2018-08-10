@@ -24,10 +24,10 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 	1. Define HTTP Resources    
 		Sentinel starter defines all HTTP URLS as resources by relative paths. If you only want to add flow control for your HTTP services, you do not need to modify your code.  
 		
-	1. Define Custom Resources   
-		If you want to implement flow control or degradation for a specific method, you can add an @EnableSentinel annotation to the method, as shown in the code below.
+	2. Define Custom Resources   
+		If you want to implement flow control or degradation for a specific method, you can add an @SentinelResource annotation to the method, as shown in the code below.
 	
-			@EnableSentinel("resource")
+			@SentinelResource("resource")
 			public String hello() {
 				return "Hello";
 			}
@@ -95,11 +95,11 @@ The screenshot belows shows invoke success:
 
 <p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532078717483-62ab74cd-e5da-4241-a45d-66166b1bde99.png" width="480" heigh='180' ></p>
 
-4. Configure Custom Resource Flow Rule：Click **流控规则(Flow Rule)** on the left-side navigation pane and **新增流控规则(Create Flow Rule)**. type the value() of @EnableSentinel in the **资源名(Resource Name)** field , enter **单机阈值(Threshold)** value, then click **新增(OK)**.Here we set threshold to 1 for demonstration purpose.
+3. Configure Custom Resource Flow Rule：Click **流控规则(Flow Rule)** on the left-side navigation pane and **新增流控规则(Create Flow Rule)**. type the value() of @SentinelResource in the **资源名(Resource Name)** field , enter **单机阈值(Threshold)** value, then click **新增(OK)**.Here we set threshold to 1 for demonstration purpose.
 
 <p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532080384317-2943ce0a-daaf-495d-8afc-79a0248a119a.png" width="480" heigh='180' ></p>
 
-5. Visit the URL in your browser again. When QPS is more than 1, we can see that flow control takes effect.
+4. Visit the URL in your browser again. When QPS is more than 1, we can see that flow control takes effect.
 
 <p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532080652178-be119c4a-2a08-4f67-be70-fe5ed9a248a3.png" width="480" heigh='180' ></p>
 
@@ -125,23 +125,19 @@ The screenshot belows shows invoke success:
 
 2. When a custom resource is blocked by Sentinel, the default logic is throw BlockException.
    
-	If you want to customize your flow control logic, implement interface `SentinelExceptionHandler`, add it to HandlerUtil, and set @EnableSentinel's handler(). See the code below:
-
-		public class CustomBlockHandler implements SentinelBlockHandler {
-			@Override
-			public Object handler(BlockException e) {
-				//todo add your logic
-				return null;
-			}
-		}
-		
-		HandlerUtil.addHandler("myhandler", new CustomBlockHandler());
-		
-		
-		@EnableSentinel(value = "resource",handler = "myhandler")
-    	public String hello() {
-        	return "Hello";
-    	}
+	If you want to customize your flow control logic, implement interface `SentinelExceptionHandler`, set @SentinelResource's blockHandler() and blockHandlerClass(). See the code below:
+        
+        @SentinelResource(value = "resource", blockHandler = "", blockHandlerClass = ExceptionUtil.class)
+        public String hello() {
+            return "Hello";
+        }
+        
+        // ExceptionUtil.java
+        public class ExceptionUtil {
+            public static void handleException(BlockException ex) {
+                System.out.println("Oops: " + ex.getClass().getCanonicalName());
+            }
+        }
 
 ## Endpoint 
 
@@ -168,6 +164,43 @@ To see the metrics, click **实时监控(Real-time Monitoring)** in the left-sid
 `p_qps` stands for passed requests per second, `b_qps` stands for blocked requests per second.
 
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532313595369-8428cd7d-9eb7-4786-a149-acf0da4a2daf.png" width="480" heigh='180'></p>
+
+## Dubbo
+
+[Dubbo](http://dubbo.apache.org/) is a high-performance, java based open source RPC framework.
+
+Sentinel provide a module named [sentinel-dubbo-adapter](https://github.com/alibaba/Sentinel/tree/master/sentinel-adapter/sentinel-dubbo-adapter) to support dubbo.sentinel-starter integrates this feature by default.
+
+For example, a service named FooService, see the code below:
+
+    package org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService;
+    public interface FooService {
+        String hello(String name);
+    }
+
+The resource name of this service is `org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` . 
+
+You should handle SentinelRpcException if rpc invocation was be limited on Consumer side:
+
+    FooService service = applicationContext.getBean(FooService.class);
+   
+    for (int i = 0; i < 15; i++) {
+        try {
+            String message = service.hello("Jim");
+        } catch (SentinelRpcException ex) {
+            System.out.println("Blocked");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+It will throw RpcException on Consumer side if it was be limited on Provider side, because Provider side throw SentinelRpcException in this scene.
+
+### Dubbo Start Application
+
+You can startup ConsumerApplication after ServiceApplication startup.
+
+ConsumerApplication init flow control rules after startup, so you will find some invocations have been blocked in console.
 
 ## More
 For more information about Sentinel, see [Sentinel Project](https://github.com/alibaba/Sentinel).

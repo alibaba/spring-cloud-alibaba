@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel.custom;
+package org.springframework.cloud.alibaba.sentinel.annotation;
 
-import com.alibaba.csp.sentinel.slots.block.BlockException;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.lang.annotation.*;
 
 /**
- * Sentinel Block Handler
- * @author xiaojing
+ * @author fangjian
  */
-public interface SentinelBlockHandler {
+@Target({ ElementType.METHOD, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Qualifier
+public @interface SentinelProtect {
 
-	/**
-	 * custom method to process BlockException
-	 * @param e block exception when blocked by sentinel
-	 * @return Object result processed by the handler
-	 */
-	Object handler(BlockException e);
+    String blockHandler() default "";
+
+    Class<?> blockHandlerClass() default void.class;
+
+    String fallback() default "";
+
+    Class<?> fallbackClass() default void.class;
 
 }
