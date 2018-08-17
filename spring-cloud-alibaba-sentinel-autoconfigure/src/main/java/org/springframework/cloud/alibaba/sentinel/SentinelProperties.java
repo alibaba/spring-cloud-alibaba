@@ -26,7 +26,7 @@ import org.springframework.core.Ordered;
  * @author xiaojing
  * @author hengyunabc
  */
-@ConfigurationProperties(prefix = "spring.cloud.sentinel")
+@ConfigurationProperties(prefix = SentinelConstants.PROPERTY_PREFIX)
 public class SentinelProperties {
 
 	/**
