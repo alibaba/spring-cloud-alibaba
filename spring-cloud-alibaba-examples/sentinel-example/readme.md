@@ -165,42 +165,78 @@ To see the metrics, click **实时监控(Real-time Monitoring)** in the left-sid
 
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532313595369-8428cd7d-9eb7-4786-a149-acf0da4a2daf.png" width="480" heigh='180'></p>
 
-## Dubbo
+## DataSource
 
-[Dubbo](http://dubbo.apache.org/) is a high-performance, java based open source RPC framework.
+Sentinel provide [DataSource](https://github.com/alibaba/Sentinel/blob/master/sentinel-extension/sentinel-datasource-extension/src/main/java/com/alibaba/csp/sentinel/datasource/DataSource.java) to manage dynamic rules.
 
-Sentinel provide a module named [sentinel-dubbo-adapter](https://github.com/alibaba/Sentinel/tree/master/sentinel-adapter/sentinel-dubbo-adapter)to support dubbo。sentinel-starter integrates this feature by default.
+Sentinel starter integrated 4 DataSources provided by Sentinel. It will be register into Spring Context if you write some configs in `application.properties`.
 
-For example, a service named FooService, see the code below:
+If you want to define FileRefreshableDataSource:
 
-    package org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService;
-    public interface FooService {
-        String hello(String name);
-    }
+    spring.cloud.sentinel.datasource.type=file
+    spring.cloud.sentinel.datasource.recommendRefreshMs=2000
+    spring.cloud.sentinel.datasource.bufSize=2048
+    spring.cloud.sentinel.datasource.charset=utf-8
+    spring.cloud.sentinel.datasource.configParser=myParser
+    spring.cloud.sentinel.datasource.file=/Users/you/rule.json
+    
+then use `@SentinelDataSource` to annotate DataSource:
+ 
+    @SentinelDataSource("spring.cloud.sentinel.datasource")
+    private DataSource dataSource;
+    
+The value() of `@SentinelDataSource` is not required, it means the prefix of configuration. Default value is `spring.cloud.sentinel.datasource`.
 
-The resource name of this service is `org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` . 
+spring.cloud.sentinel.datasource.type means the type of DataSource.
 
-You should handle SentinelRpcException if rpc invocation was be limited on Consumer side:
+spring.cloud.sentinel.datasource.recommendRefreshMs means the recommendRefreshMs property of specified DataSource.
 
-    FooService service = applicationContext.getBean(FooService.class);
-   
-    for (int i = 0; i < 15; i++) {
-        try {
-            String message = service.hello("Jim");
-        } catch (SentinelRpcException ex) {
-            System.out.println("Blocked");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+spring.cloud.sentinel.datasource.configParser means the name of spring bean that type is ConfigParser. If the bean is not exists, will throw exception.
+    
+Now datasource type support 4 categories: file, nacos, zk, apollo.
+
+### User-defined DataSource
+
+User-defined DataSource need 2 steps.
+
+1. Define DataSource
+    
+        public class CustomDataSource implements DataSource {
+            private String fieldA;
+            private String fieldB;
+            ...
         }
-    }
+    
+2. Assemble DataSource. There are 2 ways to do this.
 
-It will throw RpcException on Consumer side if it was be limited on Provider side, because Provider side throw SentinelRpcException in this scene.
+    * Construct DataSource directly
+        
+            @Bean
+            public CustomDataSource customDataSource() {
+                CustomDataSource customDataSource = new CustomDataSource();
+                customDataSource.setFieldA("valueA");
+                customDataSource.setFieldB("valueB");
+                ...
+                return customDataSource;
+            }
 
-### Start Application
+    * define DataSource metadata in `classpath:/META-INF/sentinel-datasource.properties`
+    
+            custom = yourpackage.CustomDataSource
+       
+       define configuration in `application.properties`
+       
+            spring.cloud.sentinel.datasource.type = custom
+            spring.cloud.sentinel.datasource.fieldA = valueA
+            spring.cloud.sentinel.datasource.fieldB = valueB
+            
+Note: The AbstractDataSource of Sentinel need a ConfigParser as a constructor param and the subclass of AbstractDataSource was construct by multi-param constructor.
+Now All DataSources in starter was construct by FactoryBean. If you want to do it in this way, you should register FactoryBean by SentinelDataSourceRegistry.
 
-You can startup ConsumerApplication after ServiceApplication startup.
-
-ConsumerApplication init flow control rules after startup, so you will find some invocations have been blocked in console.
+    SentinelDataSourceRegistry.registerFactoryBean("custeom", CustomDataSourceFactoryBean.class);
+    
+It is no need to using SentinelDataSourceRegistry to register FactoryBean if your User-defined DataSource can inject fields. 
+  
 
 ## More
 For more information about Sentinel, see [Sentinel Project](https://github.com/alibaba/Sentinel).

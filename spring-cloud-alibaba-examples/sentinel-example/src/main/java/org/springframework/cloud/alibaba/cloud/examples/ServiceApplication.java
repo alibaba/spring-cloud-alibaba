@@ -1,5 +1,6 @@
 package org.springframework.cloud.alibaba.cloud.examples;
 
+import com.alibaba.csp.sentinel.datasource.ConfigParser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelProtect;
@@ -22,6 +23,11 @@ public class ServiceApplication {
 	public RestTemplate restTemplate2() {
 		return new RestTemplate();
 	}
+
+	@Bean
+    public ConfigParser myParser() {
+	    return new JsonFlowRuleListParser();
+    }
 
 	public static void main(String[] args) {
 		SpringApplication.run(ServiceApplication.class, args);

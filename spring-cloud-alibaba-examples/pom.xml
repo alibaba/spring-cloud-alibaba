@@ -16,6 +16,9 @@
 
     <modules>
         <module>sentinel-example</module>
+        <module>sentinel-dubbo-provider-example</module>
+        <module>sentinel-dubbo-consumer-example</module>
+        <module>sentinel-dubbo-api</module>
     </modules>
 
     <build>

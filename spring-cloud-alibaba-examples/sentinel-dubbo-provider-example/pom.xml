@@ -10,24 +10,26 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <artifactId>sentinel-example</artifactId>
+    <artifactId>sentinel-dubbo-provider-example</artifactId>
     <packaging>jar</packaging>
-    <description>Example demonstrating how to use sentinel</description>
+    <description>Example demonstrating how to use sentinel with dubbo</description>
 
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sentinel</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>sentinel-dubbo-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>0.2.0</version>
         </dependency>
 
     </dependencies>
