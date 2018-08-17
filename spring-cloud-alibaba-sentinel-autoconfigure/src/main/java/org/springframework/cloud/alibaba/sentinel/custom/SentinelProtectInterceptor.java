@@ -43,7 +43,7 @@ import com.alibaba.csp.sentinel.util.StringUtil;
  */
 public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor {
 
-	private static final Logger LOGGER = LoggerFactory
+    private static final Logger logger = LoggerFactory
 			.getLogger(SentinelProtectInterceptor.class);
 
 	private SentinelProtect sentinelProtect;
@@ -68,12 +68,12 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			response = execution.execute(request, body);
 		}
 		catch (BlockException e) {
-			LOGGER.error("RestTemplate block", e);
+			logger.error("RestTemplate block", e);
 			try {
 				handleBlockException(e);
 			}
 			catch (Exception ex) {
-				LOGGER.error("sentinel handle BlockException error.", e);
+				logger.error("sentinel handle BlockException error.", e);
 			}
 		}
 		finally {

@@ -16,19 +16,51 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import com.alibaba.csp.sentinel.util.AppNameUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
+import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourcePostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author xiaojing
  */
 @Configuration
+@ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
+@EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelAutoConfiguration {
+
+    @Value("${project.name:${spring.application.name:}}")
+    private String projectName;
+
+    @Autowired
+    private SentinelProperties properties;
+
+    @PostConstruct
+    private void init() {
+        if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))) {
+            System.setProperty(AppNameUtil.APP_NAME, projectName);
+        }
+        if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))) {
+            System.setProperty(TransportConfig.SERVER_PORT, properties.getPort());
+        }
+        if (StringUtils.isEmpty(System.getProperty(TransportConfig.CONSOLE_SERVER))) {
+            System.setProperty(TransportConfig.CONSOLE_SERVER, properties.getDashboard());
+        }
+    }
 
 	@Bean
 	@ConditionalOnMissingBean
@@ -38,9 +70,15 @@ public class SentinelAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnClass(value = RestTemplate.class)
+	@ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
 	public SentinelBeanPostProcessor sentinelBeanPostProcessor() {
 		return new SentinelBeanPostProcessor();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public SentinelDataSourcePostProcessor sentinelDataSourcePostProcessor() {
+		return new SentinelDataSourcePostProcessor();
 	}
 
 }
