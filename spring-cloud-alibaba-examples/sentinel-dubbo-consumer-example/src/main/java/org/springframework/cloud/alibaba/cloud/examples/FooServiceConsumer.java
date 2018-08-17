@@ -1,6 +1,4 @@
-package org.springframework.cloud.alibaba.cloud.examples.dubbo.consumer;
-
-import org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService;
+package org.springframework.cloud.alibaba.cloud.examples;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 
@@ -9,7 +7,8 @@ import com.alibaba.dubbo.config.annotation.Reference;
  */
 public class FooServiceConsumer {
 
-	@Reference(url = "dubbo://127.0.0.1:25758", timeout = 3000)
+	@Reference(version = "${foo.service.version}", application = "${dubbo.application.id}",
+            url = "dubbo://localhost:12345", timeout = 30000)
 	private FooService fooService;
 
 	public String hello(String name) {

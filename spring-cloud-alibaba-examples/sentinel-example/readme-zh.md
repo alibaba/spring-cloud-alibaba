@@ -158,42 +158,81 @@ Sentinel 控制台支持实时监控查看，您可以通过 Sentinel 控制台�
 
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532313595369-8428cd7d-9eb7-4786-a149-acf0da4a2daf.png" width="480" heigh='180' ></p>
 
-## Dubbo支持
+## DataSource支持
 
-[Dubbo](http://dubbo.apache.org/)是一款高性能Java RPC框架。
+Sentinel内部提供了[动态规则的扩展实现DataSource](https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95#datasource-%E6%89%A9%E5%B1%95)。
 
-Sentinel提供了[sentinel-dubbo-adapter](https://github.com/alibaba/Sentinel/tree/master/sentinel-adapter/sentinel-dubbo-adapter)模块用来支持Dubbo服务调用的限流降级。sentinel-starter默认也集成了该功能。
+Sentinel starter整合了目前存在的4类DataSource。只需要在配置文件中进行相关配置，即可在Spring容器中自动注册DataSource。
 
-比如有个FooService服务，定义如下：
+比如要定义一个FileRefreshableDataSource，配置如下：
 
-    package org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService;
-    public interface FooService {
-        String hello(String name);
-    }
+    spring.cloud.sentinel.datasource.type=file
+    spring.cloud.sentinel.datasource.recommendRefreshMs=2000
+    spring.cloud.sentinel.datasource.bufSize=2048
+    spring.cloud.sentinel.datasource.charset=utf-8
+    spring.cloud.sentinel.datasource.configParser=myParser
+    spring.cloud.sentinel.datasource.file=/Users/you/rule.json
+    
+然后使用`@SentinelDataSource`注解修饰DataSource即可注入：
+ 
+    @SentinelDataSource("spring.cloud.sentinel.datasource")
+    private DataSource dataSource;
+    
+`@SentinelDataSource`注解的value属性可以不填。默认值就是spring.cloud.sentinel.datasource。
 
-该服务在Sentinel下对应的资源名是 `org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` 。
+value属性代表配置前缀。示例中会去找spring.cloud.sentinel.datasource.xxx相关的配置。
 
-在Consumer端进行限流的话，需要处理SentinelRpcException。
+spring.cloud.sentinel.datasource.type就是对应的DataSource类型。
 
-    FooService service = applicationContext.getBean(FooService.class);
-   
-    for (int i = 0; i < 15; i++) {
-        try {
-            String message = service.hello("Jim");
-        } catch (SentinelRpcException ex) {
-            System.out.println("Blocked");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+spring.cloud.sentinel.datasource.recommendRefreshMs里的recommendRefreshMs对应相关DataSource的属性。
+
+spring.cloud.sentinel.datasource.configParser代表ConfigParser在Spring容器里的name。如果没找到，会抛出异常。
+    
+type目前支持file, nacos, zk, apollo。
+
+### 自定义DataSource
+
+自定义DataSource只需要两部。
+
+1. 定义DataSource
+    
+        public class CustomDataSource implements DataSource {
+            private String fieldA;
+            private String fieldB;
+            ...
         }
-    }
+    
+2. 装配DataSource。有两种方式处理。
 
-在Provider端进行限流的话，Consumer端调用的话会抛出RpcException。因为Provider端被限流抛出了SentinelRpcException。
+    * 直接构造DataSource
+        
+            @Bean
+            public CustomDataSource customDataSource() {
+                CustomDataSource customDataSource =
+                                                new CustomDataSource();
+                customDataSource.setFieldA("valueA");
+                customDataSource.setFieldB("valueB");
+                ...
+                return customDataSource;
+            }
 
-### 应用启动 
-
-在启动ServiceApplication的前提下，再启动ConsumerApplication。
-
-ConsumerApplication在Consumer端设置的限流规则，所以启动完成后查看控制台的打印信息，会发现部分调用被Block。
+    * 在classpath:/META-INF/sentinel-datasource.properties中管理DataSource信息
+    
+            custom = yourpackage.CustomDataSource
+       
+       在application.properties中定义DataSource
+       
+            spring.cloud.sentinel.datasource.type = custom
+            spring.cloud.sentinel.datasource.fieldA = valueA
+            spring.cloud.sentinel.datasource.fieldB = valueB
+       
+        注意：由于目前Sentinel的AbstractDataSource需要有个ConfigParser作为构造函数中的参数，并且它的子类的构造都是通过多个参数的构造函数构造的。
+            所以目前所有的Sentinel starter中的DataSource都是基于FactoryBean并且通过设置属性构造的。如果有这方面的需求，需要再多加一个registerFactoryBean过程。
+            
+            SentinelDataSourceRegistry.registerFactoryBean("custeom", CustomDataSourceFactoryBean.class);
+            
+        如果自定义DataSource可以注入属性，那么没有必要使用SentinelDataSourceRegistry注册FactoryBean。
+    
 
 ## More
 Sentinel 是一款功能强大的中间件，从流量控制，熔断降级，系统负载保护等多个维度保护服务的稳定性。此 Demo 仅演示了 使用 Sentinel 作为限流工具的使用，更多 Sentinel 相关的信息，请参考 [Sentinel 项目](https://github.com/alibaba/Sentinel)。
