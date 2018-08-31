@@ -56,6 +56,6 @@ Example 列表：
 
 spring-cloud-alibaba@googlegroups.com，欢迎通过此邮件列表讨论与 spring-cloud-alibaba 相关的一切。
 
-### QQ 群
+### 钉钉群
 
-QQ群号 294650787
+![DingQR](https://cdn.nlark.com/lark/0/2018/png/64647/1535108150178-409a1689-437f-495b-8dcb-b667ccb32f85.png) 
