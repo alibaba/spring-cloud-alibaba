@@ -19,6 +19,7 @@
         <module>sentinel-dubbo-provider-example</module>
         <module>sentinel-dubbo-consumer-example</module>
         <module>sentinel-dubbo-api</module>
+        <module>storage-example</module>
     </modules>
 
     <build>
