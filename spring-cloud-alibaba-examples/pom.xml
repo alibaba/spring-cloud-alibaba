@@ -16,6 +16,7 @@
 
     <modules>
         <module>sentinel-example</module>
+        <module>storage-example</module>
     </modules>
 
     <build>
