@@ -17,6 +17,7 @@
 
     <properties>
         <sentinel.version>0.1.1</sentinel.version>
+        <oss.version>3.1.0</oss.version>
     </properties>
 
     <dependencyManagement>
@@ -53,6 +54,11 @@
                 <artifactId>sentinel-dubbo-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${oss.version}</version>
+            </dependency>
 
 
             <!-- Own dependencies autoconfigure -->
@@ -61,11 +67,21 @@
                 <artifactId>spring-cloud-alibaba-sentinel-autoconfigure</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-storage-autoconfigure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Own dependencies - Starters -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-sentinel</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
