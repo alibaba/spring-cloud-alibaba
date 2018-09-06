@@ -5,7 +5,7 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
         <version>0.2.0.BUILD-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>spring-cloud-starter-alibaba</artifactId>
     <packaging>pom</packaging>

@@ -6,6 +6,7 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
         <version>0.2.0.BUILD-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
     <name>Spring Cloud Starter Alibaba Storage</name>
