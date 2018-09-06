@@ -1,6 +1,6 @@
 # Spring Cloud Alibaba
 
-See the [中文文档](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/README-zh.md) for Chinese readme.
+See the [中文文档](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/README-zh.md) for Chinese readme.
 
 Spring Cloud Alibaba provides a one-stop solution for distributed application development. It contains all the components required to develop distributed applications, making it easy for you to develop your applications using Spring Cloud.
 
@@ -11,13 +11,13 @@ With Spring Cloud Alibaba，you only need to add some annotations and a small am
 
 * **Flow control and service degradation**：Flow control for HTTP services is supported by default. You can also customize flow control and service degradation rules using annotations. The rules can be changed dynamically.
 
-For more features, please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/Roadmap.md).
+For more features, please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
 ## Components
 
 **[Sentinel](https://github.com/alibaba/Sentinel)**: Sentinel takes "traffic flow" as the breakthrough point, and provides solutions in areas such as flow control, concurrency, circuit breaking, and load protection to protect service stability.
 
-For more features please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/Roadmap.md).
+For more features please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
 ## How to build
 
