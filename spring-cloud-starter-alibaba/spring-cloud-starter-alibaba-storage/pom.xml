@@ -7,25 +7,17 @@
         <artifactId>spring-cloud-alibaba</artifactId>
         <version>0.2.0.BUILD-SNAPSHOT</version>
     </parent>
-    <artifactId>spring-cloud-starter-sentinel</artifactId>
-    <name>Spring Cloud Starter Sentinel</name>
+    <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
+    <name>Spring Cloud Starter Alibaba Storage</name>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-sentinel-autoconfigure</artifactId>
+            <artifactId>spring-cloud-alibaba-storage</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.csp</groupId>
-            <artifactId>sentinel-datasource-nacos</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.csp</groupId>
-            <artifactId>sentinel-datasource-zookeeper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.csp</groupId>
-            <artifactId>sentinel-datasource-apollo</artifactId>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
         </dependency>
     </dependencies>
 

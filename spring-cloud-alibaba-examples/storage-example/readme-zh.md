@@ -13,11 +13,11 @@
 
 **注意：本节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您只需修改 accessKeyId、secretAccessKey、region 即可。**
 
-1. 修改 pom.xml 文件，引入 OSS starter。
+1. 修改 pom.xml 文件，引入 alibaba-storage starter。	
 
 	    <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-oss</artifactId>
+            <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
         </dependency>
 	
 2. 在配置文件中配置 OSS 服务对应的 accessKeyId、secretAccessKey 和 region。
