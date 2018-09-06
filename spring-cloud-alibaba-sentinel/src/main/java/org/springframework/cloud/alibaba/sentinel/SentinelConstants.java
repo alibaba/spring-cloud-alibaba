@@ -14,41 +14,20 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel.custom;
-
-import com.alibaba.csp.sentinel.Entry;
+package org.springframework.cloud.alibaba.sentinel;
 
 /**
- * @author xiaojing
+ * @author fangjian
  */
-public class SentinelEntry {
+public interface SentinelConstants {
 
-	private String key;
-	private String handler;
+    String PROPERTY_PREFIX = "spring.cloud.sentinel";
 
-	private Entry entry;
+    String PROPERTY_ITEM_SEPARATOR = ".";
 
-	public String getKey() {
-		return key;
-	}
+    String PROPERTY_DATASOURCE_NAME = "datasource";
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    String PROPERTY_DATASOURCE_PREFIX = PROPERTY_PREFIX + PROPERTY_ITEM_SEPARATOR
+            + PROPERTY_DATASOURCE_NAME;
 
-	public String getHandler() {
-		return handler;
-	}
-
-	public void setHandler(String handler) {
-		this.handler = handler;
-	}
-
-	public Entry getEntry() {
-		return entry;
-	}
-
-	public void setEntry(Entry entry) {
-		this.entry = entry;
-	}
 }

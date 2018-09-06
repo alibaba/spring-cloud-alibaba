@@ -6,22 +6,29 @@ import org.springframework.cloud.alibaba.sentinel.annotation.SentinelProtect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.csp.sentinel.datasource.ConfigParser;
+
 /**
  * @author xiaojing
  */
 @SpringBootApplication
 public class ServiceApplication {
 
-    @Bean
-    @SentinelProtect(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+	@Bean
+	@SentinelProtect(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
 
-    @Bean
-    public RestTemplate restTemplate2() {
-        return new RestTemplate();
-    }
+	@Bean
+	public RestTemplate restTemplate2() {
+		return new RestTemplate();
+	}
+
+	@Bean
+	public ConfigParser myParser() {
+		return new JsonFlowRuleListParser();
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(ServiceApplication.class, args);
