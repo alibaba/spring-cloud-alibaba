@@ -4,12 +4,11 @@
 
     <parent>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-alibaba</artifactId>
+        <artifactId>spring-cloud-starter-alibaba</artifactId>
         <version>0.2.0.BUILD-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-    <name>Spring Cloud Starter Sentinel</name>
+    <name>Spring Cloud Starter Alibaba Sentinel</name>
 
     <dependencies>
         <dependency>
