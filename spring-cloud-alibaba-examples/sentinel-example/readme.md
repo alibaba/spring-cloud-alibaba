@@ -12,11 +12,11 @@ This example illustrates how to use Sentinel starter to implement flow control f
 Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud application.
 **Note: This section is to show you how to connect to Sentinel. The configurations have been completed in the following example, so you don't need modify the code any more.**
 
-1. Add dependency spring-cloud-starter-sentinel in the pom.xml file in your Spring Cloud project.
+1. Add dependency spring-cloud-starter-alibaba-sentinel in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sentinel</artifactId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
 	
 2. Define Resources

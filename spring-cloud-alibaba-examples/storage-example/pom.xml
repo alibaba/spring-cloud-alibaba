@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-storage</artifactId>
+            <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
         </dependency>
 
         <dependency>

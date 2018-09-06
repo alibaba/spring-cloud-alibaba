@@ -64,24 +64,24 @@
             <!-- Own dependencies autoconfigure -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-sentinel-autoconfigure</artifactId>
+                <artifactId>spring-cloud-alibaba-sentinel</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-storage-autoconfigure</artifactId>
+                <artifactId>spring-cloud-alibaba-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!-- Own dependencies - Starters -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-sentinel</artifactId>
+                <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-storage</artifactId>
+                <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

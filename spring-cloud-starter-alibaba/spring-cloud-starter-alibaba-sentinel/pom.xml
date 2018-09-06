@@ -4,16 +4,16 @@
 
     <parent>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-alibaba</artifactId>
+        <artifactId>spring-cloud-starter-alibaba</artifactId>
         <version>0.1.0.BUILD-SNAPSHOT</version>
     </parent>
-    <artifactId>spring-cloud-starter-sentinel</artifactId>
-    <name>Spring Cloud Starter Sentinel</name>
+    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+    <name>Spring Cloud Starter Alibaba Sentinel</name>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-sentinel-autoconfigure</artifactId>
+            <artifactId>spring-cloud-alibaba-sentinel</artifactId>
         </dependency>
     </dependencies>
 

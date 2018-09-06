@@ -10,15 +10,36 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-alibaba-storage-autoconfigure</artifactId>
-    <name>Spring Cloud Alibaba Storage Autoconfigure</name>
+    <artifactId>spring-cloud-alibaba-sentinel</artifactId>
+    <name>Spring Cloud Alibaba Sentinel Autoconfigure</name>
 
     <dependencies>
 
         <dependency>
-            <groupId>com.aliyun.oss</groupId>
-            <artifactId>aliyun-sdk-oss</artifactId>
-            <optional>true</optional>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-web-servlet</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-transport-simple-http</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-annotation-aspectj</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-dubbo-adapter</artifactId>
+        </dependency>
+
+        <!--spring boot-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <dependency>
@@ -48,10 +69,9 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
