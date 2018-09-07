@@ -2,7 +2,6 @@ package org.springframework.cloud.alibaba.cloud.examples;
 
 import java.util.Collections;
 
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -36,7 +35,7 @@ public class SentinelDubboConsumerApp {
 
 		SpringApplicationBuilder consumerBuilder = new SpringApplicationBuilder();
 		ApplicationContext applicationContext = consumerBuilder
-				.web(WebApplicationType.NONE).sources(SentinelDubboConsumerApp.class)
+				.web(false).sources(SentinelDubboConsumerApp.class)
 				.run(args);
 
 		FooServiceConsumer service = applicationContext.getBean(FooServiceConsumer.class);
