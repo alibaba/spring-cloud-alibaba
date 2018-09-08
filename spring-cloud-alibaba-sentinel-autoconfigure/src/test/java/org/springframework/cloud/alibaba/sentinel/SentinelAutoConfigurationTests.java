@@ -65,7 +65,7 @@ public class SentinelAutoConfigurationTests {
 		this.contextRunner.run(context -> {
 			SentinelProperties sentinelProperties = context
 					.getBean(SentinelProperties.class);
-			assertThat(sentinelProperties.getPort()).isEqualTo("8888");
+			assertThat(sentinelProperties.getTransport().getPort()).isEqualTo("8888");
 			assertThat(sentinelProperties.getFilter().getUrlPatterns().size())
 					.isEqualTo(2);
 			assertThat(sentinelProperties.getFilter().getUrlPatterns().get(0))
