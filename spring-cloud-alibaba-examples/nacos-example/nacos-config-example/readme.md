@@ -84,7 +84,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 #### Automatic Injection
 Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to, we can see the data successfully obtained from Nacos Config Server.
 
-![get](https://cdn-pri.nlark.com/lark/0/2018/png/54319/1536720210111-3259ba19-9a6e-4fe9-9fb3-ab610c536f43.png)
+![get](https://cdn.nlark.com/lark/0/2018/png/54319/1536986328663-5e3503c2-7e14-4c56-b5f9-72fecc6898d2.png)
 
 #### Dynamic Refresh
 1. Run the following command to modify the configuration data on the Nacos Server side.
@@ -94,7 +94,7 @@ Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to, 
 2. Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to,
 We can see that the app got the latest data from Nacos Server and the age becomes 18.
 
-![refresh](https://cdn-pri.nlark.com/lark/0/2018/png/54319/1536720077561-cedc7fab-2319-40bd-a56e-7378a2e7905e.png)
+![refresh](https://cdn.nlark.com/lark/0/2018/png/54319/1536986336535-c0efdf6d-a5d3-4f33-8d26-fe3a36cdacf6.png)
 
 
 ## Principle
@@ -159,7 +159,7 @@ To view the endpoint information, visit the following URLS:
 Spring Boot1.x: Nacos Config  Endpoint URL is http://127.0.0.1:18083/nacos-config.
 Spring Boot2.x: Nacos Config  Endpoint URL is http://127.0.0.1:18083/actuator/nacos-config.
 
-![actuator](https://cdn-pri.nlark.com/lark/0/2018/png/54319/1536719345564-96dbc4de-74e9-4e85-b1dd-2e9180256d8a.png)
+![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 
 As shown in the figure above, Sources indicates which Nacos Config configuration items the client has obtained information, RefreshHistory indicates the dynamic refresh history, and up to 20, and NacosConfigProperties is the configuration of Nacos Config Starter itself.
     	
