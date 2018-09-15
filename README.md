@@ -10,12 +10,18 @@ With Spring Cloud Alibaba，you only need to add some annotations and a small am
 ## Features
 
 * **Flow control and service degradation**：Flow control for HTTP services is supported by default. You can also customize flow control and service degradation rules using annotations. The rules can be changed dynamically.
-
+* **Service registration and discovery**：Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
+* **Distributed configuration**：support for externalized configuration in a distributed system, auto refresh when configuration changes.
+* **AliCloud Object Storage**：massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
 For more features, please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
 ## Components
 
 **[Sentinel](https://github.com/alibaba/Sentinel)**: Sentinel takes "traffic flow" as the breakthrough point, and provides solutions in areas such as flow control, concurrency, circuit breaking, and load protection to protect service stability.
+
+**[Nacos](https://github.com/alibaba/Nacos)**: an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
+
+**[AliCloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
 
 For more features please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
@@ -37,6 +43,11 @@ Examples：
 
 [Sentinel example](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/spring-cloud-alibaba-examples/sentinel-example/readme.md)
 
+[Nacos Config Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme.md)
+
+[Nacos Discovery Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme.md)
+
+[AliCloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/storage-example/readme.md)
 
 ## Version control guidelines
 The version number of the project is in the form of x.x.x, where x is a number, starting from 0, and is not limited to the range 0~9. When the project is in the incubator phase, the first version number is fixed to 0, that is, the version number is 0.x.x.
@@ -47,8 +58,6 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 
 During the incubation period，the version management of the project will follow these rules：
 * Functional updates will be reflected in the 3rd number of the version, for example, the next version of 0.1.0 will be 0.1.1。
-* Emergency fixes for bugs that block the main business process will be reflected in version numbers such as 0.1.1.fix. However, it is our duty to improve the test regression process to avoid such scenarios.
-
 
 
 ## Contact Us
