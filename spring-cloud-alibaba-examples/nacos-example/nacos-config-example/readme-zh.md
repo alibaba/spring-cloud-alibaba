@@ -84,7 +84,7 @@
 #### 验证自动注入
 在浏览器地址栏输入 `http://127.0.0.1:18084/user`，并点击调转，可以看到成功从 Nacos Config Server 中获取了数据。
 
-![get](https://cdn-pri.nlark.com/lark/0/2018/png/54319/1536720210111-3259ba19-9a6e-4fe9-9fb3-ab610c536f43.png)
+![get](https://cdn.nlark.com/lark/0/2018/png/54319/1536986328663-5e3503c2-7e14-4c56-b5f9-72fecc6898d2.png)
 
 #### 验证动态刷新
 1. 执行如下命令，修改 Nacos Server 端的配置数据
@@ -93,7 +93,7 @@
 
 2. 在浏览器地址栏输入 `http://127.0.0.1:18084/user`，并点击调转，可以看到应用从 Nacos Server 中获取了最新的数据，age 变成了 18。
 
-![refresh](https://cdn-pri.nlark.com/lark/0/2018/png/54319/1536720077561-cedc7fab-2319-40bd-a56e-7378a2e7905e.png)
+![refresh](https://cdn.nlark.com/lark/0/2018/png/54319/1536986336535-c0efdf6d-a5d3-4f33-8d26-fe3a36cdacf6.png)
 
 
 ## 原理
@@ -156,7 +156,7 @@ Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos-config 来查看
 
 Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 来访问。
 
-![actuator](https://cdn-pri.nlark.com/lark/0/2018/png/54319/1536719345564-96dbc4de-74e9-4e85-b1dd-2e9180256d8a.png)
+![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 
 如上图所示，Sources 表示此客户端从哪些 Nacos Config 配置项中获取了信息，RefreshHistory 表示动态刷新的历史记录，最多保存20条，NacosConfigProperties 则为 Nacos Config Starter 本身的配置。
     	
