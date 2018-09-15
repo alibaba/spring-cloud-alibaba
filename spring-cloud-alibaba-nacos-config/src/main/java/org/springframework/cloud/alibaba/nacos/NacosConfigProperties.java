@@ -56,7 +56,7 @@ public class NacosConfigProperties {
 	/**
 	 * timeout to get configuration
 	 */
-	private int timeout;
+	private int timeout = 3000;
 
 	/**
 	 *  endpoint for Nacos
