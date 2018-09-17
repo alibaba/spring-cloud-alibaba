@@ -158,7 +158,7 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 
 Spring Cloud Nacos Discovery follows the spring cloud common standard and implements three interfaces: AutoServiceRegistration, ServiceRegistry, and Registration.
 
-During the startup phase of the spring cloud application, the ServletWebServerInitializedEvent event is watched. When the ServletWebServerInitializedEvent event is received after the Web container is initialized, the registration action is triggered, and the ServiceRegistry register method is called to register the service to the Nacos Server.
+During the startup phase of the spring cloud application, the WebServerInitializedEvent event is watched. When the WebServerInitializedEvent event is received after the Web container is initialized, the registration action is triggered, and the ServiceRegistry register method is called to register the service to the Nacos Server.
 
 
 
