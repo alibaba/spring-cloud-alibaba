@@ -154,7 +154,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Nacos Config Sta
 
 Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos_config 来查看 Nacos Endpoint 的信息。
 
-Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos_config 来访问。
+Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 来访问。
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 

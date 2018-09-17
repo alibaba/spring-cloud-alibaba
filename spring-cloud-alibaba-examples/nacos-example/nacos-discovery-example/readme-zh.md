@@ -175,7 +175,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Nacos Discovery 
 
 Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/nacos_discovery 来查看 Nacos Endpoint 的信息。
 
-Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos_discovery 来访问。
+Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos-discovery 来访问。
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986319285-d542dc5f-5dff-462a-9f52-7254776bcd99.png)
 
