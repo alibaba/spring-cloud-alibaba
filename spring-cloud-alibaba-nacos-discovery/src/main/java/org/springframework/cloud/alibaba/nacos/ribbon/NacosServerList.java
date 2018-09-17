@@ -16,8 +16,8 @@
 
 package org.springframework.cloud.alibaba.nacos.ribbon;
 
-import com.netflix.loadbalancer.Server;
-import com.netflix.loadbalancer.ServerList;
+import com.netflix.client.config.IClientConfig;
+import com.netflix.loadbalancer.AbstractServerList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 
@@ -29,58 +29,51 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 /**
  * @author xiaojing
  */
-public class NacosServerList implements ServerList<Server> {
+public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	@Autowired
 	private NacosRegistration registration;
 
-	private String service;
+	private String serviceId;
 
-	public NacosServerList() {
-	}
 
-	public NacosServerList(String service) {
-		this.service = service;
+	public NacosServerList(String serviceId) {
+		this.serviceId = serviceId;
 	}
 
 	@Override
-	public List<Server> getInitialListOfServers() {
+	public List<NacosServer> getInitialListOfServers() {
 		try {
-			List<Instance> instances = registration.getNacosNamingService().selectInstances(service,true);
-			return hostsToServerList(instances);
+			List<Instance> instances = registration.getNacosNamingService().selectInstances(serviceId,true);
+			return instancesToServerList(instances);
 		}
 		catch (Exception e) {
-			throw new IllegalStateException("Can not get nacos hosts, service=" + service, e);
+			throw new IllegalStateException("Can not get service instances from nacos, serviceId=" + serviceId, e);
 		}
 	}
 
 	@Override
-	public List<Server> getUpdatedListOfServers() {
+	public List<NacosServer> getUpdatedListOfServers() {
 		return getInitialListOfServers();
 	}
 
-	private Server hostToServer(Instance instance) {
-		Server server = new Server(instance.getIp(), instance.getPort());
-		return server;
-	}
-
-	private List<Server> hostsToServerList(List<Instance> instances) {
-		List<Server> result = new ArrayList<Server>(instances.size());
+	private List<NacosServer> instancesToServerList(List<Instance> instances) {
+		List<NacosServer> result = new ArrayList<>(instances.size());
 		for (Instance instance : instances) {
 			if (instance.isHealthy()) {
-				result.add(hostToServer(instance));
+				result.add(new NacosServer(instance));
 			}
 		}
 
 		return result;
 	}
 
-	public String getService() {
-		return service;
+	public String getServiceId() {
+		return serviceId;
 	}
 
-	public void setService(String service) {
-		this.service = service;
+	@Override
+	public void initWithNiwsConfig(IClientConfig iClientConfig) {
+		this.serviceId = iClientConfig.getClientName();
 	}
-
 }

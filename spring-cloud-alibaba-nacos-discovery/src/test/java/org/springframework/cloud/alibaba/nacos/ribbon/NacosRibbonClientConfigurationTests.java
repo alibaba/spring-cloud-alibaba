@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by yizhan on 2018/9/14.
+ * @author xiaojing
  */
 public class NacosRibbonClientConfigurationTests {
 
@@ -36,7 +36,7 @@ public class NacosRibbonClientConfigurationTests {
 
         this.contextRunner.run(context -> {
             NacosServerList serverList = context.getBean(NacosServerList.class);
-            assertThat(serverList.getService()).isEqualTo("myapp");
+            assertThat(serverList.getServiceId()).isEqualTo("myapp");
         });
     }
 
