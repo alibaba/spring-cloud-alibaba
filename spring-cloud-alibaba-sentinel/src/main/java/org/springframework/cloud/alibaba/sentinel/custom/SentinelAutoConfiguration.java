@@ -16,9 +16,16 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
+import java.util.Optional;
+
+import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
+import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
+import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
+import com.alibaba.csp.sentinel.init.InitExecutor;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -43,24 +50,35 @@ import javax.annotation.PostConstruct;
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelAutoConfiguration {
 
-    @Value("${project.name:${spring.application.name:}}")
-    private String projectName;
+	@Value("${project.name:${spring.application.name:}}")
+	private String projectName;
 
-    @Autowired
-    private SentinelProperties properties;
+	@Autowired
+	private SentinelProperties properties;
 
-    @PostConstruct
-    private void init() {
-        if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))) {
-            System.setProperty(AppNameUtil.APP_NAME, projectName);
-        }
-        if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))) {
-            System.setProperty(TransportConfig.SERVER_PORT, properties.getPort());
-        }
-        if (StringUtils.isEmpty(System.getProperty(TransportConfig.CONSOLE_SERVER))) {
-            System.setProperty(TransportConfig.CONSOLE_SERVER, properties.getDashboard());
-        }
-    }
+	@Autowired
+	private Optional<UrlBlockHandler> urlBlockHandlerOptional;
+
+	@Autowired
+	private Optional<UrlCleaner> urlCleanerOptional;
+
+	@PostConstruct
+	private void init() {
+		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))) {
+			System.setProperty(AppNameUtil.APP_NAME, projectName);
+		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))) {
+			System.setProperty(TransportConfig.SERVER_PORT, properties.getPort());
+		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.CONSOLE_SERVER))) {
+			System.setProperty(TransportConfig.CONSOLE_SERVER, properties.getDashboard());
+		}
+
+		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
+		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
+
+		InitExecutor.doInit();
+	}
 
 	@Bean
 	@ConditionalOnMissingBean
