@@ -1,32 +1,20 @@
-{
-  "properties": [
-    {
-      "name": "spring.cloud.nacos.config.server-addr",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "nacos config server address."
-    },
-    {
-      "name": "spring.cloud.nacos.config.timeout",
-      "type": "java.lang.Long",
-      "defaultValue": 3000,
-      "description": "sentinel api port."
-    },
-    {
-      "name": "spring.cloud.sentinel.dashboard",
-      "type": "java.lang.String",
-      "description": "sentinel dashboard address, won't try to connect dashboard when address is empty."
-    },
-    {
-      "name": "spring.cloud.sentinel.filter.order",
-      "type": "java.lang.Integer",
-      "defaultValue": "Integer.MIN_VALUE",
-      "description": "Sentinel filter chain order, will be set to FilterRegistrationBean."
-    },
-    {
-      "name": "spring.cloud.sentinel.filter.urlPatterns",
-      "type": "java.util.List",
-      "description": "URL pattern for Sentinel filter, default contains '/*'."
-    }
-  ]
-}
+{"properties": [
+  {
+    "name": "spring.cloud.nacos.config.encode",
+    "type": "java.lang.String",
+    "defaultValue": "UTF-8",
+    "description": "default encode for nacos config content."
+  },
+  {
+    "name": "spring.cloud.nacos.config.prefix",
+    "type": "java.lang.String",
+    "defaultValue": "${spring.application.name}",
+    "description": "the prefix of dataId, nacos config data meta info. dataId = prefix + '-' + ${spring.active.profile} + `-` + ${spring.cloud.nacos.config.content-type}."
+  },
+  {
+    "name": "spring.cloud.nacos.config.content-type",
+    "type": "java.lang.String",
+    "defaultValue": "properties",
+    "description": "the content type of nacos config content, only support properties now."
+  }
+]}

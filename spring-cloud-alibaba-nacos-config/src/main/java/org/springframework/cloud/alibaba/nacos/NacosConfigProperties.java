@@ -35,12 +35,12 @@ public class NacosConfigProperties {
 	private String serverAddr;
 
 	/**
-	 * nacos config encode
+	 * encode for nacos config content.
 	 */
 	private String encode;
 
 	/**
-	 * nacos config group
+	 * nacos config group, group is config data meta info.
 	 */
 	private String group = "DEFAULT_GROUP";
 
@@ -49,37 +49,37 @@ public class NacosConfigProperties {
 	 */
 	private String prefix;
 	/**
-	 * nacos config dataId contentType
+	 * the content type of nacos config content.
 	 */
 	private String contentType = "properties";
 
 	/**
-	 * timeout to get configuration
+	 * timeout for get config from nacos.
 	 */
 	private int timeout = 3000;
 
 	/**
-	 *  endpoint for Nacos
+	 *  endpoint for Nacos, the domain name of a service, through which the server address can be dynamically obtained.
 	 */
 	private String endpoint;
 
 	/**
-	 * Nacos namespace
+	 * namespace, separation configuration of different environments.
 	 */
 	private String namespace;
 
 	/**
-	 * Nacos access key
+	 * access key for namespace.
 	 */
 	private String accessKey;
 
 	/**
-	 * Nacos secret key
+	 * secret key for namespace.
 	 */
 	private String secretKey;
 
 	/**
-	 * nacos config context path
+	 * context path for nacos config server.
 	 */
 	private String contextPath;
 
