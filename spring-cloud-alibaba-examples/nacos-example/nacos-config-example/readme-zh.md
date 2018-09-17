@@ -152,7 +152,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Nacos Config Sta
 * Spring Boot 1.x 中添加配置 management.security.enabled=false
 * Spring Boot 2.x 中添加配置 management.endpoints.web.exposure.include=*
 
-Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos-config 来查看 Nacos Endpoint 的信息。
+Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos_config 来查看 Nacos Endpoint 的信息。
 
 Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 来访问。
 

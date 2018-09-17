@@ -181,7 +181,7 @@ Spring Boot 1.x: Add configuration management.security.enabled=false
 Spring Boot 2.x: Add configuration management.endpoints.web.exposure.include=*
 To view the endpoint information, visit the following URLS:
 
-Spring Boot1.x: Nacos Discovery  Endpoint URL is http://127.0.0.1:18083/nacos-discovery.
+Spring Boot1.x: Nacos Discovery  Endpoint URL is http://127.0.0.1:18083/nacos_discovery.
 Spring Boot2.x: Nacos Discovery  Endpoint URL is http://127.0.0.1:18083/actuator/nacos-discovery.
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986319285-d542dc5f-5dff-462a-9f52-7254776bcd99.png)

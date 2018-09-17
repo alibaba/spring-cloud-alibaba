@@ -156,7 +156,7 @@ Spring Boot 1.x: Add configuration management.security.enabled=false
 Spring Boot 2.x: Add configuration management.endpoints.web.exposure.include=*
 To view the endpoint information, visit the following URLS:
 
-Spring Boot1.x: Nacos Config  Endpoint URL is http://127.0.0.1:18083/nacos-config.
+Spring Boot1.x: Nacos Config  Endpoint URL is http://127.0.0.1:18083/nacos_config.
 Spring Boot2.x: Nacos Config  Endpoint URL is http://127.0.0.1:18083/actuator/nacos-config.
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
