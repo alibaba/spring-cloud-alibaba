@@ -44,17 +44,17 @@ import java.util.Objects;
 public class NacosDiscoveryProperties {
 
 	/**
-	 * nacos naming server address
+	 * nacos discovery server address
 	 */
 	private String serverAddr;
 
 	/**
-	 * nacos naming server endpoint
+	 * the domain name of a service, through which the server address can be dynamically obtained.
 	 */
 	private String endpoint;
 
 	/**
-	 * nacos naming namespace，todo
+	 * namespace, separation registry of different environments.
 	 */
 	private String namespace;
 
@@ -64,45 +64,45 @@ public class NacosDiscoveryProperties {
 	private String logName;
 
 	/**
-	 * service name to publish
+	 * service name to registry
 	 */
 	@Value("${spring.cloud.nacos.discovery.service:${spring.application.name:}}")
 	private String service;
 
 	/**
-	 * weights for service instance
+	 * weight for service instance, the larger the value, the larger the weight.
 	 */
 	private float weight = 1;
 
 	/**
-	 * publish to which virtual clusterName
+	 * cluster name for nacos server.
 	 */
-	private String clusterName = "DEFAULT";//todo default value is ?
+	private String clusterName = "DEFAULT";
 
 	/**
-	 * extra metadata to publish
+	 * extra metadata to register.
 	 */
 	private Map<String, String> metadata = new HashMap<>();
 
 	/**
-	 * if you just want to subscribe, but don't want to publish your service, set it to
+	 * if you just want to subscribe, but don't want to register your service, set it to
 	 * false.
 	 */
 	private boolean registerEnabled = true;
 
 	/**
-	 * The ip address your want to publish for your service instance, needn't to set it if
+	 * The ip address your want to register for your service instance, needn't to set it if
 	 * the auto detect ip works well
 	 */
 	private String ip;
 
 	/**
-	 * which network interface's ip you want to publish
+	 * which network interface's ip you want to register
 	 */
 	private String networkInterface = "";
 
 	/**
-	 * The port your want to publish for your service instance, needn't to set it if the
+	 * The port your want to register for your service instance, needn't to set it if the
 	 * auto detect port works well
 	 */
 	private int port = -1;
@@ -113,12 +113,12 @@ public class NacosDiscoveryProperties {
 	private boolean secure = false;
 
 	/**
-	 * access key for nacos discovery
+	 * access key for namespace.
 	 */
 	private String accessKey;
 
 	/**
-	 * secret key for nacos discovery
+	 * secret key for namespace.
 	 */
 	private String secretKey;
 
