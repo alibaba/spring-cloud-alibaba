@@ -1,4 +1,4 @@
-# Sentinel Dubbo Provider Example
+# Sentinel Provider Example
 ## Project Instruction
 
 This example illustrates how to use Sentinel starter to implement flow control for Spring Cloud applications.

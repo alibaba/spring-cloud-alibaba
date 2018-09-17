@@ -84,7 +84,7 @@
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
 	1. IDE直接启动：找到主类 `ServiceApplication`，执行 main 方法启动应用。
-	2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar sentinel-example.jar`启动应用。
+	2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar sentinel-core-example.jar`启动应用。
 
 ### 调用服务
 
