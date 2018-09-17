@@ -16,112 +16,90 @@
 
 package org.springframework.cloud.alibaba.nacos.registry;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.context.ConfigurableWebServerApplicationContext;
-import org.springframework.boot.web.context.WebServerInitializedEvent;
-import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
-import org.springframework.cloud.client.discovery.event.InstanceRegisteredEvent;
-import org.springframework.cloud.client.serviceregistry.AutoServiceRegistration;
+import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
+import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.SmartLifecycle;
-import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.Ordered;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
  */
-public class NacosAutoServiceRegistration
-		implements AutoServiceRegistration, SmartLifecycle, Ordered {
-	private static final Logger logger = LoggerFactory.getLogger(NacosAutoServiceRegistration.class);
+public class NacosAutoServiceRegistration extends AbstractAutoServiceRegistration<NacosRegistration> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(NacosAutoServiceRegistration.class);
 
 	@Autowired
 	private NacosRegistration registration;
 
-	private int order = 0;
-	private AtomicBoolean running = new AtomicBoolean(false);
-	private AtomicInteger port = new AtomicInteger(0);
-	private ApplicationContext context;
-	private ServiceRegistry serviceRegistry;
 
-	public NacosAutoServiceRegistration(ApplicationContext context,
-										ServiceRegistry<NacosRegistration> serviceRegistry,
+	public NacosAutoServiceRegistration(ServiceRegistry<NacosRegistration> serviceRegistry,
+										AutoServiceRegistrationProperties autoServiceRegistrationProperties,
 										NacosRegistration registration) {
-		this.context = context;
-		this.serviceRegistry = serviceRegistry;
+		super(serviceRegistry, autoServiceRegistrationProperties);
 		this.registration = registration;
 	}
 
+	@Deprecated
+	public void setPort(int port) {
+		getPort().set(port);
+	}
+
 	@Override
-	public void start() {
-		if (this.port.get() != 0) {
-			this.registration.setPort(port.get());
+	protected NacosRegistration getRegistration() {
+		if (this.registration.getPort() < 0 && this.getPort().get() > 0) {
+			this.registration.setPort(this.getPort().get());
 		}
+		Assert.isTrue(this.registration.getPort() > 0, "service.port has not been set");
+		return this.registration;
+	}
 
-		if (!this.running.get() && this.registration.getPort() > 0) {
-			this.serviceRegistry.register(this.registration);
-			this.context
-					.publishEvent(new InstanceRegisteredEvent(this, this.registration));
-			this.running.set(true);
+	@Override
+	protected NacosRegistration getManagementRegistration() {
+		return null;
+	}
+
+	@Override
+	protected void register() {
+		if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
+			LOGGER.debug("Registration disabled.");
+			return;
 		}
-	}
-
-	@Override
-	public void stop() {
-		this.serviceRegistry.deregister(this.registration);
-		this.running.set(false);
-	}
-
-	@Override
-	public boolean isRunning() {
-		return this.running.get();
-	}
-
-	@Override
-	public int getPhase() {
-		return 0;
-	}
-
-	@Override
-	public boolean isAutoStartup() {
-		return true;
-	}
-
-	@Override
-	public void stop(Runnable callback) {
-		this.stop();
-		callback.run();
-	}
-
-	@Override
-	public int getOrder() {
-		return this.order;
-	}
-
-	@EventListener(WebServerInitializedEvent.class)
-	public void onApplicationEvent(WebServerInitializedEvent event) {
-		int localPort = event.getWebServer().getPort();
-		ApplicationContext context = event.getApplicationContext();
-
-		if(!(context instanceof ConfigurableWebServerApplicationContext) || !"management".equals(((ConfigurableWebServerApplicationContext)context).getServerNamespace())) {
-			logger.info("Updating port to {}", localPort);
-			this.port.compareAndSet(0, event.getWebServer().getPort());
-			this.start();
+		if (this.registration.getPort() < 0) {
+			this.registration.setPort(getPort().get());
 		}
+		super.register();
 	}
 
-	@EventListener({ ContextClosedEvent.class })
-	public void onApplicationEvent(ContextClosedEvent event) {
-		if (event.getApplicationContext() == this.context) {
-			this.stop();
+	@Override
+	protected void registerManagement() {
+		if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
+			return;
 		}
+		super.registerManagement();
 
+	}
+
+
+	@Override
+	protected Object getConfiguration() {
+		return this.registration.getNacosDiscoveryProperties();
+	}
+
+	@Override
+	protected boolean isEnabled() {
+		return this.registration.getNacosDiscoveryProperties().isRegisterEnabled();
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	protected String getAppName() {
+		String appName = registration.getNacosDiscoveryProperties().getService();
+		return StringUtils.isEmpty(appName) ? super.getAppName() : appName;
 	}
 
 }
+
