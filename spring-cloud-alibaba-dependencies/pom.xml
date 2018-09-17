@@ -18,12 +18,17 @@
     <properties>
         <sentinel.version>0.1.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
+        <nacos.version>0.2.0</nacos.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- Sentinel dependencies -->
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-core</artifactId>
@@ -96,6 +101,16 @@
                 <artifactId>spring-cloud-alibaba-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Own dependencies - Starters -->
             <dependency>
@@ -108,6 +123,21 @@
                 <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+
 
             <!-- Testing Dependencies -->
 
