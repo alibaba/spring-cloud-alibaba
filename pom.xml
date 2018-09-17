@@ -74,8 +74,11 @@
         <module>spring-cloud-alibaba-dependencies</module>
         <module>spring-cloud-alibaba-sentinel</module>
         <module>spring-cloud-alibaba-storage</module>
-        <module>spring-cloud-starter-alibaba</module>
+        <module>spring-cloud-alibaba-nacos-config</module>
+        <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-examples</module>
+        <module>spring-cloud-alibaba-test</module>
+        <module>spring-cloud-starter-alibaba</module>
     </modules>
 
     <dependencyManagement>
@@ -93,6 +96,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-commons-dependencies</artifactId>
                 <version>${spring-cloud-commons.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-netflix</artifactId>
+                <version>${spring-cloud-netflix.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
