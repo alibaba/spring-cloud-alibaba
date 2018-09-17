@@ -71,7 +71,7 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 2. Start the application in IDE or by building a fatjar.
 
 	1. Start in IDE: Find main class  `ServiceApplication`, and execute the main method.
-	2. Build a fatjar：Execute command `mvn clean package` to build a fatjar，and run command `java -jar sentinel-example.jar` to start the application.
+	2. Build a fatjar：Execute command `mvn clean package` to build a fatjar，and run command `java -jar sentinel-core-example.jar` to start the application.
 
 ### Invoke Service
 

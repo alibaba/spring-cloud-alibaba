@@ -1,4 +1,4 @@
-# Sentinel Dubbo Provider Example
+# Sentinel Dubbo Example
 ## Project Instruction
 
 This example illustrates how to use Sentinel starter to implement flow control for Spring Cloud applications.
@@ -7,9 +7,7 @@ This example illustrates how to use Sentinel starter to implement flow control f
 
 [Dubbo](http://dubbo.apache.org/) is a high-performance, java based open source RPC framework.
 
-This example work with 'sentinel-dubbo-consumer-example' module and `sentinel-dubbo-provider-example` module should startup firstly.
-
-This example focus on the integration of Sentinel and Dubbo. You can see more features on [sentinel-example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example).
+This example focus on the integration of Sentinel and Dubbo. You can see more features on [sentinel-core-example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example).
 
 ## Demo
 
@@ -44,7 +42,7 @@ Before we start the demo, let's learn how to connect Sentinel with Dubbo to a Sp
 
 ### Configure and Publish Service
 
-Define some configs of dubbo in `application.properties`, like protocol, config registry：
+Define some configs of dubbo in `application.properties` in provider side, like protocol, config registry :
 
     spring.application.name = dubbo-provider-demo
     
@@ -86,12 +84,62 @@ Define the implement Service annotated by `@Service`:
             return "hello, " + name;
         }
     }
+    
+### Service Invocation
+
+We will configure flow control rules before service invocation in consumer side. 
+
+`sentinel-dubbo-api` define a service named FooService:
+
+    package org.springframework.cloud.alibaba.cloud.examples.FooService;
+    public interface FooService {
+        String hello(String name);
+    }
+
+The resource name of this service's `hello` method is `org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` .
+
+Configure rules:
+
+    FlowRule flowRule = new FlowRule();
+    flowRule.setResource("org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)");
+    flowRule.setCount(10);
+    flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+    flowRule.setLimitApp("default");
+    FlowRuleManager.loadRules(Collections.singletonList(flowRule));
+
+Using the `@Reference` annotation to inject service:
+
+    @Reference(version = "${foo.service.version}", application = "${dubbo.application.id}",
+            url = "dubbo://localhost:12345", timeout = 30000)
+	private FooService fooService;
+
+Because QPS is 10, we can see that flow control takes effect in this invocation:
+
+    FooServiceConsumer service = applicationContext.getBean(FooServiceConsumer.class);
+    
+    for (int i = 0; i < 15; i++) {
+        try {
+            String message = service.hello("Jim");
+            System.out.println((i + 1) + " -> Success: " + message);
+        }
+        catch (SentinelRpcException ex) {
+            System.out.println("Blocked");
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
 ### Start Application
 
 Start the application in IDE or by building a fatjar.
 
+Provider side:
+
 1. Start in IDE: Find main class  `SentinelDubboProviderApp`, and execute the main method.
-2. Build a fatjar：Execute command `mvn clean package` to build a fatjar，and run command `java -jar sentinel-dubbo-provider-example.jar` to start the application.
+2. Build a fatjar: Execute command `mvn clean package` to build a fatjar, and run command `java -jar sentinel-dubbo-provider-example.jar` to start the application.
 
+Consumer side:
 
+1. Start in IDE: Find main class  `SentinelDubboConsumerApp`, and execute the main method.
+2. Build a fatjar: Execute command `mvn clean package` to build a fatjar, and run command `java -jar sentinel-dubbo-consumer-example.jar` to start the application.
