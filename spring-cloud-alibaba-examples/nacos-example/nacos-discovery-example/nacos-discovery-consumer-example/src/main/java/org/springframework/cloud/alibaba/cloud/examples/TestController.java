@@ -34,9 +34,9 @@ public class TestController {
     }
 
 
-    @RequestMapping(value="/client",method = RequestMethod.GET)
-    public Object client(){
-        return discoveryClient.getInstances("service-consumer");
+    @RequestMapping(value="/services/{service}",method = RequestMethod.GET)
+    public Object client(@PathVariable String service){
+        return discoveryClient.getInstances(service);
     }
     @RequestMapping(value="/services",method = RequestMethod.GET)
     public Object services(){
