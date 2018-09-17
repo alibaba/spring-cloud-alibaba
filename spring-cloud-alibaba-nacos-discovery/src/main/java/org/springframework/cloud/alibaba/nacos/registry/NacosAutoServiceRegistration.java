@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.context.ConfigurableWebServerApplicationContext;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.cloud.client.discovery.event.InstanceRegisteredEvent;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistration;
@@ -102,13 +104,15 @@ public class NacosAutoServiceRegistration
 		return this.order;
 	}
 
-	@EventListener(ServletWebServerInitializedEvent.class)
-	public void onApplicationEvent(ServletWebServerInitializedEvent event) {
+	@EventListener(WebServerInitializedEvent.class)
+	public void onApplicationEvent(WebServerInitializedEvent event) {
 		int localPort = event.getWebServer().getPort();
-		if (this.port.get() == 0) {
+		ApplicationContext context = event.getApplicationContext();
+
+		if(!(context instanceof ConfigurableWebServerApplicationContext) || !"management".equals(((ConfigurableWebServerApplicationContext)context).getServerNamespace())) {
 			logger.info("Updating port to {}", localPort);
-			this.port.compareAndSet(0, localPort);
-			start();
+			this.port.compareAndSet(0, event.getWebServer().getPort());
+			this.start();
 		}
 	}
 
