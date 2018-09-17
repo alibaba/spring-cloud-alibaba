@@ -17,7 +17,6 @@
 package org.springframework.cloud.alibaba.nacos.ribbon;
 
 import com.netflix.client.config.IClientConfig;
-import com.netflix.loadbalancer.Server;
 import com.netflix.loadbalancer.ServerList;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +32,7 @@ public class NacosRibbonClientConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public ServerList<Server> ribbonServerList(IClientConfig config) {
+	public ServerList<?> ribbonServerList(IClientConfig config) {
 		NacosServerList serverList = new NacosServerList(config.getClientName());
 		return serverList;
 	}
