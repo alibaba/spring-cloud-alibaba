@@ -16,12 +16,12 @@
     <description>Example showing how to use features of Spring Cloud Alibaba</description>
 
     <modules>
-        <module>sentinel-example</module>
+        <module>sentinel-example/sentinel-core-example</module>
+        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-provider-example</module>
+        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-consumer-example</module>
+        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
-        <module>sentinel-dubbo-provider-example</module>
-        <module>sentinel-dubbo-consumer-example</module>
-        <module>sentinel-dubbo-api</module>
         <module>storage-example</module>
     </modules>
 

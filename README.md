@@ -41,7 +41,7 @@ A `spring-cloud-alibaba-examples` module is included in our project for you to g
 
 Examples：
 
-[Sentinel example](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/spring-cloud-alibaba-examples/sentinel-example/readme.md)
+[Sentinel example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
 
 [Nacos Config Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme.md)
 
