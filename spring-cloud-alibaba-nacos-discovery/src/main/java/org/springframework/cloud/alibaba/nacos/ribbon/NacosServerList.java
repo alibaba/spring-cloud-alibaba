@@ -36,6 +36,7 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	private String serviceId;
 
+	public NacosServerList(){}
 
 	public NacosServerList(String serviceId) {
 		this.serviceId = serviceId;
