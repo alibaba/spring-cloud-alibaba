@@ -2,6 +2,7 @@ package org.springframework.cloud.alibaba.cloud.examples;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.cloud.examples.ConsumerApplication.EchoService;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,10 @@ public class TestController {
     @Autowired
     private EchoService echoService;
 
+
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
     @RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
     public String rest(@PathVariable String str) {
         return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
@@ -26,5 +31,15 @@ public class TestController {
     @RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
     public String feign(@PathVariable String str) {
         return echoService.echo(str);
+    }
+
+
+    @RequestMapping(value="/client",method = RequestMethod.GET)
+    public Object client(){
+        return discoveryClient.getInstances("service-consumer");
+    }
+    @RequestMapping(value="/services",method = RequestMethod.GET)
+    public Object services(){
+        return discoveryClient.getServices();
     }
 }
