@@ -30,7 +30,6 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.AbstractEndpoint")
 public class NacosDiscoveryEndpointAutoConfiguration {
 
-
 	@Bean
 	@ConditionalOnMissingBean
 	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint() {

@@ -35,7 +35,8 @@ import com.alibaba.nacos.api.naming.pojo.ListView;
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NacosDiscoveryClient.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NacosDiscoveryClient.class);
 	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
 	@Autowired
@@ -85,7 +86,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public List<ServiceInstance> getInstances(String serviceId) {
 		try {
 			NamingService namingService = nacosRegistration.getNacosNamingService();
-			List<Instance> instances = namingService.selectInstances(serviceId,true);
+			List<Instance> instances = namingService.selectInstances(serviceId, true);
 			return hostToServiceInstanceList(instances, serviceId);
 		}
 		catch (Exception e) {
@@ -94,25 +95,26 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		}
 	}
 
-	private static ServiceInstance hostToServiceInstance(Instance instance, String serviceId) {
+	private static ServiceInstance hostToServiceInstance(Instance instance,
+			String serviceId) {
 		NacosServiceInstance nacosServiceInstance = new NacosServiceInstance();
 		nacosServiceInstance.setHost(instance.getIp());
 		nacosServiceInstance.setPort(instance.getPort());
 		nacosServiceInstance.setServiceId(serviceId);
 		Map<String, String> metadata = new HashMap<String, String>();
 		metadata.put("instanceId", instance.getInstanceId());
-		metadata.put("weight", instance.getWeight()+"");
-		metadata.put("healthy", instance.isHealthy()+"");
-		metadata.put("cluster", instance.getCluster()+"");
+		metadata.put("weight", instance.getWeight() + "");
+		metadata.put("healthy", instance.isHealthy() + "");
+		metadata.put("cluster", instance.getCluster() + "");
 		metadata.putAll(instance.getMetadata());
 		nacosServiceInstance.setMetadata(metadata);
 		return nacosServiceInstance;
 	}
 
-	private static List<ServiceInstance> hostToServiceInstanceList(List<Instance> instances,
-			String serviceId) {
+	private static List<ServiceInstance> hostToServiceInstanceList(
+			List<Instance> instances, String serviceId) {
 		List<ServiceInstance> result = new ArrayList<ServiceInstance>(instances.size());
-		for (Instance instance: instances) {
+		for (Instance instance : instances) {
 			result.add(hostToServiceInstance(instance, serviceId));
 		}
 		return result;
@@ -123,9 +125,11 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 
 		try {
 			NamingService namingService = nacosRegistration.getNacosNamingService();
-			ListView<String> services =  namingService.getServicesOfServer(1, Integer.MAX_VALUE);
+			ListView<String> services = namingService.getServicesOfServer(1,
+					Integer.MAX_VALUE);
 			return services.getData();
-		}catch( Exception e){
+		}
+		catch (Exception e) {
 			LOGGER.error("get service name from nacos server fail,", e);
 			return Collections.emptyList();
 		}

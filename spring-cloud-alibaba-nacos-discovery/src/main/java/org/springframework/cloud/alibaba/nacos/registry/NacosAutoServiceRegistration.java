@@ -19,12 +19,11 @@ package org.springframework.cloud.alibaba.nacos.registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.event.EventListener;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
@@ -37,25 +36,52 @@ public class NacosAutoServiceRegistration
 	@Autowired
 	private NacosRegistration registration;
 
-	@Autowired
-	private ApplicationContext context;
-
 	public NacosAutoServiceRegistration(
 			ServiceRegistry<NacosRegistration> serviceRegistry,
-			AutoServiceRegistrationProperties properties,
+			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
 			NacosRegistration registration) {
-		super(serviceRegistry, properties);
+		super(serviceRegistry, autoServiceRegistrationProperties);
 		this.registration = registration;
+	}
+
+	@Deprecated
+	public void setPort(int port) {
+		getPort().set(port);
 	}
 
 	@Override
 	protected NacosRegistration getRegistration() {
-		return registration;
+		if (this.registration.getPort() < 0 && this.getPort().get() > 0) {
+			this.registration.setPort(this.getPort().get());
+		}
+		Assert.isTrue(this.registration.getPort() > 0, "service.port has not been set");
+		return this.registration;
 	}
 
 	@Override
 	protected NacosRegistration getManagementRegistration() {
 		return null;
+	}
+
+	@Override
+	protected void register() {
+		if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
+			LOGGER.debug("Registration disabled.");
+			return;
+		}
+		if (this.registration.getPort() < 0) {
+			this.registration.setPort(getPort().get());
+		}
+		super.register();
+	}
+
+	@Override
+	protected void registerManagement() {
+		if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
+			return;
+		}
+		super.registerManagement();
+
 	}
 
 	@Override
@@ -70,34 +96,19 @@ public class NacosAutoServiceRegistration
 
 	@Override
 	protected Object getConfiguration() {
-		return null;
+		return this.registration.getNacosDiscoveryProperties();
 	}
 
 	@Override
 	protected boolean isEnabled() {
-		return true;
-	}
-
-	/**
-	 * Register the local service with the {@link ServiceRegistry}
-	 */
-	@Override
-	protected void register() {
-		this.registration.setPort(this.getPort().get());
-		this.getServiceRegistry().register(getRegistration());
+		return this.registration.getNacosDiscoveryProperties().isRegisterEnabled();
 	}
 
 	@Override
-	@EventListener(EmbeddedServletContainerInitializedEvent.class)
-	public void onApplicationEvent(EmbeddedServletContainerInitializedEvent event) {
-		if (context.equals(event.getApplicationContext())) {
-			int localPort = event.getEmbeddedServletContainer().getPort();
-			if (this.getPort().get() == 0) {
-				LOGGER.info("Updating port to " + localPort);
-				this.getPort().compareAndSet(0, localPort);
-				start();
-			}
-		}
+	@SuppressWarnings("deprecation")
+	protected String getAppName() {
+		String appName = registration.getNacosDiscoveryProperties().getService();
+		return StringUtils.isEmpty(appName) ? super.getAppName() : appName;
 	}
 
 }
