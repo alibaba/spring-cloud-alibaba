@@ -44,18 +44,22 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	@Override
 	public List<NacosServer> getInitialListOfServers() {
+		return getServers();
+	}
+
+	@Override
+	public List<NacosServer> getUpdatedListOfServers() {
+		return getServers();
+	}
+
+	private List<NacosServer> getServers() {
 		try {
-			List<Instance> instances = registration.getNacosNamingService().selectInstances(serviceId,true);
+			List<Instance> instances = registration.getNacosNamingService().selectInstances(serviceId, true);
 			return instancesToServerList(instances);
 		}
 		catch (Exception e) {
 			throw new IllegalStateException("Can not get service instances from nacos, serviceId=" + serviceId, e);
 		}
-	}
-
-	@Override
-	public List<NacosServer> getUpdatedListOfServers() {
-		return getInitialListOfServers();
 	}
 
 	private List<NacosServer> instancesToServerList(List<Instance> instances) {
