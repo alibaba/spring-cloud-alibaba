@@ -57,6 +57,7 @@
         <!-- Dependency Versions -->
         <spring-cloud-commons.version>2.0.0.RELEASE</spring-cloud-commons.version>
         <spring-cloud-netflix.version>2.0.0.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.0.0.RELEASE</spring-cloud-openfeign.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -72,11 +73,13 @@
 
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
-        <module>spring-cloud-alibaba-sentinel-autoconfigure</module>
-        <module>spring-cloud-starter-sentinel</module>
-        <module>spring-cloud-alibaba-storage-autoconfigure</module>
-        <module>spring-cloud-starter-storage</module>
+        <module>spring-cloud-alibaba-sentinel</module>
+        <module>spring-cloud-alibaba-storage</module>
+        <module>spring-cloud-alibaba-nacos-config</module>
+        <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-examples</module>
+        <module>spring-cloud-alibaba-test</module>
+        <module>spring-cloud-starter-alibaba</module>
     </modules>
 
     <dependencyManagement>
@@ -94,6 +97,29 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-commons-dependencies</artifactId>
                 <version>${spring-cloud-commons.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-test-support</artifactId>
+                <scope>test</scope>
+                <version>${spring-cloud-commons.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-netflix</artifactId>
+                <version>${spring-cloud-netflix.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-openfeign-dependencies</artifactId>
+                <version>${spring-cloud-openfeign.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -8,14 +8,22 @@ Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解�
 ## 主要功能
 
 * **服务限流降级**：默认支持为 HTTP 服务的提供限流保护，也支持添加注解实现方法的自定义限流降级，且支持动态修改限流降级规则。
+* **服务注册与发现**：适配 sprig cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。
+* **分布式配置管理**：支持分布式系统中的外部化配置，配置更改时自动刷新。
+* **阿里云对象存储**：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。
 
-更多功能请参考 [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/Roadmap-zh.md)。
+
+更多功能请参考 [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap-zh.md)。
 
 ## 组件:
 
 **[Sentinel](https://github.com/alibaba/Sentinel)**：把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
 
-更多组件请参考 [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/Roadmap-zh.md)。
+**[Nacos](https://github.com/alibaba/Nacos)**：一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+
+**[AliCloud OSS](https://www.aliyun.com/product/oss)**: 阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务。您可以在任何应用、任何时间、任何地点存储和访问任意类型的数据。
+
+更多组件请参考 [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap-zh.md)。
 
 ## 如何构建
 
@@ -34,8 +42,13 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目clone�
 
 Example 列表：
 
-[sentinel example](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/spring-cloud-alibaba-examples/sentinel-example/readme-zh.md)
+[Sentinel Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md)
 
+[Nacos Config Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md)
+
+[Nacos Discovery Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md)
+
+[AliCloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/storage-example/readme-zh.md)
 
 ## 版本管理规范
 项目的版本号格式为 x.x.x 的形式，其中 x 的数值类型为数字，从0开始取值，且不限于 0~9 这个范围。项目处于孵化器阶段时，第一位版本号固定使用0，即版本号为 0.x.x 的格式。
@@ -46,7 +59,6 @@ Example 列表：
 
 项目孵化阶段，项目版本升级机制如下：
 * 功能改动的升级会增加第三位版本号的数值，例如 0.1.0 的下一个版本为0.1.1。
-* 如果遇到阻碍主业务流程的 bug，需要进行少量修改进行紧急修复，会出现类似于 0.1.1.fix 这样的版本。我们会尽量完善测试回归流程，避免此类场景出现。
 
 
 
