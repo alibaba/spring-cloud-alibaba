@@ -16,25 +16,22 @@
 
 package org.springframework.cloud.alibaba.sentinel.annotation;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-
 import java.lang.annotation.*;
 
 /**
  * @author fangjian
  */
-@Target({ ElementType.METHOD, ElementType.FIELD })
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Qualifier
 public @interface SentinelProtect {
 
-    String blockHandler() default "";
+	String blockHandler() default "";
 
-    Class<?> blockHandlerClass() default void.class;
+	Class<?> blockHandlerClass() default void.class;
 
-    String fallback() default "";
+	String fallback() default "";
 
-    Class<?> fallbackClass() default void.class;
+	Class<?> fallbackClass() default void.class;
 
 }
