@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -123,7 +122,6 @@ public class NacosDiscoveryProperties {
 	private String secretKey;
 
 	@Autowired
-	@JsonIgnore
 	private InetUtils inetUtils;
 
 	@PostConstruct
@@ -188,10 +186,6 @@ public class NacosDiscoveryProperties {
 
 	public void setLogName(String logName) {
 		this.logName = logName;
-	}
-
-	public InetUtils getInetUtils() {
-		return inetUtils;
 	}
 
 	public void setInetUtils(InetUtils inetUtils) {
