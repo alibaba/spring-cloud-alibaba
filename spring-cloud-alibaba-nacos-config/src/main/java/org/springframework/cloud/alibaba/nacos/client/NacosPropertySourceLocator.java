@@ -84,7 +84,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			configService =  NacosFactory.createConfigService(properties);
 		}
 		catch (NacosException e) {
-			// todo 为什么这里是 checkException，什么时候会抛出，什么时候需要关心
 			logger.error("create config service error, nacosConfigProperties:{}, ", properties, e);
 			return null;
 		}
