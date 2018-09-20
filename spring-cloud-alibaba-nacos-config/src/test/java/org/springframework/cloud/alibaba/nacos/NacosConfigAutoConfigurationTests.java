@@ -72,7 +72,7 @@ public class NacosConfigAutoConfigurationTests {
         }
 
         NacosConfigProperties nacosConfigProperties = this.context.getBean(NacosConfigProperties.class);
-        assertThat(nacosConfigProperties.getContentType()).isEqualTo("properties");
+        assertThat(nacosConfigProperties.getFileExtension()).isEqualTo("properties");
         assertThat(nacosConfigProperties.getPrefix()).isEqualTo("myapp");
 
     }

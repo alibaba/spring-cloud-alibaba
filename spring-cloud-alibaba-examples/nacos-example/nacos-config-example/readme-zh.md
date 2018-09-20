@@ -112,7 +112,7 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 在 Nacos Config Starter 中，dataId 的拼接格式如下
 
-	${prefix} - ${spring.active.profile} . ${content-type}
+	${prefix} - ${spring.active.profile} . ${file-extension}
 
 * `prefix` 默认为 `spring.application.name` 的值，也可以通过配置项 `spring.cloud.nacos.config.prefix`来配置。
 
@@ -120,7 +120,7 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${context.type}`**
 
-* `content-type` 为配置内容的数据格式，可以通过配置项 `spring.cloud.nacos.config.content-type`来配置。
+* `file-extension` 为配置内容的数据格式，可以通过配置项 `spring.cloud.nacos.config.content-type`来配置。
 目前只支持 `properties` 类型。
 
 #### group
@@ -168,7 +168,7 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 
 服务端地址|spring.cloud.nacos.config.server-addr||
 DataId前缀|spring.cloud.nacos.config.prefix||spring.application.name
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
-dataID后缀及数据格式|spring.cloud.nacos.config.content-type|properties|目前只支持 properties
+dataID后缀及数据格式|spring.cloud.nacos.config.file-extension|properties|目前只支持 properties
 配置内容的编码方式|spring.cloud.nacos.config.encode|UTF-8|配置的编码
 获取配置的超时时间|spring.cloud.nacos.config.timeout|3000|单位为 ms
 配置的命名空间|spring.cloud.nacos.config.namespace||常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源隔离等。
