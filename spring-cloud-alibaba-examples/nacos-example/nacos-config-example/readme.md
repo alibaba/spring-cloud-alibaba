@@ -113,15 +113,15 @@ Nacos Client gets data from Nacos Server through this method. `ConfigService.get
 
 In Nacos Config Starter, the splicing format of dataId is as follows
 
-	${prefix} - ${spring.active.profile} . ${content-type}
+	${prefix} - ${spring.active.profile} . ${file-extension}
 
 * `prefix` default value is `spring.application.name` value, which can also be configured via the configuration item `spring.cloud.nacos.config.prefix`.
 
 * `spring.active.profile` is the profile corresponding to the current environment. For details, please refer to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
-	**Note: when the activeprofile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${context.type}`**
+	**Note: when the activeprofile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
 
-* `content-type` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.content-type`.
+* `file-extension` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.file-extension`.
 Currently only the `properties` type is supported.
 
 #### group
@@ -172,7 +172,7 @@ Configuration item|key|default value|Description
 server address|spring.cloud.nacos.config.server-addr||
 DataId prefix|spring.cloud.nacos.config.prefix||spring.application.name
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
-dataID content type|spring.cloud.nacos.config.content-type|properties|currently only support properties
+dataID suffix|spring.cloud.nacos.config.file-extension|properties|the suffix of nacos config dataId, also the file extension of config content.
 encoding |spring.cloud.nacos.config.encode|UTF-8|Content encoding
 timeout|spring.cloud.nacos.config.timeout|3000|Get the configuration timeout period,unit is ms
 namespace|spring.cloud.nacos.config.namespace||One of the common scenarios is the separation of the configuration of different environments, such as the development of the test environment and the resource isolation of the production environment.

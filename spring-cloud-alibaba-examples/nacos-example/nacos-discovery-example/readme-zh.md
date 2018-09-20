@@ -197,7 +197,7 @@ AccessKey|spring.cloud.nacos.discovery.access-key||
 SecretKey|spring.cloud.nacos.discovery.secret-key||
 Metadata|spring.cloud.nacos.discovery.metadata||使用Map格式配置
 日志文件名|spring.cloud.nacos.discovery.log-name||
-接入点|spring.cloud.nacos.discovery.enpoint|UTF-8|地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
+接入点|spring.cloud.nacos.discovery.endpoint|UTF-8|地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 是否集成Ribbon|ribbon.nacos.enabled|true|
 
 

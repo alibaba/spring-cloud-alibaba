@@ -9,12 +9,12 @@
     "name": "spring.cloud.nacos.config.prefix",
     "type": "java.lang.String",
     "defaultValue": "${spring.application.name}",
-    "description": "the prefix of dataId, nacos config data meta info. dataId = prefix + '-' + ${spring.active.profile} + `-` + ${spring.cloud.nacos.config.content-type}."
+    "description": "the prefix of dataId, nacos config data meta info. dataId = prefix + '-' + ${spring.active.profile} + `.` + ${spring.cloud.nacos.config.file-extension}."
   },
   {
-    "name": "spring.cloud.nacos.config.content-type",
+    "name": "spring.cloud.nacos.config.file-extension",
     "type": "java.lang.String",
     "defaultValue": "properties",
-    "description": "the content type of nacos config content, only support properties now."
+    "description": "the suffix of nacos config dataId, also the file extension of config content, only support properties now."
   }
 ]}
