@@ -21,7 +21,7 @@
 	
 2. 在应用的 /src/main/resources/application.properties 配置文件中配置 Nacos Server 地址
 	
-		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8080
+		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
 		  
 3. 使用 @EnableDiscoveryClient 注解开启服务注册与发现功能
 		
@@ -70,7 +70,7 @@
 ### 验证
 
 #### 查询服务
-在浏览器输入此地址 `http://127.0.0.1:8080/nacos/v1/ns/instances?serviceName=service-provider`，并点击跳转，可以看到服务节点已经成功注册到 Nacos Server。
+在浏览器输入此地址 `http://127.0.0.1:8848/nacos/v1/ns/instances?serviceName=service-provider`，并点击跳转，可以看到服务节点已经成功注册到 Nacos Server。
 
 ![查询服务](https://cdn.nlark.com/lark/0/2018/png/54319/1536986288092-5cf96af9-9a26-466b-85f6-39ad1d92dfdc.png)
 
