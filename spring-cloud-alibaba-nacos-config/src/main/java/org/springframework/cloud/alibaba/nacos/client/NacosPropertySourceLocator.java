@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -81,13 +80,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		Properties properties = getPropertiesFromEnv(env);
 
 		try {
-			configService =  NacosFactory.createConfigService(properties);
+			configService = NacosFactory.createConfigService(properties);
 		}
 		catch (NacosException e) {
-			logger.error("create config service error, nacosConfigProperties:{}, ", properties, e);
+			logger.error("create config service error, nacosConfigProperties:{}, ",
+					properties, e);
 			return null;
 		}
-		
+
 		beanFactory.registerSingleton("configService", configService);
 
 		if (null == configService) {
@@ -96,7 +96,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			return null;
 		}
 		long timeout = nacosConfigProperties.getTimeout();
-		nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService, timeout);
+		nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService,
+				timeout);
 
 		String applicationName = env.getProperty("spring.application.name");
 		logger.info("Initialize spring.application.name '" + applicationName + "'.");
@@ -112,7 +113,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		CompositePropertySource composite = new CompositePropertySource(
 				NACOS_PROPERTY_SOURCE_NAME);
 
-		loadApplicationConfiguration(composite, env, nacosGroup, dataIdPrefix, contentType);
+		loadApplicationConfiguration(composite, env, nacosGroup, dataIdPrefix,
+				contentType);
 
 		return composite;
 	}
@@ -131,8 +133,9 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,
-			final String dataId, final String group,String contentType) {
-		NacosPropertySource ps = nacosPropertySourceBuilder.build(dataId, group, contentType);
+			final String dataId, final String group, String contentType) {
+		NacosPropertySource ps = nacosPropertySourceBuilder.build(dataId, group,
+				contentType);
 		if (ps != null) {
 			composite.addFirstPropertySource(ps);
 		}

@@ -56,7 +56,7 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 	private List<NacosServer> getServers() {
 		try {
 			List<Instance> instances = registration.getNacosNamingService()
-					.selectInstances(serviceId, true);
+					.getAllInstances(serviceId);
 			return instancesToServerList(instances);
 		}
 		catch (Exception e) {
