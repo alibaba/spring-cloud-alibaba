@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -81,13 +80,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		Properties properties = getPropertiesFromEnv(env);
 
 		try {
-			configService =  NacosFactory.createConfigService(properties);
+			configService = NacosFactory.createConfigService(properties);
 		}
 		catch (NacosException e) {
-			logger.error("create config service error, nacosConfigProperties:{}, ", properties, e);
+			logger.error("create config service error, nacosConfigProperties:{}, ",
+					properties, e);
 			return null;
 		}
-		
+
 		beanFactory.registerSingleton("configService", configService);
 
 		if (null == configService) {
@@ -96,7 +96,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			return null;
 		}
 		long timeout = nacosConfigProperties.getTimeout();
-		nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService, timeout);
+		nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService,
+				timeout);
 
 		String applicationName = env.getProperty("spring.application.name");
 		logger.info("Initialize spring.application.name '" + applicationName + "'.");
@@ -107,32 +108,34 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			dataIdPrefix = applicationName;
 		}
 
-		String contentType = nacosConfigProperties.getContentType();
+		String fileExtension = nacosConfigProperties.getFileExtension();
 
 		CompositePropertySource composite = new CompositePropertySource(
 				NACOS_PROPERTY_SOURCE_NAME);
 
-		loadApplicationConfiguration(composite, env, nacosGroup, dataIdPrefix, contentType);
+		loadApplicationConfiguration(composite, env, nacosGroup, dataIdPrefix,
+				fileExtension);
 
 		return composite;
 	}
 
 	private void loadApplicationConfiguration(
 			CompositePropertySource compositePropertySource, Environment environment,
-			String nacosGroup, String dataIdPrefix, String contentType) {
-		loadNacosDataIfPresent(compositePropertySource, dataIdPrefix + DOT + contentType,
-				nacosGroup, contentType);
+			String nacosGroup, String dataIdPrefix, String fileExtension) {
+		loadNacosDataIfPresent(compositePropertySource,
+				dataIdPrefix + DOT + fileExtension, nacosGroup, fileExtension);
 		for (String profile : environment.getActiveProfiles()) {
-			String dataId = dataIdPrefix + SEP1 + profile + DOT + contentType;
+			String dataId = dataIdPrefix + SEP1 + profile + DOT + fileExtension;
 			loadNacosDataIfPresent(compositePropertySource, dataId, nacosGroup,
-					contentType);
+					fileExtension);
 		}
 		// todo multi profile active order and priority
 	}
 
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,
-			final String dataId, final String group,String contentType) {
-		NacosPropertySource ps = nacosPropertySourceBuilder.build(dataId, group, contentType);
+			final String dataId, final String group, String fileExtension) {
+		NacosPropertySource ps = nacosPropertySourceBuilder.build(dataId, group,
+				fileExtension);
 		if (ps != null) {
 			composite.addFirstPropertySource(ps);
 		}
