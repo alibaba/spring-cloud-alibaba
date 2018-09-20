@@ -48,7 +48,8 @@ public class NacosDiscoveryProperties {
 	private String serverAddr;
 
 	/**
-	 * the domain name of a service, through which the server address can be dynamically obtained.
+	 * the domain name of a service, through which the server address can be dynamically
+	 * obtained.
 	 */
 	private String endpoint;
 
@@ -90,8 +91,8 @@ public class NacosDiscoveryProperties {
 	private boolean registerEnabled = true;
 
 	/**
-	 * The ip address your want to register for your service instance, needn't to set it if
-	 * the auto detect ip works well
+	 * The ip address your want to register for your service instance, needn't to set it
+	 * if the auto detect ip works well.
 	 */
 	private String ip;
 
@@ -290,47 +291,45 @@ public class NacosDiscoveryProperties {
 
 	@Override
 	public String toString() {
-		return "NacosDiscoveryProperties{" +
-			"serverAddr='" + serverAddr + '\'' +
-			", endpoint='" + endpoint + '\'' +
-			", namespace='" + namespace + '\'' +
-			", logName='" + logName + '\'' +
-			", service='" + service + '\'' +
-			", weight=" + weight +
-			", clusterName='" + clusterName + '\'' +
-			", metadata=" + metadata +
-			", registerEnabled=" + registerEnabled +
-			", ip='" + ip + '\'' +
-			", networkInterface='" + networkInterface + '\'' +
-			", port=" + port +
-			", secure=" + secure +
-			", accessKey='" + accessKey + '\'' +
-			", secretKey='" + secretKey + '\'' +
-			'}';
+		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
+				+ ", endpoint='" + endpoint + '\'' + ", namespace='" + namespace + '\''
+				+ ", logName='" + logName + '\'' + ", service='" + service + '\''
+				+ ", weight=" + weight + ", clusterName='" + clusterName + '\''
+				+ ", metadata=" + metadata + ", registerEnabled=" + registerEnabled
+				+ ", ip='" + ip + '\'' + ", networkInterface='" + networkInterface + '\''
+				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
+				+ '\'' + ", secretKey='" + secretKey + '\'' + '}';
 	}
 
-	public void overrideFromEnv(Environment env){
+	public void overrideFromEnv(Environment env) {
 
-		if(StringUtils.isEmpty(this.getServerAddr())) {
-			this.setServerAddr(env.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}"));
+		if (StringUtils.isEmpty(this.getServerAddr())) {
+			this.setServerAddr(env
+					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}"));
 		}
-		if(StringUtils.isEmpty(this.getNamespace())) {
-			this.setNamespace(env.resolvePlaceholders("${spring.cloud.nacos.discovery.namespace:}"));
+		if (StringUtils.isEmpty(this.getNamespace())) {
+			this.setNamespace(env
+					.resolvePlaceholders("${spring.cloud.nacos.discovery.namespace:}"));
 		}
-		if(StringUtils.isEmpty(this.getAccessKey())) {
-			this.setAccessKey(env.resolvePlaceholders("${spring.cloud.nacos.discovery.access-key:}"));
+		if (StringUtils.isEmpty(this.getAccessKey())) {
+			this.setAccessKey(env
+					.resolvePlaceholders("${spring.cloud.nacos.discovery.access-key:}"));
 		}
-		if(StringUtils.isEmpty(this.getSecretKey())) {
-			this.setSecretKey(env.resolvePlaceholders("${spring.cloud.nacos.discovery.secret-key:}"));
+		if (StringUtils.isEmpty(this.getSecretKey())) {
+			this.setSecretKey(env
+					.resolvePlaceholders("${spring.cloud.nacos.discovery.secret-key:}"));
 		}
-		if(StringUtils.isEmpty(this.getLogName())) {
-			this.setLogName(env.resolvePlaceholders("${spring.cloud.nacos.discovery.log-name:}"));
+		if (StringUtils.isEmpty(this.getLogName())) {
+			this.setLogName(
+					env.resolvePlaceholders("${spring.cloud.nacos.discovery.log-name:}"));
 		}
-		if(StringUtils.isEmpty(this.getClusterName())) {
-			this.setClusterName(env.resolvePlaceholders("${spring.cloud.nacos.discovery.clusterName-name:}"));
+		if (StringUtils.isEmpty(this.getClusterName())) {
+			this.setClusterName(env.resolvePlaceholders(
+					"${spring.cloud.nacos.discovery.clusterName-name:}"));
 		}
-		if(StringUtils.isEmpty(this.getEndpoint())) {
-			this.setEndpoint(env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
+		if (StringUtils.isEmpty(this.getEndpoint())) {
+			this.setEndpoint(
+					env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
 		}
 	}
 
