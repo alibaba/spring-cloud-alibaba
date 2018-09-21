@@ -38,6 +38,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * @author xiaojing
+ * @author jiashuai.xie
  */
 @Configuration
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)

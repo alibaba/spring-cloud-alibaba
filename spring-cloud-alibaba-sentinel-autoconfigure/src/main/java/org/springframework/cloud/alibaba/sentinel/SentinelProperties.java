@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * @author xiaojing
  * @author hengyunabc
+ * @author jiashuai.xie
  */
 @ConfigurationProperties(prefix = SentinelConstants.PROPERTY_PREFIX)
 public class SentinelProperties {

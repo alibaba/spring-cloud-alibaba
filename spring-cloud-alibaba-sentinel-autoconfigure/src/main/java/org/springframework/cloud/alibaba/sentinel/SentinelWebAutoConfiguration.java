@@ -41,6 +41,7 @@ import java.util.Optional;
 
 /**
  * @author xiaojing
+ * @author jiashuai.xie <href
  */
 @Configuration
 @ConditionalOnWebApplication
