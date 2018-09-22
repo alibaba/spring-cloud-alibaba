@@ -18,10 +18,17 @@
     <properties>
         <sentinel.version>0.1.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
+        <nacos.version>0.2.0</nacos.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-core</artifactId>
@@ -68,42 +75,68 @@
                 <version>${sentinel.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>sentinel-dubbo-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+            <!-- Aliyun storage dependencies -->
+            <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
                 <version>${oss.version}</version>
             </dependency>
 
 
-            <!-- Own dependencies autoconfigure -->
+            <!-- Own dependencies  -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-sentinel-autoconfigure</artifactId>
+                <artifactId>spring-cloud-alibaba-sentinel</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-storage-autoconfigure</artifactId>
+                <artifactId>spring-cloud-alibaba-storage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!-- Own dependencies - Starters -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-sentinel</artifactId>
+                <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-storage</artifactId>
+                <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- Own dependencies - Sentinel-Dubbo-Api -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>sentinel-dubbo-api</artifactId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+
 
             <!-- Testing Dependencies -->
 

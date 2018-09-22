@@ -1,0 +1,8 @@
+{"properties": [
+    {
+      "name": "spring.cloud.nacos.discovery.service",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.application.name}",
+      "description": "the service name to register, default value is ${spring.application.name}."
+    }
+]}
