@@ -34,7 +34,6 @@
             <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
         </dependency>
 
-        <!--spring boot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-actuator</artifactId>
@@ -62,13 +61,12 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

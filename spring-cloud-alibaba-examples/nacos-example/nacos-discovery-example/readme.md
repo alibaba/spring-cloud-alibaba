@@ -20,7 +20,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 	
 2. Add Nacos server address configurations to file /src/main/resources/application.properties.
 	
-		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8080
+		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
 		  
 3. Use the @EnableDiscoveryClient annotation to turn on service registration and discovery.
 		
@@ -72,7 +72,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 #### Query Service
 
-Enter `http://127.0.0.1:8080/nacos/v1/ns/instances?serviceName=service-provider` in the browser address bar and click Go to, we can see that the service node has been successfully registered to Nacos Server.
+Enter `http://127.0.0.1:8848/nacos/v1/ns/instances?serviceName=service-provider` in the browser address bar and click Go to, we can see that the service node has been successfully registered to Nacos Server.
 
 ![查询服务](https://cdn.nlark.com/lark/0/2018/png/54319/1536986288092-5cf96af9-9a26-466b-85f6-39ad1d92dfdc.png)
 
@@ -205,7 +205,7 @@ AccessKey|spring.cloud.nacos.discovery.access-key||
 SecretKey|spring.cloud.nacos.discovery.secret-key||
 Metadata|spring.cloud.nacos.discovery.metadata||Extended data, Configure using Map format
 log name|spring.cloud.nacos.discovery.log-name||
-endpoint|spring.cloud.nacos.discovery.enpoint||The domain name of a service, through which the server address can be dynamically obtained.
+endpoint|spring.cloud.nacos.discovery.endpoint||The domain name of a service, through which the server address can be dynamically obtained.
 Integration Ribbon|ribbon.nacos.enabled|true|
 
 

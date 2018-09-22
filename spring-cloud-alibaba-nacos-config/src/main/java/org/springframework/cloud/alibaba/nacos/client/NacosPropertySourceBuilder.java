@@ -69,19 +69,19 @@ public class NacosPropertySourceBuilder {
 	 * @param dataId Nacos dataId
 	 * @param group Nacos group
 	 */
-	NacosPropertySource build(String dataId, String group, String contentType) {
-		Properties p = loadNacosData(dataId, group, contentType);
+	NacosPropertySource build(String dataId, String group, String fileExtension) {
+		Properties p = loadNacosData(dataId, group, fileExtension);
 		if (p == null) {
 			return null;
 		}
 		return new NacosPropertySource(dataId, propertiesToMap(p), new Date());
 	}
 
-	private Properties loadNacosData(String dataId, String group, String contentType) {
+	private Properties loadNacosData(String dataId, String group, String fileExtension) {
 		String data = null;
 		try {
 			data = configService.getConfig(dataId, group, timeout);
-			// todo add content type yaml support
+			// todo add file extension yaml support
 			if (!StringUtils.isEmpty(data)) {
 				Properties properties = new Properties();
 				logger.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",

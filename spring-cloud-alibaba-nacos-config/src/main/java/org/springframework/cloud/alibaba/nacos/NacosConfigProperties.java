@@ -49,9 +49,9 @@ public class NacosConfigProperties {
 	 */
 	private String prefix;
 	/**
-	 * the content type of nacos config content.
+	 * the suffix of nacos config dataId, also the file extension of config content.
 	 */
-	private String contentType = "properties";
+	private String fileExtension = "properties";
 
 	/**
 	 * timeout for get config from nacos.
@@ -59,7 +59,8 @@ public class NacosConfigProperties {
 	private int timeout = 3000;
 
 	/**
-	 *  endpoint for Nacos, the domain name of a service, through which the server address can be dynamically obtained.
+	 * endpoint for Nacos, the domain name of a service, through which the server address
+	 * can be dynamically obtained.
 	 */
 	private String endpoint;
 
@@ -88,7 +89,7 @@ public class NacosConfigProperties {
 	 */
 	private String clusterName;
 
-	//todo sts support
+	// todo sts support
 
 	public String getServerAddr() {
 		return serverAddr;
@@ -106,12 +107,12 @@ public class NacosConfigProperties {
 		this.prefix = prefix;
 	}
 
-	public String getContentType() {
-		return contentType;
+	public String getFileExtension() {
+		return fileExtension;
 	}
 
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
+	public void setFileExtension(String fileExtension) {
+		this.fileExtension = fileExtension;
 	}
 
 	public String getGroup() {
@@ -188,50 +189,52 @@ public class NacosConfigProperties {
 
 	@Override
 	public String toString() {
-		return "NacosConfigProperties{" +
-			"serverAddr='" + serverAddr + '\'' +
-			", encode='" + encode + '\'' +
-			", group='" + group + '\'' +
-			", prefix='" + prefix + '\'' +
-			", contentType='" + contentType + '\'' +
-			", timeout=" + timeout +
-			", endpoint='" + endpoint + '\'' +
-			", namespace='" + namespace + '\'' +
-			", accessKey='" + accessKey + '\'' +
-			", secretKey='" + secretKey + '\'' +
-			", contextPath='" + contextPath + '\'' +
-			", clusterName='" + clusterName + '\'' +
-			'}';
+		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
+				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
+				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
+				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
+				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
+				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + '}';
 	}
 
-	public void overrideFromEnv(Environment env){
+	public void overrideFromEnv(Environment env) {
 
-		if(StringUtils.isEmpty(this.getServerAddr())) {
-			this.setServerAddr(env.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}"));
+		if (StringUtils.isEmpty(this.getServerAddr())) {
+			this.setServerAddr(
+					env.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}"));
 		}
-		if(StringUtils.isEmpty(this.getEncode())) {
-			this.setEncode(env.resolvePlaceholders("${spring.cloud.nacos.config.encode:}"));
+		if (StringUtils.isEmpty(this.getEncode())) {
+			this.setEncode(
+					env.resolvePlaceholders("${spring.cloud.nacos.config.encode:}"));
 		}
-		if(StringUtils.isEmpty(this.getNamespace())) {
-			this.setNamespace(env.resolvePlaceholders("${spring.cloud.nacos.config.namespace:}"));
+		if (StringUtils.isEmpty(this.getNamespace())) {
+			this.setNamespace(
+					env.resolvePlaceholders("${spring.cloud.nacos.config.namespace:}"));
 		}
-		if(StringUtils.isEmpty(this.getAccessKey())) {
-			this.setAccessKey(env.resolvePlaceholders("${spring.cloud.nacos.config.access-key:}"));
+		if (StringUtils.isEmpty(this.getAccessKey())) {
+			this.setAccessKey(
+					env.resolvePlaceholders("${spring.cloud.nacos.config.access-key:}"));
 		}
-		if(StringUtils.isEmpty(this.getSecretKey())) {
-			this.setSecretKey(env.resolvePlaceholders("${spring.cloud.nacos.config.secret-key:}"));
+		if (StringUtils.isEmpty(this.getSecretKey())) {
+			this.setSecretKey(
+					env.resolvePlaceholders("${spring.cloud.nacos.config.secret-key:}"));
 		}
-		if(StringUtils.isEmpty(this.getContextPath())) {
-			this.setContextPath(env.resolvePlaceholders("${spring.cloud.nacos.config.context-path:}"));
+		if (StringUtils.isEmpty(this.getContextPath())) {
+			this.setContextPath(env
+					.resolvePlaceholders("${spring.cloud.nacos.config.context-path:}"));
 		}
-		if(StringUtils.isEmpty(this.getClusterName())) {
-			this.setClusterName(env.resolvePlaceholders("${spring.cloud.nacos.config.cluster-name:}"));
+		if (StringUtils.isEmpty(this.getClusterName())) {
+			this.setClusterName(env
+					.resolvePlaceholders("${spring.cloud.nacos.config.cluster-name:}"));
 		}
-		if(StringUtils.isEmpty(this.getEndpoint())) {
-			this.setEndpoint(env.resolvePlaceholders("${spring.cloud.nacos.config.endpoint:}"));
+		if (StringUtils.isEmpty(this.getEndpoint())) {
+			this.setEndpoint(
+					env.resolvePlaceholders("${spring.cloud.nacos.config.endpoint:}"));
 		}
-		if(StringUtils.isEmpty(this.getPrefix())) {
-			this.setPrefix(env.resolvePlaceholders("${spring.cloud.nacos.config.prefix:}"));
+		if (StringUtils.isEmpty(this.getPrefix())) {
+			this.setPrefix(
+					env.resolvePlaceholders("${spring.cloud.nacos.config.prefix:}"));
 		}
 	}
 }

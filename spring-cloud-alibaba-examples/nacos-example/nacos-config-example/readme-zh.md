@@ -21,7 +21,7 @@
 	
 2. 在应用的 /src/main/resources/bootstrap.properties 配置文件中配置 Nacos Config 地址
 	
-		spring.cloud.nacos.config.server-addr=127.0.0.1:8080
+		spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 		  
 3. 完成上述两步后，应用会从 Nacos Config 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中。这里我们使用 @Value 注解来将对应的配置注入到 SampleController 的 userName 和 age 字段，并添加 @RefreshScope 打开动态刷新功能
 		
@@ -51,7 +51,7 @@
 
 3. 在命令行执行如下命令，向 Nacos Server 中添加一条配置。
 	
-		curl -X POST "http://127.0.0.1:8080/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=17"
+		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=17"
 		
 	**注：你也可以使用其他方式添加，遵循 HTTP API 规范即可，若您使用的 Nacos 版本自带控制台，建议直接使用控制台进行配置**
 	
@@ -89,7 +89,7 @@
 #### 验证动态刷新
 1. 执行如下命令，修改 Nacos Server 端的配置数据
 
-		curl -X POST "http://127.0.0.1:8080/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=18"
+		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=18"
 
 2. 在浏览器地址栏输入 `http://127.0.0.1:18084/user`，并点击调转，可以看到应用从 Nacos Server 中获取了最新的数据，age 变成了 18。
 
@@ -112,15 +112,15 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 在 Nacos Config Starter 中，dataId 的拼接格式如下
 
-	${prefix} - ${spring.active.profile} . ${content-type}
+	${prefix} - ${spring.active.profile} . ${file-extension}
 
 * `prefix` 默认为 `spring.application.name` 的值，也可以通过配置项 `spring.cloud.nacos.config.prefix`来配置。
 
 * `spring.active.profile` 即为当前环境对应的 profile，详情可以参考 [Spring Boot文档](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
-	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${context.type}`**
+	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${file-extension}`**
 
-* `content-type` 为配置内容的数据格式，可以通过配置项 `spring.cloud.nacos.config.content-type`来配置。
+* `file-extension` 为配置内容的数据格式，可以通过配置项 `spring.cloud.nacos.config.file-extension`来配置。
 目前只支持 `properties` 类型。
 
 #### group
@@ -168,7 +168,7 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 
 服务端地址|spring.cloud.nacos.config.server-addr||
 DataId前缀|spring.cloud.nacos.config.prefix||spring.application.name
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
-dataID后缀及数据格式|spring.cloud.nacos.config.content-type|properties|目前只支持 properties
+dataID后缀及内容文件格式|spring.cloud.nacos.config.file-extension|properties|dataId的后缀，同时也是配置内容的文件格式，目前只支持 properties
 配置内容的编码方式|spring.cloud.nacos.config.encode|UTF-8|配置的编码
 获取配置的超时时间|spring.cloud.nacos.config.timeout|3000|单位为 ms
 配置的命名空间|spring.cloud.nacos.config.namespace||常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源隔离等。
