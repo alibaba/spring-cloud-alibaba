@@ -17,27 +17,19 @@
 package org.springframework.cloud.alibaba.sentinel;
 
 import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
-import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author xiaojing
