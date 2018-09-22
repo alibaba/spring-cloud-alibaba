@@ -17,15 +17,14 @@
 package org.springframework.cloud.alibaba.sentinel.custom;
 
 import com.alibaba.csp.sentinel.Env;
-import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
-import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
-import com.alibaba.csp.sentinel.config.SentinelConfig;
-import com.alibaba.csp.sentinel.node.NodeBuilder;
-import java.util.Optional;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
+import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
+import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
+import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
+import com.alibaba.csp.sentinel.node.NodeBuilder;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +40,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 /**
  * @author xiaojing
@@ -51,11 +51,11 @@ import javax.annotation.PostConstruct;
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelAutoConfiguration {
 
-	@Value("${project.name:${spring.application.name:}}")
-	private String projectName;
+    @Value("${project.name:${spring.application.name:}}")
+    private String projectName;
 
-	@Autowired
-	private SentinelProperties properties;
+    @Autowired
+    private SentinelProperties properties;
 
     @Autowired
     private Optional<UrlCleaner> urlCleanerOptional;
