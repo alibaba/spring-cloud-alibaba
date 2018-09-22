@@ -21,6 +21,8 @@ import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
+import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -33,8 +35,8 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
 	@Bean
-	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint() {
-		return new NacosDiscoveryEndpoint();
+	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint(NacosDiscoveryProperties nacosDiscoveryProperties, NacosRegistration nacosRegistration) {
+		return new NacosDiscoveryEndpoint(nacosDiscoveryProperties,nacosRegistration);
 	}
 
 }

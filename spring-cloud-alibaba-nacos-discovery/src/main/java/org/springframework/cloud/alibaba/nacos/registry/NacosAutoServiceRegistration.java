@@ -28,11 +28,11 @@ import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
+ * @author jiashuai.xie
  */
 public class NacosAutoServiceRegistration extends AbstractAutoServiceRegistration<NacosRegistration> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NacosAutoServiceRegistration.class);
 
-	@Autowired
 	private NacosRegistration registration;
 
 
