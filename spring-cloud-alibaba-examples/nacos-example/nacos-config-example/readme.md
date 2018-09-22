@@ -21,7 +21,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 	
 2. Add Nacos server address configurations to file /src/main/resources/bootstrap.properties
 	
-		spring.cloud.nacos.config.server-addr=127.0.0.1:8080
+		spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 		  
 3. After completing the above two steps, the application will get the externalized configuration from Nacos Server and put it in the Spring Environment's PropertySources.We use the @Value annotation to inject the corresponding configuration into the userName and age fields of the SampleController, and add @RefreshScope to turn on dynamic refresh .		
 		@RefreshScope
@@ -50,7 +50,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 3. Execute the following command to add a configuration to Nacos Server.
 	
-		curl -X POST "http://127.0.0.1:8080/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=17"
+		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=17"
 		
 	**Note: You can also add it in other ways. If you are using the Nacos version with its own console, it is recommended to configure it directly using the console.**
 	
@@ -89,7 +89,7 @@ Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to, 
 #### Dynamic Refresh
 1. Run the following command to modify the configuration data on the Nacos Server side.
 
-		curl -X POST "http://127.0.0.1:8080/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=18"
+		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=18"
 
 2. Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to,
 We can see that the app got the latest data from Nacos Server and the age becomes 18.
@@ -113,7 +113,7 @@ Nacos Client gets data from Nacos Server through this method. `ConfigService.get
 
 In Nacos Config Starter, the splicing format of dataId is as follows
 
-	${prefix} - ${spring.active.profile} . ${content-type}
+	${prefix} - ${spring.active.profile} . ${file-extension}
 
 * `prefix` default value is `spring.application.name` value, which can also be configured via the configuration item `spring.cloud.nacos.config.prefix`.
 
@@ -121,7 +121,7 @@ In Nacos Config Starter, the splicing format of dataId is as follows
 
 	**Note: when the activeprofile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${context.type}`**
 
-* `content-type` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.content-type`.
+* `file-extension` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.content-type`.
 Currently only the `properties` type is supported.
 
 #### group
@@ -172,7 +172,7 @@ Configuration item|key|default value|Description
 server address|spring.cloud.nacos.config.server-addr||
 DataId prefix|spring.cloud.nacos.config.prefix||spring.application.name
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
-dataID content type|spring.cloud.nacos.config.content-type|properties|currently only support properties
+dataID suffix|spring.cloud.nacos.config.file-extension|properties|the suffix of nacos config dataId, also the file extension of config content.
 encoding |spring.cloud.nacos.config.encode|UTF-8|Content encoding
 timeout|spring.cloud.nacos.config.timeout|3000|Get the configuration timeout period,unit is ms
 namespace|spring.cloud.nacos.config.namespace||One of the common scenarios is the separation of the configuration of different environments, such as the development of the test environment and the resource isolation of the production environment.

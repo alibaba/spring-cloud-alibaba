@@ -31,13 +31,13 @@ public class NacosServer extends Server {
 	private final Instance instance;
 	private final Map<String, String> metadata;
 
-	public NacosServer(Instance instance) {
+	public NacosServer(final Instance instance) {
 		super(instance.getIp(), instance.getPort());
 		this.instance = instance;
 		this.metaInfo = new MetaInfo() {
 			@Override
 			public String getAppName() {
-				return instance.getService().getName();
+				return instance.serviceName();
 			}
 
 			@Override

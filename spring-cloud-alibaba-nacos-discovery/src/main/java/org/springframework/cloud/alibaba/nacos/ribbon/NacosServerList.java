@@ -36,7 +36,8 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	private String serviceId;
 
-	public NacosServerList(){}
+	public NacosServerList() {
+	}
 
 	public NacosServerList(String serviceId) {
 		this.serviceId = serviceId;
@@ -54,11 +55,14 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	private List<NacosServer> getServers() {
 		try {
-			List<Instance> instances = registration.getNacosNamingService().selectInstances(serviceId, true);
+			List<Instance> instances = registration.getNacosNamingService()
+					.getAllInstances(serviceId);
 			return instancesToServerList(instances);
 		}
 		catch (Exception e) {
-			throw new IllegalStateException("Can not get service instances from nacos, serviceId=" + serviceId, e);
+			throw new IllegalStateException(
+					"Can not get service instances from nacos, serviceId=" + serviceId,
+					e);
 		}
 	}
 
