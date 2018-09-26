@@ -12,7 +12,7 @@
 
     <artifactId>storage-example</artifactId>
     <packaging>jar</packaging>
-    <description>Example demonstrating how to use storage</description>
+    <description>Example demonstrating how to use alibab cloud storage</description>
 
 
     <dependencies>
@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
+            <artifactId>spring-cloud-starter-alicloud-storage</artifactId>
         </dependency>
 
         <dependency>

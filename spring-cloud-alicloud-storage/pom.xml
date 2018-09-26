@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-alibaba-storage</artifactId>
-    <name>Spring Cloud Alibaba Storage Autoconfigure</name>
+    <artifactId>spring-cloud-alicloud-storage</artifactId>
+    <name>Spring Cloud Alibaba Cloud Storage Autoconfigure</name>
 
     <dependencies>
 

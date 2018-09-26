@@ -13,11 +13,11 @@ If your applications are Spring Cloud applications and you need to use Alibaba C
 Before we start the demo, let's learn how to connect OSS to a Spring Cloud application.
 **Note: This section is to show you how to connect to oss. The actual configurations have been completed in the following example, and you only need to specify your accessKeyId, secretAccessKey and region.**
 
-1. Add dependency spring-cloud-starter-alibaba-storage in the pom.xml file in your Spring Cloud project.
+1. Add dependency spring-cloud-starter-alicloud-storage in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
+            <artifactId>spring-cloud-starter-alicloud-storage</artifactId>
         </dependency>
 
 2. Configure accessKeyId, secretAccessKey and region in application.properties.

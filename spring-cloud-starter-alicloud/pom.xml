@@ -8,15 +8,13 @@
         <version>0.1.0.BUILD-SNAPSHOT</version>
     </parent>
 
-
-    <artifactId>spring-cloud-starter-alibaba</artifactId>
+    <artifactId>spring-cloud-starter-alicloud</artifactId>
     <packaging>pom</packaging>
-    <name>Spring Cloud Alibaba Starters</name>
-	<description>Spring Cloud Alibaba Starters</description>
+    <name>Spring Cloud Alibaba Cloud Starters</name>
+	<description>Spring Cloud Alibaba Cloud Starters</description>
     <modules>
-        <module>spring-cloud-starter-alibaba-nacos-config</module>
-        <module>spring-cloud-starter-alibaba-nacos-discovery</module>
-        <module>spring-cloud-starter-alibaba-sentinel</module>
+        <module>spring-cloud-starter-alicloud-storage</module>
     </modules>
+
 
 </project>

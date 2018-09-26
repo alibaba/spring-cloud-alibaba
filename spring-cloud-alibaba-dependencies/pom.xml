@@ -98,7 +98,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-storage</artifactId>
+                <artifactId>spring-cloud-alicloud-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -120,7 +120,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
+                <artifactId>spring-cloud-starter-alicloud-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

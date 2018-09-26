@@ -17,7 +17,7 @@
 
 	    <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
+            <artifactId>spring-cloud-starter-alicloud-storage</artifactId>
         </dependency>
 	
 2. 在配置文件中配置 OSS 服务对应的 accessKeyId、secretAccessKey 和 region。
