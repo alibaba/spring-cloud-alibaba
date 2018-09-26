@@ -74,12 +74,14 @@
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
         <module>spring-cloud-alibaba-sentinel</module>
-        <module>spring-cloud-alibaba-storage</module>
+
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-test</module>
         <module>spring-cloud-starter-alibaba</module>
+        <module>spring-cloud-starter-alicloud</module>
+        <module>spring-cloud-alicloud-storage</module>
     </modules>
 
     <dependencyManagement>

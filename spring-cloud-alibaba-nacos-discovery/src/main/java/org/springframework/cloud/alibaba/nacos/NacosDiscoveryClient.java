@@ -50,7 +50,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public List<ServiceInstance> getInstances(String serviceId) {
 		try {
 			NamingService namingService = nacosRegistration.getNacosNamingService();
-			List<Instance> instances = namingService.selectInstances(serviceId, true);
+			List<Instance> instances = namingService.getAllInstances(serviceId);
 			return hostToServiceInstanceList(instances, serviceId);
 		}
 		catch (Exception e) {
@@ -79,7 +79,9 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 			List<Instance> instances, String serviceId) {
 		List<ServiceInstance> result = new ArrayList<ServiceInstance>(instances.size());
 		for (Instance instance : instances) {
-			result.add(hostToServiceInstance(instance, serviceId));
+			if(instance.isHealthy()) {
+				result.add(hostToServiceInstance(instance, serviceId));
+			}
 		}
 		return result;
 	}
