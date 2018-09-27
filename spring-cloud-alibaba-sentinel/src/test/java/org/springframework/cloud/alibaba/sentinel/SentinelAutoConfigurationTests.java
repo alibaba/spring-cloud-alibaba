@@ -34,13 +34,14 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 /**
  * @author fangjian
+ * @author jiashuai.xie
  */
 public class SentinelAutoConfigurationTests {
 
 	private WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(SentinelAutoConfiguration.class,
 					SentinelWebAutoConfiguration.class, SentinelTestConfiguration.class))
-			.withPropertyValues("spring.cloud.sentinel.port=8888")
+			.withPropertyValues("spring.cloud.sentinel.transport.port=8888")
 			.withPropertyValues("spring.cloud.sentinel.filter.order=123")
 			.withPropertyValues("spring.cloud.sentinel.filter.urlPatterns=/*,/test");
 
