@@ -7,26 +7,59 @@
       "description": "enable or disable sentinel auto configure."
     },
     {
-      "name": "spring.cloud.sentinel.port",
+      "name": "spring.cloud.sentinel.eager",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "earlier initialize heart-beat when the spring container starts when the transport dependency is on classpath, the configuration is effective."
+    },
+    {
+      "name": "spring.cloud.sentinel.charset",
+      "type": "java.lang.String",
+      "defaultValue": "UTF-8",
+      "description": "charset when sentinel write or search metric file."
+    },
+    {
+      "name": "spring.cloud.sentinel.transport.port",
       "type": "java.lang.String",
       "defaultValue": "8721",
       "description": "sentinel api port."
     },
     {
-      "name": "spring.cloud.sentinel.dashboard",
+      "name": "spring.cloud.sentinel.transport.dashboard",
       "type": "java.lang.String",
       "description": "sentinel dashboard address, won't try to connect dashboard when address is empty."
+    },
+    {
+      "name": "spring.cloud.sentinel.transport.heartbeatIntervalMs",
+      "type": "java.lang.String",
+      "description": "send heartbeat interval millisecond."
     },
     {
       "name": "spring.cloud.sentinel.filter.order",
       "type": "java.lang.Integer",
       "defaultValue": "Integer.MIN_VALUE",
-      "description": "Sentinel filter chain order, will be set to FilterRegistrationBean."
+      "description": "sentinel filter chain order, will be set to FilterRegistrationBean."
     },
     {
-      "name": "spring.cloud.sentinel.filter.urlPatterns",
-      "type": "java.util.List",
-      "description": "URL pattern for Sentinel filter, default contains '/*'."
+      "name": "spring.cloud.sentinel.metric.fileSingleSize",
+      "type": "java.lang.String",
+      "description": "the metric file size."
+    },
+    {
+      "name": "spring.cloud.sentinel.metric.fileTotalCount",
+      "type": "java.lang.String",
+      "description": "the total metric file count."
+    },
+    {
+      "name": "spring.cloud.sentinel.servlet.blockPage",
+      "type": "java.lang.String",
+      "description": "the process page when the flow control is triggered."
+    },
+    {
+      "name": "spring.cloud.sentinel.flow.coldFactor",
+      "type": "java.lang.String",
+      "defaultValue": "3",
+      "description": "sentinel the cold factor."
     }
   ]
 }
