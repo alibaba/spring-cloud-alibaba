@@ -22,6 +22,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.core.Ordered;
 
+import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+
 /**
  * @author xiaojing
  * @author hengyunabc
@@ -31,44 +34,50 @@ import org.springframework.core.Ordered;
 public class SentinelProperties {
 
 	/**
-	 * 是否提前初始化心跳连接
+	 * earlier initialize heart-beat when the spring container starts <note> when the
+	 * transport dependency is on classpath ,the configuration is effective </note>
 	 */
 	private boolean eager = false;
 
 	/**
-	 * Enable sentinel auto configure, the default value is true
+	 * enable sentinel auto configure, the default value is true
 	 */
 	private boolean enabled = true;
 
 	/**
-	 * 字符编码集
+	 * charset when sentinel write or search metric file {@link SentinelConfig#CHARSET}
 	 */
 	private String charset = "UTF-8";
 
 	/**
-	 * 通信相关配置
+	 * transport configuration about dashboard and client
 	 */
 	@NestedConfigurationProperty
 	private Transport transport = new Transport();
 
 	/**
-	 * 监控数据相关配置
+	 * metric configuration about resource
 	 */
 	@NestedConfigurationProperty
 	private Metric metric = new Metric();
 
 	/**
-	 * web 相关配置
+	 * web servlet configuration <note> when the application is web ,the configuration is
+	 * effective </note>
 	 */
 	@NestedConfigurationProperty
 	private Servlet servlet = new Servlet();
 
 	/**
-	 * 限流相关
+	 * sentinel filter <note> when the application is web ,the configuration is effective
+	 * </note>
 	 */
 	@NestedConfigurationProperty
 	private Filter filter = new Filter();
 
+	/**
+	 * flow configuration
+	 */
 	@NestedConfigurationProperty
 	private Flow flow = new Flow();
 
@@ -139,7 +148,7 @@ public class SentinelProperties {
 	public static class Flow {
 
 		/**
-		 * 限流冷启动因子
+		 * the cold factor {@link SentinelConfig#COLD_FACTOR}
 		 */
 		private String coldFactor = "3";
 
@@ -156,7 +165,7 @@ public class SentinelProperties {
 	public static class Servlet {
 
 		/**
-		 * url 限流后的处理页面
+		 * The process page when the flow control is triggered
 		 */
 		private String blockPage;
 
@@ -172,12 +181,12 @@ public class SentinelProperties {
 	public static class Metric {
 
 		/**
-		 * 监控数据写磁盘时单个文件的大小
+		 * the metric file size {@link SentinelConfig#SINGLE_METRIC_FILE_SIZE}
 		 */
 		private String fileSingleSize;
 
 		/**
-		 * 监控数据在磁盘上的总数量
+		 * the total metric file count {@link SentinelConfig#TOTAL_METRIC_FILE_COUNT}
 		 */
 		private String fileTotalCount;
 
@@ -201,18 +210,19 @@ public class SentinelProperties {
 	public static class Transport {
 
 		/**
-		 * sentinel api port,default value is 8721
+		 * sentinel api port,default value is 8721 {@link TransportConfig#SERVER_PORT}
 		 */
 		private String port = "8721";
 
 		/**
-		 * Sentinel dashboard address, won't try to connect dashboard when address is
-		 * empty
+		 * sentinel dashboard address, won't try to connect dashboard when address is
+		 * empty {@link TransportConfig#CONSOLE_SERVER}
 		 */
 		private String dashboard = "";
 
 		/**
-		 * 客户端和DashBord心跳发送时间
+		 * send heartbeat interval millisecond
+		 * {@link TransportConfig#HEARTBEAT_INTERVAL_MS}
 		 */
 		private String heartbeatIntervalMs;
 
@@ -245,7 +255,7 @@ public class SentinelProperties {
 	public static class Filter {
 
 		/**
-		 * Sentinel filter chain order.
+		 * sentinel filter chain order.
 		 */
 		private int order = Ordered.HIGHEST_PRECEDENCE;
 

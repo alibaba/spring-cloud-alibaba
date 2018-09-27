@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.csp.sentinel.Env;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
@@ -40,7 +39,6 @@ import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
-import com.alibaba.csp.sentinel.node.NodeBuilder;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
@@ -68,7 +66,8 @@ public class SentinelAutoConfiguration {
 	@PostConstruct
 	private void init() {
 
-		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))) {
+		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
+				&& StringUtils.hasText(projectName)) {
 			System.setProperty(AppNameUtil.APP_NAME, projectName);
 		}
 		if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))
@@ -115,11 +114,9 @@ public class SentinelAutoConfiguration {
 		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
 		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
 
-		InitExecutor.doInit();
-
 		// earlier initialize
 		if (properties.isEager()) {
-			NodeBuilder nodeBuilder = Env.nodeBuilder;
+			InitExecutor.doInit();
 		}
 
 	}
