@@ -33,11 +33,11 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnClass(Endpoint.class)
 public class NacosDiscoveryEndpointAutoConfiguration {
 
-	@ConditionalOnMissingBean
-	@ConditionalOnEnabledEndpoint
-	@Bean
-	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint(NacosDiscoveryProperties nacosDiscoveryProperties, NacosRegistration nacosRegistration) {
-		return new NacosDiscoveryEndpoint(nacosDiscoveryProperties,nacosRegistration);
-	}
+    @ConditionalOnMissingBean
+    @ConditionalOnEnabledEndpoint
+    @Bean
+    public NacosDiscoveryEndpoint nacosDiscoveryEndpoint(NacosDiscoveryProperties nacosDiscoveryProperties, NacosRegistration nacosRegistration) {
+        return new NacosDiscoveryEndpoint(nacosDiscoveryProperties, nacosRegistration);
+    }
 
 }
