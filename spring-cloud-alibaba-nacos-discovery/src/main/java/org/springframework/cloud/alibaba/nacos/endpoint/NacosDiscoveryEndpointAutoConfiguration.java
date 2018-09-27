@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * @author xiaojing
+ * @author jiashuai.xie
  */
 @ConditionalOnWebApplication
 @ConditionalOnClass(Endpoint.class)
