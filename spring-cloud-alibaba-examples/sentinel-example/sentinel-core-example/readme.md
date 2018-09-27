@@ -66,7 +66,7 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 	
 		spring.application.name=sentinel-example
 		server.port=18083
-		spring.cloud.sentinel.dashboard=localhost:8080
+		spring.cloud.sentinel.transport.dashboard=localhost:8080
 		
 2. Start the application in IDE or by building a fatjar.
 
