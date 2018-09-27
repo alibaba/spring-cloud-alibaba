@@ -16,8 +16,11 @@
 
 package org.springframework.cloud.alibaba.nacos.endpoint;
 
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.ServiceInfo;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -25,10 +28,8 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
 import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.ServiceInfo;
 
 /**
  * Endpoint for nacos discovery, get nacos properties and subscribed services
@@ -39,34 +40,37 @@ import java.util.Map;
 @Endpoint(id = "nacos-discovery")
 public class NacosDiscoveryEndpoint {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NacosDiscoveryEndpoint.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NacosDiscoveryEndpoint.class);
 
-    private NacosDiscoveryProperties nacosDiscoveryProperties;
+	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-    private NacosRegistration nacosRegistration;
+	private NacosRegistration nacosRegistration;
 
-    public NacosDiscoveryEndpoint(NacosDiscoveryProperties nacosDiscoveryProperties, NacosRegistration nacosRegistration) {
-        this.nacosDiscoveryProperties = nacosDiscoveryProperties;
-        this.nacosRegistration = nacosRegistration;
-    }
+	public NacosDiscoveryEndpoint(NacosDiscoveryProperties nacosDiscoveryProperties,
+			NacosRegistration nacosRegistration) {
+		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+		this.nacosRegistration = nacosRegistration;
+	}
 
-    /**
-     * @return nacos discovery endpoint
-     */
-    @ReadOperation
-    public Map<String, Object> nacosDiscovery() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("NacosDiscoveryProperties", nacosDiscoveryProperties);
+	/**
+	 * @return nacos discovery endpoint
+	 */
+	@ReadOperation
+	public Map<String, Object> nacosDiscovery() {
+		Map<String, Object> result = new HashMap<>();
+		result.put("NacosDiscoveryProperties", nacosDiscoveryProperties);
 
-        NamingService namingService = nacosRegistration.getNacosNamingService();
-        List<ServiceInfo> subscribe = Collections.emptyList();
+		NamingService namingService = nacosRegistration.getNacosNamingService();
+		List<ServiceInfo> subscribe = Collections.emptyList();
 
-        try {
-            subscribe = namingService.getSubscribeServices();
-        } catch (Exception e) {
-            LOGGER.error("get subscribe services from nacos fail,", e);
-        }
-        result.put("subscribe", subscribe);
-        return result;
-    }
+		try {
+			subscribe = namingService.getSubscribeServices();
+		}
+		catch (Exception e) {
+			LOGGER.error("get subscribe services from nacos fail,", e);
+		}
+		result.put("subscribe", subscribe);
+		return result;
+	}
 }

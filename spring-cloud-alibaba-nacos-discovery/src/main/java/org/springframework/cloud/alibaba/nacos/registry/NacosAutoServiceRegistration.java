@@ -16,10 +16,8 @@
 
 package org.springframework.cloud.alibaba.nacos.registry;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
@@ -30,15 +28,17 @@ import org.springframework.util.StringUtils;
  * @author xiaojing
  * @author jiashuai.xie
  */
-public class NacosAutoServiceRegistration extends AbstractAutoServiceRegistration<NacosRegistration> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(NacosAutoServiceRegistration.class);
+public class NacosAutoServiceRegistration
+		extends AbstractAutoServiceRegistration<NacosRegistration> {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NacosAutoServiceRegistration.class);
 
 	private NacosRegistration registration;
 
-
-	public NacosAutoServiceRegistration(ServiceRegistry<NacosRegistration> serviceRegistry,
-										AutoServiceRegistrationProperties autoServiceRegistrationProperties,
-										NacosRegistration registration) {
+	public NacosAutoServiceRegistration(
+			ServiceRegistry<NacosRegistration> serviceRegistry,
+			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
+			NacosRegistration registration) {
 		super(serviceRegistry, autoServiceRegistrationProperties);
 		this.registration = registration;
 	}
@@ -83,7 +83,6 @@ public class NacosAutoServiceRegistration extends AbstractAutoServiceRegistratio
 
 	}
 
-
 	@Override
 	protected Object getConfiguration() {
 		return this.registration.getNacosDiscoveryProperties();
@@ -102,4 +101,3 @@ public class NacosAutoServiceRegistration extends AbstractAutoServiceRegistratio
 	}
 
 }
-
