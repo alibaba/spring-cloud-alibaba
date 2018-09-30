@@ -22,7 +22,7 @@
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
-        <module>storage-example</module>
+        <module>oss-example</module>
     </modules>
 
     <build>

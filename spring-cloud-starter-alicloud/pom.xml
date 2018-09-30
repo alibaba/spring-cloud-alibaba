@@ -13,7 +13,7 @@
     <name>Spring Cloud Alibaba Cloud Starters</name>
 	<description>Spring Cloud Alibaba Cloud Starters</description>
     <modules>
-        <module>spring-cloud-starter-alicloud-storage</module>
+        <module>spring-cloud-starter-alicloud-oss</module>
     </modules>
 
 
