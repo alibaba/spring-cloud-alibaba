@@ -81,7 +81,7 @@
             </dependency>
 
 
-            <!-- Aliyun storage dependencies -->
+            <!-- Aliyun OSS dependencies -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
@@ -97,7 +97,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alicloud-storage</artifactId>
+                <artifactId>spring-cloud-alicloud-oss</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -119,7 +119,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-alicloud-storage</artifactId>
+                <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
