@@ -16,13 +16,13 @@
 
 package org.springframework.cloud.alibaba.sentinel.datasource;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.ApolloDataSourceFactoryBean;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.ZookeeperDataSourceFactoryBean;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Registry to save DataSource FactoryBean
@@ -53,7 +53,6 @@ public class SentinelDataSourceRegistry {
 	public static synchronized void registerFactoryBean(String alias,
 			Class<? extends FactoryBean> clazz) {
 		cache.putIfAbsent(alias, clazz);
-		cache.put(alias, clazz);
 	}
 
 	public static Class<? extends FactoryBean> getFactoryBean(String alias) {
