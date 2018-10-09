@@ -28,6 +28,8 @@ import com.alibaba.nacos.api.exception.NacosException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
 
 /**
@@ -83,11 +85,22 @@ public class NacosPropertySourceBuilder {
 			data = configService.getConfig(dataId, group, timeout);
 			// todo add content type yaml support
 			if (!StringUtils.isEmpty(data)) {
-				Properties properties = new Properties();
 				logger.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
 						dataId, group));
-				properties.load(new StringReader(data));
-				return properties;
+
+				if (fileExtension.equalsIgnoreCase("properties")) {
+					Properties properties = new Properties();
+
+					properties.load(new StringReader(data));
+					return properties;
+				}
+				else if (fileExtension.equalsIgnoreCase("yaml")
+					|| fileExtension.equalsIgnoreCase("yml")) {
+					YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+					yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
+					return yamlFactory.getObject();
+				}
+
 			}
 		}
 		catch (NacosException e) {
