@@ -78,7 +78,7 @@
     ```
 	spring.application.name=sentinel-example
 	server.port=18083
-	spring.cloud.sentinel.dashboard=localhost:8080
+	spring.cloud.sentinel.transport.dashboard=localhost:8080
     ```
 	
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
