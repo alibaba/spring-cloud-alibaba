@@ -3,7 +3,7 @@ package org.springframework.cloud.alibaba.sentinel.datasource.factorybean;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.FactoryBean;
 
-import com.alibaba.csp.sentinel.datasource.ConfigParser;
+import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.zookeeper.ZookeeperDataSource;
 
 /**
@@ -19,17 +19,17 @@ public class ZookeeperDataSourceFactoryBean implements FactoryBean<ZookeeperData
 	private String groupId;
 	private String dataId;
 
-	private ConfigParser configParser;
+	private Converter converter;
 
 	@Override
 	public ZookeeperDataSource getObject() throws Exception {
 		if (StringUtils.isNotEmpty(groupId) && StringUtils.isNotEmpty(dataId)) {
-		    // the path will be /{groupId}/{dataId}
-			return new ZookeeperDataSource(serverAddr, groupId, dataId, configParser);
+			// the path will be /{groupId}/{dataId}
+			return new ZookeeperDataSource(serverAddr, groupId, dataId, converter);
 		}
 		else {
-		    // using path directly
-			return new ZookeeperDataSource(serverAddr, path, configParser);
+			// using path directly
+			return new ZookeeperDataSource(serverAddr, path, converter);
 		}
 	}
 
@@ -70,11 +70,11 @@ public class ZookeeperDataSourceFactoryBean implements FactoryBean<ZookeeperData
 		this.dataId = dataId;
 	}
 
-	public ConfigParser getConfigParser() {
-		return configParser;
+	public Converter getConverter() {
+		return converter;
 	}
 
-	public void setConfigParser(ConfigParser configParser) {
-		this.configParser = configParser;
+	public void setConverter(Converter Converter) {
+		this.converter = Converter;
 	}
 }

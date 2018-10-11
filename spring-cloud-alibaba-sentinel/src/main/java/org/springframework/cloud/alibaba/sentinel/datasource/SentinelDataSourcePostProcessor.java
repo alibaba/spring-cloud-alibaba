@@ -44,20 +44,20 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.csp.sentinel.datasource.ConfigParser;
+import com.alibaba.csp.sentinel.datasource.Converter;
 
 /**
  * {@link SentinelDataSource @SentinelDataSource} Post Processor
  *
  * @author fangjian
- * @see com.alibaba.csp.sentinel.datasource.DataSource
+ * @see com.alibaba.csp.sentinel.datasource.ReadableDataSource
  * @see SentinelDataSource
  */
 public class SentinelDataSourcePostProcessor
 		extends InstantiationAwareBeanPostProcessorAdapter
 		implements MergedBeanDefinitionPostProcessor {
 
-    private static final Logger logger = LoggerFactory
+	private static final Logger logger = LoggerFactory
 			.getLogger(SentinelDataSourcePostProcessor.class);
 
 	@Autowired
@@ -170,8 +170,8 @@ public class SentinelDataSourcePostProcessor
 		for (String propertyName : propertyMap.keySet()) {
 			Field field = ReflectionUtils.findField(targetClass, propertyName);
 			if (field != null) {
-				if (field.getType().isAssignableFrom(ConfigParser.class)) {
-					// ConfigParser get from ApplicationContext
+				if (field.getType().isAssignableFrom(Converter.class)) {
+					// Converter get from ApplicationContext
 					builder.addPropertyReference(propertyName,
 							propertyMap.get(propertyName).toString());
 				}

@@ -2,7 +2,7 @@ package org.springframework.cloud.alibaba.sentinel.datasource.factorybean;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import com.alibaba.csp.sentinel.datasource.ConfigParser;
+import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.apollo.ApolloDataSource;
 
 /**
@@ -14,12 +14,12 @@ public class ApolloDataSourceFactoryBean implements FactoryBean<ApolloDataSource
 	private String namespaceName;
 	private String flowRulesKey;
 	private String defaultFlowRuleValue;
-	private ConfigParser configParser;
+	private Converter converter;
 
 	@Override
 	public ApolloDataSource getObject() throws Exception {
 		return new ApolloDataSource(namespaceName, flowRulesKey, defaultFlowRuleValue,
-				configParser);
+				converter);
 	}
 
 	@Override
@@ -51,11 +51,11 @@ public class ApolloDataSourceFactoryBean implements FactoryBean<ApolloDataSource
 		this.defaultFlowRuleValue = defaultFlowRuleValue;
 	}
 
-	public ConfigParser getConfigParser() {
-		return configParser;
+	public Converter getConverter() {
+		return converter;
 	}
 
-	public void setConfigParser(ConfigParser configParser) {
-		this.configParser = configParser;
+	public void setConverter(Converter Converter) {
+		this.converter = Converter;
 	}
 }
