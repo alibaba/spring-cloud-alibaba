@@ -21,6 +21,8 @@ import java.util.List;
 
 import javax.servlet.Filter;
 
+import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
-
 /**
  * @author xiaojing
  */
@@ -41,37 +41,39 @@ import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelWebAutoConfiguration {
-	private static final Logger logger = LoggerFactory
-			.getLogger(SentinelWebAutoConfiguration.class);
 
-	@Autowired
-	private SentinelProperties properties;
+    private static final Logger logger = LoggerFactory
+        .getLogger(SentinelWebAutoConfiguration.class);
 
-	@Bean
-	public FilterRegistrationBean servletRequestListener() {
-		FilterRegistrationBean registration = new FilterRegistrationBean();
+    @Autowired
+    private SentinelProperties properties;
 
-		SentinelProperties.Filter filterConfig = properties.getFilter();
+    @Bean
+    public FilterRegistrationBean servletRequestListener() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
 
-		if (null == filterConfig) {
-			filterConfig = new SentinelProperties.Filter();
-			properties.setFilter(filterConfig);
-		}
+        SentinelProperties.Filter filterConfig = properties.getFilter();
 
-		if (filterConfig.getUrlPatterns() == null
-				|| filterConfig.getUrlPatterns().isEmpty()) {
-			List<String> defaultPatterns = new ArrayList<>();
-			defaultPatterns.add("/*");
-			filterConfig.setUrlPatterns(defaultPatterns);
-		}
+        if (null == filterConfig) {
+            filterConfig = new SentinelProperties.Filter();
+            properties.setFilter(filterConfig);
+        }
 
-		registration.addUrlPatterns(filterConfig.getUrlPatterns().toArray(new String[0]));
-		Filter filter = new CommonFilter();
-		registration.setFilter(filter);
-		registration.setOrder(filterConfig.getOrder());
-		logger.info("[Sentinel Starter] register Sentinel with urlPatterns: {}.",
-				filterConfig.getUrlPatterns());
-		return registration;
+        if (filterConfig.getUrlPatterns() == null
+            || filterConfig.getUrlPatterns().isEmpty()) {
+            List<String> defaultPatterns = new ArrayList<>();
+            defaultPatterns.add("/*");
+            filterConfig.setUrlPatterns(defaultPatterns);
+        }
 
-	}
+        registration.addUrlPatterns(filterConfig.getUrlPatterns().toArray(new String[0]));
+        Filter filter = new CommonFilter();
+        registration.setFilter(filter);
+        registration.setOrder(filterConfig.getOrder());
+        logger.info("[Sentinel Starter] register Sentinel with urlPatterns: {}.",
+            filterConfig.getUrlPatterns());
+        return registration;
+
+    }
+
 }
