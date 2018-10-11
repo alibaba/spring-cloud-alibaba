@@ -6,7 +6,7 @@ import org.springframework.cloud.alibaba.sentinel.annotation.SentinelProtect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.csp.sentinel.datasource.ConfigParser;
+import com.alibaba.csp.sentinel.datasource.Converter;
 
 /**
  * @author xiaojing
@@ -26,7 +26,7 @@ public class ServiceApplication {
 	}
 
 	@Bean
-	public ConfigParser myParser() {
+	public Converter myParser() {
 		return new JsonFlowRuleListParser();
 	}
 

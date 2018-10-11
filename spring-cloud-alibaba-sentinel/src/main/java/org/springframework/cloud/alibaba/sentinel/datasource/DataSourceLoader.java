@@ -34,118 +34,119 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import com.alibaba.csp.sentinel.datasource.DataSource;
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 
 /**
- * {@link DataSource} Loader
+ * {@link ReadableDataSource} Loader
  *
  * @author fangjian
  */
 public class DataSourceLoader {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataSourceLoader.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataSourceLoader.class);
 
-    private final static String PROPERTIES_RESOURCE_LOCATION = "META-INF/sentinel-datasource.properties";
+	private final static String PROPERTIES_RESOURCE_LOCATION = "META-INF/sentinel-datasource.properties";
 
-    private final static String ALL_PROPERTIES_RESOURCES_LOCATION = CLASSPATH_ALL_URL_PREFIX
-            + PROPERTIES_RESOURCE_LOCATION;
+	private final static String ALL_PROPERTIES_RESOURCES_LOCATION = CLASSPATH_ALL_URL_PREFIX
+			+ PROPERTIES_RESOURCE_LOCATION;
 
-    private final static ConcurrentMap<String, Class<? extends DataSource>> dataSourceClassesCache = new ConcurrentHashMap<String, Class<? extends DataSource>>(
-            4);
+	private final static ConcurrentMap<String, Class<? extends ReadableDataSource>> dataSourceClassesCache = new ConcurrentHashMap<String, Class<? extends ReadableDataSource>>(
+			4);
 
-    static void loadAllDataSourceClassesCache() {
-        Map<String, Class<? extends DataSource>> dataSourceClassesMap = loadAllDataSourceClassesCache(
-                ALL_PROPERTIES_RESOURCES_LOCATION);
+	static void loadAllDataSourceClassesCache() {
+		Map<String, Class<? extends ReadableDataSource>> dataSourceClassesMap = loadAllDataSourceClassesCache(
+				ALL_PROPERTIES_RESOURCES_LOCATION);
 
-        dataSourceClassesCache.putAll(dataSourceClassesMap);
-    }
+		dataSourceClassesCache.putAll(dataSourceClassesMap);
+	}
 
-    static Map<String, Class<? extends DataSource>> loadAllDataSourceClassesCache(
-            String resourcesLocation) {
+	static Map<String, Class<? extends ReadableDataSource>> loadAllDataSourceClassesCache(
+			String resourcesLocation) {
 
-        Map<String, Class<? extends DataSource>> dataSourcesMap = new HashMap<String, Class<? extends DataSource>>(
-                4);
+		Map<String, Class<? extends ReadableDataSource>> dataSourcesMap = new HashMap<String, Class<? extends ReadableDataSource>>(
+				4);
 
-        ClassLoader classLoader = DataSourceLoader.class.getClassLoader();
+		ClassLoader classLoader = DataSourceLoader.class.getClassLoader();
 
-        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-        try {
+		try {
 
-            Resource[] resources = resolver.getResources(resourcesLocation);
+			Resource[] resources = resolver.getResources(resourcesLocation);
 
-            for (Resource resource : resources) {
-                if (resource.exists()) {
-                    Properties properties = PropertiesLoaderUtils
-                            .loadProperties(resource);
-                    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+			for (Resource resource : resources) {
+				if (resource.exists()) {
+					Properties properties = PropertiesLoaderUtils
+							.loadProperties(resource);
+					for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 
-                        String type = (String) entry.getKey();
-                        String className = (String) entry.getValue();
+						String type = (String) entry.getKey();
+						String className = (String) entry.getValue();
 
-                        if (!ClassUtils.isPresent(className, classLoader)) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug(
-                                        "Sentinel DataSource implementation [ type : "
-                                                + type + ": , class : " + className
-                                                + " , url : " + resource.getURL()
-                                                + "] was not present in current classpath , "
-                                                + "thus loading will be ignored , please add dependency if required !");
-                            }
-                            continue;
-                        }
+						if (!ClassUtils.isPresent(className, classLoader)) {
+							if (logger.isDebugEnabled()) {
+								logger.debug(
+										"Sentinel DataSource implementation [ type : "
+												+ type + ": , class : " + className
+												+ " , url : " + resource.getURL()
+												+ "] was not present in current classpath , "
+												+ "thus loading will be ignored , please add dependency if required !");
+							}
+							continue;
+						}
 
-                        Assert.isTrue(!dataSourcesMap.containsKey(type),
-                                "The duplicated type[" + type
-                                        + "] of SentinelDataSource were found in "
-                                        + "resource [" + resource.getURL() + "]");
+						Assert.isTrue(!dataSourcesMap.containsKey(type),
+								"The duplicated type[" + type
+										+ "] of SentinelDataSource were found in "
+										+ "resource [" + resource.getURL() + "]");
 
-                        Class<?> dataSourceClass = ClassUtils.resolveClassName(className,
-                                classLoader);
-                        Assert.isAssignable(DataSource.class, dataSourceClass);
+						Class<?> dataSourceClass = ClassUtils.resolveClassName(className,
+								classLoader);
+						Assert.isAssignable(ReadableDataSource.class, dataSourceClass);
 
-                        dataSourcesMap.put(type,
-                                (Class<? extends DataSource>) dataSourceClass);
+						dataSourcesMap.put(type,
+								(Class<? extends ReadableDataSource>) dataSourceClass);
 
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Sentinel DataSource implementation [ type : "
-                                    + type + ": , class : " + className
-                                    + "] was loaded.");
-                        }
-                    }
-                }
-            }
+						if (logger.isDebugEnabled()) {
+							logger.debug("Sentinel DataSource implementation [ type : "
+									+ type + ": , class : " + className
+									+ "] was loaded.");
+						}
+					}
+				}
+			}
 
-        }
-        catch (IOException e) {
-            if (logger.isErrorEnabled()) {
-                logger.error(e.getMessage(), e);
-            }
-        }
+		}
+		catch (IOException e) {
+			if (logger.isErrorEnabled()) {
+				logger.error(e.getMessage(), e);
+			}
+		}
 
-        return dataSourcesMap;
-    }
+		return dataSourcesMap;
+	}
 
-    public static Class<? extends DataSource> loadClass(String type)
-            throws IllegalArgumentException {
+	public static Class<? extends ReadableDataSource> loadClass(String type)
+			throws IllegalArgumentException {
 
-        Class<? extends DataSource> dataSourceClass = dataSourceClassesCache.get(type);
+		Class<? extends ReadableDataSource> dataSourceClass = dataSourceClassesCache
+				.get(type);
 
-        if (dataSourceClass == null) {
-            if (dataSourceClassesCache.isEmpty()) {
-                loadAllDataSourceClassesCache();
-                dataSourceClass = dataSourceClassesCache.get(type);
-            }
-        }
+		if (dataSourceClass == null) {
+			if (dataSourceClassesCache.isEmpty()) {
+				loadAllDataSourceClassesCache();
+				dataSourceClass = dataSourceClassesCache.get(type);
+			}
+		}
 
-        if (dataSourceClass == null) {
-            throw new IllegalArgumentException(
-                    "Sentinel DataSource implementation [ type : " + type
-                            + " ] can't be found!");
-        }
+		if (dataSourceClass == null) {
+			throw new IllegalArgumentException(
+					"Sentinel DataSource implementation [ type : " + type
+							+ " ] can't be found!");
+		}
 
-        return dataSourceClass;
+		return dataSourceClass;
 
-    }
+	}
 
 }
