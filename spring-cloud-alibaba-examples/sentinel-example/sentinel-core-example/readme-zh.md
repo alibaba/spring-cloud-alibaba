@@ -204,7 +204,7 @@ Sentinel starter 整合了目前存在的几类 DataSource。只需要在配置�
     spring.cloud.sentinel.datasource.recommendRefreshMs=2000
     spring.cloud.sentinel.datasource.bufSize=2048
     spring.cloud.sentinel.datasource.charset=utf-8
-    spring.cloud.sentinel.datasource.configParser=myParser
+    spring.cloud.sentinel.datasource.converter=myParser
     spring.cloud.sentinel.datasource.file=/Users/you/rule.json
 
 然后使用`@SentinelDataSource` 注解修饰 DataSource 即可注入：
@@ -220,7 +220,7 @@ Sentinel starter 整合了目前存在的几类 DataSource。只需要在配置�
 
 `spring.cloud.sentinel.datasource.recommendRefreshMs` 里的 `recommendRefreshMs` 对应相关 DataSource 的属性。
 
-`spring.cloud.sentinel.datasource.configParser`代表 `ConfigParser` 在 Spring 容器里的 name。如果没找到，会抛出异常。
+`spring.cloud.sentinel.datasource.converter`代表 `Converter` 在 Spring 容器里的 name。如果没找到，会抛出异常。
     
 type目前支持file, nacos, zk, apollo。
 
@@ -260,7 +260,7 @@ type目前支持file, nacos, zk, apollo。
             spring.cloud.sentinel.datasource.fieldA = valueA
             spring.cloud.sentinel.datasource.fieldB = valueB
            
-        注意：由于目前Sentinel的AbstractDataSource需要有个ConfigParser作为构造函数中的参数，并且它的子类的构造都是通过多个参数的构造函数构造的。
+        注意：由于目前Sentinel的AbstractDataSource需要有个Converter作为构造函数中的参数，并且它的子类的构造都是通过多个参数的构造函数构造的。
             所以目前所有的Sentinel starter中的DataSource都是基于FactoryBean并且通过设置属性构造的。如果有这方面的需求，需要再多加一个registerFactoryBean过程。
             
             SentinelDataSourceRegistry.registerFactoryBean("custeom", CustomDataSourceFactoryBean.class);

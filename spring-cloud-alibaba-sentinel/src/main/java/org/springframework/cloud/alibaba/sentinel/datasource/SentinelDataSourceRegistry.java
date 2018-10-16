@@ -18,6 +18,8 @@ package org.springframework.cloud.alibaba.sentinel.datasource;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
+
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.ApolloDataSourceFactoryBean;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
@@ -28,7 +30,7 @@ import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.Zookeep
  * Registry to save DataSource FactoryBean
  *
  * @author fangjian
- * @see com.alibaba.csp.sentinel.datasource.DataSource
+ * @see ReadableDataSource
  * @see FileRefreshableDataSourceFactoryBean
  * @see ZookeeperDataSourceFactoryBean
  * @see NacosDataSourceFactoryBean
@@ -36,32 +38,32 @@ import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.Zookeep
  */
 public class SentinelDataSourceRegistry {
 
-	private static ConcurrentHashMap<String, Class<? extends FactoryBean>> cache = new ConcurrentHashMap<>(
-			32);
+    private static ConcurrentHashMap<String, Class<? extends FactoryBean>> cache = new ConcurrentHashMap<>(
+        32);
 
-	static {
-		SentinelDataSourceRegistry.registerFactoryBean("file",
-				FileRefreshableDataSourceFactoryBean.class);
-		SentinelDataSourceRegistry.registerFactoryBean("zk",
-				ZookeeperDataSourceFactoryBean.class);
-		SentinelDataSourceRegistry.registerFactoryBean("nacos",
-				NacosDataSourceFactoryBean.class);
-		SentinelDataSourceRegistry.registerFactoryBean("apollo",
-				ApolloDataSourceFactoryBean.class);
-	}
+    static {
+        SentinelDataSourceRegistry.registerFactoryBean("file",
+            FileRefreshableDataSourceFactoryBean.class);
+        SentinelDataSourceRegistry.registerFactoryBean("zk",
+            ZookeeperDataSourceFactoryBean.class);
+        SentinelDataSourceRegistry.registerFactoryBean("nacos",
+            NacosDataSourceFactoryBean.class);
+        SentinelDataSourceRegistry.registerFactoryBean("apollo",
+            ApolloDataSourceFactoryBean.class);
+    }
 
-	public static synchronized void registerFactoryBean(String alias,
-			Class<? extends FactoryBean> clazz) {
-		cache.putIfAbsent(alias, clazz);
-		cache.put(alias, clazz);
-	}
+    public static synchronized void registerFactoryBean(String alias,
+                                                        Class<? extends FactoryBean> clazz) {
+        cache.putIfAbsent(alias, clazz);
+        cache.put(alias, clazz);
+    }
 
-	public static Class<? extends FactoryBean> getFactoryBean(String alias) {
-		return cache.get(alias);
-	}
+    public static Class<? extends FactoryBean> getFactoryBean(String alias) {
+        return cache.get(alias);
+    }
 
-	public static boolean checkFactoryBean(String alias) {
-		return cache.containsKey(alias);
-	}
+    public static boolean checkFactoryBean(String alias) {
+        return cache.containsKey(alias);
+    }
 
 }

@@ -177,7 +177,7 @@ If you want to define FileRefreshableDataSource:
     spring.cloud.sentinel.datasource.recommendRefreshMs=2000
     spring.cloud.sentinel.datasource.bufSize=2048
     spring.cloud.sentinel.datasource.charset=utf-8
-    spring.cloud.sentinel.datasource.configParser=myParser
+    spring.cloud.sentinel.datasource.converter=myParser
     spring.cloud.sentinel.datasource.file=/Users/you/rule.json
     
 then use `@SentinelDataSource` to annotate DataSource:
@@ -191,7 +191,7 @@ spring.cloud.sentinel.datasource.type means the type of DataSource.
 
 spring.cloud.sentinel.datasource.recommendRefreshMs means the recommendRefreshMs property of specified DataSource.
 
-spring.cloud.sentinel.datasource.configParser means the name of spring bean that type is ConfigParser. If the bean is not exists, will throw exception.
+spring.cloud.sentinel.datasource.converter means the name of spring bean that type is Converter. If the bean is not exists, will throw exception.
     
 Now datasource type support 4 categories: file, nacos, zk, apollo.
 
@@ -230,7 +230,7 @@ User-defined DataSource need 2 steps.
             spring.cloud.sentinel.datasource.fieldA = valueA
             spring.cloud.sentinel.datasource.fieldB = valueB
             
-Note: The AbstractDataSource of Sentinel need a ConfigParser as a constructor param and the subclass of AbstractDataSource was construct by multi-param constructor.
+Note: The AbstractDataSource of Sentinel need a Converter as a constructor param and the subclass of AbstractDataSource was construct by multi-param constructor.
 Now All DataSources in starter was construct by FactoryBean. If you want to do it in this way, you should register FactoryBean by SentinelDataSourceRegistry.
 
     SentinelDataSourceRegistry.registerFactoryBean("custeom", CustomDataSourceFactoryBean.class);
