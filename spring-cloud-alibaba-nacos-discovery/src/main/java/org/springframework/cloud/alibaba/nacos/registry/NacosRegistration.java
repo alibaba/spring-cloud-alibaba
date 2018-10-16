@@ -20,8 +20,11 @@ import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
 import org.springframework.cloud.client.serviceregistry.Registration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import java.net.URI;
 import java.util.Map;
@@ -40,17 +43,23 @@ import static com.alibaba.nacos.api.PropertyKeyConst.*;
  */
 public class NacosRegistration implements Registration, ServiceInstance {
 
+	private static final String MANAGEMENT_PORT = "management.port";
+	private static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
+	private static final String MANAGEMENT_ADDRESS = "management.address";
+
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private NamingService nacosNamingService;
-
 	@Autowired
-	private Environment environment;
+	private ApplicationContext context;
+
+	private NamingService nacosNamingService;
 
 	@PostConstruct
 	public void init() {
-		nacosDiscoveryProperties.overrideFromEnv(environment);
+
+		Environment env = context.getEnvironment();
+		nacosDiscoveryProperties.overrideFromEnv(context.getEnvironment());
 
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, nacosDiscoveryProperties.getServerAddr());
@@ -66,6 +75,20 @@ public class NacosRegistration implements Registration, ServiceInstance {
 		}
 		catch (Exception e) {
 
+		}
+
+		Integer managementPort = ManagementServerPortUtils.getPort(context);
+		if (null != managementPort) {
+			Map<String, String> metadata = nacosDiscoveryProperties.getMetadata();
+			metadata.put(MANAGEMENT_PORT, managementPort.toString());
+			String contextPath = env.getProperty("management.context-path");
+			String address = env.getProperty("management.address");
+			if (!StringUtils.isEmpty(contextPath)) {
+				metadata.put(MANAGEMENT_CONTEXT_PATH, contextPath);
+			}
+			if (!StringUtils.isEmpty(address)) {
+				metadata.put(MANAGEMENT_ADDRESS, address);
+			}
 		}
 	}
 
@@ -85,9 +108,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	}
 
 	public void setPort(int port) {
-		if (nacosDiscoveryProperties.getPort() < 0) {
-			this.nacosDiscoveryProperties.setPort(port);
-		}
+		this.nacosDiscoveryProperties.setPort(port);
 	}
 
 	@Override
