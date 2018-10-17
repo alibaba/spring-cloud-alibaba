@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryAutoConfiguration;
+import org.springframework.cloud.alibaba.nacos.NacosDiscoveryClientAutoConfiguration;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -33,6 +34,7 @@ public class NacosRibbonClientConfigurationTests {
 	public void setUp() throws Exception {
 		this.context = new SpringApplicationBuilder(NacosRibbonTestConfiguration.class,
 				NacosDiscoveryAutoConfiguration.class,
+				NacosDiscoveryClientAutoConfiguration.class,
 				NacosRibbonClientConfiguration.class, RibbonNacosAutoConfiguration.class)
 						.web(false).run("--server.port=18080",
 								"--spring.cloud.nacos.discovery.server-addr=127.0.0.1:8080",
