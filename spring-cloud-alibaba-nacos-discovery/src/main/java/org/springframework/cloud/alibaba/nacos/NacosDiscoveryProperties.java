@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -33,6 +35,18 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
+
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.client.naming.utils.UtilAndComs;
+
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
  * @author dungu.zpf
@@ -41,6 +55,9 @@ import java.util.Objects;
 
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NacosDiscoveryProperties.class);
 
 	/**
 	 * nacos discovery server address
@@ -330,6 +347,24 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(this.getEndpoint())) {
 			this.setEndpoint(
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
+		}
+	}
+
+	public NamingService getNamingService() {
+		Properties properties = new Properties();
+		properties.put(SERVER_ADDR, serverAddr);
+		properties.put(NAMESPACE, namespace);
+		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME, logName);
+		properties.put(ENDPOINT, endpoint);
+		properties.put(ACCESS_KEY, accessKey);
+		properties.put(SECRET_KEY, secretKey);
+		properties.put(CLUSTER_NAME, clusterName);
+		try {
+			return NacosFactory.createNamingService(properties);
+		}
+		catch (Exception e) {
+			LOGGER.error("create naming service error!properties={},e=,", this, e);
+			return null;
 		}
 	}
 
