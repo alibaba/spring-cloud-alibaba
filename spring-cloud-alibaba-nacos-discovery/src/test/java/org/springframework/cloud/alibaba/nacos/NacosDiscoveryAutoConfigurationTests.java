@@ -37,7 +37,8 @@ public class NacosDiscoveryAutoConfigurationTests {
 	private WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
 			.withConfiguration(
 					AutoConfigurations.of(NacosDiscoveryTestConfiguration.class,
-							NacosDiscoveryAutoConfiguration.class))
+							NacosDiscoveryAutoConfiguration.class,
+							NacosDiscoveryClientAutoConfiguration.class))
 			.withPropertyValues("spring.cloud.nacos.discovery.server-addr=127.0.0.1:8080")
 			.withPropertyValues("spring.cloud.nacos.discovery.port=18080")
 			.withPropertyValues("spring.cloud.nacos.discovery.service=myapp");
