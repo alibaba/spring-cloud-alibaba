@@ -28,15 +28,10 @@ import org.springframework.util.StringUtils;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
-import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.client.naming.utils.UtilAndComs;
-
-import static com.alibaba.nacos.api.PropertyKeyConst.*;
 
 /**
  * @author xiaojing
@@ -60,22 +55,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 
 		Environment env = context.getEnvironment();
 		nacosDiscoveryProperties.overrideFromEnv(context.getEnvironment());
-
-		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, nacosDiscoveryProperties.getServerAddr());
-		properties.put(NAMESPACE, nacosDiscoveryProperties.getNamespace());
-		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME,
-				nacosDiscoveryProperties.getLogName());
-		properties.put(ENDPOINT, nacosDiscoveryProperties.getEndpoint());
-		properties.put(ACCESS_KEY, nacosDiscoveryProperties.getAccessKey());
-		properties.put(SECRET_KEY, nacosDiscoveryProperties.getSecretKey());
-		properties.put(CLUSTER_NAME, nacosDiscoveryProperties.getClusterName());
-		try {
-			nacosNamingService = NacosFactory.createNamingService(properties);
-		}
-		catch (Exception e) {
-
-		}
+		nacosNamingService = nacosDiscoveryProperties.getNamingService();
 
 		Integer managementPort = ManagementServerPortUtils.getPort(context);
 		if (null != managementPort) {

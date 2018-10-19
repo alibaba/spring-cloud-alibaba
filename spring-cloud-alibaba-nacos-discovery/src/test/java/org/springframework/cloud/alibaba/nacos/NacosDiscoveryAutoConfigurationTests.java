@@ -42,6 +42,7 @@ public class NacosDiscoveryAutoConfigurationTests {
 	@Before
 	public void setUp() throws Exception {
 		this.context = new SpringApplicationBuilder(NacosDiscoveryTestConfiguration.class,
+				NacosDiscoveryClientAutoConfiguration.class,
 				NacosDiscoveryAutoConfiguration.class).web(false).run(
 						"--spring.cloud.nacos.discovery.server-addr=127.0.0.1:8080",
 						"--spring.cloud.nacos.discovery.port=18080",
