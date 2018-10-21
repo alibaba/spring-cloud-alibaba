@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -46,12 +45,6 @@ public class NacosDiscoveryAutoConfiguration {
 	@Bean
 	public NacosServiceRegistry nacosServiceRegistry() {
 		return new NacosServiceRegistry();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public NacosDiscoveryProperties nacosProperties() {
-		return new NacosDiscoveryProperties();
 	}
 
 	@Bean

@@ -17,6 +17,7 @@
 package org.springframework.cloud.alibaba.sentinel;
 
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,6 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 /**
  * @author fangjian
  */
@@ -43,9 +43,10 @@ public class SentinelAutoConfigurationTests {
 
     @Before
     public void init() {
-        context.register(SentinelAutoConfiguration.class, SentinelWebAutoConfiguration.class, SentinelTestConfiguration.class);
+        context.register(SentinelAutoConfiguration.class, SentinelWebAutoConfiguration.class,
+            SentinelTestConfiguration.class);
         EnvironmentTestUtils.addEnvironment(this.context,
-            "spring.cloud.sentinel.port=8888",
+            "spring.cloud.sentinel.transport.port=8888",
             "spring.cloud.sentinel.filter.order=123",
             "spring.cloud.sentinel.filter.urlPatterns=/*,/test");
         this.context.refresh();
@@ -65,14 +66,14 @@ public class SentinelAutoConfigurationTests {
     @Test
     public void testBeanPostProcessor() {
         assertThat(context.getBean("sentinelBeanPostProcessor")
-                .getClass() == SentinelBeanPostProcessor.class).isTrue();
+            .getClass() == SentinelBeanPostProcessor.class).isTrue();
     }
 
     @Test
     public void testProperties() {
         SentinelProperties sentinelProperties = context.getBean(SentinelProperties.class);
         assertThat(sentinelProperties).isNotNull();
-        assertThat(sentinelProperties.getPort()).isEqualTo("8888");
+        assertThat(sentinelProperties.getTransport().getPort()).isEqualTo("8888");
         assertThat(sentinelProperties.getFilter().getUrlPatterns().size()).isEqualTo(2);
         assertThat(sentinelProperties.getFilter().getUrlPatterns().get(0)).isEqualTo("/*");
         assertThat(sentinelProperties.getFilter().getUrlPatterns().get(1)).isEqualTo("/test");
@@ -82,10 +83,10 @@ public class SentinelAutoConfigurationTests {
     public void testRestTemplate() {
         assertThat(context.getBeansOfType(RestTemplate.class).size()).isEqualTo(2);
         RestTemplate restTemplate = context.getBean("restTemplateWithBlockClass",
-                RestTemplate.class);
+            RestTemplate.class);
         assertThat(restTemplate.getInterceptors().size()).isEqualTo(1);
         assertThat(restTemplate.getInterceptors().get(0).getClass())
-                .isEqualTo(SentinelProtectInterceptor.class);
+            .isEqualTo(SentinelProtectInterceptor.class);
     }
 
     @Configuration
@@ -110,6 +111,5 @@ public class SentinelAutoConfigurationTests {
             System.out.println("Oops: " + ex.getClass().getCanonicalName());
         }
     }
-
 
 }

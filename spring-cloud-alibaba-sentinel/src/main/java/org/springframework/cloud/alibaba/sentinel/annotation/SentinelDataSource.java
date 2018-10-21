@@ -16,19 +16,25 @@
 
 package org.springframework.cloud.alibaba.sentinel.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 
 import org.springframework.core.annotation.AliasFor;
 
 /**
- * An annotation to inject {@link com.alibaba.csp.sentinel.datasource.DataSource} instance
+ * An annotation to inject {@link ReadableDataSource} instance
  * into a Spring Bean. The Properties of DataSource bean get from config files with
  * specific prefix.
  *
  * @author fangjian
- * @see com.alibaba.csp.sentinel.datasource.DataSource
+ * @see ReadableDataSource
  */
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface SentinelDataSource {
