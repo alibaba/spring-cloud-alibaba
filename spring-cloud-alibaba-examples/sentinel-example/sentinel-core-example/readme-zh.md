@@ -78,7 +78,7 @@
     ```
 	spring.application.name=sentinel-example
 	server.port=18083
-	spring.cloud.sentinel.dashboard=localhost:8080
+	spring.cloud.sentinel.transport.dashboard=localhost:8080
     ```
 	
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
@@ -192,9 +192,9 @@ Sentinel 控制台支持实时监控查看，您可以通过 Sentinel 控制台�
 
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532313595369-8428cd7d-9eb7-4786-a149-acf0da4a2daf.png" width="480" heigh='180' ></p>
 
-## DataSource 支持
+## ReadableDataSource 支持
 
-Sentinel 内部提供了[动态规则的扩展实现 DataSource](https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95#datasource-%E6%89%A9%E5%B1%95)。
+Sentinel 内部提供了[动态规则的扩展实现 ReadableDataSource](https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95#datasource-%E6%89%A9%E5%B1%95)。
 
 Sentinel starter 整合了目前存在的几类 DataSource。只需要在配置文件中进行相关配置，即可在 Spring 容器中自动注册 DataSource。
 
@@ -204,13 +204,13 @@ Sentinel starter 整合了目前存在的几类 DataSource。只需要在配置�
     spring.cloud.sentinel.datasource.recommendRefreshMs=2000
     spring.cloud.sentinel.datasource.bufSize=2048
     spring.cloud.sentinel.datasource.charset=utf-8
-    spring.cloud.sentinel.datasource.configParser=myParser
+    spring.cloud.sentinel.datasource.converter=myParser
     spring.cloud.sentinel.datasource.file=/Users/you/rule.json
 
 然后使用`@SentinelDataSource` 注解修饰 DataSource 即可注入：
 
     @SentinelDataSource("spring.cloud.sentinel.datasource")
-    private DataSource dataSource;
+    private ReadableDataSource dataSource;
 
 `@SentinelDataSource` 注解的 value 属性可以不填。默认值就是 `spring.cloud.sentinel.datasource`。
 
@@ -220,7 +220,7 @@ Sentinel starter 整合了目前存在的几类 DataSource。只需要在配置�
 
 `spring.cloud.sentinel.datasource.recommendRefreshMs` 里的 `recommendRefreshMs` 对应相关 DataSource 的属性。
 
-`spring.cloud.sentinel.datasource.configParser`代表 `ConfigParser` 在 Spring 容器里的 name。如果没找到，会抛出异常。
+`spring.cloud.sentinel.datasource.converter`代表 `Converter` 在 Spring 容器里的 name。如果没找到，会抛出异常。
     
 type目前支持file, nacos, zk, apollo。
 
@@ -230,7 +230,7 @@ type目前支持file, nacos, zk, apollo。
 
 1. 定义DataSource
   
-        public class CustomDataSource implements DataSource {
+        public class CustomDataSource implements ReadableDataSource {
             private String fieldA;
             private String fieldB;
             ...
@@ -260,7 +260,7 @@ type目前支持file, nacos, zk, apollo。
             spring.cloud.sentinel.datasource.fieldA = valueA
             spring.cloud.sentinel.datasource.fieldB = valueB
            
-        注意：由于目前Sentinel的AbstractDataSource需要有个ConfigParser作为构造函数中的参数，并且它的子类的构造都是通过多个参数的构造函数构造的。
+        注意：由于目前Sentinel的AbstractDataSource需要有个Converter作为构造函数中的参数，并且它的子类的构造都是通过多个参数的构造函数构造的。
             所以目前所有的Sentinel starter中的DataSource都是基于FactoryBean并且通过设置属性构造的。如果有这方面的需求，需要再多加一个registerFactoryBean过程。
             
             SentinelDataSourceRegistry.registerFactoryBean("custeom", CustomDataSourceFactoryBean.class);

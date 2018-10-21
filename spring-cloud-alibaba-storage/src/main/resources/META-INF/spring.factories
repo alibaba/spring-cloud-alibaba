@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.cloud.alibaba.storage.OSSAutoConfiguration,\
-org.springframework.cloud.alibaba.storage.endpoint.OSSEndpointAutoConfiguration
-org.springframework.context.ApplicationListener=\
-org.springframework.cloud.alibaba.storage.OSSApplicationListener

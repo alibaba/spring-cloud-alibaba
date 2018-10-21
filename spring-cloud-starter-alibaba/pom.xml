@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.2.0.BUILD-SNAPSHOT</version>
+        <version>0.2.0</version>
     </parent>
     <artifactId>spring-cloud-starter-alibaba</artifactId>
     <packaging>pom</packaging>
@@ -14,6 +14,5 @@
         <module>spring-cloud-starter-alibaba-nacos-config</module>
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
         <module>spring-cloud-starter-alibaba-sentinel</module>
-        <module>spring-cloud-starter-alibaba-storage</module>
     </modules>
 </project>

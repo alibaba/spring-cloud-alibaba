@@ -2,7 +2,7 @@ package org.springframework.cloud.alibaba.sentinel.datasource.factorybean;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import com.alibaba.csp.sentinel.datasource.ConfigParser;
+import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 
 /**
@@ -14,11 +14,11 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 	private String serverAddr;
 	private String groupId;
 	private String dataId;
-	private ConfigParser configParser;
+	private Converter converter;
 
 	@Override
 	public NacosDataSource getObject() throws Exception {
-		return new NacosDataSource(serverAddr, groupId, dataId, configParser);
+		return new NacosDataSource(serverAddr, groupId, dataId, converter);
 	}
 
 	@Override
@@ -50,11 +50,11 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 		this.dataId = dataId;
 	}
 
-	public ConfigParser getConfigParser() {
-		return configParser;
+	public Converter getConverter() {
+		return converter;
 	}
 
-	public void setConfigParser(ConfigParser configParser) {
-		this.configParser = configParser;
+	public void setConverter(Converter Converter) {
+		this.converter = Converter;
 	}
 }

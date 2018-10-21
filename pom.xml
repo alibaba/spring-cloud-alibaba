@@ -14,7 +14,7 @@
 
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>0.2.0.BUILD-SNAPSHOT</version>
+    <version>0.2.0</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
 
@@ -74,12 +74,14 @@
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
         <module>spring-cloud-alibaba-sentinel</module>
-        <module>spring-cloud-alibaba-storage</module>
+
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-test</module>
         <module>spring-cloud-starter-alibaba</module>
+        <module>spring-cloud-starter-alicloud</module>
+        <module>spring-cloud-alicloud-oss</module>
     </modules>
 
     <dependencyManagement>
