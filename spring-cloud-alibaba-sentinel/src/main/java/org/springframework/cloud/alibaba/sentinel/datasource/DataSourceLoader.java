@@ -34,10 +34,10 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import com.alibaba.csp.sentinel.datasource.DataSource;
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 
 /**
- * {@link DataSource} Loader
+ * {@link ReadableDataSource} Loader
  *
  * @author fangjian
  */
@@ -50,20 +50,20 @@ public class DataSourceLoader {
 	private final static String ALL_PROPERTIES_RESOURCES_LOCATION = CLASSPATH_ALL_URL_PREFIX
 			+ PROPERTIES_RESOURCE_LOCATION;
 
-	private final static ConcurrentMap<String, Class<? extends DataSource>> dataSourceClassesCache = new ConcurrentHashMap<String, Class<? extends DataSource>>(
+	private final static ConcurrentMap<String, Class<? extends ReadableDataSource>> dataSourceClassesCache = new ConcurrentHashMap<String, Class<? extends ReadableDataSource>>(
 			4);
 
 	static void loadAllDataSourceClassesCache() {
-		Map<String, Class<? extends DataSource>> dataSourceClassesMap = loadAllDataSourceClassesCache(
+		Map<String, Class<? extends ReadableDataSource>> dataSourceClassesMap = loadAllDataSourceClassesCache(
 				ALL_PROPERTIES_RESOURCES_LOCATION);
 
 		dataSourceClassesCache.putAll(dataSourceClassesMap);
 	}
 
-	static Map<String, Class<? extends DataSource>> loadAllDataSourceClassesCache(
+	static Map<String, Class<? extends ReadableDataSource>> loadAllDataSourceClassesCache(
 			String resourcesLocation) {
 
-		Map<String, Class<? extends DataSource>> dataSourcesMap = new HashMap<String, Class<? extends DataSource>>(
+		Map<String, Class<? extends ReadableDataSource>> dataSourcesMap = new HashMap<String, Class<? extends ReadableDataSource>>(
 				4);
 
 		ClassLoader classLoader = DataSourceLoader.class.getClassLoader();
@@ -102,10 +102,10 @@ public class DataSourceLoader {
 
 						Class<?> dataSourceClass = ClassUtils.resolveClassName(className,
 								classLoader);
-						Assert.isAssignable(DataSource.class, dataSourceClass);
+						Assert.isAssignable(ReadableDataSource.class, dataSourceClass);
 
 						dataSourcesMap.put(type,
-								(Class<? extends DataSource>) dataSourceClass);
+								(Class<? extends ReadableDataSource>) dataSourceClass);
 
 						if (logger.isDebugEnabled()) {
 							logger.debug("Sentinel DataSource implementation [ type : "
@@ -126,10 +126,10 @@ public class DataSourceLoader {
 		return dataSourcesMap;
 	}
 
-	public static Class<? extends DataSource> loadClass(String type)
+	public static Class<? extends ReadableDataSource> loadClass(String type)
 			throws IllegalArgumentException {
 
-		Class<? extends DataSource> dataSourceClass = dataSourceClassesCache.get(type);
+		Class<? extends ReadableDataSource> dataSourceClass = dataSourceClassesCache.get(type);
 
 		if (dataSourceClass == null) {
 			if (dataSourceClassesCache.isEmpty()) {

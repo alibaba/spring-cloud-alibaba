@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import com.alibaba.csp.sentinel.datasource.ConfigParser;
+import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
 
 /**
@@ -19,11 +19,11 @@ public class FileRefreshableDataSourceFactoryBean
 	private String charset;
 	private long recommendRefreshMs;
 	private int bufSize;
-	private ConfigParser configParser;
+	private Converter converter;
 
 	@Override
 	public FileRefreshableDataSource getObject() throws Exception {
-		return new FileRefreshableDataSource(new File(file), configParser,
+		return new FileRefreshableDataSource(new File(file), converter,
 				recommendRefreshMs, bufSize, Charset.forName(charset));
 	}
 
@@ -64,11 +64,11 @@ public class FileRefreshableDataSourceFactoryBean
 		this.bufSize = bufSize;
 	}
 
-	public ConfigParser getConfigParser() {
-		return configParser;
+	public Converter getConverter() {
+		return converter;
 	}
 
-	public void setConfigParser(ConfigParser configParser) {
-		this.configParser = configParser;
+	public void setConverter(Converter Converter) {
+		this.converter = Converter;
 	}
 }

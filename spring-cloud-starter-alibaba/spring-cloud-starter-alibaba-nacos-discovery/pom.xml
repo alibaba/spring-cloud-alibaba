@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba</artifactId>
-        <version>0.2.0.BUILD-SNAPSHOT</version>
+        <version>0.2.0</version>
     </parent>
     <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
     <name>Spring Cloud Starter Alibaba Nacos Discovery</name>

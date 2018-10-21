@@ -10,15 +10,15 @@
         <relativePath/>
     </parent>
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-    <version>0.2.0.BUILD-SNAPSHOT</version>
+    <version>0.2.0</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Dependencies</name>
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <sentinel.version>0.1.1</sentinel.version>
+        <sentinel.version>0.2.0</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.version>0.2.1-RC1</nacos.version>
+        <nacos.version>0.2.1</nacos.version>
     </properties>
 
     <dependencyManagement>
@@ -81,7 +81,7 @@
             </dependency>
 
 
-            <!-- Aliyun storage dependencies -->
+            <!-- Aliyun OSS dependencies -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
@@ -97,7 +97,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-storage</artifactId>
+                <artifactId>spring-cloud-alicloud-oss</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -119,7 +119,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-alibaba-storage</artifactId>
+                <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
