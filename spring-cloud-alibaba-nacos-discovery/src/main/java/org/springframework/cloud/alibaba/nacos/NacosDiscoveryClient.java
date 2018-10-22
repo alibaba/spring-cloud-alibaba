@@ -19,14 +19,10 @@ package org.springframework.cloud.alibaba.nacos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.core.env.Environment;
 
 import java.util.*;
-
-import javax.annotation.PostConstruct;
 
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
@@ -44,17 +40,6 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	@Autowired
 	private NacosDiscoveryProperties discoveryProperties;
 
-	@Autowired
-	private Environment environment;
-
-	private NamingService namingService;
-
-	@PostConstruct
-	public void init() {
-		discoveryProperties.overrideFromEnv(environment);
-		namingService = discoveryProperties.getNamingService();
-	}
-
 	@Override
 	public String description() {
 		return DESCRIPTION;
@@ -63,7 +48,8 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	@Override
 	public List<ServiceInstance> getInstances(String serviceId) {
 		try {
-			List<Instance> instances = namingService.getAllInstances(serviceId);
+			List<Instance> instances = discoveryProperties.namingServiceInstance()
+					.getAllInstances(serviceId);
 			return hostToServiceInstanceList(instances, serviceId);
 		}
 		catch (Exception e) {
@@ -103,8 +89,8 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public List<String> getServices() {
 
 		try {
-			ListView<String> services = namingService.getServicesOfServer(1,
-					Integer.MAX_VALUE);
+			ListView<String> services = discoveryProperties.namingServiceInstance()
+					.getServicesOfServer(1, Integer.MAX_VALUE);
 			return services.getData();
 		}
 		catch (Exception e) {
@@ -114,6 +100,6 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	}
 
 	public NamingService getNamingService() {
-		return namingService;
+		return discoveryProperties.namingServiceInstance();
 	}
 }
