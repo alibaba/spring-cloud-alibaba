@@ -142,6 +142,11 @@ public class NacosDiscoveryProperties {
 	@Autowired
 	private InetUtils inetUtils;
 
+	@Autowired
+	private Environment environment;
+
+	private NamingService namingService;
+
 	@PostConstruct
 	public void init() throws SocketException {
 
@@ -180,6 +185,8 @@ public class NacosDiscoveryProperties {
 
 			}
 		}
+
+		this.overrideFromEnv(environment);
 	}
 
 	public String getEndpoint() {
@@ -350,7 +357,12 @@ public class NacosDiscoveryProperties {
 		}
 	}
 
-	public NamingService getNamingService() {
+	public NamingService namingServiceInstance() {
+
+		if (null != namingService) {
+			return namingService;
+		}
+
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, serverAddr);
 		properties.put(NAMESPACE, namespace);
@@ -360,7 +372,8 @@ public class NacosDiscoveryProperties {
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);
 		try {
-			return NacosFactory.createNamingService(properties);
+			namingService = NacosFactory.createNamingService(properties);
+			return namingService;
 		}
 		catch (Exception e) {
 			LOGGER.error("create naming service error!properties={},e=,", this, e);
