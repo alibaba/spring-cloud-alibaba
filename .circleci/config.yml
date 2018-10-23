@@ -17,14 +17,14 @@ jobs:
           key: sc-alibaba-{{ .Branch }}
       - run:
           name: "Download dependencies"
-          command: ./mvnw -s .settings.xml -U --fail-never dependency:go-offline || true
+          command: ./mvnw -Pspring -U --fail-never dependency:go-offline || true
       - save_cache:
           key: sc-alibaba-{{ .Branch }}
           paths:
             - ~/.m2
       - run:
           name: "Running build"
-          command: ./mvnw -s .settings.xml clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+          command: ./mvnw -Pspring clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - run:
           name: "Aggregate test results"
           when: always
