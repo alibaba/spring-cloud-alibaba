@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.alibaba.sentinel.datasource;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 
@@ -38,7 +38,7 @@ import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.Zookeep
  */
 public class SentinelDataSourceRegistry {
 
-    private static ConcurrentHashMap<String, Class<? extends FactoryBean>> cache = new ConcurrentHashMap<>(
+    private static HashMap<String, Class<? extends FactoryBean>> cache = new HashMap<>(
         32);
 
     static {
@@ -54,7 +54,6 @@ public class SentinelDataSourceRegistry {
 
     public static synchronized void registerFactoryBean(String alias,
                                                         Class<? extends FactoryBean> clazz) {
-        cache.putIfAbsent(alias, clazz);
         cache.put(alias, clazz);
     }
 
