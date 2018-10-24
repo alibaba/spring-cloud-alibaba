@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.0.0.RELEASE</version>
+        <version>2.0.3.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -55,7 +55,7 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.0.0.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-commons.version>2.0.1.RELEASE</spring-cloud-commons.version>
         <spring-cloud-netflix.version>2.0.0.RELEASE</spring-cloud-netflix.version>
         <spring-cloud-openfeign.version>2.0.0.RELEASE</spring-cloud-openfeign.version>
 
