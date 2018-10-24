@@ -165,9 +165,9 @@ To see the metrics, click **实时监控(Real-time Monitoring)** in the left-sid
 
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532313595369-8428cd7d-9eb7-4786-a149-acf0da4a2daf.png" width="480" heigh='180'></p>
 
-## DataSource
+## ReadableDataSource
 
-Sentinel provide [DataSource](https://github.com/alibaba/Sentinel/blob/master/sentinel-extension/sentinel-datasource-extension/src/main/java/com/alibaba/csp/sentinel/datasource/DataSource.java) to manage dynamic rules.
+Sentinel provide [ReadableDataSource](https://github.com/alibaba/Sentinel/blob/master/sentinel-extension/sentinel-datasource-extension/src/main/java/com/alibaba/csp/sentinel/datasource/ReadableDataSource.java) to manage dynamic rules.
 
 Sentinel starter integrated 4 DataSources provided by Sentinel. It will be register into Spring Context if you write some configs in `application.properties`.
 
@@ -183,7 +183,7 @@ If you want to define FileRefreshableDataSource:
 then use `@SentinelDataSource` to annotate DataSource:
  
     @SentinelDataSource("spring.cloud.sentinel.datasource")
-    private DataSource dataSource;
+    private ReadableDataSource dataSource;
     
 The value() of `@SentinelDataSource` is not required, it means the prefix of configuration. Default value is `spring.cloud.sentinel.datasource`.
 
@@ -201,7 +201,7 @@ User-defined DataSource need 2 steps.
 
 1. Define DataSource
     
-        public class CustomDataSource implements DataSource {
+        public class CustomDataSource implements ReadableDataSource {
             private String fieldA;
             private String fieldB;
             ...

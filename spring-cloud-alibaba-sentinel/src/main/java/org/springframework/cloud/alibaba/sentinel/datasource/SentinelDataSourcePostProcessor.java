@@ -36,15 +36,27 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alibaba.sentinel.SentinelConstants;
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelDataSource;
 import org.springframework.cloud.alibaba.sentinel.util.PropertySourcesUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.csp.sentinel.datasource.Converter;
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
+import com.alibaba.csp.sentinel.property.SentinelProperty;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.system.SystemRule;
+import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 
 /**
  * {@link SentinelDataSource @SentinelDataSource} Post Processor
@@ -186,6 +198,46 @@ public class SentinelDataSourcePostProcessor
 				.getAutowireCapableBeanFactory();
 		beanFactory.registerBeanDefinition(beanName, builder.getBeanDefinition());
 	}
+
+    @EventListener(classes = ApplicationReadyEvent.class)
+    public void appStartedListener(ApplicationReadyEvent event) throws Exception {
+        Map<String, ReadableDataSource> dataSourceMap = event.getApplicationContext().getBeansOfType(ReadableDataSource.class);
+        if(dataSourceMap.size() == 1) {
+            ReadableDataSource dataSource = dataSourceMap.values().iterator().next();
+            Object ruleConfig = dataSource.loadConfig();
+            SentinelProperty sentinelProperty = dataSource.getProperty();
+            if(checkRuleType(ruleConfig, FlowRule.class)) {
+                FlowRuleManager.register2Property(sentinelProperty);
+            }
+            if(checkRuleType(ruleConfig, DegradeRule.class)) {
+                DegradeRuleManager.register2Property(sentinelProperty);
+            }
+            if(checkRuleType(ruleConfig, SystemRule.class)) {
+                SystemRuleManager.register2Property(sentinelProperty);
+            }
+            if(checkRuleType(ruleConfig, AuthorityRule.class)) {
+                AuthorityRuleManager.register2Property(sentinelProperty);
+            }
+        }
+    }
+
+    private boolean checkRuleType(Object ruleConfig, Class type) {
+        if(ruleConfig.getClass() == type) {
+            return true;
+        } else if(ruleConfig instanceof List) {
+            List ruleList = (List)ruleConfig;
+            List checkList = new ArrayList();
+            for(Object rule : ruleList) {
+                if(rule.getClass() == type) {
+                    checkList.add(rule);
+                }
+            }
+            if(ruleList.size() == checkList.size()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 	class SentinelDataSourceField {
 		private SentinelDataSource sentinelDataSource;
