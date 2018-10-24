@@ -222,7 +222,7 @@ Sentinel starter 整合了目前存在的几类 DataSource。只需要在配置�
 
 `spring.cloud.sentinel.datasource.converter`代表 `Converter` 在 Spring 容器里的 name。如果没找到，会抛出异常。
     
-type目前支持file, nacos, zk, apollo。
+type目前支持file, nacos, zk, apollo。其中nacos，zk，apollo的使用需要加上对应的依赖`sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`, `sentinel-datasource-apollo`
 
 ### 自定义DataSource
 
