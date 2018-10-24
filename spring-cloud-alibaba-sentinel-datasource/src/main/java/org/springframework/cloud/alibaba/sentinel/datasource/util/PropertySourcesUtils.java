@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel.util;
-
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.PropertySource;
-import org.springframework.core.env.PropertySources;
+package org.springframework.cloud.alibaba.sentinel.datasource.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.PropertySources;
 
 /**
  * {@link PropertySources} Utilities
@@ -47,7 +47,7 @@ public abstract class PropertySourcesUtils {
 
         for (PropertySource<?> source : propertySources) {
             if (source instanceof EnumerablePropertySource) {
-                for (String name : ((EnumerablePropertySource<?>) source).getPropertyNames()) {
+                for (String name : ((EnumerablePropertySource<?>)source).getPropertyNames()) {
                     if (!subProperties.containsKey(name) && name.startsWith(normalizedPrefix)) {
                         String subName = name.substring(normalizedPrefix.length());
                         if (!subProperties.containsKey(subName)) { // take first one

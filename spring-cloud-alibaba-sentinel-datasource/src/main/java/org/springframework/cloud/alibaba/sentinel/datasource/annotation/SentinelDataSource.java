@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel.annotation;
+package org.springframework.cloud.alibaba.sentinel.datasource.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -31,7 +31,7 @@ import org.springframework.core.annotation.AliasFor;
  * into a Spring Bean. The Properties of DataSource bean get from config files with
  * specific prefix.
  *
- * @author fangjian
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @see ReadableDataSource
  */
 @Target({ElementType.FIELD})

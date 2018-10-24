@@ -1,12 +1,14 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.factorybean;
 
-import org.springframework.beans.factory.FactoryBean;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.apollo.ApolloDataSource;
 
+import org.springframework.beans.factory.FactoryBean;
+
 /**
- * @author fangjian
+ * A {@link FactoryBean} for creating {@link ApolloDataSource} instance.
+ *
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @see ApolloDataSource
  */
 public class ApolloDataSourceFactoryBean implements FactoryBean<ApolloDataSource> {
@@ -19,7 +21,7 @@ public class ApolloDataSourceFactoryBean implements FactoryBean<ApolloDataSource
     @Override
     public ApolloDataSource getObject() throws Exception {
         return new ApolloDataSource(namespaceName, flowRulesKey, defaultFlowRuleValue,
-                converter);
+            converter);
     }
 
     @Override

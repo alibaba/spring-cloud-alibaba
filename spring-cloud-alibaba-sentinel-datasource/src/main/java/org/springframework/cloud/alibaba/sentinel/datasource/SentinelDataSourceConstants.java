@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel;
+package org.springframework.cloud.alibaba.sentinel.datasource;
 
 /**
- * @author fangjian
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public interface SentinelConstants {
+public interface SentinelDataSourceConstants {
 
     String PROPERTY_PREFIX = "spring.cloud.sentinel";
+
+    String PROPERTY_ITEM_SEPARATOR = ".";
+
+    String PROPERTY_DATASOURCE_NAME = "datasource";
+
+    String PROPERTY_DATASOURCE_PREFIX = PROPERTY_PREFIX + PROPERTY_ITEM_SEPARATOR
+        + PROPERTY_DATASOURCE_NAME;
 
 }
