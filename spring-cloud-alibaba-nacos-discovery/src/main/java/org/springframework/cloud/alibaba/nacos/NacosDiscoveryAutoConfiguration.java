@@ -49,12 +49,6 @@ public class NacosDiscoveryAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	public NacosDiscoveryProperties nacosProperties() {
-		return new NacosDiscoveryProperties();
-	}
-
-	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
 	public NacosRegistration nacosRegistration() {
 		return new NacosRegistration();

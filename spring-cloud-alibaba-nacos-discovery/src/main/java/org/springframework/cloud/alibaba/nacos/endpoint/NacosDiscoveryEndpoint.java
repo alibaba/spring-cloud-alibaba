@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
-import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 
 /**
  * Endpoint for nacos discovery, get nacos properties and subscribed services
@@ -45,9 +44,6 @@ public class NacosDiscoveryEndpoint {
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	@Autowired
-	private NacosRegistration nacosRegistration;
-
 	/**
 	 * @return nacos discovery endpoint
 	 */
@@ -56,7 +52,7 @@ public class NacosDiscoveryEndpoint {
 		Map<String, Object> result = new HashMap<>();
 		result.put("NacosDiscoveryProperties", nacosDiscoveryProperties);
 
-		NamingService namingService = nacosRegistration.getNacosNamingService();
+		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
 		List<ServiceInfo> subscribe = Collections.emptyList();
 
 		try {

@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Configuration;
  * @author xiaojing
  */
 @Configuration
-@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
 @ConditionalOnClass(Endpoint.class)
 public class NacosDiscoveryEndpointAutoConfiguration {
 

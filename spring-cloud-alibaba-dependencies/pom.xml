@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.0.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Dependencies</name>
     <description>Spring Cloud Alibaba Dependencies</description>
@@ -18,7 +18,7 @@
     <properties>
         <sentinel.version>0.2.0</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.version>0.2.1</nacos.version>
+        <nacos.version>0.3.0-RC1</nacos.version>
     </properties>
 
     <dependencyManagement>
