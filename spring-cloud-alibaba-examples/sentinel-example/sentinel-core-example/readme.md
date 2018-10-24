@@ -193,7 +193,7 @@ spring.cloud.sentinel.datasource.recommendRefreshMs means the recommendRefreshMs
 
 spring.cloud.sentinel.datasource.converter means the name of spring bean that type is Converter. If the bean is not exists, will throw exception.
     
-Now datasource type support 4 categories: file, nacos, zk, apollo.
+Now datasource type support 4 categories: file, nacos, zk, apollo. If you want to using nacos, zk or apollo, you should add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper` or `sentinel-datasource-apollo` dependency.
 
 ### User-defined DataSource
 

@@ -1,12 +1,14 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.factorybean;
 
-import org.springframework.beans.factory.FactoryBean;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 
+import org.springframework.beans.factory.FactoryBean;
+
 /**
- * @author fangjian
+ * A {@link FactoryBean} for creating {@link NacosDataSource} instance.
+ *
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @see NacosDataSource
  */
 public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> {

@@ -29,7 +29,7 @@ import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.Zookeep
 /**
  * Registry to save DataSource FactoryBean
  *
- * @author fangjian
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @see ReadableDataSource
  * @see FileRefreshableDataSourceFactoryBean
  * @see ZookeeperDataSourceFactoryBean
