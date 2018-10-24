@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
-import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 
 /**
  * Endpoint for nacos discovery, get nacos properties and subscribed services
@@ -43,9 +42,6 @@ public class NacosDiscoveryEndpoint extends AbstractEndpoint<Map<String, Object>
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	@Autowired
-	private NacosRegistration nacosRegistration;
-
 	public NacosDiscoveryEndpoint() {
 		super("nacos_discovery", false);
 	}
@@ -58,7 +54,7 @@ public class NacosDiscoveryEndpoint extends AbstractEndpoint<Map<String, Object>
 		Map<String, Object> result = new HashMap<>();
 		result.put("NacosDiscoveryProperties", nacosDiscoveryProperties);
 
-		NamingService namingService = nacosRegistration.getNacosNamingService();
+		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
 		List<ServiceInfo> subscribe = Collections.emptyList();
 
 		try {
