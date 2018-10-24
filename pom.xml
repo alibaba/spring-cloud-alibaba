@@ -74,7 +74,7 @@
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
         <module>spring-cloud-alibaba-sentinel</module>
-
+        <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-examples</module>
