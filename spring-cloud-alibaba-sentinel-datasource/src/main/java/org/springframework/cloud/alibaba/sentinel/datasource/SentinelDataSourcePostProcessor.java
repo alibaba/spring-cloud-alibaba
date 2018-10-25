@@ -195,37 +195,51 @@ public class SentinelDataSourcePostProcessor
 
     @EventListener(classes = ApplicationStartedEvent.class)
     public void appStartedListener(ApplicationStartedEvent event) throws Exception {
+        logger.info("[Sentinel Starter] Start to find ReadableDataSource");
         Map<String, ReadableDataSource> dataSourceMap = event.getApplicationContext().getBeansOfType(
             ReadableDataSource.class);
         if (dataSourceMap.size() == 1) {
+            logger.info("[Sentinel Starter] There exists only one ReadableDataSource named {}, start to load rules",
+                dataSourceMap.keySet().iterator().next());
             ReadableDataSource dataSource = dataSourceMap.values().iterator().next();
             Object ruleConfig = dataSource.loadConfig();
             SentinelProperty sentinelProperty = dataSource.getProperty();
-            if (checkRuleType(ruleConfig, FlowRule.class)) {
+            Integer rulesNum;
+            if ((rulesNum = checkRuleType(ruleConfig, FlowRule.class)) > 0) {
                 FlowRuleManager.register2Property(sentinelProperty);
+                logger.info("[Sentinel Starter] load {} flow rules", rulesNum);
             }
-            if (checkRuleType(ruleConfig, DegradeRule.class)) {
+            if ((rulesNum = checkRuleType(ruleConfig, DegradeRule.class)) > 0) {
                 DegradeRuleManager.register2Property(sentinelProperty);
+                logger.info("[Sentinel Starter] load {} degrade rules", rulesNum);
             }
-            if (checkRuleType(ruleConfig, SystemRule.class)) {
+            if ((rulesNum = checkRuleType(ruleConfig, SystemRule.class)) > 0) {
                 SystemRuleManager.register2Property(sentinelProperty);
+                logger.info("[Sentinel Starter] load {} system rules", rulesNum);
             }
-            if (checkRuleType(ruleConfig, AuthorityRule.class)) {
+            if ((rulesNum = checkRuleType(ruleConfig, AuthorityRule.class)) > 0) {
                 AuthorityRuleManager.register2Property(sentinelProperty);
+                logger.info("[Sentinel Starter] load {} authority rules", rulesNum);
             }
+        } else if (dataSourceMap.size() > 1) {
+            logger.warn(
+                "[Sentinel Starter] There exists more than one ReadableDataSource, can not choose which one to load");
+        } else {
+            logger.warn(
+                "[Sentinel Starter] No ReadableDataSource exists");
         }
     }
 
-    private boolean checkRuleType(Object ruleConfig, Class type) {
+    private Integer checkRuleType(Object ruleConfig, Class type) {
         if (ruleConfig.getClass() == type) {
-            return true;
+            return 1;
         } else if (ruleConfig instanceof List) {
             List ruleList = (List)ruleConfig;
             if (ruleList.stream().filter(rule -> rule.getClass() == type).toArray().length == ruleList.size()) {
-                return true;
+                return ruleList.size();
             }
         }
-        return false;
+        return -1;
     }
 
     class SentinelDataSourceField {
