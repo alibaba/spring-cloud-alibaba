@@ -23,6 +23,10 @@
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
         <module>oss-example</module>
+        <module>ans-example/ans-consumer-feign-example</module>
+        <module>ans-example/ans-consumer-ribbon-example</module>
+        <module>ans-example/ans-provider-example</module>
+        <module>acm-example/acm-local-example</module>
     </modules>
 
     <build>
