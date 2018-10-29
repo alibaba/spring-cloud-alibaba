@@ -119,9 +119,9 @@ In Nacos Config Starter, the splicing format of dataId is as follows
 
 * `spring.active.profile` is the profile corresponding to the current environment. For details, please refer to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
-	**Note: when the activeprofile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${context.type}`**
+	**Note: when the activeprofile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
 
-* `file-extension` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.content-type`.
+* `file-extension` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.file-extension`.
 Currently only the `properties` type is supported.
 
 #### group

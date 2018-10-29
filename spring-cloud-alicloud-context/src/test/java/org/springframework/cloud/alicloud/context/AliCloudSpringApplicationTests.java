@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author xiaolongzuo
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AliCloudSpringApplicationTests.EurekaClientDisabledApp.class, properties = {
+@SpringBootTest(classes = AliCloudSpringApplicationTests.AliCloudDisabledApp.class, properties = {
 		"spring.application.name=myapp",
 		"spring.cloud.alicloud.edas.application.name=myapp",
 		"spring.cloud.alicloud.access-key=ak", "spring.cloud.alicloud.secret-key=sk",
@@ -43,7 +43,7 @@ public class AliCloudSpringApplicationTests {
 	}
 
 	@SpringBootApplication
-	public static class EurekaClientDisabledApp {
+	public static class AliCloudDisabledApp {
 
 	}
 
