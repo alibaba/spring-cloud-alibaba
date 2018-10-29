@@ -50,8 +50,6 @@ public class AcmPropertySourceLocator implements PropertySourceLocator {
 
 	@Override
 	public PropertySource<?> locate(Environment environment) {
-		checkDiamondHealth();
-
 		String applicationName = environment.getProperty("spring.application.name");
 		logger.info("Initialize spring.application.name '" + applicationName + "'.");
 		String applicationGroup = environment.getProperty("spring.application.group");
