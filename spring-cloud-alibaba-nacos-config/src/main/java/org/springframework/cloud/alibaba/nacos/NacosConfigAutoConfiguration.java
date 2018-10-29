@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import com.alibaba.nacos.api.config.ConfigService;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosContextRefresher;
@@ -43,14 +41,6 @@ public class NacosConfigAutoConfiguration implements ApplicationContextAware {
 	@Autowired
 	private NacosRefreshProperties nacosRefreshProperties;
 
-	@Autowired
-	private ConfigService configService;
-
-	@Bean
-	public NacosConfigProperties nacosConfigProperties() {
-		return new NacosConfigProperties();
-	}
-
 	@Bean
 	public NacosPropertySourceRepository nacosPropertySourceRepository() {
 		return new NacosPropertySourceRepository(applicationContext);
@@ -69,10 +59,10 @@ public class NacosConfigAutoConfiguration implements ApplicationContextAware {
 	@Bean
 	public NacosContextRefresher nacosContextRefresher(ContextRefresher contextRefresher,
 			NacosRefreshHistory refreshHistory,
-			NacosPropertySourceRepository propertySourceRepository,
-													   ConfigService configService) {
+			NacosPropertySourceRepository propertySourceRepository) {
 		return new NacosContextRefresher(contextRefresher, nacosConfigProperties,
-				nacosRefreshProperties, refreshHistory, propertySourceRepository,configService);
+				nacosRefreshProperties, refreshHistory, propertySourceRepository,
+				nacosConfigProperties.configServiceInstance());
 	}
 
 	@Override

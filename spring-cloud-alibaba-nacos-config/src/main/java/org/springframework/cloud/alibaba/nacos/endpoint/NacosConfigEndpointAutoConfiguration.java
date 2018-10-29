@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.alibaba.nacos.endpoint;
 
-import com.alibaba.nacos.api.config.ConfigService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -46,15 +44,6 @@ public class NacosConfigEndpointAutoConfiguration {
 	@Autowired
 	private NacosPropertySourceRepository nacosPropertySourceRepository;
 
-	@Autowired
-	private ConfigService configService;
-
-	@Bean
-	@ConditionalOnBean
-	public NacosConfigProperties nacosConfigProperties() {
-		return new NacosConfigProperties();
-	}
-
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
 	@Bean
@@ -67,6 +56,7 @@ public class NacosConfigEndpointAutoConfiguration {
 	public NacosConfigHealthIndicator nacosConfigHealthIndicator(
 			NacosPropertySourceRepository nacosPropertySourceRepository) {
 		return new NacosConfigHealthIndicator(nacosConfigProperties,
-				nacosPropertySourceRepository, configService);
+				nacosPropertySourceRepository,
+				nacosConfigProperties.configServiceInstance());
 	}
 }

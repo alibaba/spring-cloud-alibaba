@@ -63,15 +63,7 @@ public class NacosConfigAutoConfigurationTests {
     @Test
     public void testNacosConfigProperties() {
 
-        NacosPropertySourceLocator nacosPropertySourceLocator = this.context.getBean(NacosPropertySourceLocator.class);
-        Environment environment = this.context.getEnvironment();
-        try{
-            nacosPropertySourceLocator.locate(environment);
-        }catch (Exception e){
-
-        }
-
-        NacosConfigProperties nacosConfigProperties = this.context.getBean(NacosConfigProperties.class);
+        NacosConfigProperties nacosConfigProperties = this.context.getParent().getBean(NacosConfigProperties.class);
         assertThat(nacosConfigProperties.getFileExtension()).isEqualTo("properties");
         assertThat(nacosConfigProperties.getPrefix()).isEqualTo("myapp");
 
