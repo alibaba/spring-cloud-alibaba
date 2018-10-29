@@ -19,9 +19,10 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 	
-2. 在应用的 /src/main/resources/bootstrap.properties 配置文件中配置 Nacos Config 地址
+2. 在应用的 /src/main/resources/bootstrap.properties 配置文件中配置 Nacos Config 元数据
 	
-		spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+        spring.application.name=nacos-config-example
+        spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 		  
 3. 完成上述两步后，应用会从 Nacos Config 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中。这里我们使用 @Value 注解来将对应的配置注入到 SampleController 的 userName 和 age 字段，并添加 @RefreshScope 打开动态刷新功能
 		
@@ -70,8 +71,8 @@
 
 1. 增加配置，在应用的 /src/main/resources/application.properties 中添加基本配置信息
 	
-		spring.application.name=nacos-config-example
-		server.port=18084
+        server.port=18084
+        management.endpoints.web.exposure.include=*
 
 		
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
