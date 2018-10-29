@@ -44,15 +44,6 @@ public class NacosConfigEndpointAutoConfiguration {
 	@Autowired
 	private NacosPropertySourceRepository nacosPropertySourceRepository;
 
-	@Autowired
-	private ConfigService configService;
-
-	@Bean
-	@ConditionalOnBean
-	public NacosConfigProperties nacosConfigProperties() {
-		return new NacosConfigProperties();
-	}
-
 	@ConditionalOnMissingBean
 	@Bean
 	public NacosConfigEndpoint nacosConfigEndpoint() {
@@ -64,6 +55,7 @@ public class NacosConfigEndpointAutoConfiguration {
 	public NacosConfigHealthIndicator nacosConfigHealthIndicator(
 			NacosPropertySourceRepository nacosPropertySourceRepository) {
 		return new NacosConfigHealthIndicator(nacosConfigProperties,
-				nacosPropertySourceRepository, configService);
+				nacosPropertySourceRepository,
+				nacosConfigProperties.configServiceInstance());
 	}
 }

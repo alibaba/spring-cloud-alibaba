@@ -16,39 +16,39 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 public class Application {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
 }
 
 @Component
 class SampleRunner implements ApplicationRunner {
 
-    @Value("${user.name}")
-    String userName;
+	@Value("${user.name}")
+	String userName;
 
-    @Value("${user.age}")
-    int userAge;
+	@Value("${user.age}")
+	int userAge;
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        System.out.println(userName);
-        System.out.println(userAge);
-    }
+	@Override
+	public void run(ApplicationArguments args) throws Exception {
+		System.out.println(userName);
+		System.out.println(userAge);
+	}
 }
 
 @RestController
 @RefreshScope
 class SampleController {
 
-    @Value("${user.name}")
-    String userName;
+	@Value("${user.name}")
+	String userName;
 
-    @Value("${user.age}")
-    int age;
+	@Value("${user.age}")
+	int age;
 
-    @RequestMapping("/user")
-    public String simple() {
-        return "Hello Nacos Config!" + "Hello " + userName + " " + age + "!";
-    }
+	@RequestMapping("/user")
+	public String simple() {
+		return "Hello Nacos Config!" + "Hello " + userName + " " + age + "!";
+	}
 }

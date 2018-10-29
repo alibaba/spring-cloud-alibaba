@@ -83,7 +83,6 @@ public class NacosPropertySourceBuilder {
 		String data = null;
 		try {
 			data = configService.getConfig(dataId, group, timeout);
-			// todo add file extension yaml support
 			if (!StringUtils.isEmpty(data)) {
 				logger.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
 						dataId, group));
