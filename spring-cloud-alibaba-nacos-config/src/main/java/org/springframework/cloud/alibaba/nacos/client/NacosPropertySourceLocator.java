@@ -16,12 +16,9 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
@@ -30,11 +27,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.exception.NacosException;
-
-import static com.alibaba.nacos.api.PropertyKeyConst.*;
 
 /**
  * @author xiaojing
@@ -49,46 +42,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final String DOT = ".";
 
 	@Autowired
-	private ConfigurableListableBeanFactory beanFactory;
-
-	@Autowired
 	private NacosConfigProperties nacosConfigProperties;
 
-	private ConfigService configService;
-
 	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
-
-	private Properties getPropertiesFromEnv(Environment env) {
-
-		nacosConfigProperties.overrideFromEnv(env);
-
-		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, nacosConfigProperties.getServerAddr());
-		properties.put(ENCODE, nacosConfigProperties.getEncode());
-		properties.put(NAMESPACE, nacosConfigProperties.getNamespace());
-		properties.put(ACCESS_KEY, nacosConfigProperties.getAccessKey());
-		properties.put(SECRET_KEY, nacosConfigProperties.getSecretKey());
-		properties.put(CONTEXT_PATH, nacosConfigProperties.getContextPath());
-		properties.put(CLUSTER_NAME, nacosConfigProperties.getClusterName());
-		properties.put(ENDPOINT, nacosConfigProperties.getEndpoint());
-		return properties;
-	}
 
 	@Override
 	public PropertySource<?> locate(Environment env) {
 
-		Properties properties = getPropertiesFromEnv(env);
-
-		try {
-			configService = NacosFactory.createConfigService(properties);
-		}
-		catch (NacosException e) {
-			logger.error("create config service error, nacosConfigProperties:{}, ",
-					properties, e);
-			return null;
-		}
-
-		beanFactory.registerSingleton("configService", configService);
+		ConfigService configService = nacosConfigProperties.configServiceInstance();
 
 		if (null == configService) {
 			logger.warn(

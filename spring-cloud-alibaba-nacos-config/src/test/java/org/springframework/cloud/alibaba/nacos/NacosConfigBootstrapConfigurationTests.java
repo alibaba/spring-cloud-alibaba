@@ -68,15 +68,14 @@ public class NacosConfigBootstrapConfigurationTests {
 
 		}
 
-		Field configServiceField = ReflectionUtils
-				.findField(NacosPropertySourceLocator.class, "configService");
-		configServiceField.setAccessible(true);
+		Field nacosConfigPropertiesField = ReflectionUtils
+				.findField(NacosPropertySourceLocator.class, "nacosConfigProperties");
+		nacosConfigPropertiesField.setAccessible(true);
 
-		ConfigService configService = (ConfigService) ReflectionUtils
-				.getField(configServiceField, locator);
+		NacosConfigProperties configService = (NacosConfigProperties) ReflectionUtils
+				.getField(nacosConfigPropertiesField, locator);
 
 		assertThat(configService).isNotNull();
 	}
-
 
 }

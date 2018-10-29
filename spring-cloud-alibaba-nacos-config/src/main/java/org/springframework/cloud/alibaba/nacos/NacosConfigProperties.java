@@ -16,9 +16,26 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import java.util.Properties;
+
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.config.ConfigService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
+
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
  * nacos properties
@@ -29,15 +46,18 @@ import org.springframework.util.StringUtils;
 @ConfigurationProperties("spring.cloud.nacos.config")
 public class NacosConfigProperties {
 
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NacosConfigProperties.class);
+
 	/**
 	 * nacos config server address
 	 */
-	private String serverAddr;
+	private String serverAddr = "";
 
 	/**
 	 * encode for nacos config content.
 	 */
-	private String encode;
+	private String encode = "";
 
 	/**
 	 * nacos config group, group is config data meta info.
@@ -47,7 +67,7 @@ public class NacosConfigProperties {
 	/**
 	 * nacos config dataId prefix
 	 */
-	private String prefix;
+	private String prefix = "";
 	/**
 	 * the suffix of nacos config dataId, also the file extension of config content.
 	 */
@@ -62,32 +82,34 @@ public class NacosConfigProperties {
 	 * endpoint for Nacos, the domain name of a service, through which the server address
 	 * can be dynamically obtained.
 	 */
-	private String endpoint;
+	private String endpoint = "";
 
 	/**
 	 * namespace, separation configuration of different environments.
 	 */
-	private String namespace;
+	private String namespace = "";
 
 	/**
 	 * access key for namespace.
 	 */
-	private String accessKey;
+	private String accessKey = "";
 
 	/**
 	 * secret key for namespace.
 	 */
-	private String secretKey;
+	private String secretKey = "";
 
 	/**
 	 * context path for nacos config server.
 	 */
-	private String contextPath;
+	private String contextPath = "";
 
 	/**
 	 * nacos config cluster name
 	 */
-	private String clusterName;
+	private String clusterName = "";
+
+	private ConfigService configService;
 
 	// todo sts support
 
@@ -235,6 +257,31 @@ public class NacosConfigProperties {
 		if (StringUtils.isEmpty(this.getPrefix())) {
 			this.setPrefix(
 					env.resolvePlaceholders("${spring.cloud.nacos.config.prefix:}"));
+		}
+	}
+
+	public ConfigService configServiceInstance() {
+
+		if (null != configService) {
+			return configService;
+		}
+
+		Properties properties = new Properties();
+		properties.put(SERVER_ADDR, this.serverAddr);
+		properties.put(ENCODE, this.encode);
+		properties.put(NAMESPACE, this.namespace);
+		properties.put(ACCESS_KEY, this.accessKey);
+		properties.put(SECRET_KEY, this.secretKey);
+		properties.put(CONTEXT_PATH, this.contextPath);
+		properties.put(CLUSTER_NAME, this.clusterName);
+		properties.put(ENDPOINT, this.endpoint);
+		try {
+			configService = NacosFactory.createConfigService(properties);
+			return configService;
+		}
+		catch (Exception e) {
+			LOGGER.error("create config service error!properties={},e=,", this, e);
+			return null;
 		}
 	}
 }
