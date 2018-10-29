@@ -81,6 +81,7 @@
         <module>spring-cloud-starter-alibaba</module>
         <module>spring-cloud-starter-alicloud</module>
         <module>spring-cloud-alicloud-oss</module>
+        <module>spring-cloud-alicloud-context</module>
     </modules>
 
     <dependencyManagement>
