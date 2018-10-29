@@ -1,0 +1,34 @@
+{
+  "properties": [
+    {
+      "name": "spring.cloud.alicloud.ans.server.mode",
+      "type": "java.lang.String",
+      "defaultValue": "LOCAL",
+      "description": "Server mode."
+    },
+    {
+      "name": "spring.cloud.alicloud.ans.server.list",
+      "type": "java.lang.String",
+      "defaultValue": "127.0.0.1",
+      "description": "ANS server list."
+    },
+    {
+      "name": "spring.cloud.alicloud.ans.server.port",
+      "type": "java.lang.Integer",
+      "defaultValue": "80",
+      "description": "ANS server port."
+    },
+    {
+      "name": "spring.cloud.alicloud.ans.client.domains",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Service name list, default value is ${spring.application.name}."
+    },
+    {
+      "name": "spring.cloud.alicloud.ans.client.env",
+      "type": "java.lang.String",
+      "defaultValue": "DEFAULT",
+      "description": "The env for ans, default value is DEFAULT."
+    }
+  ]
+}
