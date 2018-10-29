@@ -19,11 +19,47 @@
         <sentinel.version>0.2.0</sentinel.version>
         <oss.version>3.1.0</oss.version>
         <nacos.version>0.3.0-RC1</nacos.version>
+        <acm.version>1.0.8</acm.version>
+        <ans.version>0.1.1</ans.version>
+        <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
+        <alicloud.context.version>1.0.0</alicloud.context.version>
+        <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-
+            <!-- Alibaba -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>alicloud-context</artifactId>
+                <version>${alicloud.context.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-edas</artifactId>
+                <version>${aliyun.sdk.edas.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.aliyun</groupId>
+                        <artifactId>aliyun-java-sdk-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>${aliyun.sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.ans</groupId>
+                <artifactId>ans-sdk</artifactId>
+                <version>${ans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.edas.acm</groupId>
+                <artifactId>acm-sdk</artifactId>
+                <version>${acm.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
@@ -79,7 +115,6 @@
                 <artifactId>sentinel-dubbo-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
 
 
             <!-- Aliyun storage dependencies -->
@@ -140,8 +175,6 @@
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
-
 
 
             <!-- Testing Dependencies -->

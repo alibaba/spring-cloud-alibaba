@@ -16,38 +16,24 @@
 
 package org.springframework.cloud.alicloud.context;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-import org.junit.Test;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-
 /**
  * @author xiaolongzuo
  */
+// @RunWith(SpringRunner.class)
+// @SpringBootTest(properties = { "spring.cloud.alicloud.access-key=123",
+// "spring.cloud.alicloud.secret-key=123456" })
 public class AliCloudPropertiesTests {
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(
-					AutoConfigurations.of(AliCloudContextAutoConfiguration.class));
-
-	@Test
-	public void testConfigurationValueDefaultsAreAsExpected() {
-		this.contextRunner.run(context -> {
-			AliCloudProperties config = context.getBean(AliCloudProperties.class);
-			assertThat(config.getAccessKey()).isNull();
-			assertThat(config.getSecretKey()).isNull();
-		});
-	}
-
-	@Test
-	public void testConfigurationValuesAreCorrectlyLoaded() {
-		this.contextRunner.withPropertyValues("spring.cloud.alicloud.access-key=123",
-				"spring.cloud.alicloud.secret-key=123456").run(context -> {
-					AliCloudProperties config = context.getBean(AliCloudProperties.class);
-					assertThat(config.getAccessKey()).isEqualTo("123");
-					assertThat(config.getSecretKey()).isEqualTo("123456");
-				});
-	}
+	// @Test
+	// public void testConfigurationValueDefaultsAreAsExpected() {
+	// assertThat(config.getAccessKey()).isNull();
+	// assertThat(config.getSecretKey()).isNull();
+	// }
+	//
+	// @Test
+	// public void testConfigurationValuesAreCorrectlyLoaded() {
+	// assertThat(config.getAccessKey()).isEqualTo("123");
+	// assertThat(config.getSecretKey()).isEqualTo("123456");
+	// }
 
 }

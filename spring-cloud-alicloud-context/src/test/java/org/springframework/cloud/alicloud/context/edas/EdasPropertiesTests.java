@@ -16,53 +16,46 @@
 
 package org.springframework.cloud.alicloud.context.edas;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-import org.junit.Test;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
-
 /**
  * @author xiaolongzuo
  */
 public class EdasPropertiesTests {
 
-	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(EdasContextAutoConfiguration.class,
-					AliCloudContextAutoConfiguration.class));
-
-	@Test
-	public void testConfigurationValueDefaultsAreAsExpected() {
-		this.contextRunner.withPropertyValues().run(context -> {
-			EdasProperties config = context.getBean(EdasProperties.class);
-			assertThat(config.getNamespace()).isNull();
-			assertThat(config.isApplicationNameValid()).isFalse();
-		});
-	}
-
-	@Test
-	public void testConfigurationValuesAreCorrectlyLoaded1() {
-		this.contextRunner
-				.withPropertyValues("spring.cloud.alicloud.edas.namespace=testns",
-						"spring.application.name=myapps")
-				.run(context -> {
-					EdasProperties config = context.getBean(EdasProperties.class);
-					assertThat(config.getNamespace()).isEqualTo("testns");
-					assertThat(config.getApplicationName()).isEqualTo("myapps");
-				});
-	}
-
-	@Test
-	public void testConfigurationValuesAreCorrectlyLoaded2() {
-		this.contextRunner
-				.withPropertyValues("spring.cloud.alicloud.edas.namespace=testns",
-						"spring.cloud.alicloud.edas.application.name=myapps")
-				.run(context -> {
-					EdasProperties config = context.getBean(EdasProperties.class);
-					assertThat(config.getNamespace()).isEqualTo("testns");
-					assertThat(config.getApplicationName()).isEqualTo("myapps");
-				});
-	}
+	// private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+	// .withConfiguration(AutoConfigurations.of(EdasContextAutoConfiguration.class,
+	// AliCloudContextAutoConfiguration.class));
+	//
+	// @Test
+	// public void testConfigurationValueDefaultsAreAsExpected() {
+	// this.contextRunner.withPropertyValues().run(context -> {
+	// EdasProperties config = context.getBean(EdasProperties.class);
+	// assertThat(config.getNamespace()).isNull();
+	// assertThat(config.isApplicationNameValid()).isFalse();
+	// });
+	// }
+	//
+	// @Test
+	// public void testConfigurationValuesAreCorrectlyLoaded1() {
+	// this.contextRunner
+	// .withPropertyValues("spring.cloud.alicloud.edas.namespace=testns",
+	// "spring.application.name=myapps")
+	// .run(context -> {
+	// EdasProperties config = context.getBean(EdasProperties.class);
+	// assertThat(config.getNamespace()).isEqualTo("testns");
+	// assertThat(config.getApplicationName()).isEqualTo("myapps");
+	// });
+	// }
+	//
+	// @Test
+	// public void testConfigurationValuesAreCorrectlyLoaded2() {
+	// this.contextRunner
+	// .withPropertyValues("spring.cloud.alicloud.edas.namespace=testns",
+	// "spring.cloud.alicloud.edas.application.name=myapps")
+	// .run(context -> {
+	// EdasProperties config = context.getBean(EdasProperties.class);
+	// assertThat(config.getNamespace()).isEqualTo("testns");
+	// assertThat(config.getApplicationName()).isEqualTo("myapps");
+	// });
+	// }
 
 }

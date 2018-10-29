@@ -16,35 +16,27 @@
 
 package org.springframework.cloud.alicloud.context;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
-
 /**
  * @author xiaolongzuo
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = AliCloudSpringApplicationTests.EurekaClientDisabledApp.class, properties = {
-		"spring.application.name=myapp",
-		"spring.cloud.alicloud.edas.application.name=myapp",
-		"spring.cloud.alicloud.access-key=ak", "spring.cloud.alicloud.secret-key=sk",
-		"spring.cloud.alicloud.oss.endpoint=test" }, webEnvironment = RANDOM_PORT)
-@DirtiesContext
+// @RunWith(SpringRunner.class)
+// @SpringBootTest(classes = AliCloudSpringApplicationTests.AliCloudDisabledApp.class,
+// properties = {
+// "spring.application.name=myapp",
+// "spring.cloud.alicloud.edas.application.name=myapp",
+// "spring.cloud.alicloud.access-key=ak", "spring.cloud.alicloud.secret-key=sk",
+// "spring.cloud.alicloud.oss.endpoint=test" }, webEnvironment = RANDOM_PORT)
+// @DirtiesContext
 public class AliCloudSpringApplicationTests {
 
-	@Test
-	public void contextLoads() {
-		System.out.println("Context load...");
-	}
-
-	@SpringBootApplication
-	public static class EurekaClientDisabledApp {
-
-	}
+	// @Test
+	// public void contextLoads() {
+	// System.out.println("Context load...");
+	// }
+	//
+	// @SpringBootApplication
+	// public static class AliCloudDisabledApp {
+	//
+	// }
 
 }
