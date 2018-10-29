@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.alicloud.context.acm;
 
+import static org.springframework.core.env.AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.alicloud.context.AliCloudProperties;
 import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
 import org.springframework.cloud.alicloud.context.edas.EdasProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.context.acm.AliCloudAcmInitializer;
 
@@ -47,10 +53,32 @@ public class AcmContextBootstrapConfiguration {
 	@Autowired
 	private AliCloudProperties aliCloudProperties;
 
+	@Autowired
+	private Environment environment;
+
 	@PostConstruct
 	public void initAcmProperties() {
 		AliCloudAcmInitializer.initialize(aliCloudProperties, edasProperties,
 				acmProperties);
+	}
+
+	@Bean
+	public AcmIntegrationProperties acmIntegrationProperties() {
+		AcmIntegrationProperties acmIntegrationProperties = new AcmIntegrationProperties();
+		String applicationName = environment.getProperty("spring.application.name");
+		String applicationGroup = environment.getProperty("spring.application.group");
+		String activeProfiles = environment.getProperty(ACTIVE_PROFILES_PROPERTY_NAME);
+		Assert.isTrue(!StringUtils.isEmpty(applicationName),
+				"'spring.application.name' must be configured..");
+		acmIntegrationProperties.setApplicationName(applicationName);
+		acmIntegrationProperties.setApplicationGroup(applicationGroup);
+		if (StringUtils.hasText(activeProfiles)) {
+			acmIntegrationProperties
+					.setActiveProfiles(StringUtils.commaDelimitedListToStringArray(
+							StringUtils.trimAllWhitespace(activeProfiles)));
+		}
+		acmIntegrationProperties.setAcmProperties(acmProperties);
+		return acmIntegrationProperties;
 	}
 
 }
