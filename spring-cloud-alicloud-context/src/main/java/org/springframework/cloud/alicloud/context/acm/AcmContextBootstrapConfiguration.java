@@ -67,16 +67,11 @@ public class AcmContextBootstrapConfiguration {
 		AcmIntegrationProperties acmIntegrationProperties = new AcmIntegrationProperties();
 		String applicationName = environment.getProperty("spring.application.name");
 		String applicationGroup = environment.getProperty("spring.application.group");
-		String activeProfiles = environment.getProperty(ACTIVE_PROFILES_PROPERTY_NAME);
 		Assert.isTrue(!StringUtils.isEmpty(applicationName),
 				"'spring.application.name' must be configured..");
 		acmIntegrationProperties.setApplicationName(applicationName);
 		acmIntegrationProperties.setApplicationGroup(applicationGroup);
-		if (StringUtils.hasText(activeProfiles)) {
-			acmIntegrationProperties
-					.setActiveProfiles(StringUtils.commaDelimitedListToStringArray(
-							StringUtils.trimAllWhitespace(activeProfiles)));
-		}
+		acmIntegrationProperties.setActiveProfiles(environment.getActiveProfiles());
 		acmIntegrationProperties.setAcmProperties(acmProperties);
 		return acmIntegrationProperties;
 	}
