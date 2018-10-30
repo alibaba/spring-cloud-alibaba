@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.alicloud.context.acm;
 
-import static org.springframework.core.env.AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +66,7 @@ public class AcmContextBootstrapConfiguration {
 		String applicationName = environment.getProperty("spring.application.name");
 		String applicationGroup = environment.getProperty("spring.application.group");
 		Assert.isTrue(!StringUtils.isEmpty(applicationName),
-				"'spring.application.name' must be configured..");
+				"'spring.application.name' must be configured in bootstrap.properties or bootstrap.yml/yaml...");
 		acmIntegrationProperties.setApplicationName(applicationName);
 		acmIntegrationProperties.setApplicationGroup(applicationGroup);
 		acmIntegrationProperties.setActiveProfiles(environment.getActiveProfiles());
