@@ -14,6 +14,8 @@
 	<description>Spring Cloud Alibaba Cloud Starters</description>
     <modules>
         <module>spring-cloud-starter-alicloud-oss</module>
+        <module>spring-cloud-starter-alicloud-acm</module>
+        <module>spring-cloud-starter-alicloud-ans</module>
     </modules>
 
 
