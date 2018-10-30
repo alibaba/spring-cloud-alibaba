@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>spring-cloud-alicloud-acm</artifactId>
+    <name>Spring Cloud Alibaba Cloud ACM</name>
 
     <dependencies>
 
