@@ -40,6 +40,7 @@ public class AnsEndpoint extends AbstractEndpoint<Map<String, Object>> {
 
 	public AnsEndpoint(AnsProperties ansProperties) {
 		super("ans", false);
+		this.ansProperties = ansProperties;
 	}
 
 	/**
