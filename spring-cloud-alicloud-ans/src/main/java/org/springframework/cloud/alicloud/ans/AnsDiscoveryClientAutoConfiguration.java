@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alicloud.context.ans;
+package org.springframework.cloud.alicloud.ans;
 
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
-import org.springframework.cloud.commons.util.InetUtils;
-import org.springframework.cloud.commons.util.InetUtilsProperties;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,15 +28,14 @@ import org.springframework.context.annotation.Configuration;
  * @author xiaolongzuo
  */
 @Configuration
-@ConditionalOnClass(name = "org.springframework.cloud.alicloud.ans.AnsAutoConfiguration")
-@EnableConfigurationProperties({ AnsProperties.class })
-@ImportAutoConfiguration(EdasContextAutoConfiguration.class)
-public class AnsContextAutoConfiguration {
+@ConditionalOnMissingBean(DiscoveryClient.class)
+@EnableConfigurationProperties
+@AutoConfigureBefore(SimpleDiscoveryClientAutoConfiguration.class)
+public class AnsDiscoveryClientAutoConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean
-	public InetUtils inetUtils(InetUtilsProperties inetUtilsProperties) {
-		return new InetUtils(inetUtilsProperties);
+	public DiscoveryClient ansDiscoveryClient() {
+		return new AnsDiscoveryClient();
 	}
 
 }
