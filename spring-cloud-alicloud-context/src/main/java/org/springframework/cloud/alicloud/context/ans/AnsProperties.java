@@ -44,20 +44,17 @@ public class AnsProperties implements AnsConfiguration {
 	/**
 	 * 服务端模式，默认为LOCAL
 	 */
-	@Value("${spring.cloud.alicloud.ans.server-mode:LOCAL}")
-	private AliCloudServerMode serverMode;
+	private AliCloudServerMode serverMode = AliCloudServerMode.LOCAL;
 
 	/**
 	 * 服务端列表
 	 */
-	@Value("${spring.cloud.alicloud.ans.server-list:127.0.0.1}")
-	private String serverList;
+	private String serverList = "127.0.0.1";
 
 	/**
 	 * 服务端列表
 	 */
-	@Value("${spring.cloud.alicloud.ans.server-port:8080}")
-	private String serverPort;
+	private String serverPort = "8080";
 
 	/**
 	 * 注册的服务名，默认从 spring.cloud.alicloud.ans.doms 中获取，当没有配置时，使用 spring.application.name
