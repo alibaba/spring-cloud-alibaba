@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.alicloud.context.acm;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.alibaba.cloud.context.AliCloudServerMode;
@@ -31,8 +30,7 @@ import com.alibaba.cloud.context.acm.AcmConfiguration;
 @ConfigurationProperties(prefix = "spring.cloud.alicloud.acm")
 public class AcmProperties implements AcmConfiguration {
 
-	@Value("${spring.cloud.alicloud.acm.server-mode:LOCAL}")
-	private AliCloudServerMode serverMode;
+	private AliCloudServerMode serverMode = AliCloudServerMode.LOCAL;
 
 	private String serverList = "127.0.0.1";
 
@@ -49,7 +47,7 @@ public class AcmProperties implements AcmConfiguration {
 	private int timeout = 3000;
 
 	/**
-	 * the AliYun endpoint2 for ACM
+	 * the AliYun endpoint for ACM
 	 */
 	private String endpoint;
 
