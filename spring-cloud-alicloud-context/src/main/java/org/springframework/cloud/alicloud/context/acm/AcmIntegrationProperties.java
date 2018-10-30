@@ -34,6 +34,10 @@ public class AcmIntegrationProperties {
 
 	private AcmProperties acmProperties;
 
+	public String getApplicationConfigurationDataIdWithoutGroup() {
+		return applicationName + "." + acmProperties.getFileExtension();
+	}
+
 	public List<String> getGroupConfigurationDataIds() {
 		List<String> groupConfigurationDataIds = new ArrayList<>();
 		if (StringUtils.isEmpty(applicationGroup)) {
@@ -88,4 +92,7 @@ public class AcmIntegrationProperties {
 		this.acmProperties = acmProperties;
 	}
 
+	public AcmProperties getAcmProperties() {
+		return acmProperties;
+	}
 }
