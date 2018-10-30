@@ -35,9 +35,9 @@ public class EdasPropertiesTests {
 	@Test
 	public void testConfigurationValueDefaultsAreAsExpected() {
 		this.contextRunner.withPropertyValues().run(context -> {
-			EdasProperties config = context.getBean(EdasProperties.class);
-			assertThat(config.getNamespace()).isNull();
-			assertThat(config.isApplicationNameValid()).isFalse();
+			EdasProperties edasProperties = context.getBean(EdasProperties.class);
+			assertThat(edasProperties.getNamespace()).isNull();
+			assertThat(edasProperties.isApplicationNameValid()).isFalse();
 		});
 	}
 
@@ -47,9 +47,9 @@ public class EdasPropertiesTests {
 				.withPropertyValues("spring.cloud.alicloud.edas.namespace=testns",
 						"spring.application.name=myapps")
 				.run(context -> {
-					EdasProperties config = context.getBean(EdasProperties.class);
-					assertThat(config.getNamespace()).isEqualTo("testns");
-					assertThat(config.getApplicationName()).isEqualTo("myapps");
+					EdasProperties edasProperties = context.getBean(EdasProperties.class);
+					assertThat(edasProperties.getNamespace()).isEqualTo("testns");
+					assertThat(edasProperties.getApplicationName()).isEqualTo("myapps");
 				});
 	}
 
@@ -59,9 +59,9 @@ public class EdasPropertiesTests {
 				.withPropertyValues("spring.cloud.alicloud.edas.namespace=testns",
 						"spring.cloud.alicloud.edas.application.name=myapps")
 				.run(context -> {
-					EdasProperties config = context.getBean(EdasProperties.class);
-					assertThat(config.getNamespace()).isEqualTo("testns");
-					assertThat(config.getApplicationName()).isEqualTo("myapps");
+					EdasProperties edasProperties = context.getBean(EdasProperties.class);
+					assertThat(edasProperties.getNamespace()).isEqualTo("testns");
+					assertThat(edasProperties.getApplicationName()).isEqualTo("myapps");
 				});
 	}
 
