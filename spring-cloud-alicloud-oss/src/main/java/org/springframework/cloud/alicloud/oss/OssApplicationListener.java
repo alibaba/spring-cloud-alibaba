@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.oss;
+package org.springframework.cloud.alicloud.oss;
 
 import java.util.Map;
 
@@ -26,23 +26,24 @@ import org.springframework.context.event.ContextClosedEvent;
 import com.aliyun.oss.OSS;
 
 /**
- * Shutdown All OSS Clients when {@code ApplicationContext} gets closed {@link ApplicationListener}
+ * Shutdown All OSS Clients when {@code ApplicationContext} gets closed
+ * {@link ApplicationListener}
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public class OSSApplicationListener implements ApplicationListener<ContextClosedEvent> {
+public class OssApplicationListener implements ApplicationListener<ContextClosedEvent> {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(OSSApplicationListener.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(OssApplicationListener.class);
 
-    @Override
-    public void onApplicationEvent(ContextClosedEvent event) {
-        Map<String, OSS> ossClientMap = event.getApplicationContext()
-                .getBeansOfType(OSS.class);
-        logger.info("{} OSSClients will be shutdown soon", ossClientMap.size());
-        for(String beanName : ossClientMap.keySet()) {
-            logger.info("shutdown ossClient: {}", beanName);
-            ossClientMap.get(beanName).shutdown();
-        }
-    }
+	@Override
+	public void onApplicationEvent(ContextClosedEvent event) {
+		Map<String, OSS> ossClientMap = event.getApplicationContext()
+				.getBeansOfType(OSS.class);
+		logger.info("{} OSSClients will be shutdown soon", ossClientMap.size());
+		for (String beanName : ossClientMap.keySet()) {
+			logger.info("shutdown ossClient: {}", beanName);
+			ossClientMap.get(beanName).shutdown();
+		}
+	}
 }
