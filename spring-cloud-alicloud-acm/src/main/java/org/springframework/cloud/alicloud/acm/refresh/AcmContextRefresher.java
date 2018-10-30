@@ -16,26 +16,25 @@
 
 package org.springframework.cloud.alicloud.acm.refresh;
 
-import com.alibaba.edas.acm.ConfigService;
-import com.alibaba.edas.acm.listener.ConfigChangeListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.cloud.alicloud.acm.AcmPropertySourceRepository;
-import org.springframework.cloud.alicloud.acm.bootstrap.AcmPropertySource;
-import org.springframework.cloud.alicloud.context.acm.AcmProperties;
-import org.springframework.cloud.context.refresh.ContextRefresher;
-import org.springframework.context.ApplicationListener;
-import org.springframework.core.env.Environment;
-import org.springframework.util.StringUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cloud.alicloud.acm.AcmPropertySourceRepository;
+import org.springframework.cloud.alicloud.acm.bootstrap.AcmPropertySource;
+import org.springframework.cloud.alicloud.context.acm.AcmIntegrationProperties;
+import org.springframework.cloud.context.refresh.ContextRefresher;
+import org.springframework.context.ApplicationListener;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.edas.acm.ConfigService;
+import com.alibaba.edas.acm.listener.ConfigChangeListener;
 
 /**
  * On application start up, AcmContextRefresher add diamond listeners to all application
@@ -50,7 +49,7 @@ public class AcmContextRefresher implements ApplicationListener<ApplicationReady
 
 	private final ContextRefresher contextRefresher;
 
-	private final AcmProperties properties;
+	private final AcmIntegrationProperties acmIntegrationProperties;
 
 	private final AcmRefreshHistory refreshHistory;
 
@@ -58,14 +57,12 @@ public class AcmContextRefresher implements ApplicationListener<ApplicationReady
 
 	private Map<String, ConfigChangeListener> listenerMap = new ConcurrentHashMap<>(16);
 
-	@Autowired
-	private Environment environment;
-
 	public AcmContextRefresher(ContextRefresher contextRefresher,
-			AcmProperties properties, AcmRefreshHistory refreshHistory,
+			AcmIntegrationProperties acmIntegrationProperties,
+			AcmRefreshHistory refreshHistory,
 			AcmPropertySourceRepository acmPropertySourceRepository) {
 		this.contextRefresher = contextRefresher;
-		this.properties = properties;
+		this.acmIntegrationProperties = acmIntegrationProperties;
 		this.refreshHistory = refreshHistory;
 		this.acmPropertySourceRepository = acmPropertySourceRepository;
 	}
@@ -76,7 +73,7 @@ public class AcmContextRefresher implements ApplicationListener<ApplicationReady
 	}
 
 	private void registerDiamondListenersForApplications() {
-		if (properties.isRefreshEnabled()) {
+		if (acmIntegrationProperties.getAcmProperties().isRefreshEnabled()) {
 			for (AcmPropertySource acmPropertySource : acmPropertySourceRepository
 					.getAll()) {
 				if (acmPropertySource.isGroupLevel()) {
@@ -87,17 +84,13 @@ public class AcmContextRefresher implements ApplicationListener<ApplicationReady
 			}
 			if (acmPropertySourceRepository.getAll().isEmpty()) {
 
-				String applicationName = environment
-						.getProperty("spring.application.name");
-				String dataId = applicationName + "." + properties.getFileExtension();
-
-				registerDiamondListener(dataId);
+				registerDiamondListener(acmIntegrationProperties
+						.getApplicationConfigurationDataIdWithoutGroup());
 			}
 		}
 	}
 
 	private void registerDiamondListener(final String dataId) {
-
 		ConfigChangeListener listener = listenerMap.get(dataId);
 		if (listener == null) {
 			listener = new ConfigChangeListener() {
@@ -122,6 +115,9 @@ public class AcmContextRefresher implements ApplicationListener<ApplicationReady
 			};
 			listenerMap.put(dataId, listener);
 		}
+
+		ConfigService.addListener(dataId,
+				acmIntegrationProperties.getAcmProperties().getGroup(), listener);
 	}
 
 }
