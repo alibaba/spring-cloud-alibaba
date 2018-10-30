@@ -19,9 +19,10 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 	
-2. Add Nacos server address configurations to file /src/main/resources/bootstrap.properties
+2. Add Nacos config metadata configurations to file /src/main/resources/bootstrap.properties
 	
-		spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+        spring.application.name=nacos-config-example
+        spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 		  
 3. After completing the above two steps, the application will get the externalized configuration from Nacos Server and put it in the Spring Environment's PropertySources.We use the @Value annotation to inject the corresponding configuration into the userName and age fields of the SampleController, and add @RefreshScope to turn on dynamic refresh .		
 		@RefreshScope
@@ -70,8 +71,8 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 1. Add necessary configurations to file /src/main/resources/application.properties
 	
-		spring.application.name=nacos-config-example
-		server.port=18084
+        server.port=18084
+        management.endpoints.web.exposure.include=*
 
 		
 2. Start the application in IDE or by building a fatjar.
