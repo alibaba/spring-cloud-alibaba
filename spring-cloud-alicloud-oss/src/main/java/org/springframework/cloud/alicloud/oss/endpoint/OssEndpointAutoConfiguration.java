@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.oss.endpoint;
+package org.springframework.cloud.alicloud.oss.endpoint;
 
 import org.springframework.boot.actuate.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.alibaba.oss.OSSProperties;
+import org.springframework.cloud.alicloud.context.oss.OssProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,14 +31,14 @@ import org.springframework.context.annotation.Configuration;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConditionalOnClass(Endpoint.class)
-@EnableConfigurationProperties({ OSSProperties.class })
-public class OSSEndpointAutoConfiguration {
+@EnableConfigurationProperties({ OssProperties.class })
+public class OssEndpointAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnEnabledEndpoint("oss")
-    public OSSEndpoint sentinelEndPoint() {
-        return new OSSEndpoint();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnEnabledEndpoint("oss")
+	public OssEndpoint sentinelEndPoint() {
+		return new OssEndpoint();
+	}
 
 }

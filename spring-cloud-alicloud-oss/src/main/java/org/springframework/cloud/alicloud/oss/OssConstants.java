@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.oss;
+package org.springframework.cloud.alicloud.oss;
 
 /**
  * OSS constants
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public interface OSSConstants {
+public interface OssConstants {
 
     String PREFIX = "spring.cloud.alibaba.oss";
     String ENABLED = PREFIX + ".enabled";
