@@ -34,9 +34,10 @@ public class AliCloudPropertiesTests {
 	@Test
 	public void testConfigurationValueDefaultsAreAsExpected() {
 		this.contextRunner.run(context -> {
-			AliCloudProperties config = context.getBean(AliCloudProperties.class);
-			assertThat(config.getAccessKey()).isNull();
-			assertThat(config.getSecretKey()).isNull();
+			AliCloudProperties aliCloudProperties = context
+					.getBean(AliCloudProperties.class);
+			assertThat(aliCloudProperties.getAccessKey()).isNull();
+			assertThat(aliCloudProperties.getSecretKey()).isNull();
 		});
 	}
 
@@ -44,9 +45,10 @@ public class AliCloudPropertiesTests {
 	public void testConfigurationValuesAreCorrectlyLoaded() {
 		this.contextRunner.withPropertyValues("spring.cloud.alicloud.access-key=123",
 				"spring.cloud.alicloud.secret-key=123456").run(context -> {
-					AliCloudProperties config = context.getBean(AliCloudProperties.class);
-					assertThat(config.getAccessKey()).isEqualTo("123");
-					assertThat(config.getSecretKey()).isEqualTo("123456");
+					AliCloudProperties aliCloudProperties = context
+							.getBean(AliCloudProperties.class);
+					assertThat(aliCloudProperties.getAccessKey()).isEqualTo("123");
+					assertThat(aliCloudProperties.getSecretKey()).isEqualTo("123456");
 				});
 	}
 
