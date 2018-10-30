@@ -6,7 +6,7 @@
     <parent>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>1.3.10.RELEASE</version>
+        <version>1.3.11.RELEASE</version>
         <relativePath/>
     </parent>
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
@@ -117,7 +117,7 @@
             </dependency>
 
 
-            <!-- Aliyun storage dependencies -->
+            <!-- Aliyun OSS dependencies -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
@@ -125,7 +125,7 @@
             </dependency>
 
 
-            <!-- Own dependencies autoconfigure -->
+            <!-- Own dependencies  -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-sentinel</artifactId>
