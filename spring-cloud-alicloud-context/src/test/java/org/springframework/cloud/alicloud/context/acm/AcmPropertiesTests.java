@@ -29,7 +29,7 @@ import com.alibaba.cloud.context.AliCloudServerMode;
 /**
  * @author xiaolongzuo
  */
-public class AnsPropertiesTests {
+public class AcmPropertiesTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(
@@ -67,14 +67,15 @@ public class AnsPropertiesTests {
 				"spring.cloud.alicloud.acm.endpoint=testDomain",
 				"spring.cloud.alicloud.acm.group=testGroup",
 				"spring.cloud.alicloud.acm.file-extension=yaml").run(context -> {
-					AcmProperties config = context.getBean(AcmProperties.class);
-					assertThat(config.getServerMode()).isEqualTo(AliCloudServerMode.EDAS);
-					assertThat(config.getServerList()).isEqualTo("10.10.10.10");
-					assertThat(config.getServerPort()).isEqualTo("11111");
-					assertThat(config.getEndpoint()).isEqualTo("testDomain");
-					assertThat(config.getGroup()).isEqualTo("testGroup");
-					assertThat(config.getFileExtension()).isEqualTo("yaml");
-					assertThat(config.getNamespace()).isEqualTo("testNamespace");
+					AcmProperties acmProperties = context.getBean(AcmProperties.class);
+					assertThat(acmProperties.getServerMode())
+							.isEqualTo(AliCloudServerMode.EDAS);
+					assertThat(acmProperties.getServerList()).isEqualTo("10.10.10.10");
+					assertThat(acmProperties.getServerPort()).isEqualTo("11111");
+					assertThat(acmProperties.getEndpoint()).isEqualTo("testDomain");
+					assertThat(acmProperties.getGroup()).isEqualTo("testGroup");
+					assertThat(acmProperties.getFileExtension()).isEqualTo("yaml");
+					assertThat(acmProperties.getNamespace()).isEqualTo("testNamespace");
 				});
 	}
 
@@ -97,10 +98,6 @@ public class AnsPropertiesTests {
 							.size()).isEqualTo(2);
 					assertThat(acmIntegrationProperties
 							.getApplicationConfigurationDataIds().size()).isEqualTo(2);
-					System.out.println("-----"
-							+ acmIntegrationProperties.getGroupConfigurationDataIds());
-					System.out.println(acmIntegrationProperties
-							.getApplicationConfigurationDataIds());
 				});
 	}
 

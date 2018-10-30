@@ -40,26 +40,26 @@ public class AnsPropertiesTests {
 	public void testConfigurationValueDefaultsAreAsExpected()
 			throws ClassNotFoundException {
 		this.contextRunner.withPropertyValues().run(context -> {
-			AnsProperties config = context.getBean(AnsProperties.class);
-			assertThat(config.getServerMode()).isEqualTo(AliCloudServerMode.LOCAL);
-			assertThat(config.getServerList()).isEqualTo("127.0.0.1");
-			assertThat(config.getServerPort()).isEqualTo("8080");
-			assertThat(config.getClientDomains()).isEqualTo("");
-			assertThat(config.getClientWeight()).isEqualTo(1.0F);
-			assertThat(config.getClientWeights().size()).isEqualTo(0);
-			assertThat(config.getClientTokens().size()).isEqualTo(0);
-			assertThat(config.getClientMetadata().size()).isEqualTo(0);
-			assertThat(config.getClientToken()).isNull();
-			assertThat(config.getClientCluster()).isEqualTo("DEFAULT");
-			assertThat(config.isRegisterEnabled()).isTrue();
-			assertThat(config.getClientInterfaceName()).isNull();
-			assertThat(config.getClientPort()).isEqualTo(-1);
-			assertThat(config.getEnv()).isEqualTo("DEFAULT");
-			assertThat(config.isSecure()).isFalse();
-			assertThat(config.getTags().size()).isEqualTo(1);
-			assertThat(config.getTags().keySet().iterator().next())
+			AnsProperties ansProperties = context.getBean(AnsProperties.class);
+			assertThat(ansProperties.getServerMode()).isEqualTo(AliCloudServerMode.LOCAL);
+			assertThat(ansProperties.getServerList()).isEqualTo("127.0.0.1");
+			assertThat(ansProperties.getServerPort()).isEqualTo("8080");
+			assertThat(ansProperties.getClientDomains()).isEqualTo("");
+			assertThat(ansProperties.getClientWeight()).isEqualTo(1.0F);
+			assertThat(ansProperties.getClientWeights().size()).isEqualTo(0);
+			assertThat(ansProperties.getClientTokens().size()).isEqualTo(0);
+			assertThat(ansProperties.getClientMetadata().size()).isEqualTo(0);
+			assertThat(ansProperties.getClientToken()).isNull();
+			assertThat(ansProperties.getClientCluster()).isEqualTo("DEFAULT");
+			assertThat(ansProperties.isRegisterEnabled()).isTrue();
+			assertThat(ansProperties.getClientInterfaceName()).isNull();
+			assertThat(ansProperties.getClientPort()).isEqualTo(-1);
+			assertThat(ansProperties.getEnv()).isEqualTo("DEFAULT");
+			assertThat(ansProperties.isSecure()).isFalse();
+			assertThat(ansProperties.getTags().size()).isEqualTo(1);
+			assertThat(ansProperties.getTags().keySet().iterator().next())
 					.isEqualTo("ANS_SERVICE_TYPE");
-			assertThat(config.getTags().get("ANS_SERVICE_TYPE"))
+			assertThat(ansProperties.getTags().get("ANS_SERVICE_TYPE"))
 					.isEqualTo("SPRING_CLOUD");
 		});
 	}
@@ -74,26 +74,27 @@ public class AnsPropertiesTests {
 						"spring.cloud.alicloud.ans.client-weight=0.9",
 						"spring.cloud.alicloud.ans.client-weights.testDomain=0.9")
 				.run(context -> {
-					AnsProperties config = context.getBean(AnsProperties.class);
-					assertThat(config.getServerMode()).isEqualTo(AliCloudServerMode.EDAS);
-					assertThat(config.getServerList()).isEqualTo("10.10.10.10");
-					assertThat(config.getServerPort()).isEqualTo("11111");
-					assertThat(config.getClientDomains()).isEqualTo("testDomain");
-					assertThat(config.getClientWeight()).isEqualTo(0.9F);
-					assertThat(config.getClientWeights().size()).isEqualTo(1);
-					assertThat(config.getClientTokens().size()).isEqualTo(0);
-					assertThat(config.getClientMetadata().size()).isEqualTo(0);
-					assertThat(config.getClientToken()).isNull();
-					assertThat(config.getClientCluster()).isEqualTo("DEFAULT");
-					assertThat(config.isRegisterEnabled()).isTrue();
-					assertThat(config.getClientInterfaceName()).isNull();
-					assertThat(config.getClientPort()).isEqualTo(-1);
-					assertThat(config.getEnv()).isEqualTo("DEFAULT");
-					assertThat(config.isSecure()).isFalse();
-					assertThat(config.getTags().size()).isEqualTo(1);
-					assertThat(config.getTags().keySet().iterator().next())
+					AnsProperties ansProperties = context.getBean(AnsProperties.class);
+					assertThat(ansProperties.getServerMode())
+							.isEqualTo(AliCloudServerMode.EDAS);
+					assertThat(ansProperties.getServerList()).isEqualTo("10.10.10.10");
+					assertThat(ansProperties.getServerPort()).isEqualTo("11111");
+					assertThat(ansProperties.getClientDomains()).isEqualTo("testDomain");
+					assertThat(ansProperties.getClientWeight()).isEqualTo(0.9F);
+					assertThat(ansProperties.getClientWeights().size()).isEqualTo(1);
+					assertThat(ansProperties.getClientTokens().size()).isEqualTo(0);
+					assertThat(ansProperties.getClientMetadata().size()).isEqualTo(0);
+					assertThat(ansProperties.getClientToken()).isNull();
+					assertThat(ansProperties.getClientCluster()).isEqualTo("DEFAULT");
+					assertThat(ansProperties.isRegisterEnabled()).isTrue();
+					assertThat(ansProperties.getClientInterfaceName()).isNull();
+					assertThat(ansProperties.getClientPort()).isEqualTo(-1);
+					assertThat(ansProperties.getEnv()).isEqualTo("DEFAULT");
+					assertThat(ansProperties.isSecure()).isFalse();
+					assertThat(ansProperties.getTags().size()).isEqualTo(1);
+					assertThat(ansProperties.getTags().keySet().iterator().next())
 							.isEqualTo("ANS_SERVICE_TYPE");
-					assertThat(config.getTags().get("ANS_SERVICE_TYPE"))
+					assertThat(ansProperties.getTags().get("ANS_SERVICE_TYPE"))
 							.isEqualTo("SPRING_CLOUD");
 				});
 	}
