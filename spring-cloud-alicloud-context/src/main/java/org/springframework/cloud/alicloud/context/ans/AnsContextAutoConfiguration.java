@@ -37,6 +37,12 @@ public class AnsContextAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
+	public InetUtilsProperties inetUtilsProperties() {
+		return new InetUtilsProperties();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
 	public InetUtils inetUtils(InetUtilsProperties inetUtilsProperties) {
 		return new InetUtils(inetUtilsProperties);
 	}
