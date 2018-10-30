@@ -31,9 +31,15 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnClass(name = "org.springframework.cloud.alicloud.ans.AnsAutoConfiguration")
-@EnableConfigurationProperties({ AnsProperties.class, InetUtilsProperties.class })
+@EnableConfigurationProperties({ AnsProperties.class })
 @ImportAutoConfiguration(EdasContextAutoConfiguration.class)
 public class AnsContextAutoConfiguration {
+
+	@Bean
+	@ConditionalOnMissingBean
+	public InetUtilsProperties inetUtilsProperties() {
+		return new InetUtilsProperties();
+	}
 
 	@Bean
 	@ConditionalOnMissingBean
