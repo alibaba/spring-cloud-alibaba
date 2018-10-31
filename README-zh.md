@@ -32,7 +32,7 @@ Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解�
 
 Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目clone到本地，然后执行以下命令：
 
-	./mvnw install
+	./mvn install
 
 执行完毕后，项目将被安装到本地 Maven 仓库。
 
