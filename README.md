@@ -34,7 +34,7 @@ For more features please refer to [Roadmap](https://github.com/spring-cloud-incu
 
 Spring Cloud uses Maven for most build-related activities, and you should be able to get off the ground quite quickly by cloning the project you are interested in and typing:
 
-	./mvnw install
+	./mvn install
 
 
 ## How to use
