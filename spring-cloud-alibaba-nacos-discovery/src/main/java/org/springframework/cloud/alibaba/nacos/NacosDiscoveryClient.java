@@ -25,12 +25,12 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 
 import java.util.*;
 
-import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 
 /**
  * @author xiaojing
+ * @author renhaojun
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
@@ -108,9 +108,5 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 			LOGGER.error("get service name from nacos server fail,", e);
 			return Collections.emptyList();
 		}
-	}
-
-	public NamingService getNamingService() {
-		return discoveryProperties.namingServiceInstance();
 	}
 }
