@@ -8,13 +8,13 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.0.0.RELEASE</version>
+        <version>2.0.4.RELEASE</version>
         <relativePath/>
     </parent>
 
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
 
@@ -28,12 +28,12 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud</url>
+        <url>https://github.com/spring-cloud-incubator/spring-cloud-alibaba</url>
         <connection>
-            scm:git:git://github.com/spring-cloud-incubator/spring-cloud-alibabacloud.git
+            scm:git:git://github.com/spring-cloud-incubator/spring-cloud-alibaba.git
         </connection>
         <developerConnection>
-            scm:git:ssh://git@github.com/spring-cloud-incubator/spring-cloud-alibabacloud.git
+            scm:git:ssh://git@github.com/spring-cloud-incubator/spring-cloud-alibaba.git
         </developerConnection>
         <tag>HEAD</tag>
     </scm>
@@ -48,6 +48,10 @@
             <email>fangjian0423@gmail.com</email>
         </developer>
         <developer>
+            <name>xiaolongzuo</name>
+            <email>150349407@qq.com</email>
+        </developer>
+        <developer>
             <name>hengyunabc</name>
             <email>hengyunabc@gmail.com</email>
         </developer>
@@ -55,9 +59,9 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.0.0.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.0.0.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.0.0.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-commons.version>2.0.2.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.0.2.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.0.2.RELEASE</spring-cloud-openfeign.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -74,7 +78,7 @@
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
         <module>spring-cloud-alibaba-sentinel</module>
-
+        <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-examples</module>
@@ -82,6 +86,9 @@
         <module>spring-cloud-starter-alibaba</module>
         <module>spring-cloud-starter-alicloud</module>
         <module>spring-cloud-alicloud-oss</module>
+        <module>spring-cloud-alicloud-context</module>
+        <module>spring-cloud-alicloud-acm</module>
+        <module>spring-cloud-alicloud-ans</module>
     </modules>
 
     <dependencyManagement>
@@ -154,4 +161,69 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>spring</id>
+            <repositories>
+                <repository>
+                    <id>spring-snapshots</id>
+                    <name>Spring Snapshots</name>
+                    <url>https://repo.spring.io/libs-snapshot-local</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                </repository>
+                <repository>
+                    <id>spring-milestones</id>
+                    <name>Spring Milestones</name>
+                    <url>https://repo.spring.io/libs-milestone-local</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>spring-releases</id>
+                    <name>Spring Releases</name>
+                    <url>https://repo.spring.io/release</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>spring-snapshots</id>
+                    <name>Spring Snapshots</name>
+                    <url>https://repo.spring.io/libs-snapshot-local</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>spring-milestones</id>
+                    <name>Spring Milestones</name>
+                    <url>https://repo.spring.io/libs-milestone-local</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>spring-releases</id>
+                    <name>Spring Releases</name>
+                    <url>https://repo.spring.io/libs-release-local</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
 </project>

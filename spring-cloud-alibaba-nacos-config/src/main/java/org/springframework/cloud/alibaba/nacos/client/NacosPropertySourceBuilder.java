@@ -83,7 +83,6 @@ public class NacosPropertySourceBuilder {
 		String data = null;
 		try {
 			data = configService.getConfig(dataId, group, timeout);
-			// todo add content type yaml support
 			if (!StringUtils.isEmpty(data)) {
 				logger.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
 						dataId, group));
@@ -95,7 +94,7 @@ public class NacosPropertySourceBuilder {
 					return properties;
 				}
 				else if (fileExtension.equalsIgnoreCase("yaml")
-					|| fileExtension.equalsIgnoreCase("yml")) {
+						|| fileExtension.equalsIgnoreCase("yml")) {
 					YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
 					yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
 					return yamlFactory.getObject();

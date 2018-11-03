@@ -16,9 +16,30 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Properties;
+
+import javax.annotation.PostConstruct;
+
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.config.ConfigService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
-import org.springframework.util.StringUtils;
+
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
  * nacos properties
@@ -28,6 +49,9 @@ import org.springframework.util.StringUtils;
  */
 @ConfigurationProperties("spring.cloud.nacos.config")
 public class NacosConfigProperties {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NacosConfigProperties.class);
 
 	/**
 	 * nacos config server address
@@ -88,6 +112,21 @@ public class NacosConfigProperties {
 	 * nacos config cluster name
 	 */
 	private String clusterName;
+
+	@Value("${spring.application.name}")
+	private String name;
+
+	private String[] activeProfiles;
+
+	private ConfigService configService;
+
+	@Autowired
+	private Environment environment;
+
+	@PostConstruct
+	public void init() {
+		this.activeProfiles = environment.getActiveProfiles();
+	}
 
 	// todo sts support
 
@@ -187,6 +226,14 @@ public class NacosConfigProperties {
 		this.clusterName = clusterName;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public String[] getActiveProfiles() {
+		return activeProfiles;
+	}
+
 	@Override
 	public String toString() {
 		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
@@ -195,46 +242,32 @@ public class NacosConfigProperties {
 				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
 				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
 				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
-				+ '\'' + ", clusterName='" + clusterName + '\'' + '}';
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ ", activeProfiles=" + Arrays.toString(activeProfiles) + '}';
 	}
 
-	public void overrideFromEnv(Environment env) {
+	public ConfigService configServiceInstance() {
 
-		if (StringUtils.isEmpty(this.getServerAddr())) {
-			this.setServerAddr(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}"));
+		if (null != configService) {
+			return configService;
 		}
-		if (StringUtils.isEmpty(this.getEncode())) {
-			this.setEncode(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.encode:}"));
+
+		Properties properties = new Properties();
+		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
+		properties.put(ENCODE, Objects.toString(this.encode, ""));
+		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
+		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
+		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
+		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
+		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
+		properties.put(ENDPOINT, Objects.toString(this.endpoint, ""));
+		try {
+			configService = NacosFactory.createConfigService(properties);
+			return configService;
 		}
-		if (StringUtils.isEmpty(this.getNamespace())) {
-			this.setNamespace(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.namespace:}"));
-		}
-		if (StringUtils.isEmpty(this.getAccessKey())) {
-			this.setAccessKey(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.access-key:}"));
-		}
-		if (StringUtils.isEmpty(this.getSecretKey())) {
-			this.setSecretKey(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.secret-key:}"));
-		}
-		if (StringUtils.isEmpty(this.getContextPath())) {
-			this.setContextPath(env
-					.resolvePlaceholders("${spring.cloud.nacos.config.context-path:}"));
-		}
-		if (StringUtils.isEmpty(this.getClusterName())) {
-			this.setClusterName(env
-					.resolvePlaceholders("${spring.cloud.nacos.config.cluster-name:}"));
-		}
-		if (StringUtils.isEmpty(this.getEndpoint())) {
-			this.setEndpoint(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.endpoint:}"));
-		}
-		if (StringUtils.isEmpty(this.getPrefix())) {
-			this.setPrefix(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.prefix:}"));
+		catch (Exception e) {
+			LOGGER.error("create config service error!properties={},e=,", this, e);
+			return null;
 		}
 	}
 }

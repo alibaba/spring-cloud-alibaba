@@ -1,6 +1,3 @@
 {
-  "name": "spring-cloud-alibaba",
-  "github": "https://github.com/spring-cloud-incubator/spring-cloud-alibaba",
-  "authors": ["Jim", "flystar32"],
-  "emails": ["fangjian0423@gmail.com", "flystar32@163.com"]
+  "name": "chenzhu-test"
 }
