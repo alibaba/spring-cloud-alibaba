@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1.BUILD-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,6 +14,11 @@
     <name>Spring Cloud Alibaba Cloud OSS Autoconfigure</name>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-alicloud-context</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.aliyun.oss</groupId>

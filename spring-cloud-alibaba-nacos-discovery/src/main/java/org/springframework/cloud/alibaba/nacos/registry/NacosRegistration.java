@@ -48,15 +48,10 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	@Autowired
 	private ApplicationContext context;
 
-	private NamingService nacosNamingService;
-
 	@PostConstruct
 	public void init() {
 
 		Environment env = context.getEnvironment();
-		nacosDiscoveryProperties.overrideFromEnv(context.getEnvironment());
-		nacosNamingService = nacosDiscoveryProperties.getNamingService();
-
 		Integer managementPort = ManagementServerPortUtils.getPort(context);
 		if (null != managementPort) {
 			Map<String, String> metadata = nacosDiscoveryProperties.getMetadata();
@@ -123,11 +118,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	}
 
 	public NamingService getNacosNamingService() {
-		return nacosNamingService;
-	}
-
-	public void setNacosNamingService(NamingService nacosNamingService) {
-		this.nacosNamingService = nacosNamingService;
+		return nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 	public void setNacosDiscoveryProperties(
@@ -138,7 +129,6 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	@Override
 	public String toString() {
 		return "NacosRegistration{" + "nacosDiscoveryProperties="
-				+ nacosDiscoveryProperties + ", nacosNamingService=" + nacosNamingService
-				+ '}';
+				+ nacosDiscoveryProperties + '}';
 	}
 }

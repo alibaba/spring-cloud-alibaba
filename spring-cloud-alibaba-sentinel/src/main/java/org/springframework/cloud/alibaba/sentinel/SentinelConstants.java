@@ -23,11 +23,4 @@ public interface SentinelConstants {
 
     String PROPERTY_PREFIX = "spring.cloud.sentinel";
 
-    String PROPERTY_ITEM_SEPARATOR = ".";
-
-    String PROPERTY_DATASOURCE_NAME = "datasource";
-
-    String PROPERTY_DATASOURCE_PREFIX = PROPERTY_PREFIX + PROPERTY_ITEM_SEPARATOR
-            + PROPERTY_DATASOURCE_NAME;
-
 }
