@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySourceLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,7 @@ public class NacosConfigBootstrapConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public NacosConfigProperties nacosConfigProperties() {
 		return new NacosConfigProperties();
 	}

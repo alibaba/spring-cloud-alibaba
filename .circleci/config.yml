@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: springcloud/pipeline-base
+        user: appuser
+    environment:
+      _JAVA_OPTIONS: "-Xms1024m -Xmx2048m"
+      TERM: dumb
+    branches:
+      ignore:
+        - gh-pages # list of branches to ignore
+    resource_class: large
+    steps:
+      - checkout
+      - restore_cache:
+          key: sc-alibaba-{{ .Branch }}
+      - run:
+          name: "Download dependencies"
+          command: ./mvnw -Pspring -U --fail-never dependency:go-offline || true
+      - save_cache:
+          key: sc-alibaba-{{ .Branch }}
+          paths:
+            - ~/.m2
+      - run:
+          name: "Running build"
+          command: ./mvnw -Pspring clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      - run:
+          name: "Aggregate test results"
+          when: always
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/target/.*-reports/.*" -exec cp {} ~/junit/ \;
+            bash <(curl -s https://codecov.io/bash)
+      - store_artifacts:
+          path: ~/junit/
+          destination: artifacts
+      - store_test_results:
+          path: ~/junit/
+          destination: testartifacts

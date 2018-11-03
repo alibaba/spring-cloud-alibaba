@@ -28,4 +28,5 @@ hs_err_pid*
 .project
 .settings
 target
+.DS_Store
 
