@@ -19,9 +19,7 @@ package org.springframework.cloud.alibaba.nacos.ribbon;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.AbstractServerList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.alibaba.nacos.NacosDiscoveryClient;
-import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +28,12 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 
 /**
  * @author xiaojing
+ * @author renhaojun
  */
 public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	@Autowired
-	private NacosDiscoveryClient discoveryClient;
+	private NacosDiscoveryProperties discoveryProperties;
 
 	private String serviceId;
 
@@ -57,7 +56,7 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	private List<NacosServer> getServers() {
 		try {
-			List<Instance> instances = discoveryClient.getNamingService()
+			List<Instance> instances = discoveryProperties.namingServiceInstance()
 					.getAllInstances(serviceId);
 			return instancesToServerList(instances);
 		}
