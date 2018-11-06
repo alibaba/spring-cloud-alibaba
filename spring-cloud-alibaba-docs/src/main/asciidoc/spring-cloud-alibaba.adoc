@@ -1,0 +1,31 @@
+[[spring-cloud-alibaba-reference]]
+= Spring Cloud Alibaba Reference Documentation
+xiaojing; xiaolongzuo; jim fang; bingting peng
+:doctype: book
+:toc:
+:toclevels: 4
+:source-highlighter: prettify
+:numbered:
+
+== Introduction
+
+Spring Cloud Alibaba provides a one-stop solution for distributed application development. It contains all the components required to develop distributed applications, making it easy for you to develop your applications using Spring Cloud.
+
+With Spring Cloud Alibaba, you only need to add some annotations and a small amount of configurations to connect Spring Cloud applications to the distributed solutions of Alibaba, and build a distributed application system with Alibaba middleware.
+
+include::dependency-management.adoc[]
+
+include::nacos-discovery.adoc[]
+
+include::nacos-config.adoc[]
+
+include::sentinel.adoc[]
+
+include::rocketmq.adoc[]
+
+include::ans.adoc[]
+
+include::acm.adoc[]
+
+include::oss.adoc[]
+
