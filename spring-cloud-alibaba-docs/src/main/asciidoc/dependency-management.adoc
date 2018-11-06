@@ -1,0 +1,4 @@
+== Dependency Management
+
+The Spring Cloud Alibaba Bill of Materials (BOM) contains the versions of all the dependencies it uses.
+
