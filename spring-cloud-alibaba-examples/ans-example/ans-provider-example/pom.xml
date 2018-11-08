@@ -6,6 +6,7 @@
         <artifactId>spring-cloud-alibaba-examples</artifactId>
         <groupId>org.springframework.cloud</groupId>
         <version>0.2.1.BUILD-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ans-provider-example</artifactId>
