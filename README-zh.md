@@ -1,6 +1,6 @@
 # Spring Cloud Alibaba
 
-Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解决方案。此项目包含开发分布式应用服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+Spring Cloud Alibaba 致力于提供基于微服务架构开发分布式应用的一站式解决方案。此项目包含开发分布式应用服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
 
 依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里分布式应用解决方案，通过阿里中间件来迅速搭建分布式应用系统。
 
@@ -93,6 +93,10 @@ Example 列表：
 [Nacos Discovery Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md)
 
 [AliCloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme-zh.md)
+
+[AliCloud ANS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/ans-example/ans-provider-example/readme-zh.md)
+
+[AliCloud ACM Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/acm-example/acm-local-example/readme-zh.md)
 
 ## 版本管理规范
 项目的版本号格式为 x.x.x 的形式，其中 x 的数值类型为数字，从0开始取值，且不限于 0~9 这个范围。项目处于孵化器阶段时，第一位版本号固定使用0，即版本号为 0.x.x 的格式。
