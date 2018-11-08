@@ -4,6 +4,7 @@ import org.apache.rocketmq.client.consumer.MQPushConsumer;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 /**
  * @author Timur Valiev
@@ -22,6 +23,11 @@ public class RocketMQConsumerProperties {
      * {@link MessageSelector#bySql(String)}
      */
     private String sql;
+
+    /**
+     * {@link MessageModel#BROADCASTING}
+     */
+    private Boolean broadcasting = false;
 
     /**
      * if orderly is true, using {@link MessageListenerOrderly}
@@ -63,4 +69,11 @@ public class RocketMQConsumerProperties {
         this.enabled = enabled;
     }
 
+    public Boolean getBroadcasting() {
+        return broadcasting;
+    }
+
+    public void setBroadcasting(Boolean broadcasting) {
+        this.broadcasting = broadcasting;
+    }
 }

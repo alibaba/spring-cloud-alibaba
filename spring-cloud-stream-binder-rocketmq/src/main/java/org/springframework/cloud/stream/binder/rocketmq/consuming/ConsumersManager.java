@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -52,7 +53,10 @@ public class ConsumersManager {
         started.put(group, false);
         consumer.setConsumeThreadMax(consumerProperties.getConcurrency());
         consumer.setConsumeThreadMin(consumerProperties.getConcurrency());
-        logger.info("Rocket consuming for SCS group {} created", group);
+        if (consumerProperties.getExtension().getBroadcasting()) {
+            consumer.setMessageModel(MessageModel.BROADCASTING);
+        }
+        logger.info("RocketMQ consuming for SCS group {} created", group);
         return consumer;
     }
 
@@ -90,7 +94,7 @@ public class ConsumersManager {
             groupInstrumentation.markStartedSuccessfully();
         } catch (MQClientException e) {
             groupInstrumentation.markStartFailed(e);
-            logger.error("Rocket Consumer hasn't been started. Caused by " + e.getErrorMessage(), e);
+            logger.error("RocketMQ Consumer hasn't been started. Caused by " + e.getErrorMessage(), e);
             throw e;
         }
     }
