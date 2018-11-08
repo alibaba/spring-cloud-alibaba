@@ -11,7 +11,7 @@ If your applications are Spring Cloud applications and you need to use Alibaba C
 ### Connect to OSS
 
 Before we start the demo, let's learn how to connect OSS to a Spring Cloud application.
-**Note: This section is to show you how to connect to oss. The actual configurations have been completed in the following example, and you only need to specify your accessKeyId, secretAccessKey and region.**
+**Note: This section is to show you how to connect to oss. The actual configurations have been completed in the following example, and you only need to specify your accessKey, secretKey and endpoint.**
 
 1. Add dependency spring-cloud-starter-alicloud-oss in the pom.xml file in your Spring Cloud project.
 
@@ -23,21 +23,21 @@ Before we start the demo, let's learn how to connect OSS to a Spring Cloud appli
 2. Configure accessKeyId, secretAccessKey and region in application.properties.
 
 		// application.properties
-		spring.cloud.alibaba.oss.accessKeyId=your-ak
-		spring.cloud.alibaba.oss.secretAccessKey=your-sk
-		spring.cloud.alibaba.oss.region=cn-beijing
+		spring.cloud.alicloud.access-key=your-ak
+		spring.cloud.alicloud.secret-key=your-sk
+		spring.cloud.alicloud.oss.endpoint=***
 		  
-    To get accessKeyId, secretAccessKey, follow these steps:
+    To get accessKey, secretKey, follow these steps:
 
     1. On the Alibaba Cloud console, click your avatar on the upper-right corner and click accesskeys. Or visit [User Management](https://usercenter.console.aliyun.com/) page directly：
 		  
        ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535464041257-5c7ae997-daff-45b3-89d4-02d578da4ac7.png) 
 
-    2. Get your accessKeyId、secretAccessKey：
+    2. Get your accessKey、secretKey：
 
        ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535464098793-517491f6-156b-4a98-a5a4-6113cb3c01a4.png) 
 	
-	 **Note:** If you are using [STS](https://www.alibabacloud.com/help/doc-detail/28756.html), you should configure securityToken in addition to accessKeyId, secretAccessKey, and region.
+	 **Note:** If you are using [STS](https://www.alibabacloud.com/help/doc-detail/28756.html), you should configure securityToken in addition to accessKey, secretKey, and endpoint.
 	 
 3. Inject OSSClient and use it to upload files to the OSS server and download a file from OSS server.
 
@@ -60,9 +60,9 @@ Before we start the demo, let's learn how to connect OSS to a Spring Cloud appli
 	
 		spring.application.name=oss-example
 		server.port=18084
-		spring.cloud.alibaba.oss.accessKeyId=your-ak
-		spring.cloud.alibaba.oss.secretAccessKey=your-sk
-		spring.cloud.alibaba.oss.region=cn-beijing
+		spring.cloud.alicloud.access-key=your-ak
+		spring.cloud.alicloud.secret-key=your-sk
+		spring.cloud.alicloud.oss.endpoint=***
 		
 2. Start the application in IDE or by building a fatjar.
 
@@ -71,7 +71,7 @@ Before we start the demo, let's learn how to connect OSS to a Spring Cloud appli
 	    1. Execute command `mvn clean package` to build a fatjar.
 	    2. Run command `java -jar oss-example.jar` to start the application.
 
-After startup, a bucket called 'spring-cloud-alibaba' is automatically created in OSS.
+After startup, a bucket called 'spring-cloud-alibaba-test' is automatically created in OSS.
 
 ### Upload or download files
 
@@ -88,14 +88,14 @@ Results：
 	upload fail: The OSS Access Key Id you provided does not exist in our records. [ErrorCode]: InvalidAccessKeyId [RequestId]: RequestId [HostId]: xxx.oss-cn-beijing.aliyuncs.com [ResponseError]: InvalidAccessKeyId The OSS Access Key Id you provided does not exist in our records. RequestId xxx.oss-cn-beijing.aliyuncs.com xxx-accessKeyId
 
 #### Download files
-Use `curl` command to download files. It will download the oss-test.json file that you uploaded just now and print in result):
+Use `curl` command to download files. It will download the oss-test.json file that you uploaded just now and print in result:
 
     curl http://localhost:18084/download
 	
 Results：
 	
 	// If configurations are correct, the output will be as follows
-	download success, content: { "name": "spring-cloud-alibaba", "github": "https://github.com/spring-cloud-incubator/spring-cloud-alibaba", "authors": ["Jim", "flystar32"], "emails": ["fangjian0423@gmail.com", "flystar32@163.com"] }
+	download success, content: { "name": "oss-tes" }
 	// If an error occurs during downloading, the output will be 'download fail: fail reason'. For example, if accessKeyId is wrong，fail reason will be as follows
 	download fail: The OSS Access Key Id you provided does not exist in our records. [ErrorCode]: InvalidAccessKeyId [RequestId]: RequestId [HostId]: xxx.oss-cn-beijing.aliyuncs.com [ResponseError]: InvalidAccessKeyId The OSS Access Key Id you provided does not exist in our records. RequestId sxxx.oss-cn-beijing.aliyuncs.com xxx-accessKeyId
 	
@@ -103,11 +103,11 @@ Results：
 ### Verify results on OSS
 
 You can verify results on the OSS console when you finish uploading or downloading files.
-1. Log on to the [OSS console](https://oss.console.aliyun.com/)，and you will find a bucket named `spring-cloud-alibaba`.
+1. Log on to the [OSS console](https://oss.console.aliyun.com/)，and you will find a bucket named `spring-cloud-alibaba-test`.
 
    ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535464204462-ccebb9e0-7233-499c-8dec-8b8348231b2b.png) 
 
-2. Click the `spring-cloud-alibaba` bucket, select the Files tab, and you will find the oss-test file. The file 'oss-test' is located in directory 'custom-dir'. The objectName of the file is 'custom-dir/oss-test'. File directory and file is separated by '/'. 
+2. Click the `spring-cloud-alibaba-test` bucket, select the Files tab, and you will find the oss-test.json file. The objectName of the file is 'oss-test.json'. File directory and file is separated by '/'. 
 
    ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535618026281-613a338c-f89c-4c7b-8b04-d404d1320699.png) 
     	
@@ -132,26 +132,6 @@ Spring Boot2.x: OSS Endpoint URL is http://127.0.0.1:18084/acutator/oss.
 Endpoint will show the configurations and the list of buckets of all OSSClients.
 
 ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535373658171-20674565-6fe1-4e1e-a596-1dd6f4159ec3.png) 
-
-## Multiple OSSClients
-
-If you need multiple OSSClients，like Multi DataSources, build `OSSProperties` first，and then build `OSSClient`. Specify information such as assessKeyId and secrectAccessKey for each OSSClient.
-    
-	  @Bean
-	  @ConfigurationProperties(prefix = "spring.cloud.alibaba.oss1")
-	  public OSSProperties ossProperties1() {
-		  return new OSSProperties();
-	  }
-
-	  @Bean
-	  public OSS ossClient1(@Qualifier("ossProperties1") OSSProperties ossProperties) {
-		  return new OSSClientBuilder().build(ossProperties.getEndpoint(),
-				  ossProperties.getAccessKeyId(), ossProperties.getSecretAccessKey(),
-				  ossProperties.getSecurityToken(), ossProperties.getConfiguration());
-	  }
-
-
-* OSSClient shutdown：You do not need to shutdown OSSClient. It will be done in `OSSApplicationListener`.
 
 <h2 id="1">Read file using resource mode</h2>
 
