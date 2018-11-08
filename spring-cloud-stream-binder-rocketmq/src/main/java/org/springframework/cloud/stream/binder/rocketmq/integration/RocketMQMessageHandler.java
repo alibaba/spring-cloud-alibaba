@@ -67,7 +67,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
             producerInstrumentation.markStartedSuccessfully();
         } catch (MQClientException e) {
             producerInstrumentation.markStartFailed(e);
-            logger.error("Rocket Message hasn't been sent. Caused by " + e.getMessage());
+            logger.error("RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
             throw new MessagingException(e.getMessage(), e);
         }
         running = true;
@@ -122,7 +122,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
         } catch (MQClientException | RemotingException | MQBrokerException | InterruptedException |
             UnsupportedOperationException e) {
             producerInstrumentation.markSentFailure();
-            logger.error("Rocket Message hasn't been sent. Caused by " + e.getMessage());
+            logger.error("RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
             throw new MessagingException(e.getMessage(), e);
         }
 

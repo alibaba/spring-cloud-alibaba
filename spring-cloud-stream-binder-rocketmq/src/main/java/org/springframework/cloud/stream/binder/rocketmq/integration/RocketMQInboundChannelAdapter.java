@@ -1,5 +1,10 @@
 package org.springframework.cloud.stream.binder.rocketmq.integration;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -62,8 +67,10 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
         final CloudStreamMessageListener listener = isOrderly ? new CloudStreamMessageListenerOrderly(
             instrumentationManager, msg -> sendMessage(msg))
             : new CloudStreamMessageListenerConcurrently(instrumentationManager, msg -> sendMessage(msg));
+        listener.setTopic(destination);
 
-        listener.setConsumerPropertiesWrapper(group, destination, tags);
+        Set<String> tagsSet = tags == null ? new HashSet<>() : Arrays.stream(tags.split("\\|\\|")).map(String::trim).collect(
+            Collectors.toSet());
 
         consumerInstrumentation = instrumentationManager.getConsumerInstrumentation(destination);
         instrumentationManager.addHealthInstrumentation(consumerInstrumentation);
@@ -72,13 +79,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
             if (!StringUtils.isEmpty(consumerProperties.getExtension().getSql())) {
                 consumer.subscribe(destination, MessageSelector.bySql(consumerProperties.getExtension().getSql()));
             } else {
-                consumer.subscribe(destination, listener.getTagsString());
+                consumer.subscribe(destination, String.join(" || ", tagsSet));
             }
             consumerInstrumentation.markStartedSuccessfully();
         } catch (MQClientException e) {
             consumerInstrumentation.markStartFailed(e);
-            logger.error("Rocket Consumer hasn't been subscribed. Caused by " + e.getErrorMessage(), e);
-            throw new RuntimeException("Rocket Consumer hasn't been subscribed.", e);
+            logger.error("RocketMQ Consumer hasn't been subscribed. Caused by " + e.getErrorMessage(), e);
+            throw new RuntimeException("RocketMQ Consumer hasn't been subscribed.", e);
         }
 
         consumer.registerMessageListener(listener);
@@ -86,8 +93,8 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
         try {
             consumersManager.startConsumer(group);
         } catch (MQClientException e) {
-            logger.error("Rocket Consumer startup failed. Caused by " + e.getErrorMessage(), e);
-            throw new RuntimeException("Rocket Consumer startup failed.", e);
+            logger.error("RocketMQ Consumer startup failed. Caused by " + e.getErrorMessage(), e);
+            throw new RuntimeException("RocketMQ Consumer startup failed.", e);
         }
     }
 
