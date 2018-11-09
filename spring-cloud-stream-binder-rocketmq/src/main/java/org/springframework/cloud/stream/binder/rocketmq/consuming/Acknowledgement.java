@@ -62,4 +62,17 @@ public class Acknowledgement {
     public void setConsumeOrderlySuspendCurrentQueueTimeMill(Long consumeOrderlySuspendCurrentQueueTimeMill) {
         this.consumeOrderlySuspendCurrentQueueTimeMill = consumeOrderlySuspendCurrentQueueTimeMill;
     }
+
+    public static Acknowledgement buildOrderlyInstance() {
+        Acknowledgement acknowledgement = new Acknowledgement();
+        acknowledgement.setConsumeOrderlyStatus(ConsumeOrderlyStatus.SUCCESS);
+        return acknowledgement;
+    }
+
+    public static Acknowledgement buildConcurrentlyInstance() {
+        Acknowledgement acknowledgement = new Acknowledgement();
+        acknowledgement.setConsumeConcurrentlyStatus(ConsumeConcurrentlyStatus.CONSUME_SUCCESS);
+        return acknowledgement;
+    }
+
 }
