@@ -6,7 +6,7 @@
 
 ==== Nacos 服务端初始化
 
-1、启动Nacos Server。启动方式可见 https://nacos.io/zh-cn/docs/quick-start.html[Naocs 官网]
+1、启动Nacos Server。启动方式可见 https://nacos.io/zh-cn/docs/quick-start.html[Nacos 官网]
 
 2、启动好Nacos之后，在Nacos添加如下的配置。注意data id是以 properties为扩展名，默认的文件扩展名方式。如下所示：
 
