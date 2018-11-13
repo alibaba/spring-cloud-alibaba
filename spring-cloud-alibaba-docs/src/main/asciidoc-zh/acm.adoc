@@ -1,6 +1,6 @@
 = Spring Cloud AliCloud ACM
 
-Spring Cloud Alibaba Config 提供了和阿里云上的ACM的集成。使得在项目中如果需要上云的用户可以非常方便无缝的对接阿里云，来享受云端提供的稳定服务。
+Spring Cloud AliCloud ACM 提供了和阿里云上的ACM的集成。使得在项目中如果需要上云的用户可以非常方便无缝的对接阿里云，来享受云端提供的稳定服务。
 
 === 快速开始
 
