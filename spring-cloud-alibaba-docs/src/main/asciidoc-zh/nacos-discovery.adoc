@@ -292,7 +292,6 @@ NOTE: 在启动 Consumer 应用之前请先将 Nacos 服务启动好。具体启
  访问地址：http://127.0.0.1:8082/echo/app-name
  访问结果：Hello Nacos Discovery nacos-consumer
 
-
 == 2. 关于 Nacos Starter 更多的配置项信息
 
 更多关于 spring-cloud-starter-alibaba-nacos-discovery 的 starter 配置项如下所示:
