@@ -159,10 +159,10 @@ NOTE: 再启动 Provider 应用之前 请先将 Nacos 服务启动。具体启�
 
 === 服务的 EndPoint
 
-spring-cloud-starter-alibaba-nacos-discovery 在实现的时候提供了一个EndPoint,EndPoint的访问地址为`http://ip:port/actuator/nacos-discovery`。
+spring-cloud-starter-alibaba-nacos-discovery 在实现的时候提供了一个EndPoint,EndPoint的访问地址为 `http://ip:port/actuator/nacos-discovery`。
 EndPoint 的信息主要提供了两类:
 
-    1. subscribe: 显示了当前有哪些服务订阅者
+    1、subscribe: 显示了当前有哪些服务订阅者
     2、NacosDiscoveryProperties: 显示了当前服务实例关于 Nacos 的基础配置
 
 一个服务实例访问 EndPoint 的信息如下所示：
