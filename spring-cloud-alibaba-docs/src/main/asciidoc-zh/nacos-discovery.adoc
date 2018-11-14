@@ -120,7 +120,7 @@ Spring Cloud 的 Finchley.SR1 版本最佳实践的 Spring Boot 版本是 2.0.6.
 ----
 
 2. application.properties 配置。一些关于 Nacos 基本的配置也必须在 application.properties(也可以是application.yaml)配置，如下所示：
-application.propertoes
+application.properties
 [source,properties]
 ----
 server.port=8081
