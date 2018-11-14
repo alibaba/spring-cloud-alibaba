@@ -1,7 +1,7 @@
 = Spring Cloud Alibaba Nacos Discovery
 
-该项目通过自动配置以及其他 Spring 编程模型的习惯用法为Spring Boot 应用程序在服务注册与发现方面提供和Nacos的无缝集成。
-通过一些简单的注解，您可以快速来注册一个服务，并使用经过双十一考验的Nacos组件来作为大规模分布式系统的服务注册中心。
+该项目通过自动配置以及其他 Spring 编程模型的习惯用法为 Spring Boot 应用程序在服务注册与发现方面提供和 Nacos 的无缝集成。
+通过一些简单的注解，您可以快速来注册一个服务，并使用经过双十一考验的 Nacos 组件来作为大规模分布式系统的服务注册中心。
 
 == 1. 服务注册发现: Nacos Discovery Starter
 
@@ -119,8 +119,7 @@ Spring Cloud 的 Finchley.SR1 版本最佳实践的 Spring Boot 版本是 2.0.6.
 </project>
 ----
 
-2. application.propertie配置。一些关于 Nacos 基本的配置也必须在 application.properties(也可以是application.yaml)配置，如下所示：
-
+2. application.properties 配置。一些关于 Nacos 基本的配置也必须在 application.properties(也可以是application.yaml)配置，如下所示：
 application.propertoes
 [source,properties]
 ----
