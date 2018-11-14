@@ -285,7 +285,7 @@ public class NacosConsumerApp {
 这个例子中我们注入了一个 LoadBalancerClient 的实例，并且手动的实例化一个 RestTemplate，同时将 `spring.application.name` 的配置值 注入到应用中来，
 目的是调用 Provider 提供的服务时，希望将当前配置的应用名给显示出来。
 
-NOTE: 再启动 Consumer 应用之前 请先将 Nacos 服务启动。具体启动方式可参考 https://nacos.io/zh-cn/docs/quick-start.html[Naco 官网]。
+NOTE: 在启动 Consumer 应用之前请先将 Nacos 服务启动好。具体启动方式可参考 https://nacos.io/zh-cn/docs/quick-start.html[Nacos 官网]。
 
 启动后，访问 Consumer 提供出来的 `http://ip:port/echo/app-name` 接口。我这里测试启动的 port是 8082。访问结果如下所示：
 
@@ -295,7 +295,7 @@ NOTE: 再启动 Consumer 应用之前 请先将 Nacos 服务启动。具体启�
 
 == 2. 关于 Nacos Starter 更多的配置项信息
 
-更多关于 spring-cloud-starter-alibaba-nacos-discovery starter 的配置项如下所示
+更多关于 spring-cloud-starter-alibaba-nacos-discovery 的 starter 配置项如下所示:
 
 :frame: topbot
 [width="60%",options="header"]
