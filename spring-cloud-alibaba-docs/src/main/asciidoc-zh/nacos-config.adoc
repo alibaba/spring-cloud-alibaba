@@ -117,9 +117,11 @@ spring-cloud-starter-alibaba-nacos-config 默认对文件扩展名为properties�
 [source,properties]
 ----
 spring.application.name=nacos-config
-spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+spring.cloud.nacos.config.server-addr=127.0.0.1:8848 
 spring.cloud.nacos.config.file-extension=yaml #显示的声明使用的文件扩展名
 ----
+
+NOTE: 如果 spring.cloud.nacos.config.server-addr 使用的是域名，请写上域名以及监听的端口号，即使是默认的80也需要填上，因为当只配上了域名时会自动填上Nacos的默认端口8848。
 
 2、在Nacos的控制台新增一个dataid为yaml为扩展名的配置，如下所示：
 
