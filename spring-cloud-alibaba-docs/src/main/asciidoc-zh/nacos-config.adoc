@@ -121,7 +121,7 @@ spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 spring.cloud.nacos.config.file-extension=yaml #显示的声明使用的文件扩展名
 ----
 
-NOTE: 如果 spring.cloud.nacos.config.server-addr 使用的是域名，请写上域名以及监听的端口号，即使是默认的80也需要填上，因为当只配上了域名时会自动填上Nacos的默认端口8848。
+NOTE: 如果 spring.cloud.nacos.config.server-addr 使用的是域名，请写上域名以及监听的端口号，`请切记不用带上http:// 前缀以及 /nacos的后缀`，即使是默认的80也需要填上，因为当只配上了域名时会自动填上Nacos的默认端口8848。例如当你的域名是abc.com.nacos 时，监听的端口号是80，那么`spring.cloud.nacos.config.server-addr` 的配置是 `abc.com.nacos:80`。
 
 2、在Nacos的控制台新增一个dataid为yaml为扩展名的配置，如下所示：
 
