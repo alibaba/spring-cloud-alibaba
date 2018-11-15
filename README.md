@@ -37,7 +37,53 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 	./mvnw install
 
 
-## How to use
+## How to Use
+
+### Add maven dependency
+Version 0.2.0.RELEASE is compatible with the Spring Boot 2.0.x line. Version 0.1.0.RELEASE is compatible with the Spring Boot 1.x line.
+
+These artifacts are available from Maven Central and Spring Release repository via BOM:
+
+	<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>0.2.0.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+add the module in  `dependencies`.
+
+If you want to use the latest BUILD-SNAPSHOT version, add `Spring Snapshot Repository` in  pom.xml , **Attention: BUILD-SNAPSHOT may be updated in any time**
+
+	<repositories>
+        <repository>
+            <id>spring-snapshot</id>
+            <name>Spring Snapshot Repository</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
+### Reference Doc
+
+[Contents](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/spring-cloud-alibaba.adoc)
+
+[Nacos Config](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
+
+[Nacos Discovery](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
+
+[ACM](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/acm.adoc)
+
+
+## Examples
 
 A `spring-cloud-alibaba-examples` module is included in our project for you to get started with Spring Cloud Alibaba quickly. It contains an example, and you can refer to the readme file in the example project for a quick walkthrough.
 
