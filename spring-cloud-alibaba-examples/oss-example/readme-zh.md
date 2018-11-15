@@ -11,7 +11,7 @@
 ### 接入 OSS
 在启动示例进行演示之前，我们先了解一下如何接入 OSS。
 
-**注意：本节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您只需修改 accessKeyId、secretAccessKey、region 即可。**
+**注意：本节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您只需修改 accessKey、secretKey、endpoint 即可。**
 
 1. 修改 pom.xml 文件，引入 alicloud-oss starter。	
 
@@ -20,24 +20,24 @@
             <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
         </dependency>
 	
-2. 在配置文件中配置 OSS 服务对应的 accessKeyId、secretAccessKey 和 region。
+2. 在配置文件中配置 OSS 服务对应的 accessKey、secretKey 和 endpoint。
 
 		// application.properties
-		spring.cloud.alibaba.oss.accessKeyId=your-ak
-		spring.cloud.alibaba.oss.secretAccessKey=your-sk
-		spring.cloud.alibaba.oss.region=cn-beijing
+		spring.cloud.alicloud.access-key=your-ak
+		spring.cloud.alicloud.secret-key=your-sk
+		spring.cloud.alicloud.oss.endpoint=***
 		  
-    以阿里云 accessKeyId、secretAccessKey 为例，获取方式如下。
+    以阿里云 accessKey、secretKey 为例，获取方式如下。
 
     i. 在阿里云控制台界面，单击右上角头像，选择 accesskeys，或者直接登录[用户信息管理界面](https://usercenter.console.aliyun.com/)：
 		  
       ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535371973274-3ebec90a-ebde-4eb7-96ed-5372f6b32fe0.png) 
 
-    ii. 获取 accessKeyId、secretAccessKey：
+    ii. 获取 accessKey、secretKey：
 
       ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535372168883-b94a3d77-3f81-4938-b409-611945a9e21c.png) 
  
-   **注意：**如果您使用了阿里云 [STS服务](https://help.aliyun.com/document_detail/28756.html) 进行短期访问权限管理，则除了 accessKeyId、secretAccessKey、region 以外，还需配置 securityToken。
+   **注意：**如果您使用了阿里云 [STS服务](https://help.aliyun.com/document_detail/28756.html) 进行短期访问权限管理，则除了 accessKey、secretKey、endpoint 以外，还需配置 securityToken。
 	
 3. 注入 OSSClient 并进行文件上传下载等操作。
 
@@ -61,9 +61,9 @@
 	
 		spring.application.name=oss-example
 		server.port=18084
-		spring.cloud.alibaba.oss.accessKeyId=your-ak
-		spring.cloud.alibaba.oss.secretAccessKey=your-sk
-		spring.cloud.alibaba.oss.region=cn-beijing
+		spring.cloud.alicloud.access-key=your-ak
+		spring.cloud.alicloud.secret-key=your-sk
+		spring.cloud.alicloud.oss.endpoint=***
 		
 2. 通过 IDE 直接启动或者编译打包后启动应用。
 
@@ -72,7 +72,7 @@
 	  1. 执行 `mvn clean package` 将工程编译打包；
 	  2. 执行 `java -jar oss-example.jar`启动应用。
 	  
-应用启动后会自动在 OSS 上创建一个名为 `spring-cloud-alibaba` 的 Bucket。	 
+应用启动后会自动在 OSS 上创建一个名为 `spring-cloud-alibaba-test` 的 Bucket。	 
 
 ### 上传或下载文件
 
@@ -96,7 +96,7 @@
 显示结果：
 	
 	// 如果配置正确，则输出
-	download success, content: { "name": "spring-cloud-alibaba", "github": "https://github.com/spring-cloud-incubator/spring-cloud-alibaba", "authors": ["Jim", "flystar32"], "emails": ["fangjian0423@gmail.com", "flystar32@163.com"] }
+	download success, content: { "name": "oss-test" }
 	// 下载的过程中如果发生异常，则会输出download fail: fail reason。比如accessKeyId配置错误，则fail reason内容如下
 	download fail: The OSS Access Key Id you provided does not exist in our records. [ErrorCode]: InvalidAccessKeyId [RequestId]: RequestId [HostId]: xxx.oss-cn-beijing.aliyuncs.com [ResponseError]: InvalidAccessKeyId The OSS Access Key Id you provided does not exist in our records. RequestId sxxx.oss-cn-beijing.aliyuncs.com xxx-accessKeyId
 	
@@ -106,11 +106,11 @@
 
 完成文件上传或者下载操作后，可以登录 OSS 控制台进行验证。
 
-1. 登陆[OSS控制台](https://oss.console.aliyun.com/)，可以看到左侧 Bucket 列表新增一个名字为`spring-cloud-alibaba`的 Bucket。
+1. 登陆[OSS控制台](https://oss.console.aliyun.com/)，可以看到左侧 Bucket 列表新增一个名字为`spring-cloud-alibaba-test`的 Bucket。
 
    ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535369224513-387afdf9-6078-4a42-9f18-d9fe9926a9cd.png) 
 
-2. 单击`spring-cloud-alibaba` Bucket，选择 `文件管理` 页签，发现上传的 oss-test 文件在 custom-dir 目录中。上传的 objectName 为`custom-dir/oss-test`。目录和文件以'/'符号分割。
+2. 单击`spring-cloud-alibaba-test` Bucket，选择 `文件管理` 页签，发现上传的 oss-test 文件。上传的 objectName 为`oss-test.json`。目录和文件以'/'符号分割。
 
    ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535615378605-df1381e9-c5ff-4da1-b3b3-ce9acfef313f.png) 
     	
@@ -133,24 +133,6 @@ Spring Boot2.x 可以通过访问 http://127.0.0.1:18084/acutator/oss 来访问�
 Endpoint 内部会显示所有的 OSSClient 配置信息，以及该 OSSClient 对应的 Bucket 列表。
 
 ![undefined](https://cdn.nlark.com/lark/0/2018/png/64647/1535373658171-20674565-6fe1-4e1e-a596-1dd6f4159ec3.png) 
-
-
-## 多个 OSSClient 场景
-
-如果您需要配置多个 OSSClient，类似多数据源的配置，则可以先构造 `OSSProperties`，再构造 `OSSClient`，并分别为每个 OSSClient 配置相应的 accessKeyId、secretAccessKey 等信息。
-    
-	  @Bean
-	  @ConfigurationProperties(prefix = "spring.cloud.alibaba.oss1")
-	  public OSSProperties ossProperties1() {
-		  return new OSSProperties();
-	  }
-
-	  @Bean
-	  public OSS ossClient1(@Qualifier("ossProperties1") OSSProperties ossProperties) {
-		  return new OSSClientBuilder().build(ossProperties.getEndpoint(),
-				  ossProperties.getAccessKeyId(), ossProperties.getSecretAccessKey(),
-				  ossProperties.getSecurityToken(), ossProperties.getConfiguration());
-	  }
 
 <h2 id="1"> 以 Resource 的形式读取文件 </h2>
 
