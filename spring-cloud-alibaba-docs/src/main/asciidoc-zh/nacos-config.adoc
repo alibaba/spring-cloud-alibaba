@@ -121,7 +121,7 @@ spring-cloud-starter-alibaba-nacos-config 默认对 dateid 的文件扩展名是
 
 1、在应用的 bootstrap.properties 配置文件中显示的声明 dataid 文件扩展名。如下所示
 
-.bootstrap.yaml
+.bootstrap.properties
 [source,yaml]
 ----
 spring.cloud.nacos.config.file-extension=yaml
