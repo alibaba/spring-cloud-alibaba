@@ -1,0 +1,4 @@
+== 依赖管理
+
+Spring Cloud Alibaba BOM 包含了它所使用的所有依赖的版本。
+

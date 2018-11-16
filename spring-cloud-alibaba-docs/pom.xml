@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-alibaba</artifactId>
+        <version>0.2.1.BUILD-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-alibaba-docs</artifactId>
+    <name>Spring Cloud Alibaba Documentation</name>
+    <packaging>pom</packaging>
+
+    <properties>
+        <docs.main>spring-cloud-alibaba</docs.main>
+        <main.basedir>${basedir}/..</main.basedir>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>docs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <sourceDirectory>${basedir}/src/main/asciidoc-zh</sourceDirectory>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.agilejava.docbkx</groupId>
+                        <artifactId>docbkx-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <inherited>false</inherited>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+

@@ -39,66 +39,59 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class NacosConfigAutoConfigurationTests {
 
-    private ConfigurableApplicationContext context;
+	private ConfigurableApplicationContext context;
 
-    @Before
-    public void setUp() throws Exception {
-        this.context = new SpringApplicationBuilder(
-            NacosConfigBootstrapConfiguration.class,
-            NacosConfigAutoConfiguration.class,
-            TestConfiguration.class)
-            .web(WebApplicationType.NONE).run(
-            "--spring.cloud.config.enabled=true",
-            "--spring.cloud.nacos.config.server-addr=127.0.0.1:8080",
-            "--spring.cloud.nacos.config.prefix=myapp");
-    }
+	@Before
+	public void setUp() throws Exception {
+		this.context = new SpringApplicationBuilder(
+				NacosConfigBootstrapConfiguration.class,
+				NacosConfigAutoConfiguration.class, TestConfiguration.class)
+						.web(WebApplicationType.NONE)
+						.run("--spring.application.name=myapp",
+								"--spring.cloud.config.enabled=true",
+								"--spring.cloud.nacos.config.server-addr=127.0.0.1:8080",
+								"--spring.cloud.nacos.config.prefix=test");
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        if (this.context != null) {
-            this.context.close();
-        }
-    }
+	@After
+	public void tearDown() throws Exception {
+		if (this.context != null) {
+			this.context.close();
+		}
+	}
 
-    @Test
-    public void testNacosConfigProperties() {
+	@Test
+	public void testNacosConfigProperties() {
 
-        NacosPropertySourceLocator nacosPropertySourceLocator = this.context.getBean(NacosPropertySourceLocator.class);
-        Environment environment = this.context.getEnvironment();
-        try{
-            nacosPropertySourceLocator.locate(environment);
-        }catch (Exception e){
+		NacosConfigProperties nacosConfigProperties = this.context.getParent()
+				.getBean(NacosConfigProperties.class);
+		assertThat(nacosConfigProperties.getFileExtension()).isEqualTo("properties");
+		assertThat(nacosConfigProperties.getPrefix()).isEqualTo("test");
+		assertThat(nacosConfigProperties.getName()).isEqualTo("myapp");
 
-        }
+	}
 
-        NacosConfigProperties nacosConfigProperties = this.context.getBean(NacosConfigProperties.class);
-        assertThat(nacosConfigProperties.getFileExtension()).isEqualTo("properties");
-        assertThat(nacosConfigProperties.getPrefix()).isEqualTo("myapp");
+	@Test
+	public void testNacosRefreshProperties() {
 
-    }
+		NacosRefreshProperties nacosRefreshProperties = this.context
+				.getBean(NacosRefreshProperties.class);
+		assertThat(nacosRefreshProperties.isEnabled()).isEqualTo(true);
 
+	}
 
-    @Test
-    public void testNacosRefreshProperties() {
+	@Configuration
+	@AutoConfigureBefore(NacosConfigAutoConfiguration.class)
+	static class TestConfiguration {
 
-        NacosRefreshProperties nacosRefreshProperties = this.context.getBean(NacosRefreshProperties.class);
-        assertThat(nacosRefreshProperties.isEnabled()).isEqualTo(true);
+		@Autowired
+		ConfigurableApplicationContext context;
 
-    }
+		@Bean
+		ContextRefresher contextRefresher() {
+			return new ContextRefresher(context, new RefreshScope());
+		}
 
-    @Configuration
-    @AutoConfigureBefore(NacosConfigAutoConfiguration.class)
-    static class TestConfiguration{
-
-
-        @Autowired
-        ConfigurableApplicationContext context;
-
-        @Bean
-        ContextRefresher contextRefresher(){
-            return new ContextRefresher(context, new RefreshScope());
-        }
-
-    }
+	}
 
 }
