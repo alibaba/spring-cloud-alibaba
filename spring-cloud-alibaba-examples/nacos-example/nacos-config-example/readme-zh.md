@@ -19,9 +19,10 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 	
-2. 在应用的 /src/main/resources/bootstrap.properties 配置文件中配置 Nacos Config 地址
+2. 在应用的 /src/main/resources/bootstrap.properties 配置文件中配置 Nacos Config 元数据
 	
-		spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+        spring.application.name=nacos-config-example
+        spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 		  
 3. 完成上述两步后，应用会从 Nacos Config 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中。这里我们使用 @Value 注解来将对应的配置注入到 SampleController 的 userName 和 age 字段，并添加 @RefreshScope 打开动态刷新功能
 		
@@ -70,8 +71,8 @@
 
 1. 增加配置，在应用的 /src/main/resources/application.properties 中添加基本配置信息
 	
-		spring.application.name=nacos-config-example
-		server.port=18084
+        server.port=18084
+        management.endpoints.web.exposure.include=*
 
 		
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
@@ -118,9 +119,9 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 * `spring.active.profile` 即为当前环境对应的 profile，详情可以参考 [Spring Boot文档](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
-	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${context.type}`**
+	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${file-extension}`**
 
-* `file-extension` 为配置内容的数据格式，可以通过配置项 `spring.cloud.nacos.config.content-type`来配置。
+* `file-extension` 为配置内容的数据格式，可以通过配置项 `spring.cloud.nacos.config.file-extension`来配置。
 目前只支持 `properties` 类型。
 
 #### group
@@ -168,7 +169,7 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 
 服务端地址|spring.cloud.nacos.config.server-addr||
 DataId前缀|spring.cloud.nacos.config.prefix||spring.application.name
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
-dataID后缀及数据格式|spring.cloud.nacos.config.file-extension|properties|目前只支持 properties
+dataID后缀及内容文件格式|spring.cloud.nacos.config.file-extension|properties|dataId的后缀，同时也是配置内容的文件格式，目前只支持 properties
 配置内容的编码方式|spring.cloud.nacos.config.encode|UTF-8|配置的编码
 获取配置的超时时间|spring.cloud.nacos.config.timeout|3000|单位为 ms
 配置的命名空间|spring.cloud.nacos.config.namespace||常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源隔离等。

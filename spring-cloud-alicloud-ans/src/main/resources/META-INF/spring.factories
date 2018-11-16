@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.springframework.cloud.alicloud.ans.endpoint.AnsEndpointAutoConfiguration,\
+  org.springframework.cloud.alicloud.ans.ribbon.RibbonAnsAutoConfiguration,\
+  org.springframework.cloud.alicloud.ans.AnsAutoConfiguration
+org.springframework.cloud.client.discovery.EnableDiscoveryClient=\
+  org.springframework.cloud.alicloud.ans.AnsDiscoveryClientAutoConfiguration

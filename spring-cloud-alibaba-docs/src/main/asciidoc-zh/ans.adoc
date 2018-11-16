@@ -1,0 +1,111 @@
+== Spring Cloud AliCloud ANS
+
+ANS（Application Naming Service） 是隶属于阿里云EDAS产品的组件， Spring Cloud AliCloud ANS 提供了Spring Cloud规范下商业版的服务注册与发现，可以让用户方便的在本地开发，同时也可以运行在云环境里。
+
+=== 如何引入 Spring Cloud AliCloud ANS
+
+Spring Cloud Alibaba 已经发布了0.2.0版本，需要首先导入依赖管理POM。
+
+[source,xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>0.2.0.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+接下来引入 Spring Cloud AliCloud ANS Starter 即可。
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-alicloud-ans</artifactId>
+</dependency>
+----
+
+=== 使用ANS进行服务注册
+
+当客户端引入了 Spring Cloud AliCloud ANS Starter 以后，服务的元数据会被自动注册到注册中心，比如IP、端口、权重等信息。客户端会与服务端保持心跳，来证明自己可以正常提供服务。
+
+以下是一个简单的应用示例。
+
+[source,java]
+----
+@SpringBootApplication
+@EnableDiscoveryClient
+@RestController
+public class ProviderApplication {
+
+    @RequestMapping("/")
+    public String home() {
+        return "Hello world";
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(ProviderApplication.class, args);
+    }
+
+}
+----
+
+既然服务会被注册到注册中心，那么肯定需要配置注册中心的地址，在application.properties中，还需要配置上以下地址。
+
+[source,properties]
+----
+# 应用名会被作为服务名称使用，因此会必选
+spring.application.name=ans-provider
+server.port=18081
+# 以下就是注册中心的IP和端口配置，因为默认就是127.0.0.1和8080，因此以下两行配置也可以省略
+spring.cloud.alicloud.ans.server.list=127.0.0.1
+spring.cloud.alicloud.ans.server.port=8080
+----
+
+NOTE: 此时没有启动注册中心，启动应用会报错，因此在应用启动之前，应当首先启动注册中心。
+
+=== 启动注册中心
+
+ANS使用的注册中心有两种，一种是完全免费的轻量版配置中心，主要用于开发和本地调试，一种是云上注册中心，ANS依托于阿里云EDAS产品提供服务注册的功能。通常情况下，可以使用轻量版配置中心作为开发和测试环境，使用云上的EDAS作为灰度和生产环境。
+
+==== 启动轻量版配置中心
+
+轻量版配置中心的下载和启动方式可参考 https://help.aliyun.com/document_detail/44163.html?spm=a2c4g.11186623.6.677.5f206b82Z2mTCF[这里]
+
+NOTE: 只需要进行第1步（下载轻量配置中心）和第2步（启动轻量配置中心）即可，第3步（配置hosts）在与 ANS 结合使用时，不需要操作。
+
+启动完轻量版配置中心以后，直接启动 ProviderApplication ，即可将服务注册到轻量版配置中心，由于轻量版配置中心的默认端口是8080，因此你可以打开 http://127.0.0.1:8080 ，点击左侧"服务列表"，查看注册上来的服务。
+
+==== 使用云上注册中心
+
+使用云上注册中心，可以省去服务端的维护工作，同时稳定性也会更有保障。当使用云上注册中心时，代码部分和使用轻量配置中心并没有区别，但是配置上会有一些区别。
+
+以下是一个简单的使用云上配置中心的配置示例。
+
+[source,properties]
+----
+# 应用名会被作为服务名称使用，因此是必选
+spring.application.name=ans-provider
+# 端口配置自由配置即可
+server.port=18081
+# 以下就是注册中心的IP和端口配置，因为默认就是127.0.0.1和8080，因此以下两行配置也可以省略
+spring.cloud.alicloud.ans.server-mode=EDAS
+spring.cloud.alicloud.access-key=你的阿里云AK
+spring.cloud.alicloud.secret-key=你的阿里云SK
+spring.cloud.alicloud.edas.namespace=cn-xxxxx
+----
+
+server-mode 的默认值为 LOCAL ，如果要使用云上注册中心，则需要更改为 EDAS 。
+
+access-key 和 secret-key 则是阿里云账号的AK/SK，需要首先注册阿里云账号，然后登陆 https://usercenter.console.aliyun.com/#/manage/ak[阿里云AK/SK管理页面] ，即可看到 AccessKey ID 和 Access Key Secret ，如果没有的话，需要点击"创建AccessKey"按钮创建。
+
+namespace 是阿里云EDAS产品的概念，用于隔离不同的环境，比如测试环境和生产环境。要获取 namespace 需要 https://common-buy.aliyun.com/?spm=5176.11451019.0.0.6f5965c0Uq5tue&commodityCode=edaspostpay#/buy[开通EDAS服务]，按量计费模式下开通是免费的，开通以后进入 https://edas.console.aliyun.com/#/namespaces?regionNo=cn-hangzhou[EDAS控制台]，即可看到对应的namespace，比如cn-hangzhou。
+
+NOTE: EDAS提供应用托管服务，如果你将应用托管到EDAS，那么EDAS将会自动为你填充所有配置。
+

@@ -19,18 +19,17 @@ package org.springframework.cloud.alibaba.nacos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
 import java.util.*;
 
-import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 
 /**
  * @author xiaojing
+ * @author renhaojun
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
@@ -39,7 +38,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
 	@Autowired
-	private NacosRegistration nacosRegistration;
+	private NacosDiscoveryProperties discoveryProperties;
 
 	@Override
 	public String description() {
@@ -49,8 +48,8 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	@Override
 	public List<ServiceInstance> getInstances(String serviceId) {
 		try {
-			NamingService namingService = nacosRegistration.getNacosNamingService();
-			List<Instance> instances = namingService.getAllInstances(serviceId);
+			List<Instance> instances = discoveryProperties.namingServiceInstance()
+					.getAllInstances(serviceId);
 			return hostToServiceInstanceList(instances, serviceId);
 		}
 		catch (Exception e) {
@@ -79,7 +78,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 			List<Instance> instances, String serviceId) {
 		List<ServiceInstance> result = new ArrayList<ServiceInstance>(instances.size());
 		for (Instance instance : instances) {
-			if(instance.isHealthy()) {
+			if (instance.isHealthy()) {
 				result.add(hostToServiceInstance(instance, serviceId));
 			}
 		}
@@ -90,9 +89,8 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public List<String> getServices() {
 
 		try {
-			NamingService namingService = nacosRegistration.getNacosNamingService();
-			ListView<String> services = namingService.getServicesOfServer(1,
-					Integer.MAX_VALUE);
+			ListView<String> services = discoveryProperties.namingServiceInstance()
+					.getServicesOfServer(1, Integer.MAX_VALUE);
 			return services.getData();
 		}
 		catch (Exception e) {
@@ -100,5 +98,4 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 			return Collections.emptyList();
 		}
 	}
-
 }

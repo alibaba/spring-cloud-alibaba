@@ -1,0 +1,157 @@
+== Spring Cloud AliCloud OSS
+
+OSS（Object Storage Service）是阿里云的一款对象存储服务产品， Spring Cloud AliCloud OSS 提供了Spring Cloud规范下商业版的对象存储服务，提供简单易用的API，并且支持与 Spring 框架中 Resource 的整合。
+
+=== 如何引入 Spring Cloud AliCloud OSS
+
+Spring Cloud Alibaba 已经发布了0.2.0版本，需要首先导入依赖管理POM。
+
+[source,xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>0.2.0.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+接下来引入 Spring Cloud AliCloud OSS Starter 即可。
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
+</dependency>
+----
+
+=== 如何使用 OSS API
+
+==== 配置 OSS
+
+使用 Spring Cloud AliCloud OSS 之前，需要在 application.properties 中加入以下配置。
+
+[source,properties]
+----
+spring.cloud.alicloud.access-key=你的阿里云AK
+spring.cloud.alicloud.secret-key=你的阿里云SK
+spring.cloud.alicloud.oss.endpoint=***.aliyuncs.com
+----
+
+access-key 和 secret-key 是阿里云账号的AK/SK，需要首先注册阿里云账号，然后登陆 https://usercenter.console.aliyun.com/#/manage/ak[阿里云AK/SK管理页面] ，即可看到 AccessKey ID 和 Access Key Secret ，如果没有的话，需要点击"创建AccessKey"按钮创建。
+
+endpoint可以到 OSS 的 https://help.aliyun.com/document_detail/31837.html?spm=a2c4g.11186623.2.9.7dc72841Z2hGqa#concept-zt4-cvy-5db[官方文档]中查看，根据所在的 region ，填写对应的 endpoint 即可。
+
+
+==== 引入 OSS API
+
+Spring Cloud Alicloud OSS 中的 OSS API 基于阿里云官方OSS SDK提供，具备上传、下载、查看等所有对象存储类操作API。
+
+一个简单的使用 OSS API 的应用如下。
+
+[source,java]
+----
+@SpringBootApplication
+public class OssApplication {
+
+    @Autowired
+    private OSS ossClient;
+
+    @RequestMapping("/")
+    public String home() {
+        ossClient.putObject("bucketName", "fileName", new FileInputStream("/your/local/file/path"));
+        return "upload success";
+    }
+
+    public static void main(String[] args) throws URISyntaxException {
+        SpringApplication.run(OssApplication.class, args);
+    }
+
+}
+----
+
+在上传文件之前，首先需要 https://account.aliyun.com/register/register.htm?spm=5176.8142029.388261.26.e9396d3eaYK2sG&oauth_callback=https%3A%2F%2Fwww.aliyun.com%2F[注册阿里云账号] ，如果已经有的话，请 https://common-buy.aliyun.com/?spm=5176.8465980.unusable.dopen.4cdf1450rg8Ujb&commodityCode=oss#/open[开通OSS服务]。
+
+进入 https://oss.console.aliyun.com/overview[OSS控制台]，点击左侧"新建Bucket"，按照提示创建一个Bucket，然后将bucket名称替换掉上面代码中的"bucketName"，而"fileName"取任意文件名，"/your/local/file/path"取任意本地文件路径，然后 curl http://127.0.0.1:端口/ 即可上传文件，可以到 https://oss.console.aliyun.com/overview[OSS控制台]查看效果。
+
+更多关于 OSS API 的操作，可以参考 https://help.aliyun.com/document_detail/32008.html[OSS官方SDK文档]。
+
+=== 与 Spring 框架的 Resource 结合
+
+Spring Cloud AliCloud OSS 整合了 Spring 框架的 Resource 规范，可以让用户很方便的引用 OSS 的资源。
+
+一个简单的使用 Resource 的例子如下。
+
+[source,java]
+----
+@SpringBootApplication
+public class OssApplication {
+
+    @Value("oss://bucketName/fileName")
+    private Resource file;
+
+    @GetMapping("/file")
+    public String fileResource() {
+        try {
+            return "get file resource success. content: " + StreamUtils.copyToString(
+                file.getInputStream(), Charset.forName(CharEncoding.UTF_8));
+        } catch (Exception e) {
+            return "get resource fail: " + e.getMessage();
+        }
+    }
+
+    public static void main(String[] args) throws URISyntaxException {
+        SpringApplication.run(OssApplication.class, args);
+    }
+
+}
+----
+
+NOTE: 以上示例运行的前提是，在 OSS 上需要有名为"bucketName"的Bucket，同时在该Bucket下，存在名为"fileName"的文件。
+
+=== 采用 STS 授权
+
+Spring Cloud AliCloud OSS 除了 AccessKey/SecretKey 的授权方式以外，还支持 STS 授权方式。 STS 是临时访问令牌的方式，一般用于授权第三方，临时访问自己的资源。
+
+作为第三方，也就是被授权者，只需要配置以下内容，就可以访问临时被授权的资源。
+
+[source,properties]
+----
+spring.cloud.alicloud.oss.authorization-mode=STS
+spring.cloud.alicloud.oss.endpoint=***.aliyuncs.com
+spring.cloud.alicloud.oss.sts.access-key=你被授权的AK
+spring.cloud.alicloud.oss.sts.secret-key=你被授权的SK
+spring.cloud.alicloud.oss.sts.security-token=你被授权的ST
+----
+
+其中 spring.cloud.alicloud.oss.authorization-mode 是枚举类型，此时填写 STS ，代表采用 STS 的方式授权。 endpoint可以到 OSS 的 https://help.aliyun.com/document_detail/31837.html?spm=a2c4g.11186623.2.9.7dc72841Z2hGqa#concept-zt4-cvy-5db[官方文档]中查看，根据所在的 region ，填写对应的 endpoint 即可。
+
+access-key、secret-key和security-token需要由授权方颁发，如果对 STS 不了解的话，可以参考 https://help.aliyun.com/document_detail/31867.html[STS官方文档]。
+
+=== 更多客户端配置
+
+除了基本的配置项以外， Spring Cloud AliCloud OSS 还支持很多额外的配置，也是在 application.properties 文件中。
+
+以下是一些简单的示例。
+
+[source,properties]
+----
+spring.cloud.alicloud.oss.authorization-mode=STS
+spring.cloud.alicloud.oss.endpoint=***.aliyuncs.com
+spring.cloud.alicloud.oss.sts.access-key=你被授权的AK
+spring.cloud.alicloud.oss.sts.secret-key=你被授权的SK
+spring.cloud.alicloud.oss.sts.security-token=你被授权的ST
+
+spring.cloud.alicloud.oss.config.connection-timeout=3000
+spring.cloud.alicloud.oss.config.max-connections=1000
+----
+
+如果想了解更多的配置项，可以参考 https://help.aliyun.com/document_detail/32010.html?spm=a2c4g.11186623.6.703.50b25413nGsYHc[OSSClient配置项] 的末尾表格。
+
+NOTE: 通常情况下，都需要将 https://help.aliyun.com/document_detail/32010.html?spm=a2c4g.11186623.6.703.50b25413nGsYHc[OSSClient配置项] 末尾表格中的参数名更换成"-"连接，且所有字母小写。例如 ConnectionTimeout，对应 connection-timeout。

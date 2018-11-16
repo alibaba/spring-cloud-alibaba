@@ -43,9 +43,10 @@ public class NacosConfigBootstrapConfigurationTests {
 	public void setUp() throws Exception {
 		this.context = new SpringApplicationBuilder(
 				NacosConfigBootstrapConfiguration.class).web(WebApplicationType.NONE).run(
+						"--spring.application.name=myapp",
 						"--spring.cloud.config.enabled=true",
 						"--spring.cloud.nacos.config.server-addr=127.0.0.1:8080",
-						"--spring.cloud.nacos.config.prefix=myapp");
+						"--spring.cloud.nacos.config.prefix=test");
 	}
 
 	@After
@@ -68,15 +69,14 @@ public class NacosConfigBootstrapConfigurationTests {
 
 		}
 
-		Field configServiceField = ReflectionUtils
-				.findField(NacosPropertySourceLocator.class, "configService");
-		configServiceField.setAccessible(true);
+		Field nacosConfigPropertiesField = ReflectionUtils
+				.findField(NacosPropertySourceLocator.class, "nacosConfigProperties");
+		nacosConfigPropertiesField.setAccessible(true);
 
-		ConfigService configService = (ConfigService) ReflectionUtils
-				.getField(configServiceField, locator);
+		NacosConfigProperties configService = (NacosConfigProperties) ReflectionUtils
+				.getField(nacosConfigPropertiesField, locator);
 
 		assertThat(configService).isNotNull();
 	}
-
 
 }
