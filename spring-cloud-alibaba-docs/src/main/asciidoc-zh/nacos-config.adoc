@@ -2,13 +2,13 @@
 
 == 快速开始
 
-=== 基于properties的文件扩展名的配置方式
+=== 基于 dataid 为 properties 的文件扩展名配置方式
 
 ==== Nacos 服务端初始化
 
 1、启动Nacos Server。启动方式可见 https://nacos.io/zh-cn/docs/quick-start.html[Nacos 官网]
 
-2、启动好Nacos之后，在Nacos添加如下的配置。注意data id是以 properties为扩展名，默认的文件扩展名方式。如下所示：
+2、启动好Nacos之后，在Nacos添加如下的配置。注意dataid是以 properties为扩展名，默认的文件扩展名方式。如下所示：
 
 [source,subs="normal"]
 ----
@@ -91,13 +91,18 @@ public class ProviderApplication {
 }
 ----
 
-spring-cloud-starter-alibaba-nacos-config 对于Nacos服务端的基础配置没有默认值，因此在运行此Example 之前， 必须使用 bootstrap.properties 配置文件来配置Nacos Server地址，例如：
+spring-cloud-starter-alibaba-nacos-config 对于 Nacos 服务端的基础配置没有默认值，因此在运行此Example 之前， 必须使用 bootstrap.properties 配置文件来配置Nacos Server地址，例如：
 
+.bootstrap.properties
 [source,properties]
 ----
 spring.application.name=nacos-config #注意，spring.application.name 必须要放在bootstrap.properties中
 spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 ----
+
+NOTE: 注意当你使用域名的方式来访问 Nacos 时，`spring.cloud.nacos.config.server-addr` 配置的方式为 `域名:port`。
+例如 Nacos 的域名为abc.com.nacos，监听的端口为 80，则 `spring.cloud.nacos.config.server-addr=abc.com.nacos:80`。
+注意 80 端口不能省略。
 
 启动这个Example，可以在控制台看到打印出的值正是在Nacos上预先配置好的值。
 
@@ -109,19 +114,20 @@ user name :nacos-config-properties; age: 90
 2018-11
 ----
 
-=== 基于yaml的文件扩展名的配置方式
+=== 基于 dataid 为 yaml 的文件扩展名配置方式
 
-spring-cloud-starter-alibaba-nacos-config 默认对文件扩展名为properties的支持，如果习惯使用yaml格式来作为应用中的基础配置，也是可以支持的。这个时候只需要完成以下两步：
+spring-cloud-starter-alibaba-nacos-config 默认对 dateid 的文件扩展名是 properties。如果习惯使用yaml格式来作为应用中的基础配置，也是可以支持的。
+这个时候只需要完成以下两步：
 
-1、在bootstrap.properties配置文件中显示的来声明使用的文件扩展名。如下所示
-[source,properties]
+1、在应用的 bootstrap.properties 配置文件中显示的声明 dataid 文件扩展名。如下所示
+
+.bootstrap.properties
+[source,yaml]
 ----
-spring.application.name=nacos-config
-spring.cloud.nacos.config.server-addr=127.0.0.1:8848
-spring.cloud.nacos.config.file-extension=yaml #显示的声明使用的文件扩展名
+spring.cloud.nacos.config.file-extension=yaml
 ----
 
-2、在Nacos的控制台新增一个dataid为yaml为扩展名的配置，如下所示：
+2、在 Nacos 的控制台新增一个dataid为yaml为扩展名的配置，如下所示：
 
 [source,subs="normal"]
 ----
