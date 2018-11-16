@@ -87,6 +87,7 @@
         <module>spring-cloud-starter-alibaba</module>
         <module>spring-cloud-starter-alicloud</module>
         <module>spring-cloud-alicloud-oss</module>
+        <module>spring-cloud-alibaba-nacos-config-server</module>
         <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alicloud-acm</module>
         <module>spring-cloud-alicloud-ans</module>
