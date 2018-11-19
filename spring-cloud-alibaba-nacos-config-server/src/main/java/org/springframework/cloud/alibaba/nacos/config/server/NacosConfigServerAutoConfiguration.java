@@ -23,6 +23,7 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.cloud.config.server.config.ConfigServerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Nacos Config Server Auto-Configuration
@@ -35,6 +36,7 @@ import org.springframework.context.annotation.ComponentScan;
         "com.alibaba.nacos.config.server",
 })
 @AutoConfigureBefore(ConfigServerAutoConfiguration.class)
+@Configuration
 public class NacosConfigServerAutoConfiguration {
 
     @Bean

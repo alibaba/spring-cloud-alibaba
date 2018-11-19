@@ -16,9 +16,11 @@
  */
 package org.springframework.cloud.alibaba.nacos.config.server.bootstrap;
 
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.config.server.EnableConfigServer;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Nacos Config Server Bootstrap
@@ -33,5 +35,13 @@ public class NacosConfigServerBootstrap {
     public static void main(String[] args) {
         System.setProperty("nacos.standalone", "true");
         SpringApplication.run(NacosConfigServerBootstrap.class);
+    }
+
+    @Bean
+    public ApplicationRunner applicationRunner() {
+
+        return args -> {
+            System.out.println("Running...");
+        };
     }
 }
