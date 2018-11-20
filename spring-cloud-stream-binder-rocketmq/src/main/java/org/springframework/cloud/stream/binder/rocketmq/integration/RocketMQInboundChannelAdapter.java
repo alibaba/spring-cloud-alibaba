@@ -43,6 +43,8 @@ import org.springframework.util.StringUtils;
  */
 public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
+    private static final Logger logger = LoggerFactory.getLogger(RocketMQInboundChannelAdapter.class);
+
     private ConsumerInstrumentation consumerInstrumentation;
 
     private final ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties;
@@ -132,7 +134,6 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
     }
 
     protected class CloudStreamMessageListener implements MessageListener, RetryListener {
-        private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         private final InstrumentationManager instrumentationManager;
 
