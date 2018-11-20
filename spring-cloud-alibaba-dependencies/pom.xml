@@ -28,6 +28,7 @@
 
     <dependencyManagement>
         <dependencies>
+
             <!-- Alibaba -->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
@@ -60,11 +61,20 @@
                 <artifactId>acm-sdk</artifactId>
                 <version>${acm.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
                 <version>${nacos.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-config</artifactId>
+                <version>${nacos.version}</version>
+            </dependency>
+
+            <!-- Sentinel -->
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-core</artifactId>
