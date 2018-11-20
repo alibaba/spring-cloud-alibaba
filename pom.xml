@@ -55,6 +55,13 @@
             <name>hengyunabc</name>
             <email>hengyunabc@gmail.com</email>
         </developer>
+        <developer>
+            <id>mercyblitz</id>
+            <name>Mercy Ma</name>
+            <email>mercyblitz@gmail.com</email>
+            <organization>Alibaba</organization>
+            <url>https://github.com/mercyblitz</url>
+        </developer>
     </developers>
 
     <properties>
@@ -81,13 +88,14 @@
         <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
+        <module>spring-cloud-alibaba-nacos-config-server</module>
+        <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-test</module>
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-starter-alibaba</module>
         <module>spring-cloud-starter-alicloud</module>
         <module>spring-cloud-alicloud-oss</module>
-        <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alicloud-acm</module>
         <module>spring-cloud-alicloud-ans</module>
     </modules>
