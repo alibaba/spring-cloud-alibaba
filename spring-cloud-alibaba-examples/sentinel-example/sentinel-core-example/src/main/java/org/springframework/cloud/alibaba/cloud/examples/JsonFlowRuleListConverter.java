@@ -10,7 +10,7 @@ import com.alibaba.fastjson.TypeReference;
 /**
  * @author fangjian
  */
-public class JsonFlowRuleListParser implements Converter<String, List<FlowRule>> {
+public class JsonFlowRuleListConverter implements Converter<String, List<FlowRule>> {
 	@Override
 	public List<FlowRule> convert(String source) {
 		return JSON.parseObject(source, new TypeReference<List<FlowRule>>() {
