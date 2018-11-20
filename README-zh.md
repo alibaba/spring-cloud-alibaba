@@ -1,13 +1,13 @@
 # Spring Cloud Alibaba
 
-Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解决方案。此项目包含开发分布式应用服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
 
-依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里分布式应用解决方案，通过阿里中间件来迅速搭建分布式应用系统。
+依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
 
 
 ## 主要功能
 
-* **服务限流降级**：默认支持为 HTTP 服务的提供限流保护，也支持添加注解实现方法的自定义限流降级，且支持动态修改限流降级规则。
+* **服务限流降级**：默认支持 Servlet、RestTemplate、Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
 * **服务注册与发现**：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。
 * **分布式配置管理**：支持分布式系统中的外部化配置，配置更改时自动刷新。
 * **阿里云对象存储**：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。
@@ -48,7 +48,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目clone�
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.0.REALEASE</version>
+                <version>0.2.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -77,6 +77,8 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目clone�
 
 [Nacos Config](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
 
+[Nacos Discovery](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
+
 [ACM](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/acm.adoc)
 
 
@@ -93,6 +95,10 @@ Example 列表：
 [Nacos Discovery Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md)
 
 [AliCloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme-zh.md)
+
+[AliCloud ANS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/ans-example/ans-provider-example/readme-zh.md)
+
+[AliCloud ACM Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/acm-example/acm-local-example/readme-zh.md)
 
 ## 版本管理规范
 项目的版本号格式为 x.x.x 的形式，其中 x 的数值类型为数字，从0开始取值，且不限于 0~9 这个范围。项目处于孵化器阶段时，第一位版本号固定使用0，即版本号为 0.x.x 的格式。

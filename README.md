@@ -49,7 +49,7 @@ These artifacts are available from Maven Central and Spring Release repository v
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.0.REALEASE</version>
+                <version>0.2.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -77,6 +77,8 @@ If you want to use the latest BUILD-SNAPSHOT version, add `Spring Snapshot Repos
 [Contents](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/spring-cloud-alibaba.adoc)
 
 [Nacos Config](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
+
+[Nacos Discovery](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
 
 [ACM](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/acm.adoc)
 
