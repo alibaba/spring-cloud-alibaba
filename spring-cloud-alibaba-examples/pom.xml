@@ -27,6 +27,7 @@
         <module>ans-example/ans-consumer-ribbon-example</module>
         <module>ans-example/ans-provider-example</module>
         <module>acm-example/acm-local-example</module>
+        <module>rocketmq-example</module>
     </modules>
 
     <build>

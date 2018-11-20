@@ -21,13 +21,15 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
-import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourcePostProcessor;
+import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
+import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
@@ -42,9 +44,13 @@ import com.alibaba.csp.sentinel.init.InitExecutor;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 /**
  * @author xiaojing
  * @author jiashuai.xie
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @Configuration
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
@@ -135,9 +141,33 @@ public class SentinelAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	public SentinelDataSourcePostProcessor sentinelDataSourcePostProcessor() {
-		return new SentinelDataSourcePostProcessor();
+	public SentinelDataSourceHandler sentinelDataSourceHandler() {
+		return new SentinelDataSourceHandler();
+	}
+
+	@Bean("sentinel-json-converter")
+	public JsonConverter jsonConverter(
+			@Qualifier("sentinel-object-mapper") ObjectMapper objectMapper) {
+		return new JsonConverter(objectMapper);
+	}
+
+	@Bean("sentinel-object-mapper")
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
+	}
+
+	@ConditionalOnClass(XmlMapper.class)
+	protected static class SentinelXmlConfiguration {
+		@Bean("sentinel-xml-converter")
+		public XmlConverter xmlConverter(
+				@Qualifier("sentinel-xml-mapper") XmlMapper xmlMapper) {
+			return new XmlConverter(xmlMapper);
+		}
+
+		@Bean("sentinel-xml-mapper")
+		public XmlMapper xmlMapper() {
+			return new XmlMapper();
+		}
 	}
 
 }
