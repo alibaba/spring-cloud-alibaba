@@ -9,26 +9,26 @@ import com.codahale.metrics.MetricRegistry;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class ConsumerGroupInstrumentation extends Instrumentation {
-    private MetricRegistry metricRegistry;
+	private MetricRegistry metricRegistry;
 
-    private AtomicBoolean delayedStart = new AtomicBoolean(false);
+	private AtomicBoolean delayedStart = new AtomicBoolean(false);
 
-    public ConsumerGroupInstrumentation(MetricRegistry metricRegistry, String name) {
-        super(name);
-        this.metricRegistry = metricRegistry;
-    }
+	public ConsumerGroupInstrumentation(MetricRegistry metricRegistry, String name) {
+		super(name);
+		this.metricRegistry = metricRegistry;
+	}
 
-    public void markDelayedStart() {
-        delayedStart.set(true);
-    }
+	public void markDelayedStart() {
+		delayedStart.set(true);
+	}
 
-    @Override
-    public boolean isUp() {
-        return started.get() || delayedStart.get();
-    }
+	@Override
+	public boolean isUp() {
+		return started.get() || delayedStart.get();
+	}
 
-    @Override
-    public boolean isOutOfService() {
-        return !started.get() && startException == null && !delayedStart.get();
-    }
+	@Override
+	public boolean isOutOfService() {
+		return !started.get() && startException == null && !delayedStart.get();
+	}
 }

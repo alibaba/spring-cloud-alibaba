@@ -19,9 +19,9 @@ public class RocketMQConsumerProperties {
     private String tags;
 
     /**
-     * {@link MQPushConsumer#subscribe(String, MessageSelector)}
-     * {@link MessageSelector#bySql(String)}
-     */
+	 * {@link MQPushConsumer#subscribe(String, MessageSelector)}
+	 * {@link MessageSelector#bySql(String)}
+	 */
     private String sql;
 
     /**

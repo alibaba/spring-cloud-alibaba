@@ -11,27 +11,28 @@ import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationM
  */
 public class RocketMQBinderHealthIndicator extends AbstractHealthIndicator {
 
-    private final InstrumentationManager instrumentationManager;
+	private final InstrumentationManager instrumentationManager;
 
-    public RocketMQBinderHealthIndicator(InstrumentationManager instrumentationManager) {
-        this.instrumentationManager = instrumentationManager;
-    }
+	public RocketMQBinderHealthIndicator(InstrumentationManager instrumentationManager) {
+		this.instrumentationManager = instrumentationManager;
+	}
 
-    @Override
-    protected void doHealthCheck(Health.Builder builder) throws Exception {
-        if (instrumentationManager.getHealthInstrumentations().stream().
-            allMatch(Instrumentation::isUp)) {
-            builder.up();
-            return;
-        }
-        if (instrumentationManager.getHealthInstrumentations().stream().
-            allMatch(Instrumentation::isOutOfService)) {
-            builder.outOfService();
-            return;
-        }
-        builder.down();
-        instrumentationManager.getHealthInstrumentations().stream().
-            filter(instrumentation -> !instrumentation.isStarted()).
-            forEach(instrumentation1 -> builder.withException(instrumentation1.getStartException()));
-    }
+	@Override
+	protected void doHealthCheck(Health.Builder builder) throws Exception {
+		if (instrumentationManager.getHealthInstrumentations().stream()
+				.allMatch(Instrumentation::isUp)) {
+			builder.up();
+			return;
+		}
+		if (instrumentationManager.getHealthInstrumentations().stream()
+				.allMatch(Instrumentation::isOutOfService)) {
+			builder.outOfService();
+			return;
+		}
+		builder.down();
+		instrumentationManager.getHealthInstrumentations().stream()
+				.filter(instrumentation -> !instrumentation.isStarted())
+				.forEach(instrumentation1 -> builder
+						.withException(instrumentation1.getStartException()));
+	}
 }

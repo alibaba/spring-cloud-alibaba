@@ -9,24 +9,24 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.cloud.stream.rocketmq.binder")
 public class RocketMQBinderConfigurationProperties {
 
-    private String namesrvAddr;
+	private String namesrvAddr;
 
-    private String logLevel = "ERROR";
+	private String logLevel = "ERROR";
 
-    public String getNamesrvAddr() {
-        return namesrvAddr;
-    }
+	public String getNamesrvAddr() {
+		return namesrvAddr;
+	}
 
-    public void setNamesrvAddr(String namesrvAddr) {
-        this.namesrvAddr = namesrvAddr;
-    }
+	public void setNamesrvAddr(String namesrvAddr) {
+		this.namesrvAddr = namesrvAddr;
+	}
 
-    public String getLogLevel() {
-        return logLevel;
-    }
+	public String getLogLevel() {
+		return logLevel;
+	}
 
-    public void setLogLevel(String logLevel) {
-        this.logLevel = logLevel;
-    }
+	public void setLogLevel(String logLevel) {
+		this.logLevel = logLevel;
+	}
 
 }

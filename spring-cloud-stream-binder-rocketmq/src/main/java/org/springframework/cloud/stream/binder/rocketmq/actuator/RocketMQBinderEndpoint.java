@@ -1,14 +1,15 @@
 package org.springframework.cloud.stream.binder.rocketmq.actuator;
 
+import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ENDPOINT_ID;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.codahale.metrics.MetricRegistry;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
-import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ENDPOINT_ID;
+import com.codahale.metrics.MetricRegistry;
 
 /**
  * @author Timur Valiev
@@ -17,23 +18,23 @@ import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderCon
 @Endpoint(id = ENDPOINT_ID)
 public class RocketMQBinderEndpoint {
 
-    private MetricRegistry metricRegistry = new MetricRegistry();
-    private Map<String, Object> runtime = new ConcurrentHashMap<>();
+	private MetricRegistry metricRegistry = new MetricRegistry();
+	private Map<String, Object> runtime = new ConcurrentHashMap<>();
 
-    @ReadOperation
-    public Map<String, Object> invoke() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("metrics", metricRegistry().getMetrics());
-        result.put("runtime", runtime());
-        return result;
-    }
+	@ReadOperation
+	public Map<String, Object> invoke() {
+		Map<String, Object> result = new HashMap<>();
+		result.put("metrics", metricRegistry().getMetrics());
+		result.put("runtime", runtime());
+		return result;
+	}
 
-    public MetricRegistry metricRegistry() {
-        return metricRegistry;
-    }
+	public MetricRegistry metricRegistry() {
+		return metricRegistry;
+	}
 
-    public Map<String, Object> runtime() {
-        return runtime;
-    }
+	public Map<String, Object> runtime() {
+		return runtime;
+	}
 
 }

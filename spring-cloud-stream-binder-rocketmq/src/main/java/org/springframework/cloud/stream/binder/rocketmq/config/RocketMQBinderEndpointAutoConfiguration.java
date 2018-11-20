@@ -15,19 +15,22 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(EndpointAutoConfiguration.class)
 public class RocketMQBinderEndpointAutoConfiguration {
 
-    @Bean
-    public RocketMQBinderEndpoint rocketBinderEndpoint() {
-        return new RocketMQBinderEndpoint();
-    }
+	@Bean
+	public RocketMQBinderEndpoint rocketBinderEndpoint() {
+		return new RocketMQBinderEndpoint();
+	}
 
-    @Bean
-    public RocketMQBinderHealthIndicator rocketBinderHealthIndicator(InstrumentationManager instrumentationManager) {
-        return new RocketMQBinderHealthIndicator(instrumentationManager);
-    }
+	@Bean
+	public RocketMQBinderHealthIndicator rocketBinderHealthIndicator(
+			InstrumentationManager instrumentationManager) {
+		return new RocketMQBinderHealthIndicator(instrumentationManager);
+	}
 
-    @Bean
-    public InstrumentationManager instrumentationManager(RocketMQBinderEndpoint rocketBinderEndpoint) {
-        return new InstrumentationManager(rocketBinderEndpoint.metricRegistry(), rocketBinderEndpoint.runtime());
-    }
+	@Bean
+	public InstrumentationManager instrumentationManager(
+			RocketMQBinderEndpoint rocketBinderEndpoint) {
+		return new InstrumentationManager(rocketBinderEndpoint.metricRegistry(),
+				rocketBinderEndpoint.runtime());
+	}
 
 }
