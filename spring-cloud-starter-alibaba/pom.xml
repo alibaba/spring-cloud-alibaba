@@ -14,5 +14,6 @@
         <module>spring-cloud-starter-alibaba-nacos-config</module>
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
         <module>spring-cloud-starter-alibaba-sentinel</module>
+        <module>spring-cloud-starter-stream-rocketmq</module>
     </modules>
 </project>

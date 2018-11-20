@@ -183,6 +183,11 @@
                 <artifactId>spring-cloud-alicloud-context</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Own dependencies - Starters -->
             <dependency>
@@ -217,6 +222,12 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

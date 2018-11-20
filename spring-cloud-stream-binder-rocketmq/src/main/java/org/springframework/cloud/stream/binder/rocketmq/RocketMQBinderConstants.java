@@ -5,22 +5,22 @@ package org.springframework.cloud.stream.binder.rocketmq;
  */
 public interface RocketMQBinderConstants {
 
-    /**
-     * Header key
-     */
-    String ORIGINAL_ROCKET_MESSAGE = "ORIGINAL_ROCKET_MESSAGE";
+	/**
+	 * Header key
+	 */
+	String ORIGINAL_ROCKET_MESSAGE = "ORIGINAL_ROCKETMQ_MESSAGE";
 
-    String ROCKET_FLAG = "ROCKETMQ_FLAG";
+	String ROCKET_FLAG = "ROCKETMQ_FLAG";
 
-    String ROCKET_SEND_RESULT = "ROCKETMQ_SEND_RESULT";
+	String ROCKET_SEND_RESULT = "ROCKETMQ_SEND_RESULT";
 
-    String ACKNOWLEDGEMENT_KEY = "ACKNOWLEDGEMENT";
+	String ACKNOWLEDGEMENT_KEY = "ACKNOWLEDGEMENT";
 
-    /**
-     * Instrumentation key
-     */
-    String LASTSEND_TIMESTAMP = "lastSend.timestamp";
+	/**
+	 * Instrumentation key
+	 */
+	String LASTSEND_TIMESTAMP = "lastSend.timestamp";
 
-    String ENDPOINT_ID = "rocketmq-binder";
+	String ENDPOINT_ID = "rocketmq-binder";
 
 }
