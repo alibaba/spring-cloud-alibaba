@@ -17,9 +17,12 @@
 package org.springframework.cloud.alibaba.sentinel;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
 import org.springframework.core.Ordered;
 
 import com.alibaba.csp.sentinel.config.SentinelConfig;
@@ -29,6 +32,7 @@ import com.alibaba.csp.sentinel.transport.config.TransportConfig;
  * @author xiaojing
  * @author hengyunabc
  * @author jiashuai.xie
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = SentinelConstants.PROPERTY_PREFIX)
 public class SentinelProperties {
@@ -48,6 +52,12 @@ public class SentinelProperties {
 	 * charset when sentinel write or search metric file {@link SentinelConfig#CHARSET}
 	 */
 	private String charset = "UTF-8";
+
+	/**
+	 * configurations about datasource, like 'nacos', 'apollo', 'file', 'zookeeper'
+	 */
+	private Map<String, DataSourcePropertiesConfiguration> datasource = new TreeMap<>(
+			String.CASE_INSENSITIVE_ORDER);
 
 	/**
 	 * transport configuration about dashboard and client
@@ -143,6 +153,14 @@ public class SentinelProperties {
 
 	public void setFilter(Filter filter) {
 		this.filter = filter;
+	}
+
+	public Map<String, DataSourcePropertiesConfiguration> getDatasource() {
+		return datasource;
+	}
+
+	public void setDatasource(Map<String, DataSourcePropertiesConfiguration> datasource) {
+		this.datasource = datasource;
 	}
 
 	public static class Flow {
