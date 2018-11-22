@@ -167,7 +167,7 @@ private ReadableDataSource dataSource;
 
 如果 `ApplicationContext` 中存在超过1个 `ReadableDataSource` bean，那么不会加载这些 `ReadableDataSource` 中的任意一个。 只有在 `ApplicationContext` 存在一个 `ReadableDataSource` 的情况下才会生效。
 
-如果数据库生效并且规则成功加载，控制台会打印类似如下信息：
+如果数据源生效并且规则成功加载，控制台会打印类似如下信息：
 
 ```
 [Sentinel Starter] load 3 flow rules
@@ -215,6 +215,13 @@ NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。�
 当然还有一种情况是json对象或xml对象可能会匹配上所有4种规则(比如json对象里只配了 `resource` 字段，那么会匹配上4种规则)，这种情况下日志里会警告，并且过滤掉这个对象。
 
 用户使用这种配置的时候只需要填写正确的json或xml就行，有任何不合理的信息都会在日志里打印出来。
+
+如果数据源生效并且规则成功加载，控制台会打印类似如下信息：
+
+```
+[Sentinel Starter] DataSource ds1-sentinel-file-datasource load 3 DegradeRule
+[Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
+```
 
 NOTE: 默认情况下，xml格式是不支持的。需要添加 `jackson-dataformat-xml` 依赖后才会自动生效。
 
