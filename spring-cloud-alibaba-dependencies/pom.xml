@@ -24,6 +24,7 @@
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
         <alicloud.context.version>1.0.0</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
+        <rocketmq.version>4.3.1</rocketmq.version>
     </properties>
 
     <dependencyManagement>
@@ -72,6 +73,13 @@
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-config</artifactId>
                 <version>${nacos.version}</version>
+            </dependency>
+
+            <!-- Apache RocketMQ -->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
             </dependency>
 
             <!-- Sentinel -->
