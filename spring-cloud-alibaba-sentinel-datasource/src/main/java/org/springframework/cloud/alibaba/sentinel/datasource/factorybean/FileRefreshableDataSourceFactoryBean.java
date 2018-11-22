@@ -70,7 +70,7 @@ public class FileRefreshableDataSourceFactoryBean
         return converter;
     }
 
-    public void setConverter(Converter Converter) {
-        this.converter = Converter;
+    public void setConverter(Converter converter) {
+        this.converter = converter;
     }
 }
