@@ -252,7 +252,7 @@ Content:    owner.group: infrastructure
 
 NOTE: 这个时候注意在轻量版配置中心填写的dataid的格式为：${spring.application.group}:application.${file-extension} 或者
 ${spring.application.group}:${spring.application.name}.${file-extension}。如果有 `spring.profiles.active` 的配置，dataid的格式还支持 
-${spring.application.group}:${spring.application.name}-${spring.profiles.active}.${file-extension}。 Group 的值目前只支持 DEFAULT_GROUP，因此在使用过程中请额外注意改值配置的正确性，不要和 `spring.application.group` 这个配置搞混了。
+${spring.application.group}:${spring.application.name}-${spring.profiles.active}.${file-extension}。 Group 的值目前只支持 DEFAULT_GROUP，因此在使用过程中请额外注意该值配置的正确性，不要和 `spring.application.group` 这个配置搞混了。
 
 启动 Spring Boot 应用测试的代码如下：
 
