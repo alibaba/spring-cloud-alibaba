@@ -18,6 +18,20 @@ package org.springframework.cloud.alibaba.sentinel.custom;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
+import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
+import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
+
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
@@ -28,115 +42,131 @@ import com.alibaba.csp.sentinel.init.InitExecutor;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
-import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourcePostProcessor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * @author xiaojing
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @Configuration
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelAutoConfiguration {
 
-    @Value("${project.name:${spring.application.name:}}")
-    private String projectName;
+	@Value("${project.name:${spring.application.name:}}")
+	private String projectName;
 
-    @Autowired
-    private SentinelProperties properties;
+	@Autowired
+	private SentinelProperties properties;
 
-    @Autowired(required = false)
-    private UrlCleaner urlCleaner;
+	@Autowired(required = false)
+	private UrlCleaner urlCleaner;
 
-    @Autowired(required = false)
-    private UrlBlockHandler urlBlockHandler;
+	@Autowired(required = false)
+	private UrlBlockHandler urlBlockHandler;
 
-    @PostConstruct
-    private void init() {
-        if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
-            && StringUtils.hasText(projectName)) {
-            System.setProperty(AppNameUtil.APP_NAME, projectName);
-        }
-        if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))
-            && StringUtils.hasText(properties.getTransport().getPort())) {
-            System.setProperty(TransportConfig.SERVER_PORT,
-                properties.getTransport().getPort());
-        }
-        if (StringUtils.isEmpty(System.getProperty(TransportConfig.CONSOLE_SERVER))
-            && StringUtils.hasText(properties.getTransport().getDashboard())) {
-            System.setProperty(TransportConfig.CONSOLE_SERVER,
-                properties.getTransport().getDashboard());
-        }
-        if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_INTERVAL_MS))
-            && StringUtils
-            .hasText(properties.getTransport().getHeartbeatIntervalMs())) {
-            System.setProperty(TransportConfig.HEARTBEAT_INTERVAL_MS,
-                properties.getTransport().getHeartbeatIntervalMs());
-        }
-        if (StringUtils.isEmpty(System.getProperty(SentinelConfig.CHARSET))
-            && StringUtils.hasText(properties.getCharset())) {
-            System.setProperty(SentinelConfig.CHARSET, properties.getCharset());
-        }
-        if (StringUtils
-            .isEmpty(System.getProperty(SentinelConfig.SINGLE_METRIC_FILE_SIZE))
-            && StringUtils.hasText(properties.getMetric().getFileSingleSize())) {
-            System.setProperty(SentinelConfig.SINGLE_METRIC_FILE_SIZE,
-                properties.getMetric().getFileSingleSize());
-        }
-        if (StringUtils
-            .isEmpty(System.getProperty(SentinelConfig.TOTAL_METRIC_FILE_COUNT))
-            && StringUtils.hasText(properties.getMetric().getFileTotalCount())) {
-            System.setProperty(SentinelConfig.TOTAL_METRIC_FILE_COUNT,
-                properties.getMetric().getFileTotalCount());
-        }
-        if (StringUtils.isEmpty(System.getProperty(SentinelConfig.COLD_FACTOR))
-            && StringUtils.hasText(properties.getFlow().getColdFactor())) {
-            System.setProperty(SentinelConfig.COLD_FACTOR,
-                properties.getFlow().getColdFactor());
-        }
+	@PostConstruct
+	private void init() {
+		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
+				&& StringUtils.hasText(projectName)) {
+			System.setProperty(AppNameUtil.APP_NAME, projectName);
+		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))
+				&& StringUtils.hasText(properties.getTransport().getPort())) {
+			System.setProperty(TransportConfig.SERVER_PORT,
+					properties.getTransport().getPort());
+		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.CONSOLE_SERVER))
+				&& StringUtils.hasText(properties.getTransport().getDashboard())) {
+			System.setProperty(TransportConfig.CONSOLE_SERVER,
+					properties.getTransport().getDashboard());
+		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_INTERVAL_MS))
+				&& StringUtils
+						.hasText(properties.getTransport().getHeartbeatIntervalMs())) {
+			System.setProperty(TransportConfig.HEARTBEAT_INTERVAL_MS,
+					properties.getTransport().getHeartbeatIntervalMs());
+		}
+		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.CHARSET))
+				&& StringUtils.hasText(properties.getCharset())) {
+			System.setProperty(SentinelConfig.CHARSET, properties.getCharset());
+		}
+		if (StringUtils
+				.isEmpty(System.getProperty(SentinelConfig.SINGLE_METRIC_FILE_SIZE))
+				&& StringUtils.hasText(properties.getMetric().getFileSingleSize())) {
+			System.setProperty(SentinelConfig.SINGLE_METRIC_FILE_SIZE,
+					properties.getMetric().getFileSingleSize());
+		}
+		if (StringUtils
+				.isEmpty(System.getProperty(SentinelConfig.TOTAL_METRIC_FILE_COUNT))
+				&& StringUtils.hasText(properties.getMetric().getFileTotalCount())) {
+			System.setProperty(SentinelConfig.TOTAL_METRIC_FILE_COUNT,
+					properties.getMetric().getFileTotalCount());
+		}
+		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.COLD_FACTOR))
+				&& StringUtils.hasText(properties.getFlow().getColdFactor())) {
+			System.setProperty(SentinelConfig.COLD_FACTOR,
+					properties.getFlow().getColdFactor());
+		}
 
-        if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
-            WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
-        }
-        if (urlBlockHandler != null) {
-            WebCallbackManager.setUrlBlockHandler(urlBlockHandler);
-        }
-        if (urlCleaner != null) {
-            WebCallbackManager.setUrlCleaner(urlCleaner);
-        }
+		if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
+			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
+		}
+		if (urlBlockHandler != null) {
+			WebCallbackManager.setUrlBlockHandler(urlBlockHandler);
+		}
+		if (urlCleaner != null) {
+			WebCallbackManager.setUrlCleaner(urlCleaner);
+		}
 
-        // earlier initialize
-        if (properties.isEager()) {
-            InitExecutor.doInit();
-        }
-    }
+		// earlier initialize
+		if (properties.isEager()) {
+			InitExecutor.doInit();
+		}
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public SentinelResourceAspect sentinelResourceAspect() {
-        return new SentinelResourceAspect();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public SentinelResourceAspect sentinelResourceAspect() {
+		return new SentinelResourceAspect();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
-    public SentinelBeanPostProcessor sentinelBeanPostProcessor() {
-        return new SentinelBeanPostProcessor();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
+	public SentinelBeanPostProcessor sentinelBeanPostProcessor() {
+		return new SentinelBeanPostProcessor();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public SentinelDataSourcePostProcessor sentinelDataSourcePostProcessor() {
-        return new SentinelDataSourcePostProcessor();
-    }
+	@Bean
+	public SentinelDataSourceHandler sentinelDataSourceHandler() {
+		return new SentinelDataSourceHandler();
+	}
+
+	@Bean("sentinel-json-converter")
+	public JsonConverter jsonConverter(
+			@Qualifier("sentinel-object-mapper") ObjectMapper objectMapper) {
+		return new JsonConverter(objectMapper);
+	}
+
+	@Bean("sentinel-object-mapper")
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
+	}
+
+	@ConditionalOnClass(XmlMapper.class)
+	protected static class SentinelXmlConfiguration {
+		@Bean("sentinel-xml-converter")
+		public XmlConverter xmlConverter(
+				@Qualifier("sentinel-xml-mapper") XmlMapper xmlMapper) {
+			return new XmlConverter(xmlMapper);
+		}
+
+		@Bean("sentinel-xml-mapper")
+		public XmlMapper xmlMapper() {
+			return new XmlMapper();
+		}
+	}
 
 }

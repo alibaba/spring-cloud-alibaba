@@ -20,15 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
+import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
+import org.springframework.cloud.alibaba.sentinel.custom.SentinelDataSourceHandler;
+import org.springframework.context.ApplicationContext;
+
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
-import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
 
 /**
  * Endpoint for Sentinel, contains ans properties and rules
@@ -38,6 +42,12 @@ public class SentinelEndpoint extends AbstractEndpoint<Map<String, Object>> {
 
 	@Autowired
 	private SentinelProperties sentinelProperties;
+
+	@Autowired
+	private SentinelDataSourceHandler dataSourceHandler;
+
+	@Autowired
+	private ApplicationContext applicationContext;
 
 	public SentinelEndpoint() {
 		super("sentinel");
@@ -54,6 +64,20 @@ public class SentinelEndpoint extends AbstractEndpoint<Map<String, Object>> {
 		result.put("FlowRules", flowRules);
 		result.put("DegradeRules", degradeRules);
 		result.put("SystemRules", systemRules);
+		result.put("datasources", new HashMap<String, Object>());
+
+		for (String dataSourceBeanName : dataSourceHandler.getDataSourceBeanNameList()) {
+			ReadableDataSource dataSource = applicationContext.getBean(dataSourceBeanName,
+					ReadableDataSource.class);
+			try {
+				((HashMap) result.get("datasources")).put(dataSourceBeanName,
+						dataSource.loadConfig());
+			}
+			catch (Exception e) {
+				((HashMap) result.get("datasources")).put(dataSourceBeanName,
+						"load error: " + e.getMessage());
+			}
+		}
 		return result;
 	}
 
