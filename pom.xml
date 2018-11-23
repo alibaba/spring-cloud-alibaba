@@ -89,6 +89,7 @@
         <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
+        <module>spring-cloud-stream-binder-rocketmq</module>
         <module>spring-cloud-alibaba-nacos-config-server</module>
         <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>

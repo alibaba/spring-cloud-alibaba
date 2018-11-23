@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba</artifactId>
+        <version>0.2.1.BUILD-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
+    <name>Spring Cloud Alibaba Bus RocketMQ</name>
+
+    <dependencies>
+
+        <!-- Spring Cloud Stream RocketMQ -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+        </dependency>
+
+        <!-- Spring Cloud Bus -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-bus</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

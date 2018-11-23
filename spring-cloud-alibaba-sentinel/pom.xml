@@ -40,6 +40,12 @@
             <artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!--spring boot-->
 
         <dependency>
