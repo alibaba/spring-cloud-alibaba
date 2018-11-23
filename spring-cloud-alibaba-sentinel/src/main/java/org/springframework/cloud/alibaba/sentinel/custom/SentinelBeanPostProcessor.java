@@ -34,7 +34,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * PostProcessor handle @SentinelProtect Annotation, add interceptor for RestTemplate
  *
- * @author fangjian
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @see SentinelProtect
  * @see SentinelProtectInterceptor
  */

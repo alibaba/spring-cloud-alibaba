@@ -9,6 +9,7 @@
         <version>2.0.4.RELEASE</version>
         <relativePath/>
     </parent>
+
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
     <version>0.2.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -184,6 +185,11 @@
                 <artifactId>spring-cloud-alicloud-context</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Own dependencies - Starters -->
             <dependency>
@@ -220,11 +226,24 @@
                 <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!-- Testing Dependencies -->
 
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Testing Dependencies -->
 
         </dependencies>
     </dependencyManagement>
+
     <profiles>
         <profile>
             <id>spring</id>
