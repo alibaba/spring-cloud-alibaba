@@ -2,6 +2,8 @@ package org.springframework.cloud.stream.binder.rocketmq.metrics;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Consumer;
+
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
@@ -19,13 +21,15 @@ public class ConsumerInstrumentation extends Instrumentation {
 
 	public ConsumerInstrumentation(MetricRegistry registry, String baseMetricName) {
 		super(baseMetricName);
-		this.totalConsumed = registry.counter(name(baseMetricName, "totalConsumed"));
+
+		this.totalConsumed = registry
+				.counter(name(baseMetricName, Consumer.TOTAL_CONSUMED));
 		this.consumedPerSecond = registry
-				.meter(name(baseMetricName, "consumedPerSecond"));
+				.meter(name(baseMetricName, Consumer.CONSUMED_PER_SECOND));
 		this.totalConsumedFailures = registry
-				.counter(name(baseMetricName, "totalConsumedFailures"));
+				.counter(name(baseMetricName, Consumer.TOTAL_CONSUMED_FAILURES));
 		this.consumedFailuresPerSecond = registry
-				.meter(name(baseMetricName, "consumedFailuresPerSecond"));
+				.meter(name(baseMetricName, Consumer.CONSUMED_FAILURES_PER_SECOND));
 	}
 
 	public void markConsumed() {
