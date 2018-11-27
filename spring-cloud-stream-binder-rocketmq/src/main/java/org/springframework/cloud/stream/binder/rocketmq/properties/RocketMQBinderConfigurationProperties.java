@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.cloud.stream.rocketmq.binder")
 public class RocketMQBinderConfigurationProperties {
 
-	private String namesrvAddr;
+	private String namesrvAddr = "127.0.0.1:9876";
 
 	private String logLevel = "ERROR";
 
