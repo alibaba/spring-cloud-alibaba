@@ -71,7 +71,7 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 2. Start the application in IDE or by building a fatjar.
 
 	1. Start in IDE: Find main class  `ServiceApplication`, and execute the main method.
-	2. Build a fatjar：Execute command `mvn clean package` to build a fatjar，and run command `java -jar sentinel-core-example.jar` to start the application.
+	2. Build a fatjar：Execute command `mvn clean package` to build a fatjar, and run command `java -jar sentinel-core-example.jar` to start the application.
 
 ### Invoke Service
 
@@ -86,7 +86,7 @@ The screenshot belows shows invoke success:
 
 1. Open http://localhost:8080 in browser, and you can find a Sentinel-Example Application has been registered to the dashboard. 
 
-	**Note: If you can't find your application in the dashboard, invoke a method that has been defined as a Sentinel Resource，for Sentinel uses lazy load strategy.**
+	**Note: If you can't find your application in the dashboard, invoke a method that has been defined as a Sentinel Resource, for Sentinel uses lazy load strategy.**
 	
 <p align="center"><img src="https://cdn.nlark.com/lark/0/2018/png/54319/1532315951819-9ffd959e-0547-4f61-8f06-91374cfe7f21.png" width="1000" heigh='400' ></p>
 
@@ -171,73 +171,30 @@ Sentinel provide [ReadableDataSource](https://github.com/alibaba/Sentinel/blob/m
 
 Sentinel starter integrated 4 DataSources provided by Sentinel. It will be register into Spring Context if you write some configs in `application.properties`.
 
-If you want to define FileRefreshableDataSource:
+If you want to define `FileRefreshableDataSource` and `NacosDataSource`, see the code below:
 
-    spring.cloud.sentinel.datasource.type=file
-    spring.cloud.sentinel.datasource.recommendRefreshMs=2000
-    spring.cloud.sentinel.datasource.bufSize=2048
-    spring.cloud.sentinel.datasource.charset=utf-8
-    spring.cloud.sentinel.datasource.converter=myParser
-    spring.cloud.sentinel.datasource.file=/Users/you/rule.json
-    
-then use `@SentinelDataSource` to annotate DataSource:
- 
-    @SentinelDataSource("spring.cloud.sentinel.datasource")
-    private ReadableDataSource dataSource;
-    
-The value() of `@SentinelDataSource` is not required, it means the prefix of configuration. Default value is `spring.cloud.sentinel.datasource`.
+```properties
+spring.cloud.sentinel.datasource.ds1.file.file=classpath: degraderule.json
+spring.cloud.sentinel.datasource.ds1.file.data-type=json
 
-spring.cloud.sentinel.datasource.type means the type of DataSource.
+spring.cloud.sentinel.datasource.ds2.nacos.server-addr=localhost:8848
+spring.cloud.sentinel.datasource.ds2.nacos.dataId=sentinel
+spring.cloud.sentinel.datasource.ds2.nacos.groupId=DEFAULT_GROUP
+spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
+```
 
-spring.cloud.sentinel.datasource.recommendRefreshMs means the recommendRefreshMs property of specified DataSource.
+`ds1` and `ds2` means the name of ReadableDataSource, you can write whatever you want. The `file` and `nacos` after name `ds1` and `ds2` means the type of ReadableDataSource. 
 
-spring.cloud.sentinel.datasource.converter means the name of spring bean that type is Converter. If the bean is not exists, will throw exception.
-    
-Now datasource type support 4 categories: file, nacos, zk, apollo. If you want to using nacos, zk or apollo, you should add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper` or `sentinel-datasource-apollo` dependency. 
+Now ReadableDataSource type support 4 categories: `file`, `nacos`, `zk` and `apollo`.
 
+If you want to use `nacos`, `zk` or `apollo` ReadableDataSource, you could add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper` or `sentinel-datasource-apollo` dependency.
 
-### User-defined DataSource
+When ReadableDataSource load rule data successfully, console will print some logs:
 
-User-defined DataSource need 2 steps.
-
-1. Define DataSource
-    
-        public class CustomDataSource implements ReadableDataSource {
-            private String fieldA;
-            private String fieldB;
-            ...
-        }
-    
-2. Assemble DataSource. There are 2 ways to do this.
-
-    * Construct DataSource directly
-        
-            @Bean
-            public CustomDataSource customDataSource() {
-                CustomDataSource customDataSource = new CustomDataSource();
-                customDataSource.setFieldA("valueA");
-                customDataSource.setFieldB("valueB");
-                ...
-                return customDataSource;
-            }
-
-    * define DataSource metadata in `classpath:/META-INF/sentinel-datasource.properties`
-    
-            custom = yourpackage.CustomDataSource
-       
-       define configuration in `application.properties`
-       
-            spring.cloud.sentinel.datasource.type = custom
-            spring.cloud.sentinel.datasource.fieldA = valueA
-            spring.cloud.sentinel.datasource.fieldB = valueB
-            
-Note: The AbstractDataSource of Sentinel need a Converter as a constructor param and the subclass of AbstractDataSource was construct by multi-param constructor.
-Now All DataSources in starter was construct by FactoryBean. If you want to do it in this way, you should register FactoryBean by SentinelDataSourceRegistry.
-
-    SentinelDataSourceRegistry.registerFactoryBean("custeom", CustomDataSourceFactoryBean.class);
-    
-It is no need to using SentinelDataSourceRegistry to register FactoryBean if your User-defined DataSource can inject fields. 
-  
+```
+[Sentinel Starter] DataSource ds1-sentinel-file-datasource load 3 DegradeRule
+[Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
+```   
 
 ## More
 For more information about Sentinel, see [Sentinel Project](https://github.com/alibaba/Sentinel).
