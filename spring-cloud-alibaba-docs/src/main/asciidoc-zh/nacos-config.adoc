@@ -28,7 +28,7 @@ Group  :    DEFAULT_GROUP
 
 ==== 客户端使用方式
 
-为了能够在应用程序使用Nacos实现应用的外部化配置，在构建应用的同时添加一个Spring Boot Starter org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config。以下是一个基础的maven 依赖配置:
+为了能够在应用程序中使用 Nacos 来实现应用的外部化配置，在构建应用的同时添加一个Spring Boot Starter org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config。以下是一个基础的 maven 依赖配置:
 
 [source,xml]
 ----
@@ -95,7 +95,7 @@ public class ProviderApplication {
 }
 ----
 
-spring-cloud-starter-alibaba-nacos-config 对于 Nacos 服务端的基础配置没有默认值，因此在运行此Example 之前， 必须使用 bootstrap.properties 配置文件来配置Nacos Server地址，例如：
+spring-cloud-starter-alibaba-nacos-config 对于 Nacos 服务端的基础配置没有默认值，因此在运行此 Example 之前， 必须使用 bootstrap.properties 配置文件来配置Nacos Server地址，例如：
 
 .bootstrap.properties
 [source,properties]
@@ -250,7 +250,7 @@ in develop-evn enviroment; user name :nacos-config-yaml-update; age: 68
 spring.profiles.active=product
 ----
 
-同时生产环境上Nacos需要添加该对应 dataid 的基础配置。例如，在生成环境下的 Naocs 添加了dataid为：nacos-config-product.yaml的配置：
+同时生产环境上 Nacos 需要添加对应 dataid 的基础配置。例如，在生成环境下的 Naocs 添加了dataid为：nacos-config-product.yaml的配置：
 
 [source,subs="normal"]
 ----
@@ -271,4 +271,4 @@ in product-env enviroment; user name :nacos-config-yaml-update; age: 68
 2018-11-02 15:42:14.628  INFO 33024 --- [Thread-11] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@6aa8e115: startup date [Fri Nov 02 15:42:03 CST 2018]; parent: org.springframework.context.annotation.AnnotationConfigApplicationContext@19bb07ed
 ----
 
-NOTE: 此案例中我们通过 `spring.profiles.active=****` 的方式写死在配置文件中，而在真正的项目实施过程中这个变量的值是需要不同环境而有不同的值。这个时候通常的做法是通过 `-Dspring.profiles.active=****` 参数指定其配置来达到环境间灵活的切换。
+NOTE: 此案例中我们通过 spring.profiles.active=**** 的方式写死在配置文件中，而在真正的项目实施过程中这个变量的值是需要不同环境而有不同的值。这个时候通常的做法是通过 -Dspring.profiles.active=**** 参数指定其配置来达到环境间灵活的切换。
