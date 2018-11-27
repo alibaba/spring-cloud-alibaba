@@ -37,7 +37,7 @@ public class NacosServer extends Server {
 		this.metaInfo = new MetaInfo() {
 			@Override
 			public String getAppName() {
-				return instance.serviceName();
+				return instance.getServiceName();
 			}
 
 			@Override
