@@ -39,7 +39,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目clone�
 ## 如何使用
 
 ### 如何引入依赖
-项目已经发布了第一个版本，版本 0.2.0.RELEASE 对应的是 Spring Boot 2.x 版本，版本 0.1.0.RELEASE 对应的是 Spring Boot 1.x 版本。
+项目已经发布了第一个版本，版本 0.2.0.RELEASE 对应的是 Spring Cloud Finchley 版本，版本 0.1.0.RELEASE 对应的是 Spring Cloud Edgware 版本。
 
 如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
 
