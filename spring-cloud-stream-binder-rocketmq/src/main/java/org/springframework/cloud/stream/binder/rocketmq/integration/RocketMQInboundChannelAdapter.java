@@ -212,14 +212,14 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 			}
 			catch (Exception e) {
 				logger.error(
-						"Rocket Message hasn't been processed successfully. Caused by ",
+						"RocketMQ Message hasn't been processed successfully. Caused by ",
 						e);
 				instrumentationManager
 						.getConsumerInstrumentation(
 								RocketMQInboundChannelAdapter.this.destination)
 						.markConsumedFailure();
 				throw new RuntimeException(
-						"Rocket Message hasn't been processed successfully. Caused by ",
+						"RocketMQ Message hasn't been processed successfully. Caused by ",
 						e);
 			}
 		}
