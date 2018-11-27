@@ -4,6 +4,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
 
+参考文档 请查看 [WIKI](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/wiki)
 
 ## 主要功能
 
@@ -69,18 +70,6 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目clone�
             </snapshots>
         </repository>
     </repositories>
-
-
-### Reference Doc
-
-[目录](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/spring-cloud-alibaba.adoc)
-
-[Nacos Config](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
-
-[Nacos Discovery](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
-
-[ACM](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/acm.adoc)
-
 
 ## 演示 Demo
 
