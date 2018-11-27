@@ -17,256 +17,285 @@
 package org.springframework.cloud.alibaba.sentinel;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
 import org.springframework.core.Ordered;
+
+import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 
 /**
  * @author xiaojing
  * @author hengyunabc
+ * @author jiashuai.xie
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = SentinelConstants.PROPERTY_PREFIX)
 public class SentinelProperties {
 
-    /**
-     * 是否提前初始化心跳连接
-     */
-    private boolean eager = false;
+	/**
+	 * earlier initialize heart-beat when the spring container starts <note> when the
+	 * transport dependency is on classpath ,the configuration is effective </note>
+	 */
+	private boolean eager = false;
 
-    /**
-     * Enable sentinel auto configure, the default value is true
-     */
-    private boolean enabled = true;
+	/**
+	 * enable sentinel auto configure, the default value is true
+	 */
+	private boolean enabled = true;
 
-    /**
-     * 字符编码集
-     */
-    private String charset = "UTF-8";
+	/**
+	 * charset when sentinel write or search metric file {@link SentinelConfig#CHARSET}
+	 */
+	private String charset = "UTF-8";
 
-    /**
-     * 通信相关配置
-     */
-    @NestedConfigurationProperty
-    private Transport transport = new Transport();
+	/**
+	 * configurations about datasource, like 'nacos', 'apollo', 'file', 'zookeeper'
+	 */
+	private Map<String, DataSourcePropertiesConfiguration> datasource = new TreeMap<>(
+			String.CASE_INSENSITIVE_ORDER);
 
-    /**
-     * 监控数据相关配置
-     */
-    @NestedConfigurationProperty
-    private Metric metric = new Metric();
+	/**
+	 * transport configuration about dashboard and client
+	 */
+	@NestedConfigurationProperty
+	private Transport transport = new Transport();
 
-    /**
-     * web 相关配置
-     */
-    @NestedConfigurationProperty
-    private Servlet servlet = new Servlet();
+	/**
+	 * metric configuration about resource
+	 */
+	@NestedConfigurationProperty
+	private Metric metric = new Metric();
 
-    /**
-     * 限流相关
-     */
-    @NestedConfigurationProperty
-    private Filter filter = new Filter();
+	/**
+	 * web servlet configuration <note> when the application is web ,the configuration is
+	 * effective </note>
+	 */
+	@NestedConfigurationProperty
+	private Servlet servlet = new Servlet();
 
-    @NestedConfigurationProperty
-    private Flow flow = new Flow();
+	/**
+	 * sentinel filter <note> when the application is web ,the configuration is effective
+	 * </note>
+	 */
+	@NestedConfigurationProperty
+	private Filter filter = new Filter();
 
-    public boolean isEager() {
-        return eager;
-    }
+	/**
+	 * flow configuration
+	 */
+	@NestedConfigurationProperty
+	private Flow flow = new Flow();
 
-    public void setEager(boolean eager) {
-        this.eager = eager;
-    }
+	public boolean isEager() {
+		return eager;
+	}
 
-    public Flow getFlow() {
-        return flow;
-    }
+	public void setEager(boolean eager) {
+		this.eager = eager;
+	}
 
-    public void setFlow(Flow flow) {
-        this.flow = flow;
-    }
+	public Flow getFlow() {
+		return flow;
+	}
 
-    public String getCharset() {
-        return charset;
-    }
+	public void setFlow(Flow flow) {
+		this.flow = flow;
+	}
 
-    public void setCharset(String charset) {
-        this.charset = charset;
-    }
+	public String getCharset() {
+		return charset;
+	}
 
-    public Transport getTransport() {
-        return transport;
-    }
+	public void setCharset(String charset) {
+		this.charset = charset;
+	}
 
-    public void setTransport(Transport transport) {
-        this.transport = transport;
-    }
+	public Transport getTransport() {
+		return transport;
+	}
 
-    public Metric getMetric() {
-        return metric;
-    }
+	public void setTransport(Transport transport) {
+		this.transport = transport;
+	}
 
-    public void setMetric(Metric metric) {
-        this.metric = metric;
-    }
+	public Metric getMetric() {
+		return metric;
+	}
 
-    public Servlet getServlet() {
-        return servlet;
-    }
+	public void setMetric(Metric metric) {
+		this.metric = metric;
+	}
 
-    public void setServlet(Servlet servlet) {
-        this.servlet = servlet;
-    }
+	public Servlet getServlet() {
+		return servlet;
+	}
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+	public void setServlet(Servlet servlet) {
+		this.servlet = servlet;
+	}
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+	public boolean isEnabled() {
+		return enabled;
+	}
 
-    public Filter getFilter() {
-        return filter;
-    }
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
+	public Filter getFilter() {
+		return filter;
+	}
 
-    public static class Flow {
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+	}
 
-        /**
-         * 限流冷启动因子
-         */
-        private String coldFactor = "3";
+	public Map<String, DataSourcePropertiesConfiguration> getDatasource() {
+		return datasource;
+	}
 
-        public String getColdFactor() {
-            return coldFactor;
-        }
+	public void setDatasource(Map<String, DataSourcePropertiesConfiguration> datasource) {
+		this.datasource = datasource;
+	}
 
-        public void setColdFactor(String coldFactor) {
-            this.coldFactor = coldFactor;
-        }
+	public static class Flow {
 
-    }
+		/**
+		 * the cold factor {@link SentinelConfig#COLD_FACTOR}
+		 */
+		private String coldFactor = "3";
 
-    public static class Servlet {
+		public String getColdFactor() {
+			return coldFactor;
+		}
 
-        /**
-         * url 限流后的处理页面
-         */
-        private String blockPage;
+		public void setColdFactor(String coldFactor) {
+			this.coldFactor = coldFactor;
+		}
 
-        public String getBlockPage() {
-            return blockPage;
-        }
+	}
 
-        public void setBlockPage(String blockPage) {
-            this.blockPage = blockPage;
-        }
-    }
+	public static class Servlet {
 
-    public static class Metric {
+		/**
+		 * The process page when the flow control is triggered
+		 */
+		private String blockPage;
 
-        /**
-         * 监控数据写磁盘时单个文件的大小
-         */
-        private String fileSingleSize;
+		public String getBlockPage() {
+			return blockPage;
+		}
 
-        /**
-         * 监控数据在磁盘上的总数量
-         */
-        private String fileTotalCount;
+		public void setBlockPage(String blockPage) {
+			this.blockPage = blockPage;
+		}
+	}
 
-        public String getFileSingleSize() {
-            return fileSingleSize;
-        }
+	public static class Metric {
 
-        public void setFileSingleSize(String fileSingleSize) {
-            this.fileSingleSize = fileSingleSize;
-        }
+		/**
+		 * the metric file size {@link SentinelConfig#SINGLE_METRIC_FILE_SIZE}
+		 */
+		private String fileSingleSize;
 
-        public String getFileTotalCount() {
-            return fileTotalCount;
-        }
+		/**
+		 * the total metric file count {@link SentinelConfig#TOTAL_METRIC_FILE_COUNT}
+		 */
+		private String fileTotalCount;
 
-        public void setFileTotalCount(String fileTotalCount) {
-            this.fileTotalCount = fileTotalCount;
-        }
-    }
+		public String getFileSingleSize() {
+			return fileSingleSize;
+		}
 
-    public static class Transport {
+		public void setFileSingleSize(String fileSingleSize) {
+			this.fileSingleSize = fileSingleSize;
+		}
 
-        /**
-         * sentinel api port,default value is 8721
-         */
-        private String port = "8721";
+		public String getFileTotalCount() {
+			return fileTotalCount;
+		}
 
-        /**
-         * Sentinel dashboard address, won't try to connect dashboard when address is
-         * empty
-         */
-        private String dashboard = "";
+		public void setFileTotalCount(String fileTotalCount) {
+			this.fileTotalCount = fileTotalCount;
+		}
+	}
 
-        /**
-         * 客户端和DashBord心跳发送时间
-         */
-        private String heartbeatIntervalMs;
+	public static class Transport {
 
-        public String getHeartbeatIntervalMs() {
-            return heartbeatIntervalMs;
-        }
+		/**
+		 * sentinel api port,default value is 8721 {@link TransportConfig#SERVER_PORT}
+		 */
+		private String port = "8721";
 
-        public void setHeartbeatIntervalMs(String heartbeatIntervalMs) {
-            this.heartbeatIntervalMs = heartbeatIntervalMs;
-        }
+		/**
+		 * sentinel dashboard address, won't try to connect dashboard when address is
+		 * empty {@link TransportConfig#CONSOLE_SERVER}
+		 */
+		private String dashboard = "";
 
-        public String getPort() {
-            return port;
-        }
+		/**
+		 * send heartbeat interval millisecond
+		 * {@link TransportConfig#HEARTBEAT_INTERVAL_MS}
+		 */
+		private String heartbeatIntervalMs;
 
-        public void setPort(String port) {
-            this.port = port;
-        }
+		public String getHeartbeatIntervalMs() {
+			return heartbeatIntervalMs;
+		}
 
-        public String getDashboard() {
-            return dashboard;
-        }
+		public void setHeartbeatIntervalMs(String heartbeatIntervalMs) {
+			this.heartbeatIntervalMs = heartbeatIntervalMs;
+		}
 
-        public void setDashboard(String dashboard) {
-            this.dashboard = dashboard;
-        }
+		public String getPort() {
+			return port;
+		}
 
-    }
+		public void setPort(String port) {
+			this.port = port;
+		}
 
-    public static class Filter {
+		public String getDashboard() {
+			return dashboard;
+		}
 
-        /**
-         * Sentinel filter chain order.
-         */
-        private int order = Ordered.HIGHEST_PRECEDENCE;
+		public void setDashboard(String dashboard) {
+			this.dashboard = dashboard;
+		}
 
-        /**
-         * URL pattern for sentinel filter,default is /*
-         */
-        private List<String> urlPatterns;
+	}
 
-        public int getOrder() {
-            return this.order;
-        }
+	public static class Filter {
 
-        public void setOrder(int order) {
-            this.order = order;
-        }
+		/**
+		 * sentinel filter chain order.
+		 */
+		private int order = Ordered.HIGHEST_PRECEDENCE;
 
-        public List<String> getUrlPatterns() {
-            return urlPatterns;
-        }
+		/**
+		 * URL pattern for sentinel filter,default is /*
+		 */
+		private List<String> urlPatterns;
 
-        public void setUrlPatterns(List<String> urlPatterns) {
-            this.urlPatterns = urlPatterns;
-        }
-    }
+		public int getOrder() {
+			return this.order;
+		}
+
+		public void setOrder(int order) {
+			this.order = order;
+		}
+
+		public List<String> getUrlPatterns() {
+			return urlPatterns;
+		}
+
+		public void setUrlPatterns(List<String> urlPatterns) {
+			this.urlPatterns = urlPatterns;
+		}
+	}
 }
