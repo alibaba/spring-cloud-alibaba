@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Consumer;
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Producer;
+
 import com.codahale.metrics.MetricRegistry;
 
 /**
@@ -27,21 +30,22 @@ public class InstrumentationManager {
 	}
 
 	public ProducerInstrumentation getProducerInstrumentation(String destination) {
-		String key = "scs-rocketmq.producer." + destination;
+
+		String key = Producer.PREFIX + destination;
 		producerInstrumentations.putIfAbsent(key,
 				new ProducerInstrumentation(metricRegistry, key));
 		return producerInstrumentations.get(key);
 	}
 
 	public ConsumerInstrumentation getConsumerInstrumentation(String destination) {
-		String key = "scs-rocketmq.consumer." + destination;
+		String key = Consumer.PREFIX + destination;
 		consumeInstrumentations.putIfAbsent(key,
 				new ConsumerInstrumentation(metricRegistry, key));
 		return consumeInstrumentations.get(key);
 	}
 
 	public ConsumerGroupInstrumentation getConsumerGroupInstrumentation(String group) {
-		String key = "scs-rocketmq.consumerGroup." + group;
+		String key = Consumer.GROUP_PREFIX + group;
 		consumerGroupsInstrumentations.putIfAbsent(key,
 				new ConsumerGroupInstrumentation(metricRegistry, key));
 		return consumerGroupsInstrumentations.get(key);
