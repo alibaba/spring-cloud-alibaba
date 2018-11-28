@@ -6,6 +6,7 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba</artifactId>
         <version>0.2.1.BUILD-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
     <name>Spring Cloud Starter Stream RocketMQ</name>
