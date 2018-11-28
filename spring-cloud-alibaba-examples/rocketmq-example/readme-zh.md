@@ -122,12 +122,12 @@ spring.cloud.stream.bindings.output.destination=test-topic
 spring.cloud.stream.bindings.output.content-type=application/json
 
 spring.cloud.stream.bindings.input1.destination=test-topic
-spring.cloud.stream.bindings.input1.content-type=application/json
+spring.cloud.stream.bindings.input1.content-type=text/plain
 spring.cloud.stream.bindings.input1.group=test-group1
 spring.cloud.stream.rocketmq.bindings.input1.consumer.orderly=true
 
 spring.cloud.stream.bindings.input2.destination=test-topic
-spring.cloud.stream.bindings.input2.content-type=application/json
+spring.cloud.stream.bindings.input2.content-type=text/plain
 spring.cloud.stream.bindings.input2.group=test-group2
 spring.cloud.stream.rocketmq.bindings.input2.consumer.orderly=false
 spring.cloud.stream.rocketmq.bindings.input2.consumer.tags=tagStr
@@ -195,7 +195,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，RocketMQ Stream 
 * Spring Boot 1.x 中添加配置 `management.security.enabled=false`
 * Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`
 
-Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq-binder 来查看 RocketMQ Binder Endpoint 的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:28081/acutator/rocketmq-binder 来访问。
+Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq_binder 来查看 RocketMQ Binder Endpoint 的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:28081/actuator/rocketmq-binder 来访问。
 
 这里会统计消息最后一次发送的数据，消息发送成功或失败的次数，消息消费成功或失败的次数等数据。
 
@@ -246,6 +246,14 @@ Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq-binder 来查
 			"oneMinuteRate": 0.0
 		}
 	}
+}
+```
+
+注意：要想查看统计数据需要在pom里加上 [metrics-core依赖](https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core) 。如若不加，endpoint将会显示warning信息而不会显示统计信息：
+
+```json
+{
+    "warning": "please add metrics-core dependency, we use it to metrics"
 }
 ```
 
