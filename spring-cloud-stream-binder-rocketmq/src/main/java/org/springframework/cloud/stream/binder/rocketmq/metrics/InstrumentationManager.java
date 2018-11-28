@@ -3,6 +3,7 @@ package org.springframework.cloud.stream.binder.rocketmq.metrics;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Consumer;
@@ -15,22 +16,17 @@ import com.codahale.metrics.MetricRegistry;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class InstrumentationManager {
-	private final MetricRegistry metricRegistry;
-	private final Map<String, Object> runtime;
+
+	private final MetricRegistry metricRegistry = new MetricRegistry();
+	private final Map<String, Object> runtime = new ConcurrentHashMap<>();
+
 	private final Map<String, ProducerInstrumentation> producerInstrumentations = new HashMap<>();
 	private final Map<String, ConsumerInstrumentation> consumeInstrumentations = new HashMap<>();
 	private final Map<String, ConsumerGroupInstrumentation> consumerGroupsInstrumentations = new HashMap<>();
 
 	private final Map<String, Instrumentation> healthInstrumentations = new HashMap<>();
 
-	public InstrumentationManager(MetricRegistry metricRegistry,
-			Map<String, Object> runtime) {
-		this.metricRegistry = metricRegistry;
-		this.runtime = runtime;
-	}
-
 	public ProducerInstrumentation getProducerInstrumentation(String destination) {
-
 		String key = Producer.PREFIX + destination;
 		producerInstrumentations.putIfAbsent(key,
 				new ProducerInstrumentation(metricRegistry, key));
@@ -62,5 +58,9 @@ public class InstrumentationManager {
 
 	public Map<String, Object> getRuntime() {
 		return runtime;
+	}
+
+	public MetricRegistry getMetricRegistry() {
+		return metricRegistry;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,19 +49,19 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
 	private ConsumerInstrumentation consumerInstrumentation;
 
+	private InstrumentationManager instrumentationManager;
+
+	private RetryTemplate retryTemplate;
+
+	private RecoveryCallback<? extends Object> recoveryCallback;
+
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties;
 
 	private final String destination;
 
 	private final String group;
 
-	private final InstrumentationManager instrumentationManager;
-
 	private final ConsumersManager consumersManager;
-
-	private RetryTemplate retryTemplate;
-
-	private RecoveryCallback<? extends Object> recoveryCallback;
 
 	public RocketMQInboundChannelAdapter(ConsumersManager consumersManager,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties,
@@ -75,21 +76,20 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
 	@Override
 	protected void doStart() {
-		if (!consumerProperties.getExtension().getEnabled()) {
+		if (consumerProperties == null
+				|| !consumerProperties.getExtension().getEnabled()) {
 			return;
 		}
 
-		String tags = consumerProperties == null ? null
-				: consumerProperties.getExtension().getTags();
-		Boolean isOrderly = consumerProperties == null ? false
-				: consumerProperties.getExtension().getOrderly();
+		String tags = consumerProperties.getExtension().getTags();
+		Boolean isOrderly = consumerProperties.getExtension().getOrderly();
 
 		DefaultMQPushConsumer consumer = consumersManager.getOrCreateConsumer(group,
 				destination, consumerProperties);
 
 		final CloudStreamMessageListener listener = isOrderly
-				? new CloudStreamMessageListenerOrderly(instrumentationManager)
-				: new CloudStreamMessageListenerConcurrently(instrumentationManager);
+				? new CloudStreamMessageListenerOrderly()
+				: new CloudStreamMessageListenerConcurrently();
 
 		if (retryTemplate != null) {
 			retryTemplate.registerListener(listener);
@@ -99,9 +99,10 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 				: Arrays.stream(tags.split("\\|\\|")).map(String::trim)
 						.collect(Collectors.toSet());
 
-		consumerInstrumentation = instrumentationManager
-				.getConsumerInstrumentation(destination);
-		instrumentationManager.addHealthInstrumentation(consumerInstrumentation);
+		Optional.ofNullable(instrumentationManager).ifPresent(manager -> {
+			consumerInstrumentation = manager.getConsumerInstrumentation(destination);
+			manager.addHealthInstrumentation(consumerInstrumentation);
+		});
 
 		try {
 			if (!StringUtils.isEmpty(consumerProperties.getExtension().getSql())) {
@@ -111,10 +112,12 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 			else {
 				consumer.subscribe(destination, String.join(" || ", tagsSet));
 			}
-			consumerInstrumentation.markStartedSuccessfully();
+			Optional.ofNullable(consumerInstrumentation)
+					.ifPresent(c -> c.markStartedSuccessfully());
 		}
 		catch (MQClientException e) {
-			consumerInstrumentation.markStartFailed(e);
+			Optional.ofNullable(consumerInstrumentation)
+					.ifPresent(c -> c.markStartFailed(e));
 			logger.error("RocketMQ Consumer hasn't been subscribed. Caused by "
 					+ e.getErrorMessage(), e);
 			throw new RuntimeException("RocketMQ Consumer hasn't been subscribed.", e);
@@ -148,12 +151,6 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
 	protected class CloudStreamMessageListener implements MessageListener, RetryListener {
 
-		private final InstrumentationManager instrumentationManager;
-
-		CloudStreamMessageListener(InstrumentationManager instrumentationManager) {
-			this.instrumentationManager = instrumentationManager;
-		}
-
 		Acknowledgement consumeMessage(final List<MessageExt> msgs) {
 			boolean enableRetry = RocketMQInboundChannelAdapter.this.retryTemplate != null;
 			try {
@@ -180,10 +177,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 				}
 				else {
 					Acknowledgement result = doSendMsgs(msgs, null);
-					instrumentationManager
-							.getConsumerInstrumentation(
-									RocketMQInboundChannelAdapter.this.destination)
-							.markConsumed();
+					Optional.ofNullable(
+							RocketMQInboundChannelAdapter.this.instrumentationManager)
+							.ifPresent(manager -> {
+								manager.getConsumerInstrumentation(
+										RocketMQInboundChannelAdapter.this.destination)
+										.markConsumed();
+							});
 					return result;
 				}
 			}
@@ -191,10 +191,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 				logger.error(
 						"RocketMQ Message hasn't been processed successfully. Caused by ",
 						e);
-				instrumentationManager
-						.getConsumerInstrumentation(
-								RocketMQInboundChannelAdapter.this.destination)
-						.markConsumedFailure();
+				Optional.ofNullable(
+						RocketMQInboundChannelAdapter.this.instrumentationManager)
+						.ifPresent(manager -> {
+							manager.getConsumerInstrumentation(
+									RocketMQInboundChannelAdapter.this.destination)
+									.markConsumedFailure();
+						});
 				throw new RuntimeException(
 						"RocketMQ Message hasn't been processed successfully. Caused by ",
 						e);
@@ -232,16 +235,22 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 		public <T, E extends Throwable> void close(RetryContext context,
 				RetryCallback<T, E> callback, Throwable throwable) {
 			if (throwable != null) {
-				instrumentationManager
-						.getConsumerInstrumentation(
-								RocketMQInboundChannelAdapter.this.destination)
-						.markConsumedFailure();
+				Optional.ofNullable(
+						RocketMQInboundChannelAdapter.this.instrumentationManager)
+						.ifPresent(manager -> {
+							manager.getConsumerInstrumentation(
+									RocketMQInboundChannelAdapter.this.destination)
+									.markConsumedFailure();
+						});
 			}
 			else {
-				instrumentationManager
-						.getConsumerInstrumentation(
-								RocketMQInboundChannelAdapter.this.destination)
-						.markConsumed();
+				Optional.ofNullable(
+						RocketMQInboundChannelAdapter.this.instrumentationManager)
+						.ifPresent(manager -> {
+							manager.getConsumerInstrumentation(
+									RocketMQInboundChannelAdapter.this.destination)
+									.markConsumed();
+						});
 			}
 		}
 
@@ -253,11 +262,6 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
 	protected class CloudStreamMessageListenerConcurrently
 			extends CloudStreamMessageListener implements MessageListenerConcurrently {
-
-		public CloudStreamMessageListenerConcurrently(
-				InstrumentationManager instrumentationManager) {
-			super(instrumentationManager);
-		}
 
 		@Override
 		public ConsumeConcurrentlyStatus consumeMessage(final List<MessageExt> msgs,
@@ -271,11 +275,6 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
 	protected class CloudStreamMessageListenerOrderly extends CloudStreamMessageListener
 			implements MessageListenerOrderly {
-
-		public CloudStreamMessageListenerOrderly(
-				InstrumentationManager instrumentationManager) {
-			super(instrumentationManager);
-		}
 
 		@Override
 		public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs,
