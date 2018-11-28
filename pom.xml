@@ -69,6 +69,7 @@
         <spring-cloud-commons.version>2.0.2.RELEASE</spring-cloud-commons.version>
         <spring-cloud-netflix.version>2.0.2.RELEASE</spring-cloud-netflix.version>
         <spring-cloud-openfeign.version>2.0.2.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>2.0.0.RELEASE</spring-cloud-bus.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -99,6 +100,7 @@
         <module>spring-cloud-alicloud-oss</module>
         <module>spring-cloud-alicloud-acm</module>
         <module>spring-cloud-alicloud-ans</module>
+        <module>spring-cloud-starter-bus-rocketmq</module>
     </modules>
 
     <dependencyManagement>
@@ -139,6 +141,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-openfeign-dependencies</artifactId>
                 <version>${spring-cloud-openfeign.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-bus-dependencies</artifactId>
+                <version>${spring-cloud-bus.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
