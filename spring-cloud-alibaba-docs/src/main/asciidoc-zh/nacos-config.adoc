@@ -203,6 +203,8 @@ spring-cloud-starter-alibaba-nacos-config 在加载配置的时候，不仅仅�
 spring.profiles.active=develop
 ----
 
+NOTE: ${spring.profiles.active} 当通过配置文件来指定时必须放在 bootstrap.properties 文件中。
+
 Nacos 上新增一个dataid为：nacos-config-develop.yaml的基础配置，如下所示：
 
 [source,subs="normal"]
