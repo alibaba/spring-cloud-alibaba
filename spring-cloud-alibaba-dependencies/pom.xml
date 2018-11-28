@@ -9,6 +9,7 @@
         <version>2.0.4.RELEASE</version>
         <relativePath/>
     </parent>
+
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
     <version>0.2.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -25,7 +26,6 @@
         <alicloud.context.version>1.0.0</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
-        <metrics.core>4.0.3</metrics.core>
     </properties>
 
     <dependencyManagement>
@@ -74,6 +74,13 @@
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-config</artifactId>
                 <version>${nacos.version}</version>
+            </dependency>
+
+            <!-- Apache RocketMQ -->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
             </dependency>
 
             <!-- Sentinel -->
@@ -126,11 +133,6 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>sentinel-dubbo-api</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-client</artifactId>
-                <version>${rocketmq.version}</version>
             </dependency>
 
 
@@ -231,18 +233,17 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- Third dependencies -->
             <dependency>
-                <groupId>io.dropwizard.metrics</groupId>
-                <artifactId>metrics-core</artifactId>
-                <version>${metrics.core}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- Testing Dependencies -->
 
-
         </dependencies>
     </dependencyManagement>
+
     <profiles>
         <profile>
             <id>spring</id>
