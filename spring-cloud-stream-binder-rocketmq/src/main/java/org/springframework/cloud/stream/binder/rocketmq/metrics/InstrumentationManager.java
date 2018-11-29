@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.codahale.metrics.MetricRegistry;
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Consumer;
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Producer;
 
 /**
  * @author Timur Valiev
@@ -37,7 +39,7 @@ public class InstrumentationManager {
 	private final Map<String, Instrumentation> healthInstrumentations = new HashMap<>();
 
 	public ProducerInstrumentation getProducerInstrumentation(String destination) {
-		String key = "scs-rocketmq.producer." + destination;
+		String key = Producer.PREFIX + destination;
 		ProducerInstrumentation producerInstrumentation = producerInstrumentations
 				.get(key);
 		if (producerInstrumentation == null) {
@@ -48,7 +50,7 @@ public class InstrumentationManager {
 	}
 
 	public ConsumerInstrumentation getConsumerInstrumentation(String destination) {
-		String key = "scs-rocketmq.consumer." + destination;
+		String key = Consumer.PREFIX + destination;
 		ConsumerInstrumentation consumerInstrumentation = consumeInstrumentations
 				.get(key);
 		if (consumerInstrumentation == null) {
@@ -59,7 +61,7 @@ public class InstrumentationManager {
 	}
 
 	public ConsumerGroupInstrumentation getConsumerGroupInstrumentation(String group) {
-		String key = "scs-rocketmq.consumerGroup." + group;
+		String key = Consumer.GROUP_PREFIX + group;
 		ConsumerGroupInstrumentation consumerGroupInstrumentation = consumerGroupsInstrumentations
 				.get(key);
 		if (consumerGroupInstrumentation == null) {
