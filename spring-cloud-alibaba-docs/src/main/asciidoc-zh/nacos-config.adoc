@@ -274,7 +274,8 @@ in product-env enviroment; user name :nacos-config-yaml-update; age: 68
 2018-11-02 15:42:14.628  INFO 33024 --- [Thread-11] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@6aa8e115: startup date [Fri Nov 02 15:42:03 CST 2018]; parent: org.springframework.context.annotation.AnnotationConfigApplicationContext@19bb07ed
 ----
 
-NOTE: 此案例中我们通过 spring.profiles.active=XXXX 的方式写死在配置文件中，而在真正的项目实施过程中这个变量的值是需要不同环境而有不同的值。这个时候通常的做法是通过 -Dspring.profiles.active=XXXX 参数指定其配置来达到环境间灵活的切换。
+
+NOTE: 此案例中我们通过 `spring.profiles.active=****` 的方式写死在配置文件中，而在真正的项目实施过程中这个变量的值是需要不同环境而有不同的值。这个时候通常的做法是通过 `-Dspring.profiles.active=****` 参数指定其配置来达到环境间灵活的切换。
 
 === 支持自定义 namespace 的配置
 
