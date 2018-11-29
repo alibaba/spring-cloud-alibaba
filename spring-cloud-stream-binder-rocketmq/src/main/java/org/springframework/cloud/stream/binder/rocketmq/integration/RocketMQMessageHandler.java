@@ -45,13 +45,13 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	private ProducerInstrumentation producerInstrumentation;
 
+	private InstrumentationManager instrumentationManager;
+
 	private final RocketMQProducerProperties producerProperties;
 
 	private final String destination;
 
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
-
-	private final InstrumentationManager instrumentationManager;
 
 	protected volatile boolean running = false;
 
@@ -69,9 +69,11 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 	public void start() {
 		producer = new DefaultMQProducer(destination);
 
-		producerInstrumentation = instrumentationManager
-				.getProducerInstrumentation(destination);
-		instrumentationManager.addHealthInstrumentation(producerInstrumentation);
+		if (instrumentationManager != null) {
+			producerInstrumentation = instrumentationManager
+					.getProducerInstrumentation(destination);
+			instrumentationManager.addHealthInstrumentation(producerInstrumentation);
+		}
 
 		producer.setNamesrvAddr(rocketBinderConfigurationProperties.getNamesrvAddr());
 
@@ -81,10 +83,14 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 		try {
 			producer.start();
-			producerInstrumentation.markStartedSuccessfully();
+			if (producerInstrumentation != null) {
+				producerInstrumentation.markStartedSuccessfully();
+			}
 		}
 		catch (MQClientException e) {
-			producerInstrumentation.markStartFailed(e);
+			if (producerInstrumentation != null) {
+				producerInstrumentation.markStartFailed(e);
+			}
 			logger.error(
 					"RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
 			throw new MessagingException(e.getMessage(), e);
@@ -142,14 +148,18 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 				RocketMQMessageHeaderAccessor.putSendResult((MutableMessage) message,
 						sendRes);
 			}
-			instrumentationManager.getRuntime().put(
-					RocketMQBinderConstants.LASTSEND_TIMESTAMP,
-					System.currentTimeMillis());
-			producerInstrumentation.markSent();
+			if (instrumentationManager != null) {
+				instrumentationManager.getRuntime().put(
+						RocketMQBinderConstants.LASTSEND_TIMESTAMP,
+						System.currentTimeMillis());
+				producerInstrumentation.markSent();
+			}
 		}
 		catch (MQClientException | RemotingException | MQBrokerException
 				| InterruptedException | UnsupportedOperationException e) {
-			producerInstrumentation.markSentFailure();
+			if (producerInstrumentation != null) {
+				producerInstrumentation.markSentFailure();
+			}
 			logger.error(
 					"RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
 			throw new MessagingException(e.getMessage(), e);

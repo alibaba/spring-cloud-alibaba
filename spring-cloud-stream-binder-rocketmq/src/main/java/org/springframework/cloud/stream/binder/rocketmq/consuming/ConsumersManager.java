@@ -38,85 +38,98 @@ import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQConsu
  */
 public class ConsumersManager {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final Map<String, DefaultMQPushConsumer> consumerGroups = new HashMap<>();
-    private final Map<String, Boolean> started = new HashMap<>();
-    private final Map<Map.Entry<String, String>, ExtendedConsumerProperties<RocketMQConsumerProperties>> propertiesMap
-        = new HashMap<>();
-    private final InstrumentationManager instrumentationManager;
-    private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
+	private InstrumentationManager instrumentationManager;
 
-    public ConsumersManager(InstrumentationManager instrumentationManager,
-                            RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties) {
-        this.instrumentationManager = instrumentationManager;
-        this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
-    }
+	private final Map<String, DefaultMQPushConsumer> consumerGroups = new HashMap<>();
+	private final Map<String, Boolean> started = new HashMap<>();
+	private final Map<Map.Entry<String, String>, ExtendedConsumerProperties<RocketMQConsumerProperties>> propertiesMap = new HashMap<>();
+	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
-    public synchronized DefaultMQPushConsumer getOrCreateConsumer(String group, String topic,
-                                                                  ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties) {
-        propertiesMap.put(new AbstractMap.SimpleEntry<>(group, topic), consumerProperties);
-        ConsumerGroupInstrumentation instrumentation = instrumentationManager.getConsumerGroupInstrumentation(group);
-        instrumentationManager.addHealthInstrumentation(instrumentation);
+	public ConsumersManager(InstrumentationManager instrumentationManager,
+			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties) {
+		this.instrumentationManager = instrumentationManager;
+		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
+	}
 
-        if (consumerGroups.containsKey(group)) {
-            return consumerGroups.get(group);
-        }
+	public synchronized DefaultMQPushConsumer getOrCreateConsumer(String group,
+			String topic,
+			ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties) {
+		propertiesMap.put(new AbstractMap.SimpleEntry<>(group, topic),
+				consumerProperties);
+		if (instrumentationManager != null) {
+			ConsumerGroupInstrumentation instrumentation = instrumentationManager
+					.getConsumerGroupInstrumentation(group);
+			instrumentationManager.addHealthInstrumentation(instrumentation);
+		}
 
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(group);
-        consumer.setNamesrvAddr(rocketBinderConfigurationProperties.getNamesrvAddr());
-        consumerGroups.put(group, consumer);
-        started.put(group, false);
-        consumer.setConsumeThreadMax(consumerProperties.getConcurrency());
-        consumer.setConsumeThreadMin(consumerProperties.getConcurrency());
-        if (consumerProperties.getExtension().getBroadcasting()) {
-            consumer.setMessageModel(MessageModel.BROADCASTING);
-        }
-        logger.info("RocketMQ consuming for SCS group {} created", group);
-        return consumer;
-    }
+		if (consumerGroups.containsKey(group)) {
+			return consumerGroups.get(group);
+		}
 
-    public synchronized void startConsumers() throws MQClientException {
-        for (String group : getConsumerGroups()) {
-            start(group);
-        }
-    }
+		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(group);
+		consumer.setNamesrvAddr(rocketBinderConfigurationProperties.getNamesrvAddr());
+		consumerGroups.put(group, consumer);
+		started.put(group, false);
+		consumer.setConsumeThreadMax(consumerProperties.getConcurrency());
+		consumer.setConsumeThreadMin(consumerProperties.getConcurrency());
+		if (consumerProperties.getExtension().getBroadcasting()) {
+			consumer.setMessageModel(MessageModel.BROADCASTING);
+		}
+		logger.info("RocketMQ consuming for SCS group {} created", group);
+		return consumer;
+	}
 
-    public synchronized void startConsumer(String group) throws MQClientException {
-        start(group);
-    }
+	public synchronized void startConsumers() throws MQClientException {
+		for (String group : getConsumerGroups()) {
+			start(group);
+		}
+	}
 
-    public synchronized void stopConsumer(String group) {
-        stop(group);
-    }
+	public synchronized void startConsumer(String group) throws MQClientException {
+		start(group);
+	}
 
-    private void stop(String group) {
-        if (consumerGroups.get(group) != null) {
-            consumerGroups.get(group).shutdown();
-            started.put(group, false);
-        }
-    }
+	public synchronized void stopConsumer(String group) {
+		stop(group);
+	}
 
-    private synchronized void start(String group) throws MQClientException {
-        if (started.get(group)) {
-            return;
-        }
-        ConsumerGroupInstrumentation groupInstrumentation = instrumentationManager.getConsumerGroupInstrumentation(
-            group);
-        instrumentationManager.addHealthInstrumentation(groupInstrumentation);
-        try {
-            consumerGroups.get(group).start();
-            started.put(group, true);
-            groupInstrumentation.markStartedSuccessfully();
-        } catch (MQClientException e) {
-            groupInstrumentation.markStartFailed(e);
-            logger.error("RocketMQ Consumer hasn't been started. Caused by " + e.getErrorMessage(), e);
-            throw e;
-        }
-    }
+	private void stop(String group) {
+		if (consumerGroups.get(group) != null) {
+			consumerGroups.get(group).shutdown();
+			started.put(group, false);
+		}
+	}
 
-    public synchronized Set<String> getConsumerGroups() {
-        return consumerGroups.keySet();
-    }
+	private synchronized void start(String group) throws MQClientException {
+		if (started.get(group)) {
+			return;
+		}
+		ConsumerGroupInstrumentation groupInstrumentation = null;
+		if (instrumentationManager != null) {
+			groupInstrumentation = instrumentationManager
+					.getConsumerGroupInstrumentation(group);
+			instrumentationManager.addHealthInstrumentation(groupInstrumentation);
+		}
+		try {
+			consumerGroups.get(group).start();
+			started.put(group, true);
+			if (groupInstrumentation != null) {
+				groupInstrumentation.markStartedSuccessfully();
+			}
+		}
+		catch (MQClientException e) {
+			if (groupInstrumentation != null) {
+				groupInstrumentation.markStartFailed(e);
+			}
+			logger.error("RocketMQ Consumer hasn't been started. Caused by "
+					+ e.getErrorMessage(), e);
+			throw e;
+		}
+	}
+
+	public synchronized Set<String> getConsumerGroups() {
+		return consumerGroups.keySet();
+	}
 }
-

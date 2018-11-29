@@ -33,38 +33,46 @@ import org.springframework.context.annotation.Configuration;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @Configuration
-@EnableConfigurationProperties({RocketMQBinderConfigurationProperties.class, RocketMQExtendedBindingProperties.class})
+@EnableConfigurationProperties({ RocketMQBinderConfigurationProperties.class,
+		RocketMQExtendedBindingProperties.class })
 public class RocketMQBinderAutoConfiguration {
 
-    private final RocketMQExtendedBindingProperties extendedBindingProperties;
+	private final RocketMQExtendedBindingProperties extendedBindingProperties;
 
-    private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
+	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
-    @Autowired
-    public RocketMQBinderAutoConfiguration(RocketMQExtendedBindingProperties extendedBindingProperties,
-                                           RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties) {
-        this.extendedBindingProperties = extendedBindingProperties;
-        this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
-        System.setProperty(ClientLogger.CLIENT_LOG_LEVEL, this.rocketBinderConfigurationProperties.getLogLevel());
-    }
+	@Autowired(required = false)
+	private InstrumentationManager instrumentationManager;
 
-    @Bean
-    public RocketMQTopicProvisioner provisioningProvider() {
-        return new RocketMQTopicProvisioner();
-    }
+	@Autowired
+	public RocketMQBinderAutoConfiguration(
+			RocketMQExtendedBindingProperties extendedBindingProperties,
+			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties) {
+		this.extendedBindingProperties = extendedBindingProperties;
+		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
+		System.setProperty(ClientLogger.CLIENT_LOG_LEVEL,
+				this.rocketBinderConfigurationProperties.getLogLevel());
+	}
 
-    @Bean
-    public RocketMQMessageChannelBinder rocketMessageChannelBinder(RocketMQTopicProvisioner provisioningProvider,
-                                                                   InstrumentationManager instrumentationManager,
-                                                                   ConsumersManager consumersManager) {
-        RocketMQMessageChannelBinder binder = new RocketMQMessageChannelBinder(consumersManager, extendedBindingProperties,
-            provisioningProvider, rocketBinderConfigurationProperties, instrumentationManager);
-        return binder;
-    }
+	@Bean
+	public RocketMQTopicProvisioner provisioningProvider() {
+		return new RocketMQTopicProvisioner();
+	}
 
-    @Bean
-    public ConsumersManager consumersManager(InstrumentationManager instrumentationManager) {
-        return new ConsumersManager(instrumentationManager, rocketBinderConfigurationProperties);
-    }
+	@Bean
+	public RocketMQMessageChannelBinder rocketMessageChannelBinder(
+			RocketMQTopicProvisioner provisioningProvider,
+			ConsumersManager consumersManager) {
+		RocketMQMessageChannelBinder binder = new RocketMQMessageChannelBinder(
+				consumersManager, extendedBindingProperties, provisioningProvider,
+				rocketBinderConfigurationProperties, instrumentationManager);
+		return binder;
+	}
+
+	@Bean
+	public ConsumersManager consumersManager() {
+		return new ConsumersManager(instrumentationManager,
+				rocketBinderConfigurationProperties);
+	}
 
 }
