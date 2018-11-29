@@ -25,6 +25,9 @@ public class RocketMQBinderAutoConfiguration {
 
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
+	@Autowired(required = false)
+	private InstrumentationManager instrumentationManager;
+
 	@Autowired
 	public RocketMQBinderAutoConfiguration(
 			RocketMQExtendedBindingProperties extendedBindingProperties,
@@ -43,7 +46,6 @@ public class RocketMQBinderAutoConfiguration {
 	@Bean
 	public RocketMQMessageChannelBinder rocketMessageChannelBinder(
 			RocketMQTopicProvisioner provisioningProvider,
-			InstrumentationManager instrumentationManager,
 			ConsumersManager consumersManager) {
 		RocketMQMessageChannelBinder binder = new RocketMQMessageChannelBinder(
 				consumersManager, extendedBindingProperties, provisioningProvider,
@@ -52,8 +54,7 @@ public class RocketMQBinderAutoConfiguration {
 	}
 
 	@Bean
-	public ConsumersManager consumersManager(
-			InstrumentationManager instrumentationManager) {
+	public ConsumersManager consumersManager() {
 		return new ConsumersManager(instrumentationManager,
 				rocketBinderConfigurationProperties);
 	}
