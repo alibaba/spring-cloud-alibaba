@@ -34,7 +34,6 @@ public class RocketMQMessageChannelBinder extends
 			.getLogger(RocketMQMessageChannelBinder.class);
 
 	private final RocketMQExtendedBindingProperties extendedBindingProperties;
-	private final RocketMQTopicProvisioner rocketTopicProvisioner;
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 	private final InstrumentationManager instrumentationManager;
 	private final ConsumersManager consumersManager;
@@ -47,7 +46,6 @@ public class RocketMQMessageChannelBinder extends
 		super(null, provisioningProvider);
 		this.consumersManager = consumersManager;
 		this.extendedBindingProperties = extendedBindingProperties;
-		this.rocketTopicProvisioner = provisioningProvider;
 		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
 		this.instrumentationManager = instrumentationManager;
 	}
@@ -63,7 +61,7 @@ public class RocketMQMessageChannelBinder extends
 		}
 		else {
 			throw new RuntimeException("Binding for channel " + destination.getName()
-					+ "has been disabled, message can't be delivered");
+					+ " has been disabled, message can't be delivered");
 		}
 	}
 
@@ -74,7 +72,7 @@ public class RocketMQMessageChannelBinder extends
 			throws Exception {
 		if (group == null || "".equals(group)) {
 			throw new RuntimeException(
-					"'group' must be configured for channel + " + destination.getName());
+					"'group must be configured for channel + " + destination.getName());
 		}
 
 		RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(
