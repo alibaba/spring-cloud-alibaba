@@ -100,7 +100,6 @@
         <module>spring-cloud-alicloud-oss</module>
         <module>spring-cloud-alicloud-acm</module>
         <module>spring-cloud-alicloud-ans</module>
-        <module>spring-cloud-starter-bus-rocketmq</module>
     </modules>
 
     <dependencyManagement>
