@@ -20,11 +20,10 @@ import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderCon
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
-
-import com.codahale.metrics.MetricRegistry;
+import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 
 /**
  * @author Timur Valiev
@@ -32,8 +31,8 @@ import com.codahale.metrics.MetricRegistry;
  */
 public class RocketMQBinderEndpoint extends AbstractEndpoint<Map<String, Object>> {
 
-	private MetricRegistry metricRegistry = new MetricRegistry();
-	private Map<String, Object> runtime = new ConcurrentHashMap<>();
+	@Autowired(required = false)
+	private InstrumentationManager instrumentationManager;
 
 	public RocketMQBinderEndpoint() {
 		super(ENDPOINT_ID);
@@ -42,17 +41,15 @@ public class RocketMQBinderEndpoint extends AbstractEndpoint<Map<String, Object>
 	@Override
 	public Map<String, Object> invoke() {
 		Map<String, Object> result = new HashMap<>();
-		result.put("metrics", metricRegistry().getMetrics());
-		result.put("runtime", runtime());
+		if (instrumentationManager != null) {
+			result.put("metrics", instrumentationManager.getMetricRegistry());
+			result.put("runtime", instrumentationManager.getRuntime());
+		}
+		else {
+			result.put("warning",
+					"please add metrics-core dependency, we use it for metrics");
+		}
 		return result;
-	}
-
-	public MetricRegistry metricRegistry() {
-		return metricRegistry;
-	}
-
-	public Map<String, Object> runtime() {
-		return runtime;
 	}
 
 }

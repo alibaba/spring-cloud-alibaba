@@ -25,7 +25,6 @@
         <alicloud.context.version>1.0.0</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
-        <metrics.core>3.2.6</metrics.core>
     </properties>
 
     <dependencyManagement>
@@ -219,13 +218,6 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <!-- Third dependencies -->
-            <dependency>
-                <groupId>io.dropwizard.metrics</groupId>
-                <artifactId>metrics-core</artifactId>
-                <version>${metrics.core}</version>
             </dependency>
 
             <!-- Testing Dependencies -->

@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.actuator;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.Instrumentation;
@@ -27,40 +28,45 @@ import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationM
  */
 public class RocketMQBinderHealthIndicator extends AbstractHealthIndicator {
 
-	private final InstrumentationManager instrumentationManager;
-
-	public RocketMQBinderHealthIndicator(InstrumentationManager instrumentationManager) {
-		this.instrumentationManager = instrumentationManager;
-	}
+	@Autowired(required = false)
+	private InstrumentationManager instrumentationManager;
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
 		int upCount = 0, outOfServiceCount = 0;
-		for (Instrumentation instrumentation : instrumentationManager
-				.getHealthInstrumentations()) {
-			if (instrumentation.isUp()) {
-				upCount++;
+		if (instrumentationManager != null) {
+			for (Instrumentation instrumentation : instrumentationManager
+					.getHealthInstrumentations()) {
+				if (instrumentation.isUp()) {
+					upCount++;
+				}
+				else if (instrumentation.isOutOfService()) {
+					upCount++;
+				}
 			}
-			else if (instrumentation.isOutOfService()) {
-				upCount++;
+			if (upCount == instrumentationManager.getHealthInstrumentations().size()) {
+				builder.up();
+				return;
 			}
-		}
-		if (upCount == instrumentationManager.getHealthInstrumentations().size()) {
-			builder.up();
-			return;
-		}
-		else if (outOfServiceCount == instrumentationManager.getHealthInstrumentations()
-				.size()) {
-			builder.outOfService();
-			return;
-		}
-		builder.down();
+			else if (outOfServiceCount == instrumentationManager
+					.getHealthInstrumentations().size()) {
+				builder.outOfService();
+				return;
+			}
+			builder.down();
 
-		for (Instrumentation instrumentation : instrumentationManager
-				.getHealthInstrumentations()) {
-			if (!instrumentation.isStarted()) {
-				builder.withException(instrumentation.getStartException());
+			for (Instrumentation instrumentation : instrumentationManager
+					.getHealthInstrumentations()) {
+				if (!instrumentation.isStarted()) {
+					builder.withException(instrumentation.getStartException());
+				}
 			}
 		}
+		else {
+			builder.down();
+			builder.withDetail("warning",
+					"please add metrics-core dependency, we use it for metrics");
+		}
+
 	}
 }

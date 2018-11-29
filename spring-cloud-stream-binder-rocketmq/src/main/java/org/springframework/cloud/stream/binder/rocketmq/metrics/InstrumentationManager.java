@@ -22,28 +22,24 @@ import java.util.Map;
 import java.util.Set;
 
 import com.codahale.metrics.MetricRegistry;
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Consumer;
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Producer;
 
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class InstrumentationManager {
-	private final MetricRegistry metricRegistry;
-	private final Map<String, Object> runtime;
+	private final MetricRegistry metricRegistry = new MetricRegistry();
+	private final Map<String, Object> runtime = new HashMap<>();
 	private final Map<String, ProducerInstrumentation> producerInstrumentations = new HashMap<>();
 	private final Map<String, ConsumerInstrumentation> consumeInstrumentations = new HashMap<>();
 	private final Map<String, ConsumerGroupInstrumentation> consumerGroupsInstrumentations = new HashMap<>();
 
 	private final Map<String, Instrumentation> healthInstrumentations = new HashMap<>();
 
-	public InstrumentationManager(MetricRegistry metricRegistry,
-			Map<String, Object> runtime) {
-		this.metricRegistry = metricRegistry;
-		this.runtime = runtime;
-	}
-
 	public ProducerInstrumentation getProducerInstrumentation(String destination) {
-		String key = "scs-rocketmq.producer." + destination;
+		String key = Producer.PREFIX + destination;
 		ProducerInstrumentation producerInstrumentation = producerInstrumentations
 				.get(key);
 		if (producerInstrumentation == null) {
@@ -54,7 +50,7 @@ public class InstrumentationManager {
 	}
 
 	public ConsumerInstrumentation getConsumerInstrumentation(String destination) {
-		String key = "scs-rocketmq.consumer." + destination;
+		String key = Consumer.PREFIX + destination;
 		ConsumerInstrumentation consumerInstrumentation = consumeInstrumentations
 				.get(key);
 		if (consumerInstrumentation == null) {
@@ -65,7 +61,7 @@ public class InstrumentationManager {
 	}
 
 	public ConsumerGroupInstrumentation getConsumerGroupInstrumentation(String group) {
-		String key = "scs-rocketmq.consumerGroup." + group;
+		String key = Consumer.GROUP_PREFIX + group;
 		ConsumerGroupInstrumentation consumerGroupInstrumentation = consumerGroupsInstrumentations
 				.get(key);
 		if (consumerGroupInstrumentation == null) {
@@ -85,5 +81,9 @@ public class InstrumentationManager {
 
 	public Map<String, Object> getRuntime() {
 		return runtime;
+	}
+
+	public MetricRegistry getMetricRegistry() {
+		return metricRegistry;
 	}
 }

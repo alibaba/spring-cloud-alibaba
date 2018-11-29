@@ -42,76 +42,82 @@ import org.springframework.messaging.MessageHandler;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class RocketMQMessageChannelBinder extends
-    AbstractMessageChannelBinder<ExtendedConsumerProperties<RocketMQConsumerProperties>,
-        ExtendedProducerProperties<RocketMQProducerProperties>, RocketMQTopicProvisioner>
-    implements ExtendedPropertiesBinder<MessageChannel, RocketMQConsumerProperties, RocketMQProducerProperties> {
+		AbstractMessageChannelBinder<ExtendedConsumerProperties<RocketMQConsumerProperties>, ExtendedProducerProperties<RocketMQProducerProperties>, RocketMQTopicProvisioner>
+		implements
+		ExtendedPropertiesBinder<MessageChannel, RocketMQConsumerProperties, RocketMQProducerProperties> {
 
-    private static final Logger logger = LoggerFactory.getLogger(RocketMQMessageChannelBinder.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(RocketMQMessageChannelBinder.class);
 
-    private final RocketMQExtendedBindingProperties extendedBindingProperties;
-    private final RocketMQTopicProvisioner rocketTopicProvisioner;
-    private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
-    private final InstrumentationManager instrumentationManager;
-    private final ConsumersManager consumersManager;
+	private final RocketMQExtendedBindingProperties extendedBindingProperties;
+	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
+	private final InstrumentationManager instrumentationManager;
+	private final ConsumersManager consumersManager;
 
-    public RocketMQMessageChannelBinder(ConsumersManager consumersManager,
-                                        RocketMQExtendedBindingProperties extendedBindingProperties,
-                                        RocketMQTopicProvisioner provisioningProvider,
-                                        RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
-                                        InstrumentationManager instrumentationManager) {
-        super(true, null, provisioningProvider);
-        this.consumersManager = consumersManager;
-        this.extendedBindingProperties = extendedBindingProperties;
-        this.rocketTopicProvisioner = provisioningProvider;
-        this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
-        this.instrumentationManager = instrumentationManager;
-    }
+	public RocketMQMessageChannelBinder(ConsumersManager consumersManager,
+			RocketMQExtendedBindingProperties extendedBindingProperties,
+			RocketMQTopicProvisioner provisioningProvider,
+			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
+			InstrumentationManager instrumentationManager) {
+		super(true, null, provisioningProvider);
+		this.consumersManager = consumersManager;
+		this.extendedBindingProperties = extendedBindingProperties;
+		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
+		this.instrumentationManager = instrumentationManager;
+	}
 
-    @Override
-    protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
-                                                          ExtendedProducerProperties<RocketMQProducerProperties>
-                                                              producerProperties,
-                                                          MessageChannel errorChannel) throws Exception {
-        if (producerProperties.getExtension().getEnabled()) {
-            return new RocketMQMessageHandler(destination.getName(), producerProperties.getExtension(),
-                rocketBinderConfigurationProperties, instrumentationManager);
-        } else {
-            throw new RuntimeException(
-                "Binding for channel " + destination.getName() + "has been disabled, message can't be delivered");
-        }
-    }
+	@Override
+	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
+			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
+			MessageChannel errorChannel) throws Exception {
+		if (producerProperties.getExtension().getEnabled()) {
+			return new RocketMQMessageHandler(destination.getName(),
+					producerProperties.getExtension(),
+					rocketBinderConfigurationProperties, instrumentationManager);
+		}
+		else {
+			throw new RuntimeException("Binding for channel " + destination.getName()
+					+ " has been disabled, message can't be delivered");
+		}
+	}
 
-    @Override
-    protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
-                                                     ExtendedConsumerProperties<RocketMQConsumerProperties>
-                                                         consumerProperties)
-        throws Exception {
-        if (group == null || "".equals(group)) {
-            throw new RuntimeException("'group' must be configured for channel + " + destination.getName());
-        }
+	@Override
+	protected MessageProducer createConsumerEndpoint(ConsumerDestination destination,
+			String group,
+			ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties)
+			throws Exception {
+		if (group == null || "".equals(group)) {
+			throw new RuntimeException(
+					"'group' must be configured for channel + " + destination.getName());
+		}
 
-        RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(consumersManager,
-            consumerProperties, destination.getName(), group, instrumentationManager);
+		RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(
+				consumersManager, consumerProperties, destination.getName(), group,
+				instrumentationManager);
 
-        ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination, group,
-            consumerProperties);
-        if (consumerProperties.getMaxAttempts() > 1) {
-            rocketInboundChannelAdapter.setRetryTemplate(buildRetryTemplate(consumerProperties));
-            rocketInboundChannelAdapter.setRecoveryCallback(errorInfrastructure.getRecoverer());
-        } else {
-            rocketInboundChannelAdapter.setErrorChannel(errorInfrastructure.getErrorChannel());
-        }
+		ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination,
+				group, consumerProperties);
+		if (consumerProperties.getMaxAttempts() > 1) {
+			rocketInboundChannelAdapter
+					.setRetryTemplate(buildRetryTemplate(consumerProperties));
+			rocketInboundChannelAdapter
+					.setRecoveryCallback(errorInfrastructure.getRecoverer());
+		}
+		else {
+			rocketInboundChannelAdapter
+					.setErrorChannel(errorInfrastructure.getErrorChannel());
+		}
 
-        return rocketInboundChannelAdapter;
-    }
+		return rocketInboundChannelAdapter;
+	}
 
-    @Override
-    public RocketMQConsumerProperties getExtendedConsumerProperties(String channelName) {
-        return extendedBindingProperties.getExtendedConsumerProperties(channelName);
-    }
+	@Override
+	public RocketMQConsumerProperties getExtendedConsumerProperties(String channelName) {
+		return extendedBindingProperties.getExtendedConsumerProperties(channelName);
+	}
 
-    @Override
-    public RocketMQProducerProperties getExtendedProducerProperties(String channelName) {
-        return extendedBindingProperties.getExtendedProducerProperties(channelName);
-    }
+	@Override
+	public RocketMQProducerProperties getExtendedProducerProperties(String channelName) {
+		return extendedBindingProperties.getExtendedProducerProperties(channelName);
+	}
 }
