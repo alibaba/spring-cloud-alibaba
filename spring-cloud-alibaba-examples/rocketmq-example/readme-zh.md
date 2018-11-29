@@ -249,6 +249,14 @@ Spring Boot 1.x 可以通过访问 http://127.0.0.1:28081/rocketmq_binder 来查
 }
 ```
 
+注意：要想查看统计数据需要在pom里加上 [metrics-core依赖](https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core) 。如若不加，endpoint将会显示warning信息而不会显示统计信息：
+
+```json
+{
+    "warning": "please add metrics-core dependency, we use it for metrics"
+}
+```
+
 ## More
 
 RocketMQ 是一款功能强大的分布式消息系统，广泛应用于多个领域，包括异步通信解耦、企业解决方案、金融支付、电信、电子商务、快递物流、广告营销、社交、即时通信、移动应用、手游、视频、物联网、车联网等。
