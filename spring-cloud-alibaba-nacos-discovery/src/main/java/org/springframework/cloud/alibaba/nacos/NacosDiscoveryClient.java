@@ -79,7 +79,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		metadata.put("instanceId", instance.getInstanceId());
 		metadata.put("weight", instance.getWeight() + "");
 		metadata.put("healthy", instance.isHealthy() + "");
-		metadata.put("cluster", instance.getCluster() + "");
+		metadata.put("cluster", instance.getClusterName() + "");
 		metadata.putAll(instance.getMetadata());
 		nacosServiceInstance.setMetadata(metadata);
 		return nacosServiceInstance;
