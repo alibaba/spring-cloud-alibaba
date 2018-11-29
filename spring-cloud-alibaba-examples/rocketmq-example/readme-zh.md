@@ -6,13 +6,21 @@
 
 [RocketMQ](https://rocketmq.apache.org/) 是一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
 
-在说明RocketMQ的示例之前，我们先了解一下 Spring Cloud Stream 中的Binder和Binding概念。
+在说明RocketMQ的示例之前，我们先了解一下 Spring Cloud Stream。
 
-Binder: 跟外部消息中间件集成的组件，用来创建Binding，各消息中间件都有自己的Binder实现。
+这是官方对Spring Cloud Stream的一段介绍：
+
+Spring Cloud Stream是一个用于构建基于消息的微服务应用框架。它基于SpringBoot来创建具有生产级别的单机Spring应用，并且使用 `Spring Integration` 与Broker进行连接。
+ 
+Spring Cloud Stream提供了消息中间件配置的统一抽象，推出了 publish-subscribe、consumer groups、partition 这些统一的概念。
+
+Spring Cloud Stream 内部有2个概念：Binder 和 Binding。
+
+* Binder: 跟外部消息中间件集成的组件，用来创建Binding，各消息中间件都有自己的Binder实现。
 
 比如 `Kafka` 的实现 `KafkaMessageChannelBinder` ，`RabbitMQ` 的实现 `RabbitMessageChannelBinder` 以及 `RocketMQ` 的实现 `RocketMQMessageChannelBinder` 。
 
-Binding: 包括Input Binding和Output Binding。
+* Binding: 包括Input Binding和Output Binding。
 
 Binding在消息中间件与应用程序提供的Provider和Consumer之间提供了一个桥梁，实现了开发者只需使用应用程序的Provider或Consumer生产或消费数据即可，屏蔽了开发者与底层消息中间件的接触。
 
@@ -110,8 +118,9 @@ server.port=28081
 
 使用2个input binding订阅数据。
 
-input1: 订阅topic为test-topic的消息，顺序消费所有消息(顺序消费的前提是所有消息都在一个MessageQueue中)
-input2: 订阅topic为test-topic的消息，异步消费tags为tagStr的消息，Consumer端线程池个数为20
+* input1：订阅topic为test-topic的消息，顺序消费所有消息(顺序消费的前提是所有消息都在一个MessageQueue中)
+
+* input2：订阅topic为test-topic的消息，异步消费tags为tagStr的消息，Consumer端线程池个数为20
 
 配置信息如下：
 
