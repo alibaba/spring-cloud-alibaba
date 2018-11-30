@@ -60,8 +60,7 @@ public class RocketMQTopicProvisioner implements
 			Validators.checkTopic(topic);
 		}
 		catch (MQClientException e) {
-			logger.error("topic check error: " + topic, e);
-			throw new AssertionError(e); // Can't happen
+			throw new AssertionError(e);
 		}
 	}
 
