@@ -12,7 +12,7 @@ Spring Cloud AliCloud ACM 提供了和阿里云上的ACM的集成。使得在项
 
 1、轻量版配置中心的下载和启动方式可参考 https://help.aliyun.com/document_detail/44163.html?spm=a2c4g.11186623.6.677.5f206b82Z2mTCF[这里]
 
-2、启动好轻量版配置中心之后，在控制台中添加如下的配置。注意data id是以 properties为扩展名(默认的文件扩展名方式)。
+2、启动好轻量版配置中心之后，在控制台中添加如下的配置。
 
 [source,subs="normal"]
 ----
@@ -23,6 +23,8 @@ DataId:     acm-config.properties
 Content:    user.name=alibaba
             user.age=56
 ----
+
+NOTE: data id是以 `properties` 为扩展名(默认的文件扩展名方式)。Group 的值目前只支持 DEFAULT_GROUP，注意在使用的过程中无需更改其默认值。
 
 ===== 客户端使用方式
 
@@ -122,6 +124,8 @@ Content:    user.name: yaml-alibaba
             user.age:  102
 ----
 
+NOTE: 这里的DataId的命名规则。${spring.application.name}.${spring.cloud.nacos.config.file-extension}。因为配置中配置的是 acm-config和yaml，因此根据规则这里的DataId的命名是：acm-config.yaml。
+
 完成之后，重启测试程序，可以在控制台看到输出的结果的值。
 
 [source,subs="normal"]
@@ -153,6 +157,8 @@ spring-cloud-starter-alicloud 在加载配置的时候，不仅仅加载了以da
 [sources,properties]
 ----
 spring.profiles.active=${deploy.env}
+spring.application.name=acm-config
+spring.cloud.nacos.config.file-extension=yaml #显示的声明使用的文件扩展名
 ----
 
 其中 ${deploy.env}变量的值可以在启动应用时通过-Ddeploy.env=*****来动态指定。比如现在在轻量版配置中心上新增了一个dataid为：acm-config-develop.yaml的基础配置，如下所示：
@@ -167,6 +173,8 @@ Content:    deploy.env: develop
 ----
 
 同时启动应用的时候通过-Ddeploy.env=develop 来指定当前spring.profiles.active的值。
+
+NOTE: 特别关注下这里的DataId 的命名。因为DataId的命名规则为 ${spring.application.name}-${profile}.${file-extension:properties}。而案例中配置的值依次为 acm-config、develop、yaml，因此这里的DataId为 acm-config-develop.yaml。Group的配置目前只支持 DEFAULT_GROUP，注意在使用的过程中不要更改其他的值。
 
 启动 Spring Boot 应用测试的代码如下：
 
@@ -231,10 +239,6 @@ Deploy Env:Product
 spring.application.group=com.infrastructure.alibaba
 ----
 
-这个时候注意在轻量版配置中心填写的dataid的格式为：
-
- ${spring.application.group}:application.${file-extension}
-
 如下所示:
 
 [source,subs="normal"]
@@ -245,6 +249,10 @@ DataId:     com.infrastructure.alibaba:application.yaml
 
 Content:    owner.group: infrastructure
 ----
+
+NOTE: 这个时候注意在轻量版配置中心填写的dataid的格式为：`${spring.application.group}:application.${file-extension}` 或者
+ `${spring.application.group}:${spring.application.name}.${file-extension}` 。如果有 `spring.profiles.active` 的配置，dataid的格式还支持 
+ `${spring.application.group}:${spring.application.name}-${spring.profiles.active}.${file-extension}`。 Group 的值目前只支持 `DEFAULT_GROUP`，因此在使用过程中请额外注意该值配置的正确性，不要和 `spring.application.group` 这个配置搞混了。
 
 启动 Spring Boot 应用测试的代码如下：
 
