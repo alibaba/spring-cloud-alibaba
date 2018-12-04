@@ -6,17 +6,25 @@
 
 [RocketMQ](https://rocketmq.apache.org/) 是一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
 
-在说明RocketMQ的示例之前，我们先了解一下 Spring Cloud Stream 中的Binder和Binding概念。
+在说明 RocketMQ 的示例之前，我们先了解一下 Spring Cloud Stream。
 
-Binder: 跟外部消息中间件集成的组件，用来创建Binding，各消息中间件都有自己的Binder实现。
+这是官方对 Spring Cloud Stream 的一段介绍：
 
-比如 `Kafka` 的实现 `KafkaMessageChannelBinder` ，`RabbitMQ` 的实现 `RabbitMessageChannelBinder` 以及 `RocketMQ` 的实现 `RocketMQMessageChannelBinder` 。
+Spring Cloud Stream 是一个用于构建基于消息的微服务应用框架。它基于 SpringBoot 来创建具有生产级别的单机 Spring 应用，并且使用 `Spring Integration` 与 Broker 进行连接。
+ 
+Spring Cloud Stream 提供了消息中间件配置的统一抽象，推出了 publish-subscribe、consumer groups、partition 这些统一的概念。
 
-Binding: 包括Input Binding和Output Binding。
+Spring Cloud Stream 内部有两个概念：Binder 和 Binding。
 
-Binding在消息中间件与应用程序提供的Provider和Consumer之间提供了一个桥梁，实现了开发者只需使用应用程序的Provider或Consumer生产或消费数据即可，屏蔽了开发者与底层消息中间件的接触。
+* Binder: 跟外部消息中间件集成的组件，用来创建 Binding，各消息中间件都有自己的 Binder 实现。
 
-下图是Spring Cloud Stream的架构设计。
+比如 `Kafka` 的实现 `KafkaMessageChannelBinder`，`RabbitMQ` 的实现 `RabbitMessageChannelBinder` 以及 `RocketMQ` 的实现 `RocketMQMessageChannelBinder`。
+
+* Binding: 包括 Input Binding 和 Output Binding。
+
+Binding 在消息中间件与应用程序提供的 Provider 和 Consumer 之间提供了一个桥梁，实现了开发者只需使用应用程序的 Provider 或 Consumer 生产或消费数据即可，屏蔽了开发者与底层消息中间件的接触。
+
+下图是 Spring Cloud Stream 的架构设计。
 
 ![](https://docs.spring.io/spring-cloud-stream/docs/current/reference/htmlsingle/images/SCSt-overview.png)
 
@@ -37,7 +45,7 @@ Binding在消息中间件与应用程序提供的Provider和Consumer之间提供
 </dependency>
 ```
 
-2. 配置Input和Output的Binding信息并配合`@EnableBinding`注解使其生效
+2. 配置 Input 和 Output 的 Binding 信息并配合 `@EnableBinding` 注解使其生效
 
 ```java
 @SpringBootApplication
@@ -49,7 +57,7 @@ public class RocketMQApplication {
 }
 ```
 
-配置Binding信息：
+配置 Binding 信息：
 ```properties
 # 配置rocketmq的nameserver地址
 spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876
@@ -67,7 +75,7 @@ spring.cloud.stream.bindings.input.group=test-group
 
 ### 下载并启动 RocketMQ
 
-在接入RocketMQ Binder之前，首先需要启动RocketMQ的Name Server和Broker。
+在接入 RocketMQ Binder 之前，首先需要启动 RocketMQ 的 Name Server 和 Broker。
 
 1. 下载[RocketMQ最新的二进制文件](https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip)，并解压
 
@@ -77,13 +85,13 @@ spring.cloud.stream.bindings.input.group=test-group
 sh bin/mqnamesrv
 ```
 
-3. 启动Broker
+3. 启动 Broker
 
 ```bash
 sh bin/mqbroker -n localhost:9876
 ```
 
-4. 创建Topic: test-topic
+4. 创建 Topic: test-topic
 
 ```bash
 sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t test-topic
@@ -100,18 +108,19 @@ server.port=28081
 	
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
-	1. IDE直接启动：找到主类 `RocketMQApplication`，执行 main 方法启动应用。
-	2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar rocketmq-example.jar`启动应用。
+	1. IDE 直接启动：找到主类 `RocketMQApplication`，执行 main 方法启动应用。
+	2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar rocketmq-example.jar` 启动应用。
 
 
 ### 消息处理
 
-使用name为output对应的binding发送消息到test-topic这个topic。
+使用 name 为 output 对应的 binding 发送消息到 test-topic 这个 topic。
 
-使用2个input binding订阅数据。
+使用2个 input binding 订阅数据。
 
-input1: 订阅topic为test-topic的消息，顺序消费所有消息(顺序消费的前提是所有消息都在一个MessageQueue中)
-input2: 订阅topic为test-topic的消息，异步消费tags为tagStr的消息，Consumer端线程池个数为20
+* input1: 订阅 topic 为 test-topic 的消息，顺序消费所有消息(顺序消费的前提是所有消息都在一个 MessageQueue 中)
+
+* input2: 订阅 topic 为 test-topic 的消息，异步消费 tags 为 tagStr 的消息，Consumer 端线程池个数为20
 
 配置信息如下：
 
@@ -122,12 +131,12 @@ spring.cloud.stream.bindings.output.destination=test-topic
 spring.cloud.stream.bindings.output.content-type=application/json
 
 spring.cloud.stream.bindings.input1.destination=test-topic
-spring.cloud.stream.bindings.input1.content-type=application/json
+spring.cloud.stream.bindings.input1.content-type=text/plain
 spring.cloud.stream.bindings.input1.group=test-group1
 spring.cloud.stream.rocketmq.bindings.input1.consumer.orderly=true
 
 spring.cloud.stream.bindings.input2.destination=test-topic
-spring.cloud.stream.bindings.input2.content-type=application/json
+spring.cloud.stream.bindings.input2.content-type=text/plain
 spring.cloud.stream.bindings.input2.group=test-group2
 spring.cloud.stream.rocketmq.bindings.input2.consumer.orderly=false
 spring.cloud.stream.rocketmq.bindings.input2.consumer.tags=tagStr
@@ -137,7 +146,7 @@ spring.cloud.stream.bindings.input2.consumer.concurrency=20
 
 #### 消息发送
 
-使用MessageChannel进行消息发送：
+使用 MessageChannel 进行消息发送：
 
 ```java
 public class ProducerRunner implements CommandLineRunner {
@@ -153,7 +162,7 @@ public class ProducerRunner implements CommandLineRunner {
 }
 ```
 
-或者使用RocketMQ原生的API进行消息发送:
+或者使用 RocketMQ 原生的 API 进行消息发送:
 
 ```java
 public class RocketMQProducer {
@@ -168,7 +177,7 @@ public class RocketMQProducer {
 
 #### 消息接收
 
-使用`@StreamListener`注解接收消息：
+使用 `@StreamListener` 注解接收消息：
 
 ```java
 @Service
@@ -195,7 +204,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，RocketMQ Stream 
 * Spring Boot 1.x 中添加配置 `management.security.enabled=false`
 * Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`
 
-Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq-binder 来查看 RocketMQ Binder Endpoint 的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:28081/acutator/rocketmq-binder 来访问。
+Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq_binder 来查看 RocketMQ Binder Endpoint 的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:28081/actuator/rocketmq-binder 来访问。
 
 这里会统计消息最后一次发送的数据，消息发送成功或失败的次数，消息消费成功或失败的次数等数据。
 
@@ -246,6 +255,14 @@ Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq-binder 来查
 			"oneMinuteRate": 0.0
 		}
 	}
+}
+```
+
+注意：要想查看统计数据需要在pom里加上 [metrics-core依赖](https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core)。如若不加，endpoint 将会显示 warning 信息而不会显示统计信息：
+
+```json
+{
+    "warning": "please add metrics-core dependency, we use it for metrics"
 }
 ```
 

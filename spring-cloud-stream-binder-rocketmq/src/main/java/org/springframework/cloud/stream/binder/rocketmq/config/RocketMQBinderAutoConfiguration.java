@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.cloud.stream.binder.rocketmq.config;
 
 import org.apache.rocketmq.client.log.ClientLogger;
@@ -25,6 +41,9 @@ public class RocketMQBinderAutoConfiguration {
 
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
+	@Autowired(required = false)
+	private InstrumentationManager instrumentationManager;
+
 	@Autowired
 	public RocketMQBinderAutoConfiguration(
 			RocketMQExtendedBindingProperties extendedBindingProperties,
@@ -43,7 +62,6 @@ public class RocketMQBinderAutoConfiguration {
 	@Bean
 	public RocketMQMessageChannelBinder rocketMessageChannelBinder(
 			RocketMQTopicProvisioner provisioningProvider,
-			InstrumentationManager instrumentationManager,
 			ConsumersManager consumersManager) {
 		RocketMQMessageChannelBinder binder = new RocketMQMessageChannelBinder(
 				consumersManager, extendedBindingProperties, provisioningProvider,
@@ -52,8 +70,7 @@ public class RocketMQBinderAutoConfiguration {
 	}
 
 	@Bean
-	public ConsumersManager consumersManager(
-			InstrumentationManager instrumentationManager) {
+	public ConsumersManager consumersManager() {
 		return new ConsumersManager(instrumentationManager,
 				rocketBinderConfigurationProperties);
 	}
