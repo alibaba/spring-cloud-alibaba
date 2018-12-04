@@ -6,14 +6,14 @@ package org.springframework.cloud.alibaba.cloud.examples;
 public class Foo {
 
 	private int id;
-	private String tag;
+	private String bar;
 
 	public Foo() {
 	}
 
-	public Foo(int id, String tag) {
+	public Foo(int id, String bar) {
 		this.id = id;
-		this.tag = tag;
+		this.bar = bar;
 	}
 
 	public int getId() {
@@ -24,16 +24,16 @@ public class Foo {
 		this.id = id;
 	}
 
-	public String getTag() {
-		return tag;
-	}
+    public String getBar() {
+        return bar;
+    }
 
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
+    public void setBar(String bar) {
+        this.bar = bar;
+    }
 
-	@Override
+    @Override
 	public String toString() {
-		return "Foo{" + "id=" + id + ", tag='" + tag + '\'' + '}';
+		return "Foo{" + "id=" + id + ", bar='" + bar + '\'' + '}';
 	}
 }

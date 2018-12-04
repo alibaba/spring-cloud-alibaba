@@ -1,7 +1,24 @@
+/*
+ * Copyright (C) 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.cloud.stream.binder.rocketmq.integration;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -30,13 +47,13 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	private ProducerInstrumentation producerInstrumentation;
 
+	private InstrumentationManager instrumentationManager;
+
 	private final RocketMQProducerProperties producerProperties;
 
 	private final String destination;
 
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
-
-	private final InstrumentationManager instrumentationManager;
 
 	protected volatile boolean running = false;
 
@@ -54,9 +71,10 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 	public void start() {
 		producer = new DefaultMQProducer(destination);
 
-		producerInstrumentation = instrumentationManager
-				.getProducerInstrumentation(destination);
-		instrumentationManager.addHealthInstrumentation(producerInstrumentation);
+		Optional.ofNullable(instrumentationManager).ifPresent(manager -> {
+			producerInstrumentation = manager.getProducerInstrumentation(destination);
+			manager.addHealthInstrumentation(producerInstrumentation);
+		});
 
 		producer.setNamesrvAddr(rocketBinderConfigurationProperties.getNamesrvAddr());
 
@@ -66,10 +84,12 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 		try {
 			producer.start();
-			producerInstrumentation.markStartedSuccessfully();
+			Optional.ofNullable(producerInstrumentation)
+					.ifPresent(p -> p.markStartedSuccessfully());
 		}
 		catch (MQClientException e) {
-			producerInstrumentation.markStartFailed(e);
+			Optional.ofNullable(producerInstrumentation)
+					.ifPresent(p -> p.markStartFailed(e));
 			logger.error(
 					"RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
 			throw new MessagingException(e.getMessage(), e);
@@ -127,14 +147,16 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 				RocketMQMessageHeaderAccessor.putSendResult((MutableMessage) message,
 						sendRes);
 			}
-			instrumentationManager.getRuntime().put(
-					RocketMQBinderConstants.LASTSEND_TIMESTAMP,
-					Instant.now().toEpochMilli());
-			producerInstrumentation.markSent();
+			Optional.ofNullable(instrumentationManager).ifPresent(manager -> {
+				manager.getRuntime().put(RocketMQBinderConstants.LASTSEND_TIMESTAMP,
+						Instant.now().toEpochMilli());
+			});
+			Optional.ofNullable(producerInstrumentation).ifPresent(p -> p.markSent());
 		}
 		catch (MQClientException | RemotingException | MQBrokerException
 				| InterruptedException | UnsupportedOperationException e) {
-			producerInstrumentation.markSentFailure();
+			Optional.ofNullable(producerInstrumentation)
+					.ifPresent(p -> p.markSentFailure());
 			logger.error(
 					"RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
 			throw new MessagingException(e.getMessage(), e);
