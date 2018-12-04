@@ -16,15 +16,20 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
+import org.springframework.core.env.MapPropertySource;
+
 import java.util.Date;
 import java.util.Map;
-
-import org.springframework.core.env.MapPropertySource;
 
 /**
  * @author xiaojing
  */
 public class NacosPropertySource extends MapPropertySource {
+
+	/**
+	 * Nacos Group
+	 */
+	private final String group;
 
 	/**
 	 * Nacos dataID
@@ -36,11 +41,21 @@ public class NacosPropertySource extends MapPropertySource {
 	 */
 	private final Date timestamp;
 
+	/**
+	 * Whether to support dynamic refresh for this Property Source
+	 */
+	private final boolean isRefreshable ;
 
-	NacosPropertySource(String dataId, Map<String, Object> source, Date timestamp) {
+	NacosPropertySource(String group,String dataId, Map<String, Object> source, Date timestamp,boolean isRefreshable) {
 		super(dataId, source);
+		this.group = group;
 		this.dataId = dataId;
 		this.timestamp = timestamp;
+		this.isRefreshable = isRefreshable ;
+	}
+
+	public String getGroup(){
+		return this.group;
 	}
 
 	public String getDataId() {
@@ -51,4 +66,7 @@ public class NacosPropertySource extends MapPropertySource {
 		return timestamp;
 	}
 
+	public boolean isRefreshable(){
+		return isRefreshable;
+	}
 }
