@@ -21,19 +21,16 @@
     {
       "name": "spring.cloud.nacos.config.shared-dataids",
       "type": "java.lang.String",
-      "defaultValue": "properties",
       "description": "the dataids for configurable multiple shared configurations , multiple separated by commas ."
     },
     {
       "name": "spring.cloud.nacos.config.refreshable-dataids",
       "type": "java.lang.String",
-      "defaultValue": "properties",
       "description": "refreshable dataids , multiple separated by commas ."
     },
     {
       "name": "spring.cloud.nacos.config.ext-config",
-      "type": "java.lang.String",
-      "defaultValue": "properties",
+      "type": "java.util.List",
       "description": "a set of extended configurations ."
     }
   ]
