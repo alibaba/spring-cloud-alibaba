@@ -38,6 +38,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.*;
  *
  * @author leijuan
  * @author xiaojing
+ * @author pbting
  */
 @ConfigurationProperties("spring.cloud.nacos.config")
 public class NacosConfigProperties {
@@ -111,19 +112,20 @@ public class NacosConfigProperties {
 	private String[] activeProfiles;
 
 	/**
-	 * the dataids for configurable multiple shared configurations , multiple separated by commas .
+	 * the dataids for configurable multiple shared configurations , multiple separated by
+	 * commas .
 	 */
-	private String sharedDataids ;
+	private String sharedDataids;
 
 	/**
 	 * refreshable dataids , multiple separated by commas .
 	 */
-	private String refreshableDataids ;
+	private String refreshableDataids;
 
 	/**
 	 * a set of extended configurations .
 	 */
-	private List<Config> extConfig ;
+	private List<Config> extConfig;
 
 	private ConfigService configService;
 
@@ -265,7 +267,7 @@ public class NacosConfigProperties {
 		this.extConfig = extConfig;
 	}
 
-	public static class Config{
+	public static class Config {
 		private String dataId;
 		private String group = "DEFAULT_GROUP";
 		private boolean refresh = false;

@@ -29,6 +29,7 @@ import java.util.*;
 
 /**
  * @author xiaojing
+ * @author pbting
  */
 public class NacosPropertySourceBuilder {
 
@@ -66,12 +67,14 @@ public class NacosPropertySourceBuilder {
 	 * @param dataId Nacos dataId
 	 * @param group Nacos group
 	 */
-	NacosPropertySource build(String dataId, String group, String fileExtension, boolean isRefreshable) {
+	NacosPropertySource build(String dataId, String group, String fileExtension,
+			boolean isRefreshable) {
 		Properties p = loadNacosData(dataId, group, fileExtension);
 		if (p == null) {
 			return null;
 		}
-		return new NacosPropertySource(group,dataId, propertiesToMap(p), new Date(), isRefreshable);
+		return new NacosPropertySource(group, dataId, propertiesToMap(p), new Date(),
+				isRefreshable);
 	}
 
 	private Properties loadNacosData(String dataId, String group, String fileExtension) {

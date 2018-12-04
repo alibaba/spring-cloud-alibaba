@@ -43,6 +43,7 @@ import java.util.concurrent.Executor;
  * configurations.
  *
  * @author juven.xuxb
+ * @author pbting
  */
 public class NacosContextRefresher implements ApplicationListener<ApplicationReadyEvent> {
 
@@ -60,7 +61,7 @@ public class NacosContextRefresher implements ApplicationListener<ApplicationRea
 
 	private final ConfigService configService;
 
-	private Map<String,Listener> listenerMap = new ConcurrentHashMap<>(16);
+	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
 
 	public NacosContextRefresher(ContextRefresher contextRefresher,
 			NacosConfigProperties properties, NacosRefreshProperties refreshProperties,
@@ -84,12 +85,12 @@ public class NacosContextRefresher implements ApplicationListener<ApplicationRea
 		if (refreshProperties.isEnabled()) {
 			for (NacosPropertySource nacosPropertySource : nacosPropertySourceRepository
 					.getAll()) {
-				if (!nacosPropertySource.isRefreshable()){
+				if (!nacosPropertySource.isRefreshable()) {
 					continue;
 				}
 
 				String dataId = nacosPropertySource.getDataId();
-				registerNacosListener(nacosPropertySource.getGroup(),dataId);
+				registerNacosListener(nacosPropertySource.getGroup(), dataId);
 			}
 		}
 	}
@@ -104,8 +105,9 @@ public class NacosContextRefresher implements ApplicationListener<ApplicationRea
 					try {
 						MessageDigest md = MessageDigest.getInstance("MD5");
 						md5 = new BigInteger(1, md.digest(configInfo.getBytes("UTF-8")))
-							.toString(16);
-					} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+								.toString(16);
+					}
+					catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 						logger.warn("[Nacos] unable to get md5 for dataId: " + dataId, e);
 					}
 				}
@@ -121,7 +123,8 @@ public class NacosContextRefresher implements ApplicationListener<ApplicationRea
 
 		try {
 			configService.addListener(dataId, group, listener);
-		} catch (NacosException e) {
+		}
+		catch (NacosException e) {
 			e.printStackTrace();
 		}
 	}

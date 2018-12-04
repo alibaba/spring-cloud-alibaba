@@ -23,6 +23,7 @@ import java.util.Map;
 
 /**
  * @author xiaojing
+ * @author pbting
  */
 public class NacosPropertySource extends MapPropertySource {
 
@@ -44,17 +45,18 @@ public class NacosPropertySource extends MapPropertySource {
 	/**
 	 * Whether to support dynamic refresh for this Property Source
 	 */
-	private final boolean isRefreshable ;
+	private final boolean isRefreshable;
 
-	NacosPropertySource(String group,String dataId, Map<String, Object> source, Date timestamp,boolean isRefreshable) {
+	NacosPropertySource(String group, String dataId, Map<String, Object> source,
+			Date timestamp, boolean isRefreshable) {
 		super(dataId, source);
 		this.group = group;
 		this.dataId = dataId;
 		this.timestamp = timestamp;
-		this.isRefreshable = isRefreshable ;
+		this.isRefreshable = isRefreshable;
 	}
 
-	public String getGroup(){
+	public String getGroup() {
 		return this.group;
 	}
 
@@ -66,7 +68,7 @@ public class NacosPropertySource extends MapPropertySource {
 		return timestamp;
 	}
 
-	public boolean isRefreshable(){
+	public boolean isRefreshable() {
 		return isRefreshable;
 	}
 }
