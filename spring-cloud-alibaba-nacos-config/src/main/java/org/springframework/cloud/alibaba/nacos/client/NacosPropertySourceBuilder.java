@@ -16,21 +16,16 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-import java.io.StringReader;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
+
+import java.io.StringReader;
+import java.util.*;
 
 /**
  * @author xiaojing
@@ -71,12 +66,12 @@ public class NacosPropertySourceBuilder {
 	 * @param dataId Nacos dataId
 	 * @param group Nacos group
 	 */
-	NacosPropertySource build(String dataId, String group, String fileExtension) {
+	NacosPropertySource build(String dataId, String group, String fileExtension, boolean isRefreshable) {
 		Properties p = loadNacosData(dataId, group, fileExtension);
 		if (p == null) {
 			return null;
 		}
-		return new NacosPropertySource(dataId, propertiesToMap(p), new Date());
+		return new NacosPropertySource(group,dataId, propertiesToMap(p), new Date(), isRefreshable);
 	}
 
 	private Properties loadNacosData(String dataId, String group, String fileExtension) {

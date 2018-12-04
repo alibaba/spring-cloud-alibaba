@@ -16,11 +16,10 @@
 
 package org.springframework.cloud.alibaba.nacos.ribbon;
 
-import java.util.Map;
-
 import com.alibaba.nacos.api.naming.pojo.Instance;
-
 import com.netflix.loadbalancer.Server;
+
+import java.util.Map;
 
 /**
  * @author xiaojing
@@ -37,7 +36,7 @@ public class NacosServer extends Server {
 		this.metaInfo = new MetaInfo() {
 			@Override
 			public String getAppName() {
-				return instance.serviceName();
+				return instance.getServiceName();
 			}
 
 			@Override

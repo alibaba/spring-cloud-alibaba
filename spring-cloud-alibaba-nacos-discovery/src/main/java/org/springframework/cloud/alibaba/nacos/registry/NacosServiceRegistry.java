@@ -16,14 +16,12 @@
 
 package org.springframework.cloud.alibaba.nacos.registry;
 
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.Cluster;
-import com.alibaba.nacos.api.naming.pojo.Instance;
 
 /**
  * @author xiaojing
@@ -51,7 +49,7 @@ public class NacosServiceRegistry implements ServiceRegistry<NacosRegistration> 
 		instance.setIp(registration.getHost());
 		instance.setPort(registration.getPort());
 		instance.setWeight(registration.getRegisterWeight());
-		instance.setCluster(new Cluster(registration.getCluster()));
+		instance.setClusterName(registration.getCluster());
 		instance.setMetadata(registration.getMetadata());
 
 		try {

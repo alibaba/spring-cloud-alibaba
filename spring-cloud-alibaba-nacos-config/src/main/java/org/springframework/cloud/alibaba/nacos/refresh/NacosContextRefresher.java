@@ -16,14 +16,9 @@
 
 package org.springframework.cloud.alibaba.nacos.refresh;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.config.listener.Listener;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -34,9 +29,13 @@ import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.config.listener.Listener;
-import com.alibaba.nacos.api.exception.NacosException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 
 /**
  * On application start up, NacosContextRefresher add nacos listeners to all application
@@ -85,13 +84,17 @@ public class NacosContextRefresher implements ApplicationListener<ApplicationRea
 		if (refreshProperties.isEnabled()) {
 			for (NacosPropertySource nacosPropertySource : nacosPropertySourceRepository
 					.getAll()) {
+				if (!nacosPropertySource.isRefreshable()){
+					continue;
+				}
+
 				String dataId = nacosPropertySource.getDataId();
-				registerNacosListener(dataId);
+				registerNacosListener(nacosPropertySource.getGroup(),dataId);
 			}
 		}
 	}
 
-	private void registerNacosListener(final String dataId) {
+	private void registerNacosListener(final String group, final String dataId) {
 
 		Listener listener = listenerMap.computeIfAbsent(dataId, i -> new Listener() {
 			@Override
@@ -103,7 +106,7 @@ public class NacosContextRefresher implements ApplicationListener<ApplicationRea
 						md5 = new BigInteger(1, md.digest(configInfo.getBytes("UTF-8")))
 							.toString(16);
 					} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-						logger.warn("unable to get md5 for dataId: " + dataId, e);
+						logger.warn("[Nacos] unable to get md5 for dataId: " + dataId, e);
 					}
 				}
 				refreshHistory.add(dataId, md5);
@@ -117,7 +120,7 @@ public class NacosContextRefresher implements ApplicationListener<ApplicationRea
 		});
 
 		try {
-			configService.addListener(dataId, properties.getGroup(), listener);
+			configService.addListener(dataId, group, listener);
 		} catch (NacosException e) {
 			e.printStackTrace();
 		}
