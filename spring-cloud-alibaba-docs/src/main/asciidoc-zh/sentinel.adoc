@@ -1,20 +1,20 @@
 == Spring Cloud Alibaba Sentinel
 
-### Sentinel介绍
+### Sentinel 介绍
 
-随着微服务的流行，服务和服务之间的稳定性变得越来越重要。Sentinel 以流量为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
+随着微服务的流行，服务和服务之间的稳定性变得越来越重要。 https://github.com/alibaba/Sentinel[Sentinel] 以流量为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
 
-Sentinel 具有以下特征:
+https://github.com/alibaba/Sentinel[Sentinel] 具有以下特征:
 
 
-* *丰富的应用场景*：Sentinel 承接了阿里巴巴近 10 年的双十一大促流量的核心场景，例如秒杀（即突发流量控制在系统容量可以承受的范围）、消息削峰填谷、实时熔断下游不可用应用等。
-* *完备的实时监控*：Sentinel 同时提供实时的监控功能。您可以在控制台中看到接入应用的单台机器秒级数据，甚至 500 台以下规模的集群的汇总运行情况。
-* *广泛的开源生态*：Sentinel 提供开箱即用的与其它开源框架/库的整合模块，例如与 Spring Cloud、Dubbo、gRPC 的整合。您只需要引入相应的依赖并进行简单的配置即可快速地接入 Sentinel。
-* *完善的 SPI 扩展点*：Sentinel 提供简单易用、完善的 SPI 扩展点。您可以通过实现扩展点，快速的定制逻辑。例如定制规则管理、适配数据源等。
+* *丰富的应用场景*： Sentinel 承接了阿里巴巴近 10 年的双十一大促流量的核心场景，例如秒杀（即突发流量控制在系统容量可以承受的范围）、消息削峰填谷、实时熔断下游不可用应用等。
+* *完备的实时监控*： Sentinel 同时提供实时的监控功能。您可以在控制台中看到接入应用的单台机器秒级数据，甚至 500 台以下规模的集群的汇总运行情况。
+* *广泛的开源生态*： Sentinel 提供开箱即用的与其它开源框架/库的整合模块，例如与 Spring Cloud、Dubbo、gRPC 的整合。您只需要引入相应的依赖并进行简单的配置即可快速地接入 Sentinel。
+* *完善的 SPI 扩展点*： Sentinel 提供简单易用、完善的 SPI 扩展点。您可以通过实现扩展点，快速的定制逻辑。例如定制规则管理、适配数据源等。
 
-### 如何使用Sentinel
+### 如何使用 Sentinel
 
-如果要在您的项目中引入Sentinel，使用group ID为 `org.springframework.cloud` 和artifact ID为 `spring-cloud-starter-alibaba-sentinel` 的starter。
+如果要在您的项目中引入 Sentinel，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-sentinel` 的 starter。
 
 ```xml
 <dependency>
@@ -23,7 +23,7 @@ Sentinel 具有以下特征:
 </dependency>
 ```
 
-下面这个例子就是一个最简单的使用Sentinel的例子:
+下面这个例子就是一个最简单的使用 Sentinel 的例子:
 
 ```java
 @SpringBootApplication
@@ -47,9 +47,9 @@ public class TestController {
 }
 ```
 
-@SentinelResource注解用来标识资源是否被限流、降级。上述例子上该注解的属性'hello'表示资源名。
+@SentinelResource 注解用来标识资源是否被限流、降级。上述例子上该注解的属性 'hello' 表示资源名。
 
-@SentinelResource还提供了其它额外的属性如 `blockHandler`，`blockHandlerClass`，`fallback` 用于表示限流或降级的操作，更多内容可以参考 https://github.com/alibaba/Sentinel/wiki/%E6%B3%A8%E8%A7%A3%E6%94%AF%E6%8C%81[Sentinel注解支持]。
+@SentinelResource 还提供了其它额外的属性如 `blockHandler`，`blockHandlerClass`，`fallback` 用于表示限流或降级的操作，更多内容可以参考 https://github.com/alibaba/Sentinel/wiki/%E6%B3%A8%E8%A7%A3%E6%94%AF%E6%8C%81[Sentinel注解支持]。
 
 ##### Sentinel 控制台
 
@@ -74,7 +74,7 @@ image::https://github.com/alibaba/Sentinel/wiki/image/dashboard.png[]
 
 ###### 启动控制台
 
-Sentinel 控制台是一个标准的SpringBoot应用，以SpringBoot的方式运行jar包即可。
+Sentinel 控制台是一个标准的 SpringBoot 应用，以 SpringBoot 的方式运行 jar 包即可。
 
 ```shell
 java -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar
@@ -94,17 +94,17 @@ spring:
         dashboard: localhost:8080
 ----
 
-这里的 `spring.cloud.sentinel.transport.port` 端口配置会在应用对应的机器上启动一个Http Server，该Serve会与Sentinel控制台做交互。比如Sentinel控制台添加了1个限流规则，会把规则数据push给这个Http Server接受，Http Server再将规则注册到Sentinel中。
+这里的 `spring.cloud.sentinel.transport.port` 端口配置会在应用对应的机器上启动一个 Http Server，该 Server 会与 Sentinel 控制台做交互。比如 Sentinel 控制台添加了1个限流规则，会把规则数据 push 给这个 Http Server 接收，Http Server 再将规则注册到 Sentinel 中。
 
-更多Sentinel控制台的使用及问题参考： https://github.com/alibaba/Sentinel/wiki/%E6%8E%A7%E5%88%B6%E5%8F%B0[Sentinel控制台]
+更多 Sentinel 控制台的使用及问题参考： https://github.com/alibaba/Sentinel/wiki/%E6%8E%A7%E5%88%B6%E5%8F%B0[Sentinel控制台]
 
-### Feign支持
+### Feign 支持
 
 DOING
 
-### RestTemplate支持
+### RestTemplate 支持
 
-Spring Cloud Alibaba Sentinel支持对 `RestTemplate` 的服务调用使用Sentinel进行保护，在构造 `RestTemplate` bean的时候需要加上 `@SentinelProtect` 注解。
+Spring Cloud Alibaba Sentinel 支持对 `RestTemplate` 的服务调用使用 Sentinel 进行保护，在构造 `RestTemplate` bean的时候需要加上 `@SentinelProtect` 注解。
 
 ```java
 @Bean
@@ -122,12 +122,12 @@ public RestTemplate restTemplate() {
 
 * `schema://host:port`：协议、主机和端口
 
-NOTE: 以 `https://www.taobao.com/test` 这个url为例。对应的资源名有两种粒度，分别是 `https://www.taobao.com:80` 以及 `https://www.taobao.com:80/test`
+NOTE: 以 `https://www.taobao.com/test` 这个 url 为例。对应的资源名有两种粒度，分别是 `https://www.taobao.com:80` 以及 `https://www.taobao.com:80/test`
 
 
 ### 动态数据源支持
 
-*在版本 0.2.0.RELEASE 或 0.1.0.RELEASE 之前*，要在Spring Cloud Alibaba Sentinel下使用动态数据源，需要3个步骤：
+*在版本 0.2.0.RELEASE 或 0.1.0.RELEASE 之前*，要在 Spring Cloud Alibaba Sentinel 下使用动态数据源，需要3个步骤：
 
 * 配置文件中定义数据源信息。比如使用文件：
 
@@ -141,7 +141,7 @@ spring.cloud.sentinel.datasource.converter=flowConverter
 spring.cloud.sentinel.datasource.file=/Users/you/yourrule.json
 ----
 
-* 创建一个Converter类实现 `com.alibaba.csp.sentinel.datasource.Converter` 接口，并且需要在 `ApplicationContext` 中有该类的一个Bean
+* 创建一个 Converter 类实现 `com.alibaba.csp.sentinel.datasource.Converter` 接口，并且需要在 `ApplicationContext` 中有该类的一个 Bean
 
 ```java
 @Component("flowConverter")
@@ -154,7 +154,7 @@ public class JsonFlowRuleListParser implements Converter<String, List<FlowRule>>
 }
 ```
 
-这个Converter的bean name需要跟 `application.properties` 配置文件中的converter配置一致
+这个 Converter 的 bean name 需要跟 `application.properties` 配置文件中的 converter 配置一致
 
 * 在任意一个 Spring Bean 中定义一个被 `@SentinelDataSource` 注解修饰的 `ReadableDataSource` 属性
 
@@ -163,7 +163,7 @@ public class JsonFlowRuleListParser implements Converter<String, List<FlowRule>>
 private ReadableDataSource dataSource;
 ```
 
-`@SentinelDataSource` 注解的value属性表示数据源在 `application.properties` 配置文件中前缀。 该在例子中，前缀为 `spring.cloud.sentinel.datasource` 。
+`@SentinelDataSource` 注解的 value 属性表示数据源在 `application.properties` 配置文件中前缀。 该在例子中，前缀为 `spring.cloud.sentinel.datasource` 。
 
 如果 `ApplicationContext` 中存在超过1个 `ReadableDataSource` bean，那么不会加载这些 `ReadableDataSource` 中的任意一个。 只有在 `ApplicationContext` 存在一个 `ReadableDataSource` 的情况下才会生效。
 
@@ -173,7 +173,7 @@ private ReadableDataSource dataSource;
 [Sentinel Starter] load 3 flow rules
 ```
 
-*在版本 0.2.0.RELEASE 或 0.1.0.RELEASE 之后*，要在Spring Cloud Alibaba Sentinel下使用动态数据源，只需要1个步骤：
+*在版本 0.2.0.RELEASE 或 0.1.0.RELEASE 之后*，要在 Spring Cloud Alibaba Sentinel 下使用动态数据源，只需要1个步骤：
 
 * 直接在 `application.properties` 配置文件中配置数据源信息即可
 
@@ -196,23 +196,23 @@ spring.cloud.sentinel.datasource.ds4.apollo.default-flow-rule-value = test
 
 ```
 
-这样配置方式参考了Spring Cloud Stream Binder的配置，内部使用了 `TreeMap` 进行存储，comparator为 `String.CASE_INSENSITIVE_ORDER` 。
+这样配置方式参考了 Spring Cloud Stream Binder 的配置，内部使用了 `TreeMap` 进行存储，comparator 为 `String.CASE_INSENSITIVE_ORDER` 。
 
 NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。后面的 `file` ，`zk` ，`nacos` , `apollo` 就是对应具体的数据源。 它们后面的配置就是这些数据源各自的配置。
 
 每种数据源都有两个共同的配置项： `data-type` 和 `converter-class` 。
 
-`data-type` 配置项表示 `Converter`，Spring Cloud Alibaba Sentinel默认提供两种内置的值，分别是 `json` 和 `xml` (不填默认是json)。 如果不想使用内置的 `json` 或 `xml` 这两种 `Converter`，可以填写 `custom` 表示自定义 `Converter`，然后再配置 `converter-class` 配置项，该配置项需要写类的全路径名。
+`data-type` 配置项表示 `Converter`，Spring Cloud Alibaba Sentinel 默认提供两种内置的值，分别是 `json` 和 `xml` (不填默认是json)。 如果不想使用内置的 `json` 或 `xml` 这两种 `Converter`，可以填写 `custom` 表示自定义 `Converter`，然后再配置 `converter-class` 配置项，该配置项需要写类的全路径名。
 
-这两种内置的 `Converter` 只支持解析 json数组 或 xml数组。内部解析的时候会自动判断每个json对象或xml对象属于哪4种Sentinel规则(`FlowRule`，`DegradeRule`，`SystemRule`，`AuthorityRule`)。
+这两种内置的 `Converter` 只支持解析 json 数组 或 xml 数组。内部解析的时候会自动判断每个 json 对象或xml对象属于哪4种 Sentinel 规则(`FlowRule`，`DegradeRule`，`SystemRule`，`AuthorityRule`)。
 
 比如10个规则数组里解析出5个限流规则和5个降级规则。 这种情况下该数据源不会注册，日志里页会进行警告。
 
 如果10个规则里有9个限流规则，1个解析报错了。这种情况下日志会警告有个规则格式错误，另外9个限流规则会注册上去。
 
-这里json或xml解析用的是 `jackson`。`ObjectMapper` 或 `XmlMapper` 使用默认的配置，遇到不认识的字段会解析报错。 因为不这样做的话限流 json 也会解析成 系统规则(系统规则所有的配置都有默认值)，所以需要这样严格解析。
+这里 json 或 xml 解析用的是 `jackson`。`ObjectMapper` 或 `XmlMapper` 使用默认的配置，遇到不认识的字段会解析报错。 因为不这样做的话限流 json 也会解析成 系统规则(系统规则所有的配置都有默认值)，所以需要这样严格解析。
 
-当然还有一种情况是json对象或xml对象可能会匹配上所有4种规则(比如json对象里只配了 `resource` 字段，那么会匹配上4种规则)，这种情况下日志里会警告，并且过滤掉这个对象。
+当然还有一种情况是 json 对象或 xml 对象可能会匹配上所有4种规则(比如json对象里只配了 `resource` 字段，那么会匹配上4种规则)，这种情况下日志里会警告，并且过滤掉这个对象。
 
 用户使用这种配置的时候只需要填写正确的json或xml就行，有任何不合理的信息都会在日志里打印出来。
 
@@ -223,16 +223,16 @@ NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。�
 [Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
 ```
 
-NOTE: 默认情况下，xml格式是不支持的。需要添加 `jackson-dataformat-xml` 依赖后才会自动生效。
+NOTE: 默认情况下，xml 格式是不支持的。需要添加 `jackson-dataformat-xml` 依赖后才会自动生效。
 
-关于Sentinel动态数据源的实现原理，参考： https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95[动态规则扩展]
+关于 Sentinel 动态数据源的实现原理，参考： https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95[动态规则扩展]
 
-### Endpoint支持
+### Endpoint 支持
 
-在使用Endpoint特性之前需要在 Maven 中添加 `spring-boot-starter-actuator` 依赖，并在配置中允许 Endpoints 的访问。
+在使用 Endpoint 特性之前需要在 Maven 中添加 `spring-boot-starter-actuator` 依赖，并在配置中允许 Endpoints 的访问。
 
-* Spring Boot 1.x 中添加配置 `management.security.enabled=false`。暴露的endpoint路径为 `/sentinel`
-* Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`。暴露的endpoint路径为 `/actuator/sentinel`
+* Spring Boot 1.x 中添加配置 `management.security.enabled=false`。暴露的 endpoint 路径为 `/sentinel`
+* Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`。暴露的 endpoint 路径为 `/actuator/sentinel`
 
 ### More
 

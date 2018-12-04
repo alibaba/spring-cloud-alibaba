@@ -1,15 +1,30 @@
+/*
+ * Copyright (C) 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.cloud.stream.binder.rocketmq.actuator;
 
 import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ENDPOINT_ID;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-
-import com.codahale.metrics.MetricRegistry;
+import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 
 /**
  * @author Timur Valiev
@@ -18,23 +33,22 @@ import com.codahale.metrics.MetricRegistry;
 @Endpoint(id = ENDPOINT_ID)
 public class RocketMQBinderEndpoint {
 
-	private MetricRegistry metricRegistry = new MetricRegistry();
-	private Map<String, Object> runtime = new ConcurrentHashMap<>();
+	@Autowired(required = false)
+	private InstrumentationManager instrumentationManager;
 
 	@ReadOperation
 	public Map<String, Object> invoke() {
 		Map<String, Object> result = new HashMap<>();
-		result.put("metrics", metricRegistry().getMetrics());
-		result.put("runtime", runtime());
+		if (instrumentationManager != null) {
+			result.put("metrics",
+					instrumentationManager.getMetricRegistry().getMetrics());
+			result.put("runtime", instrumentationManager.getRuntime());
+		}
+		else {
+			result.put("warning",
+					"please add metrics-core dependency, we use it for metrics");
+		}
 		return result;
-	}
-
-	public MetricRegistry metricRegistry() {
-		return metricRegistry;
-	}
-
-	public Map<String, Object> runtime() {
-		return runtime;
 	}
 
 }
