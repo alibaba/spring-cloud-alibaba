@@ -16,15 +16,8 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +25,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+
+import static com.alibaba.nacos.api.PropertyKeyConst.*;
 
 /**
  * nacos properties
  *
  * @author leijuan
  * @author xiaojing
+ * @author pbting
  */
 @ConfigurationProperties("spring.cloud.nacos.config")
 public class NacosConfigProperties {
@@ -117,6 +110,20 @@ public class NacosConfigProperties {
 	private String name;
 
 	private String[] activeProfiles;
+
+	/**
+	 * the dataids for configurable multiple shared configurations , multiple separated by
+	 * commas .
+	 */
+	private String sharedDataids;
+	/**
+	 * refreshable dataids , multiple separated by commas .
+	 */
+	private String refreshableDataids;
+	/**
+	 * a set of extended configurations .
+	 */
+	private List<Config> extConfig;
 
 	private ConfigService configService;
 
@@ -234,6 +241,69 @@ public class NacosConfigProperties {
 		return activeProfiles;
 	}
 
+	public String getSharedDataids() {
+		return sharedDataids;
+	}
+
+	public void setSharedDataids(String sharedDataids) {
+		this.sharedDataids = sharedDataids;
+	}
+
+	public String getRefreshableDataids() {
+		return refreshableDataids;
+	}
+
+	public void setRefreshableDataids(String refreshableDataids) {
+		this.refreshableDataids = refreshableDataids;
+	}
+
+	public List<Config> getExtConfig() {
+		return extConfig;
+	}
+
+	public void setExtConfig(List<Config> extConfig) {
+		this.extConfig = extConfig;
+	}
+
+	public static class Config {
+		/**
+		 * the data id of extended configuration
+		 */
+		private String dataId;
+		/**
+		 * the group of extended configuration, the default value is DEFAULT_GROUP
+		 */
+		private String group = "DEFAULT_GROUP";
+		/**
+		 * whether to support dynamic refresh, the default does not support .
+		 */
+		private boolean refresh = false;
+
+		public String getDataId() {
+			return dataId;
+		}
+
+		public void setDataId(String dataId) {
+			this.dataId = dataId;
+		}
+
+		public String getGroup() {
+			return group;
+		}
+
+		public void setGroup(String group) {
+			this.group = group;
+		}
+
+		public boolean isRefresh() {
+			return refresh;
+		}
+
+		public void setRefresh(boolean refresh) {
+			this.refresh = refresh;
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
@@ -243,7 +313,11 @@ public class NacosConfigProperties {
 				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
 				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
 				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
-				+ ", activeProfiles=" + Arrays.toString(activeProfiles) + '}';
+				+ ", activeProfiles=" + Arrays.toString(activeProfiles)
+				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
+				+ refreshableDataids + '\'' + ", extConfig=" + extConfig
+				+ ", configService=" + configService + ", environment=" + environment
+				+ '}';
 	}
 
 	public ConfigService configServiceInstance() {

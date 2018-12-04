@@ -16,6 +16,9 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,31 +29,18 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.client.naming.utils.UtilAndComs;
-
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
+import static com.alibaba.nacos.api.PropertyKeyConst.*;
 
 /**
  * @author dungu.zpf
  * @author xiaojing
+ * @author pbting
  */
 
 @ConfigurationProperties("spring.cloud.nacos.discovery")
@@ -95,6 +85,11 @@ public class NacosDiscoveryProperties {
 	 * cluster name for nacos server.
 	 */
 	private String clusterName = "DEFAULT";
+
+	/**
+	 * naming load from local cache at application start. true is load
+	 */
+	private String namingLoadCacheAtStart = "false";
 
 	/**
 	 * extra metadata to register.
@@ -313,6 +308,14 @@ public class NacosDiscoveryProperties {
 		this.secretKey = secretKey;
 	}
 
+	public String getNamingLoadCacheAtStart() {
+		return namingLoadCacheAtStart;
+	}
+
+	public void setNamingLoadCacheAtStart(String namingLoadCacheAtStart) {
+		this.namingLoadCacheAtStart = namingLoadCacheAtStart;
+	}
+
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
@@ -322,7 +325,8 @@ public class NacosDiscoveryProperties {
 				+ ", metadata=" + metadata + ", registerEnabled=" + registerEnabled
 				+ ", ip='" + ip + '\'' + ", networkInterface='" + networkInterface + '\''
 				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
-				+ '\'' + ", secretKey='" + secretKey + '\'' + '}';
+				+ ", namingLoadCacheAtStart=" + namingLoadCacheAtStart + '\''
+				+ ", secretKey='" + secretKey + '\'' + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {
@@ -371,6 +375,8 @@ public class NacosDiscoveryProperties {
 		properties.put(ACCESS_KEY, accessKey);
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);
+		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
+
 		try {
 			namingService = NacosFactory.createNamingService(properties);
 			return namingService;
