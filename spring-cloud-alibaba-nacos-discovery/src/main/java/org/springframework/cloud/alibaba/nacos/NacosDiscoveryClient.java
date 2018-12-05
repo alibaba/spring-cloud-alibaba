@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.api.naming.pojo.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,10 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 
 import java.util.*;
 
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.api.naming.pojo.ListView;
-
 /**
  * @author xiaojing
  * @author renhaojun
+ * @author pbting
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
