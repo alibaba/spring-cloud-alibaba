@@ -278,9 +278,12 @@ in product-env enviroment; user name :nacos-config-yaml-update; age: 68
 NOTE: 此案例中我们通过 `spring.profiles.active=****` 的方式写死在配置文件中，而在真正的项目实施过程中这个变量的值是需要不同环境而有不同的值。这个时候通常的做法是通过 `-Dspring.profiles.active=****` 参数指定其配置来达到环境间灵活的切换。
 
 === 支持自定义 namespace 的配置
+首先看一下 Nacos 的 Namespace 的概念， https://nacos.io/zh-cn/docs/concepts.html[Nacos 概念]
 
-在没有明确指定 `${spring.cloud.nacos.config.namespace}` 配置的情况下， 默认使用的是 Nacos 上 Public 这个namespae。在我们日常业务的开发过程中，经常需要自定义自己的 namespace，那这个时候可以通过以下配置来实现：
+[quote]
+用于进行租户粒度的配置隔离。不同的命名空间下，可以存在相同的 Group 或 Data ID 的配置。Namespace 的常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等。
 
+在没有明确指定 `${spring.cloud.nacos.config.namespace}` 配置的情况下， 默认使用的是 Nacos 上 Public 这个namespae。如果需要使用自定义的命名空间，可以通过以下配置来实现：
 [source,properties]
 ----
 spring.cloud.nacos.config.namespace=b3404bc0-d7dc-4855-b519-570ed34b62d7
@@ -290,7 +293,7 @@ NOTE: 该配置必须放在 bootstrap.properties 文件中。此外 `spring.clou
 
 === 支持自定义 Group 的配置
 
-在没有明确指定 `${spring.cloud.nacos.config.group}` 配置的情况下， 默认使用的是 DEFAULT_GROUP 。在我们日常业务的开发过程中，经常需要自定义自己的 Group，那这个时候可以通过以下配置来实现：
+在没有明确指定 `${spring.cloud.nacos.config.group}` 配置的情况下， 默认使用的是 DEFAULT_GROUP 。如果需要自定义自己的 Group，可以通过以下配置来实现：
 
 [source,properties]
 ----
