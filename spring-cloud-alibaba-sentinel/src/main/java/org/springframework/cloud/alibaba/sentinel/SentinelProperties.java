@@ -26,6 +26,7 @@ import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePr
 import org.springframework.core.Ordered;
 
 import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 
 /**
@@ -47,11 +48,6 @@ public class SentinelProperties {
 	 * enable sentinel auto configure, the default value is true
 	 */
 	private boolean enabled = true;
-
-	/**
-	 * charset when sentinel write or search metric file {@link SentinelConfig#CHARSET}
-	 */
-	private String charset = "UTF-8";
 
 	/**
 	 * configurations about datasource, like 'nacos', 'apollo', 'file', 'zookeeper'
@@ -91,6 +87,12 @@ public class SentinelProperties {
 	@NestedConfigurationProperty
 	private Flow flow = new Flow();
 
+	/**
+	 * sentinel log configuration {@link LogBase}
+	 */
+	@NestedConfigurationProperty
+	private Log log = new Log();
+
 	public boolean isEager() {
 		return eager;
 	}
@@ -105,14 +107,6 @@ public class SentinelProperties {
 
 	public void setFlow(Flow flow) {
 		this.flow = flow;
-	}
-
-	public String getCharset() {
-		return charset;
-	}
-
-	public void setCharset(String charset) {
-		this.charset = charset;
 	}
 
 	public Transport getTransport() {
@@ -163,6 +157,14 @@ public class SentinelProperties {
 		this.datasource = datasource;
 	}
 
+	public Log getLog() {
+		return log;
+	}
+
+	public void setLog(Log log) {
+		this.log = log;
+	}
+
 	public static class Flow {
 
 		/**
@@ -208,6 +210,12 @@ public class SentinelProperties {
 		 */
 		private String fileTotalCount;
 
+		/**
+		 * charset when sentinel write or search metric file
+		 * {@link SentinelConfig#CHARSET}
+		 */
+		private String charset = "UTF-8";
+
 		public String getFileSingleSize() {
 			return fileSingleSize;
 		}
@@ -222,6 +230,14 @@ public class SentinelProperties {
 
 		public void setFileTotalCount(String fileTotalCount) {
 			this.fileTotalCount = fileTotalCount;
+		}
+
+		public String getCharset() {
+			return charset;
+		}
+
+		public void setCharset(String charset) {
+			this.charset = charset;
 		}
 	}
 
@@ -297,6 +313,36 @@ public class SentinelProperties {
 		public void setUrlPatterns(List<String> urlPatterns) {
 			this.urlPatterns = urlPatterns;
 		}
+	}
+
+	public static class Log {
+
+		/**
+		 * sentinel log base dir
+		 */
+		private String dir;
+
+		/**
+		 * distinguish the log file by pid number
+		 */
+		private boolean switchPid = false;
+
+		public String getDir() {
+			return dir;
+		}
+
+		public void setDir(String dir) {
+			this.dir = dir;
+		}
+
+		public boolean isSwitchPid() {
+			return switchPid;
+		}
+
+		public void setSwitchPid(boolean switchPid) {
+			this.switchPid = switchPid;
+		}
+
 	}
 
 }

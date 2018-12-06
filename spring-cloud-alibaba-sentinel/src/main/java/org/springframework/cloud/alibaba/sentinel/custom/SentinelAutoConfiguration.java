@@ -41,6 +41,7 @@ import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
+import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
@@ -71,7 +72,6 @@ public class SentinelAutoConfiguration {
 
 	@PostConstruct
 	private void init() {
-
 		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
 				&& StringUtils.hasText(projectName)) {
 			System.setProperty(AppNameUtil.APP_NAME, projectName);
@@ -93,8 +93,9 @@ public class SentinelAutoConfiguration {
 					properties.getTransport().getHeartbeatIntervalMs());
 		}
 		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.CHARSET))
-				&& StringUtils.hasText(properties.getCharset())) {
-			System.setProperty(SentinelConfig.CHARSET, properties.getCharset());
+				&& StringUtils.hasText(properties.getMetric().getCharset())) {
+			System.setProperty(SentinelConfig.CHARSET,
+					properties.getMetric().getCharset());
 		}
 		if (StringUtils
 				.isEmpty(System.getProperty(SentinelConfig.SINGLE_METRIC_FILE_SIZE))
@@ -113,10 +114,19 @@ public class SentinelAutoConfiguration {
 			System.setProperty(SentinelConfig.COLD_FACTOR,
 					properties.getFlow().getColdFactor());
 		}
-
 		if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
 			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
 		}
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
+				&& StringUtils.hasText(properties.getLog().getDir())) {
+			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
+		}
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
+				&& properties.getLog().isSwitchPid()) {
+			System.setProperty(LogBase.LOG_NAME_USE_PID,
+					String.valueOf(properties.getLog().isSwitchPid()));
+		}
+
 		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
 		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
 
