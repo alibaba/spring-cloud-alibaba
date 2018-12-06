@@ -2,7 +2,7 @@ package org.springframework.cloud.alibaba.cloud.examples;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.alibaba.sentinel.annotation.SentinelProtect;
+import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,7 +15,7 @@ import com.alibaba.csp.sentinel.datasource.Converter;
 public class ServiceApplication {
 
 	@Bean
-	@SentinelProtect(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
+	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
