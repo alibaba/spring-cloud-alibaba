@@ -32,6 +32,8 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 
@@ -58,10 +60,12 @@ public class SentinelEndpoint {
 		List<FlowRule> flowRules = FlowRuleManager.getRules();
 		List<DegradeRule> degradeRules = DegradeRuleManager.getRules();
 		List<SystemRule> systemRules = SystemRuleManager.getRules();
+		List<ParamFlowRule> paramFlowRules = ParamFlowRuleManager.getRules();
 		result.put("properties", sentinelProperties);
 		result.put("FlowRules", flowRules);
 		result.put("DegradeRules", degradeRules);
 		result.put("SystemRules", systemRules);
+		result.put("ParamFlowRule", paramFlowRules);
 		result.put("datasources", new HashMap<String, Object>());
 		dataSourceHandler.getDataSourceBeanNameList().forEach(dataSourceBeanName -> {
 			ReadableDataSource dataSource = applicationContext.getBean(dataSourceBeanName,
