@@ -62,12 +62,12 @@ public class SentinelEndpoint extends AbstractEndpoint<Map<String, Object>> {
 		List<FlowRule> flowRules = FlowRuleManager.getRules();
 		List<DegradeRule> degradeRules = DegradeRuleManager.getRules();
 		List<SystemRule> systemRules = SystemRuleManager.getRules();
-        List<ParamFlowRule> paramFlowRules = ParamFlowRuleManager.getRules();
+		List<ParamFlowRule> paramFlowRules = ParamFlowRuleManager.getRules();
 		result.put("properties", sentinelProperties);
 		result.put("FlowRules", flowRules);
 		result.put("DegradeRules", degradeRules);
 		result.put("SystemRules", systemRules);
-        result.put("ParamFlowRule", paramFlowRules);
+		result.put("ParamFlowRule", paramFlowRules);
 		result.put("datasources", new HashMap<String, Object>());
 
 		for (String dataSourceBeanName : dataSourceHandler.getDataSourceBeanNameList()) {

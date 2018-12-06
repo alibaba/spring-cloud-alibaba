@@ -158,15 +158,15 @@ public class JsonConverter implements Converter<String, List<AbstractRule>> {
 		return rule;
 	}
 
-    private ParamFlowRule convertParamFlowRule(String json) {
-        ParamFlowRule rule = null;
-        try {
-            rule = objectMapper.readValue(json, ParamFlowRule.class);
-        }
-        catch (Exception e) {
-            // ignore
-        }
-        return rule;
-    }
+	private ParamFlowRule convertParamFlowRule(String json) {
+		ParamFlowRule rule = null;
+		try {
+			rule = objectMapper.readValue(json, ParamFlowRule.class);
+		}
+		catch (Exception e) {
+			// ignore
+		}
+		return rule;
+	}
 
 }
