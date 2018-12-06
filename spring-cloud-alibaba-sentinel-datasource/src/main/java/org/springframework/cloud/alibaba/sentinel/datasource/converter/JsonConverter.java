@@ -17,6 +17,7 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @see DegradeRule
  * @see SystemRule
  * @see AuthorityRule
+ * @see ParamFlowRule
  * @see ObjectMapper
  */
 public class JsonConverter implements Converter<String, List<AbstractRule>> {
@@ -47,7 +49,7 @@ public class JsonConverter implements Converter<String, List<AbstractRule>> {
 	public List<AbstractRule> convert(String source) {
 		List<AbstractRule> ruleList = new ArrayList<>();
 		if (StringUtils.isEmpty(source)) {
-			logger.info(
+			logger.warn(
 					"Sentinel JsonConverter can not convert rules because source is empty");
 			return ruleList;
 		}
@@ -67,7 +69,7 @@ public class JsonConverter implements Converter<String, List<AbstractRule>> {
 
 				List<AbstractRule> rules = Arrays.asList(convertFlowRule(itemJson),
 						convertDegradeRule(itemJson), convertSystemRule(itemJson),
-						convertAuthorityRule(itemJson));
+						convertAuthorityRule(itemJson), convertParamFlowRule(itemJson));
 
 				List<AbstractRule> convertRuleList = new ArrayList<>();
 
@@ -105,8 +107,6 @@ public class JsonConverter implements Converter<String, List<AbstractRule>> {
 			throw new RuntimeException(
 					"Sentinel JsonConverter convert error: " + e.getMessage(), e);
 		}
-		logger.info("Sentinel JsonConverter convert {} rules: {}", ruleList.size(),
-				ruleList);
 		return ruleList;
 	}
 
@@ -151,6 +151,17 @@ public class JsonConverter implements Converter<String, List<AbstractRule>> {
 		AuthorityRule rule = null;
 		try {
 			rule = objectMapper.readValue(json, AuthorityRule.class);
+		}
+		catch (Exception e) {
+			// ignore
+		}
+		return rule;
+	}
+
+	private ParamFlowRule convertParamFlowRule(String json) {
+		ParamFlowRule rule = null;
+		try {
+			rule = objectMapper.readValue(json, ParamFlowRule.class);
 		}
 		catch (Exception e) {
 			// ignore
