@@ -6,7 +6,7 @@ See the [中文文档](https://github.com/spring-cloud-incubator/spring-cloud-al
 
 Spring Cloud Alibaba provides a one-stop solution for distributed application development. It contains all the components required to develop distributed applications, making it easy for you to develop your applications using Spring Cloud.
 
-With Spring Cloud Alibaba，you only need to add some annotations and a small amount of configurations to connect Spring Cloud applications to the distributed solutions of Alibaba, and build a distributed application system with Alibaba middleware.
+With Spring Cloud Alibaba, you only need to add some annotations and a small amount of configurations to connect Spring Cloud applications to the distributed solutions of Alibaba, and build a distributed application system with Alibaba middleware.
 
 
 ## Features
@@ -14,6 +14,7 @@ With Spring Cloud Alibaba，you only need to add some annotations and a small am
 * **Flow control and service degradation**：Flow control for HTTP services is supported by default. You can also customize flow control and service degradation rules using annotations. The rules can be changed dynamically.
 * **Service registration and discovery**：Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
 * **Distributed configuration**：support for externalized configuration in a distributed system, auto refresh when configuration changes.
+* **Event-driven**：support for building highly scalable event-driven microservices connected with shared messaging systems.
 * **AliCloud Object Storage**：massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
 For more features, please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
@@ -23,6 +24,10 @@ For more features, please refer to [Roadmap](https://github.com/spring-cloud-inc
 
 **[Nacos](https://github.com/alibaba/Nacos)**: an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 
+**[RocketMQ](https://rocketmq.apache.org/)**：a distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
+
+**[AliCloud ACM](https://www.aliyun.com/product/acm)**：an application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
+
 **[AliCloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
 
 For more features please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
@@ -30,7 +35,7 @@ For more features please refer to [Roadmap](https://github.com/spring-cloud-incu
 ## How to build
 
 * **master branch**: Corresponds to Spring Boot 2.x. JDK 1.8 or later versions are supported.
-* **1.x branch**: Corresponds to Spring Boot 1.x，JDK 1.7 or later versions are supported.
+* **1.x branch**: Corresponds to Spring Boot 1.x, JDK 1.7 or later versions are supported.
 
 Spring Cloud uses Maven for most build-related activities, and you should be able to get off the ground quite quickly by cloning the project you are interested in and typing:
 
@@ -40,7 +45,7 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 ## How to Use
 
 ### Add maven dependency
-Version 0.2.0.RELEASE is compatible with the Spring Boot 2.0.x line. Version 0.1.0.RELEASE is compatible with the Spring Boot 1.x line.
+Version 0.2.0.RELEASE is compatible with the Spring Cloud Finchley. Version 0.1.0.RELEASE is compatible with the Spring Cloud Edgware.
 
 These artifacts are available from Maven Central and Spring Release repository via BOM:
 
@@ -95,6 +100,8 @@ Examples：
 
 [Nacos Discovery Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme.md)
 
+[RocketMQ Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
+
 [AliCloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme.md)
 
 ## Version control guidelines
@@ -104,8 +111,8 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 * 0.1.x for Spring Boot 1
 * 0.2.x for Spring Boot 2
 
-During the incubation period，the version management of the project will follow these rules：
-* Functional updates will be reflected in the 3rd number of the version, for example, the next version of 0.1.0 will be 0.1.1。
+During the incubation period, the version management of the project will follow these rules：
+* Functional updates will be reflected in the 3rd number of the version, for example, the next version of 0.1.0 will be 0.1.1.
 
 
 ## Contact Us
