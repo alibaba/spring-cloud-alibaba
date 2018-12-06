@@ -22,7 +22,7 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.alibaba.sentinel.annotation.SentinelProtect;
+import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -37,19 +37,19 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 import com.alibaba.csp.sentinel.util.StringUtil;
 
 /**
- * Interceptor using by SentinelProtect and SentinelProtectInterceptor
+ * Interceptor using by SentinelRestTemplate
  *
  * @author fangjian
  */
 public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor {
 
-    private static final Logger logger = LoggerFactory
+	private static final Logger logger = LoggerFactory
 			.getLogger(SentinelProtectInterceptor.class);
 
-	private SentinelProtect sentinelProtect;
+	private SentinelRestTemplate sentinelRestTemplate;
 
-	public SentinelProtectInterceptor(SentinelProtect sentinelProtect) {
-		this.sentinelProtect = sentinelProtect;
+	public SentinelProtectInterceptor(SentinelRestTemplate sentinelRestTemplate) {
+		this.sentinelRestTemplate = sentinelRestTemplate;
 	}
 
 	@Override
@@ -92,15 +92,16 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		Object[] args = new Object[] { ex };
 		// handle degrade
 		if (isDegradeFailure(ex)) {
-			Method method = extractFallbackMethod(sentinelProtect.fallback(),
-					sentinelProtect.fallbackClass());
+			Method method = extractFallbackMethod(sentinelRestTemplate.fallback(),
+					sentinelRestTemplate.fallbackClass());
 			if (method != null) {
 				method.invoke(null, args);
 			}
 		}
 		// handle block
-		Method blockHandler = extractBlockHandlerMethod(sentinelProtect.blockHandler(),
-				sentinelProtect.blockHandlerClass());
+		Method blockHandler = extractBlockHandlerMethod(
+				sentinelRestTemplate.blockHandler(),
+				sentinelRestTemplate.blockHandlerClass());
 		if (blockHandler != null) {
 			blockHandler.invoke(null, args);
 		}

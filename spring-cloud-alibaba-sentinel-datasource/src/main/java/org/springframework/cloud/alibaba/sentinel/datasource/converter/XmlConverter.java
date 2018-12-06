@@ -18,6 +18,7 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,7 +33,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
  * @see DegradeRule
  * @see SystemRule
  * @see AuthorityRule
- * @see XmlMapper
+ * @see ParamFlowRule
  */
 public class XmlConverter implements Converter<String, List<AbstractRule>> {
 
@@ -48,7 +49,7 @@ public class XmlConverter implements Converter<String, List<AbstractRule>> {
 	public List<AbstractRule> convert(String source) {
 		List<AbstractRule> ruleList = new ArrayList<>();
 		if (StringUtils.isEmpty(source)) {
-			logger.info(
+			logger.warn(
 					"Sentinel XmlConverter can not convert rules because source is empty");
 			return ruleList;
 		}
@@ -68,7 +69,7 @@ public class XmlConverter implements Converter<String, List<AbstractRule>> {
 
 				List<AbstractRule> rules = Arrays.asList(convertFlowRule(itemXml),
 						convertDegradeRule(itemXml), convertSystemRule(itemXml),
-						convertAuthorityRule(itemXml));
+						convertAuthorityRule(itemXml), convertParamFlowRule(itemXml));
 
 				List<AbstractRule> convertRuleList = rules.stream()
 						.filter(rule -> !ObjectUtils.isEmpty(rule))
@@ -101,8 +102,6 @@ public class XmlConverter implements Converter<String, List<AbstractRule>> {
 			throw new RuntimeException(
 					"Sentinel XmlConverter convert error: " + e.getMessage(), e);
 		}
-		logger.info("Sentinel XmlConverter convert {} rules: {}", ruleList.size(),
-				ruleList);
 		return ruleList;
 	}
 
@@ -147,6 +146,17 @@ public class XmlConverter implements Converter<String, List<AbstractRule>> {
 		AuthorityRule rule = null;
 		try {
 			rule = xmlMapper.readValue(xml, AuthorityRule.class);
+		}
+		catch (Exception e) {
+			// ignore
+		}
+		return rule;
+	}
+
+	private ParamFlowRule convertParamFlowRule(String json) {
+		ParamFlowRule rule = null;
+		try {
+			rule = xmlMapper.readValue(json, ParamFlowRule.class);
 		}
 		catch (Exception e) {
 			// ignore
