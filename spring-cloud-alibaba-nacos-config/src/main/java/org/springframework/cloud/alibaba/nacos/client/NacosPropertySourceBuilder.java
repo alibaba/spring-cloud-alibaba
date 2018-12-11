@@ -16,31 +16,27 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.exception.NacosException;
+import java.io.StringReader;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
 
-import java.io.StringReader;
-import java.util.*;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
 
 /**
  * @author xiaojing
  * @author pbting
  */
 public class NacosPropertySourceBuilder {
-
-	private static final Logger logger = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NacosPropertySourceBuilder.class);
-
 	private ConfigService configService;
 	private long timeout;
-
-	public NacosPropertySourceBuilder() {
-	}
 
 	public NacosPropertySourceBuilder(ConfigService configService, long timeout) {
 		this.configService = configService;
@@ -82,7 +78,7 @@ public class NacosPropertySourceBuilder {
 		try {
 			data = configService.getConfig(dataId, group, timeout);
 			if (!StringUtils.isEmpty(data)) {
-				logger.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
+				LOGGER.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
 						dataId, group));
 
 				if (fileExtension.equalsIgnoreCase("properties")) {
@@ -101,10 +97,10 @@ public class NacosPropertySourceBuilder {
 			}
 		}
 		catch (NacosException e) {
-			logger.error("get data from Nacos error,dataId:{}, ", dataId, e);
+			LOGGER.error("get data from Nacos error,dataId:{}, ", dataId, e);
 		}
 		catch (Exception e) {
-			logger.error("parse data from Nacos error,dataId:{},data:{},", dataId, data,
+			LOGGER.error("parse data from Nacos error,dataId:{},data:{},", dataId, data,
 					e);
 		}
 		return null;
