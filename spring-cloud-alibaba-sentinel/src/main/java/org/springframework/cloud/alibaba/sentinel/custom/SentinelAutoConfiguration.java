@@ -21,7 +21,6 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -156,26 +155,22 @@ public class SentinelAutoConfiguration {
 	}
 
 	@Bean("sentinel-json-converter")
-	public JsonConverter jsonConverter(
-			@Qualifier("sentinel-object-mapper") ObjectMapper objectMapper) {
-		return new JsonConverter(objectMapper);
+	public JsonConverter jsonConverter() {
+		return new JsonConverter(objectMapper());
 	}
 
-	@Bean("sentinel-object-mapper")
-	public ObjectMapper objectMapper() {
+	private ObjectMapper objectMapper() {
 		return new ObjectMapper();
 	}
 
 	@ConditionalOnClass(XmlMapper.class)
 	protected static class SentinelXmlConfiguration {
 		@Bean("sentinel-xml-converter")
-		public XmlConverter xmlConverter(
-				@Qualifier("sentinel-xml-mapper") XmlMapper xmlMapper) {
-			return new XmlConverter(xmlMapper);
+		public XmlConverter xmlConverter() {
+			return new XmlConverter(xmlMapper());
 		}
 
-		@Bean("sentinel-xml-mapper")
-		public XmlMapper xmlMapper() {
+		private XmlMapper xmlMapper() {
 			return new XmlMapper();
 		}
 	}

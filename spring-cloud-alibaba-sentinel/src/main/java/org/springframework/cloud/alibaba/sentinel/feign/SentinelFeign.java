@@ -89,13 +89,14 @@ public class SentinelFeign {
 					// check fallback and fallbackFactory properties
 					if (void.class != fallback) {
 						fallbackInstance = getFromContext(name, "fallback", fallback,
-								target);
+								target.type());
 						return new SentinelInvocationHandler(target, dispatch,
 								new FallbackFactory.Default(fallbackInstance));
 					}
 					if (void.class != fallbackFactory) {
 						fallbackFactoryInstance = (FallbackFactory) getFromContext(name,
-								"fallbackFactory", fallbackFactory, target);
+								"fallbackFactory", fallbackFactory,
+								FallbackFactory.class);
 						return new SentinelInvocationHandler(target, dispatch,
 								fallbackFactoryInstance);
 					}
@@ -103,7 +104,7 @@ public class SentinelFeign {
 				}
 
 				private Object getFromContext(String name, String type,
-						Class fallbackType, Target target) {
+						Class fallbackType, Class targetType) {
 					Object fallbackInstance = feignContext.getInstance(name,
 							fallbackType);
 					if (fallbackInstance == null) {
@@ -112,10 +113,10 @@ public class SentinelFeign {
 								type, fallbackType, name));
 					}
 
-					if (!target.type().isAssignableFrom(fallbackType)) {
+					if (!targetType.isAssignableFrom(fallbackType)) {
 						throw new IllegalStateException(String.format(
 								"Incompatible %s instance. Fallback/fallbackFactory of type %s is not assignable to %s for feign client %s",
-								type, fallbackType, target.type(), name));
+								type, fallbackType, targetType, name));
 					}
 					return fallbackInstance;
 				}
