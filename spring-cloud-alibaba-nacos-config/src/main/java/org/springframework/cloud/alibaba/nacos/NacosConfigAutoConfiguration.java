@@ -16,14 +16,11 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosContextRefresher;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshHistory;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshProperties;
-import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,19 +28,23 @@ import org.springframework.context.annotation.Configuration;
  * @author juven.xuxb
  */
 @Configuration
-public class NacosConfigAutoConfiguration implements ApplicationContextAware {
+public class NacosConfigAutoConfiguration {
 
-	private ApplicationContext applicationContext;
-
-	@Autowired
-	private NacosConfigProperties nacosConfigProperties;
-
-	@Autowired
-	private NacosRefreshProperties nacosRefreshProperties;
+	@Bean
+	public NacosConfigProperties nacosConfigProperties(ApplicationContext context) {
+		if (context.getParent() != null
+				&& BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
+						context.getParent(), NacosConfigProperties.class).length > 0) {
+			return BeanFactoryUtils.beanOfTypeIncludingAncestors(context.getParent(),
+					NacosConfigProperties.class);
+		}
+		NacosConfigProperties nacosConfigProperties = new NacosConfigProperties();
+		return nacosConfigProperties;
+	}
 
 	@Bean
 	public NacosPropertySourceRepository nacosPropertySourceRepository() {
-		return new NacosPropertySourceRepository(applicationContext);
+		return new NacosPropertySourceRepository();
 	}
 
 	@Bean
@@ -57,17 +58,12 @@ public class NacosConfigAutoConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean
-	public NacosContextRefresher nacosContextRefresher(ContextRefresher contextRefresher,
+	public NacosContextRefresher nacosContextRefresher(
+			NacosConfigProperties nacosConfigProperties,
+			NacosRefreshProperties nacosRefreshProperties,
 			NacosRefreshHistory refreshHistory,
 			NacosPropertySourceRepository propertySourceRepository) {
-		return new NacosContextRefresher(contextRefresher, nacosConfigProperties,
-				nacosRefreshProperties, refreshHistory, propertySourceRepository,
-				nacosConfigProperties.configServiceInstance());
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.applicationContext = applicationContext;
+		return new NacosContextRefresher(nacosRefreshProperties, refreshHistory,
+				propertySourceRepository, nacosConfigProperties.configServiceInstance());
 	}
 }

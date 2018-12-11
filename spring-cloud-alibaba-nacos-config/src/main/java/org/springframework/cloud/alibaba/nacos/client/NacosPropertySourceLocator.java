@@ -16,10 +16,11 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-import com.alibaba.nacos.api.config.ConfigService;
+import java.util.Arrays;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
@@ -27,8 +28,8 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.StringUtils;
-import java.util.Arrays;
-import java.util.List;
+
+import com.alibaba.nacos.api.config.ConfigService;
 
 /**
  * @author xiaojing
@@ -36,7 +37,7 @@ import java.util.List;
 @Order(0)
 public class NacosPropertySourceLocator implements PropertySourceLocator {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NacosPropertySourceLocator.class);
 	private static final String NACOS_PROPERTY_SOURCE_NAME = "NACOS";
 	private static final String SEP1 = "-";
@@ -45,8 +46,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
 			"yaml", "yml");
 
-	@Autowired
 	private NacosConfigProperties nacosConfigProperties;
+
+	public NacosPropertySourceLocator(NacosConfigProperties nacosConfigProperties) {
+		this.nacosConfigProperties = nacosConfigProperties;
+	}
 
 	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
 
@@ -56,7 +60,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		ConfigService configService = nacosConfigProperties.configServiceInstance();
 
 		if (null == configService) {
-			logger.warn(
+			LOGGER.warn(
 					"no instance of config service found, can't load config from nacos");
 			return null;
 		}
