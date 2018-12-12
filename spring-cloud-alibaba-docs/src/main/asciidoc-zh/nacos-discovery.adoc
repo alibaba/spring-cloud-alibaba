@@ -1,15 +1,15 @@
-= Spring Cloud Alibaba Nacos Discovery
+== Spring Cloud Alibaba Nacos Discovery
 
 该项目通过自动配置以及其他 Spring 编程模型的习惯用法为 Spring Boot 应用程序在服务注册与发现方面提供和 Nacos 的无缝集成。
 通过一些简单的注解，您可以快速来注册一个服务，并使用经过双十一考验的 Nacos 组件来作为大规模分布式系统的服务注册中心。
 
-== 1. 服务注册发现: Nacos Discovery Starter
+=== 服务注册发现: Nacos Discovery Starter
 
 服务发现是微服务架构体系中最关键的组件之一。如果尝试着用手动的方式来给每一个客户端来配置所有服务提供者的服务列表是一件非常困难的事，而且也不利于
 服务的动态扩缩容。Nacos Discovery Starter 可以帮助您将服务自动注册到 Nacos 服务端并且能够动态感知和刷新某个服务实例的服务列表。除此之外，Nacos
 Discovery Starter 也将服务实例自身的一些元数据信息-例如 host，port,健康检查URL，主页等-注册到 Nacos 。Nacos 的获取和启动方式可以参考 https://nacos.io/zh-cn/docs/quick-start.html[Nacos 官网]。
 
-=== 如何引入 Nacos Discovery Starter
+==== 如何引入 Nacos Discovery Starter
 
 为了能够在你的工程下引入 Nacos Discovey Starter，使用group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-discovery`。
 pom.xml 示例如下所示：
@@ -38,7 +38,7 @@ pom.xml 示例如下所示：
 </dependencies>
 ----
 
-=== 启动一个 Provider 应用
+==== 启动一个 Provider 应用
 
 如果您使用的 Spring Cloud 版本是 Finchley.SR1 版本,那么这个时候您的Spring Boot版本的选择可需要额外的小心了，因为版本的不匹对，可能会导致许多意外的效果。
 Spring Cloud 的 Finchley.SR1 版本最佳实践的 Spring Boot 版本是 2.0.6.RELEASE。在启动您的一个 Provider 应用时请检查依赖的 Spring Boot 版本是否是
@@ -292,7 +292,7 @@ NOTE: 在启动 Consumer 应用之前请先将 Nacos 服务启动好。具体启
  访问地址：http://127.0.0.1:8082/echo/app-name
  访问结果：Hello Nacos Discovery nacos-consumer
 
-== 2. 关于 Nacos Starter 更多的配置项信息
+=== 关于 Nacos Starter 更多的配置项信息
 
 更多关于 spring-cloud-starter-alibaba-nacos-discovery 的 starter 配置项如下所示:
 
