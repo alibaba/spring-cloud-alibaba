@@ -87,7 +87,7 @@ public class SimpleTask implements ScxSimpleJobProcessor {
 
 === 对任务进行调度
 
-进入[SchedulerX任务列表](https://edas.console.aliyun.com/#/edasSchedulerXJob?regionNo=cn-test)页面，选择上方"测试"区域，点击右上角"新建Job"，创建一个Job，即如下所示。
+进入 https://edas.console.aliyun.com/#/edasSchedulerXJob?regionNo=cn-test[SchedulerX任务列表] 页面，选择上方"测试"区域，点击右上角"新建Job"，创建一个Job，即如下所示。
 
 [source,text]
 ----
@@ -101,7 +101,7 @@ Job描述：无
 
 以上任务类型选择了"简单Job单机版"，并且制定了Cron表达式为"0 * * * * ?"，这意味着，每过一分钟，任务将会被执行且只执行一次。
 
-更多任务类型，请参考 https://help.aliyun.com/document_detail/43136.html?spm=a2c4g.11186623.6.703.64e17da9br61ZS[SchedulerX官方文档]。
+更多任务类型，请参考 https://help.aliyun.com/document_detail/43136.html[SchedulerX官方文档]。
 
 === 生产环境使用
 
@@ -128,4 +128,4 @@ NOTE: group-id必须创建在namespace当中。
 
 access-key以及secret-key为阿里云账号的AK/SK信息，如果应用在EDAS上部署，则不需要填写这两项信息，否则请前往 https://usercenter.console.aliyun.com/#/manage/ak[安全信息管理]获取。
 
-domain-name并不是必须的，具体请参考 https://help.aliyun.com/document_detail/35359.html?spm=a2c4g.11186623.6.704.4abf1994SbgXYS[SchedulerX官方文档]。
+domain-name并不是必须的，具体请参考 https://help.aliyun.com/document_detail/35359.html[SchedulerX官方文档]。
