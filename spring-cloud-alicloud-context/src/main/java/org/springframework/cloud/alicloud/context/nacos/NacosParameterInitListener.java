@@ -1,11 +1,12 @@
 package org.springframework.cloud.alicloud.context.nacos;
 
-import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
-import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
+
+import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
+import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
 
 public class NacosParameterInitListener
 		implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
@@ -20,7 +21,7 @@ public class NacosParameterInitListener
 
 	private void preparedNacosConfiguration() {
 		EdasChangeOrderConfiguration edasChangeOrderConfiguration = EdasChangeOrderConfigurationFactory
-				.buildEdasChangeOrderConfiguration();
+				.getEdasChangeOrderConfiguration();
 		log.info("Initialize Nacos Parameter from edas change order,is edas managed {}.",
 				edasChangeOrderConfiguration.isEdasManaged());
 		if (!edasChangeOrderConfiguration.isEdasManaged()) {

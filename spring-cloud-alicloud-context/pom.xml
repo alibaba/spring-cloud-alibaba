@@ -39,6 +39,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.alibaba.schedulerx</groupId>
+            <artifactId>schedulerx-client</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba.ans</groupId>
             <artifactId>ans-sdk</artifactId>
             <scope>provided</scope>
