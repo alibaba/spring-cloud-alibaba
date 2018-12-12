@@ -30,4 +30,9 @@ public class ReceiveService {
 		System.out.println("input1 receive again: " + receiveMsg);
 	}
 
+    @StreamListener("input4")
+    public void receiveTransactionalMsg(String transactionMsg) {
+        System.out.println("input4 receive transaction msg: " + transactionMsg);
+    }
+
 }

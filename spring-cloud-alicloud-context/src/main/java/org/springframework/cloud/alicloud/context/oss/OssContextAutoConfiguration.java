@@ -51,9 +51,9 @@ public class OssContextAutoConfiguration {
 			Assert.isTrue(!StringUtils.isEmpty(ossProperties.getEndpoint()),
 					"Oss endpoint can't be empty.");
 			Assert.isTrue(!StringUtils.isEmpty(aliCloudProperties.getAccessKey()),
-					"Access key can't be empty.");
+					"${spring.cloud.alicloud.access-key} can't be empty.");
 			Assert.isTrue(!StringUtils.isEmpty(aliCloudProperties.getSecretKey()),
-					"Secret key can't be empty.");
+					"${spring.cloud.alicloud.secret-key} can't be empty.");
 			return new OSSClientBuilder().build(ossProperties.getEndpoint(),
 					aliCloudProperties.getAccessKey(), aliCloudProperties.getSecretKey(),
 					ossProperties.getConfig());
