@@ -124,10 +124,9 @@ public class NacosContextRefresher
 				}
 				refreshHistory.add(dataId, md5);
 				applicationContext.publishEvent(
-						new RefreshEvent(this, null, "Refresh  Nacos config"));
+						new RefreshEvent(this, null, "Refresh Nacos config"));
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Refresh  Nacos config group[[]] dataId[]", group,
-							dataId);
+					LOGGER.debug("Refresh Nacos config group{},dataId{}", group, dataId);
 				}
 			}
 
