@@ -301,3 +301,64 @@ spring.cloud.nacos.config.group=DEVELOP_GROUP
 ----
 
 NOTE: 该配置必须放在 bootstrap.properties 文件中。并且在添加配置时 Group 的值一定要和 `spring.cloud.nacos.config.group` 的配置值一致。
+
+=== 支持自定义扩展的 Data Id 配置
+
+Spring Cloud Alibaba Nacos Config 从 0.2.1 版本后，可支持自定义 Data Id 的配置。关于这部分详细的设计可参考 https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/141[这里]。
+一个完整的配置案例如下所示：
+
+[source,properties]
+----
+spring.application.name=opensource-service-provider
+spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+
+# config external configuration
+# 1、Data Id 在默认的组 DEFAULT_GROUP,不支持配置的动态刷新
+spring.cloud.nacos.config.ext-config[0].data-id=ext-config-common01.properties
+
+# 2、Data Id 不在默认的组，不支持动态刷新
+spring.cloud.nacos.config.ext-config[1].data-id=ext-config-common02.properties
+spring.cloud.nacos.config.ext-config[1].group=GLOBALE_GROUP
+
+# 3、Data Id 既不在默认的组，也支持动态刷新
+spring.cloud.nacos.config.ext-config[2].data-id=ext-config-common03.properties
+spring.cloud.nacos.config.ext-config[2].group=REFRESH_GROUP
+spring.cloud.nacos.config.ext-config[2].refresh=true
+----
+
+可以看到:
+
+* 通过 `spring.cloud.nacos.config.ext-config[n].data-id` 的配置方式来支持多个 Data Id 的配置。
+* 通过 `spring.cloud.nacos.config.ext-config[n].group` 的配置方式自定义 Data Id 所在的组，不明确配置的话，默认是 DEFAULT_GROUP。
+* 通过 `spring.cloud.nacos.config.ext-config[n].refresh` 的配置方式来控制该 Data Id 在配置变更时，是否支持应用中可动态刷新，
+感知到最新的配置值。默认是不支持的。
+
+
+NOTE: 多个 Data Id 同时配置时，他的优先级关系是 `spring.cloud.nacos.config.ext-config[n].data-id` 其中 n 的值越大，优先级越高。
+
+NOTE: `spring.cloud.nacos.config.ext-config[n].data-id` 的值必须带文件扩展名，文件扩展名既可支持 properties，又可以支持 yaml/yml。
+此时 `spring.cloud.nacos.config.file-extension` 的配置对自定义扩展配置的 Data Id 文件扩展名没有影响。
+
+通过自定义扩展的 Data Id 配置，既可以解决多个应用间配置共享的问题，又可以支持一个应用有多个配置文件。
+
+为了更加清晰的在多个应用间配置共享的 Data Id ，你可以通过以下的方式来配置：
+
+[source,properties]
+----
+spring.cloud.nacos.config.shared-dataids=bootstrap-common.properties,all-common.properties
+spring.cloud.nacos.config.refreshable-dataids=bootstrap-common.properties
+----
+
+可以看到：
+
+* 通过 `spring.cloud.nacos.config.shared-dataids` 来支持多个共享 Data Id 的配置，多个之间用逗号隔开。
+* 通过 `spring.cloud.nacos.config.refreshable-dataids` 来支持哪些共享配置的 Data Id 在配置变化时，应用中是否可动态刷新，
+感知到最新的配置值，多个 Data Id 之间用逗号隔开。如果没有明确配置，默认情况下所有共享配置的 Data Id 都不支持动态刷新。
+
+NOTE: 通过 `spring.cloud.nacos.config.shared-dataids` 来支持多个共享配置的 Data Id 时，
+多个共享配置间的一个优先级的关系我们约定：按照配置出现的先后顺序，即后面的优先级要高于前面。
+
+NOTE: 通过 `spring.cloud.nacos.config.shared-dataids` 来配置时，Data Id 必须带文件扩展名，文件扩展名既可支持 properties，也可以支持 yaml/yml。
+此时 `spring.cloud.nacos.config.file-extension` 的配置对自定义扩展配置的 Data Id 文件扩展名没有影响。
+
+NOTE: `spring.cloud.nacos.config.refreshable-dataids` 给出哪些需要支持动态刷新时，Data Id 的值也必须明确给出文件扩展名。
