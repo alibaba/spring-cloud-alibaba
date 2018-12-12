@@ -1,14 +1,12 @@
-= Spring Cloud Alibaba Nacos Config
+== Spring Cloud Alibaba Nacos Config
 
 Nacos 提供用于存储配置和其他元数据的 key/value 存储，为分布式系统中的外部化配置提供服务器端和客户端支持。使用 Spring Cloud Alibaba Nacos Config，您可以在 Nacos Server 集中管理你 Spring Cloud 应用的外部属性配置。
 
 Spring Cloud Alibaba Nacos Config 是 Config Server 和 Client 的替代方案，客户端和服务器上的概念与 Spring Environment 和 PropertySource 有着一致的抽象，在特殊的 bootstrap 阶段，配置被加载到 Spring 环境中。当应用程序通过部署管道从开发到测试再到生产时，您可以管理这些环境之间的配置，并确保应用程序具有迁移时需要运行的所有内容。
 
-== 快速开始
+=== 快速开始
 
-=== 基于 dataid 为 properties 的文件扩展名配置方式
-
-==== Nacos 服务端初始化
+===== Nacos 服务端初始化
 
 1、启动Nacos Server。启动方式可见 https://nacos.io/zh-cn/docs/quick-start.html[Nacos 官网]
 
@@ -28,7 +26,7 @@ Group  :    DEFAULT_GROUP
 
 NOTE: 注意dataid是以 properties(默认的文件扩展名方式)为扩展名。
 
-==== 客户端使用方式
+===== 客户端使用方式
 
 为了能够在应用程序中使用 Nacos 来实现应用的外部化配置，在构建应用的同时添加一个Spring Boot Starter org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config。以下是一个基本的 maven 依赖配置:
 
