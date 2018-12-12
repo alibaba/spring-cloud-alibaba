@@ -21,7 +21,7 @@ package org.springframework.cloud.stream.binder.rocketmq;
  */
 public interface RocketMQBinderConstants {
 
-    String ENDPOINT_ID = "rocketmq_binder";
+	String ENDPOINT_ID = "rocketmq_binder";
 
 	/**
 	 * Header key
@@ -32,6 +32,8 @@ public interface RocketMQBinderConstants {
 
 	String ROCKET_SEND_RESULT = "ROCKETMQ_SEND_RESULT";
 
+	String ROCKET_TRANSACTIONAL_ARG = "ROCKETMQ_TRANSACTIONAL_ARG";
+
 	String ACKNOWLEDGEMENT_KEY = "ACKNOWLEDGEMENT";
 
 	/**
@@ -39,23 +41,23 @@ public interface RocketMQBinderConstants {
 	 */
 	String LASTSEND_TIMESTAMP = "lastSend.timestamp";
 
-    interface Metrics {
-        interface Producer {
-            String PREFIX = "scs-rocketmq.producer.";
-            String TOTAL_SENT = "totalSent";
-            String TOTAL_SENT_FAILURES = "totalSentFailures";
-            String SENT_PER_SECOND = "sentPerSecond";
-            String SENT_FAILURES_PER_SECOND = "sentFailuresPerSecond";
-        }
+	interface Metrics {
+		interface Producer {
+			String PREFIX = "scs-rocketmq.producer.";
+			String TOTAL_SENT = "totalSent";
+			String TOTAL_SENT_FAILURES = "totalSentFailures";
+			String SENT_PER_SECOND = "sentPerSecond";
+			String SENT_FAILURES_PER_SECOND = "sentFailuresPerSecond";
+		}
 
-        interface Consumer {
-            String GROUP_PREFIX = "scs-rocketmq.consumerGroup.";
-            String PREFIX = "scs-rocketmq.consumer.";
-            String TOTAL_CONSUMED = "totalConsumed";
-            String CONSUMED_PER_SECOND = "consumedPerSecond";
-            String TOTAL_CONSUMED_FAILURES = "totalConsumedFailures";
-            String CONSUMED_FAILURES_PER_SECOND = "consumedFailuresPerSecond";
-        }
-    }
+		interface Consumer {
+			String GROUP_PREFIX = "scs-rocketmq.consumerGroup.";
+			String PREFIX = "scs-rocketmq.consumer.";
+			String TOTAL_CONSUMED = "totalConsumed";
+			String CONSUMED_PER_SECOND = "consumedPerSecond";
+			String TOTAL_CONSUMED_FAILURES = "totalConsumedFailures";
+			String CONSUMED_FAILURES_PER_SECOND = "consumedFailuresPerSecond";
+		}
+	}
 
 }

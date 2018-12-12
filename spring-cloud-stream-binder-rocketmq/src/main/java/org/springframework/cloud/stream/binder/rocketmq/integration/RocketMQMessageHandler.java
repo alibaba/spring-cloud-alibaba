@@ -21,10 +21,14 @@ import java.util.Map;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
+import org.apache.rocketmq.client.producer.TransactionCheckListener;
+import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.exception.RemotingException;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQMessageHeaderAccessor;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
@@ -47,16 +51,20 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	private InstrumentationManager instrumentationManager;
 
-	private final RocketMQProducerProperties producerProperties;
+	private LocalTransactionExecuter localTransactionExecuter;
+
+	private TransactionCheckListener transactionCheckListener;
+
+	private final ExtendedProducerProperties<RocketMQProducerProperties> producerProperties;
 
 	private final String destination;
 
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
-	protected volatile boolean running = false;
+	private volatile boolean running = false;
 
 	public RocketMQMessageHandler(String destination,
-			RocketMQProducerProperties producerProperties,
+			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
 			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
 			InstrumentationManager instrumentationManager) {
 		this.destination = destination;
@@ -67,7 +75,16 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	@Override
 	public void start() {
-		producer = new DefaultMQProducer(destination);
+		if (producerProperties.getExtension().getTransactional()) {
+			producer = new TransactionMQProducer(destination);
+			if (transactionCheckListener != null) {
+				((TransactionMQProducer) producer)
+						.setTransactionCheckListener(transactionCheckListener);
+			}
+		}
+		else {
+			producer = new DefaultMQProducer(destination);
+		}
 
 		if (instrumentationManager != null) {
 			producerInstrumentation = instrumentationManager
@@ -77,8 +94,9 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 		producer.setNamesrvAddr(rocketBinderConfigurationProperties.getNamesrvAddr());
 
-		if (producerProperties.getMaxMessageSize() > 0) {
-			producer.setMaxMessageSize(producerProperties.getMaxMessageSize());
+		if (producerProperties.getExtension().getMaxMessageSize() > 0) {
+			producer.setMaxMessageSize(
+					producerProperties.getExtension().getMaxMessageSize());
 		}
 
 		try {
@@ -139,7 +157,14 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 				toSend.putUserProperty(entry.getKey(), entry.getValue());
 			}
 
-			SendResult sendRes = producer.send(toSend);
+			SendResult sendRes;
+			if (producerProperties.getExtension().getTransactional()) {
+				sendRes = producer.sendMessageInTransaction(toSend,
+						localTransactionExecuter, headerAccessor.getTransactionalArg());
+			}
+			else {
+				sendRes = producer.send(toSend);
+			}
 
 			if (!sendRes.getSendStatus().equals(SendStatus.SEND_OK)) {
 				throw new MQClientException("message hasn't been sent", null);
@@ -165,6 +190,16 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 			throw new MessagingException(e.getMessage(), e);
 		}
 
+	}
+
+	public void setLocalTransactionExecuter(
+			LocalTransactionExecuter localTransactionExecuter) {
+		this.localTransactionExecuter = localTransactionExecuter;
+	}
+
+	public void setTransactionCheckListener(
+			TransactionCheckListener transactionCheckListener) {
+		this.transactionCheckListener = transactionCheckListener;
 	}
 
 }

@@ -16,6 +16,12 @@
 
 package org.springframework.cloud.stream.binder.rocketmq;
 
+import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ACKNOWLEDGEMENT_KEY;
+import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ORIGINAL_ROCKET_MESSAGE;
+import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKET_FLAG;
+import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKET_SEND_RESULT;
+import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKET_TRANSACTIONAL_ARG;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,95 +35,105 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 
-import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ACKNOWLEDGEMENT_KEY;
-import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ORIGINAL_ROCKET_MESSAGE;
-import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKET_FLAG;
-import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKET_SEND_RESULT;
-
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class RocketMQMessageHeaderAccessor extends MessageHeaderAccessor {
 
-    public RocketMQMessageHeaderAccessor() {
-        super();
-    }
+	public RocketMQMessageHeaderAccessor() {
+		super();
+	}
 
-    public RocketMQMessageHeaderAccessor(Message<?> message) {
-        super(message);
-    }
+	public RocketMQMessageHeaderAccessor(Message<?> message) {
+		super(message);
+	}
 
-    public Acknowledgement getAcknowledgement(Message message) {
-        return message.getHeaders().get(ACKNOWLEDGEMENT_KEY, Acknowledgement.class);
-    }
+	public Acknowledgement getAcknowledgement(Message message) {
+		return message.getHeaders().get(ACKNOWLEDGEMENT_KEY, Acknowledgement.class);
+	}
 
-    public RocketMQMessageHeaderAccessor withAcknowledgment(Acknowledgement acknowledgment) {
-        setHeader(ACKNOWLEDGEMENT_KEY, acknowledgment);
-        return this;
-    }
+	public RocketMQMessageHeaderAccessor withAcknowledgment(
+			Acknowledgement acknowledgment) {
+		setHeader(ACKNOWLEDGEMENT_KEY, acknowledgment);
+		return this;
+	}
 
-    public String getTags() {
-        return getMessageHeaders().get(MessageConst.PROPERTY_TAGS) == null ? "" : (String) getMessageHeaders().get(MessageConst.PROPERTY_TAGS);
-    }
+	public String getTags() {
+		return getMessageHeaders().get(MessageConst.PROPERTY_TAGS) == null ? ""
+				: (String) getMessageHeaders().get(MessageConst.PROPERTY_TAGS);
+	}
 
-    public RocketMQMessageHeaderAccessor withTags(String tag) {
-        setHeader(MessageConst.PROPERTY_TAGS, tag);
-        return this;
-    }
+	public RocketMQMessageHeaderAccessor withTags(String tag) {
+		setHeader(MessageConst.PROPERTY_TAGS, tag);
+		return this;
+	}
 
-    public String getKeys() {
-        return getMessageHeaders().get(MessageConst.PROPERTY_KEYS) == null ? "" : (String) getMessageHeaders().get(MessageConst.PROPERTY_KEYS);
-    }
+	public String getKeys() {
+		return getMessageHeaders().get(MessageConst.PROPERTY_KEYS) == null ? ""
+				: (String) getMessageHeaders().get(MessageConst.PROPERTY_KEYS);
+	}
 
-    public RocketMQMessageHeaderAccessor withKeys(String keys) {
-        setHeader(MessageConst.PROPERTY_KEYS, keys);
-        return this;
-    }
+	public RocketMQMessageHeaderAccessor withKeys(String keys) {
+		setHeader(MessageConst.PROPERTY_KEYS, keys);
+		return this;
+	}
 
-    public MessageExt getRocketMessage() {
-        return getMessageHeaders().get(ORIGINAL_ROCKET_MESSAGE, MessageExt.class);
-    }
+	public MessageExt getRocketMessage() {
+		return getMessageHeaders().get(ORIGINAL_ROCKET_MESSAGE, MessageExt.class);
+	}
 
-    public RocketMQMessageHeaderAccessor withRocketMessage(MessageExt message) {
-        setHeader(ORIGINAL_ROCKET_MESSAGE, message);
-        return this;
-    }
+	public RocketMQMessageHeaderAccessor withRocketMessage(MessageExt message) {
+		setHeader(ORIGINAL_ROCKET_MESSAGE, message);
+		return this;
+	}
 
-    public Integer getDelayTimeLevel() {
-        return NumberUtils.toInt((String)getMessageHeaders().get(MessageConst.PROPERTY_DELAY_TIME_LEVEL), 0);
-    }
+	public Integer getDelayTimeLevel() {
+		return NumberUtils.toInt(
+				(String) getMessageHeaders().get(MessageConst.PROPERTY_DELAY_TIME_LEVEL),
+				0);
+	}
 
-    public RocketMQMessageHeaderAccessor withDelayTimeLevel(Integer delayTimeLevel) {
-        setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, delayTimeLevel);
-        return this;
-    }
+	public RocketMQMessageHeaderAccessor withDelayTimeLevel(Integer delayTimeLevel) {
+		setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, delayTimeLevel);
+		return this;
+	}
 
-    public Integer getFlag() {
-        return NumberUtils.toInt((String)getMessageHeaders().get(ROCKET_FLAG), 0);
-    }
+	public Integer getFlag() {
+		return NumberUtils.toInt((String) getMessageHeaders().get(ROCKET_FLAG), 0);
+	}
 
-    public RocketMQMessageHeaderAccessor withFlag(Integer delayTimeLevel) {
-        setHeader(ROCKET_FLAG, delayTimeLevel);
-        return this;
-    }
+	public RocketMQMessageHeaderAccessor withFlag(Integer delayTimeLevel) {
+		setHeader(ROCKET_FLAG, delayTimeLevel);
+		return this;
+	}
 
-    public SendResult getSendResult() {
-        return getMessageHeaders().get(ROCKET_SEND_RESULT, SendResult.class);
-    }
+	public Object getTransactionalArg() {
+		return getMessageHeaders().get(ROCKET_TRANSACTIONAL_ARG);
+	}
 
-    public static void putSendResult(MutableMessage message, SendResult sendResult) {
-        message.getHeaders().put(ROCKET_SEND_RESULT, sendResult);
-    }
+	public Object withTransactionalArg(Object arg) {
+		setHeader(ROCKET_TRANSACTIONAL_ARG, arg);
+		return this;
+	}
 
-    public Map<String, String> getUserProperties() {
-        Map<String, String> result = new HashMap<>();
-        for (Map.Entry<String, Object> entry : this.toMap().entrySet()) {
-            if (entry.getValue() instanceof String && !MessageConst.STRING_HASH_SET.contains(entry.getKey()) && !entry
-                .getKey().equals(MessageHeaders.CONTENT_TYPE)) {
-                result.put(entry.getKey(), (String)entry.getValue());
-            }
-        }
-        return result;
-    }
+	public SendResult getSendResult() {
+		return getMessageHeaders().get(ROCKET_SEND_RESULT, SendResult.class);
+	}
+
+	public static void putSendResult(MutableMessage message, SendResult sendResult) {
+		message.getHeaders().put(ROCKET_SEND_RESULT, sendResult);
+	}
+
+	public Map<String, String> getUserProperties() {
+		Map<String, String> result = new HashMap<>();
+		for (Map.Entry<String, Object> entry : this.toMap().entrySet()) {
+			if (entry.getValue() instanceof String
+					&& !MessageConst.STRING_HASH_SET.contains(entry.getKey())
+					&& !entry.getKey().equals(MessageHeaders.CONTENT_TYPE)) {
+				result.put(entry.getKey(), (String) entry.getValue());
+			}
+		}
+		return result;
+	}
 }
