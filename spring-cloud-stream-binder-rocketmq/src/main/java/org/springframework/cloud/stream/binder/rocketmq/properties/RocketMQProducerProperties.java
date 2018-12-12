@@ -17,6 +17,8 @@
 package org.springframework.cloud.stream.binder.rocketmq.properties;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
+import org.apache.rocketmq.client.producer.TransactionCheckListener;
 
 /**
  * @author Timur Valiev
@@ -24,28 +26,62 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
  */
 public class RocketMQProducerProperties {
 
-    private Boolean enabled = true;
+	private Boolean enabled = true;
 
-    /**
-     * Maximum allowed message size in bytes
-     * {@link DefaultMQProducer#maxMessageSize}
-     */
-    private Integer maxMessageSize = 0;
+	/**
+	 * Maximum allowed message size in bytes {@link DefaultMQProducer#maxMessageSize}
+	 */
+	private Integer maxMessageSize = 0;
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
+	private Boolean transactional = false;
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
+	/**
+	 * full class name of {@link LocalTransactionExecuter}
+	 */
+	private String executer;
 
-    public Integer getMaxMessageSize() {
-        return maxMessageSize;
-    }
+	/**
+	 * full class name of {@link TransactionCheckListener}
+	 */
+	private String transactionCheckListener;
 
-    public void setMaxMessageSize(Integer maxMessageSize) {
-        this.maxMessageSize = maxMessageSize;
-    }
+	public Boolean getEnabled() {
+		return enabled;
+	}
 
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Integer getMaxMessageSize() {
+		return maxMessageSize;
+	}
+
+	public void setMaxMessageSize(Integer maxMessageSize) {
+		this.maxMessageSize = maxMessageSize;
+	}
+
+	public Boolean getTransactional() {
+		return transactional;
+	}
+
+	public void setTransactional(Boolean transactional) {
+		this.transactional = transactional;
+	}
+
+	public String getExecuter() {
+		return executer;
+	}
+
+	public void setExecuter(String executer) {
+		this.executer = executer;
+	}
+
+	public String getTransactionCheckListener() {
+		return transactionCheckListener;
+	}
+
+	public void setTransactionCheckListener(String transactionCheckListener) {
+		this.transactionCheckListener = transactionCheckListener;
+	}
 }
