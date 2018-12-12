@@ -18,12 +18,8 @@ package org.springframework.cloud.alicloud.context.ans;
 
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
-import org.springframework.cloud.commons.util.InetUtils;
-import org.springframework.cloud.commons.util.InetUtilsProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -31,14 +27,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnClass(name = "org.springframework.cloud.alicloud.ans.AnsAutoConfiguration")
-@EnableConfigurationProperties({ AnsProperties.class, InetUtilsProperties.class })
+@EnableConfigurationProperties(AnsProperties.class)
 @ImportAutoConfiguration(EdasContextAutoConfiguration.class)
 public class AnsContextAutoConfiguration {
-
-	@Bean
-	@ConditionalOnMissingBean
-	public InetUtils inetUtils(InetUtilsProperties inetUtilsProperties) {
-		return new InetUtils(inetUtilsProperties);
-	}
 
 }

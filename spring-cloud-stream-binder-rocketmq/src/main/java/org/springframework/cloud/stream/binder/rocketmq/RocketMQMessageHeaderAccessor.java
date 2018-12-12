@@ -20,6 +20,7 @@ import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderCon
 import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ORIGINAL_ROCKET_MESSAGE;
 import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKET_FLAG;
 import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKET_SEND_RESULT;
+import static org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKET_TRANSACTIONAL_ARG;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,6 +101,15 @@ public class RocketMQMessageHeaderAccessor extends MessageHeaderAccessor {
 
 	public RocketMQMessageHeaderAccessor withFlag(Integer delayTimeLevel) {
 		setHeader(ROCKET_FLAG, delayTimeLevel);
+		return this;
+	}
+
+	public Object getTransactionalArg() {
+		return getMessageHeaders().get(ROCKET_TRANSACTIONAL_ARG);
+	}
+
+	public Object withTransactionalArg(Object arg) {
+		setHeader(ROCKET_TRANSACTIONAL_ARG, arg);
 		return this;
 	}
 
