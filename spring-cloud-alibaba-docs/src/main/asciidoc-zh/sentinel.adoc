@@ -142,7 +142,7 @@ class EchoServiceFallback implements EchoService {
 }
 ```
 
-NOTE: Feign 对应的接口中的资源名策略定义：httpmethod:http://requesturl
+NOTE: Feign 对应的接口中的资源名策略定义：httpmethod:protocol://requesturl
 
 `EchoService` 接口中方法 `echo` 对应的资源名为 `GET:http://service-provider/echo/{str}`。
 
@@ -150,17 +150,17 @@ NOTE: Feign 对应的接口中的资源名策略定义：httpmethod:http://reque
 
 ### RestTemplate 支持
 
-Spring Cloud Alibaba Sentinel 支持对 `RestTemplate` 的服务调用使用 Sentinel 进行保护，在构造 `RestTemplate` bean的时候需要加上 `@SentinelProtect` 注解。
+Spring Cloud Alibaba Sentinel 支持对 `RestTemplate` 的服务调用使用 Sentinel 进行保护，在构造 `RestTemplate` bean的时候需要加上 `@SentinelRestTemplate` 注解。
 
 ```java
 @Bean
-@SentinelProtect(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
+@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 public RestTemplate restTemplate() {
     return new RestTemplate();
 }
 ```
 
-`@SentinelProtect` 注解的参数跟 `@SentinelResource` 一致，使用方式也一致。
+`@SentinelRestTemplate` 注解的参数跟 `@SentinelResource` 一致，使用方式也一致。
 
 限流的资源规则提供两种粒度：
 
