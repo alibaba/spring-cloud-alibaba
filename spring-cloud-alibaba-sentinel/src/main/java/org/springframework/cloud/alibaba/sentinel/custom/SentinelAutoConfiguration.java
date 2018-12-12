@@ -21,7 +21,6 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -41,6 +40,7 @@ import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
+import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
@@ -71,7 +71,6 @@ public class SentinelAutoConfiguration {
 
 	@PostConstruct
 	private void init() {
-
 		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
 				&& StringUtils.hasText(projectName)) {
 			System.setProperty(AppNameUtil.APP_NAME, projectName);
@@ -93,8 +92,9 @@ public class SentinelAutoConfiguration {
 					properties.getTransport().getHeartbeatIntervalMs());
 		}
 		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.CHARSET))
-				&& StringUtils.hasText(properties.getCharset())) {
-			System.setProperty(SentinelConfig.CHARSET, properties.getCharset());
+				&& StringUtils.hasText(properties.getMetric().getCharset())) {
+			System.setProperty(SentinelConfig.CHARSET,
+					properties.getMetric().getCharset());
 		}
 		if (StringUtils
 				.isEmpty(System.getProperty(SentinelConfig.SINGLE_METRIC_FILE_SIZE))
@@ -113,10 +113,19 @@ public class SentinelAutoConfiguration {
 			System.setProperty(SentinelConfig.COLD_FACTOR,
 					properties.getFlow().getColdFactor());
 		}
-
 		if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
 			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
 		}
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
+				&& StringUtils.hasText(properties.getLog().getDir())) {
+			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
+		}
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
+				&& properties.getLog().isSwitchPid()) {
+			System.setProperty(LogBase.LOG_NAME_USE_PID,
+					String.valueOf(properties.getLog().isSwitchPid()));
+		}
+
 		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
 		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
 
@@ -146,26 +155,22 @@ public class SentinelAutoConfiguration {
 	}
 
 	@Bean("sentinel-json-converter")
-	public JsonConverter jsonConverter(
-			@Qualifier("sentinel-object-mapper") ObjectMapper objectMapper) {
-		return new JsonConverter(objectMapper);
+	public JsonConverter jsonConverter() {
+		return new JsonConverter(objectMapper());
 	}
 
-	@Bean("sentinel-object-mapper")
-	public ObjectMapper objectMapper() {
+	private ObjectMapper objectMapper() {
 		return new ObjectMapper();
 	}
 
 	@ConditionalOnClass(XmlMapper.class)
 	protected static class SentinelXmlConfiguration {
 		@Bean("sentinel-xml-converter")
-		public XmlConverter xmlConverter(
-				@Qualifier("sentinel-xml-mapper") XmlMapper xmlMapper) {
-			return new XmlConverter(xmlMapper);
+		public XmlConverter xmlConverter() {
+			return new XmlConverter(xmlMapper());
 		}
 
-		@Bean("sentinel-xml-mapper")
-		public XmlMapper xmlMapper() {
+		private XmlMapper xmlMapper() {
 			return new XmlMapper();
 		}
 	}

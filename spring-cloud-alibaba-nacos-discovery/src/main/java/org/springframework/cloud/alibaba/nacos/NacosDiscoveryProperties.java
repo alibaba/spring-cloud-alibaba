@@ -306,15 +306,15 @@ public class NacosDiscoveryProperties {
 		this.secretKey = secretKey;
 	}
 
-    public String getNamingLoadCacheAtStart() {
-        return namingLoadCacheAtStart;
-    }
+	public String getNamingLoadCacheAtStart() {
+		return namingLoadCacheAtStart;
+	}
 
-    public void setNamingLoadCacheAtStart(String namingLoadCacheAtStart) {
-        this.namingLoadCacheAtStart = namingLoadCacheAtStart;
-    }
+	public void setNamingLoadCacheAtStart(String namingLoadCacheAtStart) {
+		this.namingLoadCacheAtStart = namingLoadCacheAtStart;
+	}
 
-    @Override
+	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
 				+ ", endpoint='" + endpoint + '\'' + ", namespace='" + namespace + '\''
@@ -323,7 +323,8 @@ public class NacosDiscoveryProperties {
 				+ ", metadata=" + metadata + ", registerEnabled=" + registerEnabled
 				+ ", ip='" + ip + '\'' + ", networkInterface='" + networkInterface + '\''
 				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
-				+ ", namingLoadCacheAtStart=" + namingLoadCacheAtStart + '\'' + ", secretKey='" + secretKey + '\'' + '}';
+				+ ", namingLoadCacheAtStart=" + namingLoadCacheAtStart + '\''
+				+ ", secretKey='" + secretKey + '\'' + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {
@@ -372,7 +373,7 @@ public class NacosDiscoveryProperties {
 		properties.put(ACCESS_KEY, accessKey);
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);
-        properties.put(NAMING_LOAD_CACHE_AT_START,namingLoadCacheAtStart);
+		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
 
 		try {
 			namingService = NacosFactory.createNamingService(properties);

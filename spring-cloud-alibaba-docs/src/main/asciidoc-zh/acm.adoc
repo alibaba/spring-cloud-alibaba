@@ -161,7 +161,7 @@ spring.application.name=acm-config
 spring.cloud.nacos.config.file-extension=yaml #显示的声明使用的文件扩展名
 ----
 
-其中 ${deploy.env}变量的值可以在启动应用时通过-Ddeploy.env=*****来动态指定。比如现在在轻量版配置中心上新增了一个dataid为：acm-config-develop.yaml的基础配置，如下所示：
+其中 ${deploy.env}变量的值可以在启动应用时通过-Ddeploy.env=<env>来动态指定。比如现在在轻量版配置中心上新增了一个dataid为：acm-config-develop.yaml的基础配置，如下所示：
 
 [source,subs="normal"]
 ----

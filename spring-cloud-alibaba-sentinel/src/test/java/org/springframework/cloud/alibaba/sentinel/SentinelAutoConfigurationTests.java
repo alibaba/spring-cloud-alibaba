@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.cloud.alibaba.sentinel.annotation.SentinelProtect;
+import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelAutoConfiguration;
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelBeanPostProcessor;
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelProtectInterceptor;
@@ -92,13 +92,13 @@ public class SentinelAutoConfigurationTests {
 	static class SentinelTestConfiguration {
 
 		@Bean
-		@SentinelProtect
+		@SentinelRestTemplate
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
 
 		@Bean
-		@SentinelProtect(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException")
+		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException")
 		RestTemplate restTemplateWithBlockClass() {
 			return new RestTemplate();
 		}
