@@ -18,11 +18,9 @@ package org.springframework.cloud.alicloud.acm;
 
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.cloud.alicloud.acm.endpoint.AcmHealthIndicator;
 import org.springframework.cloud.alicloud.acm.refresh.AcmContextRefresher;
 import org.springframework.cloud.alicloud.acm.refresh.AcmRefreshHistory;
 import org.springframework.cloud.alicloud.context.acm.AcmIntegrationProperties;
-import org.springframework.cloud.alicloud.context.acm.AcmProperties;
 import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -45,12 +43,6 @@ public class AcmAutoConfiguration implements ApplicationContextAware {
 	@Bean
 	public AcmPropertySourceRepository acmPropertySourceRepository() {
 		return new AcmPropertySourceRepository(applicationContext);
-	}
-
-	@Bean
-	public AcmHealthIndicator acmHealthIndicator(AcmProperties acmProperties,
-			AcmPropertySourceRepository acmPropertySourceRepository) {
-		return new AcmHealthIndicator(acmProperties, acmPropertySourceRepository);
 	}
 
 	@Bean

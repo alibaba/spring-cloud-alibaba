@@ -23,9 +23,10 @@
         <acm.version>1.0.8</acm.version>
         <ans.version>0.1.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
-        <alicloud.context.version>1.0.0</alicloud.context.version>
+        <alicloud.context.version>1.0.1</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
+        <schedulerX.version>2.3.1-SNAPSHOT</schedulerX.version>
     </properties>
 
     <dependencyManagement>
@@ -62,6 +63,11 @@
                 <groupId>com.alibaba.edas.acm</groupId>
                 <artifactId>acm-sdk</artifactId>
                 <version>${acm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.schedulerx</groupId>
+                <artifactId>schedulerx-client</artifactId>
+                <version>${schedulerX.version}</version>
             </dependency>
 
             <!--Nacos-->
@@ -193,6 +199,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alicloud-schedulerX</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alicloud-context</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -240,6 +251,12 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alicloud-schedulerX</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

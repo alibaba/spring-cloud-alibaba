@@ -33,7 +33,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 		"spring.application.name=myapp",
 		"spring.cloud.alicloud.edas.application.name=myapp",
 		"spring.cloud.alicloud.access-key=ak", "spring.cloud.alicloud.secret-key=sk",
-		"spring.cloud.alicloud.oss.endpoint=test" }, webEnvironment = RANDOM_PORT)
+		"spring.cloud.alicloud.oss.endpoint=test",
+		"spring.cloud.alicloud.scx.group-id=1-2-3-4",
+		"spring.cloud.alicloud.edas.namespace=cn-test" }, webEnvironment = RANDOM_PORT)
 @DirtiesContext
 public class AliCloudSpringApplicationTests {
 
