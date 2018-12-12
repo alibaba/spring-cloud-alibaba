@@ -75,7 +75,7 @@ spring.cloud.stream.bindings.input.group=test-group
 
 ### 下载并启动 RocketMQ
 
-在接入 RocketMQ Binder 之前，首先需要启动 RocketMQ 的 Name Server 和 Broker。
+**在接入 RocketMQ Binder 之前，首先需要启动 RocketMQ 的 Name Server 和 Broker。**
 
 1. 下载[RocketMQ最新的二进制文件](https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip)，并解压
 

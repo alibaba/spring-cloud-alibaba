@@ -6,6 +6,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,6 +28,16 @@ public class TestController {
 	public String rest(@PathVariable String str) {
 		return restTemplate.getForObject("http://service-provider/echo/" + str,
 				String.class);
+	}
+
+	@RequestMapping(value = "/notFound-feign", method = RequestMethod.GET)
+	public String notFound() {
+		return echoService.notFound();
+	}
+
+	@RequestMapping(value = "/divide-feign", method = RequestMethod.GET)
+	public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+		return echoService.divide(a, b);
 	}
 
 	@RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
