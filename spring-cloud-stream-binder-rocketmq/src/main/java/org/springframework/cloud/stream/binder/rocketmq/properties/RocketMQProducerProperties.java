@@ -17,6 +17,8 @@
 package org.springframework.cloud.stream.binder.rocketmq.properties;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
+import org.apache.rocketmq.client.producer.TransactionCheckListener;
 
 /**
  * @author Timur Valiev
@@ -30,6 +32,18 @@ public class RocketMQProducerProperties {
 	 * Maximum allowed message size in bytes {@link DefaultMQProducer#maxMessageSize}
 	 */
 	private Integer maxMessageSize = 0;
+
+	private Boolean transactional = false;
+
+	/**
+	 * full class name of {@link LocalTransactionExecuter}
+	 */
+	private String executer;
+
+	/**
+	 * full class name of {@link TransactionCheckListener}
+	 */
+	private String transactionCheckListener;
 
 	public Boolean getEnabled() {
 		return enabled;
@@ -47,4 +61,27 @@ public class RocketMQProducerProperties {
 		this.maxMessageSize = maxMessageSize;
 	}
 
+	public Boolean getTransactional() {
+		return transactional;
+	}
+
+	public void setTransactional(Boolean transactional) {
+		this.transactional = transactional;
+	}
+
+	public String getExecuter() {
+		return executer;
+	}
+
+	public void setExecuter(String executer) {
+		this.executer = executer;
+	}
+
+	public String getTransactionCheckListener() {
+		return transactionCheckListener;
+	}
+
+	public void setTransactionCheckListener(String transactionCheckListener) {
+		this.transactionCheckListener = transactionCheckListener;
+	}
 }
