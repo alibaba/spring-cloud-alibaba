@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alicloud.context.ans;
+package org.springframework.cloud.alicloud.scx;
 
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * placeholder configuration
+ *
  * @author xiaolongzuo
  */
 @Configuration
-@ConditionalOnClass(name = "org.springframework.cloud.alicloud.ans.AnsAutoConfiguration")
-@EnableConfigurationProperties(AnsProperties.class)
-@ImportAutoConfiguration(EdasContextAutoConfiguration.class)
-public class AnsContextAutoConfiguration {
+public class ScxAutoConfiguration {
 
 }

@@ -33,20 +33,26 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnClass(name = "org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration")
 public class AcmEndpointAutoConfiguration {
 
-    @Autowired
-    private AcmProperties acmProperties;
+	@Autowired
+	private AcmProperties acmProperties;
 
-    @Autowired
-    private AcmRefreshHistory acmRefreshHistory;
+	@Autowired
+	private AcmRefreshHistory acmRefreshHistory;
 
-    @Autowired
-    private AcmPropertySourceRepository acmPropertySourceRepository;
+	@Autowired
+	private AcmPropertySourceRepository acmPropertySourceRepository;
 
-    @ConditionalOnMissingBean
-    @ConditionalOnEnabledEndpoint
-    @Bean
-    public AcmEndpoint acmEndpoint() {
-        return new AcmEndpoint(acmProperties, acmRefreshHistory,
-            acmPropertySourceRepository);
-    }
+	@ConditionalOnMissingBean
+	@ConditionalOnEnabledEndpoint
+	@Bean
+	public AcmEndpoint acmEndpoint() {
+		return new AcmEndpoint(acmProperties, acmRefreshHistory,
+				acmPropertySourceRepository);
+	}
+
+	@Bean
+	public AcmHealthIndicator acmHealthIndicator(AcmProperties acmProperties,
+			AcmPropertySourceRepository acmPropertySourceRepository) {
+		return new AcmHealthIndicator(acmProperties, acmPropertySourceRepository);
+	}
 }
