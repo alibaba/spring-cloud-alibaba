@@ -23,7 +23,7 @@
         <acm.version>1.0.8</acm.version>
         <ans.version>0.1.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
-        <alicloud.context.version>1.0.1</alicloud.context.version>
+        <alicloud.context.version>1.0.2</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
         <schedulerX.client.version>2.1.5</schedulerX.client.version>
