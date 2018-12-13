@@ -42,6 +42,12 @@
             <groupId>com.alibaba.edas</groupId>
             <artifactId>schedulerX-client</artifactId>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.taobao.middleware</groupId>
+                    <artifactId>logger.api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
