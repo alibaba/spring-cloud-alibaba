@@ -31,7 +31,8 @@
 
     <repositories>
         <repository>
-            <id>Sonatype repository</id>
+            <id>sonatype-repository</id>
+            <name>Sonatype repository</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
     </repositories>
@@ -294,6 +295,17 @@
         <profile>
             <id>spring</id>
             <repositories>
+                <repository>
+                    <id>sonatype-repository</id>
+                    <name>Sonatype repository</name>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                </repository>
                 <repository>
                     <id>spring-snapshots</id>
                     <name>Spring Snapshots</name>
