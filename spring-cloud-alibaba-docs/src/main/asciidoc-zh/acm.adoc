@@ -1,4 +1,4 @@
-== Spring Cloud AliCloud ACM
+== Spring Cloud Alibaba Cloud ACM
 
 Spring Cloud AliCloud ACM 是阿里云提供的商业版应用配置管理(Application Configuration Management) 产品 在 Spring Cloud 应用侧的客户端实现，且目前完全免费。
 
