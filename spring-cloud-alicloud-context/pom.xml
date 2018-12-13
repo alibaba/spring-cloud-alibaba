@@ -13,6 +13,13 @@
     <artifactId>spring-cloud-alicloud-context</artifactId>
     <name>Spring Cloud AliCloud Context</name>
 
+    <repositories>
+        <repository>
+            <id>sonatype-repository</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <dependency>
@@ -42,12 +49,6 @@
             <groupId>com.alibaba.edas</groupId>
             <artifactId>schedulerX-client</artifactId>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.taobao.middleware</groupId>
-                    <artifactId>logger.api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
