@@ -26,7 +26,7 @@
         <alicloud.context.version>1.0.1</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
-        <schedulerX.version>2.1.5</schedulerX.version>
+        <schedulerX.client.version>2.1.5</schedulerX.client.version>
     </properties>
 
     <dependencyManagement>
@@ -67,7 +67,7 @@
             <dependency>
                 <groupId>com.alibaba.edas</groupId>
                 <artifactId>schedulerX-client</artifactId>
-                <version>${schedulerX.version}</version>
+                <version>${schedulerX.client.version}</version>
             </dependency>
 
             <!--Nacos-->
@@ -199,7 +199,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alicloud-schedulerX</artifactId>
+                <artifactId>spring-cloud-alicloud-schedulerx</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -256,7 +256,7 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-alicloud-schedulerX</artifactId>
+                <artifactId>spring-cloud-starter-alicloud-schedulerx</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
