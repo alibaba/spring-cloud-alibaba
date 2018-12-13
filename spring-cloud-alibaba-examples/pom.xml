@@ -30,7 +30,6 @@
         <module>acm-example/acm-local-example</module>
         <module>rocketmq-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
-        <module>schedulerX-example/schedulerX-simple-task-example</module>
     </modules>
 
     <build>
