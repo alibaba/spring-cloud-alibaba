@@ -17,8 +17,8 @@
             <artifactId>spring-cloud-alicloud-context</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.schedulerx</groupId>
-            <artifactId>schedulerx-client</artifactId>
+            <groupId>com.alibaba.edas</groupId>
+            <artifactId>schedulerX-client</artifactId>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
