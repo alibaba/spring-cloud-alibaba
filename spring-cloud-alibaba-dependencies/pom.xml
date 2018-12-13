@@ -65,8 +65,8 @@
                 <version>${acm.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.schedulerx</groupId>
-                <artifactId>schedulerx-client</artifactId>
+                <groupId>com.alibaba.edas</groupId>
+                <artifactId>schedulerX-client</artifactId>
                 <version>${schedulerX.version}</version>
             </dependency>
 
