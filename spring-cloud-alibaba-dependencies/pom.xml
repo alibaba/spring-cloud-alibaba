@@ -26,7 +26,7 @@
         <alicloud.context.version>1.0.1</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
-        <schedulerX.version>2.3.1-SNAPSHOT</schedulerX.version>
+        <schedulerX.version>2.1.5</schedulerX.version>
     </properties>
 
     <dependencyManagement>
