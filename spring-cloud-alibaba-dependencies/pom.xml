@@ -26,8 +26,15 @@
         <alicloud.context.version>1.0.2</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
-        <schedulerX.client.version>2.1.5</schedulerX.client.version>
+        <schedulerX.client.version>2.1.6-SNAPSHOT</schedulerX.client.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>Sonatype repository</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -68,6 +75,12 @@
                 <groupId>com.alibaba.edas</groupId>
                 <artifactId>schedulerX-client</artifactId>
                 <version>${schedulerX.client.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.taobao.middleware</groupId>
+                        <artifactId>logger.api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!--Nacos-->
