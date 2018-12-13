@@ -1,4 +1,4 @@
-== Spring Cloud AliCloud ANS
+== Spring Cloud Alibaba Cloud ANS
 
 ANS（Application Naming Service） 是隶属于阿里云 EDAS 产品的组件， Spring Cloud AliCloud ANS 提供了 Spring Cloud 规范下商业版的服务注册与发现，可以让用户方便的在本地开发，同时也可以运行在云环境里。
 
