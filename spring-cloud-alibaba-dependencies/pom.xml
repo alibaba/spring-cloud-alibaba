@@ -29,14 +29,6 @@
         <schedulerX.client.version>2.1.6-SNAPSHOT</schedulerX.client.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>sonatype-repository</id>
-            <name>Sonatype repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
-
     <dependencyManagement>
         <dependencies>
 
@@ -76,12 +68,6 @@
                 <groupId>com.alibaba.edas</groupId>
                 <artifactId>schedulerX-client</artifactId>
                 <version>${schedulerX.client.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.taobao.middleware</groupId>
-                        <artifactId>logger.api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!--Nacos-->
@@ -295,18 +281,6 @@
         <profile>
             <id>spring</id>
             <repositories>
-                <repository>
-                    <id>sonatype-repository</id>
-                    <name>Sonatype repository</name>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
-                </repository>
                 <repository>
                     <id>spring-snapshots</id>
                     <name>Spring Snapshots</name>
