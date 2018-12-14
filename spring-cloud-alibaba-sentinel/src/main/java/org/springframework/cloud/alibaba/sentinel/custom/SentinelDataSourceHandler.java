@@ -35,6 +35,8 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 
@@ -55,7 +57,7 @@ public class SentinelDataSourceHandler {
 	private List<String> dataTypeList = Arrays.asList("json", "xml");
 
 	private List<Class> rulesList = Arrays.asList(FlowRule.class, DegradeRule.class,
-			SystemRule.class, AuthorityRule.class);
+			SystemRule.class, AuthorityRule.class, ParamFlowRule.class);
 
 	private List<String> dataSourceBeanNameList = Collections
 			.synchronizedList(new ArrayList<>());
@@ -146,8 +148,11 @@ public class SentinelDataSourceHandler {
 				else if (ruleType == SystemRule.class) {
 					SystemRuleManager.register2Property(sentinelProperty);
 				}
-				else {
+				else if (ruleType == AuthorityRule.class) {
 					AuthorityRuleManager.register2Property(sentinelProperty);
+				}
+				else {
+					ParamFlowRuleManager.register2Property(sentinelProperty);
 				}
 			}
 		});
