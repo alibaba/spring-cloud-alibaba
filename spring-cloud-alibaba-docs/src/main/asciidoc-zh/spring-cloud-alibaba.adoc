@@ -1,6 +1,6 @@
 [[spring-cloud-alibaba-reference]]
 = Spring Cloud Alibaba 参考文档
-xiaojing; xiaolongzuo; jim fang; bingting peng
+xiaojing; xiaolongzuo; jim fang; bingting peng; wangyuxin
 :doctype: book
 :toc:
 :toclevels: 4
@@ -28,4 +28,7 @@ include::ans.adoc[]
 include::acm.adoc[]
 
 include::oss.adoc[]
+
+include::schedulerx.adoc[]
+
 

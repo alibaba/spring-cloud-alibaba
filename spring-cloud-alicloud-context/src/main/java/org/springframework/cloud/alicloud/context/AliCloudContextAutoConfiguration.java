@@ -16,14 +16,24 @@
 
 package org.springframework.cloud.alicloud.context;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.cloud.commons.util.InetUtilsProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xiaolongzuo
  */
 @Configuration
-@EnableConfigurationProperties(AliCloudProperties.class)
+@EnableConfigurationProperties({ AliCloudProperties.class, InetUtilsProperties.class })
 public class AliCloudContextAutoConfiguration {
+
+	@Bean
+	@ConditionalOnMissingBean
+	public InetUtils inetUtils(InetUtilsProperties inetUtilsProperties) {
+		return new InetUtils(inetUtilsProperties);
+	}
 
 }
