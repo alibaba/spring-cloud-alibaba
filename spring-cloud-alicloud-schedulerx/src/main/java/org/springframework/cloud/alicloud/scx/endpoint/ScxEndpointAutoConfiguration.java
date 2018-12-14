@@ -19,6 +19,7 @@ package org.springframework.cloud.alicloud.scx.endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.cloud.alicloud.context.edas.EdasProperties;
 import org.springframework.cloud.alicloud.context.scx.ScxProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -30,7 +31,7 @@ import org.springframework.context.annotation.Bean;
 public class ScxEndpointAutoConfiguration {
 
     @Bean
-    public ScxEndpoint scxEndpoint(ScxProperties scxProperties) {
-        return new ScxEndpoint(scxProperties);
+    public ScxEndpoint scxEndpoint(EdasProperties edasProperties, ScxProperties scxProperties) {
+        return new ScxEndpoint(edasProperties, scxProperties);
     }
 }

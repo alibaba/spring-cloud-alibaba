@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.cloud.alicloud.context.edas.EdasProperties;
 import org.springframework.cloud.alicloud.context.scx.ScxProperties;
 
 import java.util.HashMap;
@@ -35,7 +36,10 @@ public class ScxEndpoint {
 
     private ScxProperties scxProperties;
 
-    public ScxEndpoint(ScxProperties scxProperties) {
+    private EdasProperties edasProperties;
+
+    public ScxEndpoint(EdasProperties edasProperties, ScxProperties scxProperties) {
+        this.edasProperties = edasProperties;
         this.scxProperties = scxProperties;
     }
 
@@ -46,6 +50,7 @@ public class ScxEndpoint {
     public Map<String, Object> invoke() {
         Map<String, Object> scxEndpoint = new HashMap<>();
         LOGGER.info("SCX endpoint invoke, scxProperties is {}", scxProperties);
+        scxEndpoint.put("namespace", edasProperties == null ? "" : edasProperties.getNamespace());
         scxEndpoint.put("scxProperties", scxProperties);
         return scxEndpoint;
     }
