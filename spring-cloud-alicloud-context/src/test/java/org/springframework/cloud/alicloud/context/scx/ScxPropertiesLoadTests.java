@@ -14,39 +14,37 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alicloud.context;
+package org.springframework.cloud.alicloud.context.scx;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.cloud.alicloud.context.edas.EdasProperties;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author xiaolongzuo
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AliCloudSpringApplicationTests.AliCloudDisabledApp.class, properties = {
-		"spring.application.name=myapp",
-		"spring.cloud.alicloud.edas.application.name=myapp",
-		"spring.cloud.alicloud.access-key=ak", "spring.cloud.alicloud.secret-key=sk",
-		"spring.cloud.alicloud.oss.endpoint=test",
+@SpringBootTest(classes = ScxContextAutoConfiguration.class, properties = {
 		"spring.cloud.alicloud.scx.group-id=1-2-3-4",
-		"spring.cloud.alicloud.edas.namespace=cn-test" }, webEnvironment = RANDOM_PORT)
-@DirtiesContext
-public class AliCloudSpringApplicationTests {
+		"spring.cloud.alicloud.edas.namespace=cn-test" })
+public class ScxPropertiesLoadTests {
+
+	@Autowired
+	private EdasProperties edasProperties;
+
+	@Autowired
+	private ScxProperties scxProperties;
 
 	@Test
-	public void contextLoads() {
-		System.out.println("Context load...");
-	}
-
-	@SpringBootApplication
-	public static class AliCloudDisabledApp {
-
+	public void testSxcProperties() {
+		assertThat(scxProperties.getGroupId()).isEqualTo("1-2-3-4");
+		assertThat(edasProperties.getNamespace()).isEqualTo("cn-test");
+		assertThat(scxProperties.getDomainName()).isNull();
 	}
 
 }

@@ -22,9 +22,10 @@
         <acm.version>1.0.8</acm.version>
         <ans.version>0.1.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
-        <alicloud.context.version>1.0.0</alicloud.context.version>
+        <alicloud.context.version>1.0.2</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
+        <schedulerX.client.version>2.1.6</schedulerX.client.version>
     </properties>
 
     <dependencyManagement>
@@ -60,6 +61,11 @@
                 <groupId>com.alibaba.edas.acm</groupId>
                 <artifactId>acm-sdk</artifactId>
                 <version>${acm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.edas</groupId>
+                <artifactId>schedulerX-client</artifactId>
+                <version>${schedulerX.client.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
@@ -174,6 +180,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alicloud-schedulerx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alicloud-context</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -216,6 +227,12 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alicloud-schedulerx</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

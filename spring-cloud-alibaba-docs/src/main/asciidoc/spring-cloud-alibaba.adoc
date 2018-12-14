@@ -29,3 +29,4 @@ include::acm.adoc[]
 
 include::oss.adoc[]
 
+include::schedulerx.adoc[]
