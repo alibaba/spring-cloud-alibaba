@@ -20,9 +20,9 @@ An open-source project of Alibaba, Sentinel takes "flow" as breakthrough point, 
 
 An opensource project of Alibaba, an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 
-**AliCloud OSS**
+**Alibaba Cloud OSS**
 
-AliCloud Object Storage Service, An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
+Alibaba Cloud Object Storage Service, An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
 
 More components will be supported by Spring Cloud Alibaba in the future, which may include but are not limited to the following: 
 
@@ -32,8 +32,8 @@ Apache Dubbo™ (incubating) is a high-performance, Java based open source RPC f
 **RocketMQ**
 Apache RocketMQ™ is an open source distributed messaging and streaming data platform.
 
-**Schedulerx**
+**Alibaba Cloud Schedulerx**
 A distributed task scheduling product developed by Alibaba Middleware team. It supports both periodical tasks and tasks to be triggered at specified time points.
 
-**AliCloud SLS**
+**Alibaba Cloud SLS**
 Aliyun Log Service is an all-in-one service for log-type data. It helps increase Operations & Management and operational efficiency, as well as build the processing capability to deal with massive logs.
