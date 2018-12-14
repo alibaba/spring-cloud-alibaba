@@ -22,14 +22,9 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.alicloud.context.edas.EdasProperties;
-import org.springframework.cloud.alicloud.context.oss.OssProperties;
-
-import com.aliyun.oss.OSS;
 
 /**
- * {@link OSS} {@link OssProperties} Test
- *
- * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author xiaolongzuo
  */
 public class ScxAutoConfigurationTests {
 
