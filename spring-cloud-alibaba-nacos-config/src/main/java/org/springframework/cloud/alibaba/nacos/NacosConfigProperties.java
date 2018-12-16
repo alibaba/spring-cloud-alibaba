@@ -16,8 +16,15 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.config.ConfigService;
+import static com.alibaba.nacos.api.PropertyKeyConst.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +32,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
 
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
-
-import static com.alibaba.nacos.api.PropertyKeyConst.*;
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.config.ConfigService;
 
 /**
  * nacos properties
@@ -40,8 +42,10 @@ import static com.alibaba.nacos.api.PropertyKeyConst.*;
  * @author xiaojing
  * @author pbting
  */
-@ConfigurationProperties("spring.cloud.nacos.config")
+@ConfigurationProperties(NacosConfigProperties.PREFIX)
 public class NacosConfigProperties {
+
+	public static final String PREFIX = "spring.cloud.nacos.config";
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
