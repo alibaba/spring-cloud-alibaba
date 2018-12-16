@@ -242,6 +242,12 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- Testing Dependencies -->
 
 
