@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.PropertySource;
@@ -28,11 +29,12 @@ import org.springframework.core.env.PropertySource;
 /**
  * @author xiaojing
  */
-public class NacosPropertySourceRepository {
+public class NacosPropertySourceRepository implements ApplicationContextAware {
 
-	private final ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 
-	public NacosPropertySourceRepository(ApplicationContext applicationContext) {
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 
@@ -54,7 +56,7 @@ public class NacosPropertySourceRepository {
 	}
 
 	private void collectNacosPropertySources(CompositePropertySource composite,
-											 List<NacosPropertySource> result) {
+			List<NacosPropertySource> result) {
 		for (PropertySource p : composite.getPropertySources()) {
 			if (p instanceof NacosPropertySource) {
 				result.add((NacosPropertySource) p);
