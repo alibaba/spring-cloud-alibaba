@@ -33,6 +33,7 @@ import com.alibaba.nacos.api.config.ConfigService;
 
 /**
  * @author xiaojing
+ * @author pbting
  */
 @Order(0)
 public class NacosPropertySourceLocator implements PropertySourceLocator {
