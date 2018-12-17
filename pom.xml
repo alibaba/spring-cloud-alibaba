@@ -55,6 +55,13 @@
             <name>hengyunabc</name>
             <email>hengyunabc@gmail.com</email>
         </developer>
+        <developer>
+            <id>mercyblitz</id>
+            <name>Mercy Ma</name>
+            <email>mercyblitz@gmail.com</email>
+            <organization>Alibaba</organization>
+            <url>https://github.com/mercyblitz</url>
+        </developer>
     </developers>
 
     <properties>

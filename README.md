@@ -15,7 +15,7 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 * **Service registration and discovery**：Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
 * **Distributed configuration**：support for externalized configuration in a distributed system, auto refresh when configuration changes.
 * **Event-driven**：support for building highly scalable event-driven microservices connected with shared messaging systems.
-* **AliCloud Object Storage**：massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
+* **Alibaba Cloud Object Storage**：massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
 For more features, please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
 ## Components
@@ -26,9 +26,9 @@ For more features, please refer to [Roadmap](https://github.com/spring-cloud-inc
 
 **[RocketMQ](https://rocketmq.apache.org/)**：a distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[AliCloud ACM](https://www.aliyun.com/product/acm)**：an application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
+**[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**：an application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
 
-**[AliCloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
+**[Alibaba Cloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
 
 For more features please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
@@ -102,7 +102,7 @@ Examples：
 
 [RocketMQ Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
 
-[AliCloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme.md)
+[Alibaba Cloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme.md)
 
 ## Version control guidelines
 The version number of the project is in the form of x.x.x, where x is a number, starting from 0, and is not limited to the range 0~9. When the project is in the incubator phase, the first version number is fixed to 0, that is, the version number is 0.x.x.

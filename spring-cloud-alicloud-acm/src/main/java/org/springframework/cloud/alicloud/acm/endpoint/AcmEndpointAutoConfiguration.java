@@ -47,4 +47,10 @@ public class AcmEndpointAutoConfiguration {
 		return new AcmEndpoint(acmProperties, acmRefreshHistory,
 				acmPropertySourceRepository);
 	}
+
+	@Bean
+	public AcmHealthIndicator acmHealthIndicator(AcmProperties acmProperties,
+			AcmPropertySourceRepository acmPropertySourceRepository) {
+		return new AcmHealthIndicator(acmProperties, acmPropertySourceRepository);
+	}
 }
