@@ -11,11 +11,12 @@
     <artifactId>spring-cloud-starter-alicloud</artifactId>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Cloud Starters</name>
-	<description>Spring Cloud Alibaba Cloud Starters</description>
+    <description>Spring Cloud Alibaba Cloud Starters</description>
     <modules>
         <module>spring-cloud-starter-alicloud-oss</module>
         <module>spring-cloud-starter-alicloud-acm</module>
         <module>spring-cloud-starter-alicloud-ans</module>
+        <module>spring-cloud-starter-alicloud-schedulerx</module>
     </modules>
 
 

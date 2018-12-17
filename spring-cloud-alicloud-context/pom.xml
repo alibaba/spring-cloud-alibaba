@@ -51,6 +51,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.alibaba.edas</groupId>
+            <artifactId>schedulerX-client</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba.edas.acm</groupId>
             <artifactId>acm-sdk</artifactId>
             <scope>provided</scope>
