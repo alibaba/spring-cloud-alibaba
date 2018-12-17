@@ -20,7 +20,7 @@
         <oss.version>3.1.0</oss.version>
         <nacos.version>0.5.0</nacos.version>
         <acm.version>1.0.8</acm.version>
-        <ans.version>0.1.1</ans.version>
+        <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
         <alicloud.context.version>1.0.2</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
