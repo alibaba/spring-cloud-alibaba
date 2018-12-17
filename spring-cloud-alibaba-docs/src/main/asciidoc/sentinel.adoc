@@ -160,9 +160,27 @@ public RestTemplate restTemplate() {
 }
 ```
 
-The parameter of the `@SentinelRestTemplate` annotation and its usage is the same with `@SentinelResource`.
+The parameter of the `@SentinelRestTemplate` annotation support flow control(`blockHandler`, `blockHandlerClass`) and circuit breaking(`fallback`, `fallbackClass`).
 
-Sentinel provides two granularities for resource rate limiting:
+==
+
+The `blockHandler` or `fallback` is the static method of `blockHandlerClass` or `fallbackClass`.
+
+The parameter of method in `@SentinelRestTemplate` is same as `ClientHttpRequestInterceptor`, but it has one more parameter `BlockException` and its value of return type should be `ClientHttpResponse`.
+
+The method signature of `handleException` in `ExceptionUtil` above should be like this:
+
+```java
+public class ExceptionUtil {
+    public static ClientHttpResponse handleException(HttpRequest request, byte[] body, ClientHttpRequestExecution execution, BlockException exception) {
+        ...
+    }
+}
+```
+
+It will return `RestTemplate request block by sentinel` when you do not write any flow control(`blockHandler`, `blockHandlerClass`) configuration or circuit breaking configuration(`fallback`, `fallbackClass`), you can override it by using your own method.
+
+Sentinel RestTemplate provides two granularities for resource rate limiting:
 
 * `schema://host:port/path`： Protocol, host, port and path
 
@@ -172,7 +190,7 @@ NOTE: Take `https://www.taobao.com/test` as an example. The corresponding resour
 
 ### Dynamic Data Source Support
 
-#### For 0.2.0.RELEASE or 0.1.0.RELEASE and ealier versions,
+#### The usage of our first version 0.2.0.RELEASE or 0.1.0.RELEASE
 
 you need to complete the following 3 steps to configure your data source.
 
@@ -220,7 +238,7 @@ If the data source takes effect and is loaded successfully, the dashboard will p
 [Sentinel Starter] load 3 flow rules
 ```
 
-#### In  0.2.0.RELEASE and 0.1.0.RELEASE or later
+#### The usage after first version
 
 You only need to complete 1 step to configure your data source:
 
@@ -247,13 +265,13 @@ spring.cloud.sentinel.datasource.ds4.apollo.default-flow-rule-value = test
 
 This method follows the configuration of Spring Cloud Stream Binder. `TreeMap` is used for storage internally, and comparator is `String.CASE_INSENSITIVE_ORDER`.
 
-NOTE: d1, ds2, ds3, ds4 are the names of `ReadableDataSource`, and can be coded as you like. The `file` ，`zk` ，`nacos` , `apollo` refer to the specific data sources. The configurations following them are the specific configurations of these data sources respecitively.
+NOTE: d1, ds2, ds3, ds4 are the names of `ReadableDataSource`, and can be coded as you like. The `file`, `zk`, `nacos` , `apollo` refer to the specific data sources. The configurations following them are the specific configurations of these data sources respecitively.
 
 Every data source has two common configuration items: `data-type` and `converter-class`.
 
 `data-type` refers to `Converter`. Spring Cloud Alibaba Sentinel provides two embedded values by defaul: `json` and `xml` (the default is json if not specified). If you do not want to use the embedded `json` or `xml` `Converter`, you can also fill in `custom` to indicate that you will define your own `Converter`, and then configure the `converter-class`. You need to specify the full path of the class for this configuration.
 
-The two embedded `Converter` only supports parsing the Json array or XML array. Sentinel will determine automatically which of the 4 Sentinel rules that the Json or XML objext belongs to(`FlowRule`，`DegradeRule`，`SystemRule`，`AuthorityRule`).
+The two embedded `Converter` only supports parsing the Json array or XML array. Sentinel will determine automatically which of the 4 Sentinel rules that the Json or XML objext belongs to(`FlowRule`, `DegradeRule`, `SystemRule`, `AuthorityRule`, `ParamFlowRule`).
 
 For example, if 5 rate limiting rules and 5 degradation rules in the 10 rule arrays,  then the data source will not be registered, and there will be warnings in the logs.
 
