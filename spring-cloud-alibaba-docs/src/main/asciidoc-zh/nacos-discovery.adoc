@@ -22,7 +22,7 @@ pom.xml 示例如下所示：
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.0.RELEASE</version>
+            <version>0.2.1.RELEASE</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -84,7 +84,7 @@ Spring Cloud 的 Finchley.SR1 版本最佳实践的 Spring Boot 版本是 2.0.6.
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.0.RELEASE</version>
+                <version>0.2.1.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

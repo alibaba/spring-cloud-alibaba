@@ -13,7 +13,7 @@ Spring Cloud Alibaba 已经发布了0.2.0版本，需要首先导入依赖管理
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.0.RELEASE</version>
+            <version>0.2.1.RELEASE</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

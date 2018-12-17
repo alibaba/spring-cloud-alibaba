@@ -96,6 +96,7 @@ public class NacosContextRefresher
 		if (refreshProperties.isEnabled()) {
 			for (NacosPropertySource nacosPropertySource : nacosPropertySourceRepository
 					.getAll()) {
+
 				if (!nacosPropertySource.isRefreshable()) {
 					continue;
 				}

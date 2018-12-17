@@ -272,8 +272,17 @@ public class NacosConfigProperties {
 	}
 
 	public static class Config {
+		/**
+		 * the data id of extended configuration
+		 */
 		private String dataId;
+		/**
+		 * the group of extended configuration, the default value is DEFAULT_GROUP
+		 */
 		private String group = "DEFAULT_GROUP";
+		/**
+		 * whether to support dynamic refresh, the default does not support .
+		 */
 		private boolean refresh = false;
 
 		public String getDataId() {
