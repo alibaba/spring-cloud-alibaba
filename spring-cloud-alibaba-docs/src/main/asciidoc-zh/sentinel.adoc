@@ -160,9 +160,25 @@ public RestTemplate restTemplate() {
 }
 ```
 
-`@SentinelRestTemplate` 注解的参数跟 `@SentinelResource` 一致，使用方式也一致。
+`@SentinelRestTemplate` 注解的参数支持限流(`blockHandler`, `blockHandlerClass`)和降级(`fallback`, `fallbackClass`)的处理。
 
-限流的资源规则提供两种粒度：
+其中 `blockHandler` 或 `fallback` 对应的方法必须是对应 `blockHandlerClass` 或 `fallbackClass` 中的静态方法。
+
+该注解对应的方法参数跟 `ClientHttpRequestInterceptor` 接口中的参数一致，并多出了一个 `BlockException` 参数，且返回值是 `ClientHttpResponse`。
+
+比如上述 `ExceptionUtil` 的 `handleException` 方法对应的声明如下：
+
+```java
+public class ExceptionUtil {
+    public static ClientHttpResponse handleException(HttpRequest request, byte[] body, ClientHttpRequestExecution execution, BlockException exception) {
+        ...
+    }
+}
+```
+
+`@SentinelRestTemplate` 注解的限流(`blockHandler`, `blockHandlerClass`)和降级(`fallback`, `fallbackClass`)不强制填写，当被 Sentinel 熔断后，会返回 `RestTemplate request block by sentinel` 信息，或者也可以填写对应的方法自行处理。
+
+Sentinel RestTemplate 限流的资源规则提供两种粒度：
 
 * `schema://host:port/path`：协议、主机、端口和路径
 
@@ -172,7 +188,7 @@ NOTE: 以 `https://www.taobao.com/test` 这个 url 为例。对应的资源名�
 
 ### 动态数据源支持
 
-#### 在版本 0.2.0.RELEASE 或 0.1.0.RELEASE 之前
+#### 在我们的第一个版本 0.2.0.RELEASE 或 0.1.0.RELEASE 中的使用方式
 
 需要3个步骤才可完成数据源的配置：
 
@@ -220,7 +236,7 @@ private ReadableDataSource dataSource;
 [Sentinel Starter] load 3 flow rules
 ```
 
-#### 在版本 0.2.0.RELEASE 或 0.1.0.RELEASE 之后
+#### 后续版本的使用方式
 
 只需要1个步骤就可完成数据源的配置：
 
@@ -253,7 +269,7 @@ NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。�
 
 `data-type` 配置项表示 `Converter`，Spring Cloud Alibaba Sentinel 默认提供两种内置的值，分别是 `json` 和 `xml` (不填默认是json)。 如果不想使用内置的 `json` 或 `xml` 这两种 `Converter`，可以填写 `custom` 表示自定义 `Converter`，然后再配置 `converter-class` 配置项，该配置项需要写类的全路径名。
 
-这两种内置的 `Converter` 只支持解析 json 数组 或 xml 数组。内部解析的时候会自动判断每个 json 对象或xml对象属于哪4种 Sentinel 规则(`FlowRule`，`DegradeRule`，`SystemRule`，`AuthorityRule`)。
+这两种内置的 `Converter` 只支持解析 json 数组 或 xml 数组。内部解析的时候会自动判断每个 json 对象或xml对象属于哪4种 Sentinel 规则(`FlowRule`，`DegradeRule`，`SystemRule`，`AuthorityRule`, `ParamFlowRule`)。
 
 比如10个规则数组里解析出5个限流规则和5个降级规则。 这种情况下该数据源不会注册，日志里页会进行警告。
 
