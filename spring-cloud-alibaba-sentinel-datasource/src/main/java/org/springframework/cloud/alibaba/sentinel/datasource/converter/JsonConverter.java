@@ -16,7 +16,7 @@ import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleUtil;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 
@@ -113,7 +113,7 @@ public class JsonConverter implements Converter<String, List<AbstractRule>> {
 	private FlowRule convertFlowRule(String json) {
 		try {
 			FlowRule rule = objectMapper.readValue(json, FlowRule.class);
-			if (FlowRuleManager.isValidRule(rule)) {
+			if (FlowRuleUtil.isValidRule(rule)) {
 				return rule;
 			}
 		}
