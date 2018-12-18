@@ -167,6 +167,7 @@ The parameter of the `@SentinelRestTemplate` annotation support flow control(`bl
 The `blockHandler` or `fallback` is the static method of `blockHandlerClass` or `fallbackClass`.
 
 The parameter of method in `@SentinelRestTemplate` is same as `ClientHttpRequestInterceptor`, but it has one more parameter `BlockException` and its value of return type should be `ClientHttpResponse`.
+If you do not continue to execute the following Http request interceptor after being restricted, you can use the instance of `SentinelClientHttpResponse` to customize the return value result after the current limit.
 
 The method signature of `handleException` in `ExceptionUtil` above should be like this:
 
