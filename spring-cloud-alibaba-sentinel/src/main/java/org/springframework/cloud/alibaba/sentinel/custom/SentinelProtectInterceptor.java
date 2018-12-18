@@ -58,8 +58,8 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
 			ClientHttpRequestExecution execution) throws IOException {
 		URI uri = request.getURI();
-		String hostResource = uri.getScheme() + "://" + uri.getHost() + ":"
-				+ (uri.getPort() == -1 ? 80 : uri.getPort());
+		String hostResource = uri.getScheme() + "://" + uri.getHost()
+				+ (uri.getPort() == -1 ? "" : ":" + uri.getPort());
 		String hostWithPathResource = hostResource + uri.getPath();
 		Entry hostEntry = null, hostWithPathEntry = null;
 		ClientHttpResponse response;
