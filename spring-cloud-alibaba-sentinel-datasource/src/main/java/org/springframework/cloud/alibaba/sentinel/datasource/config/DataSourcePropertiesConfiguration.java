@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.util.ObjectUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Using By ConfigurationProperties.
  *
@@ -57,6 +59,7 @@ public class DataSourcePropertiesConfiguration {
 		this.apollo = apollo;
 	}
 
+	@JsonIgnore
 	public List<String> getInvalidField() {
 		List<String> fieldList = new ArrayList<>();
 		for (Field field : this.getClass().getDeclaredFields()) {

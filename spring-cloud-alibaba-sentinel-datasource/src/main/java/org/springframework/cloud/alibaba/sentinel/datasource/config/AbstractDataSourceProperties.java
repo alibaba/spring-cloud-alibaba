@@ -1,5 +1,7 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Abstract class Using by {@link DataSourcePropertiesConfiguration}
  *
@@ -9,6 +11,7 @@ public class AbstractDataSourceProperties {
 
 	private String dataType = "json";
 	private String converterClass;
+	@JsonIgnore
 	private final String factoryBeanName;
 
 	public AbstractDataSourceProperties(String factoryBeanName) {
