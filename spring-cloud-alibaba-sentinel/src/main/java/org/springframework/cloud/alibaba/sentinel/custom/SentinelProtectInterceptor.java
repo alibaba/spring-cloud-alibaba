@@ -69,7 +69,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		Entry hostEntry = null, hostWithPathEntry = null;
 		ClientHttpResponse response;
 		try {
-			ContextUtil.enter(hostResource);
+			ContextUtil.enter(hostWithPathResource);
 			if (entryWithPath) {
 				hostWithPathEntry = SphU.entry(hostWithPathResource);
 			}
