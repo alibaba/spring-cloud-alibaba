@@ -16,6 +16,13 @@
 
 package org.springframework.cloud.alibaba.sentinel.rest;
 
+import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
+import org.springframework.cloud.alibaba.sentinel.custom.SentinelProtectInterceptor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.AbstractClientHttpResponse;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,20 +31,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
-import org.springframework.cloud.alibaba.sentinel.custom.SentinelProtectInterceptor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.AbstractClientHttpResponse;
-
 /**
  * Using by {@link SentinelRestTemplate} and {@link SentinelProtectInterceptor}
+ *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
-	private final String BLOCK_STR = "RestTemplate request block by sentinel";
+	private String blockResponse = "RestTemplate request block by sentinel";
+
+	public SentinelClientHttpResponse() {
+
+	}
+
+	public SentinelClientHttpResponse(String blockResponse) {
+		this.blockResponse = blockResponse;
+	}
 
 	@Override
 	public int getRawStatusCode() throws IOException {
@@ -46,7 +55,7 @@ public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
 	@Override
 	public String getStatusText() throws IOException {
-		return BLOCK_STR;
+		return blockResponse;
 	}
 
 	@Override
@@ -56,7 +65,7 @@ public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
 	@Override
 	public InputStream getBody() throws IOException {
-		return new ByteArrayInputStream(BLOCK_STR.getBytes());
+		return new ByteArrayInputStream(blockResponse.getBytes());
 	}
 
 	@Override
