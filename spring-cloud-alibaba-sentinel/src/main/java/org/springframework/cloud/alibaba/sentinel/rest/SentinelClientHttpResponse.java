@@ -16,13 +16,6 @@
 
 package org.springframework.cloud.alibaba.sentinel.rest;
 
-import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
-import org.springframework.cloud.alibaba.sentinel.custom.SentinelProtectInterceptor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.AbstractClientHttpResponse;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
+import org.springframework.cloud.alibaba.sentinel.custom.SentinelProtectInterceptor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.AbstractClientHttpResponse;
+
 /**
  * Using by {@link SentinelRestTemplate} and {@link SentinelProtectInterceptor}
  *
@@ -38,43 +38,43 @@ import java.util.Map;
  */
 public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
-    private String blockResponse = "RestTemplate request block by sentinel";
+	private String blockResponse = "RestTemplate request block by sentinel";
 
-    public SentinelClientHttpResponse() {
+	public SentinelClientHttpResponse() {
 
-    }
+	}
 
-    public SentinelClientHttpResponse(String blockResponse) {
-        this.blockResponse = blockResponse;
-    }
+	public SentinelClientHttpResponse(String blockResponse) {
+		this.blockResponse = blockResponse;
+	}
 
-    @Override
-    public int getRawStatusCode() throws IOException {
-        return HttpStatus.OK.value();
-    }
+	@Override
+	public int getRawStatusCode() throws IOException {
+		return HttpStatus.OK.value();
+	}
 
-    @Override
-    public String getStatusText() throws IOException {
-        return blockResponse;
-    }
+	@Override
+	public String getStatusText() throws IOException {
+		return blockResponse;
+	}
 
-    @Override
-    public void close() {
-        // nothing do
-    }
+	@Override
+	public void close() {
+		// nothing do
+	}
 
-    @Override
-    public InputStream getBody() throws IOException {
-        return new ByteArrayInputStream(blockResponse.getBytes());
-    }
+	@Override
+	public InputStream getBody() throws IOException {
+		return new ByteArrayInputStream(blockResponse.getBytes());
+	}
 
-    @Override
-    public HttpHeaders getHeaders() {
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put(HttpHeaders.CONTENT_TYPE,
-                Arrays.asList(MediaType.APPLICATION_JSON_UTF8_VALUE));
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.putAll(headers);
-        return httpHeaders;
-    }
+	@Override
+	public HttpHeaders getHeaders() {
+		Map<String, List<String>> headers = new HashMap<>();
+		headers.put(HttpHeaders.CONTENT_TYPE,
+				Arrays.asList(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.putAll(headers);
+		return httpHeaders;
+	}
 }
