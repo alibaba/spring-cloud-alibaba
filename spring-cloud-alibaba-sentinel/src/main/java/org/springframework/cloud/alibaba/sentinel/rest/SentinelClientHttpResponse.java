@@ -16,6 +16,13 @@
 
 package org.springframework.cloud.alibaba.sentinel.rest;
 
+import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
+import org.springframework.cloud.alibaba.sentinel.custom.SentinelProtectInterceptor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.AbstractClientHttpResponse;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,13 +30,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
-import org.springframework.cloud.alibaba.sentinel.custom.SentinelProtectInterceptor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.AbstractClientHttpResponse;
 
 /**
  * Using by {@link SentinelRestTemplate} and {@link SentinelProtectInterceptor}
