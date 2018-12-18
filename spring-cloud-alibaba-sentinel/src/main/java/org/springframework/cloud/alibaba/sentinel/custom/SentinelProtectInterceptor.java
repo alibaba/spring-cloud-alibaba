@@ -33,6 +33,7 @@ import org.springframework.util.ClassUtils;
 
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.context.ContextUtil;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
@@ -69,16 +70,24 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			hostEntry = SphU.entry(hostResource);
 			response = execution.execute(request, body);
 		}
-		catch (BlockException e) {
-			try {
-				return handleBlockException(request, body, execution, e);
+		catch (Throwable e) {
+			if (!BlockException.isBlockException(e)) {
+				Tracer.trace(e);
+				throw new IllegalStateException(e);
 			}
-			catch (Exception ex) {
-				if (ex instanceof IllegalStateException) {
-					throw (IllegalStateException) ex;
+			else {
+				try {
+					return handleBlockException(request, body, execution,
+							(BlockException) e);
 				}
-				throw new IllegalStateException(
-						"sentinel handle BlockException error: " + ex.getMessage(), ex);
+				catch (Exception ex) {
+					if (ex instanceof IllegalStateException) {
+						throw (IllegalStateException) ex;
+					}
+					throw new IllegalStateException(
+							"sentinel handle BlockException error: " + ex.getMessage(),
+							ex);
+				}
 			}
 		}
 		finally {
