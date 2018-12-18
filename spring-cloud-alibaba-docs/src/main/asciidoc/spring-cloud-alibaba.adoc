@@ -1,6 +1,6 @@
 [[spring-cloud-alibaba-reference]]
 = Spring Cloud Alibaba Reference Documentation
-xiaojing; xiaolongzuo; jim fang; bingting peng
+xiaojing; xiaolongzuo; jim fang; bingting peng; wangyuxin
 :doctype: book
 :toc:
 :toclevels: 4
