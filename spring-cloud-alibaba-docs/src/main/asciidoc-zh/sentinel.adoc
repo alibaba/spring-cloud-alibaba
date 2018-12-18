@@ -165,6 +165,7 @@ public RestTemplate restTemplate() {
 其中 `blockHandler` 或 `fallback` 对应的方法必须是对应 `blockHandlerClass` 或 `fallbackClass` 中的静态方法。
 
 该注解对应的方法参数跟 `ClientHttpRequestInterceptor` 接口中的参数一致，并多出了一个 `BlockException` 参数，且返回值是 `ClientHttpResponse`。
+被限流后如果不继续执行后面的 Http 请求拦截器，则可以通过 `SentinelClientHttpResponse` 的一个实例来自定义被限流后的返回值结果。
 
 比如上述 `ExceptionUtil` 的 `handleException` 方法对应的声明如下：
 
