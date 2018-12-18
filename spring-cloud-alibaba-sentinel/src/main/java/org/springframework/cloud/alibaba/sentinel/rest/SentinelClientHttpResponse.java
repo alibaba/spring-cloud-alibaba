@@ -38,42 +38,42 @@ import java.util.Map;
  */
 public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
-    private String blockResponse = "RestTemplate request block by sentinel";
+	private String blockResponse = "RestTemplate request block by sentinel";
 
-    public SentinelClientHttpResponse() {
-    }
+	public SentinelClientHttpResponse() {
+	}
 
-    public SentinelClientHttpResponse(String blockResponse) {
-        this.blockResponse = blockResponse;
-    }
+	public SentinelClientHttpResponse(String blockResponse) {
+		this.blockResponse = blockResponse;
+	}
 
-    @Override
-    public int getRawStatusCode() throws IOException {
-        return HttpStatus.OK.value();
-    }
+	@Override
+	public int getRawStatusCode() throws IOException {
+		return HttpStatus.OK.value();
+	}
 
-    @Override
-    public String getStatusText() throws IOException {
-        return blockResponse;
-    }
+	@Override
+	public String getStatusText() throws IOException {
+		return blockResponse;
+	}
 
-    @Override
-    public void close() {
-        // nothing do
-    }
+	@Override
+	public void close() {
+		// nothing do
+	}
 
-    @Override
-    public InputStream getBody() throws IOException {
-        return new ByteArrayInputStream(blockResponse.getBytes());
-    }
+	@Override
+	public InputStream getBody() throws IOException {
+		return new ByteArrayInputStream(blockResponse.getBytes());
+	}
 
-    @Override
-    public HttpHeaders getHeaders() {
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put(HttpHeaders.CONTENT_TYPE,
-                Arrays.asList(MediaType.APPLICATION_JSON_UTF8_VALUE));
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.putAll(headers);
-        return httpHeaders;
-    }
+	@Override
+	public HttpHeaders getHeaders() {
+		Map<String, List<String>> headers = new HashMap<>();
+		headers.put(HttpHeaders.CONTENT_TYPE,
+				Arrays.asList(MediaType.APPLICATION_JSON_UTF8_VALUE));
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.putAll(headers);
+		return httpHeaders;
+	}
 }
