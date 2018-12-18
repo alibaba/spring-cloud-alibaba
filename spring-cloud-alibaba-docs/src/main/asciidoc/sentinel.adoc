@@ -187,7 +187,7 @@ Sentinel RestTemplate provides two granularities for resource rate limiting:
 
 * `schema://host:port`： Protocol, host and port
 
-NOTE: Take `https://www.taobao.com/test` as an example. The corresponding resource names have two levels of granularities, `https://www.taobao.com:80` and `https://www.taobao.com:80/test`.
+NOTE: Take `https://www.taobao.com/test` as an example. The corresponding resource names have two levels of granularities, `https://www.taobao.com` and `https://www.taobao.com/test`.
 
 ### Dynamic Data Source Support
 
