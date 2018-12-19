@@ -108,6 +108,7 @@ public class NacosContextRefresher
 		Listener listener = listenerMap.computeIfAbsent(dataId, i -> new Listener() {
 			@Override
 			public void receiveConfigInfo(String configInfo) {
+				loadCount.incrementAndGet();
 				String md5 = "";
 				if (!StringUtils.isEmpty(configInfo)) {
 					try {
