@@ -78,6 +78,13 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			dataIdPrefix = name;
 		}
 
+		if (StringUtils.isEmpty(dataIdPrefix)) {
+			dataIdPrefix = env.getProperty("spring.application.name");
+		}
+
+		List<String> profiles = Arrays.asList(env.getActiveProfiles());
+		nacosConfigProperties.setActiveProfiles(profiles.toArray(new String[0]));
+
 		String fileExtension = nacosConfigProperties.getFileExtension();
 
 		CompositePropertySource composite = new CompositePropertySource(
