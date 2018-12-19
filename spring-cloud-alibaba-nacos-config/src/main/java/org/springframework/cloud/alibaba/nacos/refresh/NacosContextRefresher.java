@@ -16,15 +16,9 @@
 
 package org.springframework.cloud.alibaba.nacos.refresh;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.config.listener.Listener;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -36,9 +30,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.config.listener.Listener;
-import com.alibaba.nacos.api.exception.NacosException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * On application start up, NacosContextRefresher add nacos listeners to all application
@@ -54,11 +54,11 @@ public class NacosContextRefresher
 	private final static Logger LOGGER = LoggerFactory
 			.getLogger(NacosContextRefresher.class);
 
+	public static final AtomicLong loadCount = new AtomicLong(0);
+
 	private final NacosRefreshProperties refreshProperties;
 
 	private final NacosRefreshHistory refreshHistory;
-
-	private final NacosPropertySourceRepository nacosPropertySourceRepository;
 
 	private final ConfigService configService;
 
@@ -69,12 +69,9 @@ public class NacosContextRefresher
 	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
 
 	public NacosContextRefresher(NacosRefreshProperties refreshProperties,
-			NacosRefreshHistory refreshHistory,
-			NacosPropertySourceRepository nacosPropertySourceRepository,
-			ConfigService configService) {
+			NacosRefreshHistory refreshHistory, ConfigService configService) {
 		this.refreshProperties = refreshProperties;
 		this.refreshHistory = refreshHistory;
-		this.nacosPropertySourceRepository = nacosPropertySourceRepository;
 		this.configService = configService;
 	}
 
@@ -94,7 +91,7 @@ public class NacosContextRefresher
 
 	private void registerNacosListenersForApplications() {
 		if (refreshProperties.isEnabled()) {
-			for (NacosPropertySource nacosPropertySource : nacosPropertySourceRepository
+			for (NacosPropertySource nacosPropertySource : NacosPropertySourceRepository
 					.getAll()) {
 
 				if (!nacosPropertySource.isRefreshable()) {
@@ -114,6 +111,7 @@ public class NacosContextRefresher
 			listener = new Listener() {
 				@Override
 				public void receiveConfigInfo(String configInfo) {
+					loadCount.incrementAndGet();
 					String md5 = "";
 					if (!StringUtils.isEmpty(configInfo)) {
 						try {
