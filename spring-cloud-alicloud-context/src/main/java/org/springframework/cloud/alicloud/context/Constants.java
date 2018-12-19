@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel.datasource;
+package org.springframework.cloud.alicloud.context;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public interface SentinelDataSourceConstants {
+public interface Constants {
 
-	String PROPERTY_PREFIX = "spring.cloud.sentinel";
-
-	String NACOS_DATASOURCE_AK = PROPERTY_PREFIX + ".nacos.config.access-key";
-
-	String NACOS_DATASOURCE_SK = PROPERTY_PREFIX + ".nacos.config.secret-key";
-
-	String NACOS_DATASOURCE_NAMESPACE = PROPERTY_PREFIX + ".nacos.config.namespace";
-
-	String NACOS_DATASOURCE_ENDPOINT = PROPERTY_PREFIX + ".nacos.config.endpoint";
+	interface Sentinel {
+		String PROPERTY_PREFIX = "spring.cloud.sentinel";
+		String NACOS_DATASOURCE_AK = PROPERTY_PREFIX + ".nacos.config.access-key";
+		String NACOS_DATASOURCE_SK = PROPERTY_PREFIX + ".nacos.config.secret-key";
+		String NACOS_DATASOURCE_NAMESPACE = PROPERTY_PREFIX + ".nacos.config.namespace";
+		String NACOS_DATASOURCE_ENDPOINT = PROPERTY_PREFIX + ".nacos.config.endpoint";
+	}
 
 }

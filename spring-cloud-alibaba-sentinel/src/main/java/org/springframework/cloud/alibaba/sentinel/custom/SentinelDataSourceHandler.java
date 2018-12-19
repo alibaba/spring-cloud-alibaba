@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +38,6 @@ import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConver
 import org.springframework.context.event.EventListener;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
@@ -97,46 +95,19 @@ public class SentinelDataSourceHandler {
 			String dataSourceName = entry.getKey();
 			DataSourcePropertiesConfiguration dataSourceProperties = entry.getValue();
 
-			if (dataSourceProperties.getInvalidField().size() != 1) {
+			List<String> validFields = dataSourceProperties.getValidField();
+			if (validFields.size() != 1) {
 				logger.error("[Sentinel Starter] DataSource " + dataSourceName
 						+ " multi datasource active and won't loaded: "
-						+ dataSourceProperties.getInvalidField());
+						+ dataSourceProperties.getValidField());
 				return;
 			}
 
-			if (dataSourceProperties.getFile() != null) {
-				try {
-					dataSourceProperties.getFile()
-							.setFile(ResourceUtils
-									.getFile(StringUtils.trimAllWhitespace(
-											dataSourceProperties.getFile().getFile()))
-									.getAbsolutePath());
-				}
-				catch (IOException e) {
-					logger.error("[Sentinel Starter] DataSource " + dataSourceName
-							+ " handle file error: " + e.getMessage());
-					throw new RuntimeException("[Sentinel Starter] DataSource "
-							+ dataSourceName + " handle file error: " + e.getMessage(),
-							e);
-				}
-				registerBean(beanFactory, dataSourceProperties.getFile(),
-						dataSourceName + "-sentinel-file-datasource");
-			}
-
-			if (dataSourceProperties.getNacos() != null) {
-				registerBean(beanFactory, dataSourceProperties.getNacos(),
-						dataSourceName + "-sentinel-nacos-datasource");
-			}
-
-			if (dataSourceProperties.getApollo() != null) {
-				registerBean(beanFactory, dataSourceProperties.getApollo(),
-						dataSourceName + "-sentinel-apollo-datasource");
-			}
-
-			if (dataSourceProperties.getZk() != null) {
-				registerBean(beanFactory, dataSourceProperties.getZk(),
-						dataSourceName + "-sentinel-zk-datasource");
-			}
+			AbstractDataSourceProperties abstractDataSourceProperties = dataSourceProperties
+					.getValidDataSourceProperties();
+			abstractDataSourceProperties.preCheck();
+			registerBean(beanFactory, abstractDataSourceProperties,
+					dataSourceName + "-sentinel-" + validFields.get(0) + "-datasource");
 
 		}
 
@@ -272,7 +243,9 @@ public class SentinelDataSourceHandler {
 				}
 				else {
 					// wired properties
-					builder.addPropertyValue(propertyName, propertyValue);
+					if (propertyValue != null) {
+						builder.addPropertyValue(propertyName, propertyValue);
+					}
 				}
 			}
 		}

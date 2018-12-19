@@ -60,7 +60,7 @@ public class DataSourcePropertiesConfiguration {
 	}
 
 	@JsonIgnore
-	public List<String> getInvalidField() {
+	public List<String> getValidField() {
 		List<String> fieldList = new ArrayList<>();
 		for (Field field : this.getClass().getDeclaredFields()) {
 			try {
@@ -73,6 +73,26 @@ public class DataSourcePropertiesConfiguration {
 			}
 		}
 		return fieldList;
+	}
+
+	@JsonIgnore
+	public AbstractDataSourceProperties getValidDataSourceProperties() {
+		List<String> invalidFields = getValidField();
+		if (invalidFields.size() == 1) {
+			try {
+				this.getClass().getDeclaredField(invalidFields.get(0))
+						.setAccessible(true);
+				return (AbstractDataSourceProperties) this.getClass()
+						.getDeclaredField(invalidFields.get(0)).get(this);
+			}
+			catch (IllegalAccessException e) {
+				// won't happen
+			}
+			catch (NoSuchFieldException e) {
+				// won't happen
+			}
+		}
+		return null;
 	}
 
 }

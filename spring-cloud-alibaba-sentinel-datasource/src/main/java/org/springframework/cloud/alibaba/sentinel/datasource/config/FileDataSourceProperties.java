@@ -1,6 +1,10 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
+import java.io.IOException;
+
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * File Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -49,5 +53,20 @@ public class FileDataSourceProperties extends AbstractDataSourceProperties {
 
 	public void setBufSize(int bufSize) {
 		this.bufSize = bufSize;
+	}
+
+	@Override
+	public void preCheck() {
+		super.preCheck();
+		try {
+			this.setFile(
+					ResourceUtils.getFile(StringUtils.trimAllWhitespace(this.getFile()))
+							.getAbsolutePath());
+		}
+		catch (IOException e) {
+			throw new RuntimeException("[Sentinel Starter] " + " handle file ["
+					+ this.getFile() + "] error: " + e.getMessage(), e);
+		}
+
 	}
 }
