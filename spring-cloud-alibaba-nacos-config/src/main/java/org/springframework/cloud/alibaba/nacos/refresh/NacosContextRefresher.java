@@ -64,7 +64,7 @@ public class NacosContextRefresher
 
 	private ApplicationContext applicationContext;
 
-	private AtomicBoolean ready = new AtomicBoolean(true);
+	private AtomicBoolean ready = new AtomicBoolean(false);
 
 	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
 
@@ -78,9 +78,8 @@ public class NacosContextRefresher
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		// many Spring context
-		if (this.ready.get()) {
+		if (this.ready.compareAndSet(false, true)) {
 			this.registerNacosListenersForApplications();
-			this.ready.compareAndSet(true, false);
 		}
 	}
 
