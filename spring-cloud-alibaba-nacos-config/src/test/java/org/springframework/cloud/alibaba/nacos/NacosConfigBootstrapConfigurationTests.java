@@ -43,9 +43,9 @@ public class NacosConfigBootstrapConfigurationTests {
 	public void setUp() throws Exception {
 		this.context = new SpringApplicationBuilder(
 				NacosConfigBootstrapConfiguration.class).web(WebApplicationType.NONE).run(
-						"--spring.application.name=myapp",
+						"--spring.cloud.nacos.config.name=myapp",
 						"--spring.cloud.config.enabled=true",
-						"--spring.cloud.nacos.config.server-addr=127.0.0.1:8080",
+						"--spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
 						"--spring.cloud.nacos.config.prefix=test");
 	}
 

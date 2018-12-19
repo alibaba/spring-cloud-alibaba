@@ -267,6 +267,10 @@ public class NacosConfigProperties {
 		this.extConfig = extConfig;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public void setActiveProfiles(String[] activeProfiles) {
 		this.activeProfiles = activeProfiles;
 	}
