@@ -43,11 +43,6 @@ public class NacosConfigAutoConfiguration {
 	}
 
 	@Bean
-	public NacosPropertySourceRepository nacosPropertySourceRepository() {
-		return new NacosPropertySourceRepository();
-	}
-
-	@Bean
 	public NacosRefreshProperties nacosRefreshProperties() {
 		return new NacosRefreshProperties();
 	}
