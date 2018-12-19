@@ -108,7 +108,9 @@ The screenshot belows shows invoke success:
 
 ## Customize Flow Control Logic
 
-1. When a URL resource is blocked by Sentinel, the default logic is return HTTP response "Blocked by Sentinel (flow limiting)".
+* Flow control exception handle by default 
+
+When a URL resource is blocked by Sentinel, the default logic is return HTTP response "Blocked by Sentinel (flow limiting)".
    
 	If you want to customize your flow control logic, see the code below:
 
@@ -123,7 +125,9 @@ The screenshot belows shows invoke success:
 		WebCallbackManager.setUrlBlockHandler(new CustomUrlBlockHandler());
 
 
-2. When a custom resource is blocked by Sentinel, the default logic is throw BlockException.
+* Flow control exception handle by using `@SentinelResource`
+
+When a custom resource is blocked by Sentinel, the default logic is throw BlockException.
    
     If you want to customize your flow control logic, implement interface `SentinelExceptionHandler`, set @SentinelResource's blockHandler() and blockHandlerClass(). See the code below:
     
