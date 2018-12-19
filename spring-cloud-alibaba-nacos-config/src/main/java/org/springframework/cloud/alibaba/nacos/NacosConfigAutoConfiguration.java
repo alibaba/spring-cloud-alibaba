@@ -56,9 +56,8 @@ public class NacosConfigAutoConfiguration {
 	public NacosContextRefresher nacosContextRefresher(
 			NacosConfigProperties nacosConfigProperties,
 			NacosRefreshProperties nacosRefreshProperties,
-			NacosRefreshHistory refreshHistory,
-			NacosPropertySourceRepository propertySourceRepository) {
+			NacosRefreshHistory refreshHistory) {
 		return new NacosContextRefresher(nacosRefreshProperties, refreshHistory,
-				propertySourceRepository, nacosConfigProperties.configServiceInstance());
+				nacosConfigProperties.configServiceInstance());
 	}
 }

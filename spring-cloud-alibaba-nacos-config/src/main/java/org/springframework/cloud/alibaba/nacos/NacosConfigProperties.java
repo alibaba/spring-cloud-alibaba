@@ -16,24 +16,21 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.*;
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.config.ConfigService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.Environment;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.env.Environment;
-
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.config.ConfigService;
+import static com.alibaba.nacos.api.PropertyKeyConst.*;
 
 /**
  * nacos properties
@@ -110,7 +107,6 @@ public class NacosConfigProperties {
 	 */
 	private String clusterName;
 
-	@Value("${spring.application.name}")
 	private String name;
 
 	private String[] activeProfiles;
@@ -139,6 +135,10 @@ public class NacosConfigProperties {
 	@PostConstruct
 	public void init() {
 		this.activeProfiles = environment.getActiveProfiles();
+	}
+
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
 	}
 
 	// todo sts support

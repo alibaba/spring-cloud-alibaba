@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
+import org.springframework.cloud.alibaba.nacos.refresh.NacosContextRefresher;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
@@ -51,9 +52,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	@Autowired
 	private NacosConfigProperties nacosConfigProperties;
 
-	@Autowired
-	private NacosPropertySourceRepository nacosPropertySourceRepository;
-
 	public NacosPropertySourceLocator() {
 	}
 
@@ -72,8 +70,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		long timeout = nacosConfigProperties.getTimeout();
 		nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService,
 				timeout);
-		nacosPropertySourceBuilder
-				.setNacosPropertySourceRepository(nacosPropertySourceRepository);
 		String name = nacosConfigProperties.getName();
 
 		String nacosGroup = nacosConfigProperties.getGroup();
@@ -81,6 +77,13 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		if (StringUtils.isEmpty(dataIdPrefix)) {
 			dataIdPrefix = name;
 		}
+
+		if (StringUtils.isEmpty(dataIdPrefix)) {
+			dataIdPrefix = env.getProperty("spring.application.name");
+		}
+
+		List<String> profiles = Arrays.asList(env.getActiveProfiles());
+		nacosConfigProperties.setActiveProfiles(profiles.toArray(new String[0]));
 
 		String fileExtension = nacosConfigProperties.getFileExtension();
 
@@ -164,11 +167,24 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,
 			final String dataId, final String group, String fileExtension,
 			boolean isRefreshable) {
-		NacosPropertySource ps = nacosPropertySourceBuilder.build(dataId, group,
-				fileExtension, isRefreshable);
-		if (ps != null) {
+
+		if (NacosContextRefresher.loadCount.get() != 0) {
+			NacosPropertySource ps;
+			if (!isRefreshable) {
+				ps = NacosPropertySourceRepository.getNacosPropertySource(dataId);
+			}
+			else {
+				ps = nacosPropertySourceBuilder.build(dataId, group, fileExtension, true);
+			}
+
 			composite.addFirstPropertySource(ps);
 		}
+		else {
+			NacosPropertySource ps = nacosPropertySourceBuilder.build(dataId, group,
+					fileExtension, isRefreshable);
+			composite.addFirstPropertySource(ps);
+		}
+
 	}
 
 	private static void checkDataIdFileExtension(String[] sharedDataIdArry) {
