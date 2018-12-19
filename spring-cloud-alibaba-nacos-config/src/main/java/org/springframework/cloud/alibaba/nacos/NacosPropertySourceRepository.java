@@ -16,54 +16,30 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.CompositePropertySource;
-import org.springframework.core.env.PropertySource;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xiaojing
  */
-public class NacosPropertySourceRepository implements ApplicationContextAware {
+public class NacosPropertySourceRepository {
 
-	private ApplicationContext applicationContext;
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
+	private ConcurrentHashMap<String, NacosPropertySource> nacosPropertySourceRepository = new ConcurrentHashMap<>();
 
 	/**
 	 * @return all nacos properties from application context
 	 */
 	public List<NacosPropertySource> getAll() {
 		List<NacosPropertySource> result = new ArrayList<>();
-		ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) applicationContext;
-		for (PropertySource p : ctx.getEnvironment().getPropertySources()) {
-			if (p instanceof NacosPropertySource) {
-				result.add((NacosPropertySource) p);
-			}
-			else if (p instanceof CompositePropertySource) {
-				collectNacosPropertySources((CompositePropertySource) p, result);
-			}
-		}
+		result.addAll(nacosPropertySourceRepository.values());
 		return result;
 	}
 
-	private void collectNacosPropertySources(CompositePropertySource composite,
-			List<NacosPropertySource> result) {
-		for (PropertySource p : composite.getPropertySources()) {
-			if (p instanceof NacosPropertySource) {
-				result.add((NacosPropertySource) p);
-			}
-			else if (p instanceof CompositePropertySource) {
-				collectNacosPropertySources((CompositePropertySource) p, result);
-			}
-		}
+	public void collectNacosPropertySources(NacosPropertySource nacosPropertySource) {
+		nacosPropertySourceRepository.putIfAbsent(nacosPropertySource.getDataId(),
+				nacosPropertySource);
 	}
 }
