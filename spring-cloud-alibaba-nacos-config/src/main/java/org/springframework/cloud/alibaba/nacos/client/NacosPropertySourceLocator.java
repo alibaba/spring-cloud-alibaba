@@ -16,12 +16,12 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.alibaba.nacos.api.config.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
+import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
@@ -29,7 +29,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.config.ConfigService;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author xiaojing
@@ -47,10 +48,13 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
 			"yaml", "yml");
 
+	@Autowired
 	private NacosConfigProperties nacosConfigProperties;
 
-	public NacosPropertySourceLocator(NacosConfigProperties nacosConfigProperties) {
-		this.nacosConfigProperties = nacosConfigProperties;
+	@Autowired
+	private NacosPropertySourceRepository nacosPropertySourceRepository;
+
+	public NacosPropertySourceLocator() {
 	}
 
 	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
@@ -68,7 +72,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		long timeout = nacosConfigProperties.getTimeout();
 		nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService,
 				timeout);
-
+		nacosPropertySourceBuilder
+				.setNacosPropertySourceRepository(nacosPropertySourceRepository);
 		String name = nacosConfigProperties.getName();
 
 		String nacosGroup = nacosConfigProperties.getGroup();
