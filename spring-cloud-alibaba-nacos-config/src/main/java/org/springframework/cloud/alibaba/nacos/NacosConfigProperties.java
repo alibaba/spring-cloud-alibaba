@@ -243,6 +243,10 @@ public class NacosConfigProperties {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String[] getActiveProfiles() {
 		return activeProfiles;
 	}
