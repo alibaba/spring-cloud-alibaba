@@ -12,7 +12,7 @@ public class AbstractDataSourceProperties {
 	private String dataType = "json";
 	private String converterClass;
 	@JsonIgnore
-	private final String factoryBeanName;
+	protected String factoryBeanName;
 
 	public AbstractDataSourceProperties(String factoryBeanName) {
 		this.factoryBeanName = factoryBeanName;
@@ -36,6 +36,14 @@ public class AbstractDataSourceProperties {
 
 	public String getFactoryBeanName() {
 		return factoryBeanName;
+	}
+
+	public void setFactoryBeanName(String factoryBeanName) {
+		this.factoryBeanName = factoryBeanName;
+	}
+
+	public void preCheck() {
+
 	}
 
 }
