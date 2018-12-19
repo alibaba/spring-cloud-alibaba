@@ -37,7 +37,6 @@ public class NacosPropertySourceBuilder {
 			.getLogger(NacosPropertySourceBuilder.class);
 	private static final Properties EMPTY_PROPERTIES = new Properties();
 
-	private NacosPropertySourceRepository nacosPropertySourceRepository;
 	private ConfigService configService;
 	private long timeout;
 
@@ -74,7 +73,7 @@ public class NacosPropertySourceBuilder {
 		}
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
 				propertiesToMap(p), new Date(), isRefreshable);
-		nacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
+		NacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
 		return nacosPropertySource;
 	}
 
@@ -128,12 +127,4 @@ public class NacosPropertySourceBuilder {
 		return result;
 	}
 
-	public NacosPropertySourceRepository getNacosPropertySourceRepository() {
-		return nacosPropertySourceRepository;
-	}
-
-	public void setNacosPropertySourceRepository(
-			NacosPropertySourceRepository nacosPropertySourceRepository) {
-		this.nacosPropertySourceRepository = nacosPropertySourceRepository;
-	}
 }
