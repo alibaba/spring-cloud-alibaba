@@ -1,6 +1,5 @@
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +23,6 @@ import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConver
 import org.springframework.context.event.EventListener;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
@@ -77,49 +75,19 @@ public class SentinelDataSourceHandler {
 
 		sentinelProperties.getDatasource()
 				.forEach((dataSourceName, dataSourceProperties) -> {
-					if (dataSourceProperties.getInvalidField().size() != 1) {
+					List<String> validFields = dataSourceProperties.getValidField();
+					if (validFields.size() != 1) {
 						logger.error("[Sentinel Starter] DataSource " + dataSourceName
 								+ " multi datasource active and won't loaded: "
-								+ dataSourceProperties.getInvalidField());
+								+ dataSourceProperties.getValidField());
 						return;
 					}
-					Optional.ofNullable(dataSourceProperties.getFile())
-							.ifPresent(file -> {
-								try {
-									dataSourceProperties.getFile().setFile(ResourceUtils
-											.getFile(StringUtils.trimAllWhitespace(
-													dataSourceProperties.getFile()
-															.getFile()))
-											.getAbsolutePath());
-								}
-								catch (IOException e) {
-									logger.error("[Sentinel Starter] DataSource "
-											+ dataSourceName + " handle file error: "
-											+ e.getMessage());
-									throw new RuntimeException(
-											"[Sentinel Starter] DataSource "
-													+ dataSourceName
-													+ " handle file error: "
-													+ e.getMessage(),
-											e);
-								}
-								registerBean(beanFactory, file,
-										dataSourceName + "-sentinel-file-datasource");
-							});
-					Optional.ofNullable(dataSourceProperties.getNacos())
-							.ifPresent(nacos -> {
-								registerBean(beanFactory, nacos,
-										dataSourceName + "-sentinel-nacos-datasource");
-							});
-					Optional.ofNullable(dataSourceProperties.getApollo())
-							.ifPresent(apollo -> {
-								registerBean(beanFactory, apollo,
-										dataSourceName + "-sentinel-apollo-datasource");
-							});
-					Optional.ofNullable(dataSourceProperties.getZk()).ifPresent(zk -> {
-						registerBean(beanFactory, zk,
-								dataSourceName + "-sentinel-zk-datasource");
-					});
+
+					AbstractDataSourceProperties abstractDataSourceProperties = dataSourceProperties
+							.getValidDataSourceProperties();
+					abstractDataSourceProperties.preCheck();
+					registerBean(beanFactory, abstractDataSourceProperties, dataSourceName
+							+ "-sentinel-" + validFields.get(0) + "-datasource");
 				});
 
 		dataSourceBeanNameList.forEach(beanName -> {
@@ -251,7 +219,8 @@ public class SentinelDataSourceHandler {
 				}
 				else {
 					// wired properties
-					builder.addPropertyValue(propertyName, propertyValue);
+					Optional.ofNullable(propertyValue)
+							.ifPresent(v -> builder.addPropertyValue(propertyName, v));
 				}
 			}
 		});
