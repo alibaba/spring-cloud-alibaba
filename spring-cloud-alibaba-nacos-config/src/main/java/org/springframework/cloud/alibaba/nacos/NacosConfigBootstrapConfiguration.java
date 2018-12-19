@@ -28,14 +28,18 @@ import org.springframework.context.annotation.Configuration;
 public class NacosConfigBootstrapConfiguration {
 
 	@Bean
-	public NacosPropertySourceLocator nacosPropertySourceLocator(
-			NacosConfigProperties nacosConfigProperties) {
-		return new NacosPropertySourceLocator(nacosConfigProperties);
+	public NacosPropertySourceLocator nacosPropertySourceLocator() {
+		return new NacosPropertySourceLocator();
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
 	public NacosConfigProperties nacosConfigProperties() {
 		return new NacosConfigProperties();
+	}
+
+	@Bean
+	public NacosPropertySourceRepository nacosPropertySourceRepository() {
+		return new NacosPropertySourceRepository();
 	}
 }
