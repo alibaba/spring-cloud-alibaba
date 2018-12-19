@@ -16,19 +16,19 @@
 
 package org.springframework.cloud.alibaba.nacos.endpoint;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshHistory;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Endpoint for Nacos, contains config data and refresh history
@@ -41,15 +41,12 @@ public class NacosConfigEndpoint {
 
 	private final NacosRefreshHistory refreshHistory;
 
-	private final NacosPropertySourceRepository propertySourceRepository;
-
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public NacosConfigEndpoint(NacosConfigProperties properties, NacosRefreshHistory refreshHistory,
-							   NacosPropertySourceRepository propertySourceRepository) {
+	public NacosConfigEndpoint(NacosConfigProperties properties,
+			NacosRefreshHistory refreshHistory) {
 		this.properties = properties;
 		this.refreshHistory = refreshHistory;
-		this.propertySourceRepository = propertySourceRepository;
 	}
 
 	@ReadOperation
@@ -57,7 +54,7 @@ public class NacosConfigEndpoint {
 		Map<String, Object> result = new HashMap<>(16);
 		result.put("NacosConfigProperties", properties);
 
-		List<NacosPropertySource> all = propertySourceRepository.getAll();
+		List<NacosPropertySource> all = NacosPropertySourceRepository.getAll();
 
 		List<Map<String, Object>> sources = new ArrayList<>();
 		for (NacosPropertySource ps : all) {

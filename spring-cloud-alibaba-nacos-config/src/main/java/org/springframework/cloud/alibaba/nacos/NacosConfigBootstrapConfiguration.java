@@ -38,9 +38,4 @@ public class NacosConfigBootstrapConfiguration {
 		return new NacosConfigProperties();
 	}
 
-	@Bean
-	public NacosPropertySourceRepository nacosPropertySourceRepository() {
-		return new NacosPropertySourceRepository();
-	}
-
 }
