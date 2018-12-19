@@ -44,6 +44,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.property.SentinelProperty;
 import com.alibaba.csp.sentinel.slots.block.AbstractRule;
@@ -277,7 +278,18 @@ public class SentinelDataSourceHandler {
 
 		beanFactory.registerBeanDefinition(dataSourceName, builder.getBeanDefinition());
 		// init in Spring
-		beanFactory.getBean(dataSourceName);
+		AbstractDataSource newDataSource = (AbstractDataSource) beanFactory
+				.getBean(dataSourceName);
+		// commercialization
+		if (!StringUtils.isEmpty(System.getProperties()
+				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
+			if (dataSourceName.contains(SentinelConstants.FLOW_DATASOURCE_NAME)) {
+				FlowRuleManager.register2Property(newDataSource.getProperty());
+			}
+			else if (dataSourceName.contains(SentinelConstants.DEGRADE_DATASOURCE_NAME)) {
+				DegradeRuleManager.register2Property(newDataSource.getProperty());
+			}
+		}
 		dataSourceBeanNameList.add(dataSourceName);
 	}
 
