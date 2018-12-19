@@ -25,11 +25,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alicloud.acm.AcmPropertySourceRepository;
-import org.springframework.cloud.alicloud.acm.bootstrap.AcmPropertySource;
 import org.springframework.cloud.alicloud.context.acm.AcmIntegrationProperties;
 import org.springframework.cloud.context.refresh.ContextRefresher;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.util.StringUtils;
 
@@ -43,7 +46,8 @@ import com.alibaba.edas.acm.listener.ConfigChangeListener;
  *
  * @author juven.xuxb, 5/13/16.
  */
-public class AcmContextRefresher implements ApplicationListener<ApplicationReadyEvent> {
+public class AcmContextRefresher
+		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
 	private Logger logger = LoggerFactory.getLogger(AcmContextRefresher.class);
 
@@ -52,6 +56,8 @@ public class AcmContextRefresher implements ApplicationListener<ApplicationReady
 	private final AcmIntegrationProperties acmIntegrationProperties;
 
 	private final AcmRefreshHistory refreshHistory;
+
+	private ApplicationContext applicationContext;
 
 	private final AcmPropertySourceRepository acmPropertySourceRepository;
 
@@ -74,18 +80,9 @@ public class AcmContextRefresher implements ApplicationListener<ApplicationReady
 
 	private void registerDiamondListenersForApplications() {
 		if (acmIntegrationProperties.getAcmProperties().isRefreshEnabled()) {
-			for (AcmPropertySource acmPropertySource : acmPropertySourceRepository
-					.getAll()) {
-				if (acmPropertySource.isGroupLevel()) {
-					continue;
-				}
-				String dataId = acmPropertySource.getDataId();
+			for (String dataId : acmIntegrationProperties
+					.getApplicationConfigurationDataIds()) {
 				registerDiamondListener(dataId);
-			}
-			if (acmPropertySourceRepository.getAll().isEmpty()) {
-
-				registerDiamondListener(acmIntegrationProperties
-						.getApplicationConfigurationDataIdWithoutGroup());
 			}
 		}
 	}
@@ -110,11 +107,17 @@ public class AcmContextRefresher implements ApplicationListener<ApplicationReady
 							}
 						}
 						refreshHistory.add(dataId, md5);
-						contextRefresher.refresh();
+						applicationContext.publishEvent(new RefreshEvent(this, md5,
+								"ACM Refresh, dataId=" + dataId));
 					}
 				});
 		ConfigService.addListener(dataId,
 				acmIntegrationProperties.getAcmProperties().getGroup(), listener);
 	}
 
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 }
