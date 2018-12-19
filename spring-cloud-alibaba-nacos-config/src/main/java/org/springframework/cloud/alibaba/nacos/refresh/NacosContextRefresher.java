@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * On application start up, NacosContextRefresher add nacos listeners to all application
@@ -53,34 +54,31 @@ public class NacosContextRefresher
 	private final static Logger LOGGER = LoggerFactory
 			.getLogger(NacosContextRefresher.class);
 
+	public static final AtomicLong loadCount = new AtomicLong(0);
+
 	private final NacosRefreshProperties refreshProperties;
 
 	private final NacosRefreshHistory refreshHistory;
-
-	private final NacosPropertySourceRepository nacosPropertySourceRepository;
 
 	private final ConfigService configService;
 
 	private ApplicationContext applicationContext;
 
-	private AtomicBoolean ready = new AtomicBoolean(true);
+	private AtomicBoolean ready = new AtomicBoolean(false);
 
 	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
 
 	public NacosContextRefresher(NacosRefreshProperties refreshProperties,
-			NacosRefreshHistory refreshHistory,
-			NacosPropertySourceRepository nacosPropertySourceRepository,
-			ConfigService configService) {
+			NacosRefreshHistory refreshHistory, ConfigService configService) {
 		this.refreshProperties = refreshProperties;
 		this.refreshHistory = refreshHistory;
-		this.nacosPropertySourceRepository = nacosPropertySourceRepository;
 		this.configService = configService;
 	}
 
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		// many Spring context
-		if (this.ready.compareAndSet(true, false)) {
+		if (this.ready.compareAndSet(false, true)) {
 			this.registerNacosListenersForApplications();
 		}
 	}
@@ -92,7 +90,7 @@ public class NacosContextRefresher
 
 	private void registerNacosListenersForApplications() {
 		if (refreshProperties.isEnabled()) {
-			for (NacosPropertySource nacosPropertySource : nacosPropertySourceRepository
+			for (NacosPropertySource nacosPropertySource : NacosPropertySourceRepository
 					.getAll()) {
 
 				if (!nacosPropertySource.isRefreshable()) {
@@ -110,6 +108,7 @@ public class NacosContextRefresher
 		Listener listener = listenerMap.computeIfAbsent(dataId, i -> new Listener() {
 			@Override
 			public void receiveConfigInfo(String configInfo) {
+				loadCount.incrementAndGet();
 				String md5 = "";
 				if (!StringUtils.isEmpty(configInfo)) {
 					try {
