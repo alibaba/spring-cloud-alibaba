@@ -52,6 +52,8 @@ public class SentinelAliCloudListener
 				edasChangeOrderConfiguration.getDauthAccessKey());
 		System.getProperties().setProperty(Constants.Sentinel.NACOS_DATASOURCE_SK,
 				edasChangeOrderConfiguration.getDauthSecretKey());
+		System.getProperties().setProperty(Constants.Sentinel.PROJECT_NAME,
+				edasChangeOrderConfiguration.getProjectName());
 	}
 
 	@Override

@@ -31,4 +31,6 @@ public interface SentinelDataSourceConstants {
 
 	String NACOS_DATASOURCE_ENDPOINT = PROPERTY_PREFIX + ".nacos.config.endpoint";
 
+	String PROJECT_NAME = PROPERTY_PREFIX + ".nacos.config.project-name";
+
 }

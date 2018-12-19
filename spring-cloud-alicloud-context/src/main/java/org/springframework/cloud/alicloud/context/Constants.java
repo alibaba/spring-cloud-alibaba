@@ -27,6 +27,7 @@ public interface Constants {
 		String NACOS_DATASOURCE_SK = PROPERTY_PREFIX + ".nacos.config.secret-key";
 		String NACOS_DATASOURCE_NAMESPACE = PROPERTY_PREFIX + ".nacos.config.namespace";
 		String NACOS_DATASOURCE_ENDPOINT = PROPERTY_PREFIX + ".nacos.config.endpoint";
+		String PROJECT_NAME = PROPERTY_PREFIX + ".nacos.config.project-name";
 	}
 
 }

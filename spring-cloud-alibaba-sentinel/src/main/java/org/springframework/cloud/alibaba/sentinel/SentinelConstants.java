@@ -21,6 +21,11 @@ package org.springframework.cloud.alibaba.sentinel;
  */
 public interface SentinelConstants {
 
-    String PROPERTY_PREFIX = "spring.cloud.sentinel";
+	String PROPERTY_PREFIX = "spring.cloud.sentinel";
+
+	// commercialized
+
+	String FLOW_DATASOURCE_NAME = "edas-flow";
+	String DEGRADE_DATASOURCE_NAME = "edas-degrade";
 
 }

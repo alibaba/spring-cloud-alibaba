@@ -27,6 +27,25 @@ public class DataSourcePropertiesConfiguration {
 
 	private ApolloDataSourceProperties apollo;
 
+	public DataSourcePropertiesConfiguration() {
+	}
+
+	public DataSourcePropertiesConfiguration(FileDataSourceProperties file) {
+		this.file = file;
+	}
+
+	public DataSourcePropertiesConfiguration(NacosDataSourceProperties nacos) {
+		this.nacos = nacos;
+	}
+
+	public DataSourcePropertiesConfiguration(ZookeeperDataSourceProperties zk) {
+		this.zk = zk;
+	}
+
+	public DataSourcePropertiesConfiguration(ApolloDataSourceProperties apollo) {
+		this.apollo = apollo;
+	}
+
 	public FileDataSourceProperties getFile() {
 		return file;
 	}
