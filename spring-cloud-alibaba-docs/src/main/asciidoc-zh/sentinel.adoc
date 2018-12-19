@@ -185,7 +185,7 @@ Sentinel RestTemplate 限流的资源规则提供两种粒度：
 
 * `schema://host:port`：协议、主机和端口
 
-NOTE: 以 `https://www.taobao.com/test` 这个 url 为例。对应的资源名有两种粒度，分别是 `https://www.taobao.com:80` 以及 `https://www.taobao.com:80/test`
+NOTE: 以 `https://www.taobao.com/test` 这个 url 为例。对应的资源名有两种粒度，分别是 `https://www.taobao.com` 以及 `https://www.taobao.com/test`
 
 ### 动态数据源支持
 
