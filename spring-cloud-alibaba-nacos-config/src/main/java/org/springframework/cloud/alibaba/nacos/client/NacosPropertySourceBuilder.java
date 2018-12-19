@@ -16,17 +16,17 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-import java.io.StringReader;
-import java.util.*;
-
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.exception.NacosException;
+import java.io.StringReader;
+import java.util.*;
 
 /**
  * @author xiaojing
@@ -35,6 +35,9 @@ import com.alibaba.nacos.api.exception.NacosException;
 public class NacosPropertySourceBuilder {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NacosPropertySourceBuilder.class);
+	private static final Properties EMPTY_PROPERTIES = new Properties();
+
+	private NacosPropertySourceRepository nacosPropertySourceRepository;
 	private ConfigService configService;
 	private long timeout;
 
@@ -67,10 +70,12 @@ public class NacosPropertySourceBuilder {
 			boolean isRefreshable) {
 		Properties p = loadNacosData(dataId, group, fileExtension);
 		if (p == null) {
-			return null;
+			p = EMPTY_PROPERTIES;
 		}
-		return new NacosPropertySource(group, dataId, propertiesToMap(p), new Date(),
-				isRefreshable);
+		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
+				propertiesToMap(p), new Date(), isRefreshable);
+		nacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
+		return nacosPropertySource;
 	}
 
 	private Properties loadNacosData(String dataId, String group, String fileExtension) {
@@ -121,5 +126,14 @@ public class NacosPropertySourceBuilder {
 			}
 		}
 		return result;
+	}
+
+	public NacosPropertySourceRepository getNacosPropertySourceRepository() {
+		return nacosPropertySourceRepository;
+	}
+
+	public void setNacosPropertySourceRepository(
+			NacosPropertySourceRepository nacosPropertySourceRepository) {
+		this.nacosPropertySourceRepository = nacosPropertySourceRepository;
 	}
 }
