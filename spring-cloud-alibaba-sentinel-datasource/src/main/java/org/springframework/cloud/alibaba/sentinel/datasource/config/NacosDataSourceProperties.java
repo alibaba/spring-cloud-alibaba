@@ -101,4 +101,31 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
 	}
+
+	public static NacosDataSourceProperties buildFlowByEDAS() {
+		return buildByEDAS("flow");
+	}
+
+	public static NacosDataSourceProperties buildDegradeByEDAS() {
+		return buildByEDAS("degrade");
+	}
+
+	public static NacosDataSourceProperties buildByEDAS(String type) {
+		NacosDataSourceProperties result = new NacosDataSourceProperties();
+		result.setFactoryBeanName(
+				NacosDataSourceWithAuthorizationFactoryBean.class.getName());
+		result.setEndpoint(System.getProperties()
+				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT));
+		result.setNamespace(System.getProperties()
+				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_NAMESPACE));
+		result.setAccessKey(System.getProperties()
+				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_AK));
+		result.setSecretKey(System.getProperties()
+				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_SK));
+		result.setDataType("json");
+		result.setDataId(System.getProperties()
+				.getProperty(SentinelDataSourceConstants.PROJECT_NAME) + "-" + type);
+		result.setGroupId("nacos-sentinel");
+		return result;
+	}
 }

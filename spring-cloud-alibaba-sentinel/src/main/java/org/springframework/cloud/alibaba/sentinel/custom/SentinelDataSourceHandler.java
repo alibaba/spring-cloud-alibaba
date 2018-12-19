@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -16,8 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.cloud.alibaba.sentinel.SentinelConstants;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
+import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.AbstractDataSourceProperties;
+import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
+import org.springframework.cloud.alibaba.sentinel.datasource.config.NacosDataSourceProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
 import org.springframework.context.event.EventListener;
@@ -72,6 +77,27 @@ public class SentinelDataSourceHandler {
 
 		DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) event
 				.getApplicationContext().getAutowireCapableBeanFactory();
+
+		// commercialization
+		if (!StringUtils.isEmpty(System.getProperties()
+				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
+			Map<String, DataSourcePropertiesConfiguration> newDataSourceMap = new TreeMap<>(
+					String.CASE_INSENSITIVE_ORDER);
+			for (Map.Entry<String, DataSourcePropertiesConfiguration> entry : sentinelProperties
+					.getDatasource().entrySet()) {
+				if (entry.getValue().getValidDataSourceProperties()
+						.getClass() != NacosDataSourceProperties.class) {
+					newDataSourceMap.put(entry.getKey(), entry.getValue());
+				}
+			}
+			newDataSourceMap.put(SentinelConstants.FLOW_DATASOURCE_NAME,
+					new DataSourcePropertiesConfiguration(
+							NacosDataSourceProperties.buildFlowByEDAS()));
+			newDataSourceMap.put(SentinelConstants.DEGRADE_DATASOURCE_NAME,
+					new DataSourcePropertiesConfiguration(
+							NacosDataSourceProperties.buildDegradeByEDAS()));
+			sentinelProperties.setDatasource(newDataSourceMap);
+		}
 
 		sentinelProperties.getDatasource()
 				.forEach((dataSourceName, dataSourceProperties) -> {

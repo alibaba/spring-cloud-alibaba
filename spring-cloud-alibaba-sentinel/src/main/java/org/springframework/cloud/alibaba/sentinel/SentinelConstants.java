@@ -23,4 +23,9 @@ public interface SentinelConstants {
 
 	String PROPERTY_PREFIX = "spring.cloud.sentinel";
 
+	// commercialization
+
+	String FLOW_DATASOURCE_NAME = "edas-flow";
+	String DEGRADE_DATASOURCE_NAME = "edas-degrade";
+
 }
