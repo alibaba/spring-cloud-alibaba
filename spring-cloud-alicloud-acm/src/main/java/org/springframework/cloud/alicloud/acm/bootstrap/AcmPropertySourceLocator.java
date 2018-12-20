@@ -31,8 +31,6 @@ public class AcmPropertySourceLocator implements PropertySourceLocator {
 
 	private static final String DIAMOND_PROPERTY_SOURCE_NAME = "diamond";
 
-	private static String defaultDiamondGroup = "DEFAULT_GROUP";
-
 	private AcmPropertySourceBuilder acmPropertySourceBuilder = new AcmPropertySourceBuilder();
 
 	@Autowired
@@ -45,14 +43,14 @@ public class AcmPropertySourceLocator implements PropertySourceLocator {
 				DIAMOND_PROPERTY_SOURCE_NAME);
 
 		for (String dataId : acmIntegrationProperties.getGroupConfigurationDataIds()) {
-			loadDiamondDataIfPresent(compositePropertySource, dataId, defaultDiamondGroup,
-					true);
+			loadDiamondDataIfPresent(compositePropertySource, dataId,
+					acmIntegrationProperties.getAcmProperties().getGroup(), true);
 		}
 
 		for (String dataId : acmIntegrationProperties
 				.getApplicationConfigurationDataIds()) {
-			loadDiamondDataIfPresent(compositePropertySource, dataId, defaultDiamondGroup,
-					false);
+			loadDiamondDataIfPresent(compositePropertySource, dataId,
+					acmIntegrationProperties.getAcmProperties().getGroup(), false);
 		}
 
 		return compositePropertySource;
