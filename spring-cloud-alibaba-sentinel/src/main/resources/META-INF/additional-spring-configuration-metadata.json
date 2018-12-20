@@ -15,7 +15,7 @@
     {
       "name": "spring.cloud.sentinel.transport.port",
       "type": "java.lang.String",
-      "defaultValue": "8721",
+      "defaultValue": "8719",
       "description": "sentinel api port."
     },
     {
