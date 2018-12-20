@@ -244,9 +244,9 @@ public class SentinelProperties {
 	public static class Transport {
 
 		/**
-		 * sentinel api port,default value is 8721 {@link TransportConfig#SERVER_PORT}
+		 * sentinel api port,default value is 8719 {@link TransportConfig#SERVER_PORT}
 		 */
-		private String port = "8721";
+		private String port = "8719";
 
 		/**
 		 * sentinel dashboard address, won't try to connect dashboard when address is
