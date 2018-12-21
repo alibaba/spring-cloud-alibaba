@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-    <version>0.2.1.RELEASE</version>
+    <version>0.2.2.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Dependencies</name>
     <description>Spring Cloud Alibaba Dependencies</description>

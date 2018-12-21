@@ -51,7 +51,7 @@ NOTE: 注意dataid是以 properties(默认的文件扩展名方式)为扩展名�
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.1.RELEASE</version>
+            <version>0.2.2.BUILD-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
