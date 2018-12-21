@@ -51,7 +51,7 @@ To use Nacos to manage externalized configurations for your applications, you ne
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.1.RELEASE</version>
+            <version>0.2.2.BUILD-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

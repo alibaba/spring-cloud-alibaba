@@ -4,7 +4,7 @@ ANS（Application Naming Service） 是隶属于阿里云 EDAS 产品的组件�
 
 === 如何引入 Spring Cloud AliCloud ANS
 
-Spring Cloud Alibaba 已经发布了 0.2.1.RELEASE 版本，需要首先导入依赖管理 POM。
+Spring Cloud Alibaba 已经发布了 0.2.2.BUILD-SNAPSHOT 版本，需要首先导入依赖管理 POM。
 
 [source,xml]
 ----
@@ -13,7 +13,7 @@ Spring Cloud Alibaba 已经发布了 0.2.1.RELEASE 版本，需要首先导入�
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.1.RELEASE</version>
+            <version>0.2.2.BUILD-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
