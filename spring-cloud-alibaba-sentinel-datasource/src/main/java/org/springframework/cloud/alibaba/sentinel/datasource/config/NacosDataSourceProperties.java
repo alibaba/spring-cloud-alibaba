@@ -1,5 +1,6 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
+import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceWithAuthorizationFactoryBean;
@@ -29,7 +30,7 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 	}
 
 	@Override
-	public void preCheck() {
+	public void preCheck(String dataSourceName) {
 		if (!StringUtils.isEmpty(System.getProperties()
 				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
 			this.setServerAddr(null);
@@ -126,6 +127,12 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 		result.setDataId(System.getProperties()
 				.getProperty(SentinelDataSourceConstants.PROJECT_NAME) + "-" + type);
 		result.setGroupId("nacos-sentinel");
+		if (type.equals(RuleType.FLOW.getName())) {
+			result.setRuleType(RuleType.FLOW.getName());
+		}
+		else {
+			result.setRuleType(RuleType.DEGRADE.getName());
+		}
 		return result;
 	}
 }
