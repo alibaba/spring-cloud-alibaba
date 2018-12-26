@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.alibaba.sentinel.SentinelConstants;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
+import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.AbstractDataSourceProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
@@ -32,17 +32,9 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
-import com.alibaba.csp.sentinel.property.SentinelProperty;
-import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
-import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.AbstractRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
-import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
-import com.alibaba.csp.sentinel.slots.system.SystemRule;
-import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 
 /**
  * Sentinel {@link ReadableDataSource} Handler Handle the configurations of
@@ -59,9 +51,6 @@ public class SentinelDataSourceHandler {
 			.getLogger(SentinelDataSourceHandler.class);
 
 	private List<String> dataTypeList = Arrays.asList("json", "xml");
-
-	private List<Class> rulesList = Arrays.asList(FlowRule.class, DegradeRule.class,
-			SystemRule.class, AuthorityRule.class, ParamFlowRule.class);
 
 	private List<String> dataSourceBeanNameList = Collections
 			.synchronizedList(new ArrayList<>());
@@ -102,55 +91,26 @@ public class SentinelDataSourceHandler {
 
 		sentinelProperties.getDatasource()
 				.forEach((dataSourceName, dataSourceProperties) -> {
-					List<String> validFields = dataSourceProperties.getValidField();
-					if (validFields.size() != 1) {
-						logger.error("[Sentinel Starter] DataSource " + dataSourceName
-								+ " multi datasource active and won't loaded: "
-								+ dataSourceProperties.getValidField());
-						return;
+					try {
+						List<String> validFields = dataSourceProperties.getValidField();
+						if (validFields.size() != 1) {
+							logger.error("[Sentinel Starter] DataSource " + dataSourceName
+									+ " multi datasource active and won't loaded: "
+									+ dataSourceProperties.getValidField());
+							return;
+						}
+						AbstractDataSourceProperties abstractDataSourceProperties = dataSourceProperties
+								.getValidDataSourceProperties();
+						abstractDataSourceProperties.preCheck(dataSourceName);
+						registerBean(beanFactory, abstractDataSourceProperties,
+								dataSourceName + "-sentinel-" + validFields.get(0)
+										+ "-datasource");
 					}
-
-					AbstractDataSourceProperties abstractDataSourceProperties = dataSourceProperties
-							.getValidDataSourceProperties();
-					abstractDataSourceProperties.preCheck();
-					registerBean(beanFactory, abstractDataSourceProperties, dataSourceName
-							+ "-sentinel-" + validFields.get(0) + "-datasource");
+					catch (Exception e) {
+						logger.error("[Sentinel Starter] DataSource " + dataSourceName
+								+ " build error: " + e.getMessage(), e);
+					}
 				});
-
-		dataSourceBeanNameList.forEach(beanName -> {
-			ReadableDataSource dataSource = beanFactory.getBean(beanName,
-					ReadableDataSource.class);
-			Object ruleConfig;
-			try {
-				logger.info("[Sentinel Starter] DataSource " + beanName
-						+ " start to loadConfig");
-				ruleConfig = dataSource.loadConfig();
-			}
-			catch (Exception e) {
-				logger.error("[Sentinel Starter] DataSource " + beanName
-						+ " loadConfig error: " + e.getMessage(), e);
-				return;
-			}
-			SentinelProperty sentinelProperty = dataSource.getProperty();
-			Class ruleType = getAndCheckRuleType(ruleConfig, beanName);
-			if (ruleType != null) {
-				if (ruleType == FlowRule.class) {
-					FlowRuleManager.register2Property(sentinelProperty);
-				}
-				else if (ruleType == DegradeRule.class) {
-					DegradeRuleManager.register2Property(sentinelProperty);
-				}
-				else if (ruleType == SystemRule.class) {
-					SystemRuleManager.register2Property(sentinelProperty);
-				}
-				else if (ruleType == AuthorityRule.class) {
-					AuthorityRuleManager.register2Property(sentinelProperty);
-				}
-				else {
-					ParamFlowRuleManager.register2Property(sentinelProperty);
-				}
-			}
-		});
 	}
 
 	private void registerBean(DefaultListableBeanFactory beanFactory,
@@ -236,9 +196,11 @@ public class SentinelDataSourceHandler {
 						}
 						// converter type now support xml or json.
 						// The bean name of these converters wrapped by
-						// 'sentinel-{converterType}-converter'
+						// 'sentinel-{converterType}-{ruleType}-converter'
 						builder.addPropertyReference("converter",
-								"sentinel-" + propertyValue.toString() + "-converter");
+								"sentinel-" + propertyValue.toString() + "-"
+										+ dataSourceProperties.getRuleType()
+										+ "-converter");
 					}
 				}
 				else if (CONVERTERCLASS_FIELD.equals(propertyName)) {
@@ -256,6 +218,13 @@ public class SentinelDataSourceHandler {
 		// init in Spring
 		AbstractDataSource newDataSource = (AbstractDataSource) beanFactory
 				.getBean(dataSourceName);
+
+		logAndCheckRuleType(newDataSource, dataSourceName,
+				RuleType.getByName(dataSourceProperties.getRuleType()).get().getClazz());
+
+		// register property in RuleManager
+		dataSourceProperties.postRegister(newDataSource);
+
 		// commercialization
 		if (!StringUtils.isEmpty(System.getProperties()
 				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
@@ -269,55 +238,50 @@ public class SentinelDataSourceHandler {
 		dataSourceBeanNameList.add(dataSourceName);
 	}
 
-	private Class getAndCheckRuleType(Object ruleConfig, String dataSourceName) {
-		if (rulesList.contains(ruleConfig.getClass())) {
-			logger.info("[Sentinel Starter] DataSource {} load {} {}", dataSourceName, 1,
-					ruleConfig.getClass().getSimpleName());
-			return ruleConfig.getClass();
+	private void logAndCheckRuleType(AbstractDataSource dataSource, String dataSourceName,
+			Class<? extends AbstractRule> ruleClass) {
+		Object ruleConfig;
+		try {
+			ruleConfig = dataSource.loadConfig();
 		}
-		else if (ruleConfig instanceof List) {
+		catch (Exception e) {
+			logger.error("[Sentinel Starter] DataSource " + dataSourceName
+					+ " loadConfig error: " + e.getMessage(), e);
+			return;
+		}
+		if (ruleConfig instanceof List) {
 			List convertedRuleList = (List) ruleConfig;
 			if (CollectionUtils.isEmpty(convertedRuleList)) {
 				logger.warn("[Sentinel Starter] DataSource {} rule list is empty.",
 						dataSourceName);
-				return null;
+				return;
 			}
 			if (convertedRuleList.stream()
-					.allMatch(rule -> rulesList.contains(rule.getClass()))) {
-				if (rulesList.contains(convertedRuleList.get(0).getClass())
-						&& convertedRuleList.stream()
-								.filter(rule -> rule.getClass() == convertedRuleList
-										.get(0).getClass())
-								.toArray().length == convertedRuleList.size()) {
-					logger.info("[Sentinel Starter] DataSource {} load {} {}",
-							dataSourceName, convertedRuleList.size(),
-							convertedRuleList.get(0).getClass().getSimpleName());
-					return convertedRuleList.get(0).getClass();
-				}
-				else {
-					logger.warn(
-							"[Sentinel Starter] DataSource {} all rules are not same rule type and it will not be used. "
-									+ "Rule List: {}",
-							dataSourceName, convertedRuleList.toString());
-				}
+					.noneMatch(rule -> rule.getClass() == ruleClass)) {
+				logger.error("[Sentinel Starter] DataSource {} none rules are {} type.",
+						dataSourceName, ruleClass.getSimpleName());
+				throw new IllegalArgumentException("[Sentinel Starter] DataSource "
+						+ dataSourceName + " none rules are " + ruleClass.getSimpleName()
+						+ " type.");
+			}
+			else if (!convertedRuleList.stream()
+					.allMatch(rule -> rule.getClass() == ruleClass)) {
+				logger.warn("[Sentinel Starter] DataSource {} all rules are not {} type.",
+						dataSourceName, ruleClass.getSimpleName());
 			}
 			else {
-				List<Class> classList = (List<Class>) convertedRuleList.stream()
-						.map(Object::getClass).collect(Collectors.toList());
-				logger.error("[Sentinel Starter] DataSource " + dataSourceName
-						+ " rule class is invalid. Class List: " + classList);
-				throw new RuntimeException(
-						"[Sentinel Starter] DataSource " + dataSourceName
-								+ " rule class is invalid. Class List: " + classList);
+				logger.info("[Sentinel Starter] DataSource {} load {} {}", dataSourceName,
+						convertedRuleList.size(), ruleClass.getSimpleName());
 			}
 		}
 		else {
 			logger.error("[Sentinel Starter] DataSource " + dataSourceName
-					+ " rule class is invalid. Class: " + ruleConfig.getClass());
-			throw new RuntimeException("[Sentinel Starter] DataSource " + dataSourceName
-					+ " rule class is invalid. Class: " + ruleConfig.getClass());
+					+ " rule class is not List<" + ruleClass.getSimpleName()
+					+ ">. Class: " + ruleConfig.getClass());
+			throw new IllegalArgumentException("[Sentinel Starter] DataSource "
+					+ dataSourceName + " rule class is not List<"
+					+ ruleClass.getSimpleName() + ">. Class: " + ruleConfig.getClass());
 		}
-		return null;
 	}
 
 	public List<String> getDataSourceBeanNameList() {
