@@ -6,6 +6,8 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 参考文档 请查看 [WIKI](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/wiki)
 
+为 Spring Cloud Alibaba 贡献代码请参考 [如何贡献](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/wiki/%E5%A6%82%E4%BD%95%E8%B4%A1%E7%8C%AE%E4%BB%A3%E7%A0%81)
+
 ## 主要功能
 
 * **服务限流降级**：默认支持 Servlet、Feign、RestTemplate、Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
