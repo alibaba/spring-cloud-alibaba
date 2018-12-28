@@ -106,7 +106,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
             return;
         }
 
-        String[] sharedDataIdArry = sharedDataIds.split(SHARED_CONFIG_SEPRATOR_CHAR);
+        String[] sharedDataIdArry = sharedDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
         checkDataIdFileExtension(sharedDataIdArry);
 
         for (int i = 0; i < sharedDataIdArry.length; i++) {
@@ -209,7 +209,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
             return false;
         }
 
-        String[] refreshDataIdArry = refreshDataIds.split(SHARED_CONFIG_SEPRATOR_CHAR);
+        String[] refreshDataIdArry = refreshDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
         for (String refreshDataId : refreshDataIdArry) {
             if (refreshDataId.equals(sharedDataId)) {
                 return true;
