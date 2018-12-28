@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class AbstractDataSourceProperties {
 
 	private String dataType = "json";
-	private String ruleType;
+	private RuleType ruleType;
 	private String converterClass;
 	@JsonIgnore
 	protected String factoryBeanName;
@@ -36,11 +36,11 @@ public class AbstractDataSourceProperties {
 		this.dataType = dataType;
 	}
 
-	public String getRuleType() {
+	public RuleType getRuleType() {
 		return ruleType;
 	}
 
-	public void setRuleType(String ruleType) {
+	public void setRuleType(RuleType ruleType) {
 		this.ruleType = ruleType;
 	}
 
@@ -61,15 +61,10 @@ public class AbstractDataSourceProperties {
 	}
 
 	public void preCheck(String dataSourceName) {
-		if (!RuleType.getByName(this.getRuleType()).isPresent()) {
-			throw new IllegalArgumentException(
-					"[Sentinel Starter] DataSource " + dataSourceName
-							+ " get error ruleType [" + this.getRuleType() + "]");
-		}
 	}
 
 	public void postRegister(AbstractDataSource dataSource) {
-		switch (RuleType.getByName(this.getRuleType()).get()) {
+		switch (this.getRuleType()) {
 		case FLOW:
 			FlowRuleManager.register2Property(dataSource.getProperty());
 			break;

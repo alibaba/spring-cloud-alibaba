@@ -18,7 +18,6 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.alibaba.sentinel.SentinelConstants;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
-import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.AbstractDataSourceProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
@@ -199,7 +198,7 @@ public class SentinelDataSourceHandler {
 						// 'sentinel-{converterType}-{ruleType}-converter'
 						builder.addPropertyReference("converter",
 								"sentinel-" + propertyValue.toString() + "-"
-										+ dataSourceProperties.getRuleType()
+										+ dataSourceProperties.getRuleType().getName()
 										+ "-converter");
 					}
 				}
@@ -220,7 +219,7 @@ public class SentinelDataSourceHandler {
 				.getBean(dataSourceName);
 
 		logAndCheckRuleType(newDataSource, dataSourceName,
-				RuleType.getByName(dataSourceProperties.getRuleType()).get().getClazz());
+				dataSourceProperties.getRuleType().getClazz());
 
 		// register property in RuleManager
 		dataSourceProperties.postRegister(newDataSource);
