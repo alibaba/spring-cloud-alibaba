@@ -45,7 +45,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final String NACOS_PROPERTY_SOURCE_NAME = "NACOS";
 	private static final String SEP1 = "-";
 	private static final String DOT = ".";
-	private static final String SHARED_CONFIG_SEPRATOR_CHAR = "[,]";
+	private static final String SHARED_CONFIG_SEPARATOR_CHAR = "[,]";
 	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
 			"yaml", "yml");
 
@@ -106,7 +106,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			return;
 		}
 
-		String[] sharedDataIdArry = sharedDataIds.split(SHARED_CONFIG_SEPRATOR_CHAR);
+		String[] sharedDataIdArry = sharedDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
 		checkDataIdFileExtension(sharedDataIdArry);
 
 		for (int i = 0; i < sharedDataIdArry.length; i++) {
@@ -212,7 +212,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			return false;
 		}
 
-		String[] refreshDataIdArry = refreshDataIds.split(SHARED_CONFIG_SEPRATOR_CHAR);
+		String[] refreshDataIdArry = refreshDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
 		for (String refreshDataId : refreshDataIdArry) {
 			if (refreshDataId.equals(sharedDataId)) {
 				return true;
