@@ -128,10 +128,10 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 				.getProperty(SentinelDataSourceConstants.PROJECT_NAME) + "-" + type);
 		result.setGroupId("nacos-sentinel");
 		if (type.equals(RuleType.FLOW.getName())) {
-			result.setRuleType(RuleType.FLOW.getName());
+			result.setRuleType(RuleType.FLOW);
 		}
 		else {
-			result.setRuleType(RuleType.DEGRADE.getName());
+			result.setRuleType(RuleType.DEGRADE);
 		}
 		return result;
 	}
