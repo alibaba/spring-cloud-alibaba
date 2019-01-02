@@ -18,7 +18,6 @@ package org.springframework.cloud.alibaba.nacos.registry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
@@ -33,7 +32,6 @@ public class NacosAutoServiceRegistration
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NacosAutoServiceRegistration.class);
 
-	@Autowired
 	private NacosRegistration registration;
 
 	public NacosAutoServiceRegistration(
