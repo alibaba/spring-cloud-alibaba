@@ -39,7 +39,7 @@ public class NacosDiscoveryAutoConfigurationTests {
 					AutoConfigurations.of(NacosDiscoveryTestConfiguration.class,
 							NacosDiscoveryAutoConfiguration.class,
 							NacosDiscoveryClientAutoConfiguration.class))
-			.withPropertyValues("spring.cloud.nacos.discovery.server-addr=127.0.0.1:8080")
+			.withPropertyValues("spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848")
 			.withPropertyValues("spring.cloud.nacos.discovery.port=18080")
 			.withPropertyValues("spring.cloud.nacos.discovery.service=myapp");
 
@@ -49,7 +49,7 @@ public class NacosDiscoveryAutoConfigurationTests {
 			NacosDiscoveryProperties properties = context
 					.getBean(NacosDiscoveryProperties.class);
 			assertThat(properties.getPort()).isEqualTo(18080);
-			assertThat(properties.getServerAddr()).isEqualTo("127.0.0.1:8080");
+			assertThat(properties.getServerAddr()).isEqualTo("127.0.0.1:8848");
 			assertThat(properties.getService()).isEqualTo("myapp");
 		});
 	}

@@ -17,7 +17,6 @@
 package org.springframework.cloud.alibaba.nacos.registry;
 
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
@@ -42,11 +41,15 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	private static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
 	private static final String MANAGEMENT_ADDRESS = "management.address";
 
-	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	@Autowired
 	private ApplicationContext context;
+
+	public NacosRegistration(NacosDiscoveryProperties nacosDiscoveryProperties,
+			ApplicationContext context) {
+		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+		this.context = context;
+	}
 
 	@PostConstruct
 	public void init() {
