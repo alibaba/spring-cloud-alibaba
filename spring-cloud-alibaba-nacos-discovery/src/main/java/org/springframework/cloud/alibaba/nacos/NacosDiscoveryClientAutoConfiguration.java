@@ -32,8 +32,9 @@ import org.springframework.context.annotation.Configuration;
 public class NacosDiscoveryClientAutoConfiguration {
 
 	@Bean
-	public DiscoveryClient nacosDiscoveryClient() {
-		return new NacosDiscoveryClient();
+	public DiscoveryClient nacosDiscoveryClient(
+			NacosDiscoveryProperties discoveryProperties) {
+		return new NacosDiscoveryClient(discoveryProperties);
 	}
 
 	@Bean
