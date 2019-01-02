@@ -21,13 +21,16 @@ package org.springframework.cloud.alibaba.sentinel.datasource;
  */
 public interface SentinelDataSourceConstants {
 
-    String PROPERTY_PREFIX = "spring.cloud.sentinel";
+	String PROPERTY_PREFIX = "spring.cloud.sentinel";
 
-    String PROPERTY_ITEM_SEPARATOR = ".";
+	String NACOS_DATASOURCE_AK = PROPERTY_PREFIX + ".nacos.config.access-key";
 
-    String PROPERTY_DATASOURCE_NAME = "datasource";
+	String NACOS_DATASOURCE_SK = PROPERTY_PREFIX + ".nacos.config.secret-key";
 
-    String PROPERTY_DATASOURCE_PREFIX = PROPERTY_PREFIX + PROPERTY_ITEM_SEPARATOR
-        + PROPERTY_DATASOURCE_NAME;
+	String NACOS_DATASOURCE_NAMESPACE = PROPERTY_PREFIX + ".nacos.config.namespace";
+
+	String NACOS_DATASOURCE_ENDPOINT = PROPERTY_PREFIX + ".nacos.config.endpoint";
+
+	String PROJECT_NAME = PROPERTY_PREFIX + ".nacos.config.project-name";
 
 }

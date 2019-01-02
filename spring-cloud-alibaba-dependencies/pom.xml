@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-    <version>0.2.1.BUILD-SNAPSHOT</version>
+    <version>0.2.2.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Dependencies</name>
     <description>Spring Cloud Alibaba Dependencies</description>
@@ -19,7 +19,8 @@
     <properties>
         <sentinel.version>1.4.0</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.version>0.6.1</nacos.version>
+        <nacos.client.version>0.6.2</nacos.client.version>
+        <nacos.config.version>0.6.1</nacos.config.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
@@ -74,13 +75,13 @@
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
-                <version>${nacos.version}</version>
+                <version>${nacos.client.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-config</artifactId>
-                <version>${nacos.version}</version>
+                <version>${nacos.config.version}</version>
             </dependency>
 
             <!-- Apache RocketMQ -->

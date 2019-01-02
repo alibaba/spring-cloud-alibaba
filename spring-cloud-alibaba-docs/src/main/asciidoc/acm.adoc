@@ -15,7 +15,7 @@ We’ve released Spring Cloud Alibaba version 0.2.1. You will need to add depend
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.1.RELEASE</version>
+            <version>0.2.2.BUILD-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -129,7 +129,7 @@ user name :james; age: 18
 === Modify Configuration File Extension
 
 The default file extension of dataId in spring-cloud-starter-alicloud-acm is properties. In addition to properties,  yaml is also supported.
-You can set the file extension using spring.cloud.nacos.config.file-extension. Just set it to `yaml` or `yml`for yaml format.
+You can set the file extension using spring.cloud.alicloud.acm.file-extension. Just set it to `yaml` or `yml`for yaml format.
 
 NOTE: After you change the file extension, you need to make corresponding format changes in the DataID and content of the configuration center.
 
@@ -138,7 +138,7 @@ NOTE: After you change the file extension, you need to make corresponding format
 spring-cloud-starter-alicloud-acm supports dynamic configuration updates. Context Refresh in Spring is triggered when you update configuration in the configuration center.
 All classes with @RefreshScope and @ConfigurationProperties annotations will be refershed automatically.
 
-NOTE: You can disable automatic refresh by this setting: spring.cloud.nacos.config.refresh.enabled=false
+NOTE: You can disable automatic refresh by this setting: spring.cloud.alicloud.acm.refresh.enabled=false
 
 === Configure Profile Granularity
 
@@ -157,14 +157,14 @@ Note: You can also configure the granularity through JVM parameters such as -Dsp
 
 === Support Custom Group Configurations
 
-DEFAULT_GROUP is used by default when no `{spring.cloud.nacos.config.group}` configuration is defined. If you need to define your own group, you can use the following method:
+DEFAULT_GROUP is used by default when no `{spring.cloud.alicloud.acm.group}` configuration is defined. If you need to define your own group, you can use the following method:
 
 [source,properties]
 ----
-spring.cloud.nacos.config.group=DEVELOP_GROUP
+spring.cloud.alicloud.acm.group=DEVELOP_GROUP
 ----
 
-NOTE: This configuration must be placed in the bootstrap.properties file, and the value of Group must be the same with the value of `spring.cloud.nacos.config.group`.
+NOTE: This configuration must be placed in the bootstrap.properties file, and the value of Group must be the same with the value of `spring.cloud.alicloud.acm.group`.
 
 ==== Support Shared Configurations
 
@@ -180,6 +180,6 @@ After that, it also retrieves configuration from  {spring.application.group}: {s
 The later in order, the higer the priority, and the unique configuration of the application itself has the highest priority.
 
 
-NOTE: The default suffix of DataId is properties, and you can change it using spring.cloud.nacos.config.file-extension. `{spring.application.group}: {spring.application.name}. {file-extension}` 。
+NOTE: The default suffix of DataId is properties, and you can change it using spring.cloud.alicloud.acm.file-extension. `{spring.application.group}: {spring.application.name}. {file-extension}` 。
 
 NOTE: If you configured `spring.profiles.active` , then the DataId format of `{spring.application.group}: {spring.application.name}-{spring.profiles.active}. {file-extension}` is also supported, and has higher priority than `{spring.application.group}: {spring.application.name}. {file-extension}`

@@ -28,6 +28,25 @@ public class DataSourcePropertiesConfiguration {
 
 	private ApolloDataSourceProperties apollo;
 
+	public DataSourcePropertiesConfiguration() {
+	}
+
+	public DataSourcePropertiesConfiguration(FileDataSourceProperties file) {
+		this.file = file;
+	}
+
+	public DataSourcePropertiesConfiguration(NacosDataSourceProperties nacos) {
+		this.nacos = nacos;
+	}
+
+	public DataSourcePropertiesConfiguration(ZookeeperDataSourceProperties zk) {
+		this.zk = zk;
+	}
+
+	public DataSourcePropertiesConfiguration(ApolloDataSourceProperties apollo) {
+		this.apollo = apollo;
+	}
+
 	public FileDataSourceProperties getFile() {
 		return file;
 	}
@@ -61,7 +80,7 @@ public class DataSourcePropertiesConfiguration {
 	}
 
 	@JsonIgnore
-	public List<String> getInvalidField() {
+	public List<String> getValidField() {
 		return Arrays.stream(this.getClass().getDeclaredFields()).map(field -> {
 			try {
 				if (!ObjectUtils.isEmpty(field.get(this))) {
@@ -74,6 +93,26 @@ public class DataSourcePropertiesConfiguration {
 			}
 			return null;
 		}).filter(Objects::nonNull).collect(Collectors.toList());
+	}
+
+	@JsonIgnore
+	public AbstractDataSourceProperties getValidDataSourceProperties() {
+		List<String> invalidFields = getValidField();
+		if (invalidFields.size() == 1) {
+			try {
+				this.getClass().getDeclaredField(invalidFields.get(0))
+						.setAccessible(true);
+				return (AbstractDataSourceProperties) this.getClass()
+						.getDeclaredField(invalidFields.get(0)).get(this);
+			}
+			catch (IllegalAccessException e) {
+				// won't happen
+			}
+			catch (NoSuchFieldException e) {
+				// won't happen
+			}
+		}
+		return null;
 	}
 
 }

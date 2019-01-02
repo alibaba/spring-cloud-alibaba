@@ -6,7 +6,7 @@ Spring Cloud AliCloud ACM 是 Config Server 和 Client 的替代方案，客户�
 
 === 如何引入 Spring Cloud AliCloud ACM
 
-Spring Cloud Alibaba 已经发布了 0.2.1.RELEASE 版本，需要首先导入依赖管理POM。
+Spring Cloud Alibaba 已经发布了 0.2.2.BUILD-SNAPSHOT 版本，需要首先导入依赖管理POM。
 
 [source,xml]
 ----
@@ -15,7 +15,7 @@ Spring Cloud Alibaba 已经发布了 0.2.1.RELEASE 版本，需要首先导入�
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.1.RELEASE</version>
+            <version>0.2.2.BUILD-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -129,7 +129,7 @@ user name :james; age: 18
 === 更改配置文件扩展名
 
 spring-cloud-starter-alicloud-acm 中 DataId 默认的文件扩展名是 properties。除去 properties 格式之外，也支持 yaml 格式。
-支持通过 spring.cloud.nacos.config.file-extension 来配置文件的扩展名，yaml 格式可以配置成 `yaml` 或 `yml`。
+支持通过 spring.cloud.alicloud.acm.file-extension 来配置文件的扩展名，yaml 格式可以配置成 `yaml` 或 `yml`。
 
 NOTE: 修改文件扩展名后，在配置中心中的 DataID 以及 Content 的格式都必须做相应的修改。
 
@@ -138,7 +138,7 @@ NOTE: 修改文件扩展名后，在配置中心中的 DataID 以及 Content 的
 spring-cloud-starter-alicloud-acm 默认支持配置的动态更新，当您在配置中心修改配置的内容时，会触发 Spring 中的 Context Refresh 动作。
 带有 @RefreshScope 和 @ConfigurationProperties 注解的类会自动刷新。
 
-NOTE: 你可以通过配置 spring.cloud.nacos.config.refresh.enabled=false 来关闭动态刷新
+NOTE: 你可以通过配置 spring.cloud.alicloud.acm.refresh.enabled=false 来关闭动态刷新
 
 === profile 粒度的配置
 
@@ -157,14 +157,14 @@ Note: 也可以通过 JVM 参数 -Dspring.profiles.active=develop 或者 --sprin
 
 === 支持自定义 Group 的配置
 
-在没有明确指定 `{spring.cloud.nacos.config.group}` 配置的情况下， 默认使用的是 DEFAULT_GROUP 。如果需要自定义自己的 Group，可以通过以下配置来实现：
+在没有明确指定 `{spring.cloud.alicloud.acm.group}` 配置的情况下， 默认使用的是 DEFAULT_GROUP 。如果需要自定义自己的 Group，可以通过以下配置来实现：
 
 [source,properties]
 ----
-spring.cloud.nacos.config.group=DEVELOP_GROUP
+spring.cloud.alicloud.acm.group=DEVELOP_GROUP
 ----
 
-NOTE: 该配置必须放在 bootstrap.properties 文件中。并且在添加配置时 Group 的值一定要和 `spring.cloud.nacos.config.group` 的配置值一致。
+NOTE: 该配置必须放在 bootstrap.properties 文件中。并且在添加配置时 Group 的值一定要和 `spring.cloud.alicloud.acm.group` 的配置值一致。
 
 ==== 支持共享配置
 
@@ -180,6 +180,6 @@ spring.application.group=company.department.team
 越往后优先级越高，最高的仍然是应用自身所独有的配置。
 
 
-NOTE: 共享配置中 DataId 默认后缀为 properties，可以通过 spring.cloud.nacos.config.file-extension 配置. `{spring.application.group}:{spring.application.name}.{file-extension}` 。
+NOTE: 共享配置中 DataId 默认后缀为 properties，可以通过 spring.cloud.alicloud.acm.file-extension 配置. `{spring.application.group}:{spring.application.name}.{file-extension}` 。
 
 NOTE: 如果设置了 `spring.profiles.active` ，DataId 的格式还支持 `{spring.application.group}:{spring.application.name}-{spring.profiles.active}.{file-extension}`。优先级高于 `{spring.application.group}:{spring.application.name}.{file-extension}`

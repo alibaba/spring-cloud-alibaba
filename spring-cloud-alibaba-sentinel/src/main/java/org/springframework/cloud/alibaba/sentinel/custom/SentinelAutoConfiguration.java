@@ -41,6 +41,11 @@ import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
 import com.alibaba.csp.sentinel.log.LogBase;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
+import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
@@ -154,25 +159,67 @@ public class SentinelAutoConfiguration {
 		return new SentinelDataSourceHandler();
 	}
 
-	@Bean("sentinel-json-converter")
-	public JsonConverter jsonConverter() {
-		return new JsonConverter(objectMapper());
-	}
+	protected static class SentinelConverterConfiguration {
 
-	private ObjectMapper objectMapper() {
-		return new ObjectMapper();
+		private ObjectMapper objectMapper = new ObjectMapper();
+
+		@Bean("sentinel-json-flow-converter")
+		public JsonConverter jsonFlowConverter() {
+			return new JsonConverter(objectMapper, FlowRule.class);
+		}
+
+		@Bean("sentinel-json-degrade-converter")
+		public JsonConverter jsonDegradeConverter() {
+			return new JsonConverter(objectMapper, DegradeRule.class);
+		}
+
+		@Bean("sentinel-json-system-converter")
+		public JsonConverter jsonSystemConverter() {
+			return new JsonConverter(objectMapper, SystemRule.class);
+		}
+
+		@Bean("sentinel-json-authority-converter")
+		public JsonConverter jsonAuthorityConverter() {
+			return new JsonConverter(objectMapper, AuthorityRule.class);
+		}
+
+		@Bean("sentinel-json-param-flow-converter")
+		public JsonConverter jsonParamFlowConverter() {
+			return new JsonConverter(objectMapper, ParamFlowRule.class);
+		}
+
 	}
 
 	@ConditionalOnClass(XmlMapper.class)
 	protected static class SentinelXmlConfiguration {
-		@Bean("sentinel-xml-converter")
-		public XmlConverter xmlConverter() {
-			return new XmlConverter(xmlMapper());
+
+		private XmlMapper xmlMapper = new XmlMapper();
+
+		@Bean("sentinel-xml-flow-converter")
+		public XmlConverter xmlFlowConverter() {
+			return new XmlConverter(xmlMapper, FlowRule.class);
 		}
 
-		private XmlMapper xmlMapper() {
-			return new XmlMapper();
+		@Bean("sentinel-xml-degrade-converter")
+		public XmlConverter xmlDegradeConverter() {
+			return new XmlConverter(xmlMapper, DegradeRule.class);
 		}
+
+		@Bean("sentinel-xml-system-converter")
+		public XmlConverter xmlSystemConverter() {
+			return new XmlConverter(xmlMapper, SystemRule.class);
+		}
+
+		@Bean("sentinel-xml-authority-converter")
+		public XmlConverter xmlAuthorityConverter() {
+			return new XmlConverter(xmlMapper, AuthorityRule.class);
+		}
+
+		@Bean("sentinel-xml-param-flow-converter")
+		public XmlConverter xmlParamFlowConverter() {
+			return new XmlConverter(xmlMapper, ParamFlowRule.class);
+		}
+
 	}
 
 }
