@@ -60,10 +60,12 @@ public class AnsServerList extends AbstractServerList<AnsServer> {
 		List<AnsServer> result = new ArrayList<AnsServer>(hosts.size());
 		for (Host host : hosts) {
 			if (host.isValid()) {
-				result.add(hostToServer(host));
+				AnsServer ansServer = hostToServer(host);
+				if (ansServer.isAlive(3)) {
+					result.add(ansServer);
+				}
 			}
 		}
-
 		return result;
 	}
 
