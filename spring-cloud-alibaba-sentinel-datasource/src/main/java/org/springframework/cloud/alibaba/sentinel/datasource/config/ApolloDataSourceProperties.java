@@ -12,9 +12,9 @@ import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.ApolloD
  */
 public class ApolloDataSourceProperties extends AbstractDataSourceProperties {
 
-    @NotEmpty
+	@NotEmpty
 	private String namespaceName;
-    @NotEmpty
+	@NotEmpty
 	private String flowRulesKey;
 	private String defaultFlowRuleValue;
 
