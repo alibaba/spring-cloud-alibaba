@@ -31,7 +31,7 @@ jobs:
           command: |
             mkdir -p ~/junit/
             find . -type f -regex ".*/target/.*-reports/.*" -exec cp {} ~/junit/ \;
-            bash <(curl -s https://codecov.io/bash)
+            bash <(curl -s https://codecov.io/bash) -t 8dc515f7-a691-4e29-9b68-6199cd3ca46d
       - store_artifacts:
           path: ~/junit/
           destination: artifacts
