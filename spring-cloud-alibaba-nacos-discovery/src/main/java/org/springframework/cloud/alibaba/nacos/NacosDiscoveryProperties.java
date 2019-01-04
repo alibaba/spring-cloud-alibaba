@@ -143,6 +143,10 @@ public class NacosDiscoveryProperties {
 	@PostConstruct
 	public void init() throws SocketException {
 
+		if (secure) {
+			metadata.put("secure", "true");
+		}
+
 		serverAddr = Objects.toString(serverAddr, "");
 		endpoint = Objects.toString(endpoint, "");
 		namespace = Objects.toString(namespace, "");
@@ -351,7 +355,7 @@ public class NacosDiscoveryProperties {
 		}
 		if (StringUtils.isEmpty(this.getClusterName())) {
 			this.setClusterName(env.resolvePlaceholders(
-					"${spring.cloud.nacos.discovery.clusterName-name:}"));
+					"${spring.cloud.nacos.discovery.cluster-name:}"));
 		}
 		if (StringUtils.isEmpty(this.getEndpoint())) {
 			this.setEndpoint(
