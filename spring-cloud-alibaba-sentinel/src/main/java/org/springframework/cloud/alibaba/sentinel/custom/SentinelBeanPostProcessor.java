@@ -28,6 +28,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.type.StandardMethodMetadata;
+import org.springframework.core.type.classreading.MethodMetadataReadingVisitor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,9 +50,16 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition,
 			Class<?> beanType, String beanName) {
 		if (checkSentinelProtect(beanDefinition, beanType)) {
-			SentinelRestTemplate sentinelRestTemplate = ((StandardMethodMetadata) beanDefinition
-					.getSource()).getIntrospectedMethod()
-							.getAnnotation(SentinelRestTemplate.class);
+			SentinelRestTemplate sentinelRestTemplate;
+			if (beanDefinition.getSource() instanceof StandardMethodMetadata) {
+				sentinelRestTemplate = ((StandardMethodMetadata) beanDefinition
+						.getSource()).getIntrospectedMethod()
+								.getAnnotation(SentinelRestTemplate.class);
+			}
+			else {
+				sentinelRestTemplate = beanDefinition.getResolvedFactoryMethod()
+						.getAnnotation(SentinelRestTemplate.class);
+			}
 			cache.put(beanName, sentinelRestTemplate);
 		}
 	}
@@ -59,8 +67,19 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	private boolean checkSentinelProtect(RootBeanDefinition beanDefinition,
 			Class<?> beanType) {
 		return beanType == RestTemplate.class
-				&& beanDefinition.getSource() instanceof StandardMethodMetadata
+				&& (checkStandardMethodMetadata(beanDefinition)
+						|| checkMethodMetadataReadingVisitor(beanDefinition));
+	}
+
+	private boolean checkStandardMethodMetadata(RootBeanDefinition beanDefinition) {
+		return beanDefinition.getSource() instanceof StandardMethodMetadata
 				&& ((StandardMethodMetadata) beanDefinition.getSource())
+						.isAnnotated(SentinelRestTemplate.class.getName());
+	}
+
+	private boolean checkMethodMetadataReadingVisitor(RootBeanDefinition beanDefinition) {
+		return beanDefinition.getSource() instanceof MethodMetadataReadingVisitor
+				&& ((MethodMetadataReadingVisitor) beanDefinition.getSource())
 						.isAnnotated(SentinelRestTemplate.class.getName());
 	}
 
