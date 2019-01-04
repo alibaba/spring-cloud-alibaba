@@ -37,9 +37,9 @@ import com.alibaba.nacos.api.naming.NamingService;
  */
 public class NacosRegistration implements Registration, ServiceInstance {
 
-	private static final String MANAGEMENT_PORT = "management.port";
-	private static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
-	private static final String MANAGEMENT_ADDRESS = "management.address";
+	public static final String MANAGEMENT_PORT = "management.port";
+	public static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
+	public static final String MANAGEMENT_ADDRESS = "management.address";
 
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
@@ -123,11 +123,6 @@ public class NacosRegistration implements Registration, ServiceInstance {
 
 	public NamingService getNacosNamingService() {
 		return nacosDiscoveryProperties.namingServiceInstance();
-	}
-
-	public void setNacosDiscoveryProperties(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 	}
 
 	@Override
