@@ -1,5 +1,7 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
+import javax.validation.constraints.NotEmpty;
+
 import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
@@ -15,7 +17,11 @@ import org.springframework.util.StringUtils;
 public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	private String serverAddr;
+
+	@NotEmpty
 	private String groupId;
+
+	@NotEmpty
 	private String dataId;
 
 	// commercialized usage
