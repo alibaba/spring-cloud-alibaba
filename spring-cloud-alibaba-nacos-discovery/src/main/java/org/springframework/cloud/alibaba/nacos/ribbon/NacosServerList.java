@@ -35,9 +35,6 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	private String serviceId;
 
-	public NacosServerList() {
-	}
-
 	public NacosServerList(NacosDiscoveryProperties discoveryProperties) {
 		this.discoveryProperties = discoveryProperties;
 	}

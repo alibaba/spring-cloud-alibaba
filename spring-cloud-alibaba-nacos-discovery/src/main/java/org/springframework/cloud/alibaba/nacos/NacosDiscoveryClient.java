@@ -72,6 +72,11 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		metadata.put("cluster", instance.getClusterName() + "");
 		metadata.putAll(instance.getMetadata());
 		nacosServiceInstance.setMetadata(metadata);
+
+		if (metadata.containsKey("secure")) {
+			boolean secure = Boolean.parseBoolean(metadata.get("secure"));
+			nacosServiceInstance.setSecure(secure);
+		}
 		return nacosServiceInstance;
 	}
 
