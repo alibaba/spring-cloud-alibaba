@@ -45,7 +45,6 @@ public class NacosRibbonClientConfigurationTests {
 
 		@Bean
 		IClientConfig iClientConfig() {
-			// return new IClientConfig.Builder().s.build();
 			DefaultClientConfigImpl config = new DefaultClientConfigImpl();
 			config.setClientName("myapp");
 			return config;
