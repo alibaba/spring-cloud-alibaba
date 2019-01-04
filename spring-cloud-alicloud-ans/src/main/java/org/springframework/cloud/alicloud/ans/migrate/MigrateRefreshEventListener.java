@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class MigrateRefreshEventListener implements ApplicationListener<RefreshEvent> {
 
-	private final static String MIGRATE_RESET = "sca.migrate.ans.reset";
+	private final static String MIGRATE_RESET = "sca.migrate.ans.switch";
 
 	private volatile String lastScaMigrateAnsResetValue;
 
