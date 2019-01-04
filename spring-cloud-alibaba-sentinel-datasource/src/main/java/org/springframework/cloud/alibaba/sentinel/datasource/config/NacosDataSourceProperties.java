@@ -18,10 +18,10 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	private String serverAddr;
 
-    @NotEmpty
+	@NotEmpty
 	private String groupId;
 
-    @NotEmpty
+	@NotEmpty
 	private String dataId;
 
 	// commercialized usage

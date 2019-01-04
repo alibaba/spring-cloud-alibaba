@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
  */
 public class FileDataSourceProperties extends AbstractDataSourceProperties {
 
-    @NotEmpty
+	@NotEmpty
 	private String file;
 	private String charset = "utf-8";
 	private long recommendRefreshMs = 3000L;
