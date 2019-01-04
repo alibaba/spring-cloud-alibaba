@@ -24,10 +24,9 @@ jobs:
             - ~/.m2
       - run:
           name: "Running build"
-          command: ./mvnw -Pspring -Pdocs clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-      - run:
-          name: "install codecov"
-          command: "pip install codecov"
+          command: |
+            ./mvnw cobertura:cobertura
+            ./mvnw -Pspring -Pdocs clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - run:
           name: "Aggregate test results"
           when: always
