@@ -24,9 +24,13 @@ jobs:
             - ~/.m2
       - run:
           name: "Running build"
+          command: ./mvnw -Pspring -Pdocs clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      - run:
+          name: "look and install python"
           command: |
-            ./mvnw cobertura:cobertura
-            ./mvnw -Pspring -Pdocs clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+            python -V
+            sudo bash -c "yes | add-apt-repository ppa:jonathonf/python-3.6 && apt-get update && apt-get install -y python3.6"
+            python -V
       - run:
           name: "Aggregate test results"
           when: always
