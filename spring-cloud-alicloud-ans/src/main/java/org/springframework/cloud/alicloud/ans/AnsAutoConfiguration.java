@@ -69,4 +69,5 @@ public class AnsAutoConfiguration {
 		return new AnsAutoServiceRegistration(registry, autoServiceRegistrationProperties,
 				registration);
 	}
+
 }
