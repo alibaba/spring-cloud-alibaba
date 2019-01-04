@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class MigrateRefreshEventListener implements ApplicationListener<RefreshEvent> {
 
-	private final static String MIGRATE_RESET = "sca.migrate.ans.switch";
+	private final static String MIGRATE_SWITCH = "sca.migrate.ans.switch";
 
-	private volatile String lastScaMigrateAnsResetValue;
+	private volatile String lastScaMigrateAnsSwitchValue = "true";
 
 	@Autowired
 	private Environment environment;
@@ -39,25 +39,25 @@ public class MigrateRefreshEventListener implements ApplicationListener<RefreshE
 
 	@Override
 	public void onApplicationEvent(RefreshEvent event) {
-		String value = environment.getProperty(MIGRATE_RESET, "");
+		String value = environment.getProperty(MIGRATE_SWITCH, "true");
 
 		// check 1: check the value
-		if (value.equals(lastScaMigrateAnsResetValue)) {
+		if (value.equals(lastScaMigrateAnsSwitchValue)) {
 			return;
 		}
 
 		updateLastScaMigrateAnsResetValue(value);
 
-		// step 1: migrate close
+		// step 1: migrate up
 		if ("true".equals(value)) {
-			MigrateProxyManager.migrateProxyClose();
+			MigrateProxyManager.migrateProxyUp();
 			serviceIdContextInit();
 			return;
 		}
 
-		// step 2: migrate up
+		// step 2: migrate close
 		if ("false".equals(value)) {
-			MigrateProxyManager.migrateProxyUp();
+			MigrateProxyManager.migrateProxyClose();
 			serviceIdContextInit();
 			return;
 		}
@@ -71,6 +71,6 @@ public class MigrateRefreshEventListener implements ApplicationListener<RefreshE
 	}
 
 	private synchronized void updateLastScaMigrateAnsResetValue(String value) {
-		this.lastScaMigrateAnsResetValue = value;
+		this.lastScaMigrateAnsSwitchValue = value;
 	}
 }
