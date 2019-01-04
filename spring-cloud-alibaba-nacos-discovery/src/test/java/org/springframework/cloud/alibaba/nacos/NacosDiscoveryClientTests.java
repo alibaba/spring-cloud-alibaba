@@ -17,7 +17,6 @@
 package org.springframework.cloud.alibaba.nacos;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,16 +29,15 @@ import org.junit.Test;
 import org.springframework.cloud.client.ServiceInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.cloud.alibaba.nacos.test.NacosMockTest.serviceInstance;
 
 /**
- * @author yizhan
+ * @author xiaojing
  */
-public class NacosDiscoveryClientTest {
+public class NacosDiscoveryClientTests {
 
 	private String host = "123.123.123.123";
 	private int port = 8888;
