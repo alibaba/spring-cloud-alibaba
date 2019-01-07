@@ -20,7 +20,6 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
@@ -36,8 +35,11 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 			.getLogger(NacosDiscoveryClient.class);
 	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
-	@Autowired
 	private NacosDiscoveryProperties discoveryProperties;
+
+	public NacosDiscoveryClient(NacosDiscoveryProperties discoveryProperties) {
+		this.discoveryProperties = discoveryProperties;
+	}
 
 	@Override
 	public String description() {
@@ -70,6 +72,11 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		metadata.put("cluster", instance.getClusterName() + "");
 		metadata.putAll(instance.getMetadata());
 		nacosServiceInstance.setMetadata(metadata);
+
+		if (metadata.containsKey("secure")) {
+			boolean secure = Boolean.parseBoolean(metadata.get("secure"));
+			nacosServiceInstance.setSecure(secure);
+		}
 		return nacosServiceInstance;
 	}
 
