@@ -1,5 +1,8 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 
 import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
@@ -18,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class AbstractDataSourceProperties {
 
+	@NotEmpty
 	private String dataType = "json";
+	@NotNull
 	private RuleType ruleType;
 	private String converterClass;
 	@JsonIgnore
@@ -61,6 +66,7 @@ public class AbstractDataSourceProperties {
 	}
 
 	public void preCheck(String dataSourceName) {
+
 	}
 
 	public void postRegister(AbstractDataSource dataSource) {

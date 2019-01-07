@@ -24,6 +24,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
 import org.springframework.core.Ordered;
+import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
@@ -36,6 +37,7 @@ import com.alibaba.csp.sentinel.transport.config.TransportConfig;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = SentinelConstants.PROPERTY_PREFIX)
+@Validated
 public class SentinelProperties {
 
 	/**
