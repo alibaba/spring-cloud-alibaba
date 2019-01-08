@@ -13,10 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms;
+package org.springframework.cloud.alicloud.sms.endpoint;
 
-/**
- * @author pbting
- */
-public interface SmsUpMessageListener extends SmsMessageListener {
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+
+import java.util.Map;
+
+@Endpoint(id = "nacos-config")
+public class SmsEndpoint {
+
+	@ReadOperation
+	public Map<String, Object> invoke() {
+
+		return EndpointManager.getSmsEndpointMessage();
+	}
 }

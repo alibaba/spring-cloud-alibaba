@@ -40,7 +40,6 @@ public class MigrateRefreshEventListener implements ApplicationListener<RefreshE
 	@Override
 	public void onApplicationEvent(RefreshEvent event) {
 		String value = environment.getProperty(MIGRATE_SWITCH, "true");
-
 		// check 1: check the value
 		if (value.equals(lastScaMigrateAnsSwitchValue)) {
 			return;

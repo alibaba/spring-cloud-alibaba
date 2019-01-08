@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.springframework.cloud.alicloud.sms;
 
 import com.aliyuncs.IAcsClient;
@@ -14,16 +29,16 @@ public interface ISmsService {
 	 * 
 	 * @param accessKeyId
 	 * @param secret
-	 * @return
+	 * @return IAcsClient
 	 */
 	IAcsClient getHangZhouRegionClientProfile(String accessKeyId, String secret);
 
 	/**
 	 *
 	 * @param sendSmsRequest
-	 * @return
 	 * @throws ServerException
 	 * @throws ClientException
+	 * @return SendSmsResponse
 	 */
 	SendSmsResponse sendSmsRequest(SendSmsRequest sendSmsRequest)
 			throws ServerException, ClientException;
@@ -31,9 +46,9 @@ public interface ISmsService {
 	/**
 	 *
 	 * @param sendBatchSmsRequest
-	 * @return
 	 * @throws ServerException
 	 * @throws ClientException
+	 * @return SendBatchSmsResponse
 	 */
 	SendBatchSmsResponse sendSmsBatchRequest(SendBatchSmsRequest sendBatchSmsRequest)
 			throws ServerException, ClientException;
@@ -57,9 +72,9 @@ public interface ISmsService {
 	 * @param sendSmsRequest
 	 * @param accessKeyId
 	 * @param accessKeySecret
-	 * @return
 	 * @throws ServerException
 	 * @throws ClientException
+	 * @return SendBatchSmsResponse
 	 */
 	SendBatchSmsResponse sendSmsBatchRequest(SendBatchSmsRequest sendSmsRequest,
 			String accessKeyId, String accessKeySecret)
@@ -68,7 +83,7 @@ public interface ISmsService {
 	/**
 	 *
 	 * @param smsReportMessageListener
-	 * @return
+	 * @return boolean
 	 */
 	boolean startSmsReportMessageListener(
 			SmsReportMessageListener smsReportMessageListener);
@@ -76,14 +91,16 @@ public interface ISmsService {
 	/**
 	 *
 	 * @param smsUpMessageListener
-	 * @return
+	 * @return boolean
 	 */
 	boolean startSmsUpMessageListener(SmsUpMessageListener smsUpMessageListener);
 
 	/**
 	 * 
 	 * @param request
-	 * @return
+	 * @param accessKeyId
+	 * @param accessKeySecret
+	 * @return QuerySendDetailsResponse
 	 */
 	QuerySendDetailsResponse querySendDetails(QuerySendDetailsRequest request,
 			String accessKeyId, String accessKeySecret) throws ClientException;
@@ -91,7 +108,7 @@ public interface ISmsService {
 	/**
 	 *
 	 * @param request
-	 * @return
+	 * @return QuerySendDetailsResponse
 	 */
 	QuerySendDetailsResponse querySendDetails(QuerySendDetailsRequest request)
 			throws ClientException;
