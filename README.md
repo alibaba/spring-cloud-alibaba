@@ -1,5 +1,7 @@
 # Spring Cloud Alibaba
 
+[![Codecov](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba/branch/master/graph/badge.svg)](https://codecov.io/spring-cloud-incubator/spring-cloud-alibaba)
+
 A project maintained by Alibaba.
 
 See the [中文文档](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/README-zh.md) for Chinese readme.
