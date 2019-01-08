@@ -98,6 +98,9 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 			producer = new DefaultMQProducer(destination);
 		}
 
+		producer.setVipChannelEnabled(
+				producerProperties.getExtension().getVipChannelEnabled());
+
 		Optional.ofNullable(instrumentationManager).ifPresent(manager -> {
 			producerInstrumentation = manager.getProducerInstrumentation(destination);
 			manager.addHealthInstrumentation(producerInstrumentation);
