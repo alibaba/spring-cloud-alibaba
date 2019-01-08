@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms.endpoint;
+package org.springframework.cloud.alibaba.cloud.example;
 
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Map;
+/**
+ * 
+ */
+@SpringBootApplication
+public class SmsApplication {
 
-@Endpoint(id = "sms-info")
-public class SmsEndpoint {
+	public static void main(String[] args) {
 
-	@ReadOperation
-	public Map<String, Object> invoke() {
-
-		return EndpointManager.getSmsEndpointMessage();
+		SpringApplication.run(SmsApplication.class, args);
 	}
 }
