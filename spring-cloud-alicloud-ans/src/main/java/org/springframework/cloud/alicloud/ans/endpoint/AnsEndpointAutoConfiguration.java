@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.alicloud.ans.endpoint;
 
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.cloud.alicloud.context.ans.AnsProperties;
@@ -25,7 +26,7 @@ import org.springframework.context.annotation.Bean;
  * @author xiaolongzuo
  */
 @ConditionalOnWebApplication
-@ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.AbstractEndpoint")
+@ConditionalOnClass(AbstractEndpoint.class)
 public class AnsEndpointAutoConfiguration {
 
 	@Bean

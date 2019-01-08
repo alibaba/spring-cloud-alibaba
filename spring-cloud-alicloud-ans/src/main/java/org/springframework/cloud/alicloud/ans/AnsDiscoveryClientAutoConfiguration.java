@@ -19,23 +19,28 @@ package org.springframework.cloud.alicloud.ans;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.alicloud.ans.migrate.MigrateOnConditionMissingClass;
+import org.springframework.cloud.alicloud.ans.registry.AnsRegistration;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xiaolongzuo
+ * @author pbting
  */
 @Configuration
+@Conditional(MigrateOnConditionMissingClass.class)
 @ConditionalOnMissingBean(DiscoveryClient.class)
 @EnableConfigurationProperties
 @AutoConfigureBefore(SimpleDiscoveryClientAutoConfiguration.class)
 public class AnsDiscoveryClientAutoConfiguration {
 
 	@Bean
-	public DiscoveryClient ansDiscoveryClient() {
-		return new AnsDiscoveryClient();
+	public DiscoveryClient ansDiscoveryClient(AnsRegistration ansRegistration) {
+		return new AnsDiscoveryClient(ansRegistration);
 	}
 
 }

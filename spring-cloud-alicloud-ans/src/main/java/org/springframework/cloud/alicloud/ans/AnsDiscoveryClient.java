@@ -16,40 +16,31 @@
 
 package org.springframework.cloud.alicloud.ans;
 
-import java.util.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.alicloud.context.ans.AnsProperties;
-import org.springframework.cloud.client.DefaultServiceInstance;
+import com.alibaba.ans.core.NamingService;
+import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+import org.springframework.cloud.alicloud.ans.registry.AnsRegistration;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
-import com.alibaba.ans.core.NamingService;
-import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+import java.util.*;
 
 /**
  * @author xiaolongzuo
+ * @author pbting
  */
 public class AnsDiscoveryClient implements DiscoveryClient {
 
 	public static final String DESCRIPTION = "Spring Cloud ANS Discovery Client";
 
-	@Autowired
-	private AnsProperties ansProperties;
+	private AnsRegistration ansRegistration;
+
+	public AnsDiscoveryClient(AnsRegistration ansRegistration) {
+		this.ansRegistration = ansRegistration;
+	}
 
 	@Override
 	public String description() {
 		return DESCRIPTION;
-	}
-
-	@Override
-	public ServiceInstance getLocalServiceInstance() {
-		String serviceId = ansProperties.getClientDomains();
-		String host = ansProperties.getClientIp();
-		int port = ansProperties.getClientPort();
-		boolean secure = ansProperties.isSecure();
-		Map<String, String> metadata = ansProperties.getClientMetadata();
-		return new DefaultServiceInstance(serviceId, host, port, secure, metadata);
 	}
 
 	@Override
@@ -91,8 +82,9 @@ public class AnsDiscoveryClient implements DiscoveryClient {
 
 	@Override
 	public List<String> getServices() {
-
+		Set<String> publishers = NamingService.getPublishes();
 		Set<String> doms = NamingService.getDomsSubscribed();
+		doms.addAll(publishers);
 		List<String> result = new LinkedList<>();
 		for (String service : doms) {
 			result.add(service);
@@ -100,4 +92,8 @@ public class AnsDiscoveryClient implements DiscoveryClient {
 		return result;
 	}
 
+	@Override
+	public ServiceInstance getLocalServiceInstance() {
+		return ansRegistration;
+	}
 }
