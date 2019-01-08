@@ -24,20 +24,16 @@ jobs:
             - ~/.m2
       - run:
           name: "Running build"
-          command: ./mvnw -Pspring -Pdocs clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-      - run:
-          name: "look and install python"
           command: |
-            python -V
-            bash -c "yes | add-apt-repository ppa:jonathonf/python-3.6 && apt-get update && apt-get install -y python3.6"
-            python -V
+            ./mvnw cobertura:cobertura
+            ./mvnw -Pspring -Pdocs clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - run:
           name: "Aggregate test results"
           when: always
           command: |
             mkdir -p ~/junit/
             find . -type f -regex ".*/target/.*-reports/.*" -exec cp {} ~/junit/ \;
-            bash <(curl -s https://codecov.io/bash) -t 8dc515f7-a691-4e29-9b68-6199cd3ca46d
+            bash <(curl -s https://codecov.io/bash)
       - store_artifacts:
           path: ~/junit/
           destination: artifacts
