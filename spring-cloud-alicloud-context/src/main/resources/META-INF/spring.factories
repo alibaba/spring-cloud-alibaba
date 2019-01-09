@@ -6,7 +6,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration,\
   org.springframework.cloud.alicloud.context.oss.OssContextAutoConfiguration,\
   org.springframework.cloud.alicloud.context.scx.ScxContextAutoConfiguration,\
-  org.springframework.cloud.alicloud.context.statistics.StatisticsTaskStarter
+  org.springframework.cloud.alicloud.context.statistics.StatisticsTaskStarter,\
+  org.springframework.cloud.alicloud.context.sms.SmsContextAutoConfiguration
 org.springframework.context.ApplicationListener=\
   org.springframework.cloud.alicloud.context.ans.AnsContextApplicationListener,\
   org.springframework.cloud.alicloud.context.nacos.NacosParameterInitListener,\
