@@ -15,6 +15,7 @@
         <module>spring-cloud-starter-alicloud-acm</module>
         <module>spring-cloud-starter-alicloud-ans</module>
         <module>spring-cloud-starter-alicloud-schedulerx</module>
+        <module>spring-cloud-starter-alicloud-sms</module>
     </modules>
 
     <build>
