@@ -23,6 +23,7 @@
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
+        <module>env-extension</module>
         <module>oss-example</module>
         <module>ans-example/ans-consumer-feign-example</module>
         <module>ans-example/ans-consumer-ribbon-example</module>
