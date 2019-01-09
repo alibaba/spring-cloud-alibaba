@@ -232,10 +232,8 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 									RocketMQInboundChannelAdapter.this.destination)
 									.markConsumedFailure();
 						});
-				throw new RuntimeException(
-						"RocketMQ Message hasn't been processed successfully. Caused by ",
-						e);
 			}
+			return null;
 		}
 
 		private Acknowledgement doSendMsgs(final List<MessageExt> msgs,
@@ -307,9 +305,16 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 		public ConsumeConcurrentlyStatus consumeMessage(final List<MessageExt> msgs,
 				ConsumeConcurrentlyContext context) {
 			Acknowledgement acknowledgement = consumeMessage(msgs);
-			context.setDelayLevelWhenNextConsume(
-					acknowledgement.getConsumeConcurrentlyDelayLevel());
-			return acknowledgement.getConsumeConcurrentlyStatus();
+			if (acknowledgement != null) {
+				context.setDelayLevelWhenNextConsume(
+						acknowledgement.getConsumeConcurrentlyDelayLevel());
+				return acknowledgement.getConsumeConcurrentlyStatus();
+			}
+			else {
+				context.setDelayLevelWhenNextConsume(consumerProperties.getExtension()
+						.getError().getDelayLevelWhenNextConsume());
+				return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+			}
 		}
 	}
 
@@ -320,11 +325,17 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 		public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs,
 				ConsumeOrderlyContext context) {
 			Acknowledgement acknowledgement = consumeMessage(msgs);
-			context.setSuspendCurrentQueueTimeMillis(
-					(acknowledgement.getConsumeOrderlySuspendCurrentQueueTimeMill()));
-			return acknowledgement.getConsumeOrderlyStatus();
+			if (acknowledgement != null) {
+				context.setSuspendCurrentQueueTimeMillis(
+						(acknowledgement.getConsumeOrderlySuspendCurrentQueueTimeMill()));
+				return acknowledgement.getConsumeOrderlyStatus();
+			}
+			else {
+				context.setSuspendCurrentQueueTimeMillis(consumerProperties.getExtension()
+						.getError().getSuspendCurrentQueueTimeMillis());
+				return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
+			}
 		}
-
 	}
 
 }
