@@ -59,6 +59,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
         </dependency>
+        <dependency>
+            <groupId>alibaba.com</groupId>
+            <artifactId>env-extension</artifactId>
+            <version>0.2.2.BUILD-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
