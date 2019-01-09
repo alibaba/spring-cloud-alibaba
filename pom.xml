@@ -189,6 +189,27 @@
                         <format>xml</format>
                     </formats>
                     <check />
+                    <instrumentation>
+                        <excludes>
+                            <exclude>spring-cloud-alibaba-dependencies/**.*.class</exclude>
+                            <exclude>spring-cloud-alibaba-docs/**.*.class</exclude>
+                            <exclude>spring-cloud-alibaba-examples/**.*.class</exclude>
+                            <exclude>spring-cloud-alibaba-test/**.*.class</exclude>
+                            <exclude>spring-cloud-starter-alibaba/**.*.class</exclude>
+                            <exclude>spring-cloud-starter-alicloud/**.*.class</exclude>
+                            <exclude>spring-cloud-alibaba-nacos-config/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alibaba-nacos-config-server/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alibaba-nacos-discovery/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alibaba-sentinel/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alibaba-sentinel-datasource/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alicloud-acm/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alicloud-ans/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alicloud-context/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alicloud-oss/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-alicloud-schedulerx/src/test/**.*.class</exclude>
+                            <exclude>spring-cloud-stream-binder-rocketmq/src/test/**.*.class</exclude>
+                        </excludes>
+                    </instrumentation>
                 </configuration>
                 <executions>
                     <execution>
