@@ -58,7 +58,7 @@ public class AnsAutoServiceRegistration
 
 	@Override
 	protected AnsRegistration getManagementRegistration() {
-		return null;
+		return registration;
 	}
 
 	@Override
