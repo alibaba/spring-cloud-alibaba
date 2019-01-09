@@ -18,8 +18,8 @@ package org.springframework.cloud.alibaba.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
@@ -42,10 +42,9 @@ import static com.alibaba.nacos.api.PropertyKeyConst.*;
 @ConfigurationProperties(NacosConfigProperties.PREFIX)
 public class NacosConfigProperties {
 
-	public static final String PREFIX = "spring.cloud.nacos.config";
+	static final String PREFIX = "spring.cloud.nacos.config";
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(NacosConfigProperties.class);
+	private static final Log log = LogFactory.getLog(NacosConfigProperties.class);
 
 	/**
 	 * nacos config server address
@@ -348,7 +347,9 @@ public class NacosConfigProperties {
 			return configService;
 		}
 		catch (Exception e) {
-			LOGGER.error("create config service error!properties={},e=,", this, e);
+			log.error(
+					"create config service error!properties=" + this.toString() + ",e=,",
+					e);
 			return null;
 		}
 	}

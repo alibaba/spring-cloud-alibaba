@@ -19,8 +19,8 @@ package org.springframework.cloud.alibaba.nacos.refresh;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
@@ -51,10 +51,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class NacosContextRefresher
 		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
-	private final static Logger LOGGER = LoggerFactory
-			.getLogger(NacosContextRefresher.class);
+	private final static Log log = LogFactory.getLog(NacosContextRefresher.class);
 
-	public static final AtomicLong loadCount = new AtomicLong(0);
+	private static final AtomicLong REFRESH_COUNT = new AtomicLong(0);
 
 	private final NacosRefreshProperties refreshProperties;
 
@@ -108,7 +107,7 @@ public class NacosContextRefresher
 		Listener listener = listenerMap.computeIfAbsent(dataId, i -> new Listener() {
 			@Override
 			public void receiveConfigInfo(String configInfo) {
-				loadCount.incrementAndGet();
+				refreshCountIncrement();
 				String md5 = "";
 				if (!StringUtils.isEmpty(configInfo)) {
 					try {
@@ -117,14 +116,14 @@ public class NacosContextRefresher
 								.toString(16);
 					}
 					catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-						LOGGER.warn("[Nacos] unable to get md5 for dataId: " + dataId, e);
+						log.warn("[Nacos] unable to get md5 for dataId: " + dataId, e);
 					}
 				}
 				refreshHistory.add(dataId, md5);
 				applicationContext.publishEvent(
 						new RefreshEvent(this, null, "Refresh Nacos config"));
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Refresh Nacos config group{},dataId{}", group, dataId);
+				if (log.isDebugEnabled()) {
+					log.debug("Refresh Nacos config group " + group + ",dataId" + dataId);
 				}
 			}
 
@@ -142,4 +141,11 @@ public class NacosContextRefresher
 		}
 	}
 
+	public static long getRefreshCount() {
+		return REFRESH_COUNT.get();
+	}
+
+	public static void refreshCountIncrement() {
+		REFRESH_COUNT.incrementAndGet();
+	}
 }

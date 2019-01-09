@@ -34,6 +34,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnBean(SpringClientFactory.class)
 @ConditionalOnRibbonAns
 @AutoConfigureAfter(RibbonAutoConfiguration.class)
-@RibbonClients(defaultConfiguration = AnsRibbonClientConfiguration.class)
+@RibbonClients(defaultConfiguration = { AnsRibbonClientConfiguration.class,
+		MigrateRibbonCofiguration.class })
 public class RibbonAnsAutoConfiguration {
 }
