@@ -98,7 +98,7 @@
                 <configuration>
                     <instrumentation>
                         <excludes>
-                            <exclude>src/test/org/springframework/cloud/alibaba/nacos/**.*class</exclude>
+                            <exclude>org/springframework/cloud/alibaba/nacos/**.*class</exclude>
                         </excludes>
                     </instrumentation>
                     <check/>
