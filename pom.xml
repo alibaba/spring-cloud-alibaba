@@ -91,6 +91,7 @@
         <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-stream-binder-rocketmq</module>
         <module>spring-cloud-alibaba-nacos-config-server</module>
+        <module>spring-cloud-alibaba-dubbo</module>
         <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-test</module>
@@ -106,10 +107,11 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- Spring Boot -->
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -149,6 +151,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-bus-dependencies</artifactId>
                 <version>${spring-cloud-bus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
