@@ -54,9 +54,8 @@ public class AnsRegistration implements Registration, ServiceInstance {
 		if (null != managementPort) {
 			Map<String, String> metadata = ansProperties.getClientMetadata();
 			metadata.put(MANAGEMENT_PORT, managementPort.toString());
-			String contextPath = env
-					.getProperty("management.server.servlet.context-path");
-			String address = env.getProperty("management.server.address");
+			String contextPath = env.getProperty(MANAGEMENT_CONTEXT_PATH);
+			String address = env.getProperty(MANAGEMENT_ADDRESS);
 			if (!StringUtils.isEmpty(contextPath)) {
 				metadata.put(MANAGEMENT_CONTEXT_PATH, contextPath);
 			}
