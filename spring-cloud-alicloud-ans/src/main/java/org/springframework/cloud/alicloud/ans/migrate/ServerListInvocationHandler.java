@@ -88,17 +88,17 @@ class ServerListInvocationHandler implements MethodInterceptor {
 			ansServerList.forEach(ansServer -> {
 				if (server.getHostPort()
 						.equals(ansServer.getHealthService().toInetAddr())) {
-					// fix bug: mast be set the zone, update server list,will filter
 					// by: ZoneAffinityPredicate
-					ansServer.setZone(server.getZone());
-					ansServer.setSchemea(server.getScheme());
-					ansServer.setId(server.getId());
-					ansServer.setReadyToServe(true);
 					serverIterator.remove();
 					log.info("Source Server is remove " + server.getHostPort()
 							+ ", and from ANS Server is override："
 							+ ansServer.toString());
 				}
+				// fix bug: mast be set the zone, update server list,will filter
+				ansServer.setZone(server.getZone());
+				ansServer.setSchemea(server.getScheme());
+				ansServer.setId(ansServer.getHealthService().toInetAddr());
+				ansServer.setReadyToServe(true);
 			});
 		}
 
