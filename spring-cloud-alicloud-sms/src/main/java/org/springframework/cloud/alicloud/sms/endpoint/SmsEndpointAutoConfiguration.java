@@ -15,12 +15,13 @@
  */
 package org.springframework.cloud.alicloud.sms.endpoint;
 
+import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 
 @ConditionalOnWebApplication
-@ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.AbstractEndpoint")
+@ConditionalOnClass(value = Endpoint.class)
 public class SmsEndpointAutoConfiguration {
 
 	@Bean

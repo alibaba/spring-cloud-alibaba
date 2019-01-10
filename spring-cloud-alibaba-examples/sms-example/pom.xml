@@ -10,10 +10,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>alibaba.com</groupId>
     <artifactId>sms-example</artifactId>
     <packaging>jar</packaging>
-
     <name>sms-example</name>
     <description>Demo project for Spring Boot</description>
 

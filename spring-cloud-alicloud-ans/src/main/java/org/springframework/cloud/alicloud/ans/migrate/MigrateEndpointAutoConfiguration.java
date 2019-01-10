@@ -1,5 +1,6 @@
 package org.springframework.cloud.alicloud.ans.migrate;
 
+import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Conditional;
  * @author pbting
  */
 @ConditionalOnWebApplication
-@ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.AbstractEndpoint")
+@ConditionalOnClass(value = Endpoint.class)
 @Conditional(MigrateOnConditionClass.class)
 public class MigrateEndpointAutoConfiguration {
 

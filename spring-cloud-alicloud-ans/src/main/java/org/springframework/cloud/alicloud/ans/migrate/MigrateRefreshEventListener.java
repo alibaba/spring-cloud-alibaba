@@ -26,7 +26,7 @@ public class MigrateRefreshEventListener implements ApplicationListener<RefreshE
 
 	private final static int CHECK_INTERVAL = 1;
 
-	private final static String MIGRATE_SWITCH = "sca.migrate.ans.switch";
+	private final static String MIGRATE_SWITCH = "spring.cloud.alicloud.migarte.ans.switch";
 
 	private volatile String lastScaMigrateAnsSwitchValue = "true";
 
