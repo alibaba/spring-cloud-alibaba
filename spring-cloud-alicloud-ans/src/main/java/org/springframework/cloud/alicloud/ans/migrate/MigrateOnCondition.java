@@ -35,7 +35,7 @@ public abstract class MigrateOnCondition implements Condition, BeanClassLoaderAw
 			forName(className, classLoader);
 			return true;
 		}
-		catch (Throwable var3) {
+		catch (Throwable throwable) {
 			return false;
 		}
 	}

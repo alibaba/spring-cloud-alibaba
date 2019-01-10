@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Conditional;
  * @author pbting
  */
 @ConditionalOnWebApplication
-@ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
+@ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.AbstractEndpoint")
 @Conditional(MigrateOnConditionClass.class)
 public class MigrateEndpointAutoConfiguration {
 

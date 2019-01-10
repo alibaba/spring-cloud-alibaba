@@ -15,7 +15,7 @@ public class MigrateOnConditionMissingClass extends MigrateOnConditionClass {
 	@Override
 	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
 		boolean result = !super.matches(context, metadata);
-		log.info(" matche result is " + result);
+		log.info(" the result of matcher is " + result);
 		return result;
 	}
 
