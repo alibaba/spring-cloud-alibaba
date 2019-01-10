@@ -23,7 +23,10 @@ class ServerListInvocationHandler implements MethodInterceptor {
 
 	private final static Log log = LogFactory.getLog(ServerListInvocationHandler.class);
 
+	private final static ConcurrentMap<String, AnsServerList> SERVER_LIST_CONCURRENT_MAP = new ConcurrentHashMap<>();
+
 	private final static ConcurrentMap<String, ConcurrentMap<String, ServerWrapper>> CALL_SERVICE_COUNT = new ConcurrentHashMap<>();
+
 	private final static Set<String> INTERCEPTOR_METHOD_NAME = new ConcurrentSkipListSet();
 
 	private IClientConfig clientConfig;
@@ -38,6 +41,7 @@ class ServerListInvocationHandler implements MethodInterceptor {
 	ServerListInvocationHandler(IClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 		this.ansServerList = new AnsServerList(clientConfig.getClientName());
+		SERVER_LIST_CONCURRENT_MAP.put(ansServerList.getDom(), ansServerList);
 	}
 
 	@Override
@@ -120,6 +124,23 @@ class ServerListInvocationHandler implements MethodInterceptor {
 	static Map<String, ConcurrentMap<String, ServerWrapper>> getServerRegistry() {
 
 		return Collections.unmodifiableMap(CALL_SERVICE_COUNT);
+	}
+
+	static Server checkAndGetServiceServer(String serviceId, Server server) {
+		if (server != null) {
+			return server;
+		}
+
+		log.warn(String.format("[%s] refers the server is null", server));
+
+		List<AnsServer> ansServerList = SERVER_LIST_CONCURRENT_MAP.get(serviceId)
+				.getInitialListOfServers();
+
+		if (!ansServerList.isEmpty()) {
+			return ansServerList.get(0);
+		}
+
+		return server;
 	}
 
 	static void incrementCallService(String serviceId, Server server) {

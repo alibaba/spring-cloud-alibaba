@@ -6,5 +6,3 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.springframework.cloud.alicloud.ans.migrate.MigrationAutoconfiguration
 org.springframework.cloud.client.discovery.EnableDiscoveryClient=\
   org.springframework.cloud.alicloud.ans.AnsDiscoveryClientAutoConfiguration
-org.springframework.context.ApplicationListener=\
-  org.springframework.cloud.alicloud.ans.migrate.MigrateRefreshEventListener
