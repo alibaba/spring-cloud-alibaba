@@ -16,7 +16,7 @@ public class MigrateOnConditionClass extends MigrateOnCondition {
 	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
 		boolean result = isPresent(conditionOnClass[0], classLoader)
 				|| isPresent(conditionOnClass[1], classLoader);
-		log.info("the result of MigrateOnConditionClass is :" + result);
+		log.info("the result of match is :" + result);
 		return result;
 	}
 }
