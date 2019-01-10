@@ -45,8 +45,8 @@ import org.springframework.context.annotation.Configuration;
 public class NacosDiscoveryAutoConfiguration {
 
     @Bean
-    public NacosServiceRegistry nacosServiceRegistry() {
-        return new NacosServiceRegistry();
+    public NacosServiceRegistry nacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
+        return new NacosServiceRegistry(nacosDiscoveryProperties);
     }
 
     @Bean
