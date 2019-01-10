@@ -189,6 +189,26 @@
                         <format>xml</format>
                     </formats>
                     <check />
+                    <instrumentation>
+                        <excludes>
+                            <exclude>org/springframework/cloud/alibaba/cloud/dependencies/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alibaba/cloud/docs/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alibaba/cloud/examples/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alibaba/cloud/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/start/alibaba/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/start/alicloud/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alibaba/nacos/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alibaba/nacos/config/server/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alibaba/sentinel/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alibaba/sentinel/datasource/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alicloud/acm/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alicloud/ans/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alicloud/context/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alicloud/oss/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/alicloud/scx/src/test/**.*.class</exclude>
+                            <exclude>org/springframework/cloud/stream/binder/rocketmq/src/test/**.*.class</exclude>
+                        </excludes>
+                    </instrumentation>
                 </configuration>
                 <executions>
                     <execution>
