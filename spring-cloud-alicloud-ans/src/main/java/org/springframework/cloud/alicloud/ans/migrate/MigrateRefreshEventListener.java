@@ -1,16 +1,17 @@
 package org.springframework.cloud.alicloud.ans.migrate;
 
-import com.netflix.loadbalancer.ILoadBalancer;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.cloud.context.named.NamedContextFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import com.netflix.loadbalancer.ILoadBalancer;
 
 /**
  * @author pbting
@@ -22,13 +23,14 @@ public class MigrateRefreshEventListener implements ApplicationListener<RefreshE
 
 	private volatile String lastScaMigrateAnsSwitchValue = "true";
 
-	@Autowired
 	private Environment environment;
 
-	@Autowired
 	private NamedContextFactory namedContextFactory;
 
-	public MigrateRefreshEventListener() {
+	public MigrateRefreshEventListener(Environment environment,
+			NamedContextFactory namedContextFactory) {
+		this.environment = environment;
+		this.namedContextFactory = namedContextFactory;
 	}
 
 	@PostConstruct

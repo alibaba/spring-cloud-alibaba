@@ -1,5 +1,15 @@
 package org.springframework.cloud.alicloud.ans.migrate;
 
+import com.netflix.client.config.IClientConfig;
+import com.netflix.loadbalancer.ILoadBalancer;
+import com.netflix.loadbalancer.Server;
+import com.netflix.loadbalancer.ServerList;
+import org.aopalliance.aop.Advice;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.aop.AfterReturningAdvice;
+import org.springframework.aop.framework.ProxyFactory;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,17 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.aopalliance.aop.Advice;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.aop.AfterReturningAdvice;
-import org.springframework.aop.framework.ProxyFactory;
-
-import com.netflix.client.config.IClientConfig;
-import com.netflix.loadbalancer.ILoadBalancer;
-import com.netflix.loadbalancer.Server;
-import com.netflix.loadbalancer.ServerList;
 
 /**
  * @author pbting
@@ -49,17 +48,21 @@ final class MigrateProxyManager {
 	}
 
 	static Object newLoadBalancerProxy(Object bean, ClassLoader classLoader,
-			IClientConfig clientConfig) {
+			final IClientConfig clientConfig) {
 
 		bean = springProxyFactory(bean, classLoader,
 				Arrays.asList(new AfterReturningAdvice() {
+					private final IClientConfig iclientConfig = clientConfig;
+
 					@Override
 					public void afterReturning(Object returnValue, Method method,
 							Object[] args, Object target) {
 						String methodName = method.getName();
 						if ("chooseServer".equals(methodName)) {
-							String serviceId = clientConfig.getClientName();
+							String serviceId = iclientConfig.getClientName();
 							Server server = (Server) returnValue;
+							server = ServerListInvocationHandler
+									.checkAndGetServiceServer(serviceId, server);
 							ServerListInvocationHandler.incrementCallService(serviceId,
 									server);
 						}
