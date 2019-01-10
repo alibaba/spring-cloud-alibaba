@@ -91,15 +91,15 @@ class ServerListInvocationHandler implements MethodInterceptor {
 						.equals(ansServer.getHealthService().toInetAddr())) {
 					// fix bug: mast be set the zone, update server list,will filter
 					// by: ZoneAffinityPredicate
-					ansServer.setZone(server.getZone());
-					ansServer.setSchemea(server.getScheme());
-					ansServer.setId(server.getId());
-					ansServer.setReadyToServe(true);
 					serverIterator.remove();
 					log.info("Source Server is remove " + server.getHostPort()
 							+ ", and from ANS Server is override："
 							+ ansServer.toString());
 				}
+				ansServer.setZone(server.getZone());
+				ansServer.setSchemea(server.getScheme());
+				ansServer.setId(ansServer.getHealthService().toInetAddr());
+				ansServer.setReadyToServe(true);
 			}
 		}
 
@@ -133,11 +133,19 @@ class ServerListInvocationHandler implements MethodInterceptor {
 	}
 
 	static Server checkAndGetServiceServer(String serviceId, Server server) {
-		if (server == null) {
-			log.warn(String.format("[%s] refers the server is null", server));
+		if (server != null) {
+			return server;
 		}
-		server = (server == null ? SERVER_LIST_CONCURRENT_MAP.get(serviceId)
-				.getInitialListOfServers().get(0) : server);
+
+		log.warn(String.format("[%s] refers the server is null", server));
+
+		List<AnsServer> ansServerList = SERVER_LIST_CONCURRENT_MAP.get(serviceId)
+				.getInitialListOfServers();
+
+		if (!ansServerList.isEmpty()) {
+			return ansServerList.get(0);
+		}
+
 		return server;
 	}
 

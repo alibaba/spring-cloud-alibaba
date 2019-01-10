@@ -1,6 +1,12 @@
 package org.springframework.cloud.alicloud.ans.migrate;
 
-import com.netflix.loadbalancer.ILoadBalancer;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.cloud.context.named.NamedContextFactory;
@@ -9,11 +15,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import com.netflix.loadbalancer.ILoadBalancer;
 
 /**
  * @author pbting
@@ -21,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class MigrateRefreshEventListener implements ApplicationListener<RefreshEvent> {
 	private final static Log log = LogFactory.getLog(MigrateRefreshEventListener.class);
+
+	private final static int CHECK_INTERVAL = 1;
 
 	private final static String MIGRATE_SWITCH = "sca.migrate.ans.switch";
 
@@ -51,7 +55,7 @@ public class MigrateRefreshEventListener implements ApplicationListener<RefreshE
 									e);
 						}
 					}
-				}, 1, 1, TimeUnit.SECONDS);
+				}, CHECK_INTERVAL, CHECK_INTERVAL, TimeUnit.SECONDS);
 	}
 
 	@Override

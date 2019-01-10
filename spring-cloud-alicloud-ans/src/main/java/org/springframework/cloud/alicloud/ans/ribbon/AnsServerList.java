@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class AnsServerList extends AbstractServerList<AnsServer> {
 
+	private final static int CONNECT_TIME_OUT = 3;
+
 	private String dom;
 
 	public AnsServerList(String dom) {
@@ -62,7 +64,7 @@ public class AnsServerList extends AbstractServerList<AnsServer> {
 		for (Host host : hosts) {
 			if (host.isValid()) {
 				AnsServer ansServer = hostToServer(host);
-				if (ansServer.isAlive(3)) {
+				if (ansServer.isAlive(CONNECT_TIME_OUT)) {
 					result.add(ansServer);
 				}
 			}
