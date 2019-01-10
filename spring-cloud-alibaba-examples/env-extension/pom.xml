@@ -13,6 +13,7 @@
 
     <groupId>alibaba.com</groupId>
     <artifactId>env-extension</artifactId>
+    <version>0.1.2.BUILD-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>env-extension</name>
