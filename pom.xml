@@ -99,6 +99,7 @@
         <module>spring-cloud-alicloud-acm</module>
         <module>spring-cloud-alicloud-ans</module>
         <module>spring-cloud-alicloud-schedulerx</module>
+        <module>spring-cloud-alicloud-sms</module>
     </modules>
 
     <dependencyManagement>
