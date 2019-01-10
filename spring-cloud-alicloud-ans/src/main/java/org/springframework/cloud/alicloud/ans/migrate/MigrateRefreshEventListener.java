@@ -19,6 +19,8 @@ import com.netflix.loadbalancer.ILoadBalancer;
 @Component
 public class MigrateRefreshEventListener implements ApplicationListener<RefreshEvent> {
 
+	private final static int CHECK_INTERVAL = 1;
+
 	private final static String MIGRATE_SWITCH = "sca.migrate.ans.switch";
 
 	private volatile String lastScaMigrateAnsSwitchValue = "true";
@@ -36,7 +38,8 @@ public class MigrateRefreshEventListener implements ApplicationListener<RefreshE
 	@PostConstruct
 	public void initTimerCheck() {
 		Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(
-				() -> onApplicationEvent(null), 1, 1, TimeUnit.SECONDS);
+				() -> onApplicationEvent(null), CHECK_INTERVAL, CHECK_INTERVAL,
+				TimeUnit.SECONDS);
 	}
 
 	@Override
