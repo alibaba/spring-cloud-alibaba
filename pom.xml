@@ -103,6 +103,7 @@
         <module>spring-cloud-alicloud-acm</module>
         <module>spring-cloud-alicloud-ans</module>
         <module>spring-cloud-alicloud-schedulerx</module>
+        <module>spring-cloud-alicloud-sms</module>
     </modules>
 
     <dependencyManagement>
@@ -204,7 +205,7 @@
                         <format>html</format>
                         <format>xml</format>
                     </formats>
-                    <check />
+                    <check/>
                 </configuration>
                 <executions>
                     <execution>
