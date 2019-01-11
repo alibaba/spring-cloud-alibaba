@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboRestAutoConfiguration,\
+  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration
