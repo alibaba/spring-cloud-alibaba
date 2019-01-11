@@ -52,9 +52,9 @@ public class RocketMQConsumerProperties {
 
 	private Boolean enabled = true;
 
-	private ErrorProp error;
+	private Error error;
 
-	public static class ErrorProp {
+	public static class Error {
 
 		/**
 		 * Reconsume later timeMillis in ConsumeOrderlyContext.
@@ -126,11 +126,11 @@ public class RocketMQConsumerProperties {
 		this.broadcasting = broadcasting;
 	}
 
-	public ErrorProp getError() {
+	public Error getError() {
 		return error;
 	}
 
-	public void setError(ErrorProp error) {
+	public void setError(Error error) {
 		this.error = error;
 	}
 }
