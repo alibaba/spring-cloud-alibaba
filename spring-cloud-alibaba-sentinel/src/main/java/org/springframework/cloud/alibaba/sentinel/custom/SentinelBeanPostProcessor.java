@@ -103,7 +103,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			SentinelProtectInterceptor sentinelProtectInterceptor = applicationContext
 					.getBean(interceptorBeanName.toString(),
 							SentinelProtectInterceptor.class);
-			restTemplate.getInterceptors().add(sentinelProtectInterceptor);
+			restTemplate.getInterceptors().add(0, sentinelProtectInterceptor);
 		}
 		return bean;
 	}
