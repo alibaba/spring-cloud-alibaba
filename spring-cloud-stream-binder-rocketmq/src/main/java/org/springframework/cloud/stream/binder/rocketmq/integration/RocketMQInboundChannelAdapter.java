@@ -53,6 +53,7 @@ import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
 import org.springframework.retry.support.RetryTemplate;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
@@ -70,6 +71,10 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 	private RetryTemplate retryTemplate;
 
 	private RecoveryCallback<? extends Object> recoveryCallback;
+
+	private DefaultMQPushConsumer consumer;
+
+	private CloudStreamMessageListener listener;
 
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties;
 
@@ -91,6 +96,31 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 	}
 
 	@Override
+	protected void onInit() {
+		if (consumerProperties == null
+				|| !consumerProperties.getExtension().getEnabled()) {
+			return;
+		}
+		super.onInit();
+		if (this.retryTemplate != null) {
+			Assert.state(getErrorChannel() == null,
+					"Cannot have an 'errorChannel' property when a 'RetryTemplate' is "
+							+ "provided; use an 'ErrorMessageSendingRecoverer' in the 'recoveryCallback' property to "
+							+ "send an error message when retries are exhausted");
+		}
+		this.consumer = consumersManager.getOrCreateConsumer(group, destination,
+				consumerProperties);
+
+		Boolean isOrderly = consumerProperties.getExtension().getOrderly();
+		this.listener = isOrderly ? new CloudStreamMessageListenerOrderly()
+				: new CloudStreamMessageListenerConcurrently();
+
+		if (retryTemplate != null) {
+			this.retryTemplate.registerListener(this.listener);
+		}
+	}
+
+	@Override
 	protected void doStart() {
 		if (consumerProperties == null
 				|| !consumerProperties.getExtension().getEnabled()) {
@@ -98,18 +128,6 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 		}
 
 		String tags = consumerProperties.getExtension().getTags();
-		Boolean isOrderly = consumerProperties.getExtension().getOrderly();
-
-		DefaultMQPushConsumer consumer = consumersManager.getOrCreateConsumer(group,
-				destination, consumerProperties);
-
-		final CloudStreamMessageListener listener = isOrderly
-				? new CloudStreamMessageListenerOrderly()
-				: new CloudStreamMessageListenerConcurrently();
-
-		if (retryTemplate != null) {
-			retryTemplate.registerListener(listener);
-		}
 
 		Set<String> tagsSet = tags == null ? new HashSet<>()
 				: Arrays.stream(tags.split("\\|\\|")).map(String::trim)
@@ -122,11 +140,11 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
 		try {
 			if (!StringUtils.isEmpty(consumerProperties.getExtension().getSql())) {
-				consumer.subscribe(destination, MessageSelector
+				this.consumer.subscribe(destination, MessageSelector
 						.bySql(consumerProperties.getExtension().getSql()));
 			}
 			else {
-				consumer.subscribe(destination, String.join(" || ", tagsSet));
+				this.consumer.subscribe(destination, String.join(" || ", tagsSet));
 			}
 			Optional.ofNullable(consumerInstrumentation)
 					.ifPresent(c -> c.markStartedSuccessfully());
@@ -139,7 +157,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 			throw new RuntimeException("RocketMQ Consumer hasn't been subscribed.", e);
 		}
 
-		consumer.registerMessageListener(listener);
+		this.consumer.registerMessageListener(this.listener);
 
 		try {
 			consumersManager.startConsumer(group);
@@ -214,10 +232,8 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 									RocketMQInboundChannelAdapter.this.destination)
 									.markConsumedFailure();
 						});
-				throw new RuntimeException(
-						"RocketMQ Message hasn't been processed successfully. Caused by ",
-						e);
 			}
+			return null;
 		}
 
 		private Acknowledgement doSendMsgs(final List<MessageExt> msgs,
@@ -229,16 +245,22 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 				logger.debug(retryInfo + "consuming msg:\n" + msg);
 				logger.debug(retryInfo + "message body:\n" + new String(msg.getBody()));
 				Acknowledgement acknowledgement = new Acknowledgement();
-				Message<byte[]> toChannel = MessageBuilder.withPayload(msg.getBody())
-						.setHeaders(new RocketMQMessageHeaderAccessor()
-								.withAcknowledgment(acknowledgement)
-								.withTags(msg.getTags()).withKeys(msg.getKeys())
-								.withFlag(msg.getFlag()).withRocketMessage(msg))
-						.build();
+				Message<byte[]> toChannel = convertMessagingFromRocketMQMsg(msg,
+						acknowledgement);
 				acknowledgements.add(acknowledgement);
 				RocketMQInboundChannelAdapter.this.sendMessage(toChannel);
 			});
 			return acknowledgements.get(0);
+		}
+
+		private Message convertMessagingFromRocketMQMsg(MessageExt msg,
+				Acknowledgement acknowledgement) {
+			return MessageBuilder.withPayload(msg.getBody())
+					.setHeaders(new RocketMQMessageHeaderAccessor()
+							.withAcknowledgment(acknowledgement).withTags(msg.getTags())
+							.withKeys(msg.getKeys()).withFlag(msg.getFlag())
+							.withRocketMessage(msg))
+					.build();
 		}
 
 		@Override
@@ -283,9 +305,16 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 		public ConsumeConcurrentlyStatus consumeMessage(final List<MessageExt> msgs,
 				ConsumeConcurrentlyContext context) {
 			Acknowledgement acknowledgement = consumeMessage(msgs);
-			context.setDelayLevelWhenNextConsume(
-					acknowledgement.getConsumeConcurrentlyDelayLevel());
-			return acknowledgement.getConsumeConcurrentlyStatus();
+			if (acknowledgement != null) {
+				context.setDelayLevelWhenNextConsume(
+						acknowledgement.getConsumeConcurrentlyDelayLevel());
+				return acknowledgement.getConsumeConcurrentlyStatus();
+			}
+			else {
+				context.setDelayLevelWhenNextConsume(consumerProperties.getExtension()
+						.getError().getDelayLevelWhenNextConsume());
+				return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+			}
 		}
 	}
 
@@ -296,11 +325,17 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 		public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs,
 				ConsumeOrderlyContext context) {
 			Acknowledgement acknowledgement = consumeMessage(msgs);
-			context.setSuspendCurrentQueueTimeMillis(
-					(acknowledgement.getConsumeOrderlySuspendCurrentQueueTimeMill()));
-			return acknowledgement.getConsumeOrderlyStatus();
+			if (acknowledgement != null) {
+				context.setSuspendCurrentQueueTimeMillis(
+						(acknowledgement.getConsumeOrderlySuspendCurrentQueueTimeMill()));
+				return acknowledgement.getConsumeOrderlyStatus();
+			}
+			else {
+				context.setSuspendCurrentQueueTimeMillis(consumerProperties.getExtension()
+						.getError().getSuspendCurrentQueueTimeMillis());
+				return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
+			}
 		}
-
 	}
 
 }
