@@ -160,12 +160,12 @@ public class SpringCloudRegistry extends FailbackRegistry {
         return serviceInstance;
     }
 
-    private String getServiceName(URL url) {
+    public static String getServiceName(URL url) {
         String category = url.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
         return getServiceName(url, category);
     }
 
-    private String getServiceName(URL url, String category) {
+    private static String getServiceName(URL url, String category) {
         StringBuilder serviceNameBuilder = new StringBuilder(category);
         appendIfPresent(serviceNameBuilder, url, Constants.INTERFACE_KEY);
         appendIfPresent(serviceNameBuilder, url, Constants.VERSION_KEY);
@@ -173,7 +173,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
         return serviceNameBuilder.toString();
     }
 
-    private void appendIfPresent(StringBuilder target, URL url, String parameterName) {
+    private static void appendIfPresent(StringBuilder target, URL url, String parameterName) {
         String parameterValue = url.getParameter(parameterName);
         if (StringUtils.hasText(parameterValue)) {
             target.append(SERVICE_NAME_SEPARATOR).append(parameterValue);

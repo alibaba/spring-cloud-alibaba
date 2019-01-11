@@ -24,4 +24,7 @@ package org.springframework.cloud.alibaba.dubbo.service;
 public interface EchoService {
 
     String echo(String message);
+
+    String plus(int a, int b);
+
 }

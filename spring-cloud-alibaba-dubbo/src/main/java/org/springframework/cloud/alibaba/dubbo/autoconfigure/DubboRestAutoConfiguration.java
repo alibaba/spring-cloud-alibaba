@@ -16,7 +16,18 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.Contract;
+import feign.jaxrs2.JAXRS2Contract;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataResolver;
+import org.springframework.cloud.openfeign.support.SpringMvcContract;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.ws.rs.Path;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo REST
@@ -26,5 +37,32 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DubboRestAutoConfiguration {
 
+    /**
+     * A Feign Contract bean for JAX-RS if available
+     */
+    @ConditionalOnClass(Path.class)
+    @Bean
+    public Contract jaxrs2Contract() {
+        return new JAXRS2Contract();
+    }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    /**
+     * A Feign Contract bean for Spring MVC if available
+     */
+    @ConditionalOnClass(RequestMapping.class)
+    @Bean
+    public Contract springMvcContract() {
+        return new SpringMvcContract();
+    }
+
+    @Bean
+    public RestMetadataResolver metadataJsonResolver(ObjectMapper objectMapper) {
+        return new RestMetadataResolver(objectMapper);
+    }
 }
