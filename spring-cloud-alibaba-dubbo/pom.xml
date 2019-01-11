@@ -82,31 +82,42 @@
             <artifactId>netty-all</artifactId>
         </dependency>
 
-        <!-- REST -->
-        <!--<dependency>-->
-        <!--<groupId>org.jboss.resteasy</groupId>-->
-        <!--<artifactId>resteasy-jaxrs</artifactId>-->
-        <!--</dependency>-->
+        <!-- REST support dependencies -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+        </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>org.jboss.resteasy</groupId>-->
-        <!--<artifactId>resteasy-client</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+        </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>javax.validation</groupId>-->
-        <!--<artifactId>validation-api</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-netty4</artifactId>
+        </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>org.hibernate.validator</groupId>-->
-        <!--<artifactId>hibernate-validator</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>org.mortbay.jetty</groupId>-->
-        <!--<artifactId>jetty</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Feign for JAX-RS 2-->
         <dependency>
