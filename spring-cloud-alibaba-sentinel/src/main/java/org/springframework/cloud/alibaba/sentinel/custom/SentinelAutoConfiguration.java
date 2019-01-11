@@ -33,6 +33,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.csp.sentinel.adapter.servlet.callback.RequestOriginParser;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
@@ -73,6 +74,9 @@ public class SentinelAutoConfiguration {
 
 	@Autowired
 	private Optional<UrlBlockHandler> urlBlockHandlerOptional;
+
+	@Autowired
+	private Optional<RequestOriginParser> requestOriginParserOptional;
 
 	@PostConstruct
 	private void init() {
@@ -138,6 +142,7 @@ public class SentinelAutoConfiguration {
 
 		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
 		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
+		requestOriginParserOptional.ifPresent(WebCallbackManager::setRequestOriginParser);
 
 		// earlier initialize
 		if (properties.isEager()) {
