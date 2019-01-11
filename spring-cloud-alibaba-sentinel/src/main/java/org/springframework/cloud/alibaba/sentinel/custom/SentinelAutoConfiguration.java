@@ -96,6 +96,11 @@ public class SentinelAutoConfiguration {
 			System.setProperty(TransportConfig.HEARTBEAT_INTERVAL_MS,
 					properties.getTransport().getHeartbeatIntervalMs());
 		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_CLIENT_IP))
+				&& StringUtils.hasText(properties.getTransport().getClientIp())) {
+			System.setProperty(TransportConfig.HEARTBEAT_CLIENT_IP,
+					properties.getTransport().getClientIp());
+		}
 		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.CHARSET))
 				&& StringUtils.hasText(properties.getMetric().getCharset())) {
 			System.setProperty(SentinelConfig.CHARSET,

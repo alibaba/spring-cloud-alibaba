@@ -262,6 +262,8 @@ public class SentinelProperties {
 		 */
 		private String heartbeatIntervalMs;
 
+		private String clientIp;
+
 		public String getHeartbeatIntervalMs() {
 			return heartbeatIntervalMs;
 		}
@@ -286,6 +288,13 @@ public class SentinelProperties {
 			this.dashboard = dashboard;
 		}
 
+		public String getClientIp() {
+			return clientIp;
+		}
+
+		public void setClientIp(String clientIp) {
+			this.clientIp = clientIp;
+		}
 	}
 
 	public static class Filter {
