@@ -18,8 +18,8 @@ package org.springframework.cloud.alibaba.nacos.client;
 
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.core.io.ByteArrayResource;
@@ -33,8 +33,7 @@ import java.util.*;
  * @author pbting
  */
 public class NacosPropertySourceBuilder {
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(NacosPropertySourceBuilder.class);
+	private static final Log log = LogFactory.getLog(NacosPropertySourceBuilder.class);
 	private static final Properties EMPTY_PROPERTIES = new Properties();
 
 	private ConfigService configService;
@@ -68,9 +67,6 @@ public class NacosPropertySourceBuilder {
 	NacosPropertySource build(String dataId, String group, String fileExtension,
 			boolean isRefreshable) {
 		Properties p = loadNacosData(dataId, group, fileExtension);
-		if (p == null) {
-			p = EMPTY_PROPERTIES;
-		}
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
 				propertiesToMap(p), new Date(), isRefreshable);
 		NacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
@@ -82,7 +78,7 @@ public class NacosPropertySourceBuilder {
 		try {
 			data = configService.getConfig(dataId, group, timeout);
 			if (!StringUtils.isEmpty(data)) {
-				LOGGER.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
+				log.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
 						dataId, group));
 
 				if (fileExtension.equalsIgnoreCase("properties")) {
@@ -101,13 +97,13 @@ public class NacosPropertySourceBuilder {
 			}
 		}
 		catch (NacosException e) {
-			LOGGER.error("get data from Nacos error,dataId:{}, ", dataId, e);
+			log.error("get data from Nacos error,dataId:" + dataId + ", ", e);
 		}
 		catch (Exception e) {
-			LOGGER.error("parse data from Nacos error,dataId:{},data:{},", dataId, data,
-					e);
+			log.error("parse data from Nacos error,dataId:" + dataId + ",data:" + data
+					+ ",", e);
 		}
-		return null;
+		return EMPTY_PROPERTIES;
 	}
 
 	@SuppressWarnings("unchecked")

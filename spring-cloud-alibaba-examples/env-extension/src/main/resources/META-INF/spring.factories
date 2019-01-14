@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationListener=\
+  org.springframework.alicloud.env.extension.LoadExtraConfigApplicationListener
