@@ -52,7 +52,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 	private final String CUSTOM_DATA_TYPE = "custom";
 	private final String CONVERTER_CLASS_FIELD = "converterClass";
 
-	private DefaultListableBeanFactory beanFactory;
+	private final DefaultListableBeanFactory beanFactory;
 
 	public SentinelDataSourceHandler(DefaultListableBeanFactory beanFactory) {
 		this.beanFactory = beanFactory;

@@ -34,8 +34,8 @@ public class SentinelEndpointAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
-	public SentinelEndpoint sentinelEndPoint() {
-		return new SentinelEndpoint();
+	public SentinelEndpoint sentinelEndPoint(SentinelProperties sentinelProperties) {
+		return new SentinelEndpoint(sentinelProperties);
 	}
 
 }
