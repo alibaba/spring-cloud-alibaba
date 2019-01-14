@@ -37,14 +37,14 @@ import javax.ws.rs.Path;
 @Configuration
 public class DubboRestAutoConfiguration {
 
-    /**
-     * A Feign Contract bean for JAX-RS if available
-     */
-    @ConditionalOnClass(Path.class)
-    @Bean
-    public Contract jaxrs2Contract() {
-        return new JAXRS2Contract();
-    }
+//    /**
+//     * A Feign Contract bean for JAX-RS if available
+//     */
+//    @ConditionalOnClass(Path.class)
+//    @Bean
+//    public Contract jaxrs2Contract() {
+//        return new JAXRS2Contract();
+//    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -52,14 +52,14 @@ public class DubboRestAutoConfiguration {
         return new ObjectMapper();
     }
 
-    /**
-     * A Feign Contract bean for Spring MVC if available
-     */
-    @ConditionalOnClass(RequestMapping.class)
-    @Bean
-    public Contract springMvcContract() {
-        return new SpringMvcContract();
-    }
+//    /**
+//     * A Feign Contract bean for Spring MVC if available
+//     */
+//    @ConditionalOnClass(RequestMapping.class)
+//    @Bean
+//    public Contract springMvcContract() {
+//        return new SpringMvcContract();
+//    }
 
     @Bean
     public RestMetadataResolver metadataJsonResolver(ObjectMapper objectMapper) {

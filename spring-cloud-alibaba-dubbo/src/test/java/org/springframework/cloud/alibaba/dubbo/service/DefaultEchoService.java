@@ -43,13 +43,14 @@ import javax.ws.rs.QueryParam;
 public class DefaultEchoService implements EchoService {
 
     @Override
-    @GetMapping(value = "/echo",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/echo"
+//            consumes = MediaType.APPLICATION_JSON_VALUE,
+//            produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
     @Path("/echo")
     @GET
-    @Consumes("application/json")
-    @Produces("application/json;charset=UTF-8")
+//    @Consumes("application/json")
+//    @Produces("application/json;charset=UTF-8")
     public String echo(@RequestParam @QueryParam("message") String message) {
         return RpcContext.getContext().getUrl() + " [echo] : " + message;
     }

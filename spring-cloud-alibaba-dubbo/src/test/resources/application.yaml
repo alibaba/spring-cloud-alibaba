@@ -10,4 +10,4 @@ dubbo:
       port: 9090
       server: netty
   registry:
-    address: spring-cloud://dummy
+    address: spring-cloud://nacos
