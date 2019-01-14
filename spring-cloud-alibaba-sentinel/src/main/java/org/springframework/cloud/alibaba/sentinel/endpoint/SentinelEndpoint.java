@@ -17,25 +17,23 @@
 package org.springframework.cloud.alibaba.sentinel.endpoint;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
-import org.springframework.cloud.alibaba.sentinel.custom.SentinelDataSourceHandler;
-import org.springframework.context.ApplicationContext;
 
-import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
+import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.log.LogBase;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
-import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
-import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Endpoint for Sentinel, contains ans properties and rules
@@ -48,39 +46,35 @@ public class SentinelEndpoint {
 	private SentinelProperties sentinelProperties;
 
 	@Autowired
-	private SentinelDataSourceHandler dataSourceHandler;
-
-	@Autowired
-	private ApplicationContext applicationContext;
+	private ObjectMapper objectMapper;
 
 	@ReadOperation
 	public Map<String, Object> invoke() {
 		final Map<String, Object> result = new HashMap<>();
+		if (sentinelProperties.isEnabled()) {
 
-		List<FlowRule> flowRules = FlowRuleManager.getRules();
-		List<DegradeRule> degradeRules = DegradeRuleManager.getRules();
-		List<SystemRule> systemRules = SystemRuleManager.getRules();
-		List<ParamFlowRule> paramFlowRules = ParamFlowRuleManager.getRules();
-		result.put("properties", sentinelProperties);
-		result.put("FlowRules", flowRules);
-		result.put("DegradeRules", degradeRules);
-		result.put("SystemRules", systemRules);
-		result.put("ParamFlowRule", paramFlowRules);
-		result.put("datasources", new HashMap<String, Object>());
-		dataSourceHandler.getDataSourceBeanNameList().forEach(dataSourceBeanName -> {
-			ReadableDataSource dataSource = applicationContext.getBean(dataSourceBeanName,
-					ReadableDataSource.class);
-			try {
-				((HashMap) result.get("datasources")).put(dataSourceBeanName,
-						dataSource.loadConfig());
-			}
-			catch (Exception e) {
-				((HashMap) result.get("datasources")).put(dataSourceBeanName,
-						"load error: " + e.getMessage());
-			}
+			result.put("logDir", LogBase.getLogBaseDir());
+			result.put("logUsePid", LogBase.isLogNameUsePid());
+			result.put("blockPage", WebServletConfig.getBlockPage());
+			result.put("metricsFileSize", SentinelConfig.singleMetricFileSize());
+			result.put("metricsFileCharset", SentinelConfig.charset());
+			result.put("totalMetricsFileCount", SentinelConfig.totalMetricFileCount());
+			result.put("consoleServer", TransportConfig.getConsoleServer());
+			result.put("clientIp", TransportConfig.getHeartbeatClientIp());
+			result.put("heartbeatIntervalMs", TransportConfig.getHeartbeatIntervalMs());
+			result.put("clientPort", TransportConfig.getPort());
+			result.put("coldFactor", sentinelProperties.getFlow().getColdFactor());
+			result.put("filter", sentinelProperties.getFilter());
+			result.put("datasource", sentinelProperties.getDatasource());
 
-		});
-
+			final Map<String, Object> rules = new HashMap<>();
+			result.put("rules", rules);
+			rules.put("flowRules", FlowRuleManager.getRules());
+			rules.put("degradeRules", SystemRuleManager.getRules());
+			rules.put("systemRules", SystemRuleManager.getRules());
+			rules.put("authorityRule", AuthorityRuleManager.getRules());
+			rules.put("paramFlowRule", ParamFlowRuleManager.getRules());
+		}
 		return result;
 	}
 
