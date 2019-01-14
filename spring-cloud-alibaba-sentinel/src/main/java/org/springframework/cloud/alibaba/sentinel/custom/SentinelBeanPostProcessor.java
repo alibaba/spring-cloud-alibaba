@@ -16,8 +16,12 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -25,12 +29,19 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.cloud.alibaba.sentinel.SentinelConstants;
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.type.StandardMethodMetadata;
 import org.springframework.core.type.classreading.MethodMetadataReadingVisitor;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 /**
  * PostProcessor handle @SentinelRestTemplate Annotation, add interceptor for RestTemplate
@@ -40,6 +51,9 @@ import org.springframework.web.client.RestTemplate;
  * @see SentinelProtectInterceptor
  */
 public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProcessor {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(SentinelBeanPostProcessor.class);
 
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -60,7 +74,66 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 				sentinelRestTemplate = beanDefinition.getResolvedFactoryMethod()
 						.getAnnotation(SentinelRestTemplate.class);
 			}
+			// check class and method validation
+			checkSentinelRestTemplate(sentinelRestTemplate, beanName);
 			cache.put(beanName, sentinelRestTemplate);
+		}
+	}
+
+	private void checkSentinelRestTemplate(SentinelRestTemplate sentinelRestTemplate,
+			String beanName) {
+		checkBlock4RestTemplate(sentinelRestTemplate.blockHandlerClass(),
+				sentinelRestTemplate.blockHandler(), beanName,
+				SentinelConstants.BLOCK_TYPE);
+		checkBlock4RestTemplate(sentinelRestTemplate.fallbackClass(),
+				sentinelRestTemplate.fallback(), beanName,
+				SentinelConstants.FALLBACK_TYPE);
+	}
+
+	private void checkBlock4RestTemplate(Class<?> blockClass, String blockMethod,
+			String beanName, String type) {
+		if (blockClass == void.class && StringUtils.isEmpty(blockMethod)) {
+			return;
+		}
+		if (blockClass != void.class && StringUtils.isEmpty(blockMethod)) {
+			logger.error(
+					"{} class property exists but {}"
+							+ " method property is not exists in bean[{}]",
+					type, type, beanName);
+			System.exit(-1);
+		}
+		else if (blockClass == void.class && !StringUtils.isEmpty(blockMethod)) {
+			logger.error(
+					"{} method property exists but {} class property is not exists in bean[{}]",
+					type, type, beanName);
+			System.exit(-1);
+		}
+		Class[] args = new Class[] { HttpRequest.class, byte[].class,
+				ClientHttpRequestExecution.class, BlockException.class };
+		Method foundMethod = ClassUtils.getStaticMethod(blockClass, blockMethod, args);
+		if (foundMethod == null) {
+			logger.error(
+					"{} method can not be found in bean[{}]. The right method signature is {}#{}{}, please check your class name, method name and arguments",
+					type, beanName, blockClass.getName(), blockMethod,
+					Arrays.toString(Arrays.stream(args)
+							.map(clazz -> clazz.getSimpleName()).toArray()));
+			System.exit(-1);
+		}
+
+		if (!ClientHttpResponse.class.isAssignableFrom(foundMethod.getReturnType())) {
+			logger.error(
+					"{} method return value in bean[{}] is not ClientHttpResponse: {}#{}{}",
+					type, beanName, blockClass.getName(), blockMethod,
+					Arrays.toString(Arrays.stream(args)
+							.map(clazz -> clazz.getSimpleName()).toArray()));
+			System.exit(-1);
+		}
+		if (type.equals(SentinelConstants.BLOCK_TYPE)) {
+			BlockClassRegistry.updateBlockHandlerFor(blockClass, blockMethod,
+					foundMethod);
+		}
+		else {
+			BlockClassRegistry.updateFallbackFor(blockClass, blockMethod, foundMethod);
 		}
 	}
 
