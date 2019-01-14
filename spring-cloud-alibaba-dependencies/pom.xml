@@ -26,6 +26,9 @@
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
+        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
+        <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
+        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
     </properties>
 
     <dependencyManagement>
@@ -153,6 +156,18 @@
                 <version>${oss.version}</version>
             </dependency>
 
+            <!-- SMS -->
+            <dependency>
+                <groupId>com.aliyun.mns</groupId>
+                <artifactId>aliyun-sdk-mns</artifactId>
+                <version>${aliyun.sdk.mns}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+                <version>${aliyun.java.sdk.dysmsapi}</version>
+            </dependency>
 
             <!-- Own dependencies  -->
             <dependency>
@@ -193,6 +208,11 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alicloud-schedulerx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alicloud-sms</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -245,6 +265,12 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alicloud-schedulerx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
