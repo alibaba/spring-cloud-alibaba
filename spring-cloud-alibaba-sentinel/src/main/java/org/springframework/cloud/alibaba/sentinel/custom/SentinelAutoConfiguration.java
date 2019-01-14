@@ -30,6 +30,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
@@ -161,8 +162,9 @@ public class SentinelAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
-	public SentinelBeanPostProcessor sentinelBeanPostProcessor() {
-		return new SentinelBeanPostProcessor();
+	public SentinelBeanPostProcessor sentinelBeanPostProcessor(
+			ApplicationContext applicationContext) {
+		return new SentinelBeanPostProcessor(applicationContext);
 	}
 
 	@Bean

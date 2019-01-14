@@ -47,7 +47,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 	private static final Logger logger = LoggerFactory
 			.getLogger(SentinelProtectInterceptor.class);
 
-	private SentinelRestTemplate sentinelRestTemplate;
+	private final SentinelRestTemplate sentinelRestTemplate;
 
 	public SentinelProtectInterceptor(SentinelRestTemplate sentinelRestTemplate) {
 		this.sentinelRestTemplate = sentinelRestTemplate;

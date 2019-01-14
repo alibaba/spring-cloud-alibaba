@@ -19,7 +19,6 @@ package org.springframework.cloud.alibaba.sentinel.endpoint;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
@@ -33,8 +32,6 @@ import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * Endpoint for Sentinel, contains ans properties and rules
  * @author xiaojing
@@ -42,11 +39,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Endpoint(id = "sentinel")
 public class SentinelEndpoint {
 
-	@Autowired
-	private SentinelProperties sentinelProperties;
+	private final SentinelProperties sentinelProperties;
 
-	@Autowired
-	private ObjectMapper objectMapper;
+	public SentinelEndpoint(SentinelProperties sentinelProperties) {
+		this.sentinelProperties = sentinelProperties;
+	}
 
 	@ReadOperation
 	public Map<String, Object> invoke() {

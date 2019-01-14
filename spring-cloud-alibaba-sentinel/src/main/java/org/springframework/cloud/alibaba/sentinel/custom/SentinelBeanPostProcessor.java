@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -55,8 +54,11 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	private static final Logger logger = LoggerFactory
 			.getLogger(SentinelBeanPostProcessor.class);
 
-	@Autowired
-	private ApplicationContext applicationContext;
+	private final ApplicationContext applicationContext;
+
+	public SentinelBeanPostProcessor(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 
 	private ConcurrentHashMap<String, SentinelRestTemplate> cache = new ConcurrentHashMap<>();
 
