@@ -45,6 +45,8 @@ public class RocketMQProducerProperties {
 	 */
 	private String transactionCheckListener;
 
+	private Boolean vipChannelEnabled = true;
+
 	public Boolean getEnabled() {
 		return enabled;
 	}
@@ -83,5 +85,13 @@ public class RocketMQProducerProperties {
 
 	public void setTransactionCheckListener(String transactionCheckListener) {
 		this.transactionCheckListener = transactionCheckListener;
+	}
+
+	public Boolean getVipChannelEnabled() {
+		return vipChannelEnabled;
+	}
+
+	public void setVipChannelEnabled(Boolean vipChannelEnabled) {
+		this.vipChannelEnabled = vipChannelEnabled;
 	}
 }
