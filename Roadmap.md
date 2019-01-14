@@ -32,6 +32,9 @@ Apache Dubbo™ (incubating) is a high-performance, Java based open source RPC f
 **RocketMQ**
 Apache RocketMQ™ is an open source distributed messaging and streaming data platform.
 
+**Fescar**
+A distributed transaction solution with high performance and ease of use for microservices architecture.
+
 **Alibaba Cloud Schedulerx**
 A distributed task scheduling product developed by Alibaba Middleware team. It supports both periodical tasks and tasks to be triggered at specified time points.
 
