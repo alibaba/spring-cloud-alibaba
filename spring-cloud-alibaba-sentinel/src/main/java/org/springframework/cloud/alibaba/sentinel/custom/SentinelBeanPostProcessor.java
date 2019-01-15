@@ -99,36 +99,41 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		}
 		if (blockClass != void.class && StringUtils.isEmpty(blockMethod)) {
 			logger.error(
-					"{} class property exists but {}"
-							+ " method property is not exists in bean[{}]",
+					"{} class attribute exists but {} method attribute is not exists in bean[{}]",
 					type, type, beanName);
-			System.exit(-1);
+			throw new IllegalArgumentException(type + " class attribute exists but "
+					+ type + " method attribute is not exists in bean[" + beanName + "]");
 		}
 		else if (blockClass == void.class && !StringUtils.isEmpty(blockMethod)) {
 			logger.error(
-					"{} method property exists but {} class property is not exists in bean[{}]",
+					"{} method attribute exists but {} class attribute is not exists in bean[{}]",
 					type, type, beanName);
-			System.exit(-1);
+			throw new IllegalArgumentException(type + " method attribute exists but "
+					+ type + " class attribute is not exists in bean[" + beanName + "]");
 		}
 		Class[] args = new Class[] { HttpRequest.class, byte[].class,
 				ClientHttpRequestExecution.class, BlockException.class };
+		String argsStr = Arrays.toString(
+				Arrays.stream(args).map(clazz -> clazz.getSimpleName()).toArray());
 		Method foundMethod = ClassUtils.getStaticMethod(blockClass, blockMethod, args);
 		if (foundMethod == null) {
 			logger.error(
-					"{} method can not be found in bean[{}]. The right method signature is {}#{}{}, please check your class name, method name and arguments",
-					type, beanName, blockClass.getName(), blockMethod,
-					Arrays.toString(Arrays.stream(args)
-							.map(clazz -> clazz.getSimpleName()).toArray()));
-			System.exit(-1);
+					"{} static method can not be found in bean[{}]. The right method signature is {}#{}{}, please check your class name, method name and arguments",
+					type, beanName, blockClass.getName(), blockMethod, argsStr);
+			throw new IllegalArgumentException(type
+					+ " static method can not be found in bean[" + beanName
+					+ "]. The right method signature is " + blockClass.getName() + "#"
+					+ blockMethod + argsStr
+					+ ", please check your class name, method name and arguments");
 		}
 
 		if (!ClientHttpResponse.class.isAssignableFrom(foundMethod.getReturnType())) {
 			logger.error(
 					"{} method return value in bean[{}] is not ClientHttpResponse: {}#{}{}",
-					type, beanName, blockClass.getName(), blockMethod,
-					Arrays.toString(Arrays.stream(args)
-							.map(clazz -> clazz.getSimpleName()).toArray()));
-			System.exit(-1);
+					type, beanName, blockClass.getName(), blockMethod, argsStr);
+			throw new IllegalArgumentException(type + " method return value in bean["
+					+ beanName + "] is not ClientHttpResponse: " + blockClass.getName()
+					+ "#" + blockMethod + argsStr);
 		}
 		if (type.equals(SentinelConstants.BLOCK_TYPE)) {
 			BlockClassRegistry.updateBlockHandlerFor(blockClass, blockMethod,
