@@ -28,7 +28,6 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelAutoConfiguration;
 import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -100,7 +99,6 @@ public class SentinelDataSourceTests {
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ SentinelAutoConfiguration.class,
 			SentinelWebAutoConfiguration.class })
-	@EnableFeignClients
 	public static class TestConfig {
 
 	}
