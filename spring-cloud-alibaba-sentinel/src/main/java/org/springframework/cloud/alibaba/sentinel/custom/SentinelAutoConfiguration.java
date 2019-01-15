@@ -82,6 +82,15 @@ public class SentinelAutoConfiguration {
 
 	@PostConstruct
 	private void init() {
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
+				&& StringUtils.hasText(properties.getLog().getDir())) {
+			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
+		}
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
+				&& properties.getLog().isSwitchPid()) {
+			System.setProperty(LogBase.LOG_NAME_USE_PID,
+					String.valueOf(properties.getLog().isSwitchPid()));
+		}
 		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
 				&& StringUtils.hasText(projectName)) {
 			System.setProperty(AppNameUtil.APP_NAME, projectName);
@@ -131,15 +140,6 @@ public class SentinelAutoConfiguration {
 		}
 		if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
 			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
-		}
-		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
-				&& StringUtils.hasText(properties.getLog().getDir())) {
-			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
-		}
-		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
-				&& properties.getLog().isSwitchPid()) {
-			System.setProperty(LogBase.LOG_NAME_USE_PID,
-					String.valueOf(properties.getLog().isSwitchPid()));
 		}
 
 		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
