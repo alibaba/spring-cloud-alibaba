@@ -4,14 +4,14 @@ Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解�
 
 此项目包含的组件内容，主要选取自阿里巴巴开源中间件和阿里云商业化产品，但也不限定于这些产品。
 
-如果您对 Roadmap 有任何建议或想法，欢迎在 issue 中或者通过其他社区渠道向我们提出，一起讨论。
+如果您对 Roadmap 有任何建议或想法，欢迎在 issues 中或者通过其他社区渠道向我们提出，一起讨论。
 
 
 ## 已包含的组件
 
 **Sentinel**
 
-阿里巴巴开源产品，把流量作为切入点，从流量控制，熔断降级，系统负载保护等多个维度保护服务的稳定性。
+阿里巴巴开源产品，把流量作为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
 
 **Nacos**
 
@@ -23,9 +23,9 @@ Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解�
 
 **RocketMQ**
 
-Apache RocketMQ™ 基于Java的高性能、高吞吐量的分布式消息和流计算平台。
+Apache RocketMQ™ 基于 Java 的高性能、高吞吐量的分布式消息和流计算平台。
 
-**Alibaba Cloud Schedulerx**
+**Alibaba Cloud SchedulerX**
 
 阿里中间件团队开发的一款分布式任务调度产品，支持周期性的任务与固定时间点触发任务。
 
@@ -34,7 +34,7 @@ Apache RocketMQ™ 基于Java的高性能、高吞吐量的分布式消息和流
 
 **Dubbo**
 
-Apache Dubbo™ (incubating) 是一款高性能Java RPC框架。
+Apache Dubbo™ (incubating) 是一款高性能 Java RPC 框架。
 
 **Fescar**
 
