@@ -54,11 +54,6 @@ public class SentinelWebAutoConfiguration {
 
 		SentinelProperties.Filter filterConfig = properties.getFilter();
 
-		if (null == filterConfig) {
-			filterConfig = new SentinelProperties.Filter();
-			properties.setFilter(filterConfig);
-		}
-
 		if (filterConfig.getUrlPatterns() == null
 				|| filterConfig.getUrlPatterns().isEmpty()) {
 			List<String> defaultPatterns = new ArrayList<>();
