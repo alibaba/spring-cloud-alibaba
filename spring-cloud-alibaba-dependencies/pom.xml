@@ -17,7 +17,7 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <sentinel.version>1.4.0</sentinel.version>
+        <sentinel.version>1.4.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
         <nacos.client.version>0.6.2</nacos.client.version>
         <nacos.config.version>0.6.1</nacos.config.version>
