@@ -96,7 +96,7 @@
 	  1. 执行 `mvn clean package` 将工程编译打包；
 	  2. 执行 `java -jar sms-example.jar`启动应用。
 	  
-应用启动后访问 http://localhost:18084/send.do?telphone=******&code=6580。查看返回发送的 SendSmsResponse 的 json 串结果。 
+应用启动后访问 http://localhost:18084/send.do?telphone=******&code=6580。 查看返回的 SendSmsResponse 的 json 串结果。 
 
 
 ### 批量短信发送
