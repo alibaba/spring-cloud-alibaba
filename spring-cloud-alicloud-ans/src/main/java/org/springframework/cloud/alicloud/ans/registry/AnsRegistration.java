@@ -16,6 +16,11 @@
 
 package org.springframework.cloud.alicloud.ans.registry;
 
+import java.net.URI;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.cloud.alicloud.context.ans.AnsProperties;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
@@ -24,10 +29,6 @@ import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
-
-import javax.annotation.PostConstruct;
-import java.net.URI;
-import java.util.Map;
 
 /**
  * @author xiaolongzuo
@@ -62,11 +63,6 @@ public class AnsRegistration implements Registration, ServiceInstance {
 			if (!StringUtils.isEmpty(address)) {
 				metadata.put(MANAGEMENT_ADDRESS, address);
 			}
-		}
-
-		String serverPort = env.getProperty("server.port");
-		if (null != serverPort) {
-			this.setPort(Integer.valueOf(serverPort));
 		}
 	}
 
