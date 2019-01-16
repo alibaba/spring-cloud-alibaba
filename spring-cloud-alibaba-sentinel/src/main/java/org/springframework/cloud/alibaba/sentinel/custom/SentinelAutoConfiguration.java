@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,10 +30,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.csp.sentinel.adapter.servlet.callback.RequestOriginParser;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
@@ -74,8 +77,20 @@ public class SentinelAutoConfiguration {
 	@Autowired
 	private Optional<UrlBlockHandler> urlBlockHandlerOptional;
 
+	@Autowired
+	private Optional<RequestOriginParser> requestOriginParserOptional;
+
 	@PostConstruct
 	private void init() {
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
+				&& StringUtils.hasText(properties.getLog().getDir())) {
+			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
+		}
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
+				&& properties.getLog().isSwitchPid()) {
+			System.setProperty(LogBase.LOG_NAME_USE_PID,
+					String.valueOf(properties.getLog().isSwitchPid()));
+		}
 		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
 				&& StringUtils.hasText(projectName)) {
 			System.setProperty(AppNameUtil.APP_NAME, projectName);
@@ -95,6 +110,11 @@ public class SentinelAutoConfiguration {
 						.hasText(properties.getTransport().getHeartbeatIntervalMs())) {
 			System.setProperty(TransportConfig.HEARTBEAT_INTERVAL_MS,
 					properties.getTransport().getHeartbeatIntervalMs());
+		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_CLIENT_IP))
+				&& StringUtils.hasText(properties.getTransport().getClientIp())) {
+			System.setProperty(TransportConfig.HEARTBEAT_CLIENT_IP,
+					properties.getTransport().getClientIp());
 		}
 		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.CHARSET))
 				&& StringUtils.hasText(properties.getMetric().getCharset())) {
@@ -121,18 +141,10 @@ public class SentinelAutoConfiguration {
 		if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
 			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
 		}
-		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
-				&& StringUtils.hasText(properties.getLog().getDir())) {
-			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
-		}
-		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
-				&& properties.getLog().isSwitchPid()) {
-			System.setProperty(LogBase.LOG_NAME_USE_PID,
-					String.valueOf(properties.getLog().isSwitchPid()));
-		}
 
 		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
 		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
+		requestOriginParserOptional.ifPresent(WebCallbackManager::setRequestOriginParser);
 
 		// earlier initialize
 		if (properties.isEager()) {
@@ -150,13 +162,15 @@ public class SentinelAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
-	public SentinelBeanPostProcessor sentinelBeanPostProcessor() {
-		return new SentinelBeanPostProcessor();
+	public SentinelBeanPostProcessor sentinelBeanPostProcessor(
+			ApplicationContext applicationContext) {
+		return new SentinelBeanPostProcessor(applicationContext);
 	}
 
 	@Bean
-	public SentinelDataSourceHandler sentinelDataSourceHandler() {
-		return new SentinelDataSourceHandler();
+	public SentinelDataSourceHandler sentinelDataSourceHandler(
+			DefaultListableBeanFactory beanFactory) {
+		return new SentinelDataSourceHandler(beanFactory);
 	}
 
 	protected static class SentinelConverterConfiguration {
