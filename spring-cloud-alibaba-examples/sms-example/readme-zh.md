@@ -2,7 +2,7 @@
 
 ## 项目说明
 
-如果您的应用是 Spring Cloud 应用，且需要使用阿里云的 SMS 服务来发送短信，例如登录验证码，那么您可以使用 SMS starter 完成 Spring Cloud 应用的短信发送。
+如果您的应用是 Spring Cloud/Boot 应用，且需要使用阿里云的 SMS 服务来发送短信，例如登录验证码，那么您可以使用 SMS starter 完成 Spring Cloud/Boot 应用的短信发送。
 
 短信服务（Short Message Service）是阿里云为用户提供的一种通信服务的能力。支持国内和国际快速发送验证码、短信通知和推广短信，服务范围覆盖全球200多个国家和地区。更多可参考 [官网文档](https://help.aliyun.com/document_detail/60704.html?spm=5176.8195934.1283918.6.18924183bHPct2)
 
