@@ -16,9 +16,7 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.alibaba.nacos.api.config.ConfigService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
@@ -31,7 +29,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.config.ConfigService;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author xiaojing
@@ -186,12 +185,17 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static void checkDataIdFileExtension(String[] sharedDataIdArry) {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (int i = 0; i < sharedDataIdArry.length; i++) {
+			boolean isLegal = false;
 			for (String fileExtension : SUPPORT_FILE_EXTENSION) {
 				if (sharedDataIdArry[i].indexOf(fileExtension) > 0) {
+					isLegal = true;
 					break;
 				}
 			}
-			stringBuilder.append(sharedDataIdArry[i] + ",");
+			// add tips
+			if (!isLegal) {
+				stringBuilder.append(sharedDataIdArry[i] + ",");
+			}
 		}
 
 		if (stringBuilder.length() > 0) {
