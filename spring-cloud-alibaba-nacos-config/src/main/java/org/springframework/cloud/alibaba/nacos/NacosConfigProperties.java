@@ -111,6 +111,16 @@ public class NacosConfigProperties {
 	private String[] activeProfiles;
 
 	/**
+	 * add activeProfiles to dataId
+	 * such as:
+	 * spring.profiles.active: dev
+	 * dataId is oo.yaml
+	 * <p>
+	 * we can get oo.yaml & oo-dev.yaml
+	 */
+	private boolean supportActiveProfiles = true;
+
+	/**
 	 * the dataids for configurable multiple shared configurations , multiple separated by
 	 * commas .
 	 */
@@ -240,6 +250,14 @@ public class NacosConfigProperties {
 
 	public String[] getActiveProfiles() {
 		return activeProfiles;
+	}
+
+	public boolean isSupportActiveProfiles() {
+		return supportActiveProfiles;
+	}
+
+	public void setSupportActiveProfiles(boolean supportActiveProfiles) {
+		this.supportActiveProfiles = supportActiveProfiles;
 	}
 
 	public String getSharedDataids() {

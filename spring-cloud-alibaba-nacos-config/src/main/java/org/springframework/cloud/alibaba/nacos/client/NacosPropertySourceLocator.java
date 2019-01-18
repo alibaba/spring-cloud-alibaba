@@ -89,7 +89,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 		loadSharedConfiguration(composite);
 		loadExtConfiguration(composite);
-		loadApplicationConfiguration(composite, nacosGroup, dataIdPrefix, fileExtension);
+		loadDataIdByActiveProfilesConfiguration(composite, nacosGroup, dataIdPrefix, fileExtension);
 
 		return composite;
 	}
@@ -108,7 +108,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 		for (int i = 0; i < sharedDataIdArry.length; i++) {
 			String dataId = sharedDataIdArry[i];
-			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
+			String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
 			boolean isRefreshable = checkDataIdIsRefreshbable(refreshDataIds,
 					sharedDataIdArry[i]);
 
@@ -129,9 +129,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 		for (NacosConfigProperties.Config config : extConfigs) {
 			String dataId = config.getDataId();
-			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
-			loadNacosDataIfPresent(compositePropertySource, dataId, config.getGroup(),
-					fileExtension, config.isRefresh());
+			String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
+			String dataIdPrefix = dataId.substring(0, dataId.lastIndexOf(DOT));
+
+			loadDataIdByActiveProfilesConfiguration(compositePropertySource, config.getGroup(),
+					dataIdPrefix, fileExtension);
 		}
 	}
 
@@ -149,11 +151,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		checkDataIdFileExtension(dataIds);
 	}
 
-	private void loadApplicationConfiguration(
+	private void loadDataIdByActiveProfilesConfiguration(
 			CompositePropertySource compositePropertySource, String nacosGroup,
 			String dataIdPrefix, String fileExtension) {
 		loadNacosDataIfPresent(compositePropertySource,
 				dataIdPrefix + DOT + fileExtension, nacosGroup, fileExtension, true);
+		if (!nacosConfigProperties.isSupportActiveProfiles()) {
+			return;
+		}
 		for (String profile : nacosConfigProperties.getActiveProfiles()) {
 			String dataId = dataIdPrefix + SEP1 + profile + DOT + fileExtension;
 			loadNacosDataIfPresent(compositePropertySource, dataId, nacosGroup,
