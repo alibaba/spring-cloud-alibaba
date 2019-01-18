@@ -16,36 +16,26 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.config.spring.ServiceBean;
 import com.alibaba.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.Contract;
-import feign.jaxrs2.JAXRS2Contract;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.rest.metadata.ServiceRestMetadata;
+import org.springframework.cloud.alibaba.dubbo.util.MetadataConfigUtils;
 import org.springframework.cloud.client.discovery.event.InstancePreRegisteredEvent;
 import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
-import org.springframework.util.ClassUtils;
 
-import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceName;
 
 /**
  * The Auto-Configuration class for Dubbo REST metadata registration,
@@ -54,21 +44,19 @@ import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegist
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
 @AutoConfigureAfter(value = {
         DubboRestAutoConfiguration.class, DubboServiceRegistrationAutoConfiguration.class})
+@Configuration
 public class DubboRestMetadataRegistrationAutoConfiguration implements BeanClassLoaderAware {
 
     /**
      * A Map to store REST metadata temporary, its' key is the special service name for a Dubbo service,
      * the value is a JSON content of JAX-RS or Spring MVC REST metadata from the annotated methods.
      */
-    private final Map<String, Set<String>> restMetadata = new LinkedHashMap<>();
+    private final Map<String, Map<String, Map<String, Object>>> restMetadata = new LinkedHashMap<>();
 
-    /**
-     * Feign Contracts
-     */
-    private Collection<Contract> contracts = Collections.emptyList();
+    private final Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
 
     private ClassLoader classLoader;
 
@@ -78,42 +66,16 @@ public class DubboRestMetadataRegistrationAutoConfiguration implements BeanClass
     @Autowired
     private RestMetadataResolver restMetadataResolver;
 
-    @PostConstruct
-    public void init() {
-        contracts = initFeignContracts();
-    }
-
-    private Collection<Contract> initFeignContracts() {
-        Collection<Contract> contracts = new LinkedList<>();
-
-        if (ClassUtils.isPresent("javax.ws.rs.Path", classLoader)) {
-            contracts.add(new JAXRS2Contract());
-        }
-
-        if (ClassUtils.isPresent("org.springframework.web.bind.annotation.RequestMapping", classLoader)) {
-            contracts.add(new SpringMvcContract());
-        }
-
-        return contracts;
-    }
+    @Autowired
+    private MetadataConfigUtils metadataConfigUtils;
 
 
     @EventListener(ServiceBeanExportedEvent.class)
-    public void recordRestMetadata(ServiceBeanExportedEvent event) {
+    public void recordRestMetadata(ServiceBeanExportedEvent event) throws JsonProcessingException {
         ServiceBean serviceBean = event.getServiceBean();
-        List<URL> urls = serviceBean.getExportedUrls();
-        Object bean = serviceBean.getRef();
-
-        Set<String> metadata = contracts.stream()
-                .map(contract -> contract.parseAndValidatateMetadata(bean.getClass()))
-                .flatMap(v -> v.stream())
-                .map(restMetadataResolver::resolve)
-                .collect(Collectors.toSet());
-
-        urls.forEach(url -> {
-            String serviceName = getServiceName(url);
-            restMetadata.put(serviceName, metadata);
-        });
+//        Map<String, Map<String, Map<String, Object>>> metadata = restMetadataResolver.resolve(serviceBean);
+//        restMetadata.putAll(metadata);
+        serviceRestMetadata.addAll(restMetadataResolver.resolve(serviceBean));
     }
 
     /**
@@ -126,15 +88,20 @@ public class DubboRestMetadataRegistrationAutoConfiguration implements BeanClass
      * @param event {@link InstancePreRegisteredEvent} instance
      */
     @EventListener(InstancePreRegisteredEvent.class)
-    public void registerRestMetadata(InstancePreRegisteredEvent event) throws JsonProcessingException {
+    public void registerRestMetadata(InstancePreRegisteredEvent event) throws Exception {
         Registration registration = event.getRegistration();
-        Map<String, String> serviceInstanceMetadata = registration.getMetadata();
-        String restMetadataJson = objectMapper.writeValueAsString(restMetadata);
-        serviceInstanceMetadata.put("restMetadata", restMetadataJson);
+
+        String restMetadataJson = objectMapper.writeValueAsString(serviceRestMetadata);
+
+        metadataConfigUtils.publishServiceRestMetadata(registration.getServiceId(), restMetadataJson);
+
     }
+
 
     @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
+
+
 }

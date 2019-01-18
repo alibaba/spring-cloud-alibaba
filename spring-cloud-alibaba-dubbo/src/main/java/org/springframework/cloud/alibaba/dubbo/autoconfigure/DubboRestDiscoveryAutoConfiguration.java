@@ -16,31 +16,36 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
+import com.alibaba.boot.dubbo.autoconfigure.DubboAutoConfiguration;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.spring.ReferenceBean;
 import feign.Client;
 import feign.Request;
+import feign.RequestInterceptor;
 import feign.Response;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.rest.metadata.ServiceRestMetadata;
+import org.springframework.cloud.alibaba.dubbo.util.MetadataConfigUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.discovery.event.InstanceRegisteredEvent;
+import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.context.named.NamedContextFactory;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -51,17 +56,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * The Auto-Configuration class for Dubbo REST Discovery
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@ConditionalOnProperty(value = "spring.cloud.config.discovery.enabled", matchIfMissing = true)
 @AutoConfigureAfter(value = {
+        DubboAutoConfiguration.class,
         DubboRestAutoConfiguration.class,
         DubboRestMetadataRegistrationAutoConfiguration.class})
+@Configuration
 public class DubboRestDiscoveryAutoConfiguration {
 
     @Autowired
@@ -81,29 +87,66 @@ public class DubboRestDiscoveryAutoConfiguration {
     @Autowired
     private ApplicationConfig applicationConfig;
 
+    @Value("${spring.application.name}")
+    private String applicationName;
+
     @Value("${spring.cloud.nacos.discovery.server-addr}")
     private String nacosServerAddress;
-
-
-    private volatile boolean initialized = false;
 
     @Autowired
     private ListableBeanFactory beanFactory;
 
-    @Scheduled(initialDelay = 10 * 1000, fixedRate = 5000)
-    public void init() {
+    @Autowired
+    private MetadataConfigUtils metadataConfigUtils;
 
-        if (initialized) {
+    /**
+     * Handle on self instance registered.
+     *
+     * @param event {@link InstanceRegisteredEvent}
+     */
+    @EventListener(InstanceRegisteredEvent.class)
+    public void onSelfInstanceRegistered(InstanceRegisteredEvent event) throws Exception {
+
+        Class<?> targetClass = AbstractAutoServiceRegistration.class;
+
+        Object source = event.getSource();
+
+        if (!targetClass.isInstance(source)) {
             return;
         }
 
+        // getRegistration() is a protected method
+        Method method = targetClass.getDeclaredMethod("getRegistration");
+
+        method.setAccessible(true);
+
+        Registration registration = (Registration) ReflectionUtils.invokeMethod(method, source);
+
+        String serviceRestMetaData =
+                metadataConfigUtils.getServiceRestMetadata(registration.getServiceId());
+
+        Set<ServiceRestMetadata> metadata = objectMapper.readValue(serviceRestMetaData, Set.class);
+
+        System.out.println(serviceRestMetaData);
+
+    }
+
+    @Bean
+    public RequestInterceptor requestInterceptor() {
+        return template -> {
+            System.out.println(template);
+        };
+    }
+
+    private void noop() {
         Map<String, NamedContextFactory.Specification> specifications =
                 beanFactory.getBeansOfType(NamedContextFactory.Specification.class);
-        ServiceAnnotationBeanPostProcessor
         // 1. Get all service names from Spring beans that was annotated by @FeignClient
         List<String> serviceNames = new LinkedList<>();
 
-        specifications.forEach((beanName, specification) -> {
+        specifications.forEach((beanName, specification) ->
+
+        {
             String serviceName = beanName.substring(0, beanName.indexOf("."));
             serviceNames.add(serviceName);
 
@@ -139,10 +182,31 @@ public class DubboRestDiscoveryAutoConfiguration {
                 //
             }
         });
-
-        initialized = true;
-
     }
+
+    private ReferenceBean buildReferenceBean(ServiceInstance serviceInstance) {
+
+        ReferenceBean referenceBean = new ReferenceBean();
+        Map<String, String> metadata = serviceInstance.getMetadata();
+        // 4. Resolve REST metadata from the @FeignClient instance
+        String restMetadataJson = metadata.get("restMetadata");
+
+        try {
+            Map<String, List<String>> restMetadata = objectMapper.readValue(restMetadataJson, Map.class);
+
+            restMetadata.forEach((dubboServiceName, restJsons) -> {
+                restJsons.stream().map(restMetadataResolver::resolveRequest).forEach(request -> {
+                    referenceBeanCache.put(request.toString(), buildReferenceBean(dubboServiceName));
+                });
+            });
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return referenceBean;
+    }
+
 
     private ReferenceBean buildReferenceBean(String dubboServiceName) {
         ReferenceBean referenceBean = new ReferenceBean();
@@ -204,6 +268,7 @@ public class DubboRestDiscoveryAutoConfiguration {
 
             return delegate.execute(request, options);
         }
+
     }
 
     @EventListener(ContextRefreshedEvent.class)
