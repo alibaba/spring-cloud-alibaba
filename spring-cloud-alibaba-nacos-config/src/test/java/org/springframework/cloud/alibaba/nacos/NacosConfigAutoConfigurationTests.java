@@ -17,8 +17,6 @@
 package org.springframework.cloud.alibaba.nacos;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySourceLocator;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshProperties;
 import org.springframework.core.env.CompositePropertySource;
@@ -28,32 +26,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author xiaojing
+ * @author pbting
  */
-public class NacosConfigAutoConfigurationTests extends BaseNacosConfigTests {
-	private final static Logger log = LoggerFactory
-			.getLogger(NacosConfigAutoConfigurationTests.class);
-
+public class NacosConfigAutoConfigurationTests extends NacosPowerMockitBaseTests {
 	@Test
 	public void testNacosConfigProperties() {
 
 		NacosConfigProperties nacosConfigProperties = context.getParent()
 				.getBean(NacosConfigProperties.class);
 		assertThat(nacosConfigProperties.getFileExtension()).isEqualTo("properties");
-		// assertThat(nacosConfigProperties.getPrefix()).isEqualTo("test");
+		assertThat(nacosConfigProperties.getPrefix() == null).isEqualTo(true);
+		assertThat(nacosConfigProperties.getNamespace() == null).isEqualTo(true);
 		assertThat(nacosConfigProperties.getName()).isEqualTo("sca-nacos-config");
 		assertThat(nacosConfigProperties.getServerAddr()).isEqualTo("127.0.0.1:8848");
 		assertThat(nacosConfigProperties.getEncode()).isEqualTo("utf-8");
 		assertThat(nacosConfigProperties.getActiveProfiles())
 				.isEqualTo(new String[] { "develop" });
-		// assertThat(nacosConfigProperties.getSharedDataids())
-		// .isEqualTo("base-common.properties,common.properties");
-		// assertThat(nacosConfigProperties.getRefreshableDataids())
-		// .isEqualTo("base-common.properties");
-		// assertThat(nacosConfigProperties.getExtConfig().size()).isEqualTo(3);
-		// assertThat(nacosConfigProperties.getExtConfig().get(0).getDataId())
-		// .isEqualTo("ext01.yaml");
-		// assertThat(nacosConfigProperties.getExtConfig().get(1).getGroup())
-		// .isEqualTo("EXT01_GROUP");
+		assertThat(nacosConfigProperties.getSharedDataids())
+				.isEqualTo("base-common.properties,common.properties");
+		assertThat(nacosConfigProperties.getRefreshableDataids())
+				.isEqualTo("common.properties");
+		assertThat(nacosConfigProperties.getExtConfig().size()).isEqualTo(3);
+		assertThat(nacosConfigProperties.getExtConfig().get(0).getDataId())
+				.isEqualTo("ext00.yaml");
+		assertThat(nacosConfigProperties.getExtConfig().get(1).getGroup())
+				.isEqualTo("EXT01_GROUP");
 		assertThat(nacosConfigProperties.getExtConfig().get(1).isRefresh())
 				.isEqualTo(true);
 	}
@@ -67,9 +64,7 @@ public class NacosConfigAutoConfigurationTests extends BaseNacosConfigTests {
 
 		assertThat(propertySource instanceof CompositePropertySource).isEqualTo(true);
 		CompositePropertySource compositePropertySource = (CompositePropertySource) propertySource;
-		// assertThat(compositePropertySource.containsProperty("user.name")).isEqualTo(true);
-		// assertThat(compositePropertySource.getProperty("user.name"))
-		// .isEqualTo("sca-nacos-config-test-case");
+		assertThat(compositePropertySource.containsProperty("user.name")).isEqualTo(true);
 	}
 
 	@Test

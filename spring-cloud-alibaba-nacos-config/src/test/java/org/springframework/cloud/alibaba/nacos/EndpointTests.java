@@ -24,12 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author pbting
  * @date 2019-01-17 2:25 PM
  */
-public class EndpointTests extends BaseNacosConfigTests {
+public class EndpointTests extends NacosPowerMockitBaseTests {
 
 	@Test
 	public void nacosConfigEndpoint() {
 
-		NacosConfigEndpoint nacosConfigEndpoint = this.context
+		NacosConfigEndpoint nacosConfigEndpoint = super.context
 				.getBean(NacosConfigEndpoint.class);
 		assertThat(nacosConfigEndpoint != null).isEqualTo(true);
 	}

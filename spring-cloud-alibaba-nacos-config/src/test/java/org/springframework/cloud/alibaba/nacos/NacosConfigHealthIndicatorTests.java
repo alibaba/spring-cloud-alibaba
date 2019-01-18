@@ -16,10 +16,7 @@
 package org.springframework.cloud.alibaba.nacos;
 
 import org.junit.Test;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.alibaba.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
 import org.springframework.cloud.alibaba.nacos.endpoint.NacosConfigHealthIndicator;
 import org.springframework.util.ReflectionUtils;
 
@@ -32,19 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author pbting
  * @date 2019-01-17 2:58 PM
  */
-public class NacosConfigHealthIndicatorTests extends BaseNacosConfigTests {
-
-	@Override
-	public void setUp() throws Exception {
-		this.context = new SpringApplicationBuilder(
-				NacosConfigBootstrapConfiguration.class,
-				NacosConfigEndpointAutoConfiguration.class,
-				NacosConfigAutoConfiguration.class, TestConfiguration.class)
-						.web(WebApplicationType.SERVLET)
-						.run("--spring.cloud.config.enabled=true", "--server.port=18080",
-								"--spring.application.name=sca-nacos-config",
-								"--spring.cloud.nacos.config.server-addr=127.0.0.1:8848");
-	}
+public class NacosConfigHealthIndicatorTests extends NacosPowerMockitBaseTests {
 
 	@Test
 	public void nacosConfigHealthIndicatorInstance() {

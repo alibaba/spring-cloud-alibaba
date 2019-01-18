@@ -16,14 +16,18 @@
 package org.springframework.cloud.alibaba.nacos;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.powermock.api.support.MethodProxy;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySourceBuilder;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,10 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author pbting
  * @date 2019-01-17 11:49 AM
  */
-public class NacosPropertySourceBuilderTests extends BaseNacosConfigTests {
-
-	private final static Logger log = LoggerFactory
-			.getLogger(NacosPropertySourceBuilderTests.class);
+public class NacosPropertySourceBuilderTests extends NacosPowerMockitBaseTests {
 
 	@Test
 	public void nacosPropertySourceBuilder() {
@@ -44,79 +45,120 @@ public class NacosPropertySourceBuilderTests extends BaseNacosConfigTests {
 
 	@Test
 	public void getConfigByProperties() {
-		NacosPropertySourceBuilder nacosPropertySourceBuilder = nacosPropertySourceBuilderInstance();
-
-		Method method = ReflectionUtils.findMethod(NacosPropertySourceBuilder.class,
-				"build", String.class, String.class, String.class, boolean.class);
-		ReflectionUtils.makeAccessible(method);
-		assertThat(method != null).isEqualTo(true);
-
 		try {
+			final HashMap<String, String> value = new HashMap<>();
+			value.put("dev.mode", "local-mock");
+
+			final Constructor constructor = ReflectionUtils.accessibleConstructor(
+					NacosPropertySource.class, String.class, String.class, Map.class,
+					Date.class, boolean.class);
+
+			NacosPropertySourceBuilder nacosPropertySourceBuilder = nacosPropertySourceBuilderInstance();
+
+			Method method = ReflectionUtils.findMethod(NacosPropertySourceBuilder.class,
+					"build", String.class, String.class, String.class, boolean.class);
+			ReflectionUtils.makeAccessible(method);
+			assertThat(method != null).isEqualTo(true);
+			MethodProxy.proxy(method, new InvocationHandler() {
+				@Override
+				public Object invoke(Object proxy, Method method, Object[] args)
+						throws Throwable {
+					Object instance = constructor.newInstance(args[1].toString(),
+							args[0].toString(), value, new Date(), args[3]);
+					return instance;
+				}
+			});
+
 			Object result = method.invoke(nacosPropertySourceBuilder,
-					"ext-config-common01.properties", "DEFAULT_GROUP", "properties",
-					true);
+					"mock-nacos-config.properties", "DEFAULT_GROUP", "properties", true);
 			assertThat(result != null).isEqualTo(true);
 			assertThat(result instanceof NacosPropertySource).isEqualTo(true);
 			NacosPropertySource nacosPropertySource = (NacosPropertySource) result;
-			// assertThat(nacosPropertySource.getProperty("ext.key"))
-			// .isEqualTo("ext.value01");
+			assertThat(nacosPropertySource.getProperty("dev.mode"))
+					.isEqualTo("local-mock");
 		}
-		catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		catch (InvocationTargetException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Test
 	public void getConfigByYaml() {
-		NacosPropertySourceBuilder nacosPropertySourceBuilder = nacosPropertySourceBuilderInstance();
-
-		Method method = ReflectionUtils.findMethod(NacosPropertySourceBuilder.class,
-				"build", String.class, String.class, String.class, boolean.class);
-		ReflectionUtils.makeAccessible(method);
-		assertThat(method != null).isEqualTo(true);
 
 		try {
-			Object result = method.invoke(nacosPropertySourceBuilder,
-					"app-local-common.yaml", "DEFAULT_GROUP", "yaml", true);
+			//
+			final HashMap<String, String> value = new HashMap<>();
+			value.put("mock-ext-config", "mock-ext-config-value");
+
+			final Constructor constructor = ReflectionUtils.accessibleConstructor(
+					NacosPropertySource.class, String.class, String.class, Map.class,
+					Date.class, boolean.class);
+
+			Method method = ReflectionUtils.findMethod(NacosPropertySourceBuilder.class,
+					"build", String.class, String.class, String.class, boolean.class);
+			ReflectionUtils.makeAccessible(method);
+			assertThat(method != null).isEqualTo(true);
+
+			MethodProxy.proxy(method, new InvocationHandler() {
+				@Override
+				public Object invoke(Object proxy, Method method, Object[] args)
+						throws Throwable {
+					Object instance = constructor.newInstance(args[1].toString(),
+							args[0].toString(), value, new Date(), args[3]);
+					return instance;
+				}
+			});
+
+			NacosPropertySourceBuilder nacosPropertySourceBuilder = nacosPropertySourceBuilderInstance();
+			Object result = method.invoke(nacosPropertySourceBuilder, "ext-config.yaml",
+					"DEFAULT_GROUP", "yaml", true);
 			assertThat(result != null).isEqualTo(true);
 			assertThat(result instanceof NacosPropertySource).isEqualTo(true);
 			NacosPropertySource nacosPropertySource = (NacosPropertySource) result;
-			// assertThat(nacosPropertySource.getProperty("app-local-common"))
-			// .isEqualTo("update app local shared cguration for Nacos");
+			assertThat(nacosPropertySource.getProperty("mock-ext-config"))
+					.isEqualTo("mock-ext-config-value");
 		}
-		catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		catch (InvocationTargetException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Test
 	public void getConfigByYml() {
-		NacosPropertySourceBuilder nacosPropertySourceBuilder = nacosPropertySourceBuilderInstance();
-
-		Method method = ReflectionUtils.findMethod(NacosPropertySourceBuilder.class,
-				"build", String.class, String.class, String.class, boolean.class);
-		ReflectionUtils.makeAccessible(method);
-		assertThat(method != null).isEqualTo(true);
-
 		try {
-			Object result = method.invoke(nacosPropertySourceBuilder, "nacos.yml",
+			//
+			final HashMap<String, String> value = new HashMap<>();
+			value.put("mock-ext-config-yml", "mock-ext-config-yml-value");
+
+			final Constructor constructor = ReflectionUtils.accessibleConstructor(
+					NacosPropertySource.class, String.class, String.class, Map.class,
+					Date.class, boolean.class);
+
+			Method method = ReflectionUtils.findMethod(NacosPropertySourceBuilder.class,
+					"build", String.class, String.class, String.class, boolean.class);
+			ReflectionUtils.makeAccessible(method);
+			assertThat(method != null).isEqualTo(true);
+
+			MethodProxy.proxy(method, new InvocationHandler() {
+				@Override
+				public Object invoke(Object proxy, Method method, Object[] args)
+						throws Throwable {
+					Object instance = constructor.newInstance(args[1].toString(),
+							args[0].toString(), value, new Date(), args[3]);
+					return instance;
+				}
+			});
+
+			NacosPropertySourceBuilder nacosPropertySourceBuilder = nacosPropertySourceBuilderInstance();
+			Object result = method.invoke(nacosPropertySourceBuilder, "ext-config.yml",
 					"DEFAULT_GROUP", "yml", true);
 			assertThat(result != null).isEqualTo(true);
 			assertThat(result instanceof NacosPropertySource).isEqualTo(true);
 			NacosPropertySource nacosPropertySource = (NacosPropertySource) result;
-			// assertThat(nacosPropertySource.getProperty("address"))
-			// .isEqualTo("zhejiang-hangzhou");
+			assertThat(nacosPropertySource.getProperty("mock-ext-config-yml"))
+					.isEqualTo("mock-ext-config-yml-value");
 		}
-		catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		catch (InvocationTargetException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
