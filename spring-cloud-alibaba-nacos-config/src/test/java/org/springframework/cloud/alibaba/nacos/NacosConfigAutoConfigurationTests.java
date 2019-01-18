@@ -16,13 +16,13 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySourceLocator;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshProperties;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.PropertySource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author xiaojing
@@ -61,10 +61,7 @@ public class NacosConfigAutoConfigurationTests extends NacosPowerMockitBaseTests
 				.getBean(NacosPropertySourceLocator.class);
 		PropertySource propertySource = nacosPropertySourceLocator
 				.locate(this.context.getEnvironment());
-
 		assertThat(propertySource instanceof CompositePropertySource).isEqualTo(true);
-		CompositePropertySource compositePropertySource = (CompositePropertySource) propertySource;
-		assertThat(compositePropertySource.containsProperty("user.name")).isEqualTo(true);
 	}
 
 	@Test
