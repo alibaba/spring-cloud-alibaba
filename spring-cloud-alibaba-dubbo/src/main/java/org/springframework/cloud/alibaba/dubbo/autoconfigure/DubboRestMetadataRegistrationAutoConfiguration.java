@@ -20,21 +20,18 @@ import com.alibaba.dubbo.config.spring.ServiceBean;
 import com.alibaba.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataConfigService;
 import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.rest.metadata.ServiceRestMetadata;
-import org.springframework.cloud.alibaba.dubbo.util.MetadataConfigUtils;
 import org.springframework.cloud.client.discovery.event.InstancePreRegisteredEvent;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,17 +45,13 @@ import java.util.Set;
 @AutoConfigureAfter(value = {
         DubboRestAutoConfiguration.class, DubboServiceRegistrationAutoConfiguration.class})
 @Configuration
-public class DubboRestMetadataRegistrationAutoConfiguration implements BeanClassLoaderAware {
+public class DubboRestMetadataRegistrationAutoConfiguration {
 
     /**
      * A Map to store REST metadata temporary, its' key is the special service name for a Dubbo service,
      * the value is a JSON content of JAX-RS or Spring MVC REST metadata from the annotated methods.
      */
-    private final Map<String, Map<String, Map<String, Object>>> restMetadata = new LinkedHashMap<>();
-
     private final Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
-
-    private ClassLoader classLoader;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -67,14 +60,12 @@ public class DubboRestMetadataRegistrationAutoConfiguration implements BeanClass
     private RestMetadataResolver restMetadataResolver;
 
     @Autowired
-    private MetadataConfigUtils metadataConfigUtils;
+    private RestMetadataConfigService metadataConfigService;
 
 
     @EventListener(ServiceBeanExportedEvent.class)
     public void recordRestMetadata(ServiceBeanExportedEvent event) throws JsonProcessingException {
         ServiceBean serviceBean = event.getServiceBean();
-//        Map<String, Map<String, Map<String, Object>>> metadata = restMetadataResolver.resolve(serviceBean);
-//        restMetadata.putAll(metadata);
         serviceRestMetadata.addAll(restMetadataResolver.resolve(serviceBean));
     }
 
@@ -93,15 +84,8 @@ public class DubboRestMetadataRegistrationAutoConfiguration implements BeanClass
 
         String restMetadataJson = objectMapper.writeValueAsString(serviceRestMetadata);
 
-        metadataConfigUtils.publishServiceRestMetadata(registration.getServiceId(), restMetadataJson);
+        metadataConfigService.publishServiceRestMetadata(registration.getServiceId(), restMetadataJson);
 
     }
-
-
-    @Override
-    public void setBeanClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
-
 
 }

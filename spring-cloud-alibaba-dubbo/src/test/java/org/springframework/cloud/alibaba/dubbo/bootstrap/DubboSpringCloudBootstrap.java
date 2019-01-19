@@ -22,21 +22,17 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.spring.ReferenceBean;
 import com.alibaba.dubbo.config.spring.ServiceBean;
 import com.alibaba.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.alibaba.dubbo.service.EchoService;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,15 +67,15 @@ public class DubboSpringCloudBootstrap {
         String echo(@RequestParam("message") String message);
     }
 
-    @Bean
-    public ApplicationRunner applicationRunner() {
-        return arguments -> {
-            // Dubbo Service call
-            System.out.println(echoService.echo("mercyblitz"));
-            // Spring Cloud Open Feign REST Call
-            System.out.println(feignEchoService.echo("mercyblitz"));
-        };
-    }
+//    @Bean
+//    public ApplicationRunner applicationRunner() {
+//        return arguments -> {
+//            // Dubbo Service call
+//            System.out.println(echoService.echo("mercyblitz"));
+//            // Spring Cloud Open Feign REST Call
+//            System.out.println(feignEchoService.echo("mercyblitz"));
+//        };
+//    }
 
 
     @Autowired

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.util;
+package org.springframework.cloud.alibaba.dubbo.rest.feign;
 
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
@@ -26,9 +26,9 @@ import javax.annotation.PostConstruct;
 import static com.alibaba.nacos.api.common.Constants.DEFAULT_GROUP;
 
 /**
- * TODO
+ * Rest Metadata Config Service
  */
-public class MetadataConfigUtils {
+public class RestMetadataConfigService {
 
     @Autowired
     private NacosConfigProperties nacosConfigProperties;
