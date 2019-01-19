@@ -4,36 +4,33 @@
 
     <parent>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-alibaba</artifactId>
+        <artifactId>nacos-gateway-example</artifactId>
         <version>0.2.2.BUILD-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
 
-    <artifactId>spring-cloud-alibaba-examples</artifactId>
-    <packaging>pom</packaging>
-    <name>Spring Cloud Alibaba Examples</name>
-    <description>Example showing how to use features of Spring Cloud Alibaba</description>
+    <artifactId>nacos-gateway-provider-example</artifactId>
+    <packaging>jar</packaging>
+    <description>Example demonstrating how to use gateway with nacos</description>
 
-    <modules>
-        <module>sentinel-example/sentinel-core-example</module>
-        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-provider-example</module>
-        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-consumer-example</module>
-        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
-        <module>nacos-example/nacos-discovery-example</module>
-        <module>nacos-example/nacos-config-example</module>
-        <module>nacos-example/nacos-gateway-example</module>
-        <module>env-extension</module>
-        <module>oss-example</module>
-        <module>ans-example/ans-consumer-feign-example</module>
-        <module>ans-example/ans-consumer-ribbon-example</module>
-        <module>ans-example/ans-provider-example</module>
-        <module>acm-example/acm-local-example</module>
-        <module>rocketmq-example</module>
-        <module>spring-cloud-bus-rocketmq-example</module>
-        <module>schedulerx-example/schedulerx-simple-task-example</module>
-    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+    </dependencies>
 
     <build>
         <pluginManagement>
@@ -45,6 +42,10 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -62,9 +63,7 @@
                     <check/>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
-
 
 </project>
