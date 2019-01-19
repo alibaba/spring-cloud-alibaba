@@ -58,7 +58,7 @@ public class DubboOpenFeignAutoConfiguration {
     private ObjectProvider<FeignContext> feignContextObjectProvider;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void onContextRefreshed(ApplicationReadyEvent event) {
+    public void onApplicationReady(ApplicationReadyEvent event) {
         ConfigurableApplicationContext applicationContext = event.getApplicationContext();
         // Resolve the subscribed service names for @FeignClient
         Set<String> feignClientServiceNames = resolveFeignClientServiceNames(applicationContext);

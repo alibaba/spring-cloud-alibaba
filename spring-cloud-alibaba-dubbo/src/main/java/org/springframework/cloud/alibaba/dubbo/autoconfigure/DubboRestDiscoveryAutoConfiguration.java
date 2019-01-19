@@ -31,7 +31,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataConfigService;
-import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.rest.feign.FeignRestMetadataResolver;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,7 +63,7 @@ public class DubboRestDiscoveryAutoConfiguration {
     private DiscoveryClient discoveryClient;
 
     @Autowired
-    private RestMetadataResolver restMetadataResolver;
+    private FeignRestMetadataResolver feignRestMetadataResolver;
 
     @Autowired(required = false)
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -206,7 +206,7 @@ public class DubboRestDiscoveryAutoConfiguration {
 //                    Map<String, List<String>> restMetadata = objectMapper.readValue(restMetadataJson, Map.class);
 //
 //                    restMetadata.forEach((dubboServiceName, restJsons) -> {
-//                        restJsons.stream().map(restMetadataResolver::resolveRequest).forEach(request -> {
+//                        restJsons.stream().map(feignRestMetadataResolver::resolveRequest).forEach(request -> {
 //                            referenceBeanCache.put(request.toString(), buildReferenceBean(dubboServiceName));
 //                        });
 //                    });
@@ -231,7 +231,7 @@ public class DubboRestDiscoveryAutoConfiguration {
 //            Map<String, List<String>> restMetadata = objectMapper.readValue(restMetadataJson, Map.class);
 //
 //            restMetadata.forEach((dubboServiceName, restJsons) -> {
-//                restJsons.stream().map(restMetadataResolver::resolveRequest).forEach(request -> {
+//                restJsons.stream().map(feignRestMetadataResolver::resolveRequest).forEach(request -> {
 //                    referenceBeanCache.put(request.toString(), buildReferenceBean(dubboServiceName));
 //                });
 //            });

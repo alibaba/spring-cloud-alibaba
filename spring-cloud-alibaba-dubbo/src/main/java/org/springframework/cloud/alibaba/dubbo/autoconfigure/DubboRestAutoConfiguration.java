@@ -17,10 +17,11 @@
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.Contract;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.alibaba.dubbo.rest.feign.FeignRestMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataConfigService;
-import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -35,14 +36,9 @@ import org.springframework.core.Ordered;
 public class DubboRestAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
-
-    @Bean
-    public RestMetadataResolver metadataJsonResolver(ObjectMapper objectMapper) {
-        return new RestMetadataResolver(objectMapper);
+    public FeignRestMetadataResolver metadataJsonResolver(
+            ObjectProvider<ObjectMapper> objectMapper, ObjectProvider<Contract> contract) {
+        return new FeignRestMetadataResolver(objectMapper, contract);
     }
 
     @Bean
