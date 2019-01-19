@@ -20,42 +20,28 @@ import com.alibaba.boot.dubbo.autoconfigure.DubboAutoConfiguration;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.spring.ReferenceBean;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Client;
 import feign.Request;
-import feign.RequestInterceptor;
 import feign.Response;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataConfigService;
 import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataResolver;
-import org.springframework.cloud.alibaba.dubbo.rest.metadata.ServiceRestMetadata;
-import org.springframework.cloud.alibaba.dubbo.util.MetadataConfigUtils;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.client.discovery.event.InstanceRegisteredEvent;
-import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
-import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.cloud.context.named.NamedContextFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The Auto-Configuration class for Dubbo REST Discovery
@@ -69,6 +55,9 @@ import java.util.Set;
         DubboRestMetadataRegistrationAutoConfiguration.class})
 @Configuration
 public class DubboRestDiscoveryAutoConfiguration {
+
+    private static final String FEIGN_CLIENT_FACTORY_BEAN_CLASS_NAME =
+            "org.springframework.cloud.openfeign.FeignClientFactoryBean";
 
     @Autowired
     private DiscoveryClient discoveryClient;
@@ -94,119 +83,7 @@ public class DubboRestDiscoveryAutoConfiguration {
     private String nacosServerAddress;
 
     @Autowired
-    private ListableBeanFactory beanFactory;
-
-    @Autowired
-    private MetadataConfigUtils metadataConfigUtils;
-
-    /**
-     * Handle on self instance registered.
-     *
-     * @param event {@link InstanceRegisteredEvent}
-     */
-    @EventListener(InstanceRegisteredEvent.class)
-    public void onSelfInstanceRegistered(InstanceRegisteredEvent event) throws Exception {
-
-        Class<?> targetClass = AbstractAutoServiceRegistration.class;
-
-        Object source = event.getSource();
-
-        if (!targetClass.isInstance(source)) {
-            return;
-        }
-
-        // getRegistration() is a protected method
-        Method method = targetClass.getDeclaredMethod("getRegistration");
-
-        method.setAccessible(true);
-
-        Registration registration = (Registration) ReflectionUtils.invokeMethod(method, source);
-
-        String serviceRestMetaData =
-                metadataConfigUtils.getServiceRestMetadata(registration.getServiceId());
-
-        Set<ServiceRestMetadata> metadata = objectMapper.readValue(serviceRestMetaData, Set.class);
-
-        System.out.println(serviceRestMetaData);
-
-    }
-
-    @Bean
-    public RequestInterceptor requestInterceptor() {
-        return template -> {
-            System.out.println(template);
-        };
-    }
-
-    private void noop() {
-        Map<String, NamedContextFactory.Specification> specifications =
-                beanFactory.getBeansOfType(NamedContextFactory.Specification.class);
-        // 1. Get all service names from Spring beans that was annotated by @FeignClient
-        List<String> serviceNames = new LinkedList<>();
-
-        specifications.forEach((beanName, specification) ->
-
-        {
-            String serviceName = beanName.substring(0, beanName.indexOf("."));
-            serviceNames.add(serviceName);
-
-            // 2. Get all service instances by echo specified service name
-            List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceName);
-            if (!serviceInstances.isEmpty()) {
-                ServiceInstance serviceInstance = serviceInstances.get(0);
-                // 3. Get Rest metadata from service instance
-                Map<String, String> metadata = serviceInstance.getMetadata();
-                // 4. Resolve REST metadata from the @FeignClient instance
-                String restMetadataJson = metadata.get("restMetadata");
-                /**
-                 * {
-                 *   "providers:org.springframework.cloud.alibaba.dubbo.service.EchoService:1.0.0": [
-                 *     "{\"method\":\"POST\",\"url\":\"/plus?a={a}&b={b}\",\"headers\":{}}",
-                 *     "{\"method\":\"GET\",\"url\":\"/echo?message={message}\",\"headers\":{}}"
-                 *   ]
-                 * }
-                 */
-                try {
-                    Map<String, List<String>> restMetadata = objectMapper.readValue(restMetadataJson, Map.class);
-
-                    restMetadata.forEach((dubboServiceName, restJsons) -> {
-                        restJsons.stream().map(restMetadataResolver::resolveRequest).forEach(request -> {
-                            referenceBeanCache.put(request.toString(), buildReferenceBean(dubboServiceName));
-                        });
-                    });
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                //
-            }
-        });
-    }
-
-    private ReferenceBean buildReferenceBean(ServiceInstance serviceInstance) {
-
-        ReferenceBean referenceBean = new ReferenceBean();
-        Map<String, String> metadata = serviceInstance.getMetadata();
-        // 4. Resolve REST metadata from the @FeignClient instance
-        String restMetadataJson = metadata.get("restMetadata");
-
-        try {
-            Map<String, List<String>> restMetadata = objectMapper.readValue(restMetadataJson, Map.class);
-
-            restMetadata.forEach((dubboServiceName, restJsons) -> {
-                restJsons.stream().map(restMetadataResolver::resolveRequest).forEach(request -> {
-                    referenceBeanCache.put(request.toString(), buildReferenceBean(dubboServiceName));
-                });
-            });
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return referenceBean;
-    }
-
+    private RestMetadataConfigService restMetadataConfigService;
 
     private ReferenceBean buildReferenceBean(String dubboServiceName) {
         ReferenceBean referenceBean = new ReferenceBean();
@@ -271,10 +148,122 @@ public class DubboRestDiscoveryAutoConfiguration {
 
     }
 
-    @EventListener(ContextRefreshedEvent.class)
-    public void onContextRefreshed(ContextRefreshedEvent event) {
-
-    }
-
-
 }
+
+
+//    private Method getRegistrationMethod;
+//
+//    @PostConstruct
+//    public void init() throws NoSuchMethodException {
+//        getRegistrationMethod = initGetRegistrationMethod();
+//    }
+//
+//    /**
+//     * Initializes {@link AbstractAutoServiceRegistration#getRegistration() getRegistration method} that is is protected.
+//     *
+//     * @return {@link Method}
+//     * @throws NoSuchMethodException
+//     */
+//    private Method initGetRegistrationMethod() throws NoSuchMethodException {
+//        Method method = AbstractAutoServiceRegistration.class.getDeclaredMethod("getRegistration");
+//        method.setAccessible(true);
+//        return method;
+//    }
+//
+//    private Registration getRegistration(AbstractAutoServiceRegistration source) {
+//        return (Registration) ReflectionUtils.invokeMethod(getRegistrationMethod, source);
+//    }
+//
+//    private void noop() {
+//        Map<String, NamedContextFactory.Specification> specifications =
+//                beanFactory.getBeansOfType(NamedContextFactory.Specification.class);
+//        // 1. Get all service names from Spring beans that was annotated by @FeignClient
+//        List<String> serviceNames = new LinkedList<>();
+//
+//        specifications.forEach((beanName, specification) ->
+//
+//        {
+//            String serviceName = beanName.substring(0, beanName.indexOf("."));
+//            serviceNames.add(serviceName);
+//
+//            // 2. Get all service instances by echo specified service name
+//            List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceName);
+//            if (!serviceInstances.isEmpty()) {
+//                ServiceInstance serviceInstance = serviceInstances.get(0);
+//                // 3. Get Rest metadata from service instance
+//                Map<String, String> metadata = serviceInstance.getMetadata();
+//                // 4. Resolve REST metadata from the @FeignClient instance
+//                String restMetadataJson = metadata.get("restMetadata");
+//                /**
+//                 * {
+//                 *   "providers:org.springframework.cloud.alibaba.dubbo.service.EchoService:1.0.0": [
+//                 *     "{\"method\":\"POST\",\"url\":\"/plus?a={a}&b={b}\",\"headers\":{}}",
+//                 *     "{\"method\":\"GET\",\"url\":\"/echo?message={message}\",\"headers\":{}}"
+//                 *   ]
+//                 * }
+//                 */
+//                try {
+//                    Map<String, List<String>> restMetadata = objectMapper.readValue(restMetadataJson, Map.class);
+//
+//                    restMetadata.forEach((dubboServiceName, restJsons) -> {
+//                        restJsons.stream().map(restMetadataResolver::resolveRequest).forEach(request -> {
+//                            referenceBeanCache.put(request.toString(), buildReferenceBean(dubboServiceName));
+//                        });
+//                    });
+//
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//
+//                //
+//            }
+//        });
+//    }
+//
+//    private ReferenceBean buildReferenceBean(ServiceInstance serviceInstance) {
+//
+//        ReferenceBean referenceBean = new ReferenceBean();
+//        Map<String, String> metadata = serviceInstance.getMetadata();
+//        // 4. Resolve REST metadata from the @FeignClient instance
+//        String restMetadataJson = metadata.get("restMetadata");
+//
+//        try {
+//            Map<String, List<String>> restMetadata = objectMapper.readValue(restMetadataJson, Map.class);
+//
+//            restMetadata.forEach((dubboServiceName, restJsons) -> {
+//                restJsons.stream().map(restMetadataResolver::resolveRequest).forEach(request -> {
+//                    referenceBeanCache.put(request.toString(), buildReferenceBean(dubboServiceName));
+//                });
+//            });
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return referenceBean;
+//    }
+
+//    /**
+//     * Handle on self instance registered.
+//     *
+//     * @param event {@link InstanceRegisteredEvent}
+//     */
+//    @EventListener(InstanceRegisteredEvent.class)
+//    public void onSelfInstanceRegistered(InstanceRegisteredEvent event) throws Exception {
+//
+//        Class<?> targetClass = AbstractAutoServiceRegistration.class;
+//
+//        Object source = event.getSource();
+//
+//        Assert.isInstanceOf(targetClass, source,
+//                format("The source of %s must implement %s", source, targetClass.getName()));
+//
+//        Registration registration = getRegistration((AbstractAutoServiceRegistration) source);
+//
+//        String serviceRestMetaDataConfig =
+//                restMetadataConfigService.getServiceRestMetadata(registration.getServiceId());
+//
+//        Set<ServiceRestMetadata> serviceRestMetadata = objectMapper.readValue(serviceRestMetaDataConfig,
+//                TypeFactory.defaultInstance().constructCollectionType(Set.class, ServiceRestMetadata.class));
+//
+//    }
