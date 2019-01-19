@@ -26,10 +26,12 @@ import feign.Request;
 import feign.RequestTemplate;
 import feign.jaxrs2.JAXRS2Contract;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry;
 import org.springframework.cloud.alibaba.dubbo.rest.metadata.MethodRestMetadata;
 import org.springframework.cloud.alibaba.dubbo.rest.metadata.ServiceRestMetadata;
@@ -44,17 +46,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * The JSON resolver for {@link MethodMetadata}
+ * The REST metadata resolver for Feign
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class RestMetadataResolver implements BeanClassLoaderAware, SmartInitializingSingleton {
+public class FeignRestMetadataResolver implements BeanClassLoaderAware, SmartInitializingSingleton {
 
     private static final String METHOD_PROPERTY_NAME = "method";
     private static final String URL_PROPERTY_NAME = "url";
     private static final String HEADERS_PROPERTY_NAME = "headers";
 
+    private static final String[] CONTRACT_CLASS_NAMES = {
+            "feign.jaxrs2.JAXRS2Contract",
+            "org.springframework.cloud.openfeign.support.SpringMvcContract",
+    };
+
     private final ObjectMapper objectMapper;
+
+    private final ObjectProvider<Contract> contract;
 
     /**
      * Feign Contracts
@@ -63,37 +76,44 @@ public class RestMetadataResolver implements BeanClassLoaderAware, SmartInitiali
 
     private ClassLoader classLoader;
 
-    @Autowired
-    private ObjectProvider<Contract> contractObjectProvider;
+    @Value("${spring.application.name}")
+    private String currentApplicationName;
 
-    public RestMetadataResolver(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public FeignRestMetadataResolver(ObjectProvider<ObjectMapper> objectMapper, ObjectProvider<Contract> contract) {
+        this.objectMapper = objectMapper.getIfAvailable();
+        this.contract = contract;
     }
 
     @Override
     public void afterSingletonsInstantiated() {
 
-        Collection<Contract> contracts = new LinkedList<>();
+        LinkedList<Contract> contracts = new LinkedList<>();
 
-        // Add injected Contract , for example SpringMvcContract Bean under Spring Cloud Open Feign
-        Contract contract = contractObjectProvider.getIfAvailable();
-        if (contract != null) {
-            contracts.add(contract);
-        } else {
-            if (ClassUtils.isPresent("org.springframework.cloud.openfeign.support.SpringMvcContract", classLoader)) {
-                contracts.add(new SpringMvcContract());
-            }
-        }
+        // Add injected Contract if available, for example SpringMvcContract Bean under Spring Cloud Open Feign
+        contract.ifAvailable(contracts::add);
 
-        // Add JAXRS2Contract if it's present in Class Path
-        if (ClassUtils.isPresent("javax.ws.rs.Path", classLoader)) {
-            contracts.add(new JAXRS2Contract());
-        }
+        Stream.of(CONTRACT_CLASS_NAMES)
+                .filter(this::isClassPresent) // filter the existed classes
+                .map(this::loadContractClass) // load Contract Class
+                .map(this::createContract)    // create instance by the specified class
+                .forEach(contracts::add);     // add the Contract instance into contracts
 
         this.contracts = Collections.unmodifiableCollection(contracts);
     }
 
-    public Set<ServiceRestMetadata> resolve(ServiceBean serviceBean) {
+    private Contract createContract(Class<?> contractClassName) {
+        return (Contract) BeanUtils.instantiateClass(contractClassName);
+    }
+
+    private Class<?> loadContractClass(String contractClassName) {
+        return ClassUtils.resolveClassName(contractClassName, classLoader);
+    }
+
+    private boolean isClassPresent(String className) {
+        return ClassUtils.isPresent(className, classLoader);
+    }
+
+    public Set<ServiceRestMetadata> resolveServiceRestMetadata(ServiceBean serviceBean) {
 
         Object bean = serviceBean.getRef();
 
@@ -103,14 +123,7 @@ public class RestMetadataResolver implements BeanClassLoaderAware, SmartInitiali
 
         Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
 
-        Set<MethodRestMetadata> methodRestMetadata = new LinkedHashSet<>();
-
-        contracts.stream()
-                .map(contract -> contract.parseAndValidatateMetadata(bean.getClass()))
-                .flatMap(v -> v.stream())
-                .forEach(methodMetadata -> {
-                    methodRestMetadata.add(resolveMethodRestMetadata(methodMetadata, beanType, interfaceClass));
-                });
+        Set<MethodRestMetadata> methodRestMetadata = resolveMethodRestMetadata(beanType, interfaceClass);
 
         List<URL> urls = serviceBean.getExportedUrls();
 
@@ -126,6 +139,18 @@ public class RestMetadataResolver implements BeanClassLoaderAware, SmartInitiali
         return serviceRestMetadata;
     }
 
+    public Set<MethodRestMetadata> resolveMethodRestMetadata(Class<?> targetClass) {
+        return resolveMethodRestMetadata(targetClass, targetClass);
+    }
+
+    protected Set<MethodRestMetadata> resolveMethodRestMetadata(Class<?> targetClass, Class revisedClass) {
+        return contracts.stream()
+                .map(contract -> contract.parseAndValidatateMetadata(targetClass))
+                .flatMap(v -> v.stream())
+                .map(methodMetadata -> resolveMethodRestMetadata(methodMetadata, targetClass, revisedClass))
+                .collect(Collectors.toSet());
+    }
+
     private String toJson(Object object) {
         String jsonContent = null;
         try {
@@ -137,6 +162,9 @@ public class RestMetadataResolver implements BeanClassLoaderAware, SmartInitiali
     }
 
     private String regenerateConfigKey(String configKey, Class<?> beanType, Class<?> interfaceClass) {
+        if (beanType.equals(interfaceClass)) {
+            return configKey;
+        }
         return StringUtils.replace(configKey, beanType.getSimpleName(), interfaceClass.getSimpleName());
     }
 

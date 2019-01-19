@@ -11,3 +11,6 @@ dubbo:
       server: netty
   registry:
     address: spring-cloud://nacos
+
+server:
+  port: 8080

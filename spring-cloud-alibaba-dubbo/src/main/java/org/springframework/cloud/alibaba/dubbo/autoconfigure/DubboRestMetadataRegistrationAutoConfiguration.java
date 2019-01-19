@@ -23,8 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.alibaba.dubbo.rest.feign.FeignRestMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataConfigService;
-import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.rest.metadata.ServiceRestMetadata;
 import org.springframework.cloud.client.discovery.event.InstancePreRegisteredEvent;
 import org.springframework.cloud.client.serviceregistry.Registration;
@@ -57,7 +57,7 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private RestMetadataResolver restMetadataResolver;
+    private FeignRestMetadataResolver feignRestMetadataResolver;
 
     @Autowired
     private RestMetadataConfigService metadataConfigService;
@@ -66,7 +66,7 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
     @EventListener(ServiceBeanExportedEvent.class)
     public void recordRestMetadata(ServiceBeanExportedEvent event) throws JsonProcessingException {
         ServiceBean serviceBean = event.getServiceBean();
-        serviceRestMetadata.addAll(restMetadataResolver.resolve(serviceBean));
+        serviceRestMetadata.addAll(feignRestMetadataResolver.resolveServiceRestMetadata(serviceBean));
     }
 
     /**

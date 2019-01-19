@@ -27,6 +27,8 @@ import static com.alibaba.nacos.api.common.Constants.DEFAULT_GROUP;
 
 /**
  * Rest Metadata Config Service
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class RestMetadataConfigService {
 
@@ -45,7 +47,7 @@ public class RestMetadataConfigService {
      * TODO JavaDoc
      */
     private static String getServiceRestMetadataDataId(String serviceName) {
-        return serviceName + "-rest-metadata.json";
+        return "metadata:rest:" + serviceName + ".json";
     }
 
     public void publishServiceRestMetadata(String serviceName, String restMetadataJSON)
