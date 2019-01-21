@@ -14,18 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.rest.metadata;
+package org.springframework.cloud.alibaba.dubbo.metadata;
 
 import java.util.Set;
 
 /**
- * TODO
+ * Service Rest Metadata
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @see RestMethodMetadata
  */
 public class ServiceRestMetadata {
 
     private String name;
 
-    private Set<MethodRestMetadata> meta;
+    private Set<RestMethodMetadata> meta;
 
     public String getName() {
         return name;
@@ -35,11 +38,11 @@ public class ServiceRestMetadata {
         this.name = name;
     }
 
-    public Set<MethodRestMetadata> getMeta() {
+    public Set<RestMethodMetadata> getMeta() {
         return meta;
     }
 
-    public void setMeta(Set<MethodRestMetadata> meta) {
+    public void setMeta(Set<RestMethodMetadata> meta) {
         this.meta = meta;
     }
 
