@@ -23,7 +23,6 @@ import com.alibaba.dubbo.common.utils.UrlUtils;
 import com.alibaba.dubbo.registry.NotifyListener;
 import com.alibaba.dubbo.registry.RegistryFactory;
 import com.alibaba.dubbo.registry.support.FailbackRegistry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.DefaultServiceInstance;
@@ -48,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.alibaba.dubbo.common.Constants.CONFIGURATORS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.CONSUMERS_CATEGORY;
+import static com.alibaba.dubbo.common.Constants.PROTOCOL_KEY;
 import static com.alibaba.dubbo.common.Constants.PROVIDERS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.ROUTERS_CATEGORY;
 
@@ -70,11 +70,13 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     private static final int CATEGORY_INDEX = 0;
 
-    private static final int SERVICE_INTERFACE_INDEX = 1;
+    private static final int PROTOCOL_INDEX = CATEGORY_INDEX + 1;
 
-    private static final int SERVICE_VERSION_INDEX = 2;
+    private static final int SERVICE_INTERFACE_INDEX = PROTOCOL_INDEX + 1;
 
-    private static final int SERVICE_GROUP_INDEX = 3;
+    private static final int SERVICE_VERSION_INDEX = SERVICE_INTERFACE_INDEX + 1;
+
+    private static final int SERVICE_GROUP_INDEX = SERVICE_VERSION_INDEX + 1;
 
     private static final String WILDCARD = "*";
 
@@ -167,6 +169,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     private static String getServiceName(URL url, String category) {
         StringBuilder serviceNameBuilder = new StringBuilder(category);
+        appendIfPresent(serviceNameBuilder, url.getParameter(PROTOCOL_KEY, url.getProtocol()));
         appendIfPresent(serviceNameBuilder, url, Constants.INTERFACE_KEY);
         appendIfPresent(serviceNameBuilder, url, Constants.VERSION_KEY);
         appendIfPresent(serviceNameBuilder, url, Constants.GROUP_KEY);
@@ -175,6 +178,10 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     private static void appendIfPresent(StringBuilder target, URL url, String parameterName) {
         String parameterValue = url.getParameter(parameterName);
+        appendIfPresent(target, parameterValue);
+    }
+
+    private static void appendIfPresent(StringBuilder target, String parameterValue) {
         if (StringUtils.hasText(parameterValue)) {
             target.append(SERVICE_NAME_SEPARATOR).append(parameterValue);
         }
@@ -196,32 +203,38 @@ public class SpringCloudRegistry extends FailbackRegistry {
                 // split service name to segments
                 // (required) segments[0] = category
                 // (required) segments[1] = serviceInterface
-                // (required) segments[2] = version
-                // (optional) segments[3] = group
-                String[] segments = StringUtils.split(serviceName, SERVICE_NAME_SEPARATOR);
+                // (required) segments[2] = protocol
+                // (required) segments[3] = version
+                // (optional) segments[4] = group
+                String[] segments = getServiceSegments(serviceName);
                 int length = segments.length;
-                if (length < 3) { // must present 3 segments or more
+                if (length < 4) { // must present 4 segments or more
                     return false;
                 }
 
-                String category = segments[CATEGORY_INDEX];
+                String category = getCategory(segments);
                 if (Arrays.binarySearch(categories, category) > -1) { // no match category
                     return false;
                 }
 
-                String serviceInterface = segments[SERVICE_INTERFACE_INDEX];
+                String protocol = getProtocol(segments);
+                if (StringUtils.hasText(protocol)) {
+                    return false;
+                }
+
+                String serviceInterface = getServiceInterface(segments);
                 if (!WILDCARD.equals(targetServiceInterface) &&
                         !Objects.equals(targetServiceInterface, serviceInterface)) { // no match service interface
                     return false;
                 }
 
-                String version = segments[SERVICE_VERSION_INDEX];
+                String version = getServiceVersion(segments);
                 if (!WILDCARD.equals(targetVersion) &&
                         !Objects.equals(targetVersion, version)) { // no match service version
                     return false;
                 }
 
-                String group = length > 3 ? segments[SERVICE_GROUP_INDEX] : null;
+                String group = getServiceGroup(segments);
                 if (group != null && !WILDCARD.equals(targetGroup)
                         && !Objects.equals(targetGroup, group)) {  // no match service group
                     return false;
@@ -230,6 +243,30 @@ public class SpringCloudRegistry extends FailbackRegistry {
                 return true;
             }
         });
+    }
+
+    public static String[] getServiceSegments(String serviceName) {
+        return StringUtils.delimitedListToStringArray(serviceName, SERVICE_NAME_SEPARATOR);
+    }
+
+    public static String getCategory(String[] segments) {
+        return segments[CATEGORY_INDEX];
+    }
+
+    public static String getProtocol(String[] segments) {
+        return segments[PROTOCOL_INDEX];
+    }
+
+    public static String getServiceInterface(String[] segments) {
+        return segments[SERVICE_INTERFACE_INDEX];
+    }
+
+    public static String getServiceVersion(String[] segments) {
+        return segments[SERVICE_VERSION_INDEX];
+    }
+
+    public static String getServiceGroup(String[] segments) {
+        return segments.length > 4 ? segments[SERVICE_GROUP_INDEX] : null;
     }
 
     /**
@@ -333,7 +370,8 @@ public class SpringCloudRegistry extends FailbackRegistry {
             @Override
             public boolean accept(ServiceInstance data) {
                 // TODO check the details of status
-                return serviceRegistry.getStatus(new DubboRegistration(data)) != null;
+//                return serviceRegistry.getStatus(new DubboRegistration(data)) != null;
+                return true;
             }
         });
     }

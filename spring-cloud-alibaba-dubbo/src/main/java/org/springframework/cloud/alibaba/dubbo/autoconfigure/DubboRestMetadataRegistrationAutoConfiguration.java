@@ -19,13 +19,13 @@ package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 import com.alibaba.dubbo.config.spring.ServiceBean;
 import com.alibaba.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.alibaba.dubbo.rest.feign.FeignRestMetadataResolver;
-import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataConfigService;
-import org.springframework.cloud.alibaba.dubbo.rest.metadata.ServiceRestMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
 import org.springframework.cloud.client.discovery.event.InstancePreRegisteredEvent;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +42,14 @@ import java.util.Set;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
+@ConditionalOnMissingBean(value = {
+        MetadataResolver.class,
+        MetadataConfigService.class
+})
 @AutoConfigureAfter(value = {
-        DubboRestAutoConfiguration.class, DubboServiceRegistrationAutoConfiguration.class})
+        DubboMetadataAutoConfiguration.class,
+        DubboServiceRegistrationAutoConfiguration.class
+})
 @Configuration
 public class DubboRestMetadataRegistrationAutoConfiguration {
 
@@ -54,19 +60,15 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
     private final Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private MetadataResolver metadataResolver;
 
     @Autowired
-    private FeignRestMetadataResolver feignRestMetadataResolver;
-
-    @Autowired
-    private RestMetadataConfigService metadataConfigService;
-
+    private MetadataConfigService metadataConfigService;
 
     @EventListener(ServiceBeanExportedEvent.class)
     public void recordRestMetadata(ServiceBeanExportedEvent event) throws JsonProcessingException {
         ServiceBean serviceBean = event.getServiceBean();
-        serviceRestMetadata.addAll(feignRestMetadataResolver.resolveServiceRestMetadata(serviceBean));
+        serviceRestMetadata.addAll(metadataResolver.resolveServiceRestMetadata(serviceBean));
     }
 
     /**
@@ -81,11 +83,7 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
     @EventListener(InstancePreRegisteredEvent.class)
     public void registerRestMetadata(InstancePreRegisteredEvent event) throws Exception {
         Registration registration = event.getRegistration();
-
-        String restMetadataJson = objectMapper.writeValueAsString(serviceRestMetadata);
-
-        metadataConfigService.publishServiceRestMetadata(registration.getServiceId(), restMetadataJson);
-
+        metadataConfigService.publishServiceRestMetadata(registration.getServiceId(), serviceRestMetadata);
     }
 
 }

@@ -14,32 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.rest.metadata;
+package org.springframework.cloud.alibaba.dubbo.metadata;
+
+import feign.RequestTemplate;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * TODO
+ * Request Metadata
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class MethodRestMetadata {
-
-    private String configKey;
+public class RequestMetadata {
 
     private String method;
 
     private String url;
 
+    private Map<String, Collection<String>> queries;
+
     private Map<String, Collection<String>> headers;
 
-    private Map<Integer, Collection<String>> indexToName;
-
-    public String getConfigKey() {
-        return configKey;
+    public RequestMetadata() {
     }
 
-    public void setConfigKey(String configKey) {
-        this.configKey = configKey;
+    public RequestMetadata(RequestTemplate requestTemplate) {
+        this.method = requestTemplate.method();
+        this.url = requestTemplate.url();
+        this.queries = requestTemplate.queries();
+        this.headers = requestTemplate.headers();
     }
 
     public String getMethod() {
@@ -66,35 +71,27 @@ public class MethodRestMetadata {
         this.headers = headers;
     }
 
-    public Map<Integer, Collection<String>> getIndexToName() {
-        return indexToName;
+    public Map<String, Collection<String>> getQueries() {
+        return queries;
     }
 
-    public void setIndexToName(Map<Integer, Collection<String>> indexToName) {
-        this.indexToName = indexToName;
+    public void setQueries(Map<String, Collection<String>> queries) {
+        this.queries = queries;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        MethodRestMetadata that = (MethodRestMetadata) o;
-
-        if (configKey != null ? !configKey.equals(that.configKey) : that.configKey != null) return false;
-        if (method != null ? !method.equals(that.method) : that.method != null) return false;
-        if (url != null ? !url.equals(that.url) : that.url != null) return false;
-        if (headers != null ? !headers.equals(that.headers) : that.headers != null) return false;
-        return indexToName != null ? indexToName.equals(that.indexToName) : that.indexToName == null;
+        RequestMetadata that = (RequestMetadata) o;
+        return Objects.equals(method, that.method) &&
+                Objects.equals(url, that.url) &&
+                Objects.equals(queries, that.queries) &&
+                Objects.equals(headers, that.headers);
     }
 
     @Override
     public int hashCode() {
-        int result = configKey != null ? configKey.hashCode() : 0;
-        result = 31 * result + (method != null ? method.hashCode() : 0);
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (headers != null ? headers.hashCode() : 0);
-        result = 31 * result + (indexToName != null ? indexToName.hashCode() : 0);
-        return result;
+        return Objects.hash(method, url, queries, headers);
     }
 }

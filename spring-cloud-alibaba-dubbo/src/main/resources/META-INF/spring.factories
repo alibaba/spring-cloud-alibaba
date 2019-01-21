@@ -1,6 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboRestAutoConfiguration,\
+  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration,\
   org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboOpenFeignAutoConfiguration,\
   org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration,\
-  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboRestMetadataRegistrationAutoConfiguration,\
-  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboRestDiscoveryAutoConfiguration
+  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboRestMetadataRegistrationAutoConfiguration

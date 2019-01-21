@@ -16,34 +16,31 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.Contract;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.cloud.alibaba.dubbo.rest.feign.FeignRestMetadataResolver;
-import org.springframework.cloud.alibaba.dubbo.rest.feign.RestMetadataConfigService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.metadata.service.NacosMetadataConfigService;
+import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 
 /**
- * Spring Boot Auto-Configuration class for Dubbo REST
+ * Spring Boot Auto-Configuration class for Dubbo Metadata
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
+@Import(DubboServiceMetadataRepository.class)
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
-public class DubboRestAutoConfiguration {
+public class DubboMetadataAutoConfiguration {
 
     @Bean
-    public FeignRestMetadataResolver metadataJsonResolver(
-            ObjectProvider<ObjectMapper> objectMapper, ObjectProvider<Contract> contract) {
-        return new FeignRestMetadataResolver(objectMapper, contract);
-    }
-
-    @Bean
-    public RestMetadataConfigService restMetadataConfigService() {
-        return new RestMetadataConfigService();
+    @ConditionalOnBean(NacosConfigProperties.class)
+    public MetadataConfigService metadataConfigService() {
+        return new NacosMetadataConfigService();
     }
 
 }
