@@ -19,6 +19,7 @@ package org.springframework.cloud.alibaba.sentinel.endpoint;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
@@ -67,7 +68,7 @@ public class SentinelEndpoint {
 			final Map<String, Object> rules = new HashMap<>();
 			result.put("rules", rules);
 			rules.put("flowRules", FlowRuleManager.getRules());
-			rules.put("degradeRules", SystemRuleManager.getRules());
+			rules.put("degradeRules", DegradeRuleManager.getRules());
 			rules.put("systemRules", SystemRuleManager.getRules());
 			rules.put("authorityRule", AuthorityRuleManager.getRules());
 			rules.put("paramFlowRule", ParamFlowRuleManager.getRules());
