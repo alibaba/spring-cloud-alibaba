@@ -16,7 +16,6 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
@@ -25,7 +24,6 @@ import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.Ordered;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata
@@ -34,7 +32,6 @@ import org.springframework.core.Ordered;
  */
 @Configuration
 @Import(DubboServiceMetadataRepository.class)
-@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
 public class DubboMetadataAutoConfiguration {
 
     @Bean
