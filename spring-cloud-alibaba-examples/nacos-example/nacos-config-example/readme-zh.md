@@ -113,11 +113,11 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 在 Nacos Config Starter 中，dataId 的拼接格式如下
 
-	${prefix} - ${spring.active.profile} . ${file-extension}
+	${prefix} - ${spring.profiles.active} . ${file-extension}
 
 * `prefix` 默认为 `spring.application.name` 的值，也可以通过配置项 `spring.cloud.nacos.config.prefix`来配置。
 
-* `spring.active.profile` 即为当前环境对应的 profile，详情可以参考 [Spring Boot文档](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
+* `spring.profiles.active` 即为当前环境对应的 profile，详情可以参考 [Spring Boot文档](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
 	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${file-extension}`**
 
