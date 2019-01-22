@@ -121,6 +121,14 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-commons-dependencies</artifactId>
                 <version>${spring-cloud-commons.version}</version>
                 <type>pom</type>
@@ -157,7 +165,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>net.sourceforge.cobertura</groupId>
                 <artifactId>cobertura-runtime</artifactId>
@@ -165,15 +172,6 @@
                 <scope>provided</scope>
                 <type>pom</type>
             </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -211,7 +209,14 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
+                <version>${cobertura-maven-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>5.0.3</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <quiet>true</quiet>
                     <formats>
@@ -220,26 +225,6 @@
                     </formats>
                     <check/>
                     <check />
-                    <instrumentation>
-                        <excludes>
-                            <exclude>org/springframework/cloud/alibaba/cloud/dependencies/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alibaba/cloud/docs/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alibaba/cloud/examples/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alibaba/cloud/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/start/alibaba/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/start/alicloud/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alibaba/nacos/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alibaba/nacos/config/server/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alibaba/sentinel/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alibaba/sentinel/datasource/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alicloud/acm/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alicloud/ans/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alicloud/context/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alicloud/oss/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/alicloud/scx/src/test/**.*.class</exclude>
-                            <exclude>org/springframework/cloud/stream/binder/rocketmq/src/test/**.*.class</exclude>
-                        </excludes>
-                    </instrumentation>
                 </configuration>
                 <executions>
                     <execution>
