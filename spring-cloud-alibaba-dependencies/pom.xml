@@ -31,6 +31,10 @@
         <dubbo.version>2.6.5</dubbo.version>
         <dubbo-spring-boot.version>0.2.1-SNAPSHOT</dubbo-spring-boot.version>
         <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
+        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
+        <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
+        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
+        <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
     </properties>
 
     <dependencyManagement>
@@ -72,6 +76,19 @@
                 <groupId>com.alibaba.edas</groupId>
                 <artifactId>schedulerX-client</artifactId>
                 <version>${schedulerX.client.version}</version>
+            </dependency>
+
+            <!-- SMS -->
+            <dependency>
+                <groupId>com.aliyun.mns</groupId>
+                <artifactId>aliyun-sdk-mns</artifactId>
+                <version>${aliyun.sdk.mns}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+                <version>${aliyun.java.sdk.dysmsapi}</version>
             </dependency>
 
             <!--Nacos-->
@@ -261,6 +278,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alicloud-sms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alicloud-context</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -329,6 +351,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- SMS -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- Testing Dependencies -->
 
         </dependencies>
@@ -389,4 +418,26 @@
             </pluginRepositories>
         </profile>
     </profiles>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>true</skip>
+                    <check/>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

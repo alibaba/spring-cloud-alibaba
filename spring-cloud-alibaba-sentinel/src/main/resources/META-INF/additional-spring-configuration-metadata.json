@@ -19,6 +19,11 @@
       "description": "sentinel api port."
     },
     {
+      "name": "spring.cloud.sentinel.transport.clientIp",
+      "type": "java.lang.String",
+      "description": "sentinel client ip connect to dashboard."
+    },
+    {
       "name": "spring.cloud.sentinel.transport.dashboard",
       "type": "java.lang.String",
       "description": "sentinel dashboard address, won't try to connect dashboard when address is empty."

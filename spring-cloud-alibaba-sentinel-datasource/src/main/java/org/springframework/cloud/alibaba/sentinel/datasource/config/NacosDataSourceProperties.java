@@ -1,12 +1,11 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
-import javax.validation.constraints.NotEmpty;
-
 import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
-import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceWithAuthorizationFactoryBean;
 import org.springframework.util.StringUtils;
+
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Nacos Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -40,8 +39,6 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 		if (!StringUtils.isEmpty(System.getProperties()
 				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
 			this.setServerAddr(null);
-			this.setFactoryBeanName(
-					NacosDataSourceWithAuthorizationFactoryBean.class.getName());
 			this.setEndpoint(System.getProperties()
 					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT));
 			this.setNamespace(System.getProperties()
@@ -119,8 +116,6 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	public static NacosDataSourceProperties buildByEDAS(String type) {
 		NacosDataSourceProperties result = new NacosDataSourceProperties();
-		result.setFactoryBeanName(
-				NacosDataSourceWithAuthorizationFactoryBean.class.getName());
 		result.setEndpoint(System.getProperties()
 				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT));
 		result.setNamespace(System.getProperties()

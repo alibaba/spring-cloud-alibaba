@@ -16,13 +16,17 @@
 
 package org.springframework.cloud.alicloud.ans;
 
-import java.util.*;
-
+import com.alibaba.ans.core.NamingService;
+import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
-import com.alibaba.ans.core.NamingService;
-import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author xiaolongzuo
@@ -75,8 +79,9 @@ public class AnsDiscoveryClient implements DiscoveryClient {
 
 	@Override
 	public List<String> getServices() {
-
+		Set<String> publishers = NamingService.getPublishes();
 		Set<String> doms = NamingService.getDomsSubscribed();
+		doms.addAll(publishers);
 		List<String> result = new LinkedList<>();
 		for (String service : doms) {
 			result.add(service);

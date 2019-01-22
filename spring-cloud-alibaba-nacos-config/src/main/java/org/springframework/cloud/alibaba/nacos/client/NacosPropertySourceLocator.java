@@ -17,9 +17,8 @@
 package org.springframework.cloud.alibaba.nacos.client;
 
 import com.alibaba.nacos.api.config.ConfigService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosContextRefresher;
@@ -40,8 +39,7 @@ import java.util.List;
 @Order(0)
 public class NacosPropertySourceLocator implements PropertySourceLocator {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(NacosPropertySourceLocator.class);
+	private static final Log log = LogFactory.getLog(NacosPropertySourceLocator.class);
 	private static final String NACOS_PROPERTY_SOURCE_NAME = "NACOS";
 	private static final String SEP1 = "-";
 	private static final String DOT = ".";
@@ -49,13 +47,13 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
 			"yaml", "yml");
 
-	@Autowired
+	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
+
 	private NacosConfigProperties nacosConfigProperties;
 
-	public NacosPropertySourceLocator() {
+	public NacosPropertySourceLocator(NacosConfigProperties nacosConfigProperties) {
+		this.nacosConfigProperties = nacosConfigProperties;
 	}
-
-	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
 
 	@Override
 	public PropertySource<?> locate(Environment env) {
@@ -63,8 +61,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		ConfigService configService = nacosConfigProperties.configServiceInstance();
 
 		if (null == configService) {
-			LOGGER.warn(
-					"no instance of config service found, can't load config from nacos");
+			log.warn("no instance of config service found, can't load config from nacos");
 			return null;
 		}
 		long timeout = nacosConfigProperties.getTimeout();
@@ -167,7 +164,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,
 			final String dataId, final String group, String fileExtension,
 			boolean isRefreshable) {
-		if (NacosContextRefresher.loadCount.get() != 0) {
+		if (NacosContextRefresher.getRefreshCount() != 0) {
 			NacosPropertySource ps;
 			if (!isRefreshable) {
 				ps = NacosPropertySourceRepository.getNacosPropertySource(dataId);
@@ -187,13 +184,18 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private static void checkDataIdFileExtension(String[] sharedDataIdArry) {
 		StringBuilder stringBuilder = new StringBuilder();
-		outline: for (int i = 0; i < sharedDataIdArry.length; i++) {
+		for (int i = 0; i < sharedDataIdArry.length; i++) {
+			boolean isLegal = false;
 			for (String fileExtension : SUPPORT_FILE_EXTENSION) {
 				if (sharedDataIdArry[i].indexOf(fileExtension) > 0) {
-					continue outline;
+					isLegal = true;
+					break;
 				}
 			}
-			stringBuilder.append(sharedDataIdArry[i] + ",");
+			// add tips
+			if (!isLegal) {
+				stringBuilder.append(sharedDataIdArry[i] + ",");
+			}
 		}
 
 		if (stringBuilder.length() > 0) {

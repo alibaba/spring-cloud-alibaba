@@ -23,7 +23,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaojing
@@ -65,7 +69,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		nacosServiceInstance.setHost(instance.getIp());
 		nacosServiceInstance.setPort(instance.getPort());
 		nacosServiceInstance.setServiceId(serviceId);
-		Map<String, String> metadata = new HashMap<String, String>();
+		Map<String, String> metadata = new HashMap<>();
 		metadata.put("instanceId", instance.getInstanceId());
 		metadata.put("weight", instance.getWeight() + "");
 		metadata.put("healthy", instance.isHealthy() + "");
@@ -82,7 +86,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 
 	private static List<ServiceInstance> hostToServiceInstanceList(
 			List<Instance> instances, String serviceId) {
-		List<ServiceInstance> result = new ArrayList<ServiceInstance>(instances.size());
+		List<ServiceInstance> result = new ArrayList<>(instances.size());
 		for (Instance instance : instances) {
 			result.add(hostToServiceInstance(instance, serviceId));
 		}

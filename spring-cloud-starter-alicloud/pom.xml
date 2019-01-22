@@ -15,5 +15,28 @@
         <module>spring-cloud-starter-alicloud-acm</module>
         <module>spring-cloud-starter-alicloud-ans</module>
         <module>spring-cloud-starter-alicloud-schedulerx</module>
+        <module>spring-cloud-starter-alicloud-sms</module>
     </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>true</skip>
+                    <check/>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
