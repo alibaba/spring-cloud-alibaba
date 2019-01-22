@@ -92,6 +92,9 @@ public class RocketMQMessageChannelBinder extends
 								TransactionCheckListener.class));
 			}
 
+			if (errorChannel != null) {
+				messageHandler.setSendFailureChannel(errorChannel);
+			}
 			return messageHandler;
 		}
 		else {
@@ -107,7 +110,7 @@ public class RocketMQMessageChannelBinder extends
 			throws Exception {
 		if (group == null || "".equals(group)) {
 			throw new RuntimeException(
-					"'group must be configured for channel + " + destination.getName());
+					"'group must be configured for channel " + destination.getName());
 		}
 
 		RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(

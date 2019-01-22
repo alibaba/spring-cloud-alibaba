@@ -23,6 +23,8 @@
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
+        <module>nacos-example/nacos-gateway-example</module>
+        <module>env-extension</module>
         <module>oss-example</module>
         <module>ans-example/ans-consumer-feign-example</module>
         <module>ans-example/ans-consumer-ribbon-example</module>
@@ -34,6 +36,14 @@
     </modules>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -43,6 +53,16 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>true</skip>
+                    <check/>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
