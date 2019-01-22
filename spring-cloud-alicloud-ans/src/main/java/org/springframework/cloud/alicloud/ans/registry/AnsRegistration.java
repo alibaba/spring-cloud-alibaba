@@ -35,9 +35,9 @@ import org.springframework.util.StringUtils;
  */
 public class AnsRegistration implements Registration, ServiceInstance {
 
-	private static final String MANAGEMENT_PORT = "management.port";
-	private static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
-	private static final String MANAGEMENT_ADDRESS = "management.address";
+	static final String MANAGEMENT_PORT = "management.port";
+	static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
+	static final String MANAGEMENT_ADDRESS = "management.address";
 
 	private AnsProperties ansProperties;
 	private ApplicationContext context;
