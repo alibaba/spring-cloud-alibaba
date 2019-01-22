@@ -46,10 +46,7 @@ import java.util.Set;
         MetadataResolver.class,
         MetadataConfigService.class
 })
-@AutoConfigureAfter(value = {
-        DubboMetadataAutoConfiguration.class,
-        DubboServiceRegistrationAutoConfiguration.class
-})
+@AutoConfigureAfter(value = {DubboMetadataAutoConfiguration.class})
 @Configuration
 public class DubboRestMetadataRegistrationAutoConfiguration {
 
