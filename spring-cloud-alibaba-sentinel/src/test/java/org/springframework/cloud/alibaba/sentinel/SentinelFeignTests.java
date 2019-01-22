@@ -16,14 +16,11 @@
 
 package org.springframework.cloud.alibaba.sentinel;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,10 +96,8 @@ public class SentinelFeignTests {
 				echoService.echo("test"));
 		assertEquals("Sentinel Feign Client fallbackFactory success", "foo fallback",
 				fooService.echo("test"));
-		assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-			barService.bar();
-		});
-
+		Assertions.assertThatCode(() -> barService.bar())
+				.doesNotThrowAnyException();
 		assertNotEquals("ToString method invoke was not in SentinelInvocationHandler",
 				echoService.toString(), fooService.toString());
 		assertNotEquals("HashCode method invoke was not in SentinelInvocationHandler",
