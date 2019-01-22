@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.alicloud.ans;
 
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -27,6 +28,7 @@ import org.springframework.cloud.alicloud.ans.registry.AnsRegistration;
 import org.springframework.cloud.alicloud.ans.registry.AnsServiceRegistry;
 import org.springframework.cloud.alicloud.context.ans.AnsProperties;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration;
+import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +46,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnAnsEnabled
 @AutoConfigureBefore({ AutoServiceRegistrationAutoConfiguration.class,
 		AnsDiscoveryClientAutoConfiguration.class })
+@AutoConfigureAfter(AutoServiceRegistrationConfiguration.class)
 public class AnsAutoConfiguration {
 
 	@Bean
