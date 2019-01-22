@@ -17,14 +17,14 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <sentinel.version>1.4.0</sentinel.version>
+        <sentinel.version>1.4.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
         <nacos.client.version>0.6.2</nacos.client.version>
         <nacos.config.version>0.6.1</nacos.config.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
-        <alicloud.context.version>1.0.4</alicloud.context.version>
+        <alicloud.context.version>1.0.5</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
