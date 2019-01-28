@@ -160,7 +160,7 @@ public class NacosDiscoveryProperties {
 			else {
 				NetworkInterface netInterface = NetworkInterface
 						.getByName(networkInterface);
-				if (null == networkInterface) {
+				if (null == netInterface) {
 					throw new IllegalArgumentException(
 							"no such interface " + networkInterface);
 				}
