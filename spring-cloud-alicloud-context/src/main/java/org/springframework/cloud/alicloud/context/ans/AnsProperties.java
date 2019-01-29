@@ -94,7 +94,7 @@ public class AnsProperties implements AnsConfiguration {
 	private String clientCluster = "DEFAULT";
 
 	/**
-	 * Unsupported.
+	 * Temporarily not supported, reserved fields.
 	 */
 	private Map<String, String> clientMetadata = new HashMap<>();
 
