@@ -121,7 +121,7 @@ During the incubation period, the version management of the project will follow 
 
 
 ## Code of Conduct
-This project adheres to the Contributor Covenant code of conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
+This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
 
 ## Code Conventions and Housekeeping
 None of these is essential for a pull request, but they will all help. They can also be added after the original pull request but before a merge.
