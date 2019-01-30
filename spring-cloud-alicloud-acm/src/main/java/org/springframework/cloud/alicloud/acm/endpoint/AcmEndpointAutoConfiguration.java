@@ -49,6 +49,7 @@ public class AcmEndpointAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public AcmHealthIndicator acmHealthIndicator(AcmProperties acmProperties,
 			AcmPropertySourceRepository acmPropertySourceRepository) {
 		return new AcmHealthIndicator(acmProperties, acmPropertySourceRepository);
