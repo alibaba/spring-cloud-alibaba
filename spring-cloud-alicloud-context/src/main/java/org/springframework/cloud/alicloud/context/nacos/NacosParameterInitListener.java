@@ -27,12 +27,13 @@ public class NacosParameterInitListener
 		EdasChangeOrderConfiguration edasChangeOrderConfiguration = EdasChangeOrderConfigurationFactory
 				.getEdasChangeOrderConfiguration();
 
-		log.info("Initialize Nacos Parameter from edas change order,is edas managed {}.",
-				edasChangeOrderConfiguration.isEdasManaged());
-
 		if (!edasChangeOrderConfiguration.isEdasManaged()) {
 			return;
 		}
+
+		log.info("Initialize Nacos Parameter from edas change order,is edas managed {}.",
+				edasChangeOrderConfiguration.isEdasManaged());
+
 		// initialize nacos configuration
 		System.getProperties().setProperty("spring.cloud.nacos.config.server-addr", "");
 		System.getProperties().setProperty("spring.cloud.nacos.config.endpoint",

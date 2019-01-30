@@ -34,7 +34,7 @@ public class OssEndpointAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
-	public OssEndpoint sentinelEndPoint() {
+	public OssEndpoint ossEndpoint() {
 		return new OssEndpoint();
 	}
 
