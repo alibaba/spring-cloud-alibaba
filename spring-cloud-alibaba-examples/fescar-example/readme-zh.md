@@ -15,11 +15,11 @@
 
 1. 配置数据库
 
-1. Create UNDO_LOG table
+1. 创建 UNDO_LOG 表
 
-1. Create tables for examples business
+1. 创建 示例中 业务所需要的数据库表
 
-1. Start Fescar Server
+1. 启动 Fescar Server
 
 
 ### 配置数据库
