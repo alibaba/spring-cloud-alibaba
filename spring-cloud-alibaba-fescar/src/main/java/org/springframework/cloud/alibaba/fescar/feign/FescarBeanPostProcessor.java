@@ -24,16 +24,16 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  */
 final class FescarBeanPostProcessor implements BeanPostProcessor {
 
-	private final FescarFeignObjectWrapper eagleEyeFeignObjectWrapper;
+	private final FescarFeignObjectWrapper fescarFeignObjectWrapper;
 
-	FescarBeanPostProcessor(FescarFeignObjectWrapper eagleEyeFeignObjectWrapper) {
-		this.eagleEyeFeignObjectWrapper = eagleEyeFeignObjectWrapper;
+	FescarBeanPostProcessor(FescarFeignObjectWrapper fescarFeignObjectWrapper) {
+		this.fescarFeignObjectWrapper = fescarFeignObjectWrapper;
 	}
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName)
 			throws BeansException {
-		return this.eagleEyeFeignObjectWrapper.wrap(bean);
+		return this.fescarFeignObjectWrapper.wrap(bean);
 	}
 
 	@Override

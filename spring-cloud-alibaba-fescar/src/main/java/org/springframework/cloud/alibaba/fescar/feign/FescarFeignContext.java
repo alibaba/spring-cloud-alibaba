@@ -31,9 +31,9 @@ public class FescarFeignContext extends FeignContext {
 	private final FescarFeignObjectWrapper fescarFeignObjectWrapper;
 	private final FeignContext delegate;
 
-	FescarFeignContext(FescarFeignObjectWrapper eagleEyeFeignObjectWrapper,
+	FescarFeignContext(FescarFeignObjectWrapper fescarFeignObjectWrapper,
 			FeignContext delegate) {
-		this.fescarFeignObjectWrapper = eagleEyeFeignObjectWrapper;
+		this.fescarFeignObjectWrapper = fescarFeignObjectWrapper;
 		this.delegate = delegate;
 	}
 

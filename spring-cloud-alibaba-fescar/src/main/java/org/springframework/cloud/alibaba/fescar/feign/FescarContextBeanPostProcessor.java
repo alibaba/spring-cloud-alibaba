@@ -27,7 +27,7 @@ import org.springframework.cloud.openfeign.FeignContext;
 public class FescarContextBeanPostProcessor implements BeanPostProcessor {
 
 	private final BeanFactory beanFactory;
-	private FescarFeignObjectWrapper eagleEyeFeignObjectWrapper;
+	private FescarFeignObjectWrapper fescarFeignObjectWrapper;
 
 	FescarContextBeanPostProcessor(BeanFactory beanFactory) {
 		this.beanFactory = beanFactory;
@@ -37,7 +37,7 @@ public class FescarContextBeanPostProcessor implements BeanPostProcessor {
 	public Object postProcessBeforeInitialization(Object bean, String beanName)
 			throws BeansException {
 		if (bean instanceof FeignContext && !(bean instanceof FescarFeignContext)) {
-			return new FescarFeignContext(getEagleEyeFeignObjectWrapper(),
+			return new FescarFeignContext(getFescarFeignObjectWrapper(),
 					(FeignContext) bean);
 		}
 		return bean;
@@ -49,11 +49,11 @@ public class FescarContextBeanPostProcessor implements BeanPostProcessor {
 		return bean;
 	}
 
-	private FescarFeignObjectWrapper getEagleEyeFeignObjectWrapper() {
-		if (this.eagleEyeFeignObjectWrapper == null) {
-			this.eagleEyeFeignObjectWrapper = this.beanFactory
+	private FescarFeignObjectWrapper getFescarFeignObjectWrapper() {
+		if (this.fescarFeignObjectWrapper == null) {
+			this.fescarFeignObjectWrapper = this.beanFactory
 					.getBean(FescarFeignObjectWrapper.class);
 		}
-		return this.eagleEyeFeignObjectWrapper;
+		return this.fescarFeignObjectWrapper;
 	}
 }
