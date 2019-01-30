@@ -1,5 +1,10 @@
 # Spring Cloud Alibaba
 
+[![CircleCI](https://circleci.com/gh/spring-cloud-incubator/spring-cloud-alibaba/tree/master.svg?style=svg)](https://circleci.com/gh/spring-cloud-incubator/spring-cloud-alibaba/tree/master)
+[![Maven Central](https://img.shields.io/maven-central/v/org.springframework.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:org.springframework.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
+[![Codecov](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba/branch/master/graph/badge.svg)](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+
 A project maintained by Alibaba.
 
 See the [中文文档](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/README-zh.md) for Chinese readme.
@@ -114,6 +119,28 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 During the incubation period, the version management of the project will follow these rules：
 * Functional updates will be reflected in the 3rd number of the version, for example, the next version of 0.1.0 will be 0.1.1.
 
+
+## Code of Conduct
+This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
+
+## Code Conventions and Housekeeping
+None of these is essential for a pull request, but they will all help. They can also be added after the original pull request but before a merge.
+
+Use the Spring Framework code format conventions. If you use Eclipse you can import formatter settings using the eclipse-code-formatter.xml file from the Spring Cloud Build project. If using IntelliJ, you can use the Eclipse Code Formatter Plugin to import the same file.
+
+Make sure all new .java files to have a simple Javadoc class comment with at least an @author tag identifying you, and preferably at least a paragraph on what the class is for.
+
+Add the ASF license header comment to all new .java files (copy from existing files in the project)
+
+Add yourself as an @author to the .java files that you modify substantially (more than cosmetic changes).
+
+Add some Javadocs and, if you change the namespace, some XSD doc elements.
+
+A few unit tests would help a lot as well — someone has to do it.
+
+If no-one else is using your branch, please rebase it against the current master (or other target branch in the main project).
+
+When writing a commit message please follow these conventions, if you are fixing an existing issue please add Fixes gh-XXXX at the end of the commit message (where XXXX is the issue number).
 
 ## Contact Us
 Mailing list is recommended for discussing almost anything related to spring-cloud-alibaba. 

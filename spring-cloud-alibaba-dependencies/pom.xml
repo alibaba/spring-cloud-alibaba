@@ -17,17 +17,21 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <sentinel.version>1.4.0</sentinel.version>
+        <sentinel.version>1.4.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.client.version>0.6.2</nacos.client.version>
-        <nacos.config.version>0.6.1</nacos.config.version>
+        <nacos.client.version>0.8.0</nacos.client.version>
+        <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
-        <alicloud.context.version>1.0.4</alicloud.context.version>
+        <alicloud.context.version>1.0.5</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
+        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
+        <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
+        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
+        <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
     </properties>
 
     <dependencyManagement>
@@ -69,6 +73,19 @@
                 <groupId>com.alibaba.edas</groupId>
                 <artifactId>schedulerX-client</artifactId>
                 <version>${schedulerX.client.version}</version>
+            </dependency>
+
+            <!-- SMS -->
+            <dependency>
+                <groupId>com.aliyun.mns</groupId>
+                <artifactId>aliyun-sdk-mns</artifactId>
+                <version>${aliyun.sdk.mns}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+                <version>${aliyun.java.sdk.dysmsapi}</version>
             </dependency>
 
             <!--Nacos-->
@@ -215,6 +232,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alicloud-sms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alicloud-context</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -283,6 +305,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- SMS -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- Testing Dependencies -->
 
         </dependencies>
@@ -343,4 +372,26 @@
             </pluginRepositories>
         </profile>
     </profiles>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>true</skip>
+                    <check/>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

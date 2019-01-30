@@ -27,7 +27,7 @@ public class AbstractDataSourceProperties {
 	private RuleType ruleType;
 	private String converterClass;
 	@JsonIgnore
-	protected String factoryBeanName;
+	private final String factoryBeanName;
 
 	public AbstractDataSourceProperties(String factoryBeanName) {
 		this.factoryBeanName = factoryBeanName;
@@ -59,10 +59,6 @@ public class AbstractDataSourceProperties {
 
 	public String getFactoryBeanName() {
 		return factoryBeanName;
-	}
-
-	public void setFactoryBeanName(String factoryBeanName) {
-		this.factoryBeanName = factoryBeanName;
 	}
 
 	public void preCheck(String dataSourceName) {
