@@ -65,19 +65,19 @@ public class FescarFeignClientAutoConfiguration {
 	protected static class FeignBeanPostProcessorConfiguration {
 
 		@Bean
-		FescarBeanPostProcessor eagleEyeBeanPostProcessor(
-				FescarFeignObjectWrapper eagleEyeFeignObjectWrapper) {
-			return new FescarBeanPostProcessor(eagleEyeFeignObjectWrapper);
+		FescarBeanPostProcessor fescarBeanPostProcessor(
+				FescarFeignObjectWrapper fescarFeignObjectWrapper) {
+			return new FescarBeanPostProcessor(fescarFeignObjectWrapper);
 		}
 
 		@Bean
-		FescarContextBeanPostProcessor eagleEyeContextBeanPostProcessor(
+		FescarContextBeanPostProcessor fescarContextBeanPostProcessor(
 				BeanFactory beanFactory) {
 			return new FescarContextBeanPostProcessor(beanFactory);
 		}
 
 		@Bean
-		FescarFeignObjectWrapper eagleEyeFeignObjectWrapper(BeanFactory beanFactory) {
+		FescarFeignObjectWrapper fescarFeignObjectWrapper(BeanFactory beanFactory) {
 			return new FescarFeignObjectWrapper(beanFactory);
 		}
 	}
