@@ -25,6 +25,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,7 @@ public class AnsAutoServiceRegistrationIpNetworkInterfaceTests {
 	private InetUtils inetUtils;
 
 	@Test
+	@Ignore
 	public void contextLoads() throws Exception {
 
 		assertNotNull("AnsRegistration was not created", registration);
