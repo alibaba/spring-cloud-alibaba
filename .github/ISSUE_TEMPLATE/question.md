@@ -7,6 +7,10 @@ assignees: ''
 
 ---
 
+我们鼓励使用英文，如果不能直接使用，可以使用翻译软件，您仍旧可以保留中文原文。
+We recommend using English. If you are non-native English speaker, you can use the translation software. 
+
+
 **Which Component**
 eg. Nacos Discovery, Sentinel
 
