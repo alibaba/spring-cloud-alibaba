@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnNacosDiscoveryEnabled
 @ConditionalOnClass(name = "org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent")
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
-@AutoConfigureAfter({ AutoServiceRegistrationAutoConfiguration.class })
+@AutoConfigureAfter(AutoServiceRegistrationAutoConfiguration.class)
 public class NacosDiscoveryAutoConfiguration {
 
 	@Bean
