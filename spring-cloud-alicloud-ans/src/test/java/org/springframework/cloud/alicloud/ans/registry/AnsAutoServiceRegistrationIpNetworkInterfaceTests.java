@@ -64,7 +64,6 @@ public class AnsAutoServiceRegistrationIpNetworkInterfaceTests {
 	private InetUtils inetUtils;
 
 	@Test
-	@Ignore
 	public void contextLoads() throws Exception {
 
 		assertNotNull("AnsRegistration was not created", registration);
@@ -132,7 +131,7 @@ public class AnsAutoServiceRegistrationIpNetworkInterfaceTests {
 							hasValidNetworkInterface = true;
 							netWorkInterfaceName = networkInterface.getName();
 							System.setProperty(
-									"spring.cloud.alicloud.ans.client-interface-ame",
+									"spring.cloud.alicloud.ans.client-interface-name",
 									networkInterface.getName());
 							break;
 						}
