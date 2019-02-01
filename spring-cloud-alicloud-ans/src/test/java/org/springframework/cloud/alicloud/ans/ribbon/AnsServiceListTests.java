@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.ans.ribbon;
+package org.springframework.cloud.alicloud.ans.ribbon;
 
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-import org.springframework.cloud.alicloud.ans.ribbon.AnsServer;
-import org.springframework.cloud.alicloud.ans.ribbon.AnsServerList;
 
 import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 import com.netflix.loadbalancer.Server;
