@@ -30,7 +30,7 @@
         <rocketmq.version>4.3.1</rocketmq.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
         <dubbo.version>2.6.5</dubbo.version>
-        <dubbo-spring-boot.version>0.2.1-SNAPSHOT</dubbo-spring-boot.version>
+        <dubbo-spring-boot.version>0.2.1.RELEASE</dubbo-spring-boot.version>
         <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
