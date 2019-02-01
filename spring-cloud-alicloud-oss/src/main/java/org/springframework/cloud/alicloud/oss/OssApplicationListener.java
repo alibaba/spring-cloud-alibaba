@@ -26,22 +26,23 @@ import org.springframework.context.event.ContextClosedEvent;
 import com.aliyun.oss.OSS;
 
 /**
- * Shutdown All OSS Clients when {@code ApplicationContext} gets closed {@link ApplicationListener}
+ * Shutdown All OSS Clients when {@code ApplicationContext} gets closed
+ * {@link ApplicationListener}
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class OssApplicationListener implements ApplicationListener<ContextClosedEvent> {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(OssApplicationListener.class);
 
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
 		Map<String, OSS> ossClientMap = event.getApplicationContext()
 				.getBeansOfType(OSS.class);
-		logger.info("{} OSSClients will be shutdown soon", ossClientMap.size());
+		log.info("{} OSSClients will be shutdown soon", ossClientMap.size());
 		ossClientMap.keySet().forEach(beanName -> {
-			logger.info("shutdown ossClient: {}", beanName);
+			log.info("shutdown ossClient: {}", beanName);
 			ossClientMap.get(beanName).shutdown();
 		});
 	}

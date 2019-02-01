@@ -19,8 +19,9 @@
     <properties>
         <sentinel.version>1.4.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.client.version>0.6.2</nacos.client.version>
-        <nacos.config.version>0.6.1</nacos.config.version>
+        <fescar.version>0.1.3</fescar.version>
+        <nacos.client.version>0.8.0</nacos.client.version>
+        <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
@@ -179,6 +180,29 @@
             </dependency>
 
 
+            <!--Alibaba Fescar-->
+
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-core</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-common</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-spring</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-rm-datasource</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+
             <!-- Aliyun OSS dependencies -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
@@ -263,6 +287,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-fescar</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alicloud-acm</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -301,6 +330,12 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-fescar</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
