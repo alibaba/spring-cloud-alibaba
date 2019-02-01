@@ -16,14 +16,13 @@
 
 package org.springframework.cloud.alibaba.sentinel;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

@@ -16,14 +16,13 @@
 
 package org.springframework.cloud.alicloud.ans.ribbon;
 
+import com.netflix.client.config.IClientConfig;
+import com.netflix.loadbalancer.ServerList;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.alicloud.ans.migrate.MigrateOnConditionMissingClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-
-import com.netflix.client.config.IClientConfig;
-import com.netflix.loadbalancer.ServerList;
 
 /**
  * @author xiaolongzuo
