@@ -28,33 +28,25 @@ import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationM
  */
 public class RocketMQBinderHealthIndicator extends AbstractHealthIndicator {
 
-	@Autowired(required = false)
+	@Autowired
 	private InstrumentationManager instrumentationManager;
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
-		if (instrumentationManager != null) {
-			if (instrumentationManager.getHealthInstrumentations().stream()
-					.allMatch(Instrumentation::isUp)) {
-				builder.up();
-				return;
-			}
-			if (instrumentationManager.getHealthInstrumentations().stream()
-					.allMatch(Instrumentation::isOutOfService)) {
-				builder.outOfService();
-				return;
-			}
-			builder.down();
-			instrumentationManager.getHealthInstrumentations().stream()
-					.filter(instrumentation -> !instrumentation.isStarted())
-					.forEach(instrumentation1 -> builder
-							.withException(instrumentation1.getStartException()));
+		if (instrumentationManager.getHealthInstrumentations().stream()
+				.allMatch(Instrumentation::isUp)) {
+			builder.up();
+			return;
 		}
-		else {
-			builder.down();
-			builder.withDetail("warning",
-					"please add metrics-core dependency, we use it for metrics");
+		if (instrumentationManager.getHealthInstrumentations().stream()
+				.allMatch(Instrumentation::isOutOfService)) {
+			builder.outOfService();
+			return;
 		}
-
+		builder.down();
+		instrumentationManager.getHealthInstrumentations().stream()
+				.filter(instrumentation -> !instrumentation.isStarted())
+				.forEach(instrumentation1 -> builder
+						.withException(instrumentation1.getStartException()));
 	}
 }
