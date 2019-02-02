@@ -16,16 +16,18 @@
 
 package org.springframework.cloud.stream.binder.rocketmq;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
-import org.apache.rocketmq.client.producer.TransactionCheckListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
-import org.springframework.cloud.stream.binder.rocketmq.consuming.ConsumersManager;
+import org.springframework.cloud.stream.binder.rocketmq.consuming.RocketMQListenerBindingContainer;
 import org.springframework.cloud.stream.binder.rocketmq.integration.RocketMQInboundChannelAdapter;
 import org.springframework.cloud.stream.binder.rocketmq.integration.RocketMQMessageHandler;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
@@ -39,10 +41,10 @@ import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.util.ClassUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class RocketMQMessageChannelBinder extends
@@ -50,21 +52,19 @@ public class RocketMQMessageChannelBinder extends
 		implements
 		ExtendedPropertiesBinder<MessageChannel, RocketMQConsumerProperties, RocketMQProducerProperties> {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(RocketMQMessageChannelBinder.class);
-
 	private final RocketMQExtendedBindingProperties extendedBindingProperties;
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 	private final InstrumentationManager instrumentationManager;
-	private final ConsumersManager consumersManager;
 
-	public RocketMQMessageChannelBinder(ConsumersManager consumersManager,
+	private Set<String> clientConfigId = new HashSet<>();
+	private Map<String, String> topicInUse = new HashMap<>();
+
+	public RocketMQMessageChannelBinder(
 			RocketMQExtendedBindingProperties extendedBindingProperties,
 			RocketMQTopicProvisioner provisioningProvider,
 			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
 			InstrumentationManager instrumentationManager) {
 		super(null, provisioningProvider);
-		this.consumersManager = consumersManager;
 		this.extendedBindingProperties = extendedBindingProperties;
 		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
 		this.instrumentationManager = instrumentationManager;
@@ -75,22 +75,53 @@ public class RocketMQMessageChannelBinder extends
 			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
 			MessageChannel errorChannel) throws Exception {
 		if (producerProperties.getExtension().getEnabled()) {
-			RocketMQMessageHandler messageHandler = new RocketMQMessageHandler(
-					destination.getName(), producerProperties,
-					rocketBinderConfigurationProperties, instrumentationManager);
+
+			RocketMQTemplate rocketMQTemplate;
 			if (producerProperties.getExtension().getTransactional()) {
-				// transaction message check LocalTransactionExecuter
-				messageHandler.setLocalTransactionExecuter(
-						getClassConfiguration(destination.getName(),
-								producerProperties.getExtension().getExecuter(),
-								LocalTransactionExecuter.class));
-				// transaction message check TransactionCheckListener
-				messageHandler.setTransactionCheckListener(
-						getClassConfiguration(destination.getName(),
-								producerProperties.getExtension()
-										.getTransactionCheckListener(),
-								TransactionCheckListener.class));
+				Map<String, RocketMQTemplate> rocketMQTemplates = getBeanFactory()
+						.getBeansOfType(RocketMQTemplate.class);
+				if (rocketMQTemplates.size() == 0) {
+					throw new IllegalStateException(
+							"there is no RocketMQTemplate in Spring BeanFactory");
+				}
+				else if (rocketMQTemplates.size() > 1) {
+					throw new IllegalStateException(
+							"there is more than 1 RocketMQTemplates in Spring BeanFactory");
+				}
+				rocketMQTemplate = rocketMQTemplates.values().iterator().next();
+				clientConfigId.add(rocketMQTemplate.getProducer().buildMQClientId());
 			}
+			else {
+				rocketMQTemplate = new RocketMQTemplate();
+				rocketMQTemplate.setObjectMapper(this.getApplicationContext()
+						.getBeansOfType(ObjectMapper.class).values().iterator().next());
+				DefaultMQProducer producer = new DefaultMQProducer(destination.getName());
+				producer.setNamesrvAddr(
+						rocketBinderConfigurationProperties.getNamesrvAddr());
+				producer.setSendMsgTimeout(
+						producerProperties.getExtension().getSendMessageTimeout());
+				producer.setRetryTimesWhenSendFailed(
+						producerProperties.getExtension().getRetryTimesWhenSendFailed());
+				producer.setRetryTimesWhenSendAsyncFailed(producerProperties
+						.getExtension().getRetryTimesWhenSendAsyncFailed());
+				producer.setCompressMsgBodyOverHowmuch(producerProperties.getExtension()
+						.getCompressMessageBodyThreshold());
+				producer.setRetryAnotherBrokerWhenNotStoreOK(
+						producerProperties.getExtension().isRetryNextServer());
+				producer.setMaxMessageSize(
+						producerProperties.getExtension().getMaxMessageSize());
+				producer.setVipChannelEnabled(
+						producerProperties.getExtension().getVipChannelEnabled());
+				rocketMQTemplate.setProducer(producer);
+				clientConfigId.add(producer.buildMQClientId());
+			}
+
+			RocketMQMessageHandler messageHandler = new RocketMQMessageHandler(
+					rocketMQTemplate, destination.getName(),
+					producerProperties.getExtension().getTransactional(),
+					instrumentationManager);
+			messageHandler.setBeanFactory(this.getApplicationContext().getBeanFactory());
+			messageHandler.setSync(producerProperties.getExtension().getSync());
 
 			if (errorChannel != null) {
 				messageHandler.setSendFailureChannel(errorChannel);
@@ -113,9 +144,22 @@ public class RocketMQMessageChannelBinder extends
 					"'group must be configured for channel " + destination.getName());
 		}
 
+		RocketMQListenerBindingContainer listenerContainer = new RocketMQListenerBindingContainer(
+				consumerProperties, this);
+		listenerContainer.setConsumerGroup(group);
+		listenerContainer.setTopic(destination.getName());
+		listenerContainer.setConsumeThreadMax(consumerProperties.getConcurrency());
+		listenerContainer.setSuspendCurrentQueueTimeMillis(
+				consumerProperties.getExtension().getSuspendCurrentQueueTimeMillis());
+		listenerContainer.setDelayLevelWhenNextConsume(
+				consumerProperties.getExtension().getDelayLevelWhenNextConsume());
+		listenerContainer
+				.setNameServer(rocketBinderConfigurationProperties.getNamesrvAddr());
+
 		RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(
-				consumersManager, consumerProperties, destination.getName(), group,
-				instrumentationManager);
+				listenerContainer, consumerProperties, instrumentationManager);
+
+		topicInUse.put(destination.getName(), group);
 
 		ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination,
 				group, consumerProperties);
@@ -143,45 +187,11 @@ public class RocketMQMessageChannelBinder extends
 		return extendedBindingProperties.getExtendedProducerProperties(channelName);
 	}
 
-	private <T> T getClassConfiguration(String destName, String className,
-			Class<T> interfaceClass) {
-		if (StringUtils.isEmpty(className)) {
-			throw new RuntimeException("Binding for channel " + destName
-					+ " using transactional message, should set "
-					+ interfaceClass.getSimpleName() + " configuration"
-					+ interfaceClass.getSimpleName() + " should be set, like "
-					+ "'spring.cloud.stream.rocketmq.bindings.output.producer.xxx=TheFullClassNameOfYour"
-					+ interfaceClass.getSimpleName() + "'");
-		}
-		else if (StringUtils.isNotEmpty(className)) {
-			Class fieldClass;
-			// check class exists
-			try {
-				fieldClass = ClassUtils.forName(className,
-						RocketMQMessageChannelBinder.class.getClassLoader());
-			}
-			catch (ClassNotFoundException e) {
-				throw new RuntimeException("Binding for channel " + destName
-						+ " using transactional message, but " + className
-						+ " class is not found");
-			}
-			// check interface incompatible
-			if (!interfaceClass.isAssignableFrom(fieldClass)) {
-				throw new RuntimeException("Binding for channel " + destName
-						+ " using transactional message, but " + className
-						+ " is incompatible with " + interfaceClass.getSimpleName()
-						+ " interface");
-			}
-			try {
-				return (T) fieldClass.newInstance();
-			}
-			catch (Exception e) {
-				throw new RuntimeException("Binding for channel " + destName
-						+ " using transactional message, but " + className
-						+ " instance error", e);
-			}
-		}
-		return null;
+	public Set<String> getClientConfigId() {
+		return clientConfigId;
 	}
 
+	public Map<String, String> getTopicInUse() {
+		return topicInUse;
+	}
 }

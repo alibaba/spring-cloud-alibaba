@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.binder.rocketmq.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 
 /**
  * @author Timur Valiev
@@ -25,9 +26,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.cloud.stream.rocketmq.binder")
 public class RocketMQBinderConfigurationProperties {
 
-	private String namesrvAddr = "127.0.0.1:9876";
-
-	private String logLevel = "ERROR";
+	private String namesrvAddr = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
 
 	public String getNamesrvAddr() {
 		return namesrvAddr;
@@ -35,14 +34,6 @@ public class RocketMQBinderConfigurationProperties {
 
 	public void setNamesrvAddr(String namesrvAddr) {
 		this.namesrvAddr = namesrvAddr;
-	}
-
-	public String getLogLevel() {
-		return logLevel;
-	}
-
-	public void setLogLevel(String logLevel) {
-		this.logLevel = logLevel;
 	}
 
 }
