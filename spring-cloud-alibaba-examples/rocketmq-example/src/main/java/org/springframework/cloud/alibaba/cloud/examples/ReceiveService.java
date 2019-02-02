@@ -25,11 +25,6 @@ public class ReceiveService {
 		System.out.println("input3 receive: " + foo);
 	}
 
-	@StreamListener("input1")
-	public void receiveInput1Again(String receiveMsg) {
-		System.out.println("input1 receive again: " + receiveMsg);
-	}
-
     @StreamListener("input4")
     public void receiveTransactionalMsg(String transactionMsg) {
         System.out.println("input4 receive transaction msg: " + transactionMsg);

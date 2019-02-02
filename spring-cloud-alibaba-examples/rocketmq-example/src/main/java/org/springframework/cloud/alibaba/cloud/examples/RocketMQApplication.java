@@ -89,9 +89,9 @@ public class RocketMQApplication {
 			senderService.sendTransactionalMsg("transactional-msg1", false);
 			// ROLLBACK_MESSAGE message
 			senderService.sendTransactionalMsg("transactional-msg2", true);
-            // ROLLBACK_MESSAGE message
+			// ROLLBACK_MESSAGE message
 			senderService.sendTransactionalMsg("transactional-msg3", true);
-            // COMMIT_MESSAGE message
+			// COMMIT_MESSAGE message
 			senderService.sendTransactionalMsg("transactional-msg4", false);
 		}
 	}
