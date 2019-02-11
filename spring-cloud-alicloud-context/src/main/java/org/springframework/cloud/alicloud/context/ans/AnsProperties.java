@@ -42,84 +42,94 @@ import com.alibaba.cloud.context.ans.AnsConfiguration;
 public class AnsProperties implements AnsConfiguration {
 
 	/**
-	 * 服务端模式，默认为LOCAL
+	 * Server side mode，the default is LOCAL.
 	 */
 	private AliCloudServerMode serverMode = AliCloudServerMode.LOCAL;
 
 	/**
-	 * 服务端列表
+	 * Server list.
 	 */
 	private String serverList = "127.0.0.1";
 
 	/**
-	 * 服务端列表
+	 * Server port.
 	 */
 	private String serverPort = "8080";
 
 	/**
-	 * 注册的服务名，默认从 spring.cloud.alicloud.ans.doms 中获取，当没有配置时，使用 spring.application.name
+	 * Service names，default value is ${spring.cloud.alicloud.ans.doms}. When not
+	 * configured, use ${spring.application.name}.
 	 */
 	@Value("${spring.cloud.alicloud.ans.client-domains:${spring.application.name:}}")
 	private String clientDomains;
 
 	/**
-	 * 注册服务的权重，从配置 spring.cloud.alicloud.ans.weight 中获取，默认为 1
+	 * The weight of the registration service, obtained from the configuration
+	 * ${spring.cloud.alicloud.ans.weight}, the default is 1.
 	 */
 	private float clientWeight = 1;
 
 	/**
-	 * 当存在多个doms，需要对应不同的 weight 时，通过 spring.cloud.alicloud.ans.weight.dom1=weight1 的方式配置
+	 * When there are multiple doms and need to correspond to different weights, configure
+	 * them by spring.cloud.alicloud.ans.weight.dom1=weight1.
 	 */
 	private Map<String, Float> clientWeights = new HashMap<String, Float>();
 
 	/**
-	 * 注册服务的 token ，从 spring.cloud.alicloud.ans.token 中获取
+	 * The token of the registration service, obtained from
+	 * ${spring.cloud.alicloud.ans.token}.
 	 */
 	private String clientToken;
 
 	/**
-	 * 当存在多个doms，需要对应不同的token时，通过 spring.cloud.alicloud.ans.tokens.dom1=token1 的方式配置
+	 * When there are multiple doms and need to correspond to different tokens, configure
+	 * them by spring.cloud.alicloud.ans.tokens.dom1=token1.
 	 */
 	private Map<String, String> clientTokens = new HashMap<String, String>();
 
 	/**
-	 * 配置注册到哪个集群，从 spring.cloud.alicloud.ans.cluster 中获取，默认为 DEFAULT
+	 * Configure which cluster to register with, obtained from
+	 * ${spring.cloud.alicloud.ans.cluster}, defaults to DEFAULT.
 	 */
 	private String clientCluster = "DEFAULT";
 
 	/**
-	 * metadata 实现 serviceInstance 接口所需的字段，但 ans 目前尚不支持此字段，配置了也没用
+	 * Temporarily not supported, reserved fields.
 	 */
 	private Map<String, String> clientMetadata = new HashMap<>();
 
 	/**
-	 * 默认打开注册，可以通过 spring.cloud.alicloud.ans.register-enabled=false 的配置来关闭注册
+	 * Registration is turned on by default, and registration can be turned off by the
+	 * configuration of spring.cloud.alicloud.ans.register-enabled=false.
 	 */
 	private boolean registerEnabled = true;
 
 	/**
-	 * 想要发布的服务的ip，从 spring.cloud.alicloud.ans.client-ip 中获取
+	 * The ip of the service you want to publish, obtained from
+	 * ${spring.cloud.alicloud.ans.client-ip}.
 	 */
 	private String clientIp;
 
 	/**
-	 * 想要发布的服务的ip从哪一块网卡中获取
+	 * Configure which NIC the ip of the service you want to publish is obtained from.
 	 */
 	private String clientInterfaceName;
 
 	/**
-	 * 想要发布的服务的端口，从 spring.cloud.alicloud.ans.port 中获取
+	 * The port of the service you want to publish.
 	 */
 	private int clientPort = -1;
 
 	/**
-	 * 租户下的环境隔离配置，相同租户的相同环境下的服务才能互相发现
+	 * The environment isolation configuration under the tenant, the services in the same
+	 * environment of the same tenant can discover each other.
 	 */
 	@Value("${spring.cloud.alicloud.ans.env:${env.id:DEFAULT}}")
 	private String env;
 
 	/**
-	 * 是否注册成 https 的形式，通过 spring.cloud.alicloud.ans.secure 来配置，默认为false
+	 * Whether to register as https, configured by ${spring.cloud.alicloud.ans.secure},
+	 * default is false.
 	 */
 	private boolean secure = false;
 
@@ -131,11 +141,10 @@ public class AnsProperties implements AnsConfiguration {
 	@PostConstruct
 	public void init() throws SocketException {
 
-		// 增加注册类型，标记为 spring cloud 应用
+		// Marked as spring cloud application
 		tags.put("ANS_SERVICE_TYPE", "SPRING_CLOUD");
 
 		if (StringUtils.isEmpty(clientIp)) {
-			// 如果没有指定注册的ip对应的网卡名，则通过遍历网卡去获取
 			if (StringUtils.isEmpty(clientInterfaceName)) {
 				clientIp = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 			}

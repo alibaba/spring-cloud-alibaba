@@ -1,0 +1,7 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.cloud.alibaba.fescar.rest.FescarRestTemplateAutoConfiguration,\
+org.springframework.cloud.alibaba.fescar.web.FescarHandlerInterceptorConfiguration,\
+org.springframework.cloud.alibaba.fescar.GlobalTransactionAutoConfiguration,\
+org.springframework.cloud.alibaba.fescar.feign.FescarFeignClientAutoConfiguration,\
+org.springframework.cloud.alibaba.fescar.feign.hystrix.FescarHystrixAutoConfiguration
+

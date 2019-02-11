@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: spring-cloud-alibaba-dubbo
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+
+eureka:
+  client:
+    enabled: false
+
+---
+spring:
+  profiles: eureka
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+        register-enabled: false
+
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/

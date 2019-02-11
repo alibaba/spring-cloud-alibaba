@@ -25,6 +25,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,7 +131,7 @@ public class AnsAutoServiceRegistrationIpNetworkInterfaceTests {
 							hasValidNetworkInterface = true;
 							netWorkInterfaceName = networkInterface.getName();
 							System.setProperty(
-									"spring.cloud.alicloud.ans.client-interface-ame",
+									"spring.cloud.alicloud.ans.client-interface-name",
 									networkInterface.getName());
 							break;
 						}

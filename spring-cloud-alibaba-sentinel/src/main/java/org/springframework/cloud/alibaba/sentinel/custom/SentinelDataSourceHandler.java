@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +13,8 @@ import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.cloud.alibaba.sentinel.SentinelConstants;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
-import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.AbstractDataSourceProperties;
-import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
-import org.springframework.cloud.alibaba.sentinel.datasource.config.NacosDataSourceProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
 import org.springframework.util.CollectionUtils;
@@ -29,8 +24,6 @@ import org.springframework.util.StringUtils;
 import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.slots.block.AbstractRule;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 
 /**
  * Sentinel {@link ReadableDataSource} Handler Handle the configurations of
@@ -63,27 +56,6 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 
 	@Override
 	public void afterSingletonsInstantiated() {
-		// commercialization
-		if (!StringUtils.isEmpty(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
-			Map<String, DataSourcePropertiesConfiguration> newDataSourceMap = new TreeMap<>(
-					String.CASE_INSENSITIVE_ORDER);
-			for (Map.Entry<String, DataSourcePropertiesConfiguration> entry : sentinelProperties
-					.getDatasource().entrySet()) {
-				if (entry.getValue().getValidDataSourceProperties()
-						.getClass() != NacosDataSourceProperties.class) {
-					newDataSourceMap.put(entry.getKey(), entry.getValue());
-				}
-			}
-			newDataSourceMap.put(SentinelConstants.FLOW_DATASOURCE_NAME,
-					new DataSourcePropertiesConfiguration(
-							NacosDataSourceProperties.buildFlowByEDAS()));
-			newDataSourceMap.put(SentinelConstants.DEGRADE_DATASOURCE_NAME,
-					new DataSourcePropertiesConfiguration(
-							NacosDataSourceProperties.buildDegradeByEDAS()));
-			sentinelProperties.setDatasource(newDataSourceMap);
-		}
-
 		sentinelProperties.getDatasource()
 				.forEach((dataSourceName, dataSourceProperties) -> {
 					try {
@@ -214,17 +186,6 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 
 		// register property in RuleManager
 		dataSourceProperties.postRegister(newDataSource);
-
-		// commercialization
-		if (!StringUtils.isEmpty(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
-			if (dataSourceName.contains(SentinelConstants.FLOW_DATASOURCE_NAME)) {
-				FlowRuleManager.register2Property(newDataSource.getProperty());
-			}
-			else if (dataSourceName.contains(SentinelConstants.DEGRADE_DATASOURCE_NAME)) {
-				DegradeRuleManager.register2Property(newDataSource.getProperty());
-			}
-		}
 	}
 
 	private void logAndCheckRuleType(AbstractDataSource dataSource, String dataSourceName,
