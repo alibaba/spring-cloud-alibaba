@@ -18,8 +18,8 @@ package org.springframework.cloud.alibaba.dubbo.metadata.repository;
 
 import com.alibaba.dubbo.config.spring.ReferenceBean;
 import com.alibaba.dubbo.rpc.service.GenericService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
@@ -46,24 +46,18 @@ public class DubboServiceMetadataRepository {
 
     /**
      * Key is application name
-     * Value is  Map<RequestMetadata, GenericService>
+     * Value is  Map<RequestMetadata, ReferenceBean<GenericService>>
      */
-    private Map<String, Map<RequestMetadata, GenericService>> genericServicesRepository = new HashMap<>();
+    private Map<String, Map<RequestMetadata, ReferenceBean<GenericService>>> referenceBeansRepository = new HashMap<>();
 
     private Map<String, Map<RequestMetadata, MethodMetadata>> methodMetadataRepository = new HashMap<>();
 
     @Autowired
     private MetadataConfigService metadataConfigService;
 
-    @Value("${dubbo.target.protocol:dubbo}")
-    private String targetProtocol;
-
-    @Value("${dubbo.target.cluster:failover}")
-    private String targetCluster;
-
     public void updateMetadata(String serviceName) {
 
-        Map<RequestMetadata, GenericService> genericServicesMap = genericServicesRepository.computeIfAbsent(serviceName, k -> new HashMap<>());
+        Map<RequestMetadata, ReferenceBean<GenericService>> genericServicesMap = referenceBeansRepository.computeIfAbsent(serviceName, k -> new HashMap<>());
 
         Map<RequestMetadata, MethodMetadata> methodMetadataMap = methodMetadataRepository.computeIfAbsent(serviceName, k -> new HashMap<>());
 
@@ -75,14 +69,14 @@ public class DubboServiceMetadataRepository {
 
             serviceRestMetadata.getMeta().forEach(restMethodMetadata -> {
                 RequestMetadata requestMetadata = restMethodMetadata.getRequest();
-                genericServicesMap.put(requestMetadata, referenceBean.get());
+                genericServicesMap.put(requestMetadata, referenceBean);
                 methodMetadataMap.put(requestMetadata, restMethodMetadata.getMethod());
             });
         }
     }
 
-    public GenericService getGenericService(String serviceName, RequestMetadata requestMetadata) {
-        return getGenericServicesMap(serviceName).get(requestMetadata);
+    public ReferenceBean<GenericService> getReferenceBean(String serviceName, RequestMetadata requestMetadata) {
+        return getReferenceBeansMap(serviceName).get(requestMetadata);
     }
 
     public MethodMetadata getMethodMetadata(String serviceName, RequestMetadata requestMetadata) {
@@ -101,18 +95,15 @@ public class DubboServiceMetadataRepository {
         referenceBean.setInterface(interfaceName);
         referenceBean.setVersion(version);
         referenceBean.setGroup(group);
-        referenceBean.setProtocol(targetProtocol);
-        referenceBean.setCluster(targetCluster);
 
         return referenceBean;
     }
 
-    private Map<RequestMetadata, GenericService> getGenericServicesMap(String serviceName) {
-        return genericServicesRepository.getOrDefault(serviceName, Collections.emptyMap());
+    private Map<RequestMetadata, ReferenceBean<GenericService>> getReferenceBeansMap(String serviceName) {
+        return referenceBeansRepository.getOrDefault(serviceName, Collections.emptyMap());
     }
 
     private Map<RequestMetadata, MethodMetadata> getMethodMetadataMap(String serviceName) {
         return methodMetadataRepository.getOrDefault(serviceName, Collections.emptyMap());
     }
-
 }
