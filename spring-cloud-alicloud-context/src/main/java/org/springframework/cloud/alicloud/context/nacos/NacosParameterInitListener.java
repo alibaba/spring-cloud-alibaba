@@ -8,6 +8,9 @@ import org.springframework.cloud.alicloud.context.listener.AbstractOnceApplicati
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
 
+/**
+ * @author pbting
+ */
 public class NacosParameterInitListener
 		extends AbstractOnceApplicationListener<ApplicationEnvironmentPreparedEvent> {
 	private static final Logger log = LoggerFactory
@@ -33,7 +36,8 @@ public class NacosParameterInitListener
 
 		log.info("Initialize Nacos Parameter from edas change order,is edas managed {}.",
 				edasChangeOrderConfiguration.isEdasManaged());
-
+		System.getProperties().setProperty("spring.cloud.nacos.config.server-mode",
+				"EDAS");
 		// initialize nacos configuration
 		System.getProperties().setProperty("spring.cloud.nacos.config.server-addr", "");
 		System.getProperties().setProperty("spring.cloud.nacos.config.endpoint",
