@@ -26,6 +26,7 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 
 import org.junit.Test;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosDiscoveryClient;
 import org.springframework.cloud.client.ServiceInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
