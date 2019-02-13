@@ -2,6 +2,8 @@ package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
 import javax.validation.constraints.NotEmpty;
 
+import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
+import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
 import org.springframework.util.StringUtils;
 
