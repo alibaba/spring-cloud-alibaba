@@ -15,11 +15,11 @@
  */
 package org.springframework.cloud.alicloud.sms;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.profile.DefaultProfile;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -30,11 +30,12 @@ public abstract class AbstractSmsService implements ISmsService {
 	private ConcurrentHashMap<String, IAcsClient> acsClientConcurrentHashMap = new ConcurrentHashMap<>();
 
 	/**
-	 * 
+	 *
 	 * @param accessKeyId
 	 * @param accessKeySecret
 	 * @return
 	 */
+    @Override
 	public IAcsClient getHangZhouRegionClientProfile(String accessKeyId,
 			String accessKeySecret) {
 
