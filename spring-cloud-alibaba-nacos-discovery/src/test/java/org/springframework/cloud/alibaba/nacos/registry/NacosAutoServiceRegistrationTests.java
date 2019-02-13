@@ -26,7 +26,7 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryAutoConfiguration;
-import org.springframework.cloud.alibaba.nacos.NacosDiscoveryClientAutoConfiguration;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
 import org.springframework.cloud.alibaba.nacos.endpoint.NacosDiscoveryEndpoint;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
@@ -185,8 +185,8 @@ public class NacosAutoServiceRegistrationTests {
 				properties);
 		Map<String, Object> map = nacosDiscoveryEndpoint.nacosDiscovery();
 		assertEquals(map.get("NacosDiscoveryProperties"), properties);
-		assertEquals(map.get("subscribe"),
-				properties.namingServiceInstance().getSubscribeServices());
+		assertEquals(map.get("subscribe").toString(),
+				properties.namingServiceInstance().getSubscribeServices().toString());
 	}
 
 	@Configuration
