@@ -18,6 +18,7 @@ package org.springframework.cloud.alibaba.dubbo.metadata.resolver;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.config.spring.ServiceBean;
+
 import feign.Contract;
 import feign.Feign;
 import feign.MethodMetadata;
@@ -44,11 +45,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The metadata resolver for {@link Feign}
+ * The metadata resolver for {@link Feign} for {@link ServiceBean Dubbo Service Bean} in the provider side.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class FeignMetadataResolver implements BeanClassLoaderAware, SmartInitializingSingleton, MetadataResolver {
+public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, SmartInitializingSingleton,
+        MetadataResolver {
 
     private static final String[] CONTRACT_CLASS_NAMES = {
             "feign.jaxrs2.JAXRS2Contract",
@@ -66,7 +68,7 @@ public class FeignMetadataResolver implements BeanClassLoaderAware, SmartInitial
      */
     private Collection<Contract> contracts;
 
-    public FeignMetadataResolver(String currentApplicationName, ObjectProvider<Contract> contract) {
+    public DubboServiceBeanMetadataResolver(String currentApplicationName, ObjectProvider<Contract> contract) {
         this.currentApplicationName = currentApplicationName;
         this.contract = contract;
     }

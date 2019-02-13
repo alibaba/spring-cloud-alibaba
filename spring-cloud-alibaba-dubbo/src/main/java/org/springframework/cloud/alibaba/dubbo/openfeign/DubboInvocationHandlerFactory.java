@@ -16,7 +16,9 @@
  */
 package org.springframework.cloud.alibaba.dubbo.openfeign;
 
+import com.alibaba.dubbo.config.spring.ReferenceBean;
 import com.alibaba.dubbo.rpc.service.GenericService;
+
 import feign.Contract;
 import feign.InvocationHandlerFactory;
 import feign.MethodMetadata;
@@ -68,10 +70,10 @@ public class DubboInvocationHandlerFactory implements InvocationHandlerFactory {
         Map<Method, org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata> methodMetadataMap = new HashMap<>();
 
         methodRequestMetadataMap.forEach((method, requestMetadata) -> {
-            GenericService genericService = dubboServiceRepository.getGenericService(serviceName, requestMetadata);
+            ReferenceBean<GenericService> referenceBean = dubboServiceRepository.getReferenceBean(serviceName, requestMetadata);
             org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata methodMetadata =
                     dubboServiceRepository.getMethodMetadata(serviceName, requestMetadata);
-            genericServicesMap.put(method, genericService);
+            genericServicesMap.put(method, referenceBean.get());
             methodMetadataMap.put(method, methodMetadata);
         });
 
