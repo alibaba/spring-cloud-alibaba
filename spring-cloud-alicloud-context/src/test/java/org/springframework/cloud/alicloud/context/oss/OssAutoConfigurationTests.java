@@ -35,11 +35,13 @@ public class OssAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(OssContextAutoConfiguration.class))
-			.withPropertyValues("spring.cloud.alicloud.accessKey=your-ak")
-			.withPropertyValues("spring.cloud.alicloud.secretKey=your-sk")
-			.withPropertyValues(
-					"spring.cloud.alicloud.oss.endpoint=http://oss-cn-beijing.aliyuncs.com")
-			.withPropertyValues("spring.cloud.alicloud.oss.config.userAgent=alibaba");
+			.withPropertyValues("spring.cloud.alicloud.accessKey=your-ak",
+					"spring.cloud.alicloud.secretKey=your-sk",
+					"spring.cloud.alicloud.oss.endpoint=http://oss-cn-beijing.aliyuncs.com",
+					"spring.cloud.alicloud.oss.config.userAgent=alibaba",
+					"spring.cloud.alicloud.oss.sts.access-key=your-sts-ak",
+					"spring.cloud.alicloud.oss.sts.secret-key=your-sts-sk",
+					"spring.cloud.alicloud.oss.sts.security-token=your-sts-token");
 
 	@Test
 	public void testOSSProperties() {
@@ -53,11 +55,15 @@ public class OssAutoConfigurationTests {
 			assertThat(ossProperties.getEndpoint())
 					.isEqualTo("http://oss-cn-beijing.aliyuncs.com");
 			assertThat(ossProperties.getConfig().getUserAgent()).isEqualTo("alibaba");
+			assertThat(ossProperties.getSts().getAccessKey()).isEqualTo("your-sts-ak");
+			assertThat(ossProperties.getSts().getSecretKey()).isEqualTo("your-sts-sk");
+			assertThat(ossProperties.getSts().getSecurityToken())
+					.isEqualTo("your-sts-token");
 		});
 	}
 
 	@Test
-	public void testOSSClient() {
+	public void testOSSClient1() {
 		this.contextRunner.run(context -> {
 			assertThat(context.getBeansOfType(OSS.class).size() == 1).isTrue();
 			assertThat(context.getBeanNamesForType(OSS.class)[0]).isEqualTo("ossClient");
@@ -72,6 +78,28 @@ public class OssAutoConfigurationTests {
 			assertThat(ossClient.getCredentialsProvider().getCredentials()
 					.getSecretAccessKey()).isEqualTo("your-sk");
 		});
+	}
+
+	@Test
+	public void testOSSClient2() {
+		this.contextRunner
+				.withPropertyValues("spring.cloud.alicloud.oss.authorization-mode=STS")
+				.run(context -> {
+					assertThat(context.getBeansOfType(OSS.class).size() == 1).isTrue();
+					assertThat(context.getBeanNamesForType(OSS.class)[0])
+							.isEqualTo("ossClient");
+					OSSClient ossClient = (OSSClient) context.getBean(OSS.class);
+					assertThat(ossClient.getEndpoint().toString())
+							.isEqualTo("http://oss-cn-beijing.aliyuncs.com");
+					assertThat(ossClient.getClientConfiguration().getUserAgent())
+							.isEqualTo("alibaba");
+					assertThat(ossClient.getCredentialsProvider().getCredentials()
+							.getAccessKeyId()).isEqualTo("your-sts-ak");
+					assertThat(ossClient.getCredentialsProvider().getCredentials()
+							.getSecretAccessKey()).isEqualTo("your-sts-sk");
+					assertThat(ossClient.getCredentialsProvider().getCredentials()
+							.getSecurityToken()).isEqualTo("your-sts-token");
+				});
 	}
 
 }
