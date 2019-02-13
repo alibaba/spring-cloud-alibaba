@@ -19,6 +19,7 @@
         <sentinel.version>1.4.0</sentinel.version>
         <oss.version>3.1.0</oss.version>
         <nacos.version>0.6.2</nacos.version>
+        <fescar.version>0.1.3</fescar.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
@@ -70,11 +71,34 @@
                 <artifactId>schedulerX-client</artifactId>
                 <version>${schedulerX.client.version}</version>
             </dependency>
+
+            <!-- SMS -->
+            <dependency>
+                <groupId>com.aliyun.mns</groupId>
+                <artifactId>aliyun-sdk-mns</artifactId>
+                <version>${aliyun.sdk.mns}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+                <version>${aliyun.java.sdk.dysmsapi}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
                 <version>${nacos.version}</version>
             </dependency>
+
+            <!--Apache RocketMQ-->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+
+            <!--Sentinel-->
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-core</artifactId>
@@ -141,32 +165,34 @@
                 <version>${sentinel.version}</version>
             </dependency>
 
+            <!--Alibaba Fescar-->
 
             <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-client</artifactId>
-                <version>${rocketmq.version}</version>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-core</artifactId>
+                <version>${fescar.version}</version>
             </dependency>
-
+            <dependency>
+            <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-common</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-spring</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-rm-datasource</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
 
             <!-- Aliyun OSS dependencies -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
                 <version>${oss.version}</version>
-            </dependency>
-
-            <!-- SMS -->
-            <dependency>
-                <groupId>com.aliyun.mns</groupId>
-                <artifactId>aliyun-sdk-mns</artifactId>
-                <version>${aliyun.sdk.mns}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.aliyun</groupId>
-                <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
-                <version>${aliyun.java.sdk.dysmsapi}</version>
             </dependency>
 
             <!-- Own dependencies  -->
@@ -193,6 +219,11 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-fescar</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -240,6 +271,12 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-fescar</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -270,12 +307,6 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -283,6 +314,13 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- SMS -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

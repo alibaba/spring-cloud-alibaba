@@ -1,5 +1,10 @@
 # Spring Cloud Alibaba
 
+[![CircleCI](https://circleci.com/gh/spring-cloud-incubator/spring-cloud-alibaba/tree/master.svg?style=svg)](https://circleci.com/gh/spring-cloud-incubator/spring-cloud-alibaba/tree/master)
+[![Maven Central](https://img.shields.io/maven-central/v/org.springframework.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:org.springframework.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
+[![Codecov](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba/branch/master/graph/badge.svg)](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+
 A project maintained by Alibaba.
 
 See the [中文文档](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/README-zh.md) for Chinese readme.
@@ -15,20 +20,32 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 * **Service registration and discovery**：Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
 * **Distributed configuration**：support for externalized configuration in a distributed system, auto refresh when configuration changes.
 * **Event-driven**：support for building highly scalable event-driven microservices connected with shared messaging systems.
+* **Distributed Transaction**：support for distributed transaction solution with high performance and ease of use.
 * **Alibaba Cloud Object Storage**：massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
+* **Alibaba Cloud SchedulerX**：accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
+* **Alibaba Cloud SMS**： A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
+
 For more features, please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
 ## Components
 
 **[Sentinel](https://github.com/alibaba/Sentinel)**: Sentinel takes "traffic flow" as the breakthrough point, and provides solutions in areas such as flow control, concurrency, circuit breaking, and load protection to protect service stability.
 
-**[Nacos](https://github.com/alibaba/Nacos)**: an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
+**[Nacos](https://github.com/alibaba/Nacos)**: An easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 
-**[RocketMQ](https://rocketmq.apache.org/)**：a distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
+**[RocketMQ](https://rocketmq.apache.org/)**：A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**：an application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
+**[Dubbo](https://github.com/apache/incubator-dubbo)**：A high-performance, Java based open source RPC framework.
+
+**[Fescar](https://github.com/alibaba/fescar)**：A distributed transaction solution with high performance and ease of use for microservices architecture.
+
+**[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**：An application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
 
 **[Alibaba Cloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
+
+**[Alibaba Cloud SMS](https://www.aliyun.com/product/sms)**: A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
+
+**[Alibaba Cloud SchedulerX](https://www.aliyun.com/product/SchedulerX)**:accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds..
 
 For more features please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
 
@@ -45,7 +62,7 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 ## How to Use
 
 ### Add maven dependency
-Version 0.2.0.RELEASE is compatible with the Spring Cloud Finchley. Version 0.1.0.RELEASE is compatible with the Spring Cloud Edgware.
+Version 0.2.1.RELEASE is compatible with the Spring Cloud Finchley. Version 0.1.1.RELEASE is compatible with the Spring Cloud Edgware.
 
 These artifacts are available from Maven Central and Spring Release repository via BOM:
 
@@ -54,7 +71,7 @@ These artifacts are available from Maven Central and Spring Release repository v
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.0.RELEASE</version>
+                <version>0.2.1.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -114,6 +131,28 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 During the incubation period, the version management of the project will follow these rules：
 * Functional updates will be reflected in the 3rd number of the version, for example, the next version of 0.1.0 will be 0.1.1.
 
+
+## Code of Conduct
+This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
+
+## Code Conventions and Housekeeping
+None of these is essential for a pull request, but they will all help. They can also be added after the original pull request but before a merge.
+
+Use the Spring Framework code format conventions. If you use Eclipse you can import formatter settings using the eclipse-code-formatter.xml file from the Spring Cloud Build project. If using IntelliJ, you can use the Eclipse Code Formatter Plugin to import the same file.
+
+Make sure all new .java files to have a simple Javadoc class comment with at least an @author tag identifying you, and preferably at least a paragraph on what the class is for.
+
+Add the ASF license header comment to all new .java files (copy from existing files in the project)
+
+Add yourself as an @author to the .java files that you modify substantially (more than cosmetic changes).
+
+Add some Javadocs and, if you change the namespace, some XSD doc elements.
+
+A few unit tests would help a lot as well — someone has to do it.
+
+If no-one else is using your branch, please rebase it against the current master (or other target branch in the main project).
+
+When writing a commit message please follow these conventions, if you are fixing an existing issue please add Fixes gh-XXXX at the end of the commit message (where XXXX is the issue number).
 
 ## Contact Us
 Mailing list is recommended for discussing almost anything related to spring-cloud-alibaba. 
