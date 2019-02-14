@@ -41,48 +41,53 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 @ConditionalOnNacosDiscoveryEnabled
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
-@AutoConfigureBefore({AutoServiceRegistrationAutoConfiguration.class,
-        NacosDiscoveryClientAutoConfiguration.class})
-@AutoConfigureAfter(AutoServiceRegistrationConfiguration.class)
+@AutoConfigureBefore(NacosDiscoveryClientAutoConfiguration.class)
+@AutoConfigureAfter(AutoServiceRegistrationAutoConfiguration.class)
 public class NacosDiscoveryAutoConfiguration {
 
-    @Bean
-    public NacosServiceRegistry nacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
-        return new NacosServiceRegistry(nacosDiscoveryProperties);
-    }
+	@Bean
+	public NacosServiceRegistry nacosServiceRegistry(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		return new NacosServiceRegistry(nacosDiscoveryProperties);
+	}
 
-    @Bean
-    @ConditionalOnBean(AutoServiceRegistrationProperties.class)
-    public NacosRegistration nacosRegistration(
-            NacosDiscoveryProperties nacosDiscoveryProperties,
-            ApplicationContext context) {
-        return new NacosRegistration(nacosDiscoveryProperties, context);
-    }
+	@Bean
+	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
+	public NacosRegistration nacosRegistration(
+			NacosDiscoveryProperties nacosDiscoveryProperties,
+			ApplicationContext context) {
+		return new NacosRegistration(nacosDiscoveryProperties, context);
+	}
 
-    @Bean
-    @ConditionalOnBean(AutoServiceRegistrationProperties.class)
-    public NacosAutoServiceRegistration nacosAutoServiceRegistration(
-            NacosServiceRegistry registry,
-            AutoServiceRegistrationProperties autoServiceRegistrationProperties,
-            NacosRegistration registration) {
-        return new NacosAutoServiceRegistration(registry,
-                autoServiceRegistrationProperties, registration);
-    }
+	@Bean
+	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
+	public NacosAutoServiceRegistration nacosAutoServiceRegistration(
+			NacosServiceRegistry registry,
+			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
+			NacosRegistration registration) {
+		return new NacosAutoServiceRegistration(registry,
+				autoServiceRegistrationProperties, registration);
+	}
 
-    @Bean
-    @ConditionalOnBean(NacosAutoServiceRegistration.class) // NacosAutoServiceRegistration should be present
-    @ConditionalOnNotWebApplication // Not Web Application
-    public ApplicationRunner applicationRunner(NacosAutoServiceRegistration nacosAutoServiceRegistration) {
-        return args -> {
-            // WebServerInitializedEvent should not be multicast in Non-Web environment.
-            // Whatever, NacosAutoServiceRegistration must be checked it's running or not.
-            if (!nacosAutoServiceRegistration.isRunning()) { // If it's not running, let it start.
-                // FIXME: Please make sure "spring.cloud.nacos.discovery.port" must be configured on an available port,
-                // or the startup or Nacos health check will be failed.
-                nacosAutoServiceRegistration.start();
-                // NacosAutoServiceRegistration will be stopped after its destroy() method is invoked.
-                // @PreDestroy destroy() -> stop()
-            }
-        };
-    }
+	@Bean
+	@ConditionalOnBean(NacosAutoServiceRegistration.class) // NacosAutoServiceRegistration
+															// should be present
+	@ConditionalOnNotWebApplication // Not Web Application
+	public ApplicationRunner applicationRunner(
+			NacosAutoServiceRegistration nacosAutoServiceRegistration) {
+		return args -> {
+			// WebServerInitializedEvent should not be multicast in Non-Web environment.
+			// Whatever, NacosAutoServiceRegistration must be checked it's running or not.
+			if (!nacosAutoServiceRegistration.isRunning()) { // If it's not running, let
+																// it start.
+				// FIXME: Please make sure "spring.cloud.nacos.discovery.port" must be
+				// configured on an available port,
+				// or the startup or Nacos health check will be failed.
+				nacosAutoServiceRegistration.start();
+				// NacosAutoServiceRegistration will be stopped after its destroy() method
+				// is invoked.
+				// @PreDestroy destroy() -> stop()
+			}
+		};
+	}
 }
