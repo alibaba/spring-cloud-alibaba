@@ -20,23 +20,48 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.alibaba.cloud.context.AliCloudServerMode;
+import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
+import com.alibaba.cloud.context.edas.AliCloudEdasSdk;
+import com.aliyuncs.edas.model.v20170801.GetSecureTokenResponse;
+import com.aliyuncs.edas.model.v20170801.InsertApplicationResponse;
 
 /**
  * @author xiaolongzuo
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = { AnsContextAutoConfiguration.class }, properties = {
-		"spring.cloud.alicloud.ans.server-mode=EDAS",
-		"spring.cloud.alicloud.ans.server-port=11111",
-		"spring.cloud.alicloud.ans.server-list=10.10.10.10",
-		"spring.cloud.alicloud.ans.client-domains=testDomain",
-		"spring.cloud.alicloud.ans.client-weight=0.9",
-		"spring.cloud.alicloud.ans.client-weights.testDomain=0.9" })
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringRunner.class)
+@PowerMockIgnore("javax.management.*")
+@SpringBootTest(classes = { AnsPropertiesLoadTests.TestConfiguration.class,
+		AliCloudContextAutoConfiguration.class, EdasContextAutoConfiguration.class,
+		AnsContextAutoConfiguration.class }, properties = {
+				"spring.application.name=myapp", "spring.cloud.alicloud.access-key=ak",
+				"spring.cloud.alicloud.secret-key=sk",
+				"spring.cloud.alicloud.edas.namespace=cn-test",
+				"spring.cloud.alicloud.ans.server-mode=EDAS",
+				"spring.cloud.alicloud.ans.server-port=11111",
+				"spring.cloud.alicloud.ans.server-list=10.10.10.10",
+				"spring.cloud.alicloud.ans.client-domains=testDomain",
+				"spring.cloud.alicloud.ans.client-weight=0.9",
+				"spring.cloud.alicloud.ans.client-weights.testDomain=0.9",
+				"spring.cloud.alicloud.oss.endpoint=test",
+				"spring.cloud.alicloud.oss.enabled=false",
+				"spring.cloud.alicloud.scx.enabled=false" })
+@PrepareForTest({ AliCloudAnsInitializer.class })
 public class AnsPropertiesLoadTests {
 
 	@Autowired
@@ -64,5 +89,27 @@ public class AnsPropertiesLoadTests {
 				.isEqualTo("ANS_SERVICE_TYPE");
 		assertThat(ansProperties.getTags().get("ANS_SERVICE_TYPE"))
 				.isEqualTo("SPRING_CLOUD");
+	}
+
+	@Configuration
+	@AutoConfigureBefore(EdasContextAutoConfiguration.class)
+	public static class TestConfiguration {
+
+		@Bean
+		public AliCloudEdasSdk aliCloudEdasSdk() {
+			GetSecureTokenResponse.SecureToken secureToken = new GetSecureTokenResponse.SecureToken();
+			InsertApplicationResponse.ApplicationInfo applicationInfo = new InsertApplicationResponse.ApplicationInfo();
+			applicationInfo.setAppId("testAppId");
+			secureToken.setTenantId("testTenantId");
+			secureToken.setAccessKey("testAK");
+			secureToken.setSecretKey("testSK");
+			secureToken.setAddressServerHost("testDomain");
+			AliCloudEdasSdk aliCloudEdasSdk = Mockito.mock(AliCloudEdasSdk.class);
+			Mockito.when(aliCloudEdasSdk.getSecureToken("cn-test"))
+					.thenReturn(secureToken);
+			Mockito.when(aliCloudEdasSdk.getApplicationInfo("myapp", "cn-test"))
+					.thenReturn(applicationInfo);
+			return aliCloudEdasSdk;
+		}
 	}
 }

@@ -22,14 +22,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author xiaolongzuo
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { EdasContextAutoConfiguration.class }, properties = {
-		"spring.cloud.alicloud.edas.namespace=testns", "spring.application.name=myapps" })
+@SpringBootTest(classes = { AliCloudContextAutoConfiguration.class,
+		EdasContextAutoConfiguration.class,
+		AnsContextAutoConfiguration.class }, properties = {
+				"spring.cloud.alicloud.edas.namespace=testns",
+				"spring.application.name=myapps" })
 public class EdasPropertiesLoadTests {
 
 	@Autowired

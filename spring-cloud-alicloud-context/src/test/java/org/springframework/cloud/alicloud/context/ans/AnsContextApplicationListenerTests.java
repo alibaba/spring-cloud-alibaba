@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.alicloud.context.ans;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.springframework.cloud.alicloud.context.BaseAliCloudSpringApplication;

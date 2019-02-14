@@ -22,6 +22,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
 import org.springframework.cloud.alicloud.context.edas.EdasProperties;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,9 +32,11 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author xiaolongzuo
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ScxContextAutoConfiguration.class, properties = {
-		"spring.cloud.alicloud.scx.group-id=1-2-3-4",
-		"spring.cloud.alicloud.edas.namespace=cn-test" })
+@SpringBootTest(classes = { AliCloudContextAutoConfiguration.class,
+		EdasContextAutoConfiguration.class, AnsContextAutoConfiguration.class,
+		ScxContextAutoConfiguration.class }, properties = {
+				"spring.cloud.alicloud.scx.group-id=1-2-3-4",
+				"spring.cloud.alicloud.edas.namespace=cn-test" })
 public class ScxPropertiesLoadTests {
 
 	@Autowired

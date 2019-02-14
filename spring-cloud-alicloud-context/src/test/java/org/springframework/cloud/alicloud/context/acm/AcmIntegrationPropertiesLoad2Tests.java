@@ -22,13 +22,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author xiaolongzuo
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { AcmContextBootstrapConfiguration.class }, properties = {
+@SpringBootTest(classes = { AliCloudContextAutoConfiguration.class,
+		EdasContextAutoConfiguration.class, AnsContextAutoConfiguration.class,AcmContextBootstrapConfiguration.class }, properties = {
 		"spring.application.name=myapp", "spring.application.group=com.alicloud.test",
 		"spring.profiles.active=profile1,profile2", "spring.cloud.alicloud.access-key=ak",
 		"spring.cloud.alicloud.secret-key=sk",

@@ -33,7 +33,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { AliCloudContextAutoConfiguration.class,
 		EdasContextAutoConfiguration.class, AnsContextAutoConfiguration.class,
-		SmsContextAutoConfiguration.class })
+		SmsContextAutoConfiguration.class }, properties = {
+				"spring.cloud.alicloud.sms.reportQueueName=q1",
+				"spring.cloud.alicloud.sms.upQueueName=q2",
+				"spring.cloud.alicloud.sms.connect-timeout=20",
+				"spring.cloud.alicloud.sms.read-timeout=30" })
 public class SmsPropertiesLoadTests {
 
 	@Autowired
@@ -41,9 +45,9 @@ public class SmsPropertiesLoadTests {
 
 	@Test
 	public void test() {
-		assertThat(smsProperties.getReportQueueName()).isNull();
-		assertThat(smsProperties.getUpQueueName()).isNull();
-		assertThat(smsProperties.getConnectTimeout()).isEqualTo("10000");
-		assertThat(smsProperties.getReadTimeout()).isEqualTo("10000");
+		assertThat(smsProperties.getReportQueueName()).isEqualTo("q1");
+		assertThat(smsProperties.getUpQueueName()).isEqualTo("q2");
+		assertThat(smsProperties.getConnectTimeout()).isEqualTo("20");
+		assertThat(smsProperties.getReadTimeout()).isEqualTo("30");
 	}
 }

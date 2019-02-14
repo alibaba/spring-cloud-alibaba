@@ -22,7 +22,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
 import org.springframework.cloud.alicloud.context.AliCloudProperties;
+import org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.aliyun.oss.OSSClient;
@@ -31,11 +34,13 @@ import com.aliyun.oss.OSSClient;
  * @author xiaolongzuo
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = OssContextAutoConfiguration.class, properties = {
-		"spring.cloud.alicloud.accessKey=your-ak",
-		"spring.cloud.alicloud.secretKey=your-sk",
-		"spring.cloud.alicloud.oss.endpoint=http://oss-cn-beijing.aliyuncs.com",
-		"spring.cloud.alicloud.oss.config.userAgent=alibaba" })
+@SpringBootTest(classes = { AliCloudContextAutoConfiguration.class,
+		EdasContextAutoConfiguration.class, AnsContextAutoConfiguration.class,
+		OssContextAutoConfiguration.class }, properties = {
+				"spring.cloud.alicloud.accessKey=your-ak",
+				"spring.cloud.alicloud.secretKey=your-sk",
+				"spring.cloud.alicloud.oss.endpoint=http://oss-cn-beijing.aliyuncs.com",
+				"spring.cloud.alicloud.oss.config.userAgent=alibaba" })
 public class OssLoadTests {
 
 	@Autowired

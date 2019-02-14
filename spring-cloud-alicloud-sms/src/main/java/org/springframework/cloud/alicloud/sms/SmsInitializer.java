@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.cloud.alicloud.context.sms.SmsConfigProperties;
+import org.springframework.cloud.alicloud.context.sms.SmsProperties;
 import org.springframework.cloud.alicloud.sms.base.MessageListener;
 
 import com.aliyuncs.profile.DefaultProfile;
@@ -32,12 +32,11 @@ public class SmsInitializer implements BeanPostProcessor, SmartInitializingSingl
 
 	private final static Log log = LogFactory.getLog(SmsInitializer.class);
 
-	private SmsConfigProperties msConfigProperties;
+	private SmsProperties smsProperties;
 	private ISmsService smsService;
 
-	public SmsInitializer(SmsConfigProperties msConfigProperties,
-			ISmsService smsService) {
-		this.msConfigProperties = msConfigProperties;
+	public SmsInitializer(SmsProperties smsProperties, ISmsService smsService) {
+		this.smsProperties = smsProperties;
 		this.smsService = smsService;
 	}
 
@@ -46,13 +45,13 @@ public class SmsInitializer implements BeanPostProcessor, SmartInitializingSingl
 		// 整个application context refreshed then do
 		// 可自助调整超时时间
 		System.setProperty("sun.net.client.defaultConnectTimeout",
-				msConfigProperties.getConnnectTimeout());
+				smsProperties.getConnectTimeout());
 		System.setProperty("sun.net.client.defaultReadTimeout",
-				msConfigProperties.getReadTimeout());
+				smsProperties.getReadTimeout());
 		// 初始化acsClient,暂不支持region化
 		try {
 			DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou",
-					SmsConfigProperties.smsProduct, SmsConfigProperties.smsDomain);
+					SmsProperties.smsProduct, SmsProperties.smsDomain);
 		}
 		catch (Exception e) {
 			log.error("initializer the sms cause an exception", e);
@@ -76,8 +75,8 @@ public class SmsInitializer implements BeanPostProcessor, SmartInitializingSingl
 
 	private void initMessageListener(MessageListener messageListener) {
 		if (SmsReportMessageListener.class.isInstance(messageListener)) {
-			if (msConfigProperties.getReportQueueName() != null
-					&& msConfigProperties.getReportQueueName().trim().length() > 0) {
+			if (smsProperties.getReportQueueName() != null
+					&& smsProperties.getReportQueueName().trim().length() > 0) {
 				smsService.startSmsReportMessageListener(
 						(SmsReportMessageListener) messageListener);
 				return;
@@ -89,8 +88,8 @@ public class SmsInitializer implements BeanPostProcessor, SmartInitializingSingl
 
 		if (SmsUpMessageListener.class.isInstance(messageListener)) {
 
-			if (msConfigProperties.getUpQueueName() != null
-					&& msConfigProperties.getUpQueueName().trim().length() > 0) {
+			if (smsProperties.getUpQueueName() != null
+					&& smsProperties.getUpQueueName().trim().length() > 0) {
 				smsService.startSmsUpMessageListener(
 						(SmsUpMessageListener) messageListener);
 				return;

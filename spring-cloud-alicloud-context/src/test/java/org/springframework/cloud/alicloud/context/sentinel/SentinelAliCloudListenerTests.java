@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.alicloud.context.sentinel;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

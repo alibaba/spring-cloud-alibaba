@@ -16,8 +16,25 @@
 
 package org.springframework.cloud.alicloud.context.sms;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.alicloud.context.BaseAliCloudSpringApplication;
+
 /**
  * @author xiaolongzuo
  */
-public class SmsPropertiesDefaultTests {
+public class SmsPropertiesDefaultTests extends BaseAliCloudSpringApplication {
+
+	@Autowired
+	private SmsProperties smsProperties;
+
+	@Test
+	public void test() {
+		assertThat(smsProperties.getReportQueueName()).isNull();
+		assertThat(smsProperties.getUpQueueName()).isNull();
+		assertThat(smsProperties.getConnectTimeout()).isEqualTo("10000");
+		assertThat(smsProperties.getReadTimeout()).isEqualTo("10000");
+	}
 }
