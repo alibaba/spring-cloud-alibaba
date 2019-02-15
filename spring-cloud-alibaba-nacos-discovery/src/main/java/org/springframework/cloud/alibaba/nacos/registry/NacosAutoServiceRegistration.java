@@ -20,83 +20,85 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class NacosAutoServiceRegistration
-		extends AbstractAutoServiceRegistration<NacosRegistration> {
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(NacosAutoServiceRegistration.class);
+        extends AbstractAutoServiceRegistration<Registration> {
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(NacosAutoServiceRegistration.class);
 
-	private NacosRegistration registration;
+    private NacosRegistration registration;
 
-	public NacosAutoServiceRegistration(
-			ServiceRegistry<NacosRegistration> serviceRegistry,
-			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
-			NacosRegistration registration) {
-		super(serviceRegistry, autoServiceRegistrationProperties);
-		this.registration = registration;
-	}
+    public NacosAutoServiceRegistration(
+            ServiceRegistry<Registration> serviceRegistry,
+            AutoServiceRegistrationProperties autoServiceRegistrationProperties,
+            NacosRegistration registration) {
+        super(serviceRegistry, autoServiceRegistrationProperties);
+        this.registration = registration;
+    }
 
-	@Deprecated
-	public void setPort(int port) {
-		getPort().set(port);
-	}
+    @Deprecated
+    public void setPort(int port) {
+        getPort().set(port);
+    }
 
-	@Override
-	protected NacosRegistration getRegistration() {
-		if (this.registration.getPort() < 0 && this.getPort().get() > 0) {
-			this.registration.setPort(this.getPort().get());
-		}
-		Assert.isTrue(this.registration.getPort() > 0, "service.port has not been set");
-		return this.registration;
-	}
+    @Override
+    protected NacosRegistration getRegistration() {
+        if (this.registration.getPort() < 0 && this.getPort().get() > 0) {
+            this.registration.setPort(this.getPort().get());
+        }
+        Assert.isTrue(this.registration.getPort() > 0, "service.port has not been set");
+        return this.registration;
+    }
 
-	@Override
-	protected NacosRegistration getManagementRegistration() {
-		return null;
-	}
+    @Override
+    protected NacosRegistration getManagementRegistration() {
+        return null;
+    }
 
-	@Override
-	protected void register() {
-		if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
-			LOGGER.debug("Registration disabled.");
-			return;
-		}
-		if (this.registration.getPort() < 0) {
-			this.registration.setPort(getPort().get());
-		}
-		super.register();
-	}
+    @Override
+    protected void register() {
+        if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
+            LOGGER.debug("Registration disabled.");
+            return;
+        }
+        if (this.registration.getPort() < 0) {
+            this.registration.setPort(getPort().get());
+        }
+        super.register();
+    }
 
-	@Override
-	protected void registerManagement() {
-		if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
-			return;
-		}
-		super.registerManagement();
+    @Override
+    protected void registerManagement() {
+        if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
+            return;
+        }
+        super.registerManagement();
 
-	}
+    }
 
-	@Override
-	protected Object getConfiguration() {
-		return this.registration.getNacosDiscoveryProperties();
-	}
+    @Override
+    protected Object getConfiguration() {
+        return this.registration.getNacosDiscoveryProperties();
+    }
 
-	@Override
-	protected boolean isEnabled() {
-		return this.registration.getNacosDiscoveryProperties().isRegisterEnabled();
-	}
+    @Override
+    protected boolean isEnabled() {
+        return this.registration.getNacosDiscoveryProperties().isRegisterEnabled();
+    }
 
-	@Override
-	@SuppressWarnings("deprecation")
-	protected String getAppName() {
-		String appName = registration.getNacosDiscoveryProperties().getService();
-		return StringUtils.isEmpty(appName) ? super.getAppName() : appName;
-	}
+    @Override
+    @SuppressWarnings("deprecation")
+    protected String getAppName() {
+        String appName = registration.getNacosDiscoveryProperties().getService();
+        return StringUtils.isEmpty(appName) ? super.getAppName() : appName;
+    }
 
 }

@@ -17,17 +17,21 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <sentinel.version>1.4.0</sentinel.version>
+        <sentinel.version>1.4.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.client.version>0.6.2</nacos.client.version>
-        <nacos.config.version>0.6.1</nacos.config.version>
+        <fescar.version>0.1.3</fescar.version>
+        <nacos.client.version>0.8.0</nacos.client.version>
+        <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
-        <alicloud.context.version>1.0.4</alicloud.context.version>
+        <alicloud.context.version>1.0.5</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
         <rocketmq.version>4.3.1</rocketmq.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
+        <dubbo.version>2.6.5</dubbo.version>
+        <dubbo-spring-boot.version>0.2.1.RELEASE</dubbo-spring-boot.version>
+        <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
@@ -176,6 +180,29 @@
             </dependency>
 
 
+            <!--Alibaba Fescar-->
+
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-core</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-common</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-spring</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fescar</groupId>
+                <artifactId>fescar-rm-datasource</artifactId>
+                <version>${fescar.version}</version>
+            </dependency>
+
             <!-- Aliyun OSS dependencies -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
@@ -183,6 +210,49 @@
                 <version>${oss.version}</version>
             </dependency>
 
+            <!-- Apache Dubbo dependencies-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo-dependencies-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Dubbo -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Dubbo Spring Boot Starter -->
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo-spring-boot.version}</version>
+            </dependency>
+
+            <!-- Dubbo Nacos registry dependency -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo-registry-nacos</artifactId>
+                <version>${dubbo-registry-nacos.version}</version>
+            </dependency>
 
             <!-- Own dependencies  -->
             <dependency>
@@ -213,6 +283,11 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-nacos-config-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-fescar</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -255,6 +330,12 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-fescar</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

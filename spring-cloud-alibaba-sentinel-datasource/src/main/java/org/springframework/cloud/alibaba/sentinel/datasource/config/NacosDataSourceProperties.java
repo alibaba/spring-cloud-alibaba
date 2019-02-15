@@ -5,7 +5,6 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
-import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceWithAuthorizationFactoryBean;
 import org.springframework.util.StringUtils;
 
 /**
@@ -19,12 +18,10 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 	private String serverAddr;
 
 	@NotEmpty
-	private String groupId;
+	private String groupId = "DEFAULT_GROUP";
 
 	@NotEmpty
 	private String dataId;
-
-	// commercialized usage
 
 	private String endpoint;
 	private String namespace;
@@ -37,19 +34,9 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	@Override
 	public void preCheck(String dataSourceName) {
-		if (!StringUtils.isEmpty(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
-			this.setServerAddr(null);
-			this.setFactoryBeanName(
-					NacosDataSourceWithAuthorizationFactoryBean.class.getName());
-			this.setEndpoint(System.getProperties()
-					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT));
-			this.setNamespace(System.getProperties()
-					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_NAMESPACE));
-			this.setAccessKey(System.getProperties()
-					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_AK));
-			this.setSecretKey(System.getProperties()
-					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_SK));
+		if (StringUtils.isEmpty(serverAddr) && acmPropertiesInvalid()) {
+			throw new IllegalArgumentException(
+					"NacosDataSource properties value not correct. serverAddr is empty but there is empty value in accessKey, secretKey, endpoint, namespace property");
 		}
 	}
 
@@ -109,36 +96,9 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 		this.secretKey = secretKey;
 	}
 
-	public static NacosDataSourceProperties buildFlowByEDAS() {
-		return buildByEDAS("flow");
+	public boolean acmPropertiesInvalid() {
+		return StringUtils.isEmpty(endpoint) || StringUtils.isEmpty(accessKey)
+				|| StringUtils.isEmpty(secretKey) || StringUtils.isEmpty(namespace);
 	}
 
-	public static NacosDataSourceProperties buildDegradeByEDAS() {
-		return buildByEDAS("degrade");
-	}
-
-	public static NacosDataSourceProperties buildByEDAS(String type) {
-		NacosDataSourceProperties result = new NacosDataSourceProperties();
-		result.setFactoryBeanName(
-				NacosDataSourceWithAuthorizationFactoryBean.class.getName());
-		result.setEndpoint(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT));
-		result.setNamespace(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_NAMESPACE));
-		result.setAccessKey(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_AK));
-		result.setSecretKey(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_SK));
-		result.setDataType("json");
-		result.setDataId(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.PROJECT_NAME) + "-" + type);
-		result.setGroupId("nacos-sentinel");
-		if (type.equals(RuleType.FLOW.getName())) {
-			result.setRuleType(RuleType.FLOW);
-		}
-		else {
-			result.setRuleType(RuleType.DEGRADE);
-		}
-		return result;
-	}
 }

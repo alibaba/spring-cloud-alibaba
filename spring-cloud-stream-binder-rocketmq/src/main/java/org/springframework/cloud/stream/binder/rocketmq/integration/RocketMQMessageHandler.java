@@ -16,10 +16,6 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.integration;
 
-import java.time.Instant;
-import java.util.Map;
-import java.util.Optional;
-
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -47,6 +43,10 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.util.Assert;
+
+import java.time.Instant;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
