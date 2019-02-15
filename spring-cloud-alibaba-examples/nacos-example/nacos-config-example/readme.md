@@ -114,11 +114,11 @@ Nacos Client gets data from Nacos Server through this method. `ConfigService.get
 
 In Nacos Config Starter, the splicing format of dataId is as follows
 
-	${prefix} - ${spring.active.profile} . ${file-extension}
+	${prefix} - ${spring.profiles.active} . ${file-extension}
 
 * `prefix` default value is `spring.application.name` value, which can also be configured via the configuration item `spring.cloud.nacos.config.prefix`.
 
-* `spring.active.profile` is the profile corresponding to the current environment. For details, please refer to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
+* `spring.profiles.active` is the profile corresponding to the current environment. For details, please refer to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
 	**Note: when the activeprofile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
 

@@ -16,21 +16,21 @@
 
 package org.springframework.cloud.alibaba.sentinel.endpoint;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
-
 import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Endpoint for Sentinel, contains ans properties and rules
@@ -67,7 +67,7 @@ public class SentinelEndpoint {
 			final Map<String, Object> rules = new HashMap<>();
 			result.put("rules", rules);
 			rules.put("flowRules", FlowRuleManager.getRules());
-			rules.put("degradeRules", SystemRuleManager.getRules());
+			rules.put("degradeRules", DegradeRuleManager.getRules());
 			rules.put("systemRules", SystemRuleManager.getRules());
 			rules.put("authorityRule", AuthorityRuleManager.getRules());
 			rules.put("paramFlowRule", ParamFlowRuleManager.getRules());

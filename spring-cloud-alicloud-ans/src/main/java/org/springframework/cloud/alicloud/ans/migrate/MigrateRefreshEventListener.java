@@ -1,17 +1,15 @@
 package org.springframework.cloud.alicloud.ans.migrate;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-
+import com.netflix.loadbalancer.ILoadBalancer;
 import org.springframework.cloud.context.named.NamedContextFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.netflix.loadbalancer.ILoadBalancer;
+import javax.annotation.PostConstruct;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author pbting
