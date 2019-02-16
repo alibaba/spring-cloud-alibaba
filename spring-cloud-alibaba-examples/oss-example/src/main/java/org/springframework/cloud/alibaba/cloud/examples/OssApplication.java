@@ -22,7 +22,7 @@ public class OssApplication {
 
     public static void main(String[] args) throws URISyntaxException {
         SpringApplication.run(OssApplication.class, args);
-        System.out.println("test");
+        
     }
 
     @Bean
