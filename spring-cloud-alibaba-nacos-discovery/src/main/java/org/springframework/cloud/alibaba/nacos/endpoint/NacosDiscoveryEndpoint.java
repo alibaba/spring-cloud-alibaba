@@ -46,10 +46,7 @@ public class NacosDiscoveryEndpoint {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 	}
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
+
 
 	/**
 	 * @return nacos discovery endpoint
