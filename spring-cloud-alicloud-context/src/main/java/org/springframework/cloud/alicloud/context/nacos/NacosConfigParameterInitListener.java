@@ -11,10 +11,10 @@ import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
 /**
  * @author pbting
  */
-public class NacosParameterInitListener
+public class NacosConfigParameterInitListener
 		extends AbstractOnceApplicationListener<ApplicationEnvironmentPreparedEvent> {
 	private static final Logger log = LoggerFactory
-			.getLogger(NacosParameterInitListener.class);
+			.getLogger(NacosConfigParameterInitListener.class);
 
 	@Override
 	protected String conditionalOnClass() {
