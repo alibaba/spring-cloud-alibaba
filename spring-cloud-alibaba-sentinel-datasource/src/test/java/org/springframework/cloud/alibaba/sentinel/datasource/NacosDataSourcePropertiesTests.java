@@ -17,7 +17,6 @@
 package org.springframework.cloud.alibaba.sentinel.datasource;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.NacosDataSourceProperties;
@@ -69,72 +68,6 @@ public class NacosDataSourcePropertiesTests {
 				nacosDataSourceProperties.getNamespace());
 		assertEquals("Nacos rule type was wrong", RuleType.SYSTEM,
 				nacosDataSourceProperties.getRuleType());
-	}
-
-	@Test
-	public void testNacosWithEDASAndWithoutSystemProperties() {
-		NacosDataSourceProperties nacosDataSourceProperties = NacosDataSourceProperties
-				.buildByEDAS(RuleType.DEGRADE.getName());
-		assertEquals("Nacos groupId was wrong", "nacos-sentinel",
-				nacosDataSourceProperties.getGroupId());
-		assertEquals("Nacos dataId was wrong", "null-" + RuleType.DEGRADE.getName(),
-				nacosDataSourceProperties.getDataId());
-		assertEquals("Nacos default data type was wrong", "json",
-				nacosDataSourceProperties.getDataType());
-		assertEquals("Nacos rule type was wrong", RuleType.DEGRADE,
-				nacosDataSourceProperties.getRuleType());
-		assertNull("Nacos ak was not null", nacosDataSourceProperties.getAccessKey());
-		assertNull("Nacos sk was not null", nacosDataSourceProperties.getSecretKey());
-		assertNull("Nacos endpoint was not null",
-				nacosDataSourceProperties.getEndpoint());
-		assertNull("Nacos namespace was not null",
-				nacosDataSourceProperties.getNamespace());
-		assertNull("Nacos serverAddr was not null",
-				nacosDataSourceProperties.getServerAddr());
-	}
-
-	@Test
-	public void testNacosWithEDASDegradeAndWithoutSystemProperties() {
-		NacosDataSourceProperties nacosDataSourceProperties = NacosDataSourceProperties
-				.buildDegradeByEDAS();
-		assertEquals("Nacos groupId was wrong", "nacos-sentinel",
-				nacosDataSourceProperties.getGroupId());
-		assertEquals("Nacos dataId was wrong", "null-" + RuleType.DEGRADE.getName(),
-				nacosDataSourceProperties.getDataId());
-		assertEquals("Nacos default data type was wrong", "json",
-				nacosDataSourceProperties.getDataType());
-		assertEquals("Nacos rule type was wrong", RuleType.DEGRADE,
-				nacosDataSourceProperties.getRuleType());
-		assertNull("Nacos ak was not null", nacosDataSourceProperties.getAccessKey());
-		assertNull("Nacos sk was not null", nacosDataSourceProperties.getSecretKey());
-		assertNull("Nacos endpoint was not null",
-				nacosDataSourceProperties.getEndpoint());
-		assertNull("Nacos namespace was not null",
-				nacosDataSourceProperties.getNamespace());
-		assertNull("Nacos serverAddr was not null",
-				nacosDataSourceProperties.getServerAddr());
-	}
-
-	@Test
-	public void testNacosWithEDASFlowAndWithoutSystemProperties() {
-		NacosDataSourceProperties nacosDataSourceProperties = NacosDataSourceProperties
-				.buildFlowByEDAS();
-		assertEquals("Nacos groupId was wrong", "nacos-sentinel",
-				nacosDataSourceProperties.getGroupId());
-		assertEquals("Nacos dataId was wrong", "null-" + RuleType.FLOW.getName(),
-				nacosDataSourceProperties.getDataId());
-		assertEquals("Nacos default data type was wrong", "json",
-				nacosDataSourceProperties.getDataType());
-		assertEquals("Nacos rule type was wrong", RuleType.FLOW,
-				nacosDataSourceProperties.getRuleType());
-		assertNull("Nacos ak was not null", nacosDataSourceProperties.getAccessKey());
-		assertNull("Nacos sk was not null", nacosDataSourceProperties.getSecretKey());
-		assertNull("Nacos endpoint was not null",
-				nacosDataSourceProperties.getEndpoint());
-		assertNull("Nacos namespace was not null",
-				nacosDataSourceProperties.getNamespace());
-		assertNull("Nacos serverAddr was not null",
-				nacosDataSourceProperties.getServerAddr());
 	}
 
 }

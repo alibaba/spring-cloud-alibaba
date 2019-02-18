@@ -39,6 +39,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.*;
 /**
  * @author dungu.zpf
  * @author xiaojing
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 
 @ConfigurationProperties("spring.cloud.nacos.discovery")
@@ -148,6 +149,9 @@ public class NacosDiscoveryProperties {
 		}
 
 		serverAddr = Objects.toString(serverAddr, "");
+		if(serverAddr.lastIndexOf("/") != -1) {
+			serverAddr.substring(0,serverAddr.length()-1);
+		}
 		endpoint = Objects.toString(endpoint, "");
 		namespace = Objects.toString(namespace, "");
 		logName = Objects.toString(logName, "");
@@ -160,7 +164,7 @@ public class NacosDiscoveryProperties {
 			else {
 				NetworkInterface netInterface = NetworkInterface
 						.getByName(networkInterface);
-				if (null == networkInterface) {
+				if (null == netInterface) {
 					throw new IllegalArgumentException(
 							"no such interface " + networkInterface);
 				}
@@ -379,14 +383,13 @@ public class NacosDiscoveryProperties {
 		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
 
-		try {
-			namingService = NacosFactory.createNamingService(properties);
-			return namingService;
-		}
-		catch (Exception e) {
+        try {
+            namingService = NacosFactory.createNamingService(properties);
+        } catch (Exception e) {
 			LOGGER.error("create naming service error!properties={},e=,", this, e);
 			return null;
 		}
+        return namingService;
 	}
 
 }

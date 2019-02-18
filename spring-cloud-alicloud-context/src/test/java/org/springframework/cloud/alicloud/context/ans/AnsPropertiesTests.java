@@ -18,7 +18,17 @@ package org.springframework.cloud.alicloud.context.ans;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Vector;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
@@ -29,6 +39,8 @@ import com.alibaba.cloud.context.AliCloudServerMode;
 /**
  * @author xiaolongzuo
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ NetworkInterface.class, AnsProperties.class })
 public class AnsPropertiesTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -37,8 +49,7 @@ public class AnsPropertiesTests {
 					AliCloudContextAutoConfiguration.class));
 
 	@Test
-	public void testConfigurationValueDefaultsAreAsExpected()
-			throws ClassNotFoundException {
+	public void testConfigurationValueDefaultsAreAsExpected() {
 		this.contextRunner.withPropertyValues().run(context -> {
 			AnsProperties ansProperties = context.getBean(AnsProperties.class);
 			assertThat(ansProperties.getServerMode()).isEqualTo(AliCloudServerMode.LOCAL);
@@ -65,7 +76,7 @@ public class AnsPropertiesTests {
 	}
 
 	@Test
-	public void testConfigurationValuesAreCorrectlyLoaded() {
+	public void testConfigurationValuesAreCorrectlyLoaded1() {
 		this.contextRunner
 				.withPropertyValues("spring.cloud.alicloud.ans.server-mode=EDAS",
 						"spring.cloud.alicloud.ans.server-port=11111",
@@ -96,6 +107,39 @@ public class AnsPropertiesTests {
 							.isEqualTo("ANS_SERVICE_TYPE");
 					assertThat(ansProperties.getTags().get("ANS_SERVICE_TYPE"))
 							.isEqualTo("SPRING_CLOUD");
+				});
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void testConfigurationValuesAreCorrectlyLoaded2() {
+		this.contextRunner.withPropertyValues(
+				"spring.cloud.alicloud.ans.client-interface-name=noneinterfacename")
+				.run(context -> {
+					AnsProperties ansProperties = context.getBean(AnsProperties.class);
+					assertThat(ansProperties.getClientInterfaceName())
+							.isEqualTo("noneinterfacename");
+				});
+	}
+
+	@Test
+	public void testConfigurationValuesAreCorrectlyLoaded3() throws SocketException {
+		NetworkInterface networkInterface = PowerMockito.mock(NetworkInterface.class);
+		Vector<InetAddress> inetAddressList = new Vector<>();
+		Inet4Address inetAddress = PowerMockito.mock(Inet4Address.class);
+		PowerMockito.when(inetAddress.getHostAddress()).thenReturn("192.168.1.100");
+		inetAddressList.add(inetAddress);
+		PowerMockito.when(networkInterface.getInetAddresses())
+				.thenReturn(inetAddressList.elements());
+		PowerMockito.mockStatic(NetworkInterface.class);
+		PowerMockito.when(NetworkInterface.getByName("eth0"))
+				.thenReturn(networkInterface);
+		this.contextRunner
+				.withPropertyValues(
+						"spring.cloud.alicloud.ans.client-interface-name=eth0")
+				.run(context -> {
+					AnsProperties ansProperties = context.getBean(AnsProperties.class);
+					assertThat(ansProperties.getClientInterfaceName()).isEqualTo("eth0");
+					assertThat(ansProperties.getClientIp()).isEqualTo("192.168.1.100");
 				});
 	}
 
