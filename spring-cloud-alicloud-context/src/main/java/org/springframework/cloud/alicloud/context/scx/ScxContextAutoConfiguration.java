@@ -16,9 +16,13 @@
 
 package org.springframework.cloud.alicloud.context.scx;
 
+import com.alibaba.cloud.context.edas.AliCloudEdasSdk;
+import com.alibaba.cloud.context.scx.AliCloudScxInitializer;
+import com.alibaba.edas.schedulerx.SchedulerXClient;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.alicloud.context.AliCloudProperties;
 import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
@@ -26,15 +30,12 @@ import org.springframework.cloud.alicloud.context.edas.EdasProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.cloud.context.edas.AliCloudEdasSdk;
-import com.alibaba.cloud.context.scx.AliCloudScxInitializer;
-import com.alibaba.edas.schedulerx.SchedulerXClient;
-
 /**
  * @author xiaolongzuo
  */
 @Configuration
 @ConditionalOnClass(name = "org.springframework.cloud.alicloud.scx.ScxAutoConfiguration")
+@ConditionalOnProperty(name = "spring.cloud.alicloud.scx.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(ScxProperties.class)
 @ImportAutoConfiguration(EdasContextAutoConfiguration.class)
 public class ScxContextAutoConfiguration {
@@ -42,10 +43,10 @@ public class ScxContextAutoConfiguration {
 	@Bean(initMethod = "init")
 	@ConditionalOnMissingBean
 	public SchedulerXClient schedulerXClient(AliCloudProperties aliCloudProperties,
-											 EdasProperties edasProperties, ScxProperties scxProperties,
-											 AliCloudEdasSdk aliCloudEdasSdk) {
+			EdasProperties edasProperties, ScxProperties scxProperties,
+			AliCloudEdasSdk aliCloudEdasSdk) {
 		return AliCloudScxInitializer.initialize(aliCloudProperties, edasProperties,
-			scxProperties, aliCloudEdasSdk);
+				scxProperties, aliCloudEdasSdk);
 	}
 
 }

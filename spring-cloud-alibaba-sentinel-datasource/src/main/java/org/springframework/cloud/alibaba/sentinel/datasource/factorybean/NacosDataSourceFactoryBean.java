@@ -1,14 +1,12 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.factorybean;
 
-import java.util.Properties;
-
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 import com.alibaba.nacos.api.PropertyKeyConst;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.StringUtils;
+
+import java.util.Properties;
 
 /**
  * A {@link FactoryBean} for creating {@link NacosDataSource} instance.
@@ -30,16 +28,19 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 
 	@Override
 	public NacosDataSource getObject() throws Exception {
-		if (!StringUtils.isEmpty(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
-			Properties properties = new Properties();
-			properties.setProperty(PropertyKeyConst.ACCESS_KEY, this.accessKey);
-			properties.setProperty(PropertyKeyConst.SERVER_ADDR, this.secretKey);
-			properties.setProperty(PropertyKeyConst.ENDPOINT, this.endpoint);
-			properties.setProperty(PropertyKeyConst.NAMESPACE, this.namespace);
-			return new NacosDataSource(properties, groupId, dataId, converter);
+		Properties properties = new Properties();
+		if (!StringUtils.isEmpty(this.serverAddr)) {
+			properties.setProperty(PropertyKeyConst.SERVER_ADDR, this.serverAddr);
 		}
-		return new NacosDataSource(serverAddr, groupId, dataId, converter);
+		else {
+			properties.setProperty(PropertyKeyConst.ACCESS_KEY, this.accessKey);
+			properties.setProperty(PropertyKeyConst.SECRET_KEY, this.secretKey);
+			properties.setProperty(PropertyKeyConst.ENDPOINT, this.endpoint);
+		}
+		if (!StringUtils.isEmpty(this.namespace)) {
+			properties.setProperty(PropertyKeyConst.NAMESPACE, this.namespace);
+		}
+		return new NacosDataSource(properties, groupId, dataId, converter);
 	}
 
 	@Override

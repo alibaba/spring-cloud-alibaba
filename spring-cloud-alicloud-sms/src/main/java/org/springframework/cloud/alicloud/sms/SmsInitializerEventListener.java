@@ -18,7 +18,7 @@ package org.springframework.cloud.alicloud.sms;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.cloud.alicloud.context.sms.SmsConfigProperties;
+import org.springframework.cloud.alicloud.context.sms.SmsProperties;
 import org.springframework.cloud.alicloud.sms.base.MessageListener;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -35,11 +35,11 @@ public class SmsInitializerEventListener
 
 	private final AtomicBoolean isCalled = new AtomicBoolean(false);
 
-	private SmsConfigProperties msConfigProperties;
+	private SmsProperties msConfigProperties;
 
 	private ISmsService smsService;
 
-	public SmsInitializerEventListener(SmsConfigProperties msConfigProperties,
+	public SmsInitializerEventListener(SmsProperties msConfigProperties,
 			ISmsService smsService) {
 		this.msConfigProperties = msConfigProperties;
 		this.smsService = smsService;
@@ -54,13 +54,13 @@ public class SmsInitializerEventListener
 		// 整个application context refreshed then do
 		// 可自助调整超时时间
 		System.setProperty("sun.net.client.defaultConnectTimeout",
-				msConfigProperties.getConnnectTimeout());
+				msConfigProperties.getConnectTimeout());
 		System.setProperty("sun.net.client.defaultReadTimeout",
 				msConfigProperties.getReadTimeout());
 		// 初始化acsClient,暂不支持region化
 		try {
 			DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou",
-					SmsConfigProperties.smsProduct, SmsConfigProperties.smsDomain);
+					SmsProperties.smsProduct, SmsProperties.smsDomain);
 			Collection<MessageListener> messageListeners = event.getApplicationContext()
 					.getBeansOfType(MessageListener.class).values();
 			if (messageListeners.isEmpty()) {
