@@ -10,5 +10,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.springframework.cloud.alicloud.context.sms.SmsContextAutoConfiguration
 org.springframework.context.ApplicationListener=\
   org.springframework.cloud.alicloud.context.ans.AnsContextApplicationListener,\
-  org.springframework.cloud.alicloud.context.nacos.NacosParameterInitListener,\
+  org.springframework.cloud.alicloud.context.nacos.NacosConfigParameterInitListener,\
+  org.springframework.cloud.alicloud.context.nacos.NacosDiscoveryParameterInitListener,\
   org.springframework.cloud.alicloud.context.sentinel.SentinelAliCloudListener

@@ -18,7 +18,7 @@
     <properties>
         <sentinel.version>1.4.0</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.version>0.6.2</nacos.version>
+        <nacos.version>0.8.1</nacos.version>
         <fescar.version>0.1.3</fescar.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
@@ -173,7 +173,7 @@
                 <version>${fescar.version}</version>
             </dependency>
             <dependency>
-            <groupId>com.alibaba.fescar</groupId>
+                <groupId>com.alibaba.fescar</groupId>
                 <artifactId>fescar-common</artifactId>
                 <version>${fescar.version}</version>
             </dependency>
