@@ -43,8 +43,7 @@ public class NacosDiscoveryParameterInitListener
 		EdasChangeOrderConfiguration edasChangeOrderConfiguration = EdasChangeOrderConfigurationFactory
 				.getEdasChangeOrderConfiguration();
 
-		log.info(
-				"Initialize Nacos Discovery Parameter from edas change order,is edas managed {}.",
+		log.info("Initialize Nacos Discovery Parameter ,is managed {}.",
 				edasChangeOrderConfiguration.isEdasManaged());
 
 		if (!edasChangeOrderConfiguration.isEdasManaged()) {

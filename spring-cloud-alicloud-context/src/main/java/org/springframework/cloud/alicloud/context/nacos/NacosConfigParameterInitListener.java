@@ -34,7 +34,7 @@ public class NacosConfigParameterInitListener
 			return;
 		}
 
-		log.info("Initialize Nacos Parameter from edas change order,is edas managed {}.",
+		log.info("Initialize Nacos Parameter ,is  managed {}.",
 				edasChangeOrderConfiguration.isEdasManaged());
 		System.getProperties().setProperty("spring.cloud.nacos.config.server-mode",
 				"EDAS");
