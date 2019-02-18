@@ -19,6 +19,7 @@ package org.springframework.cloud.alicloud.context.oss;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
 import org.springframework.cloud.alicloud.context.AliCloudProperties;
@@ -39,6 +40,7 @@ import com.aliyun.oss.OSSClientBuilder;
  */
 @Configuration
 @ConditionalOnClass(name = "org.springframework.cloud.alicloud.oss.OssAutoConfiguration")
+@ConditionalOnProperty(name = "spring.cloud.alicloud.oss.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(OssProperties.class)
 @ImportAutoConfiguration(AliCloudContextAutoConfiguration.class)
 public class OssContextAutoConfiguration {
