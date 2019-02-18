@@ -37,10 +37,4 @@ public class NacosDiscoveryClientAutoConfiguration {
 		return new NacosDiscoveryClient(discoveryProperties);
 	}
 
-	@Bean
-	@ConditionalOnMissingBean
-	public NacosDiscoveryProperties nacosProperties() {
-		return new NacosDiscoveryProperties();
-	}
-
 }
