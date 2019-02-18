@@ -46,6 +46,10 @@ import com.alibaba.cloud.context.statistics.StatisticsTask;
 		AcmContextBootstrapConfiguration.class })
 public class StatisticsTaskStarter implements InitializingBean {
 
+	private static final String NACOS_CONFIG_SERVER_MODE_KEY = "spring.cloud.nacos.config.server-mode";
+
+	private static final String NACOS_CONFIG_SERVER_MODE_VALUE = "EDAS";
+
 	@Autowired(required = false)
 	private AliCloudEdasSdk aliCloudEdasSdk;
 
@@ -101,6 +105,10 @@ public class StatisticsTaskStarter implements InitializingBean {
 				&& acmProperties.getServerMode() == AliCloudServerMode.EDAS);
 		if (acmContextBootstrapConfiguration != null && acmEnableEdas) {
 			components.add("SC-ACM");
+		}
+		if (NACOS_CONFIG_SERVER_MODE_VALUE
+				.equals(System.getProperty(NACOS_CONFIG_SERVER_MODE_KEY))) {
+			components.add("SC-NACOS-CONFIG");
 		}
 		return components;
 	}
