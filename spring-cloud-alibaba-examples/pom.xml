@@ -26,6 +26,10 @@
         <module>ans-example/ans-consumer-feign-example</module>
         <module>ans-example/ans-consumer-ribbon-example</module>
         <module>ans-example/ans-provider-example</module>
+        <module>fescar-example/business-service</module>
+        <module>fescar-example/order-service</module>
+        <module>fescar-example/storage-service</module>
+        <module>fescar-example/account-service</module>
         <module>acm-example/acm-local-example</module>
         <module>rocketmq-example</module>
         <module>env-extension</module>

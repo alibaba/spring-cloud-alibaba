@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.context.sms;
 
-import org.springframework.core.env.Environment;
+package org.springframework.cloud.alibaba.fescar.feign;
 
-import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.BeanFactory;
+
+import feign.Feign;
+import feign.Retryer;
+import org.springframework.cloud.alibaba.sentinel.feign.SentinelFeign;
 
 /**
- * @author pbting
+ * @author xiaojing
  */
-public class SmsConfigRegistration {
+final class FescarSentinelFeignBuilder {
 
-	private Environment environment;
-
-	private SmsConfigProperties smsConfigProperties;
-
-	public SmsConfigRegistration(Environment environment,
-			SmsConfigProperties smsConfigProperties) {
-		this.environment = environment;
-		this.smsConfigProperties = smsConfigProperties;
+	private FescarSentinelFeignBuilder() {
 	}
 
-	@PostConstruct
-	public void initSmsConfigRegistration() {
-		smsConfigProperties.overiideFromEnv(environment);
+	static Feign.Builder builder(BeanFactory beanFactory) {
+		return SentinelFeign.builder().retryer(Retryer.NEVER_RETRY)
+				.client(new FescarFeignClient(beanFactory));
 	}
 }
