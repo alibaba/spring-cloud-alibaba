@@ -1,6 +1,6 @@
 [
   {
-    "resource": "GET:http://service-provider/echo/{str}",
+    "resource": "GET:http://service-provider-1X/echo/{str}",
     "controlBehavior": 0,
     "count": 1,
     "grade": 1,

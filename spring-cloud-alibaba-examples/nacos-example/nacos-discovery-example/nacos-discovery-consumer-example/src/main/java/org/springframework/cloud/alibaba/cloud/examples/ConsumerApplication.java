@@ -32,7 +32,7 @@ public class ConsumerApplication {
 		SpringApplication.run(ConsumerApplication.class, args);
 	}
 
-	@FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
+	@FeignClient(name = "service-provider-1X", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 	public interface EchoService {
 		@RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
 		String echo(@PathVariable("str") String str);
