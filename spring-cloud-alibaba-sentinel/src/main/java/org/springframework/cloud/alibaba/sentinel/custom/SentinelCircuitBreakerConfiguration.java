@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel;
+package org.springframework.cloud.alibaba.sentinel.custom;
+
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author fangjian
+ * @author lengleng
+ * <p>
+ * support @EnableCircuitBreaker ,Do nothing
  */
-public interface SentinelConstants {
-
-	String PROPERTY_PREFIX = "spring.cloud.sentinel";
-
-	String BLOCK_TYPE = "block";
-	String FALLBACK_TYPE = "fallback";
-
-	// commercialization
-
-	String FLOW_DATASOURCE_NAME = "edas-flow";
-	String DEGRADE_DATASOURCE_NAME = "edas-degrade";
-
+@Configuration
+public class SentinelCircuitBreakerConfiguration {
 }

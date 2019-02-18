@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,10 +28,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.csp.sentinel.adapter.servlet.callback.RequestOriginParser;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
@@ -39,6 +42,11 @@ import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
 import com.alibaba.csp.sentinel.log.LogBase;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
+import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
@@ -47,6 +55,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * @author xiaojing
+ * @author jiashuai.xie
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @Configuration
@@ -66,8 +75,20 @@ public class SentinelAutoConfiguration {
 	@Autowired(required = false)
 	private UrlBlockHandler urlBlockHandler;
 
+	@Autowired(required = false)
+	private RequestOriginParser requestOriginParser;
+
 	@PostConstruct
 	private void init() {
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
+				&& StringUtils.hasText(properties.getLog().getDir())) {
+			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
+		}
+		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
+				&& properties.getLog().isSwitchPid()) {
+			System.setProperty(LogBase.LOG_NAME_USE_PID,
+					String.valueOf(properties.getLog().isSwitchPid()));
+		}
 		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
 				&& StringUtils.hasText(projectName)) {
 			System.setProperty(AppNameUtil.APP_NAME, projectName);
@@ -87,6 +108,11 @@ public class SentinelAutoConfiguration {
 						.hasText(properties.getTransport().getHeartbeatIntervalMs())) {
 			System.setProperty(TransportConfig.HEARTBEAT_INTERVAL_MS,
 					properties.getTransport().getHeartbeatIntervalMs());
+		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_CLIENT_IP))
+				&& StringUtils.hasText(properties.getTransport().getClientIp())) {
+			System.setProperty(TransportConfig.HEARTBEAT_CLIENT_IP,
+					properties.getTransport().getClientIp());
 		}
 		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.CHARSET))
 				&& StringUtils.hasText(properties.getMetric().getCharset())) {
@@ -110,30 +136,25 @@ public class SentinelAutoConfiguration {
 			System.setProperty(SentinelConfig.COLD_FACTOR,
 					properties.getFlow().getColdFactor());
 		}
-		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
-				&& StringUtils.hasText(properties.getLog().getDir())) {
-			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
-		}
-		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_NAME_USE_PID))
-				&& properties.getLog().isSwitchPid()) {
-			System.setProperty(LogBase.LOG_NAME_USE_PID,
-					String.valueOf(properties.getLog().isSwitchPid()));
-		}
-
 		if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
 			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
 		}
+
 		if (urlBlockHandler != null) {
 			WebCallbackManager.setUrlBlockHandler(urlBlockHandler);
 		}
 		if (urlCleaner != null) {
 			WebCallbackManager.setUrlCleaner(urlCleaner);
 		}
+		if (requestOriginParser != null) {
+			WebCallbackManager.setRequestOriginParser(requestOriginParser);
+		}
 
 		// earlier initialize
 		if (properties.isEager()) {
 			InitExecutor.doInit();
 		}
+
 	}
 
 	@Bean
@@ -145,34 +166,78 @@ public class SentinelAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
-	public SentinelBeanPostProcessor sentinelBeanPostProcessor() {
-		return new SentinelBeanPostProcessor();
+	public SentinelBeanPostProcessor sentinelBeanPostProcessor(
+			ApplicationContext applicationContext) {
+		return new SentinelBeanPostProcessor(applicationContext);
 	}
 
 	@Bean
-	public SentinelDataSourceHandler sentinelDataSourceHandler() {
-		return new SentinelDataSourceHandler();
+	public SentinelDataSourceHandler sentinelDataSourceHandler(
+			DefaultListableBeanFactory beanFactory) {
+		return new SentinelDataSourceHandler(beanFactory);
 	}
 
-	@Bean("sentinel-json-converter")
-	public JsonConverter jsonConverter() {
-		return new JsonConverter(objectMapper());
-	}
+	protected static class SentinelConverterConfiguration {
 
-	private ObjectMapper objectMapper() {
-		return new ObjectMapper();
+		private ObjectMapper objectMapper = new ObjectMapper();
+
+		@Bean("sentinel-json-flow-converter")
+		public JsonConverter jsonFlowConverter() {
+			return new JsonConverter(objectMapper, FlowRule.class);
+		}
+
+		@Bean("sentinel-json-degrade-converter")
+		public JsonConverter jsonDegradeConverter() {
+			return new JsonConverter(objectMapper, DegradeRule.class);
+		}
+
+		@Bean("sentinel-json-system-converter")
+		public JsonConverter jsonSystemConverter() {
+			return new JsonConverter(objectMapper, SystemRule.class);
+		}
+
+		@Bean("sentinel-json-authority-converter")
+		public JsonConverter jsonAuthorityConverter() {
+			return new JsonConverter(objectMapper, AuthorityRule.class);
+		}
+
+		@Bean("sentinel-json-param-flow-converter")
+		public JsonConverter jsonParamFlowConverter() {
+			return new JsonConverter(objectMapper, ParamFlowRule.class);
+		}
+
 	}
 
 	@ConditionalOnClass(XmlMapper.class)
 	protected static class SentinelXmlConfiguration {
-		@Bean("sentinel-xml-converter")
-		public XmlConverter xmlConverter() {
-			return new XmlConverter(xmlMapper());
+
+		private XmlMapper xmlMapper = new XmlMapper();
+
+		@Bean("sentinel-xml-flow-converter")
+		public XmlConverter xmlFlowConverter() {
+			return new XmlConverter(xmlMapper, FlowRule.class);
 		}
 
-		private XmlMapper xmlMapper() {
-			return new XmlMapper();
+		@Bean("sentinel-xml-degrade-converter")
+		public XmlConverter xmlDegradeConverter() {
+			return new XmlConverter(xmlMapper, DegradeRule.class);
 		}
+
+		@Bean("sentinel-xml-system-converter")
+		public XmlConverter xmlSystemConverter() {
+			return new XmlConverter(xmlMapper, SystemRule.class);
+		}
+
+		@Bean("sentinel-xml-authority-converter")
+		public XmlConverter xmlAuthorityConverter() {
+			return new XmlConverter(xmlMapper, AuthorityRule.class);
+		}
+
+		@Bean("sentinel-xml-param-flow-converter")
+		public XmlConverter xmlParamFlowConverter() {
+			return new XmlConverter(xmlMapper, ParamFlowRule.class);
+		}
+
 	}
 
 }

@@ -1,9 +1,29 @@
+/*
+ * Copyright (C) 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.cloud.alibaba.sentinel.datasource.factorybean;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
-
-import org.springframework.beans.factory.FactoryBean;
+import com.alibaba.nacos.api.PropertyKeyConst;
 
 /**
  * A {@link FactoryBean} for creating {@link NacosDataSource} instance.
@@ -13,55 +33,104 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> {
 
-    private String serverAddr;
-    private String groupId;
-    private String dataId;
-    private Converter converter;
+	private String serverAddr;
+	private String groupId;
+	private String dataId;
+	private Converter converter;
 
-    @Override
-    public NacosDataSource getObject() throws Exception {
-        return new NacosDataSource(serverAddr, groupId, dataId, converter);
-    }
+	private String endpoint;
+	private String namespace;
+	private String accessKey;
+	private String secretKey;
 
-    @Override
-    public Class<?> getObjectType() {
-        return NacosDataSource.class;
-    }
+	@Override
+	public NacosDataSource getObject() throws Exception {
+		Properties properties = new Properties();
+		if (!StringUtils.isEmpty(this.serverAddr)) {
+			properties.setProperty(PropertyKeyConst.SERVER_ADDR, this.serverAddr);
+		}
+		else {
+			properties.setProperty(PropertyKeyConst.ACCESS_KEY, this.accessKey);
+			properties.setProperty(PropertyKeyConst.SECRET_KEY, this.secretKey);
+			properties.setProperty(PropertyKeyConst.ENDPOINT, this.endpoint);
+		}
+		if (!StringUtils.isEmpty(this.namespace)) {
+			properties.setProperty(PropertyKeyConst.NAMESPACE, this.namespace);
+		}
+		return new NacosDataSource(properties, groupId, dataId, converter);
+	}
 
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
+	@Override
+	public boolean isSingleton() {
+		return true;
+	}
 
-    public String getServerAddr() {
-        return serverAddr;
-    }
+	@Override
+	public Class<?> getObjectType() {
+		return NacosDataSource.class;
+	}
 
-    public void setServerAddr(String serverAddr) {
-        this.serverAddr = serverAddr;
-    }
+	public String getServerAddr() {
+		return serverAddr;
+	}
 
-    public String getGroupId() {
-        return groupId;
-    }
+	public void setServerAddr(String serverAddr) {
+		this.serverAddr = serverAddr;
+	}
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
+	public String getGroupId() {
+		return groupId;
+	}
 
-    public String getDataId() {
-        return dataId;
-    }
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
 
-    public void setDataId(String dataId) {
-        this.dataId = dataId;
-    }
+	public String getDataId() {
+		return dataId;
+	}
 
-    public Converter getConverter() {
-        return converter;
-    }
+	public void setDataId(String dataId) {
+		this.dataId = dataId;
+	}
 
-    public void setConverter(Converter converter) {
-        this.converter = converter;
-    }
+	public Converter getConverter() {
+		return converter;
+	}
+
+	public void setConverter(Converter converter) {
+		this.converter = converter;
+	}
+
+	public String getEndpoint() {
+		return endpoint;
+	}
+
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
+
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+
+	public String getAccessKey() {
+		return accessKey;
+	}
+
+	public void setAccessKey(String accessKey) {
+		this.accessKey = accessKey;
+	}
+
+	public String getSecretKey() {
+		return secretKey;
+	}
+
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
+	}
 }
