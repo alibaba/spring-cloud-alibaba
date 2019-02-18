@@ -30,8 +30,10 @@ public class NacosConfigParameterInitListener
 		EdasChangeOrderConfiguration edasChangeOrderConfiguration = EdasChangeOrderConfigurationFactory
 				.getEdasChangeOrderConfiguration();
 
-		log.info("Initialize Nacos Parameter ,is managed {}.",
-				edasChangeOrderConfiguration.isEdasManaged());
+		if (log.isDebugEnabled()) {
+			log.debug("Initialize Nacos Config Parameter ,is managed {}.",
+					edasChangeOrderConfiguration.isEdasManaged());
+		}
 
 		if (!edasChangeOrderConfiguration.isEdasManaged()) {
 			return;
