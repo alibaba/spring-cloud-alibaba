@@ -16,23 +16,22 @@
 
 package org.springframework.cloud.alicloud.context.nacos;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
+import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.cloud.alicloud.context.BaseAliCloudSpringApplication;
 import org.springframework.cloud.alicloud.utils.ChangeOrderUtils;
 
-import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
-import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * @author xiaolongzuo
  */
 @PrepareForTest({ EdasChangeOrderConfigurationFactory.class,
-		NacosParameterInitListener.class, AliCloudAnsInitializer.class })
-public class NacosParameterInitListenerTests extends BaseAliCloudSpringApplication {
+		NacosConfigParameterInitListener.class, AliCloudAnsInitializer.class })
+public class NacosConfigParameterInitListenerTests extends BaseAliCloudSpringApplication {
 
 	@BeforeClass
 	public static void setUp() {
