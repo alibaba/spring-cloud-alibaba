@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alicloud.context.scx;
+package org.springframework.cloud.alicloud.context.sms;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
 import org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration;
 import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
-import org.springframework.cloud.alicloud.context.edas.EdasProperties;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -34,22 +33,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { AliCloudContextAutoConfiguration.class,
 		EdasContextAutoConfiguration.class, AnsContextAutoConfiguration.class,
-		ScxContextAutoConfiguration.class }, properties = {
-				"spring.cloud.alicloud.scx.group-id=1-2-3-4",
-				"spring.cloud.alicloud.edas.namespace=cn-test" })
-public class ScxPropertiesLoadTests {
+		SmsContextAutoConfiguration.class }, properties = {
+				"spring.cloud.alicloud.sms.reportQueueName=q1",
+				"spring.cloud.alicloud.sms.upQueueName=q2",
+				"spring.cloud.alicloud.sms.connect-timeout=20",
+				"spring.cloud.alicloud.sms.read-timeout=30" })
+public class SmsPropertiesLoadTests {
 
 	@Autowired
-	private EdasProperties edasProperties;
-
-	@Autowired
-	private ScxProperties scxProperties;
+	private SmsProperties smsProperties;
 
 	@Test
-	public void testSxcProperties() {
-		assertThat(scxProperties.getGroupId()).isEqualTo("1-2-3-4");
-		assertThat(edasProperties.getNamespace()).isEqualTo("cn-test");
-		assertThat(scxProperties.getDomainName()).isNull();
+	public void test() {
+		assertThat(smsProperties.getReportQueueName()).isEqualTo("q1");
+		assertThat(smsProperties.getUpQueueName()).isEqualTo("q2");
+		assertThat(smsProperties.getConnectTimeout()).isEqualTo("20");
+		assertThat(smsProperties.getReadTimeout()).isEqualTo("30");
 	}
-
 }

@@ -15,17 +15,19 @@
  */
 package org.springframework.cloud.alicloud.sms;
 
-import com.aliyuncs.dysmsapi.model.v20170525.*;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.exceptions.ServerException;
+import java.text.ParseException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.cloud.alicloud.context.sms.SmsConfigProperties;
+import org.springframework.cloud.alicloud.context.AliCloudProperties;
+import org.springframework.cloud.alicloud.context.sms.SmsProperties;
 import org.springframework.cloud.alicloud.sms.base.DefaultAlicomMessagePuller;
 import org.springframework.cloud.alicloud.sms.endpoint.EndpointManager;
 import org.springframework.cloud.alicloud.sms.endpoint.ReceiveMessageEntity;
 
-import java.text.ParseException;
+import com.aliyuncs.dysmsapi.model.v20170525.*;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
 
 /**
  * @author pbting
@@ -38,17 +40,22 @@ public final class SmsServiceImpl extends AbstractSmsService {
 	 * @param sendSmsRequest
 	 * @return
 	 */
-	private SmsConfigProperties smsConfigProperties;
+	private SmsProperties smsProperties;
 
-	public SmsServiceImpl(SmsConfigProperties smsConfigProperties) {
-		this.smsConfigProperties = smsConfigProperties;
+	private AliCloudProperties aliCloudProperties;
+
+	public SmsServiceImpl(AliCloudProperties aliCloudProperties,
+			SmsProperties smsProperties) {
+		this.aliCloudProperties = aliCloudProperties;
+		this.smsProperties = smsProperties;
 	}
 
+	@Override
 	public SendSmsResponse sendSmsRequest(SendSmsRequest sendSmsRequest)
 			throws ClientException {
 
-		return sendSmsRequest(sendSmsRequest, smsConfigProperties.getAccessKeyId(),
-				smsConfigProperties.getAccessKeySecret());
+		return sendSmsRequest(sendSmsRequest, aliCloudProperties.getAccessKey(),
+				aliCloudProperties.getSecretKey());
 	}
 
 	/**
@@ -62,6 +69,7 @@ public final class SmsServiceImpl extends AbstractSmsService {
 	 * @throws ClientException
 	 * @return SendSmsResponse
 	 */
+	@Override
 	public SendSmsResponse sendSmsRequest(SendSmsRequest sendSmsRequest,
 			String accessKeyId, String accessKeySecret)
 			throws ServerException, ClientException {
@@ -76,10 +84,12 @@ public final class SmsServiceImpl extends AbstractSmsService {
 	 * @param smsReportMessageListener
 	 * @return boolean
 	 */
+	@Override
 	public boolean startSmsReportMessageListener(
 			SmsReportMessageListener smsReportMessageListener) {
-		String messageType = "SmsReport";// 短信回执：SmsReport，短信上行：SmsUp
-		String queueName = smsConfigProperties.getReportQueueName();
+		// 短信回执：SmsReport，短信上行：SmsUp
+		String messageType = "SmsReport";
+		String queueName = smsProperties.getReportQueueName();
 		return startReceiveMsg(messageType, queueName, smsReportMessageListener);
 	}
 
@@ -88,9 +98,11 @@ public final class SmsServiceImpl extends AbstractSmsService {
 	 * @param smsUpMessageListener
 	 * @return boolean
 	 */
+	@Override
 	public boolean startSmsUpMessageListener(SmsUpMessageListener smsUpMessageListener) {
-		String messageType = "SmsUp";// 短信回执：SmsReport，短信上行：SmsUp
-		String queueName = smsConfigProperties.getUpQueueName();
+		// 短信回执：SmsReport，短信上行：SmsUp
+		String messageType = "SmsUp";
+		String queueName = smsProperties.getUpQueueName();
 		return startReceiveMsg(messageType, queueName, smsUpMessageListener);
 	}
 
@@ -103,8 +115,8 @@ public final class SmsServiceImpl extends AbstractSmsService {
 	 */
 	private boolean startReceiveMsg(String messageType, String queueName,
 			SmsMessageListener messageListener) {
-		String accessKeyId = smsConfigProperties.getAccessKeyId();
-		String accessKeySecret = smsConfigProperties.getAccessKeySecret();
+		String accessKeyId = aliCloudProperties.getAccessKey();
+		String accessKeySecret = aliCloudProperties.getSecretKey();
 		boolean result = true;
 		try {
 			new DefaultAlicomMessagePuller().startReceiveMsg(accessKeyId, accessKeySecret,
@@ -135,9 +147,8 @@ public final class SmsServiceImpl extends AbstractSmsService {
 			SendBatchSmsRequest sendBatchSmsRequest)
 			throws ServerException, ClientException {
 
-		return sendSmsBatchRequest(sendBatchSmsRequest,
-				smsConfigProperties.getAccessKeyId(),
-				smsConfigProperties.getAccessKeySecret());
+		return sendSmsBatchRequest(sendBatchSmsRequest, aliCloudProperties.getAccessKey(),
+				aliCloudProperties.getSecretKey());
 	}
 
 	/**
@@ -181,7 +192,7 @@ public final class SmsServiceImpl extends AbstractSmsService {
 	@Override
 	public QuerySendDetailsResponse querySendDetails(QuerySendDetailsRequest request)
 			throws ClientException {
-		return querySendDetails(request, smsConfigProperties.getAccessKeyId(),
-				smsConfigProperties.getAccessKeySecret());
+		return querySendDetails(request, aliCloudProperties.getAccessKey(),
+				aliCloudProperties.getSecretKey());
 	}
 }

@@ -22,6 +22,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration;
+import org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.alibaba.cloud.context.AliCloudServerMode;
@@ -30,8 +33,10 @@ import com.alibaba.cloud.context.AliCloudServerMode;
  * @author xiaolongzuo
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { AcmContextBootstrapConfiguration.class }, properties = {
-		"spring.application.name=myapp" })
+@SpringBootTest(classes = { AliCloudContextAutoConfiguration.class,
+		EdasContextAutoConfiguration.class, AnsContextAutoConfiguration.class,
+		AcmContextBootstrapConfiguration.class }, properties = {
+				"spring.application.name=myapp" })
 public class AcmPropertiesDefaultTests {
 
 	@Autowired

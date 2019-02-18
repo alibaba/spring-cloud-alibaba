@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alicloud.context.edas;
+package org.springframework.cloud.alicloud.context.sms;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration;
-import org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.cloud.alicloud.context.BaseAliCloudSpringApplication;
 
 /**
  * @author xiaolongzuo
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = { AliCloudContextAutoConfiguration.class,
-		EdasContextAutoConfiguration.class, AnsContextAutoConfiguration.class })
-public class EdasPropertiesDefaultTests {
+public class SmsPropertiesDefaultTests extends BaseAliCloudSpringApplication {
 
 	@Autowired
-	private EdasProperties edasProperties;
+	private SmsProperties smsProperties;
 
 	@Test
 	public void test() {
-		assertThat(edasProperties.getNamespace()).isNull();
-		assertThat(edasProperties.isApplicationNameValid()).isFalse();
+		assertThat(smsProperties.getReportQueueName()).isNull();
+		assertThat(smsProperties.getUpQueueName()).isNull();
+		assertThat(smsProperties.getConnectTimeout()).isEqualTo("10000");
+		assertThat(smsProperties.getReadTimeout()).isEqualTo("10000");
 	}
 }
