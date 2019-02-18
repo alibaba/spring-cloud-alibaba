@@ -149,6 +149,9 @@ public class NacosDiscoveryProperties {
 		}
 
 		serverAddr = Objects.toString(serverAddr, "");
+		if(serverAddr.lastIndexOf("/") != -1) {
+			serverAddr.substring(0,serverAddr.length()-1);
+		}
 		endpoint = Objects.toString(endpoint, "");
 		namespace = Objects.toString(namespace, "");
 		logName = Objects.toString(logName, "");
