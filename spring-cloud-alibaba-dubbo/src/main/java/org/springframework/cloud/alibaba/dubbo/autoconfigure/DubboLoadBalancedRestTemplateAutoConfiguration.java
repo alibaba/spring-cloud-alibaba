@@ -27,15 +27,19 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 import org.springframework.cloud.alibaba.dubbo.client.loadbalancer.DubboAdapterLoadBalancerInterceptor;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -66,6 +70,12 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
     @Autowired
     private ConfigurableListableBeanFactory beanFactory;
 
+    @Autowired
+    private DubboGenericServiceFactory dubboGenericServiceFactory;
+
+    @Autowired
+    private Environment environment;
+
     @LoadBalanced
     @Autowired(required = false)
     private Map<String, RestTemplate> restTemplates = Collections.emptyMap();
@@ -82,37 +92,43 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
     public void adaptRestTemplates() {
         for (Map.Entry<String, RestTemplate> entry : restTemplates.entrySet()) {
             String beanName = entry.getKey();
-            if (isDubboTranslatedAnnotated(beanName)) {
-                adaptRestTemplate(entry.getValue());
+            Map<String, Object> dubboTranslatedAttributes = getDubboTranslatedAttributes(beanName);
+            if (!CollectionUtils.isEmpty(dubboTranslatedAttributes)) {
+                adaptRestTemplate(entry.getValue(), dubboTranslatedAttributes);
             }
         }
     }
 
     /**
-     * Judge {@link RestTemplate} bean being annotated {@link DubboTransported @DubboTransported} or not
+     * Gets the annotation attributes {@link RestTemplate} bean being annotated
+     * {@link DubboTransported @DubboTransported}
      *
      * @param beanName the bean name of {@link LoadBalanced @LoadBalanced} {@link RestTemplate}
-     * @return
+     * @return non-null {@link Map}
      */
-    private boolean isDubboTranslatedAnnotated(String beanName) {
-        boolean annotated = false;
+    private Map<String, Object> getDubboTranslatedAttributes(String beanName) {
+        Map<String, Object> attributes = Collections.emptyMap();
         BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
         if (beanDefinition instanceof AnnotatedBeanDefinition) {
             AnnotatedBeanDefinition annotatedBeanDefinition = (AnnotatedBeanDefinition) beanDefinition;
             MethodMetadata factoryMethodMetadata = annotatedBeanDefinition.getFactoryMethodMetadata();
-            annotated = factoryMethodMetadata != null &&
-                    !factoryMethodMetadata.getAnnotationAttributes(DUBBO_TRANSPORTED_CLASS_NAME).isEmpty();
+            attributes = factoryMethodMetadata != null ?
+                    factoryMethodMetadata.getAnnotationAttributes(DUBBO_TRANSPORTED_CLASS_NAME) : Collections.emptyMap();
         }
-        return annotated;
+        return attributes;
     }
 
 
     /**
      * Adapt the instance of {@link DubboAdapterLoadBalancerInterceptor} to the {@link LoadBalancerInterceptor} Bean.
      *
-     * @param restTemplate {@link LoadBalanced @LoadBalanced} {@link RestTemplate} Bean
+     * @param restTemplate              {@link LoadBalanced @LoadBalanced} {@link RestTemplate} Bean
+     * @param dubboTranslatedAttributes the annotation dubboTranslatedAttributes {@link RestTemplate} bean being annotated
+     *                                  {@link DubboTransported @DubboTransported}
      */
-    private void adaptRestTemplate(RestTemplate restTemplate) {
+    private void adaptRestTemplate(RestTemplate restTemplate, Map<String, Object> dubboTranslatedAttributes) {
+
+        DubboTransportedMetadata dubboTransportedMetadata = buildDubboTransportedMetadata(dubboTranslatedAttributes);
 
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(restTemplate.getInterceptors());
 
@@ -120,10 +136,21 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
 
         if (index > -1) {
             interceptors.set(index, new DubboAdapterLoadBalancerInterceptor(repository, loadBalancerInterceptor,
-                    restTemplate.getMessageConverters(),classLoader));
+                    restTemplate.getMessageConverters(), classLoader,
+                    dubboTransportedMetadata, dubboGenericServiceFactory));
         }
 
         restTemplate.setInterceptors(interceptors);
+    }
+
+    private DubboTransportedMetadata buildDubboTransportedMetadata(Map<String, Object> dubboTranslatedAttributes) {
+        DubboTransportedMetadata dubboTransportedMetadata = new DubboTransportedMetadata();
+        String protocol = (String) dubboTranslatedAttributes.get("protocol");
+        String cluster = (String) dubboTranslatedAttributes.get("cluster");
+        // resolve placeholders
+        dubboTransportedMetadata.setProtocol(environment.resolvePlaceholders(protocol));
+        dubboTransportedMetadata.setCluster(environment.resolvePlaceholders(cluster));
+        return dubboTransportedMetadata;
     }
 
     @Override

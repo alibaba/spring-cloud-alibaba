@@ -20,6 +20,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
 import org.springframework.core.env.Environment;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
@@ -39,12 +40,16 @@ public class TargeterBeanPostProcessor implements BeanPostProcessor, BeanClassLo
 
     private final DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
+    private final DubboGenericServiceFactory dubboGenericServiceFactory;
+
     private ClassLoader classLoader;
 
     public TargeterBeanPostProcessor(Environment environment,
-                                     DubboServiceMetadataRepository dubboServiceMetadataRepository) {
+                                     DubboServiceMetadataRepository dubboServiceMetadataRepository,
+                                     DubboGenericServiceFactory dubboGenericServiceFactory) {
         this.environment = environment;
         this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
+        this.dubboGenericServiceFactory = dubboGenericServiceFactory;
     }
 
     @Override
@@ -58,7 +63,8 @@ public class TargeterBeanPostProcessor implements BeanPostProcessor, BeanClassLo
         Class<?> targetClass = resolveClassName(TARGETER_CLASS_NAME, classLoader);
         if (targetClass.isAssignableFrom(beanClass)) {
             return newProxyInstance(classLoader, new Class[]{targetClass},
-                    new TargeterInvocationHandler(bean, environment, dubboServiceMetadataRepository));
+                    new TargeterInvocationHandler(bean, environment, dubboServiceMetadataRepository,
+                            dubboGenericServiceFactory));
         }
         return bean;
     }
