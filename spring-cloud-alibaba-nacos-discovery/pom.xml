@@ -82,28 +82,4 @@
         </dependency>
 
     </dependencies>
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>cobertura-maven-plugin</artifactId>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <configuration>
-                    <instrumentation>
-                        <excludes>
-                            <exclude>org/springframework/cloud/alibaba/nacos/**.*class</exclude>
-                        </excludes>
-                    </instrumentation>
-                    <check/>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
