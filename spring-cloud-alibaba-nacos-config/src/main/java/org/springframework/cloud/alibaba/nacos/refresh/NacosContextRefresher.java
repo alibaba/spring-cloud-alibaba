@@ -19,8 +19,9 @@ package org.springframework.cloud.alibaba.nacos.refresh;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
@@ -51,7 +52,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class NacosContextRefresher
 		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
-	private final static Log log = LogFactory.getLog(NacosContextRefresher.class);
+	private final static Logger log = LoggerFactory
+			.getLogger(NacosContextRefresher.class);
 
 	private static final AtomicLong REFRESH_COUNT = new AtomicLong(0);
 

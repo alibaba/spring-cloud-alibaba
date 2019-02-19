@@ -18,26 +18,23 @@ package org.springframework.cloud.alibaba.nacos.client;
 
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author xiaojing
  * @author pbting
  */
 public class NacosPropertySourceBuilder {
-	private static final Log log = LogFactory.getLog(NacosPropertySourceBuilder.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosPropertySourceBuilder.class);
 	private static final Properties EMPTY_PROPERTIES = new Properties();
 
 	private ConfigService configService;
@@ -101,11 +98,10 @@ public class NacosPropertySourceBuilder {
 			}
 		}
 		catch (NacosException e) {
-			log.error("get data from Nacos error,dataId:" + dataId + ", ", e);
+			log.error("get data from Nacos error,dataId:{}, ", dataId, e);
 		}
 		catch (Exception e) {
-			log.error("parse data from Nacos error,dataId:" + dataId + ",data:" + data
-					+ ",", e);
+			log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
 		}
 		return EMPTY_PROPERTIES;
 	}

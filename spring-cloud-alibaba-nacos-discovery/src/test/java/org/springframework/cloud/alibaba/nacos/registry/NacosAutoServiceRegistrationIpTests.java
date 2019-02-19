@@ -28,7 +28,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryAutoConfiguration;
-import org.springframework.cloud.alibaba.nacos.NacosDiscoveryClientAutoConfiguration;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +42,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = NacosAutoServiceRegistrationIpTests.TestConfig.class, properties = {
 		"spring.application.name=myTestService1",
 		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
-		"spring.cloud.nacos.discovery.ip=123.123.123.123" }, webEnvironment = RANDOM_PORT)
+			"spring.cloud.nacos.discovery.ip=123.123.123.123" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationIpTests {
 
 	@Autowired
