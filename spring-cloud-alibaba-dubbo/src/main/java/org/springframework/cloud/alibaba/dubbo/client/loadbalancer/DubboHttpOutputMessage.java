@@ -29,13 +29,17 @@ import java.io.IOException;
  */
 class DubboHttpOutputMessage implements HttpOutputMessage {
 
+    private final FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
+
+    private final HttpHeaders httpHeaders = new HttpHeaders();
+
     @Override
     public FastByteArrayOutputStream getBody() throws IOException {
-        return new FastByteArrayOutputStream();
+        return outputStream;
     }
 
     @Override
     public HttpHeaders getHeaders() {
-        return new HttpHeaders();
+        return httpHeaders;
     }
 }
