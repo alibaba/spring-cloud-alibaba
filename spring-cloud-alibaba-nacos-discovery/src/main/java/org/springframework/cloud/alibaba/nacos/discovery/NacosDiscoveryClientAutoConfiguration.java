@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.nacos;
+package org.springframework.cloud.alibaba.nacos.discovery;
 
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.alibaba.nacos.ConditionalOnNacosDiscoveryEnabled;
+import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosDiscoveryClient;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosWatch;
+import org.springframework.cloud.client.CommonsClientAutoConfiguration;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,9 +33,10 @@ import org.springframework.context.annotation.Configuration;
  * @author xiaojing
  */
 @Configuration
-@ConditionalOnMissingBean(DiscoveryClient.class)
 @ConditionalOnNacosDiscoveryEnabled
 @EnableConfigurationProperties
+@AutoConfigureBefore({ SimpleDiscoveryClientAutoConfiguration.class,
+		CommonsClientAutoConfiguration.class })
 public class NacosDiscoveryClientAutoConfiguration {
 
 	@Bean
@@ -37,4 +45,9 @@ public class NacosDiscoveryClientAutoConfiguration {
 		return new NacosDiscoveryClient(discoveryProperties);
 	}
 
+	@Bean
+	@ConditionalOnMissingBean
+	public NacosWatch nacosWatch(NacosDiscoveryProperties nacosDiscoveryProperties) {
+		return new NacosWatch(nacosDiscoveryProperties);
+	}
 }
