@@ -18,6 +18,7 @@ package org.springframework.cloud.alibaba.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,13 @@ public class NacosConfigProperties {
 
 	public static final String PREFIX = "spring.cloud.nacos.config";
 
-	private static final Logger LOGGER = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
+
+	/**
+	 * whether to enable nacos config.
+	 */
+	private boolean enabled = true;
 
 	/**
 	 * nacos config server address
@@ -137,11 +143,15 @@ public class NacosConfigProperties {
 		this.activeProfiles = environment.getActiveProfiles();
 	}
 
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
+	// todo sts support
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 
-	// todo sts support
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	public String getServerAddr() {
 		return serverAddr;
@@ -243,10 +253,6 @@ public class NacosConfigProperties {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String[] getActiveProfiles() {
 		return activeProfiles;
 	}
@@ -273,6 +279,14 @@ public class NacosConfigProperties {
 
 	public void setExtConfig(List<Config> extConfig) {
 		this.extConfig = extConfig;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
 	}
 
 	public static class Config {
@@ -316,16 +330,17 @@ public class NacosConfigProperties {
 
 	@Override
 	public String toString() {
-		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
-				+ ", encode='" + encode + '\'' + ", group='" + group + '\''
-				+ ", sharedDataids='" + this.sharedDataids + '\''
-				+ ", refreshableDataids='" + this.refreshableDataids + '\'' + ", prefix='"
-				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
-				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
-				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
-				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
-				+ ", activeProfiles=" + Arrays.toString(activeProfiles) + '}';
+		return "NacosConfigProperties{" + "enabled=" + enabled + ", serverAddr='"
+				+ serverAddr + '\'' + ", encode='" + encode + '\'' + ", group='" + group
+				+ '\'' + ", prefix='" + prefix + '\'' + ", fileExtension='"
+				+ fileExtension + '\'' + ", timeout=" + timeout + ", endpoint='"
+				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
+				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
+				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
+				+ '\'' + ", name='" + name + '\'' + ", activeProfiles="
+				+ Arrays.toString(activeProfiles) + ", sharedDataids='" + sharedDataids
+				+ '\'' + ", refreshableDataids='" + refreshableDataids + '\''
+				+ ", extConfig=" + extConfig + '}';
 	}
 
 	public ConfigService configServiceInstance() {
@@ -348,7 +363,7 @@ public class NacosConfigProperties {
 			return configService;
 		}
 		catch (Exception e) {
-			LOGGER.error("create config service error!properties={},e=,", this, e);
+			log.error("create config service error!properties={},e=,", this, e);
 			return null;
 		}
 	}
