@@ -16,6 +16,8 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
+import java.util.Map;
+
 /**
  * Echo Service
  *
@@ -27,4 +29,11 @@ public interface EchoService {
 
     String plus(int a, int b);
 
+    String toString(Map<String, Object> data);
+
+    String header(String header);
+
+    String form(String form);
+
+    String paramAndHeader(String param, String header);
 }

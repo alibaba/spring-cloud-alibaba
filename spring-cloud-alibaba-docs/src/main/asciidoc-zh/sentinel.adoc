@@ -185,7 +185,7 @@ Sentinel RestTemplate 限流的资源规则提供两种粒度：
 
 * `schema://host:port`：协议、主机和端口
 
-NOTE: 以 `https://www.taobao.com/test` 这个 url 为例。对应的资源名有两种粒度，分别是 `https://www.taobao.com` 以及 `https://www.taobao.com/test`
+NOTE: 以 `https://www.taobao.com/test` 这个 path 为例。对应的资源名有两种粒度，分别是 `https://www.taobao.com` 以及 `https://www.taobao.com/test`
 
 ### 动态数据源支持
 
@@ -324,7 +324,7 @@ NOTE: 默认情况下，xml 格式是不支持的。需要添加 `jackson-datafo
 |`spring.cloud.sentinel.transport.dashboard`|Sentinel 控制台地址|
 |`spring.cloud.sentinel.transport.heartbeatIntervalMs`|应用与Sentinel控制台的心跳间隔时间|
 |`spring.cloud.sentinel.filter.order`|Servlet Filter的加载顺序。Starter内部会构造这个filter|Integer.MIN_VALUE
-|`spring.cloud.sentinel.filter.spring.url-patterns`|数据类型是数组。表示Servlet Filter的url pattern集合|/*
+|`spring.cloud.sentinel.filter.spring.path-patterns`|数据类型是数组。表示Servlet Filter的url pattern集合|/*
 |`spring.cloud.sentinel.metric.charset`|metric文件字符集|UTF-8
 |`spring.cloud.sentinel.metric.fileSingleSize`|Sentinel metric 单个文件的大小|
 |`spring.cloud.sentinel.metric.fileTotalCount`|Sentinel metric 总文件数量|

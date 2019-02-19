@@ -16,20 +16,71 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * Method Request Metadata
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RestMethodMetadata {
 
     private MethodMetadata method;
 
     private RequestMetadata request;
 
+    @JsonProperty("url-index")
+    private Integer urlIndex;
+
+    @JsonProperty("body-index")
+    private Integer bodyIndex;
+
+    @JsonProperty("header-map-index")
+    private Integer headerMapIndex;
+
+    @JsonProperty("query-map-index")
+    private Integer queryMapIndex;
+
+    @JsonProperty("query-map-encoded")
+    private boolean queryMapEncoded;
+
+    @JsonProperty("return-type")
+    private String returnType;
+
+    @JsonProperty("body-type")
+    private String bodyType;
+
+    @JsonProperty("index-to-name")
     private Map<Integer, Collection<String>> indexToName;
+
+    @JsonProperty("form-params")
+    private List<String> formParams;
+
+    @JsonProperty("index-to-encoded")
+    private Map<Integer, Boolean> indexToEncoded;
+
+    public RestMethodMetadata() {
+    }
+
+    public RestMethodMetadata(feign.MethodMetadata methodMetadata) {
+        this.request = new RequestMetadata(methodMetadata.template());
+        this.urlIndex = methodMetadata.urlIndex();
+        this.bodyIndex = methodMetadata.bodyIndex();
+        this.headerMapIndex = methodMetadata.headerMapIndex();
+        this.queryMapEncoded = methodMetadata.queryMapEncoded();
+        this.queryMapEncoded = methodMetadata.queryMapEncoded();
+        this.returnType = methodMetadata.returnType() == null ? null : methodMetadata.returnType().toString();
+        this.bodyType = methodMetadata.bodyType() == null ? null : methodMetadata.bodyType().toString();
+        this.indexToName = methodMetadata.indexToName();
+        this.formParams = methodMetadata.formParams();
+        this.indexToEncoded = methodMetadata.indexToEncoded();
+    }
 
     public MethodMetadata getMethod() {
         return method;
@@ -55,18 +106,100 @@ public class RestMethodMetadata {
         this.indexToName = indexToName;
     }
 
+    public Integer getUrlIndex() {
+        return urlIndex;
+    }
+
+    public void setUrlIndex(Integer urlIndex) {
+        this.urlIndex = urlIndex;
+    }
+
+    public Integer getBodyIndex() {
+        return bodyIndex;
+    }
+
+    public void setBodyIndex(Integer bodyIndex) {
+        this.bodyIndex = bodyIndex;
+    }
+
+    public Integer getHeaderMapIndex() {
+        return headerMapIndex;
+    }
+
+    public void setHeaderMapIndex(Integer headerMapIndex) {
+        this.headerMapIndex = headerMapIndex;
+    }
+
+    public Integer getQueryMapIndex() {
+        return queryMapIndex;
+    }
+
+    public void setQueryMapIndex(Integer queryMapIndex) {
+        this.queryMapIndex = queryMapIndex;
+    }
+
+    public boolean isQueryMapEncoded() {
+        return queryMapEncoded;
+    }
+
+    public void setQueryMapEncoded(boolean queryMapEncoded) {
+        this.queryMapEncoded = queryMapEncoded;
+    }
+
+    public String getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(String returnType) {
+        this.returnType = returnType;
+    }
+
+    public String getBodyType() {
+        return bodyType;
+    }
+
+    public void setBodyType(String bodyType) {
+        this.bodyType = bodyType;
+    }
+
+    public List<String> getFormParams() {
+        return formParams;
+    }
+
+    public void setFormParams(List<String> formParams) {
+        this.formParams = formParams;
+    }
+
+    public Map<Integer, Boolean> getIndexToEncoded() {
+        return indexToEncoded;
+    }
+
+    public void setIndexToEncoded(Map<Integer, Boolean> indexToEncoded) {
+        this.indexToEncoded = indexToEncoded;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof RestMethodMetadata)) return false;
         RestMethodMetadata that = (RestMethodMetadata) o;
-        return Objects.equals(method, that.method) &&
+        return queryMapEncoded == that.queryMapEncoded &&
+                Objects.equals(method, that.method) &&
                 Objects.equals(request, that.request) &&
-                Objects.equals(indexToName, that.indexToName);
+                Objects.equals(urlIndex, that.urlIndex) &&
+                Objects.equals(bodyIndex, that.bodyIndex) &&
+                Objects.equals(headerMapIndex, that.headerMapIndex) &&
+                Objects.equals(queryMapIndex, that.queryMapIndex) &&
+                Objects.equals(returnType, that.returnType) &&
+                Objects.equals(bodyType, that.bodyType) &&
+                Objects.equals(indexToName, that.indexToName) &&
+                Objects.equals(formParams, that.formParams) &&
+                Objects.equals(indexToEncoded, that.indexToEncoded);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(method, request, indexToName);
+        return Objects.hash(method, request, urlIndex, bodyIndex, headerMapIndex, queryMapIndex, queryMapEncoded,
+                returnType, bodyType, indexToName, formParams, indexToEncoded);
     }
 }

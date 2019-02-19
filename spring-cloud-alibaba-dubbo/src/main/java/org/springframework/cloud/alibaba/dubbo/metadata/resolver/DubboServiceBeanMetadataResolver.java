@@ -27,7 +27,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry;
@@ -162,13 +161,8 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
                                                            List<Method> feignContractMethods) {
         String configKey = methodMetadata.configKey();
         Method feignContractMethod = getMatchedFeignContractMethod(targetType, feignContractMethods, configKey);
-
-        RestMethodMetadata metadata = new RestMethodMetadata();
-
-        metadata.setRequest(new RequestMetadata(methodMetadata.template()));
+        RestMethodMetadata metadata = new RestMethodMetadata(methodMetadata);
         metadata.setMethod(new org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata(feignContractMethod));
-        metadata.setIndexToName(methodMetadata.indexToName());
-
         return metadata;
     }
 

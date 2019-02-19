@@ -16,11 +16,26 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import feign.RequestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Objects;
+import java.util.Set;
+import java.util.SortedMap;
+
+import static org.springframework.http.MediaType.parseMediaTypes;
 
 /**
  * Request Metadata
@@ -31,20 +46,26 @@ public class RequestMetadata {
 
     private String method;
 
-    private String url;
+    private String path;
 
-    private Map<String, Collection<String>> queries;
+    @JsonProperty("params")
+    private MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
-    private Map<String, Collection<String>> headers;
+    @JsonProperty("headers")
+    private HttpHeaders headers = new HttpHeaders();
+
+    private List<String> consumes = new LinkedList<>();
+
+    private List<String> produces = new LinkedList<>();
 
     public RequestMetadata() {
     }
 
     public RequestMetadata(RequestTemplate requestTemplate) {
-        this.method = requestTemplate.method();
-        this.url = requestTemplate.url();
-        this.queries = requestTemplate.queries();
-        this.headers = requestTemplate.headers();
+        setMethod(requestTemplate.method());
+        setPath(requestTemplate.url());
+        params(requestTemplate.queries());
+        headers(requestTemplate.headers());
     }
 
     public String getMethod() {
@@ -52,46 +73,180 @@ public class RequestMetadata {
     }
 
     public void setMethod(String method) {
-        this.method = method;
+        this.method = method.toUpperCase();
     }
 
-    public String getUrl() {
-        return url;
+    public String getPath() {
+        return path;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public Map<String, Collection<String>> getHeaders() {
+    public MultiValueMap<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, List<String>> params) {
+        params(params);
+    }
+
+    public Map<String, List<String>> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(Map<String, Collection<String>> headers) {
-        this.headers = headers;
+    public void setHeaders(Map<String, List<String>> headers) {
+        headers(headers);
     }
 
-    public Map<String, Collection<String>> getQueries() {
-        return queries;
+    public List<String> getConsumes() {
+        return consumes;
     }
 
-    public void setQueries(Map<String, Collection<String>> queries) {
-        this.queries = queries;
+    public void setConsumes(List<String> consumes) {
+        this.consumes = consumes;
+    }
+
+    public List<String> getProduces() {
+        return produces;
+    }
+
+    public void setProduces(List<String> produces) {
+        this.produces = produces;
+    }
+
+    // @JsonIgnore properties
+    @JsonIgnore
+    public Set<String> getParamNames() {
+        return params.keySet();
+    }
+
+    @JsonIgnore
+    public Set<String> getHeaderNames() {
+        return headers.keySet();
+    }
+
+    @JsonIgnore
+    public List<MediaType> getConsumeMediaTypes() {
+        return toMediaTypes(consumes);
+    }
+
+    @JsonIgnore
+    public List<MediaType> getProduceMediaTypes() {
+        return toMediaTypes(produces);
+    }
+
+    public RequestMetadata addParam(String name, String value) {
+        add(name, value, this.params);
+        return this;
+    }
+
+    public RequestMetadata addHeader(String name, String value) {
+        add(name, value, this.headers);
+        return this;
+    }
+
+    private <T extends Collection<String>> RequestMetadata params(Map<String, T> params) {
+        addAll(params, this.params);
+        return this;
+    }
+
+    private <T extends Collection<String>> RequestMetadata headers(Map<String, T> headers) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        // Add all headers
+        addAll(headers, httpHeaders);
+        // Handles "Content-Type" and "Accept" headers if present
+        mediaTypes(httpHeaders, HttpHeaders.CONTENT_TYPE, this.consumes);
+        mediaTypes(httpHeaders, HttpHeaders.ACCEPT, this.produces);
+        this.headers.putAll(httpHeaders);
+        return this;
+    }
+
+    /**
+     * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}
+     *
+     * @param requestMetadataMap the source of  {@link NavigableMap}
+     * @param requestMetadata    the match object
+     * @return if not matched, return <code>null</code>
+     */
+    public static RequestMetadata getBestMatch(NavigableMap<RequestMetadata, RequestMetadata> requestMetadataMap,
+                                               RequestMetadata requestMetadata) {
+
+        RequestMetadata key = requestMetadata;
+
+        RequestMetadata result = requestMetadataMap.get(key);
+
+        if (result == null) {
+            SortedMap<RequestMetadata, RequestMetadata> headMap = requestMetadataMap.headMap(key, true);
+            result = headMap.isEmpty() ? null : requestMetadataMap.get(headMap.lastKey());
+        }
+
+        return result;
+    }
+
+    private static void add(String key, String value, MultiValueMap<String, String> destination) {
+        destination.add(key, value);
+    }
+
+    private static <T extends Collection<String>> void addAll(Map<String, T> source,
+                                                              MultiValueMap<String, String> destination) {
+        for (Map.Entry<String, T> entry : source.entrySet()) {
+            String key = entry.getKey();
+            for (String value : entry.getValue()) {
+                add(key, value, destination);
+            }
+        }
+    }
+
+    private static void mediaTypes(HttpHeaders httpHeaders, String headerName, List<String> destination) {
+        List<String> value = httpHeaders.get(headerName);
+        List<MediaType> mediaTypes = parseMediaTypes(value);
+        destination.addAll(toMediaTypeValues(mediaTypes));
+    }
+
+    private static List<String> toMediaTypeValues(List<MediaType> mediaTypes) {
+        List<String> list = new ArrayList<>(mediaTypes.size());
+        for (MediaType mediaType : mediaTypes) {
+            list.add(mediaType.toString());
+        }
+        return list;
+    }
+
+    private static List<MediaType> toMediaTypes(List<String> mediaTypeValues) {
+        if (mediaTypeValues.isEmpty()) {
+            return Collections.singletonList(MediaType.ALL);
+        }
+        return parseMediaTypes(mediaTypeValues);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof RequestMetadata)) return false;
         RequestMetadata that = (RequestMetadata) o;
         return Objects.equals(method, that.method) &&
-                Objects.equals(url, that.url) &&
-                Objects.equals(queries, that.queries) &&
-                Objects.equals(headers, that.headers);
+                Objects.equals(path, that.path) &&
+                Objects.equals(params, that.params) &&
+                Objects.equals(headers, that.headers) &&
+                Objects.equals(consumes, that.consumes) &&
+                Objects.equals(produces, that.produces);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(method, url, queries, headers);
+        return Objects.hash(method, path, params, headers, consumes, produces);
+    }
+
+    @Override
+    public String toString() {
+        return "RequestMetadata{" +
+                "method='" + method + '\'' +
+                ", path='" + path + '\'' +
+                ", params=" + params +
+                ", headers=" + headers +
+                ", consumes=" + consumes +
+                ", produces=" + produces +
+                '}';
     }
 }
