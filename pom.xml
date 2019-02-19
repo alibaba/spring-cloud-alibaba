@@ -22,13 +22,13 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <path>http://www.apache.org/licenses/LICENSE-2.0.txt</path>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <path>https://github.com/spring-cloud-incubator/spring-cloud-alibaba</path>
+        <url>https://github.com/spring-cloud-incubator/spring-cloud-alibaba</url>
         <connection>
             scm:git:git://github.com/spring-cloud-incubator/spring-cloud-alibaba.git
         </connection>
@@ -60,7 +60,7 @@
             <name>Mercy Ma</name>
             <email>mercyblitz@gmail.com</email>
             <organization>Alibaba</organization>
-            <path>https://github.com/mercyblitz</path>
+            <url>https://github.com/mercyblitz</url>
         </developer>
     </developers>
 
@@ -246,7 +246,7 @@
                 <repository>
                     <id>spring-snapshots</id>
                     <name>Spring Snapshots</name>
-                    <path>https://repo.spring.io/libs-snapshot-local</path>
+                    <url>https://repo.spring.io/libs-snapshot-local</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
@@ -257,7 +257,7 @@
                 <repository>
                     <id>spring-milestones</id>
                     <name>Spring Milestones</name>
-                    <path>https://repo.spring.io/libs-milestone-local</path>
+                    <url>https://repo.spring.io/libs-milestone-local</url>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
@@ -265,7 +265,7 @@
                 <repository>
                     <id>spring-releases</id>
                     <name>Spring Releases</name>
-                    <path>https://repo.spring.io/release</path>
+                    <url>https://repo.spring.io/release</url>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
@@ -275,7 +275,7 @@
                 <pluginRepository>
                     <id>spring-snapshots</id>
                     <name>Spring Snapshots</name>
-                    <path>https://repo.spring.io/libs-snapshot-local</path>
+                    <url>https://repo.spring.io/libs-snapshot-local</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
@@ -286,7 +286,7 @@
                 <pluginRepository>
                     <id>spring-milestones</id>
                     <name>Spring Milestones</name>
-                    <path>https://repo.spring.io/libs-milestone-local</path>
+                    <url>https://repo.spring.io/libs-milestone-local</url>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
@@ -294,7 +294,7 @@
                 <pluginRepository>
                     <id>spring-releases</id>
                     <name>Spring Releases</name>
-                    <path>https://repo.spring.io/libs-release-local</path>
+                    <url>https://repo.spring.io/libs-release-local</url>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>

@@ -87,7 +87,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
         <repository>
             <id>spring-snapshot</id>
             <name>Spring Snapshot Repository</name>
-            <path>https://repo.spring.io/snapshot</path>
+            <url>https://repo.spring.io/snapshot</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
