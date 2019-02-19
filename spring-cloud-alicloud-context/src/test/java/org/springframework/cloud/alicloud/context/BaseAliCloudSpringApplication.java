@@ -16,36 +16,35 @@
 
 package org.springframework.cloud.alicloud.context;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author xiaolongzuo
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = AliCloudSpringApplicationTests.AliCloudDisabledApp.class, properties = {
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringRunner.class)
+@PowerMockIgnore("javax.management.*")
+@SpringBootTest(classes = BaseAliCloudSpringApplication.AliCloudApplication.class, properties = {
 		"spring.application.name=myapp",
 		"spring.cloud.alicloud.edas.application.name=myapp",
 		"spring.cloud.alicloud.access-key=ak", "spring.cloud.alicloud.secret-key=sk",
 		"spring.cloud.alicloud.oss.endpoint=test",
 		"spring.cloud.alicloud.scx.group-id=1-2-3-4",
-		"spring.cloud.alicloud.edas.namespace=cn-test" }, webEnvironment = RANDOM_PORT)
-@DirtiesContext
-public class AliCloudSpringApplicationTests {
-
-	@Test
-	public void contextLoads() {
-		System.out.println("Context load...");
-	}
+		"spring.cloud.alicloud.edas.namespace=cn-test",
+		"spring.cloud.alicloud.ans.server-list=192.168.1.100",
+		"spring.cloud.alicloud.ans.server-port=8888",
+		"spring.cloud.alicloud.oss.enabled=false",
+		"spring.cloud.alicloud.scx.enabled=false" })
+public abstract class BaseAliCloudSpringApplication {
 
 	@SpringBootApplication
-	public static class AliCloudDisabledApp {
+	public static class AliCloudApplication {
 
 	}
 
