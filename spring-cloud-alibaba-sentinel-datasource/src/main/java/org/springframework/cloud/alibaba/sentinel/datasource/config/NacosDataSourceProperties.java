@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
 import org.springframework.util.StringUtils;
@@ -31,10 +31,10 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	private String serverAddr;
 
-	@NotEmpty
+	@NotNull
 	private String groupId = "DEFAULT_GROUP";
 
-	@NotEmpty
+	@NotNull
 	private String dataId;
 
 	private String endpoint;

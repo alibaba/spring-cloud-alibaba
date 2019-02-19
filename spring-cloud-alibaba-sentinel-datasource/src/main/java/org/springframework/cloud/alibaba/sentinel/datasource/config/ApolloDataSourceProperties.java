@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.ApolloDataSourceFactoryBean;
 
@@ -28,9 +28,9 @@ import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.ApolloD
  */
 public class ApolloDataSourceProperties extends AbstractDataSourceProperties {
 
-	@NotEmpty
+	@NotNull
 	private String namespaceName;
-	@NotEmpty
+	@NotNull
 	private String flowRulesKey;
 	private String defaultFlowRuleValue;
 

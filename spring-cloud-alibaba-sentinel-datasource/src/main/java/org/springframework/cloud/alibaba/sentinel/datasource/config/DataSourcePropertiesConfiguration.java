@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.util.ObjectUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,12 +21,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class DataSourcePropertiesConfiguration {
 
+    @Valid
 	private FileDataSourceProperties file;
 
+    @Valid
 	private NacosDataSourceProperties nacos;
 
+    @Valid
 	private ZookeeperDataSourceProperties zk;
 
+    @Valid
 	private ApolloDataSourceProperties apollo;
 
 	public DataSourcePropertiesConfiguration() {
