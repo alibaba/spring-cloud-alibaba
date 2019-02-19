@@ -26,6 +26,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.openfeign.TargeterBeanPostProcessor;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -54,8 +55,9 @@ public class DubboOpenFeignAutoConfiguration {
 
     @Bean
     public TargeterBeanPostProcessor targeterBeanPostProcessor(Environment environment,
-                                                               DubboServiceMetadataRepository dubboServiceMetadataRepository) {
-        return new TargeterBeanPostProcessor(environment, dubboServiceMetadataRepository);
+                                                               DubboServiceMetadataRepository dubboServiceMetadataRepository,
+                                                               DubboGenericServiceFactory dubboGenericServiceFactory) {
+        return new TargeterBeanPostProcessor(environment, dubboServiceMetadataRepository,dubboGenericServiceFactory);
     }
 
 }

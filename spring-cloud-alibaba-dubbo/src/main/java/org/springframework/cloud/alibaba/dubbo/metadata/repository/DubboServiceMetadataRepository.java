@@ -16,15 +16,12 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata.repository;
 
-import com.alibaba.dubbo.config.spring.ReferenceBean;
-import com.alibaba.dubbo.rpc.service.GenericService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.dubbo.http.matcher.RequestMetadataMatcher;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
 import org.springframework.http.HttpRequest;
@@ -35,10 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.cloud.alibaba.dubbo.http.DefaultHttpRequest.builder;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceGroup;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceInterface;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceSegments;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceVersion;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
@@ -53,15 +46,9 @@ public class DubboServiceMetadataRepository {
 
     /**
      * Key is application name
-     * Value is  Map<RequestMetadata, ReferenceBean<GenericService>>
+     * Value is  Map<RequestMetadata, DubboServiceMetadata>
      */
-    private Map<String, Map<RequestMetadataMatcher, ReferenceBean<GenericService>>> referenceBeansRepository = newHashMap();
-
-    /**
-     * Key is application name
-     * Value is  Map<RequestMetadata, RestMethodMetadata>
-     */
-    private Map<String, Map<RequestMetadataMatcher, RestMethodMetadata>> restMethodMetadataRepository = newHashMap();
+    private Map<String, Map<RequestMetadataMatcher, DubboServiceMetadata>> repository = newHashMap();
 
     @Autowired
     private MetadataConfigService metadataConfigService;
@@ -73,7 +60,7 @@ public class DubboServiceMetadataRepository {
      */
     public void initialize(String serviceName) {
 
-        if (referenceBeansRepository.containsKey(serviceName)) {
+        if (repository.containsKey(serviceName)) {
             return;
         }
 
@@ -87,29 +74,28 @@ public class DubboServiceMetadataRepository {
             return;
         }
 
-        Map<RequestMetadataMatcher, ReferenceBean<GenericService>> genericServicesMap = getReferenceBeansMap(serviceName);
-
-        Map<RequestMetadataMatcher, RestMethodMetadata> restMethodMetadataMap = getRestMethodMetadataMap(serviceName);
+        Map<RequestMetadataMatcher, DubboServiceMetadata> metadataMap = getMetadataMap(serviceName);
 
         for (ServiceRestMetadata serviceRestMetadata : serviceRestMetadataSet) {
-
-            ReferenceBean<GenericService> referenceBean = adaptReferenceBean(serviceRestMetadata);
 
             serviceRestMetadata.getMeta().forEach(restMethodMetadata -> {
                 RequestMetadata requestMetadata = restMethodMetadata.getRequest();
                 RequestMetadataMatcher matcher = new RequestMetadataMatcher(requestMetadata);
-                genericServicesMap.put(matcher, referenceBean);
-                restMethodMetadataMap.put(matcher, restMethodMetadata);
+                DubboServiceMetadata metadata = new DubboServiceMetadata(serviceRestMetadata, restMethodMetadata);
+                metadataMap.put(matcher, metadata);
             });
         }
     }
 
-    public ReferenceBean<GenericService> getReferenceBean(String serviceName, RequestMetadata requestMetadata) {
-        return match(referenceBeansRepository, serviceName, requestMetadata);
-    }
-
-    public RestMethodMetadata getRestMethodMetadata(String serviceName, RequestMetadata requestMetadata) {
-        return match(restMethodMetadataRepository, serviceName, requestMetadata);
+    /**
+     * Get a {@link DubboServiceMetadata} by the specified service name if {@link RequestMetadata} matched
+     *
+     * @param serviceName     service name
+     * @param requestMetadata {@link RequestMetadata} to be matched
+     * @return {@link DubboServiceMetadata} if matched, or <code>null</code>
+     */
+    public DubboServiceMetadata get(String serviceName, RequestMetadata requestMetadata) {
+        return match(repository, serviceName, requestMetadata);
     }
 
     private static <T> T match(Map<String, Map<RequestMetadataMatcher, T>> repository, String serviceName,
@@ -140,28 +126,8 @@ public class DubboServiceMetadataRepository {
         return object;
     }
 
-    private ReferenceBean<GenericService> adaptReferenceBean(ServiceRestMetadata serviceRestMetadata) {
-        String dubboServiceName = serviceRestMetadata.getName();
-        String[] segments = getServiceSegments(dubboServiceName);
-        String interfaceName = getServiceInterface(segments);
-        String version = getServiceVersion(segments);
-        String group = getServiceGroup(segments);
-
-        ReferenceBean<GenericService> referenceBean = new ReferenceBean<GenericService>();
-        referenceBean.setGeneric(true);
-        referenceBean.setInterface(interfaceName);
-        referenceBean.setVersion(version);
-        referenceBean.setGroup(group);
-
-        return referenceBean;
-    }
-
-    private Map<RequestMetadataMatcher, ReferenceBean<GenericService>> getReferenceBeansMap(String serviceName) {
-        return getMap(referenceBeansRepository, serviceName);
-    }
-
-    private Map<RequestMetadataMatcher, RestMethodMetadata> getRestMethodMetadataMap(String serviceName) {
-        return getMap(restMethodMetadataRepository, serviceName);
+    private Map<RequestMetadataMatcher, DubboServiceMetadata> getMetadataMap(String serviceName) {
+        return getMap(repository, serviceName);
     }
 
     private static <K, V> Map<K, V> getMap(Map<String, Map<K, V>> repository, String key) {

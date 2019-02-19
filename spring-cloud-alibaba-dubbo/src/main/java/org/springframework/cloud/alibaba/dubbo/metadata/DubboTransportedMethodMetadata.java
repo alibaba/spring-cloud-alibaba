@@ -19,55 +19,88 @@ package org.springframework.cloud.alibaba.dubbo.metadata;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * {@link MethodMetadata} annotated {@link DubboTransported @DubboTransported}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class DubboTransportedMethodMetadata extends MethodMetadata {
+public class DubboTransportedMethodMetadata {
 
-    private String protocol;
+    private final DubboTransportedMetadata dubboTransportedMetadata;
 
-    private String cluster;
+    private final MethodMetadata methodMetadata;
 
     public DubboTransportedMethodMetadata(Method method) {
-        super(method);
+        this.methodMetadata = new MethodMetadata(method);
+        this.dubboTransportedMetadata = new DubboTransportedMetadata();
     }
 
     public String getProtocol() {
-        return protocol;
+        return dubboTransportedMetadata.getProtocol();
     }
 
     public void setProtocol(String protocol) {
-        this.protocol = protocol;
+        dubboTransportedMetadata.setProtocol(protocol);
     }
 
     public String getCluster() {
-        return cluster;
+        return dubboTransportedMetadata.getCluster();
     }
 
     public void setCluster(String cluster) {
-        this.cluster = cluster;
+        dubboTransportedMetadata.setCluster(cluster);
+    }
+
+    public String getName() {
+        return methodMetadata.getName();
+    }
+
+    public void setName(String name) {
+        methodMetadata.setName(name);
+    }
+
+    public String getReturnType() {
+        return methodMetadata.getReturnType();
+    }
+
+    public void setReturnType(String returnType) {
+        methodMetadata.setReturnType(returnType);
+    }
+
+    public List<MethodParameterMetadata> getParams() {
+        return methodMetadata.getParams();
+    }
+
+    public void setParams(List<MethodParameterMetadata> params) {
+        methodMetadata.setParams(params);
+    }
+
+    public Method getMethod() {
+        return methodMetadata.getMethod();
+    }
+
+    public DubboTransportedMetadata getDubboTransportedMetadata() {
+        return dubboTransportedMetadata;
+    }
+
+    public MethodMetadata getMethodMetadata() {
+        return methodMetadata;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DubboTransportedMethodMetadata)) return false;
-        if (!super.equals(o)) return false;
-
         DubboTransportedMethodMetadata that = (DubboTransportedMethodMetadata) o;
-
-        if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) return false;
-        return cluster != null ? cluster.equals(that.cluster) : that.cluster == null;
+        return Objects.equals(dubboTransportedMetadata, that.dubboTransportedMetadata) &&
+                Objects.equals(methodMetadata, that.methodMetadata);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
-        result = 31 * result + (cluster != null ? cluster.hashCode() : 0);
-        return result;
+        return Objects.hash(dubboTransportedMetadata, methodMetadata);
     }
 }

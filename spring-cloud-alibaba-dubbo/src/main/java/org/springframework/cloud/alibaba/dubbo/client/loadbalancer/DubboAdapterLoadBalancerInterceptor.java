@@ -16,15 +16,17 @@
  */
 package org.springframework.cloud.alibaba.dubbo.client.loadbalancer;
 
-import com.alibaba.dubbo.config.spring.ReferenceBean;
 import com.alibaba.dubbo.rpc.service.GenericException;
 import com.alibaba.dubbo.rpc.service.GenericService;
 
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.ParameterResolver;
+import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -52,18 +54,23 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
 
     private final LoadBalancerInterceptor loadBalancerInterceptor;
 
-    private final List<HttpMessageConverter<?>> messageConverters;
-
     private final DubboClientHttpResponseFactory clientHttpResponseFactory;
+
+    private final DubboTransportedMetadata dubboTransportedMetadata;
+
+    private final DubboGenericServiceFactory dubboGenericServiceFactory;
 
     public DubboAdapterLoadBalancerInterceptor(DubboServiceMetadataRepository dubboServiceMetadataRepository,
                                                LoadBalancerInterceptor loadBalancerInterceptor,
                                                List<HttpMessageConverter<?>> messageConverters,
-                                               ClassLoader classLoader) {
+                                               ClassLoader classLoader,
+                                               DubboTransportedMetadata dubboTransportedMetadata,
+                                               DubboGenericServiceFactory dubboGenericServiceFactory) {
         this.repository = dubboServiceMetadataRepository;
         this.loadBalancerInterceptor = loadBalancerInterceptor;
-        this.messageConverters = messageConverters;
+        this.dubboTransportedMetadata = dubboTransportedMetadata;
         this.clientHttpResponseFactory = new DubboClientHttpResponseFactory(messageConverters, classLoader);
+        this.dubboGenericServiceFactory = dubboGenericServiceFactory;
     }
 
     @Override
@@ -79,19 +86,21 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
 
         RequestMetadata clientMetadata = buildRequestMetadata(request, uriComponents);
 
-        RestMethodMetadata restMethodMetadata = repository.getRestMethodMetadata(serviceName, clientMetadata);
+        DubboServiceMetadata dubboServiceMetadata = repository.get(serviceName, clientMetadata);
 
-        ReferenceBean<GenericService> referenceBean = repository.getReferenceBean(serviceName, clientMetadata);
-
-        if (referenceBean == null || restMethodMetadata == null) {
+        if (dubboServiceMetadata == null) { // if DubboServiceMetadata is not found
             return loadBalancerInterceptor.intercept(request, body, execution);
         }
+
+        RestMethodMetadata restMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
+
+        GenericService genericService = dubboGenericServiceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
 
         Object result = null;
         GenericException exception = null;
 
         try {
-            result = invokeService(restMethodMetadata, referenceBean, clientMetadata);
+            result = invokeService(restMethodMetadata, genericService, clientMetadata);
         } catch (GenericException e) {
             exception = e;
         }
@@ -99,7 +108,7 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
         return clientHttpResponseFactory.build(result, exception, clientMetadata, restMethodMetadata);
     }
 
-    private Object invokeService(RestMethodMetadata restMethodMetadata, ReferenceBean<GenericService> referenceBean,
+    private Object invokeService(RestMethodMetadata restMethodMetadata, GenericService genericService,
                                  RequestMetadata clientMetadata) throws GenericException {
 
         MethodMetadata methodMetadata = restMethodMetadata.getMethod();
@@ -109,8 +118,6 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
         String[] parameterTypes = parameterResolver.resolveParameterTypes(methodMetadata);
 
         Object[] parameters = parameterResolver.resolveParameters(restMethodMetadata, clientMetadata);
-
-        GenericService genericService = referenceBean.get();
 
         Object result = genericService.$invoke(methodName, parameterTypes, parameters);
 
