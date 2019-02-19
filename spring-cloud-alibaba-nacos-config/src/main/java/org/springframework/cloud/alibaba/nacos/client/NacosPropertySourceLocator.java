@@ -17,8 +17,9 @@
 package org.springframework.cloud.alibaba.nacos.client;
 
 import com.alibaba.nacos.api.config.ConfigService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosContextRefresher;
@@ -39,7 +40,8 @@ import java.util.List;
 @Order(0)
 public class NacosPropertySourceLocator implements PropertySourceLocator {
 
-	private static final Log log = LogFactory.getLog(NacosPropertySourceLocator.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosPropertySourceLocator.class);
 	private static final String NACOS_PROPERTY_SOURCE_NAME = "NACOS";
 	private static final String SEP1 = "-";
 	private static final String DOT = ".";
