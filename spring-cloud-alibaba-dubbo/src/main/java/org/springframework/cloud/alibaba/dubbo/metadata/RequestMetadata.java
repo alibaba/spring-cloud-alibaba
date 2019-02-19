@@ -21,12 +21,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import feign.RequestTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +56,9 @@ public class RequestMetadata {
     @JsonProperty("headers")
     private HttpHeaders headers = new HttpHeaders();
 
-    private List<String> consumes = new LinkedList<>();
+    private Set<String> consumes = new LinkedHashSet<>();
 
-    private List<String> produces = new LinkedList<>();
+    private Set<String> produces = new LinkedHashSet<>();
 
     public RequestMetadata() {
     }
@@ -100,19 +102,19 @@ public class RequestMetadata {
         headers(headers);
     }
 
-    public List<String> getConsumes() {
+    public Set<String> getConsumes() {
         return consumes;
     }
 
-    public void setConsumes(List<String> consumes) {
+    public void setConsumes(Set<String> consumes) {
         this.consumes = consumes;
     }
 
-    public List<String> getProduces() {
+    public Set<String> getProduces() {
         return produces;
     }
 
-    public void setProduces(List<String> produces) {
+    public void setProduces(Set<String> produces) {
         this.produces = produces;
     }
 
@@ -137,6 +139,14 @@ public class RequestMetadata {
         return toMediaTypes(produces);
     }
 
+    public String getParameter(String name) {
+        return this.params.getFirst(name);
+    }
+
+    public String getHeader(String name) {
+        return this.headers.getFirst(name);
+    }
+
     public RequestMetadata addParam(String name, String value) {
         add(name, value, this.params);
         return this;
@@ -153,13 +163,15 @@ public class RequestMetadata {
     }
 
     private <T extends Collection<String>> RequestMetadata headers(Map<String, T> headers) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        // Add all headers
-        addAll(headers, httpHeaders);
-        // Handles "Content-Type" and "Accept" headers if present
-        mediaTypes(httpHeaders, HttpHeaders.CONTENT_TYPE, this.consumes);
-        mediaTypes(httpHeaders, HttpHeaders.ACCEPT, this.produces);
-        this.headers.putAll(httpHeaders);
+        if (!CollectionUtils.isEmpty(headers)) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            // Add all headers
+            addAll(headers, httpHeaders);
+            // Handles "Content-Type" and "Accept" headers if present
+            mediaTypes(httpHeaders, HttpHeaders.CONTENT_TYPE, this.consumes);
+            mediaTypes(httpHeaders, HttpHeaders.ACCEPT, this.produces);
+            this.headers.putAll(httpHeaders);
+        }
         return this;
     }
 
@@ -199,7 +211,7 @@ public class RequestMetadata {
         }
     }
 
-    private static void mediaTypes(HttpHeaders httpHeaders, String headerName, List<String> destination) {
+    private static void mediaTypes(HttpHeaders httpHeaders, String headerName, Collection<String> destination) {
         List<String> value = httpHeaders.get(headerName);
         List<MediaType> mediaTypes = parseMediaTypes(value);
         destination.addAll(toMediaTypeValues(mediaTypes));
@@ -213,11 +225,11 @@ public class RequestMetadata {
         return list;
     }
 
-    private static List<MediaType> toMediaTypes(List<String> mediaTypeValues) {
+    private static List<MediaType> toMediaTypes(Collection<String> mediaTypeValues) {
         if (mediaTypeValues.isEmpty()) {
             return Collections.singletonList(MediaType.ALL);
         }
-        return parseMediaTypes(mediaTypeValues);
+        return parseMediaTypes(new LinkedList<>(mediaTypeValues));
     }
 
     @Override

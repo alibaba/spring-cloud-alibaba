@@ -14,28 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.client.loadbalancer;
+package org.springframework.cloud.alibaba.dubbo.http.converter;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpOutputMessage;
-import org.springframework.util.FastByteArrayOutputStream;
-
-import java.io.IOException;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
 
 /**
- * Dubbo {@link HttpOutputMessage} implementation
+ * {@link HttpMessageConverter} Holder with {@link MediaType}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-class DubboHttpOutputMessage implements HttpOutputMessage {
+public class HttpMessageConverterHolder {
 
-    @Override
-    public FastByteArrayOutputStream getBody() throws IOException {
-        return new FastByteArrayOutputStream();
+    private final MediaType mediaType;
+
+    private final HttpMessageConverter<?> converter;
+
+    public HttpMessageConverterHolder(MediaType mediaType, HttpMessageConverter<?> converter) {
+        this.mediaType = mediaType;
+        this.converter = converter;
     }
 
-    @Override
-    public HttpHeaders getHeaders() {
-        return new HttpHeaders();
+    public MediaType getMediaType() {
+        return mediaType;
+    }
+
+    public HttpMessageConverter<?> getConverter() {
+        return converter;
     }
 }

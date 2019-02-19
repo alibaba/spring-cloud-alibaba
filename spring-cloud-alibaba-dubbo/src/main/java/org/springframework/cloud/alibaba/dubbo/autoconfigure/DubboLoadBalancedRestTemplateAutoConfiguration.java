@@ -16,6 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
+import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ import java.util.Map;
 @Configuration
 @ConditionalOnClass(RestTemplate.class)
 @AutoConfigureAfter(LoadBalancerAutoConfiguration.class)
-public class DubboLoadBalancedRestTemplateAutoConfiguration {
+public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClassLoaderAware {
 
     private static final Class<DubboTransported> DUBBO_TRANSPORTED_CLASS = DubboTransported.class;
 
@@ -68,6 +69,8 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration {
     @LoadBalanced
     @Autowired(required = false)
     private Map<String, RestTemplate> restTemplates = Collections.emptyMap();
+
+    private ClassLoader classLoader;
 
     /**
      * Adapt the {@link RestTemplate} beans that are annotated  {@link LoadBalanced @LoadBalanced} and
@@ -117,10 +120,14 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration {
 
         if (index > -1) {
             interceptors.set(index, new DubboAdapterLoadBalancerInterceptor(repository, loadBalancerInterceptor,
-                    restTemplate.getMessageConverters()));
+                    restTemplate.getMessageConverters(),classLoader));
         }
 
         restTemplate.setInterceptors(interceptors);
     }
 
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 }
