@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.cloud.stream.binder.rocketmq.config.RocketMQBinderEndpointAutoConfiguration
+org.springframework.cloud.stream.binder.rocketmq.config.RocketMQComponent4BinderAutoConfiguration

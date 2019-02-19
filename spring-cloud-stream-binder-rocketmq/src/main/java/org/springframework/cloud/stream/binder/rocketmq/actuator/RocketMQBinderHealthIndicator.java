@@ -28,45 +28,37 @@ import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationM
  */
 public class RocketMQBinderHealthIndicator extends AbstractHealthIndicator {
 
-	@Autowired(required = false)
+	@Autowired
 	private InstrumentationManager instrumentationManager;
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
 		int upCount = 0, outOfServiceCount = 0;
-		if (instrumentationManager != null) {
-			for (Instrumentation instrumentation : instrumentationManager
-					.getHealthInstrumentations()) {
-				if (instrumentation.isUp()) {
-					upCount++;
-				}
-				else if (instrumentation.isOutOfService()) {
-					upCount++;
-				}
+		for (Instrumentation instrumentation : instrumentationManager
+				.getHealthInstrumentations()) {
+			if (instrumentation.isUp()) {
+				upCount++;
 			}
-			if (upCount == instrumentationManager.getHealthInstrumentations().size()) {
-				builder.up();
-				return;
-			}
-			else if (outOfServiceCount == instrumentationManager
-					.getHealthInstrumentations().size()) {
-				builder.outOfService();
-				return;
-			}
-			builder.down();
-
-			for (Instrumentation instrumentation : instrumentationManager
-					.getHealthInstrumentations()) {
-				if (!instrumentation.isStarted()) {
-					builder.withException(instrumentation.getStartException());
-				}
+			else if (instrumentation.isOutOfService()) {
+				upCount++;
 			}
 		}
-		else {
-			builder.down();
-			builder.withDetail("warning",
-					"please add metrics-core dependency, we use it for metrics");
+		if (upCount == instrumentationManager.getHealthInstrumentations().size()) {
+			builder.up();
+			return;
 		}
+		else if (outOfServiceCount == instrumentationManager.getHealthInstrumentations()
+				.size()) {
+			builder.outOfService();
+			return;
+		}
+		builder.down();
 
+		for (Instrumentation instrumentation : instrumentationManager
+				.getHealthInstrumentations()) {
+			if (!instrumentation.isStarted()) {
+				builder.withException(instrumentation.getStartException());
+			}
+		}
 	}
 }

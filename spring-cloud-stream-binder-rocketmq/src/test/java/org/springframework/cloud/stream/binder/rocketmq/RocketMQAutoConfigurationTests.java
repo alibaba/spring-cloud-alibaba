@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.stream.binder.rocketmq.config.RocketMQBinderAutoConfiguration;
-import org.springframework.cloud.stream.binder.rocketmq.config.RocketMQBinderEndpointAutoConfiguration;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -36,10 +35,9 @@ public class RocketMQAutoConfigurationTests {
 
 	@Before
 	public void setUp() throws Exception {
-		this.context = new SpringApplicationBuilder(
-				RocketMQBinderEndpointAutoConfiguration.class,
-				RocketMQBinderAutoConfiguration.class).web(false).run(
-						"--spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876",
+		this.context = new SpringApplicationBuilder(RocketMQBinderAutoConfiguration.class)
+				.web(false)
+				.run("--spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876",
 						"--spring.cloud.stream.bindings.output.destination=TopicOrderTest",
 						"--spring.cloud.stream.bindings.output.content-type=application/json",
 						"--spring.cloud.stream.bindings.input1.destination=TopicOrderTest",
