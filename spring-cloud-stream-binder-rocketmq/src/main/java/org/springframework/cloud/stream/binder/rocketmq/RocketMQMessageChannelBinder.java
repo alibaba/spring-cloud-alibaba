@@ -22,6 +22,7 @@ import org.apache.rocketmq.client.producer.TransactionCheckListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
+import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
@@ -53,19 +54,18 @@ public class RocketMQMessageChannelBinder extends
 	private static final Logger logger = LoggerFactory
 			.getLogger(RocketMQMessageChannelBinder.class);
 
-	private final RocketMQExtendedBindingProperties extendedBindingProperties;
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 	private final InstrumentationManager instrumentationManager;
 	private final ConsumersManager consumersManager;
 
+	private RocketMQExtendedBindingProperties extendedBindingProperties = new RocketMQExtendedBindingProperties();
+
 	public RocketMQMessageChannelBinder(ConsumersManager consumersManager,
-			RocketMQExtendedBindingProperties extendedBindingProperties,
 			RocketMQTopicProvisioner provisioningProvider,
 			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
 			InstrumentationManager instrumentationManager) {
 		super(null, provisioningProvider);
 		this.consumersManager = consumersManager;
-		this.extendedBindingProperties = extendedBindingProperties;
 		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
 		this.instrumentationManager = instrumentationManager;
 	}
@@ -143,6 +143,16 @@ public class RocketMQMessageChannelBinder extends
 		return extendedBindingProperties.getExtendedProducerProperties(channelName);
 	}
 
+	@Override
+	public String getDefaultsPrefix() {
+		return extendedBindingProperties.getDefaultsPrefix();
+	}
+
+	@Override
+	public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
+		return extendedBindingProperties.getExtendedPropertiesEntryClass();
+	}
+
 	private <T> T getClassConfiguration(String destName, String className,
 			Class<T> interfaceClass) {
 		if (StringUtils.isEmpty(className)) {
@@ -182,6 +192,11 @@ public class RocketMQMessageChannelBinder extends
 			}
 		}
 		return null;
+	}
+
+	public void setExtendedBindingProperties(
+			RocketMQExtendedBindingProperties extendedBindingProperties) {
+		this.extendedBindingProperties = extendedBindingProperties;
 	}
 
 }
