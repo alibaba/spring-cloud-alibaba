@@ -25,6 +25,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 import org.springframework.cloud.alibaba.dubbo.service.EchoService;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,13 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Dubbo Spring Cloud Bootstrap
@@ -53,6 +61,10 @@ public class DubboSpringCloudBootstrap {
     @Lazy
     private DubboFeignEchoService dubboFeignEchoService;
 
+    @Autowired
+    @LoadBalanced
+    private RestTemplate restTemplate;
+
     @GetMapping(value = "/dubbo/call/echo")
     public String dubboEcho(@RequestParam("message") String message) {
         return echoService.echo(message);
@@ -71,16 +83,16 @@ public class DubboSpringCloudBootstrap {
     @FeignClient("spring-cloud-alibaba-dubbo")
     public interface FeignEchoService {
 
-        @GetMapping(value = "/echo")
+        @GetMapping(value = "/echo", consumes = APPLICATION_JSON_VALUE)
         String echo(@RequestParam("message") String message);
 
     }
 
     @FeignClient("spring-cloud-alibaba-dubbo")
+    @DubboTransported
     public interface DubboFeignEchoService {
 
-        @GetMapping(value = "/echo")
-        @DubboTransported
+        @GetMapping(value = "/echo", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
         String echo(@RequestParam("message") String message);
     }
 
@@ -94,6 +106,26 @@ public class DubboSpringCloudBootstrap {
             // Spring Cloud Open Feign REST Call (Dubbo Transported)
             System.out.println(dubboFeignEchoService.echo("mercyblitz"));
         };
+    }
+
+    @Bean
+    public ApplicationRunner restTemplateRunner() {
+        return arguments -> {
+            System.out.println(restTemplate.getForEntity("http://spring-cloud-alibaba-dubbo/echo?message=小马哥", String.class));
+            Map<String, Object> data = new HashMap<>();
+            data.put("name", "小马哥");
+            data.put("age", 33);
+            data.put("height", 173);
+            System.out.println(restTemplate.postForEntity("http://spring-cloud-alibaba-dubbo/toString", data, String.class));
+        };
+    }
+
+
+    @Bean
+    @LoadBalanced
+    @DubboTransported
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     public static void main(String[] args) {

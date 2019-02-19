@@ -86,7 +86,7 @@ If you want to use the latest BUILD-SNAPSHOT version, add `Spring Snapshot Repos
         <repository>
             <id>spring-snapshot</id>
             <name>Spring Snapshot Repository</name>
-            <url>https://repo.spring.io/snapshot</url>
+            <path>https://repo.spring.io/snapshot</path>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

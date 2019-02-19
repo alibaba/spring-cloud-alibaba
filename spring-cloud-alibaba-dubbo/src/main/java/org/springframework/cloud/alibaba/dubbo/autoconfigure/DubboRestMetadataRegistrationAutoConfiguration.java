@@ -18,15 +18,16 @@ package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
 import com.alibaba.dubbo.config.spring.ServiceBean;
 import com.alibaba.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
-import org.springframework.cloud.client.discovery.event.InstancePreRegisteredEvent;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -42,7 +43,7 @@ import java.util.Set;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
-@ConditionalOnMissingBean(value = {
+@ConditionalOnBean(value = {
         MetadataResolver.class,
         MetadataConfigService.class
 })
@@ -62,25 +63,21 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
     @Autowired
     private MetadataConfigService metadataConfigService;
 
+    @Value("${spring.application.name:application}")
+    private String currentApplicationName;
+
     @EventListener(ServiceBeanExportedEvent.class)
-    public void recordRestMetadata(ServiceBeanExportedEvent event) throws JsonProcessingException {
+    public void recordRestMetadata(ServiceBeanExportedEvent event) {
         ServiceBean serviceBean = event.getServiceBean();
         serviceRestMetadata.addAll(metadataResolver.resolveServiceRestMetadata(serviceBean));
     }
 
     /**
-     * Pre-handle Spring Cloud application service registered:
-     * <p>
-     * Put <code>restMetadata</code> with the JSON format into
-     * {@link Registration#getMetadata() service instances' metadata}
-     * <p>
-     *
-     * @param event {@link InstancePreRegisteredEvent} instance
+     * Publish <code>serviceRestMetadata</code> with the JSON format into
+     * {@link Registration#getMetadata() service instances' metadata} when The Spring Application is started.
      */
-    @EventListener(InstancePreRegisteredEvent.class)
-    public void registerRestMetadata(InstancePreRegisteredEvent event) throws Exception {
-        Registration registration = event.getRegistration();
-        metadataConfigService.publishServiceRestMetadata(registration.getServiceId(), serviceRestMetadata);
+    @EventListener(ApplicationStartedEvent.class)
+    public void registerRestMetadata() {
+        metadataConfigService.publishServiceRestMetadata(currentApplicationName, serviceRestMetadata);
     }
-
 }

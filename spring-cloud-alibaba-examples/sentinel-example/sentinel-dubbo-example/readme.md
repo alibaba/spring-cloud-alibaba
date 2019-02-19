@@ -110,7 +110,7 @@ Configure rules:
 Using the `@Reference` annotation to inject service:
 
     @Reference(version = "${foo.service.version}", application = "${dubbo.application.id}",
-            url = "dubbo://localhost:12345", timeout = 30000)
+            path = "dubbo://localhost:12345", timeout = 30000)
 	private FooService fooService;
 
 Because QPS is 10, we can see that flow control takes effect in this invocation:

@@ -61,7 +61,7 @@ public @interface DubboTransported {
     /**
      * The cluster of Dubbo transport whose value could be used the placeholder "dubbo.transport.cluster"
      *
-     * @return the default protocol is "failover"
+     * @return the default cluster is "failover"
      */
     String cluster() default "${dubbo.transport.cluster:failover}";
 }

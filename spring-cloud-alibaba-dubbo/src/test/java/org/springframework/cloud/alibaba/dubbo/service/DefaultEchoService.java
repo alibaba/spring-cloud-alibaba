@@ -19,18 +19,23 @@ package org.springframework.cloud.alibaba.dubbo.service;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.dubbo.rpc.RpcContext;
 
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
  * Default {@link EchoService}
@@ -43,14 +48,10 @@ import javax.ws.rs.QueryParam;
 public class DefaultEchoService implements EchoService {
 
     @Override
-    @GetMapping(value = "/echo"
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_UTF8_VALUE
-    )
+    @GetMapping(value = "/echo", produces = APPLICATION_JSON_UTF8_VALUE)
     @Path("/echo")
     @GET
-//    @Consumes("application/json")
-//    @Produces("application/json;charset=UTF-8")
+    @Produces(APPLICATION_JSON_UTF8_VALUE)
     public String echo(@RequestParam @QueryParam("message") String message) {
         return RpcContext.getContext().getUrl() + " [echo] : " + message;
     }
@@ -60,6 +61,39 @@ public class DefaultEchoService implements EchoService {
     @Path("/plus")
     @POST
     public String plus(@RequestParam @QueryParam("a") int a, @RequestParam @QueryParam("b") int b) {
-        return null;
+        return String.valueOf(a + b);
+    }
+
+    @Override
+    @PostMapping("/toString")
+    @Path("/toString")
+    @POST
+    public String toString(@RequestBody Map<String, Object> data) {
+        return data.toString();
+    }
+
+    @Override
+    @GetMapping("/header")
+    @Path("/header")
+    @GET
+    public String header(@RequestHeader("h") @HeaderParam("h") String header) {
+        return String.valueOf(header);
+    }
+
+    @Override
+    @PostMapping("/form")
+    @Path("/form")
+    @POST
+    public String form(@RequestParam("f") @FormParam("f") String form) {
+        return String.valueOf(form);
+    }
+
+    @Override
+    @GetMapping("/paramAndHeader")
+    @Path("/paramAndHeader")
+    @GET
+    public String paramAndHeader(@RequestHeader("h") @HeaderParam("h") @RequestParam("p") @QueryParam("p") String param,
+                                 @RequestHeader("h") @HeaderParam("h") String header) {
+        return param + header;
     }
 }
