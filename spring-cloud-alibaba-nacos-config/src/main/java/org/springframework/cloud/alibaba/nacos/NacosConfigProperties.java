@@ -18,8 +18,8 @@ package org.springframework.cloud.alibaba.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
@@ -30,14 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
+import static com.alibaba.nacos.api.PropertyKeyConst.*;
 
 /**
  * nacos properties
@@ -49,9 +42,10 @@ import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 @ConfigurationProperties(NacosConfigProperties.PREFIX)
 public class NacosConfigProperties {
 
-	static final String PREFIX = "spring.cloud.nacos.config";
+	public static final String PREFIX = "spring.cloud.nacos.config";
 
-	private static final Log log = LogFactory.getLog(NacosConfigProperties.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosConfigProperties.class);
 
 	/**
 	 * whether to enable nacos config.
@@ -368,11 +362,8 @@ public class NacosConfigProperties {
 			return configService;
 		}
 		catch (Exception e) {
-			log.error(
-					"create config service error!properties=" + this.toString() + ",e=,",
-					e);
+			log.error("create config service error!properties={},e=,", this, e);
 			return null;
 		}
 	}
-
 }
