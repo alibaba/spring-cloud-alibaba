@@ -42,9 +42,8 @@ public abstract class AbstractOnceApplicationListener<T extends ApplicationEvent
 			ApplicationContext applicationContext = ((ApplicationContextEvent) event)
 					.getApplicationContext();
 			// skip bootstrap context or super parent context.
-			if (applicationContext.getParent() == null
-					|| BOOTSTRAP_CONFIG_NAME_VALUE.equals(applicationContext
-							.getEnvironment().getProperty(BOOTSTRAP_CONFIG_NAME_KEY))) {
+			if (BOOTSTRAP_CONFIG_NAME_VALUE.equals(applicationContext.getEnvironment()
+					.getProperty(BOOTSTRAP_CONFIG_NAME_KEY))) {
 				return;
 			}
 		}
