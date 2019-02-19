@@ -56,7 +56,7 @@ public class NacosConfigProperties {
 	/**
 	 * whether to enable nacos config.
 	 */
-	private boolean enabled;
+	private boolean enabled = true;
 
 	/**
 	 * nacos config server address
