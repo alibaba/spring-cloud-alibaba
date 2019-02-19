@@ -33,21 +33,19 @@ import java.io.InputStream;
  */
 class DubboClientHttpResponse implements ClientHttpResponse {
 
-    private final Object result;
-
-    private final GenericException exception;
-
     private final HttpStatus httpStatus;
 
     private final String statusText;
 
     private final HttpHeaders httpHeaders = new HttpHeaders();
 
-    public DubboClientHttpResponse(Object result, GenericException exception) {
-        this.result = result;
-        this.exception = exception;
+    private final DubboHttpOutputMessage httpOutputMessage;
+
+    public DubboClientHttpResponse(DubboHttpOutputMessage httpOutputMessage, GenericException exception) {
         this.httpStatus = exception != null ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK;
         this.statusText = exception != null ? exception.getExceptionMessage() : httpStatus.getReasonPhrase();
+        this.httpOutputMessage = httpOutputMessage;
+        this.httpHeaders.putAll(httpOutputMessage.getHeaders());
     }
 
     @Override
@@ -67,12 +65,11 @@ class DubboClientHttpResponse implements ClientHttpResponse {
 
     @Override
     public void close() {
-
     }
 
     @Override
     public InputStream getBody() throws IOException {
-        return null;
+        return httpOutputMessage.getBody().getInputStream();
     }
 
     @Override

@@ -30,13 +30,11 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -111,12 +109,15 @@ public class DubboSpringCloudBootstrap {
     @Bean
     public ApplicationRunner restTemplateRunner() {
         return arguments -> {
-            System.out.println(restTemplate.getForEntity("http://spring-cloud-alibaba-dubbo/echo?message=小马哥", String.class));
-            Map<String, Object> data = new HashMap<>();
-            data.put("name", "小马哥");
-            data.put("age", 33);
-            data.put("height", 173);
-            System.out.println(restTemplate.postForEntity("http://spring-cloud-alibaba-dubbo/toString", data, String.class));
+            ResponseEntity<String> entity = restTemplate.getForEntity("http://spring-cloud-alibaba-dubbo/echo?message=小马哥", String.class);
+            System.out.println(entity.getHeaders());
+            System.out.println(entity.getBody());
+            // Still issue
+//            Map<String, Object> data = new HashMap<>();
+//            data.put("name", "小马哥");
+//            data.put("age", 33);
+//            data.put("height", 173);
+//            System.out.println(restTemplate.postForEntity("http://spring-cloud-alibaba-dubbo/toString", data, String.class));
         };
     }
 

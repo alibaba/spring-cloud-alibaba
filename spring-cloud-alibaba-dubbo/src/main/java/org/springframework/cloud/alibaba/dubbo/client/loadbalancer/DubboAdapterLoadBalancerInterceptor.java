@@ -17,6 +17,7 @@
 package org.springframework.cloud.alibaba.dubbo.client.loadbalancer;
 
 import com.alibaba.dubbo.config.spring.ReferenceBean;
+import com.alibaba.dubbo.rpc.service.GenericException;
 import com.alibaba.dubbo.rpc.service.GenericService;
 
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
@@ -53,12 +54,16 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
 
     private final List<HttpMessageConverter<?>> messageConverters;
 
+    private final DubboClientHttpResponseFactory clientHttpResponseFactory;
+
     public DubboAdapterLoadBalancerInterceptor(DubboServiceMetadataRepository dubboServiceMetadataRepository,
                                                LoadBalancerInterceptor loadBalancerInterceptor,
-                                               List<HttpMessageConverter<?>> messageConverters) {
+                                               List<HttpMessageConverter<?>> messageConverters,
+                                               ClassLoader classLoader) {
         this.repository = dubboServiceMetadataRepository;
         this.loadBalancerInterceptor = loadBalancerInterceptor;
         this.messageConverters = messageConverters;
+        this.clientHttpResponseFactory = new DubboClientHttpResponseFactory(messageConverters, classLoader);
     }
 
     @Override
@@ -72,16 +77,30 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
 
         repository.initialize(serviceName);
 
-        RequestMetadata requestMetadata = buildRequestMetadata(request, uriComponents);
+        RequestMetadata clientMetadata = buildRequestMetadata(request, uriComponents);
 
-        ReferenceBean<GenericService> referenceBean =
-                repository.getReferenceBean(serviceName, requestMetadata);
+        RestMethodMetadata restMethodMetadata = repository.getRestMethodMetadata(serviceName, clientMetadata);
 
-        RestMethodMetadata restMethodMetadata = repository.getRestMethodMetadata(serviceName, requestMetadata);
+        ReferenceBean<GenericService> referenceBean = repository.getReferenceBean(serviceName, clientMetadata);
 
         if (referenceBean == null || restMethodMetadata == null) {
             return loadBalancerInterceptor.intercept(request, body, execution);
         }
+
+        Object result = null;
+        GenericException exception = null;
+
+        try {
+            result = invokeService(restMethodMetadata, referenceBean, clientMetadata);
+        } catch (GenericException e) {
+            exception = e;
+        }
+
+        return clientHttpResponseFactory.build(result, exception, clientMetadata, restMethodMetadata);
+    }
+
+    private Object invokeService(RestMethodMetadata restMethodMetadata, ReferenceBean<GenericService> referenceBean,
+                                 RequestMetadata clientMetadata) throws GenericException {
 
         MethodMetadata methodMetadata = restMethodMetadata.getMethod();
 
@@ -89,13 +108,13 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
 
         String[] parameterTypes = parameterResolver.resolveParameterTypes(methodMetadata);
 
-        Object[] parameters = parameterResolver.resolveParameters(restMethodMetadata, request, uriComponents);
+        Object[] parameters = parameterResolver.resolveParameters(restMethodMetadata, clientMetadata);
 
         GenericService genericService = referenceBean.get();
 
         Object result = genericService.$invoke(methodName, parameterTypes, parameters);
 
-        return null;
+        return result;
     }
 
     public static RequestMetadata buildRequestMetadata(HttpRequest request, UriComponents uriComponents) {

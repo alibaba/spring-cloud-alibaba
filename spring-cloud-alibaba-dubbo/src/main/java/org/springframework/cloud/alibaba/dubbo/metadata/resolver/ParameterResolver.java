@@ -20,9 +20,7 @@ import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodParameterMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
-import org.springframework.http.HttpRequest;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.util.UriComponents;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -37,8 +35,7 @@ import java.util.Set;
  */
 public class ParameterResolver {
 
-
-    public Object[] resolveParameters(RestMethodMetadata restMethodMetadata, HttpRequest request, UriComponents uriComponents) {
+    public Object[] resolveParameters(RestMethodMetadata restMethodMetadata, RequestMetadata clientMetadata) {
 
         MethodMetadata methodMetadata = restMethodMetadata.getMethod();
 
@@ -56,26 +53,24 @@ public class ParameterResolver {
 
             String name = getName(indexToName, index);
 
-            parameters[index] = getValue(requestMetadata, request, uriComponents, name);
+            parameters[index] = getValue(requestMetadata, clientMetadata, name);
 
         }
 
         return parameters;
     }
 
-    private String getValue(RequestMetadata requestMetadata, HttpRequest request, UriComponents uriComponents, String name) {
-
+    private String getValue(RequestMetadata serverMetadata, RequestMetadata clientMetadata, String name) {
         String value = null;
-        Set<String> paramNames = requestMetadata.getParamNames();
-        Set<String> headerNames = requestMetadata.getHeaderNames();
-
+        Set<String> paramNames = serverMetadata.getParamNames();
+        Set<String> headerNames = serverMetadata.getHeaderNames();
         if (paramNames.contains(name)) {
-            value = uriComponents.getQueryParams().getFirst(name);
+            value = clientMetadata.getParameter(name);
         } else if (headerNames.contains(name)) {
-            value = request.getHeaders().getFirst(name);
+            value = clientMetadata.getHeader(name);
         }
-
         return value;
+
     }
 
     private String getName(Map<Integer, Collection<String>> indexToName, int index) {
