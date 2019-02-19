@@ -183,19 +183,19 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		}
 	}
 
-	private static void checkDataIdFileExtension(String[] sharedDataIdArry) {
+	private static void checkDataIdFileExtension(String[] dataIdArray) {
 		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < sharedDataIdArry.length; i++) {
+		for (int i = 0; i < dataIdArray.length; i++) {
 			boolean isLegal = false;
 			for (String fileExtension : SUPPORT_FILE_EXTENSION) {
-				if (sharedDataIdArry[i].indexOf(fileExtension) > 0) {
+				if (dataIdArray[i].indexOf(fileExtension) > 0) {
 					isLegal = true;
 					break;
 				}
 			}
 			// add tips
 			if (!isLegal) {
-				stringBuilder.append(sharedDataIdArry[i] + ",");
+				stringBuilder.append(dataIdArray[i] + ",");
 			}
 		}
 
