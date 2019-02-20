@@ -17,8 +17,10 @@
 package org.springframework.cloud.alibaba.dubbo.openfeign;
 
 import com.alibaba.dubbo.rpc.service.GenericService;
-import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.MethodParameterMetadata;
+
+import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContext;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -33,16 +35,20 @@ public class DubboInvocationHandler implements InvocationHandler {
 
     private final Map<Method, GenericService> genericServicesMap;
 
-    private final Map<Method, MethodMetadata> methodMetadata;
+    private final Map<Method, RestMethodMetadata> restMethodMetadataMap;
 
     private final InvocationHandler defaultInvocationHandler;
 
+    private final DubboGenericServiceExecutionContextFactory contextFactory;
+
     public DubboInvocationHandler(Map<Method, GenericService> genericServicesMap,
-                                  Map<Method, MethodMetadata> methodMetadata,
-                                  InvocationHandler defaultInvocationHandler) {
+                                  Map<Method, RestMethodMetadata> restMethodMetadataMap,
+                                  InvocationHandler defaultInvocationHandler,
+                                  DubboGenericServiceExecutionContextFactory contextFactory) {
         this.genericServicesMap = genericServicesMap;
-        this.methodMetadata = methodMetadata;
+        this.restMethodMetadataMap = restMethodMetadataMap;
         this.defaultInvocationHandler = defaultInvocationHandler;
+        this.contextFactory = contextFactory;
     }
 
     @Override
@@ -50,20 +56,18 @@ public class DubboInvocationHandler implements InvocationHandler {
 
         GenericService genericService = genericServicesMap.get(method);
 
-        MethodMetadata methodMetadata = this.methodMetadata.get(method);
+        RestMethodMetadata restMethodMetadata = restMethodMetadataMap.get(method);
 
-        if (genericService == null || methodMetadata == null) {
+        if (genericService == null || restMethodMetadata == null) {
             return defaultInvocationHandler.invoke(proxy, method, args);
         }
 
-        String methodName = methodMetadata.getName();
+        DubboGenericServiceExecutionContext context = contextFactory.create(restMethodMetadata, args);
 
-        String[] parameterTypes = methodMetadata
-                .getParams()
-                .stream()
-                .map(MethodParameterMetadata::getType)
-                .toArray(String[]::new);
+        String methodName = context.getMethodName();
+        String[] parameterTypes = context.getParameterTypes();
+        Object[] parameters = context.getParameters();
 
-        return genericService.$invoke(methodName, parameterTypes, args);
+        return genericService.$invoke(methodName, parameterTypes, parameters);
     }
 }

@@ -20,7 +20,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.core.env.Environment;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
@@ -42,14 +43,18 @@ public class TargeterBeanPostProcessor implements BeanPostProcessor, BeanClassLo
 
     private final DubboGenericServiceFactory dubboGenericServiceFactory;
 
+    private final DubboGenericServiceExecutionContextFactory contextFactory;
+
     private ClassLoader classLoader;
 
     public TargeterBeanPostProcessor(Environment environment,
                                      DubboServiceMetadataRepository dubboServiceMetadataRepository,
-                                     DubboGenericServiceFactory dubboGenericServiceFactory) {
+                                     DubboGenericServiceFactory dubboGenericServiceFactory,
+                                     DubboGenericServiceExecutionContextFactory contextFactory) {
         this.environment = environment;
         this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
         this.dubboGenericServiceFactory = dubboGenericServiceFactory;
+        this.contextFactory = contextFactory;
     }
 
     @Override
@@ -64,7 +69,7 @@ public class TargeterBeanPostProcessor implements BeanPostProcessor, BeanClassLo
         if (targetClass.isAssignableFrom(beanClass)) {
             return newProxyInstance(classLoader, new Class[]{targetClass},
                     new TargeterInvocationHandler(bean, environment, dubboServiceMetadataRepository,
-                            dubboGenericServiceFactory));
+                            dubboGenericServiceFactory,contextFactory));
         }
         return bean;
     }

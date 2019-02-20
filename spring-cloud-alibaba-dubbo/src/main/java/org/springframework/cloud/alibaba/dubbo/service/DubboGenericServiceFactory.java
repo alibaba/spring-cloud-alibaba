@@ -14,15 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.metadata.service;
+package org.springframework.cloud.alibaba.dubbo.service;
 
 import com.alibaba.dubbo.config.spring.ReferenceBean;
 import com.alibaba.dubbo.rpc.service.GenericService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 
+import javax.annotation.PreDestroy;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -39,26 +43,28 @@ import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegist
  */
 public class DubboGenericServiceFactory {
 
-    private final ConcurrentMap<Integer, GenericService> cache = new ConcurrentHashMap<>();
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final ConcurrentMap<Integer, ReferenceBean<GenericService>> cache = new ConcurrentHashMap<>();
 
     public GenericService create(DubboServiceMetadata dubboServiceMetadata,
                                  DubboTransportedMetadata dubboTransportedMetadata) {
 
         Integer key = Objects.hash(dubboServiceMetadata, dubboTransportedMetadata);
 
-        GenericService genericService = cache.get(key);
+        ReferenceBean<GenericService> referenceBean = cache.get(key);
 
-        if (genericService == null) {
-            genericService = build(dubboServiceMetadata.getServiceRestMetadata(), dubboTransportedMetadata);
-            cache.putIfAbsent(key, genericService);
+        if (referenceBean == null) {
+            referenceBean = build(dubboServiceMetadata.getServiceRestMetadata(), dubboTransportedMetadata);
+            cache.putIfAbsent(key, referenceBean);
         }
 
-        return genericService;
+        return referenceBean == null ? null : referenceBean.get();
     }
 
 
-    private GenericService build(ServiceRestMetadata serviceRestMetadata,
-                                 DubboTransportedMetadata dubboTransportedMetadata) {
+    private ReferenceBean<GenericService> build(ServiceRestMetadata serviceRestMetadata,
+                                                DubboTransportedMetadata dubboTransportedMetadata) {
         String dubboServiceName = serviceRestMetadata.getName();
         String[] segments = getServiceSegments(dubboServiceName);
         String interfaceName = getServiceInterface(segments);
@@ -73,7 +79,26 @@ public class DubboGenericServiceFactory {
         referenceBean.setProtocol(dubboTransportedMetadata.getProtocol());
         referenceBean.setCluster(dubboTransportedMetadata.getCluster());
 
-        return referenceBean.get();
+        return referenceBean;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        destroyReferenceBeans();
+        cache.values();
+    }
+
+    private void destroyReferenceBeans() {
+        Collection<ReferenceBean<GenericService>> referenceBeans = cache.values();
+        if (logger.isInfoEnabled()) {
+            logger.info("The Dubbo GenericService ReferenceBeans are destroying...");
+        }
+        for (ReferenceBean referenceBean : referenceBeans) {
+            referenceBean.destroy(); // destroy ReferenceBean
+            if (logger.isInfoEnabled()) {
+                logger.info("Destroyed the ReferenceBean  : {} ", referenceBean);
+            }
+        }
     }
 
 }

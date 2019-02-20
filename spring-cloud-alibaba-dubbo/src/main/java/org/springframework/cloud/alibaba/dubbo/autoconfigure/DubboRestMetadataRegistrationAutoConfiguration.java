@@ -27,7 +27,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.service.MetadataConfigService;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;

@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.metadata.resolver;
+package org.springframework.cloud.alibaba.dubbo.http.util;
 
 import org.springframework.cloud.alibaba.dubbo.http.converter.HttpMessageConverterHolder;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -32,6 +34,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import static java.util.Collections.unmodifiableList;
 
 /**
  * {@link HttpMessageConverter} Resolver
@@ -54,6 +58,28 @@ public class HttpMessageConverterResolver {
         this.classLoader = classLoader;
     }
 
+    public HttpMessageConverterHolder resolve(HttpRequest request, Class<?> parameterType) {
+
+        HttpMessageConverterHolder httpMessageConverterHolder = null;
+
+        HttpHeaders httpHeaders = request.getHeaders();
+
+        MediaType contentType = httpHeaders.getContentType();
+
+        if (contentType == null) {
+            contentType = MediaType.APPLICATION_OCTET_STREAM;
+        }
+
+        for (HttpMessageConverter<?> converter : this.messageConverters) {
+            if (converter.canRead(parameterType, contentType)) {
+                httpMessageConverterHolder = new HttpMessageConverterHolder(contentType, converter);
+                break;
+            }
+        }
+
+        return httpMessageConverterHolder;
+    }
+
     /**
      * Resolve the most match {@link HttpMessageConverter} from {@link RequestMetadata}
      *
@@ -61,7 +87,8 @@ public class HttpMessageConverterResolver {
      * @param restMethodMetadata {@link RestMethodMetadata}
      * @return
      */
-    public HttpMessageConverterHolder resolve(RequestMetadata requestMetadata, RestMethodMetadata restMethodMetadata) {
+    public HttpMessageConverterHolder resolve(RequestMetadata requestMetadata, RestMethodMetadata
+            restMethodMetadata) {
 
         HttpMessageConverterHolder httpMessageConverterHolder = null;
 
@@ -114,6 +141,10 @@ public class HttpMessageConverterResolver {
         return httpMessageConverterHolder;
     }
 
+    public List<MediaType> getAllSupportedMediaTypes() {
+        return unmodifiableList(allSupportedMediaTypes);
+    }
+
     private Class<?> resolveReturnValueClass(RestMethodMetadata restMethodMetadata) {
         String returnClassName = restMethodMetadata.getMethod().getReturnType();
         return ClassUtils.resolveClassName(returnClassName, classLoader);
@@ -139,7 +170,8 @@ public class HttpMessageConverterResolver {
      * @param returnValueClass   the class of return value
      * @return non-null {@link List}
      */
-    private List<MediaType> getProducibleMediaTypes(RestMethodMetadata restMethodMetadata, Class<?> returnValueClass) {
+    private List<MediaType> getProducibleMediaTypes(RestMethodMetadata restMethodMetadata, Class<?>
+            returnValueClass) {
         RequestMetadata serverRequestMetadata = restMethodMetadata.getRequest();
         List<MediaType> mediaTypes = serverRequestMetadata.getProduceMediaTypes();
         if (!CollectionUtils.isEmpty(mediaTypes)) { // Empty
@@ -172,7 +204,7 @@ public class HttpMessageConverterResolver {
         }
         List<MediaType> result = new ArrayList<MediaType>(allSupportedMediaTypes);
         MediaType.sortBySpecificity(result);
-        return Collections.unmodifiableList(result);
+        return unmodifiableList(result);
     }
 
     /**

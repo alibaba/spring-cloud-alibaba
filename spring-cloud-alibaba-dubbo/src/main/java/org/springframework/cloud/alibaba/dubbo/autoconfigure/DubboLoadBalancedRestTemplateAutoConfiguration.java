@@ -29,7 +29,8 @@ import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 import org.springframework.cloud.alibaba.dubbo.client.loadbalancer.DubboAdapterLoadBalancerInterceptor;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
@@ -71,7 +72,10 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
     private ConfigurableListableBeanFactory beanFactory;
 
     @Autowired
-    private DubboGenericServiceFactory dubboGenericServiceFactory;
+    private DubboGenericServiceFactory serviceFactory;
+
+    @Autowired
+    private DubboGenericServiceExecutionContextFactory contextFactory;
 
     @Autowired
     private Environment environment;
@@ -137,7 +141,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
         if (index > -1) {
             interceptors.set(index, new DubboAdapterLoadBalancerInterceptor(repository, loadBalancerInterceptor,
                     restTemplate.getMessageConverters(), classLoader,
-                    dubboTransportedMetadata, dubboGenericServiceFactory));
+                    dubboTransportedMetadata, serviceFactory, contextFactory));
         }
 
         restTemplate.setInterceptors(interceptors);

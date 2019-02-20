@@ -14,20 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.metadata.service;
+package org.springframework.cloud.alibaba.dubbo.service;
 
-import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
-
-import java.util.Set;
+import com.alibaba.dubbo.rpc.service.GenericService;
 
 /**
- * Config Service for Metadata
+ * Dubbo {@link GenericService} execution context
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface MetadataConfigService {
+public class DubboGenericServiceExecutionContext {
 
-    void publishServiceRestMetadata(String serviceName, Set<ServiceRestMetadata> serviceRestMetadata);
+    private final String methodName;
 
-    Set<ServiceRestMetadata> getServiceRestMetadata(String serviceName);
+    private final String[] parameterTypes;
+
+    private final Object[] parameters;
+
+    public DubboGenericServiceExecutionContext(String methodName, String[] parameterTypes, Object[] parameters) {
+        this.methodName = methodName;
+        this.parameterTypes = parameterTypes;
+        this.parameters = parameters;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public String[] getParameterTypes() {
+        return parameterTypes;
+    }
+
+    public Object[] getParameters() {
+        return parameters;
+    }
 }
