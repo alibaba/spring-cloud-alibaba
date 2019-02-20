@@ -32,7 +32,7 @@ public class RequestMetadataTest {
 
     private String method = "GET";
 
-    private String url = "/echo";
+    private String url = "/param";
 
     private Set<String> paramNames = new LinkedHashSet<>(Arrays.asList("a", "b", "c"));
 

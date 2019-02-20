@@ -23,6 +23,7 @@ import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.GenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
@@ -71,10 +72,19 @@ public class HttpMessageConverterResolver {
         }
 
         for (HttpMessageConverter<?> converter : this.messageConverters) {
-            if (converter.canRead(parameterType, contentType)) {
-                httpMessageConverterHolder = new HttpMessageConverterHolder(contentType, converter);
-                break;
+            if (converter instanceof GenericHttpMessageConverter) {
+                GenericHttpMessageConverter genericConverter = (GenericHttpMessageConverter) converter;
+                if (genericConverter.canRead(parameterType, parameterType, contentType)) {
+                    httpMessageConverterHolder = new HttpMessageConverterHolder(contentType, converter);
+                    break;
+                }
+            } else {
+                if (converter.canRead(parameterType, contentType)) {
+                    httpMessageConverterHolder = new HttpMessageConverterHolder(contentType, converter);
+                    break;
+                }
             }
+
         }
 
         return httpMessageConverterHolder;

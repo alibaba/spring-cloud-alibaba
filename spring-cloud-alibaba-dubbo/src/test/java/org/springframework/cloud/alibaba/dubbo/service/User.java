@@ -16,24 +16,53 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import java.util.Map;
+import javax.ws.rs.FormParam;
+import java.io.Serializable;
 
 /**
- * Echo Service
- *
- * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * User Entity
  */
-public interface EchoService {
+public class User implements Serializable {
 
-    String echo(String message);
+    @FormParam("id")
+    private Long id;
 
-    String plus(int a, int b);
+    @FormParam("name")
+    private String name;
 
-    String toString(Map<String, Object> data);
+    @FormParam("age")
+    private Integer age;
 
-    String header(String header);
+    public Long getId() {
+        return id;
+    }
 
-    String form(String form);
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    String paramAndHeader(String param, String header);
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
 }
