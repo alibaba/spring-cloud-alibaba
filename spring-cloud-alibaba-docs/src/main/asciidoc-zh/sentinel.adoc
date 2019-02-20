@@ -100,7 +100,7 @@ spring:
 
 ### Feign 支持
 
-Sentinel 适配了 https://github.com/OpenFeign/feign[Feign] 组件。如果想使用，除了引入 `sentinel-starter` 的依赖外还需要 3 个步骤：
+Sentinel 适配了 https://github.com/OpenFeign/feign[Feign] 组件。如果想使用，除了引入 `sentinel-starter` 的依赖外还需要 2 个步骤：
 
 * 配置文件打开 sentinel 对 feign 的支持：`feign.sentinel.enabled=true`
 * 加入 `feign starter` 依赖触发 `sentinel starter` 的配置类生效：
@@ -110,15 +110,8 @@ Sentinel 适配了 https://github.com/OpenFeign/feign[Feign] 组件。如果想�
     <artifactId>spring-cloud-starter-openfeign</artifactId>
 </dependency>
 ```
-* `feign` 内部的 `loadbalance` 功能依赖 Netflix 的 `ribbon` 模块(如果不使用 `loadbalance` 功能可不引入)：
-```xml
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-</dependency>
-```
 
-这是一个 `FeignClient` 对应的接口：
+这是一个 `FeignClient` 的简单使用示例：
 
 ```java
 @FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
@@ -142,11 +135,9 @@ class EchoServiceFallback implements EchoService {
 }
 ```
 
-NOTE: Feign 对应的接口中的资源名策略定义：httpmethod:protocol://requesturl
+NOTE: Feign 对应的接口中的资源名策略定义：httpmethod:protocol://requesturl。`@FeignClient` 注解中的所有属性，Sentinel 都做了兼容。
 
 `EchoService` 接口中方法 `echo` 对应的资源名为 `GET:http://service-provider/echo/{str}`。
-
-请注意：`@FeignClient` 注解中的所有属性，Sentinel 都做了兼容。
 
 ### RestTemplate 支持
 
@@ -160,14 +151,13 @@ public RestTemplate restTemplate() {
 }
 ```
 
-`@SentinelRestTemplate` 注解的参数支持限流(`blockHandler`, `blockHandlerClass`)和降级(`fallback`, `fallbackClass`)的处理。
+`@SentinelRestTemplate` 注解的属性支持限流(`blockHandler`, `blockHandlerClass`)和降级(`fallback`, `fallbackClass`)的处理。
 
-其中 `blockHandler` 或 `fallback` 对应的方法必须是对应 `blockHandlerClass` 或 `fallbackClass` 中的静态方法。
+其中 `blockHandler` 或 `fallback` 属性对应的方法必须是对应 `blockHandlerClass` 或 `fallbackClass` 属性中的静态方法。
 
-该注解对应的方法参数跟 `ClientHttpRequestInterceptor` 接口中的参数一致，并多出了一个 `BlockException` 参数，且返回值是 `ClientHttpResponse`。
-被限流后如果不继续执行后面的 Http 请求拦截器，则可以通过 `SentinelClientHttpResponse` 的一个实例来自定义被限流后的返回值结果。
+该方法的参数跟返回值跟 `org.springframework.http.client.ClientHttpRequestInterceptor#interceptor` 方法一致，其中参数多出了一个 `BlockException` 参数用于获取 Sentinel 捕获的异常。
 
-比如上述 `ExceptionUtil` 的 `handleException` 方法对应的声明如下：
+比如上述 `@SentinelRestTemplate` 注解中 `ExceptionUtil` 的 `handleException` 属性对应的方法声明如下：
 
 ```java
 public class ExceptionUtil {
@@ -177,7 +167,11 @@ public class ExceptionUtil {
 }
 ```
 
-`@SentinelRestTemplate` 注解的限流(`blockHandler`, `blockHandlerClass`)和降级(`fallback`, `fallbackClass`)不强制填写，当被 Sentinel 熔断后，会返回 `RestTemplate request block by sentinel` 信息，或者也可以填写对应的方法自行处理。
+NOTE: 应用启动的时候会检查 `@SentinelRestTemplate` 注解对应的限流或降级方法是否存在，如不存在会抛出异常
+
+`@SentinelRestTemplate` 注解的限流(`blockHandler`, `blockHandlerClass`)和降级(`fallback`, `fallbackClass`)属性不强制填写。
+
+当使用 `RestTemplate` 调用被 Sentinel 熔断后，会返回 `RestTemplate request block by sentinel` 信息，或者也可以编写对应的方法自行处理返回信息。这里提供了 `SentinelClientHttpResponse` 用于构造返回信息。
 
 Sentinel RestTemplate 限流的资源规则提供两种粒度：
 
@@ -189,98 +183,45 @@ NOTE: 以 `https://www.taobao.com/test` 这个 url 为例。对应的资源名�
 
 ### 动态数据源支持
 
-#### 在我们的第一个版本 0.2.0.RELEASE 或 0.1.0.RELEASE 中的使用方式
+`SentinelProperties` 内部提供了 `TreeMap` 类型的 `datasource` 属性用于配置数据源信息。
 
-需要3个步骤才可完成数据源的配置：
-
-* 配置文件中定义数据源信息。比如使用文件：
-
-.application.properties
-----
-spring.cloud.sentinel.datasource.type=file
-spring.cloud.sentinel.datasource.recommendRefreshMs=3000
-spring.cloud.sentinel.datasource.bufSize=4056196
-spring.cloud.sentinel.datasource.charset=utf-8
-spring.cloud.sentinel.datasource.converter=flowConverter
-spring.cloud.sentinel.datasource.file=/Users/you/yourrule.json
-----
-
-* 创建一个 Converter 类实现 `com.alibaba.csp.sentinel.datasource.Converter` 接口，并且需要在 `ApplicationContext` 中有该类的一个 Bean
-
-```java
-@Component("flowConverter")
-public class JsonFlowRuleListParser implements Converter<String, List<FlowRule>> {
-	@Override
-	public List<FlowRule> convert(String source) {
-		return JSON.parseObject(source, new TypeReference<List<FlowRule>>() {
-		});
-	}
-}
-```
-
-这个 Converter 的 bean name 需要跟 `application.properties` 配置文件中的 converter 配置一致
-
-* 在任意一个 Spring Bean 中定义一个被 `@SentinelDataSource` 注解修饰的 `ReadableDataSource` 属性
-
-```java
-@SentinelDataSource("spring.cloud.sentinel.datasource")
-private ReadableDataSource dataSource;
-```
-
-`@SentinelDataSource` 注解的 value 属性表示数据源在 `application.properties` 配置文件中前缀。 该在例子中，前缀为 `spring.cloud.sentinel.datasource` 。
-
-如果 `ApplicationContext` 中存在超过1个 `ReadableDataSource` bean，那么不会加载这些 `ReadableDataSource` 中的任意一个。 只有在 `ApplicationContext` 存在一个 `ReadableDataSource` 的情况下才会生效。
-
-如果数据源生效并且规则成功加载，控制台会打印类似如下信息：
-
-```
-[Sentinel Starter] load 3 flow rules
-```
-
-#### 后续版本的使用方式
-
-只需要1个步骤就可完成数据源的配置：
-
-* 直接在 `application.properties` 配置文件中配置数据源信息即可
-
-比如配置了4个数据源：
+比如配置 4 个数据源：
 
 ```
 spring.cloud.sentinel.datasource.ds1.file.file=classpath: degraderule.json
+spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
+
+#spring.cloud.sentinel.datasource.ds1.file.file=classpath: flowrule.json
+#spring.cloud.sentinel.datasource.ds1.file.data-type=custom
+#spring.cloud.sentinel.datasource.ds1.file.converter-class=org.springframework.cloud.alibaba.cloud.examples.JsonFlowRuleListConverter
+#spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
 spring.cloud.sentinel.datasource.ds2.nacos.server-addr=localhost:8848
 spring.cloud.sentinel.datasource.ds2.nacos.dataId=sentinel
 spring.cloud.sentinel.datasource.ds2.nacos.groupId=DEFAULT_GROUP
 spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
+spring.cloud.sentinel.datasource.ds2.nacos.rule-type=degrade
 
 spring.cloud.sentinel.datasource.ds3.zk.path = /Sentinel-Demo/SYSTEM-CODE-DEMO-FLOW
 spring.cloud.sentinel.datasource.ds3.zk.server-addr = localhost:2181
+spring.cloud.sentinel.datasource.ds3.zk.rule-type=authority
 
 spring.cloud.sentinel.datasource.ds4.apollo.namespace-name = application
 spring.cloud.sentinel.datasource.ds4.apollo.flow-rules-key = sentinel
 spring.cloud.sentinel.datasource.ds4.apollo.default-flow-rule-value = test
+spring.cloud.sentinel.datasource.ds5.apollo.rule-type=param-flow
 
 ```
 
-这样配置方式参考了 Spring Cloud Stream Binder 的配置，内部使用了 `TreeMap` 进行存储，comparator 为 `String.CASE_INSENSITIVE_ORDER` 。
+这种配置方式参考了 Spring Cloud Stream Binder 的配置，内部使用了 `TreeMap` 进行存储，comparator 为 `String.CASE_INSENSITIVE_ORDER` 。
 
-NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。后面的 `file` ，`zk` ，`nacos` , `apollo` 就是对应具体的数据源。 它们后面的配置就是这些数据源各自的配置。
+NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。后面的 `file` ，`zk` ，`nacos` , `apollo` 就是对应具体的数据源。 它们后面的配置就是这些具体数据源各自的配置。
 
-每种数据源都有两个共同的配置项： `data-type` 和 `converter-class` 。
+每种数据源都有两个共同的配置项： `data-type`、 `converter-class` 以及 `rule-type`。
 
-`data-type` 配置项表示 `Converter`，Spring Cloud Alibaba Sentinel 默认提供两种内置的值，分别是 `json` 和 `xml` (不填默认是json)。 如果不想使用内置的 `json` 或 `xml` 这两种 `Converter`，可以填写 `custom` 表示自定义 `Converter`，然后再配置 `converter-class` 配置项，该配置项需要写类的全路径名。
+`data-type` 配置项表示 `Converter` 类型，Spring Cloud Alibaba Sentinel 默认提供两种内置的值，分别是 `json` 和 `xml` (不填默认是json)。 如果不想使用内置的 `json` 或 `xml` 这两种 `Converter`，可以填写 `custom` 表示自定义 `Converter`，然后再配置 `converter-class` 配置项，该配置项需要写类的全路径名(比如 `spring.cloud.sentinel.datasource.ds1.file.converter-class=org.springframework.cloud.alibaba.cloud.examples.JsonFlowRuleListConverter`)。
 
-这两种内置的 `Converter` 只支持解析 json 数组 或 xml 数组。内部解析的时候会自动判断每个 json 对象或xml对象属于哪4种 Sentinel 规则(`FlowRule`，`DegradeRule`，`SystemRule`，`AuthorityRule`, `ParamFlowRule`)。
-
-比如10个规则数组里解析出5个限流规则和5个降级规则。 这种情况下该数据源不会注册，日志里页会进行警告。
-
-如果10个规则里有9个限流规则，1个解析报错了。这种情况下日志会警告有个规则格式错误，另外9个限流规则会注册上去。
-
-这里 json 或 xml 解析用的是 `jackson`。`ObjectMapper` 或 `XmlMapper` 使用默认的配置，遇到不认识的字段会解析报错。 因为不这样做的话限流 json 也会解析成 系统规则(系统规则所有的配置都有默认值)，所以需要这样严格解析。
-
-当然还有一种情况是 json 对象或 xml 对象可能会匹配上所有4种规则(比如json对象里只配了 `resource` 字段，那么会匹配上4种规则)，这种情况下日志里会警告，并且过滤掉这个对象。
-
-用户使用这种配置的时候只需要填写正确的json或xml就行，有任何不合理的信息都会在日志里打印出来。
+`rule-type` 配置表示该数据源中的规则属于哪种类型的规则(`flow`，`degrade`，`authority`，`system`, `param-flow`)。
 
 如果数据源生效并且规则成功加载，控制台会打印类似如下信息：
 
@@ -288,6 +229,8 @@ NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。�
 [Sentinel Starter] DataSource ds1-sentinel-file-datasource load 3 DegradeRule
 [Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
 ```
+
+NOTE: 当某个数据源规则信息加载失败的情况下，不会影响应用的启动，会在日志中打印出错误信息。
 
 NOTE: 默认情况下，xml 格式是不支持的。需要添加 `jackson-dataformat-xml` 依赖后才会自动生效。
 
@@ -300,6 +243,8 @@ NOTE: 默认情况下，xml 格式是不支持的。需要添加 `jackson-datafo
 * Spring Boot 1.x 中添加配置 `management.security.enabled=false`。暴露的 endpoint 路径为 `/sentinel`
 * Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`。暴露的 endpoint 路径为 `/actuator/sentinel`
 
+Sentinel Endpoint 里暴露的信息非常有用。包括当前应用的所有规则信息、日志目录、当前实例的 IP，Sentinel Dashboard 地址，Block Page，应用与 Sentinel Dashboard 的心跳频率等等信息。
+
 ### More
 
 下表显示当应用的 `ApplicationContext` 中存在对应的Bean的类型时，会进行的一些操作：
@@ -310,6 +255,7 @@ NOTE: 默认情况下，xml 格式是不支持的。需要添加 `jackson-datafo
 ^|存在Bean的类型 ^|操作 ^|作用
 |`UrlCleaner`|`WebCallbackManager.setUrlCleaner(urlCleaner)`|资源清理(资源（比如将满足 /foo/:id 的 URL 都归到 /foo/* 资源下）)
 |`UrlBlockHandler`|`WebCallbackManager.setUrlBlockHandler(urlBlockHandler)`|自定义限流处理逻辑
+|`RequestOriginParser`|`WebCallbackManager.setRequestOriginParser(requestOriginParser)`|设置来源信息
 |====
 
 下表显示 Spring Cloud Alibaba Sentinel 的所有配置信息：
@@ -322,14 +268,17 @@ NOTE: 默认情况下，xml 格式是不支持的。需要添加 `jackson-datafo
 |`spring.cloud.sentinel.eager`|取消Sentinel控制台懒加载|false
 |`spring.cloud.sentinel.transport.port`|应用与Sentinel控制台交互的端口，应用本地会起一个该端口占用的HttpServer|8721
 |`spring.cloud.sentinel.transport.dashboard`|Sentinel 控制台地址|
-|`spring.cloud.sentinel.transport.heartbeatIntervalMs`|应用与Sentinel控制台的心跳间隔时间|
+|`spring.cloud.sentinel.transport.heartbeat-interval-ms`|应用与Sentinel控制台的心跳间隔时间|
+|`spring.cloud.sentinel.transport.client-ip`|客户端IP|
 |`spring.cloud.sentinel.filter.order`|Servlet Filter的加载顺序。Starter内部会构造这个filter|Integer.MIN_VALUE
-|`spring.cloud.sentinel.filter.spring.url-patterns`|数据类型是数组。表示Servlet Filter的url pattern集合|/*
+|`spring.cloud.sentinel.filter.url-patterns`|数据类型是数组。表示Servlet Filter的url pattern集合|/*
 |`spring.cloud.sentinel.metric.charset`|metric文件字符集|UTF-8
-|`spring.cloud.sentinel.metric.fileSingleSize`|Sentinel metric 单个文件的大小|
-|`spring.cloud.sentinel.metric.fileTotalCount`|Sentinel metric 总文件数量|
+|`spring.cloud.sentinel.metric.file-single-size`|Sentinel metric 单个文件的大小|
+|`spring.cloud.sentinel.metric.file-total-count`|Sentinel metric 总文件数量|
 |`spring.cloud.sentinel.log.dir`|Sentinel 日志文件所在的目录|
 |`spring.cloud.sentinel.log.switch-pid`|Sentinel 日志文件名是否需要带上pid|false
-|`spring.cloud.sentinel.servlet.blockPage`| 自定义的跳转 URL，当请求被限流时会自动跳转至设定好的 URL |
-|`spring.cloud.sentinel.flow.coldFactor`| https://github.com/alibaba/Sentinel/wiki/%E9%99%90%E6%B5%81---%E5%86%B7%E5%90%AF%E5%8A%A8[冷启动因子] |3
+|`spring.cloud.sentinel.servlet.block-page`| 自定义的跳转 URL，当请求被限流时会自动跳转至设定好的 URL |
+|`spring.cloud.sentinel.flow.cold-factor`| https://github.com/alibaba/Sentinel/wiki/%E9%99%90%E6%B5%81---%E5%86%B7%E5%90%AF%E5%8A%A8[冷启动因子] |3
 |====
+
+NOTE: 请注意。这些配置只有在 Servlet 环境下才会生效，RestTemplate 和 Feign 针对这些配置都无法生效
