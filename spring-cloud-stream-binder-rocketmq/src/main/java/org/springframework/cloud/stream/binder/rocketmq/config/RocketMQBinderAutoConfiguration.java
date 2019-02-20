@@ -64,8 +64,9 @@ public class RocketMQBinderAutoConfiguration {
 			RocketMQTopicProvisioner provisioningProvider,
 			ConsumersManager consumersManager) {
 		RocketMQMessageChannelBinder binder = new RocketMQMessageChannelBinder(
-				consumersManager, extendedBindingProperties, provisioningProvider,
+				consumersManager, provisioningProvider,
 				rocketBinderConfigurationProperties, instrumentationManager);
+		binder.setExtendedBindingProperties(extendedBindingProperties);
 		return binder;
 	}
 
