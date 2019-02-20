@@ -26,7 +26,7 @@ public class ServiceApplication {
 	}
 
 	@Bean
-	public Converter myParser() {
+	public Converter myConverter() {
 		return new JsonFlowRuleListConverter();
 	}
 

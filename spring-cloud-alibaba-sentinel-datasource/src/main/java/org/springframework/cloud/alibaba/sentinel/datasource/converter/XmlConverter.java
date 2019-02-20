@@ -1,27 +1,28 @@
+/*
+ * Copyright (C) 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.cloud.alibaba.sentinel.datasource.converter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-
-import com.alibaba.csp.sentinel.datasource.Converter;
-import com.alibaba.csp.sentinel.slots.block.AbstractRule;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleUtil;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
@@ -33,139 +34,12 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
  * @see SystemRule
  * @see AuthorityRule
  * @see ParamFlowRule
- * @see XmlMapper
+ * @see ObjectMapper
  */
-public class XmlConverter implements Converter<String, List<AbstractRule>> {
+public class XmlConverter<T> extends SentinelConverter {
 
-	private static final Logger logger = LoggerFactory.getLogger(XmlConverter.class);
-
-	private final XmlMapper xmlMapper;
-
-	public XmlConverter(XmlMapper xmlMapper) {
-		this.xmlMapper = xmlMapper;
-	}
-
-	@Override
-	public List<AbstractRule> convert(String source) {
-		List<AbstractRule> ruleList = new ArrayList<>();
-		if (StringUtils.isEmpty(source)) {
-			logger.warn(
-					"Sentinel XmlConverter can not convert rules because source is empty");
-			return ruleList;
-		}
-		try {
-			List xmlArray = xmlMapper.readValue(source,
-					new TypeReference<List<HashMap>>() {
-					});
-
-			for (Object obj : xmlArray) {
-				String itemXml = null;
-				try {
-					itemXml = xmlMapper.writeValueAsString(obj);
-				}
-				catch (JsonProcessingException e) {
-					// won't be happen
-				}
-
-				List<AbstractRule> rules = Arrays.asList(convertFlowRule(itemXml),
-						convertDegradeRule(itemXml), convertSystemRule(itemXml),
-						convertAuthorityRule(itemXml), convertParamFlowRule(itemXml));
-
-				List<AbstractRule> convertRuleList = new ArrayList<>();
-
-				for (AbstractRule rule : rules) {
-					if (!ObjectUtils.isEmpty(rule)) {
-						convertRuleList.add(rule);
-					}
-				}
-
-				if (convertRuleList.size() == 0) {
-					logger.warn(
-							"Sentinel XmlConverter can not convert {} to any rules, ignore",
-							itemXml);
-				}
-				else if (convertRuleList.size() > 1) {
-					logger.warn(
-							"Sentinel XmlConverter convert {} and match multi rules, ignore",
-							itemXml);
-				}
-				else {
-					ruleList.add(convertRuleList.get(0));
-				}
-			}
-
-			if (xmlArray.size() != ruleList.size()) {
-				logger.warn(
-						"Sentinel XmlConverter Source list size is not equals to Target List, maybe a "
-								+ "part of xml is invalid. Source List: " + xmlArray
-								+ ", Target List: " + ruleList);
-			}
-		}
-		catch (Exception e) {
-			logger.error("Sentinel XmlConverter convert error: " + e.getMessage());
-			throw new RuntimeException(
-					"Sentinel XmlConverter convert error: " + e.getMessage(), e);
-		}
-		return ruleList;
-	}
-
-	private FlowRule convertFlowRule(String xml) {
-		try {
-			FlowRule rule = xmlMapper.readValue(xml, FlowRule.class);
-			if (FlowRuleUtil.isValidRule(rule)) {
-				return rule;
-			}
-		}
-		catch (Exception e) {
-			// ignore
-		}
-		return null;
-	}
-
-	private DegradeRule convertDegradeRule(String xml) {
-		try {
-			DegradeRule rule = xmlMapper.readValue(xml, DegradeRule.class);
-			if (DegradeRuleManager.isValidRule(rule)) {
-				return rule;
-			}
-		}
-		catch (Exception e) {
-			// ignore
-		}
-		return null;
-	}
-
-	private SystemRule convertSystemRule(String xml) {
-		SystemRule rule = null;
-		try {
-			rule = xmlMapper.readValue(xml, SystemRule.class);
-		}
-		catch (Exception e) {
-			// ignore
-		}
-		return rule;
-	}
-
-	private AuthorityRule convertAuthorityRule(String xml) {
-		AuthorityRule rule = null;
-		try {
-			rule = xmlMapper.readValue(xml, AuthorityRule.class);
-		}
-		catch (Exception e) {
-			// ignore
-		}
-		return rule;
-	}
-
-	private ParamFlowRule convertParamFlowRule(String json) {
-		ParamFlowRule rule = null;
-		try {
-			rule = xmlMapper.readValue(json, ParamFlowRule.class);
-		}
-		catch (Exception e) {
-			// ignore
-		}
-		return rule;
+	public XmlConverter(XmlMapper xmlMapper, Class<T> ruleClass) {
+		super(xmlMapper, ruleClass);
 	}
 
 }
