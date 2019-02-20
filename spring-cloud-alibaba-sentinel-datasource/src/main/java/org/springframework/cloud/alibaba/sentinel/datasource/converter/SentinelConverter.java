@@ -53,7 +53,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class SentinelConverter<T extends AbstractRule>
 		implements Converter<String, List<AbstractRule>> {
 
-	private static final Logger logger = LoggerFactory.getLogger(SentinelConverter.class);
+	private static final Logger log = LoggerFactory.getLogger(SentinelConverter.class);
 
 	private final ObjectMapper objectMapper;
 
@@ -68,7 +68,7 @@ public abstract class SentinelConverter<T extends AbstractRule>
 	public List<AbstractRule> convert(String source) {
 		List<AbstractRule> ruleList = new ArrayList<>();
 		if (StringUtils.isEmpty(source)) {
-			logger.warn("converter can not convert rules because source is empty");
+			log.warn("converter can not convert rules because source is empty");
 			return ruleList;
 		}
 		try {
