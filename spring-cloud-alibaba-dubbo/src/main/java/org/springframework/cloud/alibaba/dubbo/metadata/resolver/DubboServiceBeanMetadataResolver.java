@@ -56,8 +56,6 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
             "org.springframework.cloud.openfeign.support.SpringMvcContract",
     };
 
-    private final String currentApplicationName;
-
     private final ObjectProvider<Contract> contract;
 
     private ClassLoader classLoader;
@@ -67,8 +65,7 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
      */
     private Collection<Contract> contracts;
 
-    public DubboServiceBeanMetadataResolver(String currentApplicationName, ObjectProvider<Contract> contract) {
-        this.currentApplicationName = currentApplicationName;
+    public DubboServiceBeanMetadataResolver(ObjectProvider<Contract> contract) {
         this.contract = contract;
     }
 

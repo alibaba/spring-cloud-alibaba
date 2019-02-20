@@ -19,14 +19,15 @@ package org.springframework.cloud.alibaba.dubbo.client.loadbalancer;
 import com.alibaba.dubbo.rpc.service.GenericException;
 import com.alibaba.dubbo.rpc.service.GenericService;
 
+import org.springframework.cloud.alibaba.dubbo.http.DefaultServerHttpRequest;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import org.springframework.cloud.alibaba.dubbo.metadata.resolver.ParameterResolver;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContext;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -48,8 +49,6 @@ import java.util.List;
  */
 public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInterceptor {
 
-    private final ParameterResolver parameterResolver = new ParameterResolver();
-
     private final DubboServiceMetadataRepository repository;
 
     private final LoadBalancerInterceptor loadBalancerInterceptor;
@@ -58,19 +57,23 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
 
     private final DubboTransportedMetadata dubboTransportedMetadata;
 
-    private final DubboGenericServiceFactory dubboGenericServiceFactory;
+    private final DubboGenericServiceFactory serviceFactory;
+
+    private final DubboGenericServiceExecutionContextFactory contextFactory;
 
     public DubboAdapterLoadBalancerInterceptor(DubboServiceMetadataRepository dubboServiceMetadataRepository,
                                                LoadBalancerInterceptor loadBalancerInterceptor,
                                                List<HttpMessageConverter<?>> messageConverters,
                                                ClassLoader classLoader,
                                                DubboTransportedMetadata dubboTransportedMetadata,
-                                               DubboGenericServiceFactory dubboGenericServiceFactory) {
+                                               DubboGenericServiceFactory serviceFactory,
+                                               DubboGenericServiceExecutionContextFactory contextFactory) {
         this.repository = dubboServiceMetadataRepository;
         this.loadBalancerInterceptor = loadBalancerInterceptor;
         this.dubboTransportedMetadata = dubboTransportedMetadata;
         this.clientHttpResponseFactory = new DubboClientHttpResponseFactory(messageConverters, classLoader);
-        this.dubboGenericServiceFactory = dubboGenericServiceFactory;
+        this.serviceFactory = serviceFactory;
+        this.contextFactory = contextFactory;
     }
 
     @Override
@@ -94,34 +97,21 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
 
         RestMethodMetadata restMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
 
-        GenericService genericService = dubboGenericServiceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
+        GenericService genericService = serviceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
+
+        DubboGenericServiceExecutionContext context = contextFactory.create(restMethodMetadata,
+                new DefaultServerHttpRequest(request, body));
 
         Object result = null;
         GenericException exception = null;
 
         try {
-            result = invokeService(restMethodMetadata, genericService, clientMetadata);
+            result = genericService.$invoke(context.getMethodName(), context.getParameterTypes(), context.getParameters());
         } catch (GenericException e) {
             exception = e;
         }
 
         return clientHttpResponseFactory.build(result, exception, clientMetadata, restMethodMetadata);
-    }
-
-    private Object invokeService(RestMethodMetadata restMethodMetadata, GenericService genericService,
-                                 RequestMetadata clientMetadata) throws GenericException {
-
-        MethodMetadata methodMetadata = restMethodMetadata.getMethod();
-
-        String methodName = methodMetadata.getName();
-
-        String[] parameterTypes = parameterResolver.resolveParameterTypes(methodMetadata);
-
-        Object[] parameters = parameterResolver.resolveParameters(restMethodMetadata, clientMetadata);
-
-        Object result = genericService.$invoke(methodName, parameterTypes, parameters);
-
-        return result;
     }
 
     public static RequestMetadata buildRequestMetadata(HttpRequest request, UriComponents uriComponents) {

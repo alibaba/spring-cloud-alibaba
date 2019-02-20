@@ -18,7 +18,9 @@ package org.springframework.cloud.alibaba.dubbo.metadata;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.core.ResolvableType;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +78,8 @@ public class RestMethodMetadata {
         this.headerMapIndex = methodMetadata.headerMapIndex();
         this.queryMapEncoded = methodMetadata.queryMapEncoded();
         this.queryMapEncoded = methodMetadata.queryMapEncoded();
-        this.returnType = methodMetadata.returnType() == null ? null : methodMetadata.returnType().toString();
-        this.bodyType = methodMetadata.bodyType() == null ? null : methodMetadata.bodyType().toString();
+        this.returnType = getClassName(methodMetadata.returnType());
+        this.bodyType = getClassName(methodMetadata.bodyType());
         this.indexToName = methodMetadata.indexToName();
         this.formParams = methodMetadata.formParams();
         this.indexToEncoded = methodMetadata.indexToEncoded();
@@ -203,4 +205,13 @@ public class RestMethodMetadata {
         return Objects.hash(method, request, urlIndex, bodyIndex, headerMapIndex, queryMapIndex, queryMapEncoded,
                 returnType, bodyType, indexToName, formParams, indexToEncoded);
     }
+
+    private String getClassName(Type type) {
+        if (type == null) {
+            return null;
+        }
+        ResolvableType resolvableType = ResolvableType.forType(type);
+        return resolvableType.resolve().getName();
+    }
+
 }

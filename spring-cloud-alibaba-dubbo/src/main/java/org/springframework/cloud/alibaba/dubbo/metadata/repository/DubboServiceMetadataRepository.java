@@ -23,7 +23,7 @@ import org.springframework.cloud.alibaba.dubbo.http.matcher.RequestMetadataMatch
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.service.MetadataConfigService;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Repository;
 

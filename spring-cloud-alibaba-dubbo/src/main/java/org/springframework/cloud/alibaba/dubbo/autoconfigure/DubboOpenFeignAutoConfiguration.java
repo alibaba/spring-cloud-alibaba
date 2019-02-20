@@ -19,15 +19,15 @@ package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 import feign.Contract;
 import feign.Feign;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.openfeign.TargeterBeanPostProcessor;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,20 +44,19 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class DubboOpenFeignAutoConfiguration {
 
-    @Value("${spring.application.name}")
-    private String currentApplicationName;
-
     @Bean
     @ConditionalOnMissingBean
     public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
-        return new DubboServiceBeanMetadataResolver(currentApplicationName, contract);
+        return new DubboServiceBeanMetadataResolver(contract);
     }
 
     @Bean
     public TargeterBeanPostProcessor targeterBeanPostProcessor(Environment environment,
                                                                DubboServiceMetadataRepository dubboServiceMetadataRepository,
-                                                               DubboGenericServiceFactory dubboGenericServiceFactory) {
-        return new TargeterBeanPostProcessor(environment, dubboServiceMetadataRepository,dubboGenericServiceFactory);
+                                                               DubboGenericServiceFactory dubboGenericServiceFactory,
+                                                               DubboGenericServiceExecutionContextFactory contextFactory) {
+        return new TargeterBeanPostProcessor(environment, dubboServiceMetadataRepository,
+                dubboGenericServiceFactory, contextFactory);
     }
 
 }

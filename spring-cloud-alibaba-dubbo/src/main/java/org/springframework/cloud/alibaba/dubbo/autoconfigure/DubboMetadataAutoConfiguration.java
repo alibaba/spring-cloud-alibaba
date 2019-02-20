@@ -18,8 +18,8 @@ package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.NacosMetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.service.MetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.service.NacosMetadataConfigService;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

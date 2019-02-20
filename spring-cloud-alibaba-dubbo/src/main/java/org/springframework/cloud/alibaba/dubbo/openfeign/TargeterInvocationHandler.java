@@ -28,7 +28,8 @@ import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboTransportedMethodMetadataResolver;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.DubboGenericServiceFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.core.env.Environment;
 
@@ -55,12 +56,16 @@ class TargeterInvocationHandler implements InvocationHandler {
 
     private final DubboGenericServiceFactory dubboGenericServiceFactory;
 
+    private final DubboGenericServiceExecutionContextFactory contextFactory;
+
     TargeterInvocationHandler(Object bean, Environment environment, DubboServiceMetadataRepository repository,
-                              DubboGenericServiceFactory dubboGenericServiceFactory) {
+                              DubboGenericServiceFactory dubboGenericServiceFactory,
+                              DubboGenericServiceExecutionContextFactory contextFactory) {
         this.bean = bean;
         this.environment = environment;
         this.repository = repository;
         this.dubboGenericServiceFactory = dubboGenericServiceFactory;
+        this.contextFactory = contextFactory;
     }
 
     @Override
@@ -115,24 +120,24 @@ class TargeterInvocationHandler implements InvocationHandler {
         // Update Metadata
         repository.initialize(serviceName);
 
-        Map<Method, org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata> methodMetadataMap = new HashMap<>();
+        Map<Method, RestMethodMetadata> restMethodMetadataMap = new HashMap<>();
 
         Map<Method, GenericService> genericServicesMap = new HashMap<>();
 
         methodRequestMetadataMap.forEach((dubboTransportedMethodMetadata, requestMetadata) -> {
             DubboServiceMetadata dubboServiceMetadata = repository.get(serviceName, requestMetadata);
             RestMethodMetadata restMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
-            org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata methodMetadata = restMethodMetadata.getMethod();
             DubboTransportedMetadata dubboTransportedMetadata = dubboTransportedMethodMetadata.getDubboTransportedMetadata();
             GenericService genericService = dubboGenericServiceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
-            genericServicesMap.put(dubboTransportedMethodMetadata.getMethod(), genericService);
-            methodMetadataMap.put(dubboTransportedMethodMetadata.getMethod(), methodMetadata);
+            Method method = dubboTransportedMethodMetadata.getMethod();
+            genericServicesMap.put(method, genericService);
+            restMethodMetadataMap.put(method, restMethodMetadata);
         });
 
         InvocationHandler defaultFeignClientInvocationHandler = Proxy.getInvocationHandler(defaultFeignClientProxy);
 
-        DubboInvocationHandler dubboInvocationHandler = new DubboInvocationHandler(genericServicesMap, methodMetadataMap,
-                defaultFeignClientInvocationHandler);
+        DubboInvocationHandler dubboInvocationHandler = new DubboInvocationHandler(genericServicesMap, restMethodMetadataMap,
+                defaultFeignClientInvocationHandler, contextFactory);
 
         return dubboInvocationHandler;
     }
