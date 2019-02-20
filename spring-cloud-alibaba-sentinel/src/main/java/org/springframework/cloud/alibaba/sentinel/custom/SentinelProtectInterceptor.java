@@ -16,14 +16,11 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import com.alibaba.csp.sentinel.Entry;
-import com.alibaba.csp.sentinel.SphU;
-import com.alibaba.csp.sentinel.Tracer;
-import com.alibaba.csp.sentinel.context.ContextUtil;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
+
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.cloud.alibaba.sentinel.rest.SentinelClientHttpResponse;
 import org.springframework.http.HttpRequest;
@@ -31,10 +28,12 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.Tracer;
+import com.alibaba.csp.sentinel.context.ContextUtil;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 
 /**
  * Interceptor using by SentinelRestTemplate
@@ -42,9 +41,6 @@ import java.net.URI;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor {
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(SentinelProtectInterceptor.class);
 
 	private final SentinelRestTemplate sentinelRestTemplate;
 
