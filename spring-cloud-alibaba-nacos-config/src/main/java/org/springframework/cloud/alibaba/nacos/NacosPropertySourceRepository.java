@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xiaojing
+ * @author pbting
  */
 public class NacosPropertySourceRepository {
 
@@ -45,6 +46,7 @@ public class NacosPropertySourceRepository {
 	}
 
 	public static NacosPropertySource getNacosPropertySource(String dataId) {
+
 		return nacosPropertySourceRepository.get(dataId);
 	}
 }

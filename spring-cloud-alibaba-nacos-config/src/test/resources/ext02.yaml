@@ -1,0 +1,5 @@
+user:
+  name: ext-02-value
+ext:
+  key: ext.value02
+app-local-common: update app local shared cguration for Nacos

@@ -18,7 +18,8 @@ package org.springframework.cloud.alicloud.sms.config;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.alicloud.context.sms.SmsConfigProperties;
+import org.springframework.cloud.alicloud.context.AliCloudProperties;
+import org.springframework.cloud.alicloud.context.sms.SmsProperties;
 import org.springframework.cloud.alicloud.sms.ISmsService;
 import org.springframework.cloud.alicloud.sms.SmsInitializerEventListener;
 import org.springframework.cloud.alicloud.sms.SmsServiceImpl;
@@ -37,13 +38,14 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 public class SmsAutoConfiguration {
 
 	@Bean
-	public SmsServiceImpl smsService(SmsConfigProperties smsConfigProperties) {
-		return new SmsServiceImpl(smsConfigProperties);
+	public SmsServiceImpl smsService(AliCloudProperties aliCloudProperties,
+			SmsProperties smsProperties) {
+		return new SmsServiceImpl(aliCloudProperties, smsProperties);
 	}
 
 	@Bean
 	public SmsInitializerEventListener smsInitializePostListener(
-			SmsConfigProperties msConfigProperties, ISmsService smsService) {
-		return new SmsInitializerEventListener(msConfigProperties, smsService);
+			SmsProperties smsProperties, ISmsService smsService) {
+		return new SmsInitializerEventListener(smsProperties, smsService);
 	}
 }
