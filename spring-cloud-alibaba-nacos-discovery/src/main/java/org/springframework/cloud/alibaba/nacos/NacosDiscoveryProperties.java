@@ -154,8 +154,8 @@ public class NacosDiscoveryProperties {
 		}
 
 		serverAddr = Objects.toString(serverAddr, "");
-		if(serverAddr.lastIndexOf("/") != -1) {
-			serverAddr.substring(0,serverAddr.length()-1);
+		if (serverAddr.lastIndexOf("/") != -1) {
+			serverAddr.substring(0, serverAddr.length() - 1);
 		}
 		endpoint = Objects.toString(endpoint, "");
 		namespace = Objects.toString(namespace, "");
@@ -397,13 +397,14 @@ public class NacosDiscoveryProperties {
 		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
 
-        try {
-            namingService = NacosFactory.createNamingService(properties);
-        } catch (Exception e) {
+		try {
+			namingService = NacosFactory.createNamingService(properties);
+		}
+		catch (Exception e) {
 			LOGGER.error("create naming service error!properties={},e=,", this, e);
 			return null;
 		}
-        return namingService;
+		return namingService;
 	}
 
 }
