@@ -1,5 +1,4 @@
-{
-  "properties": [
+{"properties": [
     {
       "name": "spring.cloud.nacos.discovery.service",
       "type": "java.lang.String",
@@ -12,5 +11,4 @@
       "defaultValue": "false",
       "description": "naming load from local cache at application start ."
     }
-  ]
-}
+]}
