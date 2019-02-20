@@ -16,10 +16,11 @@
  */
 package org.springframework.cloud.alibaba.dubbo.http;
 
+import com.alibaba.dubbo.common.io.UnsafeByteArrayInputStream;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,7 +29,7 @@ import java.io.InputStream;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class ByteArrayHttpInputMessage implements HttpInputMessage {
+class ByteArrayHttpInputMessage implements HttpInputMessage {
 
     private final HttpHeaders httpHeaders;
 
@@ -40,7 +41,7 @@ public class ByteArrayHttpInputMessage implements HttpInputMessage {
 
     public ByteArrayHttpInputMessage(HttpHeaders httpHeaders, byte[] body) {
         this.httpHeaders = httpHeaders;
-        this.inputStream = new ByteArrayInputStream(body);
+        this.inputStream = new UnsafeByteArrayInputStream(body);
     }
 
     @Override
