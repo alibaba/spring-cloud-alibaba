@@ -1,0 +1,157 @@
+== Spring Cloud Alibaba Cloud OSS
+
+OSS（Object Storage Service）is a storage product on Alibaba Cloud. Spring Cloud Alibaba Cloud OSS provides the commercialized storage service in conformity with Spring Cloud specifications. We provide easy-to-use APIs and supports the integration of Resource in the Spring framework.
+
+=== How to Introduce Spring Cloud Alibaba Cloud OSS
+
+We’ve released Spring Cloud Alibaba version 0.2.1. You will need to add dependency management POM first.
+
+[source,xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>0.2.2.BUILD-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+Next we need to introduce Spring Cloud Alibaba Cloud OSS Starter.
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
+</dependency>
+----
+
+=== How to Use OSS API
+
+==== Configure OSS
+
+Before you start to use Spring Cloud Alibaba Cloud OSS, please add the following configurations in application.properties.
+
+[source,properties]
+----
+spring.cloud.alicloud.access-key=Your Alibaba Cloud AK
+spring.cloud.alicloud.secret-key=Your Alibaba Cloud SK
+spring.cloud.alicloud.oss.endpoint=***.aliyuncs.com
+----
+
+access-key and secret-key is the AK/SK of your Alibaba Cloud account. If you don’t have one, please register an account first, and log on to https://usercenter.console.aliyun.com/#/manage/ak[Alibaba Cloud AK/SK Management] to get your AccessKey ID and Access Key Secret . If you haven’t create the AccessKeys, click “Create AccessKey” to create one.
+
+For endpoint information, please refer to the OSS https://help.aliyun.com/document_detail/31837.html[Documentation] and get the endpoint for your region.
+
+
+==== Introduce OSS API
+
+The OSS API of Spring Cloud Alibaba Cloud OSS is based on the official OSS SDK, and includes APIs for uploading, downloading, viewing files.
+
+Here is a simple application that uses the OSS API.
+
+[source,java]
+----
+@SpringBootApplication
+public class OssApplication {
+
+    @Autowired
+    private OSS ossClient;
+
+    @RequestMapping("/")
+    public String home() {
+        ossClient.putObject("bucketName", "fileName", new FileInputStream("/your/local/file/path"));
+        return "upload success";
+    }
+
+    public static void main(String[] args) throws URISyntaxException {
+        SpringApplication.run(OssApplication.class, args);
+    }
+
+}
+----
+
+Before you upload your files, please  https://account.aliyun.com/register/register.htm?spm=5176.8142029.388261.26.e9396d3eaYK2sG&oauth_callback=https%3A%2F%2Fwww.aliyun.com%2F[Register an Alibaba Cloud Account]. If you already have one, please  https://common-buy.aliyun.com/?spm=5176.8465980.unusable.dopen.4cdf1450rg8Ujb&commodityCode=oss#/open[Sign up for OSS].
+
+Log on to the https://oss.console.aliyun.com/overview[OSS Console], click “Create New Bucket” and create a bucket as instructed. Replace the bucket name in the “bucketname” of the previous code with your new bucket name.  "fileName” can be any name you like, and "/your/local/file/path” can be any local file path. Next you can run `curl http://127.0.0.1:port number/ to upload your files, and you will see your file on the https://oss.console.aliyun.com/overview[OSS Console].
+
+For more instructions on OSS APIs, please refer to https://help.aliyun.com/document_detail/32008.html[OSS SDK Documentation].
+
+=== Integrate with the Resource Specifications of Spring
+
+Spring Cloud Alibaba Cloud OSS integrates the Resource of the Spring framework, which allows you to use the OSS resources easily.
+
+The following is a simple example of how to use Resource.
+
+[source,java]
+----
+@SpringBootApplication
+public class OssApplication {
+
+    @Value("oss://bucketName/fileName")
+    private Resource file;
+
+    @GetMapping("/file")
+    public String fileResource() {
+        try {
+            return "get file resource success. content: " + StreamUtils.copyToString(
+                file.getInputStream(), Charset.forName(CharEncoding.UTF_8));
+        } catch (Exception e) {
+            return "get resource fail: " + e.getMessage();
+        }
+    }
+
+    public static void main(String[] args) throws URISyntaxException {
+        SpringApplication.run(OssApplication.class, args);
+    }
+
+}
+----
+
+NOTE: A prerequisite for the above sample is that you need to have a bucket named “bucketName” on OSS, and you have a file named “fileName” in this bucket.
+
+=== Use STS Authentication
+
+In addition to AccessKeys, Spring Cloud Alibaba Cloud OSS also supports STS authentication. STS is an authentication method with temporary security tokens, and is usually used for a third party to access its resources temporarily.
+
+For a third party to access resources temporarily, it only needs to complete the following configurations.
+
+[source,properties]
+----
+spring.cloud.alicloud.oss.authorization-mode=STS
+spring.cloud.alicloud.oss.endpoint=***.aliyuncs.com
+spring.cloud.alicloud.oss.sts.access-key=Your authenticated AK
+spring.cloud.alicloud.oss.sts.secret-key=Your authenticated SK
+spring.cloud.alicloud.oss.sts.security-token=Your authenticated ST
+----
+
+Among which, spring.cloud.alicloud.oss.authorization-mode is the enumeration type. Fill in STS here means that STS authentication is used. For endpoint information, refer to the https://help.aliyun.com/document_detail/31837.html[OSS Documentation] and fill in the endpoint for your region.
+
+Access-key, secret-key and the security-token need to be issued by the authentication side. For more information about STS, refer to https://help.aliyun.com/document_detail/31867.html[STS Documentation].
+
+=== More Configurations for the Client
+
+In addition to basic configurations, Spring Cloud Alibaba Cloud OSS also supports many other configurations, which are also included in the application.properties file.
+
+Here are some examples.
+
+[source,properties]
+----
+spring.cloud.alicloud.oss.authorization-mode=STS
+spring.cloud.alicloud.oss.endpoint=***.aliyuncs.com
+spring.cloud.alicloud.oss.sts.access-key=Your authenticated AK
+spring.cloud.alicloud.oss.sts.secret-key=Your authenticated SK
+spring.cloud.alicloud.oss.sts.security-token=Your authenticated ST
+
+spring.cloud.alicloud.oss.config.connection-timeout=3000
+spring.cloud.alicloud.oss.config.max-connections=1000
+----
+
+For more configurations, refer to  the table at the bottom of https://help.aliyun.com/document_detail/32010.html[OSSClient Configurations].
+
+NOTE: In most cases, you need to connect the parameter names with “-” for the parameters in the table of https://help.aliyun.com/document_detail/32010.html[OSSClient Configurations] with “-”, and all letters should be in lowercase. For example, ConnectionTimeout should be changed to connection-timeout.

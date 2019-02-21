@@ -16,17 +16,13 @@
 
 package org.springframework.cloud.alibaba.nacos.endpoint;
 
-import com.alibaba.nacos.api.config.ConfigService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
-import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshHistory;
 import org.springframework.context.annotation.Bean;
 
@@ -43,30 +39,16 @@ public class NacosConfigEndpointAutoConfiguration {
 	@Autowired
 	private NacosRefreshHistory nacosRefreshHistory;
 
-	@Autowired
-	private NacosPropertySourceRepository nacosPropertySourceRepository;
-
-	@Autowired
-	private ConfigService configService;
-
-	@Bean
-	@ConditionalOnBean
-	public NacosConfigProperties nacosConfigProperties() {
-		return new NacosConfigProperties();
-	}
-
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
 	@Bean
 	public NacosConfigEndpoint nacosConfigEndpoint() {
-		return new NacosConfigEndpoint(nacosConfigProperties, nacosRefreshHistory,
-				nacosPropertySourceRepository);
+		return new NacosConfigEndpoint(nacosConfigProperties, nacosRefreshHistory);
 	}
 
 	@Bean
-	public NacosConfigHealthIndicator nacosConfigHealthIndicator(
-			NacosPropertySourceRepository nacosPropertySourceRepository) {
+	public NacosConfigHealthIndicator nacosConfigHealthIndicator() {
 		return new NacosConfigHealthIndicator(nacosConfigProperties,
-				nacosPropertySourceRepository, configService);
+				nacosConfigProperties.configServiceInstance());
 	}
 }

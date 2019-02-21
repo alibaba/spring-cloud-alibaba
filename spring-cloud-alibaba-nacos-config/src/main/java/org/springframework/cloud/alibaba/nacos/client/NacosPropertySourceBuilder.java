@@ -16,35 +16,29 @@
 
 package org.springframework.cloud.alibaba.nacos.client;
 
-import java.io.StringReader;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
 
+import java.io.StringReader;
+import java.util.*;
+
 /**
  * @author xiaojing
+ * @author pbting
  */
 public class NacosPropertySourceBuilder {
-
-	private static final Logger logger = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceBuilder.class);
+	private static final Properties EMPTY_PROPERTIES = new Properties();
 
 	private ConfigService configService;
 	private long timeout;
-
-	public NacosPropertySourceBuilder() {
-	}
 
 	public NacosPropertySourceBuilder(ConfigService configService, long timeout) {
 		this.configService = configService;
@@ -71,21 +65,21 @@ public class NacosPropertySourceBuilder {
 	 * @param dataId Nacos dataId
 	 * @param group Nacos group
 	 */
-	NacosPropertySource build(String dataId, String group, String fileExtension) {
+	NacosPropertySource build(String dataId, String group, String fileExtension,
+			boolean isRefreshable) {
 		Properties p = loadNacosData(dataId, group, fileExtension);
-		if (p == null) {
-			return null;
-		}
-		return new NacosPropertySource(dataId, propertiesToMap(p), new Date());
+		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
+				propertiesToMap(p), new Date(), isRefreshable);
+		NacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
+		return nacosPropertySource;
 	}
 
 	private Properties loadNacosData(String dataId, String group, String fileExtension) {
 		String data = null;
 		try {
 			data = configService.getConfig(dataId, group, timeout);
-			// todo add content type yaml support
 			if (!StringUtils.isEmpty(data)) {
-				logger.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
+				log.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
 						dataId, group));
 
 				if (fileExtension.equalsIgnoreCase("properties")) {
@@ -95,7 +89,7 @@ public class NacosPropertySourceBuilder {
 					return properties;
 				}
 				else if (fileExtension.equalsIgnoreCase("yaml")
-					|| fileExtension.equalsIgnoreCase("yml")) {
+						|| fileExtension.equalsIgnoreCase("yml")) {
 					YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
 					yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
 					return yamlFactory.getObject();
@@ -104,13 +98,12 @@ public class NacosPropertySourceBuilder {
 			}
 		}
 		catch (NacosException e) {
-			logger.error("get data from Nacos error,dataId:{}, ", dataId, e);
+			log.error("get data from Nacos error,dataId:{}, ", dataId, e);
 		}
 		catch (Exception e) {
-			logger.error("parse data from Nacos error,dataId:{},data:{},", dataId, data,
-					e);
+			log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
 		}
-		return null;
+		return EMPTY_PROPERTIES;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -129,4 +122,5 @@ public class NacosPropertySourceBuilder {
 		}
 		return result;
 	}
+
 }

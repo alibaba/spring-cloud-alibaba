@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
-import org.springframework.cloud.alibaba.nacos.NacosDiscoveryClientAutoConfiguration;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class NacosRibbonClientConfigurationTests {
 					NacosRibbonClientConfiguration.class,
 					NacosDiscoveryClientAutoConfiguration.class,
 					RibbonNacosAutoConfiguration.class))
-			.withPropertyValues("spring.cloud.nacos.discovery.server-addr=127.0.0.1:8080")
+			.withPropertyValues("spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848")
 			.withPropertyValues("spring.cloud.nacos.discovery.port=18080")
 			.withPropertyValues("spring.cloud.nacos.discovery.service=myapp");
 
@@ -45,7 +45,6 @@ public class NacosRibbonClientConfigurationTests {
 
 		@Bean
 		IClientConfig iClientConfig() {
-			// return new IClientConfig.Builder().s.build();
 			DefaultClientConfigImpl config = new DefaultClientConfigImpl();
 			config.setClientName("myapp");
 			return config;

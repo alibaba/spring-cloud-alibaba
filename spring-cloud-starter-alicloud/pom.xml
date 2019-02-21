@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.2.0.BUILD-SNAPSHOT</version>
+        <version>0.2.2.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>spring-cloud-starter-alicloud</artifactId>
     <packaging>pom</packaging>
@@ -12,5 +12,9 @@
     <description>Spring Cloud Alibaba Cloud Starters</description>
     <modules>
         <module>spring-cloud-starter-alicloud-oss</module>
+        <module>spring-cloud-starter-alicloud-acm</module>
+        <module>spring-cloud-starter-alicloud-ans</module>
+        <module>spring-cloud-starter-alicloud-schedulerx</module>
+        <module>spring-cloud-starter-alicloud-sms</module>
     </modules>
 </project>

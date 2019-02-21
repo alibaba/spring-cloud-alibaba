@@ -1,5 +1,7 @@
 # Compiled class file
 *.class
+*.classpath
+*.factorypath
 
 # Log file
 *.log
@@ -28,4 +30,5 @@ hs_err_pid*
 .project
 .settings
 target
+.DS_Store
 

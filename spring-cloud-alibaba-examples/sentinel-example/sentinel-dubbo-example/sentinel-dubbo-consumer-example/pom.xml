@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>0.2.0.BUILD-SNAPSHOT</version>
+        <version>0.2.2.BUILD-SNAPSHOT</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -30,7 +30,11 @@
         <dependency>
             <groupId>com.alibaba.boot</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>0.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
         </dependency>
 
     </dependencies>

@@ -1,0 +1,190 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.cloud.alibaba.dubbo.metadata.resolver;
+
+import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.config.spring.ServiceBean;
+import feign.Contract;
+import feign.Feign;
+import feign.MethodMetadata;
+import feign.Util;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
+import org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry;
+import org.springframework.util.ClassUtils;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * The metadata resolver for {@link Feign}
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ */
+public class FeignMetadataResolver implements BeanClassLoaderAware, SmartInitializingSingleton, MetadataResolver {
+
+    private static final String[] CONTRACT_CLASS_NAMES = {
+            "feign.jaxrs2.JAXRS2Contract",
+            "org.springframework.cloud.openfeign.support.SpringMvcContract",
+    };
+
+    private final String currentApplicationName;
+
+    private final ObjectProvider<Contract> contract;
+
+    private ClassLoader classLoader;
+
+    /**
+     * Feign Contracts
+     */
+    private Collection<Contract> contracts;
+
+    public FeignMetadataResolver(String currentApplicationName, ObjectProvider<Contract> contract) {
+        this.currentApplicationName = currentApplicationName;
+        this.contract = contract;
+    }
+
+    @Override
+    public void afterSingletonsInstantiated() {
+
+        LinkedList<Contract> contracts = new LinkedList<>();
+
+        // Add injected Contract if available, for example SpringMvcContract Bean under Spring Cloud Open Feign
+        contract.ifAvailable(contracts::add);
+
+        Stream.of(CONTRACT_CLASS_NAMES)
+                .filter(this::isClassPresent) // filter the existed classes
+                .map(this::loadContractClass) // load Contract Class
+                .map(this::createContract)    // create instance by the specified class
+                .forEach(contracts::add);     // add the Contract instance into contracts
+
+        this.contracts = Collections.unmodifiableCollection(contracts);
+    }
+
+    private Contract createContract(Class<?> contractClassName) {
+        return (Contract) BeanUtils.instantiateClass(contractClassName);
+    }
+
+    private Class<?> loadContractClass(String contractClassName) {
+        return ClassUtils.resolveClassName(contractClassName, classLoader);
+    }
+
+    private boolean isClassPresent(String className) {
+        return ClassUtils.isPresent(className, classLoader);
+    }
+
+    @Override
+    public Set<ServiceRestMetadata> resolveServiceRestMetadata(ServiceBean serviceBean) {
+
+        Object bean = serviceBean.getRef();
+
+        Class<?> beanType = bean.getClass();
+
+        Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
+
+        Set<RestMethodMetadata> methodRestMetadata = resolveMethodRestMetadata(beanType);
+
+        List<URL> urls = serviceBean.getExportedUrls();
+
+        urls.stream()
+                .map(SpringCloudRegistry::getServiceName)
+                .forEach(serviceName -> {
+                    ServiceRestMetadata metadata = new ServiceRestMetadata();
+                    metadata.setName(serviceName);
+                    metadata.setMeta(methodRestMetadata);
+                    serviceRestMetadata.add(metadata);
+                });
+
+        return serviceRestMetadata;
+    }
+
+    @Override
+    public Set<RestMethodMetadata> resolveMethodRestMetadata(Class<?> targetType) {
+        List<Method> feignContractMethods = selectFeignContractMethods(targetType);
+        return contracts.stream()
+                .map(contract -> contract.parseAndValidatateMetadata(targetType))
+                .flatMap(v -> v.stream())
+                .map(methodMetadata -> resolveMethodRestMetadata(methodMetadata, targetType, feignContractMethods))
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Select feign contract methods
+     * <p>
+     * extract some code from {@link Contract.BaseContract#parseAndValidatateMetadata(java.lang.Class)}
+     *
+     * @param targetType
+     * @return non-null
+     */
+    private List<Method> selectFeignContractMethods(Class<?> targetType) {
+        List<Method> methods = new LinkedList<>();
+        for (Method method : targetType.getMethods()) {
+            if (method.getDeclaringClass() == Object.class ||
+                    (method.getModifiers() & Modifier.STATIC) != 0 ||
+                    Util.isDefault(method)) {
+                continue;
+            }
+            methods.add(method);
+        }
+        return methods;
+    }
+
+    protected RestMethodMetadata resolveMethodRestMetadata(MethodMetadata methodMetadata, Class<?> targetType,
+                                                           List<Method> feignContractMethods) {
+        String configKey = methodMetadata.configKey();
+        Method feignContractMethod = getMatchedFeignContractMethod(targetType, feignContractMethods, configKey);
+
+        RestMethodMetadata metadata = new RestMethodMetadata();
+
+        metadata.setRequest(new RequestMetadata(methodMetadata.template()));
+        metadata.setMethod(new org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata(feignContractMethod));
+        metadata.setIndexToName(methodMetadata.indexToName());
+
+        return metadata;
+    }
+
+    private Method getMatchedFeignContractMethod(Class<?> targetType, List<Method> methods, String expectedConfigKey) {
+        Method matchedMethod = null;
+        for (Method method : methods) {
+            String configKey = Feign.configKey(targetType, method);
+            if (expectedConfigKey.equals(configKey)) {
+                matchedMethod = method;
+                break;
+            }
+        }
+        return matchedMethod;
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+}

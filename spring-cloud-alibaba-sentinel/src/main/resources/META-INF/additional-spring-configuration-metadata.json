@@ -13,16 +13,15 @@
       "description": "earlier initialize heart-beat when the spring container starts when the transport dependency is on classpath, the configuration is effective."
     },
     {
-      "name": "spring.cloud.sentinel.charset",
-      "type": "java.lang.String",
-      "defaultValue": "UTF-8",
-      "description": "charset when sentinel write or search metric file."
-    },
-    {
       "name": "spring.cloud.sentinel.transport.port",
       "type": "java.lang.String",
-      "defaultValue": "8721",
+      "defaultValue": "8719",
       "description": "sentinel api port."
+    },
+    {
+      "name": "spring.cloud.sentinel.transport.clientIp",
+      "type": "java.lang.String",
+      "description": "sentinel client ip connect to dashboard."
     },
     {
       "name": "spring.cloud.sentinel.transport.dashboard",
@@ -41,6 +40,12 @@
       "description": "sentinel filter chain order, will be set to FilterRegistrationBean."
     },
     {
+      "name": "spring.cloud.sentinel.metric.charset",
+      "type": "java.lang.String",
+      "defaultValue": "UTF-8",
+      "description": "charset when sentinel write or search metric file."
+    },
+    {
       "name": "spring.cloud.sentinel.metric.fileSingleSize",
       "type": "java.lang.String",
       "description": "the metric file size."
@@ -49,6 +54,17 @@
       "name": "spring.cloud.sentinel.metric.fileTotalCount",
       "type": "java.lang.String",
       "description": "the total metric file count."
+    },
+    {
+      "name": "spring.cloud.sentinel.log.dir",
+      "type": "java.lang.String",
+      "description": "log base directory."
+    },
+    {
+      "name": "spring.cloud.sentinel.log.switch-pid",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "log file should with pid."
     },
     {
       "name": "spring.cloud.sentinel.servlet.blockPage",

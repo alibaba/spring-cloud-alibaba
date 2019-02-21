@@ -16,6 +16,21 @@
 
 package org.springframework.cloud.alibaba.nacos.refresh;
 
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.config.listener.Listener;
+import com.alibaba.nacos.api.exception.NacosException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
+import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.util.StringUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -23,20 +38,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
-import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
-import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
-import org.springframework.cloud.context.refresh.ContextRefresher;
-import org.springframework.context.ApplicationListener;
-import org.springframework.util.StringUtils;
-
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.config.listener.Listener;
-import com.alibaba.nacos.api.exception.NacosException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * On application start up, NacosContextRefresher add nacos listeners to all application
@@ -44,70 +47,86 @@ import com.alibaba.nacos.api.exception.NacosException;
  * configurations.
  *
  * @author juven.xuxb
+ * @author pbting
  */
-public class NacosContextRefresher implements ApplicationListener<ApplicationReadyEvent> {
+public class NacosContextRefresher
+		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
-	private Logger logger = LoggerFactory.getLogger(NacosContextRefresher.class);
+	private final static Logger log = LoggerFactory
+			.getLogger(NacosContextRefresher.class);
 
-	private final ContextRefresher contextRefresher;
-
-	private final NacosConfigProperties properties;
+	private static final AtomicLong REFRESH_COUNT = new AtomicLong(0);
 
 	private final NacosRefreshProperties refreshProperties;
 
 	private final NacosRefreshHistory refreshHistory;
 
-	private final NacosPropertySourceRepository nacosPropertySourceRepository;
-
 	private final ConfigService configService;
 
-	private Map<String,Listener> listenerMap = new ConcurrentHashMap<>(16);
+	private ApplicationContext applicationContext;
 
-	public NacosContextRefresher(ContextRefresher contextRefresher,
-			NacosConfigProperties properties, NacosRefreshProperties refreshProperties,
-			NacosRefreshHistory refreshHistory,
-			NacosPropertySourceRepository nacosPropertySourceRepository,
-			ConfigService configService) {
-		this.contextRefresher = contextRefresher;
-		this.properties = properties;
+	private AtomicBoolean ready = new AtomicBoolean(false);
+
+	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
+
+	public NacosContextRefresher(NacosRefreshProperties refreshProperties,
+			NacosRefreshHistory refreshHistory, ConfigService configService) {
 		this.refreshProperties = refreshProperties;
 		this.refreshHistory = refreshHistory;
-		this.nacosPropertySourceRepository = nacosPropertySourceRepository;
 		this.configService = configService;
 	}
 
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
-		this.registerNacosListenersForApplications();
+		// many Spring context
+		if (this.ready.compareAndSet(false, true)) {
+			this.registerNacosListenersForApplications();
+		}
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
 	}
 
 	private void registerNacosListenersForApplications() {
 		if (refreshProperties.isEnabled()) {
-			for (NacosPropertySource nacosPropertySource : nacosPropertySourceRepository
+			for (NacosPropertySource nacosPropertySource : NacosPropertySourceRepository
 					.getAll()) {
+
+				if (!nacosPropertySource.isRefreshable()) {
+					continue;
+				}
+
 				String dataId = nacosPropertySource.getDataId();
-				registerNacosListener(dataId);
+				registerNacosListener(nacosPropertySource.getGroup(), dataId);
 			}
 		}
 	}
 
-	private void registerNacosListener(final String dataId) {
+	private void registerNacosListener(final String group, final String dataId) {
 
 		Listener listener = listenerMap.computeIfAbsent(dataId, i -> new Listener() {
 			@Override
 			public void receiveConfigInfo(String configInfo) {
+				refreshCountIncrement();
 				String md5 = "";
 				if (!StringUtils.isEmpty(configInfo)) {
 					try {
 						MessageDigest md = MessageDigest.getInstance("MD5");
 						md5 = new BigInteger(1, md.digest(configInfo.getBytes("UTF-8")))
-							.toString(16);
-					} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-						logger.warn("unable to get md5 for dataId: " + dataId, e);
+								.toString(16);
+					}
+					catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+						log.warn("[Nacos] unable to get md5 for dataId: " + dataId, e);
 					}
 				}
 				refreshHistory.add(dataId, md5);
-				contextRefresher.refresh();
+				applicationContext.publishEvent(
+						new RefreshEvent(this, null, "Refresh Nacos config"));
+				if (log.isDebugEnabled()) {
+					log.debug("Refresh Nacos config group " + group + ",dataId" + dataId);
+				}
 			}
 
 			@Override
@@ -117,10 +136,18 @@ public class NacosContextRefresher implements ApplicationListener<ApplicationRea
 		});
 
 		try {
-			configService.addListener(dataId, properties.getGroup(), listener);
-		} catch (NacosException e) {
+			configService.addListener(dataId, group, listener);
+		}
+		catch (NacosException e) {
 			e.printStackTrace();
 		}
 	}
 
+	public static long getRefreshCount() {
+		return REFRESH_COUNT.get();
+	}
+
+	public static void refreshCountIncrement() {
+		REFRESH_COUNT.incrementAndGet();
+	}
 }

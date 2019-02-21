@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>nacos-discovery-example</artifactId>
-        <version>0.2.0.BUILD-SNAPSHOT</version>
+        <version>0.2.2.BUILD-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -40,6 +40,10 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
