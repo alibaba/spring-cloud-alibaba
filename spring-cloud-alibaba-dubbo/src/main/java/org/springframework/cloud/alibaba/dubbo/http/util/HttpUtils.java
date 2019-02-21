@@ -36,6 +36,7 @@ import java.util.Set;
 import static org.springframework.http.HttpHeaders.COOKIE;
 import static org.springframework.util.CollectionUtils.unmodifiableMultiValueMap;
 import static org.springframework.util.StringUtils.delimitedListToStringArray;
+import static org.springframework.util.StringUtils.hasText;
 import static org.springframework.util.StringUtils.trimAllWhitespace;
 import static org.springframework.util.StringUtils.trimWhitespace;
 
@@ -54,10 +55,35 @@ public abstract class HttpUtils {
 
     private static final String SEMICOLON = ";";
 
+    private static final String QUESTION_MASK = "?";
+
     /**
      * The empty value
      */
     private static final String EMPTY_VALUE = "";
+
+    /**
+     * Normalize path:
+     * <ol>
+     * <li>To remove query string if presents</li>
+     * <li>To remove duplicated slash("/") if exists</li>
+     * </ol>
+     *
+     * @param path path to be normalized
+     * @return a normalized path if required
+     */
+    public static String normalizePath(String path) {
+        if (!hasText(path)) {
+            return path;
+        }
+        String normalizedPath = path;
+        int index = normalizedPath.indexOf(QUESTION_MASK);
+        if (index > -1) {
+            normalizedPath = normalizedPath.substring(0, index);
+        }
+        return StringUtils.replace(normalizedPath, "//", "/");
+    }
+
 
     /**
      * Get Parameters from the specified {@link HttpRequest request}
