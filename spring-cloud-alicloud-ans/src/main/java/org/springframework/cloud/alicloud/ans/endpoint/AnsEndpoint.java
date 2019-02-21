@@ -18,6 +18,7 @@ package org.springframework.cloud.alicloud.ans.endpoint;
 
 import com.alibaba.ans.core.NamingService;
 import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -31,6 +32,7 @@ import java.util.Set;
 
 /**
  * @author xiaolongzuo
+ * @author pbting
  */
 @Endpoint(id = "ans")
 public class AnsEndpoint {
