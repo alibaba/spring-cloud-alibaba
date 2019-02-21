@@ -21,9 +21,13 @@ import com.alibaba.dubbo.rpc.service.GenericService;
 
 import feign.Contract;
 import feign.Target;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMethodMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
@@ -47,6 +51,8 @@ import static java.lang.reflect.Proxy.newProxyInstance;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 class TargeterInvocationHandler implements InvocationHandler {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Object bean;
 
@@ -111,35 +117,52 @@ class TargeterInvocationHandler implements InvocationHandler {
         DubboTransportedMethodMetadataResolver resolver =
                 new DubboTransportedMethodMetadataResolver(environment, contract);
 
-        Map<DubboTransportedMethodMetadata, RequestMetadata> methodRequestMetadataMap = resolver.resolve(targetType);
+        Map<DubboTransportedMethodMetadata, RestMethodMetadata> feignRestMethodMetadataMap = resolver.resolve(targetType);
 
-        if (methodRequestMetadataMap.isEmpty()) { // @DubboTransported method was not found
+        if (feignRestMethodMetadataMap.isEmpty()) { // @DubboTransported method was not found from the Client interface
+            if (logger.isDebugEnabled()) {
+                logger.debug("@{} method was not found in the Feign target type[{}]",
+                        DubboTransported.class.getSimpleName(), targetType.getName());
+            }
             return null;
         }
 
         // Update Metadata
         repository.initialize(serviceName);
 
-        Map<Method, RestMethodMetadata> restMethodMetadataMap = new HashMap<>();
-
-        Map<Method, GenericService> genericServicesMap = new HashMap<>();
-
-        methodRequestMetadataMap.forEach((dubboTransportedMethodMetadata, requestMetadata) -> {
-            DubboServiceMetadata dubboServiceMetadata = repository.get(serviceName, requestMetadata);
-            RestMethodMetadata restMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
-            DubboTransportedMetadata dubboTransportedMetadata = dubboTransportedMethodMetadata.getDubboTransportedMetadata();
-            GenericService genericService = dubboGenericServiceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
-            Method method = dubboTransportedMethodMetadata.getMethod();
-            genericServicesMap.put(method, genericService);
-            restMethodMetadataMap.put(method, restMethodMetadata);
-        });
+        Map<Method, FeignMethodMetadata> feignMethodMetadataMap = getFeignMethodMetadataMap(serviceName, feignRestMethodMetadataMap);
 
         InvocationHandler defaultFeignClientInvocationHandler = Proxy.getInvocationHandler(defaultFeignClientProxy);
 
-        DubboInvocationHandler dubboInvocationHandler = new DubboInvocationHandler(genericServicesMap, restMethodMetadataMap,
+        DubboInvocationHandler dubboInvocationHandler = new DubboInvocationHandler(feignMethodMetadataMap,
                 defaultFeignClientInvocationHandler, contextFactory);
 
         return dubboInvocationHandler;
+    }
+
+    private Map<Method, FeignMethodMetadata> getFeignMethodMetadataMap(String serviceName,
+                                                                       Map<DubboTransportedMethodMetadata, RestMethodMetadata>
+                                                                               feignRestMethodMetadataMap) {
+        Map<Method, FeignMethodMetadata> feignMethodMetadataMap = new HashMap<>();
+
+        for (Map.Entry<DubboTransportedMethodMetadata, RestMethodMetadata> entry : feignRestMethodMetadataMap.entrySet()) {
+            RestMethodMetadata feignRestMethodMetadata = entry.getValue();
+            RequestMetadata feignRequestMetadata = feignRestMethodMetadata.getRequest();
+            DubboServiceMetadata dubboServiceMetadata = repository.get(serviceName, feignRequestMetadata);
+            if (dubboServiceMetadata != null) {
+                DubboTransportedMethodMetadata dubboTransportedMethodMetadata = entry.getKey();
+                DubboTransportedMetadata dubboTransportedMetadata = dubboTransportedMethodMetadata.getDubboTransportedMetadata();
+                Method method = dubboTransportedMethodMetadata.getMethod();
+                GenericService dubboGenericService = dubboGenericServiceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
+                RestMethodMetadata dubboRestMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
+                MethodMetadata methodMetadata = dubboTransportedMethodMetadata.getMethodMetadata();
+                FeignMethodMetadata feignMethodMetadata = new FeignMethodMetadata(dubboGenericService,
+                        dubboRestMethodMetadata, feignRestMethodMetadata);
+                feignMethodMetadataMap.put(method, feignMethodMetadata);
+            }
+        }
+
+        return feignMethodMetadataMap;
     }
 
     private static <T> T cast(Object object) {

@@ -19,13 +19,13 @@ package org.springframework.cloud.alibaba.dubbo.service.parameter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.cloud.alibaba.dubbo.http.HttpServerRequest;
 import org.springframework.cloud.alibaba.dubbo.http.converter.HttpMessageConverterHolder;
 import org.springframework.cloud.alibaba.dubbo.http.util.HttpMessageConverterResolver;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodParameterMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.server.ServerHttpRequest;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class RequestBodyServerParameterResolver extends AbstractDubboGenericServiceParameterResolver {
+public class RequestBodyServiceParameterResolver extends AbstractDubboGenericServiceParameterResolver {
 
     public static final int DEFAULT_ORDER = 7;
 
@@ -46,7 +46,7 @@ public class RequestBodyServerParameterResolver extends AbstractDubboGenericServ
 
     private HttpMessageConverterResolver httpMessageConverterResolver;
 
-    public RequestBodyServerParameterResolver() {
+    public RequestBodyServiceParameterResolver() {
         super();
         setOrder(DEFAULT_ORDER);
     }
@@ -60,8 +60,7 @@ public class RequestBodyServerParameterResolver extends AbstractDubboGenericServ
                 getClassLoader());
     }
 
-    @Override
-    public boolean supportParameter(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata) {
+    private boolean supportParameter(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata) {
 
         Integer index = methodParameterMetadata.getIndex();
 
@@ -79,8 +78,12 @@ public class RequestBodyServerParameterResolver extends AbstractDubboGenericServ
     }
 
     @Override
-    public Object resolveParameter(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
-                                   ServerHttpRequest request) {
+    public Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
+                          HttpServerRequest request) {
+
+        if (!supportParameter(restMethodMetadata, methodParameterMetadata)) {
+            return null;
+        }
 
         Object result = null;
 
@@ -98,5 +101,11 @@ public class RequestBodyServerParameterResolver extends AbstractDubboGenericServ
         }
 
         return result;
+    }
+
+    @Override
+    public Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
+                          RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
+        return null;
     }
 }

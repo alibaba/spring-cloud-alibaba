@@ -16,41 +16,50 @@
  */
 package org.springframework.cloud.alibaba.dubbo.http;
 
-
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
-import org.springframework.http.server.ServerHttpAsyncRequestControl;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.net.URI;
-import java.security.Principal;
+
+import static org.springframework.cloud.alibaba.dubbo.http.util.HttpUtils.getParameters;
+import static org.springframework.cloud.alibaba.dubbo.http.util.HttpUtils.parseCookies;
+import static org.springframework.http.HttpHeaders.readOnlyHttpHeaders;
 
 /**
- * Default {@link ServerHttpRequest} implementation
+ * Default {@link HttpServerRequest} implementation
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class DefaultServerHttpRequest implements ServerHttpRequest {
+public class DefaultHttpServerRequest implements HttpServerRequest {
 
     private final HttpMethod httpMethod;
 
     private final URI uri;
 
+    private final String path;
+
+    private final MultiValueMap<String, String> queryParams;
+
     private final HttpHeaders httpHeaders;
+
+    private final MultiValueMap<String, HttpCookie> cookies;
 
     private final HttpInputMessage httpInputMessage;
 
-    public DefaultServerHttpRequest(HttpRequest httpRequest, byte[] body) {
+    public DefaultHttpServerRequest(HttpRequest httpRequest, byte[] body) {
         this.httpMethod = httpRequest.getMethod();
         this.uri = httpRequest.getURI();
-        this.httpHeaders = httpRequest.getHeaders();
+        this.path = uri.getPath();
+        this.httpHeaders = readOnlyHttpHeaders(httpRequest.getHeaders());
+        this.queryParams = getParameters(httpRequest);
         this.httpInputMessage = new ByteArrayHttpInputMessage(body);
+        this.cookies = parseCookies(httpHeaders);
     }
 
     @Override
@@ -79,22 +88,17 @@ public class DefaultServerHttpRequest implements ServerHttpRequest {
     }
 
     @Override
-    public Principal getPrincipal() {
-        throw new UnsupportedOperationException();
+    public String getPath() {
+        return path;
     }
 
     @Override
-    public InetSocketAddress getLocalAddress() {
-        throw new UnsupportedOperationException();
+    public MultiValueMap<String, String> getQueryParams() {
+        return queryParams;
     }
 
     @Override
-    public InetSocketAddress getRemoteAddress() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ServerHttpAsyncRequestControl getAsyncRequestControl(ServerHttpResponse response) {
-        throw new UnsupportedOperationException();
+    public MultiValueMap<String, HttpCookie> getCookies() {
+        return cookies;
     }
 }

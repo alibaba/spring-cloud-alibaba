@@ -30,7 +30,8 @@ import static org.springframework.util.ClassUtils.resolveClassName;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public abstract class AbstractDubboGenericServiceParameterResolver implements DubboGenericServiceParameterResolver, BeanClassLoaderAware {
+public abstract class AbstractDubboGenericServiceParameterResolver implements DubboGenericServiceParameterResolver,
+        BeanClassLoaderAware {
 
     private int order;
 

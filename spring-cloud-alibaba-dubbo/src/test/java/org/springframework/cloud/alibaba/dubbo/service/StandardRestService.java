@@ -68,7 +68,7 @@ public class StandardRestService implements RestService {
     @PostMapping("/params")
     @Path("/params")
     @POST
-    public int params(@RequestParam @QueryParam("a") int a, @RequestParam @QueryParam("b") int b) {
+    public String params(@RequestParam @QueryParam("a") int a, @RequestParam @QueryParam("b") String b) {
         log("/params", a + b);
         return a + b;
     }
@@ -91,7 +91,7 @@ public class StandardRestService implements RestService {
 
     @Override
     @PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_UTF8_VALUE)
-    @Path("/request/body/map")
+    @Path("/request/setBody/map")
     @POST
     @Produces(APPLICATION_JSON_VALUE)
     public User requestBody(@RequestBody Map<String, Object> data) {
@@ -103,7 +103,7 @@ public class StandardRestService implements RestService {
     }
 
     @PostMapping(value = "/request/body/user", consumes = APPLICATION_JSON_UTF8_VALUE)
-    @Path("/request/body/user")
+    @Path("/request/setBody/user")
     @POST
     @Override
     @Consumes(APPLICATION_JSON_UTF8_VALUE)

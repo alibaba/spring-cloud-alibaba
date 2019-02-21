@@ -123,4 +123,14 @@ public class MethodMetadata {
     public int hashCode() {
         return Objects.hash(name, returnType, params);
     }
+
+    @Override
+    public String toString() {
+        return "MethodMetadata{" +
+                "name='" + name + '\'' +
+                ", returnType='" + returnType + '\'' +
+                ", params=" + params +
+                ", method=" + method +
+                '}';
+    }
 }

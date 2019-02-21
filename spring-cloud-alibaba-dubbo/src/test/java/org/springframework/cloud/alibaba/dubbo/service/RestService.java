@@ -27,7 +27,7 @@ public interface RestService {
 
     String param(String message);
 
-    int params(int a, int b);
+    String params(int a, String b);
 
     User requestBody(Map<String, Object> data);
 

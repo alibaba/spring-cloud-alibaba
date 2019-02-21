@@ -19,7 +19,7 @@ package org.springframework.cloud.alibaba.dubbo.client.loadbalancer;
 import com.alibaba.dubbo.rpc.service.GenericException;
 import com.alibaba.dubbo.rpc.service.GenericService;
 
-import org.springframework.cloud.alibaba.dubbo.http.DefaultServerHttpRequest;
+import org.springframework.cloud.alibaba.dubbo.http.DefaultHttpServerRequest;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
@@ -35,11 +35,12 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+
+import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 /**
  * Dubbo {@link ClientHttpRequestInterceptor} implementation to adapt {@link LoadBalancerInterceptor}
@@ -81,13 +82,11 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
 
         URI originalUri = request.getURI();
 
-        UriComponents uriComponents = UriComponentsBuilder.fromUri(originalUri).build(true);
-
         String serviceName = originalUri.getHost();
 
         repository.initialize(serviceName);
 
-        RequestMetadata clientMetadata = buildRequestMetadata(request, uriComponents);
+        RequestMetadata clientMetadata = buildRequestMetadata(request);
 
         DubboServiceMetadata dubboServiceMetadata = repository.get(serviceName, clientMetadata);
 
@@ -95,12 +94,12 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
             return loadBalancerInterceptor.intercept(request, body, execution);
         }
 
-        RestMethodMetadata restMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
+        RestMethodMetadata dubboRestMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
 
         GenericService genericService = serviceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
 
-        DubboGenericServiceExecutionContext context = contextFactory.create(restMethodMetadata,
-                new DefaultServerHttpRequest(request, body));
+        DubboGenericServiceExecutionContext context = contextFactory.create(dubboRestMethodMetadata,
+                new DefaultHttpServerRequest(request, body));
 
         Object result = null;
         GenericException exception = null;
@@ -111,10 +110,11 @@ public class DubboAdapterLoadBalancerInterceptor implements ClientHttpRequestInt
             exception = e;
         }
 
-        return clientHttpResponseFactory.build(result, exception, clientMetadata, restMethodMetadata);
+        return clientHttpResponseFactory.build(result, exception, clientMetadata, dubboRestMethodMetadata);
     }
 
-    public static RequestMetadata buildRequestMetadata(HttpRequest request, UriComponents uriComponents) {
+    public static RequestMetadata buildRequestMetadata(HttpRequest request) {
+        UriComponents uriComponents = fromUri(request.getURI()).build(true);
         RequestMetadata requestMetadata = new RequestMetadata();
         requestMetadata.setPath(uriComponents.getPath());
         requestMetadata.setMethod(request.getMethod().name());

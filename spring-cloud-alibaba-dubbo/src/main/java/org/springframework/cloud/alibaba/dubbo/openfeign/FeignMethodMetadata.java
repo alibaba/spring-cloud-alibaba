@@ -14,30 +14,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.service.parameter;
+package org.springframework.cloud.alibaba.dubbo.openfeign;
 
 import com.alibaba.dubbo.rpc.service.GenericService;
 
-import org.springframework.cloud.alibaba.dubbo.http.HttpServerRequest;
-import org.springframework.cloud.alibaba.dubbo.metadata.MethodParameterMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
-import org.springframework.core.Ordered;
+
+import java.lang.reflect.Method;
 
 /**
- * Dubbo {@link GenericService} Parameter Resolver
+ * Feign {@link Method} Metadata
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface DubboGenericServiceParameterResolver extends Ordered {
+class FeignMethodMetadata {
 
-    /**
-     * Resolves a method parameter into an argument value from a given request.
-     *
-     * @return
-     */
-    Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
-                   HttpServerRequest request);
+    private final GenericService dubboGenericService;
 
-    Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
-                   RestMethodMetadata clientRestMethodMetadata, Object[] arguments);
+    private final RestMethodMetadata dubboRestMethodMetadata;
+
+    private final RestMethodMetadata feignMethodMetadata;
+
+
+    FeignMethodMetadata(GenericService dubboGenericService, RestMethodMetadata dubboRestMethodMetadata,
+                        RestMethodMetadata feignMethodMetadata) {
+        this.dubboGenericService = dubboGenericService;
+        this.dubboRestMethodMetadata = dubboRestMethodMetadata;
+        this.feignMethodMetadata = feignMethodMetadata;
+    }
+
+    GenericService getDubboGenericService() {
+        return dubboGenericService;
+    }
+
+    RestMethodMetadata getDubboRestMethodMetadata() {
+        return dubboRestMethodMetadata;
+    }
+
+    RestMethodMetadata getFeignMethodMetadata() {
+        return feignMethodMetadata;
+    }
 }
