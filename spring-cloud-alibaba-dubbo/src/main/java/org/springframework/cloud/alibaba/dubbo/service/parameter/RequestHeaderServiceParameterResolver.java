@@ -14,29 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.service;
+package org.springframework.cloud.alibaba.dubbo.service.parameter;
 
-import java.util.Map;
+import org.springframework.cloud.alibaba.dubbo.http.HttpServerRequest;
+import org.springframework.util.MultiValueMap;
 
 /**
- * Echo Service
+ * HTTP Request Header {@link DubboGenericServiceParameterResolver Dubbo GenericService Parameter Resolver}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface RestService {
+public class RequestHeaderServiceParameterResolver extends AbstractNamedValueServiceParameterResolver {
 
-    String param(String param);
+    public static final int DEFAULT_ORDER = 9;
 
-    String params(int a, String b);
+    public RequestHeaderServiceParameterResolver() {
+        super();
+        setOrder(DEFAULT_ORDER);
+    }
 
-    String headers(String header, String header2, Integer param);
-
-    String pathVariables(String path1, String path2, String param);
-
-    String form(String form);
-
-    User requestBody(Map<String, Object> data, String param);
-
-    Map<String, Object> requestBody(User user);
-
+    @Override
+    protected MultiValueMap<String, String> getNameAndValuesMap(HttpServerRequest request) {
+        return request.getHeaders();
+    }
 }

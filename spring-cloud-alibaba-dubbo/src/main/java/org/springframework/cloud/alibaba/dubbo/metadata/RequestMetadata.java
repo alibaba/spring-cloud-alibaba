@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 
+import static org.springframework.cloud.alibaba.dubbo.http.util.HttpUtils.normalizePath;
 import static org.springframework.http.MediaType.parseMediaTypes;
 
 /**
@@ -83,7 +84,7 @@ public class RequestMetadata {
     }
 
     public void setPath(String path) {
-        this.path = path;
+        this.path = normalizePath(path);
     }
 
     public MultiValueMap<String, String> getParams() {

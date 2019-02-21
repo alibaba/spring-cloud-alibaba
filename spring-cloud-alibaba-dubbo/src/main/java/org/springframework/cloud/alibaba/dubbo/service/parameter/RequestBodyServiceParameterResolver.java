@@ -106,6 +106,12 @@ public class RequestBodyServiceParameterResolver extends AbstractDubboGenericSer
     @Override
     public Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
                           RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
-        return null;
+
+        if (!supportParameter(restMethodMetadata, methodParameterMetadata)) {
+            return null;
+        }
+
+        Integer clientBodyIndex = clientRestMethodMetadata.getBodyIndex();
+        return arguments[clientBodyIndex];
     }
 }

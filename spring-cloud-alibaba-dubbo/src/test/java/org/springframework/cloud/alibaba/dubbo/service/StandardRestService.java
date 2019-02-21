@@ -20,8 +20,8 @@ import com.alibaba.dubbo.rpc.RpcContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,12 +29,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.HashMap;
@@ -74,12 +74,31 @@ public class StandardRestService implements RestService {
     }
 
     @Override
-    @GetMapping("/header")
-    @Path("/header")
+    @GetMapping("/headers")
+    @Path("/headers")
     @GET
-    public String header(@RequestHeader("h") @HeaderParam("h") String header) {
-        return String.valueOf(header);
+    public String headers(@RequestHeader("h") @HeaderParam("h") String header,
+                          @RequestHeader("h2") @HeaderParam("h2") String header2,
+                          @RequestParam("v") @QueryParam("v") Integer param) {
+        String result = header + " , " + header2 + " , " + param;
+        log("/headers", result);
+        return result;
     }
+
+    @Override
+    @GetMapping("/path-variables/{p1}/{p2}")
+    @Path("/path-variables/{p1}/{p2}")
+    @GET
+    public String pathVariables(@PathVariable("p1") @PathParam("p1") String path1,
+                                @PathVariable("p2") @PathParam("p2") String path2,
+                                @RequestParam("v") @QueryParam("v") String param) {
+        String result = path1 + " , " + path2 + " , " + param;
+        log("/path-variables", result);
+        return result;
+    }
+
+    // @CookieParam does not support : https://github.com/OpenFeign/feign/issues/913
+    // @CookieValue also does not support
 
     @Override
     @PostMapping("/form")
@@ -94,11 +113,12 @@ public class StandardRestService implements RestService {
     @Path("/request/setBody/map")
     @POST
     @Produces(APPLICATION_JSON_VALUE)
-    public User requestBody(@RequestBody Map<String, Object> data) {
+    public User requestBody(@RequestBody Map<String, Object> data, @RequestParam("param") @QueryParam("param") String param) {
         User user = new User();
         user.setId(((Integer) data.get("id")).longValue());
         user.setName((String) data.get("name"));
         user.setAge((Integer) data.get("age"));
+        log("/request/body/map", param);
         return user;
     }
 
@@ -113,14 +133,6 @@ public class StandardRestService implements RestService {
         map.put("name", user.getName());
         map.put("age", user.getAge());
         return map;
-    }
-
-    @Override
-    @GetMapping("/cookie")
-    @Path("/cookie")
-    @GET
-    public String cookie(@CookieParam("User-Agent") @CookieValue("User-Agent") String userAgent) {
-        return userAgent;
     }
 
     private void log(String url, Object result) {
