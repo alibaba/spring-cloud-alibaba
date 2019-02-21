@@ -36,7 +36,7 @@ import com.alibaba.csp.sentinel.slots.block.AbstractRule;
  */
 public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(SentinelDataSourceHandler.class);
 
 	private List<String> dataTypeList = Arrays.asList("json", "xml");
@@ -61,7 +61,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 					try {
 						List<String> validFields = dataSourceProperties.getValidField();
 						if (validFields.size() != 1) {
-							logger.error("[Sentinel Starter] DataSource " + dataSourceName
+							log.error("[Sentinel Starter] DataSource " + dataSourceName
 									+ " multi datasource active and won't loaded: "
 									+ dataSourceProperties.getValidField());
 							return;
@@ -73,7 +73,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 								+ "-sentinel-" + validFields.get(0) + "-datasource");
 					}
 					catch (Exception e) {
-						logger.error("[Sentinel Starter] DataSource " + dataSourceName
+						log.error("[Sentinel Starter] DataSource " + dataSourceName
 								+ " build error: " + e.getMessage(), e);
 					}
 				});
@@ -90,7 +90,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 						m.put(v.getName(), v.get(dataSourceProperties));
 					}
 					catch (IllegalAccessException e) {
-						logger.error("[Sentinel Starter] DataSource " + dataSourceName
+						log.error("[Sentinel Starter] DataSource " + dataSourceName
 								+ " field: " + v.getName() + " invoke error");
 						throw new RuntimeException(
 								"[Sentinel Starter] DataSource " + dataSourceName
@@ -136,7 +136,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 						builder.addPropertyReference("converter", customConvertBeanName);
 					}
 					catch (ClassNotFoundException e) {
-						logger.error("[Sentinel Starter] DataSource " + dataSourceName
+						log.error("[Sentinel Starter] DataSource " + dataSourceName
 								+ " handle "
 								+ dataSourceProperties.getClass().getSimpleName()
 								+ " error, class name: "
@@ -195,20 +195,20 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 			ruleConfig = dataSource.loadConfig();
 		}
 		catch (Exception e) {
-			logger.error("[Sentinel Starter] DataSource " + dataSourceName
+			log.error("[Sentinel Starter] DataSource " + dataSourceName
 					+ " loadConfig error: " + e.getMessage(), e);
 			return;
 		}
 		if (ruleConfig instanceof List) {
 			List convertedRuleList = (List) ruleConfig;
 			if (CollectionUtils.isEmpty(convertedRuleList)) {
-				logger.warn("[Sentinel Starter] DataSource {} rule list is empty.",
+				log.warn("[Sentinel Starter] DataSource {} rule list is empty.",
 						dataSourceName);
 				return;
 			}
 			if (convertedRuleList.stream()
 					.noneMatch(rule -> rule.getClass() == ruleClass)) {
-				logger.error("[Sentinel Starter] DataSource {} none rules are {} type.",
+				log.error("[Sentinel Starter] DataSource {} none rules are {} type.",
 						dataSourceName, ruleClass.getSimpleName());
 				throw new IllegalArgumentException("[Sentinel Starter] DataSource "
 						+ dataSourceName + " none rules are " + ruleClass.getSimpleName()
@@ -216,16 +216,16 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 			}
 			else if (!convertedRuleList.stream()
 					.allMatch(rule -> rule.getClass() == ruleClass)) {
-				logger.warn("[Sentinel Starter] DataSource {} all rules are not {} type.",
+				log.warn("[Sentinel Starter] DataSource {} all rules are not {} type.",
 						dataSourceName, ruleClass.getSimpleName());
 			}
 			else {
-				logger.info("[Sentinel Starter] DataSource {} load {} {}", dataSourceName,
+				log.info("[Sentinel Starter] DataSource {} load {} {}", dataSourceName,
 						convertedRuleList.size(), ruleClass.getSimpleName());
 			}
 		}
 		else {
-			logger.error("[Sentinel Starter] DataSource " + dataSourceName
+			log.error("[Sentinel Starter] DataSource " + dataSourceName
 					+ " rule class is not List<" + ruleClass.getSimpleName()
 					+ ">. Class: " + ruleConfig.getClass());
 			throw new IllegalArgumentException("[Sentinel Starter] DataSource "
