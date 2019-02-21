@@ -38,40 +38,40 @@ import java.util.Map;
 @Endpoint(id = "acm")
 public class AcmEndpoint {
 
-    private final AcmProperties properties;
+	private final AcmProperties properties;
 
-    private final AcmRefreshHistory refreshHistory;
+	private final AcmRefreshHistory refreshHistory;
 
-    private final AcmPropertySourceRepository propertySourceRepository;
+	private final AcmPropertySourceRepository propertySourceRepository;
 
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public AcmEndpoint(AcmProperties properties, AcmRefreshHistory refreshHistory,
-                       AcmPropertySourceRepository propertySourceRepository) {
-        this.properties = properties;
-        this.refreshHistory = refreshHistory;
-        this.propertySourceRepository = propertySourceRepository;
-    }
+	public AcmEndpoint(AcmProperties properties, AcmRefreshHistory refreshHistory,
+			AcmPropertySourceRepository propertySourceRepository) {
+		this.properties = properties;
+		this.refreshHistory = refreshHistory;
+		this.propertySourceRepository = propertySourceRepository;
+	}
 
-    @ReadOperation
-    public Map<String, Object> invoke() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("config", properties);
+	@ReadOperation
+	public Map<String, Object> invoke() {
+		Map<String, Object> result = new HashMap<>();
+		result.put("config", properties);
 
-        Map<String, Object> runtime = new HashMap<>();
-        List<AcmPropertySource> all = propertySourceRepository.getAll();
+		Map<String, Object> runtime = new HashMap<>();
+		List<AcmPropertySource> all = propertySourceRepository.getAll();
 
-        List<Map<String, Object>> sources = new ArrayList<>();
-        for (AcmPropertySource ps : all) {
-            Map<String, Object> source = new HashMap<>();
-            source.put("dataId", ps.getDataId());
-            source.put("lastSynced", dateFormat.format(ps.getTimestamp()));
-            sources.add(source);
-        }
-        runtime.put("sources", sources);
-        runtime.put("refreshHistory", refreshHistory.getRecords());
+		List<Map<String, Object>> sources = new ArrayList<>();
+		for (AcmPropertySource ps : all) {
+			Map<String, Object> source = new HashMap<>();
+			source.put("dataId", ps.getDataId());
+			source.put("lastSynced", dateFormat.format(ps.getTimestamp()));
+			sources.add(source);
+		}
+		runtime.put("sources", sources);
+		runtime.put("refreshHistory", refreshHistory.getRecords());
 
-        result.put("runtime", runtime);
-        return result;
-    }
+		result.put("runtime", runtime);
+		return result;
+	}
 }
