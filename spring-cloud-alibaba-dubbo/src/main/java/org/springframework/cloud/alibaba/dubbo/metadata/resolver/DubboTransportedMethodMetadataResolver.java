@@ -20,7 +20,7 @@ import feign.Contract;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.PropertyResolver;
 
@@ -51,14 +51,17 @@ public class DubboTransportedMethodMetadataResolver {
         this.contract = contract;
     }
 
-    public Map<DubboTransportedMethodMetadata, RequestMetadata> resolve(Class<?> targetType) {
+    public Map<DubboTransportedMethodMetadata, RestMethodMetadata> resolve(Class<?> targetType) {
         Set<DubboTransportedMethodMetadata> dubboTransportedMethodMetadataSet =
                 resolveDubboTransportedMethodMetadataSet(targetType);
-        Map<String, RequestMetadata> requestMetadataMap = resolveRequestMetadataMap(targetType);
+        Map<String, RestMethodMetadata> restMethodMetadataMap = resolveRestRequestMetadataMap(targetType);
         return dubboTransportedMethodMetadataSet
                 .stream()
-                .collect(Collectors.toMap(methodMetadata -> methodMetadata, methodMetadata ->
-                        requestMetadataMap.get(configKey(targetType, methodMetadata.getMethod()))
+                .collect(Collectors.toMap(methodMetadata -> methodMetadata, methodMetadata -> {
+                            RestMethodMetadata restMethodMetadata = restMethodMetadataMap.get(configKey(targetType, methodMetadata.getMethod()));
+                            restMethodMetadata.setMethod(methodMetadata.getMethodMetadata());
+                            return restMethodMetadata;
+                        }
                 ));
     }
 
@@ -79,13 +82,13 @@ public class DubboTransportedMethodMetadataResolver {
     }
 
 
-    private Map<String, RequestMetadata> resolveRequestMetadataMap(Class<?> targetType) {
+    private Map<String, RestMethodMetadata> resolveRestRequestMetadataMap(Class<?> targetType) {
         return contract.parseAndValidatateMetadata(targetType)
-                .stream().collect(Collectors.toMap(feign.MethodMetadata::configKey, this::requestMetadata));
+                .stream().collect(Collectors.toMap(feign.MethodMetadata::configKey, this::restMethodMetadata));
     }
 
-    private RequestMetadata requestMetadata(feign.MethodMetadata methodMetadata) {
-        return new RequestMetadata(methodMetadata.template());
+    private RestMethodMetadata restMethodMetadata(feign.MethodMetadata methodMetadata) {
+        return new RestMethodMetadata(methodMetadata);
     }
 
     private DubboTransportedMethodMetadata createDubboTransportedMethodMetadata(Method method,

@@ -41,7 +41,7 @@ public class RestMethodMetadata {
     @JsonProperty("url-index")
     private Integer urlIndex;
 
-    @JsonProperty("body-index")
+    @JsonProperty("setBody-index")
     private Integer bodyIndex;
 
     @JsonProperty("header-map-index")
@@ -56,7 +56,7 @@ public class RestMethodMetadata {
     @JsonProperty("return-type")
     private String returnType;
 
-    @JsonProperty("body-type")
+    @JsonProperty("setBody-type")
     private String bodyType;
 
     @JsonProperty("index-to-name")
@@ -214,4 +214,21 @@ public class RestMethodMetadata {
         return resolvableType.resolve().getName();
     }
 
+    @Override
+    public String toString() {
+        return "RestMethodMetadata{" +
+                "method=" + method +
+                ", request=" + request +
+                ", urlIndex=" + urlIndex +
+                ", bodyIndex=" + bodyIndex +
+                ", headerMapIndex=" + headerMapIndex +
+                ", queryMapIndex=" + queryMapIndex +
+                ", queryMapEncoded=" + queryMapEncoded +
+                ", returnType='" + returnType + '\'' +
+                ", bodyType='" + bodyType + '\'' +
+                ", indexToName=" + indexToName +
+                ", formParams=" + formParams +
+                ", indexToEncoded=" + indexToEncoded +
+                '}';
+    }
 }

@@ -14,35 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.metadata.resolver;
+package org.springframework.cloud.alibaba.dubbo.http;
 
-import com.alibaba.dubbo.config.spring.ServiceBean;
-
-import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
-
-import java.util.Set;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpRequest;
+import org.springframework.util.MultiValueMap;
 
 /**
- * The REST metadata resolver
+ * HTTP Server Request
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface MetadataResolver {
+public interface HttpServerRequest extends HttpRequest, HttpInputMessage {
 
     /**
-     * Resolve the {@link ServiceRestMetadata} {@link Set set} from {@link ServiceBean}
+     * Return a path of current HTTP request
      *
-     * @param serviceBean {@link ServiceBean}
-     * @return non-null {@link Set}
+     * @return
      */
-    Set<ServiceRestMetadata> resolveServiceRestMetadata(ServiceBean serviceBean);
+    String getPath();
 
     /**
-     * Resolve {@link RestMethodMetadata} {@link Set set} from {@link Class target type}
-     *
-     * @param targetType {@link Class target type}
-     * @return non-null {@link Set}
+     * Return a read-only map with parsed and decoded query parameter values.
      */
-    Set<RestMethodMetadata> resolveMethodRestMetadata(Class<?> targetType);
+    MultiValueMap<String, String> getQueryParams();
+
+    /**
+     * Return a read-only map of cookies sent by the client.
+     */
+    MultiValueMap<String, HttpCookie> getCookies();
+
 }

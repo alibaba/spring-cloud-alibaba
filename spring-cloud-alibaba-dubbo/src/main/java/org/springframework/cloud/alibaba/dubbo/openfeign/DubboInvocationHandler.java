@@ -33,41 +33,39 @@ import java.util.Map;
  */
 public class DubboInvocationHandler implements InvocationHandler {
 
-    private final Map<Method, GenericService> genericServicesMap;
-
-    private final Map<Method, RestMethodMetadata> restMethodMetadataMap;
+    private final Map<Method, FeignMethodMetadata> feignMethodMetadataMap;
 
     private final InvocationHandler defaultInvocationHandler;
 
     private final DubboGenericServiceExecutionContextFactory contextFactory;
 
-    public DubboInvocationHandler(Map<Method, GenericService> genericServicesMap,
-                                  Map<Method, RestMethodMetadata> restMethodMetadataMap,
+    public DubboInvocationHandler(Map<Method, FeignMethodMetadata> feignMethodMetadataMap,
                                   InvocationHandler defaultInvocationHandler,
                                   DubboGenericServiceExecutionContextFactory contextFactory) {
-        this.genericServicesMap = genericServicesMap;
-        this.restMethodMetadataMap = restMethodMetadataMap;
+        this.feignMethodMetadataMap = feignMethodMetadataMap;
         this.defaultInvocationHandler = defaultInvocationHandler;
         this.contextFactory = contextFactory;
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method feignMethod, Object[] args) throws Throwable {
 
-        GenericService genericService = genericServicesMap.get(method);
+        FeignMethodMetadata feignMethodMetadata = feignMethodMetadataMap.get(feignMethod);
 
-        RestMethodMetadata restMethodMetadata = restMethodMetadataMap.get(method);
-
-        if (genericService == null || restMethodMetadata == null) {
-            return defaultInvocationHandler.invoke(proxy, method, args);
+        if (feignMethodMetadata == null) {
+            return defaultInvocationHandler.invoke(proxy, feignMethod, args);
         }
 
-        DubboGenericServiceExecutionContext context = contextFactory.create(restMethodMetadata, args);
+        GenericService dubboGenericService = feignMethodMetadata.getDubboGenericService();
+        RestMethodMetadata dubboRestMethodMetadata = feignMethodMetadata.getDubboRestMethodMetadata();
+        RestMethodMetadata feignRestMethodMetadata = feignMethodMetadata.getFeignMethodMetadata();
+
+        DubboGenericServiceExecutionContext context = contextFactory.create(dubboRestMethodMetadata, feignRestMethodMetadata, args);
 
         String methodName = context.getMethodName();
         String[] parameterTypes = context.getParameterTypes();
         Object[] parameters = context.getParameters();
 
-        return genericService.$invoke(methodName, parameterTypes, parameters);
+        return dubboGenericService.$invoke(methodName, parameterTypes, parameters);
     }
 }

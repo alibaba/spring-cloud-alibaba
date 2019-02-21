@@ -19,7 +19,7 @@ package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
-import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestBodyServerParameterResolver;
+import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestBodyServiceParameterResolver;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestParamServiceParameterResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +43,7 @@ public class DubboServiceAutoConfiguration {
     @Import(value = {
             DubboGenericServiceExecutionContextFactory.class,
             RequestParamServiceParameterResolver.class,
-            RequestBodyServerParameterResolver.class,
+            RequestBodyServiceParameterResolver.class,
     })
     static class ParameterResolversConfiguration {
     }

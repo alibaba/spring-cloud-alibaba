@@ -68,7 +68,7 @@ public class DubboServiceMetadataRepository {
 
         if (isEmpty(serviceRestMetadataSet)) {
             if (logger.isWarnEnabled()) {
-                logger.warn("The Spring Cloud application[name : {}] does not expose The REST metadata in the Dubbo services."
+                logger.warn("The Spring application[name : {}] does not expose The REST metadata in the Dubbo services."
                         , serviceName);
             }
             return;
@@ -85,6 +85,10 @@ public class DubboServiceMetadataRepository {
                 metadataMap.put(matcher, metadata);
             });
         }
+
+        if (logger.isInfoEnabled()) {
+            logger.info("The REST metadata in the dubbo services has been loaded in the Spring application[name : {}]", serviceName);
+        }
     }
 
     /**
@@ -98,31 +102,42 @@ public class DubboServiceMetadataRepository {
         return match(repository, serviceName, requestMetadata);
     }
 
-    private static <T> T match(Map<String, Map<RequestMetadataMatcher, T>> repository, String serviceName,
-                               RequestMetadata requestMetadata) {
-        Map<RequestMetadataMatcher, T> map = repository.get(serviceName);
-        if (isEmpty(map)) {
-            return null;
-        }
-        RequestMetadataMatcher matcher = new RequestMetadataMatcher(requestMetadata);
-        T object = map.get(matcher);
-        if (object == null) { // Can't match exactly
-            // Require to match one by one
-            for (Map.Entry<RequestMetadataMatcher, T> entry : map.entrySet()) {
-                RequestMetadataMatcher possibleMatcher = entry.getKey();
-                HttpRequest request = builder()
-                        .method(requestMetadata.getMethod())
-                        .path(requestMetadata.getPath())
-                        .params(requestMetadata.getParams())
-                        .headers(requestMetadata.getHeaders())
-                        .build();
+    private <T> T match(Map<String, Map<RequestMetadataMatcher, T>> repository, String serviceName,
+                        RequestMetadata requestMetadata) {
 
-                if (possibleMatcher.match(request)) {
-                    object = entry.getValue();
-                    break;
+        Map<RequestMetadataMatcher, T> map = repository.get(serviceName);
+
+        T object = null;
+
+        if (!isEmpty(map)) {
+            RequestMetadataMatcher matcher = new RequestMetadataMatcher(requestMetadata);
+            object = map.get(matcher);
+            if (object == null) { // Can't match exactly
+                // Require to match one by one
+                for (Map.Entry<RequestMetadataMatcher, T> entry : map.entrySet()) {
+                    RequestMetadataMatcher possibleMatcher = entry.getKey();
+                    HttpRequest request = builder()
+                            .method(requestMetadata.getMethod())
+                            .path(requestMetadata.getPath())
+                            .params(requestMetadata.getParams())
+                            .headers(requestMetadata.getHeaders())
+                            .build();
+
+                    if (possibleMatcher.match(request)) {
+                        object = entry.getValue();
+                        break;
+                    }
                 }
             }
         }
+
+        if (object == null) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("DubboServiceMetadata can't be found in the Spring application [%s] and %s",
+                        serviceName, requestMetadata);
+            }
+        }
+
         return object;
     }
 

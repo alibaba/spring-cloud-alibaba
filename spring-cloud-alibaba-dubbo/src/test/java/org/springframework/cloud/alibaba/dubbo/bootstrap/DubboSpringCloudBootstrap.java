@@ -87,7 +87,7 @@ public class DubboSpringCloudBootstrap {
         String param(@RequestParam("param") String param);
 
         @PostMapping("/params")
-        public int params(@RequestParam int a, @RequestParam int b);
+        public String params(@RequestParam("b") String b, @RequestParam("a") int a);
 
     }
 
@@ -99,8 +99,9 @@ public class DubboSpringCloudBootstrap {
         String param(@RequestParam("param") String param);
 
         @PostMapping("/params")
-        public int params(@RequestParam int a, @RequestParam int b);
+        public String params(@RequestParam("b") String paramB, @RequestParam("a") int paramA);
     }
+
 
     @Bean
     public ApplicationRunner paramRunner() {
@@ -116,11 +117,11 @@ public class DubboSpringCloudBootstrap {
 
             // To call /params
             // Dubbo Service call
-            System.out.println(restService.params(1, 1));
+            System.out.println(restService.params(1, "1"));
             // Spring Cloud Open Feign REST Call (Dubbo Transported)
-            System.out.println(dubboFeignRestService.params(1, 1));
+            System.out.println(dubboFeignRestService.params("1", 1));
             // Spring Cloud Open Feign REST Call
-            System.out.println(feignRestService.params(1, 1));
+            System.out.println(feignRestService.params("1", 1));
         };
     }
 
@@ -135,11 +136,11 @@ public class DubboSpringCloudBootstrap {
             data.put("id", 1);
             data.put("name", "小马哥");
             data.put("age", 33);
-            User user = restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/body/map", data, User.class);
+            User user = restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/setBody/map", data, User.class);
 
-            System.out.println(restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/body/map", data, String.class));
+            System.out.println(restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/setBody/map", data, String.class));
 
-            Map map = restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/body/user", user, Map.class);
+            Map map = restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/setBody/user", user, Map.class);
             System.out.println(map);
         };
     }

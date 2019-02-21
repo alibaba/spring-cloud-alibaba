@@ -17,17 +17,18 @@
 package org.springframework.cloud.alibaba.dubbo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.alibaba.dubbo.http.HttpServerRequest;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodParameterMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.DubboGenericServiceParameterResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-import org.springframework.http.server.ServerHttpRequest;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * {@link DubboGenericServiceExecutionContext} Factory
@@ -45,31 +46,39 @@ public class DubboGenericServiceExecutionContextFactory {
         AnnotationAwareOrderComparator.sort(resolvers);
     }
 
-    public DubboGenericServiceExecutionContext create(RestMethodMetadata restMethodMetadata, Object[] arguments) {
+    public DubboGenericServiceExecutionContext create(RestMethodMetadata dubboRestMethodMetadata,
+                                                      RestMethodMetadata clientMethodMetadata, Object[] arguments) {
 
-        MethodMetadata methodMetadata = restMethodMetadata.getMethod();
+        MethodMetadata dubboMethodMetadata = dubboRestMethodMetadata.getMethod();
 
-        String methodName = methodMetadata.getName();
+        String methodName = dubboMethodMetadata.getName();
 
-        String[] parameterTypes = resolveParameterTypes(methodMetadata);
+        String[] parameterTypes = resolveParameterTypes(dubboMethodMetadata);
 
-        Object[] parameters = Arrays.copyOf(arguments, parameterTypes.length);
+        Object[] parameters = resolveParameters(dubboRestMethodMetadata, clientMethodMetadata, arguments);
 
         return new DubboGenericServiceExecutionContext(methodName, parameterTypes, parameters);
     }
 
-
-    public DubboGenericServiceExecutionContext create(RestMethodMetadata restMethodMetadata,
-                                                      ServerHttpRequest request) {
-        MethodMetadata methodMetadata = restMethodMetadata.getMethod();
+    public DubboGenericServiceExecutionContext create(RestMethodMetadata dubboRestMethodMetadata,
+                                                      HttpServerRequest request) {
+        MethodMetadata methodMetadata = dubboRestMethodMetadata.getMethod();
 
         String methodName = methodMetadata.getName();
 
         String[] parameterTypes = resolveParameterTypes(methodMetadata);
 
-        Object[] parameters = resolveParameters(restMethodMetadata, request);
+        Object[] parameters = resolveParameters(dubboRestMethodMetadata, request);
 
         return new DubboGenericServiceExecutionContext(methodName, parameterTypes, parameters);
+    }
+
+    private Map<String, Integer> buildParamNameToIndex(List<MethodParameterMetadata> params) {
+        Map<String, Integer> paramNameToIndex = new LinkedHashMap<>();
+        for (MethodParameterMetadata param : params) {
+            paramNameToIndex.put(param.getName(), param.getIndex());
+        }
+        return paramNameToIndex;
     }
 
     protected String[] resolveParameterTypes(MethodMetadata methodMetadata) {
@@ -87,11 +96,11 @@ public class DubboGenericServiceExecutionContextFactory {
         return parameterTypes;
     }
 
-    protected Object[] resolveParameters(RestMethodMetadata restMethodMetadata, ServerHttpRequest request) {
+    protected Object[] resolveParameters(RestMethodMetadata dubboRestMethodMetadata, HttpServerRequest request) {
 
-        MethodMetadata methodMetadata = restMethodMetadata.getMethod();
+        MethodMetadata dubboMethodMetadata = dubboRestMethodMetadata.getMethod();
 
-        List<MethodParameterMetadata> params = methodMetadata.getParams();
+        List<MethodParameterMetadata> params = dubboMethodMetadata.getParams();
 
         Object[] parameters = new Object[params.size()];
 
@@ -100,8 +109,34 @@ public class DubboGenericServiceExecutionContextFactory {
             int index = parameterMetadata.getIndex();
 
             for (DubboGenericServiceParameterResolver resolver : resolvers) {
-                if (resolver.supportParameter(restMethodMetadata, parameterMetadata)) {
-                    parameters[index] = resolver.resolveParameter(restMethodMetadata, parameterMetadata, request);
+                Object parameter = resolver.resolve(dubboRestMethodMetadata, parameterMetadata, request);
+                if (parameter != null) {
+                    parameters[index] = parameter;
+                    break;
+                }
+            }
+        }
+
+        return parameters;
+    }
+
+    protected Object[] resolveParameters(RestMethodMetadata dubboRestMethodMetadata,
+                                         RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
+
+        MethodMetadata dubboMethodMetadata = dubboRestMethodMetadata.getMethod();
+
+        List<MethodParameterMetadata> params = dubboMethodMetadata.getParams();
+
+        Object[] parameters = new Object[params.size()];
+
+        for (MethodParameterMetadata parameterMetadata : params) {
+
+            int index = parameterMetadata.getIndex();
+
+            for (DubboGenericServiceParameterResolver resolver : resolvers) {
+                Object parameter = resolver.resolve(dubboRestMethodMetadata, parameterMetadata, clientRestMethodMetadata, arguments);
+                if (parameter != null) {
+                    parameters[index] = parameter;
                     break;
                 }
             }

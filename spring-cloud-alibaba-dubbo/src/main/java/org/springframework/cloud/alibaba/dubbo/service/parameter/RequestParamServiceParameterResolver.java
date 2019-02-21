@@ -16,18 +16,17 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service.parameter;
 
+import org.springframework.cloud.alibaba.dubbo.http.HttpServerRequest;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodParameterMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
-import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponents;
 
-import java.net.URI;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
-import static org.springframework.web.util.UriComponentsBuilder.fromUri;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * HTTP Request Parameter {@link DubboGenericServiceParameterResolver Dubbo GenericService Parameter Resolver}
@@ -44,44 +43,80 @@ public class RequestParamServiceParameterResolver extends AbstractDubboGenericSe
     }
 
     @Override
-    public boolean supportParameter(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata) {
+    public Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
+                          HttpServerRequest request) {
+
+        Collection<String> paramNames = getParamNames(restMethodMetadata, methodParameterMetadata);
+
+        if (isEmpty(paramNames)) { // index can't match
+            return null;
+        }
+
+        MultiValueMap<String, String> queryParams = request.getQueryParams();
+
+        String targetParamName = null;
+
+        for (String paramName : paramNames) {
+            if (queryParams.containsKey(paramName)) {
+                targetParamName = paramName;
+                break;
+            }
+        }
+
+        if (targetParamName == null) { // request parameter is abstract
+            return null;
+        }
+
+        Class<?> parameterType = resolveClass(methodParameterMetadata.getType());
+
+        Object paramValue = null;
+
+        if (parameterType.isArray()) { // Array type
+            paramValue = queryParams.get(targetParamName);
+        } else {
+            paramValue = queryParams.getFirst(targetParamName);
+        }
+
+        return resolveValue(paramValue, parameterType);
+    }
+
+    @Override
+    public Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
+                          RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
+
+        Collection<String> paramNames = getParamNames(restMethodMetadata, methodParameterMetadata);
+
+        if (isEmpty(paramNames)) { // index can't match
+            return null;
+        }
+
+        Integer index = null;
+
+        Map<Integer, Collection<String>> clientIndexToName = clientRestMethodMetadata.getIndexToName();
+
+        for (Map.Entry<Integer, Collection<String>> entry : clientIndexToName.entrySet()) {
+
+            Collection<String> clientParamNames = entry.getValue();
+
+            if (CollectionUtils.containsAny(paramNames, clientParamNames)) {
+                index = entry.getKey();
+                break;
+            }
+        }
+
+        return index > -1 ? arguments[index] : null;
+    }
+
+
+    private Collection<String> getParamNames(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata) {
+
         Map<Integer, Collection<String>> indexToName = restMethodMetadata.getIndexToName();
 
         int index = methodParameterMetadata.getIndex();
 
         Collection<String> paramNames = indexToName.get(index);
 
-        if (CollectionUtils.isEmpty(paramNames)) {
-            return false;
-        }
-
-        String paramName = methodParameterMetadata.getName();
-
-        return paramNames.contains(paramName);
+        return paramNames == null ? Collections.emptyList() : paramNames;
     }
 
-    @Override
-    public Object resolveParameter(RestMethodMetadata restMethodMetadata, MethodParameterMetadata parameterMetadata,
-                                   ServerHttpRequest request) {
-
-        URI uri = request.getURI();
-
-        UriComponents uriComponents = fromUri(uri).build(true);
-
-        MultiValueMap<String, String> params = uriComponents.getQueryParams();
-
-        String paramName = parameterMetadata.getName();
-
-        Class<?> parameterType = resolveClass(parameterMetadata.getType());
-
-        Object paramValue = null;
-
-        if (parameterType.isArray()) { // Array type
-            paramValue = params.get(paramName);
-        } else {
-            paramValue = params.getFirst(paramName);
-        }
-
-        return resolveValue(paramValue, parameterType);
-    }
 }

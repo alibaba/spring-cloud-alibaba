@@ -73,4 +73,13 @@ public class MethodParameterMetadata {
     public int hashCode() {
         return Objects.hash(index, name, type);
     }
+
+    @Override
+    public String toString() {
+        return "MethodParameterMetadata{" +
+                "index=" + index +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }
