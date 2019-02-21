@@ -8,13 +8,13 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.0.3.RELEASE</version>
+        <version>2.1.2.RELEASE</version>
         <relativePath/>
     </parent>
 
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>0.2.0.BUILD-SNAPSHOT</version>
+    <version>0.2.2.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
 
@@ -48,17 +48,28 @@
             <email>fangjian0423@gmail.com</email>
         </developer>
         <developer>
+            <name>xiaolongzuo</name>
+            <email>150349407@qq.com</email>
+        </developer>
+        <developer>
             <name>hengyunabc</name>
             <email>hengyunabc@gmail.com</email>
+        </developer>
+        <developer>
+            <id>mercyblitz</id>
+            <name>Mercy Ma</name>
+            <email>mercyblitz@gmail.com</email>
+            <organization>Alibaba</organization>
+            <url>https://github.com/mercyblitz</url>
         </developer>
     </developers>
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.0.1.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.0.0.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.0.0.RELEASE</spring-cloud-openfeign.version>
-
+        <spring-cloud-commons.version>2.1.0.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.1.0.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.1.0.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>2.1.0.RELEASE</spring-cloud-bus.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -70,6 +81,7 @@
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
+        <jacoco.version>0.7.9</jacoco.version>
     </properties>
 
     <modules>
@@ -78,16 +90,35 @@
         <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
+        <module>spring-cloud-alibaba-fescar</module>
+        <module>spring-cloud-stream-binder-rocketmq</module>
+        <module>spring-cloud-alibaba-nacos-config-server</module>
+        <module>spring-cloud-alibaba-dubbo</module>
+        <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-test</module>
+        <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-starter-alibaba</module>
         <module>spring-cloud-starter-alicloud</module>
         <module>spring-cloud-alicloud-oss</module>
+        <module>spring-cloud-alicloud-acm</module>
+        <module>spring-cloud-alicloud-ans</module>
+        <module>spring-cloud-alicloud-schedulerx</module>
+        <module>spring-cloud-alicloud-sms</module>
         <module>spring-cloud-alibaba-sentinel-zuul</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Spring Boot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -128,6 +159,13 @@
                 <scope>import</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-bus-dependencies</artifactId>
+                <version>${spring-cloud-bus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -153,6 +191,30 @@
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <configuration>
+                    <destFile>target/coverage-reports/jacoco-unit.exec</destFile>
+                    <dataFile>target/coverage-reports/jacoco-unit.exec</dataFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

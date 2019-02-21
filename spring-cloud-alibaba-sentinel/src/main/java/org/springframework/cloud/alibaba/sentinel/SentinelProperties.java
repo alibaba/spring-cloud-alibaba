@@ -16,70 +16,77 @@
 
 package org.springframework.cloud.alibaba.sentinel;
 
-import java.util.List;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.core.Ordered;
-
 import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
+import org.springframework.core.Ordered;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
+ * {@link ConfigurationProperties} for Sentinel.
+ *
  * @author xiaojing
  * @author hengyunabc
  * @author jiashuai.xie
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = SentinelConstants.PROPERTY_PREFIX)
+@Validated
 public class SentinelProperties {
 
 	/**
-	 * earlier initialize heart-beat when the spring container starts <note> when the
-	 * transport dependency is on classpath ,the configuration is effective </note>
+	 * Earlier initialize heart-beat when the spring container starts when the transport
+	 * dependency is on classpath, the configuration is effective.
 	 */
 	private boolean eager = false;
 
 	/**
-	 * enable sentinel auto configure, the default value is true
+	 * Enable sentinel auto configure, the default value is true.
 	 */
 	private boolean enabled = true;
 
 	/**
-	 * charset when sentinel write or search metric file {@link SentinelConfig#CHARSET}
+	 * Configurations about datasource, like 'nacos', 'apollo', 'file', 'zookeeper'.
 	 */
-	private String charset = "UTF-8";
+	private Map<String, DataSourcePropertiesConfiguration> datasource = new TreeMap<>(
+			String.CASE_INSENSITIVE_ORDER);
 
 	/**
-	 * transport configuration about dashboard and client
+	 * Transport configuration about dashboard and client.
 	 */
-	@NestedConfigurationProperty
 	private Transport transport = new Transport();
 
 	/**
-	 * metric configuration about resource
+	 * Metric configuration about resource.
 	 */
-	@NestedConfigurationProperty
 	private Metric metric = new Metric();
 
 	/**
-	 * web servlet configuration <note> when the application is web ,the configuration is
-	 * effective </note>
+	 * Web servlet configuration when the application is web, the configuration is
+	 * effective.
 	 */
-	@NestedConfigurationProperty
 	private Servlet servlet = new Servlet();
 
 	/**
-	 * sentinel filter <note> when the application is web ,the configuration is effective
-	 * </note>
+	 * Sentinel filter when the application is web, the configuration is effective.
 	 */
-	@NestedConfigurationProperty
 	private Filter filter = new Filter();
 
 	/**
-	 * flow configuration
+	 * Sentinel Flow configuration.
 	 */
-	@NestedConfigurationProperty
 	private Flow flow = new Flow();
+
+	/**
+	 * Sentinel log configuration {@link LogBase}.
+	 */
+	private Log log = new Log();
 
 	public boolean isEager() {
 		return eager;
@@ -95,14 +102,6 @@ public class SentinelProperties {
 
 	public void setFlow(Flow flow) {
 		this.flow = flow;
-	}
-
-	public String getCharset() {
-		return charset;
-	}
-
-	public void setCharset(String charset) {
-		this.charset = charset;
 	}
 
 	public Transport getTransport() {
@@ -145,10 +144,26 @@ public class SentinelProperties {
 		this.filter = filter;
 	}
 
+	public Map<String, DataSourcePropertiesConfiguration> getDatasource() {
+		return datasource;
+	}
+
+	public void setDatasource(Map<String, DataSourcePropertiesConfiguration> datasource) {
+		this.datasource = datasource;
+	}
+
+	public Log getLog() {
+		return log;
+	}
+
+	public void setLog(Log log) {
+		this.log = log;
+	}
+
 	public static class Flow {
 
 		/**
-		 * the cold factor {@link SentinelConfig#COLD_FACTOR}
+		 * The cold factor {@link SentinelConfig#COLD_FACTOR}.
 		 */
 		private String coldFactor = "3";
 
@@ -165,7 +180,7 @@ public class SentinelProperties {
 	public static class Servlet {
 
 		/**
-		 * The process page when the flow control is triggered
+		 * The process page when the flow control is triggered.
 		 */
 		private String blockPage;
 
@@ -181,14 +196,20 @@ public class SentinelProperties {
 	public static class Metric {
 
 		/**
-		 * the metric file size {@link SentinelConfig#SINGLE_METRIC_FILE_SIZE}
+		 * The metric file size {@link SentinelConfig#SINGLE_METRIC_FILE_SIZE}.
 		 */
 		private String fileSingleSize;
 
 		/**
-		 * the total metric file count {@link SentinelConfig#TOTAL_METRIC_FILE_COUNT}
+		 * The total metric file count {@link SentinelConfig#TOTAL_METRIC_FILE_COUNT}.
 		 */
 		private String fileTotalCount;
+
+		/**
+		 * Charset when sentinel write or search metric file.
+		 * {@link SentinelConfig#CHARSET}
+		 */
+		private String charset = "UTF-8";
 
 		public String getFileSingleSize() {
 			return fileSingleSize;
@@ -205,26 +226,40 @@ public class SentinelProperties {
 		public void setFileTotalCount(String fileTotalCount) {
 			this.fileTotalCount = fileTotalCount;
 		}
+
+		public String getCharset() {
+			return charset;
+		}
+
+		public void setCharset(String charset) {
+			this.charset = charset;
+		}
 	}
 
 	public static class Transport {
 
 		/**
-		 * sentinel api port,default value is 8721 {@link TransportConfig#SERVER_PORT}
+		 * Sentinel api port, default value is 8719 {@link TransportConfig#SERVER_PORT}.
 		 */
-		private String port = "8721";
+		private String port = "8719";
 
 		/**
-		 * sentinel dashboard address, won't try to connect dashboard when address is
-		 * empty {@link TransportConfig#CONSOLE_SERVER}
+		 * Sentinel dashboard address, won't try to connect dashboard when address is
+		 * empty {@link TransportConfig#CONSOLE_SERVER}.
 		 */
 		private String dashboard = "";
 
 		/**
-		 * send heartbeat interval millisecond
-		 * {@link TransportConfig#HEARTBEAT_INTERVAL_MS}
+		 * Send heartbeat interval millisecond
+		 * {@link TransportConfig#HEARTBEAT_INTERVAL_MS}.
 		 */
 		private String heartbeatIntervalMs;
+
+		/**
+		 * Get heartbeat client local ip. If the client ip not configured, it will be the
+		 * address of local host.
+		 */
+		private String clientIp;
 
 		public String getHeartbeatIntervalMs() {
 			return heartbeatIntervalMs;
@@ -250,17 +285,24 @@ public class SentinelProperties {
 			this.dashboard = dashboard;
 		}
 
+		public String getClientIp() {
+			return clientIp;
+		}
+
+		public void setClientIp(String clientIp) {
+			this.clientIp = clientIp;
+		}
 	}
 
 	public static class Filter {
 
 		/**
-		 * sentinel filter chain order.
+		 * Sentinel filter chain order.
 		 */
 		private int order = Ordered.HIGHEST_PRECEDENCE;
 
 		/**
-		 * URL pattern for sentinel filter,default is /*
+		 * URL pattern for sentinel filter, default is /*
 		 */
 		private List<String> urlPatterns;
 
@@ -279,6 +321,36 @@ public class SentinelProperties {
 		public void setUrlPatterns(List<String> urlPatterns) {
 			this.urlPatterns = urlPatterns;
 		}
+	}
+
+	public static class Log {
+
+		/**
+		 * Sentinel log base dir.
+		 */
+		private String dir;
+
+		/**
+		 * Distinguish the log file by pid number.
+		 */
+		private boolean switchPid = false;
+
+		public String getDir() {
+			return dir;
+		}
+
+		public void setDir(String dir) {
+			this.dir = dir;
+		}
+
+		public boolean isSwitchPid() {
+			return switchPid;
+		}
+
+		public void setSwitchPid(boolean switchPid) {
+			this.switchPid = switchPid;
+		}
+
 	}
 
 }

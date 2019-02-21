@@ -16,18 +16,41 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.config.ConfigService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
-import org.springframework.util.StringUtils;
+
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+
+import static com.alibaba.nacos.api.PropertyKeyConst.*;
 
 /**
  * nacos properties
  *
  * @author leijuan
  * @author xiaojing
+ * @author pbting
  */
-@ConfigurationProperties("spring.cloud.nacos.config")
+@ConfigurationProperties(NacosConfigProperties.PREFIX)
 public class NacosConfigProperties {
+
+	public static final String PREFIX = "spring.cloud.nacos.config";
+
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosConfigProperties.class);
+
+	/**
+	 * whether to enable nacos config.
+	 */
+	private boolean enabled = true;
 
 	/**
 	 * nacos config server address
@@ -89,7 +112,45 @@ public class NacosConfigProperties {
 	 */
 	private String clusterName;
 
+	private String name;
+
+	private String[] activeProfiles;
+
+	/**
+	 * the dataids for configurable multiple shared configurations , multiple separated by
+	 * commas .
+	 */
+	private String sharedDataids;
+
+	/**
+	 * refreshable dataids , multiple separated by commas .
+	 */
+	private String refreshableDataids;
+
+	/**
+	 * a set of extended configurations .
+	 */
+	private List<Config> extConfig;
+
+	private ConfigService configService;
+
+	@Autowired
+	private Environment environment;
+
+	@PostConstruct
+	public void init() {
+		this.activeProfiles = environment.getActiveProfiles();
+	}
+
 	// todo sts support
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	public String getServerAddr() {
 		return serverAddr;
@@ -187,54 +248,122 @@ public class NacosConfigProperties {
 		this.clusterName = clusterName;
 	}
 
-	@Override
-	public String toString() {
-		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
-				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
-				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
-				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
-				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
-				+ '\'' + ", clusterName='" + clusterName + '\'' + '}';
+	public String getName() {
+		return name;
 	}
 
-	public void overrideFromEnv(Environment env) {
+	public String[] getActiveProfiles() {
+		return activeProfiles;
+	}
 
-		if (StringUtils.isEmpty(this.getServerAddr())) {
-			this.setServerAddr(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}"));
+	public String getSharedDataids() {
+		return sharedDataids;
+	}
+
+	public void setSharedDataids(String sharedDataids) {
+		this.sharedDataids = sharedDataids;
+	}
+
+	public String getRefreshableDataids() {
+		return refreshableDataids;
+	}
+
+	public void setRefreshableDataids(String refreshableDataids) {
+		this.refreshableDataids = refreshableDataids;
+	}
+
+	public List<Config> getExtConfig() {
+		return extConfig;
+	}
+
+	public void setExtConfig(List<Config> extConfig) {
+		this.extConfig = extConfig;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setActiveProfiles(String[] activeProfiles) {
+		this.activeProfiles = activeProfiles;
+	}
+
+	public static class Config {
+		/**
+		 * the data id of extended configuration
+		 */
+		private String dataId;
+		/**
+		 * the group of extended configuration, the default value is DEFAULT_GROUP
+		 */
+		private String group = "DEFAULT_GROUP";
+		/**
+		 * whether to support dynamic refresh, the default does not support .
+		 */
+		private boolean refresh = false;
+
+		public String getDataId() {
+			return dataId;
 		}
-		if (StringUtils.isEmpty(this.getEncode())) {
-			this.setEncode(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.encode:}"));
+
+		public void setDataId(String dataId) {
+			this.dataId = dataId;
 		}
-		if (StringUtils.isEmpty(this.getNamespace())) {
-			this.setNamespace(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.namespace:}"));
+
+		public String getGroup() {
+			return group;
 		}
-		if (StringUtils.isEmpty(this.getAccessKey())) {
-			this.setAccessKey(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.access-key:}"));
+
+		public void setGroup(String group) {
+			this.group = group;
 		}
-		if (StringUtils.isEmpty(this.getSecretKey())) {
-			this.setSecretKey(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.secret-key:}"));
+
+		public boolean isRefresh() {
+			return refresh;
 		}
-		if (StringUtils.isEmpty(this.getContextPath())) {
-			this.setContextPath(env
-					.resolvePlaceholders("${spring.cloud.nacos.config.context-path:}"));
+
+		public void setRefresh(boolean refresh) {
+			this.refresh = refresh;
 		}
-		if (StringUtils.isEmpty(this.getClusterName())) {
-			this.setClusterName(env
-					.resolvePlaceholders("${spring.cloud.nacos.config.cluster-name:}"));
+	}
+
+	@Override
+	public String toString() {
+		return "NacosConfigProperties{" + "enabled=" + enabled + ", serverAddr='"
+				+ serverAddr + '\'' + ", encode='" + encode + '\'' + ", group='" + group
+				+ '\'' + ", prefix='" + prefix + '\'' + ", fileExtension='"
+				+ fileExtension + '\'' + ", timeout=" + timeout + ", endpoint='"
+				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
+				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
+				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
+				+ '\'' + ", name='" + name + '\'' + ", activeProfiles="
+				+ Arrays.toString(activeProfiles) + ", sharedDataids='" + sharedDataids
+				+ '\'' + ", refreshableDataids='" + refreshableDataids + '\''
+				+ ", extConfig=" + extConfig + '}';
+	}
+
+	public ConfigService configServiceInstance() {
+
+		if (null != configService) {
+			return configService;
 		}
-		if (StringUtils.isEmpty(this.getEndpoint())) {
-			this.setEndpoint(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.endpoint:}"));
+
+		Properties properties = new Properties();
+		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
+		properties.put(ENCODE, Objects.toString(this.encode, ""));
+		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
+		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
+		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
+		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
+		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
+		properties.put(ENDPOINT, Objects.toString(this.endpoint, ""));
+		try {
+			configService = NacosFactory.createConfigService(properties);
+			return configService;
 		}
-		if (StringUtils.isEmpty(this.getPrefix())) {
-			this.setPrefix(
-					env.resolvePlaceholders("${spring.cloud.nacos.config.prefix:}"));
+		catch (Exception e) {
+			log.error("create config service error!properties={},e=,", this, e);
+			return null;
 		}
 	}
 }

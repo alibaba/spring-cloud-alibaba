@@ -122,28 +122,30 @@
 
 ## 自定义限流处理逻辑
 
-1. URL 限流触发后默认处理逻辑是，直接返回 "Blocked by Sentinel (flow limiting)"。
+* 默认限流异常处理
+
+URL 限流触发后默认处理逻辑是，直接返回 "Blocked by Sentinel (flow limiting)"。
 	如果需要自定义处理逻辑，实现的方式如下：
 
-	```java
-	public class CustomUrlBlockHandler implements UrlBlockHandler {
-		@Override
-		public void blocked(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-			// todo add your logic
-		}
-	}
+```java
+public class CustomUrlBlockHandler implements UrlBlockHandler {
+    @Override
+    public void blocked(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        // todo add your logic
+    }
+}
 
-	WebCallbackManager.setUrlBlockHandler(new CustomUrlBlockHandler());
-	```
+WebCallbackManager.setUrlBlockHandler(new CustomUrlBlockHandler());
+```
 
-2. 自定义限流触发后，默认的处理逻辑是抛出异常。
+* 使用 `@SentinelResource` 注解下的限流异常处理
 
 如果需要自定义处理逻辑，填写 `@SentinelResource` 注解的 `blockHandler` 属性（针对所有类型的 `BlockException`，需自行判断）或 `fallback` 属性（针对熔断降级异常），注意**对应方法的签名和位置有限制**，详情见 [Sentinel 注解支持文档](https://github.com/alibaba/Sentinel/wiki/%E6%B3%A8%E8%A7%A3%E6%94%AF%E6%8C%81#sentinelresource-%E6%B3%A8%E8%A7%A3)。示例实现如下：
 
 ```java
 public class TestService {
 
-	// blockHandler 是位于 ExceptionUtil 类下的 handleException 静态方法，需符合对应的类型限制.
+    // blockHandler 是位于 ExceptionUtil 类下的 handleException 静态方法，需符合对应的类型限制.
     @SentinelResource(value = "test", blockHandler = "handleException", blockHandlerClass = {ExceptionUtil.class})
     public void test() {
         System.out.println("Test");
@@ -172,7 +174,7 @@ public final class ExceptionUtil {
 }
 ```
 
-一个简单的示例可以见 [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/master/sentinel-demo/sentinel-demo-annotation-spring-aop)。
+一个简单的 `@SentinelResource` 示例可以见 [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/master/sentinel-demo/sentinel-demo-annotation-spring-aop)。
 
 ## Endpoint 信息查看
 
@@ -196,77 +198,33 @@ Sentinel 控制台支持实时监控查看，您可以通过 Sentinel 控制台�
 
 Sentinel 内部提供了[动态规则的扩展实现 ReadableDataSource](https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95#datasource-%E6%89%A9%E5%B1%95)。
 
-Sentinel starter 整合了目前存在的几类 DataSource。只需要在配置文件中进行相关配置，即可在 Spring 容器中自动注册 DataSource。
+Sentinel starter 整合了目前存在的几类 ReadableDataSource。只需要在配置文件中进行相关配置，即可在 Spring 容器中自动注册 DataSource。
 
-比如要定义一个 `FileRefreshableDataSource`，配置如下：
+比如要定义两个ReadableDataSource，分别是 `FileRefreshableDataSource` 和 `NacosDataSource`，配置如下：
 
-    spring.cloud.sentinel.datasource.type=file
-    spring.cloud.sentinel.datasource.recommendRefreshMs=2000
-    spring.cloud.sentinel.datasource.bufSize=2048
-    spring.cloud.sentinel.datasource.charset=utf-8
-    spring.cloud.sentinel.datasource.converter=myParser
-    spring.cloud.sentinel.datasource.file=/Users/you/rule.json
+```properties
+spring.cloud.sentinel.datasource.ds1.file.file=classpath: degraderule.json
+spring.cloud.sentinel.datasource.ds1.file.data-type=json
 
-然后使用`@SentinelDataSource` 注解修饰 DataSource 即可注入：
+spring.cloud.sentinel.datasource.ds2.nacos.server-addr=localhost:8848
+spring.cloud.sentinel.datasource.ds2.nacos.dataId=sentinel
+spring.cloud.sentinel.datasource.ds2.nacos.groupId=DEFAULT_GROUP
+spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
+```
 
-    @SentinelDataSource("spring.cloud.sentinel.datasource")
-    private ReadableDataSource dataSource;
+`ds1` 和 `ds2` 表示ReadableDataSource的名称，可随意编写。`ds1` 和 `ds2` 后面的 `file` 和 `nacos` 表示ReadableDataSource的类型。
 
-`@SentinelDataSource` 注解的 value 属性可以不填。默认值就是 `spring.cloud.sentinel.datasource`。
+目前支持`file`, `nacos`, `zk`, `apollo` 这4种类型。
 
-`value` 属性代表配置前缀。示例中会去找 `spring.cloud.sentinel.datasource.xxx` 相关的配置。
+其中`nacos`，`zk`，`apollo`这3种类型的使用需要加上对应的依赖`sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`, `sentinel-datasource-apollo`。
 
-`spring.cloud.sentinel.datasource.type` 就是对应的 DataSource 类型。
+当ReadableDataSource加载规则数据成功的时候，控制台会打印出相应的日志信息：
 
-`spring.cloud.sentinel.datasource.recommendRefreshMs` 里的 `recommendRefreshMs` 对应相关 DataSource 的属性。
+```
+[Sentinel Starter] DataSource ds1-sentinel-file-datasource load 3 DegradeRule
+[Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
+```
 
-`spring.cloud.sentinel.datasource.converter`代表 `Converter` 在 Spring 容器里的 name。如果没找到，会抛出异常。
-    
-type目前支持file, nacos, zk, apollo。其中nacos，zk，apollo的使用需要加上对应的依赖`sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`, `sentinel-datasource-apollo`
-
-### 自定义DataSource
-
-自定义DataSource只需要两步。
-
-1. 定义DataSource
-  
-        public class CustomDataSource implements ReadableDataSource {
-            private String fieldA;
-            private String fieldB;
-            ...
-        }
-   
-2. 装配DataSource。有两种方式处理。
-
-    * 直接构造DataSource
-      
-            @Bean
-            public CustomDataSource customDataSource() {
-                CustomDataSource customDataSource =
-                                                new CustomDataSource();
-                customDataSource.setFieldA("valueA");
-                customDataSource.setFieldB("valueB");
-                ...
-                return customDataSource;
-            }
-
-    * 在classpath:/META-INF/sentinel-datasource.properties中管理DataSource信息
-    
-            custom = yourpackage.CustomDataSource
-    
-       在application.properties中定义DataSource
-    
-            spring.cloud.sentinel.datasource.type = custom
-            spring.cloud.sentinel.datasource.fieldA = valueA
-            spring.cloud.sentinel.datasource.fieldB = valueB
-           
-        注意：由于目前Sentinel的AbstractDataSource需要有个Converter作为构造函数中的参数，并且它的子类的构造都是通过多个参数的构造函数构造的。
-            所以目前所有的Sentinel starter中的DataSource都是基于FactoryBean并且通过设置属性构造的。如果有这方面的需求，需要再多加一个registerFactoryBean过程。
-            
-            SentinelDataSourceRegistry.registerFactoryBean("custeom", CustomDataSourceFactoryBean.class);
-            
-        如果自定义DataSource可以注入属性，那么没有必要使用SentinelDataSourceRegistry注册FactoryBean。
-    
 
 ## More
 Sentinel 是一款功能强大的中间件，从流量控制，熔断降级，系统负载保护等多个维度保护服务的稳定性。此 Demo 仅演示了 使用 Sentinel 作为限流工具的使用，更多 Sentinel 相关的信息，请参考 [Sentinel 项目](https://github.com/alibaba/Sentinel)。

@@ -42,7 +42,7 @@ import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelWebAutoConfiguration {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(SentinelWebAutoConfiguration.class);
 
 	@Autowired
@@ -53,11 +53,6 @@ public class SentinelWebAutoConfiguration {
 		FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
 
 		SentinelProperties.Filter filterConfig = properties.getFilter();
-
-		if (null == filterConfig) {
-			filterConfig = new SentinelProperties.Filter();
-			properties.setFilter(filterConfig);
-		}
 
 		if (filterConfig.getUrlPatterns() == null
 				|| filterConfig.getUrlPatterns().isEmpty()) {
@@ -70,7 +65,7 @@ public class SentinelWebAutoConfiguration {
 		Filter filter = new CommonFilter();
 		registration.setFilter(filter);
 		registration.setOrder(filterConfig.getOrder());
-		logger.info("[Sentinel Starter] register Sentinel with urlPatterns: {}.",
+		log.info("[Sentinel Starter] register Sentinel with urlPatterns: {}.",
 				filterConfig.getUrlPatterns());
 		return registration;
 

@@ -16,17 +16,16 @@
 
 package org.springframework.cloud.alibaba.nacos.endpoint;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.nacos.api.config.ConfigService;
-
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xiaojing
@@ -35,21 +34,17 @@ public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 
 	private final NacosConfigProperties nacosConfigProperties;
 
-	private final NacosPropertySourceRepository nacosPropertySourceRepository;
-
 	private final List<String> dataIds;
 
 	private final ConfigService configService;
 
 	public NacosConfigHealthIndicator(NacosConfigProperties nacosConfigProperties,
-			NacosPropertySourceRepository nacosPropertySourceRepository,
 			ConfigService configService) {
 		this.nacosConfigProperties = nacosConfigProperties;
-		this.nacosPropertySourceRepository = nacosPropertySourceRepository;
 		this.configService = configService;
 
 		this.dataIds = new ArrayList<>();
-		for (NacosPropertySource nacosPropertySource : this.nacosPropertySourceRepository
+		for (NacosPropertySource nacosPropertySource : NacosPropertySourceRepository
 				.getAll()) {
 			this.dataIds.add(nacosPropertySource.getDataId());
 		}

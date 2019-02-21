@@ -16,42 +16,47 @@
 
 package org.springframework.cloud.alibaba.nacos.registry;
 
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.Cluster;
-import com.alibaba.nacos.api.naming.pojo.Instance;
-
 /**
  * @author xiaojing
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class NacosServiceRegistry implements ServiceRegistry<NacosRegistration> {
+public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private static Logger logger = LoggerFactory.getLogger(NacosServiceRegistry.class);
 
-	@Override
-	public void register(NacosRegistration registration) {
+	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
-		if (!registration.isRegisterEnabled()) {
-			logger.info("Nacos Registration is disabled...");
-			return;
-		}
+	private final NamingService namingService;
+
+	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
+		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+		this.namingService = nacosDiscoveryProperties.namingServiceInstance();
+	}
+
+	@Override
+	public void register(Registration registration) {
+
 		if (StringUtils.isEmpty(registration.getServiceId())) {
 			logger.info("No service to register for nacos client...");
 			return;
 		}
 
-		NamingService namingService = registration.getNacosNamingService();
 		String serviceId = registration.getServiceId();
 
 		Instance instance = new Instance();
 		instance.setIp(registration.getHost());
 		instance.setPort(registration.getPort());
-		instance.setWeight(registration.getRegisterWeight());
-		instance.setCluster(new Cluster(registration.getCluster()));
+		instance.setWeight(nacosDiscoveryProperties.getWeight());
+		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
 		instance.setMetadata(registration.getMetadata());
 
 		try {
@@ -66,7 +71,7 @@ public class NacosServiceRegistry implements ServiceRegistry<NacosRegistration> 
 	}
 
 	@Override
-	public void deregister(NacosRegistration registration) {
+	public void deregister(Registration registration) {
 
 		logger.info("De-registering from Nacos Server now...");
 
@@ -75,12 +80,12 @@ public class NacosServiceRegistry implements ServiceRegistry<NacosRegistration> 
 			return;
 		}
 
-		NamingService namingService = registration.getNacosNamingService();
+		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
 		String serviceId = registration.getServiceId();
 
 		try {
 			namingService.deregisterInstance(serviceId, registration.getHost(),
-					registration.getPort(), registration.getCluster());
+					registration.getPort(), nacosDiscoveryProperties.getClusterName());
 		}
 		catch (Exception e) {
 			logger.error("ERR_NACOS_DEREGISTER, de-register failed...{},",
@@ -96,12 +101,12 @@ public class NacosServiceRegistry implements ServiceRegistry<NacosRegistration> 
 	}
 
 	@Override
-	public void setStatus(NacosRegistration registration, String status) {
+	public void setStatus(Registration registration, String status) {
 		// nacos doesn't support set status of a particular registration.
 	}
 
 	@Override
-	public <T> T getStatus(NacosRegistration registration) {
+	public <T> T getStatus(Registration registration) {
 		// nacos doesn't support query status of a particular registration.
 		return null;
 	}
