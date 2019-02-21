@@ -59,6 +59,7 @@
         <spring-cloud-netflix.version>2.0.0.RELEASE</spring-cloud-netflix.version>
         <spring-cloud-openfeign.version>2.0.0.RELEASE</spring-cloud-openfeign.version>
 
+
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
         <slf4j-api.version>1.7.25</slf4j-api.version>
@@ -82,6 +83,7 @@
         <module>spring-cloud-starter-alibaba</module>
         <module>spring-cloud-starter-alicloud</module>
         <module>spring-cloud-alicloud-oss</module>
+        <module>spring-cloud-alibaba-sentinel-zuul</module>
     </modules>
 
     <dependencyManagement>
