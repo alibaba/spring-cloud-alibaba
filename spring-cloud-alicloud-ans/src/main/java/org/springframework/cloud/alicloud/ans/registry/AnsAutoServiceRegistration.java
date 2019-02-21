@@ -16,8 +16,8 @@
 
 package org.springframework.cloud.alicloud.ans.registry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
@@ -35,7 +35,8 @@ import org.springframework.util.StringUtils;
 public class AnsAutoServiceRegistration
 		extends AbstractAutoServiceRegistration<AnsRegistration> {
 
-	private static final Log log = LogFactory.getLog(AnsAutoServiceRegistration.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(AnsAutoServiceRegistration.class);
 
 	private AnsRegistration registration;
 
