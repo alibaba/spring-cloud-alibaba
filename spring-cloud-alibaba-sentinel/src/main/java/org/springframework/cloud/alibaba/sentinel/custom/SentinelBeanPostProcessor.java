@@ -16,7 +16,10 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import com.alibaba.csp.sentinel.slots.block.BlockException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -37,9 +40,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 /**
  * PostProcessor handle @SentinelRestTemplate Annotation, add interceptor for RestTemplate
@@ -50,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProcessor {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(SentinelBeanPostProcessor.class);
 
 	private final ApplicationContext applicationContext;
@@ -97,14 +98,14 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			return;
 		}
 		if (blockClass != void.class && StringUtils.isEmpty(blockMethod)) {
-			logger.error(
+			log.error(
 					"{} class attribute exists but {} method attribute is not exists in bean[{}]",
 					type, type, beanName);
 			throw new IllegalArgumentException(type + " class attribute exists but "
 					+ type + " method attribute is not exists in bean[" + beanName + "]");
 		}
 		else if (blockClass == void.class && !StringUtils.isEmpty(blockMethod)) {
-			logger.error(
+			log.error(
 					"{} method attribute exists but {} class attribute is not exists in bean[{}]",
 					type, type, beanName);
 			throw new IllegalArgumentException(type + " method attribute exists but "
@@ -116,7 +117,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 				Arrays.stream(args).map(clazz -> clazz.getSimpleName()).toArray());
 		Method foundMethod = ClassUtils.getStaticMethod(blockClass, blockMethod, args);
 		if (foundMethod == null) {
-			logger.error(
+			log.error(
 					"{} static method can not be found in bean[{}]. The right method signature is {}#{}{}, please check your class name, method name and arguments",
 					type, beanName, blockClass.getName(), blockMethod, argsStr);
 			throw new IllegalArgumentException(type
@@ -127,7 +128,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		}
 
 		if (!ClientHttpResponse.class.isAssignableFrom(foundMethod.getReturnType())) {
-			logger.error(
+			log.error(
 					"{} method return value in bean[{}] is not ClientHttpResponse: {}#{}{}",
 					type, beanName, blockClass.getName(), blockMethod, argsStr);
 			throw new IllegalArgumentException(type + " method return value in bean["
