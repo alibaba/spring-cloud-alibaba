@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xiaolongzuo
+ * @author pbting
  */
 @Configuration
 @Conditional(MigrateOnConditionMissingClass.class)

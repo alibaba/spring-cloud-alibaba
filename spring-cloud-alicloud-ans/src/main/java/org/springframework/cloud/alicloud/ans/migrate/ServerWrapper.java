@@ -4,6 +4,9 @@ import com.netflix.loadbalancer.Server;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * @author pbting
+ */
 public class ServerWrapper {
 
 	private Server server;

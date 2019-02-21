@@ -17,6 +17,7 @@
 package org.springframework.cloud.alicloud.acm.endpoint;
 
 import com.alibaba.edas.acm.ConfigService;
+
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.cloud.alicloud.acm.AcmPropertySourceRepository;
@@ -33,39 +34,40 @@ import java.util.List;
  */
 public class AcmHealthIndicator extends AbstractHealthIndicator {
 
-    private final AcmProperties acmProperties;
+	private final AcmProperties acmProperties;
 
-    private final AcmPropertySourceRepository acmPropertySourceRepository;
+	private final AcmPropertySourceRepository acmPropertySourceRepository;
 
-    private final List<String> dataIds;
+	private final List<String> dataIds;
 
-    public AcmHealthIndicator(AcmProperties acmProperties,
-                              AcmPropertySourceRepository acmPropertySourceRepository) {
-        this.acmProperties = acmProperties;
-        this.acmPropertySourceRepository = acmPropertySourceRepository;
+	public AcmHealthIndicator(AcmProperties acmProperties,
+			AcmPropertySourceRepository acmPropertySourceRepository) {
+		this.acmProperties = acmProperties;
+		this.acmPropertySourceRepository = acmPropertySourceRepository;
 
-        this.dataIds = new ArrayList<>();
-        for (AcmPropertySource acmPropertySource : this.acmPropertySourceRepository
-            .getAll()) {
-            this.dataIds.add(acmPropertySource.getDataId());
-        }
-    }
+		this.dataIds = new ArrayList<>();
+		for (AcmPropertySource acmPropertySource : this.acmPropertySourceRepository
+				.getAll()) {
+			this.dataIds.add(acmPropertySource.getDataId());
+		}
+	}
 
-    @Override
-    protected void doHealthCheck(Health.Builder builder) throws Exception {
-        for (String dataId : dataIds) {
-            try {
-                String config = ConfigService.getConfig(dataId, acmProperties.getGroup(),
-                    acmProperties.getTimeout());
-                if (StringUtils.isEmpty(config)) {
-                    builder.down().withDetail(String.format("dataId: '%s', group: '%s'",
-                        dataId, acmProperties.getGroup()), "config is empty");
-                }
-            } catch (Exception e) {
-                builder.down().withDetail(String.format("dataId: '%s', group: '%s'",
-                    dataId, acmProperties.getGroup()), e.getMessage());
-            }
-        }
-        builder.up().withDetail("dataIds", dataIds);
-    }
+	@Override
+	protected void doHealthCheck(Health.Builder builder) throws Exception {
+		for (String dataId : dataIds) {
+			try {
+				String config = ConfigService.getConfig(dataId, acmProperties.getGroup(),
+						acmProperties.getTimeout());
+				if (StringUtils.isEmpty(config)) {
+					builder.down().withDetail(String.format("dataId: '%s', group: '%s'",
+							dataId, acmProperties.getGroup()), "config is empty");
+				}
+			}
+			catch (Exception e) {
+				builder.down().withDetail(String.format("dataId: '%s', group: '%s'",
+						dataId, acmProperties.getGroup()), e.getMessage());
+			}
+		}
+		builder.up().withDetail("dataIds", dataIds);
+	}
 }

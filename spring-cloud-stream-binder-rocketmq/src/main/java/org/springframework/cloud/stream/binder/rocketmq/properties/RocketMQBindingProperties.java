@@ -16,16 +16,19 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.properties;
 
+import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
+
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public class RocketMQBindingProperties {
+public class RocketMQBindingProperties implements BinderSpecificPropertiesProvider {
 
 	private RocketMQConsumerProperties consumer = new RocketMQConsumerProperties();
 
 	private RocketMQProducerProperties producer = new RocketMQProducerProperties();
 
+	@Override
 	public RocketMQConsumerProperties getConsumer() {
 		return consumer;
 	}
@@ -34,6 +37,7 @@ public class RocketMQBindingProperties {
 		this.consumer = consumer;
 	}
 
+	@Override
 	public RocketMQProducerProperties getProducer() {
 		return producer;
 	}

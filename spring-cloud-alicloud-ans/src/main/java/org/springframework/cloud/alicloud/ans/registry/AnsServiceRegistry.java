@@ -18,9 +18,10 @@ package org.springframework.cloud.alicloud.ans.registry;
 
 import com.alibaba.ans.core.NamingService;
 import com.alibaba.ans.shaded.com.taobao.vipserver.client.ipms.NodeReactor;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.Map;
  */
 public class AnsServiceRegistry implements ServiceRegistry<AnsRegistration> {
 
-	private static Log log = LogFactory.getLog(AnsServiceRegistry.class);
+	private static final Logger log = LoggerFactory.getLogger(AnsServiceRegistry.class);
 
 	private static final String SEPARATOR = ",";
 
