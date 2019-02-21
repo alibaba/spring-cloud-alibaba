@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alicloud.acm.AcmPropertySourceRepository;
-import org.springframework.cloud.alicloud.acm.bootstrap.AcmPropertySource;
 import org.springframework.cloud.alicloud.context.acm.AcmIntegrationProperties;
 import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
@@ -50,7 +49,7 @@ import com.alibaba.edas.acm.listener.ConfigChangeListener;
 public class AcmContextRefresher
 		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
-	private Logger logger = LoggerFactory.getLogger(AcmContextRefresher.class);
+	private Logger log = LoggerFactory.getLogger(AcmContextRefresher.class);
 
 	private final ContextRefresher contextRefresher;
 
@@ -103,7 +102,7 @@ public class AcmContextRefresher
 						}
 						catch (NoSuchAlgorithmException
 								| UnsupportedEncodingException e) {
-							logger.warn("unable to get md5 for dataId: " + dataId, e);
+							log.warn("unable to get md5 for dataId: " + dataId, e);
 						}
 					}
 					refreshHistory.add(dataId, md5);

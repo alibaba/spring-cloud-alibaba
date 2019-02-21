@@ -27,29 +27,29 @@ import java.util.Map;
  */
 public class AcmPropertySource extends MapPropertySource {
 
-    private final String dataId;
+	private final String dataId;
 
-    private final Date timestamp;
+	private final Date timestamp;
 
-    private final boolean groupLevel;
+	private final boolean groupLevel;
 
-    AcmPropertySource(String dataId, Map<String, Object> source, Date timestamp,
-                      boolean groupLevel) {
-        super(dataId, source);
-        this.dataId = dataId;
-        this.timestamp = timestamp;
-        this.groupLevel = groupLevel;
-    }
+	AcmPropertySource(String dataId, Map<String, Object> source, Date timestamp,
+			boolean groupLevel) {
+		super(dataId, source);
+		this.dataId = dataId;
+		this.timestamp = timestamp;
+		this.groupLevel = groupLevel;
+	}
 
-    public String getDataId() {
-        return dataId;
-    }
+	public String getDataId() {
+		return dataId;
+	}
 
-    public Date getTimestamp() {
-        return timestamp;
-    }
+	public Date getTimestamp() {
+		return timestamp;
+	}
 
-    public boolean isGroupLevel() {
-        return groupLevel;
-    }
+	public boolean isGroupLevel() {
+		return groupLevel;
+	}
 }
