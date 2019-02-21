@@ -1,7 +1,7 @@
 package org.springframework.cloud.alicloud.ans.migrate;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.cloud.alicloud.ans.registry.AnsRegistration;
 import org.springframework.cloud.alicloud.ans.registry.AnsServiceRegistry;
@@ -19,7 +19,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component
 public class MigrateServiceRegistry {
 
-	private static final Log log = LogFactory.getLog(MigrateServiceRegistry.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(MigrateServiceRegistry.class);
 
 	private AtomicBoolean running = new AtomicBoolean(false);
 
