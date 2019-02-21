@@ -88,6 +88,7 @@
         <module>spring-cloud-alibaba-dependencies</module>
         <module>spring-cloud-alibaba-sentinel</module>
         <module>spring-cloud-alibaba-sentinel-datasource</module>
+        <module>spring-cloud-alibaba-sentinel-zuul</module>
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-fescar</module>
@@ -105,7 +106,6 @@
         <module>spring-cloud-alicloud-ans</module>
         <module>spring-cloud-alicloud-schedulerx</module>
         <module>spring-cloud-alicloud-sms</module>
-        <module>spring-cloud-alibaba-sentinel-zuul</module>
     </modules>
 
     <dependencyManagement>
