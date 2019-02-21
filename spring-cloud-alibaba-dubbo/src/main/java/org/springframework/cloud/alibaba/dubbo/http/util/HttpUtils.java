@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.http.HttpHeaders.COOKIE;
-import static org.springframework.util.CollectionUtils.unmodifiableMultiValueMap;
 import static org.springframework.util.StringUtils.delimitedListToStringArray;
 import static org.springframework.util.StringUtils.hasText;
 import static org.springframework.util.StringUtils.trimAllWhitespace;
@@ -125,7 +124,7 @@ public abstract class HttpUtils {
                 addParam(parameters, name, value);
             }
         }
-        return unmodifiableMultiValueMap(parameters);
+        return parameters;
     }
 
     /**
@@ -161,7 +160,7 @@ public abstract class HttpUtils {
             cookies.add(name, httpCookie);
         }
 
-        return unmodifiableMultiValueMap(cookies);
+        return cookies;
     }
 
     /**

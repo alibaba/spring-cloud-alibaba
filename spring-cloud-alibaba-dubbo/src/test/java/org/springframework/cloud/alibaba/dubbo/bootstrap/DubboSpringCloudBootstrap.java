@@ -31,7 +31,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -153,6 +152,9 @@ public class DubboSpringCloudBootstrap {
         System.out.println(dubboFeignRestService.pathVariables("c", "b", "a"));
         // Spring Cloud Open Feign REST Call
         System.out.println(feignRestService.pathVariables("b", "a", "c"));
+
+        // RestTemplate call
+        System.out.println(restTemplate.getForEntity("http://spring-cloud-alibaba-dubbo//path-variables/{p1}/{p2}?v=c", String.class, "a", "b"));
     }
 
     private void callHeaders() {
@@ -180,6 +182,9 @@ public class DubboSpringCloudBootstrap {
         System.out.println(dubboFeignRestService.params("1", 1));
         // Spring Cloud Open Feign REST Call
         System.out.println(feignRestService.params("1", 1));
+
+        // RestTemplate call
+        System.out.println(restTemplate.getForEntity("http://spring-cloud-alibaba-dubbo/param?param=小马哥", String.class));
     }
 
     private void callRequestBodyMap() {
@@ -190,34 +195,15 @@ public class DubboSpringCloudBootstrap {
         data.put("age", 33);
 
         // Dubbo Service call
-        System.out.println(restService.requestBody(data, "Hello,World"));
+        System.out.println(restService.requestBodyMap(data, "Hello,World"));
         // Spring Cloud Open Feign REST Call (Dubbo Transported)
-        System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
-        // Spring Cloud Open Feign REST Call
+//        System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
+//         Spring Cloud Open Feign REST Call
         System.out.println(feignRestService.requestBody("Hello,World", data));
+
+        // RestTemplate call
+        System.out.println(restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/body/map?param=小马哥", data, User.class));
     }
-
-
-    @Bean
-    public ApplicationRunner restTemplateRunner() {
-        return arguments -> {
-
-            ResponseEntity<String> entity = restTemplate.getForEntity("http://spring-cloud-alibaba-dubbo/param?param=小马哥", String.class);
-            System.out.println(entity);
-
-            Map<String, Object> data = new HashMap<>();
-            data.put("id", 1);
-            data.put("name", "小马哥");
-            data.put("age", 33);
-            User user = restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/body/map", data, User.class);
-
-            System.out.println(restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/body/map", data, String.class));
-
-            Map map = restTemplate.postForObject("http://spring-cloud-alibaba-dubbo/request/body/user", user, Map.class);
-            System.out.println(map);
-        };
-    }
-
 
     @Bean
     @LoadBalanced

@@ -35,8 +35,8 @@ public interface RestService {
 
     String form(String form);
 
-    User requestBody(Map<String, Object> data, String param);
+    User requestBodyMap(Map<String, Object> data, String param);
 
-    Map<String, Object> requestBody(User user);
+    Map<String, Object> requestBodyUser(User user);
 
 }

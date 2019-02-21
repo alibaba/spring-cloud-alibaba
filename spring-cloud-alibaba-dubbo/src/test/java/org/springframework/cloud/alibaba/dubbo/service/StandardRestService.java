@@ -110,10 +110,10 @@ public class StandardRestService implements RestService {
 
     @Override
     @PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_UTF8_VALUE)
-    @Path("/request/setBody/map")
+    @Path("/request/body/map")
     @POST
     @Produces(APPLICATION_JSON_VALUE)
-    public User requestBody(@RequestBody Map<String, Object> data, @RequestParam("param") @QueryParam("param") String param) {
+    public User requestBodyMap(@RequestBody Map<String, Object> data, @RequestParam("param") @QueryParam("param") String param) {
         User user = new User();
         user.setId(((Integer) data.get("id")).longValue());
         user.setName((String) data.get("name"));
@@ -123,11 +123,11 @@ public class StandardRestService implements RestService {
     }
 
     @PostMapping(value = "/request/body/user", consumes = APPLICATION_JSON_UTF8_VALUE)
-    @Path("/request/setBody/user")
+    @Path("/request/body/user")
     @POST
     @Override
     @Consumes(APPLICATION_JSON_UTF8_VALUE)
-    public Map<String, Object> requestBody(@RequestBody User user) {
+    public Map<String, Object> requestBodyUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", user.getId());
         map.put("name", user.getName());

@@ -29,7 +29,7 @@ import java.io.InputStream;
  * Dubbo {@link ClientHttpResponse} implementation
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
- * @see DubboAdapterLoadBalancerInterceptor
+ * @see DubboTransporterInterceptor
  */
 class DubboClientHttpResponse implements ClientHttpResponse {
 
