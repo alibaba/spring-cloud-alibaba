@@ -114,15 +114,15 @@ public class DubboServiceMetadataRepository {
             object = map.get(matcher);
             if (object == null) { // Can't match exactly
                 // Require to match one by one
+                HttpRequest request = builder()
+                        .method(requestMetadata.getMethod())
+                        .path(requestMetadata.getPath())
+                        .params(requestMetadata.getParams())
+                        .headers(requestMetadata.getHeaders())
+                        .build();
+
                 for (Map.Entry<RequestMetadataMatcher, T> entry : map.entrySet()) {
                     RequestMetadataMatcher possibleMatcher = entry.getKey();
-                    HttpRequest request = builder()
-                            .method(requestMetadata.getMethod())
-                            .path(requestMetadata.getPath())
-                            .params(requestMetadata.getParams())
-                            .headers(requestMetadata.getHeaders())
-                            .build();
-
                     if (possibleMatcher.match(request)) {
                         object = entry.getValue();
                         break;

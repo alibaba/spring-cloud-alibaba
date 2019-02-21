@@ -26,17 +26,17 @@ import org.springframework.util.MultiValueMap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Map;
 
 import static org.springframework.cloud.alibaba.dubbo.http.util.HttpUtils.getParameters;
 import static org.springframework.cloud.alibaba.dubbo.http.util.HttpUtils.parseCookies;
-import static org.springframework.http.HttpHeaders.readOnlyHttpHeaders;
 
 /**
- * Default {@link HttpServerRequest} implementation
+ * Mutable {@link HttpServerRequest} implementation
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class DefaultHttpServerRequest implements HttpServerRequest {
+public class MutableHttpServerRequest implements HttpServerRequest {
 
     private final HttpMethod httpMethod;
 
@@ -52,14 +52,19 @@ public class DefaultHttpServerRequest implements HttpServerRequest {
 
     private final HttpInputMessage httpInputMessage;
 
-    public DefaultHttpServerRequest(HttpRequest httpRequest, byte[] body) {
+    public MutableHttpServerRequest(HttpRequest httpRequest, byte[] body) {
         this.httpMethod = httpRequest.getMethod();
         this.uri = httpRequest.getURI();
         this.path = uri.getPath();
-        this.httpHeaders = readOnlyHttpHeaders(httpRequest.getHeaders());
+        this.httpHeaders = new HttpHeaders(httpRequest.getHeaders());
         this.queryParams = getParameters(httpRequest);
         this.httpInputMessage = new ByteArrayHttpInputMessage(body);
         this.cookies = parseCookies(httpHeaders);
+    }
+
+    public MutableHttpServerRequest params(Map<String, String> params) {
+        queryParams.setAll(params);
+        return this;
     }
 
     @Override
@@ -95,10 +100,5 @@ public class DefaultHttpServerRequest implements HttpServerRequest {
     @Override
     public MultiValueMap<String, String> getQueryParams() {
         return queryParams;
-    }
-
-    @Override
-    public MultiValueMap<String, HttpCookie> getCookies() {
-        return cookies;
     }
 }

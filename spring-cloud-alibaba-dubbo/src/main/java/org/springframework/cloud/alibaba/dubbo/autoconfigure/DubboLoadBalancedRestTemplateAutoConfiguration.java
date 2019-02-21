@@ -26,7 +26,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
-import org.springframework.cloud.alibaba.dubbo.client.loadbalancer.DubboAdapterLoadBalancerInterceptor;
+import org.springframework.cloud.alibaba.dubbo.client.loadbalancer.DubboMetadataInitializerInterceptor;
+import org.springframework.cloud.alibaba.dubbo.client.loadbalancer.DubboTransporterInterceptor;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
@@ -124,7 +125,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
 
 
     /**
-     * Adapt the instance of {@link DubboAdapterLoadBalancerInterceptor} to the {@link LoadBalancerInterceptor} Bean.
+     * Adapt the instance of {@link DubboTransporterInterceptor} to the {@link LoadBalancerInterceptor} Bean.
      *
      * @param restTemplate              {@link LoadBalanced @LoadBalanced} {@link RestTemplate} Bean
      * @param dubboTranslatedAttributes the annotation dubboTranslatedAttributes {@link RestTemplate} bean being annotated
@@ -138,11 +139,13 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
 
         int index = interceptors.indexOf(loadBalancerInterceptor);
 
-        if (index > -1) {
-            interceptors.set(index, new DubboAdapterLoadBalancerInterceptor(repository, loadBalancerInterceptor,
-                    restTemplate.getMessageConverters(), classLoader,
-                    dubboTransportedMetadata, serviceFactory, contextFactory));
-        }
+        index = index < 0 ? 0 : index;
+
+        // Add ClientHttpRequestInterceptor instances before loadBalancerInterceptor
+        interceptors.add(index++, new DubboMetadataInitializerInterceptor(repository));
+
+        interceptors.add(index++, new DubboTransporterInterceptor(repository, restTemplate.getMessageConverters(),
+                classLoader, dubboTransportedMetadata, serviceFactory, contextFactory));
 
         restTemplate.setInterceptors(interceptors);
     }

@@ -16,7 +16,6 @@
  */
 package org.springframework.cloud.alibaba.dubbo.http;
 
-import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpRequest;
 import org.springframework.util.MultiValueMap;
@@ -36,13 +35,8 @@ public interface HttpServerRequest extends HttpRequest, HttpInputMessage {
     String getPath();
 
     /**
-     * Return a read-only map with parsed and decoded query parameter values.
+     * Return a map with parsed and decoded query parameter values.
      */
     MultiValueMap<String, String> getQueryParams();
-
-    /**
-     * Return a read-only map of cookies sent by the client.
-     */
-    MultiValueMap<String, HttpCookie> getCookies();
 
 }
