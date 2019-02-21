@@ -116,11 +116,11 @@ public class AnsAutoServiceRegistration
 
 	@Override
 	protected int getConfiguredPort() {
-		return registration.getPort();
+		return this.getPort().get();
 	}
 
 	@Override
 	protected void setConfiguredPort(int port) {
-		this.registration.setPort(port);
+		this.getPort().set(port);
 	}
 }
