@@ -16,43 +16,46 @@
 
 package org.springframework.cloud.alicloud.context.nacos;
 
-import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
-import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.cloud.alicloud.context.BaseAliCloudSpringApplication;
 import org.springframework.cloud.alicloud.utils.ChangeOrderUtils;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
+import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
 
 /**
  * @author xiaolongzuo
  */
-@PrepareForTest({EdasChangeOrderConfigurationFactory.class,
-        NacosConfigParameterInitListener.class, AliCloudAnsInitializer.class})
-public class NacosDiscoveryParameterInitListenerTests extends BaseAliCloudSpringApplication {
+@PrepareForTest({ EdasChangeOrderConfigurationFactory.class,
+		NacosDiscoveryParameterInitListener.class, AliCloudAnsInitializer.class })
+public class NacosDiscoveryParameterInitListenerTests
+		extends BaseAliCloudSpringApplication {
 
-    @BeforeClass
-    public static void setUp() {
-        ChangeOrderUtils.mockChangeOrder();
-        System.getProperties().setProperty("webContext", "/vipserver");
-        System.getProperties().setProperty("serverPort", "80");
-    }
+	@BeforeClass
+	public static void setUp() {
+		ChangeOrderUtils.mockChangeOrder();
+	}
 
-    @Test
-    public void testNacosParameterInitListener() {
-        assertThat(System.getProperty("spring.cloud.nacos.config.server-addr"))
-                .isEqualTo("");
-        assertThat(System.getProperty("spring.cloud.nacos.config.endpoint"))
-                .isEqualTo("testDomain");
-        assertThat(System.getProperty("spring.cloud.nacos.config.namespace"))
-                .isEqualTo("testTenantId");
-        assertThat(System.getProperty("spring.cloud.nacos.config.access-key"))
-                .isEqualTo("testAK");
-        assertThat(System.getProperty("spring.cloud.nacos.config.secret-key"))
-                .isEqualTo("testSK");
-        assertThat(System.getProperties().getProperty("webContext")).isEqualTo("/vipserver");
-        assertThat(System.getProperties().getProperty("serverPort")).isEqualTo("80");
-    }
+	@Test
+	public void testNacosParameterInitListener() {
+		assertThat(System.getProperty("spring.cloud.nacos.discovery.server-mode"))
+				.isEqualTo("EDAS");
+		assertThat(System.getProperty("spring.cloud.nacos.discovery.server-addr"))
+				.isEqualTo("");
+		assertThat(System.getProperty("spring.cloud.nacos.discovery.endpoint"))
+				.isEqualTo("testDomain");
+		assertThat(System.getProperty("spring.cloud.nacos.discovery.namespace"))
+				.isEqualTo("testTenantId");
+		assertThat(System.getProperty("spring.cloud.nacos.discovery.access-key"))
+				.isEqualTo("testAK");
+		assertThat(System.getProperty("spring.cloud.nacos.discovery.secret-key"))
+				.isEqualTo("testSK");
+		assertThat(System.getProperties().getProperty("webContext"))
+				.isEqualTo("/vipserver");
+		assertThat(System.getProperties().getProperty("serverPort")).isEqualTo("80");
+	}
 }
