@@ -49,7 +49,7 @@ import com.alibaba.edas.acm.listener.ConfigChangeListener;
 public class AcmContextRefresher
 		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
-	private Logger logger = LoggerFactory.getLogger(AcmContextRefresher.class);
+	private Logger log = LoggerFactory.getLogger(AcmContextRefresher.class);
 
 	private final ContextRefresher contextRefresher;
 
@@ -103,7 +103,7 @@ public class AcmContextRefresher
 							}
 							catch (NoSuchAlgorithmException
 									| UnsupportedEncodingException e) {
-								logger.warn("unable to get md5 for dataId: " + dataId, e);
+								log.warn("unable to get md5 for dataId: " + dataId, e);
 							}
 						}
 						refreshHistory.add(dataId, md5);
