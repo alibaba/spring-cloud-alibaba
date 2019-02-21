@@ -21,15 +21,11 @@ import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author xiaolongzuo
+ * @author pbting
  */
 public class AnsDiscoveryClient implements DiscoveryClient {
 

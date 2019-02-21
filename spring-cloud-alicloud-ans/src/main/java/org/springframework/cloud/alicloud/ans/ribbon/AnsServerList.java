@@ -26,6 +26,7 @@ import java.util.List;
 
 /**
  * @author xiaolongzuo
+ * @author pbting
  */
 public class AnsServerList extends AbstractServerList<AnsServer> {
 
