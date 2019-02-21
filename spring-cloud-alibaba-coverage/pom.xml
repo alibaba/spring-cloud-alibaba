@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-cloud-alibaba-coverage</artifactId>
-    <name>spring-cloud-alibaba-coverage</name>
+    <name>Spring Cloud Alibaba Coverage</name>
 
     <properties>
         <spring.cloud.alibaba.version>0.2.2.BUILD-SNAPSHOT</spring.cloud.alibaba.version>
