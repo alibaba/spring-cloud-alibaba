@@ -17,19 +17,16 @@
 package org.springframework.cloud.alibaba.sentinel.custom;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Arrays;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.cloud.alibaba.sentinel.rest.SentinelClientHttpResponse;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.util.ClassUtils;
 
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphU;
@@ -37,19 +34,15 @@ import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.context.ContextUtil;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
-import com.alibaba.csp.sentinel.util.StringUtil;
 
 /**
  * Interceptor using by SentinelRestTemplate
  *
- * @author fangjian
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(SentinelProtectInterceptor.class);
-
-	private SentinelRestTemplate sentinelRestTemplate;
+	private final SentinelRestTemplate sentinelRestTemplate;
 
 	public SentinelProtectInterceptor(SentinelRestTemplate sentinelRestTemplate) {
 		this.sentinelRestTemplate = sentinelRestTemplate;
@@ -82,18 +75,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				throw new IllegalStateException(e);
 			}
 			else {
-				try {
-					return handleBlockException(request, body, execution,
-							(BlockException) e);
-				}
-				catch (Exception ex) {
-					if (ex instanceof IllegalStateException) {
-						throw (IllegalStateException) ex;
-					}
-					throw new IllegalStateException(
-							"sentinel handle BlockException error: " + ex.getMessage(),
-							ex);
-				}
+				return handleBlockException(request, body, execution, (BlockException) e);
 			}
 		}
 		finally {
@@ -109,84 +91,49 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 	}
 
 	private ClientHttpResponse handleBlockException(HttpRequest request, byte[] body,
-			ClientHttpRequestExecution execution, BlockException ex) throws Exception {
+			ClientHttpRequestExecution execution, BlockException ex) {
 		Object[] args = new Object[] { request, body, execution, ex };
 		// handle degrade
 		if (isDegradeFailure(ex)) {
-			Method method = extractFallbackMethod(sentinelRestTemplate.fallback(),
+			Method fallbackMethod = extractFallbackMethod(sentinelRestTemplate.fallback(),
 					sentinelRestTemplate.fallbackClass());
-			if (method != null) {
-				return (ClientHttpResponse) method.invoke(null, args);
+			if (fallbackMethod != null) {
+				return methodInvoke(fallbackMethod, args);
 			}
 			else {
 				return new SentinelClientHttpResponse();
 			}
 		}
-		// handle block
+		// handle flow
 		Method blockHandler = extractBlockHandlerMethod(
 				sentinelRestTemplate.blockHandler(),
 				sentinelRestTemplate.blockHandlerClass());
 		if (blockHandler != null) {
-			return (ClientHttpResponse) blockHandler.invoke(null, args);
+			return methodInvoke(blockHandler, args);
 		}
 		else {
 			return new SentinelClientHttpResponse();
 		}
 	}
 
+	private ClientHttpResponse methodInvoke(Method method, Object... args) {
+		try {
+			return (ClientHttpResponse) method.invoke(null, args);
+		}
+		catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+		catch (InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	private Method extractFallbackMethod(String fallback, Class<?> fallbackClass) {
-		if (StringUtil.isBlank(fallback) || fallbackClass == void.class) {
-			return null;
-		}
-		Method cachedMethod = BlockClassRegistry.lookupFallback(fallbackClass, fallback);
-		Class[] args = new Class[] { HttpRequest.class, byte[].class,
-				ClientHttpRequestExecution.class, BlockException.class };
-		if (cachedMethod == null) {
-			cachedMethod = ClassUtils.getStaticMethod(fallbackClass, fallback, args);
-			if (cachedMethod != null) {
-				if (!ClientHttpResponse.class
-						.isAssignableFrom(cachedMethod.getReturnType())) {
-					throw new IllegalStateException(String.format(
-							"the return type of method [%s] in class [%s] is not ClientHttpResponse in degrade",
-							cachedMethod.getName(), fallbackClass.getCanonicalName()));
-				}
-				BlockClassRegistry.updateFallbackFor(fallbackClass, fallback,
-						cachedMethod);
-			}
-			else {
-				throw new IllegalStateException(String.format(
-						"Cannot find method [%s] in class [%s] with parameters %s in degrade",
-						fallback, fallbackClass.getCanonicalName(), Arrays.asList(args)));
-			}
-		}
-		return cachedMethod;
+		return BlockClassRegistry.lookupFallback(fallbackClass, fallback);
 	}
 
 	private Method extractBlockHandlerMethod(String block, Class<?> blockClass) {
-		if (StringUtil.isBlank(block) || blockClass == void.class) {
-			return null;
-		}
-		Method cachedMethod = BlockClassRegistry.lookupBlockHandler(blockClass, block);
-		Class[] args = new Class[] { HttpRequest.class, byte[].class,
-				ClientHttpRequestExecution.class, BlockException.class };
-		if (cachedMethod == null) {
-			cachedMethod = ClassUtils.getStaticMethod(blockClass, block, args);
-			if (cachedMethod != null) {
-				if (!ClientHttpResponse.class
-						.isAssignableFrom(cachedMethod.getReturnType())) {
-					throw new IllegalStateException(String.format(
-							"the return type of method [%s] in class [%s] is not ClientHttpResponse in flow control",
-							cachedMethod.getName(), blockClass.getCanonicalName()));
-				}
-				BlockClassRegistry.updateBlockHandlerFor(blockClass, block, cachedMethod);
-			}
-			else {
-				throw new IllegalStateException(String.format(
-						"Cannot find method [%s] in class [%s] with parameters %s in flow control",
-						block, blockClass.getCanonicalName(), Arrays.asList(args)));
-			}
-		}
-		return cachedMethod;
+		return BlockClassRegistry.lookupBlockHandler(blockClass, block);
 	}
 
 	private boolean isDegradeFailure(BlockException ex) {

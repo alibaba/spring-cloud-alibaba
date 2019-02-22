@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.context.named.NamedContextFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationListener;
@@ -22,7 +22,8 @@ import com.netflix.loadbalancer.ILoadBalancer;
  */
 @Component
 public class MigrateRefreshEventListener implements ApplicationListener<RefreshEvent> {
-	private final static Log log = LogFactory.getLog(MigrateRefreshEventListener.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(MigrateRefreshEventListener.class);
 
 	private final static int CHECK_INTERVAL = 1;
 

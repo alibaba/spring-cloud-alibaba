@@ -1,4 +1,31 @@
+/*
+ * Copyright (C) 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
+
+import javax.validation.constraints.NotNull;
+
+import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
+
+import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
+import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -9,10 +36,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class AbstractDataSourceProperties {
 
+	@NotNull
 	private String dataType = "json";
+	@NotNull
+	private RuleType ruleType;
 	private String converterClass;
 	@JsonIgnore
-	protected String factoryBeanName;
+	private final String factoryBeanName;
 
 	public AbstractDataSourceProperties(String factoryBeanName) {
 		this.factoryBeanName = factoryBeanName;
@@ -24,6 +54,14 @@ public class AbstractDataSourceProperties {
 
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+
+	public RuleType getRuleType() {
+		return ruleType;
+	}
+
+	public void setRuleType(RuleType ruleType) {
+		this.ruleType = ruleType;
 	}
 
 	public String getConverterClass() {
@@ -38,12 +76,29 @@ public class AbstractDataSourceProperties {
 		return factoryBeanName;
 	}
 
-	public void setFactoryBeanName(String factoryBeanName) {
-		this.factoryBeanName = factoryBeanName;
-	}
-
-	public void preCheck() {
+	public void preCheck(String dataSourceName) {
 
 	}
 
+	public void postRegister(AbstractDataSource dataSource) {
+		switch (this.getRuleType()) {
+		case FLOW:
+			FlowRuleManager.register2Property(dataSource.getProperty());
+			break;
+		case DEGRADE:
+			DegradeRuleManager.register2Property(dataSource.getProperty());
+			break;
+		case PARAM_FLOW:
+			ParamFlowRuleManager.register2Property(dataSource.getProperty());
+			break;
+		case SYSTEM:
+			SystemRuleManager.register2Property(dataSource.getProperty());
+			break;
+		case AUTHORITY:
+			AuthorityRuleManager.register2Property(dataSource.getProperty());
+			break;
+		default:
+			break;
+		}
+	}
 }

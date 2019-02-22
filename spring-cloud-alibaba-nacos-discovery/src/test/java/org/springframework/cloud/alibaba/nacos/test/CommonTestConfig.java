@@ -14,32 +14,23 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.nacos;
+package org.springframework.cloud.alibaba.nacos.test;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author xiaojing
  */
+
 @Configuration
-@ConditionalOnMissingBean(DiscoveryClient.class)
-@ConditionalOnNacosDiscoveryEnabled
-@EnableConfigurationProperties
-public class NacosDiscoveryClientAutoConfiguration {
+public class CommonTestConfig {
 
 	@Bean
-	public DiscoveryClient nacosDiscoveryClient() {
-		return new NacosDiscoveryClient();
+	@LoadBalanced
+	RestTemplate loadBalancedRestTemplate() {
+		return new RestTemplate();
 	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public NacosDiscoveryProperties nacosProperties() {
-		return new NacosDiscoveryProperties();
-	}
-
 }

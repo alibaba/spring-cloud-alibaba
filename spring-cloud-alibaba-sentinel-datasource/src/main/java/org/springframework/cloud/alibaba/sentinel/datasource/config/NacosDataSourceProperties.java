@@ -1,8 +1,24 @@
+/*
+ * Copyright (C) 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
-import org.springframework.cloud.alibaba.sentinel.datasource.SentinelDataSourceConstants;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
-import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.NacosDataSourceWithAuthorizationFactoryBean;
 import org.springframework.util.StringUtils;
 
 /**
@@ -14,10 +30,12 @@ import org.springframework.util.StringUtils;
 public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	private String serverAddr;
-	private String groupId;
-	private String dataId;
 
-	// commercialized usage
+	@NotNull
+	private String groupId = "DEFAULT_GROUP";
+
+	@NotNull
+	private String dataId;
 
 	private String endpoint;
 	private String namespace;
@@ -29,20 +47,10 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 	}
 
 	@Override
-	public void preCheck() {
-		if (!StringUtils.isEmpty(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT))) {
-			this.setServerAddr(null);
-			this.setFactoryBeanName(
-					NacosDataSourceWithAuthorizationFactoryBean.class.getName());
-			this.setEndpoint(System.getProperties()
-					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT));
-			this.setNamespace(System.getProperties()
-					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_NAMESPACE));
-			this.setAccessKey(System.getProperties()
-					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_AK));
-			this.setSecretKey(System.getProperties()
-					.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_SK));
+	public void preCheck(String dataSourceName) {
+		if (StringUtils.isEmpty(serverAddr) && acmPropertiesInvalid()) {
+			throw new IllegalArgumentException(
+					"NacosDataSource properties value not correct. serverAddr is empty but there is empty value in accessKey, secretKey, endpoint, namespace property");
 		}
 	}
 
@@ -102,30 +110,9 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 		this.secretKey = secretKey;
 	}
 
-	public static NacosDataSourceProperties buildFlowByEDAS() {
-		return buildByEDAS("flow");
+	public boolean acmPropertiesInvalid() {
+		return StringUtils.isEmpty(endpoint) || StringUtils.isEmpty(accessKey)
+				|| StringUtils.isEmpty(secretKey) || StringUtils.isEmpty(namespace);
 	}
 
-	public static NacosDataSourceProperties buildDegradeByEDAS() {
-		return buildByEDAS("degrade");
-	}
-
-	public static NacosDataSourceProperties buildByEDAS(String type) {
-		NacosDataSourceProperties result = new NacosDataSourceProperties();
-		result.setFactoryBeanName(
-				NacosDataSourceWithAuthorizationFactoryBean.class.getName());
-		result.setEndpoint(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_ENDPOINT));
-		result.setNamespace(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_NAMESPACE));
-		result.setAccessKey(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_AK));
-		result.setSecretKey(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.NACOS_DATASOURCE_SK));
-		result.setDataType("json");
-		result.setDataId(System.getProperties()
-				.getProperty(SentinelDataSourceConstants.PROJECT_NAME) + "-" + type);
-		result.setGroupId("nacos-sentinel");
-		return result;
-	}
 }

@@ -27,8 +27,12 @@ import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplat
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelAutoConfiguration;
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelBeanPostProcessor;
 import org.springframework.cloud.alibaba.sentinel.custom.SentinelProtectInterceptor;
+import org.springframework.cloud.alibaba.sentinel.rest.SentinelClientHttpResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -109,8 +113,9 @@ public class SentinelAutoConfigurationTests {
 	}
 
 	static class ExceptionUtil {
-		public static void handleException(BlockException ex) {
-			System.out.println("Oops: " + ex.getClass().getCanonicalName());
+		public static ClientHttpResponse handleException(HttpRequest request, byte[] body,
+				ClientHttpRequestExecution execution, BlockException ex) {
+			return new SentinelClientHttpResponse("custom block info");
 		}
 	}
 

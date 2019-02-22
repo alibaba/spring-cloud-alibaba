@@ -16,16 +16,23 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
 import org.springframework.cloud.alibaba.nacos.registry.NacosAutoServiceRegistration;
 import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 import org.springframework.cloud.alibaba.nacos.registry.NacosServiceRegistry;
-import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration;
+import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,19 +45,28 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnNacosDiscoveryEnabled
 @ConditionalOnClass(name = "org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent")
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
-@AutoConfigureBefore({ AutoServiceRegistrationAutoConfiguration.class,
-		NacosDiscoveryClientAutoConfiguration.class })
+@AutoConfigureBefore(NacosDiscoveryClientAutoConfiguration.class)
+@AutoConfigureAfter(AutoServiceRegistrationConfiguration.class)
 public class NacosDiscoveryAutoConfiguration {
 
 	@Bean
-	public NacosServiceRegistry nacosServiceRegistry() {
-		return new NacosServiceRegistry();
+	@ConditionalOnMissingBean
+	public NacosDiscoveryProperties nacosProperties() {
+		return new NacosDiscoveryProperties();
+	}
+
+	@Bean
+	public NacosServiceRegistry nacosServiceRegistry(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		return new NacosServiceRegistry(nacosDiscoveryProperties);
 	}
 
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
-	public NacosRegistration nacosRegistration() {
-		return new NacosRegistration();
+	public NacosRegistration nacosRegistration(
+			NacosDiscoveryProperties nacosDiscoveryProperties,
+			ApplicationContext context) {
+		return new NacosRegistration(nacosDiscoveryProperties, context);
 	}
 
 	@Bean
@@ -62,4 +78,31 @@ public class NacosDiscoveryAutoConfiguration {
 		return new NacosAutoServiceRegistration(registry,
 				autoServiceRegistrationProperties, registration);
 	}
+
+	@Bean
+	@ConditionalOnBean(NacosAutoServiceRegistration.class) // NacosAutoServiceRegistration
+															// should be present
+	@ConditionalOnNotWebApplication // Not Web Application
+	public ApplicationRunner applicationRunner(
+			final NacosAutoServiceRegistration nacosAutoServiceRegistration) {
+
+		return new ApplicationRunner() {
+			@Override
+			public void run(ApplicationArguments args) throws Exception {
+				if (!nacosAutoServiceRegistration.isRunning()) { // If it's not running,
+																	// let
+					// it start.
+					// FIXME: Please make sure "spring.cloud.nacos.discovery.port" must be
+					// configured on an available port,
+					// or the startup or Nacos health check will be failed.
+					nacosAutoServiceRegistration.start();
+					// NacosAutoServiceRegistration will be stopped after its destroy()
+					// method
+					// is invoked.
+					// @PreDestroy destroy() -> stop()
+				}
+			}
+		};
+	}
+
 }

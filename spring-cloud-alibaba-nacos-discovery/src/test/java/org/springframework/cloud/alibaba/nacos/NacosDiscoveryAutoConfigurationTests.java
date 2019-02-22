@@ -19,9 +19,9 @@ package org.springframework.cloud.alibaba.nacos;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
 import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
@@ -44,7 +44,7 @@ public class NacosDiscoveryAutoConfigurationTests {
 		this.context = new SpringApplicationBuilder(NacosDiscoveryTestConfiguration.class,
 				NacosDiscoveryClientAutoConfiguration.class,
 				NacosDiscoveryAutoConfiguration.class).web(false).run(
-						"--spring.cloud.nacos.discovery.server-addr=127.0.0.1:8080",
+						"--spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
 						"--spring.cloud.nacos.discovery.port=18080",
 						"--spring.cloud.nacos.discovery.service=myapp");
 	}
@@ -55,7 +55,7 @@ public class NacosDiscoveryAutoConfigurationTests {
 		NacosDiscoveryProperties properties = context
 				.getBean(NacosDiscoveryProperties.class);
 		assertThat(properties.getPort()).isEqualTo(18080);
-		assertThat(properties.getServerAddr()).isEqualTo("127.0.0.1:8080");
+		assertThat(properties.getServerAddr()).isEqualTo("127.0.0.1:8848");
 		assertThat(properties.getService()).isEqualTo("myapp");
 
 	}

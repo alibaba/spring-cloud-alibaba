@@ -4,8 +4,8 @@ import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.Server;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alicloud.ans.ribbon.AnsServer;
 import org.springframework.cloud.alicloud.ans.ribbon.AnsServerList;
 
@@ -21,7 +21,8 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 class ServerListInvocationHandler implements MethodInterceptor {
 
-	private final static Log log = LogFactory.getLog(ServerListInvocationHandler.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(ServerListInvocationHandler.class);
 
 	private final static ConcurrentMap<String, AnsServerList> SERVER_LIST_CONCURRENT_MAP = new ConcurrentHashMap<>();
 
