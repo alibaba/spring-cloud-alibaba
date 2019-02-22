@@ -50,16 +50,16 @@ public class DubboGenericServiceFactory {
     public GenericService create(DubboServiceMetadata dubboServiceMetadata,
                                  DubboTransportedMetadata dubboTransportedMetadata) {
 
-        Integer key = Objects.hash(dubboServiceMetadata, dubboTransportedMetadata);
-
-        ReferenceBean<GenericService> referenceBean = cache.get(key);
-
-        if (referenceBean == null) {
-            referenceBean = build(dubboServiceMetadata.getServiceRestMetadata(), dubboTransportedMetadata);
-            cache.putIfAbsent(key, referenceBean);
-        }
+        ReferenceBean<GenericService> referenceBean = build(dubboServiceMetadata.getServiceRestMetadata(), dubboTransportedMetadata);
 
         return referenceBean == null ? null : referenceBean.get();
+    }
+
+    public GenericService create(String serviceName, Class<?> serviceClass) {
+        String interfaceName = serviceClass.getName();
+        ReferenceBean<GenericService> referenceBean = build(interfaceName, serviceName, null,
+                "dubbo", "failover");
+        return referenceBean.get();
     }
 
 
@@ -70,14 +70,28 @@ public class DubboGenericServiceFactory {
         String interfaceName = getServiceInterface(segments);
         String version = getServiceVersion(segments);
         String group = getServiceGroup(segments);
+        String protocol = dubboTransportedMetadata.getProtocol();
+        String cluster = dubboTransportedMetadata.getCluster();
 
-        ReferenceBean<GenericService> referenceBean = new ReferenceBean<GenericService>();
-        referenceBean.setGeneric(true);
-        referenceBean.setInterface(interfaceName);
-        referenceBean.setVersion(version);
-        referenceBean.setGroup(group);
-        referenceBean.setProtocol(dubboTransportedMetadata.getProtocol());
-        referenceBean.setCluster(dubboTransportedMetadata.getCluster());
+        return build(interfaceName, version, group, protocol, cluster);
+    }
+
+    private ReferenceBean<GenericService> build(String interfaceName, String version, String group, String protocol,
+                                                String cluster) {
+
+        Integer key = Objects.hash(interfaceName, version, group, protocol, cluster);
+
+        ReferenceBean<GenericService> referenceBean = cache.get(key);
+
+        if (referenceBean == null) {
+            referenceBean = new ReferenceBean<>();
+            referenceBean.setGeneric(true);
+            referenceBean.setInterface(interfaceName);
+            referenceBean.setVersion(version);
+            referenceBean.setGroup(group);
+            referenceBean.setProtocol(protocol);
+            referenceBean.setCluster(cluster);
+        }
 
         return referenceBean;
     }

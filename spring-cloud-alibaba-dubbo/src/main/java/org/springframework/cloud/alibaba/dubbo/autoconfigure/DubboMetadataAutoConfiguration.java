@@ -16,14 +16,21 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import com.alibaba.dubbo.config.ProtocolConfig;
+import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import org.springframework.cloud.alibaba.dubbo.service.MetadataConfigService;
-import org.springframework.cloud.alibaba.dubbo.service.NacosMetadataConfigService;
-import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.util.Collection;
+import java.util.Iterator;
+
+import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata
@@ -32,12 +39,39 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import(DubboServiceMetadataRepository.class)
+@DubboComponentScan(basePackages = "org.springframework.cloud.alibaba.dubbo.service")
 public class DubboMetadataAutoConfiguration {
 
-    @Bean
-    @ConditionalOnBean(NacosConfigProperties.class)
-    public MetadataConfigService metadataConfigService() {
-        return new NacosMetadataConfigService();
+    public static final String METADATA_PROTOCOL_BEAN_NAME = "metadata";
+
+    /**
+     * Build an alias Bean for {@link ProtocolConfig}
+     *
+     * @param protocols {@link ProtocolConfig} Beans
+     * @return {@link ProtocolConfig} bean
+     */
+    @Bean(name = METADATA_PROTOCOL_BEAN_NAME)
+    public ProtocolConfig protocolConfig(Collection<ProtocolConfig> protocols) {
+        ProtocolConfig protocolConfig = null;
+        for (ProtocolConfig protocol : protocols) {
+            String protocolName = protocol.getName();
+            if (DEFAULT_PROTOCOL.equals(protocolName)) {
+                protocolConfig = protocol;
+                break;
+            }
+        }
+
+        if (protocolConfig == null) { // If The ProtocolConfig bean named "dubbo" is absent, take first one of them
+            Iterator<ProtocolConfig> iterator = protocols.iterator();
+            protocolConfig = iterator.hasNext() ? iterator.next() : null;
+        }
+
+        return protocolConfig;
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public DubboMetadataConfigServiceProxy dubboMetadataConfigServiceProxy(DubboGenericServiceFactory factory) {
+        return new DubboMetadataConfigServiceProxy(factory);
+    }
 }
