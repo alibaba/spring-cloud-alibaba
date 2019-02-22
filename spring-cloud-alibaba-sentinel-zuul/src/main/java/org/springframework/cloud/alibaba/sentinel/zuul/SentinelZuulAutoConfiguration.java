@@ -27,10 +27,10 @@ import com.alibaba.csp.sentinel.adapter.zuul.properties.SentinelZuulProperties;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.netflix.zuul.ZuulFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.alibaba.sentinel.zuul.listener.FallBackProviderListener;
-import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -75,12 +75,6 @@ public class SentinelZuulAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(ProxyRequestHelper.class)
-    public ProxyRequestHelper proxyRequestHelper() {
-        return new ProxyRequestHelper();
-    }
-
-    @Bean
     @ConditionalOnMissingBean(UrlCleaner.class)
     public UrlCleaner urlCleaner(){
         return new DefaultUrlCleaner();
@@ -109,8 +103,8 @@ public class SentinelZuulAutoConfiguration {
     }
 
     @Bean
-    public FallBackProviderListener fallBackProviderListener() {
-        return new FallBackProviderListener();
+    public FallBackProviderListener fallBackProviderListener(DefaultListableBeanFactory beanFactory) {
+        return new FallBackProviderListener(beanFactory);
     }
 
 }
