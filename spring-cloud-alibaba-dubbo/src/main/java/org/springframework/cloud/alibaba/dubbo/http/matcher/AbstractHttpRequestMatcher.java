@@ -16,8 +16,6 @@
  */
 package org.springframework.cloud.alibaba.dubbo.http.matcher;
 
-import org.springframework.lang.Nullable;
-
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -45,7 +43,7 @@ public abstract class AbstractHttpRequestMatcher implements HttpRequestMatcher {
     protected abstract String getToStringInfix();
 
     @Override
-    public boolean equals(@Nullable Object other) {
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         }

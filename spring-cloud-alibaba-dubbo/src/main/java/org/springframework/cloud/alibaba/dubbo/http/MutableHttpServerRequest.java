@@ -16,7 +16,6 @@
  */
 package org.springframework.cloud.alibaba.dubbo.http;
 
-import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMethod;
@@ -29,7 +28,6 @@ import java.net.URI;
 import java.util.Map;
 
 import static org.springframework.cloud.alibaba.dubbo.http.util.HttpUtils.getParameters;
-import static org.springframework.cloud.alibaba.dubbo.http.util.HttpUtils.parseCookies;
 
 /**
  * Mutable {@link HttpServerRequest} implementation
@@ -48,18 +46,15 @@ public class MutableHttpServerRequest implements HttpServerRequest {
 
     private final HttpHeaders httpHeaders;
 
-    private final MultiValueMap<String, HttpCookie> cookies;
-
     private final HttpInputMessage httpInputMessage;
 
     public MutableHttpServerRequest(HttpRequest httpRequest, byte[] body) {
         this.httpMethod = httpRequest.getMethod();
         this.uri = httpRequest.getURI();
         this.path = uri.getPath();
-        this.httpHeaders = new HttpHeaders(httpRequest.getHeaders());
+        this.httpHeaders = httpRequest.getHeaders();
         this.queryParams = getParameters(httpRequest);
         this.httpInputMessage = new ByteArrayHttpInputMessage(body);
-        this.cookies = parseCookies(httpHeaders);
     }
 
     public MutableHttpServerRequest params(Map<String, String> params) {

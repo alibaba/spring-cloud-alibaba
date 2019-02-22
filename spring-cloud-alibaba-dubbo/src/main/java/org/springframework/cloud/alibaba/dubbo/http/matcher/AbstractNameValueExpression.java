@@ -17,7 +17,6 @@
 package org.springframework.cloud.alibaba.dubbo.http.matcher;
 
 import org.springframework.http.HttpRequest;
-import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -75,7 +74,6 @@ abstract class AbstractNameValueExpression<T> implements NameValueExpression<T> 
     }
 
     @Override
-    @Nullable
     public T getValue() {
         return this.value;
     }

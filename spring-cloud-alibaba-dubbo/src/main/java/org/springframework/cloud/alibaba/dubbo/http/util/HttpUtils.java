@@ -16,8 +16,6 @@
  */
 package org.springframework.cloud.alibaba.dubbo.http.util;
 
-import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -33,11 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.springframework.http.HttpHeaders.COOKIE;
 import static org.springframework.util.StringUtils.delimitedListToStringArray;
 import static org.springframework.util.StringUtils.hasText;
 import static org.springframework.util.StringUtils.trimAllWhitespace;
-import static org.springframework.util.StringUtils.trimWhitespace;
 
 /**
  * Http Utilities class
@@ -138,30 +134,30 @@ public abstract class HttpUtils {
         return getParameters(Arrays.asList(pairs));
     }
 
-    /**
-     * Parse a read-only  {@link MultiValueMap} of  {@link HttpCookie} from {@link HttpHeaders}
-     *
-     * @param httpHeaders {@link HttpHeaders}
-     * @return non-null, the key is a cookie name , the value is {@link HttpCookie}
-     */
-    public static MultiValueMap<String, HttpCookie> parseCookies(HttpHeaders httpHeaders) {
-
-        String cookie = httpHeaders.getFirst(COOKIE);
-
-        String[] cookieNameAndValues = StringUtils.delimitedListToStringArray(cookie, SEMICOLON);
-
-        MultiValueMap<String, HttpCookie> cookies = new LinkedMultiValueMap<>(cookieNameAndValues.length);
-
-        for (String cookeNameAndValue : cookieNameAndValues) {
-            String[] nameAndValue = delimitedListToStringArray(trimWhitespace(cookeNameAndValue), EQUAL);
-            String name = nameAndValue[0];
-            String value = nameAndValue.length < 2 ? null : nameAndValue[1];
-            HttpCookie httpCookie = new HttpCookie(name, value);
-            cookies.add(name, httpCookie);
-        }
-
-        return cookies;
-    }
+//    /**
+//     * Parse a read-only  {@link MultiValueMap} of  {@link HttpCookie} from {@link HttpHeaders}
+//     *
+//     * @param httpHeaders {@link HttpHeaders}
+//     * @return non-null, the key is a cookie name , the value is {@link HttpCookie}
+//     */
+//    public static MultiValueMap<String, HttpCookie> parseCookies(HttpHeaders httpHeaders) {
+//
+//        String cookie = httpHeaders.getFirst(COOKIE);
+//
+//        String[] cookieNameAndValues = StringUtils.delimitedListToStringArray(cookie, SEMICOLON);
+//
+//        MultiValueMap<String, HttpCookie> cookies = new LinkedMultiValueMap<>(cookieNameAndValues.length);
+//
+//        for (String cookeNameAndValue : cookieNameAndValues) {
+//            String[] nameAndValue = delimitedListToStringArray(trimWhitespace(cookeNameAndValue), EQUAL);
+//            String name = nameAndValue[0];
+//            String value = nameAndValue.length < 2 ? null : nameAndValue[1];
+//            HttpCookie httpCookie = new HttpCookie(name, value);
+//            cookies.add(name, httpCookie);
+//        }
+//
+//        return cookies;
+//    }
 
     /**
      * To the name and value line sets
