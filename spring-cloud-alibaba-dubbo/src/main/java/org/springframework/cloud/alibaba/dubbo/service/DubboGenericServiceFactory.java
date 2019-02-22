@@ -31,6 +31,8 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import static com.alibaba.dubbo.common.Constants.DEFAULT_CLUSTER;
+import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
 import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceGroup;
 import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceInterface;
 import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceSegments;
@@ -58,7 +60,7 @@ public class DubboGenericServiceFactory {
     public GenericService create(String serviceName, Class<?> serviceClass) {
         String interfaceName = serviceClass.getName();
         ReferenceBean<GenericService> referenceBean = build(interfaceName, serviceName, null,
-                "dubbo", "failover");
+                DEFAULT_PROTOCOL, DEFAULT_CLUSTER);
         return referenceBean.get();
     }
 
