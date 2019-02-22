@@ -9,7 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alicloud.ans.ribbon.AnsServer;
 import org.springframework.cloud.alicloud.ans.ribbon.AnsServerList;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListSet;

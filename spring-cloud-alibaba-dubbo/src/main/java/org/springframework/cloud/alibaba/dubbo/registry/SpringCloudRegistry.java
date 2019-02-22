@@ -23,6 +23,7 @@ import com.alibaba.dubbo.common.utils.UrlUtils;
 import com.alibaba.dubbo.registry.NotifyListener;
 import com.alibaba.dubbo.registry.RegistryFactory;
 import com.alibaba.dubbo.registry.support.FailbackRegistry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.DefaultServiceInstance;
@@ -47,7 +48,6 @@ import java.util.concurrent.TimeUnit;
 
 import static com.alibaba.dubbo.common.Constants.CONFIGURATORS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.CONSUMERS_CATEGORY;
-import static com.alibaba.dubbo.common.Constants.PROTOCOL_KEY;
 import static com.alibaba.dubbo.common.Constants.PROVIDERS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.ROUTERS_CATEGORY;
 
@@ -70,9 +70,11 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     private static final int CATEGORY_INDEX = 0;
 
-    private static final int PROTOCOL_INDEX = CATEGORY_INDEX + 1;
+//    private static final int PROTOCOL_INDEX = CATEGORY_INDEX + 1;
 
-    private static final int SERVICE_INTERFACE_INDEX = PROTOCOL_INDEX + 1;
+//    private static final int SERVICE_INTERFACE_INDEX = PROTOCOL_INDEX + 1;
+
+    private static final int SERVICE_INTERFACE_INDEX = CATEGORY_INDEX + 1;
 
     private static final int SERVICE_VERSION_INDEX = SERVICE_INTERFACE_INDEX + 1;
 
@@ -169,7 +171,6 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     private static String getServiceName(URL url, String category) {
         StringBuilder serviceNameBuilder = new StringBuilder(category);
-        appendIfPresent(serviceNameBuilder, url.getParameter(PROTOCOL_KEY, url.getProtocol()));
         appendIfPresent(serviceNameBuilder, url, Constants.INTERFACE_KEY);
         appendIfPresent(serviceNameBuilder, url, Constants.VERSION_KEY);
         appendIfPresent(serviceNameBuilder, url, Constants.GROUP_KEY);
@@ -203,22 +204,16 @@ public class SpringCloudRegistry extends FailbackRegistry {
                 // split service name to segments
                 // (required) segments[0] = category
                 // (required) segments[1] = serviceInterface
-                // (required) segments[2] = protocol
-                // (required) segments[3] = version
-                // (optional) segments[4] = group
+                // (required) segments[2] = version
+                // (optional) segments[3] = group
                 String[] segments = getServiceSegments(serviceName);
                 int length = segments.length;
-                if (length < 4) { // must present 4 segments or more
+                if (length < SERVICE_GROUP_INDEX) { // must present 4 segments or more
                     return false;
                 }
 
                 String category = getCategory(segments);
                 if (Arrays.binarySearch(categories, category) > -1) { // no match category
-                    return false;
-                }
-
-                String protocol = getProtocol(segments);
-                if (StringUtils.hasText(protocol)) {
                     return false;
                 }
 
@@ -253,9 +248,9 @@ public class SpringCloudRegistry extends FailbackRegistry {
         return segments[CATEGORY_INDEX];
     }
 
-    public static String getProtocol(String[] segments) {
-        return segments[PROTOCOL_INDEX];
-    }
+//    public static String getProtocol(String[] segments) {
+//        return segments[PROTOCOL_INDEX];
+//    }
 
     public static String getServiceInterface(String[] segments) {
         return segments[SERVICE_INTERFACE_INDEX];
@@ -266,7 +261,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
     }
 
     public static String getServiceGroup(String[] segments) {
-        return segments.length > 4 ? segments[SERVICE_GROUP_INDEX] : null;
+        return segments.length > SERVICE_GROUP_INDEX ? segments[SERVICE_GROUP_INDEX] : null;
     }
 
     /**

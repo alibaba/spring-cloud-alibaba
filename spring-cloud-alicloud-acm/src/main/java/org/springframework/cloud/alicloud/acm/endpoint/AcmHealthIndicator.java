@@ -17,6 +17,7 @@
 package org.springframework.cloud.alicloud.acm.endpoint;
 
 import com.alibaba.edas.acm.ConfigService;
+
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.cloud.alicloud.acm.AcmPropertySourceRepository;

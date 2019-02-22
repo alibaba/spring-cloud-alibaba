@@ -203,22 +203,6 @@
                 <version>${fescar.version}</version>
             </dependency>
 
-            <!-- Aliyun OSS dependencies -->
-            <dependency>
-                <groupId>com.aliyun.oss</groupId>
-                <artifactId>aliyun-sdk-oss</artifactId>
-                <version>${oss.version}</version>
-            </dependency>
-
-            <!-- Apache Dubbo dependencies-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>dubbo-dependencies-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- Dubbo -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -252,6 +236,13 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>dubbo-registry-nacos</artifactId>
                 <version>${dubbo-registry-nacos.version}</version>
+            </dependency>
+
+            <!-- Aliyun OSS dependencies -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${oss.version}</version>
             </dependency>
 
             <!-- Own dependencies  -->
