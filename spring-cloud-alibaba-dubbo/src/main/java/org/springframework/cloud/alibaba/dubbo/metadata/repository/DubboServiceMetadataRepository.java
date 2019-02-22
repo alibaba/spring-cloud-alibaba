@@ -16,6 +16,8 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,14 @@ import org.springframework.cloud.alibaba.dubbo.http.matcher.RequestMetadataMatch
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
-import org.springframework.cloud.alibaba.dubbo.service.MetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceProxy;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,6 +49,8 @@ public class DubboServiceMetadataRepository {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * Key is application name
      * Value is  Map<RequestMetadata, DubboServiceMetadata>
@@ -51,7 +58,7 @@ public class DubboServiceMetadataRepository {
     private Map<String, Map<RequestMetadataMatcher, DubboServiceMetadata>> repository = newHashMap();
 
     @Autowired
-    private MetadataConfigService metadataConfigService;
+    private DubboMetadataConfigServiceProxy dubboMetadataConfigServiceProxy;
 
     /**
      * Initialize the specified service's Dubbo Service Metadata
@@ -64,7 +71,7 @@ public class DubboServiceMetadataRepository {
             return;
         }
 
-        Set<ServiceRestMetadata> serviceRestMetadataSet = metadataConfigService.getServiceRestMetadata(serviceName);
+        Set<ServiceRestMetadata> serviceRestMetadataSet = getServiceRestMetadataSet(serviceName);
 
         if (isEmpty(serviceRestMetadataSet)) {
             if (logger.isWarnEnabled()) {
@@ -145,6 +152,23 @@ public class DubboServiceMetadataRepository {
         return getMap(repository, serviceName);
     }
 
+    private Set<ServiceRestMetadata> getServiceRestMetadataSet(String serviceName) {
+        DubboMetadataConfigService dubboMetadataConfigService = dubboMetadataConfigServiceProxy.newProxy(serviceName);
+        String serviceRestMetadataJsonConfig = dubboMetadataConfigService.getServiceRestMetadata();
+
+        Set<ServiceRestMetadata> metadata;
+        try {
+            metadata = objectMapper.readValue(serviceRestMetadataJsonConfig,
+                    TypeFactory.defaultInstance().constructCollectionType(LinkedHashSet.class, ServiceRestMetadata.class));
+        } catch (Exception e) {
+            if (logger.isErrorEnabled()) {
+                logger.error(e.getMessage(), e);
+            }
+            metadata = Collections.emptySet();
+        }
+        return metadata;
+    }
+
     private static <K, V> Map<K, V> getMap(Map<String, Map<K, V>> repository, String key) {
         return getOrDefault(repository, key, newHashMap());
     }
@@ -161,4 +185,5 @@ public class DubboServiceMetadataRepository {
     private static <K, V> Map<K, V> newHashMap() {
         return new LinkedHashMap<>();
     }
+
 }

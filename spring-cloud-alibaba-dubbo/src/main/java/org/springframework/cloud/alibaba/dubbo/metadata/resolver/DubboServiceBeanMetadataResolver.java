@@ -127,10 +127,20 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
     public Set<RestMethodMetadata> resolveMethodRestMetadata(Class<?> targetType) {
         List<Method> feignContractMethods = selectFeignContractMethods(targetType);
         return contracts.stream()
-                .map(contract -> contract.parseAndValidatateMetadata(targetType))
+                .map(contract -> parseAndValidateMetadata(contract, targetType))
                 .flatMap(v -> v.stream())
                 .map(methodMetadata -> resolveMethodRestMetadata(methodMetadata, targetType, feignContractMethods))
                 .collect(Collectors.toSet());
+    }
+
+    private List<MethodMetadata> parseAndValidateMetadata(Contract contract, Class<?> targetType) {
+        List<MethodMetadata> methodMetadataList = Collections.emptyList();
+        try {
+            methodMetadataList = contract.parseAndValidatateMetadata(targetType);
+        } catch (Throwable ignored) {
+            // ignore
+        }
+        return methodMetadataList;
     }
 
     /**

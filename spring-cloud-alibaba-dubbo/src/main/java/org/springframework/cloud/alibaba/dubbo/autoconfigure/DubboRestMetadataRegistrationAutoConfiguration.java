@@ -24,16 +24,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
-import org.springframework.cloud.alibaba.dubbo.service.MetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * The Auto-Configuration class for Dubbo REST metadata registration,
@@ -44,24 +39,17 @@ import java.util.Set;
  */
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
 @ConditionalOnBean(value = {
-        MetadataResolver.class,
-        MetadataConfigService.class
+        MetadataResolver.class
 })
 @AutoConfigureAfter(value = {DubboMetadataAutoConfiguration.class})
 @Configuration
 public class DubboRestMetadataRegistrationAutoConfiguration {
 
-    /**
-     * A Map to store REST metadata temporary, its' key is the special service name for a Dubbo service,
-     * the value is a JSON content of JAX-RS or Spring MVC REST metadata from the annotated methods.
-     */
-    private final Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
-
     @Autowired
     private MetadataResolver metadataResolver;
 
     @Autowired
-    private MetadataConfigService metadataConfigService;
+    private PublishingDubboMetadataConfigService dubboMetadataConfigService;
 
     @Value("${spring.application.name:application}")
     private String currentApplicationName;
@@ -69,15 +57,6 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
     @EventListener(ServiceBeanExportedEvent.class)
     public void recordRestMetadata(ServiceBeanExportedEvent event) {
         ServiceBean serviceBean = event.getServiceBean();
-        serviceRestMetadata.addAll(metadataResolver.resolveServiceRestMetadata(serviceBean));
-    }
-
-    /**
-     * Publish <code>serviceRestMetadata</code> with the JSON format into
-     * {@link Registration#getMetadata() service instances' metadata} when The Spring Application is started.
-     */
-    @EventListener(ApplicationStartedEvent.class)
-    public void registerRestMetadata() {
-        metadataConfigService.publishServiceRestMetadata(currentApplicationName, serviceRestMetadata);
+        dubboMetadataConfigService.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
     }
 }
