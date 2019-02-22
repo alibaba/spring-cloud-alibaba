@@ -14,17 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.service;
+package org.springframework.cloud.alibaba.dubbo.client.loadbalancer;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpOutputMessage;
+import org.springframework.util.FastByteArrayOutputStream;
+
+import java.io.IOException;
 
 /**
- * Echo Service
+ * Dubbo {@link HttpOutputMessage} implementation
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface EchoService {
+class DubboHttpOutputMessage implements HttpOutputMessage {
 
-    String echo(String message);
+    private final FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
 
-    String plus(int a, int b);
+    private final HttpHeaders httpHeaders = new HttpHeaders();
 
+    @Override
+    public FastByteArrayOutputStream getBody() throws IOException {
+        return outputStream;
+    }
+
+    @Override
+    public HttpHeaders getHeaders() {
+        return httpHeaders;
+    }
 }

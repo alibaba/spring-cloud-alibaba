@@ -14,20 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.metadata.service;
+package org.springframework.cloud.alibaba.dubbo.service;
 
-import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
-
-import java.util.Set;
+import java.util.Map;
 
 /**
- * Config Service for Metadata
+ * Echo Service
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface MetadataConfigService {
+public interface RestService {
 
-    void publishServiceRestMetadata(String serviceName, Set<ServiceRestMetadata> serviceRestMetadata);
+    String param(String param);
 
-    Set<ServiceRestMetadata> getServiceRestMetadata(String serviceName);
+    String params(int a, String b);
+
+    String headers(String header, String header2, Integer param);
+
+    String pathVariables(String path1, String path2, String param);
+
+    String form(String form);
+
+    User requestBodyMap(Map<String, Object> data, String param);
+
+    Map<String, Object> requestBodyUser(User user);
+
 }

@@ -26,7 +26,7 @@ import org.springframework.cloud.alicloud.ans.registry.AnsAutoServiceRegistratio
 import org.springframework.cloud.alicloud.ans.registry.AnsRegistration;
 import org.springframework.cloud.alicloud.ans.registry.AnsServiceRegistry;
 import org.springframework.cloud.alicloud.context.ans.AnsProperties;
-import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration;
+import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(name = "org.springframework.boot.web.context.WebServerInitializedEvent")
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
 @ConditionalOnAnsEnabled
-@AutoConfigureAfter(AutoServiceRegistrationAutoConfiguration.class)
+@AutoConfigureAfter(AutoServiceRegistrationConfiguration.class)
 public class AnsAutoConfiguration {
 
 	@Bean
