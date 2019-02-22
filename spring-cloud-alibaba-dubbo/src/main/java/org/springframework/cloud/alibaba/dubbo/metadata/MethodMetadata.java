@@ -19,7 +19,6 @@ package org.springframework.cloud.alibaba.dubbo.metadata;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -53,7 +52,7 @@ public class MethodMetadata {
 
     public MethodMetadata(Method method) {
         this.name = method.getName();
-        this.returnType = ClassUtils.getName(method.getReturnType());
+        this.returnType = method.getReturnType().getName();
         this.params = initParameters(method);
         this.method = method;
     }

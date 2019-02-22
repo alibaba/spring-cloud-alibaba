@@ -56,7 +56,7 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
             "org.springframework.cloud.openfeign.support.SpringMvcContract",
     };
 
-    private final ObjectProvider<Contract> contract;
+    private final ObjectProvider<Contract> contractObjectProvider;
 
     private ClassLoader classLoader;
 
@@ -65,8 +65,8 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
      */
     private Collection<Contract> contracts;
 
-    public DubboServiceBeanMetadataResolver(ObjectProvider<Contract> contract) {
-        this.contract = contract;
+    public DubboServiceBeanMetadataResolver(ObjectProvider<Contract> contractObjectProvider) {
+        this.contractObjectProvider = contractObjectProvider;
     }
 
     @Override
@@ -75,7 +75,11 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
         LinkedList<Contract> contracts = new LinkedList<>();
 
         // Add injected Contract if available, for example SpringMvcContract Bean under Spring Cloud Open Feign
-        contract.ifAvailable(contracts::add);
+        Contract contract = contractObjectProvider.getIfAvailable();
+
+        if (contract != null) {
+            contracts.add(contract);
+        }
 
         Stream.of(CONTRACT_CLASS_NAMES)
                 .filter(this::isClassPresent) // filter the existed classes
