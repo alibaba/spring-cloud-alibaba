@@ -45,11 +45,11 @@ public class HttpRequestParamsMatcher extends AbstractHttpRequestMatcher {
     @Override
     public boolean match(HttpRequest request) {
         for (ParamExpression paramExpression : expressions) {
-            if (!paramExpression.match(request)) {
-                return false;
+            if (paramExpression.match(request)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private static Set<ParamExpression> parseExpressions(String... params) {

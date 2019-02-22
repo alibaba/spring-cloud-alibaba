@@ -240,15 +240,18 @@ public class RequestMetadata {
         RequestMetadata that = (RequestMetadata) o;
         return Objects.equals(method, that.method) &&
                 Objects.equals(path, that.path) &&
-                Objects.equals(params, that.params) &&
-                Objects.equals(headers, that.headers) &&
                 Objects.equals(consumes, that.consumes) &&
-                Objects.equals(produces, that.produces);
+                Objects.equals(produces, that.produces) &&
+                // Metadata should not compare the values
+                Objects.equals(getParamNames(), that.getParamNames()) &&
+                Objects.equals(getHeaderNames(), that.getHeaderNames());
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(method, path, params, headers, consumes, produces);
+        // The values of metadata should not use for the hashCode() method
+        return Objects.hash(method, path, consumes, produces, getParamNames(), getHeaderNames());
     }
 
     @Override

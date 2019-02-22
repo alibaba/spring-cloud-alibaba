@@ -35,6 +35,6 @@ public class ProduceMediaTypeExpressionTest extends AbstractMediaTypeExpressionT
         Assert.assertTrue(expression.match(Arrays.asList(MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON)));
 
         expression = createExpression(MediaType.APPLICATION_JSON_VALUE);
-        Assert.assertTrue(expression.match(Arrays.asList(MediaType.APPLICATION_XML)));
+        Assert.assertFalse(expression.match(Arrays.asList(MediaType.APPLICATION_XML)));
     }
 }

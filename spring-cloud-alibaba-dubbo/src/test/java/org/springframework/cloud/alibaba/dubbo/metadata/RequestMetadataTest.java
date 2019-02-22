@@ -68,8 +68,8 @@ public class RequestMetadataTest {
         metadata.addHeader("d", "1").addHeader("e", "2").addHeader("f", "3");
         metadata2.addHeader("d", "1").addHeader("e", "2");
 
-        Assert.assertEquals(metadata, metadata2);
-        Assert.assertEquals(metadata.hashCode(), metadata2.hashCode());
+        Assert.assertNotEquals(metadata, metadata2);
+        Assert.assertNotEquals(metadata.hashCode(), metadata2.hashCode());
     }
 
 //    @Test
