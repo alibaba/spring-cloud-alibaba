@@ -16,13 +16,13 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySourceLocator;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshProperties;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.PropertySource;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author xiaojing

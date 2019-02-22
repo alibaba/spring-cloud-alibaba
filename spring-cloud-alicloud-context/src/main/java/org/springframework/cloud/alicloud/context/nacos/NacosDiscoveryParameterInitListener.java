@@ -17,6 +17,7 @@ package org.springframework.cloud.alicloud.context.nacos;
 
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;

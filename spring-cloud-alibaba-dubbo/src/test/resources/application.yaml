@@ -12,5 +12,9 @@ dubbo:
   registry:
     address: spring-cloud://nacos
 
+feign:
+  hystrix:
+    enabled: true
+
 server:
   port: 8080

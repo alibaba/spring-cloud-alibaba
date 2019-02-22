@@ -18,6 +18,7 @@ package org.springframework.cloud.alicloud.context.nacos;
 
 import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.powermock.core.classloader.annotations.PrepareForTest;
