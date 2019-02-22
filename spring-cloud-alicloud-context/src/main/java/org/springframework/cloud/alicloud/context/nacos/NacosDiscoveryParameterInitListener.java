@@ -66,7 +66,7 @@ public class NacosDiscoveryParameterInitListener
 				edasChangeOrderConfiguration.getDauthSecretKey());
 
 		// step 2: set these properties for nacos client
-		properties.setProperty("webContext", "/vipserver");
-		properties.setProperty("serverPort", "80");
+		properties.setProperty("nacos.naming.web.context", "/vipserver");
+		properties.setProperty("nacos.naming.exposed.port", "80");
 	}
 }
