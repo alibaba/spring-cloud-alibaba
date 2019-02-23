@@ -112,7 +112,7 @@ Consumer端在服务调用之前，先定义限流规则。
 根据Provider端中发布的定义，使用Dubbo的@Reference注解注入服务对应的Bean：
 
     @Reference(version = "${foo.service.version}", application = "${dubbo.application.id}",
-            url = "dubbo://localhost:12345", timeout = 30000)
+            path = "dubbo://localhost:12345", timeout = 30000)
 	private FooService fooService;
 
 由于设置的qps是10。调用15次查看是否被限流：

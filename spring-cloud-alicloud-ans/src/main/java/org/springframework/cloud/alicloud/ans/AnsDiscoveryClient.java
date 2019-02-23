@@ -18,6 +18,7 @@ package org.springframework.cloud.alicloud.ans;
 
 import com.alibaba.ans.core.NamingService;
 import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
@@ -30,6 +31,7 @@ import java.util.Set;
 
 /**
  * @author xiaolongzuo
+ * @author pbting
  */
 public class AnsDiscoveryClient implements DiscoveryClient {
 

@@ -17,6 +17,7 @@ package org.springframework.cloud.alicloud.context.nacos;
 
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
@@ -66,7 +67,7 @@ public class NacosDiscoveryParameterInitListener
 				edasChangeOrderConfiguration.getDauthSecretKey());
 
 		// step 2: set these properties for nacos client
-		properties.setProperty("webContext", "/vipserver");
-		properties.setProperty("serverPort", "80");
+		properties.setProperty("nacos.naming.web.context", "/vipserver");
+		properties.setProperty("nacos.naming.exposed.port", "80");
 	}
 }
