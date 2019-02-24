@@ -37,6 +37,7 @@
         <module>rocketmq-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>schedulerx-example/schedulerx-simple-task-example</module>
+        <module>sms-example</module>
     </modules>
 
     <build>
