@@ -12,15 +12,8 @@ Spring Cloud Alibaba 已经发布了 0.2.2.BUILD-SNAPSHOT 版本，需要首先�
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>Finchley.SR2</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.2.BUILD-SNAPSHOT</version>
+            <version>0.2.0.RELEASE</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
