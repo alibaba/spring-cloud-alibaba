@@ -16,25 +16,24 @@
 
 package org.springframework.cloud.alibaba.cloud.examples;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import com.alibaba.edas.schedulerx.ProcessResult;
-import com.alibaba.edas.schedulerx.ScxSimpleJobContext;
-import com.alibaba.edas.schedulerx.ScxSimpleJobProcessor;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author xiaolongzuo
  */
-public class SimpleTask implements ScxSimpleJobProcessor {
+@RestController
+public class TestController {
 
-	@Autowired
-	private TestService testService;
+	static AtomicInteger atomicInteger = new AtomicInteger(0);
 
-	@Override
-	public ProcessResult process(ScxSimpleJobContext context) {
-		testService.test();
-		ProcessResult processResult = new ProcessResult(true);
-		return processResult;
+	@RequestMapping("/test")
+	@ResponseBody
+	public String test() {
+		return String.valueOf(atomicInteger.get());
 	}
 
 }

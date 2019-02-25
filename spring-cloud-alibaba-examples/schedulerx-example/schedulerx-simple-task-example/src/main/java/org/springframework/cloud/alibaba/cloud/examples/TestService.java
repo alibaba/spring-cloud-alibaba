@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestService {
 
-    public void test() {
-        System.out.println("---------IOC Success--------");
-    }
+	public void test() {
+		TestController.atomicInteger.incrementAndGet();
+	}
 }
