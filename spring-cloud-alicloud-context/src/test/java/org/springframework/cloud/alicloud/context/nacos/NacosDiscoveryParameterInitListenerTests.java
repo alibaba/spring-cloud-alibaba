@@ -54,8 +54,9 @@ public class NacosDiscoveryParameterInitListenerTests
 				.isEqualTo("testAK");
 		assertThat(System.getProperty("spring.cloud.nacos.discovery.secret-key"))
 				.isEqualTo("testSK");
-		assertThat(System.getProperties().getProperty("webContext"))
+		assertThat(System.getProperties().getProperty("nacos.naming.web.context"))
 				.isEqualTo("/vipserver");
-		assertThat(System.getProperties().getProperty("serverPort")).isEqualTo("80");
+		assertThat(System.getProperties().getProperty("nacos.naming.exposed.port"))
+				.isEqualTo("80");
 	}
 }
