@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spring-cloud-alibaba</artifactId>
         <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-alibaba</artifactId>
         <version>0.2.2.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -12,6 +12,37 @@
 
     <artifactId>spring-cloud-alibaba-dubbo</artifactId>
     <name>Spring Cloud Alibaba Dubbo</name>
+
+    <properties>
+        <dubbo.version>2.6.5</dubbo.version>
+        <dubbo-spring-boot.version>0.2.1.RELEASE</dubbo-spring-boot.version>
+        <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
+    </properties>
+
+    <dependencyManagement>
+
+        <dependencies>
+            <!-- Spring Boot dependencies -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Apache Dubbo dependencies-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo-dependencies-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
 
     <dependencies>
 
@@ -170,9 +201,9 @@
 
         <!-- Eureka Service Discovery -->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.springframework.cloud</groupId>-->
+        <!--<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
 
     </dependencies>

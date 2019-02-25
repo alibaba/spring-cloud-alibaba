@@ -18,6 +18,7 @@ package org.springframework.cloud.alicloud.ans.registry;
 
 import com.alibaba.ans.core.NamingService;
 import com.alibaba.ans.shaded.com.taobao.vipserver.client.ipms.NodeReactor;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -6,7 +6,7 @@ Spring Cloud Alibaba Cloud ACM is an alternative solution for Config Server and 
 
 === How to Introduce Spring Cloud Alibaba Cloud ACM
 
-We’ve released Spring Cloud Alibaba version 0.2.1. You will need to add dependency management POM first.
+We’ve released Spring Cloud Alibaba version 0.2.2.BUILD-SNAPSHOT. You will need to add dependency management POM first.
 
 [source,xml]
 ----
@@ -68,18 +68,18 @@ spring.cloud.alicloud.acm.server-port=8080
 NOTE: By now the configuration center is not started yet, so you will get an error message if your application is started. Therefore, start the configuration center before you start your application.
 
 
-=== Start Configuration Center
+==== Start Configuration Center
 
-ACM uses two types of configuration centers. One is a lightweight configuration center which is totally free, the other is ACM which is used on Alibaba Cloud. Generally, you can use the lightweight version for application development and local testing, and use ACM for canary deployment or production.
+ACM uses two types of configuration centers. One is lightweight configuration center, the other is ACM which is used on Alibaba Cloud. Generally, you can use the lightweight version for application development and local testing, and use ACM for canary deployment or production.
 
-==== Start Lightweight Configuration Center
+===== Use Lightweight Configuration Center
 
 Refer to the https://help.aliyun.com/document_detail/44163.html[Configure Lightweight Configuration Center] for details about how to download and install lightweight configuration center.
 
-NOTE: You only need to perform step 1(Download lightweight configuration center) and step 2(Start lightweight configuration center). Step 3(Configure hosts) is not required if you use ACM at the same time.
+NOTE: You only need to perform step 1(Download lightweight configuration center) and step 2(Start lightweight configuration center).
 
 
-==== Use ACM on the Cloud
+===== Use ACM on the Alibaba Cloud
 
 Using ACM on the cloud saves you from the tedious work of server maintenance while at the same time provides a better stability. There is no difference at the code level between using ACM on cloud and lightweight configuration center, but there are some differences in configurations.
 
@@ -88,7 +88,7 @@ The following is a simple sample of using ACM. You can view configuration detail
 [source,properties]
 ----
 # The application name will be used as part of the keyword to obtain configuration key from the server, and is mandatory.
-spring.application.name=ans-provider
+spring.application.name=acm-config
 # Configure your own port number
 server.port=18081
 # The following is the IP and port number of the configuration center.
@@ -99,9 +99,9 @@ spring.cloud.alicloud.acm.endpoint=acm.aliyun.com
 spring.cloud.alicloud.acm.namespace=Your ACM namespace(You can find the namespace on the ACM console)
 ----
 
-NOTE: EDAS provides application hosting service and will fill in all configurations automatically for the hosted applications.
+NOTE: EDAS provides application hosting service and will fill in all configurations about ACM automatically for the hosted applications.
 
-=== Add Configuration in the Configuration Center
+==== Add Configuration in the Configuration Center
 
 1. After you start the lightweight configuration center, add the following configuration on the console.
 
@@ -117,7 +117,7 @@ Content:    user.name=james
 
 NOTE: The format of dataId is `{prefix}. {file-extension}`. “prefix” is obtained from spring.application.name by default, and the value of “file-extension” is "properties” by default.
 
-=== Start Application Verification
+==== Start Application Verification
 
 Start the following example and you can see that the value printed on the console is the value we configured in the lightweight configuration center.
 
@@ -133,16 +133,16 @@ You can set the file extension using spring.cloud.alicloud.acm.file-extension. J
 
 NOTE: After you change the file extension, you need to make corresponding format changes in the DataID and content of the configuration center.
 
-=== Dynamic Configuration Updates
+=== Dynamic Configuration Refresh
 
-spring-cloud-starter-alicloud-acm supports dynamic configuration updates. Context Refresh in Spring is triggered when you update configuration in the configuration center.
-All classes with @RefreshScope and @ConfigurationProperties annotations will be refershed automatically.
+spring-cloud-starter-alicloud-acm supports dynamic configuration updates. RefreshEvent in Spring is published when you update configuration in the configuration center.
+All classes with @RefreshScope and @ConfigurationProperties annotations will be refreshed automatically.
 
 NOTE: You can disable automatic refresh by this setting: spring.cloud.alicloud.acm.refresh.enabled=false
 
 === Configure Profile Granularity
 
-When configuration is loaded by spring-cloud-starter-alicloud-acm, configuration with dataid {spring.application.name}. {file-extension} will be loaded first. If there is content in spring.profiles.active, the content of spring.profile, and configuration with the dataid format of{spring.application.name}-{profile}. {file-extension} will also be loaded in turn, and the latter has higher priority.
+When configuration is loaded by spring-cloud-starter-alicloud-acm, configuration with DataId {spring.application.name}. {file-extension} will be loaded first. If there is content in spring.profiles.active, the content of spring.profile, and configuration with the dataid format of{spring.application.name}-{profile}. {file-extension} will also be loaded in turn, and the latter has higher priority.
 
 spring.profiles.active is the configuration metadata, and should also be configured in bootstrap.properties or bootstrap.yaml. For example, you can add the following content in bootstrap.properties.
 
@@ -153,6 +153,10 @@ spring.profiles.active={profile-name}
 
 Note: You can also configure the granularity through JVM parameters such as -Dspring.profiles.active=develop or --spring.profiles.active=develop, which have higher priority. Just follow the specifications of Spring Boot.
 
+
+=== Support Custom ACM Timeout
+
+the default timeout of ACM client get config from sever is 3000 ms . If you need to define a timeout, set configuration `spring.cloud.alicloud.acm.timeout`,the unit is millisecond.
 
 
 === Support Custom Group Configurations
@@ -183,3 +187,7 @@ The later in order, the higer the priority, and the unique configuration of the 
 NOTE: The default suffix of DataId is properties, and you can change it using spring.cloud.alicloud.acm.file-extension. `{spring.application.group}: {spring.application.name}. {file-extension}` 。
 
 NOTE: If you configured `spring.profiles.active` , then the DataId format of `{spring.application.group}: {spring.application.name}-{spring.profiles.active}. {file-extension}` is also supported, and has higher priority than `{spring.application.group}: {spring.application.name}. {file-extension}`
+
+=== Actuator Endpoint
+
+the Actuator endpoint of ACM is `/acm`, `config` represents the ACM metadata configuration information, `runtime.sources` corresponds to the configuration information obtained from the ACM server and the last refresh time, `runtime.refreshHistory` corresponds to the dynamic refresh history.

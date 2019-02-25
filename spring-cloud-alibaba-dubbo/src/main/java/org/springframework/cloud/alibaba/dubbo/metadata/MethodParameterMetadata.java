@@ -16,6 +16,8 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -24,6 +26,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MethodParameterMetadata {
 
     private int index;
@@ -69,5 +72,14 @@ public class MethodParameterMetadata {
     @Override
     public int hashCode() {
         return Objects.hash(index, name, type);
+    }
+
+    @Override
+    public String toString() {
+        return "MethodParameterMetadata{" +
+                "index=" + index +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }
