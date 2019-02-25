@@ -18,6 +18,7 @@ package org.springframework.cloud.alibaba.dubbo.metadata.resolver;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.config.spring.ServiceBean;
+
 import feign.Contract;
 import feign.Feign;
 import feign.MethodMetadata;
@@ -26,7 +27,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry;
@@ -44,20 +44,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The metadata resolver for {@link Feign}
+ * The metadata resolver for {@link Feign} for {@link ServiceBean Dubbo Service Bean} in the provider side.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class FeignMetadataResolver implements BeanClassLoaderAware, SmartInitializingSingleton, MetadataResolver {
+public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, SmartInitializingSingleton,
+        MetadataResolver {
 
     private static final String[] CONTRACT_CLASS_NAMES = {
             "feign.jaxrs2.JAXRS2Contract",
             "org.springframework.cloud.openfeign.support.SpringMvcContract",
     };
 
-    private final String currentApplicationName;
-
-    private final ObjectProvider<Contract> contract;
+    private final ObjectProvider<Contract> contractObjectProvider;
 
     private ClassLoader classLoader;
 
@@ -66,9 +65,8 @@ public class FeignMetadataResolver implements BeanClassLoaderAware, SmartInitial
      */
     private Collection<Contract> contracts;
 
-    public FeignMetadataResolver(String currentApplicationName, ObjectProvider<Contract> contract) {
-        this.currentApplicationName = currentApplicationName;
-        this.contract = contract;
+    public DubboServiceBeanMetadataResolver(ObjectProvider<Contract> contractObjectProvider) {
+        this.contractObjectProvider = contractObjectProvider;
     }
 
     @Override
@@ -77,7 +75,11 @@ public class FeignMetadataResolver implements BeanClassLoaderAware, SmartInitial
         LinkedList<Contract> contracts = new LinkedList<>();
 
         // Add injected Contract if available, for example SpringMvcContract Bean under Spring Cloud Open Feign
-        contract.ifAvailable(contracts::add);
+        Contract contract = contractObjectProvider.getIfAvailable();
+
+        if (contract != null) {
+            contracts.add(contract);
+        }
 
         Stream.of(CONTRACT_CLASS_NAMES)
                 .filter(this::isClassPresent) // filter the existed classes
@@ -129,10 +131,20 @@ public class FeignMetadataResolver implements BeanClassLoaderAware, SmartInitial
     public Set<RestMethodMetadata> resolveMethodRestMetadata(Class<?> targetType) {
         List<Method> feignContractMethods = selectFeignContractMethods(targetType);
         return contracts.stream()
-                .map(contract -> contract.parseAndValidatateMetadata(targetType))
+                .map(contract -> parseAndValidateMetadata(contract, targetType))
                 .flatMap(v -> v.stream())
                 .map(methodMetadata -> resolveMethodRestMetadata(methodMetadata, targetType, feignContractMethods))
                 .collect(Collectors.toSet());
+    }
+
+    private List<MethodMetadata> parseAndValidateMetadata(Contract contract, Class<?> targetType) {
+        List<MethodMetadata> methodMetadataList = Collections.emptyList();
+        try {
+            methodMetadataList = contract.parseAndValidatateMetadata(targetType);
+        } catch (Throwable ignored) {
+            // ignore
+        }
+        return methodMetadataList;
     }
 
     /**
@@ -160,13 +172,8 @@ public class FeignMetadataResolver implements BeanClassLoaderAware, SmartInitial
                                                            List<Method> feignContractMethods) {
         String configKey = methodMetadata.configKey();
         Method feignContractMethod = getMatchedFeignContractMethod(targetType, feignContractMethods, configKey);
-
-        RestMethodMetadata metadata = new RestMethodMetadata();
-
-        metadata.setRequest(new RequestMetadata(methodMetadata.template()));
+        RestMethodMetadata metadata = new RestMethodMetadata(methodMetadata);
         metadata.setMethod(new org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata(feignContractMethod));
-        metadata.setIndexToName(methodMetadata.indexToName());
-
         return metadata;
     }
 
