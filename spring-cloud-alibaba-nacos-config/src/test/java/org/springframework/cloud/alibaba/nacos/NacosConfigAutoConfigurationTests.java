@@ -16,59 +16,52 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySourceLocator;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshProperties;
-import org.springframework.cloud.context.refresh.ContextRefresher;
-import org.springframework.cloud.context.scope.refresh.RefreshScope;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.CompositePropertySource;
+import org.springframework.core.env.PropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author xiaojing
+ * @author pbting
  */
-public class NacosConfigAutoConfigurationTests {
-
-	private ConfigurableApplicationContext context;
-
-	@Before
-	public void setUp() throws Exception {
-		this.context = new SpringApplicationBuilder(
-				NacosConfigBootstrapConfiguration.class,
-				NacosConfigAutoConfiguration.class, TestConfiguration.class)
-						.web(WebApplicationType.NONE)
-						.run("--spring.cloud.nacos.config.name=myapp",
-								"--spring.cloud.config.enabled=true",
-								"--spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
-								"--spring.cloud.nacos.config.prefix=test");
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		if (this.context != null) {
-			this.context.close();
-		}
-	}
-
+public class NacosConfigAutoConfigurationTests extends NacosPowerMockitBaseTests {
 	@Test
 	public void testNacosConfigProperties() {
 
-		NacosConfigProperties nacosConfigProperties = this.context.getParent()
+		NacosConfigProperties nacosConfigProperties = context.getParent()
 				.getBean(NacosConfigProperties.class);
 		assertThat(nacosConfigProperties.getFileExtension()).isEqualTo("properties");
-		assertThat(nacosConfigProperties.getPrefix()).isEqualTo("test");
-		assertThat(nacosConfigProperties.getName()).isEqualTo("myapp");
+		assertThat(nacosConfigProperties.getPrefix() == null).isEqualTo(true);
+		assertThat(nacosConfigProperties.getNamespace() == null).isEqualTo(true);
+		assertThat(nacosConfigProperties.getName()).isEqualTo("sca-nacos-config");
+		assertThat(nacosConfigProperties.getServerAddr()).isEqualTo("127.0.0.1:8848");
+		assertThat(nacosConfigProperties.getEncode()).isEqualTo("utf-8");
+		assertThat(nacosConfigProperties.getActiveProfiles())
+				.isEqualTo(new String[] { "develop" });
+		assertThat(nacosConfigProperties.getSharedDataids())
+				.isEqualTo("base-common.properties,common.properties");
+		assertThat(nacosConfigProperties.getRefreshableDataids())
+				.isEqualTo("common.properties");
+		assertThat(nacosConfigProperties.getExtConfig().size()).isEqualTo(3);
+		assertThat(nacosConfigProperties.getExtConfig().get(0).getDataId())
+				.isEqualTo("ext00.yaml");
+		assertThat(nacosConfigProperties.getExtConfig().get(1).getGroup())
+				.isEqualTo("EXT01_GROUP");
+		assertThat(nacosConfigProperties.getExtConfig().get(1).isRefresh())
+				.isEqualTo(true);
+	}
 
+	@Test
+	public void nacosPropertySourceLocator() {
+		NacosPropertySourceLocator nacosPropertySourceLocator = this.context
+				.getBean(NacosPropertySourceLocator.class);
+		PropertySource propertySource = nacosPropertySourceLocator
+				.locate(this.context.getEnvironment());
+		assertThat(propertySource instanceof CompositePropertySource).isEqualTo(true);
 	}
 
 	@Test
@@ -77,20 +70,6 @@ public class NacosConfigAutoConfigurationTests {
 		NacosRefreshProperties nacosRefreshProperties = this.context
 				.getBean(NacosRefreshProperties.class);
 		assertThat(nacosRefreshProperties.isEnabled()).isEqualTo(true);
-
-	}
-
-	@Configuration
-	@AutoConfigureBefore(NacosConfigAutoConfiguration.class)
-	static class TestConfiguration {
-
-		@Autowired
-		ConfigurableApplicationContext context;
-
-		@Bean
-		ContextRefresher contextRefresher() {
-			return new ContextRefresher(context, new RefreshScope());
-		}
 
 	}
 

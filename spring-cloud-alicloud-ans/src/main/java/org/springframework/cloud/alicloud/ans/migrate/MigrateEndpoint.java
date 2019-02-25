@@ -1,7 +1,7 @@
 package org.springframework.cloud.alicloud.ans.migrate;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 @Endpoint(id = "migrate")
 public class MigrateEndpoint {
 
-	private static final Log log = LogFactory.getLog(MigrateEndpoint.class);
+	private static final Logger log = LoggerFactory.getLogger(MigrateEndpoint.class);
 
 	public MigrateEndpoint() {
 	}

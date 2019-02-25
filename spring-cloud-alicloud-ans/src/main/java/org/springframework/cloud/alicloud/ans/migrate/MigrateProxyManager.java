@@ -5,8 +5,8 @@ import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.Server;
 import com.netflix.loadbalancer.ServerList;
 import org.aopalliance.aop.Advice;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.aop.framework.ProxyFactory;
 
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 final class MigrateProxyManager {
 
-	private final static Log log = LogFactory.getLog(MigrateProxyManager.class);
+	private static final Logger log = LoggerFactory.getLogger(MigrateProxyManager.class);
 	private final static AtomicBoolean IS_PROXY = new AtomicBoolean(true);
 
 	private final static Set<String> SERVICES_ID = new ConcurrentSkipListSet<>();

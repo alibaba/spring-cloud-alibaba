@@ -23,7 +23,10 @@ import java.util.Set;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
+import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
@@ -52,16 +55,19 @@ public class RocketMQMessageChannelBinder extends
 		implements
 		ExtendedPropertiesBinder<MessageChannel, RocketMQConsumerProperties, RocketMQProducerProperties> {
 
-	private final RocketMQExtendedBindingProperties extendedBindingProperties;
+	private static final Logger logger = LoggerFactory
+			.getLogger(RocketMQMessageChannelBinder.class);
+
+	private RocketMQExtendedBindingProperties extendedBindingProperties = new RocketMQExtendedBindingProperties();
+
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 	private final InstrumentationManager instrumentationManager;
 
 	private Set<String> clientConfigId = new HashSet<>();
 	private Map<String, String> topicInUse = new HashMap<>();
 
-	public RocketMQMessageChannelBinder(
+	public RocketMQMessageChannelBinder(RocketMQTopicProvisioner provisioningProvider,
 			RocketMQExtendedBindingProperties extendedBindingProperties,
-			RocketMQTopicProvisioner provisioningProvider,
 			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
 			InstrumentationManager instrumentationManager) {
 		super(null, provisioningProvider);
@@ -145,7 +151,7 @@ public class RocketMQMessageChannelBinder extends
 		}
 
 		RocketMQListenerBindingContainer listenerContainer = new RocketMQListenerBindingContainer(
-				consumerProperties, this);
+				consumerProperties, rocketBinderConfigurationProperties, this);
 		listenerContainer.setConsumerGroup(group);
 		listenerContainer.setTopic(destination.getName());
 		listenerContainer.setConsumeThreadMax(consumerProperties.getConcurrency());
@@ -194,4 +200,20 @@ public class RocketMQMessageChannelBinder extends
 	public Map<String, String> getTopicInUse() {
 		return topicInUse;
 	}
+
+	@Override
+	public String getDefaultsPrefix() {
+		return extendedBindingProperties.getDefaultsPrefix();
+	}
+
+	@Override
+	public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
+		return extendedBindingProperties.getExtendedPropertiesEntryClass();
+	}
+
+	public void setExtendedBindingProperties(
+			RocketMQExtendedBindingProperties extendedBindingProperties) {
+		this.extendedBindingProperties = extendedBindingProperties;
+	}
+
 }
