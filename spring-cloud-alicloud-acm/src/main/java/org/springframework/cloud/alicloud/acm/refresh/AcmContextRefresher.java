@@ -16,12 +16,8 @@
 
 package org.springframework.cloud.alicloud.acm.refresh;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.alibaba.edas.acm.ConfigService;
+import com.alibaba.edas.acm.listener.ConfigChangeListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +32,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.edas.acm.ConfigService;
-import com.alibaba.edas.acm.listener.ConfigChangeListener;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * On application start up, AcmContextRefresher add diamond listeners to all application
@@ -49,7 +49,7 @@ import com.alibaba.edas.acm.listener.ConfigChangeListener;
 public class AcmContextRefresher
 		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
-	private Logger logger = LoggerFactory.getLogger(AcmContextRefresher.class);
+	private Logger log = LoggerFactory.getLogger(AcmContextRefresher.class);
 
 	private final ContextRefresher contextRefresher;
 
@@ -103,7 +103,7 @@ public class AcmContextRefresher
 							}
 							catch (NoSuchAlgorithmException
 									| UnsupportedEncodingException e) {
-								logger.warn("unable to get md5 for dataId: " + dataId, e);
+								log.warn("unable to get md5 for dataId: " + dataId, e);
 							}
 						}
 						refreshHistory.add(dataId, md5);

@@ -24,10 +24,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.alibaba.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
 import org.springframework.cloud.alibaba.nacos.registry.NacosAutoServiceRegistration;
 import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 import org.springframework.cloud.alibaba.nacos.registry.NacosServiceRegistry;
-import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration;
+import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +43,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnNacosDiscoveryEnabled
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
 @AutoConfigureBefore(NacosDiscoveryClientAutoConfiguration.class)
-@AutoConfigureAfter(AutoServiceRegistrationAutoConfiguration.class)
+@AutoConfigureAfter(AutoServiceRegistrationConfiguration.class)
 public class NacosDiscoveryAutoConfiguration {
 
 	@Bean

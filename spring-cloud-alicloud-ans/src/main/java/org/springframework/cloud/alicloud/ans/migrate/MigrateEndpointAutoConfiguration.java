@@ -6,6 +6,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 
+/**
+ * @author pbting
+ */
 @ConditionalOnWebApplication
 @ConditionalOnClass(value = Endpoint.class)
 @Conditional(MigrateOnConditionClass.class)

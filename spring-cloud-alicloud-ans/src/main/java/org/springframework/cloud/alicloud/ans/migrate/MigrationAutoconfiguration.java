@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+/**
+ * @author pbting
+ */
 @Configuration
 @EnableConfigurationProperties
 @Conditional(MigrateOnConditionClass.class)

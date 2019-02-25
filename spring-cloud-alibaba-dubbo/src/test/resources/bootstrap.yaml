@@ -7,6 +7,8 @@ spring:
         server-addr: 127.0.0.1:8848
       config:
         server-addr: 127.0.0.1:8848
+  main:
+    allow-bean-definition-overriding: true
 
 eureka:
   client:

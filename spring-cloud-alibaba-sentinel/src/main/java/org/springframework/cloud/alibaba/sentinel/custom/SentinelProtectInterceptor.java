@@ -22,8 +22,7 @@ import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.context.ContextUtil;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.cloud.alibaba.sentinel.rest.SentinelClientHttpResponse;
 import org.springframework.http.HttpRequest;
@@ -42,9 +41,6 @@ import java.net.URI;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor {
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(SentinelProtectInterceptor.class);
 
 	private final SentinelRestTemplate sentinelRestTemplate;
 

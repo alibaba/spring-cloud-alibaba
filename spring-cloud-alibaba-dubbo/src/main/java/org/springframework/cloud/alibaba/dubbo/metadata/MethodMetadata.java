@@ -17,7 +17,8 @@
 package org.springframework.cloud.alibaba.dubbo.metadata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang3.ClassUtils;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -32,10 +33,12 @@ import java.util.Objects;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MethodMetadata {
 
     private String name;
 
+    @JsonProperty("return-type")
     private String returnType;
 
     private List<MethodParameterMetadata> params;
@@ -49,7 +52,7 @@ public class MethodMetadata {
 
     public MethodMetadata(Method method) {
         this.name = method.getName();
-        this.returnType = ClassUtils.getName(method.getReturnType());
+        this.returnType = method.getReturnType().getName();
         this.params = initParameters(method);
         this.method = method;
     }
@@ -118,5 +121,15 @@ public class MethodMetadata {
     @Override
     public int hashCode() {
         return Objects.hash(name, returnType, params);
+    }
+
+    @Override
+    public String toString() {
+        return "MethodMetadata{" +
+                "name='" + name + '\'' +
+                ", returnType='" + returnType + '\'' +
+                ", params=" + params +
+                ", method=" + method +
+                '}';
     }
 }
