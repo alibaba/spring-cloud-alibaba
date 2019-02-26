@@ -14,29 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.service;
+package org.springframework.cloud.alibaba.dubbo.bootstrap;
 
-import java.util.Map;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
- * Echo Service
- *
- * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * Dubbo Spring Cloud Provider Bootstrap
  */
-public interface RestService {
+@EnableDiscoveryClient
+@EnableAutoConfiguration
+public class DubboSpringCloudProviderBootstrap {
 
-    String param(String param);
-
-    String params(int a, String b);
-
-    String headers(String header, String header2, Integer param);
-
-    String pathVariables(String path1, String path2, String param);
-
-    String form(String form);
-
-    User requestBodyMap(Map<String, Object> data, String param);
-
-    Map<String, Object> requestBodyUser(User user);
-
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(DubboSpringCloudProviderBootstrap.class)
+                .run(args);
+    }
 }
+
+
+

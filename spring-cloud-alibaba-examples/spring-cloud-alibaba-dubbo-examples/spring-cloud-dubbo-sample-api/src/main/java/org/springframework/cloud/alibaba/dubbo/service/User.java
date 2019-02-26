@@ -14,31 +14,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.registry;
+package org.springframework.cloud.alibaba.dubbo.service;
 
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.registry.Registry;
-import com.alibaba.dubbo.registry.RegistryFactory;
-
-import org.springframework.context.ApplicationContext;
+import java.io.Serializable;
 
 /**
- * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
+ * User Entity
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
- * @see RegistryFactory
- * @see SpringCloudRegistry
  */
-public class SpringCloudRegistryFactory implements RegistryFactory {
+public class User implements Serializable {
 
-    private static ApplicationContext applicationContext;
+    private Long id;
 
-    @Override
-    public Registry getRegistry(URL url) {
-        return new SpringCloudRegistry(url, applicationContext);
+    private String name;
+
+    private Integer age;
+
+    public Long getId() {
+        return id;
     }
 
-    public static void setApplicationContext(ApplicationContext applicationContext) {
-        SpringCloudRegistryFactory.applicationContext = applicationContext;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                '}';
     }
 }
