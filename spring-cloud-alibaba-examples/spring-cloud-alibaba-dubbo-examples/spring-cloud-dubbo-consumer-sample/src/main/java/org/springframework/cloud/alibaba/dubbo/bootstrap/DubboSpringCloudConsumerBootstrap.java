@@ -209,7 +209,7 @@ public class DubboSpringCloudConsumerBootstrap {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(DubboSpringCloudConsumerBootstrap.class)
-                .profiles("consul")
+                .profiles("nacos")
                 .run(args);
     }
 }
