@@ -4,6 +4,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+
   # default disable all
   cloud:
     nacos:
@@ -19,10 +20,13 @@ eureka:
   client:
     enabled: false
 
+ribbon:
+  nacos:
+    enabled: false
+
 provider:
   application:
     name: spring-cloud-alibaba-dubbo-provider
-
 
 ---
 spring:
@@ -35,6 +39,9 @@ spring:
         register-enabled: true
         server-addr: 127.0.0.1:8848
 
+ribbon:
+  nacos:
+    enabled: true
 
 ---
 spring:

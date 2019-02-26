@@ -103,6 +103,9 @@
         <!-- Nacos -->
         <profile>
             <id>nacos</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <dependencies>
                 <!-- Nacos Service Discovery -->
                 <dependency>
@@ -119,7 +122,6 @@
                 <dependency>
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-                    <optional>true</optional>
                 </dependency>
             </dependencies>
         </profile>
@@ -133,7 +135,6 @@
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
                     <version>${spring-cloud-zookeeper.version}</version>
-                    <optional>true</optional>
                     <exclusions>
                         <exclusion>
                             <groupId>org.apache.zookeeper</groupId>
@@ -159,23 +160,18 @@
                     <groupId>org.apache.curator</groupId>
                     <artifactId>curator-framework</artifactId>
                     <version>${curator.version}</version>
-                    <optional>true</optional>
                 </dependency>
             </dependencies>
         </profile>
 
         <profile>
             <id>consul</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <dependencies>
                 <!-- Spring Cloud Consul -->
                 <dependency>
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-starter-consul-discovery</artifactId>
                     <version>${spring-cloud-consul.version}</version>
-                    <optional>true</optional>
                 </dependency>
             </dependencies>
         </profile>
