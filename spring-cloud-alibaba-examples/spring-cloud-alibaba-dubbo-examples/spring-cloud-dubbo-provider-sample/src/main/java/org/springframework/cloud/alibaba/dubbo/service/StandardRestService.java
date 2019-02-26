@@ -20,6 +20,7 @@ import com.alibaba.dubbo.rpc.RpcContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +41,6 @@ import javax.ws.rs.QueryParam;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 /**
@@ -109,7 +109,7 @@ public class StandardRestService implements RestService {
     }
 
     @Override
-    @PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/request/body/map", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @Path("/request/body/map")
     @POST
     @Produces(APPLICATION_JSON_VALUE)
@@ -122,11 +122,11 @@ public class StandardRestService implements RestService {
         return user;
     }
 
-    @PostMapping(value = "/request/body/user", consumes = APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/request/body/user", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @Path("/request/body/user")
     @POST
     @Override
-    @Consumes(APPLICATION_JSON_UTF8_VALUE)
+    @Consumes(MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Map<String, Object> requestBodyUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", user.getId());

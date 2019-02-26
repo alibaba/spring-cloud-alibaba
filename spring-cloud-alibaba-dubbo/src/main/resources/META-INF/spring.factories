@@ -7,3 +7,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 
 org.springframework.context.ApplicationContextInitializer=\
   org.springframework.cloud.alibaba.dubbo.context.DubboServiceRegistrationApplicationContextInitializer
+
+org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactory=\
+  org.springframework.cloud.alibaba.dubbo.registry.DefaultRegistrationFactory,\
+  org.springframework.cloud.alibaba.dubbo.registry.netflix.eureka.EurekaRegistrationFactory,\
+  org.springframework.cloud.alibaba.dubbo.registry.apache.zookeeper.ZookeeperRegistrationFactory

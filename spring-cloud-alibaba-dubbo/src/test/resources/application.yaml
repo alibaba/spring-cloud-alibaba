@@ -7,7 +7,7 @@ dubbo:
       port: 12345
     rest:
       name: rest
-      port: 9090
+      port: 8081
       server: netty
   registry:
     address: spring-cloud://nacos

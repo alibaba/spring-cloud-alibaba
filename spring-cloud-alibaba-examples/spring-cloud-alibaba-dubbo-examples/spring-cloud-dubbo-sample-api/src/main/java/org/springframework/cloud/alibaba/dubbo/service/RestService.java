@@ -16,53 +16,26 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import javax.ws.rs.FormParam;
-import java.io.Serializable;
+import java.util.Map;
 
 /**
- * User Entity
+ * Rest Service
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class User implements Serializable {
+public interface RestService {
 
-    @FormParam("id")
-    private Long id;
+    String param(String param);
 
-    @FormParam("name")
-    private String name;
+    String params(int a, String b);
 
-    @FormParam("age")
-    private Integer age;
+    String headers(String header, String header2, Integer param);
 
-    public Long getId() {
-        return id;
-    }
+    String pathVariables(String path1, String path2, String param);
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    String form(String form);
 
-    public String getName() {
-        return name;
-    }
+    User requestBodyMap(Map<String, Object> data, String param);
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                '}';
-    }
+    Map<String, Object> requestBodyUser(User user);
 }
