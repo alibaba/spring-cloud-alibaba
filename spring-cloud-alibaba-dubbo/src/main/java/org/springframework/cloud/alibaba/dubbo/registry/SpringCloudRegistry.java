@@ -49,6 +49,7 @@ import static com.alibaba.dubbo.common.Constants.CONFIGURATORS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.CONSUMERS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.PROVIDERS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.ROUTERS_CATEGORY;
+import static java.lang.Long.getLong;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 import static org.springframework.core.ResolvableType.forInstance;
@@ -84,6 +85,26 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     private static final String WILDCARD = "*";
 
+    /**
+     * The interval in second of lookup service names(only for Dubbo-OPS)
+     */
+    private static final long ALL_SERVICES_LOOKUP_INTERVAL = getLong("dubbo.all.services.lookup.interval", 30);
+
+    /**
+     * The interval in second of lookup regigered service instances
+     */
+    private static final long REGISTERED_SERVICES_LOOKUP_INTERVAL = getLong("dubbo.registered.services.lookup.interval", 300);
+
+    /**
+     * The {@link ScheduledExecutorService Scheduler} to lookup the registered services
+     */
+    private static final ScheduledExecutorService registeredServicesLookupScheduler = newSingleThreadScheduledExecutor(new NamedThreadFactory("dubbo-registered-services-lookup-"));
+
+    /**
+     * The {@link ScheduledExecutorService Scheduler} to lookup all services (only for Dubbo-OPS)
+     */
+    private static volatile ScheduledExecutorService allServicesLookupScheduler;
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
@@ -99,26 +120,6 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     private final RegistrationFactory registrationFactory;
 
-    /**
-     * The {@link ScheduledExecutorService Scheduler} to lookup the registered services
-     */
-    private final ScheduledExecutorService registeredServicesLookupScheduler;
-
-    /**
-     * The {@link ScheduledExecutorService Scheduler} to lookup all services (only for Dubbo-OPS)
-     */
-    private volatile ScheduledExecutorService allServicesLookupScheduler;
-
-    /**
-     * The interval in second of lookup service names(only for Dubbo-OPS)
-     */
-    private static final long ALL_SERVICES_LOOKUP_INTERVAL = Long.getLong("dubbo.all.services.lookup.interval", 30);
-
-    /**
-     * The interval in second of lookup regigered service instances
-     */
-    private static final long REGISTERED_SERVICES_LOOKUP_INTERVAL = Long.getLong("dubbo.registered.services.lookup.interval", 30);
-
     public SpringCloudRegistry(URL url, ApplicationContext applicationContext) {
         super(url);
         this.applicationContext = applicationContext;
@@ -126,7 +127,6 @@ public class SpringCloudRegistry extends FailbackRegistry {
         this.registrationFactory = buildRegistrationFactory(serviceRegistry, applicationContext.getClassLoader());
         this.discoveryClient = applicationContext.getBean(DiscoveryClient.class);
         applicationContext.getClassLoader();
-        this.registeredServicesLookupScheduler = newSingleThreadScheduledExecutor(new NamedThreadFactory("dubbo-registered-services-lookup-"));
     }
 
     private RegistrationFactory buildRegistrationFactory(ServiceRegistry<Registration> serviceRegistry,
@@ -143,7 +143,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
                 Class<?> factoryClass = resolveClassName(factoryClassName, classLoader);
                 ResolvableType registrationFactoryType = forType(factoryClass);
                 Class<?> actualRegistrationClass = resolveGenericClass(registrationFactoryType, RegistrationFactory.class, 0);
-                if (actualRegistrationClass.equals(registrationClass)) {
+                if (registrationClass.equals(actualRegistrationClass)) {
                     registrationFactory = (RegistrationFactory) instantiateClass(registrationFactoryType.getRawClass());
                     break;
                 }
@@ -172,29 +172,33 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
         ResolvableType resolvableType = implementedType;
 
-        OUTER:
-        while (true) {
+        try {
+            OUTER:
+            while (true) {
 
-            ResolvableType[] interfaceTypes = resolvableType.getInterfaces();
+                ResolvableType[] interfaceTypes = resolvableType.getInterfaces();
 
-            for (ResolvableType interfaceType : interfaceTypes) {
-                if (interfaceType.resolve().equals(interfaceClass)) {
-                    resolvableType = interfaceType;
-                    break OUTER;
+                for (ResolvableType interfaceType : interfaceTypes) {
+                    if (interfaceType.resolve().equals(interfaceClass)) {
+                        resolvableType = interfaceType;
+                        break OUTER;
+                    }
                 }
+
+                ResolvableType superType = resolvableType.getSuperType();
+
+                Class<?> superClass = superType.resolve();
+
+                if (Object.class.equals(superClass)) {
+                    break;
+                }
+
+                resolvableType = superType;
             }
 
-            ResolvableType superType = resolvableType.getSuperType();
-
-            Class<?> superClass = superType.resolve();
-
-            if (Object.class.equals(superClass)) {
-                break;
-            }
-
-            resolvableType = superType;
+        } catch (Throwable e) {
+            resolvableType = ResolvableType.forType(void.class);
         }
-
 
         return resolvableType.resolveGeneric(index);
     }
@@ -232,9 +236,9 @@ public class SpringCloudRegistry extends FailbackRegistry {
             shutdownServiceNamesLookup();
         }
 
-        if (registeredServicesLookupScheduler != null) {
-            registeredServicesLookupScheduler.shutdown();
-        }
+//        if (registeredServicesLookupScheduler != null) {
+//            registeredServicesLookupScheduler.shutdown();
+//        }
     }
 
     @Override
