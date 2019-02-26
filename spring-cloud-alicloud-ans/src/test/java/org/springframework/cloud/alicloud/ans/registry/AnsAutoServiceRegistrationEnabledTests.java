@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.alicloud.ans.registry;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -38,14 +38,12 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AnsAutoServiceRegistrationIpTests.TestConfig.class, properties = {
+@SpringBootTest(classes = AnsAutoServiceRegistrationEnabledTests.TestConfig.class, properties = {
 		"spring.application.name=myTestService1",
-		"spring.cloud.alicloud.ans.client-domains=myTestService2",
 		"spring.cloud.alicloud.ans.server-list=127.0.0.1",
-		"spring.cloud.alicloud.ans.client-weight=2",
 		"spring.cloud.alicloud.ans.server-port=8080",
-		"spring.cloud.alicloud.ans.client-ip=123.123.123.123" }, webEnvironment = RANDOM_PORT)
-public class AnsAutoServiceRegistrationIpTests {
+		"spring.cloud.alicloud.ans.register-enabled=false" }, webEnvironment = RANDOM_PORT)
+public class AnsAutoServiceRegistrationEnabledTests {
 
 	@Autowired
 	private AnsRegistration registration;
@@ -64,23 +62,13 @@ public class AnsAutoServiceRegistrationIpTests {
 		assertNotNull("AnsAutoServiceRegistration was not created",
 				ansAutoServiceRegistration);
 
-		checkoutAnsDiscoveryServiceIP();
-		checkoutAnsDiscoveryServiceName();
-		checkoutAnsDiscoveryWeight();
+		checkEnabled();
+
 	}
 
-	private void checkoutAnsDiscoveryServiceIP() {
-		assertEquals("AnsProperties service IP was wrong", "123.123.123.123",
-				registration.getHost());
-	}
-
-	private void checkoutAnsDiscoveryServiceName() {
-		assertEquals("AnsDiscoveryProperties service name was wrong", "myTestService2",
-				properties.getClientDomains());
-	}
-
-	private void checkoutAnsDiscoveryWeight() {
-		assertEquals(2L, properties.getClientWeight(), 0);
+	private void checkEnabled() {
+		assertFalse("Ans Auto Registration should not start",
+				ansAutoServiceRegistration.isEnabled());
 	}
 
 	@Configuration
