@@ -130,12 +130,12 @@ public class DubboSpringCloudConsumerBootstrap {
 
             // To call /param
             callParam();
-//
-//            // To call /params
-//            callParams();
-//
-//            // To call /request/body/map
-//            callRequestBodyMap();
+
+            // To call /params
+            callParams();
+
+            // To call /request/body/map
+            callRequestBodyMap();
 
         };
     }
@@ -209,6 +209,7 @@ public class DubboSpringCloudConsumerBootstrap {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(DubboSpringCloudConsumerBootstrap.class)
+                .profiles("consul")
                 .run(args);
     }
 }
