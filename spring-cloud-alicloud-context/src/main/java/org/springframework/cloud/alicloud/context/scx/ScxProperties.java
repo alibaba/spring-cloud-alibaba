@@ -26,8 +26,18 @@ import com.alibaba.cloud.context.scx.ScxConfiguration;
 @ConfigurationProperties("spring.cloud.alicloud.scx")
 public class ScxProperties implements ScxConfiguration {
 
+	/**
+	 * Group id, please see <a href=
+	 * "https://help.aliyun.com/document_detail/35359.html?spm=a2c4g.11186623.6.721.69ca5763p9IJly">scx
+	 * docs</a>.
+	 */
 	private String groupId;
 
+	/**
+	 * Domain name, please see <a href=
+	 * "https://help.aliyun.com/document_detail/35359.html?spm=a2c4g.11186623.6.721.69ca5763p9IJly">scx
+	 * docs</a>.
+	 */
 	private String domainName;
 
 	@Override
