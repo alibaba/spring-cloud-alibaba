@@ -18,6 +18,7 @@
         <dubbo-spring-boot.version>0.2.1.RELEASE</dubbo-spring-boot.version>
         <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
         <spring-cloud-zookeeper.version>2.1.0.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-consul.version>2.1.0.RELEASE</spring-cloud-consul.version>
         <curator.version>4.0.1</curator.version>
     </properties>
 
@@ -54,6 +55,44 @@
             <artifactId>spring-boot-actuator</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Cloud dependencies -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+            <optional>true</optional>
+        </dependency>
+
 
         <!-- Eureka Service Discovery -->
         <dependency>
@@ -96,6 +135,14 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Spring Cloud Consul -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+            <version>${spring-cloud-consul.version}</version>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Nacos Service Discovery -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -103,43 +150,7 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-actuator-autoconfigure</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Spring Cloud dependencies -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-commons</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-context</artifactId>
-            <optional>true</optional>
-        </dependency>
-
+        <!-- Spring Cloud Open Feign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
