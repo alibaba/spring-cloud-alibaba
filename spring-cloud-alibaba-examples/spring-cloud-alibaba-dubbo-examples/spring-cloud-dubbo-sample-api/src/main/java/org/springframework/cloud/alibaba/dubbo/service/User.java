@@ -16,21 +16,19 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import javax.ws.rs.FormParam;
 import java.io.Serializable;
 
 /**
  * User Entity
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class User implements Serializable {
 
-    @FormParam("id")
     private Long id;
 
-    @FormParam("name")
     private String name;
 
-    @FormParam("age")
     private Integer age;
 
     public Long getId() {
