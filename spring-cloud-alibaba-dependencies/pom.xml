@@ -34,7 +34,6 @@
         <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
-        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
     </properties>
 
