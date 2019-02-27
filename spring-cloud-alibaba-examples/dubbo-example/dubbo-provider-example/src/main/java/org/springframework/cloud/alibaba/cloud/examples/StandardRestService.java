@@ -17,10 +17,12 @@
 package org.springframework.cloud.alibaba.cloud.examples;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 /**
  * Default {@link RestService}
@@ -29,6 +31,7 @@ import javax.ws.rs.Path;
  */
 @com.alibaba.dubbo.config.annotation.Service(version = "1.0.0", protocol = {"dubbo", "rest"})
 @RestController
+@Path("/")
 public class StandardRestService implements RestService {
 
 
@@ -37,7 +40,7 @@ public class StandardRestService implements RestService {
     @GetMapping(value = "/echo")
     @Path("/echo")
     @GET
-    public String echo(String param) {
+    public String echo(@RequestParam @QueryParam("param")String param) {
 
         return param;
     }
