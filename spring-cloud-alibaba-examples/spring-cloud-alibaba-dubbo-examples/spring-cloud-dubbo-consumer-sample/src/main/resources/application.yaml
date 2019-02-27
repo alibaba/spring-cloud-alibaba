@@ -1,0 +1,5 @@
+dubbo:
+  registry:
+    address: spring-cloud://nacos
+server:
+  port: 7070

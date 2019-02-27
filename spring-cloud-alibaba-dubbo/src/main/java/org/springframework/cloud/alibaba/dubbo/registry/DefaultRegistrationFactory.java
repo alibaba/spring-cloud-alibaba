@@ -17,28 +17,19 @@
 package org.springframework.cloud.alibaba.dubbo.registry;
 
 import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.registry.Registry;
-import com.alibaba.dubbo.registry.RegistryFactory;
 
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
+ * Default {@link RegistrationFactory}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
- * @see RegistryFactory
- * @see SpringCloudRegistry
  */
-public class SpringCloudRegistryFactory implements RegistryFactory {
-
-    private static ApplicationContext applicationContext;
+public class DefaultRegistrationFactory extends AbstractRegistrationFactory<Registration> {
 
     @Override
-    public Registry getRegistry(URL url) {
-        return new SpringCloudRegistry(url, applicationContext);
-    }
-
-    public static void setApplicationContext(ApplicationContext applicationContext) {
-        SpringCloudRegistryFactory.applicationContext = applicationContext;
+    public Registration create(String serviceName, URL url, ApplicationContext applicationContext) {
+        return new DelegatingRegistration(createServiceInstance(serviceName, url));
     }
 }
