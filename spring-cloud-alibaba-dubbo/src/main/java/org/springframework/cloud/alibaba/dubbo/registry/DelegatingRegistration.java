@@ -27,11 +27,11 @@ import java.util.Map;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-class DubboRegistration implements Registration {
+class DelegatingRegistration implements Registration {
 
     private final ServiceInstance delegate;
 
-    public DubboRegistration(ServiceInstance delegate) {
+    public DelegatingRegistration(ServiceInstance delegate) {
         this.delegate = delegate;
     }
 

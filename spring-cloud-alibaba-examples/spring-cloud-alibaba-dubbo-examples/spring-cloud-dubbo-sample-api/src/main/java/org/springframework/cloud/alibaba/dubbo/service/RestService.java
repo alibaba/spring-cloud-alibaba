@@ -19,7 +19,7 @@ package org.springframework.cloud.alibaba.dubbo.service;
 import java.util.Map;
 
 /**
- * Echo Service
+ * Rest Service
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -38,5 +38,4 @@ public interface RestService {
     User requestBodyMap(Map<String, Object> data, String param);
 
     Map<String, Object> requestBodyUser(User user);
-
 }

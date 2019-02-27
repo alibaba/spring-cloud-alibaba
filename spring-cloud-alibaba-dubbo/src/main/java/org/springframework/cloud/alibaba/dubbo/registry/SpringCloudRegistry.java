@@ -18,7 +18,7 @@ package org.springframework.cloud.alibaba.dubbo.registry;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.common.utils.NetUtils;
+import com.alibaba.dubbo.common.utils.NamedThreadFactory;
 import com.alibaba.dubbo.common.utils.UrlUtils;
 import com.alibaba.dubbo.registry.NotifyListener;
 import com.alibaba.dubbo.registry.RegistryFactory;
@@ -26,11 +26,12 @@ import com.alibaba.dubbo.registry.support.FailbackRegistry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.ResolvableType;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -38,11 +39,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +49,14 @@ import static com.alibaba.dubbo.common.Constants.CONFIGURATORS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.CONSUMERS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.PROVIDERS_CATEGORY;
 import static com.alibaba.dubbo.common.Constants.ROUTERS_CATEGORY;
+import static java.lang.Long.getLong;
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+import static org.springframework.beans.BeanUtils.instantiateClass;
+import static org.springframework.core.ResolvableType.forInstance;
+import static org.springframework.core.ResolvableType.forType;
+import static org.springframework.core.io.support.SpringFactoriesLoader.loadFactoryNames;
+import static org.springframework.util.ClassUtils.isPresent;
+import static org.springframework.util.ClassUtils.resolveClassName;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
@@ -70,10 +77,6 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     private static final int CATEGORY_INDEX = 0;
 
-//    private static final int PROTOCOL_INDEX = CATEGORY_INDEX + 1;
-
-//    private static final int SERVICE_INTERFACE_INDEX = PROTOCOL_INDEX + 1;
-
     private static final int SERVICE_INTERFACE_INDEX = CATEGORY_INDEX + 1;
 
     private static final int SERVICE_VERSION_INDEX = SERVICE_INTERFACE_INDEX + 1;
@@ -83,32 +86,123 @@ public class SpringCloudRegistry extends FailbackRegistry {
     private static final String WILDCARD = "*";
 
     /**
+     * The interval in second of lookup service names(only for Dubbo-OPS)
+     */
+    private static final long ALL_SERVICES_LOOKUP_INTERVAL = getLong("dubbo.all.services.lookup.interval", 30);
+
+    /**
+     * The interval in second of lookup regigered service instances
+     */
+    private static final long REGISTERED_SERVICES_LOOKUP_INTERVAL = getLong("dubbo.registered.services.lookup.interval", 300);
+
+    /**
+     * The {@link ScheduledExecutorService Scheduler} to lookup the registered services
+     */
+    private static final ScheduledExecutorService registeredServicesLookupScheduler = newSingleThreadScheduledExecutor(new NamedThreadFactory("dubbo-registered-services-lookup-"));
+
+    /**
+     * The {@link ScheduledExecutorService Scheduler} to lookup all services (only for Dubbo-OPS)
+     */
+    private static volatile ScheduledExecutorService allServicesLookupScheduler;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    /**
      * The separator for service name
      */
     private static final String SERVICE_NAME_SEPARATOR = ":";
+
+    private final ApplicationContext applicationContext;
 
     private final ServiceRegistry<Registration> serviceRegistry;
 
     private final DiscoveryClient discoveryClient;
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final RegistrationFactory registrationFactory;
 
-    /**
-     * {@link ScheduledExecutorService} lookup service names(only for Dubbo-OPS)
-     */
-    private volatile ScheduledExecutorService scheduledExecutorService;
-
-    /**
-     * The interval in second of lookup service names(only for Dubbo-OPS)
-     */
-    private static final long LOOKUP_INTERVAL = Long.getLong("dubbo.service.names.lookup.interval", 30);
-
-    public SpringCloudRegistry(URL url, ServiceRegistry<Registration> serviceRegistry,
-                               DiscoveryClient discoveryClient) {
+    public SpringCloudRegistry(URL url, ApplicationContext applicationContext) {
         super(url);
-        this.serviceRegistry = serviceRegistry;
-        this.discoveryClient = discoveryClient;
+        this.applicationContext = applicationContext;
+        this.serviceRegistry = applicationContext.getBean(ServiceRegistry.class);
+        this.registrationFactory = buildRegistrationFactory(serviceRegistry, applicationContext.getClassLoader());
+        this.discoveryClient = applicationContext.getBean(DiscoveryClient.class);
+        applicationContext.getClassLoader();
     }
+
+    private RegistrationFactory buildRegistrationFactory(ServiceRegistry<Registration> serviceRegistry,
+                                                         ClassLoader classLoader) {
+        RegistrationFactory registrationFactory = null;
+        List<String> factoryClassNames = loadFactoryNames(RegistrationFactory.class, classLoader);
+
+        ResolvableType serviceRegistryType = forInstance(serviceRegistry);
+        // Get first generic Class
+        Class<?> registrationClass = resolveGenericClass(serviceRegistryType, ServiceRegistry.class, 0);
+
+        for (String factoryClassName : factoryClassNames) {
+            if (isPresent(factoryClassName, classLoader)) { // ignore compilation issue
+                Class<?> factoryClass = resolveClassName(factoryClassName, classLoader);
+                ResolvableType registrationFactoryType = forType(factoryClass);
+                Class<?> actualRegistrationClass = resolveGenericClass(registrationFactoryType, RegistrationFactory.class, 0);
+                if (registrationClass.equals(actualRegistrationClass)) {
+                    registrationFactory = (RegistrationFactory) instantiateClass(registrationFactoryType.getRawClass());
+                    break;
+                }
+            }
+        }
+
+        if (registrationFactory == null) {
+
+            if (logger.isWarnEnabled()) {
+                logger.warn("{} implementation can't be resolved by ServiceRegistry[{}]",
+                        registrationClass.getSimpleName(), serviceRegistry.getClass().getName());
+            }
+
+            registrationFactory = new DefaultRegistrationFactory();
+        } else {
+            if (logger.isInfoEnabled()) {
+                logger.info("{} has been resolved by ServiceRegistry[{}]",
+                        registrationFactory.getClass().getName(), serviceRegistry.getClass().getName());
+            }
+        }
+
+        return registrationFactory;
+    }
+
+    private Class<?> resolveGenericClass(ResolvableType implementedType, Class<?> interfaceClass, int index) {
+
+        ResolvableType resolvableType = implementedType;
+
+        try {
+            OUTER:
+            while (true) {
+
+                ResolvableType[] interfaceTypes = resolvableType.getInterfaces();
+
+                for (ResolvableType interfaceType : interfaceTypes) {
+                    if (interfaceType.resolve().equals(interfaceClass)) {
+                        resolvableType = interfaceType;
+                        break OUTER;
+                    }
+                }
+
+                ResolvableType superType = resolvableType.getSuperType();
+
+                Class<?> superClass = superType.resolve();
+
+                if (Object.class.equals(superClass)) {
+                    break;
+                }
+
+                resolvableType = superType;
+            }
+
+        } catch (Throwable e) {
+            resolvableType = ResolvableType.forType(void.class);
+        }
+
+        return resolvableType.resolveGeneric(index);
+    }
+
 
     @Override
     protected void doRegister(URL url) {
@@ -128,6 +222,12 @@ public class SpringCloudRegistry extends FailbackRegistry {
     protected void doSubscribe(URL url, NotifyListener listener) {
         List<String> serviceNames = getServiceNames(url, listener);
         doSubscribe(url, listener, serviceNames);
+        this.registeredServicesLookupScheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                doSubscribe(url, listener, serviceNames);
+            }
+        }, REGISTERED_SERVICES_LOOKUP_INTERVAL, REGISTERED_SERVICES_LOOKUP_INTERVAL, TimeUnit.SECONDS);
     }
 
     @Override
@@ -135,6 +235,10 @@ public class SpringCloudRegistry extends FailbackRegistry {
         if (isAdminProtocol(url)) {
             shutdownServiceNamesLookup();
         }
+
+//        if (registeredServicesLookupScheduler != null) {
+//            registeredServicesLookupScheduler.shutdown();
+//        }
     }
 
     @Override
@@ -143,25 +247,13 @@ public class SpringCloudRegistry extends FailbackRegistry {
     }
 
     private void shutdownServiceNamesLookup() {
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService.shutdown();
+        if (allServicesLookupScheduler != null) {
+            allServicesLookupScheduler.shutdown();
         }
     }
 
     private Registration createRegistration(String serviceName, URL url) {
-        return new DubboRegistration(createServiceInstance(serviceName, url));
-    }
-
-    private ServiceInstance createServiceInstance(String serviceName, URL url) {
-        // Append default category if absent
-        String category = url.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
-        URL newURL = url.addParameter(Constants.CATEGORY_KEY, category);
-        newURL = newURL.addParameter(Constants.PROTOCOL_KEY, url.getProtocol());
-        String ip = NetUtils.getLocalHost();
-        int port = newURL.getParameter(Constants.BIND_PORT_KEY, url.getPort());
-        DefaultServiceInstance serviceInstance = new DefaultServiceInstance(serviceName, ip, port, false);
-        serviceInstance.getMetadata().putAll(new LinkedHashMap<>(newURL.getParameters()));
-        return serviceInstance;
+        return registrationFactory.create(serviceName, url, applicationContext);
     }
 
     public static String getServiceName(URL url) {
@@ -248,10 +340,6 @@ public class SpringCloudRegistry extends FailbackRegistry {
         return segments[CATEGORY_INDEX];
     }
 
-//    public static String getProtocol(String[] segments) {
-//        return segments[PROTOCOL_INDEX];
-//    }
-
     public static String getServiceInterface(String[] segments) {
         return segments[SERVICE_INTERFACE_INDEX];
     }
@@ -288,7 +376,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
      */
     private List<String> getServiceNames(URL url, NotifyListener listener) {
         if (isAdminProtocol(url)) {
-            scheduleServiceNamesLookup(url, listener);
+            initAllServicesLookupScheduler(url, listener);
             return getServiceNamesForOps(url);
         } else {
             return doGetServiceNames(url);
@@ -300,10 +388,10 @@ public class SpringCloudRegistry extends FailbackRegistry {
         return Constants.ADMIN_PROTOCOL.equals(url.getProtocol());
     }
 
-    private void scheduleServiceNamesLookup(final URL url, final NotifyListener listener) {
-        if (scheduledExecutorService == null) {
-            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-            scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+    private void initAllServicesLookupScheduler(final URL url, final NotifyListener listener) {
+        if (allServicesLookupScheduler == null) {
+            allServicesLookupScheduler = newSingleThreadScheduledExecutor(new NamedThreadFactory("dubbo-all-services-lookup-"));
+            allServicesLookupScheduler.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
                     List<String> serviceNames = getAllServiceNames();
@@ -323,7 +411,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
                     });
                     doSubscribe(url, listener, serviceNames);
                 }
-            }, LOOKUP_INTERVAL, LOOKUP_INTERVAL, TimeUnit.SECONDS);
+            }, ALL_SERVICES_LOOKUP_INTERVAL, ALL_SERVICES_LOOKUP_INTERVAL, TimeUnit.SECONDS);
         }
     }
 
@@ -331,7 +419,6 @@ public class SpringCloudRegistry extends FailbackRegistry {
         for (String serviceName : serviceNames) {
             List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceName);
             notifySubscriber(url, listener, serviceInstances);
-            // TODO Support Update notification event
         }
     }
 

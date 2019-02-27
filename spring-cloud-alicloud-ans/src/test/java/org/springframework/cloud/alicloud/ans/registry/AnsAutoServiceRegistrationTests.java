@@ -54,6 +54,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 		"spring.application.name=myTestService1",
 		"spring.cloud.alicloud.ans.server-list=127.0.0.1",
 		"spring.cloud.alicloud.ans.server-port=8080",
+		"spring.cloud.alicloud.ans.secure=true",
 		"spring.cloud.alicloud.ans.endpoint=test-endpoint" }, webEnvironment = RANDOM_PORT)
 public class AnsAutoServiceRegistrationTests {
 
@@ -86,6 +87,7 @@ public class AnsAutoServiceRegistrationTests {
 		checkoutAnsDiscoveryServiceName();
 		checkoutAnsDiscoveryServiceIP();
 		checkoutAnsDiscoveryServicePort();
+		checkoutAnsDiscoverySecure();
 
 		checkAutoRegister();
 
@@ -101,31 +103,31 @@ public class AnsAutoServiceRegistrationTests {
 	private void checkoutAnsDiscoveryServerList() {
 		assertEquals("AnsDiscoveryProperties server list was wrong", "127.0.0.1",
 				properties.getServerList());
-
 	}
 
 	private void checkoutAnsDiscoveryServerPort() {
 		assertEquals("AnsDiscoveryProperties server port was wrong", "8080",
 				properties.getServerPort());
-
 	}
 
 	private void checkoutAnsDiscoveryServiceName() {
 		assertEquals("AnsDiscoveryProperties service name was wrong", "myTestService1",
 				properties.getClientDomains());
-
 	}
 
 	private void checkoutAnsDiscoveryServiceIP() {
 		assertEquals("AnsDiscoveryProperties service IP was wrong",
 				inetUtils.findFirstNonLoopbackHostInfo().getIpAddress(),
 				registration.getHost());
-
 	}
 
 	private void checkoutAnsDiscoveryServicePort() {
 		assertEquals("AnsDiscoveryProperties service Port was wrong", port,
 				registration.getPort());
+	}
+
+	private void checkoutAnsDiscoverySecure() {
+		assertTrue("AnsDiscoveryProperties secure should be true", properties.isSecure());
 
 	}
 
