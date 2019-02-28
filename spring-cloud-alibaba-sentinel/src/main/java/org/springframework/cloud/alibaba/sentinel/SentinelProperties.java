@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.validation.Valid;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
 import org.springframework.core.Ordered;
@@ -55,6 +57,7 @@ public class SentinelProperties {
 	/**
 	 * Configurations about datasource, like 'nacos', 'apollo', 'file', 'zookeeper'.
 	 */
+	@Valid
 	private Map<String, DataSourcePropertiesConfiguration> datasource = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
 

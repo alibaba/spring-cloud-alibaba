@@ -53,7 +53,7 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
  */
 public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProcessor {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(SentinelBeanPostProcessor.class);
 
 	private final ApplicationContext applicationContext;
@@ -100,14 +100,14 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			return;
 		}
 		if (blockClass != void.class && StringUtils.isEmpty(blockMethod)) {
-			logger.error(
+			log.error(
 					"{} class attribute exists but {} method attribute is not exists in bean[{}]",
 					type, type, beanName);
 			throw new IllegalArgumentException(type + " class attribute exists but "
 					+ type + " method attribute is not exists in bean[" + beanName + "]");
 		}
 		else if (blockClass == void.class && !StringUtils.isEmpty(blockMethod)) {
-			logger.error(
+			log.error(
 					"{} method attribute exists but {} class attribute is not exists in bean[{}]",
 					type, type, beanName);
 			throw new IllegalArgumentException(type + " method attribute exists but "
@@ -123,7 +123,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		String argsStr = Arrays.toString(argList.toArray());
 		Method foundMethod = ClassUtils.getStaticMethod(blockClass, blockMethod, args);
 		if (foundMethod == null) {
-			logger.error(
+			log.error(
 					"{} static method can not be found in bean[{}]. The right method signature is {}#{}{}, please check your class name, method name and arguments",
 					type, beanName, blockClass.getName(), blockMethod, argsStr);
 			throw new IllegalArgumentException(type
@@ -134,7 +134,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		}
 
 		if (!ClientHttpResponse.class.isAssignableFrom(foundMethod.getReturnType())) {
-			logger.error(
+			log.error(
 					"{} method return value in bean[{}] is not ClientHttpResponse: {}#{}{}",
 					type, beanName, blockClass.getName(), blockMethod, argsStr);
 			throw new IllegalArgumentException(type + " method return value in bean["

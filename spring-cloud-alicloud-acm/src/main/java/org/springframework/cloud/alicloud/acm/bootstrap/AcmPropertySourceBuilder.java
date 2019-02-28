@@ -33,64 +33,68 @@ import java.util.*;
  */
 class AcmPropertySourceBuilder {
 
-    private Logger logger = LoggerFactory.getLogger(AcmPropertySourceBuilder.class);
+	private Logger log = LoggerFactory.getLogger(AcmPropertySourceBuilder.class);
 
-    /**
-     * 传入 ACM 的 DataId 和 groupID，获取到解析后的 AcmProperty 对象
-     *
-     * @param dataId
-     * @param diamondGroup
-     * @param groupLevel
-     * @return
-     */
-    AcmPropertySource build(String dataId, String diamondGroup, boolean groupLevel) {
-        Properties properties = loadDiamondData(dataId, diamondGroup);
-        if (properties == null) {
-            return null;
-        }
-        return new AcmPropertySource(dataId, toMap(properties), new Date(), groupLevel);
-    }
+	/**
+	 * 传入 ACM 的 DataId 和 groupID，获取到解析后的 AcmProperty 对象
+	 *
+	 * @param dataId
+	 * @param diamondGroup
+	 * @param groupLevel
+	 * @return
+	 */
+	AcmPropertySource build(String dataId, String diamondGroup, boolean groupLevel) {
+		Properties properties = loadDiamondData(dataId, diamondGroup);
+		if (properties == null) {
+			return null;
+		}
+		return new AcmPropertySource(dataId, toMap(properties), new Date(), groupLevel);
+	}
 
-    private Properties loadDiamondData(String dataId, String diamondGroup) {
-        try {
-            String data = ConfigService.getConfig(dataId, diamondGroup, 3000L);
-            if (StringUtils.isEmpty(data)) {
-                return null;
-            }
-            if (dataId.endsWith(".properties")) {
-                Properties properties = new Properties();
-                logger.info(String.format("Loading acm data, dataId: '%s', group: '%s'",
-                    dataId, diamondGroup));
-                properties.load(new StringReader(data));
-                return properties;
-            } else if (dataId.endsWith(".yaml") || dataId.endsWith(".yml")) {
-                YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
-                yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
-                return yamlFactory.getObject();
-            }
-        } catch (Exception e) {
-            if (e instanceof ConfigException) {
-                logger.error("DIAMOND-100500:" + dataId + ", " + e.toString(), e);
-            } else {
-                logger.error("DIAMOND-100500:" + dataId, e);
-            }
-        }
-        return null;
-    }
+	private Properties loadDiamondData(String dataId, String diamondGroup) {
+		try {
+			String data = ConfigService.getConfig(dataId, diamondGroup, 3000L);
+			if (StringUtils.isEmpty(data)) {
+				return null;
+			}
+			if (dataId.endsWith(".properties")) {
+				Properties properties = new Properties();
+				log.info(String.format("Loading acm data, dataId: '%s', group: '%s'",
+						dataId, diamondGroup));
+				properties.load(new StringReader(data));
+				return properties;
+			}
+			else if (dataId.endsWith(".yaml") || dataId.endsWith(".yml")) {
+				YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+				yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
+				return yamlFactory.getObject();
+			}
+		}
+		catch (Exception e) {
+			if (e instanceof ConfigException) {
+				log.error("DIAMOND-100500:" + dataId + ", " + e.toString(), e);
+			}
+			else {
+				log.error("DIAMOND-100500:" + dataId, e);
+			}
+		}
+		return null;
+	}
 
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> toMap(Properties properties) {
-        Map<String, Object> result = new HashMap<>();
-        Enumeration<String> keys = (Enumeration<String>)properties.propertyNames();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            Object value = properties.getProperty(key);
-            if (value != null) {
-                result.put(key, ((String)value).trim());
-            } else {
-                result.put(key, null);
-            }
-        }
-        return result;
-    }
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> toMap(Properties properties) {
+		Map<String, Object> result = new HashMap<>();
+		Enumeration<String> keys = (Enumeration<String>) properties.propertyNames();
+		while (keys.hasMoreElements()) {
+			String key = keys.nextElement();
+			Object value = properties.getProperty(key);
+			if (value != null) {
+				result.put(key, ((String) value).trim());
+			}
+			else {
+				result.put(key, null);
+			}
+		}
+		return result;
+	}
 }

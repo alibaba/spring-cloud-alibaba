@@ -26,7 +26,6 @@ import com.alibaba.nacos.api.naming.pojo.ServiceInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
 
@@ -39,11 +38,11 @@ public class NacosDiscoveryEndpoint extends AbstractEndpoint<Map<String, Object>
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NacosDiscoveryEndpoint.class);
 
-	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	public NacosDiscoveryEndpoint() {
+	public NacosDiscoveryEndpoint(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		super("nacos_discovery", false);
+		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 	}
 
 	/**

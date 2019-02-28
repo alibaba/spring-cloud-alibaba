@@ -18,7 +18,7 @@ package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
 import java.io.IOException;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
 import org.springframework.util.ResourceUtils;
@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
  */
 public class FileDataSourceProperties extends AbstractDataSourceProperties {
 
-	@NotEmpty
+	@NotNull
 	private String file;
 	private String charset = "utf-8";
 	private long recommendRefreshMs = 3000L;

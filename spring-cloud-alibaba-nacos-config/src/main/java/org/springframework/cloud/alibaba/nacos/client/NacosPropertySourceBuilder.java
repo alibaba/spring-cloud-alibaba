@@ -33,7 +33,7 @@ import java.util.*;
  * @author pbting
  */
 public class NacosPropertySourceBuilder {
-	private static final Logger LOGGER = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceBuilder.class);
 	private static final Properties EMPTY_PROPERTIES = new Properties();
 
@@ -68,9 +68,6 @@ public class NacosPropertySourceBuilder {
 	NacosPropertySource build(String dataId, String group, String fileExtension,
 			boolean isRefreshable) {
 		Properties p = loadNacosData(dataId, group, fileExtension);
-		if (p == null) {
-			p = EMPTY_PROPERTIES;
-		}
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
 				propertiesToMap(p), new Date(), isRefreshable);
 		NacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
@@ -82,7 +79,7 @@ public class NacosPropertySourceBuilder {
 		try {
 			data = configService.getConfig(dataId, group, timeout);
 			if (!StringUtils.isEmpty(data)) {
-				LOGGER.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
+				log.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
 						dataId, group));
 
 				if (fileExtension.equalsIgnoreCase("properties")) {
@@ -101,21 +98,20 @@ public class NacosPropertySourceBuilder {
 			}
 		}
 		catch (NacosException e) {
-			LOGGER.error("get data from Nacos error,dataId:{}, ", dataId, e);
+			log.error("get data from Nacos error,dataId:{}, ", dataId, e);
 		}
 		catch (Exception e) {
-			LOGGER.error("parse data from Nacos error,dataId:{},data:{},", dataId, data,
-					e);
+			log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
 		}
-		return null;
+		return EMPTY_PROPERTIES;
 	}
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> propertiesToMap(Properties properties) {
 		Map<String, Object> result = new HashMap<>(16);
-		Enumeration<String> tmpKeys = (Enumeration<String>) properties.propertyNames();
-		while (tmpKeys.hasMoreElements()) {
-			String key = tmpKeys.nextElement();
+		Enumeration<String> keys = (Enumeration<String>) properties.propertyNames();
+		while (keys.hasMoreElements()) {
+			String key = keys.nextElement();
 			Object value = properties.getProperty(key);
 			if (value != null) {
 				result.put(key, ((String) value).trim());
@@ -126,4 +122,5 @@ public class NacosPropertySourceBuilder {
 		}
 		return result;
 	}
+
 }
