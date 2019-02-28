@@ -44,7 +44,7 @@ public class AnsServiceRegistry implements ServiceRegistry<AnsRegistration> {
 			return;
 		}
 		if (StringUtils.isEmpty(registration.getServiceId())) {
-			log.info("No service to register for client...");
+			log.warn("No service to register for client...");
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class AnsServiceRegistry implements ServiceRegistry<AnsRegistration> {
 		log.info("De-registering from ANSServer now...");
 
 		if (StringUtils.isEmpty(registration.getServiceId())) {
-			log.info("No dom to de-register for client...");
+			log.warn("No dom to de-register for client...");
 			return;
 		}
 
