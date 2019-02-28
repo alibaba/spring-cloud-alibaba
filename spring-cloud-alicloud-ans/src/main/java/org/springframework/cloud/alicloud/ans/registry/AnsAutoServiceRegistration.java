@@ -18,12 +18,9 @@ package org.springframework.cloud.alicloud.ans.registry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -31,7 +28,6 @@ import org.springframework.util.StringUtils;
  * @author xiaolongzuo
  * @author pbting
  */
-@Component
 public class AnsAutoServiceRegistration
 		extends AbstractAutoServiceRegistration<AnsRegistration> {
 
@@ -64,16 +60,6 @@ public class AnsAutoServiceRegistration
 	@Override
 	protected AnsRegistration getManagementRegistration() {
 		return null;
-	}
-
-	@Override
-	public void start() {
-		// nothing to do
-	}
-
-	@EventListener(EmbeddedServletContainerInitializedEvent.class)
-	public void doStart() {
-		super.start();
 	}
 
 	@Override
