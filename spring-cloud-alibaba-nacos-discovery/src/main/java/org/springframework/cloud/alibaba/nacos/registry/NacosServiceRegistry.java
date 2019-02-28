@@ -46,7 +46,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	public void register(Registration registration) {
 
 		if (StringUtils.isEmpty(registration.getServiceId())) {
-			log.info("No service to register for nacos client...");
+			log.warn("No service to register for nacos client...");
 			return;
 		}
 
@@ -76,7 +76,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		log.info("De-registering from Nacos Server now...");
 
 		if (StringUtils.isEmpty(registration.getServiceId())) {
-			log.info("No dom to de-register for nacos client...");
+			log.warn("No dom to de-register for nacos client...");
 			return;
 		}
 
