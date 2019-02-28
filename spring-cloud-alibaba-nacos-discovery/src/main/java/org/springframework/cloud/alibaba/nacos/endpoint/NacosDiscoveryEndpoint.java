@@ -37,7 +37,7 @@ import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
 @Endpoint(id = "nacos-discovery")
 public class NacosDiscoveryEndpoint {
 
-	private static final Logger LOGGER = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryEndpoint.class);
 
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
@@ -61,7 +61,7 @@ public class NacosDiscoveryEndpoint {
 			subscribe = namingService.getSubscribeServices();
 		}
 		catch (Exception e) {
-			LOGGER.error("get subscribe services from nacos fail,", e);
+			log.error("get subscribe services from nacos fail,", e);
 		}
 		result.put("subscribe", subscribe);
 		return result;

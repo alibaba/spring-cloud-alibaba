@@ -16,25 +16,25 @@
 
 package org.springframework.cloud.alibaba.cloud.examples;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.alibaba.edas.schedulerx.ProcessResult;
 import com.alibaba.edas.schedulerx.ScxSimpleJobContext;
 import com.alibaba.edas.schedulerx.ScxSimpleJobProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaolongzuo
  */
 public class SimpleTask implements ScxSimpleJobProcessor {
 
-    @Autowired
-    private TestService testService;
+	@Autowired
+	private TestService testService;
 
-    @Override
-    public ProcessResult process(ScxSimpleJobContext context) {
-        System.out.println("-----------Hello world---------------");
-        testService.test();
-        ProcessResult processResult = new ProcessResult(true);
-        return processResult;
-    }
+	@Override
+	public ProcessResult process(ScxSimpleJobContext context) {
+		testService.test();
+		ProcessResult processResult = new ProcessResult(true);
+		return processResult;
+	}
 
 }

@@ -57,7 +57,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
 
-	private static final Logger LOGGER = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryProperties.class);
 
 	/**
@@ -167,7 +167,7 @@ public class NacosDiscoveryProperties {
 
 		serverAddr = Objects.toString(serverAddr, "");
 		if (serverAddr.lastIndexOf("/") != -1) {
-			serverAddr.substring(0, serverAddr.length() - 1);
+			serverAddr = serverAddr.substring(0, serverAddr.length() - 1);
 		}
 		endpoint = Objects.toString(endpoint, "");
 		namespace = Objects.toString(namespace, "");
@@ -413,7 +413,7 @@ public class NacosDiscoveryProperties {
 			namingService = NacosFactory.createNamingService(properties);
 		}
 		catch (Exception e) {
-			LOGGER.error("create naming service error!properties={},e=,", this, e);
+			log.error("create naming service error!properties={},e=,", this, e);
 			return null;
 		}
 		return namingService;
