@@ -18,6 +18,8 @@ package org.springframework.cloud.stream.binder.rocketmq.consuming;
 
 import java.util.List;
 
+import org.apache.rocketmq.acl.common.AclClientRPCHook;
+import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -26,8 +28,10 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
+import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.apache.rocketmq.remoting.RPCHook;
 import org.apache.rocketmq.spring.annotation.ConsumeMode;
 import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.SelectorType;
@@ -40,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
+import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.util.Assert;
@@ -83,6 +88,7 @@ public class RocketMQListenerBindingContainer
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> rocketMQConsumerProperties;
 
 	private final RocketMQMessageChannelBinder rocketMQMessageChannelBinder;
+	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
 	// The following properties came from RocketMQConsumerProperties.
 	private ConsumeMode consumeMode;
@@ -92,8 +98,10 @@ public class RocketMQListenerBindingContainer
 
 	public RocketMQListenerBindingContainer(
 			ExtendedConsumerProperties<RocketMQConsumerProperties> rocketMQConsumerProperties,
+			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
 			RocketMQMessageChannelBinder rocketMQMessageChannelBinder) {
 		this.rocketMQConsumerProperties = rocketMQConsumerProperties;
+		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
 		this.rocketMQMessageChannelBinder = rocketMQMessageChannelBinder;
 		this.consumeMode = rocketMQConsumerProperties.getExtension().getOrderly()
 				? ConsumeMode.ORDERLY
@@ -189,7 +197,23 @@ public class RocketMQListenerBindingContainer
 		Assert.notNull(nameServer, "Property 'nameServer' is required");
 		Assert.notNull(topic, "Property 'topic' is required");
 
-		consumer = new DefaultMQPushConsumer(consumerGroup);
+		String ak = rocketBinderConfigurationProperties.getAccessKey();
+		String sk = rocketBinderConfigurationProperties.getSecretKey();
+		if (!StringUtils.isEmpty(ak) && !StringUtils.isEmpty(sk)) {
+			RPCHook rpcHook = new AclClientRPCHook(new SessionCredentials(ak, sk));
+			consumer = new DefaultMQPushConsumer(consumerGroup, rpcHook,
+					new AllocateMessageQueueAveragely(),
+					rocketBinderConfigurationProperties.isEnableMsgTrace(),
+					rocketBinderConfigurationProperties.getCustomizedTraceTopic());
+			consumer.setInstanceName(RocketMQUtil.getInstanceName(rpcHook, topic));
+			consumer.setVipChannelEnabled(false);
+		}
+		else {
+			consumer = new DefaultMQPushConsumer(consumerGroup,
+					rocketBinderConfigurationProperties.isEnableMsgTrace(),
+					rocketBinderConfigurationProperties.getCustomizedTraceTopic());
+		}
+
 		consumer.setNamesrvAddr(nameServer);
 		consumer.setConsumeThreadMax(rocketMQConsumerProperties.getConcurrency());
 		consumer.setConsumeThreadMin(rocketMQConsumerProperties.getConcurrency());
@@ -236,6 +260,15 @@ public class RocketMQListenerBindingContainer
 
 		rocketMQMessageChannelBinder.getClientConfigId().add(consumer.buildMQClientId());
 
+	}
+
+	@Override
+	public String toString() {
+		return "RocketMQListenerBindingContainer{" + "consumerGroup='" + consumerGroup
+				+ '\'' + ", nameServer='" + nameServer + '\'' + ", topic='" + topic + '\''
+				+ ", consumeMode=" + consumeMode + ", selectorType=" + selectorType
+				+ ", selectorExpression='" + selectorExpression + '\'' + ", messageModel="
+				+ messageModel + '}';
 	}
 
 	public long getSuspendCurrentQueueTimeMillis() {

@@ -16,11 +16,10 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.config;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.acl.common.AclClientRPCHook;
+import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
-import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
-import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties.Producer;
 import org.apache.rocketmq.spring.config.RocketMQConfigUtils;
 import org.apache.rocketmq.spring.config.RocketMQTransactionAnnotationProcessor;
 import org.apache.rocketmq.spring.config.TransactionHandlerRegistry;
@@ -32,7 +31,6 @@ import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,48 +49,35 @@ public class RocketMQComponent4BinderAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(DefaultMQProducer.class)
 	public DefaultMQProducer defaultMQProducer() {
-		RocketMQProperties rocketMQProperties = new RocketMQProperties();
-		String configNameServer = environment
-				.getProperty("spring.cloud.stream.rocketmq.binder.namesrv-addr");
-		if (StringUtils.isEmpty(configNameServer)) {
-			rocketMQProperties.setNameServer(RocketMQBinderConstants.DEFAULT_NAME_SERVER);
+		DefaultMQProducer producer;
+		String configNameServer = environment.resolveRequiredPlaceholders(
+				"${spring.cloud.stream.rocketmq.binder.name-server:${rocketmq.producer.name-server:}}");
+		String ak = environment.resolveRequiredPlaceholders(
+				"${spring.cloud.stream.rocketmq.binder.access-key:${rocketmq.producer.access-key:}}");
+		String sk = environment.resolveRequiredPlaceholders(
+				"${spring.cloud.stream.rocketmq.binder.secret-key:${rocketmq.producer.secret-key:}}");
+		if (!org.springframework.util.StringUtils.isEmpty(ak)
+				&& !org.springframework.util.StringUtils.isEmpty(sk)) {
+			producer = new DefaultMQProducer(RocketMQBinderConstants.DEFAULT_GROUP,
+					new AclClientRPCHook(new SessionCredentials(ak, sk)));
+			producer.setVipChannelEnabled(false);
 		}
 		else {
-			rocketMQProperties.setNameServer(configNameServer);
+			producer = new DefaultMQProducer(RocketMQBinderConstants.DEFAULT_GROUP);
 		}
-		RocketMQProperties.Producer producerConfig = new Producer();
-		rocketMQProperties.setProducer(producerConfig);
-		producerConfig.setGroup(RocketMQBinderConstants.DEFAULT_GROUP);
-
-		String nameServer = rocketMQProperties.getNameServer();
-		String groupName = producerConfig.getGroup();
-		Assert.hasText(nameServer, "[rocketmq.name-server] must not be null");
-		Assert.hasText(groupName, "[rocketmq.producer.group] must not be null");
-
-		DefaultMQProducer producer = new DefaultMQProducer(groupName);
-		producer.setNamesrvAddr(nameServer);
-		producer.setSendMsgTimeout(producerConfig.getSendMessageTimeout());
-		producer.setRetryTimesWhenSendFailed(
-				producerConfig.getRetryTimesWhenSendFailed());
-		producer.setRetryTimesWhenSendAsyncFailed(
-				producerConfig.getRetryTimesWhenSendAsyncFailed());
-		producer.setMaxMessageSize(producerConfig.getMaxMessageSize());
-		producer.setCompressMsgBodyOverHowmuch(
-				producerConfig.getCompressMessageBodyThreshold());
-		producer.setRetryAnotherBrokerWhenNotStoreOK(producerConfig.isRetryNextServer());
-
+		producer.setNamesrvAddr(configNameServer);
 		return producer;
 	}
 
 	@Bean(destroyMethod = "destroy")
-	@ConditionalOnBean(DefaultMQProducer.class)
-	@ConditionalOnMissingBean(RocketMQTemplate.class)
+	@ConditionalOnMissingBean
 	public RocketMQTemplate rocketMQTemplate(DefaultMQProducer mqProducer,
-			ObjectMapper rocketMQMessageObjectMapper) {
+			ObjectMapper objectMapper) {
 		RocketMQTemplate rocketMQTemplate = new RocketMQTemplate();
 		rocketMQTemplate.setProducer(mqProducer);
-		rocketMQTemplate.setObjectMapper(rocketMQMessageObjectMapper);
+		rocketMQTemplate.setObjectMapper(objectMapper);
 		return rocketMQTemplate;
 	}
 

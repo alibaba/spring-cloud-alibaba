@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.config;
 
+import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
+import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
@@ -32,7 +34,8 @@ import org.springframework.context.annotation.Import;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @Configuration
-@Import(RocketMQBinderHealthIndicatorAutoConfiguration.class)
+@Import({ RocketMQAutoConfiguration.class,
+		RocketMQBinderHealthIndicatorAutoConfiguration.class })
 @EnableConfigurationProperties({ RocketMQBinderConfigurationProperties.class,
 		RocketMQExtendedBindingProperties.class })
 public class RocketMQBinderAutoConfiguration {
@@ -40,6 +43,9 @@ public class RocketMQBinderAutoConfiguration {
 	private final RocketMQExtendedBindingProperties extendedBindingProperties;
 
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
+
+	@Autowired(required = false)
+	private RocketMQProperties rocketMQProperties = new RocketMQProperties();
 
 	@Autowired
 	public RocketMQBinderAutoConfiguration(
@@ -60,7 +66,8 @@ public class RocketMQBinderAutoConfiguration {
 			InstrumentationManager instrumentationManager) {
 		RocketMQMessageChannelBinder binder = new RocketMQMessageChannelBinder(
 				extendedBindingProperties, provisioningProvider,
-				rocketBinderConfigurationProperties, instrumentationManager);
+				rocketBinderConfigurationProperties, rocketMQProperties,
+				instrumentationManager);
 		return binder;
 	}
 
