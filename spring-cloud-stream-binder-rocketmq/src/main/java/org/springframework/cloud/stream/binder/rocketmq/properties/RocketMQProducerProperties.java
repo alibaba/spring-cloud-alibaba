@@ -27,7 +27,12 @@ public class RocketMQProducerProperties {
 	private Boolean enabled = true;
 
 	/**
-	 * Maximum allowed message size in bytes {@link DefaultMQProducer#maxMessageSize}
+	 * Name of producer.
+	 */
+	private String group;
+
+	/**
+	 * Maximum allowed message size in bytes {@link DefaultMQProducer#maxMessageSize}.
 	 */
 	private Integer maxMessageSize = 1024 * 1024 * 4;
 
@@ -69,6 +74,14 @@ public class RocketMQProducerProperties {
 	 * Indicate whether to retry another broker on sending failure internally.
 	 */
 	private boolean retryNextServer = false;
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
 
 	public Boolean getEnabled() {
 		return enabled;

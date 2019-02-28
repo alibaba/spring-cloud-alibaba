@@ -21,10 +21,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.rocketmq.acl.common.AclClientRPCHook;
+import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.remoting.RPCHook;
+import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.rocketmq.spring.support.RocketMQUtil;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -44,6 +47,7 @@ import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,12 +59,10 @@ public class RocketMQMessageChannelBinder extends
 		implements
 		ExtendedPropertiesBinder<MessageChannel, RocketMQConsumerProperties, RocketMQProducerProperties> {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(RocketMQMessageChannelBinder.class);
-
 	private RocketMQExtendedBindingProperties extendedBindingProperties = new RocketMQExtendedBindingProperties();
 
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
+	private final RocketMQProperties rocketMQProperties;
 	private final InstrumentationManager instrumentationManager;
 
 	private Set<String> clientConfigId = new HashSet<>();
@@ -69,10 +71,12 @@ public class RocketMQMessageChannelBinder extends
 	public RocketMQMessageChannelBinder(RocketMQTopicProvisioner provisioningProvider,
 			RocketMQExtendedBindingProperties extendedBindingProperties,
 			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
+			RocketMQProperties rocketMQProperties,
 			InstrumentationManager instrumentationManager) {
 		super(null, provisioningProvider);
 		this.extendedBindingProperties = extendedBindingProperties;
 		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
+		this.rocketMQProperties = rocketMQProperties;
 		this.instrumentationManager = instrumentationManager;
 	}
 
@@ -81,6 +85,10 @@ public class RocketMQMessageChannelBinder extends
 			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
 			MessageChannel errorChannel) throws Exception {
 		if (producerProperties.getExtension().getEnabled()) {
+
+			RocketMQBinderConfigurationProperties mergedProperties = RocketMQBinderUtils
+					.mergeProducerProperties(rocketBinderConfigurationProperties,
+							rocketMQProperties);
 
 			RocketMQTemplate rocketMQTemplate;
 			if (producerProperties.getExtension().getTransactional()) {
@@ -101,9 +109,27 @@ public class RocketMQMessageChannelBinder extends
 				rocketMQTemplate = new RocketMQTemplate();
 				rocketMQTemplate.setObjectMapper(this.getApplicationContext()
 						.getBeansOfType(ObjectMapper.class).values().iterator().next());
-				DefaultMQProducer producer = new DefaultMQProducer(destination.getName());
-				producer.setNamesrvAddr(
-						rocketBinderConfigurationProperties.getNamesrvAddr());
+				DefaultMQProducer producer;
+				String ak = mergedProperties.getAccessKey();
+				String sk = mergedProperties.getSecretKey();
+				if (!StringUtils.isEmpty(ak) && !StringUtils.isEmpty(sk)) {
+					RPCHook rpcHook = new AclClientRPCHook(
+							new SessionCredentials(ak, sk));
+					producer = new DefaultMQProducer(
+							producerProperties.getExtension().getGroup(), rpcHook,
+							mergedProperties.isEnableMsgTrace(),
+							mergedProperties.getCustomizedTraceTopic());
+					producer.setVipChannelEnabled(false);
+					producer.setInstanceName(
+							RocketMQUtil.getInstanceName(rpcHook, destination.getName()));
+				}
+				else {
+					producer = new DefaultMQProducer(
+							producerProperties.getExtension().getGroup());
+					producer.setVipChannelEnabled(
+							producerProperties.getExtension().getVipChannelEnabled());
+				}
+				producer.setNamesrvAddr(mergedProperties.getNameServer());
 				producer.setSendMsgTimeout(
 						producerProperties.getExtension().getSendMessageTimeout());
 				producer.setRetryTimesWhenSendFailed(
@@ -116,14 +142,13 @@ public class RocketMQMessageChannelBinder extends
 						producerProperties.getExtension().isRetryNextServer());
 				producer.setMaxMessageSize(
 						producerProperties.getExtension().getMaxMessageSize());
-				producer.setVipChannelEnabled(
-						producerProperties.getExtension().getVipChannelEnabled());
 				rocketMQTemplate.setProducer(producer);
 				clientConfigId.add(producer.buildMQClientId());
 			}
 
 			RocketMQMessageHandler messageHandler = new RocketMQMessageHandler(
 					rocketMQTemplate, destination.getName(),
+					producerProperties.getExtension().getGroup(),
 					producerProperties.getExtension().getTransactional(),
 					instrumentationManager);
 			messageHandler.setBeanFactory(this.getApplicationContext().getBeanFactory());
@@ -160,7 +185,7 @@ public class RocketMQMessageChannelBinder extends
 		listenerContainer.setDelayLevelWhenNextConsume(
 				consumerProperties.getExtension().getDelayLevelWhenNextConsume());
 		listenerContainer
-				.setNameServer(rocketBinderConfigurationProperties.getNamesrvAddr());
+				.setNameServer(rocketBinderConfigurationProperties.getNameServer());
 
 		RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(
 				listenerContainer, consumerProperties, instrumentationManager);

@@ -53,7 +53,7 @@ public class RocketMQAutoConfigurationTests {
 		this.contextRunner.run(context -> {
 			RocketMQBinderConfigurationProperties binderConfigurationProperties = context
 					.getBean(RocketMQBinderConfigurationProperties.class);
-			assertThat(binderConfigurationProperties.getNamesrvAddr())
+			assertThat(binderConfigurationProperties.getNameServer())
 					.isEqualTo("127.0.0.1:9876");
 			RocketMQExtendedBindingProperties bindingProperties = context
 					.getBean(RocketMQExtendedBindingProperties.class);
