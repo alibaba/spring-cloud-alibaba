@@ -33,7 +33,6 @@ import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceM
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.context.annotation.Configuration;
@@ -55,8 +54,8 @@ import java.util.Map;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
-@ConditionalOnClass(RestTemplate.class)
-@AutoConfigureAfter(LoadBalancerAutoConfiguration.class)
+@ConditionalOnClass(name = {"org.springframework.web.client.RestTemplate"})
+@AutoConfigureAfter(name = {"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration"})
 public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClassLoaderAware {
 
     private static final Class<DubboTransported> DUBBO_TRANSPORTED_CLASS = DubboTransported.class;

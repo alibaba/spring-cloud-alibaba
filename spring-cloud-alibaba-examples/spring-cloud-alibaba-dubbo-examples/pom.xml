@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>spring-cloud-alibaba-examples</artifactId>
+        <groupId>org.springframework.cloud</groupId>
+        <version>0.2.2.BUILD-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
+    <name>Spring Cloud Alibaba Dubbo Examples</name>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>spring-cloud-dubbo-sample-api</module>
+        <module>spring-cloud-dubbo-provider-sample</module>
+        <module>spring-cloud-dubbo-consumer-sample</module>
+    </modules>
+
+    <properties>
+        <dubbo.version>2.6.5</dubbo.version>
+        <dubbo-spring-boot.version>0.2.1.RELEASE</dubbo-spring-boot.version>
+        <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
+        <spring-cloud-zookeeper.version>2.1.0.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-consul.version>2.1.0.RELEASE</spring-cloud-consul.version>
+        <curator.version>4.0.1</curator.version>
+    </properties>
+
+    <dependencyManagement>
+
+        <dependencies>
+            <!-- Spring Boot dependencies -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Apache Dubbo dependencies-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo-dependencies-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Cloud dependencies -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+        </dependency>
+
+        <!-- Dubbo Spring Cloud Starter -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-dubbo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+
+        <!-- Nacos -->
+        <profile>
+            <id>nacos</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <!-- Nacos Service Discovery -->
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>eureka</id>
+            <dependencies>
+                <!-- Eureka Service Discovery -->
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- Zookeeper -->
+        <profile>
+            <id>zookeeper</id>
+            <dependencies>
+                <!-- Zookeeper Service Discovery -->
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+                    <version>${spring-cloud-zookeeper.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.apache.zookeeper</groupId>
+                            <artifactId>zookeeper</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                    <version>3.4.12</version>
+                    <optional>true</optional>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>slf4j-log4j12</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.curator</groupId>
+                    <artifactId>curator-framework</artifactId>
+                    <version>${curator.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>consul</id>
+            <dependencies>
+                <!-- Spring Cloud Consul -->
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+                    <version>${spring-cloud-consul.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+    </profiles>
+
+
+</project>

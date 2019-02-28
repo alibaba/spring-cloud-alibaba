@@ -88,6 +88,10 @@ public class AcmIntegrationProperties {
 		this.activeProfiles = activeProfiles;
 	}
 
+	public String[] getActiveProfiles() {
+		return activeProfiles;
+	}
+
 	public void setAcmProperties(AcmProperties acmProperties) {
 		this.acmProperties = acmProperties;
 	}
