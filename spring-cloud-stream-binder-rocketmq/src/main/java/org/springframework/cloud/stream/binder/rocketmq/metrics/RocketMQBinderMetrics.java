@@ -59,9 +59,9 @@ public class RocketMQBinderMetrics
 	public void bindTo(@NonNull MeterRegistry registry) {
 		DefaultMQPushConsumer pushConsumer = new DefaultMQPushConsumer();
 		pushConsumer
-				.setNamesrvAddr(rocketMQBinderConfigurationProperties.getNamesrvAddr());
+				.setNamesrvAddr(rocketMQBinderConfigurationProperties.getNameServer());
 		DefaultMQProducer producer = new DefaultMQProducer();
-		producer.setNamesrvAddr(rocketMQBinderConfigurationProperties.getNamesrvAddr());
+		producer.setNamesrvAddr(rocketMQBinderConfigurationProperties.getNameServer());
 
 		rocketMQMessageChannelBinder.getTopicInUse().forEach((topic, group) -> {
 			Gauge.builder(METRIC_NAME, this, o -> calculateMsgQueueOffset(topic, group))
