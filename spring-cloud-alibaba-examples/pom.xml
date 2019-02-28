@@ -35,9 +35,10 @@
         <module>fescar-example/account-service</module>
         <module>acm-example/acm-local-example</module>
         <module>rocketmq-example</module>
+        <module>sms-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>schedulerx-example/schedulerx-simple-task-example</module>
-        <module>sms-example</module>
+        <module>spring-cloud-alibaba-dubbo-examples</module>
     </modules>
 
     <build>
