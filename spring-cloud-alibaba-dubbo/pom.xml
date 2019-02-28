@@ -17,6 +17,9 @@
         <dubbo.version>2.6.5</dubbo.version>
         <dubbo-spring-boot.version>0.2.1.RELEASE</dubbo-spring-boot.version>
         <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
+        <spring-cloud-zookeeper.version>2.1.0.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-consul.version>2.1.0.RELEASE</spring-cloud-consul.version>
+        <curator.version>4.0.1</curator.version>
     </properties>
 
     <dependencyManagement>
@@ -90,11 +93,64 @@
             <optional>true</optional>
         </dependency>
 
+
+        <!-- Eureka Service Discovery -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <optional>true</optional>
         </dependency>
 
+        <!-- Zookeeper Service Discovery -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+            <version>${spring-cloud-zookeeper.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.4.12</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>${curator.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Cloud Consul -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+            <version>${spring-cloud-consul.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Nacos Service Discovery -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Cloud Open Feign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -118,37 +174,6 @@
             <artifactId>netty-all</artifactId>
         </dependency>
 
-        <!-- REST support dependencies -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-netty4</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson-provider</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxb-provider</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -160,11 +185,6 @@
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-jaxrs2</artifactId>
             <version>9.7.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <!-- Testing -->
@@ -192,19 +212,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Nacos Service Discovery -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Eureka Service Discovery -->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.cloud</groupId>-->
-        <!--<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
 
     </dependencies>
 

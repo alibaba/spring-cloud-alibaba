@@ -31,13 +31,33 @@ import com.aliyun.oss.ClientBuilderConfiguration;
 @ConfigurationProperties("spring.cloud.alicloud.oss")
 public class OssProperties {
 
+	/**
+	 * Authorization Mode, please see <a href=
+	 * "https://help.aliyun.com/document_detail/32010.html?spm=a2c4g.11186623.6.659.29f145dc3KOwTh">oss
+	 * docs</a>.
+	 */
 	@Value("${spring.cloud.alicloud.oss.authorization-mode:AK_SK}")
 	private AliCloudAuthorizationMode authorizationMode;
 
+	/**
+	 * Endpoint, please see <a href=
+	 * "https://help.aliyun.com/document_detail/32010.html?spm=a2c4g.11186623.6.659.29f145dc3KOwTh">oss
+	 * docs</a>.
+	 */
 	private String endpoint;
 
+	/**
+	 * Sts token, please see <a href=
+	 * "https://help.aliyun.com/document_detail/32010.html?spm=a2c4g.11186623.6.659.29f145dc3KOwTh">oss
+	 * docs</a>.
+	 */
 	private StsToken sts;
 
+	/**
+	 * Client Configuration, please see <a href=
+	 * "https://help.aliyun.com/document_detail/32010.html?spm=a2c4g.11186623.6.659.29f145dc3KOwTh">oss
+	 * docs</a>.
+	 */
 	private ClientBuilderConfiguration config;
 
 	public AliCloudAuthorizationMode getAuthorizationMode() {

@@ -26,6 +26,7 @@ import org.springframework.core.env.Environment;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.springframework.util.ClassUtils.getUserClass;
+import static org.springframework.util.ClassUtils.isPresent;
 import static org.springframework.util.ClassUtils.resolveClassName;
 
 /**
@@ -64,12 +65,14 @@ public class TargeterBeanPostProcessor implements BeanPostProcessor, BeanClassLo
 
     @Override
     public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
-        Class<?> beanClass = getUserClass(bean.getClass());
-        Class<?> targetClass = resolveClassName(TARGETER_CLASS_NAME, classLoader);
-        if (targetClass.isAssignableFrom(beanClass)) {
-            return newProxyInstance(classLoader, new Class[]{targetClass},
-                    new TargeterInvocationHandler(bean, environment, dubboServiceMetadataRepository,
-                            dubboGenericServiceFactory,contextFactory));
+        if (isPresent(TARGETER_CLASS_NAME, classLoader)) {
+            Class<?> beanClass = getUserClass(bean.getClass());
+            Class<?> targetClass = resolveClassName(TARGETER_CLASS_NAME, classLoader);
+            if (targetClass.isAssignableFrom(beanClass)) {
+                return newProxyInstance(classLoader, new Class[]{targetClass},
+                        new TargeterInvocationHandler(bean, environment, dubboServiceMetadataRepository,
+                                dubboGenericServiceFactory, contextFactory));
+            }
         }
         return bean;
     }
