@@ -19,8 +19,8 @@ package org.springframework.cloud.alicloud.ans.endpoint;
 import com.alibaba.ans.core.NamingService;
 import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.cloud.alicloud.context.ans.AnsProperties;
@@ -37,7 +37,7 @@ import java.util.Set;
 @Endpoint(id = "ans")
 public class AnsEndpoint {
 
-	private static final Log log = LogFactory.getLog(AnsEndpoint.class);
+	private static final Logger log = LoggerFactory.getLogger(AnsEndpoint.class);
 
 	private AnsProperties ansProperties;
 

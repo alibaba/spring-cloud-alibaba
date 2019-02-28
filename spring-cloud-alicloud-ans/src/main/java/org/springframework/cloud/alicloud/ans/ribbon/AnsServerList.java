@@ -16,22 +16,18 @@
 
 package org.springframework.cloud.alicloud.ans.ribbon;
 
-import com.alibaba.ans.core.NamingService;
-import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
-
-import com.netflix.client.config.IClientConfig;
-import com.netflix.loadbalancer.AbstractServerList;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.ans.core.NamingService;
+import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+import com.netflix.client.config.IClientConfig;
+import com.netflix.loadbalancer.AbstractServerList;
+
 /**
  * @author xiaolongzuo
- * @author pbting
  */
 public class AnsServerList extends AbstractServerList<AnsServer> {
-
-	private final static int CONNECT_TIME_OUT = 3;
 
 	private String dom;
 
@@ -64,12 +60,10 @@ public class AnsServerList extends AbstractServerList<AnsServer> {
 		List<AnsServer> result = new ArrayList<AnsServer>(hosts.size());
 		for (Host host : hosts) {
 			if (host.isValid()) {
-				AnsServer ansServer = hostToServer(host);
-				if (ansServer.isAlive(CONNECT_TIME_OUT)) {
-					result.add(ansServer);
-				}
+				result.add(hostToServer(host));
 			}
 		}
+
 		return result;
 	}
 
