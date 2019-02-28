@@ -16,10 +16,10 @@
 
 package org.springframework.cloud.alicloud.acm;
 
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-
-import com.alibaba.edas.acm.ConfigService;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
+import com.alibaba.edas.acm.ConfigService;
 
 /**
  * @author xiaojing
@@ -48,13 +48,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ConfigService.class })
-@SpringBootTest(classes = AcmGroupConfigurationTest.TestConfig.class, properties = {
-		"spring.application.name=test-name", "spring.application.group=com.test.hello",
+@SpringBootTest(classes = AcmFileExtensionTest.TestConfig.class, properties = {
+		"spring.application.name=test-name",
 		"spring.cloud.alicloud.acm.server-list=127.0.0.1",
 		"spring.cloud.alicloud.acm.server-port=8080",
-		"spring.cloud.alicloud.acm.timeout=1000",
-		"spring.cloud.alicloud.acm.group=test-group" }, webEnvironment = NONE)
-public class AcmGroupConfigurationTest {
+		"spring.cloud.alicloud.acm.file-extension=yaml" }, webEnvironment = NONE)
+public class AcmFileExtensionTest {
 
 	static {
 
@@ -65,13 +64,9 @@ public class AcmGroupConfigurationTest {
 				@Override
 				public Object invoke(Object proxy, Method method, Object[] args)
 						throws Throwable {
-					if ("com.test:application.properties".equals(args[0])
-							&& "test-group".equals(args[1])) {
-						return "com.test.value=com.test\ntest.priority=1";
-					}
-					if ("com.test.hello:application.properties".equals(args[0])
-							&& "test-group".equals(args[1])) {
-						return "com.test.hello.value=com.test.hello\ntest.priority=2";
+					if ("test-name.yaml".equals(args[0])
+							&& "DEFAULT_GROUP".equals(args[1])) {
+						return "user:\n  name: hello\n  age: 12";
 					}
 					return "";
 				}
@@ -90,11 +85,8 @@ public class AcmGroupConfigurationTest {
 	@Test
 	public void contextLoads() throws Exception {
 
-		Assert.assertEquals(environment.getProperty("com.test.value"), "com.test");
-		Assert.assertEquals(environment.getProperty("test.priority"), "2");
-		Assert.assertEquals(environment.getProperty("com.test.hello.value"),
-				"com.test.hello");
-
+		Assert.assertEquals(environment.getProperty("user.name"), "hello");
+		Assert.assertEquals(environment.getProperty("user.age"), "12");
 	}
 
 	@Configuration
