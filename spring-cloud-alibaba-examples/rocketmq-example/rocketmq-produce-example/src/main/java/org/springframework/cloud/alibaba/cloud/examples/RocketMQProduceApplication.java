@@ -4,36 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.alibaba.cloud.examples.RocketMQApplication.MySink;
-import org.springframework.cloud.alibaba.cloud.examples.RocketMQApplication.MySource;
+import org.springframework.cloud.alibaba.cloud.examples.RocketMQProduceApplication.MySource;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.SubscribableChannel;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @SpringBootApplication
-@EnableBinding({ MySource.class, MySink.class })
-public class RocketMQApplication {
-
-	public interface MySink {
-
-		@Input("input1")
-		SubscribableChannel input1();
-
-		@Input("input2")
-		SubscribableChannel input2();
-
-		@Input("input3")
-		SubscribableChannel input3();
-
-		@Input("input4")
-		SubscribableChannel input4();
-	}
+@EnableBinding({ MySource.class })
+public class RocketMQProduceApplication {
 
 	public interface MySource {
 		@Output("output1")
@@ -44,7 +26,7 @@ public class RocketMQApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(RocketMQApplication.class, args);
+		SpringApplication.run(RocketMQProduceApplication.class, args);
 	}
 
 	@Bean
@@ -86,13 +68,13 @@ public class RocketMQApplication {
 		@Override
 		public void run(String... args) throws Exception {
 			// COMMIT_MESSAGE message
-			senderService.sendTransactionalMsg("transactional-msg1", false);
+			senderService.sendTransactionalMsg("transactional-msg1", 1);
 			// ROLLBACK_MESSAGE message
-			senderService.sendTransactionalMsg("transactional-msg2", true);
+			senderService.sendTransactionalMsg("transactional-msg2", 2);
 			// ROLLBACK_MESSAGE message
-			senderService.sendTransactionalMsg("transactional-msg3", true);
+			senderService.sendTransactionalMsg("transactional-msg3", 3);
 			// COMMIT_MESSAGE message
-			senderService.sendTransactionalMsg("transactional-msg4", false);
+			senderService.sendTransactionalMsg("transactional-msg4", 4);
 		}
 	}
 

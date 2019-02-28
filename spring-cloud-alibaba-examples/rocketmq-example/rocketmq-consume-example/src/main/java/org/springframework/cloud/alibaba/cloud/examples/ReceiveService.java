@@ -25,9 +25,9 @@ public class ReceiveService {
 		System.out.println("input3 receive: " + foo);
 	}
 
-    @StreamListener("input4")
-    public void receiveTransactionalMsg(String transactionMsg) {
-        System.out.println("input4 receive transaction msg: " + transactionMsg);
-    }
+	@StreamListener("input4")
+	public void receiveTransactionalMsg(String transactionMsg) {
+		System.out.println("input4 receive transaction msg: " + transactionMsg);
+	}
 
 }

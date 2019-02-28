@@ -27,13 +27,20 @@ import org.springframework.messaging.Message;
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@RocketMQTransactionListener(txProducerGroup = "TransactionTopic", corePoolSize = 5, maximumPoolSize = 10)
-class TransactionListenerImpl implements RocketMQLocalTransactionListener {
+@RocketMQTransactionListener(txProducerGroup = "myTxProducerGroup", corePoolSize = 5, maximumPoolSize = 10)
+public class TransactionListenerImpl implements RocketMQLocalTransactionListener {
 	@Override
 	public RocketMQLocalTransactionState executeLocalTransaction(Message msg,
 			Object arg) {
-		if ("1".equals(((HashMap) msg.getHeaders().get(RocketMQHeaders.PROPERTIES))
-				.get("USERS_test"))) {
+		Object num = ((HashMap) msg.getHeaders().get(RocketMQHeaders.PROPERTIES))
+				.get("USERS_test");
+
+		if ("1".equals(num)) {
+			System.out.println(
+					"executer: " + new String((byte[]) msg.getPayload()) + " unknown");
+			return RocketMQLocalTransactionState.UNKNOWN;
+		}
+		else if ("2".equals(num)) {
 			System.out.println(
 					"executer: " + new String((byte[]) msg.getPayload()) + " rollback");
 			return RocketMQLocalTransactionState.ROLLBACK;
