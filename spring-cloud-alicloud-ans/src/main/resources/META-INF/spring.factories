@@ -2,6 +2,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.springframework.cloud.alicloud.ans.endpoint.AnsEndpointAutoConfiguration,\
   org.springframework.cloud.alicloud.ans.ribbon.RibbonAnsAutoConfiguration,\
   org.springframework.cloud.alicloud.ans.AnsAutoConfiguration,\
-  org.springframework.cloud.alicloud.ans.migrate.MigrateEndpointAutoConfiguration,\
-  org.springframework.cloud.alicloud.ans.migrate.MigrationAutoconfiguration,\
   org.springframework.cloud.alicloud.ans.AnsDiscoveryClientAutoConfiguration

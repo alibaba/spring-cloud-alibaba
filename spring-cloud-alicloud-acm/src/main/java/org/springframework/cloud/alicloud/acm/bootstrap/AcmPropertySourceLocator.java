@@ -42,6 +42,8 @@ public class AcmPropertySourceLocator implements PropertySourceLocator {
 		CompositePropertySource compositePropertySource = new CompositePropertySource(
 				DIAMOND_PROPERTY_SOURCE_NAME);
 
+		acmIntegrationProperties.setActiveProfiles(environment.getActiveProfiles());
+
 		for (String dataId : acmIntegrationProperties.getGroupConfigurationDataIds()) {
 			loadDiamondDataIfPresent(compositePropertySource, dataId,
 					acmIntegrationProperties.getAcmProperties().getGroup(), true);

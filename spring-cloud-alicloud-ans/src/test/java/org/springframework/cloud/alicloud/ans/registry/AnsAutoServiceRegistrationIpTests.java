@@ -40,7 +40,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AnsAutoServiceRegistrationIpTests.TestConfig.class, properties = {
 		"spring.application.name=myTestService1",
+		"spring.cloud.alicloud.ans.client-domains=myTestService2",
 		"spring.cloud.alicloud.ans.server-list=127.0.0.1",
+		"spring.cloud.alicloud.ans.client-weight=2",
 		"spring.cloud.alicloud.ans.server-port=8080",
 		"spring.cloud.alicloud.ans.client-ip=123.123.123.123" }, webEnvironment = RANDOM_PORT)
 public class AnsAutoServiceRegistrationIpTests {
@@ -63,13 +65,22 @@ public class AnsAutoServiceRegistrationIpTests {
 				ansAutoServiceRegistration);
 
 		checkoutAnsDiscoveryServiceIP();
-
+		checkoutAnsDiscoveryServiceName();
+		checkoutAnsDiscoveryWeight();
 	}
 
 	private void checkoutAnsDiscoveryServiceIP() {
 		assertEquals("AnsProperties service IP was wrong", "123.123.123.123",
 				registration.getHost());
+	}
 
+	private void checkoutAnsDiscoveryServiceName() {
+		assertEquals("AnsDiscoveryProperties service name was wrong", "myTestService2",
+				properties.getClientDomains());
+	}
+
+	private void checkoutAnsDiscoveryWeight() {
+		assertEquals(2L, properties.getClientWeight(), 0);
 	}
 
 	@Configuration

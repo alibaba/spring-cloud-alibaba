@@ -71,8 +71,6 @@ public class AnsServerListTests {
 
 		PowerMockito.mockStatic(NamingService.class);
 		when(NamingService.getHosts(anyString())).thenReturn(hosts);
-		PowerMockito.stub(PowerMockito.method(AnsServer.class, "isAlive", long.class))
-				.toReturn(true);
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");
@@ -101,8 +99,6 @@ public class AnsServerListTests {
 		when(NamingService.getHosts(eq("test-service"))).thenReturn(
 				hosts.stream().filter(Host::isValid).collect(Collectors.toList()));
 
-		PowerMockito.stub(PowerMockito.method(AnsServer.class, "isAlive", long.class))
-				.toReturn(true);
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");
@@ -132,8 +128,6 @@ public class AnsServerListTests {
 		PowerMockito.mockStatic(NamingService.class);
 		when(NamingService.getHosts(eq("test-service"))).thenReturn(
 				hosts.stream().filter(Host::isValid).collect(Collectors.toList()));
-		PowerMockito.stub(PowerMockito.method(AnsServer.class, "isAlive", long.class))
-				.toReturn(true);
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");

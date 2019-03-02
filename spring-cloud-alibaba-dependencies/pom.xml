@@ -20,7 +20,7 @@
         <sentinel.version>1.4.2</sentinel.version>
         <oss.version>3.1.0</oss.version>
         <fescar.version>0.1.3</fescar.version>
-        <nacos.client.version>0.8.1</nacos.client.version>
+        <nacos.client.version>0.8.2</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
@@ -34,7 +34,6 @@
         <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
-        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
     </properties>
 
@@ -150,6 +149,11 @@
             </dependency>
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-zuul-adapter</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-transport-simple-http</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
@@ -254,6 +258,11 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-sentinel-zuul</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
