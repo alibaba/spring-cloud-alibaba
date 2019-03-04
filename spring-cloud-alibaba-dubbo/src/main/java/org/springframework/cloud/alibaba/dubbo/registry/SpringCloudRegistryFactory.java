@@ -20,9 +20,6 @@ import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.registry.Registry;
 import com.alibaba.dubbo.registry.RegistryFactory;
 
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -38,9 +35,7 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 
     @Override
     public Registry getRegistry(URL url) {
-        ServiceRegistry<Registration> serviceRegistry = applicationContext.getBean(ServiceRegistry.class);
-        DiscoveryClient discoveryClient = applicationContext.getBean(DiscoveryClient.class);
-        return new SpringCloudRegistry(url, serviceRegistry, discoveryClient);
+        return new SpringCloudRegistry(url, applicationContext);
     }
 
     public static void setApplicationContext(ApplicationContext applicationContext) {

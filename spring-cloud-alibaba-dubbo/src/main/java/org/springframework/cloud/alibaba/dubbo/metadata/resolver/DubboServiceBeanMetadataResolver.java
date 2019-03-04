@@ -84,7 +84,7 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
         Stream.of(CONTRACT_CLASS_NAMES)
                 .filter(this::isClassPresent) // filter the existed classes
                 .map(this::loadContractClass) // load Contract Class
-                .map(this::createContract)    // create instance by the specified class
+                .map(this::createContract)    // createServiceInstance instance by the specified class
                 .forEach(contracts::add);     // add the Contract instance into contracts
 
         this.contracts = Collections.unmodifiableCollection(contracts);

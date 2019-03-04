@@ -66,6 +66,12 @@ public class DubboMetadataAutoConfiguration {
             protocolConfig = iterator.hasNext() ? iterator.next() : null;
         }
 
+        if (protocolConfig == null) {
+            protocolConfig = new ProtocolConfig();
+            protocolConfig.setName(DEFAULT_PROTOCOL);
+            protocolConfig.setPort(20880);
+        }
+
         return protocolConfig;
     }
 

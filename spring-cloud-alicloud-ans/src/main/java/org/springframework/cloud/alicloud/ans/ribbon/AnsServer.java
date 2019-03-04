@@ -16,15 +16,11 @@
 
 package org.springframework.cloud.alicloud.ans.ribbon;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 import com.netflix.loadbalancer.Server;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaolongzuo
@@ -38,8 +34,7 @@ public class AnsServer extends Server {
 	public AnsServer(final Host host, final String dom) {
 		super(host.getIp(), host.getPort());
 		this.host = host;
-		this.metadata = new HashMap();
-		this.metadata.put("source", "ANS");
+		this.metadata = Collections.emptyMap();
 		metaInfo = new MetaInfo() {
 			@Override
 			public String getAppName() {
@@ -62,33 +57,6 @@ public class AnsServer extends Server {
 						+ AnsServer.this.host.getPort();
 			}
 		};
-	}
-
-	@Override
-	public boolean isAlive() {
-
-		return true;
-	}
-
-	/**
-	 * 
-	 * @param timeOut Unit: Seconds
-	 * @return
-	 */
-	public boolean isAlive(long timeOut) {
-		try {
-			String hostName = this.host.getHostname();
-			hostName = hostName != null && hostName.trim().length() > 0 ? hostName
-					: this.host.getIp();
-			Socket socket = new Socket();
-			socket.connect(new InetSocketAddress(hostName, this.host.getPort()),
-					(int) TimeUnit.SECONDS.toMillis(timeOut));
-			socket.close();
-			return true;
-		}
-		catch (IOException e) {
-			return false;
-		}
 	}
 
 	@Override

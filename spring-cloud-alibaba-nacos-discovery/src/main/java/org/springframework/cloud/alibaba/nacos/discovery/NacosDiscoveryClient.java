@@ -33,7 +33,7 @@ import java.util.*;
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
-	private static final Logger LOGGER = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryClient.class);
 	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
@@ -100,7 +100,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 			return services.getData();
 		}
 		catch (Exception e) {
-			LOGGER.error("get service name from nacos server fail,", e);
+			log.error("get service name from nacos server fail,", e);
 			return Collections.emptyList();
 		}
 	}
