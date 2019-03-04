@@ -1,4 +1,4 @@
-package org.springframework.cloud.alibaba.sentinel.zuul.listener;
+package org.springframework.cloud.alibaba.sentinel.zuul.handler;
 
 import java.util.Map;
 
