@@ -1,4 +1,4 @@
-package org.springframework.cloud.alibaba.sentinel.zuul.listener;
+package org.springframework.cloud.alibaba.sentinel.zuul.handler;
 
 import java.util.Map;
 
@@ -15,14 +15,14 @@ import com.alibaba.csp.sentinel.adapter.zuul.fallback.ZuulBlockFallbackProvider;
 /**
  * @author tiger
  */
-public class FallBackProviderListener implements SmartInitializingSingleton {
+public class FallBackProviderHandler implements SmartInitializingSingleton {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(FallBackProviderListener.class);
+			.getLogger(FallBackProviderHandler.class);
 
 	private final DefaultListableBeanFactory beanFactory;
 
-	public FallBackProviderListener(DefaultListableBeanFactory beanFactory) {
+	public FallBackProviderHandler(DefaultListableBeanFactory beanFactory) {
 		this.beanFactory = beanFactory;
 	}
 
@@ -32,13 +32,13 @@ public class FallBackProviderListener implements SmartInitializingSingleton {
 				.getBeansOfType(ZuulBlockFallbackProvider.class);
 		if (MapUtils.isNotEmpty(providerMap)) {
 			for (String k : providerMap.keySet()) {
-				logger.info("[Sentinel] Register provider name:{}, instance: {}", k,
+				logger.info("[Sentinel Zuul] Register provider name:{}, instance: {}", k,
 						providerMap.get(k));
 				ZuulBlockFallbackManager.registerProvider(providerMap.get(k));
 			}
 		}
 		else {
-			logger.info("[Sentinel] Register default fallback provider. ");
+			logger.info("[Sentinel Zuul] Register default fallback provider. ");
 			ZuulBlockFallbackManager.registerProvider(new DefaultBlockFallbackProvider());
 		}
 	}
