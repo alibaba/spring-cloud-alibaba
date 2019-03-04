@@ -18,6 +18,8 @@ package org.springframework.cloud.alibaba.dubbo.bootstrap;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -52,6 +54,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 @EnableAutoConfiguration
 @EnableFeignClients
 public class DubboSpringCloudConsumerBootstrap {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("dubbo-example");
+
 
     @Reference(version = "1.0.0")
     private RestService restService;
@@ -120,6 +125,7 @@ public class DubboSpringCloudConsumerBootstrap {
 
     @Bean
     public ApplicationRunner paramRunner() {
+
         return arguments -> {
 
             // To call /path-variables
@@ -137,49 +143,52 @@ public class DubboSpringCloudConsumerBootstrap {
             // To call /request/body/map
             callRequestBodyMap();
 
+
         };
     }
 
     private void callPathVariables() {
         // Dubbo Service call
-        System.out.println(restService.pathVariables("a", "b", "c"));
+
+        LOGGER.info(restService.pathVariables("a", "b", "c"));
         // Spring Cloud Open Feign REST Call (Dubbo Transported)
-        System.out.println(dubboFeignRestService.pathVariables("c", "b", "a"));
+        LOGGER.info(dubboFeignRestService.pathVariables("c", "b", "a"));
         // Spring Cloud Open Feign REST Call
-        System.out.println(feignRestService.pathVariables("b", "a", "c"));
+        LOGGER.info(feignRestService.pathVariables("b", "a", "c"));
 
         // RestTemplate call
-        System.out.println(restTemplate.getForEntity("http://" + providerApplicationName + "//path-variables/{p1}/{p2}?v=c", String.class, "a", "b"));
+        LOGGER.info(restTemplate.getForEntity("http://" + providerApplicationName + "//path-variables/{p1}/{p2}?v=c", String.class, "a", "b").getBody());
     }
 
     private void callHeaders() {
         // Dubbo Service call
-        System.out.println(restService.headers("a", "b", 10));
+        LOGGER.info(restService.headers("a", "b", 10));
         // Spring Cloud Open Feign REST Call (Dubbo Transported)
-        System.out.println(dubboFeignRestService.headers("b", 10, "a"));
+        LOGGER.info(dubboFeignRestService.headers("b", 10, "a"));
         // Spring Cloud Open Feign REST Call
-        System.out.println(feignRestService.headers("b", "a", 10));
+        LOGGER.info(feignRestService.headers("b", "a", 10));
     }
 
     private void callParam() {
         // Dubbo Service call
-        System.out.println(restService.param("mercyblitz"));
+        LOGGER.info(restService.param("mercyblitz"));
         // Spring Cloud Open Feign REST Call (Dubbo Transported)
-        System.out.println(dubboFeignRestService.param("mercyblitz"));
+        LOGGER.info(dubboFeignRestService.param("mercyblitz"));
         // Spring Cloud Open Feign REST Call
-        System.out.println(feignRestService.param("mercyblitz"));
+        LOGGER.info(feignRestService.param("mercyblitz"));
+        // RestTemplate call
+        LOGGER.info(restTemplate.getForEntity("http://" + providerApplicationName + "/param?param=mercyblitz", String.class).getBody());
+
     }
 
     private void callParams() {
         // Dubbo Service call
-        System.out.println(restService.params(1, "1"));
+        LOGGER.info(restService.params(1, "1"));
         // Spring Cloud Open Feign REST Call (Dubbo Transported)
-        System.out.println(dubboFeignRestService.params("1", 1));
+        LOGGER.info(dubboFeignRestService.params("1", 1));
         // Spring Cloud Open Feign REST Call
-        System.out.println(feignRestService.params("1", 1));
+        LOGGER.info(feignRestService.params("1", 1));
 
-        // RestTemplate call
-        System.out.println(restTemplate.getForEntity("http://" + providerApplicationName + "/param?param=小马哥", String.class));
     }
 
     private void callRequestBodyMap() {
@@ -190,14 +199,13 @@ public class DubboSpringCloudConsumerBootstrap {
         data.put("age", 33);
 
         // Dubbo Service call
-        System.out.println(restService.requestBodyMap(data, "Hello,World"));
-        // Spring Cloud Open Feign REST Call (Dubbo Transported)
-//        System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
+        LOGGER.info(restService.requestBodyMap(data, "Hello,World")+"");
+
 //         Spring Cloud Open Feign REST Call
-        System.out.println(feignRestService.requestBody("Hello,World", data));
+        LOGGER.info(feignRestService.requestBody("Hello,World", data)+"");
 
         // RestTemplate call
-        System.out.println(restTemplate.postForObject("http://" + providerApplicationName + "/request/body/map?param=小马哥", data, User.class));
+        LOGGER.info(restTemplate.postForObject("http://" + providerApplicationName + "/request/body/map?param=小马哥", data, User.class)+"");
     }
 
     @Bean

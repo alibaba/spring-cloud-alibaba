@@ -68,10 +68,10 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		nacosServiceInstance.setPort(instance.getPort());
 		nacosServiceInstance.setServiceId(serviceId);
 		Map<String, String> metadata = new HashMap<>();
-		metadata.put("instanceId", instance.getInstanceId());
-		metadata.put("weight", instance.getWeight() + "");
-		metadata.put("healthy", instance.isHealthy() + "");
-		metadata.put("cluster", instance.getClusterName() + "");
+//		metadata.put("instanceId", instance.getInstanceId());
+//		metadata.put("weight", instance.getWeight() + "");
+//		metadata.put("healthy", instance.isHealthy() + "");
+//		metadata.put("cluster", instance.getClusterName() + "");
 		metadata.putAll(instance.getMetadata());
 		nacosServiceInstance.setMetadata(metadata);
 

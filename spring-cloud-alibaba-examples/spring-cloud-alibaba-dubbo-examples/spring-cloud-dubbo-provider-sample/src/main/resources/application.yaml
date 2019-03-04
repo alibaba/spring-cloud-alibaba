@@ -5,10 +5,6 @@ dubbo:
     dubbo:
       name: dubbo
       port: 12345
-    rest:
-      name: rest
-      port: 8081
-      server: netty
   registry:
     address: spring-cloud://nacos
 
