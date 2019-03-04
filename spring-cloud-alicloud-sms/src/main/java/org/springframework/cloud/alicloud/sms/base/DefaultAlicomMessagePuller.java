@@ -26,8 +26,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aliyun.mns.client.CloudQueue;
 import com.aliyun.mns.common.ClientException;
@@ -39,7 +39,8 @@ import com.aliyun.mns.model.Message;
  */
 public class DefaultAlicomMessagePuller {
 
-	private Log log = LogFactory.getLog(DefaultAlicomMessagePuller.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(DefaultAlicomMessagePuller.class);
 
 	private String mnsAccountEndpoint = "https://1943695596114318.mns.cn-hangzhou.aliyuncs.com/";// 阿里通信消息的endpoint,固定。
 	private String endpointNameForPop = "cn-hangzhou";

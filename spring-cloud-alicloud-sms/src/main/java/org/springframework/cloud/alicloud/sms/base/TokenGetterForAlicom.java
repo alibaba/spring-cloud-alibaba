@@ -21,8 +21,8 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aliyun.mns.client.CloudAccount;
 import com.aliyun.mns.client.CloudQueue;
@@ -42,7 +42,7 @@ import com.aliyuncs.profile.IClientProfile;
  *
  */
 public class TokenGetterForAlicom {
-	private Log log = LogFactory.getLog(TokenGetterForAlicom.class);
+	private static final Logger log = LoggerFactory.getLogger(TokenGetterForAlicom.class);
 	private String accessKeyId;
 	private String accessKeySecret;
 	private String endpointNameForPop;
