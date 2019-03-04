@@ -45,13 +45,13 @@ import com.netflix.zuul.ZuulFilter;
  * @author tiger
  */
 @Configuration
-@ConditionalOnProperty(prefix = PREFIX, name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class SentinelZuulAutoConfiguration {
 
 	@Autowired
 	private Environment environment;
 
-	public static final String PREFIX = "spring.cloud.alibaba.sentinel.zuul";
+	public static final String PREFIX = "spring.cloud.sentinel.zuul";
 
 	@Bean
 	public SentinelZuulProperties sentinelZuulProperties() {
