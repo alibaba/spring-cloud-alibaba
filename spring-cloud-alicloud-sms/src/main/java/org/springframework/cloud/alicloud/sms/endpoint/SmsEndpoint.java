@@ -22,7 +22,7 @@ import java.util.Map;
 public class SmsEndpoint extends AbstractEndpoint<Map<String, Object>> {
 
 	public SmsEndpoint() {
-		super("sms_info");
+		super("sms");
 	}
 
 	@Override

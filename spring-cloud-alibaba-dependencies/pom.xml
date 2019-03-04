@@ -29,7 +29,6 @@
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
-        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
     </properties>
 
     <dependencyManagement>
