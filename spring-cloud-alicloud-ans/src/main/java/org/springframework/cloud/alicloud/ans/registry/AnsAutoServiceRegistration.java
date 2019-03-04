@@ -18,7 +18,6 @@ package org.springframework.cloud.alicloud.ans.registry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.serviceregistry.AbstractAutoServiceRegistration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
@@ -34,7 +33,6 @@ public class AnsAutoServiceRegistration
 	private static final Logger log = LoggerFactory
 			.getLogger(AnsAutoServiceRegistration.class);
 
-	@Autowired
 	private AnsRegistration registration;
 
 	public AnsAutoServiceRegistration(ServiceRegistry<AnsRegistration> serviceRegistry,

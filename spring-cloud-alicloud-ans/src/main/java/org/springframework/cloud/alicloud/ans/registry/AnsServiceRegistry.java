@@ -41,11 +41,11 @@ public class AnsServiceRegistry implements ServiceRegistry<AnsRegistration> {
 	public void register(AnsRegistration registration) {
 
 		if (!registration.isRegisterEnabled()) {
-			log.info("Registration is disabled...");
+			log.warn("Registration is disabled...");
 			return;
 		}
 		if (StringUtils.isEmpty(registration.getServiceId())) {
-			log.info("No service to register for client...");
+			log.warn("No service to register for client...");
 			return;
 		}
 
@@ -63,14 +63,13 @@ public class AnsServiceRegistry implements ServiceRegistry<AnsRegistration> {
 				NamingService.regDom(dom, registration.getHost(), registration.getPort(),
 						registration.getRegisterWeight(dom), registration.getCluster(),
 						tags);
-				log.info("INFO_ANS_REGISTER, " + dom + " "
-						+ registration.getAnsProperties().getClientIp() + ":"
-						+ registration.getAnsProperties().getClientPort()
-						+ " register finished");
+				log.info("INFO_ANS_REGISTER, {} {}:{} register finished", dom,
+						registration.getAnsProperties().getClientIp(),
+						registration.getAnsProperties().getClientPort());
 			}
 			catch (Exception e) {
-				log.error("ERR_ANS_REGISTER, " + dom + " register failed..."
-						+ registration.toString() + ",", e);
+				log.error("ERR_ANS_REGISTER, {} register failed...{},", dom,
+						registration.toString(), e);
 			}
 		}
 	}
@@ -81,7 +80,7 @@ public class AnsServiceRegistry implements ServiceRegistry<AnsRegistration> {
 		log.info("De-registering from ANSServer now...");
 
 		if (StringUtils.isEmpty(registration.getServiceId())) {
-			log.info("No dom to de-register for client...");
+			log.warn("No dom to de-register for client...");
 			return;
 		}
 
@@ -90,8 +89,8 @@ public class AnsServiceRegistry implements ServiceRegistry<AnsRegistration> {
 					registration.getPort(), registration.getCluster());
 		}
 		catch (Exception e) {
-			log.error("ERR_ANS_DEREGISTER, de-register failed..."
-					+ registration.toString() + ",", e);
+			log.error("ERR_ANS_DEREGISTER, de-register failed...{},",
+					registration.toString(), e);
 		}
 
 		log.info("De-registration finished.");

@@ -62,6 +62,10 @@
             <organization>Alibaba</organization>
             <url>https://github.com/mercyblitz</url>
         </developer>
+		<developer>
+            <name>yunzheng</name>
+            <email>yunzheng1228@gmail.com</email>
+        </developer>
     </developers>
 
     <properties>
