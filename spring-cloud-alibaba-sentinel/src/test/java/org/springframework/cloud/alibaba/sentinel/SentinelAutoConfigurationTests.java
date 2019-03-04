@@ -63,7 +63,7 @@ public class SentinelAutoConfigurationTests {
 
 	@Test
 	public void testFilter() {
-		assertThat(context.getBean("servletRequestListener")
+		assertThat(context.getBean("sentinelFilter")
 				.getClass() == FilterRegistrationBean.class).isTrue();
 	}
 
