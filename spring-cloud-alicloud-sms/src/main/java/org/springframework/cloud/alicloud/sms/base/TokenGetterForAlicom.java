@@ -125,8 +125,6 @@ public class TokenGetterForAlicom {
 					CloudAccount account = new CloudAccount(token.getTempAccessKeyId(),
 							token.getTempAccessKeySecret(), mnsAccountEndpoint,
 							token.getToken());
-					// log.warn("ak:"+token.getTempAccessKey());
-					// log.warn("token:"+token.getToken());
 					MNSClient client = account.getMNSClient();
 					CloudQueue queue = client.getQueueRef(queueName);
 					token.setClient(client);
