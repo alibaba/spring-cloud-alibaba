@@ -6,24 +6,7 @@ Spring Cloud AliCloud ACM 是 Config Server 和 Client 的替代方案，客户�
 
 === 如何引入 Spring Cloud AliCloud ACM
 
-Spring Cloud Alibaba 已经发布了 0.2.2.BUILD-SNAPSHOT 版本，需要首先导入依赖管理 POM。
-
-[source,xml]
-----
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.2.BUILD-SNAPSHOT</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-----
-
-并引入 Spring Cloud AliCloud ACM Starter 依赖。
+如果要在您的项目中引入 ACM，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-acm` 的 starter。
 
 [source,xml]
 ----
