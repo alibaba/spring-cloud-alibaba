@@ -271,6 +271,7 @@ The following table shows all the configurations of Spring Cloud Alibaba Sentine
 |`spring.cloud.sentinel.transport.client-ip`|Client IP|
 |`spring.cloud.sentinel.filter.order`|Loading order of Servlet Filter. The filter will be constructed in the Starter|Integer.MIN_VALUE
 |`spring.cloud.sentinel.filter.url-patterns`|Data type is array. Refers to the collection of Servlet Filter ULR patterns|/*
+|`spring.cloud.sentinel.filter.enabled`|Enable to instance CommonFilter|true
 |`spring.cloud.sentinel.metric.charset`|metric file character set|UTF-8
 |`spring.cloud.sentinel.metric.fileSingleSize`|Sentinel metric single file size|
 |`spring.cloud.sentinel.metric.fileTotalCount`|Sentinel metric total file number|

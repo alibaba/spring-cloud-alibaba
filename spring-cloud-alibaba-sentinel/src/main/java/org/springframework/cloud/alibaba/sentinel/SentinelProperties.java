@@ -16,17 +16,18 @@
 
 package org.springframework.cloud.alibaba.sentinel;
 
-import com.alibaba.csp.sentinel.config.SentinelConfig;
-import com.alibaba.csp.sentinel.log.LogBase;
-import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
 import org.springframework.core.Ordered;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.log.LogBase;
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 
 /**
  * {@link ConfigurationProperties} for Sentinel.
@@ -306,6 +307,12 @@ public class SentinelProperties {
 		 */
 		private List<String> urlPatterns;
 
+		/**
+		 * Enable to instance
+		 * {@link com.alibaba.csp.sentinel.adapter.servlet.CommonFilter}.
+		 */
+		private boolean enabled = true;
+
 		public int getOrder() {
 			return this.order;
 		}
@@ -320,6 +327,14 @@ public class SentinelProperties {
 
 		public void setUrlPatterns(List<String> urlPatterns) {
 			this.urlPatterns = urlPatterns;
+		}
+
+		public boolean isEnabled() {
+			return enabled;
+		}
+
+		public void setEnabled(boolean enabled) {
+			this.enabled = enabled;
 		}
 	}
 
