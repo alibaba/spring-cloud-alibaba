@@ -28,55 +28,14 @@ NOTE: The default file extension of dataid is properties.
 
 ===== Usage on the Client
 
-To use Nacos to manage externalized configurations for your applications, you need to add a Spring Boot Starter while building your application: org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config The following is a basic configuration of maven dependency:
+If you want to use Nacos to manage externalized configurations for your applications, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-config`.
 
 [source,xml]
 ----
-<parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.5.RELEASE</version>
-    <relativePath/>
-</parent>
-
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>Finchley.SR1</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.2.BUILD-SNAPSHOT</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-
- <dependencies>
-    <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter</artifactId>
-    </dependency>
-</dependencies>
-
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-    </plugins>
-</build>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+</dependency>
 ----
 
 Now we can create a standard Spring Boot application.

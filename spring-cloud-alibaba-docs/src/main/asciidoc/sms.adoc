@@ -6,24 +6,7 @@ Spring Cloud AliCloud SMS provide an easier-to-use API for quick access to Aliba
 
 === 如何引入 Spring Cloud AliCloud SMS
 
-We’ve released Spring Cloud Alibaba version 0.2.0. You will need to add dependency management POM first.
-
-[source,xml]
-----
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.0.RELEASE</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-----
-
-Next we need to introduce Spring Cloud Alibaba Cloud SMS Starter.
+If you want to use SMS in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alicloud-sms`.
 
 [source,xml]
 ----
