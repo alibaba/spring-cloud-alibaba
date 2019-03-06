@@ -16,9 +16,8 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import com.alibaba.dubbo.config.spring.ReferenceBean;
-import com.alibaba.dubbo.rpc.service.GenericService;
-
+import org.apache.dubbo.config.spring.ReferenceBean;
+import org.apache.dubbo.rpc.service.GenericService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;

@@ -16,9 +16,8 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import com.alibaba.dubbo.config.ProtocolConfig;
-import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
-
+import org.apache.dubbo.config.ProtocolConfig;
+import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
