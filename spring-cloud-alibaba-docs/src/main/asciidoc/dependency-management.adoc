@@ -4,6 +4,7 @@
 
 If you’re a Maven Central user, add our BOM to your pom.xml <dependencyManagement> section. This will allow you to omit versions for any of the Maven dependencies and instead delegate versioning to the BOM.
 
+```xml
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -15,11 +16,13 @@ If you’re a Maven Central user, add our BOM to your pom.xml <dependencyManagem
         </dependency>
     </dependencies>
 </dependencyManagement>
+```
 
 ### Spring Snapshots Maven Repository
 
 If you want to use the latest BUILD-SNAPSHOT version, add Spring Snapshot Repository in pom.xml , Attention: BUILD-SNAPSHOT may be updated in any time:
 
+```xml
 <repositories>
     <repository>
         <id>spring-snapshots</id>
@@ -30,5 +33,6 @@ If you want to use the latest BUILD-SNAPSHOT version, add Spring Snapshot Reposi
         </snapshots>
     </repository>
 </repositories>
+```
 
 For example, the 0.2.0.BUILD-SNAPSHOT is available from this repository.

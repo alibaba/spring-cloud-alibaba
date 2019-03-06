@@ -6,6 +6,7 @@ Spring Cloud Alibaba BOM 包含了它所使用的所有依赖的版本。
 
 如果您是 Maven Central 用户，请将我们的 BOM 添加到您的 pom.xml 中的 <dependencyManagement> 部分。 这将允许您省略任何Maven依赖项的版本，而是将版本控制委派给BOM。
 
+```xml
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -17,11 +18,13 @@ Spring Cloud Alibaba BOM 包含了它所使用的所有依赖的版本。
         </dependency>
     </dependencies>
 </dependencyManagement>
+```
 
 ### Spring Snapshots Maven Repository
 
 如果要使用最新的 BUILD-SNAPSHOT 版本，请在 pom.xml 中添加 Spring Snapshot Repository，注意：BUILD-SNAPSHOT随时可能更新:
 
+```xml
 <repositories>
     <repository>
         <id>spring-snapshots</id>
@@ -32,6 +35,7 @@ Spring Cloud Alibaba BOM 包含了它所使用的所有依赖的版本。
         </snapshots>
     </repository>
 </repositories>
+```
 
 举个例子, 0.2.0.BUILD-SNAPSHOT 版本就在这个仓库中可用。
 
