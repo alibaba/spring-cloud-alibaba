@@ -16,8 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import com.alibaba.dubbo.rpc.RpcContext;
-
+import org.apache.dubbo.rpc.RpcContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -48,7 +47,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@com.alibaba.dubbo.config.annotation.Service(version = "1.0.0", protocol = {"dubbo", "rest"})
+@org.apache.dubbo.config.annotation.Service(version = "1.0.0", protocol = {"dubbo", "rest"})
 @RestController
 @Path("/")
 public class StandardRestService implements RestService {

@@ -16,14 +16,13 @@
  */
 package org.springframework.cloud.alibaba.dubbo.registry;
 
-import com.alibaba.dubbo.common.Constants;
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.common.utils.NamedThreadFactory;
-import com.alibaba.dubbo.common.utils.UrlUtils;
-import com.alibaba.dubbo.registry.NotifyListener;
-import com.alibaba.dubbo.registry.RegistryFactory;
-import com.alibaba.dubbo.registry.support.FailbackRegistry;
-
+import org.apache.dubbo.common.Constants;
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.utils.NamedThreadFactory;
+import org.apache.dubbo.common.utils.UrlUtils;
+import org.apache.dubbo.registry.NotifyListener;
+import org.apache.dubbo.registry.RegistryFactory;
+import org.apache.dubbo.registry.support.FailbackRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
@@ -205,21 +204,21 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
 
     @Override
-    protected void doRegister(URL url) {
+    public void doRegister(URL url) {
         final String serviceName = getServiceName(url);
         final Registration registration = createRegistration(serviceName, url);
         serviceRegistry.register(registration);
     }
 
     @Override
-    protected void doUnregister(URL url) {
+    public void doUnregister(URL url) {
         final String serviceName = getServiceName(url);
         final Registration registration = createRegistration(serviceName, url);
         this.serviceRegistry.deregister(registration);
     }
 
     @Override
-    protected void doSubscribe(URL url, NotifyListener listener) {
+    public void doSubscribe(URL url, NotifyListener listener) {
         List<String> serviceNames = getServiceNames(url, listener);
         doSubscribe(url, listener, serviceNames);
         this.registeredServicesLookupScheduler.scheduleAtFixedRate(new Runnable() {
@@ -231,7 +230,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
     }
 
     @Override
-    protected void doUnsubscribe(URL url, NotifyListener listener) {
+    public void doUnsubscribe(URL url, NotifyListener listener) {
         if (isAdminProtocol(url)) {
             shutdownServiceNamesLookup();
         }

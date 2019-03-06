@@ -16,9 +16,8 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import com.alibaba.dubbo.config.spring.ServiceBean;
-import com.alibaba.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
-
+import org.apache.dubbo.config.spring.ServiceBean;
+import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;

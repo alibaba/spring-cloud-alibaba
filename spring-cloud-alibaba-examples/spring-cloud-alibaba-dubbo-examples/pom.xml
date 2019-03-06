@@ -44,7 +44,7 @@
 
             <!-- Apache Dubbo dependencies-->
             <dependency>
-                <groupId>com.alibaba</groupId>
+                <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-dependencies-bom</artifactId>
                 <version>${dubbo.version}</version>
                 <type>pom</type>

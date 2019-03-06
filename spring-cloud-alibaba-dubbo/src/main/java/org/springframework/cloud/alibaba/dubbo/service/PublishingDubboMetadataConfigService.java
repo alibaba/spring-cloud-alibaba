@@ -16,11 +16,10 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import com.alibaba.dubbo.config.annotation.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.util.CollectionUtils;
 

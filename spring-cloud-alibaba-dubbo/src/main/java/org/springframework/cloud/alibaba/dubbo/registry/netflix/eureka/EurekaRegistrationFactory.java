@@ -16,10 +16,9 @@
  */
 package org.springframework.cloud.alibaba.dubbo.registry.netflix.eureka;
 
-import com.alibaba.dubbo.common.URL;
-
 import com.netflix.appinfo.HealthCheckHandler;
 import com.netflix.discovery.EurekaClientConfig;
+import org.apache.dubbo.common.URL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.alibaba.dubbo.registry.AbstractRegistrationFactory;
