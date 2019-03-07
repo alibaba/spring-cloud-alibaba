@@ -14,22 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.registry;
+package org.springframework.cloud.alibaba.dubbo.registry.handler;
 
 import org.apache.dubbo.common.URL;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.serviceregistry.Registration;
+import org.apache.dubbo.registry.Registry;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * Default {@link RegistrationFactory}
+ * Dubbo {@link Registry} Spring Cloud Service Id Builder
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class DefaultRegistrationFactory extends AbstractRegistrationFactory<Registration> {
+public interface DubboRegistryServiceIdHandler {
 
-    @Override
-    protected Registration create(URL url, ConfigurableApplicationContext applicationContext, ServiceInstance serviceInstance) {
-        return new DelegatingRegistration(serviceInstance);
-    }
+    /**
+     * Supports the specified id of Spring Cloud Service or not
+     *
+     * @param serviceId the specified id of Spring Cloud Service
+     * @return if supports, return <code>true</code>, or <code>false</code>
+     */
+    boolean supports(String serviceId);
+
+    /**
+     * Creates the id of Spring Cloud Service
+     *
+     * @param url The Dubbo's {@link URL}
+     * @return non-null
+     */
+    String createServiceId(URL url);
+
+    /**
+     * The instance if {@link ConfigurableApplicationContext} .
+     *
+     * @return non-null
+     */
+    ConfigurableApplicationContext getContext();
+
 }
