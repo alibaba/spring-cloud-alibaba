@@ -16,8 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.http;
 
-import com.alibaba.dubbo.common.io.UnsafeByteArrayInputStream;
-
+import org.apache.dubbo.common.io.UnsafeByteArrayInputStream;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 

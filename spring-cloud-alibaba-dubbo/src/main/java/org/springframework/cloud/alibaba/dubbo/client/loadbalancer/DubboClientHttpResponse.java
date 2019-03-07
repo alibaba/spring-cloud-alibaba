@@ -16,8 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.client.loadbalancer;
 
-import com.alibaba.dubbo.rpc.service.GenericException;
-
+import org.apache.dubbo.rpc.service.GenericException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;

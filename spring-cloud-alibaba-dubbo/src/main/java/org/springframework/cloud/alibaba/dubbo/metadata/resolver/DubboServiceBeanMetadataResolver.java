@@ -16,13 +16,12 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata.resolver;
 
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.config.spring.ServiceBean;
-
 import feign.Contract;
 import feign.Feign;
 import feign.MethodMetadata;
 import feign.Util;
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.config.spring.ServiceBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.ObjectProvider;

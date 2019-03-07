@@ -16,8 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.registry.apache.zookeeper;
 
-import com.alibaba.dubbo.common.URL;
-
+import org.apache.dubbo.common.URL;
 import org.springframework.cloud.alibaba.dubbo.registry.AbstractRegistrationFactory;
 import org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactory;
 import org.springframework.cloud.client.ServiceInstance;

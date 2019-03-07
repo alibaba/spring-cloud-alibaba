@@ -16,8 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service.parameter;
 
-import com.alibaba.dubbo.rpc.service.GenericService;
-
+import org.apache.dubbo.rpc.service.GenericService;
 import org.springframework.cloud.alibaba.dubbo.http.HttpServerRequest;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodParameterMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
