@@ -16,9 +16,8 @@
  */
 package org.springframework.cloud.alibaba.dubbo.registry.hashicorp.consul;
 
-import com.alibaba.dubbo.common.URL;
-
 import com.ecwid.consul.v1.agent.model.NewService;
+import org.apache.dubbo.common.URL;
 import org.springframework.cloud.alibaba.dubbo.registry.AbstractRegistrationFactory;
 import org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactory;
 import org.springframework.cloud.client.ServiceInstance;
