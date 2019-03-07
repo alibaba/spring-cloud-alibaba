@@ -27,14 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationFailedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigService;
 import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
-import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
@@ -43,19 +40,13 @@ import org.springframework.util.StringUtils;
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration.METADATA_PROTOCOL_BEAN_NAME;
 
 /**
- * The Auto-Configuration class for Dubbo REST metadata registration,
- * REST metadata that is a part of {@link Registration#getMetadata() Spring Cloud service instances' metadata}
- * will be registered Spring Cloud registry.
+ * The Auto-Configuration class for Dubbo metadata {@link EventListener event handling}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
-@ConditionalOnBean(value = {
-        MetadataResolver.class
-})
 @AutoConfigureAfter(value = {DubboMetadataAutoConfiguration.class})
 @Configuration
-public class DubboRestMetadataRegistrationAutoConfiguration {
+public class DubboMetadataEventHandlingAutoConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

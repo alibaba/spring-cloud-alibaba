@@ -19,7 +19,6 @@ package org.springframework.cloud.alibaba.dubbo.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.util.CollectionUtils;
 
@@ -27,7 +26,6 @@ import javax.annotation.PostConstruct;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration.METADATA_PROTOCOL_BEAN_NAME;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
@@ -35,8 +33,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Service(version = "${spring.application.name}", protocol = METADATA_PROTOCOL_BEAN_NAME)
-// Use current Spring application name as the Dubbo Service version
 public class PublishingDubboMetadataConfigService implements DubboMetadataConfigService {
 
     /**
