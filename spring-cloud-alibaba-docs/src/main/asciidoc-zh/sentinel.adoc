@@ -266,7 +266,7 @@ Sentinel Endpoint 里暴露的信息非常有用。包括当前应用的所有�
 ^|配置项 ^|含义 ^|默认值
 |`spring.cloud.sentinel.enabled`|Sentinel自动化配置是否生效|true
 |`spring.cloud.sentinel.eager`|取消Sentinel控制台懒加载|false
-|`spring.cloud.sentinel.transport.port`|应用与Sentinel控制台交互的端口，应用本地会起一个该端口占用的HttpServer|8721
+|`spring.cloud.sentinel.transport.port`|应用与Sentinel控制台交互的端口，应用本地会起一个该端口占用的HttpServer|8719
 |`spring.cloud.sentinel.transport.dashboard`|Sentinel 控制台地址|
 |`spring.cloud.sentinel.transport.heartbeat-interval-ms`|应用与Sentinel控制台的心跳间隔时间|
 |`spring.cloud.sentinel.transport.client-ip`|客户端IP|

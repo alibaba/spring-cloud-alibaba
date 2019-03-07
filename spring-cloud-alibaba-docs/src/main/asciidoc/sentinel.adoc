@@ -265,7 +265,7 @@ The following table shows all the configurations of Spring Cloud Alibaba Sentine
 ^|Configuration ^|Description ^|Default Value
 |`spring.cloud.sentinel.enabled`|Whether Sentinel automatic configuration takes effect|true
 |`spring.cloud.sentinel.eager`|Cancel Sentinel dashboard lazy load|false
-|`spring.cloud.sentinel.transport.port`|Port for the application to interact with Sentinel dashboard. An HTTP Server which uses this port will be started in the application|8721
+|`spring.cloud.sentinel.transport.port`|Port for the application to interact with Sentinel dashboard. An HTTP Server which uses this port will be started in the application|8719
 |`spring.cloud.sentinel.transport.dashboard`|Sentinel dashboard address|
 |`spring.cloud.sentinel.transport.heartbeatIntervalMs`|Hearbeat interval between the application and Sentinel dashboard|
 |`spring.cloud.sentinel.transport.client-ip`|Client IP|
