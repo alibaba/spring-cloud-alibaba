@@ -27,7 +27,7 @@ import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.netflix.eureka.CloudEurekaInstanceConfig;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * {@link EurekaRegistration} Factory
@@ -37,8 +37,7 @@ import org.springframework.context.ApplicationContext;
 public class EurekaRegistrationFactory extends AbstractRegistrationFactory<EurekaRegistration> {
 
     @Override
-    public EurekaRegistration create(String serviceName, URL url, ApplicationContext applicationContext) {
-        ServiceInstance serviceInstance = createServiceInstance(serviceName, url);
+    protected EurekaRegistration create(URL url, ConfigurableApplicationContext applicationContext, ServiceInstance serviceInstance) {
         CloudEurekaInstanceConfig cloudEurekaInstanceConfig = applicationContext.getBean(CloudEurekaInstanceConfig.class);
         ObjectProvider<HealthCheckHandler> healthCheckHandler = applicationContext.getBeanProvider(HealthCheckHandler.class);
         EurekaClientConfig eurekaClientConfig = applicationContext.getBean(EurekaClientConfig.class);

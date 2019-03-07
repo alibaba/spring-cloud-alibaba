@@ -24,7 +24,7 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import org.springframework.cloud.consul.discovery.ConsulServerUtils;
 import org.springframework.cloud.consul.serviceregistry.ConsulRegistration;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -40,9 +40,7 @@ import java.util.Set;
 public class ConsulRegistrationFactory extends AbstractRegistrationFactory<ConsulRegistration> {
 
     @Override
-    public ConsulRegistration create(String serviceName, URL url, ApplicationContext applicationContext) {
-        ServiceInstance serviceInstance = createServiceInstance(serviceName, url);
-
+    protected ConsulRegistration create(URL url, ConfigurableApplicationContext applicationContext, ServiceInstance serviceInstance) {
         Map<String, String> metadata = getMetadata(serviceInstance);
         List<String> tags = createTags(metadata);
 
