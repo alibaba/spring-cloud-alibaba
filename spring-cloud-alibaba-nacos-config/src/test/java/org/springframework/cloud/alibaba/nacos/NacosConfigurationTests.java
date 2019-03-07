@@ -164,12 +164,10 @@ public class NacosConfigurationTests {
 		checkoutNacosConfigTimeout();
 		checkoutNacosConfigEncode();
 		checkoutNacosConfigProfiles();
-		checkoutNacosConfigExtConfig();
 
 		checkoutEndpoint();
+		checkoutDataLoad();
 
-		Assert.assertEquals(environment.getProperty("user.name"), "dev");
-		Assert.assertEquals(environment.getProperty("user.age"), "12");
 	}
 
 	private void checkoutNacosConfigServerAddr() {
@@ -235,15 +233,10 @@ public class NacosConfigurationTests {
 				properties.getEncode());
 	}
 
-	private void checkoutNacosConfigExtConfig() {
-		assertEquals("NacosConfigProperties' ext config is wrong",
-				"ext-config-common01.properties",
-				properties.getExtConfig().get(0).getDataId());
-		assertEquals("NacosConfigProperties' ext config is wrong",
-				"ext-config-common02.properties",
-				properties.getExtConfig().get(1).getDataId());
-		assertEquals("NacosConfigProperties' ext config is wrong", "GLOBAL_GROUP",
-				properties.getExtConfig().get(1).getGroup());
+	private void checkoutDataLoad() {
+
+		Assert.assertEquals(environment.getProperty("user.name"), "dev");
+		Assert.assertEquals(environment.getProperty("user.age"), "12");
 	}
 
 	private void checkoutNacosConfigProfiles() {

@@ -16,14 +16,11 @@
 
 package org.springframework.cloud.alibaba.nacos;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-
-import java.util.Map;
 
 import com.alibaba.nacos.client.config.NacosConfigService;
 
@@ -42,7 +39,6 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySourceLocator;
 import org.springframework.cloud.alibaba.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
-import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshHistory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
