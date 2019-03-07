@@ -29,12 +29,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigService;
 import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.StringUtils;
 
@@ -73,6 +75,11 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
     @Value("${spring.application.name:application}")
     private String currentApplicationName;
 
+    /**
+     * The ServiceConfig of DubboMetadataConfigService to be exported, can be nullable.
+     */
+    private ServiceConfig<DubboMetadataConfigService> serviceConfig;
+
     @EventListener(ServiceBeanExportedEvent.class)
     public void recordRestMetadata(ServiceBeanExportedEvent event) {
         ServiceBean serviceBean = event.getServiceBean();
@@ -84,7 +91,21 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
         exportDubboMetadataConfigService();
     }
 
+    @EventListener(ApplicationFailedEvent.class)
+    public void onApplicationFailed() {
+        unexportDubboMetadataConfigService();
+    }
+
+    @EventListener(ContextClosedEvent.class)
+    public void onContextClosed() {
+        unexportDubboMetadataConfigService();
+    }
+
     private void exportDubboMetadataConfigService() {
+
+        if (serviceConfig != null && serviceConfig.isExported()) {
+            return;
+        }
 
         if (StringUtils.isEmpty(dubboMetadataConfigService.getServiceRestMetadata())) {
             // If there is no REST metadata, DubboMetadataConfigService will not be exported.
@@ -95,7 +116,7 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
             return;
         }
 
-        ServiceConfig<DubboMetadataConfigService> serviceConfig = new ServiceConfig<>();
+        serviceConfig = new ServiceConfig<>();
 
         serviceConfig.setInterface(DubboMetadataConfigService.class);
         // Use current Spring application name as the Dubbo Service version
@@ -105,5 +126,22 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
         serviceConfig.setProtocol(metadataProtocolConfig);
 
         serviceConfig.export();
+
+        if (logger.isInfoEnabled()) {
+            logger.info("The Dubbo service[{}] has been exported.", serviceConfig.toString());
+        }
+    }
+
+    private void unexportDubboMetadataConfigService() {
+
+        if (serviceConfig == null || serviceConfig.isUnexported()) {
+            return;
+        }
+
+        serviceConfig.unexport();
+
+        if (logger.isInfoEnabled()) {
+            logger.info("The Dubbo service[{}] has been unexported.", serviceConfig.toString());
+        }
     }
 }
