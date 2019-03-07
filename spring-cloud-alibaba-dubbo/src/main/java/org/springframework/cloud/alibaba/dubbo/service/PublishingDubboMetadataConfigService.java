@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration.METADATA_PROTOCOL_BEAN_NAME;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * Publishing {@link DubboMetadataConfigService} implementation
@@ -68,7 +69,9 @@ public class PublishingDubboMetadataConfigService implements DubboMetadataConfig
     public String getServiceRestMetadata() {
         String serviceRestMetadataJsonConfig = null;
         try {
-            serviceRestMetadataJsonConfig = objectMapper.writeValueAsString(serviceRestMetadata);
+            if (!isEmpty(serviceRestMetadata)) {
+                serviceRestMetadataJsonConfig = objectMapper.writeValueAsString(serviceRestMetadata);
+            }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

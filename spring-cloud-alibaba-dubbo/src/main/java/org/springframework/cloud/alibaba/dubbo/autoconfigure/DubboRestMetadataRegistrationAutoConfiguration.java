@@ -16,18 +16,29 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
+import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ProtocolConfig;
+import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigService;
 import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.util.StringUtils;
+
+import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration.METADATA_PROTOCOL_BEAN_NAME;
 
 /**
  * The Auto-Configuration class for Dubbo REST metadata registration,
@@ -44,11 +55,20 @@ import org.springframework.context.event.EventListener;
 @Configuration
 public class DubboRestMetadataRegistrationAutoConfiguration {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private MetadataResolver metadataResolver;
 
     @Autowired
     private PublishingDubboMetadataConfigService dubboMetadataConfigService;
+
+    @Autowired
+    private ApplicationConfig applicationConfig;
+
+    @Autowired
+    @Qualifier(METADATA_PROTOCOL_BEAN_NAME)
+    private ProtocolConfig metadataProtocolConfig;
 
     @Value("${spring.application.name:application}")
     private String currentApplicationName;
@@ -57,5 +77,33 @@ public class DubboRestMetadataRegistrationAutoConfiguration {
     public void recordRestMetadata(ServiceBeanExportedEvent event) {
         ServiceBean serviceBean = event.getServiceBean();
         dubboMetadataConfigService.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void onApplicationReady() {
+        exportDubboMetadataConfigService();
+    }
+
+    private void exportDubboMetadataConfigService() {
+
+        if (StringUtils.isEmpty(dubboMetadataConfigService.getServiceRestMetadata())) {
+            // If there is no REST metadata, DubboMetadataConfigService will not be exported.
+            if (logger.isInfoEnabled()) {
+                logger.info("There is no REST metadata, the Dubbo service[{}] will not be exported.",
+                        dubboMetadataConfigService.getClass().getName());
+            }
+            return;
+        }
+
+        ServiceConfig<DubboMetadataConfigService> serviceConfig = new ServiceConfig<>();
+
+        serviceConfig.setInterface(DubboMetadataConfigService.class);
+        // Use current Spring application name as the Dubbo Service version
+        serviceConfig.setVersion(currentApplicationName);
+        serviceConfig.setRef(dubboMetadataConfigService);
+        serviceConfig.setApplication(applicationConfig);
+        serviceConfig.setProtocol(metadataProtocolConfig);
+
+        serviceConfig.export();
     }
 }
