@@ -71,7 +71,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 				timeout);
 		String name = nacosConfigProperties.getName();
 
-		String nacosGroup = nacosConfigProperties.getGroup();
 		String dataIdPrefix = nacosConfigProperties.getPrefix();
 		if (StringUtils.isEmpty(dataIdPrefix)) {
 			dataIdPrefix = name;
@@ -81,17 +80,12 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			dataIdPrefix = env.getProperty("spring.application.name");
 		}
 
-		List<String> profiles = Arrays.asList(env.getActiveProfiles());
-		nacosConfigProperties.setActiveProfiles(profiles.toArray(new String[0]));
-
-		String fileExtension = nacosConfigProperties.getFileExtension();
-
 		CompositePropertySource composite = new CompositePropertySource(
 				NACOS_PROPERTY_SOURCE_NAME);
 
 		loadSharedConfiguration(composite);
 		loadExtConfiguration(composite);
-		loadApplicationConfiguration(composite, nacosGroup, dataIdPrefix, fileExtension);
+		loadApplicationConfiguration(composite, dataIdPrefix, nacosConfigProperties, env);
 
 		return composite;
 	}
@@ -152,11 +146,15 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private void loadApplicationConfiguration(
-			CompositePropertySource compositePropertySource, String nacosGroup,
-			String dataIdPrefix, String fileExtension) {
+			CompositePropertySource compositePropertySource, String dataIdPrefix,
+			NacosConfigProperties properties, Environment environment) {
+
+		String fileExtension = properties.getFileExtension();
+		String nacosGroup = properties.getGroup();
+
 		loadNacosDataIfPresent(compositePropertySource,
 				dataIdPrefix + DOT + fileExtension, nacosGroup, fileExtension, true);
-		for (String profile : nacosConfigProperties.getActiveProfiles()) {
+		for (String profile : environment.getActiveProfiles()) {
 			String dataId = dataIdPrefix + SEP1 + profile + DOT + fileExtension;
 			loadNacosDataIfPresent(compositePropertySource, dataId, nacosGroup,
 					fileExtension, true);

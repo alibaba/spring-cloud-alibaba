@@ -163,7 +163,6 @@ public class NacosConfigurationTests {
 		checkoutNacosConfigFileExtension();
 		checkoutNacosConfigTimeout();
 		checkoutNacosConfigEncode();
-		checkoutNacosConfigProfiles();
 
 		checkoutEndpoint();
 		checkoutDataLoad();
@@ -237,11 +236,6 @@ public class NacosConfigurationTests {
 
 		Assert.assertEquals(environment.getProperty("user.name"), "dev");
 		Assert.assertEquals(environment.getProperty("user.age"), "12");
-	}
-
-	private void checkoutNacosConfigProfiles() {
-		assertEquals("NacosConfigProperties' profiles is wrong",
-				new String[] { "dev", "test" }, properties.getActiveProfiles());
 	}
 
 	private void checkoutEndpoint() throws Exception {
