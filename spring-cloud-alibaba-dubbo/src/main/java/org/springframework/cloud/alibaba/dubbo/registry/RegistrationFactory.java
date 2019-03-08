@@ -17,6 +17,7 @@
 package org.springframework.cloud.alibaba.dubbo.registry;
 
 import org.apache.dubbo.common.URL;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -37,4 +38,13 @@ public interface RegistrationFactory<R extends Registration> {
      * @return a instance of {@link R}, if null, it indicates the registration will not be executed.
      */
     R create(URL url, ConfigurableApplicationContext applicationContext);
+
+    /**
+     * Create a instance of {@link R}
+     *
+     * @param serviceInstance    {@link ServiceInstance}
+     * @param applicationContext {@link ConfigurableApplicationContext}
+     * @return a instance of {@link R}, if null, it indicates the registration will not be executed.
+     */
+    R create(ServiceInstance serviceInstance, ConfigurableApplicationContext applicationContext);
 }

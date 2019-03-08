@@ -18,7 +18,6 @@ package org.springframework.cloud.alibaba.dubbo.registry.netflix.eureka;
 
 import com.netflix.appinfo.HealthCheckHandler;
 import com.netflix.discovery.EurekaClientConfig;
-import org.apache.dubbo.common.URL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.alibaba.dubbo.registry.AbstractRegistrationFactory;
@@ -37,7 +36,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class EurekaRegistrationFactory extends AbstractRegistrationFactory<EurekaRegistration> {
 
     @Override
-    protected EurekaRegistration create(URL url, ConfigurableApplicationContext applicationContext, ServiceInstance serviceInstance) {
+    public EurekaRegistration create(ServiceInstance serviceInstance, ConfigurableApplicationContext applicationContext) {
         CloudEurekaInstanceConfig cloudEurekaInstanceConfig = applicationContext.getBean(CloudEurekaInstanceConfig.class);
         ObjectProvider<HealthCheckHandler> healthCheckHandler = applicationContext.getBeanProvider(HealthCheckHandler.class);
         EurekaClientConfig eurekaClientConfig = applicationContext.getBean(EurekaClientConfig.class);
