@@ -28,7 +28,6 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
-import org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry;
 import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Method;
@@ -115,10 +114,10 @@ public class DubboServiceBeanMetadataResolver implements BeanClassLoaderAware, S
         List<URL> urls = serviceBean.getExportedUrls();
 
         urls.stream()
-                .map(SpringCloudRegistry::getServiceName)
-                .forEach(serviceName -> {
+                .map(URL::toString)
+                .forEach(url -> {
                     ServiceRestMetadata metadata = new ServiceRestMetadata();
-                    metadata.setName(serviceName);
+                    metadata.setUrl(url);
                     metadata.setMeta(methodRestMetadata);
                     serviceRestMetadata.add(metadata);
                 });
