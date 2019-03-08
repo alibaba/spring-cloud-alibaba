@@ -15,6 +15,15 @@
  */
 package org.springframework.cloud.alicloud.sms.base;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aliyun.mns.client.CloudAccount;
 import com.aliyun.mns.client.CloudQueue;
 import com.aliyun.mns.client.MNSClient;
@@ -27,21 +36,13 @@ import com.aliyuncs.http.MethodType;
 import com.aliyuncs.http.ProtocolType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * 获取接收云通信消息的临时token
  *
  */
 public class TokenGetterForAlicom {
-	private Log logger = LogFactory.getLog(TokenGetterForAlicom.class);
+	private static final Logger log = LoggerFactory.getLogger(TokenGetterForAlicom.class);
 	private String accessKeyId;
 	private String accessKeySecret;
 	private String endpointNameForPop;
@@ -100,7 +101,7 @@ public class TokenGetterForAlicom {
 			return token;
 		}
 		else {
-			logger.error("getTokenFromRemote_error,messageType:" + messageType + ",code:"
+			log.error("getTokenFromRemote_error,messageType:" + messageType + ",code:"
 					+ response.getCode() + ",message:" + response.getMessage());
 			throw new ServerException(response.getCode(), response.getMessage());
 		}
@@ -124,8 +125,6 @@ public class TokenGetterForAlicom {
 					CloudAccount account = new CloudAccount(token.getTempAccessKeyId(),
 							token.getTempAccessKeySecret(), mnsAccountEndpoint,
 							token.getToken());
-					// logger.warn("ak:"+token.getTempAccessKey());
-					// logger.warn("token:"+token.getToken());
 					MNSClient client = account.getMNSClient();
 					CloudQueue queue = client.getQueueRef(queueName);
 					token.setClient(client);

@@ -16,13 +16,16 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import com.alibaba.dubbo.config.ProtocolConfig;
-import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
-
+import feign.Contract;
+import org.apache.dubbo.config.ProtocolConfig;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceProxy;
+import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -38,11 +41,16 @@ import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
-@Import(DubboServiceMetadataRepository.class)
-@DubboComponentScan(basePackages = "org.springframework.cloud.alibaba.dubbo.service")
+@Import({DubboServiceMetadataRepository.class, PublishingDubboMetadataConfigService.class})
 public class DubboMetadataAutoConfiguration {
 
     public static final String METADATA_PROTOCOL_BEAN_NAME = "metadata";
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
+        return new DubboServiceBeanMetadataResolver(contract);
+    }
 
     /**
      * Build an alias Bean for {@link ProtocolConfig}

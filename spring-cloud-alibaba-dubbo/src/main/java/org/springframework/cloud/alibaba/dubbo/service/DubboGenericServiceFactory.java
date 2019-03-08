@@ -16,9 +16,9 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import com.alibaba.dubbo.config.spring.ReferenceBean;
-import com.alibaba.dubbo.rpc.service.GenericService;
-
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.config.spring.ReferenceBean;
+import org.apache.dubbo.rpc.service.GenericService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
@@ -31,12 +31,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static com.alibaba.dubbo.common.Constants.DEFAULT_CLUSTER;
-import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceGroup;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceInterface;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceSegments;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.getServiceVersion;
+import static org.apache.dubbo.common.Constants.DEFAULT_CLUSTER;
+import static org.apache.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import static org.apache.dubbo.common.Constants.GROUP_KEY;
+import static org.apache.dubbo.common.Constants.VERSION_KEY;
 
 /**
  * Dubbo {@link GenericService} Factory
@@ -67,11 +65,11 @@ public class DubboGenericServiceFactory {
 
     private ReferenceBean<GenericService> build(ServiceRestMetadata serviceRestMetadata,
                                                 DubboTransportedMetadata dubboTransportedMetadata) {
-        String dubboServiceName = serviceRestMetadata.getName();
-        String[] segments = getServiceSegments(dubboServiceName);
-        String interfaceName = getServiceInterface(segments);
-        String version = getServiceVersion(segments);
-        String group = getServiceGroup(segments);
+        String urlValue = serviceRestMetadata.getUrl();
+        URL url = URL.valueOf(urlValue);
+        String interfaceName = url.getServiceInterface();
+        String version = url.getParameter(VERSION_KEY);
+        String group =  url.getParameter(GROUP_KEY);
         String protocol = dubboTransportedMetadata.getProtocol();
         String cluster = dubboTransportedMetadata.getCluster();
 

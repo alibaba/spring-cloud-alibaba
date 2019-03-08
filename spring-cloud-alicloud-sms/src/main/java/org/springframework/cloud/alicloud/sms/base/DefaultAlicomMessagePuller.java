@@ -15,14 +15,6 @@
  */
 package org.springframework.cloud.alicloud.sms.base;
 
-import com.aliyun.mns.client.CloudQueue;
-import com.aliyun.mns.common.ClientException;
-import com.aliyun.mns.common.ServiceException;
-import com.aliyun.mns.model.Message;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,12 +25,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.aliyun.mns.client.CloudQueue;
+import com.aliyun.mns.common.ClientException;
+import com.aliyun.mns.common.ServiceException;
+import com.aliyun.mns.model.Message;
+
 /**
  * 阿里通信官方消息默认拉取工具类
  */
 public class DefaultAlicomMessagePuller {
 
-	private Log logger = LogFactory.getLog(DefaultAlicomMessagePuller.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(DefaultAlicomMessagePuller.class);
 
 	private String mnsAccountEndpoint = "https://1943695596114318.mns.cn-hangzhou.aliyuncs.com/";// 阿里通信消息的endpoint,固定。
 	private String endpointNameForPop = "cn-hangzhou";
@@ -103,7 +105,7 @@ public class DefaultAlicomMessagePuller {
 			sPollingMap.put(queueName, false);
 			lockObj.notifyAll();
 			if (debugLogOpen) {
-				logger.info("PullMessageTask_WakeUp:Everyone WakeUp and Work!");
+				log.info("PullMessageTask_WakeUp:Everyone WakeUp and Work!");
 			}
 		}
 	}
@@ -131,7 +133,7 @@ public class DefaultAlicomMessagePuller {
 						if (p != null && p) {
 							try {
 								if (debugLogOpen) {
-									logger.info("PullMessageTask_sleep:"
+									log.info("PullMessageTask_sleep:"
 											+ Thread.currentThread().getName()
 											+ " Have a nice sleep!");
 								}
@@ -140,7 +142,7 @@ public class DefaultAlicomMessagePuller {
 							}
 							catch (InterruptedException e) {
 								if (debugLogOpen) {
-									logger.info("PullMessageTask_Interrupted!"
+									log.info("PullMessageTask_Interrupted!"
 											+ Thread.currentThread().getName()
 											+ " QueueName is " + queueName);
 								}
@@ -158,7 +160,7 @@ public class DefaultAlicomMessagePuller {
 						if (debugLogOpen) {
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd HH:mm:ss");
-							logger.info("PullMessageTask_popMessage:"
+							log.info("PullMessageTask_popMessage:"
 									+ Thread.currentThread().getName() + "-popDone at "
 									+ "," + format.format(new Date()) + " msgSize="
 									+ (popMsg == null ? 0 : popMsg.getMessageId()));
@@ -171,7 +173,7 @@ public class DefaultAlicomMessagePuller {
 					else {
 						if (setPolling(queueName)) {
 							if (debugLogOpen) {
-								logger.info("PullMessageTask_setPolling:"
+								log.info("PullMessageTask_setPolling:"
 										+ Thread.currentThread().getName() + " Polling!");
 							}
 						}
@@ -180,7 +182,7 @@ public class DefaultAlicomMessagePuller {
 						}
 						do {
 							if (debugLogOpen) {
-								logger.info("PullMessageTask_Keep_Polling"
+								log.info("PullMessageTask_Keep_Polling"
 										+ Thread.currentThread().getName()
 										+ "KEEP Polling!");
 							}
@@ -189,7 +191,7 @@ public class DefaultAlicomMessagePuller {
 							}
 							catch (ClientException e) {
 								if (debugLogOpen) {
-									logger.info(
+									log.info(
 											"PullMessageTask_Pop_Message:ClientException Refresh accessKey"
 													+ e);
 								}
@@ -200,7 +202,7 @@ public class DefaultAlicomMessagePuller {
 							}
 							catch (ServiceException e) {
 								if (debugLogOpen) {
-									logger.info(
+									log.info(
 											"PullMessageTask_Pop_Message:ServiceException Refresh accessKey"
 													+ e);
 								}
@@ -211,7 +213,7 @@ public class DefaultAlicomMessagePuller {
 							}
 							catch (Exception e) {
 								if (debugLogOpen) {
-									logger.info(
+									log.info(
 											"PullMessageTask_Pop_Message:Exception Happened when polling popMessage: "
 													+ e);
 								}
@@ -224,7 +226,7 @@ public class DefaultAlicomMessagePuller {
 					if (dealResult) {
 						// remember to delete message when consume message successfully.
 						if (debugLogOpen) {
-							logger.info("PullMessageTask_Deal_Message:"
+							log.info("PullMessageTask_Deal_Message:"
 									+ Thread.currentThread().getName() + "deleteMessage "
 									+ popMsg.getMessageId());
 						}
@@ -232,19 +234,19 @@ public class DefaultAlicomMessagePuller {
 					}
 				}
 				catch (ClientException e) {
-					logger.error("PullMessageTask_execute_error,messageType:"
-							+ messageType + ",queueName:" + queueName, e);
+					log.error("PullMessageTask_execute_error,messageType:" + messageType
+							+ ",queueName:" + queueName, e);
 					break;
 
 				}
 				catch (ServiceException e) {
 					if (e.getErrorCode().equals("AccessDenied")) {
-						logger.error("PullMessageTask_execute_error,messageType:"
+						log.error("PullMessageTask_execute_error,messageType:"
 								+ messageType + ",queueName:" + queueName
 								+ ",please check messageType and queueName", e);
 					}
 					else {
-						logger.error("PullMessageTask_execute_error,messageType:"
+						log.error("PullMessageTask_execute_error,messageType:"
 								+ messageType + ",queueName:" + queueName, e);
 					}
 					break;
@@ -252,30 +254,30 @@ public class DefaultAlicomMessagePuller {
 				}
 				catch (com.aliyuncs.exceptions.ClientException e) {
 					if (e.getErrCode().equals("InvalidAccessKeyId.NotFound")) {
-						logger.error("PullMessageTask_execute_error,messageType:"
+						log.error("PullMessageTask_execute_error,messageType:"
 								+ messageType + ",queueName:" + queueName
 								+ ",please check AccessKeyId", e);
 					}
 					if (e.getErrCode().equals("SignatureDoesNotMatch")) {
-						logger.error("PullMessageTask_execute_error,messageType:"
+						log.error("PullMessageTask_execute_error,messageType:"
 								+ messageType + ",queueName:" + queueName
 								+ ",please check AccessKeySecret", e);
 					}
 					else {
-						logger.error("PullMessageTask_execute_error,messageType:"
+						log.error("PullMessageTask_execute_error,messageType:"
 								+ messageType + ",queueName:" + queueName, e);
 					}
 					break;
 
 				}
 				catch (Exception e) {
-					logger.error("PullMessageTask_execute_error,messageType:"
-							+ messageType + ",queueName:" + queueName, e);
+					log.error("PullMessageTask_execute_error,messageType:" + messageType
+							+ ",queueName:" + queueName, e);
 					try {
 						Thread.sleep(sleepSecondWhenNoData);
 					}
 					catch (InterruptedException e1) {
-						logger.error("PullMessageTask_execute_error,messageType:"
+						log.error("PullMessageTask_execute_error,messageType:"
 								+ messageType + ",queueName:" + queueName, e);
 					}
 				}
