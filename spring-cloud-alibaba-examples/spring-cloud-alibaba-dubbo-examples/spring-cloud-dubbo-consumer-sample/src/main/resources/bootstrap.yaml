@@ -24,10 +24,6 @@ ribbon:
   nacos:
     enabled: false
 
-provider:
-  application:
-    name: spring-cloud-alibaba-dubbo-provider
-
 ---
 spring:
   profiles: nacos
@@ -51,7 +47,7 @@ eureka:
   client:
     enabled: true
     service-url:
-      defaultZone: http://127.0.0.1:9090/eureka/
+      defaultZone: http://127.0.0.1:8761/eureka/
 
 
 ---
