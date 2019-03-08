@@ -14,21 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.registry;
+package org.springframework.cloud.alibaba.dubbo.util;
 
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.apache.dubbo.rpc.RpcContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Default {@link RegistrationFactory}
- *
- * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * Logger Utilities
  */
-public class DefaultRegistrationFactory extends AbstractRegistrationFactory<Registration> {
+public abstract class LoggerUtils {
 
-    @Override
-    public Registration create(ServiceInstance serviceInstance, ConfigurableApplicationContext applicationContext) {
-        return new DelegatingRegistration(serviceInstance);
+    private static final Logger logger = LoggerFactory.getLogger(LoggerUtils.class);
+
+    public static void log(String url, Object result) {
+        String message = String.format("The client[%s] uses '%s' protocol to call %s : %s",
+                RpcContext.getContext().getRemoteHostName(),
+                RpcContext.getContext().getUrl() == null ? "N/A" : RpcContext.getContext().getUrl().getProtocol(),
+                url,
+                result
+        );
+        if (logger.isInfoEnabled()) {
+            logger.info(message);
+        }
     }
 }

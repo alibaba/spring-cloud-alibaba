@@ -26,19 +26,11 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.ResolvableType;
 
-import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static java.lang.System.getProperty;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
-import static org.springframework.beans.BeanUtils.instantiateClass;
-import static org.springframework.core.ResolvableType.forInstance;
-import static org.springframework.core.ResolvableType.forType;
-import static org.springframework.core.io.support.SpringFactoriesLoader.loadFactoryNames;
-import static org.springframework.util.ClassUtils.isPresent;
-import static org.springframework.util.ClassUtils.resolveClassName;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
@@ -77,7 +69,7 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
         }
 
         this.serviceRegistry = applicationContext.getBean(ServiceRegistry.class);
-        this.registrationFactory = buildRegistrationFactory(serviceRegistry, applicationContext.getClassLoader());
+        this.registrationFactory = applicationContext.getBean(RegistrationFactory.class);
         this.discoveryClient = applicationContext.getBean(DiscoveryClient.class);
     }
 
@@ -91,80 +83,4 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
     public static void setApplicationContext(ConfigurableApplicationContext applicationContext) {
         SpringCloudRegistryFactory.applicationContext = applicationContext;
     }
-
-
-    private RegistrationFactory buildRegistrationFactory(ServiceRegistry<Registration> serviceRegistry,
-                                                         ClassLoader classLoader) {
-        RegistrationFactory registrationFactory = null;
-        List<String> factoryClassNames = loadFactoryNames(RegistrationFactory.class, classLoader);
-
-        ResolvableType serviceRegistryType = forInstance(serviceRegistry);
-        // Get first generic Class
-        Class<?> registrationClass = resolveGenericClass(serviceRegistryType, ServiceRegistry.class, 0);
-
-        for (String factoryClassName : factoryClassNames) {
-            if (isPresent(factoryClassName, classLoader)) { // ignore compilation issue
-                Class<?> factoryClass = resolveClassName(factoryClassName, classLoader);
-                ResolvableType registrationFactoryType = forType(factoryClass);
-                Class<?> actualRegistrationClass = resolveGenericClass(registrationFactoryType, RegistrationFactory.class, 0);
-                if (registrationClass.equals(actualRegistrationClass)) {
-                    registrationFactory = (RegistrationFactory) instantiateClass(registrationFactoryType.getRawClass());
-                    break;
-                }
-            }
-        }
-
-        if (registrationFactory == null) {
-
-            if (logger.isWarnEnabled()) {
-                logger.warn("{} implementation can't be resolved by ServiceRegistry[{}]",
-                        registrationClass.getSimpleName(), serviceRegistry.getClass().getName());
-            }
-
-            registrationFactory = new DefaultRegistrationFactory();
-        } else {
-            if (logger.isInfoEnabled()) {
-                logger.info("{} has been resolved by ServiceRegistry[{}]",
-                        registrationFactory.getClass().getName(), serviceRegistry.getClass().getName());
-            }
-        }
-
-        return registrationFactory;
-    }
-
-    private Class<?> resolveGenericClass(ResolvableType implementedType, Class<?> interfaceClass, int index) {
-
-        ResolvableType resolvableType = implementedType;
-
-        try {
-            OUTER:
-            while (true) {
-
-                ResolvableType[] interfaceTypes = resolvableType.getInterfaces();
-
-                for (ResolvableType interfaceType : interfaceTypes) {
-                    if (interfaceType.resolve().equals(interfaceClass)) {
-                        resolvableType = interfaceType;
-                        break OUTER;
-                    }
-                }
-
-                ResolvableType superType = resolvableType.getSuperType();
-
-                Class<?> superClass = superType.resolve();
-
-                if (Object.class.equals(superClass)) {
-                    break;
-                }
-
-                resolvableType = superType;
-            }
-
-        } catch (Throwable e) {
-            resolvableType = ResolvableType.forType(void.class);
-        }
-
-        return resolvableType.resolveGeneric(index);
-    }
-
 }

@@ -19,88 +19,74 @@ package org.springframework.cloud.alibaba.dubbo.service;
 import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.cloud.alibaba.dubbo.util.LoggerUtils.log;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 /**
- * Default {@link RestService}
+ * Spring MVC {@link RestService}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Service(version = "1.0.0", protocol = {"dubbo", "rest"})
-@Path("/")
-public class StandardRestService implements RestService {
+@Service(version = "1.0.0")
+@RestController
+public class SpringRestService implements RestService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    @Path("param")
-    @GET
-    public String param(@QueryParam("param") String param) {
+    @GetMapping(value = "/param")
+    public String param(@RequestParam String param) {
         log("/param", param);
         return param;
     }
 
     @Override
-    @Path("params")
-    @POST
-    public String params(@QueryParam("a") int a, @QueryParam("b") String b) {
+    @PostMapping("/params")
+    public String params(@RequestParam int a, @RequestParam String b) {
         log("/params", a + b);
         return a + b;
     }
 
     @Override
-    @Path("headers")
-    @GET
-    public String headers(@HeaderParam("h") String header,
-                          @HeaderParam("h2") String header2,
-                          @QueryParam("v")
-                                  Integer param) {
+    @GetMapping("/headers")
+    public String headers(@RequestHeader("h") String header,
+                          @RequestHeader("h2") String header2,
+                          @RequestParam("v") Integer param) {
         String result = header + " , " + header2 + " , " + param;
         log("/headers", result);
         return result;
     }
 
     @Override
-    @Path("path-variables/{p1}/{p2}")
-    @GET
-    public String pathVariables(@PathParam("p1") String path1,
-                                @PathParam("p2") String path2,
-                                @QueryParam("v") String param) {
+    @GetMapping("/path-variables/{p1}/{p2}")
+    public String pathVariables(@PathVariable("p1") String path1,
+                                @PathVariable("p2") String path2,
+                                @RequestParam("v") String param) {
         String result = path1 + " , " + path2 + " , " + param;
         log("/path-variables", result);
         return result;
     }
 
-    // @CookieParam does not support : https://github.com/OpenFeign/feign/issues/913
-    // @CookieValue also does not support
-
     @Override
-    @Path("form")
-    @POST
-    public String form(@FormParam("f") String form) {
+    @PostMapping("/form")
+    public String form(@RequestParam("f") String form) {
         return String.valueOf(form);
     }
 
     @Override
-    @Path("request/body/map")
-    @POST
-    @Produces(APPLICATION_JSON_VALUE)
-    public User requestBodyMap(Map<String, Object> data, @QueryParam("param") String param) {
+    @PostMapping(value = "/request/body/map", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public User requestBodyMap(@RequestBody Map<String, Object> data, @RequestParam("param") String param) {
         User user = new User();
         user.setId(((Integer) data.get("id")).longValue());
         user.setName((String) data.get("name"));
@@ -109,15 +95,15 @@ public class StandardRestService implements RestService {
         return user;
     }
 
-    @Path("request/body/user")
-    @POST
+    @PostMapping(value = "/request/body/user", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @Override
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Map<String, Object> requestBodyUser(User user) {
+    public Map<String, Object> requestBodyUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", user.getId());
         map.put("name", user.getName());
         map.put("age", user.getAge());
         return map;
     }
+
 }
+

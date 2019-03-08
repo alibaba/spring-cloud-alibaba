@@ -91,7 +91,6 @@
             <optional>true</optional>
         </dependency>
 
-
         <!-- Eureka Service Discovery -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -151,8 +150,7 @@
         <!-- Spring Cloud Open Feign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <optional>true</optional>
+            <artifactId>spring-cloud-openfeign-core</artifactId>
         </dependency>
 
         <!-- Dubbo -->

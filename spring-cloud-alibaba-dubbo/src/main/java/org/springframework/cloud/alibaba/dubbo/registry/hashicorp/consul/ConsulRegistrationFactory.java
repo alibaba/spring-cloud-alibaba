@@ -17,7 +17,6 @@
 package org.springframework.cloud.alibaba.dubbo.registry.hashicorp.consul;
 
 import com.ecwid.consul.v1.agent.model.NewService;
-import org.apache.dubbo.common.URL;
 import org.springframework.cloud.alibaba.dubbo.registry.AbstractRegistrationFactory;
 import org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactory;
 import org.springframework.cloud.client.ServiceInstance;
@@ -40,7 +39,7 @@ import java.util.Set;
 public class ConsulRegistrationFactory extends AbstractRegistrationFactory<ConsulRegistration> {
 
     @Override
-    protected ConsulRegistration create(URL url, ConfigurableApplicationContext applicationContext, ServiceInstance serviceInstance) {
+    public ConsulRegistration create(ServiceInstance serviceInstance, ConfigurableApplicationContext applicationContext) {
         Map<String, String> metadata = getMetadata(serviceInstance);
         List<String> tags = createTags(metadata);
 
