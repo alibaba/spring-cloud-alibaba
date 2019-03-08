@@ -30,16 +30,16 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceRestMetadata {
 
-    private String name;
+    private String url;
 
     private Set<RestMethodMetadata> meta;
 
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Set<RestMethodMetadata> getMeta() {
@@ -55,12 +55,12 @@ public class ServiceRestMetadata {
         if (this == o) return true;
         if (!(o instanceof ServiceRestMetadata)) return false;
         ServiceRestMetadata that = (ServiceRestMetadata) o;
-        return Objects.equals(name, that.name) &&
+        return Objects.equals(url, that.url) &&
                 Objects.equals(meta, that.meta);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, meta);
+        return Objects.hash(url, meta);
     }
 }

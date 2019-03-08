@@ -1,7 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration,\
   org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboOpenFeignAutoConfiguration,\
-  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboRestMetadataRegistrationAutoConfiguration,\
+  org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataEventHandlingAutoConfiguration,\
   org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboLoadBalancedRestTemplateAutoConfiguration,\
   org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceAutoConfiguration
 
@@ -9,7 +9,6 @@ org.springframework.context.ApplicationContextInitializer=\
   org.springframework.cloud.alibaba.dubbo.context.DubboServiceRegistrationApplicationContextInitializer
 
 org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactory=\
-  org.springframework.cloud.alibaba.dubbo.registry.DefaultRegistrationFactory,\
   org.springframework.cloud.alibaba.dubbo.registry.netflix.eureka.EurekaRegistrationFactory,\
   org.springframework.cloud.alibaba.dubbo.registry.apache.zookeeper.ZookeeperRegistrationFactory,\
   org.springframework.cloud.alibaba.dubbo.registry.hashicorp.consul.ConsulRegistrationFactory
