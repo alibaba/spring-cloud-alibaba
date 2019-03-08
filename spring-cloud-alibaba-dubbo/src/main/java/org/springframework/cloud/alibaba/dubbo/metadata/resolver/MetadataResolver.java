@@ -16,8 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata.resolver;
 
-import com.alibaba.dubbo.config.spring.ServiceBean;
-
+import org.apache.dubbo.config.spring.ServiceBean;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 

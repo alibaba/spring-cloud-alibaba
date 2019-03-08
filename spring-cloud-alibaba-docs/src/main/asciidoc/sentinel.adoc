@@ -265,12 +265,13 @@ The following table shows all the configurations of Spring Cloud Alibaba Sentine
 ^|Configuration ^|Description ^|Default Value
 |`spring.cloud.sentinel.enabled`|Whether Sentinel automatic configuration takes effect|true
 |`spring.cloud.sentinel.eager`|Cancel Sentinel dashboard lazy load|false
-|`spring.cloud.sentinel.transport.port`|Port for the application to interact with Sentinel dashboard. An HTTP Server which uses this port will be started in the application|8721
+|`spring.cloud.sentinel.transport.port`|Port for the application to interact with Sentinel dashboard. An HTTP Server which uses this port will be started in the application|8719
 |`spring.cloud.sentinel.transport.dashboard`|Sentinel dashboard address|
 |`spring.cloud.sentinel.transport.heartbeatIntervalMs`|Hearbeat interval between the application and Sentinel dashboard|
 |`spring.cloud.sentinel.transport.client-ip`|Client IP|
 |`spring.cloud.sentinel.filter.order`|Loading order of Servlet Filter. The filter will be constructed in the Starter|Integer.MIN_VALUE
 |`spring.cloud.sentinel.filter.url-patterns`|Data type is array. Refers to the collection of Servlet Filter ULR patterns|/*
+|`spring.cloud.sentinel.filter.enabled`|Enable to instance CommonFilter|true
 |`spring.cloud.sentinel.metric.charset`|metric file character set|UTF-8
 |`spring.cloud.sentinel.metric.fileSingleSize`|Sentinel metric single file size|
 |`spring.cloud.sentinel.metric.fileTotalCount`|Sentinel metric total file number|

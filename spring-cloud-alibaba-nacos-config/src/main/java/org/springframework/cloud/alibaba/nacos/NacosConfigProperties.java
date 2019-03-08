@@ -122,8 +122,6 @@ public class NacosConfigProperties {
 
 	private String name;
 
-	private String[] activeProfiles;
-
 	/**
 	 * the dataids for configurable multiple shared configurations , multiple separated by
 	 * commas .
@@ -144,11 +142,6 @@ public class NacosConfigProperties {
 
 	@Autowired
 	private Environment environment;
-
-	@PostConstruct
-	public void init() {
-		this.activeProfiles = environment.getActiveProfiles();
-	}
 
 	// todo sts support
 
@@ -260,10 +253,6 @@ public class NacosConfigProperties {
 		return name;
 	}
 
-	public String[] getActiveProfiles() {
-		return activeProfiles;
-	}
-
 	public String getSharedDataids() {
 		return sharedDataids;
 	}
@@ -290,10 +279,6 @@ public class NacosConfigProperties {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
 	}
 
 	public static class Config {
@@ -344,8 +329,7 @@ public class NacosConfigProperties {
 				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
 				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
 				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
-				+ '\'' + ", name='" + name + '\'' + ", activeProfiles="
-				+ Arrays.toString(activeProfiles) + ", sharedDataids='" + sharedDataids
+				+ '\'' + ", name='" + name + '\'' + ", sharedDataids='" + sharedDataids
 				+ '\'' + ", refreshableDataids='" + refreshableDataids + '\''
 				+ ", extConfig=" + extConfig + '}';
 	}
