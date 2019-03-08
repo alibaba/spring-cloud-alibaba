@@ -16,7 +16,6 @@
  */
 package org.springframework.cloud.alibaba.dubbo.registry.apache.zookeeper;
 
-import org.apache.dubbo.common.URL;
 import org.springframework.cloud.alibaba.dubbo.registry.AbstractRegistrationFactory;
 import org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactory;
 import org.springframework.cloud.client.ServiceInstance;
@@ -33,7 +32,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class ZookeeperRegistrationFactory extends AbstractRegistrationFactory<ZookeeperRegistration> {
 
     @Override
-    protected ZookeeperRegistration create(URL url, ConfigurableApplicationContext applicationContext, ServiceInstance serviceInstance) {
+    public ZookeeperRegistration create(ServiceInstance serviceInstance, ConfigurableApplicationContext applicationContext) {
         ZookeeperInstance zookeeperInstance = new ZookeeperInstance(serviceInstance.getInstanceId(),
                 serviceInstance.getServiceId(), serviceInstance.getMetadata());
 

@@ -37,18 +37,8 @@ public abstract class AbstractRegistrationFactory<R extends Registration> implem
 
     public final R create(URL url, ConfigurableApplicationContext applicationContext) {
         ServiceInstance serviceInstance = createServiceInstance(url, applicationContext);
-        return create(url, applicationContext, serviceInstance);
+        return create(serviceInstance, applicationContext);
     }
-
-    /**
-     * Sub-class should override this method to create an instance of {@link R}
-     *
-     * @param url                The Dubbo's {@link URL}
-     * @param applicationContext {@link ConfigurableApplicationContext}
-     * @param serviceInstance    {@link ServiceInstance}
-     * @return nullable
-     */
-    protected abstract R create(URL url, ConfigurableApplicationContext applicationContext, ServiceInstance serviceInstance);
 
     /**
      * Create an instance {@link ServiceInstance}. This method maybe override by sub-class.
