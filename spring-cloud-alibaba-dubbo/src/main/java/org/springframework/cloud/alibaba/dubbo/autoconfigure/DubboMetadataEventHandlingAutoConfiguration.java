@@ -16,6 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.ServiceConfig;
@@ -26,16 +27,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.context.event.ApplicationFailedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigService;
 import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
+import org.springframework.cloud.client.DefaultServiceInstance;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.serviceregistry.Registration;
+import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
 
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration.METADATA_PROTOCOL_BEAN_NAME;
 
@@ -63,6 +76,9 @@ public class DubboMetadataEventHandlingAutoConfiguration {
     @Qualifier(METADATA_PROTOCOL_BEAN_NAME)
     private ProtocolConfig metadataProtocolConfig;
 
+    @Autowired
+    private ConfigurableApplicationContext context;
+
     @Value("${spring.application.name:application}")
     private String currentApplicationName;
 
@@ -71,10 +87,44 @@ public class DubboMetadataEventHandlingAutoConfiguration {
      */
     private ServiceConfig<DubboMetadataConfigService> serviceConfig;
 
+    private ServiceInstance restServiceInstance;
+
     @EventListener(ServiceBeanExportedEvent.class)
-    public void recordRestMetadata(ServiceBeanExportedEvent event) {
+    public void onServiceBeanExported(ServiceBeanExportedEvent event) {
         ServiceBean serviceBean = event.getServiceBean();
-        dubboMetadataConfigService.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
+        publishServiceRestMetadata(serviceBean);
+        setRestServiceInstance(serviceBean);
+    }
+
+    private void setRestServiceInstance(ServiceBean serviceBean) {
+        List<URL> urls = serviceBean.getExportedUrls();
+        urls.stream()
+                .filter(url -> "rest".equalsIgnoreCase(url.getProtocol()))
+                .forEach(url -> {
+                    String host = url.getIp();
+                    int port = url.getPort();
+
+                    if (restServiceInstance == null) {
+                        String instanceId = currentApplicationName + "-" + host + ":" + port;
+                        this.restServiceInstance = new DefaultServiceInstance(instanceId, currentApplicationName,
+                                host, port, false, new HashMap<>());
+                    } else {
+
+                        if (!host.equals(restServiceInstance.getHost())) {
+                            if (logger.isWarnEnabled()) {
+                                logger.warn("Current application[{}] host is not consistent, expected: {}, actual: {}",
+                                        currentApplicationName, restServiceInstance.getHost(), host);
+                            }
+                        }
+
+                        if (port != restServiceInstance.getPort()) {
+                            if (logger.isWarnEnabled()) {
+                                logger.warn("Current application[{}] port is not consistent, expected: {}, actual: {}",
+                                        currentApplicationName, restServiceInstance.getPort(), port);
+                            }
+                        }
+                    }
+                });
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -90,6 +140,32 @@ public class DubboMetadataEventHandlingAutoConfiguration {
     @EventListener(ContextClosedEvent.class)
     public void onContextClosed() {
         unexportDubboMetadataConfigService();
+    }
+
+    @ConditionalOnNotWebApplication
+    @Bean
+    public ApplicationRunner applicationRunner() {
+        return args -> {
+
+            if (restServiceInstance == null) {
+                return;
+            }
+
+            // From RegistrationFactoryProvider
+            RegistrationFactory registrationFactory = context.getBean(RegistrationFactory.class);
+
+            ServiceRegistry<Registration> serviceRegistry = context.getBean(ServiceRegistry.class);
+
+            Registration registration = context.getBean(Registration.class);
+
+            restServiceInstance.getMetadata().putAll(registration.getMetadata());
+
+            serviceRegistry.register(registrationFactory.create(restServiceInstance, context));
+        };
+    }
+
+    private void publishServiceRestMetadata(ServiceBean serviceBean) {
+        dubboMetadataConfigService.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
     }
 
     private void exportDubboMetadataConfigService() {
