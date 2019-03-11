@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
  * @author xiaojing
  */
 @Configuration
+@ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
 public class NacosConfigBootstrapConfiguration {
 
 	@Bean
@@ -35,7 +36,6 @@ public class NacosConfigBootstrapConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
 	public NacosPropertySourceLocator nacosPropertySourceLocator(
 			NacosConfigProperties nacosConfigProperties) {
 		return new NacosPropertySourceLocator(nacosConfigProperties);
