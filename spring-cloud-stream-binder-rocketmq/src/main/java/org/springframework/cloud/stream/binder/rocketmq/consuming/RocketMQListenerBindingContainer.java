@@ -259,7 +259,6 @@ public class RocketMQListenerBindingContainer
 					.prepareStart(consumer);
 		}
 
-		rocketMQMessageChannelBinder.getClientConfigId().add(consumer.buildMQClientId());
 	}
 
 	@Override
