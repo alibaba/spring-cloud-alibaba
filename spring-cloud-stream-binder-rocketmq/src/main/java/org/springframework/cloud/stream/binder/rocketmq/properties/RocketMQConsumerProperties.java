@@ -50,41 +50,17 @@ public class RocketMQConsumerProperties {
 	 */
 	private Boolean orderly = false;
 
+	/**
+	 * for concurrently listener. message consume retry strategy
+	 */
+	private int delayLevelWhenNextConsume = 0;
+
+	/**
+	 * for orderly listener. next retry delay time
+	 */
+	private long suspendCurrentQueueTimeMillis = 1000;
+
 	private Boolean enabled = true;
-
-	private Error error;
-
-	public static class Error {
-
-		/**
-		 * Reconsume later timeMillis in ConsumeOrderlyContext.
-		 */
-		private Long suspendCurrentQueueTimeMillis = 1000L;
-
-		/**
-		 * Message consume retry strategy in ConsumeConcurrentlyContext.
-		 *
-		 * -1,no retry,put into DLQ directly 0,broker control retry frequency >0,client
-		 * control retry frequency
-		 */
-		private Integer delayLevelWhenNextConsume = 0;
-
-		public Long getSuspendCurrentQueueTimeMillis() {
-			return suspendCurrentQueueTimeMillis;
-		}
-
-		public void setSuspendCurrentQueueTimeMillis(Long suspendCurrentQueueTimeMillis) {
-			this.suspendCurrentQueueTimeMillis = suspendCurrentQueueTimeMillis;
-		}
-
-		public Integer getDelayLevelWhenNextConsume() {
-			return delayLevelWhenNextConsume;
-		}
-
-		public void setDelayLevelWhenNextConsume(Integer delayLevelWhenNextConsume) {
-			this.delayLevelWhenNextConsume = delayLevelWhenNextConsume;
-		}
-	}
 
 	public String getTags() {
 		return tags;
@@ -126,11 +102,19 @@ public class RocketMQConsumerProperties {
 		this.broadcasting = broadcasting;
 	}
 
-	public Error getError() {
-		return error;
+	public int getDelayLevelWhenNextConsume() {
+		return delayLevelWhenNextConsume;
 	}
 
-	public void setError(Error error) {
-		this.error = error;
+	public void setDelayLevelWhenNextConsume(int delayLevelWhenNextConsume) {
+		this.delayLevelWhenNextConsume = delayLevelWhenNextConsume;
+	}
+
+	public long getSuspendCurrentQueueTimeMillis() {
+		return suspendCurrentQueueTimeMillis;
+	}
+
+	public void setSuspendCurrentQueueTimeMillis(long suspendCurrentQueueTimeMillis) {
+		this.suspendCurrentQueueTimeMillis = suspendCurrentQueueTimeMillis;
 	}
 }

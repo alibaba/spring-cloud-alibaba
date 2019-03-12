@@ -27,7 +27,7 @@
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
         <alicloud.context.version>1.0.5</alicloud.context.version>
         <aliyun.sdk.edas.version>2.16.0</aliyun.sdk.edas.version>
-        <rocketmq.version>4.3.1</rocketmq.version>
+        <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
         <dubbo.version>2.6.5</dubbo.version>
         <dubbo-spring-boot.version>0.2.1.RELEASE</dubbo-spring-boot.version>
@@ -107,8 +107,8 @@
             <!-- Apache RocketMQ -->
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-client</artifactId>
-                <version>${rocketmq.version}</version>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.starter.version}</version>
             </dependency>
 
             <!-- Sentinel -->

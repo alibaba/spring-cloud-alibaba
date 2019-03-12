@@ -34,7 +34,8 @@
         <module>fescar-example/storage-service</module>
         <module>fescar-example/account-service</module>
         <module>acm-example/acm-local-example</module>
-        <module>rocketmq-example</module>
+        <module>rocketmq-example/rocketmq-consume-example</module>
+        <module>rocketmq-example/rocketmq-produce-example</module>
         <module>sms-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>schedulerx-example/schedulerx-simple-task-example</module>
