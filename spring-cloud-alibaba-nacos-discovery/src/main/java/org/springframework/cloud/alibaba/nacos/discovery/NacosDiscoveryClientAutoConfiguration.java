@@ -18,7 +18,6 @@ package org.springframework.cloud.alibaba.nacos.discovery;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.alibaba.nacos.ConditionalOnNacosDiscoveryEnabled;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
@@ -34,7 +33,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnNacosDiscoveryEnabled
 @EnableConfigurationProperties
-@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.enabled", matchIfMissing = true)
 @AutoConfigureBefore({ SimpleDiscoveryClientAutoConfiguration.class,
 		CommonsClientAutoConfiguration.class })
 public class NacosDiscoveryClientAutoConfiguration {
