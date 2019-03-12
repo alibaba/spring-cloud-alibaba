@@ -19,22 +19,15 @@ package org.springframework.cloud.stream.binder.rocketmq.config;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
-import org.springframework.cloud.stream.binder.rocketmq.metrics.RocketMQBinderMetrics;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import org.springframework.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.MeterBinder;
 
 /**
  * @author Timur Valiev
@@ -82,23 +75,6 @@ public class RocketMQBinderAutoConfiguration {
 	@Bean
 	public InstrumentationManager instrumentationManager() {
 		return new InstrumentationManager();
-	}
-
-	@Configuration
-	@ConditionalOnClass(MeterRegistry.class)
-	@ConditionalOnBean(MeterRegistry.class)
-	protected class RocketMQBinderMetricsConfiguration {
-
-		@Bean
-		@ConditionalOnMissingBean(RocketMQBinderMetrics.class)
-		public MeterBinder rocketMqBinderMetrics(
-				RocketMQMessageChannelBinder rocketMQMessageChannelBinder,
-				RocketMQBinderConfigurationProperties rocketMQBinderConfigurationProperties,
-				MeterRegistry meterRegistry) {
-			return new RocketMQBinderMetrics(rocketMQMessageChannelBinder,
-					rocketMQBinderConfigurationProperties, meterRegistry);
-		}
-
 	}
 
 }
