@@ -28,11 +28,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-nacos-config-server</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
@@ -63,25 +58,14 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-oss</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-schedulerx</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-sms</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-fescar</artifactId>
+            <version>${spring.cloud.alibaba.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

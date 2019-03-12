@@ -6,24 +6,7 @@ Spring Cloud Alibaba Cloud ACM is an alternative solution for Config Server and 
 
 === How to Introduce Spring Cloud Alibaba Cloud ACM
 
-We’ve released Spring Cloud Alibaba version 0.2.2.BUILD-SNAPSHOT. You will need to add dependency management POM first.
-
-[source,xml]
-----
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.2.BUILD-SNAPSHOT</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-----
-
-Next we need to introduce Spring Cloud Alibaba Cloud ACM Starter.
+If you want to use ACM in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alicloud-acm`.
 
 [source,xml]
 ----

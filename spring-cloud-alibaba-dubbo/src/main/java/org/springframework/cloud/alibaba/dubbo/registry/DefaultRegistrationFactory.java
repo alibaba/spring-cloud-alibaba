@@ -16,10 +16,9 @@
  */
 package org.springframework.cloud.alibaba.dubbo.registry;
 
-import com.alibaba.dubbo.common.URL;
-
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Default {@link RegistrationFactory}
@@ -29,7 +28,7 @@ import org.springframework.context.ApplicationContext;
 public class DefaultRegistrationFactory extends AbstractRegistrationFactory<Registration> {
 
     @Override
-    public Registration create(String serviceName, URL url, ApplicationContext applicationContext) {
-        return new DelegatingRegistration(createServiceInstance(serviceName, url));
+    public Registration create(ServiceInstance serviceInstance, ConfigurableApplicationContext applicationContext) {
+        return new DelegatingRegistration(serviceInstance);
     }
 }

@@ -17,10 +17,9 @@
 package org.springframework.cloud.alibaba.dubbo.openfeign;
 
 
-import com.alibaba.dubbo.rpc.service.GenericService;
-
 import feign.Contract;
 import feign.Target;
+import org.apache.dubbo.rpc.service.GenericService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;

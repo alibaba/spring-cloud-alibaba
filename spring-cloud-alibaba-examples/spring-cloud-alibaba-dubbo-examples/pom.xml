@@ -19,12 +19,11 @@
         <module>spring-cloud-dubbo-sample-api</module>
         <module>spring-cloud-dubbo-provider-sample</module>
         <module>spring-cloud-dubbo-consumer-sample</module>
+        <module>spring-cloud-dubbo-provider-web-sample</module>
     </modules>
 
     <properties>
-        <dubbo.version>2.6.5</dubbo.version>
-        <dubbo-spring-boot.version>0.2.1.RELEASE</dubbo-spring-boot.version>
-        <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
+        <dubbo.version>2.7.0</dubbo.version>
         <spring-cloud-zookeeper.version>2.1.0.RELEASE</spring-cloud-zookeeper.version>
         <spring-cloud-consul.version>2.1.0.RELEASE</spring-cloud-consul.version>
         <curator.version>4.0.1</curator.version>
@@ -44,7 +43,7 @@
 
             <!-- Apache Dubbo dependencies-->
             <dependency>
-                <groupId>com.alibaba</groupId>
+                <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-dependencies-bom</artifactId>
                 <version>${dubbo.version}</version>
                 <type>pom</type>

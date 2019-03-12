@@ -16,8 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.bootstrap;
 
-import com.alibaba.dubbo.config.annotation.Reference;
-
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -95,7 +94,7 @@ public class DubboSpringCloudConsumerBootstrap {
     }
 
     @FeignClient("${provider.application.name}")
-    @DubboTransported
+    @DubboTransported()
     public interface DubboFeignRestService {
 
         @GetMapping(value = "/param")
@@ -209,7 +208,7 @@ public class DubboSpringCloudConsumerBootstrap {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(DubboSpringCloudConsumerBootstrap.class)
-                .profiles("nacos")
+                .properties("spring.profiles.active=nacos")
                 .run(args);
     }
 }
