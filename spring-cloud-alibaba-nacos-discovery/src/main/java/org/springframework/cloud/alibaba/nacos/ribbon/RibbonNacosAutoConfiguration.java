@@ -32,8 +32,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnBean(SpringClientFactory.class)
-@ConditionalOnNacosDiscoveryEnabled
 @ConditionalOnRibbonNacos
+@ConditionalOnNacosDiscoveryEnabled
 @AutoConfigureAfter(RibbonAutoConfiguration.class)
 @RibbonClients(defaultConfiguration = NacosRibbonClientConfiguration.class)
 public class RibbonNacosAutoConfiguration {
