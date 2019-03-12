@@ -25,7 +25,7 @@ import org.springframework.util.StringUtils;
  */
 public class RocketMQBinderUtils {
 
-	public static RocketMQBinderConfigurationProperties mergeProducerProperties(
+	public static RocketMQBinderConfigurationProperties mergeProperties(
 			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
 			RocketMQProperties rocketMQProperties) {
 		RocketMQBinderConfigurationProperties result = new RocketMQBinderConfigurationProperties();

@@ -16,12 +16,9 @@
 
 package org.springframework.cloud.alibaba.cloud.examples;
 
-import java.util.HashMap;
-
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
-import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.springframework.messaging.Message;
 
 /**
@@ -32,8 +29,7 @@ public class TransactionListenerImpl implements RocketMQLocalTransactionListener
 	@Override
 	public RocketMQLocalTransactionState executeLocalTransaction(Message msg,
 			Object arg) {
-		Object num = ((HashMap) msg.getHeaders().get(RocketMQHeaders.PROPERTIES))
-				.get("USERS_test");
+		Object num = msg.getHeaders().get("test");
 
 		if ("1".equals(num)) {
 			System.out.println(

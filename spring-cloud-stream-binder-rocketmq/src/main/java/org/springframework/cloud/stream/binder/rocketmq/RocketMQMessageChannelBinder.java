@@ -17,9 +17,7 @@
 package org.springframework.cloud.stream.binder.rocketmq;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
@@ -63,7 +61,6 @@ public class RocketMQMessageChannelBinder extends
 	private final RocketMQProperties rocketMQProperties;
 	private final InstrumentationManager instrumentationManager;
 
-	private Set<String> clientConfigId = new HashSet<>();
 	private Map<String, String> topicInUse = new HashMap<>();
 
 	public RocketMQMessageChannelBinder(
@@ -86,7 +83,7 @@ public class RocketMQMessageChannelBinder extends
 		if (producerProperties.getExtension().getEnabled()) {
 
 			RocketMQBinderConfigurationProperties mergedProperties = RocketMQBinderUtils
-					.mergeProducerProperties(rocketBinderConfigurationProperties,
+					.mergeProperties(rocketBinderConfigurationProperties,
 							rocketMQProperties);
 
 			RocketMQTemplate rocketMQTemplate;
@@ -102,7 +99,6 @@ public class RocketMQMessageChannelBinder extends
 							"there is more than 1 RocketMQTemplates in Spring BeanFactory");
 				}
 				rocketMQTemplate = rocketMQTemplates.values().iterator().next();
-				clientConfigId.add(rocketMQTemplate.getProducer().buildMQClientId());
 			}
 			else {
 				rocketMQTemplate = new RocketMQTemplate();
@@ -142,7 +138,6 @@ public class RocketMQMessageChannelBinder extends
 				producer.setMaxMessageSize(
 						producerProperties.getExtension().getMaxMessageSize());
 				rocketMQTemplate.setProducer(producer);
-				clientConfigId.add(producer.buildMQClientId());
 			}
 
 			RocketMQMessageHandler messageHandler = new RocketMQMessageHandler(
@@ -215,10 +210,6 @@ public class RocketMQMessageChannelBinder extends
 	@Override
 	public RocketMQProducerProperties getExtendedProducerProperties(String channelName) {
 		return extendedBindingProperties.getExtendedProducerProperties(channelName);
-	}
-
-	public Set<String> getClientConfigId() {
-		return clientConfigId;
 	}
 
 	public Map<String, String> getTopicInUse() {
