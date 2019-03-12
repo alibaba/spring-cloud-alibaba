@@ -59,7 +59,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 		Environment env = context.getEnvironment();
 
 		String endpointBasePath = env.getProperty(MANAGEMENT_ENDPOINT_BASE_PATH);
-		if (StringUtils.isEmpty(endpointBasePath)) {
+		if (!StringUtils.isEmpty(endpointBasePath)) {
 			metadata.put(MANAGEMENT_ENDPOINT_BASE_PATH, endpointBasePath);
 		}
 
