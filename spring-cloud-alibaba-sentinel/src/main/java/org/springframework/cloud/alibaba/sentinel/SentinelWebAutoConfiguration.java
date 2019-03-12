@@ -16,7 +16,10 @@
 
 package org.springframework.cloud.alibaba.sentinel;
 
-import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.Filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +31,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.Filter;
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
 
 /**
  * @author xiaojing
@@ -48,7 +49,8 @@ public class SentinelWebAutoConfiguration {
 	private SentinelProperties properties;
 
 	@Bean
-	public FilterRegistrationBean servletRequestListener() {
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled", matchIfMissing = true)
+	public FilterRegistrationBean sentinelFilter() {
 		FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
 
 		SentinelProperties.Filter filterConfig = properties.getFilter();

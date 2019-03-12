@@ -40,6 +40,12 @@
       "description": "sentinel filter chain order, will be set to FilterRegistrationBean."
     },
     {
+      "name": "spring.cloud.sentinel.filter.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Enable to instance com.alibaba.csp.sentinel.adapter.servlet.CommonFilter."
+    },
+    {
       "name": "spring.cloud.sentinel.metric.charset",
       "type": "java.lang.String",
       "defaultValue": "UTF-8",

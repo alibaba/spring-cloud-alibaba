@@ -17,15 +17,20 @@ package org.springframework.cloud.alicloud.sms;
 
 import java.text.ParseException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alicloud.context.AliCloudProperties;
 import org.springframework.cloud.alicloud.context.sms.SmsProperties;
 import org.springframework.cloud.alicloud.sms.base.DefaultAlicomMessagePuller;
 import org.springframework.cloud.alicloud.sms.endpoint.EndpointManager;
 import org.springframework.cloud.alicloud.sms.endpoint.ReceiveMessageEntity;
 
-import com.aliyuncs.dysmsapi.model.v20170525.*;
+import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
+import com.aliyuncs.dysmsapi.model.v20170525.SendBatchSmsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.SendBatchSmsResponse;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
 
@@ -34,7 +39,7 @@ import com.aliyuncs.exceptions.ServerException;
  */
 public final class SmsServiceImpl extends AbstractSmsService {
 
-	private static final Log log = LogFactory.getLog(SmsServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(SmsServiceImpl.class);
 	/**
 	 * will expose user to call this method send sms message
 	 * @param sendSmsRequest

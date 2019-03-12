@@ -126,6 +126,7 @@ public class AcmConfigurationTests {
 		checkoutAcmProfiles();
 		checkoutAcmRefreshEnabled();
 		checkoutDataLoad();
+		checkoutProfileDataLoad();
 	}
 
 	private void checkoutAcmServerAddr() {
@@ -178,8 +179,11 @@ public class AcmConfigurationTests {
 	}
 
 	private void checkoutDataLoad() {
-		Assert.assertEquals(environment.getProperty("user.name"), "dev");
 		Assert.assertEquals(environment.getProperty("user.age"), "12");
+	}
+
+	private void checkoutProfileDataLoad() {
+		Assert.assertEquals(environment.getProperty("user.name"), "dev");
 	}
 
 	@Configuration

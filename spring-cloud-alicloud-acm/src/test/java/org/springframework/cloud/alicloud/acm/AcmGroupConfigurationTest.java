@@ -67,11 +67,11 @@ public class AcmGroupConfigurationTest {
 						throws Throwable {
 					if ("com.test:application.properties".equals(args[0])
 							&& "test-group".equals(args[1])) {
-						return "com.test.value=com.test";
+						return "com.test.value=com.test\ntest.priority=1";
 					}
 					if ("com.test.hello:application.properties".equals(args[0])
 							&& "test-group".equals(args[1])) {
-						return "com.test.hello.value=com.test.hello";
+						return "com.test.hello.value=com.test.hello\ntest.priority=2";
 					}
 					return "";
 				}
@@ -91,6 +91,7 @@ public class AcmGroupConfigurationTest {
 	public void contextLoads() throws Exception {
 
 		Assert.assertEquals(environment.getProperty("com.test.value"), "com.test");
+		Assert.assertEquals(environment.getProperty("test.priority"), "2");
 		Assert.assertEquals(environment.getProperty("com.test.hello.value"),
 				"com.test.hello");
 
