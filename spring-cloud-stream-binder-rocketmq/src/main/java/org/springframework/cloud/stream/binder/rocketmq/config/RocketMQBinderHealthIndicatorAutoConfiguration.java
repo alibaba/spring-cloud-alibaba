@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.rocketmq.metrics;
+package org.springframework.cloud.stream.binder.rocketmq.config;
 
-import com.codahale.metrics.MetricRegistry;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.cloud.stream.binder.rocketmq.actuator.RocketMQBinderHealthIndicator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public class ConsumerGroupInstrumentation extends Instrumentation {
-	private MetricRegistry metricRegistry;
+@Configuration
+@ConditionalOnClass(Endpoint.class)
+public class RocketMQBinderHealthIndicatorAutoConfiguration {
 
-	public ConsumerGroupInstrumentation(MetricRegistry metricRegistry, String name) {
-		super(name);
-		this.metricRegistry = metricRegistry;
+	@Bean
+	public RocketMQBinderHealthIndicator rocketBinderHealthIndicator() {
+		return new RocketMQBinderHealthIndicator();
 	}
 
 }
