@@ -87,7 +87,7 @@ public class RocketMQMessageChannelBinder extends
 		if (producerProperties.getExtension().getEnabled()) {
 
 			RocketMQBinderConfigurationProperties mergedProperties = RocketMQBinderUtils
-					.mergeProducerProperties(rocketBinderConfigurationProperties,
+					.mergeProperties(rocketBinderConfigurationProperties,
 							rocketMQProperties);
 
 			RocketMQTemplate rocketMQTemplate;
