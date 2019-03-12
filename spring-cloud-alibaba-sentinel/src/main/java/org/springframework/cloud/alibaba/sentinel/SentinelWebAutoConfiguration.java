@@ -49,7 +49,8 @@ public class SentinelWebAutoConfiguration {
 	private SentinelProperties properties;
 
 	@Bean
-	public FilterRegistrationBean servletRequestListener() {
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled", matchIfMissing = true)
+	public FilterRegistrationBean sentinelFilter() {
 		FilterRegistrationBean registration = new FilterRegistrationBean();
 
 		SentinelProperties.Filter filterConfig = properties.getFilter();

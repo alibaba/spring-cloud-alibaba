@@ -310,6 +310,12 @@ public class SentinelProperties {
 		 */
 		private List<String> urlPatterns;
 
+        /**
+         * Enable to instance
+         * {@link com.alibaba.csp.sentinel.adapter.servlet.CommonFilter}.
+         */
+        private boolean enabled = true;
+
 		public int getOrder() {
 			return this.order;
 		}
@@ -325,7 +331,15 @@ public class SentinelProperties {
 		public void setUrlPatterns(List<String> urlPatterns) {
 			this.urlPatterns = urlPatterns;
 		}
-	}
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+    }
 
 	public static class Log {
 

@@ -31,6 +31,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import com.alibaba.csp.sentinel.util.AppNameUtil;
 
 /**
  * Endpoint for Sentinel, contains ans properties and rules
@@ -50,6 +51,7 @@ public class SentinelEndpoint extends AbstractEndpoint<Map<String, Object>> {
 		final Map<String, Object> result = new HashMap<>();
 		if (sentinelProperties.isEnabled()) {
 
+			result.put("appName", AppNameUtil.getAppName());
 			result.put("logDir", LogBase.getLogBaseDir());
 			result.put("logUsePid", LogBase.isLogNameUsePid());
 			result.put("blockPage", WebServletConfig.getBlockPage());

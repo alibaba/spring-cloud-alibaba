@@ -18,8 +18,8 @@
     <properties>
         <sentinel.version>1.4.2</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.version>0.8.2</nacos.version>
-        <fescar.version>0.1.3</fescar.version>
+        <nacos.version>0.9.1</nacos.version>
+        <fescar.version>0.2.3</fescar.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
@@ -29,7 +29,6 @@
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
-        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
     </properties>
 
     <dependencyManagement>
@@ -132,6 +131,11 @@
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-web-servlet</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-zuul-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
             <dependency>
