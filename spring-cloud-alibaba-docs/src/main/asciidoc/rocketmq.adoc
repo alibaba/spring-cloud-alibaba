@@ -152,12 +152,14 @@ RocketMQ Spring framework is an integration of RocketMQ and Spring Boot. It prov
 
 NOTE: RocketMQ Binder Application can also be used to configure rocketmq.** to trigger RocketMQ Spring related AutoConfiguration
 
-The headers defined in `RocketMQHeaders`, which can be set to the header of spring message when sending a message to trigger the RocketMQ related feature:
+Currently Binder supports setting the relevant key in `Header` to set the properties of the RocketMQ message.
+
+For example, `TAGS`, `DELAY`, `TRANSACTIONAL_ARG`, `KEYS`, `WAIT_STORE_MSG_OK`, `FLAG` represent the labels corresponding to the RocketMQ message.
 
 ```java
 MessageBuilder builder = MessageBuilder.withPayload(msg)
     .setHeader(RocketMQHeaders.TAGS, "binder")
-    .setHeader(RocketMQHeaders.MESSAGE_ID, "my-msg-id")
+    .setHeader(RocketMQHeaders.KEYS, "my-key")
     .setHeader("DELAY", "1");
 Message message = builder.build();
 output().send(message);
