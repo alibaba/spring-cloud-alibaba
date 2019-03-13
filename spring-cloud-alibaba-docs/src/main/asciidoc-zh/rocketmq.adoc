@@ -153,12 +153,14 @@ RocketMQ Binder 的核心类 RocketMQMessageChannelBinder 实现了 Spring Cloud
 
 NOTE: 在使用 RocketMQ Binder 的同时也可以配置 rocketmq.** 用于触发 RocketMQ Spring 相关的 AutoConfiguration
 
-`RocketMQHeaders` 中定义了很多 Header 常量，在发送消息的时候可以设置到 Spring Message 的 Header 中，用于触发 RocketMQ 相关的 feature：
+目前 Binder 支持在 `Header` 中设置相关的 key 来进行 RocketMQ Message 消息的特性设置。
+
+比如 `TAGS`、`DELAY`、`TRANSACTIONAL_ARG`、`KEYS`、`WAIT_STORE_MSG_OK`、`FLAG` 表示 RocketMQ 消息对应的标签，
 
 ```java
 MessageBuilder builder = MessageBuilder.withPayload(msg)
     .setHeader(RocketMQHeaders.TAGS, "binder")
-    .setHeader(RocketMQHeaders.MESSAGE_ID, "my-msg-id")
+    .setHeader(RocketMQHeaders.KEYS, "my-key")
     .setHeader("DELAY", "1");
 Message message = builder.build();
 output().send(message);
