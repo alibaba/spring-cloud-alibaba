@@ -82,6 +82,12 @@ public class RocketMQMessageChannelBinder extends
 			MessageChannel errorChannel) throws Exception {
 		if (producerProperties.getExtension().getEnabled()) {
 
+			// if producerGroup is empty, using destination
+			String extendedProducerGroup = producerProperties.getExtension().getGroup();
+			String producerGroup = StringUtils.isEmpty(extendedProducerGroup)
+					? destination.getName()
+					: extendedProducerGroup;
+
 			RocketMQBinderConfigurationProperties mergedProperties = RocketMQBinderUtils
 					.mergeProperties(rocketBinderConfigurationProperties,
 							rocketMQProperties);
@@ -110,8 +116,7 @@ public class RocketMQMessageChannelBinder extends
 				if (!StringUtils.isEmpty(ak) && !StringUtils.isEmpty(sk)) {
 					RPCHook rpcHook = new AclClientRPCHook(
 							new SessionCredentials(ak, sk));
-					producer = new DefaultMQProducer(
-							producerProperties.getExtension().getGroup(), rpcHook,
+					producer = new DefaultMQProducer(producerGroup, rpcHook,
 							mergedProperties.isEnableMsgTrace(),
 							mergedProperties.getCustomizedTraceTopic());
 					producer.setVipChannelEnabled(false);
@@ -119,8 +124,7 @@ public class RocketMQMessageChannelBinder extends
 							RocketMQUtil.getInstanceName(rpcHook, destination.getName()));
 				}
 				else {
-					producer = new DefaultMQProducer(
-							producerProperties.getExtension().getGroup());
+					producer = new DefaultMQProducer(producerGroup);
 					producer.setVipChannelEnabled(
 							producerProperties.getExtension().getVipChannelEnabled());
 				}
@@ -141,8 +145,7 @@ public class RocketMQMessageChannelBinder extends
 			}
 
 			RocketMQMessageHandler messageHandler = new RocketMQMessageHandler(
-					rocketMQTemplate, destination.getName(),
-					producerProperties.getExtension().getGroup(),
+					rocketMQTemplate, destination.getName(), producerGroup,
 					producerProperties.getExtension().getTransactional(),
 					instrumentationManager);
 			messageHandler.setBeanFactory(this.getApplicationContext().getBeanFactory());

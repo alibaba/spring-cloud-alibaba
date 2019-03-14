@@ -16,18 +16,19 @@
  */
 package org.springframework.cloud.bus.rocketmq.env;
 
+import static org.springframework.cloud.bus.SpringCloudBusClient.INPUT;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.cloud.bus.BusEnvironmentPostProcessor;
-import org.springframework.cloud.bus.SpringCloudBusClient;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The lowest precedence {@link EnvironmentPostProcessor} configures default RocketMQ Bus
@@ -64,9 +65,16 @@ public class RocketMQBusEnvironmentPostProcessor
 
 	private void configureDefaultProperties(Map<String, Object> source) {
 		// Required Properties
-		String groupBindingPropertyName = createBindingPropertyName(
-				SpringCloudBusClient.INPUT, "group");
+		String groupBindingPropertyName = createBindingPropertyName(INPUT, "group");
+		String broadcastingPropertyName = createRocketMQPropertyName(INPUT,
+				"broadcasting");
 		source.put(groupBindingPropertyName, "rocketmq-bus-group");
+		source.put(broadcastingPropertyName, "true");
+	}
+
+	private String createRocketMQPropertyName(String channel, String propertyName) {
+		return "spring.cloud.stream.rocketmq.bindings." + INPUT + ".consumer."
+				+ propertyName;
 	}
 
 	private String createBindingPropertyName(String channel, String propertyName) {
