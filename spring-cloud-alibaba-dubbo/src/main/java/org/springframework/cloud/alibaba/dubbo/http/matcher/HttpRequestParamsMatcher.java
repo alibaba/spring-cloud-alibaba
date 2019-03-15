@@ -17,6 +17,7 @@
 package org.springframework.cloud.alibaba.dubbo.http.matcher;
 
 import org.springframework.http.HttpRequest;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -44,6 +45,9 @@ public class HttpRequestParamsMatcher extends AbstractHttpRequestMatcher {
 
     @Override
     public boolean match(HttpRequest request) {
+        if (CollectionUtils.isEmpty(expressions)) {
+            return true;
+        }
         for (ParamExpression paramExpression : expressions) {
             if (paramExpression.match(request)) {
                 return true;
