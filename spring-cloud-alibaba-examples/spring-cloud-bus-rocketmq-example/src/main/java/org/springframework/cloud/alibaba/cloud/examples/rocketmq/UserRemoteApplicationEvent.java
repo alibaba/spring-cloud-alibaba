@@ -16,8 +16,6 @@
  */
 package org.springframework.cloud.alibaba.cloud.examples.rocketmq;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 
 /**
@@ -28,16 +26,22 @@ import org.springframework.cloud.bus.event.RemoteApplicationEvent;
  */
 public class UserRemoteApplicationEvent extends RemoteApplicationEvent {
 
+	private User user;
+
 	public UserRemoteApplicationEvent() {
 	}
 
-	public UserRemoteApplicationEvent(User user, String originService,
+	public UserRemoteApplicationEvent(Object source, User user, String originService,
 			String destinationService) {
-		super(user, originService, destinationService);
+		super(source, originService, destinationService);
+		this.user = user;
 	}
 
-	@JsonIgnore
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public User getUser() {
-		return (User) getSource();
+		return user;
 	}
 }
