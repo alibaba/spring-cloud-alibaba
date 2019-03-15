@@ -1,7 +1,6 @@
-ignore:
-  - "spring-cloud-alibaba-dependencies/.*"
-  - "spring-cloud-alibaba-docs/.*"
-  - "spring-cloud-alibaba-examples/.*"
-  - "spring-cloud-alibaba-test/.*"
-  - "spring-cloud-starter-alibaba/.*"
-  - "spring-cloud-starter-alicloud/.*"
+
+coverage:
+  status:
+    patch:
+      default:
+        enabled: no
