@@ -18,6 +18,7 @@ package org.springframework.cloud.alibaba.nacos.client;
 
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
@@ -26,7 +27,11 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
 
 import java.io.StringReader;
-import java.util.*;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author xiaojing

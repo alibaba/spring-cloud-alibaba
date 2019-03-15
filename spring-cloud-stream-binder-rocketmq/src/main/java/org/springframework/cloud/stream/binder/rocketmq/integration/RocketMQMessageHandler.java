@@ -16,110 +16,91 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.integration;
 
-import java.util.Map;
-
-import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
+import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
-import org.apache.rocketmq.client.producer.TransactionCheckListener;
-import org.apache.rocketmq.client.producer.TransactionMQProducer;
-import org.apache.rocketmq.common.message.Message;
-import org.apache.rocketmq.remoting.exception.RemotingException;
-import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
+import org.apache.rocketmq.common.message.MessageConst;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.apache.rocketmq.spring.support.RocketMQHeaders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
-import org.springframework.cloud.stream.binder.rocketmq.RocketMQMessageHeaderAccessor;
+import org.springframework.cloud.stream.binder.rocketmq.metrics.Instrumentation;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
-import org.springframework.cloud.stream.binder.rocketmq.metrics.ProducerInstrumentation;
-import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
-import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import org.springframework.context.Lifecycle;
 import org.springframework.integration.handler.AbstractMessageHandler;
-import org.springframework.integration.support.MutableMessage;
+import org.springframework.integration.support.DefaultErrorMessageStrategy;
+import org.springframework.integration.support.ErrorMessageStrategy;
+import org.springframework.integration.support.MessageBuilder;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessagingException;
+import org.springframework.messaging.support.ErrorMessage;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class RocketMQMessageHandler extends AbstractMessageHandler implements Lifecycle {
 
-	private DefaultMQProducer producer;
+	private final static Logger log = LoggerFactory
+			.getLogger(RocketMQMessageHandler.class);
 
-	private ProducerInstrumentation producerInstrumentation;
+	private ErrorMessageStrategy errorMessageStrategy = new DefaultErrorMessageStrategy();
 
-	private InstrumentationManager instrumentationManager;
+	private MessageChannel sendFailureChannel;
 
-	private LocalTransactionExecuter localTransactionExecuter;
+	private final RocketMQTemplate rocketMQTemplate;
 
-	private TransactionCheckListener transactionCheckListener;
-
-	private final ExtendedProducerProperties<RocketMQProducerProperties> producerProperties;
+	private final Boolean transactional;
 
 	private final String destination;
 
-	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
+	private final String groupName;
+
+	private final InstrumentationManager instrumentationManager;
+
+	private boolean sync = false;
 
 	private volatile boolean running = false;
 
-	public RocketMQMessageHandler(String destination,
-			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
-			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
+	public RocketMQMessageHandler(RocketMQTemplate rocketMQTemplate, String destination,
+			String group, Boolean transactional,
 			InstrumentationManager instrumentationManager) {
+		this.rocketMQTemplate = rocketMQTemplate;
 		this.destination = destination;
-		this.producerProperties = producerProperties;
-		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
+		this.groupName = group;
+		this.transactional = transactional;
 		this.instrumentationManager = instrumentationManager;
 	}
 
 	@Override
 	public void start() {
-		if (producerProperties.getExtension().getTransactional()) {
-			producer = new TransactionMQProducer(destination);
-			if (transactionCheckListener != null) {
-				((TransactionMQProducer) producer)
-						.setTransactionCheckListener(transactionCheckListener);
+		if (!transactional) {
+			instrumentationManager
+					.addHealthInstrumentation(new Instrumentation(destination));
+			try {
+				rocketMQTemplate.afterPropertiesSet();
+				instrumentationManager.getHealthInstrumentation(destination)
+						.markStartedSuccessfully();
 			}
-		}
-		else {
-			producer = new DefaultMQProducer(destination);
-		}
-
-		if (instrumentationManager != null) {
-			producerInstrumentation = instrumentationManager
-					.getProducerInstrumentation(destination);
-			instrumentationManager.addHealthInstrumentation(producerInstrumentation);
-		}
-
-		producer.setNamesrvAddr(rocketBinderConfigurationProperties.getNamesrvAddr());
-
-		if (producerProperties.getExtension().getMaxMessageSize() > 0) {
-			producer.setMaxMessageSize(
-					producerProperties.getExtension().getMaxMessageSize());
-		}
-
-		try {
-			producer.start();
-			if (producerInstrumentation != null) {
-				producerInstrumentation.markStartedSuccessfully();
+			catch (Exception e) {
+				instrumentationManager.getHealthInstrumentation(destination)
+						.markStartFailed(e);
+				log.error("RocketMQTemplate startup failed, Caused by " + e.getMessage());
+				throw new MessagingException(MessageBuilder.withPayload(
+						"RocketMQTemplate startup failed, Caused by " + e.getMessage())
+						.build(), e);
 			}
-		}
-		catch (MQClientException e) {
-			if (producerInstrumentation != null) {
-				producerInstrumentation.markStartFailed(e);
-			}
-			logger.error(
-					"RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
-			throw new MessagingException(e.getMessage(), e);
 		}
 		running = true;
 	}
 
 	@Override
 	public void stop() {
-		if (producer != null) {
-			producer.shutdown();
+		if (!transactional) {
+			rocketMQTemplate.destroy();
 		}
 		running = false;
 	}
@@ -130,76 +111,121 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 	}
 
 	@Override
-	protected void handleMessageInternal(org.springframework.messaging.Message<?> message)
-			throws Exception {
+	protected void handleMessageInternal(
+			final org.springframework.messaging.Message<?> message) throws Exception {
 		try {
-			Message toSend;
-			if (message.getPayload() instanceof byte[]) {
-				toSend = new Message(destination, (byte[]) message.getPayload());
+			final StringBuilder topicWithTags = new StringBuilder(destination);
+			String tags = null;
+			if (message.getHeaders().get(RocketMQHeaders.TAGS) != null) {
+				tags = message.getHeaders().get(RocketMQHeaders.TAGS).toString();
 			}
-			else if (message.getPayload() instanceof String) {
-				toSend = new Message(destination,
-						((String) message.getPayload()).getBytes());
+			if (!StringUtils.isEmpty(tags)) {
+				topicWithTags.append(":").append(tags);
 			}
-			else {
-				throw new UnsupportedOperationException("Payload class isn't supported: "
-						+ message.getPayload().getClass());
-			}
-			RocketMQMessageHeaderAccessor headerAccessor = new RocketMQMessageHeaderAccessor(
-					message);
-			headerAccessor.setLeaveMutable(true);
-			toSend.setDelayTimeLevel(headerAccessor.getDelayTimeLevel());
-			toSend.setTags(headerAccessor.getTags());
-			toSend.setKeys(headerAccessor.getKeys());
-			toSend.setFlag(headerAccessor.getFlag());
-			for (Map.Entry<String, String> entry : headerAccessor.getUserProperties()
-					.entrySet()) {
-				toSend.putUserProperty(entry.getKey(), entry.getValue());
-			}
-
-			SendResult sendRes;
-			if (producerProperties.getExtension().getTransactional()) {
-				sendRes = producer.sendMessageInTransaction(toSend,
-						localTransactionExecuter, headerAccessor.getTransactionalArg());
+			SendResult sendRes = null;
+			if (transactional) {
+				sendRes = rocketMQTemplate.sendMessageInTransaction(groupName,
+						topicWithTags.toString(), message, message.getHeaders()
+								.get(RocketMQBinderConstants.ROCKET_TRANSACTIONAL_ARG));
+				log.debug("transactional send to topic " + topicWithTags + " " + sendRes);
 			}
 			else {
-				sendRes = producer.send(toSend);
-			}
+				int delayLevel = 0;
+				try {
+					Object delayLevelObj = message.getHeaders()
+							.get(MessageConst.PROPERTY_DELAY_TIME_LEVEL);
+					if (delayLevelObj instanceof Number) {
+						delayLevel = ((Number) delayLevelObj).intValue();
+					}
+					else if (delayLevelObj instanceof String) {
+						delayLevel = Integer.parseInt((String) delayLevelObj);
+					}
+				}
+				catch (Exception e) {
+					// ignore
+				}
+				if (sync) {
+					sendRes = rocketMQTemplate.syncSend(topicWithTags.toString(), message,
+							rocketMQTemplate.getProducer().getSendMsgTimeout(),
+							delayLevel);
+					log.debug("sync send to topic " + topicWithTags + " " + sendRes);
+				}
+				else {
+					rocketMQTemplate.asyncSend(topicWithTags.toString(), message,
+							new SendCallback() {
+								@Override
+								public void onSuccess(SendResult sendResult) {
+									log.debug("async send to topic " + topicWithTags + " "
+											+ sendResult);
+								}
 
-			if (!sendRes.getSendStatus().equals(SendStatus.SEND_OK)) {
-				throw new MQClientException("message hasn't been sent", null);
+								@Override
+								public void onException(Throwable e) {
+									log.error(
+											"RocketMQ Message hasn't been sent. Caused by "
+													+ e.getMessage());
+									if (getSendFailureChannel() != null) {
+										getSendFailureChannel().send(
+												RocketMQMessageHandler.this.errorMessageStrategy
+														.buildErrorMessage(
+																new MessagingException(
+																		message, e),
+																null));
+									}
+								}
+							});
+				}
 			}
-			if (message instanceof MutableMessage) {
-				RocketMQMessageHeaderAccessor.putSendResult((MutableMessage) message,
-						sendRes);
-			}
-			if (instrumentationManager != null) {
-				instrumentationManager.getRuntime().put(
-						RocketMQBinderConstants.LASTSEND_TIMESTAMP,
-						System.currentTimeMillis());
-				producerInstrumentation.markSent();
+			if (sendRes != null && !sendRes.getSendStatus().equals(SendStatus.SEND_OK)) {
+				if (getSendFailureChannel() != null) {
+					this.getSendFailureChannel().send(message);
+				}
+				else {
+					throw new MessagingException(message,
+							new MQClientException("message hasn't been sent", null));
+				}
 			}
 		}
-		catch (MQClientException | RemotingException | MQBrokerException
-				| InterruptedException | UnsupportedOperationException e) {
-			if (producerInstrumentation != null) {
-				producerInstrumentation.markSentFailure();
+		catch (Exception e) {
+			log.error("RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
+			if (getSendFailureChannel() != null) {
+				getSendFailureChannel().send(this.errorMessageStrategy
+						.buildErrorMessage(new MessagingException(message, e), null));
 			}
-			logger.error(
-					"RocketMQ Message hasn't been sent. Caused by " + e.getMessage());
-			throw new MessagingException(e.getMessage(), e);
+			else {
+				throw new MessagingException(message, e);
+			}
 		}
 
 	}
 
-	public void setLocalTransactionExecuter(
-			LocalTransactionExecuter localTransactionExecuter) {
-		this.localTransactionExecuter = localTransactionExecuter;
+	/**
+	 * Set the failure channel. After a send failure, an {@link ErrorMessage} will be sent
+	 * to this channel with a payload of a {@link MessagingException} with the failed
+	 * message and cause.
+	 * @param sendFailureChannel the failure channel.
+	 * @since 0.2.2
+	 */
+	public void setSendFailureChannel(MessageChannel sendFailureChannel) {
+		this.sendFailureChannel = sendFailureChannel;
 	}
 
-	public void setTransactionCheckListener(
-			TransactionCheckListener transactionCheckListener) {
-		this.transactionCheckListener = transactionCheckListener;
+	/**
+	 * Set the error message strategy implementation to use when sending error messages
+	 * after send failures. Cannot be null.
+	 * @param errorMessageStrategy the implementation.
+	 * @since 0.2.2
+	 */
+	public void setErrorMessageStrategy(ErrorMessageStrategy errorMessageStrategy) {
+		Assert.notNull(errorMessageStrategy, "'errorMessageStrategy' cannot be null");
+		this.errorMessageStrategy = errorMessageStrategy;
 	}
 
+	public MessageChannel getSendFailureChannel() {
+		return sendFailureChannel;
+	}
+
+	public void setSync(boolean sync) {
+		this.sync = sync;
+	}
 }

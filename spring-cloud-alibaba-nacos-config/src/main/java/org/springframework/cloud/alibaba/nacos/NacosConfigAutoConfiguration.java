@@ -17,6 +17,7 @@
 package org.springframework.cloud.alibaba.nacos;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosContextRefresher;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshHistory;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshProperties;
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.Configuration;
  * @author juven.xuxb
  */
 @Configuration
+@ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
 public class NacosConfigAutoConfiguration {
 
 	@Bean

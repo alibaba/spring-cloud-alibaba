@@ -6,13 +6,14 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
         <version>0.1.2.BUILD-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
 
-    <artifactId>rocketmq-example</artifactId>
+    <artifactId>rocketmq-produce-example</artifactId>
     <packaging>jar</packaging>
-    <description>Example demonstrating how to use rocketmq</description>
+    <description>Example demonstrating how to use rocketmq produce</description>
 
 
     <dependencies>
@@ -20,18 +21,17 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
-            <artifactId>metrics-core</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -52,4 +52,3 @@
     </build>
 
 </project>
-

@@ -20,56 +20,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.codahale.metrics.MetricRegistry;
-import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Consumer;
-import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants.Metrics.Producer;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class InstrumentationManager {
-	private final MetricRegistry metricRegistry = new MetricRegistry();
-	private final Map<String, Object> runtime = new HashMap<>();
-	private final Map<String, ProducerInstrumentation> producerInstrumentations = new HashMap<>();
-	private final Map<String, ConsumerInstrumentation> consumeInstrumentations = new HashMap<>();
-	private final Map<String, ConsumerGroupInstrumentation> consumerGroupsInstrumentations = new HashMap<>();
+
+	private final Map<String, Object> runtime = new ConcurrentHashMap<>();
 
 	private final Map<String, Instrumentation> healthInstrumentations = new HashMap<>();
-
-	public ProducerInstrumentation getProducerInstrumentation(String destination) {
-		String key = Producer.PREFIX + destination;
-		ProducerInstrumentation producerInstrumentation = producerInstrumentations
-				.get(key);
-		if (producerInstrumentation == null) {
-			producerInstrumentations.put(key,
-					new ProducerInstrumentation(metricRegistry, key));
-		}
-		return producerInstrumentations.get(key);
-	}
-
-	public ConsumerInstrumentation getConsumerInstrumentation(String destination) {
-		String key = Consumer.PREFIX + destination;
-		ConsumerInstrumentation consumerInstrumentation = consumeInstrumentations
-				.get(key);
-		if (consumerInstrumentation == null) {
-			consumeInstrumentations.put(key,
-					new ConsumerInstrumentation(metricRegistry, key));
-		}
-		return consumeInstrumentations.get(key);
-	}
-
-	public ConsumerGroupInstrumentation getConsumerGroupInstrumentation(String group) {
-		String key = Consumer.GROUP_PREFIX + group;
-		ConsumerGroupInstrumentation consumerGroupInstrumentation = consumerGroupsInstrumentations
-				.get(key);
-		if (consumerGroupInstrumentation == null) {
-			consumerGroupsInstrumentations.put(key,
-					new ConsumerGroupInstrumentation(metricRegistry, key));
-		}
-		return consumerGroupsInstrumentations.get(key);
-	}
 
 	public Set<Instrumentation> getHealthInstrumentations() {
 		return new HashSet<>(healthInstrumentations.values());
@@ -79,11 +40,12 @@ public class InstrumentationManager {
 		healthInstrumentations.put(instrumentation.getName(), instrumentation);
 	}
 
+	public Instrumentation getHealthInstrumentation(String key) {
+		return healthInstrumentations.get(key);
+	}
+
 	public Map<String, Object> getRuntime() {
 		return runtime;
 	}
 
-	public MetricRegistry getMetricRegistry() {
-		return metricRegistry;
-	}
 }

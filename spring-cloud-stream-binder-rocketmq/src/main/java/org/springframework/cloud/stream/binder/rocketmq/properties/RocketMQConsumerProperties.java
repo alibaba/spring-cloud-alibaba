@@ -28,68 +28,93 @@ import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
  */
 public class RocketMQConsumerProperties {
 
-    /**
-     * using '||' to split tag
-     * {@link MQPushConsumer#subscribe(String, String)}
-     */
-    private String tags;
+	/**
+	 * using '||' to split tag {@link MQPushConsumer#subscribe(String, String)}
+	 */
+	private String tags;
 
-    /**
-     * {@link MQPushConsumer#subscribe(String, MessageSelector)}
-     * {@link MessageSelector#bySql(String)}
-     */
-    private String sql;
+	/**
+	 * {@link MQPushConsumer#subscribe(String, MessageSelector)}
+	 * {@link MessageSelector#bySql(String)}
+	 */
+	private String sql;
 
-    /**
-     * {@link MessageModel#BROADCASTING}
-     */
-    private Boolean broadcasting = false;
+	/**
+	 * {@link MessageModel#BROADCASTING}
+	 */
+	private Boolean broadcasting = false;
 
-    /**
-     * if orderly is true, using {@link MessageListenerOrderly}
-     * else if orderly if false, using {@link MessageListenerConcurrently}
-     */
-    private Boolean orderly = false;
+	/**
+	 * if orderly is true, using {@link MessageListenerOrderly} else if orderly if false,
+	 * using {@link MessageListenerConcurrently}
+	 */
+	private Boolean orderly = false;
 
-    private Boolean enabled = true;
+	/**
+	 * for concurrently listener. message consume retry strategy
+	 */
+	private int delayLevelWhenNextConsume = 0;
 
-    public String getTags() {
-        return tags;
-    }
+	/**
+	 * for orderly listener. next retry delay time
+	 */
+	private long suspendCurrentQueueTimeMillis = 1000;
 
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
+	private Boolean enabled = true;
 
-    public String getSql() {
-        return sql;
-    }
+	public String getTags() {
+		return tags;
+	}
 
-    public void setSql(String sql) {
-        this.sql = sql;
-    }
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
 
-    public Boolean getOrderly() {
-        return orderly;
-    }
+	public String getSql() {
+		return sql;
+	}
 
-    public void setOrderly(Boolean orderly) {
-        this.orderly = orderly;
-    }
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
+	public Boolean getOrderly() {
+		return orderly;
+	}
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
+	public void setOrderly(Boolean orderly) {
+		this.orderly = orderly;
+	}
 
-    public Boolean getBroadcasting() {
-        return broadcasting;
-    }
+	public Boolean getEnabled() {
+		return enabled;
+	}
 
-    public void setBroadcasting(Boolean broadcasting) {
-        this.broadcasting = broadcasting;
-    }
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Boolean getBroadcasting() {
+		return broadcasting;
+	}
+
+	public void setBroadcasting(Boolean broadcasting) {
+		this.broadcasting = broadcasting;
+	}
+
+	public int getDelayLevelWhenNextConsume() {
+		return delayLevelWhenNextConsume;
+	}
+
+	public void setDelayLevelWhenNextConsume(int delayLevelWhenNextConsume) {
+		this.delayLevelWhenNextConsume = delayLevelWhenNextConsume;
+	}
+
+	public long getSuspendCurrentQueueTimeMillis() {
+		return suspendCurrentQueueTimeMillis;
+	}
+
+	public void setSuspendCurrentQueueTimeMillis(long suspendCurrentQueueTimeMillis) {
+		this.suspendCurrentQueueTimeMillis = suspendCurrentQueueTimeMillis;
+	}
 }

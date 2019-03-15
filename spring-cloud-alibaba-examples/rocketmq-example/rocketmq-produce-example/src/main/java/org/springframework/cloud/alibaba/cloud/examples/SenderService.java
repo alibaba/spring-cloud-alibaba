@@ -2,10 +2,13 @@ package org.springframework.cloud.alibaba.cloud.examples;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.rocketmq.common.message.MessageConst;
+import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.alibaba.cloud.examples.RocketMQApplication.MySource;
+import org.springframework.cloud.alibaba.cloud.examples.RocketMQProduceApplication.MySource;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -26,10 +29,10 @@ public class SenderService {
 	}
 
 	public <T> void sendWithTags(T msg, String tag) throws Exception {
-		Map<String, Object> map = new HashMap<>();
-		map.put(MessageConst.PROPERTY_TAGS, tag);
-		Message message = MessageBuilder.createMessage(msg, new MessageHeaders(map));
-		source.output1().send(message);
+        Map<String, Object> map = new HashMap<>();
+        map.put(MessageConst.PROPERTY_TAGS, tag);
+        Message message = MessageBuilder.createMessage(msg, new MessageHeaders(map));
+        source.output1().send(message);
 	}
 
 	public <T> void sendObject(T msg, String tag) throws Exception {
@@ -40,12 +43,11 @@ public class SenderService {
 		source.output1().send(message);
 	}
 
-	public <T> void sendTransactionalMsg(T msg, boolean error) throws Exception {
+	public <T> void sendTransactionalMsg(T msg, int num) throws Exception {
 		MessageBuilder builder = MessageBuilder.withPayload(msg)
 				.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
-		if (error) {
-			builder.setHeader("test", "1");
-		}
+		builder.setHeader("test", String.valueOf(num));
+		builder.setHeader(RocketMQHeaders.TAGS, "binder");
 		Message message = builder.build();
 		source.output2().send(message);
 	}

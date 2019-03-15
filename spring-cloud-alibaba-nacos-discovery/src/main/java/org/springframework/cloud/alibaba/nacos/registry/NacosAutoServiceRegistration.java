@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
  */
 public class NacosAutoServiceRegistration
 		extends AbstractAutoServiceRegistration<Registration> {
-	private static final Logger LOGGER = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(NacosAutoServiceRegistration.class);
 
 	private NacosRegistration registration;
@@ -65,7 +65,7 @@ public class NacosAutoServiceRegistration
 	@Override
 	protected void register() {
 		if (!this.registration.getNacosDiscoveryProperties().isRegisterEnabled()) {
-			LOGGER.debug("Registration disabled.");
+			log.debug("Registration disabled.");
 			return;
 		}
 		if (this.registration.getPort() < 0) {
