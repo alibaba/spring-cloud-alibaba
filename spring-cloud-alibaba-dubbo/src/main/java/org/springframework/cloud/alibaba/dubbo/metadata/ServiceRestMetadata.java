@@ -16,6 +16,9 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -24,18 +27,19 @@ import java.util.Set;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see RestMethodMetadata
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceRestMetadata {
 
-    private String name;
+    private String url;
 
     private Set<RestMethodMetadata> meta;
 
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Set<RestMethodMetadata> getMeta() {
@@ -49,18 +53,14 @@ public class ServiceRestMetadata {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof ServiceRestMetadata)) return false;
         ServiceRestMetadata that = (ServiceRestMetadata) o;
-
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return meta != null ? meta.equals(that.meta) : that.meta == null;
+        return Objects.equals(url, that.url) &&
+                Objects.equals(meta, that.meta);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (meta != null ? meta.hashCode() : 0);
-        return result;
+        return Objects.hash(url, meta);
     }
 }

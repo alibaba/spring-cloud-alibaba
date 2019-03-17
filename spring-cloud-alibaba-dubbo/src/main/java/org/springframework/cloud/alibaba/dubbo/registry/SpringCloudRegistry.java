@@ -16,40 +16,37 @@
  */
 package org.springframework.cloud.alibaba.dubbo.registry;
 
-import com.alibaba.dubbo.common.Constants;
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.common.utils.NetUtils;
-import com.alibaba.dubbo.common.utils.UrlUtils;
-import com.alibaba.dubbo.registry.NotifyListener;
-import com.alibaba.dubbo.registry.RegistryFactory;
-import com.alibaba.dubbo.registry.support.FailbackRegistry;
+import org.apache.dubbo.common.Constants;
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.utils.UrlUtils;
+import org.apache.dubbo.registry.NotifyListener;
+import org.apache.dubbo.registry.RegistryFactory;
+import org.apache.dubbo.registry.support.FailbackRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.client.DefaultServiceInstance;
+import org.springframework.cloud.alibaba.dubbo.registry.handler.DubboRegistryServiceIdHandler;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
-import org.springframework.util.StringUtils;
+import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Executors;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.alibaba.dubbo.common.Constants.CONFIGURATORS_CATEGORY;
-import static com.alibaba.dubbo.common.Constants.CONSUMERS_CATEGORY;
-import static com.alibaba.dubbo.common.Constants.PROTOCOL_KEY;
-import static com.alibaba.dubbo.common.Constants.PROVIDERS_CATEGORY;
-import static com.alibaba.dubbo.common.Constants.ROUTERS_CATEGORY;
+import static java.util.Collections.singletonList;
+import static org.apache.dubbo.common.Constants.CONFIGURATORS_CATEGORY;
+import static org.apache.dubbo.common.Constants.CONSUMERS_CATEGORY;
+import static org.apache.dubbo.common.Constants.PROVIDERS_CATEGORY;
+import static org.apache.dubbo.common.Constants.PROVIDER_SIDE;
+import static org.apache.dubbo.common.Constants.ROUTERS_CATEGORY;
+import static org.apache.dubbo.common.Constants.SIDE_KEY;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
@@ -59,77 +56,99 @@ import static com.alibaba.dubbo.common.Constants.ROUTERS_CATEGORY;
 public class SpringCloudRegistry extends FailbackRegistry {
 
     /**
+     * The parameter name of {@link #allServicesLookupInterval}
+     */
+    public static final String ALL_SERVICES_LOOKUP_INTERVAL_PARAM_NAME = "dubbo.all.services.lookup.interval";
+
+    /**
+     * The parameter name of {@link #registeredServicesLookupInterval}
+     */
+    public static final String REGISTERED_SERVICES_LOOKUP_INTERVAL_PARAM_NAME = "dubbo.registered.services.lookup.interval";
+
+    /**
      * All supported categories
      */
-    private static final String[] ALL_SUPPORTED_CATEGORIES = of(
+    public static final String[] ALL_SUPPORTED_CATEGORIES = of(
             PROVIDERS_CATEGORY,
             CONSUMERS_CATEGORY,
             ROUTERS_CATEGORY,
             CONFIGURATORS_CATEGORY
     );
 
-    private static final int CATEGORY_INDEX = 0;
-
-    private static final int PROTOCOL_INDEX = CATEGORY_INDEX + 1;
-
-    private static final int SERVICE_INTERFACE_INDEX = PROTOCOL_INDEX + 1;
-
-    private static final int SERVICE_VERSION_INDEX = SERVICE_INTERFACE_INDEX + 1;
-
-    private static final int SERVICE_GROUP_INDEX = SERVICE_VERSION_INDEX + 1;
-
-    private static final String WILDCARD = "*";
-
-    /**
-     * The separator for service name
-     */
-    private static final String SERVICE_NAME_SEPARATOR = ":";
-
-    private final ServiceRegistry<Registration> serviceRegistry;
-
-    private final DiscoveryClient discoveryClient;
-
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    /**
-     * {@link ScheduledExecutorService} lookup service names(only for Dubbo-OPS)
-     */
-    private volatile ScheduledExecutorService scheduledExecutorService;
 
     /**
      * The interval in second of lookup service names(only for Dubbo-OPS)
      */
-    private static final long LOOKUP_INTERVAL = Long.getLong("dubbo.service.names.lookup.interval", 30);
+    private final long allServicesLookupInterval;
 
-    public SpringCloudRegistry(URL url, ServiceRegistry<Registration> serviceRegistry,
-                               DiscoveryClient discoveryClient) {
+    private final long registeredServicesLookupInterval;
+
+    private final ServiceRegistry<Registration> serviceRegistry;
+
+    private final RegistrationFactory registrationFactory;
+
+    private final DiscoveryClient discoveryClient;
+
+    private final DubboRegistryServiceIdHandler dubboRegistryServiceIdHandler;
+
+    private final ScheduledExecutorService servicesLookupScheduler;
+
+    private final ConfigurableApplicationContext applicationContext;
+
+    public SpringCloudRegistry(URL url,
+                               ServiceRegistry<Registration> serviceRegistry,
+                               RegistrationFactory registrationFactory,
+                               DiscoveryClient discoveryClient,
+                               ScheduledExecutorService servicesLookupScheduler,
+                               ConfigurableApplicationContext applicationContext) {
         super(url);
+        this.allServicesLookupInterval = url.getParameter(ALL_SERVICES_LOOKUP_INTERVAL_PARAM_NAME, 30L);
+        this.registeredServicesLookupInterval = url.getParameter(REGISTERED_SERVICES_LOOKUP_INTERVAL_PARAM_NAME, 300L);
         this.serviceRegistry = serviceRegistry;
+        this.registrationFactory = registrationFactory;
         this.discoveryClient = discoveryClient;
+        this.dubboRegistryServiceIdHandler = applicationContext.getBean(DubboRegistryServiceIdHandler.class);
+        this.applicationContext = applicationContext;
+        this.servicesLookupScheduler = servicesLookupScheduler;
+    }
+
+    protected boolean shouldRegister(Registration registration) {
+        Map<String, String> metadata = registration.getMetadata();
+        String side = metadata.get(SIDE_KEY);
+        return PROVIDER_SIDE.equals(side); // Only register the Provider.
     }
 
     @Override
-    protected void doRegister(URL url) {
-        final String serviceName = getServiceName(url);
-        final Registration registration = createRegistration(serviceName, url);
-        serviceRegistry.register(registration);
+    public void doRegister(URL url) {
+        final Registration registration = createRegistration(url);
+        if (shouldRegister(registration)) {
+            serviceRegistry.register(registration);
+        }
     }
 
     @Override
-    protected void doUnregister(URL url) {
-        final String serviceName = getServiceName(url);
-        final Registration registration = createRegistration(serviceName, url);
-        this.serviceRegistry.deregister(registration);
+    public void doUnregister(URL url) {
+        final Registration registration = createRegistration(url);
+        if (shouldRegister(registration)) {
+            this.serviceRegistry.deregister(registration);
+        }
     }
 
     @Override
-    protected void doSubscribe(URL url, NotifyListener listener) {
+    public void doSubscribe(URL url, NotifyListener listener) {
         List<String> serviceNames = getServiceNames(url, listener);
         doSubscribe(url, listener, serviceNames);
+        this.servicesLookupScheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                doSubscribe(url, listener, serviceNames);
+            }
+        }, registeredServicesLookupInterval, registeredServicesLookupInterval, TimeUnit.SECONDS);
     }
 
     @Override
-    protected void doUnsubscribe(URL url, NotifyListener listener) {
+    public void doUnsubscribe(URL url, NotifyListener listener) {
         if (isAdminProtocol(url)) {
             shutdownServiceNamesLookup();
         }
@@ -137,151 +156,30 @@ public class SpringCloudRegistry extends FailbackRegistry {
 
     @Override
     public boolean isAvailable() {
-        return false;
+        return !discoveryClient.getServices().isEmpty();
     }
 
     private void shutdownServiceNamesLookup() {
-        if (scheduledExecutorService != null) {
-            scheduledExecutorService.shutdown();
+        if (servicesLookupScheduler != null) {
+            servicesLookupScheduler.shutdown();
         }
     }
 
-    private Registration createRegistration(String serviceName, URL url) {
-        return new DubboRegistration(createServiceInstance(serviceName, url));
+    private Registration createRegistration(URL url) {
+        return registrationFactory.create(url, applicationContext);
     }
 
-    private ServiceInstance createServiceInstance(String serviceName, URL url) {
-        // Append default category if absent
-        String category = url.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
-        URL newURL = url.addParameter(Constants.CATEGORY_KEY, category);
-        newURL = newURL.addParameter(Constants.PROTOCOL_KEY, url.getProtocol());
-        String ip = NetUtils.getLocalHost();
-        int port = newURL.getParameter(Constants.BIND_PORT_KEY, url.getPort());
-        DefaultServiceInstance serviceInstance = new DefaultServiceInstance(serviceName, ip, port, false);
-        serviceInstance.getMetadata().putAll(new LinkedHashMap<>(newURL.getParameters()));
-        return serviceInstance;
-    }
-
-    public static String getServiceName(URL url) {
-        String category = url.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
-        return getServiceName(url, category);
-    }
-
-    private static String getServiceName(URL url, String category) {
-        StringBuilder serviceNameBuilder = new StringBuilder(category);
-        appendIfPresent(serviceNameBuilder, url.getParameter(PROTOCOL_KEY, url.getProtocol()));
-        appendIfPresent(serviceNameBuilder, url, Constants.INTERFACE_KEY);
-        appendIfPresent(serviceNameBuilder, url, Constants.VERSION_KEY);
-        appendIfPresent(serviceNameBuilder, url, Constants.GROUP_KEY);
-        return serviceNameBuilder.toString();
-    }
-
-    private static void appendIfPresent(StringBuilder target, URL url, String parameterName) {
-        String parameterValue = url.getParameter(parameterName);
-        appendIfPresent(target, parameterValue);
-    }
-
-    private static void appendIfPresent(StringBuilder target, String parameterValue) {
-        if (StringUtils.hasText(parameterValue)) {
-            target.append(SERVICE_NAME_SEPARATOR).append(parameterValue);
-        }
-    }
-
-    private void filterServiceNames(List<String> serviceNames, URL url) {
-
-        final String[] categories = getCategories(url);
-
-        final String targetServiceInterface = url.getServiceInterface();
-
-        final String targetVersion = url.getParameter(Constants.VERSION_KEY);
-
-        final String targetGroup = url.getParameter(Constants.GROUP_KEY);
-
+    private void filterServiceNames(List<String> serviceNames) {
         filter(serviceNames, new Filter<String>() {
             @Override
             public boolean accept(String serviceName) {
-                // split service name to segments
-                // (required) segments[0] = category
-                // (required) segments[1] = serviceInterface
-                // (required) segments[2] = protocol
-                // (required) segments[3] = version
-                // (optional) segments[4] = group
-                String[] segments = getServiceSegments(serviceName);
-                int length = segments.length;
-                if (length < 4) { // must present 4 segments or more
-                    return false;
-                }
-
-                String category = getCategory(segments);
-                if (Arrays.binarySearch(categories, category) > -1) { // no match category
-                    return false;
-                }
-
-                String protocol = getProtocol(segments);
-                if (StringUtils.hasText(protocol)) {
-                    return false;
-                }
-
-                String serviceInterface = getServiceInterface(segments);
-                if (!WILDCARD.equals(targetServiceInterface) &&
-                        !Objects.equals(targetServiceInterface, serviceInterface)) { // no match service interface
-                    return false;
-                }
-
-                String version = getServiceVersion(segments);
-                if (!WILDCARD.equals(targetVersion) &&
-                        !Objects.equals(targetVersion, version)) { // no match service version
-                    return false;
-                }
-
-                String group = getServiceGroup(segments);
-                if (group != null && !WILDCARD.equals(targetGroup)
-                        && !Objects.equals(targetGroup, group)) {  // no match service group
-                    return false;
-                }
-
-                return true;
+                return dubboRegistryServiceIdHandler.supports(serviceName);
             }
         });
     }
 
-    public static String[] getServiceSegments(String serviceName) {
-        return StringUtils.delimitedListToStringArray(serviceName, SERVICE_NAME_SEPARATOR);
-    }
-
-    public static String getCategory(String[] segments) {
-        return segments[CATEGORY_INDEX];
-    }
-
-    public static String getProtocol(String[] segments) {
-        return segments[PROTOCOL_INDEX];
-    }
-
-    public static String getServiceInterface(String[] segments) {
-        return segments[SERVICE_INTERFACE_INDEX];
-    }
-
-    public static String getServiceVersion(String[] segments) {
-        return segments[SERVICE_VERSION_INDEX];
-    }
-
-    public static String getServiceGroup(String[] segments) {
-        return segments.length > 4 ? segments[SERVICE_GROUP_INDEX] : null;
-    }
-
-    /**
-     * Get the categories from {@link URL}
-     *
-     * @param url {@link URL}
-     * @return non-null array
-     */
-    private String[] getCategories(URL url) {
-        return Constants.ANY_VALUE.equals(url.getServiceInterface()) ?
-                ALL_SUPPORTED_CATEGORIES : of(Constants.DEFAULT_CATEGORY);
-    }
-
     private List<String> getAllServiceNames() {
-        return discoveryClient.getServices();
+        return new LinkedList<>(discoveryClient.getServices());
     }
 
     /**
@@ -293,10 +191,10 @@ public class SpringCloudRegistry extends FailbackRegistry {
      */
     private List<String> getServiceNames(URL url, NotifyListener listener) {
         if (isAdminProtocol(url)) {
-            scheduleServiceNamesLookup(url, listener);
+            initAllServicesLookupScheduler(url, listener);
             return getServiceNamesForOps(url);
         } else {
-            return doGetServiceNames(url);
+            return singletonList(dubboRegistryServiceIdHandler.createServiceId(url));
         }
     }
 
@@ -305,49 +203,22 @@ public class SpringCloudRegistry extends FailbackRegistry {
         return Constants.ADMIN_PROTOCOL.equals(url.getProtocol());
     }
 
-    private void scheduleServiceNamesLookup(final URL url, final NotifyListener listener) {
-        if (scheduledExecutorService == null) {
-            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-            scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    List<String> serviceNames = getAllServiceNames();
-                    filter(serviceNames, new Filter<String>() {
-                        @Override
-                        public boolean accept(String serviceName) {
-                            boolean accepted = false;
-                            for (String category : ALL_SUPPORTED_CATEGORIES) {
-                                String prefix = category + SERVICE_NAME_SEPARATOR;
-                                if (StringUtils.startsWithIgnoreCase(serviceName, prefix)) {
-                                    accepted = true;
-                                    break;
-                                }
-                            }
-                            return accepted;
-                        }
-                    });
-                    doSubscribe(url, listener, serviceNames);
-                }
-            }, LOOKUP_INTERVAL, LOOKUP_INTERVAL, TimeUnit.SECONDS);
-        }
+    private void initAllServicesLookupScheduler(final URL url, final NotifyListener listener) {
+        servicesLookupScheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                List<String> serviceNames = getAllServiceNames();
+                filterServiceNames(serviceNames);
+                doSubscribe(url, listener, serviceNames);
+            }
+        }, allServicesLookupInterval, allServicesLookupInterval, TimeUnit.SECONDS);
     }
 
     private void doSubscribe(final URL url, final NotifyListener listener, final List<String> serviceNames) {
         for (String serviceName : serviceNames) {
             List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceName);
             notifySubscriber(url, listener, serviceInstances);
-            // TODO Support Update notification event
         }
-    }
-
-    private List<String> doGetServiceNames(URL url) {
-        String[] categories = getCategories(url);
-        List<String> serviceNames = new ArrayList<String>(categories.length);
-        for (String category : categories) {
-            final String serviceName = getServiceName(url, category);
-            serviceNames.add(serviceName);
-        }
-        return serviceNames;
     }
 
     /**
@@ -406,7 +277,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
      */
     private List<String> getServiceNamesForOps(URL url) {
         List<String> serviceNames = getAllServiceNames();
-        filterServiceNames(serviceNames, url);
+        filterServiceNames(serviceNames);
         return serviceNames;
     }
 
@@ -427,7 +298,7 @@ public class SpringCloudRegistry extends FailbackRegistry {
     /**
      * A filter
      */
-    private interface Filter<T> {
+    public interface Filter<T> {
 
         /**
          * Tests whether or not the specified data should be accepted.

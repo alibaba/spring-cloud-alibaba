@@ -62,7 +62,10 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 	}
 
 	private List<NacosServer> instancesToServerList(List<Instance> instances) {
-		List<NacosServer> result = new ArrayList<>(instances.size());
+		List<NacosServer> result = new ArrayList<>();
+		if (null == instances) {
+			return result;
+		}
 		for (Instance instance : instances) {
 			result.add(new NacosServer(instance));
 		}

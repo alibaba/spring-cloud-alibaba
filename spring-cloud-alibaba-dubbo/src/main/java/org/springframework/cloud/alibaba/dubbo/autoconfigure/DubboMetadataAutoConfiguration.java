@@ -16,14 +16,24 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import feign.Contract;
+import org.apache.dubbo.config.ProtocolConfig;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.MetadataConfigService;
-import org.springframework.cloud.alibaba.dubbo.metadata.service.NacosMetadataConfigService;
-import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
+import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceProxy;
+import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.util.Collection;
+import java.util.Iterator;
+
+import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata
@@ -31,13 +41,51 @@ import org.springframework.context.annotation.Import;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
-@Import(DubboServiceMetadataRepository.class)
+@Import({DubboServiceMetadataRepository.class, PublishingDubboMetadataConfigService.class})
 public class DubboMetadataAutoConfiguration {
 
+    public static final String METADATA_PROTOCOL_BEAN_NAME = "metadata";
+
     @Bean
-    @ConditionalOnBean(NacosConfigProperties.class)
-    public MetadataConfigService metadataConfigService() {
-        return new NacosMetadataConfigService();
+    @ConditionalOnMissingBean
+    public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
+        return new DubboServiceBeanMetadataResolver(contract);
     }
 
+    /**
+     * Build an alias Bean for {@link ProtocolConfig}
+     *
+     * @param protocols {@link ProtocolConfig} Beans
+     * @return {@link ProtocolConfig} bean
+     */
+    @Bean(name = METADATA_PROTOCOL_BEAN_NAME)
+    public ProtocolConfig protocolConfig(Collection<ProtocolConfig> protocols) {
+        ProtocolConfig protocolConfig = null;
+        for (ProtocolConfig protocol : protocols) {
+            String protocolName = protocol.getName();
+            if (DEFAULT_PROTOCOL.equals(protocolName)) {
+                protocolConfig = protocol;
+                break;
+            }
+        }
+
+        if (protocolConfig == null) { // If The ProtocolConfig bean named "dubbo" is absent, take first one of them
+            Iterator<ProtocolConfig> iterator = protocols.iterator();
+            protocolConfig = iterator.hasNext() ? iterator.next() : null;
+        }
+
+        if (protocolConfig == null) {
+            protocolConfig = new ProtocolConfig();
+            protocolConfig.setName(DEFAULT_PROTOCOL);
+            protocolConfig.setPort(20880);
+        }
+
+        return protocolConfig;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DubboMetadataConfigServiceProxy dubboMetadataConfigServiceProxy(DubboGenericServiceFactory factory) {
+        return new DubboMetadataConfigServiceProxy(factory);
+    }
 }

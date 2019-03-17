@@ -29,6 +29,7 @@ import org.springframework.cloud.alibaba.nacos.registry.NacosAutoServiceRegistra
 import org.springframework.cloud.alibaba.nacos.registry.NacosRegistration;
 import org.springframework.cloud.alibaba.nacos.registry.NacosServiceRegistry;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration;
+import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,8 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnNacosDiscoveryEnabled
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
 @AutoConfigureBefore(NacosDiscoveryClientAutoConfiguration.class)
-@AutoConfigureAfter(AutoServiceRegistrationAutoConfiguration.class)
+@AutoConfigureAfter({ AutoServiceRegistrationConfiguration.class,
+		AutoServiceRegistrationAutoConfiguration.class })
 public class NacosDiscoveryAutoConfiguration {
 
 	@Bean

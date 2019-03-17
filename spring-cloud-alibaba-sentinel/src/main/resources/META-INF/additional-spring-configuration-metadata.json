@@ -7,6 +7,12 @@
       "description": "enable or disable sentinel auto configure."
     },
     {
+      "name": "resttemplate.sentinel.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "enable or disable @SentinelRestTemplate."
+    },
+    {
       "name": "spring.cloud.sentinel.eager",
       "type": "java.lang.Boolean",
       "defaultValue": false,
@@ -38,6 +44,12 @@
       "type": "java.lang.Integer",
       "defaultValue": "Integer.MIN_VALUE",
       "description": "sentinel filter chain order, will be set to FilterRegistrationBean."
+    },
+    {
+      "name": "spring.cloud.sentinel.filter.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Enable to instance com.alibaba.csp.sentinel.adapter.servlet.CommonFilter."
     },
     {
       "name": "spring.cloud.sentinel.metric.charset",

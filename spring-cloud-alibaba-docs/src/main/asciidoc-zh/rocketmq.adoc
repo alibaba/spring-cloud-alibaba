@@ -112,139 +112,167 @@ messageChannel.send(MessageBuilder.withPayload("simple msg").build());
 
 这段代码所有的消息类都是 `spring-messaging` 模块里提供的。屏蔽具体消息中间件的底层实现，如果想用更换消息中间件，在配置文件里配置相关消息中间件信息以及修改 binder 依赖即可。
 
-**Spring Cloud Stream 底层也是基于这段代码去做了各种抽象。**
-
-### Spring Cloud Alibaba RocketMQ Binder 实现原理
-
-.RocketMQ Binder处理流程
-image::https://cdn.nlark.com/lark/0/2018/png/64647/1543560843558-24525bf4-1d0e-4e10-be5f-bdde7127f6e6.png[]
+**Spring Cloud Stream 底层基于这段代码去做了各种抽象。**
 
 
-RocketMQ Binder 的核心主要就是这3个类：`RocketMQMessageChannelBinder`，`RocketMQInboundChannelAdapter` 和 `RocketMQMessageHandler`。
+### 如何使用 Spring Cloud Alibaba RocketMQ Binder ###
 
-`RocketMQMessageChannelBinder` 是个标准的 Binder 实现，其内部构建 `RocketMQInboundChannelAdapter` 和 `RocketMQMessageHandler`。
+如果要在您的项目中引入 RocketMQ Binder，需要引入如下 maven 依赖：
 
-`RocketMQMessageHandler` 用于 RocketMQ `Producer` 的启动以及消息的发送，其内部会根据 `spring-messaging` 模块内 `org.springframework.messaging.Message` 消息类，去创建 RocketMQ 的消息类 `org.apache.rocketmq.common.message.Message`。
+```xml
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+</dependency>
+```
 
-在构造 `org.apache.rocketmq.common.message.Message` 的过程中会根据 `org.springframework.messaging.Message` 的 Header 构造成 `RocketMQMessageHeaderAccessor`。然后再根据 `RocketMQMessageHeaderAccessor` 中的一些属性，比如 tags、keys、flag等属性设置到 RocketMQ 的消息类 `org.apache.rocketmq.common.message.Message` 中。
+或者可以使用 Spring Cloud Stream RocketMQ Starter：
 
-`RocketMQInboundChannelAdapter` 用于 RocketMQ `Consumer` 的启动以及消息的接收。其内部还支持 https://github.com/spring-projects/spring-retry[spring-retry] 的使用。
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+</dependency>
+```
 
-在消费消息的时候可以从 Header 中获取 `Acknowledgement` 并进行一些设置。
+### Spring Cloud Alibaba RocketMQ Binder 实现
 
-比如使用 `MessageListenerConcurrently` 进行异步消费的时候，可以设置延迟消费：
+RocketMQ Binder 的实现依赖于 https://github.com/apache/rocketmq-spring[RocketMQ-Spring] 框架。
+
+RocketMQ-Spring 框架是 RocketMQ 与 Spring Boot 的整合，RocketMQ Spring 主要提供了 3 个特性：
+
+1. 使用 `RocketMQTemplate` 用来统一发送消息，包括同步、异步发送消息和事务消息
+2. `@RocketMQTransactionListener` 注解用来处理事务消息的监听和回查
+3. `@RocketMQMessageListener` 注解用来消费消息
+
+RocketMQ Binder 的核心类 RocketMQMessageChannelBinder 实现了 Spring Cloud Stream 规范，内部构建会 `RocketMQInboundChannelAdapter` 和 `RocketMQMessageHandler`。
+
+`RocketMQMessageHandler` 会基于 Binding 配置构造 `RocketMQTemplate`，`RocketMQTemplate` 内部会把 `spring-messaging` 模块内 `org.springframework.messaging.Message` 消息类转换成 RocketMQ 的消息类 `org.apache.rocketmq.common.message.Message`，然后发送出去。
+
+`RocketMQInboundChannelAdapter` 也会基于 Binding 配置构造 `RocketMQListenerBindingContainer`，`RocketMQListenerBindingContainer` 内部会启动 RocketMQ `Consumer` 接收消息。
+
+NOTE: 在使用 RocketMQ Binder 的同时也可以配置 rocketmq.** 用于触发 RocketMQ Spring 相关的 AutoConfiguration
+
+目前 Binder 支持在 `Header` 中设置相关的 key 来进行 RocketMQ Message 消息的特性设置。
+
+比如 `TAGS`、`DELAY`、`TRANSACTIONAL_ARG`、`KEYS`、`WAIT_STORE_MSG_OK`、`FLAG` 表示 RocketMQ 消息对应的标签，
 
 ```java
-@StreamListener("input")
-public void receive(Message message) {
-    RocketMQMessageHeaderAccessor headerAccessor = new RocketMQMessageHeaderAccessor(message);
-    Acknowledgement acknowledgement = headerAccessor.getAcknowledgement(message);
-    acknowledgement.setConsumeConcurrentlyStatus(ConsumeConcurrentlyStatus.RECONSUME_LATER);
-    acknowledgement.setConsumeConcurrentlyDelayLevel(1);
-}
+MessageBuilder builder = MessageBuilder.withPayload(msg)
+    .setHeader(RocketMQHeaders.TAGS, "binder")
+    .setHeader(RocketMQHeaders.KEYS, "my-key")
+    .setHeader("DELAY", "1");
+Message message = builder.build();
+output().send(message);
 ```
 
-比如使用 `MessageListenerOrderly` 进行顺序消费的时候，可以设置延迟消费：
+### 配置选项
 
-```java
-@StreamListener("input")
-public void receive(Message message) {
-    RocketMQMessageHeaderAccessor headerAccessor = new RocketMQMessageHeaderAccessor(message);
-    Acknowledgement acknowledgement = headerAccessor.getAcknowledgement(message);
-    acknowledgement.setConsumeOrderlyStatus(ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT);
-    acknowledgement.setConsumeOrderlySuspendCurrentQueueTimeMill(5000);
-}
-```
+#### RocketMQ Binder Properties
 
-Provider端支持的配置：
+spring.cloud.stream.rocketmq.binder.name-server::
+RocketMQ NameServer 地址。
++
+Default: `127.0.0.1:9876`.
+spring.cloud.stream.rocketmq.binder.access-key::
+阿里云账号 AccessKey。
++
+Default: null.
+spring.cloud.stream.rocketmq.binder.secret-key::
+阿里云账号 SecretKey。
++
+Default: null.
+spring.cloud.stream.rocketmq.binder.enable-msg-trace::
+是否为 Producer 和 Consumer 开启消息轨迹功能
++
+Default: `true`.
+spring.cloud.stream.rocketmq.binder.customized-trace-topic::
+消息轨迹开启后存储的 topic 名称。
++
+Default: `RMQ_SYS_TRACE_TOPIC`.
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|配置项 ^|含义 ^| 默认值
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.enabled`|是否启用producer|true
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.max-message-size`|消息发送的最大字节数|0(大于0才会生效，RocketMQ 默认值为4M = 1024 * 1024 * 4)
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.transactional`|是否启用 `TransactionMQProducer` 发送事务消息|false
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.executer`|事务消息对应的 `org.apache.rocketmq.client.producer.LocalTransactionExecuter` 接口实现类 全类名。 比如 `org.test.MyExecuter`|
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.transaction-check-listener`|事务消息对应的 `org.apache.rocketmq.client.producer.TransactionCheckListener` 接口实现类 全类名。 比如 `org.test.MyTransactionCheckListener`|
-|====
 
-Consumer端支持的配置：
+#### RocketMQ Consumer Properties
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|配置项 ^|含义| 默认值
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.enabled`|是否启用consumer|true
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.tags`|Consumer订阅只有包括这些tags的topic消息。多个标签之间使用 "\|\|" 分割(不填表示不进行tags的过滤，订阅所有消息)|
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.sql`|Consumer订阅满足sql要求的topic消息(如果同时配置了tags内容，sql的优先级更高)|
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.broadcasting`|Consumer是否是广播模式|false
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.orderly`|顺序消费 or 异步消费|false
-|====
+下面的这些配置是以 `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.` 为前缀的 RocketMQ Consumer 相关的配置。
 
-### Endpoint支持
+enable::
+是否启用 Consumer。
++
+默认值: `true`.
+tags::
+Consumer 基于 TAGS 订阅，多个 tag 以 `||` 分割。
++
+默认值: empty.
+sql::
+Consumer 基于 SQL 订阅。
++
+默认值: empty.
+broadcasting::
+Consumer 是否是广播消费模式。如果想让所有的订阅者都能接收到消息，可以使用广播模式。
++
+默认值: `false`.
+orderly::
+Consumer 是否同步消费消息模式。
++
+默认值: `false`.
+delayLevelWhenNextConsume::
+异步消费消息模式下消费失败重试策略：
+* -1,不重复，直接放入死信队列
+* 0,broker 控制重试策略
+* >0,client 控制重试策略
++
+默认值: `0`.
+suspendCurrentQueueTimeMillis::
+同步消费消息模式下消费失败后再次消费的时间间隔。
++
+默认值: `1000`.
 
-在使用Endpoint特性之前需要在 Maven 中添加 `spring-boot-starter-actuator` 依赖，并在配置中允许 Endpoints 的访问。
+#### RocketMQ Provider Properties
 
-* Spring Boot 1.x 中添加配置 `management.security.enabled=false`。暴露的 endpoint 路径为 `/rocketmq_binder`
-* Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`。暴露的 endpoint 路径为 `/actuator/rocketmq-binder`
+下面的这些配置是以 `spring.cloud.stream.rocketmq.bindings.<channelName>.producer.` 为前缀的 RocketMQ Producer 相关的配置。
 
-Endpoint 会统计消息最后一次发送的数据，消息发送成功或失败的次数，消息消费成功或失败的次数等数据。
-
-```json
-{
-    "runtime": {
-        "lastSend.timestamp": 1542786623915
-    },
-    "metrics": {
-        "scs-rocketmq.consumer.test-topic.totalConsumed": {
-            "count": 11
-        },
-        "scs-rocketmq.consumer.test-topic.totalConsumedFailures": {
-            "count": 0
-        },
-        "scs-rocketmq.producer.test-topic.totalSentFailures": {
-            "count": 0
-        },
-        "scs-rocketmq.consumer.test-topic.consumedPerSecond": {
-            "count": 11,
-            "fifteenMinuteRate": 0.012163847780107841,
-            "fiveMinuteRate": 0.03614605351360527,
-            "meanRate": 0.3493213353657594,
-            "oneMinuteRate": 0.17099243039490175
-        },
-        "scs-rocketmq.producer.test-topic.totalSent": {
-            "count": 5
-        },
-        "scs-rocketmq.producer.test-topic.sentPerSecond": {
-            "count": 5,
-            "fifteenMinuteRate": 0.005540151995103271,
-            "fiveMinuteRate": 0.01652854617838251,
-            "meanRate": 0.10697493212602836,
-            "oneMinuteRate": 0.07995558537067671
-        },
-        "scs-rocketmq.producer.test-topic.sentFailuresPerSecond": {
-            "count": 0,
-            "fifteenMinuteRate": 0.0,
-            "fiveMinuteRate": 0.0,
-            "meanRate": 0.0,
-            "oneMinuteRate": 0.0
-        },
-        "scs-rocketmq.consumer.test-topic.consumedFailuresPerSecond": {
-            "count": 0,
-            "fifteenMinuteRate": 0.0,
-            "fiveMinuteRate": 0.0,
-            "meanRate": 0.0,
-            "oneMinuteRate": 0.0
-        }
-    }
-}
-```
-
-注意：要想查看统计数据需要在pom里加上 https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core[metrics-core依赖]。如若不加，endpoint 将会显示 warning 信息而不会显示统计信息：
-
-```json
-{
-    "warning": "please add metrics-core dependency, we use it for metrics"
-}
-```
+enable::
+是否启用 Producer。
++
+默认值: `true`.
+group::
+Producer group name。
++
+默认值: empty.
+maxMessageSize::
+消息发送的最大字节数。
++
+默认值: `8249344`.
+transactional::
+是否发送事务消息。
++
+默认值: `false`.
+sync::
+是否使用同步得方式发送消息。
++
+默认值: `false`.
+vipChannelEnabled::
+是否在 Vip Channel 上发送消息。
++
+默认值: `true`.
+sendMessageTimeout::
+发送消息的超时时间(毫秒)。
++
+默认值: `3000`.
+compressMessageBodyThreshold::
+消息体压缩阀值(当消息体超过 4k 的时候会被压缩)。
++
+默认值: `4096`.
+retryTimesWhenSendFailed::
+在同步发送消息的模式下，消息发送失败的重试次数。
++
+默认值: `2`.
+retryTimesWhenSendAsyncFailed::
+在异步发送消息的模式下，消息发送失败的重试次数。
++
+默认值: `2`.
+retryNextServer::
+消息发送失败的情况下是否重试其它的 broker。
++
+默认值: `false`.

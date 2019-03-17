@@ -15,14 +15,15 @@
  */
 package org.springframework.cloud.alicloud.context.nacos;
 
-import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
-import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.cloud.alicloud.context.listener.AbstractOnceApplicationListener;
 
-import java.util.Properties;
+import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
+import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
 
 /**
  * @author pbting
@@ -53,7 +54,7 @@ public class NacosDiscoveryParameterInitListener
 		}
 		// initialize nacos configuration
 		Properties properties = System.getProperties();
-
+		properties.setProperty("spring.cloud.nacos.discovery.server-mode", "EDAS");
 		// step 1: set some properties for spring cloud alibaba nacos discovery
 		properties.setProperty("spring.cloud.nacos.discovery.server-addr", "");
 		properties.setProperty("spring.cloud.nacos.discovery.endpoint",
@@ -66,7 +67,7 @@ public class NacosDiscoveryParameterInitListener
 				edasChangeOrderConfiguration.getDauthSecretKey());
 
 		// step 2: set these properties for nacos client
-		properties.setProperty("webContext", "/vipserver");
-		properties.setProperty("serverPort", "80");
+		properties.setProperty("nacos.naming.web.context", "/vipserver");
+		properties.setProperty("nacos.naming.exposed.port", "80");
 	}
 }

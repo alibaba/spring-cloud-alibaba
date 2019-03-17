@@ -18,6 +18,7 @@ package org.springframework.cloud.alibaba.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.*;
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
  * nacos properties
@@ -46,11 +54,6 @@ public class NacosConfigProperties {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
-
-	/**
-	 * whether to enable nacos config.
-	 */
-	private boolean enabled = true;
 
 	/**
 	 * nacos config server address
@@ -114,8 +117,6 @@ public class NacosConfigProperties {
 
 	private String name;
 
-	private String[] activeProfiles;
-
 	/**
 	 * the dataids for configurable multiple shared configurations , multiple separated by
 	 * commas .
@@ -134,23 +135,7 @@ public class NacosConfigProperties {
 
 	private ConfigService configService;
 
-	@Autowired
-	private Environment environment;
-
-	@PostConstruct
-	public void init() {
-		this.activeProfiles = environment.getActiveProfiles();
-	}
-
 	// todo sts support
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
 
 	public String getServerAddr() {
 		return serverAddr;
@@ -252,10 +237,6 @@ public class NacosConfigProperties {
 		return name;
 	}
 
-	public String[] getActiveProfiles() {
-		return activeProfiles;
-	}
-
 	public String getSharedDataids() {
 		return sharedDataids;
 	}
@@ -282,10 +263,6 @@ public class NacosConfigProperties {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public void setActiveProfiles(String[] activeProfiles) {
-		this.activeProfiles = activeProfiles;
 	}
 
 	public static class Config {
@@ -329,17 +306,15 @@ public class NacosConfigProperties {
 
 	@Override
 	public String toString() {
-		return "NacosConfigProperties{" + "enabled=" + enabled + ", serverAddr='"
-				+ serverAddr + '\'' + ", encode='" + encode + '\'' + ", group='" + group
-				+ '\'' + ", prefix='" + prefix + '\'' + ", fileExtension='"
-				+ fileExtension + '\'' + ", timeout=" + timeout + ", endpoint='"
-				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
-				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
-				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
-				+ '\'' + ", name='" + name + '\'' + ", activeProfiles="
-				+ Arrays.toString(activeProfiles) + ", sharedDataids='" + sharedDataids
-				+ '\'' + ", refreshableDataids='" + refreshableDataids + '\''
-				+ ", extConfig=" + extConfig + '}';
+		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
+				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
+				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
+				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
+				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
+				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
+				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
 	}
 
 	public ConfigService configServiceInstance() {
