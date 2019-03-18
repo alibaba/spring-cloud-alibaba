@@ -85,6 +85,11 @@ public class SentinelRestTemplateTests {
 		new AnnotationConfigApplicationContext(TestConfig9.class);
 	}
 
+    @Test
+    public void testNormalWithoutParam() {
+        new AnnotationConfigApplicationContext(TestConfig10.class);
+    }
+
 	@Configuration
 	public static class TestConfig1 {
 		@Bean
@@ -219,6 +224,27 @@ public class SentinelRestTemplateTests {
 			return new RestTemplate();
 		}
 	}
+
+    @Configuration
+    public static class TestConfig10 {
+        @Bean
+        SentinelBeanPostProcessor sentinelBeanPostProcessor(
+            ApplicationContext applicationContext) {
+            return new SentinelBeanPostProcessor(applicationContext);
+        }
+
+        @Bean
+        @SentinelRestTemplate
+        RestTemplate restTemplate() {
+            return new RestTemplate();
+        }
+
+        @Bean
+        @SentinelRestTemplate
+        RestTemplate restTemplate2() {
+            return new RestTemplate();
+        }
+    }
 
 	public static class ExceptionUtil {
 		public static SentinelClientHttpResponse handleException(HttpRequest request,
