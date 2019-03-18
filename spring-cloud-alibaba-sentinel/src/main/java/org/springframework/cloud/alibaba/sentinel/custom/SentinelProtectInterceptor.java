@@ -16,12 +16,10 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import com.alibaba.csp.sentinel.Entry;
-import com.alibaba.csp.sentinel.SphU;
-import com.alibaba.csp.sentinel.Tracer;
-import com.alibaba.csp.sentinel.context.ContextUtil;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.cloud.alibaba.sentinel.rest.SentinelClientHttpResponse;
@@ -30,10 +28,12 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.Tracer;
+import com.alibaba.csp.sentinel.context.ContextUtil;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 
 /**
  * Interceptor using by SentinelRestTemplate
@@ -52,7 +52,8 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
 			ClientHttpRequestExecution execution) throws IOException {
 		URI uri = request.getURI();
-		String hostResource = uri.getScheme() + "://" + uri.getHost()
+		String hostResource = request.getMethod().toString() + ":" + uri.getScheme()
+				+ "://" + uri.getHost()
 				+ (uri.getPort() == -1 ? "" : ":" + uri.getPort());
 		String hostWithPathResource = hostResource + uri.getPath();
 		boolean entryWithPath = true;
