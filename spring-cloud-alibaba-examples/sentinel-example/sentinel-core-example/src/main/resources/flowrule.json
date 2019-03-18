@@ -16,7 +16,7 @@
     "strategy": 0
   },
   {
-    "resource": "http://www.taobao.com",
+    "resource": "GET:http://www.taobao.com",
     "controlBehavior": 0,
     "count": 0,
     "grade": 1,
