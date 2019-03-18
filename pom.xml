@@ -8,13 +8,13 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.1.2.RELEASE</version>
+        <version>2.0.4.RELEASE</version>
         <relativePath/>
     </parent>
 
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>0.2.2.BUILD-SNAPSHOT</version>
+    <version>2.0.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
 
@@ -62,7 +62,7 @@
             <organization>Alibaba</organization>
             <url>https://github.com/mercyblitz</url>
         </developer>
-		<developer>
+        <developer>
             <name>yunzheng</name>
             <email>yunzheng1228@gmail.com</email>
         </developer>
@@ -70,11 +70,11 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.1.0.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.1.0.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.1.0.RELEASE</spring-cloud-openfeign.version>
-        <spring-cloud-bus.version>2.1.0.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.1.0.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-commons.version>2.0.3.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.0.3.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.0.3.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>2.0.1.RELEASE</spring-cloud-bus.version>
+        <spring-cloud-gateway.version>2.0.3.RELEASE</spring-cloud-gateway.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -86,7 +86,6 @@
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
-        <jacoco.version>0.8.3</jacoco.version>
     </properties>
 
     <modules>
@@ -97,9 +96,9 @@
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-fescar</module>
-        <module>spring-cloud-stream-binder-rocketmq</module>
+        <!--<module>spring-cloud-stream-binder-rocketmq</module>-->
         <module>spring-cloud-alibaba-nacos-config-server</module>
-        <module>spring-cloud-alibaba-dubbo</module>
+        <!--<module>spring-cloud-alibaba-dubbo</module>-->
         <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-test</module>
@@ -111,7 +110,6 @@
         <module>spring-cloud-alicloud-ans</module>
         <module>spring-cloud-alicloud-schedulerx</module>
         <module>spring-cloud-alicloud-sms</module>
-        <module>spring-cloud-alibaba-coverage</module>
     </modules>
 
     <dependencyManagement>
@@ -184,15 +182,6 @@
     </dependencyManagement>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${jacoco.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

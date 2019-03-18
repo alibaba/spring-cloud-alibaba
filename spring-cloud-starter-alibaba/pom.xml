@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.2.2.BUILD-SNAPSHOT</version>
+        <version>2.0.1.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>spring-cloud-starter-alibaba</artifactId>
@@ -17,8 +17,8 @@
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
         <module>spring-cloud-starter-alibaba-sentinel</module>
         <module>spring-cloud-starter-alibaba-fescar</module>
-        <module>spring-cloud-starter-stream-rocketmq</module>
-        <module>spring-cloud-starter-bus-rocketmq</module>
-        <module>spring-cloud-starter-dubbo</module>
+        <!--<module>spring-cloud-starter-stream-rocketmq</module>-->
+        <!--<module>spring-cloud-starter-bus-rocketmq</module>-->
+        <!--<module>spring-cloud-starter-dubbo</module>-->
     </modules>
 </project>

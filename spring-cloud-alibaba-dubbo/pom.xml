@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.2.2.BUILD-SNAPSHOT</version>
+        <version>2.0.1.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -15,8 +15,8 @@
 
     <properties>
         <dubbo.version>2.7.0</dubbo.version>
-        <spring-cloud-zookeeper.version>2.1.0.RELEASE</spring-cloud-zookeeper.version>
-        <spring-cloud-consul.version>2.1.0.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-zookeeper.version>2.0.1.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-consul.version>2.0.2.RELEASE</spring-cloud-consul.version>
         <curator.version>4.0.1</curator.version>
     </properties>
 
@@ -228,28 +228,4 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
-                <executions>
-                    <execution>
-                        <id>jacoco-initialize</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>jacoco-site</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
