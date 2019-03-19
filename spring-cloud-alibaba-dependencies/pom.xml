@@ -378,6 +378,14 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- Dubbo -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-dubbo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
             <!-- Testing Dependencies -->
 
         </dependencies>
