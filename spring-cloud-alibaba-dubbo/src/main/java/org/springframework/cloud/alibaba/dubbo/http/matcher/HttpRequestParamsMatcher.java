@@ -16,12 +16,15 @@
  */
 package org.springframework.cloud.alibaba.dubbo.http.matcher;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
-import org.springframework.util.CollectionUtils;
+import org.springframework.http.MediaType;
 
-
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -46,6 +49,9 @@ public class HttpRequestParamsMatcher extends AbstractHttpRequestMatcher {
 
     @Override
     public boolean match(HttpRequest request) {
+        if (CollectionUtils.isEmpty(expressions)) {
+            return true;
+        }
         for (ParamExpression paramExpression : expressions) {
             if (paramExpression.match(request)) {
                 return true;

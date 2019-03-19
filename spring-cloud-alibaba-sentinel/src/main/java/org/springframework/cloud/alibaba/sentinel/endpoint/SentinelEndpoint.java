@@ -16,6 +16,13 @@
 
 package org.springframework.cloud.alibaba.sentinel.endpoint;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
+
 import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
@@ -25,12 +32,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.alibaba.csp.sentinel.util.AppNameUtil;
 
 /**
  * Endpoint for Sentinel, contains ans properties and rules
@@ -50,6 +52,7 @@ public class SentinelEndpoint {
 		final Map<String, Object> result = new HashMap<>();
 		if (sentinelProperties.isEnabled()) {
 
+			result.put("appName", AppNameUtil.getAppName());
 			result.put("logDir", LogBase.getLogBaseDir());
 			result.put("logUsePid", LogBase.isLogNameUsePid());
 			result.put("blockPage", WebServletConfig.getBlockPage());

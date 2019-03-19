@@ -29,7 +29,7 @@ public class DubboSpringCloudProviderBootstrap {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(DubboSpringCloudProviderBootstrap.class)
-                .profiles("nacos")
+                .properties("spring.profiles.active=nacos")
                 .run(args);
     }
 }

@@ -16,7 +16,9 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.properties;
 
+import org.apache.rocketmq.common.MixAll;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 
 /**
  * @author Timur Valiev
@@ -25,24 +27,69 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.cloud.stream.rocketmq.binder")
 public class RocketMQBinderConfigurationProperties {
 
-	private String namesrvAddr = "127.0.0.1:9876";
+	/**
+	 * The name server for rocketMQ, formats: `host:port;host:port`.
+	 */
+	private String nameServer = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
 
-	private String logLevel = "ERROR";
+	/**
+	 * The property of "access-key".
+	 */
+	private String accessKey;
 
-	public String getNamesrvAddr() {
-		return namesrvAddr;
+	/**
+	 * The property of "secret-key".
+	 */
+	private String secretKey;
+
+	/**
+	 * Switch flag instance for message trace.
+	 */
+	private boolean enableMsgTrace = true;
+
+	/**
+	 * The name value of message trace topic.If you don't config,you can use the default
+	 * trace topic name.
+	 */
+	private String customizedTraceTopic = MixAll.RMQ_SYS_TRACE_TOPIC;
+
+	public String getNameServer() {
+		return nameServer;
 	}
 
-	public void setNamesrvAddr(String namesrvAddr) {
-		this.namesrvAddr = namesrvAddr;
+	public void setNameServer(String nameServer) {
+		this.nameServer = nameServer;
 	}
 
-	public String getLogLevel() {
-		return logLevel;
+	public String getAccessKey() {
+		return accessKey;
 	}
 
-	public void setLogLevel(String logLevel) {
-		this.logLevel = logLevel;
+	public void setAccessKey(String accessKey) {
+		this.accessKey = accessKey;
 	}
 
+	public String getSecretKey() {
+		return secretKey;
+	}
+
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
+	}
+
+	public boolean isEnableMsgTrace() {
+		return enableMsgTrace;
+	}
+
+	public void setEnableMsgTrace(boolean enableMsgTrace) {
+		this.enableMsgTrace = enableMsgTrace;
+	}
+
+	public String getCustomizedTraceTopic() {
+		return customizedTraceTopic;
+	}
+
+	public void setCustomizedTraceTopic(String customizedTraceTopic) {
+		this.customizedTraceTopic = customizedTraceTopic;
+	}
 }

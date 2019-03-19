@@ -114,137 +114,164 @@ All the message types in this code are provided by the `spring-messaging`module.
 
 **The lower layer of Spring Cloud Stream also implements various code abstractions based on the previous code.**
 
+### How to use Spring Cloud Alibaba RocketMQ Binder ###
+
+For using the Spring Cloud Alibaba RocketMQ Binder, you just need to add it to your Spring Cloud Stream application, using the following Maven coordinates:
+
+```xml
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+</dependency>
+```
+
+Alternatively, you can also use the Spring Cloud Stream RocketMQ Starter:
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+</dependency>
+```
+
 ### How Spring Cloud Alibaba RocketMQ Binder Works
 
-.RocketMQ Binder Workflow
-image::https://cdn.nlark.com/lark/0/2018/png/64647/1543560843558-24525bf4-1d0e-4e10-be5f-bdde7127f6e6.png[]
+The implementation of RocketMQ Binder depend on the https://github.com/apache/rocketmq-spring[RocketMQ-Spring] framework.
 
+RocketMQ Spring framework is an integration of RocketMQ and Spring Boot. It provides three main features:
 
-The core of RocketMQ Binder are the 3 classes below: `RocketMQMessageChannelBinder`，`RocketMQInboundChannelAdapter` and `RocketMQMessageHandler`.
+1. `RocketMQTemplate`: Sending messages, including synchronous, asynchronous, and transactional messages.
+2. `@RocketMQTransactionListener`: Listen and check for transaction messages.
+3. `@RocketMQMessageListener`: Consume messages.
 
-`RocketMQMessageChannelBinder` is a standard implementation of Binder. It contains `RocketMQInboundChannelAdapter` and `RocketMQMessageHandler` as its internal constructions.
+`RocketMQMessageChannelBinder` is a standard implementation of Binder, it will build `RocketMQInboundChannelAdapter` and `RocketMQMessageHandler` internally.
 
-`RocketMQMessageHandler` is used to start RocketMQ `Producer` and send messages. It creates message type of RocketMQ `org.apache.rocketmq.common.message.Message` based on the message type of `org.springframework.messaging.Message` in the `spring-messaging` module.
+`RocketMQMessageHandler` will construct `RocketMQTemplate` based on the Binding configuration. `RocketMQTemplate` will convert the `org.springframework.messaging.Message` message class of `spring-messaging` module to the RocketMQ message class `org.apache.rocketmq.common .message.Message` internally, then send it out.
 
-When constructing `org.apache.rocketmq.common.message.Message`, it constructs `RocketMQMessageHeaderAccessor` based on the header of `org.springframework.messaging.Message`. Then, based on some of the properties in `RocketMQMessageHeaderAccessor` , it sets some of message attributes such as tags, keys, and flag in `org.apache.rocketmq.common.message.Message` of RocketMQ.
+`RocketMQInboundChannelAdapter` will also construct `RocketMQListenerBindingContainer` based on the Binding configuration, and `RocketMQListenerBindingContainer` will start the RocketMQ `Consumer` to receive the messages.
 
-`RocketMQInboundChannelAdapter` is used to start RocketMQ `Consumer` and receive messages. It also support the usage of https://github.com/spring-projects/spring-retry[spring-retry].
+NOTE: RocketMQ Binder Application can also be used to configure rocketmq.** to trigger RocketMQ Spring related AutoConfiguration
 
-You can also obtain `Acknowledgement` from the Header and make some configurations.
+Currently Binder supports setting the relevant key in `Header` to set the properties of the RocketMQ message.
 
-For example, you can set delayed message consumption when  `MessageListenerConcurrently` is used for asynchronous message consumption:
-
-```java
-@StreamListener("input")
-public void receive(Message message) {
-    RocketMQMessageHeaderAccessor headerAccessor = new RocketMQMessageHeaderAccessor(message);
-    Acknowledgement acknowledgement = headerAccessor.getAcknowledgement(message);
-    acknowledgement.setConsumeConcurrentlyStatus(ConsumeConcurrentlyStatus.RECONSUME_LATER);
-    acknowledgement.setConsumeConcurrentlyDelayLevel(1);
-}
-```
-
-You can also set delayed message consumption when  `MessageListenerOrderly` is used for consuming ordered messages.
+For example, `TAGS`, `DELAY`, `TRANSACTIONAL_ARG`, `KEYS`, `WAIT_STORE_MSG_OK`, `FLAG` represent the labels corresponding to the RocketMQ message.
 
 ```java
-@StreamListener("input")
-public void receive(Message message) {
-    RocketMQMessageHeaderAccessor headerAccessor = new RocketMQMessageHeaderAccessor(message);
-    Acknowledgement acknowledgement = headerAccessor.getAcknowledgement(message);
-    acknowledgement.setConsumeOrderlyStatus(ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT);
-    acknowledgement.setConsumeOrderlySuspendCurrentQueueTimeMill(5000);
-}
+MessageBuilder builder = MessageBuilder.withPayload(msg)
+    .setHeader(RocketMQHeaders.TAGS, "binder")
+    .setHeader(RocketMQHeaders.KEYS, "my-key")
+    .setHeader("DELAY", "1");
+Message message = builder.build();
+output().send(message);
 ```
 
-Supported Configurations of Provider:
+### Configuration Options
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Configuration ^|Description ^| Default Value
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.enabled`|Whether to use producer|true
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.max-message-size`|Maximum bytes of messages sent|0(Take effect only when it’s bigger than 0. The default value of RocketMQ  is 4M = 1024 * 1024 * 4)
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.transactional`|Whether to use `TransactionMQProducer` to send transaction messages|false
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.executer`|Full class name of the interface implementation class related to `org.apache.rocketmq.client.producer.LocalTransactionExecuter` For example, `org.test.MyExecuter`|
-|`spring.cloud.stream.rocketmq.bindings.your-output-binding.producer.transaction-check-listener`|Full class name of the interface implementation class related to `org.apache.rocketmq.client.producer.TransactionCheckListener` For example, `org.test.MyTransactionCheckListener`|
-|====
+#### RocketMQ Binder Properties
 
-Supported Configurations of Consumer:
+spring.cloud.stream.rocketmq.binder.name-server::
+The name server of RocketMQ Server.
++
+Default: `127.0.0.1:9876`.
+spring.cloud.stream.rocketmq.binder.access-key::
+The AccessKey of Alibaba Cloud Account.
++
+Default: null.
+spring.cloud.stream.rocketmq.binder.secret-key::
+The SecretKey of Alibaba Cloud Account.
++
+Default: null.
+spring.cloud.stream.rocketmq.binder.enable-msg-trace::
+Enable Message Trace feature for all producers and consumers.
++
+Default: `true`.
+spring.cloud.stream.rocketmq.binder.customized-trace-topic::
+The trace topic for message trace.
++
+Default: `RMQ_SYS_TRACE_TOPIC`.
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Configuration ^|Description| Default Value
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.enabled`|Whether to use consumer|true
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.tags`|Consumer will only subscribe to messages with these tags Tags are separated by "\|\|" (If not specified, it means the consumer subscribes to all messages)|
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.sql`|Consumer subscribes to the messages as requested in the SQL(If tags are also specified, SQL has a higher priority than tags.)|
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.broadcasting`|If the consumer uses the broadcasting mode|false
-|`spring.cloud.stream.rocketmq.bindings.your-input-binding.consumer.orderly`|Ordered message consumption or asychronous consumption|false
-|====
 
-### Endpoint Support
+#### RocketMQ Consumer Properties
 
-Before you use the Endpoint feature, please add the  `spring-boot-starter-actuator` dependency in Maven, and enable access of Endpoints in your configuration.
+The following properties are available for RocketMQ producers only and must be prefixed with `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.`.
 
-* Add `management.security.enabled=false`in Spring Boot 1.x. The exposed endpoint path is `/rocketmq_binder`
-* Add `management.endpoints.web.exposure.include=*`in Spring Boot 2.x. The exposed endpoint path is `/actuator/rocketmq-binder`
+enable::
+Enable Consumer Binding.
++
+Default: `true`.
+tags::
+Consumer subscription tags expression, tags split by `||`.
++
+Default: empty.
+sql::
+Consumer subscription sql expression.
++
+Default: empty.
+broadcasting::
+Control message mode, if you want all subscribers receive message all message, broadcasting is a good choice.
++
+Default: `false`.
+orderly::
+Receiving message concurrently or orderly.
++
+Default: `false`.
+delayLevelWhenNextConsume::
+Message consume retry strategy for concurrently consume:
+* -1,no retry,put into DLQ directly
+* 0,broker control retry frequency
+* >0,client control retry frequency
++
+Default: `0`.
+suspendCurrentQueueTimeMillis::
+Time interval of message consume retry for orderly consume.
++
+Default: `1000`.
 
-Endpoint will collects data about the last message that is sent, the number of successes or failures of message sending, and the number of successes of failures of message consumption.
+#### RocketMQ Provider Properties
 
-```json
-{
-    "runtime": {
-        "lastSend.timestamp": 1542786623915
-    },
-    "metrics": {
-        "scs-rocketmq.consumer.test-topic.totalConsumed": {
-            "count": 11
-        },
-        "scs-rocketmq.consumer.test-topic.totalConsumedFailures": {
-            "count": 0
-        },
-        "scs-rocketmq.producer.test-topic.totalSentFailures": {
-            "count": 0
-        },
-        "scs-rocketmq.consumer.test-topic.consumedPerSecond": {
-            "count": 11,
-            "fifteenMinuteRate": 0.012163847780107841,
-            "fiveMinuteRate": 0.03614605351360527,
-            "meanRate": 0.3493213353657594,
-            "oneMinuteRate": 0.17099243039490175
-        },
-        "scs-rocketmq.producer.test-topic.totalSent": {
-            "count": 5
-        },
-        "scs-rocketmq.producer.test-topic.sentPerSecond": {
-            "count": 5,
-            "fifteenMinuteRate": 0.005540151995103271,
-            "fiveMinuteRate": 0.01652854617838251,
-            "meanRate": 0.10697493212602836,
-            "oneMinuteRate": 0.07995558537067671
-        },
-        "scs-rocketmq.producer.test-topic.sentFailuresPerSecond": {
-            "count": 0,
-            "fifteenMinuteRate": 0.0,
-            "fiveMinuteRate": 0.0,
-            "meanRate": 0.0,
-            "oneMinuteRate": 0.0
-        },
-        "scs-rocketmq.consumer.test-topic.consumedFailuresPerSecond": {
-            "count": 0,
-            "fifteenMinuteRate": 0.0,
-            "fiveMinuteRate": 0.0,
-            "meanRate": 0.0,
-            "oneMinuteRate": 0.0
-        }
-    }
-}
-```
+The following properties are available for RocketMQ producers only and must be prefixed with `spring.cloud.stream.rocketmq.bindings.<channelName>.producer.`.
 
-Note： To view statistics, add the https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core[metrics-core dependency] in POM. If not added, the endpoint will return warning instead of statistics:
-
-```json
-{
-    "warning": "please add metrics-core dependency, we use it for metrics"
-}
-```
+enable::
+Enable Producer Binding.
++
+Default: `true`.
+group::
+Producer group name.
++
+Default: empty.
+maxMessageSize::
+Maximum allowed message size in bytes.
++
+Default: `8249344`.
+transactional::
+Send Transactional Message.
++
+Default: `false`.
+sync::
+Send message in synchronous mode.
++
+Default: `false`.
+vipChannelEnabled::
+Send message with vip channel.
++
+Default: `true`.
+sendMessageTimeout::
+Millis of send message timeout.
++
+Default: `3000`.
+compressMessageBodyThreshold::
+Compress message body threshold, namely, message body larger than 4k will be compressed on default.
++
+Default: `4096`.
+retryTimesWhenSendFailed::
+Maximum number of retry to perform internally before claiming sending failure in synchronous mode.
++
+Default: `2`.
+retryTimesWhenSendAsyncFailed::
+Maximum number of retry to perform internally before claiming sending failure in asynchronous mode.
++
+Default: `2`.
+retryNextServer::
+Indicate whether to retry another broker on sending failure internally.
++
+Default: `false`.
