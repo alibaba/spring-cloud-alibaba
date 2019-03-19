@@ -16,7 +16,9 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import com.alibaba.csp.sentinel.slots.block.BlockException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +40,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 /**
  * PostProcessor handle @SentinelRestTemplate Annotation, add interceptor for RestTemplate
@@ -193,6 +193,9 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		// register SentinelProtectInterceptor bean
 		DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext
 				.getAutowireCapableBeanFactory();
+		if (beanFactory.containsBean(interceptorBeanName)) {
+			return;
+		}
 		BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
 				.genericBeanDefinition(SentinelProtectInterceptor.class);
 		beanDefinitionBuilder.addConstructorArgValue(sentinelRestTemplate);
