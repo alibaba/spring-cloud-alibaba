@@ -17,19 +17,7 @@
 
         <dependency>
             <groupId>com.alibaba.fescar</groupId>
-            <artifactId>fescar-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.fescar</groupId>
-            <artifactId>fescar-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.fescar</groupId>
             <artifactId>fescar-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.fescar</groupId>
-            <artifactId>fescar-rm-datasource</artifactId>
         </dependency>
 
         <dependency>

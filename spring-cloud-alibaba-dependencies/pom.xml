@@ -188,22 +188,7 @@
 
             <dependency>
                 <groupId>com.alibaba.fescar</groupId>
-                <artifactId>fescar-core</artifactId>
-                <version>${fescar.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.fescar</groupId>
-                <artifactId>fescar-common</artifactId>
-                <version>${fescar.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.fescar</groupId>
                 <artifactId>fescar-spring</artifactId>
-                <version>${fescar.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.fescar</groupId>
-                <artifactId>fescar-rm-datasource</artifactId>
                 <version>${fescar.version}</version>
             </dependency>
 
