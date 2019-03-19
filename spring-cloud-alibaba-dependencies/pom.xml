@@ -20,7 +20,7 @@
         <sentinel.version>1.4.2</sentinel.version>
         <oss.version>3.1.0</oss.version>
         <fescar.version>0.2.3</fescar.version>
-        <nacos.client.version>1.0.0-RC1</nacos.client.version>
+        <nacos.client.version>1.0.0-RC2</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
