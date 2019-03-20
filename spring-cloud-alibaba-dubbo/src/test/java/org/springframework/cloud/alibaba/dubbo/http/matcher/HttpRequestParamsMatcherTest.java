@@ -77,22 +77,22 @@ public class HttpRequestParamsMatcherTest {
 
         MockClientHttpRequest request = new MockClientHttpRequest();
 
-        request.setURI(URI.create("http://dummy/?a"));
+        request.setURI(URI.create("https://dummy/?a"));
         Assert.assertTrue(matcher.match(request));
-        request.setURI(URI.create("http://dummy/?a&a=1"));
+        request.setURI(URI.create("https://dummy/?a&a=1"));
         Assert.assertTrue(matcher.match(request));
 
         matcher = new HttpRequestParamsMatcher("a  ", "a =1", "b", "b=2");
-        request.setURI(URI.create("http://dummy/?a&a=1&b"));
+        request.setURI(URI.create("https://dummy/?a&a=1&b"));
         Assert.assertTrue(matcher.match(request));
-        request.setURI(URI.create("http://dummy/?a&a=1&b&b=2"));
+        request.setURI(URI.create("https://dummy/?a&a=1&b&b=2"));
         Assert.assertTrue(matcher.match(request));
 
         matcher = new HttpRequestParamsMatcher("a  ", "a =1", "b", "b=2", "b = 3 ");
-        request.setURI(URI.create("http://dummy/?a&a=1&b&b=2&b=3"));
+        request.setURI(URI.create("https://dummy/?a&a=1&b&b=2&b=3"));
         Assert.assertTrue(matcher.match(request));
 
-        request.setURI(URI.create("http://dummy/?d=1"));
+        request.setURI(URI.create("https://dummy/?d=1"));
         Assert.assertFalse(matcher.match(request));
     }
 }

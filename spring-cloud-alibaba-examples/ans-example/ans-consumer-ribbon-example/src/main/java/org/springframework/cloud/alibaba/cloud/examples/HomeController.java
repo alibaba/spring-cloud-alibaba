@@ -40,7 +40,7 @@ public class HomeController {
         LOGGER.info("-----------------consumer调用开始-----------------");
         String param = "Nice to meet you.";
         LOGGER.info("消费者传递参数：" + param);
-        String result = restTemplate.getForObject("http://ans-provider/echo/" + param, String.class);
+        String result = restTemplate.getForObject("https://ans-provider/echo/" + param, String.class);
         LOGGER.info("收到提供者响应：" + result);
         return param + "<br>" + result;
     }

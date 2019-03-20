@@ -72,14 +72,14 @@ public class SentinelFeignTests {
 		FlowRule rule2 = new FlowRule();
 		rule2.setGrade(RuleConstant.FLOW_GRADE_QPS);
 		rule2.setCount(0);
-		rule2.setResource("GET:http://foo-service/echo/{str}");
+		rule2.setResource("GET:https://foo-service/echo/{str}");
 		rule2.setLimitApp("default");
 		rule2.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
 		rule2.setStrategy(RuleConstant.STRATEGY_DIRECT);
 		FlowRule rule3 = new FlowRule();
 		rule3.setGrade(RuleConstant.FLOW_GRADE_QPS);
 		rule3.setCount(0);
-		rule3.setResource("GET:http://bar-service/bar");
+		rule3.setResource("GET:https://bar-service/bar");
 		rule3.setLimitApp("default");
 		rule3.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
 		rule3.setStrategy(RuleConstant.STRATEGY_DIRECT);

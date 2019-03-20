@@ -30,7 +30,7 @@ The following sample illustrates how to register a service to Nacos.
 ----
 <?xml version="1.0" encoding="UTF-8"? >
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>open.source.test</groupId>
@@ -138,7 +138,7 @@ NOTE: Before you start the provider application, please start Nacos first. Refer
 
 === Service EndPoint
 
-spring-cloud-starter-alibaba-nacos-discovery provides an EndPoint, and the address is `http://ip:port/actuator/nacos-discovery`.
+spring-cloud-starter-alibaba-nacos-discovery provides an EndPoint, and the address is `https://ip:port/actuator/nacos-discovery`.
 The EndPoint mainly provides two types of information:
 
     1. Subscribe: Shows the current service subscribers
@@ -240,7 +240,7 @@ public class NacosConsumerApp {
         public String echoAppName(){
             //Access through the combination of LoadBalanceClient and RestTemolate
             ServiceInstance serviceInstance = loadBalancerClient.choose("nacos-provider");
-            String path = String.format("http://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
+            String path = String.format("https://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
             System.out.println("request path:" +path);
             return restTemplate.getForObject(path,String.class);
         }
@@ -266,7 +266,7 @@ so that the current application name can be displayed when calling the service o
 
 NOTE: Please start Nacos before you start the consumer application. For details, please refer to https://nacos.io/zh-cn/docs/quick-start.html[Nacos Website].
 
-Next, access the `http://ip:port/echo/app-name` interface provided by the consumer. Here we started the port of 8082. The access result is shown below：
+Next, access the `https://ip:port/echo/app-name` interface provided by the consumer. Here we started the port of 8082. The access result is shown below：
 
  Address：http://127.0.0.1:8082/echo/app-name
  Access result： Hello Nacos Discovery nacos-consumer

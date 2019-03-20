@@ -122,7 +122,7 @@ Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon �
 		
 		    @RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
 		    public String rest(@PathVariable String str) {
-		        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
+		        return restTemplate.getForObject("https://service-provider/echo/" + str, String.class);
 		    }
 		    @RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
 		    public String feign(@PathVariable String str) {

@@ -37,7 +37,7 @@ public class OssAutoConfigurationTests {
 			.withConfiguration(AutoConfigurations.of(OssContextAutoConfiguration.class))
 			.withPropertyValues("spring.cloud.alicloud.accessKey=your-ak",
 					"spring.cloud.alicloud.secretKey=your-sk",
-					"spring.cloud.alicloud.oss.endpoint=http://oss-cn-beijing.aliyuncs.com",
+					"spring.cloud.alicloud.oss.endpoint=https://oss-cn-beijing.aliyuncs.com",
 					"spring.cloud.alicloud.oss.config.userAgent=alibaba",
 					"spring.cloud.alicloud.oss.sts.access-key=your-sts-ak",
 					"spring.cloud.alicloud.oss.sts.secret-key=your-sts-sk",
@@ -53,7 +53,7 @@ public class OssAutoConfigurationTests {
 			assertThat(aliCloudProperties.getAccessKey()).isEqualTo("your-ak");
 			assertThat(aliCloudProperties.getSecretKey()).isEqualTo("your-sk");
 			assertThat(ossProperties.getEndpoint())
-					.isEqualTo("http://oss-cn-beijing.aliyuncs.com");
+					.isEqualTo("https://oss-cn-beijing.aliyuncs.com");
 			assertThat(ossProperties.getConfig().getUserAgent()).isEqualTo("alibaba");
 			assertThat(ossProperties.getSts().getAccessKey()).isEqualTo("your-sts-ak");
 			assertThat(ossProperties.getSts().getSecretKey()).isEqualTo("your-sts-sk");
@@ -69,7 +69,7 @@ public class OssAutoConfigurationTests {
 			assertThat(context.getBeanNamesForType(OSS.class)[0]).isEqualTo("ossClient");
 			OSSClient ossClient = (OSSClient) context.getBean(OSS.class);
 			assertThat(ossClient.getEndpoint().toString())
-					.isEqualTo("http://oss-cn-beijing.aliyuncs.com");
+					.isEqualTo("https://oss-cn-beijing.aliyuncs.com");
 			assertThat(ossClient.getClientConfiguration().getUserAgent())
 					.isEqualTo("alibaba");
 			assertThat(
@@ -90,7 +90,7 @@ public class OssAutoConfigurationTests {
 							.isEqualTo("ossClient");
 					OSSClient ossClient = (OSSClient) context.getBean(OSS.class);
 					assertThat(ossClient.getEndpoint().toString())
-							.isEqualTo("http://oss-cn-beijing.aliyuncs.com");
+							.isEqualTo("https://oss-cn-beijing.aliyuncs.com");
 					assertThat(ossClient.getClientConfiguration().getUserAgent())
 							.isEqualTo("alibaba");
 					assertThat(ossClient.getCredentialsProvider().getCredentials()

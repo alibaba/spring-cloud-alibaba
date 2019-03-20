@@ -125,7 +125,7 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 		
 		    @RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
 		    public String rest(@PathVariable String str) {
-		        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
+		        return restTemplate.getForObject("https://service-provider/echo/" + str, String.class);
 		    }
 		    @RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
 		    public String feign(@PathVariable String str) {

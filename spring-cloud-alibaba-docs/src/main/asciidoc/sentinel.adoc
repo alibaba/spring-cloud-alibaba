@@ -137,7 +137,7 @@ class EchoServiceFallback implements EchoService {
 
 NOTE: The resource name policy in the corresponding interface of Feign is：httpmethod:protocol://requesturl. All the attributes in the `@FeignClient` annotation is supported by Sentinel.
 
-The corresponding resource name of the `echo` method in the `EchoService` interface is `GET:http://service-provider/echo/{str}`.
+The corresponding resource name of the `echo` method in the `EchoService` interface is `GET:https://service-provider/echo/{str}`.
 
 ### RestTemplate Support
 

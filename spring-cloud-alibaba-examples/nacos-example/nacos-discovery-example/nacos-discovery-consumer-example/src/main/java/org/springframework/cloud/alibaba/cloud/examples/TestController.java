@@ -26,7 +26,7 @@ public class TestController {
 
 	@RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
 	public String rest(@PathVariable String str) {
-		return restTemplate.getForObject("http://service-provider/echo/" + str,
+		return restTemplate.getForObject("https://service-provider/echo/" + str,
 				String.class);
 	}
 
