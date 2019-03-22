@@ -16,23 +16,26 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.config;
 
-import org.apache.rocketmq.client.log.ClientLogger;
+import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
+import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
-import org.springframework.cloud.stream.binder.rocketmq.consuming.ConsumersManager;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import org.springframework.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @Configuration
+@Import({ RocketMQAutoConfiguration.class,
+		RocketMQBinderHealthIndicatorAutoConfiguration.class })
 @EnableConfigurationProperties({ RocketMQBinderConfigurationProperties.class,
 		RocketMQExtendedBindingProperties.class })
 public class RocketMQBinderAutoConfiguration {
@@ -42,7 +45,7 @@ public class RocketMQBinderAutoConfiguration {
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
 	@Autowired(required = false)
-	private InstrumentationManager instrumentationManager;
+	private RocketMQProperties rocketMQProperties = new RocketMQProperties();
 
 	@Autowired
 	public RocketMQBinderAutoConfiguration(
@@ -50,8 +53,6 @@ public class RocketMQBinderAutoConfiguration {
 			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties) {
 		this.extendedBindingProperties = extendedBindingProperties;
 		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
-		System.setProperty(ClientLogger.CLIENT_LOG_LEVEL,
-				this.rocketBinderConfigurationProperties.getLogLevel());
 	}
 
 	@Bean
@@ -62,18 +63,18 @@ public class RocketMQBinderAutoConfiguration {
 	@Bean
 	public RocketMQMessageChannelBinder rocketMessageChannelBinder(
 			RocketMQTopicProvisioner provisioningProvider,
-			ConsumersManager consumersManager) {
+			InstrumentationManager instrumentationManager) {
 		RocketMQMessageChannelBinder binder = new RocketMQMessageChannelBinder(
-				consumersManager, provisioningProvider,
-				rocketBinderConfigurationProperties, instrumentationManager);
+				provisioningProvider, extendedBindingProperties,
+				rocketBinderConfigurationProperties, rocketMQProperties,
+				instrumentationManager);
 		binder.setExtendedBindingProperties(extendedBindingProperties);
 		return binder;
 	}
 
 	@Bean
-	public ConsumersManager consumersManager() {
-		return new ConsumersManager(instrumentationManager,
-				rocketBinderConfigurationProperties);
+	public InstrumentationManager instrumentationManager() {
+		return new InstrumentationManager();
 	}
 
 }

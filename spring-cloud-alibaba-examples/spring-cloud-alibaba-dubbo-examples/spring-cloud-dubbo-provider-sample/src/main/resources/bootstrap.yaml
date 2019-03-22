@@ -4,6 +4,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+
   # default disable all
   cloud:
     nacos:
@@ -40,7 +41,7 @@ eureka:
   client:
     enabled: true
     service-url:
-      defaultZone: http://127.0.0.1:9090/eureka/
+      defaultZone: http://127.0.0.1:8761/eureka/
 
 
 ---

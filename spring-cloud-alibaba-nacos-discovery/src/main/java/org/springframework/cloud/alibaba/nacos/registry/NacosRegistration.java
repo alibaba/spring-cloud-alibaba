@@ -40,6 +40,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	public static final String MANAGEMENT_PORT = "management.port";
 	public static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
 	public static final String MANAGEMENT_ADDRESS = "management.address";
+	public static final String MANAGEMENT_ENDPOINT_BASE_PATH = "management.endpoints.web.base-path";
 
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
@@ -54,10 +55,16 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	@PostConstruct
 	public void init() {
 
+		Map<String, String> metadata = nacosDiscoveryProperties.getMetadata();
 		Environment env = context.getEnvironment();
+
+		String endpointBasePath = env.getProperty(MANAGEMENT_ENDPOINT_BASE_PATH);
+		if (!StringUtils.isEmpty(endpointBasePath)) {
+			metadata.put(MANAGEMENT_ENDPOINT_BASE_PATH, endpointBasePath);
+		}
+
 		Integer managementPort = ManagementServerPortUtils.getPort(context);
 		if (null != managementPort) {
-			Map<String, String> metadata = nacosDiscoveryProperties.getMetadata();
 			metadata.put(MANAGEMENT_PORT, managementPort.toString());
 			String contextPath = env
 					.getProperty("management.server.servlet.context-path");

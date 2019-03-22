@@ -33,8 +33,7 @@ import java.util.*;
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(NacosDiscoveryClient.class);
+	private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryClient.class);
 	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
 	private NacosDiscoveryProperties discoveryProperties;
@@ -67,11 +66,12 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		nacosServiceInstance.setHost(instance.getIp());
 		nacosServiceInstance.setPort(instance.getPort());
 		nacosServiceInstance.setServiceId(serviceId);
+
 		Map<String, String> metadata = new HashMap<>();
-		metadata.put("instanceId", instance.getInstanceId());
-		metadata.put("weight", instance.getWeight() + "");
-		metadata.put("healthy", instance.isHealthy() + "");
-		metadata.put("cluster", instance.getClusterName() + "");
+		metadata.put("nacos.instanceId", instance.getInstanceId());
+		metadata.put("nacos.weight", instance.getWeight() + "");
+		metadata.put("nacos.healthy", instance.isHealthy() + "");
+		metadata.put("nacos.cluster", instance.getClusterName() + "");
 		metadata.putAll(instance.getMetadata());
 		nacosServiceInstance.setMetadata(metadata);
 
@@ -100,7 +100,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 			return services.getData();
 		}
 		catch (Exception e) {
-			LOGGER.error("get service name from nacos server fail,", e);
+			log.error("get service name from nacos server fail,", e);
 			return Collections.emptyList();
 		}
 	}

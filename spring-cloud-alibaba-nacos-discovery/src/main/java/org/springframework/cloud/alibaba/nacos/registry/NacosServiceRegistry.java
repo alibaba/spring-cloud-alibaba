@@ -18,7 +18,6 @@ package org.springframework.cloud.alibaba.nacos.registry;
 
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
@@ -32,7 +31,7 @@ import org.springframework.util.StringUtils;
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
-	private static Logger logger = LoggerFactory.getLogger(NacosServiceRegistry.class);
+	private static final Logger log = LoggerFactory.getLogger(NacosServiceRegistry.class);
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
@@ -47,7 +46,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	public void register(Registration registration) {
 
 		if (StringUtils.isEmpty(registration.getServiceId())) {
-			logger.info("No service to register for nacos client...");
+			log.warn("No service to register for nacos client...");
 			return;
 		}
 
@@ -62,11 +61,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		try {
 			namingService.registerInstance(serviceId, instance);
-			logger.info("nacos registry, {} {}:{} register finished", serviceId,
+			log.info("nacos registry, {} {}:{} register finished", serviceId,
 					instance.getIp(), instance.getPort());
 		}
 		catch (Exception e) {
-			logger.error("nacos registry, {} register failed...{},", serviceId,
+			log.error("nacos registry, {} register failed...{},", serviceId,
 					registration.toString(), e);
 		}
 	}
@@ -74,10 +73,10 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	@Override
 	public void deregister(Registration registration) {
 
-		logger.info("De-registering from Nacos Server now...");
+		log.info("De-registering from Nacos Server now...");
 
 		if (StringUtils.isEmpty(registration.getServiceId())) {
-			logger.info("No dom to de-register for nacos client...");
+			log.warn("No dom to de-register for nacos client...");
 			return;
 		}
 
@@ -89,11 +88,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 					registration.getPort(), nacosDiscoveryProperties.getClusterName());
 		}
 		catch (Exception e) {
-			logger.error("ERR_NACOS_DEREGISTER, de-register failed...{},",
+			log.error("ERR_NACOS_DEREGISTER, de-register failed...{},",
 					registration.toString(), e);
 		}
 
-		logger.info("De-registration finished.");
+		log.info("De-registration finished.");
 	}
 
 	@Override

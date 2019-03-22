@@ -15,12 +15,12 @@
  */
 package org.springframework.cloud.alicloud.sms.endpoint;
 
+import java.util.Map;
+
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
-import java.util.Map;
-
-@Endpoint(id = "sms-info")
+@Endpoint(id = "sms")
 public class SmsEndpoint {
 
 	@ReadOperation

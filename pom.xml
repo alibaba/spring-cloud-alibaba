@@ -2,7 +2,7 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -22,7 +22,7 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -62,6 +62,10 @@
             <organization>Alibaba</organization>
             <url>https://github.com/mercyblitz</url>
         </developer>
+		<developer>
+            <name>yunzheng</name>
+            <email>yunzheng1228@gmail.com</email>
+        </developer>
     </developers>
 
     <properties>
@@ -70,6 +74,7 @@
         <spring-cloud-netflix.version>2.1.0.RELEASE</spring-cloud-netflix.version>
         <spring-cloud-openfeign.version>2.1.0.RELEASE</spring-cloud-openfeign.version>
         <spring-cloud-bus.version>2.1.0.RELEASE</spring-cloud-bus.version>
+        <spring-cloud-gateway.version>2.1.0.RELEASE</spring-cloud-gateway.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -164,6 +169,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-bus-dependencies</artifactId>
                 <version>${spring-cloud-bus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-gateway-dependencies</artifactId>
+                <version>${spring-cloud-gateway.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

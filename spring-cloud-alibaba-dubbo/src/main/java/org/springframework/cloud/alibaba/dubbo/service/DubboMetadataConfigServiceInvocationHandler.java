@@ -16,7 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import com.alibaba.dubbo.rpc.service.GenericService;
+import org.apache.dubbo.rpc.service.GenericService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

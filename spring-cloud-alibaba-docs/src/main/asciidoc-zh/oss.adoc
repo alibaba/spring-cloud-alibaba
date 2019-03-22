@@ -4,24 +4,7 @@ OSS（Object Storage Service）是阿里云的一款对象存储服务产品， 
 
 === 如何引入 Spring Cloud AliCloud OSS
 
-Spring Cloud Alibaba 已经发布了0.2.0版本，需要首先导入依赖管理POM。
-
-[source,xml]
-----
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.2.BUILD-SNAPSHOT</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-----
-
-接下来引入 Spring Cloud AliCloud OSS Starter 即可。
+如果要在您的项目中引入 OSS，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-oss` 的 starter。
 
 [source,xml]
 ----

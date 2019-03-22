@@ -16,13 +16,13 @@
  */
 package org.springframework.cloud.alibaba.dubbo.registry;
 
-import com.alibaba.dubbo.common.Constants;
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.common.utils.NetUtils;
-
+import org.apache.dubbo.common.Constants;
+import org.apache.dubbo.common.URL;
+import org.springframework.cloud.alibaba.dubbo.registry.handler.DubboRegistryServiceIdHandler;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.LinkedHashMap;
 
@@ -30,20 +30,39 @@ import java.util.LinkedHashMap;
  * Abstract {@link RegistrationFactory} implementation
  * <p>
  *
- * @param <T> The subclass of {@link Registration}
+ * @param <R> The subclass of {@link Registration}
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public abstract class AbstractRegistrationFactory<T extends Registration> implements RegistrationFactory<T> {
+public abstract class AbstractRegistrationFactory<R extends Registration> implements RegistrationFactory<R> {
 
-    protected ServiceInstance createServiceInstance(String serviceName, URL url) {
+    public final R create(URL url, ConfigurableApplicationContext applicationContext) {
+        ServiceInstance serviceInstance = createServiceInstance(url, applicationContext);
+        return create(serviceInstance, applicationContext);
+    }
+
+    /**
+     * Create an instance {@link ServiceInstance}. This method maybe override by sub-class.
+     *
+     * @param url                The Dubbo's {@link URL}
+     * @param applicationContext {@link ConfigurableApplicationContext}
+     * @return an instance {@link ServiceInstance}
+     */
+    protected ServiceInstance createServiceInstance(URL url, ConfigurableApplicationContext applicationContext) {
+        String serviceId = createServiceId(url, applicationContext);
         // Append default category if absent
         String category = url.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
         URL newURL = url.addParameter(Constants.CATEGORY_KEY, category);
         newURL = newURL.addParameter(Constants.PROTOCOL_KEY, url.getProtocol());
-        String ip = NetUtils.getLocalHost();
+        String ip = url.getIp();
         int port = newURL.getParameter(Constants.BIND_PORT_KEY, url.getPort());
-        DefaultServiceInstance serviceInstance = new DefaultServiceInstance(url.toIdentityString(), serviceName, ip, port, false);
+        DefaultServiceInstance serviceInstance = new DefaultServiceInstance(url.toIdentityString(), serviceId, ip, port, false);
         serviceInstance.getMetadata().putAll(new LinkedHashMap<>(newURL.getParameters()));
         return serviceInstance;
     }
+
+    protected String createServiceId(URL url, ConfigurableApplicationContext applicationContext) {
+        DubboRegistryServiceIdHandler handler = applicationContext.getBean(DubboRegistryServiceIdHandler.class);
+        return handler.createServiceId(url);
+    }
 }
+

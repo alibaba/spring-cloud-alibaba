@@ -26,12 +26,22 @@ import org.springframework.cloud.bus.event.RemoteApplicationEvent;
  */
 public class UserRemoteApplicationEvent extends RemoteApplicationEvent {
 
-    public UserRemoteApplicationEvent(User user, String originService,
+    private User user;
+
+    public UserRemoteApplicationEvent() {
+    }
+
+    public UserRemoteApplicationEvent(Object source, User user, String originService,
                                       String destinationService) {
-        super(user, originService, destinationService);
+        super(source, originService, destinationService);
+        this.user = user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public User getUser() {
-        return (User) getSource();
+        return user;
     }
 }
