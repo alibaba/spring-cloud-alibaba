@@ -17,14 +17,14 @@
 package org.springframework.cloud.alibaba.dubbo.openfeign;
 
 
+import org.apache.dubbo.rpc.service.GenericService;
+
 import feign.Contract;
 import feign.Target;
-import org.apache.dubbo.rpc.service.GenericService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
@@ -150,9 +150,9 @@ class TargeterInvocationHandler implements InvocationHandler {
             DubboServiceMetadata dubboServiceMetadata = repository.get(serviceName, feignRequestMetadata);
             if (dubboServiceMetadata != null) {
                 DubboTransportedMethodMetadata dubboTransportedMethodMetadata = entry.getKey();
-                DubboTransportedMetadata dubboTransportedMetadata = dubboTransportedMethodMetadata.getDubboTransportedMetadata();
+                Map<String, Object> dubboTranslatedAttributes = dubboTransportedMethodMetadata.getAttributes();
                 Method method = dubboTransportedMethodMetadata.getMethod();
-                GenericService dubboGenericService = dubboGenericServiceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
+                GenericService dubboGenericService = dubboGenericServiceFactory.create(dubboServiceMetadata, dubboTranslatedAttributes);
                 RestMethodMetadata dubboRestMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
                 MethodMetadata methodMetadata = dubboTransportedMethodMetadata.getMethodMetadata();
                 FeignMethodMetadata feignMethodMetadata = new FeignMethodMetadata(dubboGenericService,
