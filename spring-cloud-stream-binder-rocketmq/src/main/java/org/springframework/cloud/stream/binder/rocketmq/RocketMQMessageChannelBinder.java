@@ -27,7 +27,6 @@ import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQUtil;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
-import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
@@ -57,8 +56,7 @@ public class RocketMQMessageChannelBinder extends
 		implements
 		ExtendedPropertiesBinder<MessageChannel, RocketMQConsumerProperties, RocketMQProducerProperties> {
 
-	private RocketMQExtendedBindingProperties extendedBindingProperties = new RocketMQExtendedBindingProperties();
-
+	private final RocketMQExtendedBindingProperties extendedBindingProperties;
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 	private final RocketMQProperties rocketMQProperties;
 	private final InstrumentationManager instrumentationManager;
@@ -71,10 +69,10 @@ public class RocketMQMessageChannelBinder extends
 			RocketMQProperties rocketMQProperties,
 			InstrumentationManager instrumentationManager) {
 		super(null, provisioningProvider);
-		this.extendedBindingProperties = extendedBindingProperties;
 		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
 		this.rocketMQProperties = rocketMQProperties;
 		this.instrumentationManager = instrumentationManager;
+		this.extendedBindingProperties = extendedBindingProperties;
 	}
 
 	@Override
@@ -83,7 +81,7 @@ public class RocketMQMessageChannelBinder extends
 			MessageChannel errorChannel) throws Exception {
 		if (producerProperties.getExtension().getEnabled()) {
 
-		    // if producerGroup is empty, using destination
+			// if producerGroup is empty, using destination
 			String extendedProducerGroup = producerProperties.getExtension().getGroup();
 			String producerGroup = StringUtils.isEmpty(extendedProducerGroup)
 					? destination.getName()
@@ -218,21 +216,6 @@ public class RocketMQMessageChannelBinder extends
 
 	public Map<String, String> getTopicInUse() {
 		return topicInUse;
-	}
-
-	@Override
-	public String getDefaultsPrefix() {
-		return extendedBindingProperties.getDefaultsPrefix();
-	}
-
-	@Override
-	public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
-		return extendedBindingProperties.getExtendedPropertiesEntryClass();
-	}
-
-	public void setExtendedBindingProperties(
-			RocketMQExtendedBindingProperties extendedBindingProperties) {
-		this.extendedBindingProperties = extendedBindingProperties;
 	}
 
 }

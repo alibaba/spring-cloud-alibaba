@@ -68,7 +68,6 @@ public class RocketMQBinderAutoConfiguration {
 				provisioningProvider, extendedBindingProperties,
 				rocketBinderConfigurationProperties, rocketMQProperties,
 				instrumentationManager);
-		binder.setExtendedBindingProperties(extendedBindingProperties);
 		return binder;
 	}
 

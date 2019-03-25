@@ -17,8 +17,8 @@
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
         <module>spring-cloud-starter-alibaba-sentinel</module>
         <module>spring-cloud-starter-alibaba-fescar</module>
-        <!--<module>spring-cloud-starter-stream-rocketmq</module>-->
-        <!--<module>spring-cloud-starter-bus-rocketmq</module>-->
+        <module>spring-cloud-starter-stream-rocketmq</module>
+        <module>spring-cloud-starter-bus-rocketmq</module>
         <!--<module>spring-cloud-starter-dubbo</module>-->
     </modules>
 </project>
