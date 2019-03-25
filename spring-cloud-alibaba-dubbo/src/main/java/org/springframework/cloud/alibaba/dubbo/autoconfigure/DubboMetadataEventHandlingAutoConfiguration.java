@@ -22,10 +22,10 @@ import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -49,8 +49,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
-
-import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration.METADATA_PROTOCOL_BEAN_NAME;
+import java.util.function.Supplier;
 
 /**
  * The Auto-Configuration class for Dubbo metadata {@link EventListener event handling}.
@@ -73,8 +72,7 @@ public class DubboMetadataEventHandlingAutoConfiguration {
     private ApplicationConfig applicationConfig;
 
     @Autowired
-    @Qualifier(METADATA_PROTOCOL_BEAN_NAME)
-    private ProtocolConfig metadataProtocolConfig;
+    private Supplier<ProtocolConfig> protocolConfigSupplier;
 
     @Autowired
     private ConfigurableApplicationContext context;
@@ -190,7 +188,7 @@ public class DubboMetadataEventHandlingAutoConfiguration {
         serviceConfig.setVersion(currentApplicationName);
         serviceConfig.setRef(dubboMetadataConfigService);
         serviceConfig.setApplication(applicationConfig);
-        serviceConfig.setProtocol(metadataProtocolConfig);
+        serviceConfig.setProtocol(protocolConfigSupplier.get());
 
         serviceConfig.export();
 
