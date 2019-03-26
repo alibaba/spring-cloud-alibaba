@@ -3,7 +3,7 @@
 随着社区的回馈，发现 Spring Cloud Alibaba Nacos Config Starter 目前不能完美的来支持多个应用间的一些共享配置。
 在实际的业务场景中应用和共享配置间的关系可能如下图所示：
 
-image::http://edas.oss-cn-hangzhou.aliyuncs.com/sca/sca_shared_01.png[]
+image::https://edas.oss-cn-hangzhou.aliyuncs.com/sca/sca_shared_01.png[]
 
 * 从单个应用的角度来看： 应用可能会有多套(develop/beta/product)发布环境，多套发布环境之间有不同的基础配置，例如数据库。
 * 从多个应用的角度来看：多个应用间可能会有一些共享通用的配置，比如多个应用之间共用一套zookeeper集群。
@@ -31,7 +31,7 @@ spring.application.group=com.alibaba.aliware.edas
 com.alibaba.aliware 这个应用分组(域)，当然也可以属于 com.alibaba.aliware.edas 这个应用分组(域)。
 罗里吧嗦了这么多，目的就是 Data Id 通过以这个分组(域)来命名，从而实现多个应用间在某个分组(域)下的共享配置。如下图所示：
 
-image::http://edas.oss-cn-hangzhou.aliyuncs.com/sca/sca_shared_02.png[]
+image::https://edas.oss-cn-hangzhou.aliyuncs.com/sca/sca_shared_02.png[]
 
 以这种方式来实现多个应用间的配置共享，可以看出他具有天然的局限性。
 
@@ -64,7 +64,7 @@ NOTE: 为了尽可能的和Nacos使用方式(即Data Id 是一个带有额外文
 
 这个时候两个应用(或多个应用)之间共享配置的 Data Id 关系如下图所示：
 
-image::http://edas.oss-cn-hangzhou.aliyuncs.com/sca/sca_shared_03.png[]
+image::https://edas.oss-cn-hangzhou.aliyuncs.com/sca/sca_shared_03.png[]
 
 Spring Boot 提倡约定大于配置。当使用这种方式来实现应用间的共享配置时，我们也继承了Spring Boot的这个优良传统，多个共享配置间的一个优先级的关系我们约定：按照配置出现的先后顺序，即后面的优先级要高于前面的。
 这种方式的优点在于：

@@ -140,7 +140,7 @@ By default, Nacos Config Starter adds a listening function to all Nacos configur
 		
 If you need to dynamically refresh a bean, please refer to the Spring and Spring Cloud specifications. It is recommended to add `@RefreshScope` or `@ConfigurationProperties ` annotations to the class.
 
-Please refer to[ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
+Please refer to[ContextRefresher Java Doc](https://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
 
 	
 
