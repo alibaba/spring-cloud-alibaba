@@ -128,7 +128,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 			}
 			finally {
 				if (entry != null) {
-					entry.exit();
+					entry.exit(1, args);
 				}
 				ContextUtil.exit();
 			}
