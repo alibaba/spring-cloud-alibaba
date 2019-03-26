@@ -44,6 +44,9 @@ public class ZookeeperRegistrationFactory extends AbstractRegistrationFactory<Zo
                 .port(serviceInstance.getPort())
                 .build();
 
+        // To trigger build() method
+        registration.getServiceInstance();
+
         return registration;
     }
 }
