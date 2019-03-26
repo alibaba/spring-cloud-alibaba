@@ -106,9 +106,9 @@ public class SentinelAutoConfigurationTests {
 	@LocalServerPort
 	private int port;
 
-    private String flowUrl = "http://localhost:" + port + "/flow";
+	private String flowUrl = "http://localhost:" + port + "/flow";
 
-    private String degradeUrl = "http://localhost:" + port + "/degrade";
+	private String degradeUrl = "http://localhost:" + port + "/degrade";
 
 	@Before
 	public void setUp() {
@@ -249,14 +249,15 @@ public class SentinelAutoConfigurationTests {
 				restTemplate.getInterceptors().size());
 		assertEquals("RestTemplateWithBlockClass interceptors size was wrong", 1,
 				restTemplateWithBlockClass.getInterceptors().size());
-		ResponseEntity responseEntityBlock = restTemplateWithBlockClass.getForEntity(flowUrl,
-				String.class);
+		ResponseEntity responseEntityBlock = restTemplateWithBlockClass
+				.getForEntity(flowUrl, String.class);
 		assertEquals("RestTemplateWithBlockClass Sentinel Block Message was wrong",
 				"Oops", responseEntityBlock.getBody());
 		assertEquals(
 				"RestTemplateWithBlockClass Sentinel Block Http Status Code was wrong",
 				HttpStatus.OK, responseEntityBlock.getStatusCode());
-		ResponseEntity responseEntityRaw = restTemplate.getForEntity(flowUrl, String.class);
+		ResponseEntity responseEntityRaw = restTemplate.getForEntity(flowUrl,
+				String.class);
 		assertEquals("RestTemplate Sentinel Block Message was wrong",
 				"RestTemplate request block by sentinel", responseEntityRaw.getBody());
 		assertEquals("RestTemplate Sentinel Block Http Status Code was wrong",
