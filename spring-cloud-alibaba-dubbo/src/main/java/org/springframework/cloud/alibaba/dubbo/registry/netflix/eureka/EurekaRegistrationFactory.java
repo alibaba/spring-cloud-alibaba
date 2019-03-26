@@ -49,6 +49,7 @@ public class EurekaRegistrationFactory extends AbstractRegistrationFactory<Eurek
         eurekaInstanceConfigBean.setSecureVirtualHostName(serviceId);
         eurekaInstanceConfigBean.setAppname(serviceId);
         eurekaInstanceConfigBean.setHostname(serviceInstance.getHost());
+        eurekaInstanceConfigBean.setNonSecurePort(serviceInstance.getPort());
         eurekaInstanceConfigBean.setMetadataMap(serviceInstance.getMetadata());
 
         return EurekaRegistration.builder(eurekaInstanceConfigBean)

@@ -16,10 +16,12 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import feign.Contract;
 import org.apache.dubbo.config.ProtocolConfig;
+
+import feign.Contract;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboProtocolConfigSupplier;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
@@ -31,9 +33,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import java.util.Collection;
-import java.util.Iterator;
-
-import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import java.util.function.Supplier;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata
@@ -44,43 +44,15 @@ import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
 @Import({DubboServiceMetadataRepository.class, PublishingDubboMetadataConfigService.class})
 public class DubboMetadataAutoConfiguration {
 
-    public static final String METADATA_PROTOCOL_BEAN_NAME = "metadata";
-
     @Bean
     @ConditionalOnMissingBean
     public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
         return new DubboServiceBeanMetadataResolver(contract);
     }
 
-    /**
-     * Build an alias Bean for {@link ProtocolConfig}
-     *
-     * @param protocols {@link ProtocolConfig} Beans
-     * @return {@link ProtocolConfig} bean
-     */
-    @Bean(name = METADATA_PROTOCOL_BEAN_NAME)
-    public ProtocolConfig protocolConfig(Collection<ProtocolConfig> protocols) {
-        ProtocolConfig protocolConfig = null;
-        for (ProtocolConfig protocol : protocols) {
-            String protocolName = protocol.getName();
-            if (DEFAULT_PROTOCOL.equals(protocolName)) {
-                protocolConfig = protocol;
-                break;
-            }
-        }
-
-        if (protocolConfig == null) { // If The ProtocolConfig bean named "dubbo" is absent, take first one of them
-            Iterator<ProtocolConfig> iterator = protocols.iterator();
-            protocolConfig = iterator.hasNext() ? iterator.next() : null;
-        }
-
-        if (protocolConfig == null) {
-            protocolConfig = new ProtocolConfig();
-            protocolConfig.setName(DEFAULT_PROTOCOL);
-            protocolConfig.setPort(20880);
-        }
-
-        return protocolConfig;
+    @Bean
+    public Supplier<ProtocolConfig> dubboProtocolConfigSupplier(Collection<ProtocolConfig> protocols) {
+        return new DubboProtocolConfigSupplier(protocols);
     }
 
     @Bean
