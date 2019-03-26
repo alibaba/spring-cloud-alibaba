@@ -39,7 +39,7 @@ import com.aliyun.oss.OSSClient;
 		OssContextAutoConfiguration.class }, properties = {
 				"spring.cloud.alicloud.accessKey=your-ak",
 				"spring.cloud.alicloud.secretKey=your-sk",
-				"spring.cloud.alicloud.oss.endpoint=http://oss-cn-beijing.aliyuncs.com",
+				"spring.cloud.alicloud.oss.endpoint=https://oss-cn-beijing.aliyuncs.com",
 				"spring.cloud.alicloud.oss.config.userAgent=alibaba" })
 public class OssLoadTests {
 
@@ -57,14 +57,14 @@ public class OssLoadTests {
 		assertThat(aliCloudProperties.getAccessKey()).isEqualTo("your-ak");
 		assertThat(aliCloudProperties.getSecretKey()).isEqualTo("your-sk");
 		assertThat(ossProperties.getEndpoint())
-				.isEqualTo("http://oss-cn-beijing.aliyuncs.com");
+				.isEqualTo("https://oss-cn-beijing.aliyuncs.com");
 		assertThat(ossProperties.getConfig().getUserAgent()).isEqualTo("alibaba");
 	}
 
 	@Test
 	public void testClient() {
 		assertThat(ossClient.getEndpoint().toString())
-				.isEqualTo("http://oss-cn-beijing.aliyuncs.com");
+				.isEqualTo("https://oss-cn-beijing.aliyuncs.com");
 		assertThat(ossClient.getClientConfiguration().getUserAgent())
 				.isEqualTo("alibaba");
 		assertThat(ossClient.getCredentialsProvider().getCredentials().getAccessKeyId())

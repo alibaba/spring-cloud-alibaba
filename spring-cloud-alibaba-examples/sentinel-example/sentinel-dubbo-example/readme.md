@@ -5,7 +5,7 @@ This example illustrates how to use Sentinel starter to implement flow control f
 
 [Sentinel](https://github.com/alibaba/Sentinel) is an open-source project of Alibaba. Sentinel takes "traffic flow" as the breakthrough point, and provides solutions in areas such as flow control, concurrency, circuit breaking, and load protection to protect service stability.
 
-[Dubbo](http://dubbo.apache.org/) is a high-performance, java based open source RPC framework.
+[Dubbo](https://dubbo.apache.org/) is a high-performance, java based open source RPC framework.
 
 This example focus on the integration of Sentinel and Dubbo. You can see more features on [sentinel-core-example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example).
 

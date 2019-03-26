@@ -30,7 +30,7 @@ public class TestController {
 
 	@RequestMapping(value = "/template", method = RequestMethod.GET)
 	public String client() {
-		return restTemplate.getForObject("http://www.taobao.com/test", String.class);
+		return restTemplate.getForObject("https://www.taobao.com/test", String.class);
 	}
 
 }
