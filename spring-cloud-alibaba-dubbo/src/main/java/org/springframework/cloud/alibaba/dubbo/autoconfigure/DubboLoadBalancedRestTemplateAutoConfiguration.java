@@ -28,8 +28,8 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 import org.springframework.cloud.alibaba.dubbo.client.loadbalancer.DubboMetadataInitializerInterceptor;
 import org.springframework.cloud.alibaba.dubbo.client.loadbalancer.DubboTransporterInterceptor;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboTransportedAttributesResolver;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -86,6 +86,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
 
     private ClassLoader classLoader;
 
+
     /**
      * Adapt the {@link RestTemplate} beans that are annotated  {@link LoadBalanced @LoadBalanced} and
      * {@link LoadBalanced @LoadBalanced} when Spring Boot application started
@@ -94,9 +95,12 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
      */
     @EventListener(ApplicationStartedEvent.class)
     public void adaptRestTemplates() {
+
+        DubboTransportedAttributesResolver attributesResolver = new DubboTransportedAttributesResolver(environment);
+
         for (Map.Entry<String, RestTemplate> entry : restTemplates.entrySet()) {
             String beanName = entry.getKey();
-            Map<String, Object> dubboTranslatedAttributes = getDubboTranslatedAttributes(beanName);
+            Map<String, Object> dubboTranslatedAttributes = getDubboTranslatedAttributes(beanName, attributesResolver);
             if (!CollectionUtils.isEmpty(dubboTranslatedAttributes)) {
                 adaptRestTemplate(entry.getValue(), dubboTranslatedAttributes);
             }
@@ -107,10 +111,12 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
      * Gets the annotation attributes {@link RestTemplate} bean being annotated
      * {@link DubboTransported @DubboTransported}
      *
-     * @param beanName the bean name of {@link LoadBalanced @LoadBalanced} {@link RestTemplate}
+     * @param beanName           the bean name of {@link LoadBalanced @LoadBalanced} {@link RestTemplate}
+     * @param attributesResolver {@link DubboTransportedAttributesResolver}
      * @return non-null {@link Map}
      */
-    private Map<String, Object> getDubboTranslatedAttributes(String beanName) {
+    private Map<String, Object> getDubboTranslatedAttributes(String beanName,
+                                                             DubboTransportedAttributesResolver attributesResolver) {
         Map<String, Object> attributes = Collections.emptyMap();
         BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
         if (beanDefinition instanceof AnnotatedBeanDefinition) {
@@ -119,7 +125,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
             attributes = factoryMethodMetadata != null ?
                     factoryMethodMetadata.getAnnotationAttributes(DUBBO_TRANSPORTED_CLASS_NAME) : Collections.emptyMap();
         }
-        return attributes;
+        return attributesResolver.resolve(attributes);
     }
 
 
@@ -132,8 +138,6 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
      */
     private void adaptRestTemplate(RestTemplate restTemplate, Map<String, Object> dubboTranslatedAttributes) {
 
-        DubboTransportedMetadata dubboTransportedMetadata = buildDubboTransportedMetadata(dubboTranslatedAttributes);
-
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(restTemplate.getInterceptors());
 
         int index = interceptors.indexOf(loadBalancerInterceptor);
@@ -144,19 +148,9 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
         interceptors.add(index++, new DubboMetadataInitializerInterceptor(repository));
 
         interceptors.add(index++, new DubboTransporterInterceptor(repository, restTemplate.getMessageConverters(),
-                classLoader, dubboTransportedMetadata, serviceFactory, contextFactory));
+                classLoader, dubboTranslatedAttributes, serviceFactory, contextFactory));
 
         restTemplate.setInterceptors(interceptors);
-    }
-
-    private DubboTransportedMetadata buildDubboTransportedMetadata(Map<String, Object> dubboTranslatedAttributes) {
-        DubboTransportedMetadata dubboTransportedMetadata = new DubboTransportedMetadata();
-        String protocol = (String) dubboTranslatedAttributes.get("protocol");
-        String cluster = (String) dubboTranslatedAttributes.get("cluster");
-        // resolve placeholders
-        dubboTransportedMetadata.setProtocol(environment.resolvePlaceholders(protocol));
-        dubboTransportedMetadata.setCluster(environment.resolvePlaceholders(cluster));
-        return dubboTransportedMetadata;
     }
 
     @Override
