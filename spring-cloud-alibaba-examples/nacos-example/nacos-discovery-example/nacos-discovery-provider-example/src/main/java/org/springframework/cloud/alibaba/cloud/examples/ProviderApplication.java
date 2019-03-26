@@ -25,25 +25,26 @@ public class ProviderApplication {
 	@RestController
 	class EchoController {
 
-        @RequestMapping(value = "/", method = RequestMethod.GET)
-        public ResponseEntity index() {
-            return new ResponseEntity("index error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+		@RequestMapping(value = "/", method = RequestMethod.GET)
+		public ResponseEntity index() {
+			return new ResponseEntity("index error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
-        @RequestMapping(value = "/test", method = RequestMethod.GET)
-        public ResponseEntity test() {
-            return new ResponseEntity("error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+		@RequestMapping(value = "/test", method = RequestMethod.GET)
+		public ResponseEntity test() {
+			return new ResponseEntity("error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
-        @RequestMapping(value = "/sleep", method = RequestMethod.GET)
-        public String sleep() {
-            try {
-                Thread.sleep(1000L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return "ok";
-        }
+		@RequestMapping(value = "/sleep", method = RequestMethod.GET)
+		public String sleep() {
+			try {
+				Thread.sleep(1000L);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return "ok";
+		}
 
 		@RequestMapping(value = "/echo/{string}", method = RequestMethod.GET)
 		public String echo(@PathVariable String string) {
