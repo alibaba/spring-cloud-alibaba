@@ -180,9 +180,9 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			throws BeansException {
 		if (cache.containsKey(beanName)) {
 			// add interceptor for each RestTemplate with @SentinelRestTemplate annotation
-			StringBuilder interceptorBeanName = new StringBuilder();
+			StringBuilder interceptorBeanNamePrefix = new StringBuilder();
 			SentinelRestTemplate sentinelRestTemplate = cache.get(beanName);
-			interceptorBeanName
+			interceptorBeanNamePrefix
 					.append(StringUtils.uncapitalize(
 							SentinelProtectInterceptor.class.getSimpleName()))
 					.append("_")
@@ -191,23 +191,25 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 					.append(sentinelRestTemplate.fallbackClass().getSimpleName())
 					.append(sentinelRestTemplate.fallback());
 			RestTemplate restTemplate = (RestTemplate) bean;
-			registerBean(interceptorBeanName.toString(), sentinelRestTemplate);
+			String interceptorBeanName = interceptorBeanNamePrefix + "@"
+					+ bean.toString();
+			registerBean(interceptorBeanName, sentinelRestTemplate, (RestTemplate) bean);
 			SentinelProtectInterceptor sentinelProtectInterceptor = applicationContext
-					.getBean(interceptorBeanName.toString(),
-							SentinelProtectInterceptor.class);
+					.getBean(interceptorBeanName, SentinelProtectInterceptor.class);
 			restTemplate.getInterceptors().add(0, sentinelProtectInterceptor);
 		}
 		return bean;
 	}
 
 	private void registerBean(String interceptorBeanName,
-			SentinelRestTemplate sentinelRestTemplate) {
+			SentinelRestTemplate sentinelRestTemplate, RestTemplate restTemplate) {
 		// register SentinelProtectInterceptor bean
 		DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext
 				.getAutowireCapableBeanFactory();
 		BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
 				.genericBeanDefinition(SentinelProtectInterceptor.class);
 		beanDefinitionBuilder.addConstructorArgValue(sentinelRestTemplate);
+		beanDefinitionBuilder.addConstructorArgValue(restTemplate);
 		BeanDefinition interceptorBeanDefinition = beanDefinitionBuilder
 				.getRawBeanDefinition();
 		beanFactory.registerBeanDefinition(interceptorBeanName,

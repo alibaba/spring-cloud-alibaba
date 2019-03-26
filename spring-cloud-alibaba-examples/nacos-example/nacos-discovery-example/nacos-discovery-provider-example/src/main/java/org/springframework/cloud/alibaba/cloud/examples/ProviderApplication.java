@@ -3,6 +3,8 @@ package org.springframework.cloud.alibaba.cloud.examples;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +24,27 @@ public class ProviderApplication {
 
 	@RestController
 	class EchoController {
+		@RequestMapping(value = "/", method = RequestMethod.GET)
+		public ResponseEntity index() {
+			return new ResponseEntity("index error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		@RequestMapping(value = "/test", method = RequestMethod.GET)
+		public ResponseEntity test() {
+			return new ResponseEntity("error", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		@RequestMapping(value = "/sleep", method = RequestMethod.GET)
+		public String sleep() {
+			try {
+				Thread.sleep(1000L);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return "ok";
+		}
+
 		@RequestMapping(value = "/echo/{string}", method = RequestMethod.GET)
 		public String echo(@PathVariable String string) {
 			return "hello Nacos Discovery " + string;

@@ -1,0 +1,20 @@
+[
+  {
+    "resource": "GET:http://service-provider-1X/test",
+    "count": 0.5,
+    "grade": 1,
+    "timeWindow": 30
+  },
+  {
+    "resource": "GET:http://service-provider-1X",
+    "count": 0.5,
+    "grade": 1,
+    "timeWindow": 10
+  },
+  {
+    "resource": "GET:http://service-provider-1X/sleep",
+    "count": 20.0,
+    "grade": 0,
+    "timeWindow": 30
+  }
+]
