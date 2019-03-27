@@ -14,7 +14,7 @@
 
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>0.2.2.BUILD-SNAPSHOT</version>
+    <version>2.1.0.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
 
