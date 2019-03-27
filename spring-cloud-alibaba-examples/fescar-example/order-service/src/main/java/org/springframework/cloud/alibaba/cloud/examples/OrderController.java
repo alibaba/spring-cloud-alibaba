@@ -16,11 +16,6 @@
 
 package org.springframework.cloud.alibaba.cloud.examples;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Random;
-
 import com.alibaba.fescar.core.context.RootContext;
 
 import org.slf4j.Logger;
@@ -39,6 +34,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Random;
 
 /**
  * @author xiaojing
@@ -94,7 +94,7 @@ public class OrderController {
 			}
 		}, keyHolder);
 
-		order.id = (long) keyHolder.getKey();
+		order.id = keyHolder.getKey().longValue();
 
 		if (random.nextBoolean()) {
 			throw new RuntimeException("this is a mock Exception");

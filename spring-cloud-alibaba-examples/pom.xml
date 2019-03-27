@@ -33,7 +33,6 @@
         <module>acm-example/acm-local-example</module>
         <module>rocketmq-example/rocketmq-consume-example</module>
         <module>rocketmq-example/rocketmq-produce-example</module>
-        <module>env-extension</module>
         <module>sms-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>schedulerx-example/schedulerx-simple-task-example</module>
