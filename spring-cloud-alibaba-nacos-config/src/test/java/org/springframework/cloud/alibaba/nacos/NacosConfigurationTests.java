@@ -60,6 +60,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 		"spring.application.name=myTestService1", "spring.profiles.active=dev,test",
 		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
 		"spring.cloud.nacos.config.endpoint=test-endpoint",
+		"spring.cloud.nacos.config.endpoint-port=8081",
 		"spring.cloud.nacos.config.namespace=test-namespace",
 		"spring.cloud.nacos.config.encode=utf-8",
 		"spring.cloud.nacos.config.timeout=1000",
@@ -153,6 +154,7 @@ public class NacosConfigurationTests {
 
 		checkoutNacosConfigServerAddr();
 		checkoutNacosConfigEndpoint();
+		checkoutNacosConfigEndpointPort();
 		checkoutNacosConfigNamespace();
 		checkoutNacosConfigClusterName();
 		checkoutNacosConfigAccessKey();
@@ -178,6 +180,12 @@ public class NacosConfigurationTests {
 	private void checkoutNacosConfigEndpoint() {
 		assertEquals("NacosConfigProperties endpoint is wrong", "test-endpoint",
 				properties.getEndpoint());
+
+	}
+
+	private void checkoutNacosConfigEndpointPort() {
+		assertEquals("NacosConfigProperties endpoint port is wrong", "8081",
+				properties.getEndpointPort());
 
 	}
 
