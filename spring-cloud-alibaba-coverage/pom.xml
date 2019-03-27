@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-alibaba</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>0.2.2.BUILD-SNAPSHOT</version>
+        <version>2.1.0.BUILD-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,7 @@
     <name>Spring Cloud Alibaba Coverage</name>
 
     <properties>
-        <spring.cloud.alibaba.version>0.2.2.BUILD-SNAPSHOT</spring.cloud.alibaba.version>
+        <spring.cloud.alibaba.version>2.1.0.BUILD-SNAPSHOT</spring.cloud.alibaba.version>
     </properties>
     <dependencies>
         <dependency>

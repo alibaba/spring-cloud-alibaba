@@ -42,12 +42,12 @@ public class DubboTransportedMethodMetadataResolver {
 
     private static final Class<DubboTransported> DUBBO_TRANSPORTED_CLASS = DubboTransported.class;
 
-    private final PropertyResolver propertyResolver;
+    private final DubboTransportedAttributesResolver attributesResolver;
 
     private final Contract contract;
 
     public DubboTransportedMethodMetadataResolver(PropertyResolver propertyResolver, Contract contract) {
-        this.propertyResolver = propertyResolver;
+        this.attributesResolver = new DubboTransportedAttributesResolver(propertyResolver);
         this.contract = contract;
     }
 
@@ -93,12 +93,8 @@ public class DubboTransportedMethodMetadataResolver {
 
     private DubboTransportedMethodMetadata createDubboTransportedMethodMetadata(Method method,
                                                                                 DubboTransported dubboTransported) {
-        DubboTransportedMethodMetadata methodMetadata = new DubboTransportedMethodMetadata(method);
-        String protocol = propertyResolver.resolvePlaceholders(dubboTransported.protocol());
-        String cluster = propertyResolver.resolvePlaceholders(dubboTransported.cluster());
-        methodMetadata.setProtocol(protocol);
-        methodMetadata.setCluster(cluster);
-        return methodMetadata;
+        Map<String, Object> attributes = attributesResolver.resolve(dubboTransported);
+        return new DubboTransportedMethodMetadata(method, attributes);
     }
 
     private DubboTransported resolveDubboTransported(Method method) {

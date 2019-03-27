@@ -10,7 +10,7 @@
     <parent>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>0.2.2.BUILD-SNAPSHOT</version>
+        <version>2.1.0.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

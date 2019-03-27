@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba</artifactId>
-        <version>0.2.2.BUILD-SNAPSHOT</version>
+        <version>2.1.0.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>spring-cloud-starter-alibaba-fescar</artifactId>
     <name>Spring Cloud Starter Alibaba Fescar</name>

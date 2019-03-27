@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>0.2.2.BUILD-SNAPSHOT</version>
+        <version>2.1.0.BUILD-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -35,29 +35,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>cobertura-maven-plugin</artifactId>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <inherited>false</inherited>
-                <configuration>
-                    <skip>true</skip>
-                    <check/>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    
 </project>
