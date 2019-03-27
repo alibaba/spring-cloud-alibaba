@@ -23,33 +23,40 @@ import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
 
+import com.ecwid.consul.v1.agent.model.NewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.event.ApplicationFailedEvent;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
-import org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactory;
+import org.springframework.cloud.alibaba.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigService;
 import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
-import org.springframework.cloud.client.DefaultServiceInstance;
+import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
+import org.springframework.cloud.consul.serviceregistry.ConsulRegistration;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.DUBBO_URLS_METADATA_PROPERTY_NAME;
 
 /**
  * The Auto-Configuration class for Dubbo metadata {@link EventListener event handling}.
@@ -59,6 +66,12 @@ import java.util.function.Supplier;
 @AutoConfigureAfter(value = {DubboMetadataAutoConfiguration.class})
 @Configuration
 public class DubboMetadataEventHandlingAutoConfiguration {
+
+    private static final String CONSUL_REGISTRATION_CLASS_NAME =
+            "org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration";
+
+    private static final String EUREKA_REGISTRATION_CLASS_NAME =
+            "org.springframework.cloud.netflix.eureka.serviceregistry.EurekaAutoServiceRegistration";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -77,57 +90,45 @@ public class DubboMetadataEventHandlingAutoConfiguration {
     @Autowired
     private ConfigurableApplicationContext context;
 
+    @Autowired
+    private DubboServiceMetadataRepository dubboServiceMetadataRepository;
+
+    @Autowired
+    private JSONUtils jsonUtils;
+
     @Value("${spring.application.name:application}")
     private String currentApplicationName;
+
+    @Autowired
+    private ServiceRegistry serviceRegistry;
+
+    private volatile Registration registration;
 
     /**
      * The ServiceConfig of DubboMetadataConfigService to be exported, can be nullable.
      */
     private ServiceConfig<DubboMetadataConfigService> serviceConfig;
 
-    private ServiceInstance restServiceInstance;
-
     @EventListener(ServiceBeanExportedEvent.class)
     public void onServiceBeanExported(ServiceBeanExportedEvent event) {
         ServiceBean serviceBean = event.getServiceBean();
         publishServiceRestMetadata(serviceBean);
-        setRestServiceInstance(serviceBean);
     }
 
-    private void setRestServiceInstance(ServiceBean serviceBean) {
-        List<URL> urls = serviceBean.getExportedUrls();
-        urls.stream()
-                .filter(url -> "rest".equalsIgnoreCase(url.getProtocol()))
-                .forEach(url -> {
-                    String host = url.getIp();
-                    int port = url.getPort();
-
-                    if (restServiceInstance == null) {
-                        String instanceId = currentApplicationName + "-" + host + ":" + port;
-                        this.restServiceInstance = new DefaultServiceInstance(instanceId, currentApplicationName,
-                                host, port, false, new HashMap<>());
-                    } else {
-
-                        if (!host.equals(restServiceInstance.getHost())) {
-                            if (logger.isWarnEnabled()) {
-                                logger.warn("Current application[{}] host is not consistent, expected: {}, actual: {}",
-                                        currentApplicationName, restServiceInstance.getHost(), host);
-                            }
-                        }
-
-                        if (port != restServiceInstance.getPort()) {
-                            if (logger.isWarnEnabled()) {
-                                logger.warn("Current application[{}] port is not consistent, expected: {}, actual: {}",
-                                        currentApplicationName, restServiceInstance.getPort(), port);
-                            }
-                        }
-                    }
-                });
+    @ConditionalOnClass(name = EUREKA_REGISTRATION_CLASS_NAME)
+    @Bean
+    public ApplicationListener<ServiceBeanExportedEvent> onServiceBeanExportedInEureka() {
+        return event -> {
+            reRegister();
+        };
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void onApplicationReady() {
-        exportDubboMetadataConfigService();
+    private void reRegister() {
+        Registration registration = this.registration;
+        if (registration == null) {
+            return;
+        }
+        serviceRegistry.register(registration);
     }
 
     @EventListener(ApplicationFailedEvent.class)
@@ -140,26 +141,60 @@ public class DubboMetadataEventHandlingAutoConfiguration {
         unexportDubboMetadataConfigService();
     }
 
-    @ConditionalOnNotWebApplication
+    @EventListener(ServiceInstancePreRegisteredEvent.class)
+    public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {
+        Registration registration = event.getSource();
+        exportDubboMetadataConfigService();
+        attachURLsIntoMetadata(registration);
+        setRegistration(registration);
+    }
+
+    private void setRegistration(Registration registration) {
+        this.registration = registration;
+    }
+
+    /**
+     * Handle the pre-registered event of {@link ServiceInstance} for Consul
+     *
+     * @return ApplicationListener<ServiceInstancePreRegisteredEvent>
+     */
+    @ConditionalOnClass(name = CONSUL_REGISTRATION_CLASS_NAME)
     @Bean
-    public ApplicationRunner applicationRunner() {
-        return args -> {
-
-            if (restServiceInstance == null) {
-                return;
+    public ApplicationListener<ServiceInstancePreRegisteredEvent> onServiceInstancePreRegisteredInConsul() {
+        return event -> {
+            Registration registration = event.getSource();
+            String registrationClassName = registration.getClass().getName();
+            if (CONSUL_REGISTRATION_CLASS_NAME.equalsIgnoreCase(registrationClassName)) {
+                NewService newService = ((ConsulRegistration) registration).getService();
+                String dubboURLsJson = getDubboURLsJSON();
+                if (StringUtils.hasText(dubboURLsJson)) {
+                    List<String> tags = newService.getTags();
+                    tags.add(DUBBO_URLS_METADATA_PROPERTY_NAME + "=" + dubboURLsJson);
+                }
             }
-
-            // From RegistrationFactoryProvider
-            RegistrationFactory registrationFactory = context.getBean(RegistrationFactory.class);
-
-            ServiceRegistry<Registration> serviceRegistry = context.getBean(ServiceRegistry.class);
-
-            Registration registration = context.getBean(Registration.class);
-
-            restServiceInstance.getMetadata().putAll(registration.getMetadata());
-
-            serviceRegistry.register(registrationFactory.create(restServiceInstance, context));
         };
+    }
+
+    private void attachURLsIntoMetadata(Registration registration) {
+        if (registration == null) {
+            return;
+        }
+        Map<String, String> metadata = registration.getMetadata();
+        String dubboURLsJson = getDubboURLsJSON();
+        if (StringUtils.hasText(dubboURLsJson)) {
+            metadata.put(DUBBO_URLS_METADATA_PROPERTY_NAME, dubboURLsJson);
+        }
+    }
+
+    private String getDubboURLsJSON() {
+        Collection<URL> urls = dubboServiceMetadataRepository.getRegisteredUrls();
+        if (CollectionUtils.isEmpty(urls)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("There is no registered URL to attach into metadata.");
+            }
+            return null;
+        }
+        return jsonUtils.toJSON(urls.stream().map(URL::toFullString).collect(Collectors.toList()));
     }
 
     private void publishServiceRestMetadata(ServiceBean serviceBean) {
