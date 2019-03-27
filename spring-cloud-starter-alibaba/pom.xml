@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.1.2.BUILD-SNAPSHOT</version>
+        <version>1.5.0.BUILD-SNAPSHOT</version>
     </parent>
 
 
