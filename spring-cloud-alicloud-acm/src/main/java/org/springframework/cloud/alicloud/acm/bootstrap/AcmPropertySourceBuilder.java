@@ -18,7 +18,6 @@ package org.springframework.cloud.alicloud.acm.bootstrap;
 
 import com.alibaba.edas.acm.ConfigService;
 import com.alibaba.edas.acm.exception.ConfigException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
