@@ -16,5 +16,11 @@
       "type": "java.lang.Boolean",
       "defaultValue": "false",
       "description": "naming load from local cache at application start ."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.watch.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": "true",
+      "description": "enable nacos discovery watch or not ."
     }
 ]}
