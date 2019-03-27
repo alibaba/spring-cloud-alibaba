@@ -29,12 +29,12 @@ public class ConsumerApplication {
 		return new RestTemplate();
 	}
 
-    @LoadBalanced
-    @Bean
-    @SentinelRestTemplate
-    public RestTemplate restTemplate1() {
-        return new RestTemplate();
-    }
+	@LoadBalanced
+	@Bean
+	@SentinelRestTemplate
+	public RestTemplate restTemplate1() {
+		return new RestTemplate();
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumerApplication.class, args);

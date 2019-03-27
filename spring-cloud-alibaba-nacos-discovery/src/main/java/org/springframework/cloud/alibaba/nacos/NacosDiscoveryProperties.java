@@ -60,6 +60,12 @@ public class NacosDiscoveryProperties {
 	private String endpoint;
 
 	/**
+	 * the domain port of a service, through which the server address can be dynamically
+	 * obtained.
+	 */
+	private String endpointPort;
+
+	/**
 	 * namespace, separation registry of different environments.
 	 */
 	private String namespace;
@@ -335,18 +341,26 @@ public class NacosDiscoveryProperties {
 		this.watchDelay = watchDelay;
 	}
 
+	public String getEndpointPort() {
+		return endpointPort;
+	}
+
+	public void setEndpointPort(String endpointPort) {
+		this.endpointPort = endpointPort;
+	}
+
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
-				+ ", endpoint='" + endpoint + '\'' + ", namespace='" + namespace + '\''
-				+ ", watchDelay=" + watchDelay + ", logName='" + logName + '\''
-				+ ", service='" + service + '\'' + ", weight=" + weight
-				+ ", clusterName='" + clusterName + '\'' + ", namingLoadCacheAtStart='"
-				+ namingLoadCacheAtStart + '\'' + ", metadata=" + metadata
-				+ ", registerEnabled=" + registerEnabled + ", ip='" + ip + '\''
-				+ ", networkInterface='" + networkInterface + '\'' + ", port=" + port
-				+ ", secure=" + secure + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + '}';
+				+ ", endpoint='" + endpoint + '\'' + ", endpointPort='" + endpointPort
+				+ '\'' + ", namespace='" + namespace + '\'' + ", watchDelay=" + watchDelay
+				+ ", logName='" + logName + '\'' + ", service='" + service + '\''
+				+ ", weight=" + weight + ", clusterName='" + clusterName + '\''
+				+ ", namingLoadCacheAtStart='" + namingLoadCacheAtStart + '\''
+				+ ", metadata=" + metadata + ", registerEnabled=" + registerEnabled
+				+ ", ip='" + ip + '\'' + ", networkInterface='" + networkInterface + '\''
+				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
+				+ '\'' + ", secretKey='" + secretKey + '\'' + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {
@@ -379,6 +393,10 @@ public class NacosDiscoveryProperties {
 			this.setEndpoint(
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
 		}
+		if (StringUtils.isEmpty(this.getEndpointPort())) {
+			this.setEndpointPort(env.resolvePlaceholders(
+					"${spring.cloud.nacos.discovery.endpoint-port:}"));
+		}
 	}
 
 	public NamingService namingServiceInstance() {
@@ -392,6 +410,7 @@ public class NacosDiscoveryProperties {
 		properties.put(NAMESPACE, namespace);
 		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME, logName);
 		properties.put(ENDPOINT, endpoint);
+		properties.put(ENDPOINT_PORT, endpointPort);
 		properties.put(ACCESS_KEY, accessKey);
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);
