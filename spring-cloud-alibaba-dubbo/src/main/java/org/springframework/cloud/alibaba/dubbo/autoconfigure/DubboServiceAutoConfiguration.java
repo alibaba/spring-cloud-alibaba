@@ -18,9 +18,10 @@ package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
 import org.apache.dubbo.common.utils.Assert;
 import org.apache.dubbo.config.spring.util.PropertySourcesUtils;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
-import org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactoryProvider;
+import org.springframework.cloud.alibaba.dubbo.registry.ServiceRegistryAspect;
 import org.springframework.cloud.alibaba.dubbo.registry.handler.DubboRegistryServiceIdHandler;
 import org.springframework.cloud.alibaba.dubbo.registry.handler.StandardDubboRegistryServiceIdHandler;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
@@ -72,14 +73,14 @@ public class DubboServiceAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public DubboRegistryServiceIdHandler dubboRegistryServiceIdHandler(ConfigurableApplicationContext context) {
-        return new StandardDubboRegistryServiceIdHandler(context);
+    public ServiceRegistryAspect serviceRegistryAspect() {
+        return new ServiceRegistryAspect();
     }
 
     @Bean
-    public RegistrationFactoryProvider registrationFactoryProvider() {
-        return new RegistrationFactoryProvider();
+    @ConditionalOnMissingBean
+    public DubboRegistryServiceIdHandler dubboRegistryServiceIdHandler(ConfigurableApplicationContext context) {
+        return new StandardDubboRegistryServiceIdHandler(context);
     }
 
     /**

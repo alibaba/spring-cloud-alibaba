@@ -28,6 +28,7 @@ import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolve
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceProxy;
 import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -41,7 +42,7 @@ import java.util.function.Supplier;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
-@Import({DubboServiceMetadataRepository.class, PublishingDubboMetadataConfigService.class})
+@Import({DubboServiceMetadataRepository.class, PublishingDubboMetadataConfigService.class, JSONUtils.class})
 public class DubboMetadataAutoConfiguration {
 
     @Bean

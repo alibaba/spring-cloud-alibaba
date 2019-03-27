@@ -24,7 +24,7 @@ import feign.Target;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboRestServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.MethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
@@ -147,13 +147,13 @@ class TargeterInvocationHandler implements InvocationHandler {
         for (Map.Entry<DubboTransportedMethodMetadata, RestMethodMetadata> entry : feignRestMethodMetadataMap.entrySet()) {
             RestMethodMetadata feignRestMethodMetadata = entry.getValue();
             RequestMetadata feignRequestMetadata = feignRestMethodMetadata.getRequest();
-            DubboServiceMetadata dubboServiceMetadata = repository.get(serviceName, feignRequestMetadata);
-            if (dubboServiceMetadata != null) {
+            DubboRestServiceMetadata metadata = repository.get(serviceName, feignRequestMetadata);
+            if (metadata != null) {
                 DubboTransportedMethodMetadata dubboTransportedMethodMetadata = entry.getKey();
                 Map<String, Object> dubboTranslatedAttributes = dubboTransportedMethodMetadata.getAttributes();
                 Method method = dubboTransportedMethodMetadata.getMethod();
-                GenericService dubboGenericService = dubboGenericServiceFactory.create(dubboServiceMetadata, dubboTranslatedAttributes);
-                RestMethodMetadata dubboRestMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
+                GenericService dubboGenericService = dubboGenericServiceFactory.create(metadata, dubboTranslatedAttributes);
+                RestMethodMetadata dubboRestMethodMetadata = metadata.getRestMethodMetadata();
                 MethodMetadata methodMetadata = dubboTransportedMethodMetadata.getMethodMetadata();
                 FeignMethodMetadata feignMethodMetadata = new FeignMethodMetadata(dubboGenericService,
                         dubboRestMethodMetadata, feignRestMethodMetadata);
