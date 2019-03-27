@@ -18,16 +18,50 @@ public class TestController {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private RestTemplate restTemplate1;
+
 	@Autowired
 	private EchoService echoService;
 
 	@Autowired
 	private DiscoveryClient discoveryClient;
 
+	// @PostConstruct
+	// public void init() {
+	// restTemplate1.setErrorHandler(new ResponseErrorHandler() {
+	// @Override
+	// public boolean hasError(ClientHttpResponse response) throws IOException {
+	// return false;
+	// }
+	//
+	// @Override
+	// public void handleError(ClientHttpResponse response) throws IOException {
+	// System.err.println("handle error");
+	// }
+	// });
+	// }
+
 	@RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
 	public String rest(@PathVariable String str) {
 		return restTemplate.getForObject("http://service-provider/echo/" + str,
 				String.class);
+	}
+
+	@RequestMapping(value = "/index", method = RequestMethod.GET)
+	public String index() {
+		return restTemplate1.getForObject("http://service-provider", String.class);
+	}
+
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public String test() {
+		return restTemplate1.getForObject("http://service-provider/test", String.class);
+	}
+
+	@RequestMapping(value = "/sleep", method = RequestMethod.GET)
+	public String sleep() {
+		return restTemplate1.getForObject("http://service-provider/sleep", String.class);
 	}
 
 	@RequestMapping(value = "/notFound-feign", method = RequestMethod.GET)

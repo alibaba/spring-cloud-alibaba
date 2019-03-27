@@ -106,14 +106,16 @@ public class SentinelAutoConfigurationTests {
 	@LocalServerPort
 	private int port;
 
-	private String url = "http://localhost:" + port;
+	private String flowUrl = "http://localhost:" + port + "/flow";
+
+	private String degradeUrl = "http://localhost:" + port + "/degrade";
 
 	@Before
 	public void setUp() {
 		FlowRule rule = new FlowRule();
 		rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
 		rule.setCount(0);
-		rule.setResource("GET:" + url);
+		rule.setResource("GET:" + flowUrl);
 		rule.setLimitApp("default");
 		rule.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
 		rule.setStrategy(RuleConstant.STRATEGY_DIRECT);
@@ -121,7 +123,7 @@ public class SentinelAutoConfigurationTests {
 
 		DegradeRule degradeRule = new DegradeRule();
 		degradeRule.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT);
-		degradeRule.setResource("GET:" + url + "/test");
+		degradeRule.setResource("GET:" + degradeUrl);
 		degradeRule.setCount(0);
 		degradeRule.setTimeWindow(60);
 		DegradeRuleManager.loadRules(Arrays.asList(degradeRule));
@@ -247,14 +249,15 @@ public class SentinelAutoConfigurationTests {
 				restTemplate.getInterceptors().size());
 		assertEquals("RestTemplateWithBlockClass interceptors size was wrong", 1,
 				restTemplateWithBlockClass.getInterceptors().size());
-		ResponseEntity responseEntityBlock = restTemplateWithBlockClass.getForEntity(url,
-				String.class);
+		ResponseEntity responseEntityBlock = restTemplateWithBlockClass
+				.getForEntity(flowUrl, String.class);
 		assertEquals("RestTemplateWithBlockClass Sentinel Block Message was wrong",
 				"Oops", responseEntityBlock.getBody());
 		assertEquals(
 				"RestTemplateWithBlockClass Sentinel Block Http Status Code was wrong",
 				HttpStatus.OK, responseEntityBlock.getStatusCode());
-		ResponseEntity responseEntityRaw = restTemplate.getForEntity(url, String.class);
+		ResponseEntity responseEntityRaw = restTemplate.getForEntity(flowUrl,
+				String.class);
 		assertEquals("RestTemplate Sentinel Block Message was wrong",
 				"RestTemplate request block by sentinel", responseEntityRaw.getBody());
 		assertEquals("RestTemplate Sentinel Block Http Status Code was wrong",
@@ -266,14 +269,14 @@ public class SentinelAutoConfigurationTests {
 		assertEquals("RestTemplateWithoutBlockClass interceptors size was wrong", 0,
 				restTemplateWithoutBlockClass.getInterceptors().size());
 		assertThatExceptionOfType(RestClientException.class).isThrownBy(() -> {
-			restTemplateWithoutBlockClass.getForEntity(url, String.class);
+			restTemplateWithoutBlockClass.getForEntity(flowUrl, String.class);
 		});
 	}
 
 	@Test
 	public void testFallbackRestTemplate() {
 		ResponseEntity responseEntity = restTemplateWithFallbackClass
-				.getForEntity(url + "/test", String.class);
+				.getForEntity(degradeUrl, String.class);
 		assertEquals("RestTemplateWithFallbackClass Sentinel Message was wrong",
 				"Oops fallback", responseEntity.getBody());
 		assertEquals("RestTemplateWithFallbackClass Sentinel Http Status Code was wrong",
