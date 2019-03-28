@@ -30,6 +30,7 @@ import org.springframework.cloud.alibaba.dubbo.metadata.DubboProtocolConfigSuppl
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
+import org.springframework.cloud.alibaba.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceExporter;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceProxy;
@@ -90,12 +91,18 @@ public class DubboMetadataAutoConfiguration {
         publishServiceRestMetadata(serviceBean);
     }
 
-    private void publishServiceRestMetadata(ServiceBean serviceBean) {
-        dubboMetadataConfigService.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
+    /**
+     * On Dubbo Service registering in Spring Cloud Registry
+     */
+    @EventListener(ServiceInstancePreRegisteredEvent.class)
+    public void onServiceInstancePreRegistered() {
+        dubboMetadataConfigServiceExporter.export();
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
+        // Maybe invoke again if used Spring Cloud Registry,
+        // but don't worry.
         dubboMetadataConfigServiceExporter.export();
     }
 
@@ -107,5 +114,9 @@ public class DubboMetadataAutoConfiguration {
     @EventListener(ContextClosedEvent.class)
     public void onContextClosed() {
         dubboMetadataConfigServiceExporter.unexport();
+    }
+
+    private void publishServiceRestMetadata(ServiceBean serviceBean) {
+        dubboMetadataConfigService.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
     }
 }
