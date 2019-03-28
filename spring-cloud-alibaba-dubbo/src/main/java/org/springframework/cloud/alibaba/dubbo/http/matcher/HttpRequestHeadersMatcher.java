@@ -18,6 +18,7 @@ package org.springframework.cloud.alibaba.dubbo.http.matcher;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
