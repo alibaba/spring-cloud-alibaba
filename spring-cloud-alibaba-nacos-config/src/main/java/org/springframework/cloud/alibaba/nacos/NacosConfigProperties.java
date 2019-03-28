@@ -21,12 +21,8 @@ import com.alibaba.nacos.api.config.ConfigService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.env.Environment;
 
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -90,12 +86,6 @@ public class NacosConfigProperties {
 	 * can be dynamically obtained.
 	 */
 	private String endpoint;
-
-	/**
-	 * endpoint port for Nacos, the domain port of a service, through which the server
-	 * address can be dynamically obtained.
-	 */
-	private String endpointPort;
 
 	/**
 	 * namespace, separation configuration of different environments.
@@ -272,14 +262,6 @@ public class NacosConfigProperties {
 		this.name = name;
 	}
 
-	public String getEndpointPort() {
-		return endpointPort;
-	}
-
-	public void setEndpointPort(String endpointPort) {
-		this.endpointPort = endpointPort;
-	}
-
 	public static class Config {
 		/**
 		 * the data id of extended configuration
@@ -325,12 +307,11 @@ public class NacosConfigProperties {
 				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
 				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
 				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
-				+ ", endpointPort='" + endpointPort + '\'' + ", namespace='" + namespace
-				+ '\'' + ", accessKey='" + accessKey + '\'' + ", secretKey='" + secretKey
-				+ '\'' + ", contextPath='" + contextPath + '\'' + ", clusterName='"
-				+ clusterName + '\'' + ", name='" + name + '\'' + ", sharedDataids='"
-				+ sharedDataids + '\'' + ", refreshableDataids='" + refreshableDataids
-				+ '\'' + ", extConfig=" + extConfig + '}';
+				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
+				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
+				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
 	}
 
 	public ConfigService configServiceInstance() {
@@ -347,8 +328,17 @@ public class NacosConfigProperties {
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
 		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
-		properties.put(ENDPOINT, Objects.toString(this.endpoint, ""));
-		properties.put(ENDPOINT_PORT, Objects.toString(this.endpointPort, ""));
+
+		String endpoint = Objects.toString(this.endpoint, "");
+		if (endpoint.contains(":")) {
+			int index = endpoint.indexOf(":");
+			properties.put(ENDPOINT, endpoint.substring(0, index));
+			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
+		}
+		else {
+			properties.put(ENDPOINT, endpoint);
+		}
+
 		try {
 			configService = NacosFactory.createConfigService(properties);
 			return configService;
