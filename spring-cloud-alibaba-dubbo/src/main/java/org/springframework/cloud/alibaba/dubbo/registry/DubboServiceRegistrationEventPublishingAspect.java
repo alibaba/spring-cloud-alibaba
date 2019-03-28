@@ -27,12 +27,14 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
 /**
- * {@link ServiceRegistry} Aspect
+ * Dubbo Service Registration Event-Publishing Aspect
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @see ServiceInstancePreRegisteredEvent
+ * @see ServiceInstanceRegisteredEvent
  */
 @Aspect
-public class ServiceRegistryAspect implements ApplicationEventPublisherAware {
+public class DubboServiceRegistrationEventPublishingAspect implements ApplicationEventPublisherAware {
 
     /**
      * The pointcut expression for {@link ServiceRegistry#register(Registration)}

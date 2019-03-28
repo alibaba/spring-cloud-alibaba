@@ -21,16 +21,12 @@ import org.apache.dubbo.config.spring.util.PropertySourcesUtils;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
-import org.springframework.cloud.alibaba.dubbo.registry.ServiceRegistryAspect;
-import org.springframework.cloud.alibaba.dubbo.registry.handler.DubboRegistryServiceIdHandler;
-import org.springframework.cloud.alibaba.dubbo.registry.handler.StandardDubboRegistryServiceIdHandler;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.PathVariableServiceParameterResolver;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestBodyServiceParameterResolver;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestHeaderServiceParameterResolver;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestParamServiceParameterResolver;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -70,17 +66,6 @@ public class DubboServiceAutoConfiguration {
             PathVariableServiceParameterResolver.class
     })
     static class ParameterResolversConfiguration {
-    }
-
-    @Bean
-    public ServiceRegistryAspect serviceRegistryAspect() {
-        return new ServiceRegistryAspect();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public DubboRegistryServiceIdHandler dubboRegistryServiceIdHandler(ConfigurableApplicationContext context) {
-        return new StandardDubboRegistryServiceIdHandler(context);
     }
 
     /**
