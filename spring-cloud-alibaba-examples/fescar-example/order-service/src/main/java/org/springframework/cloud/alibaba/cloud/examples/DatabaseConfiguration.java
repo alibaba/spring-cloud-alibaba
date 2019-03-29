@@ -51,7 +51,8 @@ public class DatabaseConfiguration {
 		String password = env.getProperty("mysql.user.password");
 
 		DruidDataSource druidDataSource = new DruidDataSource();
-		druidDataSource.setUrl("jdbc:mysql://" + ip + ":" + port + "/" + dbName);
+		druidDataSource.setUrl(
+				"jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?serverTimezone=UTC");
 		druidDataSource.setUsername(userName);
 		druidDataSource.setPassword(password);
 		druidDataSource.setDriverClassName("com.mysql.jdbc.Driver");
