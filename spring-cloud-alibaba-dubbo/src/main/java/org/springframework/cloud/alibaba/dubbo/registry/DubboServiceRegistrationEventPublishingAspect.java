@@ -39,7 +39,7 @@ public class DubboServiceRegistrationEventPublishingAspect implements Applicatio
     /**
      * The pointcut expression for {@link ServiceRegistry#register(Registration)}
      */
-    private static final String REGISTER_POINTCUT_EXPRESSION =
+    public static final String REGISTER_POINTCUT_EXPRESSION =
             "execution(* org.springframework.cloud.client.serviceregistry.ServiceRegistry.register(*)) && args(registration)";
 
     private ApplicationEventPublisher applicationEventPublisher;
