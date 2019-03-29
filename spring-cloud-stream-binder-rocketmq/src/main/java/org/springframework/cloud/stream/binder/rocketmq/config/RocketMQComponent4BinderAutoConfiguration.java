@@ -31,6 +31,7 @@ import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -66,6 +67,9 @@ public class RocketMQComponent4BinderAutoConfiguration {
 		}
 		else {
 			producer = new DefaultMQProducer(RocketMQBinderConstants.DEFAULT_GROUP);
+		}
+		if (StringUtils.isEmpty(configNameServer)) {
+			configNameServer = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
 		}
 		producer.setNamesrvAddr(configNameServer);
 		return producer;
