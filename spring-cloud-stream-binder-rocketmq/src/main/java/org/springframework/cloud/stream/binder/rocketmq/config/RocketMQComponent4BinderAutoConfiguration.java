@@ -67,6 +67,9 @@ public class RocketMQComponent4BinderAutoConfiguration {
 		else {
 			producer = new DefaultMQProducer(RocketMQBinderConstants.DEFAULT_GROUP);
 		}
+		if(StringUtils.isEmpty(configNameServer)) {
+		    configNameServer = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
+        }
 		producer.setNamesrvAddr(configNameServer);
 		return producer;
 	}
