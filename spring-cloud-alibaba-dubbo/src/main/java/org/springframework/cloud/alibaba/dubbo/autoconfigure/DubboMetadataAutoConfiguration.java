@@ -73,7 +73,7 @@ public class DubboMetadataAutoConfiguration {
     }
 
     @Bean
-    public Supplier<ProtocolConfig> dubboProtocolConfigSupplier(Collection<ProtocolConfig> protocols) {
+    public Supplier<ProtocolConfig> dubboProtocolConfigSupplier(ObjectProvider<Collection<ProtocolConfig>> protocols) {
         return new DubboProtocolConfigSupplier(protocols);
     }
 
