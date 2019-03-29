@@ -92,6 +92,7 @@ public class DubboServiceAutoConfiguration {
     @Bean(name = BASE_PACKAGES_PROPERTY_RESOLVER_BEAN_NAME)
     public PropertyResolver dubboScanBasePackagesPropertyResolver(ConfigurableEnvironment environment) {
         ConfigurableEnvironment propertyResolver = new AbstractEnvironment() {
+            @Override
             protected void customizePropertySources(MutablePropertySources propertySources) {
                 Map<String, Object> dubboScanProperties = PropertySourcesUtils.getSubProperties(environment, DUBBO_SCAN_PREFIX);
                 propertySources.addLast(new MapPropertySource("dubboScanProperties", dubboScanProperties));
