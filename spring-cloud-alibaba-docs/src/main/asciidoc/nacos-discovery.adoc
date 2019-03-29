@@ -11,38 +11,17 @@ Discovery Starter registers some of the metadata of the service instance, such a
 
 ==== How to Introduce Nacos Discovery Starter
 
-To introduce Nacos Discovey Starter into your project, use the group ID of `org.springframework.cloud` and the artifact ID of `spring-cloud-starter-alibaba-nacos-discovery`.
-pom.xml sample：
+please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-discovery`.
 
 [source,xml,indent=0]
 ----
-<! -- dependency management-->
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.2.BUILD-SNAPSHOT</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-
-<! -- dependencies -->
-<dependencies>
-    <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-    </dependency>
-</dependencies>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+</dependency>
 ----
 
 ==== Start a Provider Application
-
-If you use the Finchley.SR1 version of Spring Cloud , then you will need to be very cautious when selecting the Spring Boot version, because the version incompatibility might lead to many unexpected results.
-The best practice for Spring Cloud Finchley.SR1 is to use the 2.0.6 release of Spring Boot. When starting a provider application, please also check if your Spring Boot version is
-1.X.Y.RELEASE or 2.1.0.RELEASE. If not, please change it to 2.0.6.RELEASE.
 
 The following sample illustrates how to register a service to Nacos.
 
@@ -62,7 +41,7 @@ The following sample illustrates how to register a service to Nacos.
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.6.RELEASE</version>
+        <version>${spring.boot.version}</version>
         <relativePath/>
     </parent>
 
@@ -77,14 +56,14 @@ The following sample illustrates how to register a service to Nacos.
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Finchley.SR1</version>
+                <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.2.BUILD-SNAPSHOT</version>
+                <version>${spring.cloud.alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

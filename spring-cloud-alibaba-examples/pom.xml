@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
         <groupId>org.springframework.cloud</groupId>
@@ -34,7 +34,8 @@
         <module>fescar-example/storage-service</module>
         <module>fescar-example/account-service</module>
         <module>acm-example/acm-local-example</module>
-        <module>rocketmq-example</module>
+        <module>rocketmq-example/rocketmq-consume-example</module>
+        <module>rocketmq-example/rocketmq-produce-example</module>
         <module>sms-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>schedulerx-example/schedulerx-simple-task-example</module>

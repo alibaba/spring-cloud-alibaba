@@ -40,11 +40,12 @@ mysql.user.password=your mysql server password
 
 ```
 
-### 创建 UNDO_LOG 表
+### 创建 undo_log 表
 
-[Fescar AT 模式]() 需要使用到 UNDO_LOG 表。
+[Fescar AT 模式]() 需要使用到 undo_log 表。
 
 ``` $sql
+-- 注意此处0.3.0+ 增加唯一索引 ux_undo_log
 CREATE TABLE `undo_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `branch_id` bigint(20) NOT NULL,
@@ -55,8 +56,8 @@ CREATE TABLE `undo_log` (
   `log_modified` datetime NOT NULL,
   `ext` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_unionkey` (`xid`,`branch_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
 
 ### 创建 示例中 业务所需要的数据库表

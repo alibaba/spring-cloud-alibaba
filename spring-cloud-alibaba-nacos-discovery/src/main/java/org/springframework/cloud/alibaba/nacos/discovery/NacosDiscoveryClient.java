@@ -18,7 +18,6 @@ package org.springframework.cloud.alibaba.nacos.discovery;
 
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.nacos.NacosDiscoveryProperties;
@@ -26,11 +25,7 @@ import org.springframework.cloud.alibaba.nacos.NacosServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author xiaojing
@@ -38,74 +33,75 @@ import java.util.Map;
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(NacosDiscoveryClient.class);
-    public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
+	private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryClient.class);
+	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
-    private NacosDiscoveryProperties discoveryProperties;
+	private NacosDiscoveryProperties discoveryProperties;
 
-    public NacosDiscoveryClient(NacosDiscoveryProperties discoveryProperties) {
-        this.discoveryProperties = discoveryProperties;
-    }
+	public NacosDiscoveryClient(NacosDiscoveryProperties discoveryProperties) {
+		this.discoveryProperties = discoveryProperties;
+	}
 
-    @Override
-    public String description() {
-        return DESCRIPTION;
-    }
+	@Override
+	public String description() {
+		return DESCRIPTION;
+	}
 
-    @Override
-    public List<ServiceInstance> getInstances(String serviceId) {
-        try {
-            List<Instance> instances = discoveryProperties.namingServiceInstance()
-                    .selectInstances(serviceId, true);
-            return hostToServiceInstanceList(instances, serviceId);
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Can not get hosts from nacos server. serviceId: " + serviceId, e);
-        }
-    }
+	@Override
+	public List<ServiceInstance> getInstances(String serviceId) {
+		try {
+			List<Instance> instances = discoveryProperties.namingServiceInstance()
+					.selectInstances(serviceId, true);
+			return hostToServiceInstanceList(instances, serviceId);
+		}
+		catch (Exception e) {
+			throw new RuntimeException(
+					"Can not get hosts from nacos server. serviceId: " + serviceId, e);
+		}
+	}
 
-    private static ServiceInstance hostToServiceInstance(Instance instance,
-                                                         String serviceId) {
-        NacosServiceInstance nacosServiceInstance = new NacosServiceInstance();
-        nacosServiceInstance.setHost(instance.getIp());
-        nacosServiceInstance.setPort(instance.getPort());
-        nacosServiceInstance.setServiceId(serviceId);
+	private static ServiceInstance hostToServiceInstance(Instance instance,
+			String serviceId) {
+		NacosServiceInstance nacosServiceInstance = new NacosServiceInstance();
+		nacosServiceInstance.setHost(instance.getIp());
+		nacosServiceInstance.setPort(instance.getPort());
+		nacosServiceInstance.setServiceId(serviceId);
 
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("nacos.instanceId", instance.getInstanceId());
-        metadata.put("nacos.weight", instance.getWeight() + "");
-        metadata.put("nacos.healthy", instance.isHealthy() + "");
-        metadata.put("nacos.cluster", instance.getClusterName() + "");
-        metadata.putAll(instance.getMetadata());
-        nacosServiceInstance.setMetadata(metadata);
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("nacos.instanceId", instance.getInstanceId());
+		metadata.put("nacos.weight", instance.getWeight() + "");
+		metadata.put("nacos.healthy", instance.isHealthy() + "");
+		metadata.put("nacos.cluster", instance.getClusterName() + "");
+		metadata.putAll(instance.getMetadata());
+		nacosServiceInstance.setMetadata(metadata);
 
-        if (metadata.containsKey("secure")) {
-            boolean secure = Boolean.parseBoolean(metadata.get("secure"));
-            nacosServiceInstance.setSecure(secure);
-        }
-        return nacosServiceInstance;
-    }
+		if (metadata.containsKey("secure")) {
+			boolean secure = Boolean.parseBoolean(metadata.get("secure"));
+			nacosServiceInstance.setSecure(secure);
+		}
+		return nacosServiceInstance;
+	}
 
-    private static List<ServiceInstance> hostToServiceInstanceList(
-            List<Instance> instances, String serviceId) {
-        List<ServiceInstance> result = new ArrayList<>(instances.size());
-        for (Instance instance : instances) {
-            result.add(hostToServiceInstance(instance, serviceId));
-        }
-        return result;
-    }
+	private static List<ServiceInstance> hostToServiceInstanceList(
+			List<Instance> instances, String serviceId) {
+		List<ServiceInstance> result = new ArrayList<>(instances.size());
+		for (Instance instance : instances) {
+			result.add(hostToServiceInstance(instance, serviceId));
+		}
+		return result;
+	}
 
-    @Override
-    public List<String> getServices() {
+	@Override
+	public List<String> getServices() {
 
-        try {
-            ListView<String> services = discoveryProperties.namingServiceInstance()
-                    .getServicesOfServer(1, Integer.MAX_VALUE);
-            return services.getData();
-        } catch (Exception e) {
-            log.error("get service name from nacos server fail,", e);
-            return Collections.emptyList();
-        }
-    }
+		try {
+			ListView<String> services = discoveryProperties.namingServiceInstance()
+					.getServicesOfServer(1, Integer.MAX_VALUE);
+			return services.getData();
+		}
+		catch (Exception e) {
+			log.error("get service name from nacos server fail,", e);
+			return Collections.emptyList();
+		}
+	}
 }
