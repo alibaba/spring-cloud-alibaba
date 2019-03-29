@@ -31,7 +31,7 @@ class DelegatingRegistration implements Registration {
 
     private final ServiceInstance delegate;
 
-    public DelegatingRegistration(ServiceInstance delegate) {
+    DelegatingRegistration(ServiceInstance delegate) {
         this.delegate = delegate;
     }
 

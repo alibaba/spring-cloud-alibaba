@@ -77,7 +77,6 @@ public class RestMethodMetadata {
         this.bodyIndex = methodMetadata.bodyIndex();
         this.headerMapIndex = methodMetadata.headerMapIndex();
         this.queryMapEncoded = methodMetadata.queryMapEncoded();
-        this.queryMapEncoded = methodMetadata.queryMapEncoded();
         this.returnType = getClassName(methodMetadata.returnType());
         this.bodyType = getClassName(methodMetadata.bodyType());
         this.indexToName = methodMetadata.indexToName();

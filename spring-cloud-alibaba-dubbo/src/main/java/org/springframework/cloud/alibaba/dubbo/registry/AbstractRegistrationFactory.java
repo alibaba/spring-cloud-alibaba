@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
  */
 public abstract class AbstractRegistrationFactory<R extends Registration> implements RegistrationFactory<R> {
 
+    @Override
     public final R create(URL url, ConfigurableApplicationContext applicationContext) {
         ServiceInstance serviceInstance = createServiceInstance(url, applicationContext);
         return create(serviceInstance, applicationContext);
