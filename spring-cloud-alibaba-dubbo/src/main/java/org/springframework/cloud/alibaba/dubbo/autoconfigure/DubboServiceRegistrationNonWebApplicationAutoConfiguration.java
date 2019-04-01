@@ -24,9 +24,9 @@ import com.ecwid.consul.v1.agent.model.NewService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -36,15 +36,14 @@ import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration;
 import org.springframework.cloud.consul.serviceregistry.ConsulRegistration;
-import org.springframework.cloud.netflix.eureka.CloudEurekaInstanceConfig;
-import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
+import org.springframework.cloud.zookeeper.serviceregistry.ServiceInstanceRegistration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
 import java.util.List;
 
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_CONFIGURATION_CLASS_NAME;
-import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_AUTO_CONFIGURATION_CLASS_NAME;
+import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.ZOOKEEPER_AUTO_CONFIGURATION_CLASS_NAME;
 
 /**
  * Dubbo Service Registration Auto-{@link Configuration} for Non-Web application
@@ -57,6 +56,8 @@ import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboService
 @AutoConfigureAfter(DubboServiceRegistrationAutoConfiguration.class)
 @Aspect
 public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
+
+    private static final String REST_PROTOCOL = "rest";
 
     @Autowired
     private ServiceRegistry serviceRegistry;
@@ -96,7 +97,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
         if (webPort == null) {
             List<URL> urls = serviceBean.getExportedUrls();
             urls.stream()
-                    .filter(url -> "rest".equalsIgnoreCase(url.getProtocol()))
+                    .filter(url -> REST_PROTOCOL.equalsIgnoreCase(url.getProtocol()))
                     .findFirst()
                     .ifPresent(url -> {
                         webPort = url.getPort();
@@ -105,26 +106,26 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
     }
 
     @Configuration
-    @ConditionalOnBean(name = EUREKA_AUTO_CONFIGURATION_CLASS_NAME)
-    @AutoConfigureOrder
-    static class EurekaConfiguration {
+    @ConditionalOnBean(name = ZOOKEEPER_AUTO_CONFIGURATION_CLASS_NAME)
+    class ZookeeperConfiguration implements SmartInitializingSingleton {
+
+        @Autowired
+        private ServiceInstanceRegistration registration;
 
         @EventListener(ServiceInstancePreRegisteredEvent.class)
         public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {
-            setPort(event.getSource());
+            registration.setPort(webPort);
         }
 
-        private void setPort(Registration registration) {
-            EurekaRegistration eurekaRegistration = (EurekaRegistration) registration;
-            CloudEurekaInstanceConfig cloudEurekaInstanceConfig = eurekaRegistration.getInstanceConfig();
-            cloudEurekaInstanceConfig.setNonSecurePort(registration.getPort());
+        @Override
+        public void afterSingletonsInstantiated() {
+            // invoke getServiceInstance() method to trigger the ServiceInstance building before register
+            registration.getServiceInstance();
         }
-
     }
 
     @Configuration
     @ConditionalOnBean(name = CONSUL_AUTO_CONFIGURATION_CLASS_NAME)
-    @AutoConfigureOrder
     class ConsulConfiguration {
 
         /**
