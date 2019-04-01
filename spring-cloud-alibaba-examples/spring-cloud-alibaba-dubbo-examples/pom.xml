@@ -20,6 +20,7 @@
         <module>spring-cloud-dubbo-provider-sample</module>
         <module>spring-cloud-dubbo-consumer-sample</module>
         <module>spring-cloud-dubbo-provider-web-sample</module>
+        <module>spring-cloud-dubbo-servlet-gateway-sample</module>
     </modules>
 
     <properties>

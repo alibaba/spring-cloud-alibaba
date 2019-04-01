@@ -14,27 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.bootstrap;
+package org.springframework.cloud.alibaba.dubbo.registry.event;
 
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.serviceregistry.Registration;
+import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
+
+import java.util.EventObject;
 
 /**
- * Dubbo Spring Cloud Provider Bootstrap
+ * The after-{@link ServiceRegistry#register(Registration) register} event for {@link Registration}
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@EnableDiscoveryClient
-@EnableAutoConfiguration
-public class DubboSpringCloudProviderBootstrap {
+public class ServiceInstanceRegisteredEvent extends EventObject {
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(DubboSpringCloudProviderBootstrap.class)
-                .properties("spring.profiles.active=nacos")
-                .web(WebApplicationType.NONE)
-                .run(args);
+    public ServiceInstanceRegisteredEvent(Registration source) {
+        super(source);
+    }
+
+    @Override
+    public Registration getSource() {
+        return (Registration) super.getSource();
     }
 }
-
-
-
