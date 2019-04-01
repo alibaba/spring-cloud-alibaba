@@ -16,4 +16,4 @@ feign:
     enabled: true
 
 server:
-  port: 0
+  port: 8080
