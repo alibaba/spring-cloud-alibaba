@@ -16,13 +16,15 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata.repository;
 
+import org.apache.dubbo.common.URL;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.dubbo.http.matcher.RequestMetadataMatcher;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboRestServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigService;
@@ -30,6 +32,7 @@ import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServic
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -51,17 +54,31 @@ public class DubboServiceMetadataRepository {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final Set<URL> registeredURLs = new LinkedHashSet<>();
+
     /**
      * Key is application name
-     * Value is  Map<RequestMetadata, DubboServiceMetadata>
+     * Value is  Map<RequestMetadata, DubboRestServiceMetadata>
      */
-    private Map<String, Map<RequestMetadataMatcher, DubboServiceMetadata>> repository = newHashMap();
+    private Map<String, Map<RequestMetadataMatcher, DubboRestServiceMetadata>> repository = newHashMap();
 
     @Autowired
     private DubboMetadataConfigServiceProxy dubboMetadataConfigServiceProxy;
 
+    public void registerURL(URL url) {
+        this.registeredURLs.add(url);
+    }
+
+    public void unregisterURL(URL url) {
+        this.registeredURLs.remove(url);
+    }
+
+    public Collection<URL> getRegisteredUrls() {
+        return Collections.unmodifiableSet(registeredURLs);
+    }
+
     /**
-     * Initialize the specified service's Dubbo Service Metadata
+     * Initialize the specified service's {@link ServiceRestMetadata}
      *
      * @param serviceName the service name
      */
@@ -81,14 +98,14 @@ public class DubboServiceMetadataRepository {
             return;
         }
 
-        Map<RequestMetadataMatcher, DubboServiceMetadata> metadataMap = getMetadataMap(serviceName);
+        Map<RequestMetadataMatcher, DubboRestServiceMetadata> metadataMap = getMetadataMap(serviceName);
 
         for (ServiceRestMetadata serviceRestMetadata : serviceRestMetadataSet) {
 
             serviceRestMetadata.getMeta().forEach(restMethodMetadata -> {
                 RequestMetadata requestMetadata = restMethodMetadata.getRequest();
                 RequestMetadataMatcher matcher = new RequestMetadataMatcher(requestMetadata);
-                DubboServiceMetadata metadata = new DubboServiceMetadata(serviceRestMetadata, restMethodMetadata);
+                DubboRestServiceMetadata metadata = new DubboRestServiceMetadata(serviceRestMetadata, restMethodMetadata);
                 metadataMap.put(matcher, metadata);
             });
         }
@@ -99,13 +116,13 @@ public class DubboServiceMetadataRepository {
     }
 
     /**
-     * Get a {@link DubboServiceMetadata} by the specified service name if {@link RequestMetadata} matched
+     * Get a {@link DubboRestServiceMetadata} by the specified service name if {@link RequestMetadata} matched
      *
      * @param serviceName     service name
      * @param requestMetadata {@link RequestMetadata} to be matched
-     * @return {@link DubboServiceMetadata} if matched, or <code>null</code>
+     * @return {@link DubboRestServiceMetadata} if matched, or <code>null</code>
      */
-    public DubboServiceMetadata get(String serviceName, RequestMetadata requestMetadata) {
+    public DubboRestServiceMetadata get(String serviceName, RequestMetadata requestMetadata) {
         return match(repository, serviceName, requestMetadata);
     }
 
@@ -148,7 +165,7 @@ public class DubboServiceMetadataRepository {
         return object;
     }
 
-    private Map<RequestMetadataMatcher, DubboServiceMetadata> getMetadataMap(String serviceName) {
+    private Map<RequestMetadataMatcher, DubboRestServiceMetadata> getMetadataMap(String serviceName) {
         return getMap(repository, serviceName);
     }
 
