@@ -90,7 +90,7 @@ abstract class AbstractNameValueExpression<T> implements NameValueExpression<T> 
         } else {
             isMatch = matchName(request);
         }
-        return (this.negated ? !isMatch : isMatch);
+        return (this.negated != isMatch);
     }
 
 
