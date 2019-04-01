@@ -21,7 +21,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -48,17 +47,17 @@ class DubboClientHttpResponse implements ClientHttpResponse {
     }
 
     @Override
-    public HttpStatus getStatusCode() throws IOException {
+    public HttpStatus getStatusCode() {
         return httpStatus;
     }
 
     @Override
-    public int getRawStatusCode() throws IOException {
+    public int getRawStatusCode() {
         return httpStatus.value();
     }
 
     @Override
-    public String getStatusText() throws IOException {
+    public String getStatusText() {
         return statusText;
     }
 
@@ -67,7 +66,7 @@ class DubboClientHttpResponse implements ClientHttpResponse {
     }
 
     @Override
-    public InputStream getBody() throws IOException {
+    public InputStream getBody() {
         return httpOutputMessage.getBody().getInputStream();
     }
 
