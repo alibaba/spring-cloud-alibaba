@@ -50,12 +50,12 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
     /**
      * The property name of Dubbo {@link URL URLs} metadata
      */
-    public static final String DUBBO_URLS_METADATA_PROPERTY_NAME = "dubbo-urls";
+    public static final String DUBBO_URLS_METADATA_PROPERTY_NAME = "dubbo.urls";
 
     /**
      * The parameter name of the services of Dubbo Provider
      */
-    public static final String DUBBO_PROVIDER_SERVICES_PARAM_NAME = "dubbo-provider-services";
+    public static final String DUBBO_PROVIDER_SERVICES_PARAM_NAME = "dubbo.provider-services";
 
     /**
      * All services of Dubbo Provider
