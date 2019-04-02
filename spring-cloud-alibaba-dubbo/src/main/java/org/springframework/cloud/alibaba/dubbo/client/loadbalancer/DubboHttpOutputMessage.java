@@ -20,8 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.util.FastByteArrayOutputStream;
 
-import java.io.IOException;
-
 /**
  * Dubbo {@link HttpOutputMessage} implementation
  *
@@ -34,7 +32,7 @@ class DubboHttpOutputMessage implements HttpOutputMessage {
     private final HttpHeaders httpHeaders = new HttpHeaders();
 
     @Override
-    public FastByteArrayOutputStream getBody() throws IOException {
+    public FastByteArrayOutputStream getBody() {
         return outputStream;
     }
 
