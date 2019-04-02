@@ -57,17 +57,22 @@ class TargeterInvocationHandler implements InvocationHandler {
 
     private final Environment environment;
 
+    private final ClassLoader classLoader;
+
     private final DubboServiceMetadataRepository repository;
 
     private final DubboGenericServiceFactory dubboGenericServiceFactory;
 
     private final DubboGenericServiceExecutionContextFactory contextFactory;
 
-    TargeterInvocationHandler(Object bean, Environment environment, DubboServiceMetadataRepository repository,
+    TargeterInvocationHandler(Object bean, Environment environment,
+                              ClassLoader classLoader,
+                              DubboServiceMetadataRepository repository,
                               DubboGenericServiceFactory dubboGenericServiceFactory,
                               DubboGenericServiceExecutionContextFactory contextFactory) {
         this.bean = bean;
         this.environment = environment;
+        this.classLoader = classLoader;
         this.repository = repository;
         this.dubboGenericServiceFactory = dubboGenericServiceFactory;
         this.contextFactory = contextFactory;
@@ -134,7 +139,7 @@ class TargeterInvocationHandler implements InvocationHandler {
         InvocationHandler defaultFeignClientInvocationHandler = Proxy.getInvocationHandler(defaultFeignClientProxy);
 
         DubboInvocationHandler dubboInvocationHandler = new DubboInvocationHandler(feignMethodMetadataMap,
-                defaultFeignClientInvocationHandler, contextFactory);
+                defaultFeignClientInvocationHandler, classLoader, contextFactory);
 
         return dubboInvocationHandler;
     }
