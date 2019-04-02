@@ -55,7 +55,7 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
     /**
      * The parameter name of the services of Dubbo Provider
      */
-    public static final String DUBBO_PROVIDER_SERVICES_PARAM_NAME = "dubbo.provider-services";
+    public static final String DUBBO_PROVIDER_SERVICES_PARAM_NAME = "dubbo-provider-services";
 
     /**
      * All services of Dubbo Provider
