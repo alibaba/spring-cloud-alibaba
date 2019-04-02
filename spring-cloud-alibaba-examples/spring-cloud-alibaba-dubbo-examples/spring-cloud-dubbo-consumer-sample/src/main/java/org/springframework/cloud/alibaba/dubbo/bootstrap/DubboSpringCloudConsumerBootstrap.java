@@ -192,7 +192,7 @@ public class DubboSpringCloudConsumerBootstrap {
         // Dubbo Service call
         System.out.println(restService.requestBodyMap(data, "Hello,World"));
         // Spring Cloud Open Feign REST Call (Dubbo Transported)
-//        System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
+        System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
 //         Spring Cloud Open Feign REST Call
         System.out.println(feignRestService.requestBody("Hello,World", data));
 
