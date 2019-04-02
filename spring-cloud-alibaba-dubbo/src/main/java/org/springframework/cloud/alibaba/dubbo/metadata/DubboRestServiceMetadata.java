@@ -19,17 +19,17 @@ package org.springframework.cloud.alibaba.dubbo.metadata;
 import java.util.Objects;
 
 /**
- * Dubbo Service Metadata
+ * Dubbo Rest Service Metadata
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class DubboServiceMetadata {
+public class DubboRestServiceMetadata {
 
     private final ServiceRestMetadata serviceRestMetadata;
 
     private final RestMethodMetadata restMethodMetadata;
 
-    public DubboServiceMetadata(ServiceRestMetadata serviceRestMetadata, RestMethodMetadata restMethodMetadata) {
+    public DubboRestServiceMetadata(ServiceRestMetadata serviceRestMetadata, RestMethodMetadata restMethodMetadata) {
         this.serviceRestMetadata = serviceRestMetadata;
         this.restMethodMetadata = restMethodMetadata;
     }
@@ -45,8 +45,8 @@ public class DubboServiceMetadata {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DubboServiceMetadata)) return false;
-        DubboServiceMetadata that = (DubboServiceMetadata) o;
+        if (!(o instanceof DubboRestServiceMetadata)) return false;
+        DubboRestServiceMetadata that = (DubboRestServiceMetadata) o;
         return Objects.equals(serviceRestMetadata, that.serviceRestMetadata) &&
                 Objects.equals(restMethodMetadata, that.restMethodMetadata);
     }
