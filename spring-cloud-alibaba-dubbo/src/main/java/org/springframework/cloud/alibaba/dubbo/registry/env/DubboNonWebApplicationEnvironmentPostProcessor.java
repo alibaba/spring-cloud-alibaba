@@ -26,6 +26,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -80,7 +81,17 @@ public class DubboNonWebApplicationEnvironmentPostProcessor implements Environme
             return;
         }
 
-        resetServerPort(environment);
+        MutablePropertySources propertySources = environment.getPropertySources();
+        Map<String, Object> defaultProperties = createDefaultProperties(environment);
+        if (!CollectionUtils.isEmpty(defaultProperties)) {
+            addOrReplace(propertySources, defaultProperties);
+        }
+    }
+
+    private Map<String, Object> createDefaultProperties(ConfigurableEnvironment environment) {
+        Map<String, Object> defaultProperties = new HashMap<String, Object>();
+        resetServerPort(environment, defaultProperties);
+        return defaultProperties;
     }
 
     /**
@@ -88,8 +99,9 @@ public class DubboNonWebApplicationEnvironmentPostProcessor implements Environme
      * or "dubbo.protcols.rest.port"
      *
      * @param environment
+     * @param defaultProperties
      */
-    private void resetServerPort(ConfigurableEnvironment environment) {
+    private void resetServerPort(ConfigurableEnvironment environment, Map<String, Object> defaultProperties) {
 
         String serverPort = environment.getProperty(SERVER_PORT_PROPERTY_NAME, environment.getProperty(PORT_PROPERTY_NAME));
 
@@ -103,8 +115,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor implements Environme
             serverPort = getRestPortFromProtocolsProperties(environment);
         }
 
-        setServerPort(environment, serverPort);
-
+        setServerPort(environment, serverPort, defaultProperties);
     }
 
     private String getRestPortFromProtocolProperty(ConfigurableEnvironment environment) {
@@ -147,17 +158,14 @@ public class DubboNonWebApplicationEnvironmentPostProcessor implements Environme
         return index > -1 ? propertyName.substring(0, index) : null;
     }
 
-    private void setServerPort(ConfigurableEnvironment environment, String serverPort) {
+    private void setServerPort(ConfigurableEnvironment environment, String serverPort,
+                               Map<String, Object> defaultProperties) {
         if (serverPort == null) {
             return;
         }
 
-        MutablePropertySources propertySources = environment.getPropertySources();
+        defaultProperties.put(SERVER_PORT_PROPERTY_NAME, serverPort);
 
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(SERVER_PORT_PROPERTY_NAME, String.valueOf(serverPort));
-
-        addOrReplace(propertySources, properties);
     }
 
     /**
