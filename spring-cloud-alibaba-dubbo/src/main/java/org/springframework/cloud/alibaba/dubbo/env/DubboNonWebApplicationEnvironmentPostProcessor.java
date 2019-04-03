@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.registry.env;
+package org.springframework.cloud.alibaba.dubbo.env;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
