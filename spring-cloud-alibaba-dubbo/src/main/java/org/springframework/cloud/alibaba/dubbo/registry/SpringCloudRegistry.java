@@ -21,24 +21,12 @@ import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.RegistryFactory;
 
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyMap;
-import static org.apache.dubbo.common.Constants.APPLICATION_KEY;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
@@ -47,79 +35,13 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  */
 public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
 
-    /**
-     * The property name of Dubbo {@link URL URLs} metadata
-     */
-    public static final String DUBBO_URLS_METADATA_PROPERTY_NAME = "dubbo.urls";
-
-    /**
-     * The parameter name of the services of Dubbo Provider
-     */
-    public static final String DUBBO_PROVIDER_SERVICES_PARAM_NAME = "dubbo-provider-services";
-
-    /**
-     * All services of Dubbo Provider
-     */
-    public static final String ALL_DUBBO_PROVIDER_SERVICES = "*";
-
     private final DubboServiceMetadataRepository dubboServiceMetadataRepository;
-
-    private final JSONUtils jsonUtils;
-
-    private final Set<String> dubboProviderServices;
-
-    private final Map<String, String> dubboServiceKeysCache;
 
     public SpringCloudRegistry(URL url, DiscoveryClient discoveryClient,
                                ScheduledExecutorService servicesLookupScheduler,
-                               DubboServiceMetadataRepository dubboServiceMetadataRepository,
-                               ConfigurableApplicationContext applicationContext) {
+                               DubboServiceMetadataRepository dubboServiceMetadataRepository) {
         super(url, discoveryClient, servicesLookupScheduler);
         this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
-        this.jsonUtils = applicationContext.getBean(JSONUtils.class);
-        this.dubboProviderServices = getDubboProviderServices();
-        this.dubboServiceKeysCache = this.initDubboServiceKeysCache();
-    }
-
-    private Map<String, String> initDubboServiceKeysCache() {
-
-        if (isEmpty(dubboProviderServices)) {
-            return emptyMap();
-        }
-
-        Map<String, String> newCache = new HashMap<>();
-
-        dubboProviderServices.stream()
-                .map(this::getServiceInstances)
-                .filter(this::isNotEmpty)
-                .forEach(serviceInstances -> {
-                    ServiceInstance serviceInstance = serviceInstances.get(0);
-                    getURLs(serviceInstance).forEach(url -> {
-                        String serviceKey = url.getServiceKey();
-                        String serviceName = url.getParameter(APPLICATION_KEY);
-                        newCache.put(serviceKey, serviceName);
-                    });
-                });
-
-        return newCache;
-    }
-
-    private boolean isNotEmpty(Collection collection) {
-        return !CollectionUtils.isEmpty(collection);
-    }
-
-    private List<URL> getURLs(ServiceInstance serviceInstance) {
-        Map<String, String> metadata = serviceInstance.getMetadata();
-        String dubboURLsJSON = metadata.get(DUBBO_URLS_METADATA_PROPERTY_NAME);
-        List<String> urlValues = jsonUtils.toList(dubboURLsJSON);
-        return urlValues.stream().map(URL::valueOf).collect(Collectors.toList());
-    }
-
-    private Set<String> getDubboProviderServices() {
-        URL registryURL = getUrl();
-        String services = registryURL.getParameter(DUBBO_PROVIDER_SERVICES_PARAM_NAME, ALL_DUBBO_PROVIDER_SERVICES);
-        return ALL_DUBBO_PROVIDER_SERVICES.equalsIgnoreCase(services) ?
-                getAllServiceNames() : StringUtils.commaDelimitedListToSet(services);
     }
 
     @Override
@@ -134,18 +56,18 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
 
     @Override
     protected boolean supports(String serviceName) {
-        return dubboProviderServices.contains(serviceName);
+        return dubboServiceMetadataRepository.isSubscribedService(serviceName);
     }
 
     @Override
     protected String getServiceName(URL url) {
-        String serviceKey = url.getServiceKey();
-        return dubboServiceKeysCache.get(serviceKey);
+        return dubboServiceMetadataRepository.getServiceName(url);
     }
 
     @Override
     protected void notifySubscriber(URL url, NotifyListener listener, List<ServiceInstance> serviceInstances) {
-        List<URL> urls = serviceInstances.stream().map(this::getURLs)
+        List<URL> urls = serviceInstances.stream()
+                .map(dubboServiceMetadataRepository::buildURLs)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
         notify(url, listener, urls);

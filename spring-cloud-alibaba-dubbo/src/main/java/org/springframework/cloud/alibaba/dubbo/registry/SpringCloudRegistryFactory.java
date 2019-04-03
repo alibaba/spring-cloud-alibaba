@@ -68,8 +68,7 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
     @Override
     public Registry getRegistry(URL url) {
         init();
-        return new SpringCloudRegistry(url, discoveryClient, servicesLookupScheduler,
-                dubboServiceMetadataRepository, applicationContext);
+        return new SpringCloudRegistry(url, discoveryClient, servicesLookupScheduler, dubboServiceMetadataRepository);
     }
 
     public static void setApplicationContext(ConfigurableApplicationContext applicationContext) {
