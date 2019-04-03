@@ -20,7 +20,9 @@ import org.apache.dubbo.common.utils.Assert;
 import org.apache.dubbo.config.spring.util.PropertySourcesUtils;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
+import org.springframework.cloud.alibaba.dubbo.env.DubboCloudProperties;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.PathVariableServiceParameterResolver;
@@ -49,6 +51,7 @@ import static org.apache.dubbo.spring.boot.util.DubboUtils.DUBBO_SCAN_PREFIX;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
+@EnableConfigurationProperties(DubboCloudProperties.class)
 public class DubboServiceAutoConfiguration {
 
     @Bean
