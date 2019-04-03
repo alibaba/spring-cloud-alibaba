@@ -16,24 +16,32 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import feign.Contract;
 import org.apache.dubbo.config.ProtocolConfig;
+import org.apache.dubbo.config.spring.ServiceBean;
+import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
+
+import feign.Contract;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboProtocolConfigSupplier;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolver;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceExporter;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceProxy;
 import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataConfigService;
+import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.EventListener;
 
 import java.util.Collection;
-import java.util.Iterator;
-
-import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import java.util.function.Supplier;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata
@@ -41,10 +49,20 @@ import static com.alibaba.dubbo.common.Constants.DEFAULT_PROTOCOL;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
-@Import({DubboServiceMetadataRepository.class, PublishingDubboMetadataConfigService.class})
+@Import({DubboServiceMetadataRepository.class,
+        PublishingDubboMetadataConfigService.class,
+        DubboMetadataConfigServiceExporter.class,
+        JSONUtils.class})
 public class DubboMetadataAutoConfiguration {
 
-    public static final String METADATA_PROTOCOL_BEAN_NAME = "metadata";
+    @Autowired
+    private PublishingDubboMetadataConfigService dubboMetadataConfigService;
+
+    @Autowired
+    private MetadataResolver metadataResolver;
+
+    @Autowired
+    private DubboMetadataConfigServiceExporter dubboMetadataConfigServiceExporter;
 
     @Bean
     @ConditionalOnMissingBean
@@ -52,40 +70,45 @@ public class DubboMetadataAutoConfiguration {
         return new DubboServiceBeanMetadataResolver(contract);
     }
 
-    /**
-     * Build an alias Bean for {@link ProtocolConfig}
-     *
-     * @param protocols {@link ProtocolConfig} Beans
-     * @return {@link ProtocolConfig} bean
-     */
-    @Bean(name = METADATA_PROTOCOL_BEAN_NAME)
-    public ProtocolConfig protocolConfig(Collection<ProtocolConfig> protocols) {
-        ProtocolConfig protocolConfig = null;
-        for (ProtocolConfig protocol : protocols) {
-            String protocolName = protocol.getName();
-            if (DEFAULT_PROTOCOL.equals(protocolName)) {
-                protocolConfig = protocol;
-                break;
-            }
-        }
-
-        if (protocolConfig == null) { // If The ProtocolConfig bean named "dubbo" is absent, take first one of them
-            Iterator<ProtocolConfig> iterator = protocols.iterator();
-            protocolConfig = iterator.hasNext() ? iterator.next() : null;
-        }
-
-        if (protocolConfig == null) {
-            protocolConfig = new ProtocolConfig();
-            protocolConfig.setName(DEFAULT_PROTOCOL);
-            protocolConfig.setPort(20880);
-        }
-
-        return protocolConfig;
+    @Bean
+    public Supplier<ProtocolConfig> dubboProtocolConfigSupplier(ObjectProvider<Collection<ProtocolConfig>> protocols) {
+        return new DubboProtocolConfigSupplier(protocols);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public DubboMetadataConfigServiceProxy dubboMetadataConfigServiceProxy(DubboGenericServiceFactory factory) {
         return new DubboMetadataConfigServiceProxy(factory);
+    }
+
+    // Event-Handling
+
+    @EventListener(ServiceBeanExportedEvent.class)
+    public void onServiceBeanExported(ServiceBeanExportedEvent event) {
+        ServiceBean serviceBean = event.getServiceBean();
+        publishServiceRestMetadata(serviceBean);
+        exportDubboMetadataConfigService();
+    }
+
+    @EventListener(ApplicationFailedEvent.class)
+    public void onApplicationFailed() {
+        unExportDubboMetadataConfigService();
+    }
+
+    @EventListener(ContextClosedEvent.class)
+    public void onContextClosed() {
+        dubboMetadataConfigServiceExporter.unexport();
+    }
+
+    private void publishServiceRestMetadata(ServiceBean serviceBean) {
+        dubboMetadataConfigService.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
+    }
+
+    private void exportDubboMetadataConfigService() {
+        dubboMetadataConfigServiceExporter.export();
+    }
+
+    private void unExportDubboMetadataConfigService() {
+        dubboMetadataConfigServiceExporter.unexport();
     }
 }

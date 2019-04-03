@@ -17,24 +17,31 @@
 package org.springframework.cloud.alibaba.dubbo.service;
 
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.spring.ReferenceBean;
 import org.apache.dubbo.rpc.service.GenericService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboRestServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.DataBinder;
 
 import javax.annotation.PreDestroy;
+import java.beans.PropertyEditorSupport;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static org.apache.dubbo.common.Constants.DEFAULT_CLUSTER;
-import static org.apache.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import static java.util.Collections.emptyMap;
 import static org.apache.dubbo.common.Constants.GROUP_KEY;
 import static org.apache.dubbo.common.Constants.VERSION_KEY;
+import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
 
 /**
  * Dubbo {@link GenericService} Factory
@@ -47,39 +54,36 @@ public class DubboGenericServiceFactory {
 
     private final ConcurrentMap<Integer, ReferenceBean<GenericService>> cache = new ConcurrentHashMap<>();
 
-    public GenericService create(DubboServiceMetadata dubboServiceMetadata,
-                                 DubboTransportedMetadata dubboTransportedMetadata) {
+    public GenericService create(DubboRestServiceMetadata dubboServiceMetadata,
+                                 Map<String, Object> dubboTranslatedAttributes) {
 
-        ReferenceBean<GenericService> referenceBean = build(dubboServiceMetadata.getServiceRestMetadata(), dubboTransportedMetadata);
+        ReferenceBean<GenericService> referenceBean = build(dubboServiceMetadata.getServiceRestMetadata(), dubboTranslatedAttributes);
 
         return referenceBean == null ? null : referenceBean.get();
     }
 
     public GenericService create(String serviceName, Class<?> serviceClass) {
         String interfaceName = serviceClass.getName();
-        ReferenceBean<GenericService> referenceBean = build(interfaceName, serviceName, null,
-                DEFAULT_PROTOCOL, DEFAULT_CLUSTER);
+        ReferenceBean<GenericService> referenceBean = build(interfaceName, serviceName, null, emptyMap());
         return referenceBean.get();
     }
 
 
     private ReferenceBean<GenericService> build(ServiceRestMetadata serviceRestMetadata,
-                                                DubboTransportedMetadata dubboTransportedMetadata) {
+                                                Map<String, Object> dubboTranslatedAttributes) {
         String urlValue = serviceRestMetadata.getUrl();
         URL url = URL.valueOf(urlValue);
         String interfaceName = url.getServiceInterface();
         String version = url.getParameter(VERSION_KEY);
-        String group =  url.getParameter(GROUP_KEY);
-        String protocol = dubboTransportedMetadata.getProtocol();
-        String cluster = dubboTransportedMetadata.getCluster();
+        String group = url.getParameter(GROUP_KEY);
 
-        return build(interfaceName, version, group, protocol, cluster);
+        return build(interfaceName, version, group, dubboTranslatedAttributes);
     }
 
-    private ReferenceBean<GenericService> build(String interfaceName, String version, String group, String protocol,
-                                                String cluster) {
+    private ReferenceBean<GenericService> build(String interfaceName, String version, String group,
+                                                Map<String, Object> dubboTranslatedAttributes) {
 
-        Integer key = Objects.hash(interfaceName, version, group, protocol, cluster);
+        Integer key = Objects.hash(interfaceName, version, group, dubboTranslatedAttributes);
 
         ReferenceBean<GenericService> referenceBean = cache.get(key);
 
@@ -89,11 +93,36 @@ public class DubboGenericServiceFactory {
             referenceBean.setInterface(interfaceName);
             referenceBean.setVersion(version);
             referenceBean.setGroup(group);
-            referenceBean.setProtocol(protocol);
-            referenceBean.setCluster(cluster);
+            bindReferenceBean(referenceBean, dubboTranslatedAttributes);
         }
 
         return referenceBean;
+    }
+
+    private void bindReferenceBean(ReferenceBean<GenericService> referenceBean, Map<String, Object> dubboTranslatedAttributes) {
+        DataBinder dataBinder = new DataBinder(referenceBean);
+        // Register CustomEditors for special fields
+        dataBinder.registerCustomEditor(String.class, "filter", new StringTrimmerEditor(true));
+        dataBinder.registerCustomEditor(String.class, "listener", new StringTrimmerEditor(true));
+        dataBinder.registerCustomEditor(Map.class, "parameters", new PropertyEditorSupport() {
+
+            public void setAsText(String text) throws java.lang.IllegalArgumentException {
+                // Trim all whitespace
+                String content = StringUtils.trimAllWhitespace(text);
+                if (!StringUtils.hasText(content)) { // No content , ignore directly
+                    return;
+                }
+                // replace "=" to ","
+                content = StringUtils.replace(content, "=", ",");
+                // replace ":" to ","
+                content = StringUtils.replace(content, ":", ",");
+                // String[] to Map
+                Map<String, String> parameters = CollectionUtils.toStringMap(commaDelimitedListToStringArray(content));
+                setValue(parameters);
+            }
+        });
+
+        dataBinder.bind(new MutablePropertyValues(dubboTranslatedAttributes));
     }
 
     @PreDestroy

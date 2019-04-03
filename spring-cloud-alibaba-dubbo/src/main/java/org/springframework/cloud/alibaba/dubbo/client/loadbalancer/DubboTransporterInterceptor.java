@@ -18,9 +18,9 @@ package org.springframework.cloud.alibaba.dubbo.client.loadbalancer;
 
 import org.apache.dubbo.rpc.service.GenericException;
 import org.apache.dubbo.rpc.service.GenericService;
+
 import org.springframework.cloud.alibaba.dubbo.http.MutableHttpServerRequest;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboTransportedMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboRestServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
@@ -57,7 +57,7 @@ public class DubboTransporterInterceptor implements ClientHttpRequestInterceptor
 
     private final DubboClientHttpResponseFactory clientHttpResponseFactory;
 
-    private final DubboTransportedMetadata dubboTransportedMetadata;
+    private final Map<String, Object> dubboTranslatedAttributes;
 
     private final DubboGenericServiceFactory serviceFactory;
 
@@ -68,11 +68,11 @@ public class DubboTransporterInterceptor implements ClientHttpRequestInterceptor
     public DubboTransporterInterceptor(DubboServiceMetadataRepository dubboServiceMetadataRepository,
                                        List<HttpMessageConverter<?>> messageConverters,
                                        ClassLoader classLoader,
-                                       DubboTransportedMetadata dubboTransportedMetadata,
+                                       Map<String, Object> dubboTranslatedAttributes,
                                        DubboGenericServiceFactory serviceFactory,
                                        DubboGenericServiceExecutionContextFactory contextFactory) {
         this.repository = dubboServiceMetadataRepository;
-        this.dubboTransportedMetadata = dubboTransportedMetadata;
+        this.dubboTranslatedAttributes = dubboTranslatedAttributes;
         this.clientHttpResponseFactory = new DubboClientHttpResponseFactory(messageConverters, classLoader);
         this.serviceFactory = serviceFactory;
         this.contextFactory = contextFactory;
@@ -87,16 +87,16 @@ public class DubboTransporterInterceptor implements ClientHttpRequestInterceptor
 
         RequestMetadata clientMetadata = buildRequestMetadata(request);
 
-        DubboServiceMetadata dubboServiceMetadata = repository.get(serviceName, clientMetadata);
+        DubboRestServiceMetadata metadata = repository.get(serviceName, clientMetadata);
 
-        if (dubboServiceMetadata == null) {
+        if (metadata == null) {
             // if DubboServiceMetadata is not found, executes next
             return execution.execute(request, body);
         }
 
-        RestMethodMetadata dubboRestMethodMetadata = dubboServiceMetadata.getRestMethodMetadata();
+        RestMethodMetadata dubboRestMethodMetadata = metadata.getRestMethodMetadata();
 
-        GenericService genericService = serviceFactory.create(dubboServiceMetadata, dubboTransportedMetadata);
+        GenericService genericService = serviceFactory.create(metadata, dubboTranslatedAttributes);
 
         MutableHttpServerRequest httpServerRequest = new MutableHttpServerRequest(request, body);
 

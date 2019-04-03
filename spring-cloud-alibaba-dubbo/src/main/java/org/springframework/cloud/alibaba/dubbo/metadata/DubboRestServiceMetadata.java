@@ -16,46 +16,43 @@
  */
 package org.springframework.cloud.alibaba.dubbo.metadata;
 
-import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
-
 import java.util.Objects;
 
 /**
- * {@link DubboTransported @DubboTransported} Metadata
+ * Dubbo Rest Service Metadata
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class DubboTransportedMetadata {
+public class DubboRestServiceMetadata {
 
-    private String protocol;
+    private final ServiceRestMetadata serviceRestMetadata;
 
-    private String cluster;
+    private final RestMethodMetadata restMethodMetadata;
 
-    public String getProtocol() {
-        return protocol;
+    public DubboRestServiceMetadata(ServiceRestMetadata serviceRestMetadata, RestMethodMetadata restMethodMetadata) {
+        this.serviceRestMetadata = serviceRestMetadata;
+        this.restMethodMetadata = restMethodMetadata;
     }
 
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
+    public ServiceRestMetadata getServiceRestMetadata() {
+        return serviceRestMetadata;
     }
 
-    public String getCluster() {
-        return cluster;
-    }
-
-    public void setCluster(String cluster) {
-        this.cluster = cluster;
+    public RestMethodMetadata getRestMethodMetadata() {
+        return restMethodMetadata;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DubboTransportedMetadata)) return false;
-        DubboTransportedMetadata that = (DubboTransportedMetadata) o;
-        return Objects.equals(protocol, that.protocol) &&
-                Objects.equals(cluster, that.cluster);
+        if (!(o instanceof DubboRestServiceMetadata)) return false;
+        DubboRestServiceMetadata that = (DubboRestServiceMetadata) o;
+        return Objects.equals(serviceRestMetadata, that.serviceRestMetadata) &&
+                Objects.equals(restMethodMetadata, that.restMethodMetadata);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(protocol, cluster);
+        return Objects.hash(serviceRestMetadata, restMethodMetadata);
     }
 }
