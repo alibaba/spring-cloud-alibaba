@@ -41,16 +41,9 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 @ConditionalOnNacosDiscoveryEnabled
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
-@AutoConfigureBefore(NacosDiscoveryClientAutoConfiguration.class)
 @AutoConfigureAfter({ AutoServiceRegistrationConfiguration.class,
 		AutoServiceRegistrationAutoConfiguration.class })
 public class NacosDiscoveryAutoConfiguration {
-
-	@Bean
-	@ConditionalOnMissingBean
-	public NacosDiscoveryProperties nacosProperties() {
-		return new NacosDiscoveryProperties();
-	}
 
 	@Bean
 	public NacosServiceRegistry nacosServiceRegistry(
