@@ -35,6 +35,12 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
+	public NacosDiscoveryProperties nacosProperties() {
+		return new NacosDiscoveryProperties();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
 	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint(
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
