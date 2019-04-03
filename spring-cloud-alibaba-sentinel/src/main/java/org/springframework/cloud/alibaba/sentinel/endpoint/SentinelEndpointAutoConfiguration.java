@@ -20,6 +20,7 @@ import org.springframework.boot.actuate.autoconfigure.endpoint.condition.Conditi
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.Bean;
  */
 @ConditionalOnClass(Endpoint.class)
 @EnableConfigurationProperties({ SentinelProperties.class })
+@ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
 public class SentinelEndpointAutoConfiguration {
 
 	@Bean
