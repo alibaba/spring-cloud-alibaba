@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_CONFIGURATION_CLASS_NAME;
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_AUTO_CONFIGURATION_CLASS_NAME;
-import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistry.DUBBO_URLS_METADATA_PROPERTY_NAME;
+import static org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository.DUBBO_URLS_METADATA_PROPERTY_NAME;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
