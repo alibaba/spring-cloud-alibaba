@@ -95,7 +95,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 							+ Feign.configKey(method.getDeclaringClass(), method));
 			// resource default is HttpMethod:protocol://url
 			String resourceName = methodMetadata.template().method().toUpperCase() + ":"
-					+ hardCodedTarget.url() + methodMetadata.template().url();
+					+ hardCodedTarget.url() + methodMetadata.template().path();
 			Entry entry = null;
 			try {
 				ContextUtil.enter(resourceName);
@@ -128,7 +128,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 			}
 			finally {
 				if (entry != null) {
-					entry.exit();
+					entry.exit(1, args);
 				}
 				ContextUtil.exit();
 			}

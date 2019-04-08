@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.2.2.BUILD-SNAPSHOT</version>
+        <version>2.1.0.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,8 @@
     <name>Spring Cloud Alibaba Dubbo</name>
 
     <properties>
-        <dubbo.version>2.7.0</dubbo.version>
+        <dubbo.version>2.7.1</dubbo.version>
+        <dubbo-spring-boot.version>2.7.0</dubbo-spring-boot.version>
         <spring-cloud-zookeeper.version>2.1.0.RELEASE</spring-cloud-zookeeper.version>
         <spring-cloud-consul.version>2.1.0.RELEASE</spring-cloud-consul.version>
         <curator.version>4.0.1</curator.version>
@@ -178,7 +179,7 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo.version}</version>
+            <version>${dubbo-spring-boot.version}</version>
         </dependency>
 
         <!-- Netty -->

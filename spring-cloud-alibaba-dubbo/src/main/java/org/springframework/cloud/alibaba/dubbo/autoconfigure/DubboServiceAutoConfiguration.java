@@ -18,18 +18,17 @@ package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
 import org.apache.dubbo.common.utils.Assert;
 import org.apache.dubbo.config.spring.util.PropertySourcesUtils;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
-import org.springframework.cloud.alibaba.dubbo.registry.RegistrationFactoryProvider;
-import org.springframework.cloud.alibaba.dubbo.registry.handler.DubboRegistryServiceIdHandler;
-import org.springframework.cloud.alibaba.dubbo.registry.handler.StandardDubboRegistryServiceIdHandler;
+import org.springframework.cloud.alibaba.dubbo.env.DubboCloudProperties;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.PathVariableServiceParameterResolver;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestBodyServiceParameterResolver;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestHeaderServiceParameterResolver;
 import org.springframework.cloud.alibaba.dubbo.service.parameter.RequestParamServiceParameterResolver;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -52,6 +51,7 @@ import static org.apache.dubbo.spring.boot.util.DubboUtils.DUBBO_SCAN_PREFIX;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
+@EnableConfigurationProperties(DubboCloudProperties.class)
 public class DubboServiceAutoConfiguration {
 
     @Bean
@@ -71,17 +71,6 @@ public class DubboServiceAutoConfiguration {
     static class ParameterResolversConfiguration {
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DubboRegistryServiceIdHandler dubboRegistryServiceIdHandler(ConfigurableApplicationContext context) {
-        return new StandardDubboRegistryServiceIdHandler(context);
-    }
-
-    @Bean
-    public RegistrationFactoryProvider registrationFactoryProvider() {
-        return new RegistrationFactoryProvider();
-    }
-
     /**
      * Bugfix code for an issue : https://github.com/apache/incubator-dubbo-spring-boot-project/issues/459
      *
@@ -92,6 +81,7 @@ public class DubboServiceAutoConfiguration {
     @Bean(name = BASE_PACKAGES_PROPERTY_RESOLVER_BEAN_NAME)
     public PropertyResolver dubboScanBasePackagesPropertyResolver(ConfigurableEnvironment environment) {
         ConfigurableEnvironment propertyResolver = new AbstractEnvironment() {
+            @Override
             protected void customizePropertySources(MutablePropertySources propertySources) {
                 Map<String, Object> dubboScanProperties = PropertySourcesUtils.getSubProperties(environment, DUBBO_SCAN_PREFIX);
                 propertySources.addLast(new MapPropertySource("dubboScanProperties", dubboScanProperties));
