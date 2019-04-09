@@ -22,8 +22,8 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.util.List;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.ApolloDataSourceProperties;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.FileDataSourceProperties;
