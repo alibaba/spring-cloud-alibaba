@@ -33,10 +33,15 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnNacosDiscoveryEnabled
-@EnableConfigurationProperties
 @AutoConfigureBefore({ SimpleDiscoveryClientAutoConfiguration.class,
 		CommonsClientAutoConfiguration.class })
 public class NacosDiscoveryClientAutoConfiguration {
+
+	@Bean
+	@ConditionalOnMissingBean
+	public NacosDiscoveryProperties nacosProperties() {
+		return new NacosDiscoveryProperties();
+	}
 
 	@Bean
 	public DiscoveryClient nacosDiscoveryClient(
