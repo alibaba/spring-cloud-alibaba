@@ -15,7 +15,6 @@
 
     <properties>
         <dubbo.version>2.7.1</dubbo.version>
-        <dubbo-spring-boot.version>2.7.0</dubbo-spring-boot.version>
         <spring-cloud-zookeeper.version>2.1.0.RELEASE</spring-cloud-zookeeper.version>
         <spring-cloud-consul.version>2.1.0.RELEASE</spring-cloud-consul.version>
         <curator.version>4.0.1</curator.version>
@@ -179,7 +178,7 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo-spring-boot.version}</version>
+            <version>${dubbo.version}</version>
         </dependency>
 
         <!-- Netty -->
