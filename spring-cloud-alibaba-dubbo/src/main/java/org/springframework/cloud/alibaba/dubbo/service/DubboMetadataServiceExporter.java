@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.function.Supplier;
 
@@ -43,7 +42,7 @@ public class DubboMetadataServiceExporter {
     private ApplicationConfig applicationConfig;
 
     @Autowired
-    private PublishingDubboMetadataService dubboMetadataService;
+    private DubboMetadataService dubboMetadataService;
 
     @Autowired
     private Supplier<ProtocolConfig> protocolConfigSupplier;
@@ -62,15 +61,6 @@ public class DubboMetadataServiceExporter {
     public void export() {
 
         if (serviceConfig != null && serviceConfig.isExported()) {
-            return;
-        }
-
-        if (StringUtils.isEmpty(dubboMetadataService.getServiceRestMetadata())) {
-            // If there is no REST metadata, DubboMetadataConfigService will not be exported.
-            if (logger.isInfoEnabled()) {
-                logger.info("There is no REST metadata, the Dubbo service[{}] will not be exported.",
-                        dubboMetadataService.getClass().getName());
-            }
             return;
         }
 

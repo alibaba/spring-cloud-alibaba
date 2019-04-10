@@ -30,7 +30,7 @@ public interface DubboMetadataService {
     /**
      * Get The json content of {@link ServiceRestMetadata} {@link Set}
      *
-     * @return the non-null String
+     * @return <code>null</code> if present
      */
     String getServiceRestMetadata();
 }
