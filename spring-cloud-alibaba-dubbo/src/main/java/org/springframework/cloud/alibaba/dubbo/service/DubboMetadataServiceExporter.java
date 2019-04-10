@@ -30,12 +30,12 @@ import org.springframework.util.StringUtils;
 import java.util.function.Supplier;
 
 /**
- * {@link DubboMetadataConfigService} exporter
+ * {@link DubboMetadataService} exporter
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Component
-public class DubboMetadataConfigServiceExporter {
+public class DubboMetadataServiceExporter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -43,7 +43,7 @@ public class DubboMetadataConfigServiceExporter {
     private ApplicationConfig applicationConfig;
 
     @Autowired
-    private PublishingDubboMetadataConfigService dubboMetadataConfigService;
+    private PublishingDubboMetadataService dubboMetadataService;
 
     @Autowired
     private Supplier<ProtocolConfig> protocolConfigSupplier;
@@ -54,10 +54,10 @@ public class DubboMetadataConfigServiceExporter {
     /**
      * The ServiceConfig of DubboMetadataConfigService to be exported, can be nullable.
      */
-    private ServiceConfig<DubboMetadataConfigService> serviceConfig;
+    private ServiceConfig<DubboMetadataService> serviceConfig;
 
     /**
-     * export {@link DubboMetadataConfigService} as Dubbo service
+     * export {@link DubboMetadataService} as Dubbo service
      */
     public void export() {
 
@@ -65,21 +65,21 @@ public class DubboMetadataConfigServiceExporter {
             return;
         }
 
-        if (StringUtils.isEmpty(dubboMetadataConfigService.getServiceRestMetadata())) {
+        if (StringUtils.isEmpty(dubboMetadataService.getServiceRestMetadata())) {
             // If there is no REST metadata, DubboMetadataConfigService will not be exported.
             if (logger.isInfoEnabled()) {
                 logger.info("There is no REST metadata, the Dubbo service[{}] will not be exported.",
-                        dubboMetadataConfigService.getClass().getName());
+                        dubboMetadataService.getClass().getName());
             }
             return;
         }
 
         serviceConfig = new ServiceConfig<>();
 
-        serviceConfig.setInterface(DubboMetadataConfigService.class);
+        serviceConfig.setInterface(DubboMetadataService.class);
         // Use current Spring application name as the Dubbo Service version
         serviceConfig.setVersion(currentApplicationName);
-        serviceConfig.setRef(dubboMetadataConfigService);
+        serviceConfig.setRef(dubboMetadataService);
         serviceConfig.setApplication(applicationConfig);
         serviceConfig.setProtocol(protocolConfigSupplier.get());
 
@@ -92,7 +92,7 @@ public class DubboMetadataConfigServiceExporter {
 
 
     /**
-     * unexport {@link DubboMetadataConfigService}
+     * unexport {@link DubboMetadataService}
      */
     public void unexport() {
 

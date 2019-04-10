@@ -21,11 +21,11 @@ import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import java.util.Set;
 
 /**
- * Dubbo Metadata Configuration Service
+ * Dubbo Metadata Service
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface DubboMetadataConfigService {
+public interface DubboMetadataService {
 
     /**
      * Get The json content of {@link ServiceRestMetadata} {@link Set}

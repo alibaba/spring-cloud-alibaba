@@ -22,14 +22,14 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
- * {@link DubboMetadataConfigService} {@link InvocationHandler}
+ * {@link DubboMetadataService} {@link InvocationHandler}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-class DubboMetadataConfigServiceInvocationHandler implements InvocationHandler {
+class DubboMetadataServiceInvocationHandler implements InvocationHandler {
 
     /**
-     * The method name of {@link DubboMetadataConfigService#getServiceRestMetadata()}
+     * The method name of {@link DubboMetadataService#getServiceRestMetadata()}
      */
     private static final String METHOD_NAME = "getServiceRestMetadata";
 
@@ -39,8 +39,8 @@ class DubboMetadataConfigServiceInvocationHandler implements InvocationHandler {
 
     private final GenericService genericService;
 
-    public DubboMetadataConfigServiceInvocationHandler(String serviceName, DubboGenericServiceFactory dubboGenericServiceFactory) {
-        this.genericService = dubboGenericServiceFactory.create(serviceName, DubboMetadataConfigService.class);
+    public DubboMetadataServiceInvocationHandler(String serviceName, DubboGenericServiceFactory dubboGenericServiceFactory) {
+        this.genericService = dubboGenericServiceFactory.create(serviceName, DubboMetadataService.class);
     }
 
     @Override
