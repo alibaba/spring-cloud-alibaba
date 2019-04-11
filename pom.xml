@@ -98,7 +98,7 @@
         <module>spring-cloud-alibaba-fescar</module>
         <module>spring-cloud-stream-binder-rocketmq</module>
         <module>spring-cloud-alibaba-nacos-config-server</module>
-        <!--<module>spring-cloud-alibaba-dubbo</module>-->
+        <module>spring-cloud-alibaba-dubbo</module>
         <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-test</module>

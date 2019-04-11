@@ -179,7 +179,7 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo-spring-boot.version}</version>
+            <version>${dubbo.version}</version>
         </dependency>
 
         <!-- Netty -->

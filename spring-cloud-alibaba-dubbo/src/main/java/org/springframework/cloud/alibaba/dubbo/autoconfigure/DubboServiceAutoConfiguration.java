@@ -16,12 +16,9 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import org.apache.dubbo.common.utils.Assert;
-import org.apache.dubbo.config.spring.util.PropertySourcesUtils;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.cloud.alibaba.dubbo.env.DubboCloudProperties;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
@@ -33,17 +30,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
-import org.springframework.lang.Nullable;
-
-import java.util.Map;
-
-import static org.apache.dubbo.spring.boot.util.DubboUtils.BASE_PACKAGES_PROPERTY_RESOLVER_BEAN_NAME;
-import static org.apache.dubbo.spring.boot.util.DubboUtils.DUBBO_SCAN_PREFIX;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Service
@@ -72,80 +60,14 @@ public class DubboServiceAutoConfiguration {
     }
 
     /**
-     * Bugfix code for an issue : https://github.com/apache/incubator-dubbo-spring-boot-project/issues/459
+     * Build a primary {@link PropertyResolver} bean to {@link Autowired @Autowired}
      *
-     * @param environment {@link ConfigurableEnvironment}
-     * @return a Bean of {@link PropertyResolver}
+     * @param environment {@link Environment}
+     * @return alias bean for {@link Environment}
      */
+    @Bean
     @Primary
-    @Bean(name = BASE_PACKAGES_PROPERTY_RESOLVER_BEAN_NAME)
-    public PropertyResolver dubboScanBasePackagesPropertyResolver(ConfigurableEnvironment environment) {
-        ConfigurableEnvironment propertyResolver = new AbstractEnvironment() {
-            @Override
-            protected void customizePropertySources(MutablePropertySources propertySources) {
-                Map<String, Object> dubboScanProperties = PropertySourcesUtils.getSubProperties(environment, DUBBO_SCAN_PREFIX);
-                propertySources.addLast(new MapPropertySource("dubboScanProperties", dubboScanProperties));
-            }
-        };
-        ConfigurationPropertySources.attach(propertyResolver);
-        return new DelegatingPropertyResolver(propertyResolver);
-    }
-
-
-    private static class DelegatingPropertyResolver implements PropertyResolver {
-
-        private final PropertyResolver delegate;
-
-        DelegatingPropertyResolver(PropertyResolver delegate) {
-            Assert.notNull(delegate, "The delegate of PropertyResolver must not be null");
-            this.delegate = delegate;
-        }
-
-        @Override
-        public boolean containsProperty(String key) {
-            return delegate.containsProperty(key);
-        }
-
-        @Override
-        @Nullable
-        public String getProperty(String key) {
-            return delegate.getProperty(key);
-        }
-
-        @Override
-        public String getProperty(String key, String defaultValue) {
-            return delegate.getProperty(key, defaultValue);
-        }
-
-        @Override
-        @Nullable
-        public <T> T getProperty(String key, Class<T> targetType) {
-            return delegate.getProperty(key, targetType);
-        }
-
-        @Override
-        public <T> T getProperty(String key, Class<T> targetType, T defaultValue) {
-            return delegate.getProperty(key, targetType, defaultValue);
-        }
-
-        @Override
-        public String getRequiredProperty(String key) throws IllegalStateException {
-            return delegate.getRequiredProperty(key);
-        }
-
-        @Override
-        public <T> T getRequiredProperty(String key, Class<T> targetType) throws IllegalStateException {
-            return delegate.getRequiredProperty(key, targetType);
-        }
-
-        @Override
-        public String resolvePlaceholders(String text) {
-            return delegate.resolvePlaceholders(text);
-        }
-
-        @Override
-        public String resolveRequiredPlaceholders(String text) throws IllegalArgumentException {
-            return delegate.resolveRequiredPlaceholders(text);
-        }
+    public PropertyResolver primaryPropertyResolver(Environment environment) {
+        return environment;
     }
 }
