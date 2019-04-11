@@ -17,6 +17,7 @@
 package org.springframework.cloud.alibaba.dubbo.bootstrap;
 
 import org.apache.dubbo.config.annotation.Reference;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -52,7 +53,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 @EnableFeignClients
 public class DubboSpringCloudConsumerBootstrap {
 
-    @Reference(version = "1.0.0")
+    @Reference(version = "1.0.0", protocol = "dubbo")
     private RestService restService;
 
     @Autowired
@@ -94,7 +95,7 @@ public class DubboSpringCloudConsumerBootstrap {
     }
 
     @FeignClient("${provider.application.name}")
-    @DubboTransported()
+    @DubboTransported(protocol = "dubbo")
     public interface DubboFeignRestService {
 
         @GetMapping(value = "/param")
@@ -191,7 +192,7 @@ public class DubboSpringCloudConsumerBootstrap {
         // Dubbo Service call
         System.out.println(restService.requestBodyMap(data, "Hello,World"));
         // Spring Cloud Open Feign REST Call (Dubbo Transported)
-//        System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
+        System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
 //         Spring Cloud Open Feign REST Call
         System.out.println(feignRestService.requestBody("Hello,World", data));
 

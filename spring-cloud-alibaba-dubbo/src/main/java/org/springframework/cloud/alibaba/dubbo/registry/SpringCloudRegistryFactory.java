@@ -20,11 +20,9 @@ import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.NamedThreadFactory;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -46,15 +44,11 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 
     private static ConfigurableApplicationContext applicationContext;
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final ScheduledExecutorService servicesLookupScheduler;
 
-    private ServiceRegistry<Registration> serviceRegistry;
-
-    private RegistrationFactory registrationFactory;
-
     private DiscoveryClient discoveryClient;
+
+    private DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
     private volatile boolean initialized = false;
 
@@ -67,17 +61,14 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
         if (initialized || applicationContext == null) {
             return;
         }
-
-        this.serviceRegistry = applicationContext.getBean(ServiceRegistry.class);
-        this.registrationFactory = applicationContext.getBean(RegistrationFactory.class);
         this.discoveryClient = applicationContext.getBean(DiscoveryClient.class);
+        this.dubboServiceMetadataRepository = applicationContext.getBean(DubboServiceMetadataRepository.class);
     }
 
     @Override
     public Registry getRegistry(URL url) {
         init();
-        return new SpringCloudRegistry(url, serviceRegistry, registrationFactory, discoveryClient,
-                servicesLookupScheduler, applicationContext);
+        return new SpringCloudRegistry(url, discoveryClient, servicesLookupScheduler, dubboServiceMetadataRepository);
     }
 
     public static void setApplicationContext(ConfigurableApplicationContext applicationContext) {

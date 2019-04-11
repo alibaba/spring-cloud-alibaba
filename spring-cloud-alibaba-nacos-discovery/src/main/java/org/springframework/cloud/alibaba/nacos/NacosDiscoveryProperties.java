@@ -18,6 +18,7 @@ package org.springframework.cloud.alibaba.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,12 +61,6 @@ public class NacosDiscoveryProperties {
 	private String endpoint;
 
 	/**
-	 * the domain port of a service, through which the server address can be dynamically
-	 * obtained.
-	 */
-	private String endpointPort;
-
-	/**
 	 * namespace, separation registry of different environments.
 	 */
 	private String namespace;
@@ -73,7 +68,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * watch delay,duration to pull new service from nacos server.
 	 */
-	private long watchDelay = 5000;
+	private long watchDelay = 30000;
 
 	/**
 	 * nacos naming log file name
@@ -155,6 +150,7 @@ public class NacosDiscoveryProperties {
 	@PostConstruct
 	public void init() throws SocketException {
 
+		metadata.put(PreservedMetadataKeys.REGISTER_SOURCE, "SPRING_CLOUD");
 		if (secure) {
 			metadata.put("secure", "true");
 		}
@@ -341,26 +337,18 @@ public class NacosDiscoveryProperties {
 		this.watchDelay = watchDelay;
 	}
 
-	public String getEndpointPort() {
-		return endpointPort;
-	}
-
-	public void setEndpointPort(String endpointPort) {
-		this.endpointPort = endpointPort;
-	}
-
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
-				+ ", endpoint='" + endpoint + '\'' + ", endpointPort='" + endpointPort
-				+ '\'' + ", namespace='" + namespace + '\'' + ", watchDelay=" + watchDelay
-				+ ", logName='" + logName + '\'' + ", service='" + service + '\''
-				+ ", weight=" + weight + ", clusterName='" + clusterName + '\''
-				+ ", namingLoadCacheAtStart='" + namingLoadCacheAtStart + '\''
-				+ ", metadata=" + metadata + ", registerEnabled=" + registerEnabled
-				+ ", ip='" + ip + '\'' + ", networkInterface='" + networkInterface + '\''
-				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
-				+ '\'' + ", secretKey='" + secretKey + '\'' + '}';
+				+ ", endpoint='" + endpoint + '\'' + ", namespace='" + namespace + '\''
+				+ ", watchDelay=" + watchDelay + ", logName='" + logName + '\''
+				+ ", service='" + service + '\'' + ", weight=" + weight
+				+ ", clusterName='" + clusterName + '\'' + ", namingLoadCacheAtStart='"
+				+ namingLoadCacheAtStart + '\'' + ", metadata=" + metadata
+				+ ", registerEnabled=" + registerEnabled + ", ip='" + ip + '\''
+				+ ", networkInterface='" + networkInterface + '\'' + ", port=" + port
+				+ ", secure=" + secure + ", accessKey='" + accessKey + '\''
+				+ ", secretKey='" + secretKey + '\'' + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {
@@ -393,10 +381,6 @@ public class NacosDiscoveryProperties {
 			this.setEndpoint(
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
 		}
-		if (StringUtils.isEmpty(this.getEndpointPort())) {
-			this.setEndpointPort(env.resolvePlaceholders(
-					"${spring.cloud.nacos.discovery.endpoint-port:}"));
-		}
 	}
 
 	public NamingService namingServiceInstance() {
@@ -409,8 +393,16 @@ public class NacosDiscoveryProperties {
 		properties.put(SERVER_ADDR, serverAddr);
 		properties.put(NAMESPACE, namespace);
 		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME, logName);
-		properties.put(ENDPOINT, endpoint);
-		properties.put(ENDPOINT_PORT, endpointPort);
+
+		if (endpoint.contains(":")) {
+			int index = endpoint.indexOf(":");
+			properties.put(ENDPOINT, endpoint.substring(0, index));
+			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
+		}
+		else {
+			properties.put(ENDPOINT, endpoint);
+		}
+
 		properties.put(ACCESS_KEY, accessKey);
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);

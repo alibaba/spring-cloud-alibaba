@@ -48,7 +48,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.application.name=myTestService1",
 		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
 		"spring.cloud.nacos.discovery.endpoint=test-endpoint",
-		"spring.cloud.nacos.discovery.endpoint-port=8081",
 		"spring.cloud.nacos.discovery.namespace=test-namespace",
 		"spring.cloud.nacos.discovery.log-name=test-logName",
 		"spring.cloud.nacos.discovery.weight=2",
@@ -84,7 +83,6 @@ public class NacosAutoServiceRegistrationTests {
 
 		checkoutNacosDiscoveryServerAddr();
 		checkoutNacosDiscoveryEndpoint();
-		checkoutNacosDiscoveryEndpointPort();
 		checkoutNacosDiscoveryNamespace();
 		checkoutNacosDiscoveryLogName();
 		checkoutNacosDiscoveryWeight();
@@ -118,12 +116,6 @@ public class NacosAutoServiceRegistrationTests {
 	private void checkoutNacosDiscoveryEndpoint() {
 		assertEquals("NacosDiscoveryProperties endpoint was wrong", "test-endpoint",
 				properties.getEndpoint());
-
-	}
-
-	private void checkoutNacosDiscoveryEndpointPort() {
-		assertEquals("NacosDiscoveryProperties endpoint port was wrong", "8081",
-				properties.getEndpointPort());
 
 	}
 

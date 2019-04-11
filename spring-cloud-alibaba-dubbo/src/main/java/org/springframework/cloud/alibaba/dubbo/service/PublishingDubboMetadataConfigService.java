@@ -16,13 +16,11 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
+import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -41,12 +39,8 @@ public class PublishingDubboMetadataConfigService implements DubboMetadataConfig
      */
     private final Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @PostConstruct
-    public void init() {
-        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-    }
+    @Autowired
+    private JSONUtils jsonUtils;
 
     /**
      * Publish the {@link Set} of {@link ServiceRestMetadata}
@@ -64,12 +58,8 @@ public class PublishingDubboMetadataConfigService implements DubboMetadataConfig
     @Override
     public String getServiceRestMetadata() {
         String serviceRestMetadataJsonConfig = null;
-        try {
-            if (!isEmpty(serviceRestMetadata)) {
-                serviceRestMetadataJsonConfig = objectMapper.writeValueAsString(serviceRestMetadata);
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        if (!isEmpty(serviceRestMetadata)) {
+            serviceRestMetadataJsonConfig = jsonUtils.toJSON(serviceRestMetadata);
         }
         return serviceRestMetadataJsonConfig;
     }

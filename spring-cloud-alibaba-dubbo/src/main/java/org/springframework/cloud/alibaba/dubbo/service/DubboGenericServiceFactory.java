@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.cloud.alibaba.dubbo.metadata.DubboServiceMetadata;
+import org.springframework.cloud.alibaba.dubbo.metadata.DubboRestServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.DataBinder;
@@ -54,7 +54,7 @@ public class DubboGenericServiceFactory {
 
     private final ConcurrentMap<Integer, ReferenceBean<GenericService>> cache = new ConcurrentHashMap<>();
 
-    public GenericService create(DubboServiceMetadata dubboServiceMetadata,
+    public GenericService create(DubboRestServiceMetadata dubboServiceMetadata,
                                  Map<String, Object> dubboTranslatedAttributes) {
 
         ReferenceBean<GenericService> referenceBean = build(dubboServiceMetadata.getServiceRestMetadata(), dubboTranslatedAttributes);

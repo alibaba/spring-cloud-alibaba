@@ -18,6 +18,8 @@ package org.springframework.cloud.alibaba.dubbo.metadata;
 
 import org.apache.dubbo.config.ProtocolConfig;
 
+import org.springframework.beans.factory.ObjectProvider;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Supplier;
@@ -31,15 +33,16 @@ import static org.apache.dubbo.common.Constants.DEFAULT_PROTOCOL;
  */
 public class DubboProtocolConfigSupplier implements Supplier<ProtocolConfig> {
 
-    private final Collection<ProtocolConfig> protocols;
+    private final ObjectProvider<Collection<ProtocolConfig>> protocols;
 
-    public DubboProtocolConfigSupplier(Collection<ProtocolConfig> protocols) {
+    public DubboProtocolConfigSupplier(ObjectProvider<Collection<ProtocolConfig>> protocols) {
         this.protocols = protocols;
     }
 
     @Override
     public ProtocolConfig get() {
         ProtocolConfig protocolConfig = null;
+        Collection<ProtocolConfig> protocols = this.protocols.getIfAvailable();
         for (ProtocolConfig protocol : protocols) {
             String protocolName = protocol.getName();
             if (DEFAULT_PROTOCOL.equals(protocolName)) {
