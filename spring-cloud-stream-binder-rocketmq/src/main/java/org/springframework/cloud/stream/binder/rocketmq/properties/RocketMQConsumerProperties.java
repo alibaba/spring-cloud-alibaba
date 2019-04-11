@@ -62,6 +62,14 @@ public class RocketMQConsumerProperties {
 
 	private Boolean enabled = true;
 
+	// ------------ For Pull Consumer ------------
+
+	private long pullTimeout = 10 * 1000;
+
+	private boolean fromStore;
+
+	// ------------ For Pull Consumer ------------
+
 	public String getTags() {
 		return tags;
 	}
@@ -116,5 +124,21 @@ public class RocketMQConsumerProperties {
 
 	public void setSuspendCurrentQueueTimeMillis(long suspendCurrentQueueTimeMillis) {
 		this.suspendCurrentQueueTimeMillis = suspendCurrentQueueTimeMillis;
+	}
+
+	public long getPullTimeout() {
+		return pullTimeout;
+	}
+
+	public void setPullTimeout(long pullTimeout) {
+		this.pullTimeout = pullTimeout;
+	}
+
+	public boolean isFromStore() {
+		return fromStore;
+	}
+
+	public void setFromStore(boolean fromStore) {
+		this.fromStore = fromStore;
 	}
 }
