@@ -14,23 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.service;
+package org.springframework.cloud.alibaba.dubbo.actuate.endpoint;
 
-import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataService;
 
-import java.util.Set;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
- * Dubbo Metadata Configuration Service
- *
- * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * Dubbo Rest Metadata {@link Endpoint}
  */
-public interface DubboMetadataConfigService {
+@Endpoint(id = "dubborestmetadata")
+public class DubboRestMetadataEndpoint {
 
-    /**
-     * Get The json content of {@link ServiceRestMetadata} {@link Set}
-     *
-     * @return the non-null String
-     */
-    String getServiceRestMetadata();
+    @Autowired
+    private DubboMetadataService dubboMetadataService;
+
+    @ReadOperation(produces = APPLICATION_JSON_UTF8_VALUE)
+    public String get() {
+        return dubboMetadataService.getServiceRestMetadata();
+    }
 }
