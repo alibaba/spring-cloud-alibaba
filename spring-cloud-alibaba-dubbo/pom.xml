@@ -15,8 +15,8 @@
 
     <properties>
         <dubbo.version>2.7.1</dubbo.version>
-        <spring-cloud-zookeeper.version>2.1.0.RELEASE</spring-cloud-zookeeper.version>
-        <spring-cloud-consul.version>2.1.0.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-zookeeper.version>2.1.1.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-consul.version>2.1.1.RELEASE</spring-cloud-consul.version>
         <curator.version>4.0.1</curator.version>
     </properties>
 
