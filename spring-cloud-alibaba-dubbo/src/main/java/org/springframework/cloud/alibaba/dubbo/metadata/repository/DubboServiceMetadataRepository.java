@@ -29,8 +29,8 @@ import org.springframework.cloud.alibaba.dubbo.http.matcher.RequestMetadataMatch
 import org.springframework.cloud.alibaba.dubbo.metadata.DubboRestServiceMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.RequestMetadata;
 import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
-import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigService;
-import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataConfigServiceProxy;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataService;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataServiceProxy;
 import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -88,7 +88,7 @@ public class DubboServiceMetadataRepository {
     private DubboCloudProperties dubboCloudProperties;
 
     @Autowired
-    private DubboMetadataConfigServiceProxy dubboMetadataConfigServiceProxy;
+    private DubboMetadataServiceProxy dubboMetadataConfigServiceProxy;
 
     @Autowired
     private DiscoveryClient discoveryClient;
@@ -255,11 +255,11 @@ public class DubboServiceMetadataRepository {
     }
 
     private Set<ServiceRestMetadata> getServiceRestMetadataSet(String serviceName) {
-        DubboMetadataConfigService dubboMetadataConfigService = dubboMetadataConfigServiceProxy.newProxy(serviceName);
+        DubboMetadataService dubboMetadataService = dubboMetadataConfigServiceProxy.newProxy(serviceName);
 
         Set<ServiceRestMetadata> metadata = Collections.emptySet();
         try {
-            String serviceRestMetadataJsonConfig = dubboMetadataConfigService.getServiceRestMetadata();
+            String serviceRestMetadataJsonConfig = dubboMetadataService.getServiceRestMetadata();
             metadata = objectMapper.readValue(serviceRestMetadataJsonConfig,
                     TypeFactory.defaultInstance().constructCollectionType(LinkedHashSet.class, ServiceRestMetadata.class));
         } catch (Exception e) {

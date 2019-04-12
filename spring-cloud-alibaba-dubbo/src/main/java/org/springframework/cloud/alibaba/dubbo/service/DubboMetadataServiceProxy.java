@@ -21,27 +21,27 @@ import org.springframework.beans.factory.BeanClassLoaderAware;
 import static java.lang.reflect.Proxy.newProxyInstance;
 
 /**
- * The proxy of {@link DubboMetadataConfigService}
+ * The proxy of {@link DubboMetadataService}
  */
-public class DubboMetadataConfigServiceProxy implements BeanClassLoaderAware {
+public class DubboMetadataServiceProxy implements BeanClassLoaderAware {
 
     private final DubboGenericServiceFactory dubboGenericServiceFactory;
 
     private ClassLoader classLoader;
 
-    public DubboMetadataConfigServiceProxy(DubboGenericServiceFactory dubboGenericServiceFactory) {
+    public DubboMetadataServiceProxy(DubboGenericServiceFactory dubboGenericServiceFactory) {
         this.dubboGenericServiceFactory = dubboGenericServiceFactory;
     }
 
     /**
-     * New proxy instance of {@link DubboMetadataConfigService} via the specified service name
+     * New proxy instance of {@link DubboMetadataService} via the specified service name
      *
      * @param serviceName the service name
-     * @return a {@link DubboMetadataConfigService} proxy
+     * @return a {@link DubboMetadataService} proxy
      */
-    public DubboMetadataConfigService newProxy(String serviceName) {
-        return (DubboMetadataConfigService) newProxyInstance(classLoader, new Class[]{DubboMetadataConfigService.class},
-                new DubboMetadataConfigServiceInvocationHandler(serviceName, dubboGenericServiceFactory));
+    public DubboMetadataService newProxy(String serviceName) {
+        return (DubboMetadataService) newProxyInstance(classLoader, new Class[]{DubboMetadataService.class},
+                new DubboMetadataServiceInvocationHandler(serviceName, dubboGenericServiceFactory));
     }
 
     @Override
