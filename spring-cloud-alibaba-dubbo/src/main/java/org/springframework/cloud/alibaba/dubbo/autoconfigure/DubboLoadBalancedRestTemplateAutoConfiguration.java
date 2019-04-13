@@ -95,7 +95,6 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
      */
     private ClientHttpRequestInterceptor loadBalancerInterceptorBean;
 
-
     @Override
     public void afterSingletonsInstantiated() {
         loadBalancerInterceptorBean = retryLoadBalancerInterceptor != null ?
