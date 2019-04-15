@@ -1,6 +1,10 @@
 package org.springframework.cloud.alibaba.cloud.examples;
 
-import com.alibaba.nacos.api.config.listener.Listener;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Properties;
+import java.util.concurrent.Executor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -13,9 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
+import com.alibaba.nacos.api.config.listener.Listener;
 
 /**
  * @author xiaojing, Jianwei Mao
@@ -37,45 +39,44 @@ class SampleRunner implements ApplicationRunner {
 	@Value("${user.age:25}")
 	int userAge;
 
-
-    @Autowired
-    private NacosConfigProperties nacosConfigProperties;
+	@Autowired
+	private NacosConfigProperties nacosConfigProperties;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		System.out.println(String.format("Initial username=%s, userAge=%d", userName, userAge));
+		System.out.println(
+				String.format("Initial username=%s, userAge=%d", userName, userAge));
 
-		nacosConfigProperties.configServiceInstance()
-                .addListener("nacos-config-example.properties", "DEFAULT_GROUP", new Listener() {
+		nacosConfigProperties.configServiceInstance().addListener(
+				"nacos-config-example.properties", "DEFAULT_GROUP", new Listener() {
 
-                    /**
-                     * Callback with latest config data.
-                     *
-                     * For example, config data in Nacos is:
-                     *
-                     *     user.name=Nacos
-                     *     user.age=25
-                     *
-                     * @param configInfo latest config data for specific dataId in Nacos server
-                     */
-                    @Override
-                    public void receiveConfigInfo(String configInfo) {
-                        String [] configLines = configInfo.split("\r\n");
-                        Map<String, String> configs = new HashMap<>();
-                        for (String c : configLines) {
-                            String [] configPair = c.split("=");
-                            configs.put(configPair[0], configPair[1]);
-                        }
+					/**
+					 * Callback with latest config data.
+					 *
+					 * For example, config data in Nacos is:
+					 *
+					 * user.name=Nacos user.age=25
+					 *
+					 * @param configInfo latest config data for specific dataId in Nacos
+					 * server
+					 */
+					@Override
+					public void receiveConfigInfo(String configInfo) {
+						Properties properties = new Properties();
+						try {
+							properties.load(new StringReader(configInfo));
+						}
+						catch (IOException e) {
+							e.printStackTrace();
+						}
+						System.out.println("config changed: " + properties);
+					}
 
-                        System.out.println(String.format("Latest username=%s, userAge=%s",
-                                configs.get("user.name"), configs.get("user.age")));
-                    }
-
-                    @Override
-                    public Executor getExecutor() {
-                        return null;
-                    }
-                });
+					@Override
+					public Executor getExecutor() {
+						return null;
+					}
+				});
 	}
 }
 
@@ -85,6 +86,7 @@ class SampleController {
 
 	@Value("${user.name}")
 	String userName;
+
 
 	@Value("${user.age:25}")
 	int age;

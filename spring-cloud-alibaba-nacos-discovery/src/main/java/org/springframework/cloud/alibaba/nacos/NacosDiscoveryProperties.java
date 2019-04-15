@@ -68,7 +68,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * watch delay,duration to pull new service from nacos server.
 	 */
-	private long watchDelay = 5000;
+	private long watchDelay = 30000;
 
 	/**
 	 * nacos naming log file name
