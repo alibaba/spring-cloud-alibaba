@@ -26,6 +26,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 import org.springframework.cloud.alibaba.dubbo.service.RestService;
 import org.springframework.cloud.alibaba.dubbo.service.User;
+import org.springframework.cloud.alibaba.dubbo.service.UserService;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -52,6 +53,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 @EnableAutoConfiguration
 @EnableFeignClients
 public class DubboSpringCloudConsumerBootstrap {
+
+    @Reference
+    private UserService userService;
 
     @Reference(version = "1.0.0", protocol = "dubbo")
     private RestService restService;
@@ -119,7 +123,28 @@ public class DubboSpringCloudConsumerBootstrap {
     }
 
     @Bean
-    public ApplicationRunner paramRunner() {
+    public ApplicationRunner userServiceRunner() {
+        return arguments -> {
+
+            User user = new User();
+            user.setId(1L);
+            user.setName("小马哥");
+            user.setAge(33);
+
+            // save User
+            System.out.printf("UserService.save(%s) : %s\n", user, userService.save(user));
+
+            // find all Users
+            System.out.printf("UserService.findAll() : %s\n", user, userService.findAll());
+
+            // remove User
+            System.out.printf("UserService.remove(%d) : %s\n", user.getId(), userService.remove(user.getId()));
+
+        };
+    }
+
+    @Bean
+    public ApplicationRunner callRunner() {
         return arguments -> {
 
             // To call /path-variables
