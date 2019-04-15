@@ -32,6 +32,12 @@
       "name": "spring.cloud.nacos.config.ext-config",
       "type": "java.util.List",
       "description": "a set of extended configurations ."
+    },
+    {
+      "name": "spring.cloud.nacos.config.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "enable nacos config or not."
     }
   ]
 }

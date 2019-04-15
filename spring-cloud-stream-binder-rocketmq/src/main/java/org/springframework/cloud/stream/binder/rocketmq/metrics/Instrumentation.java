@@ -27,7 +27,7 @@ public class Instrumentation {
 	protected final AtomicBoolean started = new AtomicBoolean(false);
 	protected Exception startException = null;
 
-	Instrumentation(String name) {
+	public Instrumentation(String name) {
 		this.name = name;
 	}
 

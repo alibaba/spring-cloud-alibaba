@@ -16,16 +16,15 @@
 
 package org.springframework.cloud.alibaba.sentinel;
 
-import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
-import com.alibaba.csp.sentinel.config.SentinelConfig;
-import com.alibaba.csp.sentinel.log.LogBase;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.csp.sentinel.slots.block.RuleConstant;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
-import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+import java.util.Arrays;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,14 +50,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
+import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.log.LogBase;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -105,14 +106,16 @@ public class SentinelAutoConfigurationTests {
 	@LocalServerPort
 	private int port;
 
-	private String url = "http://localhost:" + port;
+	private String flowUrl = "http://localhost:" + port + "/flow";
+
+	private String degradeUrl = "http://localhost:" + port + "/degrade";
 
 	@Before
 	public void setUp() {
 		FlowRule rule = new FlowRule();
 		rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
 		rule.setCount(0);
-		rule.setResource(url);
+		rule.setResource("GET:" + flowUrl);
 		rule.setLimitApp("default");
 		rule.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
 		rule.setStrategy(RuleConstant.STRATEGY_DIRECT);
@@ -120,7 +123,7 @@ public class SentinelAutoConfigurationTests {
 
 		DegradeRule degradeRule = new DegradeRule();
 		degradeRule.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT);
-		degradeRule.setResource(url + "/test");
+		degradeRule.setResource("GET:" + degradeUrl);
 		degradeRule.setCount(0);
 		degradeRule.setTimeWindow(60);
 		DegradeRuleManager.loadRules(Arrays.asList(degradeRule));
@@ -246,14 +249,15 @@ public class SentinelAutoConfigurationTests {
 				restTemplate.getInterceptors().size());
 		assertEquals("RestTemplateWithBlockClass interceptors size was wrong", 1,
 				restTemplateWithBlockClass.getInterceptors().size());
-		ResponseEntity responseEntityBlock = restTemplateWithBlockClass.getForEntity(url,
-				String.class);
+		ResponseEntity responseEntityBlock = restTemplateWithBlockClass
+				.getForEntity(flowUrl, String.class);
 		assertEquals("RestTemplateWithBlockClass Sentinel Block Message was wrong",
 				"Oops", responseEntityBlock.getBody());
 		assertEquals(
 				"RestTemplateWithBlockClass Sentinel Block Http Status Code was wrong",
 				HttpStatus.OK, responseEntityBlock.getStatusCode());
-		ResponseEntity responseEntityRaw = restTemplate.getForEntity(url, String.class);
+		ResponseEntity responseEntityRaw = restTemplate.getForEntity(flowUrl,
+				String.class);
 		assertEquals("RestTemplate Sentinel Block Message was wrong",
 				"RestTemplate request block by sentinel", responseEntityRaw.getBody());
 		assertEquals("RestTemplate Sentinel Block Http Status Code was wrong",
@@ -265,14 +269,14 @@ public class SentinelAutoConfigurationTests {
 		assertEquals("RestTemplateWithoutBlockClass interceptors size was wrong", 0,
 				restTemplateWithoutBlockClass.getInterceptors().size());
 		assertThatExceptionOfType(RestClientException.class).isThrownBy(() -> {
-			restTemplateWithoutBlockClass.getForEntity(url, String.class);
+			restTemplateWithoutBlockClass.getForEntity(flowUrl, String.class);
 		});
 	}
 
 	@Test
 	public void testFallbackRestTemplate() {
 		ResponseEntity responseEntity = restTemplateWithFallbackClass
-				.getForEntity(url + "/test", String.class);
+				.getForEntity(degradeUrl, String.class);
 		assertEquals("RestTemplateWithFallbackClass Sentinel Message was wrong",
 				"Oops fallback", responseEntity.getBody());
 		assertEquals("RestTemplateWithFallbackClass Sentinel Http Status Code was wrong",

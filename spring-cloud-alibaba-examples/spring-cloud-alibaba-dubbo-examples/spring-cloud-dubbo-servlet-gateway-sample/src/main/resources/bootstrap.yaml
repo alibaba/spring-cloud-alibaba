@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: spring-cloud-alibaba-dubbo-servlet-gateway
+  main:
+    allow-bean-definition-overriding: true
+
+
+  # default disable all
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+        register-enabled: false
+    zookeeper:
+      enabled: false
+    consul:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+ribbon:
+  nacos:
+    enabled: false
+
+---
+spring:
+  profiles: nacos
+
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        register-enabled: true
+        server-addr: 127.0.0.1:8848
+
+ribbon:
+  nacos:
+    enabled: true
+
+---
+spring:
+  profiles: eureka
+
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+
+
+---
+spring:
+  profiles: zookeeper
+  cloud:
+    zookeeper:
+      enabled: true
+      connect-string: 127.0.0.1:2181
+
+
+---
+spring:
+  profiles: consul
+
+  cloud:
+    consul:
+      enabled: true
+      host: 127.0.0.1
+      port: 8500

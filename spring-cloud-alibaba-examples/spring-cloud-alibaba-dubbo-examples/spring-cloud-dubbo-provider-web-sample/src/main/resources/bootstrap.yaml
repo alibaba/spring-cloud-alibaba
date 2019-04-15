@@ -1,6 +1,6 @@
 spring:
   application:
-    name: spring-cloud-alibaba-dubbo-web-provider
+    name: spring-cloud-alibaba-dubbo-provider
   main:
     allow-bean-definition-overriding: true
 

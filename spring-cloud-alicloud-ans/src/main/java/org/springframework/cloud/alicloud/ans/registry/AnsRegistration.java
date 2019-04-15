@@ -37,6 +37,7 @@ public class AnsRegistration implements Registration, ServiceInstance {
 	static final String MANAGEMENT_PORT = "management.port";
 	static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
 	static final String MANAGEMENT_ADDRESS = "management.address";
+	static final String MANAGEMENT_ENDPOINT_BASE_PATH = "management.endpoints.web.base-path";
 
 	private AnsProperties ansProperties;
 	private ApplicationContext context;
@@ -49,10 +50,16 @@ public class AnsRegistration implements Registration, ServiceInstance {
 	@PostConstruct
 	public void init() {
 
+		Map<String, String> metadata = ansProperties.getClientMetadata();
 		Environment env = context.getEnvironment();
+
+		String endpointBasePath = env.getProperty(MANAGEMENT_ENDPOINT_BASE_PATH);
+		if (!StringUtils.isEmpty(endpointBasePath)) {
+			metadata.put(MANAGEMENT_ENDPOINT_BASE_PATH, endpointBasePath);
+		}
+
 		Integer managementPort = ManagementServerPortUtils.getPort(context);
 		if (null != managementPort) {
-			Map<String, String> metadata = ansProperties.getClientMetadata();
 			metadata.put(MANAGEMENT_PORT, managementPort.toString());
 			String contextPath = env
 					.getProperty("management.server.servlet.context-path");

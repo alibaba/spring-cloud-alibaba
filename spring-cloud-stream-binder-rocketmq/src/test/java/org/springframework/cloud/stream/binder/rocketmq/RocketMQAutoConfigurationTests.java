@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.stream.binder.rocketmq.config.RocketMQBinderAutoConfiguration;
-import org.springframework.cloud.stream.binder.rocketmq.config.RocketMQBinderEndpointAutoConfiguration;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 
@@ -33,8 +32,7 @@ public class RocketMQAutoConfigurationTests {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(
-					AutoConfigurations.of(RocketMQBinderEndpointAutoConfiguration.class,
-							RocketMQBinderAutoConfiguration.class))
+					AutoConfigurations.of(RocketMQBinderAutoConfiguration.class))
 			.withPropertyValues(
 					"spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876",
 					"spring.cloud.stream.bindings.output.destination=TopicOrderTest",
@@ -55,7 +53,7 @@ public class RocketMQAutoConfigurationTests {
 		this.contextRunner.run(context -> {
 			RocketMQBinderConfigurationProperties binderConfigurationProperties = context
 					.getBean(RocketMQBinderConfigurationProperties.class);
-			assertThat(binderConfigurationProperties.getNamesrvAddr())
+			assertThat(binderConfigurationProperties.getNameServer())
 					.isEqualTo("127.0.0.1:9876");
 			RocketMQExtendedBindingProperties bindingProperties = context
 					.getBean(RocketMQExtendedBindingProperties.class);

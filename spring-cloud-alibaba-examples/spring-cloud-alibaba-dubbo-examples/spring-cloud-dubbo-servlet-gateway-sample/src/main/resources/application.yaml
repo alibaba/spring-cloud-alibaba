@@ -1,0 +1,12 @@
+dubbo:
+  registry:
+    #   The Spring Cloud Dubbo's registry extension
+    address: spring-cloud://localhost
+#   The traditional Dubbo's registry
+#   address: zookeeper://127.0.0.1:2181
+server:
+  port: 0
+
+provider:
+  application:
+    name: spring-cloud-alibaba-dubbo-web-provider

@@ -16,12 +16,10 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import com.alibaba.csp.sentinel.Entry;
-import com.alibaba.csp.sentinel.SphU;
-import com.alibaba.csp.sentinel.Tracer;
-import com.alibaba.csp.sentinel.context.ContextUtil;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.springframework.cloud.alibaba.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.cloud.alibaba.sentinel.rest.SentinelClientHttpResponse;
@@ -29,11 +27,14 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.EntryType;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.Tracer;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 
 /**
  * Interceptor using by SentinelRestTemplate
@@ -44,15 +45,20 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 
 	private final SentinelRestTemplate sentinelRestTemplate;
 
-	public SentinelProtectInterceptor(SentinelRestTemplate sentinelRestTemplate) {
+	private final RestTemplate restTemplate;
+
+	public SentinelProtectInterceptor(SentinelRestTemplate sentinelRestTemplate,
+			RestTemplate restTemplate) {
 		this.sentinelRestTemplate = sentinelRestTemplate;
+		this.restTemplate = restTemplate;
 	}
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
 			ClientHttpRequestExecution execution) throws IOException {
 		URI uri = request.getURI();
-		String hostResource = uri.getScheme() + "://" + uri.getHost()
+		String hostResource = request.getMethod().toString() + ":" + uri.getScheme()
+				+ "://" + uri.getHost()
 				+ (uri.getPort() == -1 ? "" : ":" + uri.getPort());
 		String hostWithPathResource = hostResource + uri.getPath();
 		boolean entryWithPath = true;
@@ -60,32 +66,33 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			entryWithPath = false;
 		}
 		Entry hostEntry = null, hostWithPathEntry = null;
-		ClientHttpResponse response;
+		ClientHttpResponse response = null;
 		try {
-			ContextUtil.enter(hostWithPathResource);
+			hostEntry = SphU.entry(hostResource, EntryType.OUT);
 			if (entryWithPath) {
-				hostWithPathEntry = SphU.entry(hostWithPathResource);
+				hostWithPathEntry = SphU.entry(hostWithPathResource, EntryType.OUT);
 			}
-			hostEntry = SphU.entry(hostResource);
 			response = execution.execute(request, body);
+			if (this.restTemplate.getErrorHandler().hasError(response)) {
+				Tracer.trace(
+						new IllegalStateException("RestTemplate ErrorHandler has error"));
+			}
 		}
 		catch (Throwable e) {
 			if (!BlockException.isBlockException(e)) {
 				Tracer.trace(e);
-				throw new IllegalStateException(e);
 			}
 			else {
 				return handleBlockException(request, body, execution, (BlockException) e);
 			}
 		}
 		finally {
-			if (hostEntry != null) {
-				hostEntry.exit();
-			}
 			if (hostWithPathEntry != null) {
 				hostWithPathEntry.exit();
 			}
-			ContextUtil.exit();
+			if (hostEntry != null) {
+				hostEntry.exit();
+			}
 		}
 		return response;
 	}

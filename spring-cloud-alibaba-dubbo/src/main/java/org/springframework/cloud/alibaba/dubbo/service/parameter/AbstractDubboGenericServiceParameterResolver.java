@@ -20,6 +20,7 @@ import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 
 import static org.springframework.context.ConfigurableApplicationContext.CONVERSION_SERVICE_BEAN_NAME;
@@ -37,7 +38,7 @@ public abstract class AbstractDubboGenericServiceParameterResolver implements Du
 
     @Autowired(required = false)
     @Qualifier(CONVERSION_SERVICE_BEAN_NAME)
-    private ConversionService conversionService = new FormattingConversionService();
+    private ConversionService conversionService = new DefaultFormattingConversionService();
 
     private ClassLoader classLoader;
 
