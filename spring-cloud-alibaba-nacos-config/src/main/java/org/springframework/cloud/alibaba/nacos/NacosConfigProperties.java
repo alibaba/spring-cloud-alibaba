@@ -21,12 +21,8 @@ import com.alibaba.nacos.api.config.ConfigService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.env.Environment;
 
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -36,6 +32,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
 import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
 import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
@@ -54,11 +51,6 @@ public class NacosConfigProperties {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
-
-	/**
-	 * whether to enable nacos config.
-	 */
-	private boolean enabled = true;
 
 	/**
 	 * nacos config server address
@@ -140,18 +132,7 @@ public class NacosConfigProperties {
 
 	private ConfigService configService;
 
-	@Autowired
-	private Environment environment;
-
 	// todo sts support
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
 
 	public String getServerAddr() {
 		return serverAddr;
@@ -322,16 +303,15 @@ public class NacosConfigProperties {
 
 	@Override
 	public String toString() {
-		return "NacosConfigProperties{" + "enabled=" + enabled + ", serverAddr='"
-				+ serverAddr + '\'' + ", encode='" + encode + '\'' + ", group='" + group
-				+ '\'' + ", prefix='" + prefix + '\'' + ", fileExtension='"
-				+ fileExtension + '\'' + ", timeout=" + timeout + ", endpoint='"
-				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
-				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
-				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
-				+ '\'' + ", name='" + name + '\'' + ", sharedDataids='" + sharedDataids
-				+ '\'' + ", refreshableDataids='" + refreshableDataids + '\''
-				+ ", extConfig=" + extConfig + '}';
+		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
+				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
+				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
+				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
+				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
+				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
+				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
 	}
 
 	public ConfigService configServiceInstance() {
@@ -348,7 +328,17 @@ public class NacosConfigProperties {
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
 		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
-		properties.put(ENDPOINT, Objects.toString(this.endpoint, ""));
+
+		String endpoint = Objects.toString(this.endpoint, "");
+		if (endpoint.contains(":")) {
+			int index = endpoint.indexOf(":");
+			properties.put(ENDPOINT, endpoint.substring(0, index));
+			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
+		}
+		else {
+			properties.put(ENDPOINT, endpoint);
+		}
+
 		try {
 			configService = NacosFactory.createConfigService(properties);
 			return configService;

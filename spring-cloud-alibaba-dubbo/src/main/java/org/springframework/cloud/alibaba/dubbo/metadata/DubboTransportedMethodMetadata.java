@@ -20,6 +20,7 @@ import org.springframework.cloud.alibaba.dubbo.annotation.DubboTransported;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -29,29 +30,13 @@ import java.util.Objects;
  */
 public class DubboTransportedMethodMetadata {
 
-    private final DubboTransportedMetadata dubboTransportedMetadata;
-
     private final MethodMetadata methodMetadata;
 
-    public DubboTransportedMethodMetadata(Method method) {
+    private final Map<String, Object> attributes;
+
+    public DubboTransportedMethodMetadata(Method method, Map<String, Object> attributes) {
         this.methodMetadata = new MethodMetadata(method);
-        this.dubboTransportedMetadata = new DubboTransportedMetadata();
-    }
-
-    public String getProtocol() {
-        return dubboTransportedMetadata.getProtocol();
-    }
-
-    public void setProtocol(String protocol) {
-        dubboTransportedMetadata.setProtocol(protocol);
-    }
-
-    public String getCluster() {
-        return dubboTransportedMetadata.getCluster();
-    }
-
-    public void setCluster(String cluster) {
-        dubboTransportedMetadata.setCluster(cluster);
+        this.attributes = attributes;
     }
 
     public String getName() {
@@ -82,12 +67,12 @@ public class DubboTransportedMethodMetadata {
         return methodMetadata.getMethod();
     }
 
-    public DubboTransportedMetadata getDubboTransportedMetadata() {
-        return dubboTransportedMetadata;
-    }
-
     public MethodMetadata getMethodMetadata() {
         return methodMetadata;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     @Override
@@ -95,12 +80,12 @@ public class DubboTransportedMethodMetadata {
         if (this == o) return true;
         if (!(o instanceof DubboTransportedMethodMetadata)) return false;
         DubboTransportedMethodMetadata that = (DubboTransportedMethodMetadata) o;
-        return Objects.equals(dubboTransportedMetadata, that.dubboTransportedMetadata) &&
-                Objects.equals(methodMetadata, that.methodMetadata);
+        return Objects.equals(methodMetadata, that.methodMetadata) &&
+                Objects.equals(attributes, that.attributes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dubboTransportedMetadata, methodMetadata);
+        return Objects.hash(methodMetadata, attributes);
     }
 }

@@ -18,8 +18,8 @@ package org.springframework.cloud.alibaba.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,25 +28,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
-
 import javax.annotation.PostConstruct;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMING_LOAD_CACHE_AT_START;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
+import static com.alibaba.nacos.api.PropertyKeyConst.*;
 
 /**
  * @author dungu.zpf
@@ -79,7 +68,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * watch delay,duration to pull new service from nacos server.
 	 */
-	private long watchDelay = 5000;
+	private long watchDelay = 30000;
 
 	/**
 	 * nacos naming log file name
@@ -161,6 +150,7 @@ public class NacosDiscoveryProperties {
 	@PostConstruct
 	public void init() throws SocketException {
 
+		metadata.put(PreservedMetadataKeys.REGISTER_SOURCE, "SPRING_CLOUD");
 		if (secure) {
 			metadata.put("secure", "true");
 		}
@@ -403,7 +393,16 @@ public class NacosDiscoveryProperties {
 		properties.put(SERVER_ADDR, serverAddr);
 		properties.put(NAMESPACE, namespace);
 		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME, logName);
-		properties.put(ENDPOINT, endpoint);
+
+		if (endpoint.contains(":")) {
+			int index = endpoint.indexOf(":");
+			properties.put(ENDPOINT, endpoint.substring(0, index));
+			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
+		}
+		else {
+			properties.put(ENDPOINT, endpoint);
+		}
+
 		properties.put(ACCESS_KEY, accessKey);
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);

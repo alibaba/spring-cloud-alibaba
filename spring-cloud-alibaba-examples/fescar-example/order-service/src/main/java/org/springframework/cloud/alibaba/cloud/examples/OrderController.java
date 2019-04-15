@@ -46,86 +46,86 @@ import java.util.Random;
 @RestController
 public class OrderController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
-    private static final String SUCCESS = "SUCCESS";
-    private static final String FAIL = "FAIL";
-    private static final String USER_ID = "U100001";
-    private static final String COMMODITY_CODE = "C00321";
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
+	private static final String SUCCESS = "SUCCESS";
+	private static final String FAIL = "FAIL";
+	private static final String USER_ID = "U100001";
+	private static final String COMMODITY_CODE = "C00321";
 
-    private final JdbcTemplate jdbcTemplate;
-    private final RestTemplate restTemplate;
-    private Random random;
+	private final JdbcTemplate jdbcTemplate;
+	private final RestTemplate restTemplate;
+	private Random random;
 
-    public OrderController(JdbcTemplate jdbcTemplate, RestTemplate restTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.restTemplate = restTemplate;
-        this.random = new Random();
-    }
+	public OrderController(JdbcTemplate jdbcTemplate, RestTemplate restTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+		this.restTemplate = restTemplate;
+		this.random = new Random();
+	}
 
-    @RequestMapping(value = "/order", method = RequestMethod.POST, produces = "application/json")
-    public String order(String userId, String commodityCode, int orderCount) {
-        LOGGER.info("Order Service Begin ... xid: " + RootContext.getXID());
+	@RequestMapping(value = "/order", method = RequestMethod.POST, produces = "application/json")
+	public String order(String userId, String commodityCode, int orderCount) {
+		LOGGER.info("Order Service Begin ... xid: " + RootContext.getXID());
 
-        int orderMoney = calculate(commodityCode, orderCount);
+		int orderMoney = calculate(commodityCode, orderCount);
 
-        invokerAccountService(orderMoney);
+		invokerAccountService(orderMoney);
 
-        final Order order = new Order();
-        order.userId = userId;
-        order.commodityCode = commodityCode;
-        order.count = orderCount;
-        order.money = orderMoney;
+		final Order order = new Order();
+		order.userId = userId;
+		order.commodityCode = commodityCode;
+		order.count = orderCount;
+		order.money = orderMoney;
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+		KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        int result = jdbcTemplate.update(new PreparedStatementCreator() {
+		int result = jdbcTemplate.update(new PreparedStatementCreator() {
 
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con)
-                    throws SQLException {
-                PreparedStatement pst = con.prepareStatement(
-                        "insert into order_tbl (user_id, commodity_code, count, money) values (?, ?, ?, ?)",
-                        PreparedStatement.RETURN_GENERATED_KEYS);
-                pst.setObject(1, order.userId);
-                pst.setObject(2, order.commodityCode);
-                pst.setObject(3, order.count);
-                pst.setObject(4, order.money);
-                return pst;
-            }
-        }, keyHolder);
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				PreparedStatement pst = con.prepareStatement(
+						"insert into order_tbl (user_id, commodity_code, count, money) values (?, ?, ?, ?)",
+						PreparedStatement.RETURN_GENERATED_KEYS);
+				pst.setObject(1, order.userId);
+				pst.setObject(2, order.commodityCode);
+				pst.setObject(3, order.count);
+				pst.setObject(4, order.money);
+				return pst;
+			}
+		}, keyHolder);
 
-        order.id = keyHolder.getKey().longValue();
+		order.id = keyHolder.getKey().longValue();
 
-//        if (random.nextBoolean()) {
-//            throw new RuntimeException("this is a mock Exception");
-//        }
+		if (random.nextBoolean()) {
+			throw new RuntimeException("this is a mock Exception");
+		}
 
-        LOGGER.info("Order Service End ... Created " + order);
+		LOGGER.info("Order Service End ... Created " + order);
 
-        if (result == 1) {
-            return SUCCESS;
-        }
-        return FAIL;
-    }
+		if (result == 1) {
+			return SUCCESS;
+		}
+		return FAIL;
+	}
 
-    private int calculate(String commodityId, int orderCount) {
-        return 2 * orderCount;
-    }
+	private int calculate(String commodityId, int orderCount) {
+		return 2 * orderCount;
+	}
 
-    private void invokerAccountService(int orderMoney) {
-        String url = "http://127.0.0.1:18084/account";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+	private void invokerAccountService(int orderMoney) {
+		String url = "http://127.0.0.1:18084/account";
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 
-        map.add("userId", USER_ID);
-        map.add("money", orderMoney + "");
+		map.add("userId", USER_ID);
+		map.add("money", orderMoney + "");
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(
-                map, headers);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(
+				map, headers);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(url, request,
-                String.class);
-    }
+		ResponseEntity<String> response = restTemplate.postForEntity(url, request,
+				String.class);
+	}
 }

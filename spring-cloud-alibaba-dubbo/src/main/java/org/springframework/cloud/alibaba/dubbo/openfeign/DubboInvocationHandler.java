@@ -17,13 +17,17 @@
 package org.springframework.cloud.alibaba.dubbo.openfeign;
 
 import org.apache.dubbo.rpc.service.GenericService;
+
 import org.springframework.cloud.alibaba.dubbo.metadata.RestMethodMetadata;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContext;
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import static org.apache.dubbo.common.utils.PojoUtils.realize;
 
 /**
  * Dubbo {@link GenericService} for {@link InvocationHandler}
@@ -38,11 +42,15 @@ public class DubboInvocationHandler implements InvocationHandler {
 
     private final DubboGenericServiceExecutionContextFactory contextFactory;
 
+    private final ClassLoader classLoader;
+
     public DubboInvocationHandler(Map<Method, FeignMethodMetadata> feignMethodMetadataMap,
                                   InvocationHandler defaultInvocationHandler,
+                                  ClassLoader classLoader,
                                   DubboGenericServiceExecutionContextFactory contextFactory) {
         this.feignMethodMetadataMap = feignMethodMetadataMap;
         this.defaultInvocationHandler = defaultInvocationHandler;
+        this.classLoader = classLoader;
         this.contextFactory = contextFactory;
     }
 
@@ -65,6 +73,15 @@ public class DubboInvocationHandler implements InvocationHandler {
         String[] parameterTypes = context.getParameterTypes();
         Object[] parameters = context.getParameters();
 
-        return dubboGenericService.$invoke(methodName, parameterTypes, parameters);
+        Object result = dubboGenericService.$invoke(methodName, parameterTypes, parameters);
+
+        Class<?> returnType = getReturnType(dubboRestMethodMetadata);
+
+        return realize(result, returnType);
+    }
+
+    private Class<?> getReturnType(RestMethodMetadata dubboRestMethodMetadata) {
+        String returnType = dubboRestMethodMetadata.getReturnType();
+        return ClassUtils.resolveClassName(returnType, classLoader);
     }
 }
