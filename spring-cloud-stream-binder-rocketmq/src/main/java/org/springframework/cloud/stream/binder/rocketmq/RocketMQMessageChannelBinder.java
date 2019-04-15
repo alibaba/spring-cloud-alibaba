@@ -43,9 +43,13 @@ import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQProdu
 import org.springframework.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
+import org.springframework.integration.StaticMessageHeaderAccessor;
+import org.springframework.integration.acks.AcknowledgmentCallback;
+import org.springframework.integration.acks.AcknowledgmentCallback.Status;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -216,6 +220,28 @@ public class RocketMQMessageChannelBinder extends
 		return new PolledConsumerResources(rocketMQMessageSource,
 				registerErrorInfrastructure(destination, group, consumerProperties,
 						true));
+	}
+
+	@Override
+	protected MessageHandler getPolledConsumerErrorMessageHandler(
+			ConsumerDestination destination, String group,
+			ExtendedConsumerProperties<RocketMQConsumerProperties> properties) {
+		return message -> {
+			if (message.getPayload() instanceof MessagingException) {
+				AcknowledgmentCallback ack = StaticMessageHeaderAccessor
+						.getAcknowledgmentCallback(
+								((MessagingException) message.getPayload())
+										.getFailedMessage());
+				if (ack != null) {
+					if (properties.getExtension().shouldRequeue()) {
+						ack.acknowledge(Status.REQUEUE);
+					}
+					else {
+						ack.acknowledge(Status.REJECT);
+					}
+				}
+			}
+		};
 	}
 
 	@Override
