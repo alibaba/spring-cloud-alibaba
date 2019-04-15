@@ -30,6 +30,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.alibaba.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
@@ -77,6 +78,10 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
     @EventListener(ServiceBeanExportedEvent.class)
     public void onServiceBeanExported(ServiceBeanExportedEvent event) {
         setWebPort(event.getServiceBean());
+    }
+
+    @EventListener(ApplicationStartedEvent.class)
+    public void onApplicationStarted() {
         register();
     }
 
