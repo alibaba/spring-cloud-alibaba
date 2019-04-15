@@ -16,21 +16,18 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
-import org.springframework.cloud.alibaba.dubbo.metadata.ServiceRestMetadata;
-
-import java.util.Set;
+import java.util.Collection;
 
 /**
- * Dubbo Metadata Configuration Service
+ * {@link User} Service
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface DubboMetadataConfigService {
+public interface UserService {
 
-    /**
-     * Get The json content of {@link ServiceRestMetadata} {@link Set}
-     *
-     * @return the non-null String
-     */
-    String getServiceRestMetadata();
+    boolean save(User user);
+
+    boolean remove(Long userId);
+
+    Collection<User> findAll();
 }
