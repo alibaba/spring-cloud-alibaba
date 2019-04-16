@@ -96,13 +96,11 @@ public class NacosConfigurationTests {
 				public Object invoke(Object proxy, Method method, Object[] args)
 						throws Throwable {
 
-					if ("test-name.properties".equals(args[0])
-							&& "test-group".equals(args[1])) {
+					if ("test-name.properties".equals(args[0])) {
 						return "user.nacos-age=1";
 					}
 
-					if ("test-name-dev.properties".equals(args[0])
-							&& "test-group".equals(args[1])) {
+					if ("test-name-dev.properties".equals(args[0])) {
 						return "user.nacos-name=dev";
 					}
 
@@ -149,7 +147,7 @@ public class NacosConfigurationTests {
 	private NacosRefreshHistory refreshHistory;
 
 	@Test
-	public void contextLoads() throws Exception {
+	public void contextLoads() {
 
 		assertNotNull("NacosPropertySourceLocator was not created", locator);
 		assertNotNull("NacosConfigProperties was not created", properties);
@@ -237,11 +235,11 @@ public class NacosConfigurationTests {
 
 	private void checkoutDataLoad() {
 
-		Assert.assertEquals(environment.getProperty("user.nacos-name"), "dev");
-		Assert.assertEquals(environment.getProperty("user.nacos-age"), "1");
+		Assert.assertEquals("dev", environment.getProperty("user.nacos-name"));
+		Assert.assertEquals("1", environment.getProperty("user.nacos-age"));
 	}
 
-	private void checkoutEndpoint() throws Exception {
+	private void checkoutEndpoint() {
 		NacosConfigEndpoint nacosConfigEndpoint = new NacosConfigEndpoint(properties,
 				refreshHistory);
 		Map<String, Object> map = nacosConfigEndpoint.invoke();
