@@ -83,22 +83,23 @@ public class NacosConfigurationTests {
 
 		try {
 			// when(any(ConfigService.class).getConfig(eq("test-name.properties"),
-			// eq("test-group"), any())).thenReturn("user.nacos-name=hello");
+			// eq("test-group"), any())).thenReturn("user.name=hello");
 
 			Method method = PowerMockito.method(NacosConfigService.class, "getConfig",
 					String.class, String.class, long.class);
 			MethodProxy.proxy(method, new InvocationHandler() {
 				@Override
-				public Object invoke(Object proxy, Method method, Object[] args) {
+				public Object invoke(Object proxy, Method method, Object[] args)
+						throws Throwable {
 
 					if ("test-name.properties".equals(args[0])
 							&& "test-group".equals(args[1])) {
-						return "user.nacos-age=1";
+						return "user.name=hello\nuser.age=12";
 					}
 
 					if ("test-name-dev.properties".equals(args[0])
 							&& "test-group".equals(args[1])) {
-						return "user.nacos-name=dev";
+						return "user.name=dev";
 					}
 
 					if ("ext-config-common01.properties".equals(args[0])
@@ -144,7 +145,7 @@ public class NacosConfigurationTests {
 	private NacosRefreshHistory refreshHistory;
 
 	@Test
-	public void contextLoads() {
+	public void contextLoads() throws Exception {
 
 		assertNotNull("NacosPropertySourceLocator was not created", locator);
 		assertNotNull("NacosConfigProperties was not created", properties);
@@ -232,11 +233,11 @@ public class NacosConfigurationTests {
 
 	private void checkoutDataLoad() {
 
-		Assert.assertEquals("dev", environment.getProperty("user.nacos-name"));
-		Assert.assertEquals("1", environment.getProperty("user.nacos-age"));
+		Assert.assertEquals(environment.getProperty("user.name"), "dev");
+		Assert.assertEquals(environment.getProperty("user.age"), "12");
 	}
 
-	private void checkoutEndpoint() {
+	private void checkoutEndpoint() throws Exception {
 		NacosConfigEndpoint nacosConfigEndpoint = new NacosConfigEndpoint(properties,
 				refreshHistory);
 		Map<String, Object> map = nacosConfigEndpoint.invoke();
