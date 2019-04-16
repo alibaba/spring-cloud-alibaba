@@ -73,10 +73,6 @@ import com.alibaba.nacos.client.config.NacosConfigService;
 		"spring.cloud.nacos.config.ext-config[1].data-id=ext-config-common02.properties",
 		"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
 
-		"spring.cloud.nacos.config.ext-config[2].data-id=test-name-dev.properties",
-
-		"spring.cloud.nacos.config.ext-config[3].data-id=test-name.properties",
-
 		"spring.cloud.nacos.config.shared-dataids=common1.properties,common2.properties",
 
 		"spring.cloud.nacos.config.accessKey=test-accessKey",
@@ -93,14 +89,15 @@ public class NacosConfigurationTests {
 					String.class, String.class, long.class);
 			MethodProxy.proxy(method, new InvocationHandler() {
 				@Override
-				public Object invoke(Object proxy, Method method, Object[] args)
-						throws Throwable {
+				public Object invoke(Object proxy, Method method, Object[] args) {
 
-					if ("test-name.properties".equals(args[0])) {
+					if ("test-name.properties".equals(args[0])
+							&& "test-group".equals(args[1])) {
 						return "user.nacos-age=1";
 					}
 
-					if ("test-name-dev.properties".equals(args[0])) {
+					if ("test-name-dev.properties".equals(args[0])
+							&& "test-group".equals(args[1])) {
 						return "user.nacos-name=dev";
 					}
 
