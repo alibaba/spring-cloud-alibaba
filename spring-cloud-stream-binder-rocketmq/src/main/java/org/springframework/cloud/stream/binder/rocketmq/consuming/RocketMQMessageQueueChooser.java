@@ -27,7 +27,7 @@ import org.apache.rocketmq.common.message.MessageQueue;
  */
 public class RocketMQMessageQueueChooser {
 
-	private int queueIndex = 0;
+	private volatile int queueIndex = 0;
 
 	private volatile List<MessageQueue> messageQueues;
 
@@ -35,7 +35,7 @@ public class RocketMQMessageQueueChooser {
 		return messageQueues.get(queueIndex);
 	}
 
-	public synchronized int requeue() {
+	public int requeue() {
 		if (queueIndex - 1 < 0) {
 			this.queueIndex = messageQueues.size() - 1;
 		}
