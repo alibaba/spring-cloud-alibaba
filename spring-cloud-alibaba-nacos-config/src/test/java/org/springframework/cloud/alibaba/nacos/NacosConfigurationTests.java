@@ -87,7 +87,7 @@ public class NacosConfigurationTests {
 
 		try {
 			// when(any(ConfigService.class).getConfig(eq("test-name.properties"),
-			// eq("test-group"), any())).thenReturn("user.name=hello");
+			// eq("test-group"), any())).thenReturn("user.nacos-name=hello");
 
 			Method method = PowerMockito.method(NacosConfigService.class, "getConfig",
 					String.class, String.class, long.class);
@@ -98,12 +98,12 @@ public class NacosConfigurationTests {
 
 					if ("test-name.properties".equals(args[0])
 							&& "test-group".equals(args[1])) {
-						return "user.name=hello\nuser.age=12";
+						return "user.nacos-age=1";
 					}
 
 					if ("test-name-dev.properties".equals(args[0])
 							&& "test-group".equals(args[1])) {
-						return "user.name=dev";
+						return "user.nacos-name=dev";
 					}
 
 					if ("ext-config-common01.properties".equals(args[0])
@@ -237,8 +237,8 @@ public class NacosConfigurationTests {
 
 	private void checkoutDataLoad() {
 
-		Assert.assertEquals(environment.getProperty("user.name"), "dev");
-		Assert.assertEquals(environment.getProperty("user.age"), "12");
+		Assert.assertEquals(environment.getProperty("user.nacos-name"), "dev");
+		Assert.assertEquals(environment.getProperty("user.nacos-age"), "1");
 	}
 
 	private void checkoutEndpoint() throws Exception {
