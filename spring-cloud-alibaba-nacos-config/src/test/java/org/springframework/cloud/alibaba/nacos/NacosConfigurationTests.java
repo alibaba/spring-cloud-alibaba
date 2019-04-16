@@ -22,10 +22,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-
 import java.util.Map;
-
-import com.alibaba.nacos.client.config.NacosConfigService;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,6 +44,8 @@ import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshHistory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.alibaba.nacos.client.config.NacosConfigService;
 
 /**
  * @author xiaojing
@@ -73,6 +72,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 		"spring.cloud.nacos.config.ext-config[1].data-id=ext-config-common02.properties",
 		"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
+
+		"spring.cloud.nacos.config.ext-config[2].data-id=test-name-dev.properties",
+
+		"spring.cloud.nacos.config.ext-config[3].data-id=test-name.properties",
 
 		"spring.cloud.nacos.config.shared-dataids=common1.properties,common2.properties",
 
