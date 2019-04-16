@@ -63,7 +63,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-fescar</artifactId>
+            <artifactId>spring-cloud-alibaba-seata</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
     </dependencies>
