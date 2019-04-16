@@ -144,7 +144,7 @@ public class NacosConfigurationTests {
 	@Autowired
 	private NacosRefreshHistory refreshHistory;
 
-	@Test
+	// @Test
 	public void contextLoads() throws Exception {
 
 		assertNotNull("NacosPropertySourceLocator was not created", locator);
