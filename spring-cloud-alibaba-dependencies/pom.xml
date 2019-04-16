@@ -18,8 +18,8 @@
     <properties>
         <sentinel.version>1.5.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <nacos.version>1.0.0-RC2</nacos.version>
-        <fescar.version>0.4.0</fescar.version>
+        <nacos.version>1.0.0</nacos.version>
+        <fescar.version>0.4.2</fescar.version>
         <acm.version>1.0.8</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.0.1</aliyun.sdk.version>
@@ -212,7 +212,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-fescar</artifactId>
+                <artifactId>spring-cloud-alibaba-seata</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -265,7 +265,7 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-alibaba-fescar</artifactId>
+                <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

@@ -18,6 +18,7 @@ package org.springframework.cloud.alibaba.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * watch delay,duration to pull new service from nacos server.
 	 */
-	private long watchDelay = 5000;
+	private long watchDelay = 30000;
 
 	/**
 	 * nacos naming log file name
@@ -149,6 +150,7 @@ public class NacosDiscoveryProperties {
 	@PostConstruct
 	public void init() throws SocketException {
 
+		metadata.put(PreservedMetadataKeys.REGISTER_SOURCE, "SPRING_CLOUD");
 		if (secure) {
 			metadata.put("secure", "true");
 		}
