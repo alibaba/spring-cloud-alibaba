@@ -84,8 +84,8 @@ public class IntrospectiveDubboMetadataService implements DubboMetadataService {
     }
 
     @Override
-    public String getExportedURLs(String serviceInstance, String group, String version) {
-        List<URL> urls = dubboServiceMetadataRepository.getExportedURLs(serviceInstance, group, version);
+    public String getExportedURLs(String serviceInterface, String group, String version) {
+        List<URL> urls = dubboServiceMetadataRepository.getExportedURLs(serviceInterface, group, version);
         return jsonUtils.toJSON(urls);
     }
 }
