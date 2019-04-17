@@ -18,8 +18,12 @@ package org.springframework.cloud.alibaba.dubbo.service;
 
 import org.apache.dubbo.rpc.service.GenericService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.stream.Stream;
 
 /**
  * {@link DubboMetadataService} {@link InvocationHandler}
@@ -28,27 +32,29 @@ import java.lang.reflect.Method;
  */
 class DubboMetadataServiceInvocationHandler implements InvocationHandler {
 
-    /**
-     * The method name of {@link DubboMetadataService#getServiceRestMetadata()}
-     */
-    private static final String METHOD_NAME = "getServiceRestMetadata";
-
-    private static final String[] PARAMETER_TYPES = new String[0];
-
-    private static final String[] PARAMETER_VALUES = new String[0];
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final GenericService genericService;
 
-    public DubboMetadataServiceInvocationHandler(String serviceName, DubboGenericServiceFactory dubboGenericServiceFactory) {
-        this.genericService = dubboGenericServiceFactory.create(serviceName, DubboMetadataService.class);
+    public DubboMetadataServiceInvocationHandler(String serviceName, String version, DubboGenericServiceFactory dubboGenericServiceFactory) {
+        this.genericService = dubboGenericServiceFactory.create(serviceName, DubboMetadataService.class, version);
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        String methodName = method.getName();
-        if (METHOD_NAME.equals(methodName)) {
-            return genericService.$invoke(methodName, PARAMETER_TYPES, PARAMETER_VALUES);
+        Object returnValue = null;
+        try {
+            returnValue = genericService.$invoke(method.getName(), getParameterTypes(method), args);
+        } catch (Throwable e) {
+            if (logger.isErrorEnabled()) {
+                logger.error(e.getMessage(), e);
+            }
         }
-        return method.invoke(proxy, args);
+        return returnValue;
+    }
+
+    private String[] getParameterTypes(Method method) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        return Stream.of(parameterTypes).map(Class::getName).toArray(length -> new String[length]);
     }
 }
