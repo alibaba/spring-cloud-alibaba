@@ -1,6 +1,6 @@
 package org.springframework.cloud.alibaba.cloud.examples;
 
-import com.alibaba.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.Service;
 
 /**
  * @author fangjian

@@ -29,6 +29,8 @@
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8</aliyun.sdk.mns>
+        <dubbo.version>2.7.1</dubbo.version>
+        <dubbo-spring-boot.version>2.7.1</dubbo-spring-boot.version>
     </properties>
 
     <dependencyManagement>
@@ -154,6 +156,11 @@
                 <version>${sentinel.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-apache-dubbo-adapter</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>sentinel-dubbo-api</artifactId>
                 <version>${project.version}</version>
@@ -175,6 +182,34 @@
                 <groupId>com.alibaba.fescar</groupId>
                 <artifactId>fescar-spring</artifactId>
                 <version>${fescar.version}</version>
+            </dependency>
+
+            <!-- Dubbo -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Dubbo Spring Boot Starter -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo-spring-boot.version}</version>
             </dependency>
 
             <!-- Aliyun OSS dependencies -->
