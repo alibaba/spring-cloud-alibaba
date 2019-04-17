@@ -23,6 +23,7 @@ import org.apache.dubbo.config.ServiceConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,7 @@ public class DubboMetadataServiceExporter {
     private ApplicationConfig applicationConfig;
 
     @Autowired
-    private DubboMetadataService dubboMetadataService;
+    private ObjectProvider<DubboMetadataService> dubboMetadataService;
 
     @Autowired
     private Supplier<ProtocolConfig> protocolConfigSupplier;
@@ -74,7 +75,7 @@ public class DubboMetadataServiceExporter {
             serviceConfig.setVersion(DubboMetadataService.VERSION);
             // Use current Spring application name as the Dubbo Service group
             serviceConfig.setGroup(currentApplicationName);
-            serviceConfig.setRef(dubboMetadataService);
+            serviceConfig.setRef(dubboMetadataService.getIfAvailable());
             serviceConfig.setApplication(applicationConfig);
             serviceConfig.setProtocol(protocolConfigSupplier.get());
 

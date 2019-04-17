@@ -56,7 +56,7 @@ import java.util.function.Supplier;
 public class DubboMetadataAutoConfiguration {
 
     @Autowired
-    private DubboServiceMetadataRepository dubboServiceMetadataRepository;
+    private ObjectProvider<DubboServiceMetadataRepository> dubboServiceMetadataRepository;
 
     @Autowired
     private MetadataResolver metadataResolver;
@@ -100,7 +100,7 @@ public class DubboMetadataAutoConfiguration {
     }
 
     private void publishServiceRestMetadata(ServiceBean serviceBean) {
-        dubboServiceMetadataRepository.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
+        dubboServiceMetadataRepository.getIfAvailable().publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
     }
 
     private void unExportDubboMetadataConfigService() {
