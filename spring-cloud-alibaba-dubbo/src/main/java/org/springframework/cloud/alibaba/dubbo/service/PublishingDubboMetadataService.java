@@ -27,11 +27,11 @@ import java.util.Set;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
- * Publishing {@link DubboMetadataConfigService} implementation
+ * Publishing {@link DubboMetadataService} implementation
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class PublishingDubboMetadataConfigService implements DubboMetadataConfigService {
+public class PublishingDubboMetadataService implements DubboMetadataService {
 
     /**
      * A Map to store REST metadata temporary, its' key is the special service name for a Dubbo service,

@@ -35,6 +35,7 @@ import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactor
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
+import org.springframework.cloud.client.loadbalancer.RetryLoadBalancerInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
@@ -56,7 +57,7 @@ import java.util.Map;
 @Configuration
 @ConditionalOnClass(name = {"org.springframework.web.client.RestTemplate"})
 @AutoConfigureAfter(name = {"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration"})
-public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClassLoaderAware {
+public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClassLoaderAware, SmartInitializingSingleton {
 
     private static final Class<DubboTransported> DUBBO_TRANSPORTED_CLASS = DubboTransported.class;
 
@@ -65,8 +66,11 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
     @Autowired
     private DubboServiceMetadataRepository repository;
 
-    @Autowired
+    @Autowired(required = false)
     private LoadBalancerInterceptor loadBalancerInterceptor;
+
+    @Autowired(required = false)
+    private RetryLoadBalancerInterceptor retryLoadBalancerInterceptor;
 
     @Autowired
     private ConfigurableListableBeanFactory beanFactory;
@@ -86,6 +90,17 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
 
     private ClassLoader classLoader;
 
+    /**
+     * The {@link ClientHttpRequestInterceptor} bean that may be {@link LoadBalancerInterceptor} or {@link RetryLoadBalancerInterceptor}
+     */
+    private ClientHttpRequestInterceptor loadBalancerInterceptorBean;
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        loadBalancerInterceptorBean = retryLoadBalancerInterceptor != null ?
+                retryLoadBalancerInterceptor :
+                loadBalancerInterceptor;
+    }
 
     /**
      * Adapt the {@link RestTemplate} beans that are annotated  {@link LoadBalanced @LoadBalanced} and
@@ -140,7 +155,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
 
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(restTemplate.getInterceptors());
 
-        int index = interceptors.indexOf(loadBalancerInterceptor);
+        int index = loadBalancerInterceptorBean == null ? -1 : interceptors.indexOf(loadBalancerInterceptorBean);
 
         index = index < 0 ? 0 : index;
 
@@ -157,4 +172,5 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements BeanClass
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
+
 }
