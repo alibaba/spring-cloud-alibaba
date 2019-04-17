@@ -32,7 +32,7 @@ import org.springframework.cloud.alibaba.dubbo.metadata.resolver.MetadataResolve
 import org.springframework.cloud.alibaba.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataServiceExporter;
 import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataServiceProxy;
-import org.springframework.cloud.alibaba.dubbo.service.PublishingDubboMetadataService;
+import org.springframework.cloud.alibaba.dubbo.service.IntrospectiveDubboMetadataService;
 import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,13 +50,13 @@ import java.util.function.Supplier;
  */
 @Configuration
 @Import({DubboServiceMetadataRepository.class,
-        PublishingDubboMetadataService.class,
+        IntrospectiveDubboMetadataService.class,
         DubboMetadataServiceExporter.class,
         JSONUtils.class})
 public class DubboMetadataAutoConfiguration {
 
     @Autowired
-    private PublishingDubboMetadataService dubboMetadataService;
+    private DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
     @Autowired
     private MetadataResolver metadataResolver;
@@ -87,7 +87,6 @@ public class DubboMetadataAutoConfiguration {
     public void onServiceBeanExported(ServiceBeanExportedEvent event) {
         ServiceBean serviceBean = event.getServiceBean();
         publishServiceRestMetadata(serviceBean);
-        exportDubboMetadataConfigService();
     }
 
     @EventListener(ApplicationFailedEvent.class)
@@ -97,15 +96,11 @@ public class DubboMetadataAutoConfiguration {
 
     @EventListener(ContextClosedEvent.class)
     public void onContextClosed() {
-        dubboMetadataConfigServiceExporter.unexport();
+        unExportDubboMetadataConfigService();
     }
 
     private void publishServiceRestMetadata(ServiceBean serviceBean) {
-        dubboMetadataService.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
-    }
-
-    private void exportDubboMetadataConfigService() {
-        dubboMetadataConfigServiceExporter.export();
+        dubboServiceMetadataRepository.publishServiceRestMetadata(metadataResolver.resolveServiceRestMetadata(serviceBean));
     }
 
     private void unExportDubboMetadataConfigService() {

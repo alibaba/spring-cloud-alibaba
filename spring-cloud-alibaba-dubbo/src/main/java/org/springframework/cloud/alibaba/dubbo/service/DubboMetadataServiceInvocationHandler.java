@@ -20,6 +20,7 @@ import org.apache.dubbo.rpc.service.GenericService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.stream.Stream;
 
 /**
  * {@link DubboMetadataService} {@link InvocationHandler}
@@ -39,16 +40,17 @@ class DubboMetadataServiceInvocationHandler implements InvocationHandler {
 
     private final GenericService genericService;
 
-    public DubboMetadataServiceInvocationHandler(String serviceName, DubboGenericServiceFactory dubboGenericServiceFactory) {
-        this.genericService = dubboGenericServiceFactory.create(serviceName, DubboMetadataService.class);
+    public DubboMetadataServiceInvocationHandler(String serviceName, String version, DubboGenericServiceFactory dubboGenericServiceFactory) {
+        this.genericService = dubboGenericServiceFactory.create(serviceName, DubboMetadataService.class, version);
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        String methodName = method.getName();
-        if (METHOD_NAME.equals(methodName)) {
-            return genericService.$invoke(methodName, PARAMETER_TYPES, PARAMETER_VALUES);
-        }
-        return method.invoke(proxy, args);
+        return genericService.$invoke(method.getName(), getParameterTypes(method), args);
+    }
+
+    private String[] getParameterTypes(Method method) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        return Stream.of(parameterTypes).map(Class::getName).toArray(length -> new String[length]);
     }
 }

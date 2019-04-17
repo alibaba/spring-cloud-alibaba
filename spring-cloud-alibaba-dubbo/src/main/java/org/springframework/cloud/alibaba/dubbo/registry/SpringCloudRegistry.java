@@ -21,6 +21,8 @@ import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.RegistryFactory;
 
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataServiceProxy;
+import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
@@ -38,20 +40,22 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
     private final DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
     public SpringCloudRegistry(URL url, DiscoveryClient discoveryClient,
-                               ScheduledExecutorService servicesLookupScheduler,
-                               DubboServiceMetadataRepository dubboServiceMetadataRepository) {
-        super(url, discoveryClient, servicesLookupScheduler);
+                               DubboServiceMetadataRepository dubboServiceMetadataRepository,
+                               DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
+                               JSONUtils jsonUtils,
+                               ScheduledExecutorService servicesLookupScheduler) {
+        super(url, discoveryClient, dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy, jsonUtils, servicesLookupScheduler);
         this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
     }
 
     @Override
     protected void doRegister0(URL url) {
-        dubboServiceMetadataRepository.registerURL(url);
+        dubboServiceMetadataRepository.exportURL(url);
     }
 
     @Override
     protected void doUnregister0(URL url) {
-        dubboServiceMetadataRepository.unregisterURL(url);
+        dubboServiceMetadataRepository.unexportURL(url);
     }
 
     @Override
@@ -60,14 +64,9 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
     }
 
     @Override
-    protected String getServiceName(URL url) {
-        return dubboServiceMetadataRepository.getServiceName(url);
-    }
-
-    @Override
     protected void notifySubscriber(URL url, NotifyListener listener, List<ServiceInstance> serviceInstances) {
         List<URL> urls = serviceInstances.stream()
-                .map(dubboServiceMetadataRepository::buildURLs)
+                .map(dubboServiceMetadataRepository::getDubboMetadataServiceURLs)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
         notify(url, listener, urls);
