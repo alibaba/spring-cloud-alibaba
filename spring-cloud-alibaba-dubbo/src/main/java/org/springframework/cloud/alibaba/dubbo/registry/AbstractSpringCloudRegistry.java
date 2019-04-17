@@ -24,12 +24,18 @@ import org.apache.dubbo.registry.support.FailbackRegistry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataService;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataServiceProxy;
+import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -38,9 +44,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
+import static org.apache.dubbo.common.Constants.APPLICATION_KEY;
+import static org.apache.dubbo.common.Constants.GROUP_KEY;
+import static org.apache.dubbo.common.Constants.PROTOCOL_KEY;
 import static org.apache.dubbo.common.Constants.PROVIDER_SIDE;
 import static org.apache.dubbo.common.Constants.SIDE_KEY;
+import static org.apache.dubbo.common.Constants.VERSION_KEY;
 import static org.springframework.util.ObjectUtils.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -56,6 +65,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
      */
     public static final String SERVICES_LOOKUP_INTERVAL_PARAM_NAME = "dubbo.services.lookup.interval";
 
+    protected static final String DUBBO_METADATA_SERVICE_CLASS_NAME = DubboMetadataService.class.getName();
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
@@ -65,14 +76,26 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
     private final DiscoveryClient discoveryClient;
 
+    private final DubboServiceMetadataRepository repository;
+
+    private final DubboMetadataServiceProxy dubboMetadataConfigServiceProxy;
+
+    private final JSONUtils jsonUtils;
+
     protected final ScheduledExecutorService servicesLookupScheduler;
 
     public AbstractSpringCloudRegistry(URL url,
                                        DiscoveryClient discoveryClient,
+                                       DubboServiceMetadataRepository dubboServiceMetadataRepository,
+                                       DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
+                                       JSONUtils jsonUtils,
                                        ScheduledExecutorService servicesLookupScheduler) {
         super(url);
         this.servicesLookupInterval = url.getParameter(SERVICES_LOOKUP_INTERVAL_PARAM_NAME, 60L);
         this.discoveryClient = discoveryClient;
+        this.repository = dubboServiceMetadataRepository;
+        this.dubboMetadataConfigServiceProxy = dubboMetadataConfigServiceProxy;
+        this.jsonUtils = jsonUtils;
         this.servicesLookupScheduler = servicesLookupScheduler;
     }
 
@@ -122,13 +145,83 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
     @Override
     public final void doSubscribe(URL url, NotifyListener listener) {
-        Set<String> serviceNames = getServiceNames(url);
-        doSubscribe(url, listener, serviceNames);
+
+        if (isAdminURL(url)) {
+            // TODO in future
+        } else if (isDubboMetadataServiceURL(url)) { // for DubboMetadataService
+            subscribeDubboMetadataServiceURLs(url, listener);
+        } else { // for general Dubbo Services
+            subscribeDubboServiceURLs(url, listener);
+        }
+    }
+
+    protected void subscribeDubboServiceURLs(URL url, NotifyListener listener) {
+
+        doSubscribeDubboServiceURLs(url, listener);
+
+        schedule(() -> {
+            doSubscribeDubboServiceURLs(url, listener);
+        });
+    }
+
+    protected void doSubscribeDubboServiceURLs(URL url, NotifyListener listener) {
+
+        Set<String> subscribedServices = repository.getSubscribedServices();
+
+        subscribedServices.stream()
+                .map(dubboMetadataConfigServiceProxy::getProxy)
+                .filter(Objects::nonNull)
+                .forEach(dubboMetadataService -> {
+                    String serviceInterface = url.getServiceInterface();
+                    String group = url.getParameter(GROUP_KEY);
+                    String version = url.getParameter(VERSION_KEY);
+                    String exportedURLsJSON = dubboMetadataService.getExportedURLs(serviceInterface, group, version);
+                    List<URL> exportedURLs = jsonUtils.toURLs(exportedURLsJSON);
+                    List<URL> allSubscribedURLs = new LinkedList<>();
+                    for (URL exportedURL : exportedURLs) {
+                        String serviceName = exportedURL.getParameter(APPLICATION_KEY);
+                        List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceName);
+                        String protocol = exportedURL.getProtocol();
+                        List<URL> subscribedURLs = new LinkedList<>();
+                        serviceInstances.forEach(serviceInstance -> {
+                            Integer port = repository.getDubboProtocolPort(serviceInstance, protocol);
+                            String host = serviceInstance.getHost();
+                            if (port == null) {
+                                if (logger.isWarnEnabled()) {
+                                    logger.warn("The protocol[{}] port of Dubbo  service instance[host : {}] " +
+                                            "can't be resolved", protocol, host);
+                                }
+                            } else {
+                                URL subscribedURL = new URL(protocol, host, port, exportedURL.getParameters());
+                                subscribedURLs.add(subscribedURL);
+                            }
+                        });
+
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("The subscribed URLs[ service name : {} , protocol : {}] will be notified : {}"
+                                    , serviceName, protocol, subscribedURLs);
+                        }
+
+                        allSubscribedURLs.addAll(subscribedURLs);
+                    }
+
+                    listener.notify(allSubscribedURLs);
+                });
+    }
+
+
+    private void subscribeDubboMetadataServiceURLs(URL url, NotifyListener listener) {
+        String serviceInterface = url.getServiceInterface();
+        String group = url.getParameter(GROUP_KEY);
+        String version = url.getParameter(VERSION_KEY);
+        String protocol = url.getParameter(PROTOCOL_KEY);
+        List<URL> urls = repository.findSubscribedDubboMetadataServiceURLs(serviceInterface, group, version, protocol);
+        listener.notify(urls);
     }
 
     @Override
     public final void doUnsubscribe(URL url, NotifyListener listener) {
-        if (isAdminProtocol(url)) {
+        if (isAdminURL(url)) {
             shutdownServiceNamesLookup();
         }
     }
@@ -154,22 +247,12 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
         return new LinkedHashSet<>(discoveryClient.getServices());
     }
 
-    /**
-     * Get the service names from the specified {@link URL url}
-     *
-     * @param url {@link URL}
-     * @return non-null
-     */
-    private Set<String> getServiceNames(URL url) {
-        if (isAdminProtocol(url)) {
-            return getServiceNamesForOps(url);
-        } else {
-            return singleton(getServiceName(url));
-        }
+    protected boolean isAdminURL(URL url) {
+        return Constants.ADMIN_PROTOCOL.equals(url.getProtocol());
     }
 
-    protected boolean isAdminProtocol(URL url) {
-        return Constants.ADMIN_PROTOCOL.equals(url.getProtocol());
+    protected boolean isDubboMetadataServiceURL(URL url) {
+        return DUBBO_METADATA_SERVICE_CLASS_NAME.equals(url.getServiceInterface());
     }
 
     /**
@@ -182,8 +265,6 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
         Set<String> serviceNames = getAllServiceNames();
         return filterServiceNames(serviceNames);
     }
-
-    protected abstract String getServiceName(URL url);
 
     private void doSubscribe(final URL url, final NotifyListener listener, final Collection<String> serviceNames) {
 

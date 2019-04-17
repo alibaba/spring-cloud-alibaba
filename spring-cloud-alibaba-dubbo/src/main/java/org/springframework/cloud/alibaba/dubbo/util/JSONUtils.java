@@ -16,6 +16,8 @@
  */
 package org.springframework.cloud.alibaba.dubbo.util;
 
+import org.apache.dubbo.common.URL;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -25,8 +27,10 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * JSON Utilities class
@@ -44,6 +48,10 @@ public class JSONUtils {
         this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
+    public String toJSON(Collection<URL> urls) {
+        return toJSON(urls.stream().map(URL::toFullString).collect(Collectors.toSet()));
+    }
+
     public String toJSON(Object object) {
         String jsonContent = null;
         try {
@@ -54,6 +62,11 @@ public class JSONUtils {
             }
         }
         return jsonContent;
+    }
+
+    public List<URL> toURLs(String urlsJSON) {
+        List<String> list = toList(urlsJSON);
+        return list.stream().map(URL::valueOf).collect(Collectors.toList());
     }
 
     public List<String> toList(String json) {
