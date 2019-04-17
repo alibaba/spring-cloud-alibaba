@@ -62,9 +62,9 @@ public class DubboGenericServiceFactory {
         return referenceBean == null ? null : referenceBean.get();
     }
 
-    public GenericService create(String serviceName, Class<?> serviceClass) {
+    public GenericService create(String serviceName, Class<?> serviceClass, String version) {
         String interfaceName = serviceClass.getName();
-        ReferenceBean<GenericService> referenceBean = build(interfaceName, serviceName, null, emptyMap());
+        ReferenceBean<GenericService> referenceBean = build(interfaceName, version, serviceName, emptyMap());
         return referenceBean.get();
     }
 

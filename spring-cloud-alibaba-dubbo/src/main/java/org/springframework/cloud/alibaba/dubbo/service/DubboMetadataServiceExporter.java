@@ -16,16 +16,20 @@
  */
 package org.springframework.cloud.alibaba.dubbo.service;
 
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.ServiceConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -42,12 +46,12 @@ public class DubboMetadataServiceExporter {
     private ApplicationConfig applicationConfig;
 
     @Autowired
-    private DubboMetadataService dubboMetadataService;
+    private ObjectProvider<DubboMetadataService> dubboMetadataService;
 
     @Autowired
     private Supplier<ProtocolConfig> protocolConfigSupplier;
 
-    @Value("${spring.application.name:application}")
+    @Value("${spring.application.name:${dubbo.application.name:application}}")
     private String currentApplicationName;
 
     /**
@@ -57,33 +61,39 @@ public class DubboMetadataServiceExporter {
 
     /**
      * export {@link DubboMetadataService} as Dubbo service
+     *
+     * @return the exported {@link URL URLs}
      */
-    public void export() {
+    public List<URL> export() {
 
-        if (serviceConfig != null && serviceConfig.isExported()) {
-            return;
+        if (serviceConfig == null || !serviceConfig.isExported()) {
+
+            serviceConfig = new ServiceConfig<>();
+
+            serviceConfig.setInterface(DubboMetadataService.class);
+            //  Use DubboMetadataService.VERSION as the Dubbo Service version
+            serviceConfig.setVersion(DubboMetadataService.VERSION);
+            // Use current Spring application name as the Dubbo Service group
+            serviceConfig.setGroup(currentApplicationName);
+            serviceConfig.setRef(dubboMetadataService.getIfAvailable());
+            serviceConfig.setApplication(applicationConfig);
+            serviceConfig.setProtocol(protocolConfigSupplier.get());
+
+            serviceConfig.export();
+
+            if (logger.isInfoEnabled()) {
+                logger.info("The Dubbo service[{}] has been exported.", serviceConfig.toString());
+            }
         }
 
-        serviceConfig = new ServiceConfig<>();
-
-        serviceConfig.setInterface(DubboMetadataService.class);
-        // Use current Spring application name as the Dubbo Service version
-        serviceConfig.setVersion(currentApplicationName);
-        serviceConfig.setRef(dubboMetadataService);
-        serviceConfig.setApplication(applicationConfig);
-        serviceConfig.setProtocol(protocolConfigSupplier.get());
-
-        serviceConfig.export();
-
-        if (logger.isInfoEnabled()) {
-            logger.info("The Dubbo service[{}] has been exported.", serviceConfig.toString());
-        }
+        return serviceConfig.getExportedUrls();
     }
 
 
     /**
      * unexport {@link DubboMetadataService}
      */
+    @PreDestroy
     public void unexport() {
 
         if (serviceConfig == null || serviceConfig.isUnexported()) {
