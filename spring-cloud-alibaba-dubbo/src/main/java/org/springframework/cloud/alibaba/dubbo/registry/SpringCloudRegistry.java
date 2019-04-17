@@ -17,16 +17,14 @@
 package org.springframework.cloud.alibaba.dubbo.registry;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.RegistryFactory;
 
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataServiceProxy;
+import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
-import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.stream.Collectors;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
@@ -38,38 +36,21 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
     private final DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
     public SpringCloudRegistry(URL url, DiscoveryClient discoveryClient,
-                               ScheduledExecutorService servicesLookupScheduler,
-                               DubboServiceMetadataRepository dubboServiceMetadataRepository) {
-        super(url, discoveryClient, servicesLookupScheduler);
+                               DubboServiceMetadataRepository dubboServiceMetadataRepository,
+                               DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
+                               JSONUtils jsonUtils,
+                               ScheduledExecutorService servicesLookupScheduler) {
+        super(url, discoveryClient, dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy, jsonUtils, servicesLookupScheduler);
         this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
     }
 
     @Override
     protected void doRegister0(URL url) {
-        dubboServiceMetadataRepository.registerURL(url);
+        dubboServiceMetadataRepository.exportURL(url);
     }
 
     @Override
     protected void doUnregister0(URL url) {
-        dubboServiceMetadataRepository.unregisterURL(url);
-    }
-
-    @Override
-    protected boolean supports(String serviceName) {
-        return dubboServiceMetadataRepository.isSubscribedService(serviceName);
-    }
-
-    @Override
-    protected String getServiceName(URL url) {
-        return dubboServiceMetadataRepository.getServiceName(url);
-    }
-
-    @Override
-    protected void notifySubscriber(URL url, NotifyListener listener, List<ServiceInstance> serviceInstances) {
-        List<URL> urls = serviceInstances.stream()
-                .map(dubboServiceMetadataRepository::buildURLs)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        notify(url, listener, urls);
+        dubboServiceMetadataRepository.unexportURL(url);
     }
 }
