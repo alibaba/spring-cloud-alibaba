@@ -18,7 +18,6 @@ package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.spring.ServiceBean;
-import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
 
 import com.ecwid.consul.v1.agent.model.NewService;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -30,6 +29,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
@@ -40,7 +41,7 @@ import org.springframework.cloud.zookeeper.serviceregistry.ServiceInstanceRegist
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_CONFIGURATION_CLASS_NAME;
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.ZOOKEEPER_AUTO_CONFIGURATION_CLASS_NAME;
@@ -65,18 +66,21 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
     @Autowired
     private Registration registration;
 
-    private volatile Integer webPort = null;
+    private volatile Integer serverPort = null;
 
     private volatile boolean registered = false;
 
+    @Autowired
+    private DubboServiceMetadataRepository repository;
+
     @Around("execution(* org.springframework.cloud.client.serviceregistry.Registration.getPort())")
     public Object getPort(ProceedingJoinPoint pjp) throws Throwable {
-        return webPort != null ? webPort : pjp.proceed();
+        return serverPort != null ? serverPort : pjp.proceed();
     }
 
-    @EventListener(ServiceBeanExportedEvent.class)
-    public void onServiceBeanExported(ServiceBeanExportedEvent event) {
-        setWebPort(event.getServiceBean());
+    @EventListener(ApplicationStartedEvent.class)
+    public void onApplicationStarted() {
+        setServerPort();
         register();
     }
 
@@ -90,18 +94,24 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 
     /**
      * Set web port from {@link ServiceBean#getExportedUrls() exported URLs}  if "rest" protocol is present.
-     *
-     * @param serviceBean {@link ServiceBean}
      */
-    private void setWebPort(ServiceBean serviceBean) {
-        if (webPort == null) {
-            List<URL> urls = serviceBean.getExportedUrls();
+    private void setServerPort() {
+        if (serverPort == null) {
+            Collection<URL> urls = repository.getRegisteredUrls();
             urls.stream()
                     .filter(url -> REST_PROTOCOL.equalsIgnoreCase(url.getProtocol()))
                     .findFirst()
                     .ifPresent(url -> {
-                        webPort = url.getPort();
+                        serverPort = url.getPort();
                     });
+
+            // If REST protocol is not present, use any applied port.
+            if (serverPort == null) {
+                urls.stream()
+                        .findAny().ifPresent(url -> {
+                    serverPort = url.getPort();
+                });
+            }
         }
     }
 
@@ -114,7 +124,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 
         @EventListener(ServiceInstancePreRegisteredEvent.class)
         public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {
-            registration.setPort(webPort);
+            registration.setPort(serverPort);
         }
 
         @Override

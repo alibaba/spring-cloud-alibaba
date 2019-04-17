@@ -174,6 +174,7 @@ public class SentinelAutoConfiguration {
 		return new SentinelDataSourceHandler(beanFactory);
 	}
 
+	@ConditionalOnClass(ObjectMapper.class)
 	protected static class SentinelConverterConfiguration {
 
 		private ObjectMapper objectMapper = new ObjectMapper();

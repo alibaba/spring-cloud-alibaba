@@ -37,6 +37,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
@@ -260,8 +261,10 @@ public class DubboServiceMetadataRepository {
         Set<ServiceRestMetadata> metadata = Collections.emptySet();
         try {
             String serviceRestMetadataJsonConfig = dubboMetadataService.getServiceRestMetadata();
-            metadata = objectMapper.readValue(serviceRestMetadataJsonConfig,
-                    TypeFactory.defaultInstance().constructCollectionType(LinkedHashSet.class, ServiceRestMetadata.class));
+            if(StringUtils.hasText(serviceRestMetadataJsonConfig)) {
+                metadata = objectMapper.readValue(serviceRestMetadataJsonConfig,
+                        TypeFactory.defaultInstance().constructCollectionType(LinkedHashSet.class, ServiceRestMetadata.class));
+            }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error(e.getMessage(), e);
