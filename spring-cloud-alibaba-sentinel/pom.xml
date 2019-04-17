@@ -33,6 +33,13 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-dubbo-adapter</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-apache-dubbo-adapter</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
