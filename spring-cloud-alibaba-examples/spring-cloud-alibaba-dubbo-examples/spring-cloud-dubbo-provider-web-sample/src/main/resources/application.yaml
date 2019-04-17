@@ -16,4 +16,10 @@ feign:
     enabled: true
 
 server:
-  port: 8080
+  port: 8888
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: dubborestmetadata

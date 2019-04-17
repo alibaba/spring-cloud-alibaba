@@ -17,6 +17,13 @@
 
     <dependencies>
 
+        <!-- Resolve the Dubbo REST RPC issue -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
         <!-- Resolve the Spring Cloud registration issue -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -72,5 +79,14 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

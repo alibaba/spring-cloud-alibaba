@@ -14,27 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.bootstrap;
+package org.springframework.cloud.alibaba.dubbo.service;
 
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.apache.dubbo.config.annotation.Service;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Dubbo Spring Cloud Provider Bootstrap
+ * In-Memory {@link UserService} implementation
  */
-@EnableDiscoveryClient
-@EnableAutoConfiguration
-public class DubboSpringCloudProviderBootstrap {
+@Service(protocol = "dubbo")
+public class InMemoryUserService implements UserService {
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(DubboSpringCloudProviderBootstrap.class)
-                .properties("spring.profiles.active=nacos")
-                .web(WebApplicationType.NONE)
-                .run(args);
+    private Map<Long, User> usersRepository = new HashMap<>();
+
+    @Override
+    public boolean save(User user) {
+        return usersRepository.put(user.getId(), user) == null;
+    }
+
+    @Override
+    public boolean remove(Long userId) {
+        return usersRepository.remove(userId) != null;
+    }
+
+    @Override
+    public Collection<User> findAll() {
+        return usersRepository.values();
     }
 }
-
-
-

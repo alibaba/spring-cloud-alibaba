@@ -14,27 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alibaba.dubbo.bootstrap;
+package org.springframework.cloud.alibaba.dubbo.service;
 
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import java.util.Collection;
 
 /**
- * Dubbo Spring Cloud Provider Bootstrap
+ * {@link User} Service
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@EnableDiscoveryClient
-@EnableAutoConfiguration
-public class DubboSpringCloudProviderBootstrap {
+public interface UserService {
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(DubboSpringCloudProviderBootstrap.class)
-                .properties("spring.profiles.active=nacos")
-                .web(WebApplicationType.NONE)
-                .run(args);
-    }
+    boolean save(User user);
+
+    boolean remove(Long userId);
+
+    Collection<User> findAll();
 }
-
-
-
