@@ -57,14 +57,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 		"spring.cloud.nacos.config.encode=utf-8",
 		"spring.cloud.nacos.config.timeout=1000",
 		"spring.cloud.nacos.config.file-extension=properties",
-
 		"spring.cloud.nacos.config.ext-config[0].data-id=ext-config-common01.properties",
-
 		"spring.cloud.nacos.config.ext-config[1].data-id=ext-config-common02.properties",
 		"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
-
 		"spring.cloud.nacos.config.shared-dataids=common1.properties,common2.properties",
-
 		"spring.cloud.nacos.config.accessKey=test-accessKey",
 		"spring.cloud.nacos.config.secretKey=test-secretKey" }, webEnvironment = NONE)
 public class NacosConfigurationExtConfigTests {
