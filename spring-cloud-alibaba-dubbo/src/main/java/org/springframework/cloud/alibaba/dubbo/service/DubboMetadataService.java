@@ -64,13 +64,13 @@ public interface DubboMetadataService {
     Map<String, String> getAllExportedURLs();
 
     /**
-     * Get the json content of an exported List<URL> of {@link URL URLs} by the serviceInstance , group and version
+     * Get the json content of an exported List<URL> of {@link URL URLs} by the serviceInterface , group and version
      *
-     * @param serviceInstance The class name of service interface
+     * @param serviceInterface The class name of service interface
      * @param group           {@link Service#group() the service group} (optional)
      * @param version         {@link Service#version() the service version} (optional)
      * @return non-null read-only {@link List}
      * @see URL
      */
-    String getExportedURLs(String serviceInstance, String group, String version);
+    String getExportedURLs(String serviceInterface, String group, String version);
 }

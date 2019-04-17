@@ -18,6 +18,9 @@ package org.springframework.cloud.alibaba.dubbo.service;
 
 import org.apache.dubbo.rpc.service.GenericService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
@@ -29,14 +32,7 @@ import java.util.stream.Stream;
  */
 class DubboMetadataServiceInvocationHandler implements InvocationHandler {
 
-    /**
-     * The method name of {@link DubboMetadataService#getServiceRestMetadata()}
-     */
-    private static final String METHOD_NAME = "getServiceRestMetadata";
-
-    private static final String[] PARAMETER_TYPES = new String[0];
-
-    private static final String[] PARAMETER_VALUES = new String[0];
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final GenericService genericService;
 
@@ -46,7 +42,15 @@ class DubboMetadataServiceInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return genericService.$invoke(method.getName(), getParameterTypes(method), args);
+        Object returnValue = null;
+        try {
+            returnValue = genericService.$invoke(method.getName(), getParameterTypes(method), args);
+        } catch (Throwable e) {
+            if (logger.isErrorEnabled()) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return returnValue;
     }
 
     private String[] getParameterTypes(Method method) {

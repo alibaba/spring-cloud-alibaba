@@ -322,8 +322,8 @@ public class DubboServiceMetadataRepository {
         return hasText(protocolPort) ? Integer.valueOf(protocolPort) : null;
     }
 
-    public List<URL> getExportedURLs(String serviceInstance, String group, String version) {
-        String serviceKey = URL.buildKey(serviceInstance, group, version);
+    public List<URL> getExportedURLs(String serviceInterface, String group, String version) {
+        String serviceKey = URL.buildKey(serviceInterface, group, version);
         return allExportedURLs.getOrDefault(serviceKey, Collections.emptyList());
     }
 

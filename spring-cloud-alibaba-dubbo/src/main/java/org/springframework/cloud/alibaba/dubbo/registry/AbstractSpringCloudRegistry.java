@@ -172,15 +172,11 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
                 .map(dubboMetadataConfigServiceProxy::getProxy)
                 .filter(Objects::nonNull)
                 .forEach(dubboMetadataService -> {
-                    String serviceInterface = url.getServiceInterface();
-                    String group = url.getParameter(GROUP_KEY);
-                    String version = url.getParameter(VERSION_KEY);
-                    String exportedURLsJSON = dubboMetadataService.getExportedURLs(serviceInterface, group, version);
-                    List<URL> exportedURLs = jsonUtils.toURLs(exportedURLsJSON);
+                    List<URL> exportedURLs = getExportedURLs(dubboMetadataService, url);
                     List<URL> allSubscribedURLs = new LinkedList<>();
                     for (URL exportedURL : exportedURLs) {
                         String serviceName = exportedURL.getParameter(APPLICATION_KEY);
-                        List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceName);
+                        List<ServiceInstance> serviceInstances = getServiceInstances(serviceName);
                         String protocol = exportedURL.getProtocol();
                         List<URL> subscribedURLs = new LinkedList<>();
                         serviceInstances.forEach(serviceInstance -> {
@@ -207,6 +203,21 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
                     listener.notify(allSubscribedURLs);
                 });
+    }
+
+    private List<URL> getExportedURLs(DubboMetadataService dubboMetadataService, URL url) {
+        String serviceInterface = url.getServiceInterface();
+        String group = url.getParameter(GROUP_KEY);
+        String version = url.getParameter(VERSION_KEY);
+        // The subscribed protocol may be null
+        String subscribedProtocol = url.getParameter(PROTOCOL_KEY);
+        String exportedURLsJSON = dubboMetadataService.getExportedURLs(serviceInterface, group, version);
+        return jsonUtils
+                .toURLs(exportedURLsJSON)
+                .stream()
+                .filter(exportedURL ->
+                        subscribedProtocol == null || subscribedProtocol.equalsIgnoreCase(exportedURL.getProtocol())
+                ).collect(Collectors.toList());
     }
 
 
