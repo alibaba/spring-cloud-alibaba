@@ -8,13 +8,13 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.0.4.RELEASE</version>
+        <version>2.0.5.RELEASE</version>
         <relativePath/>
     </parent>
 
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>0.2.2.BUILD-SNAPSHOT</version>
+    <version>0.2.2.RELEASE</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
 
