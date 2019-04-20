@@ -134,7 +134,7 @@ public class NacosProviderDemoApplication {
 
 这个时候你就可以在 Nacos的控制台上看到注册上来的服务信息了。
 
-NOTE: 再启动 Provider 应用之前 请先将 Nacos 服务启动。具体启动方式可参考 https://nacos.io/zh-cn/docs/quick-start.html[Naco 官网]。
+NOTE: 再启动 Provider 应用之前 请先将 Nacos 服务启动。具体启动方式可参考 https://nacos.io/zh-cn/docs/quick-start.html[Nacos 官网]。
 
 === 服务的 EndPoint
 
@@ -240,9 +240,9 @@ public class NacosConsumerApp {
         public String echoAppName(){
             //使用 LoadBalanceClient 和 RestTemolate 结合的方式来访问
             ServiceInstance serviceInstance = loadBalancerClient.choose("nacos-provider");
-            String path = String.format("http://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
-            System.out.println("request path:"+path);
-            return restTemplate.getForObject(path,String.class);
+            String url = String.format("http://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
+            System.out.println("request url:"+url);
+            return restTemplate.getForObject(url,String.class);
         }
 
     }
@@ -290,6 +290,7 @@ NOTE: 在启动 Consumer 应用之前请先将 Nacos 服务启动好。具体启
 |`SecretKey`|`spring.cloud.nacos.discovery.secret-key`|`无`|`当要上阿里云时，阿里云上面的一个云账号密码`
 |`Metadata`|`spring.cloud.nacos.discovery.metadata`|`无`|`使用Map格式配置，用户可以根据自己的需要自定义一些和服务相关的元数据信息`
 |`日志文件名`|`spring.cloud.nacos.discovery.log-name`|`无`|
+|`集群`|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|`配置成Nacos集群名称`
 |`接入点`|`spring.cloud.nacos.discovery.enpoint`|`UTF-8`|`地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址`
 |`是否集成Ribbon`|`ribbon.nacos.enabled`|`true`|`一般都设置成true即可`
 |====
