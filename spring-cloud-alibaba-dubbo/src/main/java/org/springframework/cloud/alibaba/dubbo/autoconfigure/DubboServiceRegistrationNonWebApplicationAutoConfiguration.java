@@ -41,7 +41,7 @@ import org.springframework.cloud.zookeeper.serviceregistry.ServiceInstanceRegist
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
-import java.util.Collection;
+import java.util.List;
 
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_CONFIGURATION_CLASS_NAME;
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.ZOOKEEPER_AUTO_CONFIGURATION_CLASS_NAME;
@@ -97,20 +97,21 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
      */
     private void setServerPort() {
         if (serverPort == null) {
-            Collection<URL> urls = repository.getRegisteredUrls();
-            urls.stream()
-                    .filter(url -> REST_PROTOCOL.equalsIgnoreCase(url.getProtocol()))
-                    .findFirst()
-                    .ifPresent(url -> {
+            for (List<URL> urls : repository.getAllExportedUrls().values()) {
+                urls.stream()
+                        .filter(url -> REST_PROTOCOL.equalsIgnoreCase(url.getProtocol()))
+                        .findFirst()
+                        .ifPresent(url -> {
+                            serverPort = url.getPort();
+                        });
+
+                // If REST protocol is not present, use any applied port.
+                if (serverPort == null) {
+                    urls.stream()
+                            .findAny().ifPresent(url -> {
                         serverPort = url.getPort();
                     });
-
-            // If REST protocol is not present, use any applied port.
-            if (serverPort == null) {
-                urls.stream()
-                        .findAny().ifPresent(url -> {
-                    serverPort = url.getPort();
-                });
+                }
             }
         }
     }
