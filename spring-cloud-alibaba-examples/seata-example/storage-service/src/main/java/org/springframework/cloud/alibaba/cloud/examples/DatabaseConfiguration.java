@@ -19,7 +19,7 @@ package org.springframework.cloud.alibaba.cloud.examples;
 import java.sql.SQLException;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.fescar.rm.datasource.DataSourceProxy;
+import io.seata.rm.datasource.DataSourceProxy;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
