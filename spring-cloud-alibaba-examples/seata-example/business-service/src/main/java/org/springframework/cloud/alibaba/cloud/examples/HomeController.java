@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.alibaba.cloud.examples;
 
-import com.alibaba.fescar.spring.annotation.GlobalTransactional;
+import io.seata.spring.annotation.GlobalTransactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
