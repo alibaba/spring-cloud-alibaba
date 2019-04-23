@@ -24,7 +24,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.fescar.rm.datasource.DataSourceProxy;
+import io.seata.rm.datasource.DataSourceProxy;
 
 /**
  * @author xiaojing
