@@ -13,7 +13,7 @@
     <name>Spring Cloud Alibaba Coverage</name>
 
     <properties>
-        <spring.cloud.alibaba.version>0.9.0.BUILD-SNAPSHOT</spring.cloud.alibaba.version>
+        <spring.cloud.alibaba.version>0.9.1.BUILD-SNAPSHOT</spring.cloud.alibaba.version>
     </properties>
     <dependencies>
         <dependency>
