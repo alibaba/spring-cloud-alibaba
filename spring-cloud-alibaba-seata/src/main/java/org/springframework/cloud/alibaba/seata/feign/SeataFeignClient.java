@@ -23,13 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fescar.core.context.RootContext;
-
-import org.springframework.beans.factory.BeanFactory;
-
 import feign.Client;
 import feign.Request;
 import feign.Response;
+import io.seata.core.context.RootContext;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.StringUtils;
 
 /**
@@ -37,49 +35,49 @@ import org.springframework.util.StringUtils;
  */
 public class SeataFeignClient implements Client {
 
-	private final Client delegate;
-	private final BeanFactory beanFactory;
+    private final Client delegate;
+    private final BeanFactory beanFactory;
+    private static final int MAP_SIZE = 16;
 
-	SeataFeignClient(BeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-		this.delegate = new Client.Default(null, null);
-	}
+    SeataFeignClient(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+        this.delegate = new Client.Default(null, null);
+    }
 
-	SeataFeignClient(BeanFactory beanFactory, Client delegate) {
-		this.delegate = delegate;
-		this.beanFactory = beanFactory;
-	}
+    SeataFeignClient(BeanFactory beanFactory, Client delegate) {
+        this.delegate = delegate;
+        this.beanFactory = beanFactory;
+    }
 
-	@Override
-	public Response execute(Request request, Request.Options options) throws IOException {
+    @Override
+    public Response execute(Request request, Request.Options options) throws IOException {
 
-		Request modifiedRequest = getModifyRequest(request);
+        Request modifiedRequest = getModifyRequest(request);
 
-		try {
-			return this.delegate.execute(modifiedRequest, options);
-		}
-		finally {
+        try {
+            return this.delegate.execute(modifiedRequest, options);
+        } finally {
 
-		}
-	}
+        }
+    }
 
-	private Request getModifyRequest(Request request) {
+    private Request getModifyRequest(Request request) {
 
-		String xid = RootContext.getXID();
+        String xid = RootContext.getXID();
 
-		if (StringUtils.isEmpty(xid)) {
-			return request;
-		}
+        if (StringUtils.isEmpty(xid)) {
+            return request;
+        }
 
-		Map<String, Collection<String>> headers = new HashMap<>();
-		headers.putAll(request.headers());
+        Map<String, Collection<String>> headers = new HashMap<>(MAP_SIZE);
+        headers.putAll(request.headers());
 
-		List<String> fescarXid = new ArrayList<>();
-		fescarXid.add(xid);
-		headers.put(RootContext.KEY_XID, fescarXid);
+        List<String> fescarXid = new ArrayList<>();
+        fescarXid.add(xid);
+        headers.put(RootContext.KEY_XID, fescarXid);
 
-		return Request.create(request.method(), request.url(), headers, request.body(),
-				request.charset());
-	}
+        return Request.create(request.method(), request.url(), headers, request.body(),
+            request.charset());
+    }
 
 }
