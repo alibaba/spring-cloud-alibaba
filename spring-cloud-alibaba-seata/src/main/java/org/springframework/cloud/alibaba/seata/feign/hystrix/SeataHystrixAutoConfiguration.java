@@ -30,7 +30,7 @@ import com.netflix.hystrix.HystrixCommand;
 public class SeataHystrixAutoConfiguration {
 
 	@Bean
-	SeataHystrixConcurrencyStrategy fescarHystrixConcurrencyStrategy() {
+	SeataHystrixConcurrencyStrategy seataHystrixConcurrencyStrategy() {
 		return new SeataHystrixConcurrencyStrategy();
 	}
 

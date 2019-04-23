@@ -50,7 +50,7 @@ import java.util.List;
 public class SeataRestTemplateAutoConfiguration {
 
 	@Bean
-	public SeataRestTemplateInterceptor fescarRestTemplateInterceptor() {
+	public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
 		return new SeataRestTemplateInterceptor();
 	}
 

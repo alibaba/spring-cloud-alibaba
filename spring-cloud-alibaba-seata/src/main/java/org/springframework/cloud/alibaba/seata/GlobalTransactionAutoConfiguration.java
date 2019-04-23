@@ -16,7 +16,7 @@
 
 package org.springframework.cloud.alibaba.seata;
 
-import com.alibaba.fescar.spring.annotation.GlobalTransactionScanner;
+import io.seata.spring.annotation.GlobalTransactionScanner;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
