@@ -64,6 +64,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 
 ### 如何引入依赖
 项目的最新版本是 0.2.1.RELEASE 和 0.1.1.RELEASE，版本 0.2.1.RELEASE 对应的是 Spring Cloud Finchley 版本，版本 0.1.1.RELEASE 对应的是 Spring Cloud Edgware 版本。
+注意：如果默认不配置 Spring Cloud 版本，则对应的 Spring Boot 2.0.x 版本
 
 如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
 
