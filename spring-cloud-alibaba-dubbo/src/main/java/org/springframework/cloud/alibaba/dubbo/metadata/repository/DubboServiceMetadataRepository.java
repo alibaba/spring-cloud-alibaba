@@ -293,9 +293,12 @@ public class DubboServiceMetadataRepository {
 
     public void unexportURL(URL url) {
         String key = url.getServiceKey();
+        // NPE issue : https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/591
         List<URL> urls = allExportedURLs.get(key);
-        urls.remove(url);
-        this.allExportedURLs.addAll(key, urls);
+        if (!isEmpty(urls)) {
+            urls.remove(url);
+            allExportedURLs.addAll(key, urls);
+        }
     }
 
     /**
