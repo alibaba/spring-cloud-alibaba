@@ -35,6 +35,7 @@ import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataServiceProxy
 import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -49,6 +50,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -148,6 +150,9 @@ public class DubboServiceMetadataRepository {
 
     @Autowired
     private JSONUtils jsonUtils;
+
+    @Autowired
+    private InetUtils inetUtils;
 
     @Value("${spring.application.name}")
     private String currentApplicationName;
@@ -275,7 +280,15 @@ public class DubboServiceMetadataRepository {
     }
 
     public void exportURL(URL url) {
-        this.allExportedURLs.add(url.getServiceKey(), url);
+        URL actualURL = url;
+        InetUtils.HostInfo hostInfo = inetUtils.findFirstNonLoopbackHostInfo();
+        String ipAddress = hostInfo.getIpAddress();
+        // To use InetUtils to set IP if they are different
+        // issue : https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/589
+        if (!Objects.equals(url.getHost(), ipAddress)) {
+            actualURL = url.setAddress(hostInfo.getIpAddress());
+        }
+        this.allExportedURLs.add(actualURL.getServiceKey(), actualURL);
     }
 
     public void unexportURL(URL url) {
