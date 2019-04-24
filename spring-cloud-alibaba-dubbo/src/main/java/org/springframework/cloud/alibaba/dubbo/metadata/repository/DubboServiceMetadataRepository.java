@@ -286,7 +286,7 @@ public class DubboServiceMetadataRepository {
         // To use InetUtils to set IP if they are different
         // issue : https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/589
         if (!Objects.equals(url.getHost(), ipAddress)) {
-            actualURL = url.setAddress(hostInfo.getIpAddress());
+            actualURL = url.setHost(ipAddress);
         }
         this.allExportedURLs.add(actualURL.getServiceKey(), actualURL);
     }
