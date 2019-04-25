@@ -14,27 +14,6 @@
     <artifactId>spring-cloud-dubbo-servlet-gateway-sample</artifactId>
     <name>Spring Cloud Dubbo Servlet Gateway Sample</name>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Spring Cloud Alibaba dependencies -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-openfeign-dependencies</artifactId>
-                <version>${spring-cloud-openfeign.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
 
         <dependency>
