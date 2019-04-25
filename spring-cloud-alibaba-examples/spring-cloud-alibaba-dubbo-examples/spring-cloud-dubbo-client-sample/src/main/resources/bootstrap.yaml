@@ -1,0 +1,19 @@
+dubbo:
+  registry:
+    # 挂载到 Spring Cloud 注册中心
+    address: spring-cloud://localhost
+  cloud:
+    subscribed-services: spring-cloud-alibaba-dubbo-server
+
+spring:
+  application:
+    # Dubbo 应用名称
+    name: spring-cloud-alibaba-dubbo-client
+  main:
+    # Spring Boot 2.1 需要设定
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      # Nacos 服务发现与注册配置
+      discovery:
+        server-addr: 127.0.0.1:8848
