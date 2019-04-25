@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
         <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
         <version>0.9.1.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -13,6 +13,19 @@
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-dubbo-provider-web-sample</artifactId>
     <name>Spring Cloud Dubbo Provider Web Sample</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Cloud Alibaba dependencies -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
 
@@ -34,6 +47,17 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Dubbo Spring Cloud Starter -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-dubbo</artifactId>
+        </dependency>
+
+        <!-- Spring Cloud Nacos Service Discovery -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
