@@ -397,7 +397,7 @@ public class NacosDiscoveryProperties {
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
 		}
 		if (StringUtils.isEmpty(this.getGroupName())) {
-			this.setEndpoint(
+			this.setGroupName(
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.group-name:}"));
 		}
 
