@@ -139,6 +139,12 @@ public class NacosDiscoveryProperties {
 	 */
 	private String secretKey;
 
+
+	/**
+	 * group name for nacos server.
+	 */
+	private String groupName = "DEFAULT_GROUP";
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -337,6 +343,14 @@ public class NacosDiscoveryProperties {
 		this.watchDelay = watchDelay;
 	}
 
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
@@ -345,6 +359,7 @@ public class NacosDiscoveryProperties {
 				+ ", service='" + service + '\'' + ", weight=" + weight
 				+ ", clusterName='" + clusterName + '\'' + ", namingLoadCacheAtStart='"
 				+ namingLoadCacheAtStart + '\'' + ", metadata=" + metadata
+				+ ", groupName='" + groupName + "'"
 				+ ", registerEnabled=" + registerEnabled + ", ip='" + ip + '\''
 				+ ", networkInterface='" + networkInterface + '\'' + ", port=" + port
 				+ ", secure=" + secure + ", accessKey='" + accessKey + '\''
@@ -381,6 +396,11 @@ public class NacosDiscoveryProperties {
 			this.setEndpoint(
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
 		}
+		if (StringUtils.isEmpty(this.getGroupName())) {
+			this.setEndpoint(
+					env.resolvePlaceholders("${spring.cloud.nacos.discovery.group-name:}"));
+		}
+
 	}
 
 	public NamingService namingServiceInstance() {
