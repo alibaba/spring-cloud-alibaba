@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
-        <version>0.9.1.BUILD-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>spring-cloud-build</artifactId>
+        <version>2.1.3.RELEASE</version>
+        <relativePath/>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-dubbo-consumer-sample</artifactId>
-    <name>Spring Cloud Dubbo Consumer Sample</name>
+    <artifactId>spring-cloud-dubbo-server-sample</artifactId>
+    <name>Spring Cloud Dubbo Server Sample</name>
+    <version>0.9.1.BUILD-SNAPSHOT</version>
 
     <dependencyManagement>
         <dependencies>
@@ -20,15 +21,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-openfeign-dependencies</artifactId>
-                <version>${spring-cloud-openfeign.version}</version>
+                <version>0.9.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -37,28 +30,17 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <!-- Spring Cloud Open Feign -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-
-        <!-- Spring Retry -->
-        <dependency>
-            <groupId>org.springframework.retry</groupId>
-            <artifactId>spring-retry</artifactId>
-        </dependency>
-
         <!-- Sample API -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-dubbo-sample-api</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spring Boot dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
         </dependency>
 
         <!-- Dubbo Spring Cloud Starter -->
