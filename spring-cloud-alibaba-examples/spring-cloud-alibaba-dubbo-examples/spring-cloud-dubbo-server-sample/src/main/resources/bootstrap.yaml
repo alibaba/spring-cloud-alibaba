@@ -1,25 +1,18 @@
 dubbo:
   scan:
-    # dubbo 服务扫描基准包
     base-packages: org.springframework.cloud.alibaba.dubbo.bootstrap
   protocol:
-    # dubbo 协议
     name: dubbo
-    # dubbo 协议端口（ -1 表示自增端口）
     port: -1
   registry:
-    # 挂载到 Spring Cloud 注册中心
     address: spring-cloud://localhost
 
 spring:
   application:
-    # Dubbo 应用名称
     name: spring-cloud-alibaba-dubbo-server
   main:
-    # Spring Boot 2.1 需要设定
     allow-bean-definition-overriding: true
   cloud:
     nacos:
-      # Nacos 服务发现与注册配置
       discovery:
         server-addr: 127.0.0.1:8848
