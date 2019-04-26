@@ -51,12 +51,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba.ans</groupId>
-            <artifactId>ans-sdk</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <scope>provided</scope>
