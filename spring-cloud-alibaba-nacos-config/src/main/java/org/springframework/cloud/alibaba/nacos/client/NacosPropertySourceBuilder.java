@@ -21,6 +21,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.YamlMapFactoryBean;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.core.io.ByteArrayResource;
@@ -71,15 +72,16 @@ public class NacosPropertySourceBuilder {
 	 * @param group Nacos group
 	 */
 	NacosPropertySource build(String dataId, String group, String fileExtension,
-			boolean isRefreshable) {
-		Properties p = loadNacosData(dataId, group, fileExtension);
+							  boolean isRefreshable) {
+		Map<?, ?> p = loadNacosData(dataId, group, fileExtension);
+		@SuppressWarnings("unchecked")
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
-				propertiesToMap(p), new Date(), isRefreshable);
+				(Map<String, Object>) p, new Date(), isRefreshable);
 		NacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
 		return nacosPropertySource;
 	}
 
-	private Properties loadNacosData(String dataId, String group, String fileExtension) {
+	private Map<?, ?> loadNacosData(String dataId, String group, String fileExtension) {
 		String data = null;
 		try {
 			data = configService.getConfig(dataId, group, timeout);
@@ -95,7 +97,12 @@ public class NacosPropertySourceBuilder {
 				}
 				else if (fileExtension.equalsIgnoreCase("yaml")
 						|| fileExtension.equalsIgnoreCase("yml")) {
-					YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+					YamlMapFactoryBean yamlFactory = new YamlMapFactoryBean() {
+						@Override
+						protected Map<String, Object> createMap() {
+							return getFlattenedMap(super.createMap());
+						}
+					};
 					yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
 					return yamlFactory.getObject();
 				}
@@ -109,23 +116,6 @@ public class NacosPropertySourceBuilder {
 			log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
 		}
 		return EMPTY_PROPERTIES;
-	}
-
-	@SuppressWarnings("unchecked")
-	private Map<String, Object> propertiesToMap(Properties properties) {
-		Map<String, Object> result = new HashMap<>(16);
-		Enumeration<String> keys = (Enumeration<String>) properties.propertyNames();
-		while (keys.hasMoreElements()) {
-			String key = keys.nextElement();
-			Object value = properties.getProperty(key);
-			if (value != null) {
-				result.put(key, ((String) value).trim());
-			}
-			else {
-				result.put(key, null);
-			}
-		}
-		return result;
 	}
 
 }
