@@ -52,6 +52,7 @@ import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
@@ -179,6 +180,11 @@ public class SentinelAutoConfiguration {
 
 		private ObjectMapper objectMapper = new ObjectMapper();
 
+		public SentinelConverterConfiguration() {
+			objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+					false);
+		}
+
 		@Bean("sentinel-json-flow-converter")
 		public JsonConverter jsonFlowConverter() {
 			return new JsonConverter(objectMapper, FlowRule.class);
@@ -210,6 +216,10 @@ public class SentinelAutoConfiguration {
 	protected static class SentinelXmlConfiguration {
 
 		private XmlMapper xmlMapper = new XmlMapper();
+
+		public SentinelXmlConfiguration() {
+			xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		}
 
 		@Bean("sentinel-xml-flow-converter")
 		public XmlConverter xmlFlowConverter() {
