@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import java.util.Optional;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +33,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.csp.sentinel.adapter.servlet.callback.RequestOriginParser;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
 import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
@@ -71,15 +65,6 @@ public class SentinelAutoConfiguration {
 
 	@Autowired
 	private SentinelProperties properties;
-
-	@Autowired
-	private Optional<UrlCleaner> urlCleanerOptional;
-
-	@Autowired
-	private Optional<UrlBlockHandler> urlBlockHandlerOptional;
-
-	@Autowired
-	private Optional<RequestOriginParser> requestOriginParserOptional;
 
 	@PostConstruct
 	private void init() {
@@ -142,10 +127,6 @@ public class SentinelAutoConfiguration {
 		if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
 			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
 		}
-
-		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
-		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
-		requestOriginParserOptional.ifPresent(WebCallbackManager::setRequestOriginParser);
 
 		// earlier initialize
 		if (properties.isEager()) {
