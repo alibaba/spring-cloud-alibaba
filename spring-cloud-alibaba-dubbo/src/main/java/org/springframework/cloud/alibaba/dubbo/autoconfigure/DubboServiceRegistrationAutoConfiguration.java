@@ -16,6 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
+import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 
 import com.ecwid.consul.v1.agent.model.NewService;
@@ -31,6 +32,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.alibaba.dubbo.autoconfigure.condition.MissingSpringCloudRegistryConfigPropertyCondition;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.registry.DubboServiceRegistrationEventPublishingAspect;
 import org.springframework.cloud.alibaba.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
@@ -41,6 +43,8 @@ import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaAutoServic
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaServiceRegistry;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
@@ -51,6 +55,8 @@ import java.util.Map;
 
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_CONFIGURATION_CLASS_NAME;
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_AUTO_CONFIGURATION_CLASS_NAME;
+import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistryFactory.ADDRESS;
+import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
@@ -86,6 +92,14 @@ public class DubboServiceRegistrationAutoConfiguration {
 
     @Autowired
     private DubboServiceMetadataRepository dubboServiceMetadataRepository;
+
+    @Bean
+    @Conditional(value = {
+            MissingSpringCloudRegistryConfigPropertyCondition.class
+    })
+    public RegistryConfig defaultSpringCloudRegistryConfig() {
+        return new RegistryConfig(ADDRESS, PROTOCOL);
+    }
 
     @EventListener(ServiceInstancePreRegisteredEvent.class)
     public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {
