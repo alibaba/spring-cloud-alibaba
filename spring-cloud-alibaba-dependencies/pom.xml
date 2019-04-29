@@ -17,7 +17,7 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <sentinel.version>1.5.2</sentinel.version>
+        <sentinel.version>1.6.0</sentinel.version>
         <oss.version>3.1.0</oss.version>
         <seata.version>0.5.0</seata.version>
         <nacos.client.version>1.0.0</nacos.client.version>
@@ -187,6 +187,12 @@
                 <artifactId>sentinel-cluster-client-default</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-spring-webflux-adapter</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+
 
 
             <!--Alibaba Seata-->
