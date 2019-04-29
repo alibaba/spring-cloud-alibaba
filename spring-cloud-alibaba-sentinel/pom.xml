@@ -40,7 +40,6 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-web-servlet</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -52,7 +51,6 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-spring-webflux-adapter</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
