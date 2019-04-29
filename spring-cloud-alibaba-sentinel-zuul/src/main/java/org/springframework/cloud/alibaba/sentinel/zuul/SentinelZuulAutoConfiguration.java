@@ -16,26 +16,20 @@
 
 package org.springframework.cloud.alibaba.sentinel.zuul;
 
-import static org.springframework.cloud.alibaba.sentinel.zuul.SentinelZuulAutoConfiguration.PREFIX;
+import static org.springframework.cloud.commons.util.InetUtilsProperties.PREFIX;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.alibaba.sentinel.zuul.handler.FallBackProviderHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
-import com.alibaba.csp.sentinel.adapter.zuul.fallback.DefaultRequestOriginParser;
-import com.alibaba.csp.sentinel.adapter.zuul.fallback.DefaultUrlCleaner;
-import com.alibaba.csp.sentinel.adapter.zuul.fallback.RequestOriginParser;
-import com.alibaba.csp.sentinel.adapter.zuul.fallback.UrlCleaner;
-import com.alibaba.csp.sentinel.adapter.zuul.filters.SentinelErrorFilter;
-import com.alibaba.csp.sentinel.adapter.zuul.filters.SentinelPostFilter;
-import com.alibaba.csp.sentinel.adapter.zuul.filters.SentinelPreFilter;
-import com.alibaba.csp.sentinel.adapter.zuul.properties.SentinelZuulProperties;
-import com.alibaba.csp.sentinel.util.StringUtil;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.callback.DefaultRequestOriginParser;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.callback.RequestOriginParser;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulErrorFilter;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulPostFilter;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulPreFilter;
 
 import com.netflix.zuul.ZuulFilter;
 
@@ -48,40 +42,6 @@ import com.netflix.zuul.ZuulFilter;
 @ConditionalOnProperty(prefix = PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class SentinelZuulAutoConfiguration {
 
-	@Autowired
-	private Environment environment;
-
-	public static final String PREFIX = "spring.cloud.sentinel.zuul";
-
-	@Bean
-	public SentinelZuulProperties sentinelZuulProperties() {
-		SentinelZuulProperties properties = new SentinelZuulProperties();
-		String enabledStr = environment.getProperty(PREFIX + "." + "enabled");
-		String preOrderStr = environment.getProperty(PREFIX + "." + "order.pre");
-		String postOrderStr = environment.getProperty(PREFIX + "." + "order.post");
-		String errorOrderStr = environment.getProperty(PREFIX + "." + "order.error");
-		if (StringUtil.isNotEmpty(enabledStr)) {
-			Boolean enabled = Boolean.valueOf(enabledStr);
-			properties.setEnabled(enabled);
-		}
-		if (StringUtil.isNotEmpty(preOrderStr)) {
-			properties.getOrder().setPre(Integer.parseInt(preOrderStr));
-		}
-		if (StringUtil.isNotEmpty(postOrderStr)) {
-			properties.getOrder().setPost(Integer.parseInt(postOrderStr));
-		}
-		if (StringUtil.isNotEmpty(errorOrderStr)) {
-			properties.getOrder().setError(Integer.parseInt(errorOrderStr));
-		}
-		return properties;
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(UrlCleaner.class)
-	public UrlCleaner urlCleaner() {
-		return new DefaultUrlCleaner();
-	}
-
 	@Bean
 	@ConditionalOnMissingBean(RequestOriginParser.class)
 	public RequestOriginParser requestOriginParser() {
@@ -89,20 +49,19 @@ public class SentinelZuulAutoConfiguration {
 	}
 
 	@Bean
-	public ZuulFilter preFilter(SentinelZuulProperties sentinelZuulProperties,
-			UrlCleaner urlCleaner, RequestOriginParser requestOriginParser) {
-		return new SentinelPreFilter(sentinelZuulProperties, urlCleaner,
-				requestOriginParser);
+	public ZuulFilter sentinelZuulPreFilter() {
+		// We can also provider the filter order in the constructor.
+		return new SentinelZuulPreFilter();
 	}
 
 	@Bean
-	public ZuulFilter postFilter(SentinelZuulProperties sentinelZuulProperties) {
-		return new SentinelPostFilter(sentinelZuulProperties);
+	public ZuulFilter sentinelZuulPostFilter() {
+		return new SentinelZuulPostFilter();
 	}
 
 	@Bean
-	public ZuulFilter errorFilter(SentinelZuulProperties sentinelZuulProperties) {
-		return new SentinelErrorFilter(sentinelZuulProperties);
+	public ZuulFilter sentinelZuulErrorFilter() {
+		return new SentinelZuulErrorFilter();
 	}
 
 	@Bean

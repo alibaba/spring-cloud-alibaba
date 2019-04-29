@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
-import com.alibaba.csp.sentinel.adapter.zuul.fallback.DefaultBlockFallbackProvider;
-import com.alibaba.csp.sentinel.adapter.zuul.fallback.ZuulBlockFallbackManager;
-import com.alibaba.csp.sentinel.adapter.zuul.fallback.ZuulBlockFallbackProvider;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.DefaultBlockFallbackProvider;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.ZuulBlockFallbackManager;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.ZuulBlockFallbackProvider;
 
 /**
  * @author tiger
