@@ -1,0 +1,18 @@
+[
+  {
+    "resource": "/mono",
+    "controlBehavior": 0,
+    "count": 0,
+    "grade": 1,
+    "limitApp": "default",
+    "strategy": 0
+  },
+  {
+    "resource": "/flux",
+    "controlBehavior": 0,
+    "count": 0,
+    "grade": 1,
+    "limitApp": "default",
+    "strategy": 0
+  }
+]
