@@ -33,11 +33,6 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.alibaba.csp</groupId>
-            <artifactId>sentinel-spring-webflux-adapter</artifactId>
-        </dependency>
-
         <!--<dependency>-->
         <!--<groupId>com.alibaba.csp</groupId>-->
         <!--<artifactId>sentinel-datasource-nacos</artifactId>-->
