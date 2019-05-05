@@ -34,6 +34,7 @@ import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
 import org.springframework.cloud.stream.binder.rocketmq.consuming.RocketMQListenerBindingContainer;
 import org.springframework.cloud.stream.binder.rocketmq.integration.RocketMQInboundChannelAdapter;
 import org.springframework.cloud.stream.binder.rocketmq.integration.RocketMQMessageHandler;
+import org.springframework.cloud.stream.binder.rocketmq.integration.RocketMQMessageSource;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
@@ -42,9 +43,13 @@ import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQProdu
 import org.springframework.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
+import org.springframework.integration.StaticMessageHeaderAccessor;
+import org.springframework.integration.acks.AcknowledgmentCallback;
+import org.springframework.integration.acks.AcknowledgmentCallback.Status;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,7 +88,7 @@ public class RocketMQMessageChannelBinder extends
 			MessageChannel errorChannel) throws Exception {
 		if (producerProperties.getExtension().getEnabled()) {
 
-		    // if producerGroup is empty, using destination
+			// if producerGroup is empty, using destination
 			String extendedProducerGroup = producerProperties.getExtension().getGroup();
 			String producerGroup = StringUtils.isEmpty(extendedProducerGroup)
 					? destination.getName()
@@ -204,6 +209,39 @@ public class RocketMQMessageChannelBinder extends
 		}
 
 		return rocketInboundChannelAdapter;
+	}
+
+	@Override
+	protected PolledConsumerResources createPolledConsumerResources(String name,
+			String group, ConsumerDestination destination,
+			ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties) {
+		RocketMQMessageSource rocketMQMessageSource = new RocketMQMessageSource(
+				rocketBinderConfigurationProperties, consumerProperties, name, group);
+		return new PolledConsumerResources(rocketMQMessageSource,
+				registerErrorInfrastructure(destination, group, consumerProperties,
+						true));
+	}
+
+	@Override
+	protected MessageHandler getPolledConsumerErrorMessageHandler(
+			ConsumerDestination destination, String group,
+			ExtendedConsumerProperties<RocketMQConsumerProperties> properties) {
+		return message -> {
+			if (message.getPayload() instanceof MessagingException) {
+				AcknowledgmentCallback ack = StaticMessageHeaderAccessor
+						.getAcknowledgmentCallback(
+								((MessagingException) message.getPayload())
+										.getFailedMessage());
+				if (ack != null) {
+					if (properties.getExtension().shouldRequeue()) {
+						ack.acknowledge(Status.REQUEUE);
+					}
+					else {
+						ack.acknowledge(Status.REJECT);
+					}
+				}
+			}
+		};
 	}
 
 	@Override
