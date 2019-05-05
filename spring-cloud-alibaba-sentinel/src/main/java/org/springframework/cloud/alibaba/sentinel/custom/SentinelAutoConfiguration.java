@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import java.util.Optional;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +33,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.csp.sentinel.adapter.servlet.callback.RequestOriginParser;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
 import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
@@ -52,6 +46,7 @@ import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
@@ -70,15 +65,6 @@ public class SentinelAutoConfiguration {
 
 	@Autowired
 	private SentinelProperties properties;
-
-	@Autowired
-	private Optional<UrlCleaner> urlCleanerOptional;
-
-	@Autowired
-	private Optional<UrlBlockHandler> urlBlockHandlerOptional;
-
-	@Autowired
-	private Optional<RequestOriginParser> requestOriginParserOptional;
 
 	@PostConstruct
 	private void init() {
@@ -142,10 +128,6 @@ public class SentinelAutoConfiguration {
 			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
 		}
 
-		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
-		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
-		requestOriginParserOptional.ifPresent(WebCallbackManager::setRequestOriginParser);
-
 		// earlier initialize
 		if (properties.isEager()) {
 			InitExecutor.doInit();
@@ -179,6 +161,11 @@ public class SentinelAutoConfiguration {
 
 		private ObjectMapper objectMapper = new ObjectMapper();
 
+		public SentinelConverterConfiguration() {
+			objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+					false);
+		}
+
 		@Bean("sentinel-json-flow-converter")
 		public JsonConverter jsonFlowConverter() {
 			return new JsonConverter(objectMapper, FlowRule.class);
@@ -210,6 +197,10 @@ public class SentinelAutoConfiguration {
 	protected static class SentinelXmlConfiguration {
 
 		private XmlMapper xmlMapper = new XmlMapper();
+
+		public SentinelXmlConfiguration() {
+			xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		}
 
 		@Bean("sentinel-xml-flow-converter")
 		public XmlConverter xmlFlowConverter() {
