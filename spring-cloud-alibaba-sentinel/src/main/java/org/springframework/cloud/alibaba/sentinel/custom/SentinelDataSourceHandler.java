@@ -1,8 +1,13 @@
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
-import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
-import com.alibaba.csp.sentinel.slots.block.AbstractRule;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +23,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 
 /**
  * Sentinel {@link ReadableDataSource} Handler Handle the configurations of
@@ -189,7 +190,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 	}
 
 	private void logAndCheckRuleType(AbstractDataSource dataSource, String dataSourceName,
-			Class<? extends AbstractRule> ruleClass) {
+			Class ruleClass) {
 		Object ruleConfig;
 		try {
 			ruleConfig = dataSource.loadConfig();
@@ -199,8 +200,8 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 					+ " loadConfig error: " + e.getMessage(), e);
 			return;
 		}
-		if (ruleConfig instanceof List) {
-			List convertedRuleList = (List) ruleConfig;
+		if (ruleConfig instanceof List || ruleConfig instanceof Set) {
+			Collection convertedRuleList = (Collection) ruleConfig;
 			if (CollectionUtils.isEmpty(convertedRuleList)) {
 				log.warn("[Sentinel Starter] DataSource {} rule list is empty.",
 						dataSourceName);

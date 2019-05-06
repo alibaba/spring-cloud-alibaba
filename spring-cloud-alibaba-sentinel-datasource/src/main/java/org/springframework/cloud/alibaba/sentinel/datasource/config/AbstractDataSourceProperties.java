@@ -5,6 +5,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 
+import com.alibaba.csp.sentinel.adapter.gateway.common.api.GatewayApiDefinitionManager;
+import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayRuleManager;
 import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
@@ -81,6 +83,12 @@ public class AbstractDataSourceProperties {
 			break;
 		case AUTHORITY:
 			AuthorityRuleManager.register2Property(dataSource.getProperty());
+			break;
+		case GATEWAY:
+			GatewayRuleManager.register2Property(dataSource.getProperty());
+			break;
+		case API:
+			GatewayApiDefinitionManager.register2Property(dataSource.getProperty());
 			break;
 		default:
 			break;

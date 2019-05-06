@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.cloud.alibaba.sentinel.datasource.config.AbstractDataSourceProperties;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
+import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
 import com.alibaba.csp.sentinel.slots.block.AbstractRule;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
@@ -40,7 +42,15 @@ public enum RuleType {
 	/**
 	 * authority
 	 */
-	AUTHORITY("authority", AuthorityRule.class);
+	AUTHORITY("authority", AuthorityRule.class),
+	/**
+	 * gateway flow
+	 */
+	GATEWAY("gateway-flow", GatewayFlowRule.class),
+	/**
+	 * api
+	 */
+	API("api", ApiDefinition.class);
 
 	/**
 	 * alias for {@link AbstractRule}

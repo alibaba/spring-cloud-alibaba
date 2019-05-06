@@ -2,11 +2,11 @@ package org.springframework.cloud.alibaba.sentinel.zuul.handler;
 
 import java.util.Map;
 
-import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.DefaultBlockFallbackProvider;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.ZuulBlockFallbackManager;
@@ -30,7 +30,7 @@ public class FallBackProviderHandler implements SmartInitializingSingleton {
 	public void afterSingletonsInstantiated() {
 		Map<String, ZuulBlockFallbackProvider> providerMap = beanFactory
 				.getBeansOfType(ZuulBlockFallbackProvider.class);
-		if (MapUtils.isNotEmpty(providerMap)) {
+		if (!CollectionUtils.isEmpty(providerMap)) {
 			providerMap.forEach((k, v) -> {
 				logger.info("[Sentinel Zuul] Register provider name:{}, instance: {}", k,
 						v);
