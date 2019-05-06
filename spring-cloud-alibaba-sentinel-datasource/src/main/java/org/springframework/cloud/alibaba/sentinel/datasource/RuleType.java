@@ -50,7 +50,7 @@ public enum RuleType {
 	/**
 	 * api
 	 */
-    GW_API_GROUP("gw-api-group", ApiDefinition.class);
+	GW_API_GROUP("gw-api-group", ApiDefinition.class);
 
 	/**
 	 * alias for {@link AbstractRule}
