@@ -16,22 +16,28 @@
 
 package org.springframework.cloud.alibaba.sentinel.zuul;
 
-import static org.springframework.cloud.commons.util.InetUtilsProperties.PREFIX;
+import java.util.Optional;
 
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.alibaba.sentinel.zuul.handler.FallBackProviderHandler;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import javax.annotation.PostConstruct;
 
-import com.alibaba.csp.sentinel.adapter.gateway.zuul.callback.DefaultRequestOriginParser;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.callback.RequestOriginParser;
+import com.alibaba.csp.sentinel.adapter.gateway.zuul.callback.ZuulGatewayCallbackManager;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulErrorFilter;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulPostFilter;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulPreFilter;
 
 import com.netflix.zuul.ZuulFilter;
+import com.netflix.zuul.http.ZuulServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.alibaba.sentinel.zuul.handler.FallBackProviderHandler;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 /**
  * Sentinel Spring Cloud Zuul AutoConfiguration
@@ -39,35 +45,71 @@ import com.netflix.zuul.ZuulFilter;
  * @author tiger
  */
 @Configuration
-@ConditionalOnProperty(prefix = PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnClass(ZuulServlet.class)
+@ConditionalOnProperty(prefix = SentinelZuulAutoConfiguration.PREFIX, name = "enabled", havingValue = "true",
+    matchIfMissing = true)
 public class SentinelZuulAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean(RequestOriginParser.class)
-	public RequestOriginParser requestOriginParser() {
-		return new DefaultRequestOriginParser();
-	}
+    private static final Logger logger = LoggerFactory
+        .getLogger(SentinelZuulAutoConfiguration.class);
 
-	@Bean
-	public ZuulFilter sentinelZuulPreFilter() {
-		// We can also provider the filter order in the constructor.
-		return new SentinelZuulPreFilter();
-	}
+    public static final String PREFIX = "spring.cloud.sentinel.zuul";
 
-	@Bean
-	public ZuulFilter sentinelZuulPostFilter() {
-		return new SentinelZuulPostFilter();
-	}
+    @Autowired
+    private Environment environment;
 
-	@Bean
-	public ZuulFilter sentinelZuulErrorFilter() {
-		return new SentinelZuulErrorFilter();
-	}
+    @Autowired
+    private Optional<RequestOriginParser> requestOriginParserOptional;
 
-	@Bean
-	public FallBackProviderHandler fallBackProviderListener(
-			DefaultListableBeanFactory beanFactory) {
-		return new FallBackProviderHandler(beanFactory);
-	}
+    @PostConstruct
+    private void init() {
+        requestOriginParserOptional
+            .ifPresent(ZuulGatewayCallbackManager::setOriginParser);
+    }
+
+    @Bean
+    public ZuulFilter sentinelZuulPreFilter() {
+        String preOrderStr = environment.getProperty(PREFIX + "." + "order.pre");
+        int order = 10000;
+        try {
+            order = Integer.parseInt(preOrderStr);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
+        logger.info("[Sentinel Zuul] register SentinelZuulPreFilter {}", order);
+        return new SentinelZuulPreFilter(order);
+    }
+
+    @Bean
+    public ZuulFilter sentinelZuulPostFilter() {
+        String postOrderStr = environment.getProperty(PREFIX + "." + "order.post");
+        int order = 1000;
+        try {
+            order = Integer.parseInt(postOrderStr);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
+        logger.info("[Sentinel Zuul] register SentinelZuulPostFilter {}", order);
+        return new SentinelZuulPostFilter(order);
+    }
+
+    @Bean
+    public ZuulFilter sentinelZuulErrorFilter() {
+        String errorOrderStr = environment.getProperty(PREFIX + "." + "order.error");
+        int order = -1;
+        try {
+            order = Integer.parseInt(errorOrderStr);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
+        logger.info("[Sentinel Zuul] register SentinelZuulErrorFilter {}", order);
+        return new SentinelZuulErrorFilter(order);
+    }
+
+    @Bean
+    public FallBackProviderHandler fallBackProviderHandler(
+        DefaultListableBeanFactory beanFactory) {
+        return new FallBackProviderHandler(beanFactory);
+    }
 
 }
