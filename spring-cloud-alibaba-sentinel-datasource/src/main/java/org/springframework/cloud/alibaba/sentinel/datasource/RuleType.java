@@ -46,11 +46,11 @@ public enum RuleType {
 	/**
 	 * gateway flow
 	 */
-	GATEWAY("gateway-flow", GatewayFlowRule.class),
+	GW_FLOW("gw-flow", GatewayFlowRule.class),
 	/**
 	 * api
 	 */
-	API("api", ApiDefinition.class);
+    GW_API_GROUP("gw-api-group", ApiDefinition.class);
 
 	/**
 	 * alias for {@link AbstractRule}
