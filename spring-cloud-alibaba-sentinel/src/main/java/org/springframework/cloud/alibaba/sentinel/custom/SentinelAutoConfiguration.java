@@ -37,6 +37,7 @@ import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConver
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
@@ -170,8 +171,8 @@ public class SentinelAutoConfiguration {
 
     @Bean
     public SentinelDataSourceHandler sentinelDataSourceHandler(
-        DefaultListableBeanFactory beanFactory) {
-        return new SentinelDataSourceHandler(beanFactory);
+        DefaultListableBeanFactory beanFactory, SentinelProperties sentinelProperties, Environment env) {
+        return new SentinelDataSourceHandler(beanFactory, sentinelProperties, env);
     }
 
     @ConditionalOnClass(ObjectMapper.class)

@@ -15,6 +15,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.core.env.Environment;
 
 /**
  * Abstract class Using by {@link DataSourcePropertiesConfiguration}
@@ -30,6 +31,8 @@ public class AbstractDataSourceProperties {
     private String converterClass;
     @JsonIgnore
     private final String factoryBeanName;
+    @JsonIgnore
+    private Environment env;
 
     public AbstractDataSourceProperties(String factoryBeanName) {
         this.factoryBeanName = factoryBeanName;
@@ -61,6 +64,14 @@ public class AbstractDataSourceProperties {
 
     public String getFactoryBeanName() {
         return factoryBeanName;
+    }
+
+    protected Environment getEnv() {
+        return env;
+    }
+
+    public void setEnv(Environment env) {
+        this.env = env;
     }
 
     public void preCheck(String dataSourceName) {
