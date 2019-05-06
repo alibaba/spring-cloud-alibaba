@@ -7,12 +7,12 @@ spring:
     sentinel:
       datasource.ds2.file:
         file: "classpath: gateway.json"
-        ruleType: gateway
+        ruleType: gw-flow
       datasource.ds1.file:
         file: "classpath: api.json"
-        ruleType: api
+        ruleType: gw-api-group
       transport:
-        dashboard: localhost:9999
+        dashboard: localhost:8080
       filter:
         enabled: false
 

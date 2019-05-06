@@ -23,75 +23,75 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class AbstractDataSourceProperties {
 
-	@NotEmpty
-	private String dataType = "json";
-	@NotNull
-	private RuleType ruleType;
-	private String converterClass;
-	@JsonIgnore
-	private final String factoryBeanName;
+    @NotEmpty
+    private String dataType = "json";
+    @NotNull
+    private RuleType ruleType;
+    private String converterClass;
+    @JsonIgnore
+    private final String factoryBeanName;
 
-	public AbstractDataSourceProperties(String factoryBeanName) {
-		this.factoryBeanName = factoryBeanName;
-	}
+    public AbstractDataSourceProperties(String factoryBeanName) {
+        this.factoryBeanName = factoryBeanName;
+    }
 
-	public String getDataType() {
-		return dataType;
-	}
+    public String getDataType() {
+        return dataType;
+    }
 
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
-	}
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
 
-	public RuleType getRuleType() {
-		return ruleType;
-	}
+    public RuleType getRuleType() {
+        return ruleType;
+    }
 
-	public void setRuleType(RuleType ruleType) {
-		this.ruleType = ruleType;
-	}
+    public void setRuleType(RuleType ruleType) {
+        this.ruleType = ruleType;
+    }
 
-	public String getConverterClass() {
-		return converterClass;
-	}
+    public String getConverterClass() {
+        return converterClass;
+    }
 
-	public void setConverterClass(String converterClass) {
-		this.converterClass = converterClass;
-	}
+    public void setConverterClass(String converterClass) {
+        this.converterClass = converterClass;
+    }
 
-	public String getFactoryBeanName() {
-		return factoryBeanName;
-	}
+    public String getFactoryBeanName() {
+        return factoryBeanName;
+    }
 
-	public void preCheck(String dataSourceName) {
+    public void preCheck(String dataSourceName) {
 
-	}
+    }
 
-	public void postRegister(AbstractDataSource dataSource) {
-		switch (this.getRuleType()) {
-		case FLOW:
-			FlowRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case DEGRADE:
-			DegradeRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case PARAM_FLOW:
-			ParamFlowRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case SYSTEM:
-			SystemRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case AUTHORITY:
-			AuthorityRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case GATEWAY:
-			GatewayRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case API:
-			GatewayApiDefinitionManager.register2Property(dataSource.getProperty());
-			break;
-		default:
-			break;
-		}
-	}
+    public void postRegister(AbstractDataSource dataSource) {
+        switch (this.getRuleType()) {
+            case FLOW:
+                FlowRuleManager.register2Property(dataSource.getProperty());
+                break;
+            case DEGRADE:
+                DegradeRuleManager.register2Property(dataSource.getProperty());
+                break;
+            case PARAM_FLOW:
+                ParamFlowRuleManager.register2Property(dataSource.getProperty());
+                break;
+            case SYSTEM:
+                SystemRuleManager.register2Property(dataSource.getProperty());
+                break;
+            case AUTHORITY:
+                AuthorityRuleManager.register2Property(dataSource.getProperty());
+                break;
+            case GW_FLOW:
+                GatewayRuleManager.register2Property(dataSource.getProperty());
+                break;
+            case GW_API_GROUP:
+                GatewayApiDefinitionManager.register2Property(dataSource.getProperty());
+                break;
+            default:
+                break;
+        }
+    }
 }
