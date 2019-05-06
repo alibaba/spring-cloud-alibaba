@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel.zuul;
+package org.springframework.cloud.alibaba.sentinel.gateway;
 
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.alibaba.sentinel.zuul.handler.FallBackProviderHandler;
+import org.springframework.cloud.alibaba.sentinel.gateway.handler.FallBackProviderHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;

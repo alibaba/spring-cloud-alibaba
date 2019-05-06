@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.alibaba.sentinel.zuul;
+package org.springframework.cloud.alibaba.sentinel.gateway;
 
 import java.util.Collections;
 import java.util.List;
