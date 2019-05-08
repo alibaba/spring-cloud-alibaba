@@ -1,8 +1,7 @@
 package org.springframework.cloud.alibaba.sentinel.datasource.config;
 
-import javax.validation.constraints.NotEmpty;
-
 import org.springframework.cloud.alibaba.sentinel.datasource.factorybean.ZookeeperDataSourceFactoryBean;
+import org.springframework.util.StringUtils;
 
 /**
  * Zookeeper Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -16,7 +15,6 @@ public class ZookeeperDataSourceProperties extends AbstractDataSourceProperties 
 		super(ZookeeperDataSourceFactoryBean.class.getName());
 	}
 
-	@NotEmpty
 	private String serverAddr;
 
 	private String path;
@@ -24,6 +22,18 @@ public class ZookeeperDataSourceProperties extends AbstractDataSourceProperties 
 	private String groupId;
 
 	private String dataId;
+
+	@Override
+	public void preCheck(String dataSourceName) {
+		if (StringUtils.isEmpty(serverAddr)) {
+			serverAddr = this.getEnv()
+					.getProperty("spring.cloud.sentinel.datasource.zk.server-addr", "");
+			if (StringUtils.isEmpty(serverAddr)) {
+				throw new IllegalArgumentException(
+						"ZookeeperDataSource server-addr is empty");
+			}
+		}
+	}
 
 	public String getServerAddr() {
 		return serverAddr;
