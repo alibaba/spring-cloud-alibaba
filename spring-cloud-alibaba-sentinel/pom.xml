@@ -105,6 +105,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-api-gateway-adapter-common</artifactId>
+        </dependency>
+
         <!--spring boot-->
 
         <dependency>
