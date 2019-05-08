@@ -48,9 +48,13 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	@Override
 	public void preCheck(String dataSourceName) {
-		if (StringUtils.isEmpty(serverAddr) && acmPropertiesInvalid()) {
-			throw new IllegalArgumentException(
-					"NacosDataSource properties value not correct. serverAddr is empty but there is empty value in accessKey, secretKey, endpoint, namespace property");
+		if (StringUtils.isEmpty(serverAddr)) {
+			serverAddr = this.getEnv().getProperty(
+					"spring.cloud.sentinel.datasource.nacos.server-addr", "");
+			if (StringUtils.isEmpty(serverAddr)) {
+				throw new IllegalArgumentException(
+						"NacosDataSource server-addr is empty");
+			}
 		}
 	}
 
@@ -108,11 +112,6 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
-	}
-
-	public boolean acmPropertiesInvalid() {
-		return StringUtils.isEmpty(endpoint) || StringUtils.isEmpty(accessKey)
-				|| StringUtils.isEmpty(secretKey) || StringUtils.isEmpty(namespace);
 	}
 
 }

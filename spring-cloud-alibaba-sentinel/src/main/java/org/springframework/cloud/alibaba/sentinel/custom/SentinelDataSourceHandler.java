@@ -18,14 +18,15 @@ package org.springframework.cloud.alibaba.sentinel.custom;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
@@ -33,6 +34,7 @@ import org.springframework.cloud.alibaba.sentinel.datasource.config.AbstractData
 import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePropertiesConfiguration;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
+import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -63,12 +65,16 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 
 	private final DefaultListableBeanFactory beanFactory;
 
-	public SentinelDataSourceHandler(DefaultListableBeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-	}
+	private final SentinelProperties sentinelProperties;
 
-	@Autowired
-	private SentinelProperties sentinelProperties;
+	private final Environment env;
+
+	public SentinelDataSourceHandler(DefaultListableBeanFactory beanFactory,
+			SentinelProperties sentinelProperties, Environment env) {
+		this.beanFactory = beanFactory;
+		this.sentinelProperties = sentinelProperties;
+		this.env = env;
+	}
 
 	@Override
 	public void afterSingletonsInstantiated() {
@@ -85,6 +91,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 				}
 				AbstractDataSourceProperties abstractDataSourceProperties = dataSourceProperties
 						.getValidDataSourceProperties();
+				abstractDataSourceProperties.setEnv(env);
 				abstractDataSourceProperties.preCheck(dataSourceName);
 				registerBean(abstractDataSourceProperties, dataSourceName + "-sentinel-"
 						+ validFields.get(0) + "-datasource");
@@ -221,8 +228,8 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 					+ " loadConfig error: " + e.getMessage(), e);
 			return;
 		}
-		if (ruleConfig instanceof List) {
-			List convertedRuleList = (List) ruleConfig;
+		if (ruleConfig instanceof List || ruleConfig instanceof Set) {
+			Collection convertedRuleList = (Collection) ruleConfig;
 			if (CollectionUtils.isEmpty(convertedRuleList)) {
 				log.warn("[Sentinel Starter] DataSource {} rule list is empty.",
 						dataSourceName);

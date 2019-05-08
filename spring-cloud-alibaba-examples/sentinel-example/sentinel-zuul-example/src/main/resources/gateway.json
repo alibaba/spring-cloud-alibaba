@@ -1,0 +1,26 @@
+[
+  {
+    "resource": "some_customized_api",
+    "count": 0
+  },
+  {
+    "resource": "my-service2",
+    "count": 0
+  },
+  {
+    "resource": "my-service3",
+    "count": 0,
+    "paramItem": {
+      "parseStrategy": 2,
+      "fieldName": "Spring-Cloud-Alibaba"
+    }
+  },
+  {
+    "resource": "my-service4",
+    "count": 0,
+    "paramItem": {
+      "parseStrategy": 3,
+      "fieldName": "name"
+    }
+  }
+]
