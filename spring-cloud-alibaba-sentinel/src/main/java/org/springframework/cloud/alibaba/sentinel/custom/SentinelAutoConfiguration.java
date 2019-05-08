@@ -261,12 +261,12 @@ public class SentinelAutoConfiguration {
 				return new JsonConverter(objectMapper, ParamFlowRule.class);
 			}
 
-			@Bean("sentinel-json-gateway-flow-converter")
+			@Bean("sentinel-json-gw-flow-converter")
 			public JsonConverter jsonGatewayFlowConverter() {
 				return new JsonConverter(objectMapper, GatewayFlowRule.class);
 			}
 
-			@Bean("sentinel-json-api-converter")
+			@Bean("sentinel-json-gw-api-group-converter")
 			public JsonConverter jsonApiConverter() {
 				return new JsonConverter(objectMapper, ApiDefinition.class);
 			}
@@ -318,12 +318,12 @@ public class SentinelAutoConfiguration {
 				return new XmlConverter(xmlMapper, ParamFlowRule.class);
 			}
 
-			@Bean("sentinel-xml-gateway-flow-converter")
+			@Bean("sentinel-xml-gw-flow-converter")
 			public XmlConverter xmlGatewayFlowConverter() {
 				return new XmlConverter(xmlMapper, GatewayFlowRule.class);
 			}
 
-			@Bean("sentinel-xml-api-converter")
+			@Bean("sentinel-xml-gw-api-group-converter")
 			public XmlConverter xmlApiConverter() {
 				return new XmlConverter(xmlMapper, ApiDefinition.class);
 			}
