@@ -76,6 +76,7 @@ public class DubboGatewayServlet extends HttpServletBean {
         return serviceName;
     }
 
+    @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         String serviceName = resolveServiceName(request);

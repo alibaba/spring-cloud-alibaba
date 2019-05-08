@@ -60,7 +60,7 @@ public class SmsInitializerEventListener
 		// 初始化acsClient,暂不支持region化
 		try {
 			DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou",
-					SmsProperties.smsProduct, SmsProperties.smsDomain);
+					SmsProperties.SMS_PRODUCT, SmsProperties.SMS_DOMAIN);
 			Collection<MessageListener> messageListeners = event.getApplicationContext()
 					.getBeansOfType(MessageListener.class).values();
 			if (messageListeners.isEmpty()) {
