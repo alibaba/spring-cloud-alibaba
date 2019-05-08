@@ -46,7 +46,7 @@ public class SentinelConverterTests {
 	@Test
 	public void testJsonConverter() {
 		JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
-		List<FlowRule> flowRules = jsonConverter
+		List<FlowRule> flowRules = (List<FlowRule>) jsonConverter
 				.convert(readFileContent("classpath: flowrule.json"));
 		assertEquals("json converter flow rule size was wrong", 1, flowRules.size());
 		assertEquals("json converter flow rule resource name was wrong", "resource",
@@ -67,7 +67,7 @@ public class SentinelConverterTests {
 	@Test
 	public void testConverterEmptyContent() {
 		JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
-		List<FlowRule> flowRules = jsonConverter.convert("");
+		List<FlowRule> flowRules = (List<FlowRule>) jsonConverter.convert("");
 		assertEquals("json converter flow rule size was not empty", 0, flowRules.size());
 	}
 
@@ -86,7 +86,7 @@ public class SentinelConverterTests {
 	@Test
 	public void testXmlConverter() {
 		XmlConverter jsonConverter = new XmlConverter(xmlMapper, FlowRule.class);
-		List<FlowRule> flowRules = jsonConverter
+		List<FlowRule> flowRules = (List<FlowRule>) jsonConverter
 				.convert(readFileContent("classpath: flowrule.xml"));
 		assertEquals("xml converter flow rule size was wrong", 2, flowRules.size());
 		assertEquals("xml converter flow rule1 resource name was wrong", "resource",

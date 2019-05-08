@@ -4,7 +4,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
+import org.springframework.core.env.Environment;
 
+import com.alibaba.csp.sentinel.adapter.gateway.common.api.GatewayApiDefinitionManager;
+import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayRuleManager;
 import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
@@ -28,6 +31,8 @@ public class AbstractDataSourceProperties {
 	private String converterClass;
 	@JsonIgnore
 	private final String factoryBeanName;
+	@JsonIgnore
+	private Environment env;
 
 	public AbstractDataSourceProperties(String factoryBeanName) {
 		this.factoryBeanName = factoryBeanName;
@@ -61,6 +66,14 @@ public class AbstractDataSourceProperties {
 		return factoryBeanName;
 	}
 
+	protected Environment getEnv() {
+		return env;
+	}
+
+	public void setEnv(Environment env) {
+		this.env = env;
+	}
+
 	public void preCheck(String dataSourceName) {
 
 	}
@@ -81,6 +94,12 @@ public class AbstractDataSourceProperties {
 			break;
 		case AUTHORITY:
 			AuthorityRuleManager.register2Property(dataSource.getProperty());
+			break;
+		case GW_FLOW:
+			GatewayRuleManager.register2Property(dataSource.getProperty());
+			break;
+		case GW_API_GROUP:
+			GatewayApiDefinitionManager.register2Property(dataSource.getProperty());
 			break;
 		default:
 			break;
