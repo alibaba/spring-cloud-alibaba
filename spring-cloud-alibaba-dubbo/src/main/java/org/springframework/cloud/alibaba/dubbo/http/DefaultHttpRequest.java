@@ -60,6 +60,7 @@ public class DefaultHttpRequest implements HttpRequest {
         return HttpMethod.resolve(getMethodValue());
     }
 
+    @Override
     public String getMethodValue() {
         return method;
     }
