@@ -85,8 +85,8 @@ public class DefaultAlicomMessagePuller {
 		this.executorService = executorService;
 	}
 
-	protected static final Map<String, Object> sLockObjMap = new HashMap<String, Object>();
-	protected static Map<String, Boolean> sPollingMap = new ConcurrentHashMap<String, Boolean>();
+	protected static final Map<String, Object> S_LOCK_OBJ_MAP = new HashMap<>();
+	protected static Map<String, Boolean> sPollingMap = new ConcurrentHashMap<>();
 	protected Object lockObj;
 
 	public boolean setPolling(String queueName) {
@@ -309,11 +309,11 @@ public class DefaultAlicomMessagePuller {
 		task.messageType = messageType;
 		task.queueName = queueName;
 
-		synchronized (sLockObjMap) {
-			lockObj = sLockObjMap.get(queueName);
+		synchronized (S_LOCK_OBJ_MAP) {
+			lockObj = S_LOCK_OBJ_MAP.get(queueName);
 			if (lockObj == null) {
 				lockObj = new Object();
-				sLockObjMap.put(queueName, lockObj);
+				S_LOCK_OBJ_MAP.put(queueName, lockObj);
 			}
 		}
 
@@ -355,11 +355,11 @@ public class DefaultAlicomMessagePuller {
 		task.messageType = messageType;
 		task.queueName = queueName;
 
-		synchronized (sLockObjMap) {
-			lockObj = sLockObjMap.get(queueName);
+		synchronized (S_LOCK_OBJ_MAP) {
+			lockObj = S_LOCK_OBJ_MAP.get(queueName);
 			if (lockObj == null) {
 				lockObj = new Object();
-				sLockObjMap.put(queueName, lockObj);
+				S_LOCK_OBJ_MAP.put(queueName, lockObj);
 			}
 		}
 
@@ -402,11 +402,11 @@ public class DefaultAlicomMessagePuller {
 		task.messageType = messageType;
 		task.queueName = queueName;
 
-		synchronized (sLockObjMap) {
-			lockObj = sLockObjMap.get(queueName);
+		synchronized (S_LOCK_OBJ_MAP) {
+			lockObj = S_LOCK_OBJ_MAP.get(queueName);
 			if (lockObj == null) {
 				lockObj = new Object();
-				sLockObjMap.put(queueName, lockObj);
+				S_LOCK_OBJ_MAP.put(queueName, lockObj);
 			}
 		}
 

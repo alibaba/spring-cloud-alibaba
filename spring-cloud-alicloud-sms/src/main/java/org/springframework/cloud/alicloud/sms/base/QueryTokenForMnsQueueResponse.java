@@ -60,6 +60,7 @@ public class QueryTokenForMnsQueueResponse extends AcsResponse {
 		this.messageTokenDTO = messageTokenDTO;
 	}
 
+	@Override
 	public QueryTokenForMnsQueueResponse getInstance(UnmarshallerContext context) {
 		return QueryTokenForMnsQueueResponseUnmarshaller.unmarshall(this, context);
 	}

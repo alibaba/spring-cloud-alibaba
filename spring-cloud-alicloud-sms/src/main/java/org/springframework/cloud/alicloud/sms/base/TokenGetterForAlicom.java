@@ -50,7 +50,7 @@ public class TokenGetterForAlicom {
 	private String domainForPop;
 	private IAcsClient iAcsClient;
 	private Long ownerId;
-	private final static String productName = "Dybaseapi";
+	private final static String PRODUCT_NAME = "Dybaseapi";
 	private long bufferTime = 1000 * 60 * 2;// 过期时间小于2分钟则重新获取，防止服务器时间误差
 	private final Object lock = new Object();
 	private ConcurrentMap<String, TokenForAlicom> tokenMap = new ConcurrentHashMap<String, TokenForAlicom>();
@@ -68,7 +68,7 @@ public class TokenGetterForAlicom {
 	}
 
 	private void init() throws ClientException {
-		DefaultProfile.addEndpoint(endpointNameForPop, regionIdForPop, productName,
+		DefaultProfile.addEndpoint(endpointNameForPop, regionIdForPop, PRODUCT_NAME,
 				domainForPop);
 		IClientProfile profile = DefaultProfile.getProfile(regionIdForPop, accessKeyId,
 				accessKeySecret);

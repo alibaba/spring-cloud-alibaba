@@ -12,12 +12,12 @@ public class SmsProperties {
 	/**
 	 * Product name.
 	 */
-	public static final String smsProduct = "Dysmsapi";
+	public static final String SMS_PRODUCT = "Dysmsapi";
 
 	/**
 	 * Product domain.
 	 */
-	public static final String smsDomain = "dysmsapi.aliyuncs.com";
+	public static final String SMS_DOMAIN = "dysmsapi.aliyuncs.com";
 
 	/**
 	 * Report queue name.
