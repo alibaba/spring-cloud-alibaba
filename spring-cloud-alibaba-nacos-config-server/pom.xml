@@ -16,10 +16,10 @@
 
     <dependencies>
 
-        <!-- Nacos Config -->
+        <!-- Spring Cloud Alibaba Nacos Config -->
         <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-config</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
         </dependency>
 
         <!-- Spring Cloud -->

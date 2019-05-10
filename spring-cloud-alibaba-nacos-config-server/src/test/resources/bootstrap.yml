@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: nacos-config-server
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+#        namespace: 9dc9af72-c932-4bef-b731-a34ef24a7788
+        encode: UTF-8
+      discovery:
+        server-addr: 127.0.0.1:8848
+#        namespace: 9dc9af72-c932-4bef-b731-a34ef24a7788
+  profiles:
+    active: nacos # active nacos environment

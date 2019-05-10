@@ -18,7 +18,8 @@ package org.springframework.cloud.alibaba.nacos.config.server.bootstrap;
 
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.context.annotation.Bean;
 
@@ -28,8 +29,9 @@ import org.springframework.context.annotation.Bean;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 0.2.0
  */
-@EnableAutoConfiguration
+@EnableDiscoveryClient
 @EnableConfigServer
+@SpringBootApplication
 public class NacosConfigServerBootstrap {
 
     public static void main(String[] args) {
