@@ -77,8 +77,12 @@ public class DubboTransportedMethodMetadata {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DubboTransportedMethodMetadata)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DubboTransportedMethodMetadata)) {
+            return false;
+        }
         DubboTransportedMethodMetadata that = (DubboTransportedMethodMetadata) o;
         return Objects.equals(methodMetadata, that.methodMetadata) &&
                 Objects.equals(attributes, that.attributes);

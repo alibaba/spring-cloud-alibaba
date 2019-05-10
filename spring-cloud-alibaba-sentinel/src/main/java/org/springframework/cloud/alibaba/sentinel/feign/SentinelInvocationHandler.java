@@ -90,7 +90,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 		// only handle by HardCodedTarget
 		if (target instanceof Target.HardCodedTarget) {
 			Target.HardCodedTarget hardCodedTarget = (Target.HardCodedTarget) target;
-			MethodMetadata methodMetadata = SentinelContractHolder.metadataMap
+			MethodMetadata methodMetadata = SentinelContractHolder.METADATA_MAP
 					.get(hardCodedTarget.type().getName()
 							+ Feign.configKey(hardCodedTarget.type(), method));
 			// resource default is HttpMethod:protocol://url
