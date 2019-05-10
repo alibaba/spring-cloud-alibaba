@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>2.1.0.BUILD-SNAPSHOT</version>
+        <version>0.9.1.BUILD-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,4 +13,20 @@
     <artifactId>spring-cloud-dubbo-sample-api</artifactId>
     <name>Spring Cloud Dubbo Sample API</name>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+
+        <!-- Dubbo -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
+
+    </dependencies>
 </project>

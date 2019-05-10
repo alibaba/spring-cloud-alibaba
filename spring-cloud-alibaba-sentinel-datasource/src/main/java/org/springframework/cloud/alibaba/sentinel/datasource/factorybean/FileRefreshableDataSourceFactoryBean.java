@@ -3,10 +3,10 @@ package org.springframework.cloud.alibaba.sentinel.datasource.factorybean;
 import java.io.File;
 import java.nio.charset.Charset;
 
+import org.springframework.beans.factory.FactoryBean;
+
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
-
-import org.springframework.beans.factory.FactoryBean;
 
 /**
  * A {@link FactoryBean} for creating {@link FileRefreshableDataSource} instance.
@@ -23,7 +23,7 @@ public class FileRefreshableDataSourceFactoryBean
     private int bufSize;
     private Converter converter;
 
-    @Override
+	@Override
     public FileRefreshableDataSource getObject() throws Exception {
         return new FileRefreshableDataSource(new File(file), converter,
             recommendRefreshMs, bufSize, Charset.forName(charset));

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>2.1.0.BUILD-SNAPSHOT</version>
+        <version>0.9.1.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -28,10 +28,16 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Spring Cloud Open Feign -->
+        <!-- Dubbo Spring Cloud Starter -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <artifactId>spring-cloud-starter-dubbo</artifactId>
+        </dependency>
+
+        <!-- Spring Cloud Nacos Service Discovery -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
     </dependencies>

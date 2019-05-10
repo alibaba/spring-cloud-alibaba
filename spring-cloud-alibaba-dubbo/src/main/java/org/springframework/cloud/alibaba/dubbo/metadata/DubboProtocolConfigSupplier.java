@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.function.Supplier;
 
 import static org.apache.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Dubbo's {@link ProtocolConfig} {@link Supplier}
@@ -43,23 +44,26 @@ public class DubboProtocolConfigSupplier implements Supplier<ProtocolConfig> {
     public ProtocolConfig get() {
         ProtocolConfig protocolConfig = null;
         Collection<ProtocolConfig> protocols = this.protocols.getIfAvailable();
-        for (ProtocolConfig protocol : protocols) {
-            String protocolName = protocol.getName();
-            if (DEFAULT_PROTOCOL.equals(protocolName)) {
-                protocolConfig = protocol;
-                break;
-            }
-        }
 
-        if (protocolConfig == null) { // If The ProtocolConfig bean named "dubbo" is absent, take first one of them
-            Iterator<ProtocolConfig> iterator = protocols.iterator();
-            protocolConfig = iterator.hasNext() ? iterator.next() : null;
+        if (!isEmpty(protocols)) {
+            for (ProtocolConfig protocol : protocols) {
+                String protocolName = protocol.getName();
+                if (DEFAULT_PROTOCOL.equals(protocolName)) {
+                    protocolConfig = protocol;
+                    break;
+                }
+            }
+
+            if (protocolConfig == null) { // If The ProtocolConfig bean named "dubbo" is absent, take first one of them
+                Iterator<ProtocolConfig> iterator = protocols.iterator();
+                protocolConfig = iterator.hasNext() ? iterator.next() : null;
+            }
         }
 
         if (protocolConfig == null) {
             protocolConfig = new ProtocolConfig();
             protocolConfig.setName(DEFAULT_PROTOCOL);
-            protocolConfig.setPort(20880);
+            protocolConfig.setPort(-1);
         }
 
         return protocolConfig;

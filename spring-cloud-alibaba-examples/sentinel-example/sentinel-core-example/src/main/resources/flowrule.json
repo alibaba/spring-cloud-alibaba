@@ -1,6 +1,6 @@
 [
   {
-    "resource": "resource",
+    "resource": "/hello",
     "controlBehavior": 0,
     "count": 1,
     "grade": 1,
