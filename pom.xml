@@ -14,7 +14,7 @@
 
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>2.1.0.BUILD-SNAPSHOT</version>
+    <version>0.9.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
 
@@ -62,7 +62,7 @@
             <organization>Alibaba</organization>
             <url>https://github.com/mercyblitz</url>
         </developer>
-		<developer>
+        <developer>
             <name>yunzheng</name>
             <email>yunzheng1228@gmail.com</email>
         </developer>
@@ -93,10 +93,10 @@
         <module>spring-cloud-alibaba-dependencies</module>
         <module>spring-cloud-alibaba-sentinel</module>
         <module>spring-cloud-alibaba-sentinel-datasource</module>
-        <module>spring-cloud-alibaba-sentinel-zuul</module>
+        <module>spring-cloud-alibaba-sentinel-gateway</module>
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
-        <module>spring-cloud-alibaba-fescar</module>
+        <module>spring-cloud-alibaba-seata</module>
         <module>spring-cloud-stream-binder-rocketmq</module>
         <module>spring-cloud-alibaba-nacos-config-server</module>
         <module>spring-cloud-alibaba-dubbo</module>

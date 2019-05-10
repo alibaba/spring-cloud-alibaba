@@ -22,6 +22,8 @@ import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
 
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import org.springframework.cloud.alibaba.dubbo.service.DubboMetadataServiceProxy;
+import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -39,6 +41,10 @@ import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
  */
 public class SpringCloudRegistryFactory implements RegistryFactory {
 
+    public static String PROTOCOL = "spring-cloud";
+
+    public static String ADDRESS = "localhost";
+
     private static String SERVICES_LOOKUP_SCHEDULER_THREAD_NAME_PREFIX =
             getProperty("dubbo.services.lookup.scheduler.thread.name.prefix ", "dubbo-services-lookup-");
 
@@ -49,6 +55,10 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
     private DiscoveryClient discoveryClient;
 
     private DubboServiceMetadataRepository dubboServiceMetadataRepository;
+
+    private DubboMetadataServiceProxy dubboMetadataConfigServiceProxy;
+
+    private JSONUtils jsonUtils;
 
     private volatile boolean initialized = false;
 
@@ -63,12 +73,15 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
         }
         this.discoveryClient = applicationContext.getBean(DiscoveryClient.class);
         this.dubboServiceMetadataRepository = applicationContext.getBean(DubboServiceMetadataRepository.class);
+        this.dubboMetadataConfigServiceProxy = applicationContext.getBean(DubboMetadataServiceProxy.class);
+        this.jsonUtils = applicationContext.getBean(JSONUtils.class);
     }
 
     @Override
     public Registry getRegistry(URL url) {
         init();
-        return new SpringCloudRegistry(url, discoveryClient, servicesLookupScheduler, dubboServiceMetadataRepository);
+        return new SpringCloudRegistry(url, discoveryClient, dubboServiceMetadataRepository,
+                dubboMetadataConfigServiceProxy, jsonUtils, servicesLookupScheduler);
     }
 
     public static void setApplicationContext(ConfigurableApplicationContext applicationContext) {

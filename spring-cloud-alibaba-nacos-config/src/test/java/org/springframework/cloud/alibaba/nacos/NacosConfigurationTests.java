@@ -22,10 +22,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-
 import java.util.Map;
-
-import com.alibaba.nacos.client.config.NacosConfigService;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,6 +45,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.alibaba.nacos.client.config.NacosConfigService;
+
 /**
  * @author xiaojing
  */
@@ -59,7 +58,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = NacosConfigurationTests.TestConfig.class, properties = {
 		"spring.application.name=myTestService1", "spring.profiles.active=dev,test",
 		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
-		"spring.cloud.nacos.config.endpoint=test-endpoint",
 		"spring.cloud.nacos.config.namespace=test-namespace",
 		"spring.cloud.nacos.config.encode=utf-8",
 		"spring.cloud.nacos.config.timeout=1000",
@@ -68,14 +66,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 		"spring.cloud.nacos.config.cluster-name=test-cluster",
 		"spring.cloud.nacos.config.file-extension=properties",
 		"spring.cloud.nacos.config.contextPath=test-contextpath",
-
 		"spring.cloud.nacos.config.ext-config[0].data-id=ext-config-common01.properties",
-
 		"spring.cloud.nacos.config.ext-config[1].data-id=ext-config-common02.properties",
 		"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
-
 		"spring.cloud.nacos.config.shared-dataids=common1.properties,common2.properties",
-
 		"spring.cloud.nacos.config.accessKey=test-accessKey",
 		"spring.cloud.nacos.config.secretKey=test-secretKey" }, webEnvironment = NONE)
 public class NacosConfigurationTests {
@@ -83,8 +77,6 @@ public class NacosConfigurationTests {
 	static {
 
 		try {
-			// when(any(ConfigService.class).getConfig(eq("test-name.properties"),
-			// eq("test-group"), any())).thenReturn("user.name=hello");
 
 			Method method = PowerMockito.method(NacosConfigService.class, "getConfig",
 					String.class, String.class, long.class);
@@ -152,7 +144,6 @@ public class NacosConfigurationTests {
 		assertNotNull("NacosConfigProperties was not created", properties);
 
 		checkoutNacosConfigServerAddr();
-		checkoutNacosConfigEndpoint();
 		checkoutNacosConfigNamespace();
 		checkoutNacosConfigClusterName();
 		checkoutNacosConfigAccessKey();
@@ -172,19 +163,12 @@ public class NacosConfigurationTests {
 	private void checkoutNacosConfigServerAddr() {
 		assertEquals("NacosConfigProperties server address is wrong", "127.0.0.1:8848",
 				properties.getServerAddr());
-
 	}
 
-	private void checkoutNacosConfigEndpoint() {
-		assertEquals("NacosConfigProperties endpoint is wrong", "test-endpoint",
-				properties.getEndpoint());
-
-	}
 
 	private void checkoutNacosConfigNamespace() {
 		assertEquals("NacosConfigProperties namespace is wrong", "test-namespace",
 				properties.getNamespace());
-
 	}
 
 	private void checkoutNacosConfigClusterName() {
@@ -234,8 +218,8 @@ public class NacosConfigurationTests {
 
 	private void checkoutDataLoad() {
 
-		Assert.assertEquals(environment.getProperty("user.name"), "dev");
-		Assert.assertEquals(environment.getProperty("user.age"), "12");
+		Assert.assertEquals("dev", environment.getProperty("user.name"));
+		Assert.assertEquals("12", environment.getProperty("user.age"));
 	}
 
 	private void checkoutEndpoint() throws Exception {

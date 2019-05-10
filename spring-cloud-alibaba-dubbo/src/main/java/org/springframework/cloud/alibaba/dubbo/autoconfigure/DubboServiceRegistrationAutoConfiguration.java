@@ -16,7 +16,7 @@
  */
 package org.springframework.cloud.alibaba.dubbo.autoconfigure;
 
-import org.apache.dubbo.common.URL;
+import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 
 import com.ecwid.consul.v1.agent.model.NewService;
@@ -32,10 +32,10 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.alibaba.dubbo.autoconfigure.condition.MissingSpringCloudRegistryConfigPropertyCondition;
 import org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import org.springframework.cloud.alibaba.dubbo.registry.DubboServiceRegistrationEventPublishingAspect;
 import org.springframework.cloud.alibaba.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
-import org.springframework.cloud.alibaba.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.consul.serviceregistry.ConsulRegistration;
@@ -43,20 +43,20 @@ import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaAutoServic
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaServiceRegistry;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_CONFIGURATION_CLASS_NAME;
 import static org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_AUTO_CONFIGURATION_CLASS_NAME;
-import static org.springframework.cloud.alibaba.dubbo.metadata.repository.DubboServiceMetadataRepository.DUBBO_URLS_METADATA_PROPERTY_NAME;
+import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistryFactory.ADDRESS;
+import static org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
@@ -93,13 +93,18 @@ public class DubboServiceRegistrationAutoConfiguration {
     @Autowired
     private DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
-    @Autowired
-    private JSONUtils jsonUtils;
+    @Bean
+    @Conditional(value = {
+            MissingSpringCloudRegistryConfigPropertyCondition.class
+    })
+    public RegistryConfig defaultSpringCloudRegistryConfig() {
+        return new RegistryConfig(ADDRESS, PROTOCOL);
+    }
 
     @EventListener(ServiceInstancePreRegisteredEvent.class)
     public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {
         Registration registration = event.getSource();
-        attachURLsIntoMetadata(registration);
+        attachDubboMetadataServiceMetadata(registration);
     }
 
     @Configuration
@@ -115,7 +120,7 @@ public class DubboServiceRegistrationAutoConfiguration {
             Registration registration = event.getSource();
             EurekaRegistration eurekaRegistration = EurekaRegistration.class.cast(registration);
             InstanceInfo instanceInfo = eurekaRegistration.getApplicationInfoManager().getInfo();
-            attachURLsIntoMetadata(instanceInfo.getMetadata());
+            attachDubboMetadataServiceMetadata(instanceInfo.getMetadata());
         }
 
         /**
@@ -155,39 +160,30 @@ public class DubboServiceRegistrationAutoConfiguration {
 
         private void attachURLsIntoMetadata(ConsulRegistration consulRegistration) {
             NewService newService = consulRegistration.getService();
-            String dubboURLsJson = getDubboURLsJSON();
-            if (StringUtils.hasText(dubboURLsJson)) {
+            Map<String, String> serviceMetadata = dubboServiceMetadataRepository.getDubboMetadataServiceMetadata();
+            if (!isEmpty(serviceMetadata)) {
                 List<String> tags = newService.getTags();
-                tags.add(DUBBO_URLS_METADATA_PROPERTY_NAME + "=" + dubboURLsJson);
+                for (Map.Entry<String, String> entry : serviceMetadata.entrySet()) {
+                    tags.add(entry.getKey() + "=" + entry.getValue());
+                }
             }
         }
     }
 
-    private void attachURLsIntoMetadata(Registration registration) {
+    private void attachDubboMetadataServiceMetadata(Registration registration) {
         if (registration == null) {
             return;
         }
         synchronized (registration) {
             Map<String, String> metadata = registration.getMetadata();
-            attachURLsIntoMetadata(metadata);
+            attachDubboMetadataServiceMetadata(metadata);
         }
     }
 
-    private void attachURLsIntoMetadata(Map<String, String> metadata) {
-        String dubboURLsJson = getDubboURLsJSON();
-        if (StringUtils.hasText(dubboURLsJson)) {
-            metadata.put(DUBBO_URLS_METADATA_PROPERTY_NAME, dubboURLsJson);
+    private void attachDubboMetadataServiceMetadata(Map<String, String> metadata) {
+        Map<String, String> serviceMetadata = dubboServiceMetadataRepository.getDubboMetadataServiceMetadata();
+        if (!isEmpty(serviceMetadata)) {
+            metadata.putAll(serviceMetadata);
         }
-    }
-
-    private String getDubboURLsJSON() {
-        Collection<URL> urls = dubboServiceMetadataRepository.getRegisteredUrls();
-        if (CollectionUtils.isEmpty(urls)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("There is no registered URL to attach into metadata.");
-            }
-            return null;
-        }
-        return jsonUtils.toJSON(urls.stream().map(URL::toFullString).collect(Collectors.toList()));
     }
 }
