@@ -407,7 +407,6 @@ public class NacosDiscoveryProperties {
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
-		properties.put(IS_USE_ENDPOINT_PARSING_RULE, "true");
 
 		try {
 			namingService = NacosFactory.createNamingService(properties);
