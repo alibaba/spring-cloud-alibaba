@@ -31,7 +31,7 @@
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
         <dubbo.version>2.7.1</dubbo.version>
         <dubbo-spring-boot.version>2.7.1</dubbo-spring-boot.version>
-        <dubbo-registry-nacos.version>0.0.2</dubbo-registry-nacos.version>
+        <dubbo-registry-nacos.version>2.7.1</dubbo-registry-nacos.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8.6</aliyun.sdk.mns>
         <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
@@ -243,7 +243,7 @@
 
             <!-- Dubbo Nacos registry dependency -->
             <dependency>
-                <groupId>com.alibaba</groupId>
+                <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-nacos</artifactId>
                 <version>${dubbo-registry-nacos.version}</version>
             </dependency>
