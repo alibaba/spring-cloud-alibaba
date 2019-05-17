@@ -2,13 +2,14 @@ package org.springframework.cloud.alibaba.cloud.examples;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.alibaba.cloud.examples.ConsumerApplication.EchoService;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author xiaojing
@@ -27,6 +28,9 @@ public class TestController {
 
 	@Autowired
 	private DiscoveryClient discoveryClient;
+
+	@Autowired
+	private LoadBalancerClient loadBalancerClient;
 
 	// @PostConstruct
 	// public void init() {
@@ -84,8 +88,16 @@ public class TestController {
 		return discoveryClient.getInstances(service);
 	}
 
+	@RequestMapping(value = "/service-lb/{service}", method = RequestMethod.GET)
+	public Map<String, String> restServiceMetadata(@PathVariable String service) {
+		ServiceInstance choose = loadBalancerClient.choose(service);
+		return choose == null ? Collections.emptyMap()
+				: loadBalancerClient.choose(service).getMetadata();
+	}
+
 	@RequestMapping(value = "/services", method = RequestMethod.GET)
 	public Object services() {
 		return discoveryClient.getServices();
 	}
+
 }
