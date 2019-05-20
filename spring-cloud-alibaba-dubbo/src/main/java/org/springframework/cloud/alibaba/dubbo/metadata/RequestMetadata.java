@@ -235,8 +235,12 @@ public class RequestMetadata {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RequestMetadata)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof RequestMetadata)) {
+            return false;
+        }
         RequestMetadata that = (RequestMetadata) o;
         return Objects.equals(method, that.method) &&
                 Objects.equals(path, that.path) &&

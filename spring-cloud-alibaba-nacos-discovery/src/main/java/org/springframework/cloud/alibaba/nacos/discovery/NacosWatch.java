@@ -118,57 +118,10 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 	}
 
 	public void nacosServicesWatch() {
-		try {
 
-			boolean changed = false;
-			NamingService namingService = properties.namingServiceInstance();
+		// nacos doesn't support watch now , publish an event every 30 seconds.
+		this.publisher.publishEvent(
+				new HeartbeatEvent(this, nacosWatchIndex.getAndIncrement()));
 
-			ListView<String> listView = properties.namingServiceInstance()
-					.getServicesOfServer(1, Integer.MAX_VALUE);
-
-			List<String> serviceList = listView.getData();
-
-			// if there are new services found, publish event
-			Set<String> currentServices = new HashSet<>(serviceList);
-			currentServices.removeAll(cacheServices);
-			if (currentServices.size() > 0) {
-				changed = true;
-			}
-
-			// if some services disappear, publish event
-			if (cacheServices.removeAll(new HashSet<>(serviceList))
-					&& cacheServices.size() > 0) {
-				changed = true;
-
-				for (String serviceName : cacheServices) {
-					namingService.unsubscribe(serviceName,
-							subscribeListeners.get(serviceName));
-					subscribeListeners.remove(serviceName);
-				}
-			}
-
-			cacheServices = new HashSet<>(serviceList);
-
-			// subscribe services's node change, publish event if nodes changed
-			for (String serviceName : cacheServices) {
-				if (!subscribeListeners.containsKey(serviceName)) {
-					EventListener eventListener = event -> NacosWatch.this.publisher
-							.publishEvent(new HeartbeatEvent(NacosWatch.this,
-									nacosWatchIndex.getAndIncrement()));
-					subscribeListeners.put(serviceName, eventListener);
-					namingService.subscribe(serviceName, eventListener);
-
-				}
-			}
-
-			if (changed) {
-				this.publisher.publishEvent(
-						new HeartbeatEvent(this, nacosWatchIndex.getAndIncrement()));
-			}
-
-		}
-		catch (Exception e) {
-			log.error("Error watching Nacos Service change", e);
-		}
 	}
 }
