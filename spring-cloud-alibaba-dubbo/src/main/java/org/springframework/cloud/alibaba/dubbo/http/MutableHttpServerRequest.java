@@ -73,6 +73,7 @@ public class MutableHttpServerRequest implements HttpServerRequest {
     }
 
     // Override method since Spring Framework 5.0
+    @Override
     public String getMethodValue() {
         return httpMethod.name();
     }
