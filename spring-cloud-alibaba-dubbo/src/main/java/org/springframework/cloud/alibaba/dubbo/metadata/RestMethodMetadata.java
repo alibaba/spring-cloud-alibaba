@@ -183,8 +183,12 @@ public class RestMethodMetadata {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RestMethodMetadata)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof RestMethodMetadata)) {
+            return false;
+        }
         RestMethodMetadata that = (RestMethodMetadata) o;
         return queryMapEncoded == that.queryMapEncoded &&
                 Objects.equals(method, that.method) &&

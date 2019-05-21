@@ -64,7 +64,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
     protected static final String DUBBO_METADATA_SERVICE_CLASS_NAME = DubboMetadataService.class.getName();
 
-    private static final Set<String> schedulerTasks = new HashSet<>();
+    private static final Set<String> SCHEDULER_TASKS = new HashSet<>();
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -164,7 +164,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
     private void submitSchedulerTaskIfAbsent(URL url, NotifyListener listener) {
         String taskId = url.toIdentityString();
-        if (schedulerTasks.add(taskId)) {
+        if (SCHEDULER_TASKS.add(taskId)) {
             schedule(() -> doSubscribeDubboServiceURLs(url, listener));
         }
     }

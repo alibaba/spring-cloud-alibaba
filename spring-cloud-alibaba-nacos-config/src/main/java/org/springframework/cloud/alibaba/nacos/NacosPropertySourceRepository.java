@@ -28,25 +28,25 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class NacosPropertySourceRepository {
 
-	private final static ConcurrentHashMap<String, NacosPropertySource> nacosPropertySourceRepository = new ConcurrentHashMap<>();
+	private final static ConcurrentHashMap<String, NacosPropertySource> NACOS_PROPERTY_SOURCE_REPOSITORY = new ConcurrentHashMap<>();
 
 	/**
 	 * @return all nacos properties from application context
 	 */
 	public static List<NacosPropertySource> getAll() {
 		List<NacosPropertySource> result = new ArrayList<>();
-		result.addAll(nacosPropertySourceRepository.values());
+		result.addAll(NACOS_PROPERTY_SOURCE_REPOSITORY.values());
 		return result;
 	}
 
 	public static void collectNacosPropertySources(
 			NacosPropertySource nacosPropertySource) {
-		nacosPropertySourceRepository.putIfAbsent(nacosPropertySource.getDataId(),
+		NACOS_PROPERTY_SOURCE_REPOSITORY.putIfAbsent(nacosPropertySource.getDataId(),
 				nacosPropertySource);
 	}
 
 	public static NacosPropertySource getNacosPropertySource(String dataId) {
 
-		return nacosPropertySourceRepository.get(dataId);
+		return NACOS_PROPERTY_SOURCE_REPOSITORY.get(dataId);
 	}
 }
