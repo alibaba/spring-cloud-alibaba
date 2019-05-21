@@ -110,6 +110,7 @@ public class DubboGenericServiceFactory {
         dataBinder.registerCustomEditor(String.class, "listener", new StringTrimmerEditor(true));
         dataBinder.registerCustomEditor(Map.class, "parameters", new PropertyEditorSupport() {
 
+            @Override
             public void setAsText(String text) throws java.lang.IllegalArgumentException {
                 // Trim all whitespace
                 String content = StringUtils.trimAllWhitespace(text);
