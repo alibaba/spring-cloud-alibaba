@@ -15,7 +15,6 @@
  */
 package org.springframework.cloud.alicloud.sms.base;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -159,9 +158,9 @@ public class DefaultAlicomMessagePuller {
 					if (!polling) {
 						popMsg = queue.popMessage();
 						if (debugLogOpen) {
-							ThreadLocal<DateFormat> format = new ThreadLocal<DateFormat>(){
+							ThreadLocal<SimpleDateFormat> format = new ThreadLocal<SimpleDateFormat>(){
 								@Override
-								protected DateFormat initialValue() {
+								protected SimpleDateFormat initialValue() {
 									return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								}
 							};
