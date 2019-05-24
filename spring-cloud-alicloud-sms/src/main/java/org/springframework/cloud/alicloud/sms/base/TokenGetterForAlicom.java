@@ -77,7 +77,7 @@ public class TokenGetterForAlicom {
 	}
 
 	private TokenForAlicom getTokenFromRemote(String messageType)
-			throws ServerException, ClientException, ParseException {
+			throws ClientException, ParseException {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		QueryTokenForMnsQueueRequest request = new QueryTokenForMnsQueueRequest();
@@ -109,7 +109,7 @@ public class TokenGetterForAlicom {
 
 	public TokenForAlicom getTokenByMessageType(String messageType, String queueName,
 			String mnsAccountEndpoint)
-			throws ServerException, ClientException, ParseException {
+			throws ClientException, ParseException {
 		TokenForAlicom token = tokenMap.get(messageType);
 		Long now = System.currentTimeMillis();
 		if (token == null || (token.getExpireTime() - now) < bufferTime) {// 过期时间小于2分钟则重新获取，防止服务器时间误差
