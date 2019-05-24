@@ -78,8 +78,13 @@ public class TokenGetterForAlicom {
 
 	private TokenForAlicom getTokenFromRemote(String messageType)
 			throws ClientException, ParseException {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+		ThreadLocal<SimpleDateFormat> df = new ThreadLocal<SimpleDateFormat>(){
+			@Override
+			protected SimpleDateFormat initialValue() {
+				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			}
+		};
+		df.get().setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		QueryTokenForMnsQueueRequest request = new QueryTokenForMnsQueueRequest();
 		request.setAcceptFormat(FormatType.JSON);
 		request.setMessageType(messageType);
@@ -94,7 +99,7 @@ public class TokenGetterForAlicom {
 			TokenForAlicom token = new TokenForAlicom();
 			String timeStr = dto.getExpireTime();
 			token.setMessageType(messageType);
-			token.setExpireTime(df.parse(timeStr).getTime());
+			token.setExpireTime(df.get().parse(timeStr).getTime());
 			token.setToken(dto.getSecurityToken());
 			token.setTempAccessKeyId(dto.getAccessKeyId());
 			token.setTempAccessKeySecret(dto.getAccessKeySecret());
