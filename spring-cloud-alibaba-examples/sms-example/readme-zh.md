@@ -306,7 +306,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，SMS Starter 也�
 
 Spring Boot1.x 可以通过访问 http://127.0.0.1:18084/sms-info 来查看 SMS Endpoint 的信息。
 
-Spring Boot2.x 可以通过访问 http://127.0.0.1:18084/acutator/sms-info 来访问。
+Spring Boot2.x 可以通过访问 http://127.0.0.1:18084/actuator/sms-info 来访问。
 
 Endpoint 内部会显示最近 20 条单个短信发送的记录和批量短信发送的记录，以及当前短信消息的配置信息(包括是**SmsReport** 还是 **SmsUp**，**队列名称**，以及对应的 **MessageListener** )。
 
