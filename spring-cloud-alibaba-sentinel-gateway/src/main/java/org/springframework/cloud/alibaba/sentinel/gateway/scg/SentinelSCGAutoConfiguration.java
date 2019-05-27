@@ -111,7 +111,8 @@ public class SentinelSCGAutoConfiguration {
 							Throwable t) {
 						return ServerResponse
 								.status(fallbackProperties.getResponseStatus())
-								.contentType(MediaType.APPLICATION_JSON_UTF8)
+								.contentType(MediaType
+										.valueOf(fallbackProperties.getContentType()))
 								.body(fromObject(fallbackProperties.getResponseBody()));
 					}
 				});
