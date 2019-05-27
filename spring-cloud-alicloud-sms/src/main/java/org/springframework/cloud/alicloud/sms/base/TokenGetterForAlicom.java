@@ -77,14 +77,9 @@ public class TokenGetterForAlicom {
 	}
 
 	private TokenForAlicom getTokenFromRemote(String messageType)
-			throws ClientException, ParseException {
-		ThreadLocal<SimpleDateFormat> df = new ThreadLocal<SimpleDateFormat>(){
-			@Override
-			protected SimpleDateFormat initialValue() {
-				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			}
-		};
-		df.get().setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+			throws ServerException, ClientException, ParseException {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		QueryTokenForMnsQueueRequest request = new QueryTokenForMnsQueueRequest();
 		request.setAcceptFormat(FormatType.JSON);
 		request.setMessageType(messageType);
@@ -99,7 +94,7 @@ public class TokenGetterForAlicom {
 			TokenForAlicom token = new TokenForAlicom();
 			String timeStr = dto.getExpireTime();
 			token.setMessageType(messageType);
-			token.setExpireTime(df.get().parse(timeStr).getTime());
+			token.setExpireTime(df.parse(timeStr).getTime());
 			token.setToken(dto.getSecurityToken());
 			token.setTempAccessKeyId(dto.getAccessKeyId());
 			token.setTempAccessKeySecret(dto.getAccessKeySecret());
@@ -114,7 +109,7 @@ public class TokenGetterForAlicom {
 
 	public TokenForAlicom getTokenByMessageType(String messageType, String queueName,
 			String mnsAccountEndpoint)
-			throws ClientException, ParseException {
+			throws ServerException, ClientException, ParseException {
 		TokenForAlicom token = tokenMap.get(messageType);
 		Long now = System.currentTimeMillis();
 		if (token == null || (token.getExpireTime() - now) < bufferTime) {// 过期时间小于2分钟则重新获取，防止服务器时间误差

@@ -30,7 +30,7 @@ public class AcmRefreshHistory {
 
 	private LinkedList<Record> records = new LinkedList<>();
 
-	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>(){
+	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
 		@Override
 		protected DateFormat initialValue() {
 			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
