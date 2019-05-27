@@ -41,7 +41,12 @@ public class NacosConfigEndpoint {
 
 	private final NacosRefreshHistory refreshHistory;
 
-	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		}
+	};
 
 	public NacosConfigEndpoint(NacosConfigProperties properties,
 			NacosRefreshHistory refreshHistory) {
@@ -60,7 +65,7 @@ public class NacosConfigEndpoint {
 		for (NacosPropertySource ps : all) {
 			Map<String, Object> source = new HashMap<>(16);
 			source.put("dataId", ps.getDataId());
-			source.put("lastSynced", dateFormat.format(ps.getTimestamp()));
+			source.put("lastSynced", dateFormat.get().format(ps.getTimestamp()));
 			sources.add(source);
 		}
 		result.put("Sources", sources);

@@ -44,7 +44,12 @@ public class AcmEndpoint {
 
 	private final AcmPropertySourceRepository propertySourceRepository;
 
-	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		}
+	};
 
 	public AcmEndpoint(AcmProperties properties, AcmRefreshHistory refreshHistory,
 			AcmPropertySourceRepository propertySourceRepository) {
@@ -65,7 +70,7 @@ public class AcmEndpoint {
 		for (AcmPropertySource ps : all) {
 			Map<String, Object> source = new HashMap<>();
 			source.put("dataId", ps.getDataId());
-			source.put("lastSynced", dateFormat.format(ps.getTimestamp()));
+			source.put("lastSynced", dateFormat.get().format(ps.getTimestamp()));
 			sources.add(source);
 		}
 		runtime.put("sources", sources);
