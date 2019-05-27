@@ -147,7 +147,7 @@ public class SentinelSCGAutoConfiguration {
 	@Bean
 	@Order(-1)
 	@ConditionalOnMissingBean
-	public GlobalFilter sentinelGatewayFilter() {
+	public SentinelGatewayFilter sentinelGatewayFilter() {
 		logger.info("[Sentinel SpringCloudGateway] register SentinelGatewayFilter");
 		return new SentinelGatewayFilter();
 	}
