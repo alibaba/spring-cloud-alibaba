@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.alibaba.sentinel.gateway.ConfigConstants;
@@ -38,7 +39,6 @@ import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulPostFil
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulPreFilter;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 
-import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.http.ZuulServlet;
 
 /**
@@ -70,21 +70,24 @@ public class SentinelZuulAutoConfiguration {
 	}
 
 	@Bean
-	public ZuulFilter sentinelZuulPreFilter() {
+	@ConditionalOnMissingBean
+	public SentinelZuulPreFilter sentinelZuulPreFilter() {
 		logger.info("[Sentinel Zuul] register SentinelZuulPreFilter {}",
 				zuulProperties.getOrder().getPre());
 		return new SentinelZuulPreFilter(zuulProperties.getOrder().getPre());
 	}
 
 	@Bean
-	public ZuulFilter sentinelZuulPostFilter() {
+	@ConditionalOnMissingBean
+	public SentinelZuulPostFilter sentinelZuulPostFilter() {
 		logger.info("[Sentinel Zuul] register SentinelZuulPostFilter {}",
 				zuulProperties.getOrder().getPost());
 		return new SentinelZuulPostFilter(zuulProperties.getOrder().getPost());
 	}
 
 	@Bean
-	public ZuulFilter sentinelZuulErrorFilter() {
+	@ConditionalOnMissingBean
+	public SentinelZuulErrorFilter sentinelZuulErrorFilter() {
 		logger.info("[Sentinel Zuul] register SentinelZuulErrorFilter {}",
 				zuulProperties.getOrder().getError());
 		return new SentinelZuulErrorFilter(zuulProperties.getOrder().getError());

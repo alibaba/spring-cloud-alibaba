@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.alibaba.sentinel.gateway.ConfigConstants;
@@ -134,6 +135,7 @@ public class SentinelSCGAutoConfiguration {
 
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
+	@ConditionalOnMissingBean
 	public SentinelGatewayBlockExceptionHandler sentinelGatewayBlockExceptionHandler() {
 		// Register the block exception handler for Spring Cloud Gateway.
 		logger.info(
@@ -144,6 +146,7 @@ public class SentinelSCGAutoConfiguration {
 
 	@Bean
 	@Order(-1)
+	@ConditionalOnMissingBean
 	public GlobalFilter sentinelGatewayFilter() {
 		logger.info("[Sentinel SpringCloudGateway] register SentinelGatewayFilter");
 		return new SentinelGatewayFilter();
