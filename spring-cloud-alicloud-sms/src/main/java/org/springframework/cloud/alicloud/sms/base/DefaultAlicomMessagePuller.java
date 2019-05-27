@@ -158,15 +158,11 @@ public class DefaultAlicomMessagePuller {
 					if (!polling) {
 						popMsg = queue.popMessage();
 						if (debugLogOpen) {
-							ThreadLocal<SimpleDateFormat> format = new ThreadLocal<SimpleDateFormat>(){
-								@Override
-								protected SimpleDateFormat initialValue() {
-									return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-								}
-							};
+							SimpleDateFormat format = new SimpleDateFormat(
+									"yyyy-MM-dd HH:mm:ss");
 							log.info("PullMessageTask_popMessage:"
 									+ Thread.currentThread().getName() + "-popDone at "
-									+ "," + format.get().format(new Date()) + " msgSize="
+									+ "," + format.format(new Date()) + " msgSize="
 									+ (popMsg == null ? 0 : popMsg.getMessageId()));
 						}
 						if (popMsg == null) {

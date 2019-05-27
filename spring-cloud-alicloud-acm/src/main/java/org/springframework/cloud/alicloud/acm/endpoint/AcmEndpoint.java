@@ -44,7 +44,7 @@ public class AcmEndpoint {
 
 	private final AcmPropertySourceRepository propertySourceRepository;
 
-	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>(){
+	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
 		@Override
 		protected DateFormat initialValue() {
 			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
