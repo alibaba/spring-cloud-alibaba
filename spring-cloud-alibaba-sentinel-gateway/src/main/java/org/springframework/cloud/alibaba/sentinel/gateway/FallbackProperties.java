@@ -17,6 +17,7 @@
 package org.springframework.cloud.alibaba.sentinel.gateway;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -40,6 +41,10 @@ public class FallbackProperties {
 	 * Response Status for `response` mode.
 	 */
 	private Integer responseStatus = HttpStatus.TOO_MANY_REQUESTS.value();
+	/**
+	 * Content-Type for `response` mode.
+	 */
+	private String contentType = MediaType.APPLICATION_JSON_UTF8.toString();
 
 	public String getMode() {
 		return mode;
@@ -77,4 +82,12 @@ public class FallbackProperties {
 		return this;
 	}
 
+	public String getContentType() {
+		return contentType;
+	}
+
+	public FallbackProperties setContentType(String contentType) {
+		this.contentType = contentType;
+		return this;
+	}
 }
