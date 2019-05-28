@@ -33,5 +33,9 @@ spring:
         dashboard: localhost:8080
       filter:
         enabled: true
+      scg.fallback:
+          mode: response
+          response-status: 444
+          response-body: 1234
 
 management.endpoints.web.exposure.include: "*"
