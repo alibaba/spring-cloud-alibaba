@@ -27,10 +27,15 @@ public class NacosRefreshHistory {
 
 	private LinkedList<Record> records = new LinkedList<>();
 
-	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		}
+	};
 
 	public void add(String dataId, String md5) {
-		records.addFirst(new Record(dateFormat.format(new Date()), dataId, md5));
+		records.addFirst(new Record(dateFormat.get().format(new Date()), dataId, md5));
 		if (records.size() > MAX_SIZE) {
 			records.removeLast();
 		}

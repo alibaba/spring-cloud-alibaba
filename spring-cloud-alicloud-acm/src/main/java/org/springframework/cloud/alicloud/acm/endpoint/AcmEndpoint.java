@@ -16,19 +16,19 @@
 
 package org.springframework.cloud.alicloud.acm.endpoint;
 
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-import org.springframework.cloud.alicloud.acm.AcmPropertySourceRepository;
-import org.springframework.cloud.alicloud.acm.bootstrap.AcmPropertySource;
-import org.springframework.cloud.alicloud.acm.refresh.AcmRefreshHistory;
-import org.springframework.cloud.alicloud.context.acm.AcmProperties;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.cloud.alicloud.acm.AcmPropertySourceRepository;
+import org.springframework.cloud.alicloud.acm.bootstrap.AcmPropertySource;
+import org.springframework.cloud.alicloud.acm.refresh.AcmRefreshHistory;
+import org.springframework.cloud.alicloud.context.acm.AcmProperties;
 
 /**
  * Created on 01/10/2017.
@@ -44,7 +44,12 @@ public class AcmEndpoint {
 
 	private final AcmPropertySourceRepository propertySourceRepository;
 
-	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		}
+	};
 
 	public AcmEndpoint(AcmProperties properties, AcmRefreshHistory refreshHistory,
 			AcmPropertySourceRepository propertySourceRepository) {
@@ -65,7 +70,7 @@ public class AcmEndpoint {
 		for (AcmPropertySource ps : all) {
 			Map<String, Object> source = new HashMap<>();
 			source.put("dataId", ps.getDataId());
-			source.put("lastSynced", dateFormat.format(ps.getTimestamp()));
+			source.put("lastSynced", dateFormat.get().format(ps.getTimestamp()));
 			sources.add(source);
 		}
 		runtime.put("sources", sources);

@@ -33,5 +33,11 @@ spring:
         dashboard: localhost:8080
       filter:
         enabled: true
+      scg.fallback:
+        mode: redirect
+        redirect: http://www.taobao.com
+#        response-status: 444
+#        response-body: 1234
+#        content-type: text/plain
 
 management.endpoints.web.exposure.include: "*"
