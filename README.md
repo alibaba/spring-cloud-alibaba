@@ -61,7 +61,7 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 
 ## How to Use
 
-### Add maven dependency
+### Add maven dependency 
 Version 0.2.1.RELEASE is compatible with the Spring Cloud Finchley. Version 0.1.1.RELEASE is compatible with the Spring Cloud Edgware.
 
 These artifacts are available from Maven Central and Spring Release repository via BOM:
