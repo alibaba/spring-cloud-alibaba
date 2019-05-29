@@ -128,7 +128,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，OSS Starter 也�
 
 Spring Boot1.x 可以通过访问 http://127.0.0.1:18084/oss 来查看 OSS Endpoint 的信息。
 
-Spring Boot2.x 可以通过访问 http://127.0.0.1:18084/acutator/oss 来访问。
+Spring Boot2.x 可以通过访问 http://127.0.0.1:18084/actuator/oss 来访问。
 
 Endpoint 内部会显示所有的 OSSClient 配置信息，以及该 OSSClient 对应的 Bucket 列表。
 
