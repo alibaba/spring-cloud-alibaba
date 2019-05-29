@@ -37,10 +37,10 @@ import java.util.Map;
  *
  * <p>
  * Check the status of Sentinel Dashboard by sending a heartbeat message to it.
- * If no Exception thrown, it's OK.
+ * If return true, it's OK.
  *
  * Check the status of Sentinel DataSource by calling loadConfig method of {@link AbstractDataSource}.
- * If return true, it's OK.
+ * If no Exception thrown, it's OK.
  *
  * If Dashboard and DataSource are both OK, the health status is UP.
  *</p>
@@ -82,7 +82,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
         boolean dashboardUp = true;
         String consoleServer = TransportConfig.getConsoleServer();
         if (StringUtils.isEmpty(consoleServer)) {
-            // If Dashboard isn't configured, mark the status of Dashboard with UNKNOWN and the dashboardUp is still true
+            // If Dashboard isn't configured, it's OK and mark the status of Dashboard with UNKNOWN.
             detailMap.put("dashboard", new Status(Status.UNKNOWN.getCode(), "dashboard isn't configured"));
         } else {
             // If Dashboard is configured, send a heartbeat message to it and check the result
@@ -103,6 +103,11 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
         detailMap.put("dataSource", dataSourceDetailMap);
 
         // Get all DataSources and each call loadConfig to check if it's OK
+        // If no Exception thrown, it's OK
+        // Note:
+        // Even if the dynamic config center is down, the loadConfig() might return successfully
+        // e.g. for Nacos client, it might retrieve from the local cache)
+        // But in most circumstances it's okay
         Map<String, AbstractDataSource> dataSourceMap = beanFactory.getBeansOfType(AbstractDataSource.class);
         for (Map.Entry<String, AbstractDataSource> dataSourceMapEntry : dataSourceMap.entrySet()) {
             String dataSourceBeanName = dataSourceMapEntry.getKey();
