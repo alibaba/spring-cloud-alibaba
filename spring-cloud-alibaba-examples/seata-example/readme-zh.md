@@ -19,14 +19,14 @@
 
 1. 创建 示例中 业务所需要的数据库表
 
-1. 启动 Fescar Server
+1. 启动 Seata Server
 
 
 ### 配置数据库
 
 首先，你需要有一个支持 InnoDB 引擎的 MySQL 数据库。
 
-**注意**： 实际上，Fescar 支持不同的应用使用完全不相干的数据库，但是这里为了简单地演示一个原理，所以我们选择了只使用一个数据库。
+**注意**： 实际上，Seata 支持不同的应用使用完全不相干的数据库，但是这里为了简单地演示一个原理，所以我们选择了只使用一个数据库。
 
 将 `account-server`、`order-service`、`storage-service` 这三个应用中的 resources 目录下的 `application.properties` 文件中的如下配置修改成你运行环境中的实际配置。
 
@@ -42,7 +42,7 @@ mysql.user.password=your mysql server password
 
 ### 创建 undo_log 表
 
-[Fescar AT 模式]() 需要使用到 undo_log 表。
+[Seata AT 模式]() 需要使用到 undo_log 表。
 
 ``` $sql
 -- 注意此处0.3.0+ 增加唯一索引 ux_undo_log
@@ -93,24 +93,24 @@ CREATE TABLE `account_tbl` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-### 启动 Fescar Server
+### 启动 Seata Server
 
-点击这个页面 [https://github.com/alibaba/fescar/releases](https://github.com/alibaba/fescar/releases)，下载最新版本的 Fescar Server 端.
+点击这个页面 [https://github.com/seata/seata/releases](https://github.com/seata/seata/releases)，下载最新版本的 Seata Server 端.
 
 
 进入解压之后的 bin 目录，执行如下命令来启动
 
 ```$shell
-sh fescar-server.sh $LISTEN_PORT $PATH_FOR_PERSISTENT_DATA
+sh seata-server.sh $LISTEN_PORT $MODE(file or db)
 ```
 
-在这个示例中，采用如下命令来启动 Fescar Server
+在这个示例中，采用如下命令来启动 Seata Server
 
 ```$shell
-sh fescar-server.sh 8091 ~/fescar/data/
+sh seata-server.sh 8091 file
 ```
 
-**注意** 如果你修改了端口号，那么记得需要在各个示例工程中的 `application.conf` 文件中，修改 grouplist 的值。
+**注意** 如果你修改了endpoint且注册中心使用默认file类型，那么记得需要在各个示例工程中的 `file.conf` 文件中，修改 grouplist 的值(当registry.conf 中registry.type 或 config.type 为file 时会读取内部的file节点中的文件名，若type不为file将直接从配置类型的对应元数据的注册配置中心读取数据)，推荐大家使用 nacos 作为配置注册中心。
 
 
 ## 运行示例
@@ -146,12 +146,12 @@ http://127.0.0.1:18081/fescar/rest
 
 ## 对 Spring Cloud 支持点
 
-- 通过 Spring MVC 提供服务的服务提供者，在收到 header 中含有 Fescar 信息的 HTTP 请求时，可以自动还原 Fescar 上下文。
+- 通过 Spring MVC 提供服务的服务提供者，在收到 header 中含有 Seata 信息的 HTTP 请求时，可以自动还原 Seata 上下文。
 
-- 支持服务调用者通过 RestTemplate 调用时，自动传递 Fescar 上下文。
+- 支持服务调用者通过 RestTemplate 调用时，自动传递 Seata 上下文。
 
-- 支持服务调用者通过 FeignClient 调用时，自动传递 Fescar 上下文。
+- 支持服务调用者通过 FeignClient 调用时，自动传递 Seata 上下文。
 
-- 支持 FeignClient 和 Hystrix 同时使用的场景。
+- 支持 SeataClient 和 Hystrix 同时使用的场景。
 
-- 支持 FeignClient 和 Sentinel 同时使用的场景。
+- 支持 SeataClient 和 Sentinel 同时使用的场景。

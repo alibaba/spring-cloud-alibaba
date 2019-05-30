@@ -16,19 +16,19 @@
 
 package org.springframework.cloud.alibaba.nacos.endpoint;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.cloud.alibaba.nacos.NacosConfigProperties;
 import org.springframework.cloud.alibaba.nacos.NacosPropertySourceRepository;
 import org.springframework.cloud.alibaba.nacos.client.NacosPropertySource;
 import org.springframework.cloud.alibaba.nacos.refresh.NacosRefreshHistory;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Endpoint for Nacos, contains config data and refresh history
