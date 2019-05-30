@@ -35,49 +35,44 @@ import org.springframework.util.StringUtils;
  */
 public class SeataFeignClient implements Client {
 
-    private final Client delegate;
-    private final BeanFactory beanFactory;
-    private static final int MAP_SIZE = 16;
+	private final Client delegate;
+	private final BeanFactory beanFactory;
+	private static final int MAP_SIZE = 16;
 
-    SeataFeignClient(BeanFactory beanFactory) {
-        this.beanFactory = beanFactory;
-        this.delegate = new Client.Default(null, null);
-    }
+	SeataFeignClient(BeanFactory beanFactory) {
+		this.beanFactory = beanFactory;
+		this.delegate = new Client.Default(null, null);
+	}
 
-    SeataFeignClient(BeanFactory beanFactory, Client delegate) {
-        this.delegate = delegate;
-        this.beanFactory = beanFactory;
-    }
+	SeataFeignClient(BeanFactory beanFactory, Client delegate) {
+		this.delegate = delegate;
+		this.beanFactory = beanFactory;
+	}
 
-    @Override
-    public Response execute(Request request, Request.Options options) throws IOException {
+	@Override
+	public Response execute(Request request, Request.Options options) throws IOException {
 
-        Request modifiedRequest = getModifyRequest(request);
+		Request modifiedRequest = getModifyRequest(request);
+		return this.delegate.execute(modifiedRequest, options);
+	}
 
-        try {
-            return this.delegate.execute(modifiedRequest, options);
-        } finally {
+	private Request getModifyRequest(Request request) {
 
-        }
-    }
+		String xid = RootContext.getXID();
 
-    private Request getModifyRequest(Request request) {
+		if (StringUtils.isEmpty(xid)) {
+			return request;
+		}
 
-        String xid = RootContext.getXID();
+		Map<String, Collection<String>> headers = new HashMap<>(MAP_SIZE);
+		headers.putAll(request.headers());
 
-        if (StringUtils.isEmpty(xid)) {
-            return request;
-        }
+		List<String> fescarXid = new ArrayList<>();
+		fescarXid.add(xid);
+		headers.put(RootContext.KEY_XID, fescarXid);
 
-        Map<String, Collection<String>> headers = new HashMap<>(MAP_SIZE);
-        headers.putAll(request.headers());
-
-        List<String> fescarXid = new ArrayList<>();
-        fescarXid.add(xid);
-        headers.put(RootContext.KEY_XID, fescarXid);
-
-        return Request.create(request.method(), request.url(), headers, request.body(),
-            request.charset());
-    }
+		return Request.create(request.method(), request.url(), headers, request.body(),
+				request.charset());
+	}
 
 }
