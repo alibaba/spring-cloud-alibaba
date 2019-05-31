@@ -26,7 +26,7 @@ Apache RocketMQ™ is an open source distributed messaging and streaming data pl
 
 **Dubbo**
 
-Apache Dubbo™ (incubating) is a high-performance, Java based open source RPC framework.
+Apache Dubbo™ is a high-performance, Java based open source RPC framework.
 
 **Fescar**
 

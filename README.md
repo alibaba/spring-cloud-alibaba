@@ -35,7 +35,7 @@ For more features, please refer to [Roadmap](https://github.com/spring-cloud-inc
 
 **[RocketMQ](https://rocketmq.apache.org/)**：A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Dubbo](https://github.com/apache/incubator-dubbo)**：A high-performance, Java based open source RPC framework.
+**[Dubbo](https://github.com/apache/dubbo)**：A high-performance, Java based open source RPC framework.
 
 **[Seata](https://github.com/seata/seata)**：A distributed transaction solution with high performance and ease of use for microservices architecture.
 
