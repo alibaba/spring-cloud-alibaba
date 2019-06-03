@@ -17,7 +17,7 @@ package org.springframework.cloud.alibaba.seata.feign.hystrix;
 
 import java.util.concurrent.Callable;
 
-import com.alibaba.fescar.core.context.RootContext;
+import io.seata.core.context.RootContext;
 
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
@@ -37,7 +37,7 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 
 	@Override
 	public <K> Callable<K> wrapCallable(Callable<K> c) {
-		if (c instanceof FescarContextCallable) {
+		if (c instanceof SeataContextCallable) {
 			return c;
 		}
 
@@ -48,19 +48,19 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 		else {
 			wrappedCallable = c;
 		}
-		if (wrappedCallable instanceof FescarContextCallable) {
+		if (wrappedCallable instanceof SeataContextCallable) {
 			return wrappedCallable;
 		}
 
-		return new FescarContextCallable<>(wrappedCallable);
+		return new SeataContextCallable<>(wrappedCallable);
 	}
 
-	private static class FescarContextCallable<K> implements Callable<K> {
+	private static class SeataContextCallable<K> implements Callable<K> {
 
 		private final Callable<K> actual;
 		private final String xid;
 
-		FescarContextCallable(Callable<K> actual) {
+		SeataContextCallable(Callable<K> actual) {
 			this.actual = actual;
 			this.xid = RootContext.getXID();
 		}

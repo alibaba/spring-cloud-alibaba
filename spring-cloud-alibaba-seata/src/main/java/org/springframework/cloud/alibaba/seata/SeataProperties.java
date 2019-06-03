@@ -27,7 +27,7 @@ public class SeataProperties {
 	// todo support config Fescar server information
 
 	/**
-	 * Fescar tx service group.default is ${spring.application.name}-fescar-service-group.
+	 * Seata tx service group.default is ${spring.application.name}-fescar-service-group.
 	 */
 	private String txServiceGroup;
 

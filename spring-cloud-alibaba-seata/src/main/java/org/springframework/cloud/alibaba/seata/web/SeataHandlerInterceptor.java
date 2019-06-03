@@ -19,7 +19,7 @@ package org.springframework.cloud.alibaba.seata.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.fescar.core.context.RootContext;
+import io.seata.core.context.RootContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +30,10 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * @author xiaojing
  *
- * Fescar HandlerInterceptor, Convert Fescar information into
- * @see com.alibaba.fescar.core.context.RootContext from http request's header in
+ * Seata HandlerInterceptor, Convert Seata information into
+ * @see io.seata.core.context.RootContext from http request's header in
  * {@link org.springframework.web.servlet.HandlerInterceptor#preHandle(HttpServletRequest , HttpServletResponse , Object )},
- * And clean up Fescar information after servlet method invocation in
+ * And clean up Seata information after servlet method invocation in
  * {@link org.springframework.web.servlet.HandlerInterceptor#afterCompletion(HttpServletRequest, HttpServletResponse, Object, Exception)}
  */
 public class SeataHandlerInterceptor implements HandlerInterceptor {

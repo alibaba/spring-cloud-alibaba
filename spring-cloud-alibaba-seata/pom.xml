@@ -16,8 +16,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.alibaba.fescar</groupId>
-            <artifactId>fescar-spring</artifactId>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring</artifactId>
         </dependency>
 
         <dependency>
