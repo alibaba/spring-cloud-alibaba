@@ -32,7 +32,7 @@ public class SeataFeignContext extends FeignContext {
 	private final FeignContext delegate;
 
 	SeataFeignContext(SeataFeignObjectWrapper seataFeignObjectWrapper,
-					  FeignContext delegate) {
+			FeignContext delegate) {
 		this.seataFeignObjectWrapper = seataFeignObjectWrapper;
 		this.delegate = delegate;
 	}
