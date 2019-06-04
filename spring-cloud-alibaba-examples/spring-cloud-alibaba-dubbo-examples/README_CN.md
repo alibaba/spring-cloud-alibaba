@@ -157,7 +157,7 @@ spring:
 - `spring.application.name` : Spring 应用名称，用于 Spring Cloud 服务注册和发现。
 > 该值在 Dubbo Spring Cloud 加持下被视作 `dubbo.application.name`，因此，无需再显示地配置 `dubbo.application.name`
 - `spring.main.allow-bean-definition-overriding` : 在 Spring Boot 2.1 以及更高的版本增加该设定，
-因为 Spring Boot 默认调整了 Bean 定义覆盖行为。（推荐一个好的 Dubbo 讨论 [issue #3193](https://github.com/apache/incubator-dubbo/issues/3193#issuecomment-474340165)）
+因为 Spring Boot 默认调整了 Bean 定义覆盖行为。（推荐一个好的 Dubbo 讨论 [issue #3193](https://github.com/apache/dubbo/issues/3193#issuecomment-474340165)）
 - `spring.cloud.nacos.discovery` : Nacos 服务发现与注册配置，其中子属性 server-addr 指定 Nacos 服务器主机和端口
 
 > 以上完整的 YAML 配置文件，请参考 `spring-cloud-dubbo-server-sample` [`bootstrap.yaml`](spring-cloud-dubbo-server-sample/src/main/resources/bootstrap.yaml) 文件
