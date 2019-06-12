@@ -16,6 +16,7 @@
 
 package org.springframework.cloud.stream.binder.rocketmq;
 
+import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import org.springframework.util.StringUtils;
@@ -65,6 +66,14 @@ public class RocketMQBinderUtils {
 		else {
 			result.setEnableMsgTrace(
 					rocketBinderConfigurationProperties.isEnableMsgTrace());
+		}
+		if (!StringUtils.isEmpty(rocketMQProperties.getAccessChannel())) {
+			result.setAccessChannel(
+					AccessChannel.valueOf(rocketMQProperties.getAccessChannel()));
+		}
+		else {
+			result.setAccessChannel(
+					rocketBinderConfigurationProperties.getAccessChannel());
 		}
 		return result;
 	}
