@@ -16,7 +16,6 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.properties;
 
-import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.common.MixAll;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
@@ -53,11 +52,6 @@ public class RocketMQBinderConfigurationProperties {
 	 * trace topic name.
 	 */
 	private String customizedTraceTopic = MixAll.RMQ_SYS_TRACE_TOPIC;
-
-	/**
-	 * Enum type for accessChannel, values: LOCAL, CLOUD.
-	 */
-	private AccessChannel accessChannel = AccessChannel.LOCAL;
 
 	public String getNameServer() {
 		return nameServer;
@@ -97,13 +91,5 @@ public class RocketMQBinderConfigurationProperties {
 
 	public void setCustomizedTraceTopic(String customizedTraceTopic) {
 		this.customizedTraceTopic = customizedTraceTopic;
-	}
-
-	public AccessChannel getAccessChannel() {
-		return accessChannel;
-	}
-
-	public void setAccessChannel(AccessChannel accessChannel) {
-		this.accessChannel = accessChannel;
 	}
 }
