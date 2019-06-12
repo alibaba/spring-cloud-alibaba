@@ -215,11 +215,6 @@ public class RocketMQListenerBindingContainer
 					rocketBinderConfigurationProperties.getCustomizedTraceTopic());
 		}
 
-		if (rocketBinderConfigurationProperties.getAccessChannel() != null) {
-			consumer.setAccessChannel(
-					rocketBinderConfigurationProperties.getAccessChannel());
-		}
-
 		consumer.setNamesrvAddr(nameServer);
 		consumer.setConsumeThreadMax(rocketMQConsumerProperties.getConcurrency());
 		consumer.setConsumeThreadMin(rocketMQConsumerProperties.getConcurrency());

@@ -27,7 +27,7 @@
         <aliyun.sdk.version>4.4.1</aliyun.sdk.version>
         <alicloud.context.version>1.0.5</alicloud.context.version>
         <aliyun.sdk.edas.version>2.44.0</aliyun.sdk.edas.version>
-        <rocketmq.starter.version>2.0.3</rocketmq.starter.version>
+        <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
         <dubbo.version>2.7.1</dubbo.version>
         <dubbo-spring-boot.version>2.7.1</dubbo-spring-boot.version>
