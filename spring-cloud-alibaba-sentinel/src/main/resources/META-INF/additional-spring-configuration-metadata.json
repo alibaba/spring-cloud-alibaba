@@ -88,6 +88,12 @@
       "type": "java.lang.String",
       "defaultValue": "3",
       "description": "sentinel the cold factor."
+    },
+    {
+      "defaultValue": "false",
+      "name": "feign.sentinel.enabled",
+      "description": "If true, an OpenFeign client will be wrapped with a Sentinel circuit breaker.",
+      "type": "java.lang.Boolean"
     }
   ]
 }
