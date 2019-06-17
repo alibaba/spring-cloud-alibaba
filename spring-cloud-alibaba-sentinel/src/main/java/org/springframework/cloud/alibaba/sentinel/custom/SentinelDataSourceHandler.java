@@ -18,11 +18,9 @@ package org.springframework.cloud.alibaba.sentinel.custom;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +33,11 @@ import org.springframework.cloud.alibaba.sentinel.datasource.config.DataSourcePr
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
 import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
 import org.springframework.core.env.Environment;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
-import com.alibaba.csp.sentinel.slots.block.AbstractRule;
 
 /**
  * Sentinel {@link ReadableDataSource} Handler Handle the configurations of
@@ -210,61 +206,8 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 		AbstractDataSource newDataSource = (AbstractDataSource) this.beanFactory
 				.getBean(dataSourceName);
 
-		logAndCheckRuleType(newDataSource, dataSourceName,
-				dataSourceProperties.getRuleType().getClazz());
-
 		// register property in RuleManager
 		dataSourceProperties.postRegister(newDataSource);
-	}
-
-	private void logAndCheckRuleType(AbstractDataSource dataSource, String dataSourceName,
-			Class<? extends AbstractRule> ruleClass) {
-		Object ruleConfig;
-		try {
-			ruleConfig = dataSource.loadConfig();
-		}
-		catch (Exception e) {
-			log.error("[Sentinel Starter] DataSource " + dataSourceName
-					+ " loadConfig error: " + e.getMessage(), e);
-			return;
-		}
-		if (ruleConfig instanceof List || ruleConfig instanceof Set) {
-			Collection convertedRuleList = (Collection) ruleConfig;
-			if (CollectionUtils.isEmpty(convertedRuleList)) {
-				log.warn("[Sentinel Starter] DataSource {} rule list is empty.",
-						dataSourceName);
-				return;
-			}
-			int matchCount = 0;
-			for (Object rule : convertedRuleList) {
-				if (rule.getClass() == ruleClass) {
-					matchCount++;
-				}
-			}
-			if (matchCount == 0) {
-				log.error("[Sentinel Starter] DataSource {} none rules are {} type.",
-						dataSourceName, ruleClass.getSimpleName());
-				throw new IllegalArgumentException("[Sentinel Starter] DataSource "
-						+ dataSourceName + " none rules are " + ruleClass.getSimpleName()
-						+ " type.");
-			}
-			else if (matchCount != convertedRuleList.size()) {
-				log.warn("[Sentinel Starter] DataSource {} all rules are not {} type.",
-						dataSourceName, ruleClass.getSimpleName());
-			}
-			else {
-				log.info("[Sentinel Starter] DataSource {} load {} {}", dataSourceName,
-						convertedRuleList.size(), ruleClass.getSimpleName());
-			}
-		}
-		else {
-			log.error("[Sentinel Starter] DataSource " + dataSourceName
-					+ " rule class is not List<" + ruleClass.getSimpleName()
-					+ ">. Class: " + ruleConfig.getClass());
-			throw new IllegalArgumentException("[Sentinel Starter] DataSource "
-					+ dataSourceName + " rule class is not List<"
-					+ ruleClass.getSimpleName() + ">. Class: " + ruleConfig.getClass());
-		}
 	}
 
 }
