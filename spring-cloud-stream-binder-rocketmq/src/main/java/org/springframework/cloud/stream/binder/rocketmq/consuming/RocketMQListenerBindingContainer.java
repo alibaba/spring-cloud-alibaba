@@ -31,6 +31,7 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.remoting.RPCHook;
 import org.apache.rocketmq.spring.annotation.ConsumeMode;
@@ -206,7 +207,8 @@ public class RocketMQListenerBindingContainer
 					new AllocateMessageQueueAveragely(),
 					rocketBinderConfigurationProperties.isEnableMsgTrace(),
 					rocketBinderConfigurationProperties.getCustomizedTraceTopic());
-			consumer.setInstanceName(RocketMQUtil.getInstanceName(rpcHook, topic));
+			consumer.setInstanceName(RocketMQUtil.getInstanceName(rpcHook,
+					topic + "|" + UtilAll.getPid()));
 			consumer.setVipChannelEnabled(false);
 		}
 		else {
