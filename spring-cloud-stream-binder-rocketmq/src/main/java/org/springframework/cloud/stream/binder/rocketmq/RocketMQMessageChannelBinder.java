@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.remoting.RPCHook;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -126,8 +127,8 @@ public class RocketMQMessageChannelBinder extends
 							mergedProperties.isEnableMsgTrace(),
 							mergedProperties.getCustomizedTraceTopic());
 					producer.setVipChannelEnabled(false);
-					producer.setInstanceName(
-							RocketMQUtil.getInstanceName(rpcHook, destination.getName()));
+					producer.setInstanceName(RocketMQUtil.getInstanceName(rpcHook,
+							destination.getName() + "|" + UtilAll.getPid()));
 				}
 				else {
 					producer = new DefaultMQProducer(producerGroup);
