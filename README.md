@@ -35,7 +35,7 @@ For more features, please refer to [Roadmap](https://github.com/spring-cloud-inc
 
 **[RocketMQ](https://rocketmq.apache.org/)**：A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Dubbo](https://github.com/apache/incubator-dubbo)**：A high-performance, Java based open source RPC framework.
+**[Dubbo](https://github.com/apache/dubbo)**：A high-performance, Java based open source RPC framework.
 
 **[Seata](https://github.com/seata/seata)**：A distributed transaction solution with high performance and ease of use for microservices architecture.
 
@@ -61,7 +61,7 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 
 ## How to Use
 
-### Add maven dependency
+### Add maven dependency 
 Version 0.2.1.RELEASE is compatible with the Spring Cloud Finchley. Version 0.1.1.RELEASE is compatible with the Spring Cloud Edgware.
 
 These artifacts are available from Maven Central and Spring Release repository via BOM:
@@ -71,7 +71,7 @@ These artifacts are available from Maven Central and Spring Release repository v
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.1.RELEASE</version>
+                <version>0.9.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

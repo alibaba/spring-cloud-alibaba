@@ -17,7 +17,13 @@
 package org.springframework.cloud.alibaba.seata.feign;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import io.seata.core.context.RootContext;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 
@@ -26,23 +32,27 @@ import feign.Request;
 import feign.Response;
 import org.springframework.cloud.openfeign.ribbon.CachingSpringLoadBalancerFactory;
 import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
+import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
  */
 public class SeataLoadBalancerFeignClient extends LoadBalancerFeignClient {
 
+	private static final int MAP_SIZE = 16;
+
 	private final BeanFactory beanFactory;
 
 	SeataLoadBalancerFeignClient(Client delegate,
-								 CachingSpringLoadBalancerFactory lbClientFactory,
-								 SpringClientFactory clientFactory, BeanFactory beanFactory) {
+			CachingSpringLoadBalancerFactory lbClientFactory,
+			SpringClientFactory clientFactory, BeanFactory beanFactory) {
 		super(wrap(delegate, beanFactory), lbClientFactory, clientFactory);
 		this.beanFactory = beanFactory;
 	}
 
 	@Override
 	public Response execute(Request request, Request.Options options) throws IOException {
+		Request modifiedRequest = getModifyRequest(request);
 		return super.execute(request, options);
 	}
 
@@ -50,4 +60,22 @@ public class SeataLoadBalancerFeignClient extends LoadBalancerFeignClient {
 		return (Client) new SeataFeignObjectWrapper(beanFactory).wrap(delegate);
 	}
 
+	private Request getModifyRequest(Request request) {
+
+		String xid = RootContext.getXID();
+
+		if (StringUtils.isEmpty(xid)) {
+			return request;
+		}
+
+		Map<String, Collection<String>> headers = new HashMap<>(MAP_SIZE);
+		headers.putAll(request.headers());
+
+		List<String> fescarXid = new ArrayList<>();
+		fescarXid.add(xid);
+		headers.put(RootContext.KEY_XID, fescarXid);
+
+		return Request.create(request.method(), request.url(), headers, request.body(),
+				request.charset());
+	}
 }

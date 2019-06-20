@@ -52,8 +52,12 @@ public class ServiceRestMetadata {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ServiceRestMetadata)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ServiceRestMetadata)) {
+            return false;
+        }
         ServiceRestMetadata that = (ServiceRestMetadata) o;
         return Objects.equals(url, that.url) &&
                 Objects.equals(meta, that.meta);
