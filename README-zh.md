@@ -35,7 +35,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 **[RocketMQ](https://rocketmq.apache.org/)**：一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
 
-**[Dubbo](https://github.com/apache/incubator-dubbo)**：Apache Dubbo™ (incubating) 是一款高性能 Java RPC 框架。
+**[Dubbo](https://github.com/apache/dubbo)**：Apache Dubbo™ 是一款高性能 Java RPC 框架。
 
 **[Seata](https://github.com/seata/seata)**：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
 
@@ -72,7 +72,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.1.RELEASE</version>
+                <version>0.9.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

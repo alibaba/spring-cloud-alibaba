@@ -25,7 +25,7 @@ import feign.MethodMetadata;
 
 /**
  *
- * Using static field {@link SentinelContractHolder#metadataMap} to hold
+ * Using static field {@link SentinelContractHolder#METADATA_MAP} to hold
  * {@link MethodMetadata} data
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -38,7 +38,7 @@ public class SentinelContractHolder implements Contract {
 	 * map key is constructed by ClassFullName + configKey. configKey is constructed by
 	 * {@link feign.Feign#configKey}
 	 */
-	public final static Map<String, MethodMetadata> metadataMap = new HashMap();
+	public final static Map<String, MethodMetadata> METADATA_MAP = new HashMap<>();
 
 	public SentinelContractHolder(Contract delegate) {
 		this.delegate = delegate;
@@ -47,7 +47,7 @@ public class SentinelContractHolder implements Contract {
 	@Override
 	public List<MethodMetadata> parseAndValidatateMetadata(Class<?> targetType) {
 		List<MethodMetadata> metadatas = delegate.parseAndValidatateMetadata(targetType);
-		metadatas.forEach(metadata -> metadataMap
+		metadatas.forEach(metadata -> METADATA_MAP
 				.put(targetType.getName() + metadata.configKey(), metadata));
 		return metadatas;
 	}

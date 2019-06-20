@@ -23,7 +23,7 @@ Apache RocketMQ™ 基于 Java 的高性能、高吞吐量的分布式消息和�
 
 **Dubbo**
 
-Apache Dubbo™ (incubating) 是一款高性能 Java RPC 框架。
+Apache Dubbo™ 是一款高性能 Java RPC 框架。
 
 **Fescar**
 

@@ -65,7 +65,7 @@ public class SeataFeignClientAutoConfiguration {
 	protected static class FeignBeanPostProcessorConfiguration {
 
 		@Bean
-        SeataBeanPostProcessor seataBeanPostProcessor(
+		SeataBeanPostProcessor seataBeanPostProcessor(
 				SeataFeignObjectWrapper seataFeignObjectWrapper) {
 			return new SeataBeanPostProcessor(seataFeignObjectWrapper);
 		}

@@ -1,29 +1,27 @@
 package org.springframework.cloud.alibaba.sentinel.custom;
 
-import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
-import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
-import com.alibaba.csp.sentinel.slots.block.AbstractRule;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
-import org.springframework.cloud.alibaba.sentinel.datasource.config.AbstractDataSourceProperties;
-import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
-import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.cloud.alibaba.sentinel.SentinelProperties;
+import org.springframework.cloud.alibaba.sentinel.datasource.config.AbstractDataSourceProperties;
+import org.springframework.cloud.alibaba.sentinel.datasource.converter.JsonConverter;
+import org.springframework.cloud.alibaba.sentinel.datasource.converter.XmlConverter;
+import org.springframework.core.env.Environment;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 
 /**
  * Sentinel {@link ReadableDataSource} Handler Handle the configurations of
@@ -47,12 +45,16 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 
 	private final DefaultListableBeanFactory beanFactory;
 
-	public SentinelDataSourceHandler(DefaultListableBeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-	}
+	private final SentinelProperties sentinelProperties;
 
-	@Autowired
-	private SentinelProperties sentinelProperties;
+	private final Environment env;
+
+	public SentinelDataSourceHandler(DefaultListableBeanFactory beanFactory,
+			SentinelProperties sentinelProperties, Environment env) {
+		this.beanFactory = beanFactory;
+		this.sentinelProperties = sentinelProperties;
+		this.env = env;
+	}
 
 	@Override
 	public void afterSingletonsInstantiated() {
@@ -68,6 +70,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 						}
 						AbstractDataSourceProperties abstractDataSourceProperties = dataSourceProperties
 								.getValidDataSourceProperties();
+						abstractDataSourceProperties.setEnv(env);
 						abstractDataSourceProperties.preCheck(dataSourceName);
 						registerBean(abstractDataSourceProperties, dataSourceName
 								+ "-sentinel-" + validFields.get(0) + "-datasource");
@@ -181,56 +184,8 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 		AbstractDataSource newDataSource = (AbstractDataSource) this.beanFactory
 				.getBean(dataSourceName);
 
-		logAndCheckRuleType(newDataSource, dataSourceName,
-				dataSourceProperties.getRuleType().getClazz());
-
 		// register property in RuleManager
 		dataSourceProperties.postRegister(newDataSource);
 	}
 
-	private void logAndCheckRuleType(AbstractDataSource dataSource, String dataSourceName,
-			Class<? extends AbstractRule> ruleClass) {
-		Object ruleConfig;
-		try {
-			ruleConfig = dataSource.loadConfig();
-		}
-		catch (Exception e) {
-			log.error("[Sentinel Starter] DataSource " + dataSourceName
-					+ " loadConfig error: " + e.getMessage(), e);
-			return;
-		}
-		if (ruleConfig instanceof List) {
-			List convertedRuleList = (List) ruleConfig;
-			if (CollectionUtils.isEmpty(convertedRuleList)) {
-				log.warn("[Sentinel Starter] DataSource {} rule list is empty.",
-						dataSourceName);
-				return;
-			}
-			if (convertedRuleList.stream()
-					.noneMatch(rule -> rule.getClass() == ruleClass)) {
-				log.error("[Sentinel Starter] DataSource {} none rules are {} type.",
-						dataSourceName, ruleClass.getSimpleName());
-				throw new IllegalArgumentException("[Sentinel Starter] DataSource "
-						+ dataSourceName + " none rules are " + ruleClass.getSimpleName()
-						+ " type.");
-			}
-			else if (!convertedRuleList.stream()
-					.allMatch(rule -> rule.getClass() == ruleClass)) {
-				log.warn("[Sentinel Starter] DataSource {} all rules are not {} type.",
-						dataSourceName, ruleClass.getSimpleName());
-			}
-			else {
-				log.info("[Sentinel Starter] DataSource {} load {} {}", dataSourceName,
-						convertedRuleList.size(), ruleClass.getSimpleName());
-			}
-		}
-		else {
-			log.error("[Sentinel Starter] DataSource " + dataSourceName
-					+ " rule class is not List<" + ruleClass.getSimpleName()
-					+ ">. Class: " + ruleConfig.getClass());
-			throw new IllegalArgumentException("[Sentinel Starter] DataSource "
-					+ dataSourceName + " rule class is not List<"
-					+ ruleClass.getSimpleName() + ">. Class: " + ruleConfig.getClass());
-		}
-	}
 }

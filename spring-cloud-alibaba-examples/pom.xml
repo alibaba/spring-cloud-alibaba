@@ -21,6 +21,9 @@
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-provider-example</module>
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-consumer-example</module>
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
+        <module>sentinel-example/sentinel-webflux-example</module>
+        <module>sentinel-example/sentinel-spring-cloud-gateway-example</module>
+        <module>sentinel-example/sentinel-zuul-example</module>
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
         <module>nacos-example/nacos-gateway-example</module>

@@ -76,6 +76,7 @@ public class QueryTokenForMnsQueueRequest
 
 	}
 
+	@Override
 	public Class<QueryTokenForMnsQueueResponse> getResponseClass() {
 		return QueryTokenForMnsQueueResponse.class;
 	}

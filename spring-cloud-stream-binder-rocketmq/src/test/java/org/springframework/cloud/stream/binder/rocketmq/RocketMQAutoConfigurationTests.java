@@ -34,7 +34,7 @@ public class RocketMQAutoConfigurationTests {
 			.withConfiguration(
 					AutoConfigurations.of(RocketMQBinderAutoConfiguration.class))
 			.withPropertyValues(
-					"spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876",
+					"spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876",
 					"spring.cloud.stream.bindings.output.destination=TopicOrderTest",
 					"spring.cloud.stream.bindings.output.content-type=application/json",
 					"spring.cloud.stream.bindings.input1.destination=TopicOrderTest",
