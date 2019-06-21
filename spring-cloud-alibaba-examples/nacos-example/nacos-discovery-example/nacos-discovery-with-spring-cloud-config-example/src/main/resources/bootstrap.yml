@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: client
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+    config:
+      discovery:
+        enabled: true
