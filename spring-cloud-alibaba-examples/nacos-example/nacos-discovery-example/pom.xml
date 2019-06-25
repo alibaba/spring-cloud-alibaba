@@ -19,5 +19,6 @@
     <modules>
         <module>nacos-discovery-consumer-example</module>
         <module>nacos-discovery-provider-example</module>
+        <module>nacos-discovery-with-spring-cloud-config-example</module>
     </modules>
 </project>
