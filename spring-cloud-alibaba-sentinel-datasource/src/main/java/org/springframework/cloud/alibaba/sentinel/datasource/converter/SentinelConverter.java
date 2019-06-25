@@ -27,8 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.alibaba.sentinel.datasource.RuleType;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
-import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
@@ -72,11 +70,13 @@ public abstract class SentinelConverter<T extends Object>
 		Collection<Object> ruleCollection;
 
 		// hard code
-		if (ruleClass == GatewayFlowRule.class || ruleClass == ApiDefinition.class) {
-			ruleCollection = new HashSet<>();
+		if (ruleClass == FlowRule.class || ruleClass == DegradeRule.class
+				|| ruleClass == SystemRule.class || ruleClass == AuthorityRule.class
+				|| ruleClass == ParamFlowRule.class) {
+			ruleCollection = new ArrayList<>();
 		}
 		else {
-			ruleCollection = new ArrayList<>();
+			ruleCollection = new HashSet<>();
 		}
 
 		if (StringUtils.isEmpty(source)) {

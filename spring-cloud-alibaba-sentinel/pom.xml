@@ -84,6 +84,7 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-api-gateway-adapter-common</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!--spring boot-->
