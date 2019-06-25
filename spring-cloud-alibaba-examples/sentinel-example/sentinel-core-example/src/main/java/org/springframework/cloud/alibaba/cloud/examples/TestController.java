@@ -23,6 +23,12 @@ public class TestController {
 		return "Hello";
 	}
 
+	@RequestMapping(value = "/aa", method = RequestMethod.GET)
+	@SentinelResource("aa")
+	public String aa(int b, int a) {
+		return "Hello test";
+	}
+
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	public String test1() {
 		return "Hello test";
