@@ -38,7 +38,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
             NamingService namingService = this.nacosDiscoveryProperties.namingServiceInstance();
             List<Instance> instances = namingService.selectInstances(name, true);
             if (CollectionUtils.isEmpty(instances)) {
-                log.warn("{}服务当前无任何实例", name);
+                LOGGER.warn("{}服务当前无任何实例", name);
                 return null;
             }
 
