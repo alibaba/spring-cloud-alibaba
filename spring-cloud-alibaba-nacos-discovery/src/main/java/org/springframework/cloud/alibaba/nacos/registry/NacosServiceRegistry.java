@@ -16,6 +16,8 @@
 
 package org.springframework.cloud.alibaba.nacos.registry;
 
+import java.util.List;
+
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
@@ -52,12 +54,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		String serviceId = registration.getServiceId();
 
-		Instance instance = new Instance();
-		instance.setIp(registration.getHost());
-		instance.setPort(registration.getPort());
-		instance.setWeight(nacosDiscoveryProperties.getWeight());
-		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
-		instance.setMetadata(registration.getMetadata());
+		Instance instance = getNacosInstanceFromRegistration(registration);
 
 		try {
 			namingService.registerInstance(serviceId, instance);
@@ -102,13 +99,60 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	@Override
 	public void setStatus(Registration registration, String status) {
-		// nacos doesn't support set status of a particular registration.
+
+		if (!status.equalsIgnoreCase("UP") && !status.equalsIgnoreCase("DOWN")) {
+			log.warn("can't support status {},please choose UP or DOWN", status);
+			return;
+		}
+
+		String serviceId = registration.getServiceId();
+
+		Instance instance = getNacosInstanceFromRegistration(registration);
+
+		if (status.equalsIgnoreCase("DOWN")) {
+			instance.setEnabled(false);
+		}
+		else {
+			instance.setEnabled(true);
+		}
+
+		try {
+			nacosDiscoveryProperties.namingMaintainServiceInstance()
+					.updateInstance(serviceId, instance);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("update nacos instance status fail", e);
+		}
+
 	}
 
 	@Override
-	public <T> T getStatus(Registration registration) {
-		// nacos doesn't support query status of a particular registration.
+	public Object getStatus(Registration registration) {
+
+		String serviceName = registration.getServiceId();
+		try {
+			List<Instance> instances = nacosDiscoveryProperties.namingServiceInstance()
+					.getAllInstances(serviceName);
+			for (Instance instance : instances) {
+				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
+						&& instance.getPort() == nacosDiscoveryProperties.getPort())
+					return instance.isEnabled() ? "UP" : "DOWN";
+			}
+		}
+		catch (Exception e) {
+			log.error("get all instance of {} error,", serviceName, e);
+		}
 		return null;
+	}
+
+	private Instance getNacosInstanceFromRegistration(Registration registration) {
+		Instance instance = new Instance();
+		instance.setIp(registration.getHost());
+		instance.setPort(registration.getPort());
+		instance.setWeight(nacosDiscoveryProperties.getWeight());
+		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
+		instance.setMetadata(registration.getMetadata());
+		return instance;
 	}
 
 }
