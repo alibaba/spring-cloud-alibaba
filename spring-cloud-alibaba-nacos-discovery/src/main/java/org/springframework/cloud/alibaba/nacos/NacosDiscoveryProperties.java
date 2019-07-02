@@ -17,8 +17,11 @@
 package org.springframework.cloud.alibaba.nacos;
 
 import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.naming.NamingMaintainFactory;
+import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
+import com.alibaba.nacos.client.naming.NacosNamingMaintainService;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,6 +149,8 @@ public class NacosDiscoveryProperties {
 	private Environment environment;
 
 	private NamingService namingService;
+
+	private NamingMaintainService namingMaintainService;
 
 	@PostConstruct
 	public void init() throws SocketException {
@@ -389,6 +394,34 @@ public class NacosDiscoveryProperties {
 			return namingService;
 		}
 
+		try {
+			namingService = NacosFactory.createNamingService(getNacosProperties());
+		}
+		catch (Exception e) {
+			log.error("create naming service error!properties={},e=,", this, e);
+			return null;
+		}
+		return namingService;
+	}
+
+	public NamingMaintainService namingMaintainServiceInstance() {
+
+		if (null != namingMaintainService) {
+			return namingMaintainService;
+		}
+
+		try {
+			namingMaintainService = NamingMaintainFactory
+					.createMaintainService(getNacosProperties());
+		}
+		catch (Exception e) {
+			log.error("create naming service error!properties={},e=,", this, e);
+			return null;
+		}
+		return namingMaintainService;
+	}
+
+	private Properties getNacosProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, serverAddr);
 		properties.put(NAMESPACE, namespace);
@@ -407,15 +440,7 @@ public class NacosDiscoveryProperties {
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
-
-		try {
-			namingService = NacosFactory.createNamingService(properties);
-		}
-		catch (Exception e) {
-			log.error("create naming service error!properties={},e=,", this, e);
-			return null;
-		}
-		return namingService;
+		return properties;
 	}
 
 }
