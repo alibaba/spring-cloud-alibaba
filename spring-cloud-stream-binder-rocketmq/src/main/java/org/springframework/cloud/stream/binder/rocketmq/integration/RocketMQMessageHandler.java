@@ -16,8 +16,6 @@
 
 package org.springframework.cloud.stream.binder.rocketmq.integration;
 
-import java.util.Optional;
-
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -27,6 +25,7 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.binder.BinderHeaders;
 import org.springframework.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.Instrumentation;
 import org.springframework.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
@@ -40,6 +39,8 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -145,36 +146,47 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 				catch (Exception e) {
 					// ignore
 				}
+				boolean needSelectQueue = message.getHeaders().containsKey(BinderHeaders.PARTITION_HEADER);
 				if (sync) {
-					sendRes = rocketMQTemplate.syncSend(topicWithTags.toString(), message,
-							rocketMQTemplate.getProducer().getSendMsgTimeout(),
-							delayLevel);
+					if (needSelectQueue) {
+						sendRes = rocketMQTemplate.syncSendOrderly(topicWithTags.toString(), message, "",
+								rocketMQTemplate.getProducer().getSendMsgTimeout());
+					} else {
+						sendRes = rocketMQTemplate.syncSend(topicWithTags.toString(), message,
+								rocketMQTemplate.getProducer().getSendMsgTimeout(),
+								delayLevel);
+					}
 					log.debug("sync send to topic " + topicWithTags + " " + sendRes);
 				}
 				else {
-					rocketMQTemplate.asyncSend(topicWithTags.toString(), message,
-							new SendCallback() {
-								@Override
-								public void onSuccess(SendResult sendResult) {
-									log.debug("async send to topic " + topicWithTags + " "
-											+ sendResult);
-								}
+					SendCallback sendCallback = new SendCallback() {
+						@Override
+						public void onSuccess(SendResult sendResult) {
+							log.debug("async send to topic " + topicWithTags + " "
+									+ sendResult);
+						}
 
-								@Override
-								public void onException(Throwable e) {
-									log.error(
-											"RocketMQ Message hasn't been sent. Caused by "
-													+ e.getMessage());
-									if (getSendFailureChannel() != null) {
-										getSendFailureChannel().send(
-												RocketMQMessageHandler.this.errorMessageStrategy
-														.buildErrorMessage(
-																new MessagingException(
-																		message, e),
-																null));
-									}
-								}
-							});
+						@Override
+						public void onException(Throwable e) {
+							log.error(
+									"RocketMQ Message hasn't been sent. Caused by "
+											+ e.getMessage());
+							if (getSendFailureChannel() != null) {
+								getSendFailureChannel().send(
+										RocketMQMessageHandler.this.errorMessageStrategy
+												.buildErrorMessage(
+														new MessagingException(
+																message, e),
+														null));
+							}
+						}
+					};
+					if (needSelectQueue) {
+						rocketMQTemplate.asyncSendOrderly(topicWithTags.toString(), message, "", sendCallback,
+								rocketMQTemplate.getProducer().getSendMsgTimeout());
+					} else {
+						rocketMQTemplate.asyncSend(topicWithTags.toString(), message, sendCallback);
+					}
 				}
 			}
 			if (sendRes != null && !sendRes.getSendStatus().equals(SendStatus.SEND_OK)) {
