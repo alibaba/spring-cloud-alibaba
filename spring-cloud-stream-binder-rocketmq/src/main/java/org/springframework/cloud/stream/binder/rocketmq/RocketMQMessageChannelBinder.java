@@ -16,9 +16,7 @@
 
 package org.springframework.cloud.stream.binder.rocketmq;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -42,6 +40,7 @@ import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQConsu
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import org.springframework.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import org.springframework.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
+import org.springframework.cloud.stream.binder.rocketmq.provisioning.selector.PartitionMessageQueueSelector;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.StaticMessageHeaderAccessor;
@@ -53,7 +52,8 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -149,6 +149,7 @@ public class RocketMQMessageChannelBinder extends
 				producer.setMaxMessageSize(
 						producerProperties.getExtension().getMaxMessageSize());
 				rocketMQTemplate.setProducer(producer);
+				rocketMQTemplate.setMessageQueueSelector(new PartitionMessageQueueSelector());
 			}
 
 			RocketMQMessageHandler messageHandler = new RocketMQMessageHandler(
