@@ -20,6 +20,7 @@ import org.apache.dubbo.config.annotation.Reference;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -124,44 +125,50 @@ public class DubboSpringCloudConsumerBootstrap {
 
     @Bean
     public ApplicationRunner userServiceRunner() {
-        return arguments -> {
+        return new ApplicationRunner() {
+            @Override
+            public void run(ApplicationArguments arguments) throws Exception {
 
-            User user = new User();
-            user.setId(1L);
-            user.setName("小马哥");
-            user.setAge(33);
+                User user = new User();
+                user.setId(1L);
+                user.setName("小马哥");
+                user.setAge(33);
 
-            // save User
-            System.out.printf("UserService.save(%s) : %s\n", user, userService.save(user));
+                // save User
+                System.out.printf("UserService.save(%s) : %s\n", user, userService.save(user));
 
-            // find all Users
-            System.out.printf("UserService.findAll() : %s\n", user, userService.findAll());
+                // find all Users
+                System.out.printf("UserService.findAll() : %s\n", user, userService.findAll());
 
-            // remove User
-            System.out.printf("UserService.remove(%d) : %s\n", user.getId(), userService.remove(user.getId()));
+                // remove User
+                System.out.printf("UserService.remove(%d) : %s\n", user.getId(), userService.remove(user.getId()));
 
+            }
         };
     }
 
     @Bean
     public ApplicationRunner callRunner() {
-        return arguments -> {
+        return new ApplicationRunner() {
+            @Override
+            public void run(ApplicationArguments arguments) throws Exception {
 
-            // To call /path-variables
-            callPathVariables();
+                // To call /path-variables
+                DubboSpringCloudConsumerBootstrap.this.callPathVariables();
 
-            // To call /headers
-            callHeaders();
+                // To call /headers
+                DubboSpringCloudConsumerBootstrap.this.callHeaders();
 
-            // To call /param
-            callParam();
+                // To call /param
+                DubboSpringCloudConsumerBootstrap.this.callParam();
 
-            // To call /params
-            callParams();
+                // To call /params
+                DubboSpringCloudConsumerBootstrap.this.callParams();
 
-            // To call /request/body/map
-            callRequestBodyMap();
+                // To call /request/body/map
+                DubboSpringCloudConsumerBootstrap.this.callRequestBodyMap();
 
+            }
         };
     }
 
