@@ -10,7 +10,8 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-
+    
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-dubbo-server-sample</artifactId>
     <name>Spring Cloud Dubbo Server Sample</name>
     <version>0.9.1.BUILD-SNAPSHOT</version>
