@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package com.alibaba.alibaba.nacos.endpoint;
+package com.alibaba.cloud.nacos;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
-import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpoint;
+import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
 import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
-import com.alibaba.cloud.nacos.endpoint.NacosConfigHealthIndicator;
-import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.nacos.client.config.NacosConfigService;
 
 import org.junit.Assert;
@@ -44,11 +36,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -59,15 +51,25 @@ import org.springframework.test.context.junit4.SpringRunner;
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
-@SpringBootTest(classes = NacosConfigEndpointTests.TestConfig.class, properties = {
-		"spring.application.name=test-name",
+@SpringBootTest(classes = NacosConfigurationExtConfigTests.TestConfig.class, properties = {
+		"spring.application.name=myTestService1", "spring.profiles.active=dev,test",
 		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
-		"spring.cloud.nacos.config.file-extension=properties" }, webEnvironment = NONE)
-public class NacosConfigEndpointTests {
+		"spring.cloud.nacos.config.encode=utf-8",
+		"spring.cloud.nacos.config.timeout=1000",
+		"spring.cloud.nacos.config.file-extension=properties",
+		"spring.cloud.nacos.config.ext-config[0].data-id=ext-config-common01.properties",
+		"spring.cloud.nacos.config.ext-config[1].data-id=ext-config-common02.properties",
+		"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
+		"spring.cloud.nacos.config.shared-dataids=common1.properties,common2.properties",
+		"spring.cloud.nacos.config.accessKey=test-accessKey",
+		"spring.cloud.nacos.config.secretKey=test-secretKey" }, webEnvironment = NONE)
+public class NacosConfigurationExtConfigTests {
 
 	static {
 
 		try {
+			// when(any(ConfigService.class).getConfig(eq("test-name.properties"),
+			// eq("test-group"), any())).thenReturn("user.name=hello");
 
 			Method method = PowerMockito.method(NacosConfigService.class, "getConfig",
 					String.class, String.class, long.class);
@@ -80,6 +82,31 @@ public class NacosConfigEndpointTests {
 							&& "DEFAULT_GROUP".equals(args[1])) {
 						return "user.name=hello\nuser.age=12";
 					}
+
+					if ("test-name-dev.properties".equals(args[0])
+							&& "DEFAULT_GROUP".equals(args[1])) {
+						return "user.name=dev";
+					}
+
+					if ("ext-config-common01.properties".equals(args[0])
+							&& "DEFAULT_GROUP".equals(args[1])) {
+						return "test-ext-config1=config1\ntest-ext-config2=config1";
+					}
+					if ("ext-config-common02.properties".equals(args[0])
+							&& "GLOBAL_GROUP".equals(args[1])) {
+						return "test-ext-config2=config2";
+					}
+
+					if ("common1.properties".equals(args[0])
+							&& "DEFAULT_GROUP".equals(args[1])) {
+						return "test-common1=common1\ntest-common2=common1";
+					}
+
+					if ("common2.properties".equals(args[0])
+							&& "DEFAULT_GROUP".equals(args[1])) {
+						return "test-common2=common2";
+					}
+
 					return "";
 				}
 			});
@@ -92,47 +119,25 @@ public class NacosConfigEndpointTests {
 	}
 
 	@Autowired
-	private NacosConfigProperties properties;
+	private Environment environment;
 
 	@Autowired
-	private NacosRefreshHistory refreshHistory;
+	private NacosPropertySourceLocator locator;
+
+	@Autowired
+	private NacosConfigProperties properties;
 
 	@Test
 	public void contextLoads() throws Exception {
 
-		checkoutEndpoint();
-		//checkoutAcmHealthIndicator();
+		assertNotNull("NacosPropertySourceLocator was not created", locator);
+		assertNotNull("NacosConfigProperties was not created", properties);
 
-	}
+		Assert.assertEquals(environment.getProperty("test-ext-config1"), "config1");
+		Assert.assertEquals(environment.getProperty("test-ext-config2"), "config2");
+		Assert.assertEquals(environment.getProperty("test-common1"), "common1");
+		Assert.assertEquals(environment.getProperty("test-common2"), "common2");
 
-	//private void checkoutAcmHealthIndicator() {
-	//	try {
-	//		Builder builder = new Builder();
-    //
-	//		NacosConfigHealthIndicator healthIndicator = new NacosConfigHealthIndicator(
-	//				properties, properties.configServiceInstance());
-	//		healthIndicator.doHealthCheck(builder);
-    //
-	//		Builder builder1 = new Builder();
-	//		List<String> dataIds = new ArrayList<>();
-	//		dataIds.add("test-name.properties");
-	//		builder1.up().withDetail("dataIds", dataIds);
-    //
-	//		Assert.assertTrue(builder.build().equals(builder1.build()));
-    //
-	//	}
-	//	catch (Exception ignoreE) {
-    //
-	//	}
-    //
-	//}
-
-	private void checkoutEndpoint() throws Exception {
-		NacosConfigEndpoint endpoint = new NacosConfigEndpoint(properties,
-				refreshHistory);
-		Map<String, Object> map = endpoint.invoke();
-		assertEquals(map.get("NacosConfigProperties"), properties);
-		assertEquals(map.get("RefreshHistory"), refreshHistory.getRecords());
 	}
 
 	@Configuration
