@@ -19,8 +19,8 @@ import java.text.ParseException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.alicloud.context.AliCloudProperties;
-import org.springframework.cloud.alicloud.context.sms.SmsProperties;
+import com.alibaba.alicloud.context.AliCloudProperties;
+import com.alibaba.alicloud.context.sms.SmsProperties;
 import org.springframework.cloud.alicloud.sms.base.DefaultAlicomMessagePuller;
 import org.springframework.cloud.alicloud.sms.endpoint.EndpointManager;
 import org.springframework.cloud.alicloud.sms.endpoint.ReceiveMessageEntity;
