@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.alibaba.alibaba.nacos;
+package com.alibaba.cloud.nacos;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
-import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
 import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
 import com.alibaba.nacos.client.config.NacosConfigService;
 
