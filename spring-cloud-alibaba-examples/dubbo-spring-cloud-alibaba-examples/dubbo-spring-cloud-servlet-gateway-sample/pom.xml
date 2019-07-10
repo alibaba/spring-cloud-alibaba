@@ -24,7 +24,7 @@
         <!-- Sample API -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-dubbo-sample-api</artifactId>
+            <artifactId>dubbo-spring-cloud-sample-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 

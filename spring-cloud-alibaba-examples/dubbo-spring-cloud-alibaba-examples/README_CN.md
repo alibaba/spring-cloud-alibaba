@@ -15,7 +15,7 @@ public interface EchoService {
 ```
 
 为了确保契约的一致性，推荐的做法是将 Dubbo 服务接口打包在第二方或者第三方的 artifact（jar）中，如以上接口就存放在
- artifact [spring-cloud-dubbo-sample-api](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/spring-cloud-alibaba-dubbo-examples/spring-cloud-dubbo-sample-api) 之中。
+ artifact [dubbo-spring-cloud-sample-api](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/dubbo-spring-cloud-alibaba-examples/dubbo-spring-cloud-sample-api) 之中。
 对于服务提供方而言，不仅通过依赖 artifact 的形式引入 Dubbo 服务接口，而且需要将其实现。对应的服务消费端，同样地需要依赖该 artifact，
 并以接口调用的方式执行远程方法。接下来进一步讨论怎样实现 Dubbo 服务提供方和消费方。
 
@@ -33,8 +33,8 @@ Dubbo Spring Cloud 必要的依赖：
 <dependencies>
     <!-- Sample API -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dubbo-sample-api</artifactId>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>dubbo-spring-cloud-sample-api</artifactId>
         <version>${project.version}</version>
     </dependency>
 
@@ -46,24 +46,24 @@ Dubbo Spring Cloud 必要的依赖：
 
     <!-- Dubbo Spring Cloud Starter -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-dubbo</artifactId>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>dubbo-spring-cloud-starter</artifactId>
     </dependency>
 
     <!-- Spring Cloud Nacos Service Discovery -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>alibaba-nacos-discovery-spring-cloud-starter</artifactId>
     </dependency>
 </dependencies>
 ```
 
 以上依赖 artifact 说明如下：
 
-- `spring-cloud-dubbo-sample-api` : 提供 `EchoService` 接口的 artifact
+- `dubbo-spring-cloud-sample-api` : 提供 `EchoService` 接口的 artifact
 - `spring-boot-actuator` : Spring Boot Production-Ready artifact，间接引入 `spring-boot` artifact
-- `spring-cloud-starter-dubbo` : Dubbo Spring Cloud Starter `artifact`，间接引入 `dubbo-spring-boot-starter` 等 artifact
-- `spring-cloud-starter-alibaba-nacos-discovery` : Nacos Spring Cloud 服务注册与发现 `artifact`
+- `dubbo-spring-cloud-starter` : Dubbo Spring Cloud Starter `artifact`，间接引入 `dubbo-spring-boot-starter` 等 artifact
+- `alibaba-nacos-discovery-spring-cloud-starter` : Nacos Spring Cloud 服务注册与发现 `artifact`
 
 
 值得注意的是，以上 artifact 未指定版本(version)，因此，还需显示地声明 `<dependencyManagement>` :
@@ -216,8 +216,8 @@ public class DubboSpringCloudServerBootstrap {
 <dependencies>
     <!-- Sample API -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dubbo-sample-api</artifactId>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>dubbo-spring-cloud-sample-api</artifactId>
         <version>${project.version}</version>
     </dependency>
 
@@ -234,14 +234,14 @@ public class DubboSpringCloudServerBootstrap {
 
     <!-- Dubbo Spring Cloud Starter -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-dubbo</artifactId>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>dubbo-spring-cloud-starter</artifactId>
     </dependency>
 
     <!-- Spring Cloud Nacos Service Discovery -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>alibaba-nacos-discovery-spring-cloud-starter</artifactId>
     </dependency>
 </dependencies>
 ```
@@ -341,7 +341,7 @@ HTTP 响应为：
 
 ## 模块说明
 
-- [spring-cloud-dubbo-sample-api](spring-cloud-dubbo-sample-api)：API 模块，存放 Dubbo 服务接口和模型定义
+- [dubbo-spring-cloud-sample-api](dubbo-spring-cloud-sample-api)：API 模块，存放 Dubbo 服务接口和模型定义
 - [spring-cloud-dubbo-provider-web-sample](spring-cloud-dubbo-provider-web-sample)：Dubbo Spring Cloud 服务提供方示例（Web 应用）
 - [spring-cloud-dubbo-provider-sample](spring-cloud-dubbo-provider-sample)：Dubbo Spring Cloud 服务提供方示例（非 Web 应用）
 - [spring-cloud-dubbo-consumer-sample](spring-cloud-dubbo-consumer-sample)：Dubbo Spring Cloud 服务消费方示例
