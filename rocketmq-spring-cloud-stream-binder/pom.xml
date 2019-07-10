@@ -11,7 +11,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>rocketmq-spring-cloud-stream-binder</artifactId>
-    <name>Spring Cloud Alibaba RocketMQ Binder</name>
+    <name>RocketMQ Spring Cloud Stream Binder</name>
 
     <dependencies>
 

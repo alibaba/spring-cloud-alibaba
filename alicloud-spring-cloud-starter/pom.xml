@@ -10,8 +10,8 @@
 
     <artifactId>alicloud-spring-cloud-starter</artifactId>
     <packaging>pom</packaging>
-    <name>Spring Cloud Alibaba Cloud Starters</name>
-    <description>Spring Cloud Alibaba Cloud Starters</description>
+    <name>Alibaba Cloud Spring Cloud Starters</name>
+    <description>Alibaba Cloud Spring Cloud Starters</description>
     <modules>
         <module>alicloud-oss-spring-cloud-starter</module>
         <module>alicloud-acm-spring-cloud-starter</module>

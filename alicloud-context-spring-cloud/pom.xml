@@ -11,7 +11,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>alicloud-context-spring-cloud</artifactId>
-    <name>Spring Cloud AliCloud Context</name>
+    <name>AliCloud Context Spring Cloud</name>
 
     <dependencies>
 

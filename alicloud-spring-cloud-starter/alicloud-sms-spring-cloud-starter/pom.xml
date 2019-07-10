@@ -8,7 +8,7 @@
         <version>0.1.3.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>alicloud-sms-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Alibaba Cloud SMS</name>
+    <name>Alibaba Cloud SMS Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>

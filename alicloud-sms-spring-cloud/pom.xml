@@ -11,7 +11,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>alicloud-sms-spring-cloud</artifactId>
-    <name>Spring Cloud Alibaba Cloud SMS</name>
+    <name>Alibaba Cloud SMS Spring Cloud</name>
 
     <dependencies>
 

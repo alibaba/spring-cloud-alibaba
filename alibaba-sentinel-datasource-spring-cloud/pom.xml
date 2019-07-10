@@ -11,7 +11,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>alibaba-sentinel-datasource-spring-cloud</artifactId>
-    <name>Spring Cloud Alibaba Sentinel DataSource</name>
+    <name>Alibaba Sentinel DataSource Spring Cloud</name>
 
     <dependencies>
 

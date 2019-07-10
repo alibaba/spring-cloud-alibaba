@@ -8,7 +8,7 @@
         <version>0.1.3.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>rocketmq-spring-cloud-starter-stream</artifactId>
-    <name>Spring Cloud Starter Stream RocketMQ</name>
+    <name>RocketMQ Spring Cloud Starter Stream</name>
 
     <dependencies>
         <dependency>

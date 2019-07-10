@@ -93,8 +93,7 @@
         <module>rocketmq-spring-cloud-stream-binder</module>
         <module>alicloud-context-spring-cloud</module>
         <module>spring-cloud-alibaba-examples</module>
-        <module>alibaba-test-spring-cloud</module>
-        <module>alibaba-docs-spring-cloud</module>
+        <module>spring-cloud-alibaba-docs</module>
         <module>alibaba-spring-cloud-starter</module>
         <module>alicloud-spring-cloud-starter</module>
         <module>alicloud-oss-spring-cloud</module>

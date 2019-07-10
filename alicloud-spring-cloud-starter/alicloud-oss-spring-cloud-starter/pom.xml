@@ -8,7 +8,7 @@
         <version>0.1.3.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>alicloud-oss-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Alibaba Cloud OSS</name>
+    <name>Alibaba Cloud OSS Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>
