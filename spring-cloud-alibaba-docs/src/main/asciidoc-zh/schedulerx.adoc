@@ -75,7 +75,7 @@ public class SimpleTask implements ScxSimpleJobProcessor {
 [source,text]
 ----
 Job分组：测试——***-*-*-****
-Job处理接口：org.springframework.cloud.alibaba.cloud.examples.SimpleTask
+Job处理接口：com.alibaba.cloud.examples.SimpleTask
 类型：简单Job单机版
 定时表达式：默认选项——0 * * * * ?
 Job描述：无

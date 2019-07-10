@@ -119,7 +119,7 @@ class EchoServiceImpl implements EchoService {
 dubbo:
   scan:
     # dubbo 服务扫描基准包
-    base-packages: org.springframework.cloud.alibaba.dubbo.bootstrap
+    base-packages: com.alibaba.cloud.dubbo.bootstrap
   protocol:
     # dubbo 协议
     name: dubbo

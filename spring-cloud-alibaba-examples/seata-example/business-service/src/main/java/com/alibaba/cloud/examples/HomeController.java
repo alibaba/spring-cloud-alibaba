@@ -60,7 +60,7 @@ public class HomeController {
 	}
 
 	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
-	@RequestMapping(value = "/fescar/rest", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/seata/rest", method = RequestMethod.GET, produces = "application/json")
 	public String rest() {
 
 		String result = restTemplate.getForObject(
@@ -96,7 +96,7 @@ public class HomeController {
 	}
 
 	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
-	@RequestMapping(value = "/fescar/feign", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/seata/feign", method = RequestMethod.GET, produces = "application/json")
 	public String feign() {
 
 		String result = storageService.storage(COMMODITY_CODE, ORDER_COUNT);
