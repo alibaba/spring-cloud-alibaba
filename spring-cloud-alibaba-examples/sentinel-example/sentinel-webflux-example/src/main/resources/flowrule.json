@@ -15,13 +15,4 @@
     "limitApp": "default",
     "strategy": 0
   }
-,
-  {
-    "resource": "abc",
-    "controlBehavior": 0,
-    "count": 0,
-    "grade": 1,
-    "limitApp": "default",
-    "strategy": 0
-  }
 ]

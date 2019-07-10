@@ -6,13 +6,13 @@ Spring Cloud AliCloud ACM 是 Config Server 和 Client 的替代方案，客户�
 
 === 如何引入 Spring Cloud AliCloud ACM
 
-如果要在您的项目中引入 ACM，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-acm` 的 starter。
+如果要在您的项目中引入 ACM，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `alicloud-acm-spring-cloud-starter` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>alicloud-acm-spring-cloud-starter</artifactId>
 </dependency>
 ----
 
@@ -111,21 +111,21 @@ user name :james; age: 18
 
 === 更改配置文件扩展名
 
-spring-cloud-starter-alicloud-acm 中 DataId 默认的文件扩展名是 properties。除去 properties 格式之外，也支持 yaml 格式。
+alicloud-acm-spring-cloud-starter 中 DataId 默认的文件扩展名是 properties。除去 properties 格式之外，也支持 yaml 格式。
 支持通过 spring.cloud.alicloud.acm.file-extension 来配置文件的扩展名，yaml 格式可以配置成 `yaml` 或 `yml`。
 
 NOTE: 修改文件扩展名后，在配置中心中的 DataID 以及 Content 的格式都必须做相应的修改。
 
 === 动态更新
 
-spring-cloud-starter-alicloud-acm 默认支持配置的动态更新，当您在配置中心修改配置的内容时，会发布 Spring 中的 RefreshEvent 事件。
+alicloud-acm-spring-cloud-starter 默认支持配置的动态更新，当您在配置中心修改配置的内容时，会发布 Spring 中的 RefreshEvent 事件。
 带有 @RefreshScope 和 @ConfigurationProperties 注解的类会自动刷新。
 
 NOTE: 你可以通过配置 spring.cloud.alicloud.acm.refresh.enabled=false 来关闭动态刷新。
 
 === Profile 粒度的配置
 
-spring-cloud-starter-alicloud-acm 在加载配置的时候，首先会加载 DataId 为{spring.application.name}.{file-extension}的配置，当 spring.profiles.active 中配置有内容时，还会依次去加载 spring.profile 对应的内容， DataId 的格式为{spring.application.name}-{profile}.{file-extension}的配置，且后者的优先级高于前者。
+alicloud-acm-spring-cloud-starter 在加载配置的时候，首先会加载 DataId 为{spring.application.name}.{file-extension}的配置，当 spring.profiles.active 中配置有内容时，还会依次去加载 spring.profile 对应的内容， DataId 的格式为{spring.application.name}-{profile}.{file-extension}的配置，且后者的优先级高于前者。
 
 spring.profiles.active 属于配置的元数据，所以也必须配置在 bootstrap.properties 或 bootstrap.yaml 中。比如可以在 bootstrap.properties 中增加如下内容。
 

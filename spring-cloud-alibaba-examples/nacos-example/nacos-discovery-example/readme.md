@@ -11,11 +11,11 @@ This example illustrates how to use Nacos Discovery Starter implement Service di
 ### Connect to Nacos Discovery
 Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Discovery. The configurations have been completed in the following example, so you don't need modify the code any more.**
 
-1. Add dependency spring-cloud-starter-alibaba-nacos-discovery in the pom.xml file in your Spring Cloud project.
+1. Add dependency alibaba-nacos-discovery-spring-cloud-starter in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-nacos-discovery-spring-cloud-starter</artifactId>
         </dependency>
 	
 2. Add Nacos server address configurations to file /src/main/resources/application.properties.

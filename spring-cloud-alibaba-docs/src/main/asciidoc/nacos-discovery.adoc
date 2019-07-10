@@ -11,13 +11,13 @@ Discovery Starter registers some of the metadata of the service instance, such a
 
 ==== How to Introduce Nacos Discovery Starter
 
-please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-discovery`.
+please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `alibaba-nacos-discovery-spring-cloud-starter`.
 
 [source,xml,indent=0]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>alibaba-nacos-discovery-spring-cloud-starter</artifactId>
 </dependency>
 ----
 
@@ -54,14 +54,14 @@ The following sample illustrates how to register a service to Nacos.
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring.cloud.alibaba.version}</version>
                 <type>pom</type>
@@ -82,8 +82,8 @@ The following sample illustrates how to register a service to Nacos.
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-nacos-discovery-spring-cloud-starter</artifactId>
         </dependency>
     </dependencies>
 
@@ -138,7 +138,7 @@ NOTE: Before you start the provider application, please start Nacos first. Refer
 
 === Service EndPoint
 
-spring-cloud-starter-alibaba-nacos-discovery provides an EndPoint, and the address is `http://ip:port/actuator/nacos-discovery`.
+alibaba-nacos-discovery-spring-cloud-starter provides an EndPoint, and the address is `http://ip:port/actuator/nacos-discovery`.
 The EndPoint mainly provides two types of information:
 
     1. Subscribe: Shows the current service subscribers
@@ -273,7 +273,7 @@ Next, access the `http://ip:port/echo/app-name` interface provided by the consum
 
 === More Information about Nacos Starter Configurations
 
-The following shows the other configurations of the starter of spring-cloud-starter-alibaba-nacos-discovery:
+The following shows the other configurations of the starter of alibaba-nacos-discovery-spring-cloud-starter:
 
 :frame: topbot
 [width="60%",options="header"]

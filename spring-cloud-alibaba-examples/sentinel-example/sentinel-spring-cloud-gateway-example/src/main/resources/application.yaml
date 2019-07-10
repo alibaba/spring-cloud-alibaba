@@ -34,10 +34,8 @@ spring:
       filter:
         enabled: true
       scg.fallback:
-        mode: redirect
-        redirect: http://www.taobao.com
-#        response-status: 444
-#        response-body: 1234
-#        content-type: text/plain
+          mode: response
+          response-status: 444
+          response-body: 1234
 
 management.endpoints.web.exposure.include: "*"

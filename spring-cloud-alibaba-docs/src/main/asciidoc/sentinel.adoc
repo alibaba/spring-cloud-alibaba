@@ -14,12 +14,12 @@ https://github.com/alibaba/Sentinel[Sentinel] has the following features:
 
 ### How to Use Sentinel
 
-If you want to use Sentinel in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alibaba-sentinel`.
+If you want to use Sentinel in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `alibaba-sentinel-spring-cloud-starter`.
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>alibaba-sentinel-spring-cloud-starter</artifactId>
 </dependency>
 ```
 
@@ -106,7 +106,7 @@ Sentinel is compatible with the https://github.com/OpenFeign/feign[Feign] compon
 * Add the `feign starter` dependency to trigger and enable `sentinel starter`:
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-openfeign</artifactId>
 </dependency>
 ```
@@ -195,7 +195,7 @@ spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
 #spring.cloud.sentinel.datasource.ds1.file.file=classpath: flowrule.json
 #spring.cloud.sentinel.datasource.ds1.file.data-type=custom
-#spring.cloud.sentinel.datasource.ds1.file.converter-class=org.springframework.cloud.alibaba.cloud.examples.JsonFlowRuleListConverter
+#spring.cloud.sentinel.datasource.ds1.file.converter-class=com.alibaba.cloud.alibaba.cloud.examples.JsonFlowRuleListConverter
 #spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
 spring.cloud.sentinel.datasource.ds2.nacos.server-addr=localhost:8848

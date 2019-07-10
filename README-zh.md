@@ -1,7 +1,7 @@
 # Spring Cloud Alibaba
 
 [![CircleCI](https://circleci.com/gh/spring-cloud-incubator/spring-cloud-alibaba/tree/master.svg?style=svg)](https://circleci.com/gh/spring-cloud-incubator/spring-cloud-alibaba/tree/master)
-[![Maven Central](https://img.shields.io/maven-central/v/org.springframework.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:org.springframework.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
+[![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
 [![Codecov](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba/branch/master/graph/badge.svg)](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -35,9 +35,9 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 **[RocketMQ](https://rocketmq.apache.org/)**：一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。
 
-**[Dubbo](https://github.com/apache/incubator-dubbo)**：Apache Dubbo™ (incubating) 是一款高性能 Java RPC 框架。
+**[Dubbo](https://github.com/apache/dubbo)**：Apache Dubbo™ 是一款高性能 Java RPC 框架。
 
-**[Fescar](https://github.com/alibaba/fescar)**：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
+**[Seata](https://github.com/seata/seata)**：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
 
 **[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**：一款在分布式架构环境中对应用配置进行集中管理和推送的应用配置中心产品。
 
@@ -63,16 +63,14 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 ## 如何使用
 
 ### 如何引入依赖
-项目的最新版本是 0.2.1.RELEASE 和 0.1.1.RELEASE，版本 0.2.1.RELEASE 对应的是 Spring Cloud Finchley 版本，版本 0.1.1.RELEASE 对应的是 Spring Cloud Edgware 版本。
-
 如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
 
 	<dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.1.RELEASE</version>
+                <version>{version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

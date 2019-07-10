@@ -9,7 +9,7 @@
 
     <parent>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <version>0.2.3.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -31,8 +31,8 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alicloud-sms-spring-cloud-starter</artifactId>
         </dependency>
     </dependencies>
 

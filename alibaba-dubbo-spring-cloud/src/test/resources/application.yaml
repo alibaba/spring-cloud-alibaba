@@ -1,0 +1,20 @@
+dubbo:
+  scan:
+    base-packages: com.alibaba.cloud.dubbo.service
+  protocols:
+    dubbo:
+      name: dubbo
+      port: 12345
+    rest:
+      name: rest
+      port: 8081
+      server: netty
+  registry:
+    address: spring-cloud://nacos
+
+feign:
+  hystrix:
+    enabled: true
+
+server:
+  port: 8080

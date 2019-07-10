@@ -15,8 +15,8 @@
 1. 首先，修改 pom.xml 文件，引入 Nacos Config Starter。
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-nacos-config-spring-cloud-starter</artifactId>
         </dependency>
 	
 2. 在应用的 /src/main/resources/bootstrap.properties 配置文件中配置 Nacos Config 元数据

@@ -6,13 +6,13 @@ Spring Cloud Alibaba Cloud ACM is an alternative solution for Config Server and 
 
 === How to Introduce Spring Cloud Alibaba Cloud ACM
 
-If you want to use ACM in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alicloud-acm`.
+If you want to use ACM in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `alicloud-acm-spring-cloud-starter`.
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>alicloud-acm-spring-cloud-starter</artifactId>
 </dependency>
 ----
 
@@ -111,21 +111,21 @@ user name :james; age: 18
 
 === Modify Configuration File Extension
 
-The default file extension of dataId in spring-cloud-starter-alicloud-acm is properties. In addition to properties,  yaml is also supported.
+The default file extension of dataId in alicloud-acm-spring-cloud-starter is properties. In addition to properties,  yaml is also supported.
 You can set the file extension using spring.cloud.alicloud.acm.file-extension. Just set it to `yaml` or `yml`for yaml format.
 
 NOTE: After you change the file extension, you need to make corresponding format changes in the DataID and content of the configuration center.
 
 === Dynamic Configuration Refresh
 
-spring-cloud-starter-alicloud-acm supports dynamic configuration updates. RefreshEvent in Spring is published when you update configuration in the configuration center.
+alicloud-acm-spring-cloud-starter supports dynamic configuration updates. RefreshEvent in Spring is published when you update configuration in the configuration center.
 All classes with @RefreshScope and @ConfigurationProperties annotations will be refreshed automatically.
 
 NOTE: You can disable automatic refresh by this setting: spring.cloud.alicloud.acm.refresh.enabled=false
 
 === Configure Profile Granularity
 
-When configuration is loaded by spring-cloud-starter-alicloud-acm, configuration with DataId {spring.application.name}. {file-extension} will be loaded first. If there is content in spring.profiles.active, the content of spring.profile, and configuration with the dataid format of{spring.application.name}-{profile}. {file-extension} will also be loaded in turn, and the latter has higher priority.
+When configuration is loaded by alicloud-acm-spring-cloud-starter, configuration with DataId {spring.application.name}. {file-extension} will be loaded first. If there is content in spring.profiles.active, the content of spring.profile, and configuration with the dataid format of{spring.application.name}-{profile}. {file-extension} will also be loaded in turn, and the latter has higher priority.
 
 spring.profiles.active is the configuration metadata, and should also be configured in bootstrap.properties or bootstrap.yaml. For example, you can add the following content in bootstrap.properties.
 

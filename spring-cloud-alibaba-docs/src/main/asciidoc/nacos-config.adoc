@@ -28,13 +28,13 @@ NOTE: The default file extension of dataid is properties.
 
 ===== Usage on the Client
 
-If you want to use Nacos to manage externalized configurations for your applications, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-config`.
+If you want to use Nacos to manage externalized configurations for your applications, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `alibaba-nacos-config-spring-cloud-starter`.
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>alibaba-nacos-config-spring-cloud-starter</artifactId>
 </dependency>
 ----
 
@@ -79,7 +79,7 @@ user name :nacos-config-properties; age: 90
 
 === Add Configurations with DataId in YAML Format
 
-spring-cloud-starter-alibaba-nacos-config supports yaml format as well. You only need to complete the following 2 steps.
+alibaba-nacos-config-spring-cloud-starter supports yaml format as well. You only need to complete the following 2 steps.
 
 1. In the bootstrap.properties file, add the following line to claim that the format of dataid is yaml. As follows:
 
@@ -114,7 +114,7 @@ user name :nacos-config-yaml; age: 68
 
 === Support Dynamic Configuration Udpates
 
-spring-cloud-starter-alibaba-nacos-config also supports dynamic configuration updates. The code for starting Spring Boot application testing is as follows:
+alibaba-nacos-config-spring-cloud-starter also supports dynamic configuration updates. The code for starting Spring Boot application testing is as follows:
 
 [source,java]
 ----
@@ -153,7 +153,7 @@ NOTE: You can disable automatic refresh with this setting`spring.cloud.nacos.con
 
 === Support configurations at the profile level
 
-When configurations are loaded by spring-cloud-starter-alibaba-nacos-config, basic configurations with  dataid of `${spring.application.name}. ${file-extension:properties}` , and dataid of `${spring.application.name}-${profile}. ${file-extension:properties}` are also loaded. If you need to use different configurations from different environments, you can use the `${spring.profiles.active}` configuration provided by Spring.
+When configurations are loaded by alibaba-nacos-config-spring-cloud-starter, basic configurations with  dataid of `${spring.application.name}. ${file-extension:properties}` , and dataid of `${spring.application.name}-${profile}. ${file-extension:properties}` are also loaded. If you need to use different configurations from different environments, you can use the `${spring.profiles.active}` configuration provided by Spring.
 
 [source,properties]
 ----

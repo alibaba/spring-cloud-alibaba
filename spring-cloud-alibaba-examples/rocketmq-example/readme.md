@@ -32,12 +32,12 @@ Before we start the demo, let's learn how to Integration with RocketMQ Binder to
 
 **Note: This section is to show you how to connect to Sentinel. The configurations have been completed in the following example, so you don't need modify the code any more.**
 
-1. Add dependency spring-cloud-starter-stream-rocketmq in the pom.xml file in your Spring Cloud project.
+1. Add dependency rocketmq-stream-spring-cloud-starter in the pom.xml file in your Spring Cloud project.
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>rocketmq-stream-spring-cloud-starter</artifactId>
 </dependency>
 ```
 
@@ -194,7 +194,7 @@ public class ReceiveService {
 
 ## Endpoint
 
-Add dependency `spring-cloud-starter-stream-rocketmq` to your pom.xml file, and configure your endpoint security strategy.
+Add dependency `rocketmq-stream-spring-cloud-starter` to your pom.xml file, and configure your endpoint security strategy.
 
 * Spring Boot1.x: Add configuration `management.security.enabled=false`    
 * Spring Boot2.x: Add configuration `management.endpoints.web.exposure.include=*`

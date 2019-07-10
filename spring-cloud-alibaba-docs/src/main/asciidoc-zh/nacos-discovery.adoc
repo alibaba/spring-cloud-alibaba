@@ -11,13 +11,13 @@ Discovery Starter 也将服务实例自身的一些元数据信息-例如 host�
 
 ==== 如何引入 Nacos Discovery Starter
 
-如果要在您的项目中使用 Nacos 来实现服务发现，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-discovery` 的 starter。
+如果要在您的项目中使用 Nacos 来实现服务发现，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `alibaba-nacos-discovery-spring-cloud-starter` 的 starter。
 
 [source,xml,indent=0]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>alibaba-nacos-discovery-spring-cloud-starter</artifactId>
 </dependency>
 ----
 
@@ -54,14 +54,14 @@ Discovery Starter 也将服务实例自身的一些元数据信息-例如 host�
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring.cloud.alibaba.version}</version>
                 <type>pom</type>
@@ -82,8 +82,8 @@ Discovery Starter 也将服务实例自身的一些元数据信息-例如 host�
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-nacos-discovery-spring-cloud-starter</artifactId>
         </dependency>
     </dependencies>
 
@@ -138,7 +138,7 @@ NOTE: 再启动 Provider 应用之前 请先将 Nacos 服务启动。具体启�
 
 === 服务的 EndPoint
 
-spring-cloud-starter-alibaba-nacos-discovery 在实现的时候提供了一个EndPoint,EndPoint的访问地址为 `http://ip:port/actuator/nacos-discovery`。
+alibaba-nacos-discovery-spring-cloud-starter 在实现的时候提供了一个EndPoint,EndPoint的访问地址为 `http://ip:port/actuator/nacos-discovery`。
 EndPoint 的信息主要提供了两类:
 
     1、subscribe: 显示了当前有哪些服务订阅者
@@ -273,7 +273,7 @@ NOTE: 在启动 Consumer 应用之前请先将 Nacos 服务启动好。具体启
 
 === 关于 Nacos Starter 更多的配置项信息
 
-更多关于 spring-cloud-starter-alibaba-nacos-discovery 的 starter 配置项如下所示:
+更多关于 alibaba-nacos-discovery-spring-cloud-starter 的 starter 配置项如下所示:
 
 :frame: topbot
 [width="60%",options="header"]

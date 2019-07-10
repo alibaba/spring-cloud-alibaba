@@ -12,11 +12,11 @@ This example illustrates how to use Nacos Config Starter implement externalized 
 Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Config. The configurations have been completed in the following example, so you don't need modify the code any more.**
 
 
-1. Add dependency spring-cloud-starter-alibaba-nacos-config in the pom.xml file in your Spring Cloud project.
+1. Add dependency alibaba-nacos-config-spring-cloud-starter in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-nacos-config-spring-cloud-starter</artifactId>
         </dependency>
 	
 2. Add Nacos config metadata configurations to file /src/main/resources/bootstrap.properties
@@ -130,17 +130,17 @@ Currently only the `properties` type is supported.
 
 
 ### Automatic Injection
-Nacos Config Starter implement `org.springframework.cloud.bootstrap.config.PropertySourceLocator` interface, and set order to 0.
+Nacos Config Starter implement `com.alibaba.cloud.bootstrap.config.PropertySourceLocator` interface, and set order to 0.
 
 In the startup phase of the Spring Cloud application, the corresponding data is obtained from the Nacos Server side, and the acquired data is converted into a PropertySource and injected into the PropertySources property of the Spring Environment. so the @Value annotation can also directly obtain the configuration of the Nacos Server side.
 
 ### Dynamic Refresh
 
-By default, Nacos Config Starter adds a listening function to all Nacos configuration items that have successfully acquired data. It will trigger `org.springframework.cloud.context.refresh.ContextRefresher` 's refresh method in real time when it detects changes in the server configuration. 
+By default, Nacos Config Starter adds a listening function to all Nacos configuration items that have successfully acquired data. It will trigger `com.alibaba.cloud.context.refresh.ContextRefresher` 's refresh method in real time when it detects changes in the server configuration. 
 		
 If you need to dynamically refresh a bean, please refer to the Spring and Spring Cloud specifications. It is recommended to add `@RefreshScope` or `@ConfigurationProperties ` annotations to the class.
 
-Please refer to[ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
+Please refer to[ContextRefresher Java Doc](http://static.javadoc.io/com.alibaba.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
 
 	
 

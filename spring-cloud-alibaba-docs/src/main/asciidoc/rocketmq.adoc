@@ -120,7 +120,7 @@ For using the Spring Cloud Alibaba RocketMQ Binder, you just need to add it to y
 
 ```xml
 <dependency>
-  <groupId>org.springframework.cloud</groupId>
+  <groupId>com.alibaba.cloud</groupId>
   <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
 </dependency>
 ```
@@ -129,8 +129,8 @@ Alternatively, you can also use the Spring Cloud Stream RocketMQ Starter:
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>rocketmq-stream-spring-cloud-starter</artifactId>
 </dependency>
 ```
 

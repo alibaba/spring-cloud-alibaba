@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-alibaba</artifactId>
+        <version>0.2.3.BUILD-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>alibaba-spring-cloud-starter</artifactId>
+    <packaging>pom</packaging>
+    <name>Alibaba Spring Cloud Starters</name>
+    <description>Alibaba Spring Cloud Starters</description>
+    <modules>
+        <module>alibaba-nacos-config-spring-cloud-starter</module>
+        <module>alibaba-nacos-discovery-spring-cloud-starter</module>
+        <module>alibaba-sentinel-spring-cloud-starter</module>
+        <module>alibaba-seata-spring-cloud-starter</module>
+        <module>rocketmq-spring-cloud-starter-stream</module>
+        <module>rocketmq-spring-cloud-starter-bus</module>
+        <module>dubbo-spring-cloud-starter</module>
+    </modules>
+</project>

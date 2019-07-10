@@ -28,13 +28,13 @@ NOTE: 注意dataid是以 properties(默认的文件扩展名方式)为扩展名�
 
 ===== 客户端使用方式
 
-如果要在您的项目中使用 Nacos 来实现应用的外部化配置，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-config` 的 starter。
+如果要在您的项目中使用 Nacos 来实现应用的外部化配置，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `alibaba-nacos-config-spring-cloud-starter` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>alibaba-nacos-config-spring-cloud-starter</artifactId>
 </dependency>
 ----
 
@@ -79,7 +79,7 @@ user name :nacos-config-properties; age: 90
 
 === 基于 dataid 为 yaml 的文件扩展名配置方式
 
-spring-cloud-starter-alibaba-nacos-config 对于 yaml 格式也是完美支持的。这个时候只需要完成以下两步：
+alibaba-nacos-config-spring-cloud-starter 对于 yaml 格式也是完美支持的。这个时候只需要完成以下两步：
 
 1、在应用的 bootstrap.properties 配置文件中显示的声明 dataid 文件扩展名。如下所示
 
@@ -114,7 +114,7 @@ user name :nacos-config-yaml; age: 68
 
 === 支持配置的动态更新
 
-spring-cloud-starter-alibaba-nacos-config 也支持配置的动态更新，启动 Spring Boot 应用测试的代码如下：
+alibaba-nacos-config-spring-cloud-starter 也支持配置的动态更新，启动 Spring Boot 应用测试的代码如下：
 
 [source,java]
 ----
@@ -153,7 +153,7 @@ NOTE: 你可以通过配置 `spring.cloud.nacos.config.refresh.enabled=false` �
 
 === 可支持profile粒度的配置
 
-spring-cloud-starter-alibaba-nacos-config 在加载配置的时候，不仅仅加载了以 dataid 为 `${spring.application.name}.${file-extension:properties}`   为前缀的基础配置，还加载了dataid为 `${spring.application.name}-${profile}.${file-extension:properties}` 的基础配置。在日常开发中如果遇到多套环境下的不同配置，可以通过Spring 提供的 `${spring.profiles.active}` 这个配置项来配置。
+alibaba-nacos-config-spring-cloud-starter 在加载配置的时候，不仅仅加载了以 dataid 为 `${spring.application.name}.${file-extension:properties}`   为前缀的基础配置，还加载了dataid为 `${spring.application.name}-${profile}.${file-extension:properties}` 的基础配置。在日常开发中如果遇到多套环境下的不同配置，可以通过Spring 提供的 `${spring.profiles.active}` 这个配置项来配置。
 
 [source,properties]
 ----

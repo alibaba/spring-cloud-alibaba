@@ -15,11 +15,11 @@ This example focus on the integration of Sentinel and Dubbo. You can see more fe
 Before we start the demo, let's learn how to connect Sentinel with Dubbo to a Spring Cloud application.
 **Note: This section is to show you how to connect to Sentinel. The configurations have been completed in the following example, so you don't need modify the code any more.**
 
-1. Add dependency spring-cloud-starter-alibaba-sentinel and dubbo-spring-boot-starter in the pom.xml file in your Spring Cloud project.
+1. Add dependency alibaba-sentinel-spring-cloud-starter and dubbo-spring-boot-starter in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-sentinel-spring-cloud-starter</artifactId>
         </dependency>
         
         <dependency>
@@ -48,7 +48,7 @@ Define some configs of dubbo in `application.properties` in provider side, like 
     
     foo.service.version = 1.0.0
     
-    dubbo.scan.basePackages = org.springframework.cloud.alibaba.cloud.examples
+    dubbo.scan.basePackages = com.alibaba.cloud.alibaba.cloud.examples
     
     dubbo.application.id = dubbo-provider-demo
     dubbo.application.name = dubbo-provider-demo
@@ -64,7 +64,7 @@ Define some configs of dubbo in `application.properties` in provider side, like 
 
 `sentinel-dubbo-api` define a service named FooService:
 
-    package org.springframework.cloud.alibaba.cloud.examples.FooService;
+    package com.alibaba.cloud.alibaba.cloud.examples.FooService;
     public interface FooService {
         String hello(String name);
     }
@@ -91,17 +91,17 @@ We will configure flow control rules before service invocation in consumer side.
 
 `sentinel-dubbo-api` define a service named FooService:
 
-    package org.springframework.cloud.alibaba.cloud.examples.FooService;
+    package com.alibaba.cloud.alibaba.cloud.examples.FooService;
     public interface FooService {
         String hello(String name);
     }
 
-The resource name of this service's `hello` method is `org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` .
+The resource name of this service's `hello` method is `com.alibaba.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` .
 
 Configure rules:
 
     FlowRule flowRule = new FlowRule();
-    flowRule.setResource("org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)");
+    flowRule.setResource("com.alibaba.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)");
     flowRule.setCount(10);
     flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
     flowRule.setLimitApp("default");

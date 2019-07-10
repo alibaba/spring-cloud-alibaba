@@ -4,13 +4,13 @@
 
 === 如何引入 Spring Cloud AliCloud SMS
 
-如果要在您的项目中引入 SMS，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-sms` 的 starter。
+如果要在您的项目中引入 SMS，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `alicloud-sms-spring-cloud-starter` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>alicloud-sms-spring-cloud-starter</artifactId>
 </dependency>
 ----
 
@@ -181,7 +181,7 @@ spring.cloud.alicloud.sms.report-queue-name=Alicom-Queue-********-SmsReport
  */
 @Component
 public class SmsReportMessageListener
-		implements org.springframework.cloud.alicloud.sms.SmsReportMessageListener {
+		implements com.alibaba.cloud.alicloud.sms.SmsReportMessageListener {
 
 	@Override
 	public boolean dealMessage(Message message) {
@@ -217,7 +217,7 @@ spring.cloud.alicloud.sms.up-queue-name=Alicom-Queue-********-SmsUp
  */
 @Component
 public class SmsUpMessageListener
-		implements org.springframework.cloud.alicloud.sms.SmsUpMessageListener {
+		implements com.alibaba.cloud.alicloud.sms.SmsUpMessageListener {
 
 	@Override
 	public boolean dealMessage(Message message) {

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.alibaba.alicloud.scx.endpoint.ScxEndpointAutoConfiguration,\
+  com.alibaba.alicloud.scx.ScxAutoConfiguration

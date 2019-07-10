@@ -1,7 +1,7 @@
 # Spring Cloud Alibaba
 
 [![CircleCI](https://circleci.com/gh/spring-cloud-incubator/spring-cloud-alibaba/tree/master.svg?style=svg)](https://circleci.com/gh/spring-cloud-incubator/spring-cloud-alibaba/tree/master)
-[![Maven Central](https://img.shields.io/maven-central/v/org.springframework.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:org.springframework.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
+[![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
 [![Codecov](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba/branch/master/graph/badge.svg)](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -35,9 +35,9 @@ For more features, please refer to [Roadmap](https://github.com/spring-cloud-inc
 
 **[RocketMQ](https://rocketmq.apache.org/)**：A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Dubbo](https://github.com/apache/incubator-dubbo)**：A high-performance, Java based open source RPC framework.
+**[Dubbo](https://github.com/apache/dubbo)**：A high-performance, Java based open source RPC framework.
 
-**[Fescar](https://github.com/alibaba/fescar)**：A distributed transaction solution with high performance and ease of use for microservices architecture.
+**[Seata](https://github.com/seata/seata)**：A distributed transaction solution with high performance and ease of use for microservices architecture.
 
 **[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**：An application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
 
@@ -62,16 +62,14 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 ## How to Use
 
 ### Add maven dependency
-Version 0.2.1.RELEASE is compatible with the Spring Cloud Finchley. Version 0.1.1.RELEASE is compatible with the Spring Cloud Edgware.
-
 These artifacts are available from Maven Central and Spring Release repository via BOM:
 
 	<dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.2.1.RELEASE</version>
+                <version>{version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -120,6 +118,8 @@ Examples：
 [RocketMQ Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
 
 [Alibaba Cloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme.md)
+
+[Duboo Spring Cloud Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/spring-cloud-alibaba-dubbo-examples/README_CN.md)
 
 ## Version control guidelines
 The version number of the project is in the form of x.x.x, where x is a number, starting from 0, and is not limited to the range 0~9. When the project is in the incubator phase, the version number is 0.x.x.
