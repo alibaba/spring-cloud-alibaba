@@ -11,8 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-dubbo-provider-web-sample</artifactId>
-    <name>Spring Cloud Dubbo Provider Web Sample</name>
+    <artifactId>dubbo-spring-cloud-provider-web-sample</artifactId>
+    <name>Dubbo Spring Cloud Provider Web Sample</name>
 
     <dependencies>
 

@@ -8,7 +8,7 @@
         <version>0.9.1.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>alibaba-seata-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Alibaba Seata</name>
+    <name>Alibaba Seata Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>

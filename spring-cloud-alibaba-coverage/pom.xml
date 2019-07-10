@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>alibaba-coverage-spring-cloud</artifactId>
+    <artifactId>spring-cloud-alibaba-coverage</artifactId>
     <name>Spring Cloud Alibaba Coverage</name>
 
     <properties>

@@ -8,7 +8,7 @@
         <version>0.9.1.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>alibaba-nacos-config-server-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Alibaba Nacos Config Server</name>
+    <name>Alibaba Nacos Config Server Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>

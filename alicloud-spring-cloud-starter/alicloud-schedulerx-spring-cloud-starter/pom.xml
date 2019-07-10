@@ -8,7 +8,7 @@
         <version>0.9.1.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>alicloud-schedulerx-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Alibaba Cloud SchedulerX</name>
+    <name>Alibaba Cloud SchedulerX Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>

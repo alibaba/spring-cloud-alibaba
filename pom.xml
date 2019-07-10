@@ -44,8 +44,11 @@
             <email>flystar32@163.com</email>
         </developer>
         <developer>
+            <id>fangjian0423</id>
             <name>fangjian</name>
             <email>fangjian0423@gmail.com</email>
+            <organization>Alibaba</organization>
+            <url>https://github.com/fangjian0423</url>
         </developer>
         <developer>
             <name>xiaolongzuo</name>
@@ -102,8 +105,8 @@
         <module>alibaba-dubbo-spring-cloud</module>
         <module>alicloud-context-spring-cloud</module>
         <module>spring-cloud-alibaba-examples</module>
-        <module>alibaba-test-spring-cloud</module>
-        <module>alibaba-docs-spring-cloud</module>
+        <module>spring-cloud-alibaba-test</module>
+        <module>alibaba-spring-cloud-docs</module>
         <module>alibaba-spring-cloud-starter</module>
         <module>alicloud-spring-cloud-starter</module>
         <module>alicloud-oss-spring-cloud</module>
@@ -111,7 +114,7 @@
         <module>alicloud-ans-spring-cloud</module>
         <module>alicloud-schedulerx-spring-cloud</module>
         <module>alicloud-sms-spring-cloud</module>
-        <module>alibaba-coverage-spring-cloud</module>
+        <module>spring-cloud-alibaba-coverage</module>
     </modules>
 
     <dependencyManagement>

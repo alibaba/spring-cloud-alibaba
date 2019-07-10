@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <artifactId>alibaba-test-spring-cloud</artifactId>
+    <artifactId>spring-cloud-alibaba-test</artifactId>
     <packaging>pom</packaging>
     <description>spring cloud alibaba test support</description>
 

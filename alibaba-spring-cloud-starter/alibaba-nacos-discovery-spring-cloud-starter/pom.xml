@@ -8,7 +8,7 @@
         <version>0.9.1.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>alibaba-nacos-discovery-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Alibaba Nacos Discovery</name>
+    <name>Alibaba Nacos Discovery Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>

@@ -11,7 +11,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>alibaba-seata-spring-cloud</artifactId>
-    <name>Spring Cloud Alibaba Seata</name>
+    <name>Alibaba Seata Spring Cloud</name>
 
     <dependencies>
 

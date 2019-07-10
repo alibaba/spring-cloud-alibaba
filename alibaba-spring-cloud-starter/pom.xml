@@ -9,8 +9,8 @@
     </parent>
     <artifactId>alibaba-spring-cloud-starter</artifactId>
     <packaging>pom</packaging>
-    <name>Spring Cloud Alibaba Starters</name>
-    <description>Spring Cloud Alibaba Starters</description>
+    <name>Alibaba Spring Cloud Starters</name>
+    <description>Alibaba Spring Cloud Starters</description>
     <modules>
         <module>alibaba-nacos-config-spring-cloud-starter</module>
         <module>alibaba-nacos-config-server-spring-cloud-starter</module>

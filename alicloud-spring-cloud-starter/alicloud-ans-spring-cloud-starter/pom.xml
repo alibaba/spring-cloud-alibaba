@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>alicloud-ans-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Alibaba Cloud ANS</name>
+    <name>Alibaba Cloud ANS Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>

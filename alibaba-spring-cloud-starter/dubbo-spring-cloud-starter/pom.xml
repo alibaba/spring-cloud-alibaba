@@ -11,7 +11,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>dubbo-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Dubbo</name>
+    <name>Dubbo Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>

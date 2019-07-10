@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-dubbo-sample-api</artifactId>
-    <name>Spring Cloud Dubbo Sample API</name>
+    <artifactId>dubbo-spring-cloud-sample-api</artifactId>
+    <name>Dubbo Spring Cloud Sample API</name>
 
     <dependencies>
 
