@@ -120,16 +120,16 @@ sh seata-server.sh 8091 file
 启动示例后，通过 HTTP 的 GET 方法访问如下两个 URL，可以分别验证在 `business-service` 中 通过 RestTemplate 和 FeignClient 调用其他服务的场景。
 
 ```$xslt
-http://127.0.0.1:18081/fescar/feign
+http://127.0.0.1:18081/seata/feign
 
-http://127.0.0.1:18081/fescar/rest
+http://127.0.0.1:18081/seata/rest
 ```
 
 ## 如何验证分布式事务成功？
 
 ### Xid 信息是否成功传递
 
-在 `account-server`、`order-service` 和 `storage-service` 三个 服务的 Controller 中，第一个执行的逻辑都是输出 RootContext 中的 Xid 信息，如果看到都输出了正确的 Xid 信息，即每次都发生变化，且同一次调用中所有服务的 Xid 都一致。则表明 Fescar 的 Xid 的传递和还原是正常的。
+在 `account-server`、`order-service` 和 `storage-service` 三个 服务的 Controller 中，第一个执行的逻辑都是输出 RootContext 中的 Xid 信息，如果看到都输出了正确的 Xid 信息，即每次都发生变化，且同一次调用中所有服务的 Xid 都一致。则表明 Seata 的 Xid 的传递和还原是正常的。
 
 ### 数据库中数据是否一致
 
