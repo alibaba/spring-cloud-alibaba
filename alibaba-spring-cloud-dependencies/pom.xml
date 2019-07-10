@@ -191,7 +191,7 @@
 
 
 
-            <!--Alibaba Fescar-->
+            <!--Alibaba Seata-->
             <dependency>
                 <groupId>io.seata</groupId>
                 <artifactId>seata-spring</artifactId>

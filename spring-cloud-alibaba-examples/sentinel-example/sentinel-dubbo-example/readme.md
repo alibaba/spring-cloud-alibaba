@@ -48,7 +48,7 @@ Define some configs of dubbo in `application.properties` in provider side, like 
     
     foo.service.version = 1.0.0
     
-    dubbo.scan.basePackages = org.springframework.cloud.alibaba.cloud.examples
+    dubbo.scan.basePackages = com.alibaba.cloud.examples
     
     dubbo.application.id = dubbo-provider-demo
     dubbo.application.name = dubbo-provider-demo
@@ -96,12 +96,12 @@ We will configure flow control rules before service invocation in consumer side.
         String hello(String name);
     }
 
-The resource name of this service's `hello` method is `org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` .
+The resource name of this service's `hello` method is `com.alibaba.cloud.examples.FooService:hello(java.lang.String)` .
 
 Configure rules:
 
     FlowRule flowRule = new FlowRule();
-    flowRule.setResource("org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)");
+    flowRule.setResource("com.alibaba.cloud.examples.FooService:hello(java.lang.String)");
     flowRule.setCount(10);
     flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
     flowRule.setLimitApp("default");

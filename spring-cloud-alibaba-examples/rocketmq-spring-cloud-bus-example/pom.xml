@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-bus-rocketmq-example</artifactId>
+    <artifactId>rocketmq-spring-cloud-bus-example</artifactId>
     <name>Spring Cloud Bus RocketMQ Example</name>
 
 

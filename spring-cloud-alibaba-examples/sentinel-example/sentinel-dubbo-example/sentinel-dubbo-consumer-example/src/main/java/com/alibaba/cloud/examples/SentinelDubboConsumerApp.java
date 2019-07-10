@@ -27,7 +27,7 @@ public class SentinelDubboConsumerApp {
 
 		FlowRule flowRule = new FlowRule();
 		flowRule.setResource(
-				"FooService:hello(java.lang.String)");
+				"com.alibaba.cloud.examples.FooService:hello(java.lang.String)");
 		flowRule.setCount(10);
 		flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
 		flowRule.setLimitApp("default");
