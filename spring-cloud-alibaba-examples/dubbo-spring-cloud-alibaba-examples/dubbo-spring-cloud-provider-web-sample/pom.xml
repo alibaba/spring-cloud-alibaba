@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.alibaba.cloud</groupId>
-        <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
+        <artifactId>dubbo-spring-cloud-alibaba-examples</artifactId>
         <version>0.9.1.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
