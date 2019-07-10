@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>alibaba-spring-cloud-docs</artifactId>
-    <name>Alibaba Spring Cloud Documentation</name>
+    <artifactId>spring-cloud-alibaba-docs</artifactId>
+    <name>Spring Cloud Alibaba Documentation</name>
     <packaging>pom</packaging>
 
     <properties>
