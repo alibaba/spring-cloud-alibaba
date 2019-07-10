@@ -8,12 +8,11 @@
         <version>2.1.6.RELEASE</version>
         <relativePath/>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-dubbo-server-sample</artifactId>
-    <name>Spring Cloud Dubbo Server Sample</name>
+    <artifactId>dubbo-spring-cloud-client-sample</artifactId>
+    <name>Dubbo Spring Cloud Client Sample</name>
     <version>0.9.1.BUILD-SNAPSHOT</version>
 
     <dependencyManagement>
@@ -30,7 +29,6 @@
     </dependencyManagement>
 
     <dependencies>
-
         <!-- Sample API -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -39,6 +37,11 @@
         </dependency>
 
         <!-- Spring Boot dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-actuator</artifactId>

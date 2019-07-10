@@ -11,19 +11,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
+    <artifactId>dubbo-spring-cloud-alibaba-examples</artifactId>
     <version>0.9.1.BUILD-SNAPSHOT</version>
-    <name>Spring Cloud Alibaba Dubbo Examples</name>
+    <name>Dubbo Spring Cloud Alibaba Examples</name>
     <packaging>pom</packaging>
 
     <modules>
-        <module>spring-cloud-dubbo-sample-api</module>
-        <module>spring-cloud-dubbo-server-sample</module>
-        <module>spring-cloud-dubbo-client-sample</module>
-        <module>spring-cloud-dubbo-provider-sample</module>
-        <module>spring-cloud-dubbo-consumer-sample</module>
-        <module>spring-cloud-dubbo-provider-web-sample</module>
-        <module>spring-cloud-dubbo-servlet-gateway-sample</module>
+        <module>dubbo-spring-cloud-sample-api</module>
+        <module>dubbo-spring-cloud-server-sample</module>
+        <module>dubbo-spring-cloud-client-sample</module>
+        <module>dubbo-spring-cloud-provider-sample</module>
+        <module>dubbo-spring-cloud-consumer-sample</module>
+        <module>dubbo-spring-cloud-provider-web-sample</module>
+        <module>dubbo-spring-cloud-servlet-gateway-sample</module>
     </modules>
 
     <properties>

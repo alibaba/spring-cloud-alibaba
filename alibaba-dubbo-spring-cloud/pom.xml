@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>alibaba-dubbo-spring-cloud</artifactId>
-    <name>Spring Cloud Alibaba Dubbo</name>
+    <name>Alibaba Dubbo Spring Cloud</name>
 
     <properties>
         <dubbo.version>2.7.1</dubbo.version>

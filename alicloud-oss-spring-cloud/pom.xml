@@ -11,7 +11,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>alicloud-oss-spring-cloud</artifactId>
-    <name>Spring Cloud Alibaba Cloud OSS</name>
+    <name>Alibaba Cloud OSS Spring Cloud</name>
 
     <dependencies>
 

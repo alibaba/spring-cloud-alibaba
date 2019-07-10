@@ -8,7 +8,7 @@
         <version>0.9.1.BUILD-SNAPSHOT</version>
     </parent>
     <artifactId>alicloud-acm-spring-cloud-starter</artifactId>
-    <name>Spring Cloud Starter Alibaba Cloud ACM</name>
+    <name>Alibaba Cloud ACM Spring Cloud Starter</name>
 
     <dependencies>
         <dependency>

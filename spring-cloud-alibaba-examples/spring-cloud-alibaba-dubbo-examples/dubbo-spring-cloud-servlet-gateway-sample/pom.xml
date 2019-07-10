@@ -11,8 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-dubbo-servlet-gateway-sample</artifactId>
-    <name>Spring Cloud Dubbo Servlet Gateway Sample</name>
+    <artifactId>dubbo-spring-cloud-servlet-gateway-sample</artifactId>
+    <name>Dubbo Spring Cloud Servlet Gateway Sample</name>
 
     <dependencies>
 

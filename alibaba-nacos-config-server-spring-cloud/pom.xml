@@ -12,7 +12,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>alibaba-nacos-config-server-spring-cloud</artifactId>
-    <name>Spring Cloud Alibaba Nacos Config Server</name>
+    <name>Alibaba Nacos Config Server Spring Cloud</name>
 
     <dependencies>
 

@@ -11,7 +11,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>alibaba-nacos-discovery-spring-cloud</artifactId>
-    <name>Spring Cloud Alibaba Nacos Discovery</name>
+    <name>Alibaba Nacos Discovery Spring Cloud</name>
 
     <dependencies>
 
