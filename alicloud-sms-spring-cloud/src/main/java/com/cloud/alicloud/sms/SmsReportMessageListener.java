@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms;
+package com.cloud.alicloud.sms;
 
 /**
  * @author pbting
  */
-public interface SmsUpMessageListener extends SmsMessageListener {
+public interface SmsReportMessageListener extends SmsMessageListener {
 }

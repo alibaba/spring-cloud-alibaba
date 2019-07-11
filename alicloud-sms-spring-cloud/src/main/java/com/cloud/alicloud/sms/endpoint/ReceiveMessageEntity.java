@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms.endpoint;
+package com.cloud.alicloud.sms.endpoint;
 
-import org.springframework.cloud.alicloud.sms.base.MessageListener;
+import com.cloud.alicloud.sms.base.MessageListener;
 
 import java.io.Serializable;
 

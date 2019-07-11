@@ -13,10 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms;
+package com.cloud.alicloud.sms.endpoint;
 
-/**
- * @author pbting
- */
-public interface SmsReportMessageListener extends SmsMessageListener {
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
+
+import java.util.Map;
+
+public class SmsEndpoint extends AbstractEndpoint<Map<String, Object>> {
+
+	public SmsEndpoint() {
+		super("sms");
+	}
+
+	@Override
+	public Map<String, Object> invoke() {
+
+		return EndpointManager.getSmsEndpointMessage();
+	}
 }

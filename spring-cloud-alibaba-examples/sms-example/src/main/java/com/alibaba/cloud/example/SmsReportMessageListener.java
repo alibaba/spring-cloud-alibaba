@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Component
 public class SmsReportMessageListener
-		implements org.springframework.cloud.alicloud.sms.SmsReportMessageListener {
+		implements com.cloud.alicloud.sms.SmsReportMessageListener {
 	private List<Message> smsReportMessageSet = new LinkedList<>();
 
 	@Override

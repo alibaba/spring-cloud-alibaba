@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms.endpoint;
+package com.cloud.alicloud.sms.endpoint;
 
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
+import org.springframework.boot.actuate.endpoint.Endpoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.annotation.Bean;
 
-import java.util.Map;
+@ConditionalOnWebApplication
+@ConditionalOnClass(value = Endpoint.class)
+public class SmsEndpointAutoConfiguration {
 
-public class SmsEndpoint extends AbstractEndpoint<Map<String, Object>> {
-
-	public SmsEndpoint() {
-		super("sms");
-	}
-
-	@Override
-	public Map<String, Object> invoke() {
-
-		return EndpointManager.getSmsEndpointMessage();
+	@Bean
+	public SmsEndpoint smsEndpoint() {
+		return new SmsEndpoint();
 	}
 }

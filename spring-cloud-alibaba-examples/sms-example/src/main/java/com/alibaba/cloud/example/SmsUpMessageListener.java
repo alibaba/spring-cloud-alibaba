@@ -10,7 +10,7 @@ import com.aliyun.mns.model.Message;
  */
 @Component
 public class SmsUpMessageListener
-		implements org.springframework.cloud.alicloud.sms.SmsUpMessageListener {
+		implements com.cloud.alicloud.sms.SmsUpMessageListener {
 
 	@Override
 	public boolean dealMessage(Message message) {

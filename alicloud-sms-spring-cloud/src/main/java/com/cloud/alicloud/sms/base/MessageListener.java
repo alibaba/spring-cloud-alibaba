@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms.base;
+package com.cloud.alicloud.sms.base;
 
 import com.aliyun.mns.model.Message;
 

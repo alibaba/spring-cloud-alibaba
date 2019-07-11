@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms.endpoint;
+package com.cloud.alicloud.sms.endpoint;
 
 import com.aliyuncs.dysmsapi.model.v20170525.SendBatchSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;

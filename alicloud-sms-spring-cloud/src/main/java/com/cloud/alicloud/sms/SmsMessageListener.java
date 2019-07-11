@@ -13,19 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms.endpoint;
+package com.cloud.alicloud.sms;
 
-import org.springframework.boot.actuate.endpoint.Endpoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Bean;
+import com.cloud.alicloud.sms.base.MessageListener;
 
-@ConditionalOnWebApplication
-@ConditionalOnClass(value = Endpoint.class)
-public class SmsEndpointAutoConfiguration {
-
-	@Bean
-	public SmsEndpoint smsEndpoint() {
-		return new SmsEndpoint();
-	}
+/**
+ * @author pbting
+ */
+public interface SmsMessageListener extends MessageListener {
 }

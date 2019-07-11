@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms;
+package com.cloud.alicloud.sms;
 
 import java.text.ParseException;
 
+import com.cloud.alicloud.sms.base.DefaultAlicomMessagePuller;
+import com.cloud.alicloud.sms.endpoint.EndpointManager;
+import com.cloud.alicloud.sms.endpoint.ReceiveMessageEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.sms.SmsProperties;
-import org.springframework.cloud.alicloud.sms.base.DefaultAlicomMessagePuller;
-import org.springframework.cloud.alicloud.sms.endpoint.EndpointManager;
-import org.springframework.cloud.alicloud.sms.endpoint.ReceiveMessageEntity;
 
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;

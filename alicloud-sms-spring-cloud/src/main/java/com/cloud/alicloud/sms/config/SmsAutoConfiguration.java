@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms.config;
+package com.cloud.alicloud.sms.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.sms.SmsProperties;
-import org.springframework.cloud.alicloud.sms.ISmsService;
-import org.springframework.cloud.alicloud.sms.SmsInitializer;
-import org.springframework.cloud.alicloud.sms.SmsServiceImpl;
+import com.cloud.alicloud.sms.ISmsService;
+import com.cloud.alicloud.sms.SmsInitializer;
+import com.cloud.alicloud.sms.SmsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

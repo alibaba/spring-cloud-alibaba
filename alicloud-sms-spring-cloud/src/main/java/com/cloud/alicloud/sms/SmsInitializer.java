@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.alicloud.sms;
+package com.cloud.alicloud.sms;
 
+import com.cloud.alicloud.sms.base.MessageListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import com.alibaba.alicloud.context.sms.SmsProperties;
-import org.springframework.cloud.alicloud.sms.base.MessageListener;
 
 import com.aliyuncs.profile.DefaultProfile;
 
