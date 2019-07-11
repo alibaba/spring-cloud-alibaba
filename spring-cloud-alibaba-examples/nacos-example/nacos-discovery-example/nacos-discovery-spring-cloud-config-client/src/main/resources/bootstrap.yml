@@ -8,3 +8,5 @@ spring:
     config:
       discovery:
         enabled: true
+  profiles:
+    active: dev

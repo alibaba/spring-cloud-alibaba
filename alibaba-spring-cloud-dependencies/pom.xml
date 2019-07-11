@@ -20,7 +20,7 @@
     <properties>
         <sentinel.version>1.6.2</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <seata.version>0.5.1</seata.version>
+        <seata.version>0.5.2</seata.version>
         <nacos.version>1.1.0</nacos.version>
         <acm.version>1.0.9</acm.version>
         <ans.version>1.0.1</ans.version>
