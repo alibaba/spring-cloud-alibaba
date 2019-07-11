@@ -251,7 +251,7 @@ public QuerySendDetailsResponse querySendDetailsResponse(
 发送状态的回执消息如下所示：
 
 ```plain
-org.springframework.cloud.alibaba.cloud.example.SmsReportMessageListener; MessageID:9F3CFCE6BB3B2C8F-2-1682D84D9AD-20000000A,MessageMD5:C6AFEE0EE560BBC3380252337AC36985,RequestID:5C349CCEB8C115CCF344A3EB,MessageBody:"{"send_time":"2019-01-08 20:51:40","report_time":"2019-01-08 20:51:47","success":true,"err_msg":"用户接收成功","err_code":"DELIVERED","phone_number":"152********","sms_size":"1","biz_id":"667618746951900475^0","out_id":"edasTraceId"}",ReceiptHandle:"1-ODU4OTkzNDYwMi0xNTQ2OTUxOTM3LTItOA==",DequeueCount:"1",EnqueueTime:"Tue Jan 08 20:51:47 CST 2019",FirstDequeueTime:"Tue Jan 08 20:51:47 CST 2019",NextVisibleTime:"Tue Jan 08 20:52:17 CST 2019",Priority:"8"
+com.alibaba.cloud.examples.SmsReportMessageListener; MessageID:9F3CFCE6BB3B2C8F-2-1682D84D9AD-20000000A,MessageMD5:C6AFEE0EE560BBC3380252337AC36985,RequestID:5C349CCEB8C115CCF344A3EB,MessageBody:"{"send_time":"2019-01-08 20:51:40","report_time":"2019-01-08 20:51:47","success":true,"err_msg":"用户接收成功","err_code":"DELIVERED","phone_number":"152********","sms_size":"1","biz_id":"667618746951900475^0","out_id":"edasTraceId"}",ReceiptHandle:"1-ODU4OTkzNDYwMi0xNTQ2OTUxOTM3LTItOA==",DequeueCount:"1",EnqueueTime:"Tue Jan 08 20:51:47 CST 2019",FirstDequeueTime:"Tue Jan 08 20:51:47 CST 2019",NextVisibleTime:"Tue Jan 08 20:52:17 CST 2019",Priority:"8"
 ```
 
 ### 上行短信消息   
@@ -290,7 +290,7 @@ org.springframework.cloud.alibaba.cloud.example.SmsReportMessageListener; Messag
 短信成功恢复后，上行短信消息 SmsUpMessageListener 回调后的信息如下所示：
 
 ```plain
-org.springframework.cloud.alibaba.cloud.example.SmsUpMessageListener; MessageID:BF030215BA85BB41-1-1682D85425F-400000003,MessageMD5:D1AF5C2D7410EF190532CBF8E17FE2B7,RequestID:5C349CEE36AF628D2A847D50,MessageBody:"{"dest_code":"2493559","send_time":"2019-01-08 20:52:14","sign_name":"【企业级分布式应用服务】","sequence_id":568585703,"phone_number":"152********","content":"5279"}",ReceiptHandle:"1-MTcxNzk4NjkxODctMTU0Njk1MTk2NC0xLTg=",DequeueCount:"1",EnqueueTime:"Tue Jan 08 20:52:14 CST 2019",FirstDequeueTime:"Tue Jan 08 20:52:14 CST 2019",NextVisibleTime:"Tue Jan 08 20:52:44 CST 2019",Priority:"8"
+com.alibaba.cloud.examples.SmsUpMessageListener; MessageID:BF030215BA85BB41-1-1682D85425F-400000003,MessageMD5:D1AF5C2D7410EF190532CBF8E17FE2B7,RequestID:5C349CEE36AF628D2A847D50,MessageBody:"{"dest_code":"2493559","send_time":"2019-01-08 20:52:14","sign_name":"【企业级分布式应用服务】","sequence_id":568585703,"phone_number":"152********","content":"5279"}",ReceiptHandle:"1-MTcxNzk4NjkxODctMTU0Njk1MTk2NC0xLTg=",DequeueCount:"1",EnqueueTime:"Tue Jan 08 20:52:14 CST 2019",FirstDequeueTime:"Tue Jan 08 20:52:14 CST 2019",NextVisibleTime:"Tue Jan 08 20:52:44 CST 2019",Priority:"8"
 ```
 
 ## 查看 Endpoint 信息

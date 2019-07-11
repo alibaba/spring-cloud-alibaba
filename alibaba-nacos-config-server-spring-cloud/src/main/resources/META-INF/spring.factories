@@ -1,0 +1,3 @@
+# Auto-Configuration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.alibaba.cloud.nacos.config.server.NacosConfigServerAutoConfiguration
