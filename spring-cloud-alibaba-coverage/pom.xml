@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <groupId>org.springframework.cloud</groupId>
         <version>0.9.1.BUILD-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -17,53 +17,53 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dubbo</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-dubbo-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-nacos-config-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-nacos-discovery-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-sentinel</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-sentinel-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-sentinel-datasource-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-acm</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alicloud-acm-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-ans</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alicloud-ans-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-context</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alicloud-context-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>rocketmq-spring-cloud-stream-binder</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-seata</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>alibaba-seata-spring-cloud</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
         </dependency>
     </dependencies>

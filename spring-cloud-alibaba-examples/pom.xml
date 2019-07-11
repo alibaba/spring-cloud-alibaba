@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
         <version>0.9.1.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -39,9 +39,9 @@
         <module>rocketmq-example/rocketmq-consume-example</module>
         <module>rocketmq-example/rocketmq-produce-example</module>
         <module>sms-example</module>
-        <module>spring-cloud-bus-rocketmq-example</module>
+        <module>rocketmq-spring-cloud-bus-example</module>
         <module>schedulerx-example/schedulerx-simple-task-example</module>
-        <module>spring-cloud-alibaba-dubbo-examples</module>
+        <module>dubbo-spring-cloud-alibaba-examples</module>
     </modules>
 
     <build>

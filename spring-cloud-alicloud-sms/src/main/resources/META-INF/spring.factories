@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.springframework.cloud.alicloud.sms.config.SmsAutoConfiguration,\
-  org.springframework.cloud.alicloud.sms.endpoint.SmsEndpointAutoConfiguration

@@ -195,7 +195,7 @@ spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
 #spring.cloud.sentinel.datasource.ds1.file.file=classpath: flowrule.json
 #spring.cloud.sentinel.datasource.ds1.file.data-type=custom
-#spring.cloud.sentinel.datasource.ds1.file.converter-class=org.springframework.cloud.alibaba.cloud.examples.JsonFlowRuleListConverter
+#spring.cloud.sentinel.datasource.ds1.file.converter-class=com.alibaba.cloud.examples.JsonFlowRuleListConverter
 #spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
 spring.cloud.sentinel.datasource.ds2.nacos.server-addr=localhost:8848

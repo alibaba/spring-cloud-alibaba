@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.cloud.alicloud.oss.OssAutoConfiguration,\
-org.springframework.cloud.alicloud.oss.endpoint.OssEndpointAutoConfiguration
-org.springframework.context.ApplicationListener=\
-org.springframework.cloud.alicloud.oss.OssApplicationListener

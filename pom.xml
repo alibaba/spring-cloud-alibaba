@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
     <version>0.9.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -44,8 +44,11 @@
             <email>flystar32@163.com</email>
         </developer>
         <developer>
+            <id>fangjian0423</id>
             <name>fangjian</name>
             <email>fangjian0423@gmail.com</email>
+            <organization>Alibaba</organization>
+            <url>https://github.com/fangjian0423</url>
         </developer>
         <developer>
             <name>xiaolongzuo</name>
@@ -90,27 +93,27 @@
     </properties>
 
     <modules>
-        <module>spring-cloud-alibaba-dependencies</module>
-        <module>spring-cloud-alibaba-sentinel</module>
-        <module>spring-cloud-alibaba-sentinel-datasource</module>
-        <module>spring-cloud-alibaba-sentinel-gateway</module>
-        <module>spring-cloud-alibaba-nacos-config</module>
-        <module>spring-cloud-alibaba-nacos-discovery</module>
-        <module>spring-cloud-alibaba-seata</module>
-        <module>spring-cloud-stream-binder-rocketmq</module>
-        <module>spring-cloud-alibaba-nacos-config-server</module>
-        <module>spring-cloud-alibaba-dubbo</module>
-        <module>spring-cloud-alicloud-context</module>
+        <module>alibaba-spring-cloud-dependencies</module>
+        <module>alibaba-sentinel-spring-cloud</module>
+        <module>alibaba-sentinel-datasource-spring-cloud</module>
+        <module>alibaba-sentinel-gateway-spring-cloud</module>
+        <module>alibaba-nacos-config-spring-cloud</module>
+        <module>alibaba-nacos-discovery-spring-cloud</module>
+        <module>alibaba-seata-spring-cloud</module>
+        <module>rocketmq-spring-cloud-stream-binder</module>
+        <module>alibaba-nacos-config-server-spring-cloud</module>
+        <module>alibaba-dubbo-spring-cloud</module>
+        <module>alicloud-context-spring-cloud</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-test</module>
         <module>spring-cloud-alibaba-docs</module>
-        <module>spring-cloud-starter-alibaba</module>
-        <module>spring-cloud-starter-alicloud</module>
-        <module>spring-cloud-alicloud-oss</module>
-        <module>spring-cloud-alicloud-acm</module>
-        <module>spring-cloud-alicloud-ans</module>
-        <module>spring-cloud-alicloud-schedulerx</module>
-        <module>spring-cloud-alicloud-sms</module>
+        <module>alibaba-spring-cloud-starter</module>
+        <module>alicloud-spring-cloud-starter</module>
+        <module>alicloud-oss-spring-cloud</module>
+        <module>alicloud-acm-spring-cloud</module>
+        <module>alicloud-ans-spring-cloud</module>
+        <module>alicloud-schedulerx-spring-cloud</module>
+        <module>alicloud-sms-spring-cloud</module>
         <module>spring-cloud-alibaba-coverage</module>
     </modules>
 
@@ -127,8 +130,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>alibaba-spring-cloud-dependencies</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
