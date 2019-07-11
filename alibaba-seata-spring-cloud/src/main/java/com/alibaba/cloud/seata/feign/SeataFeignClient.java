@@ -58,9 +58,9 @@ public class SeataFeignClient implements Client {
 
 	private Request getModifyRequest(Request request) {
 
-		String xid = RootContext.getXID();
+		String xid;
 
-		if (StringUtils.isEmpty(xid)) {
+		if (StringUtils.isEmpty(xid= RootContext.getXID())) {
 			return request;
 		}
 
