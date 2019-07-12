@@ -105,7 +105,6 @@
         <module>alibaba-dubbo-spring-cloud</module>
         <module>alicloud-context-spring-cloud</module>
         <module>spring-cloud-alibaba-examples</module>
-        <module>spring-cloud-alibaba-test</module>
         <module>spring-cloud-alibaba-docs</module>
         <module>alibaba-spring-cloud-starter</module>
         <module>alicloud-spring-cloud-starter</module>
