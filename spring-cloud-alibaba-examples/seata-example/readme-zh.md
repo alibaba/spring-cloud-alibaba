@@ -50,6 +50,7 @@ CREATE TABLE `undo_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `branch_id` bigint(20) NOT NULL,
   `xid` varchar(100) NOT NULL,
+  `context` varchar(128) NOT NULL,
   `rollback_info` longblob NOT NULL,
   `log_status` int(11) NOT NULL,
   `log_created` datetime NOT NULL,
@@ -101,13 +102,13 @@ CREATE TABLE `account_tbl` (
 进入解压之后的 bin 目录，执行如下命令来启动
 
 ```$shell
-sh seata-server.sh $LISTEN_PORT $MODE(file or db)
+sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db)
 ```
 
 在这个示例中，采用如下命令来启动 Seata Server
 
 ```$shell
-sh seata-server.sh 8091 file
+sh seata-server.sh -p 8091 -m file
 ```
 
 **注意** 如果你修改了endpoint且注册中心使用默认file类型，那么记得需要在各个示例工程中的 `file.conf` 文件中，修改 grouplist 的值(当registry.conf 中registry.type 或 config.type 为file 时会读取内部的file节点中的文件名，若type不为file将直接从配置类型的对应元数据的注册配置中心读取数据)，推荐大家使用 nacos 作为配置注册中心。
