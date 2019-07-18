@@ -175,12 +175,12 @@ public class NacosAutoServiceRegistrationTests {
 
 	private void checkoutNacosDiscoveryHeartBeatTimeout() {
 		assertEquals("NacosDiscoveryProperties heart beat timeout was wrong",
-				Integer.valueOf(6), properties.getHeartBeatInterval());
+				Integer.valueOf(6), properties.getHeartBeatTimeout());
 	}
 
 	private void checkoutNacosDiscoveryIpDeleteTimeout() {
 		assertEquals("NacosDiscoveryProperties ip delete timeout was wrong",
-				Integer.valueOf(9), properties.getHeartBeatInterval());
+				Integer.valueOf(9), properties.getIpDeleteTimeout());
 	}
 
 	private void checkoutNacosDiscoveryServiceName() {
