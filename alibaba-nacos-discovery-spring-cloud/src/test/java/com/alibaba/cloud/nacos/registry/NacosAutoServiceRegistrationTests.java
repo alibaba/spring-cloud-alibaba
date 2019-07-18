@@ -169,18 +169,18 @@ public class NacosAutoServiceRegistrationTests {
 	}
 
 	private void checkoutNacosDiscoveryHeartBeatInterval() {
-		assertEquals("NacosDiscoveryProperties heart beat interval was wrong", Integer.valueOf(3),
-				properties.getHeartBeatInterval());
+		assertEquals("NacosDiscoveryProperties heart beat interval was wrong",
+				Integer.valueOf(3), properties.getHeartBeatInterval());
 	}
 
 	private void checkoutNacosDiscoveryHeartBeatTimeout() {
-		assertEquals("NacosDiscoveryProperties heart beat timeout was wrong", Integer.valueOf(6),
-				properties.getHeartBeatInterval());
+		assertEquals("NacosDiscoveryProperties heart beat timeout was wrong",
+				Integer.valueOf(6), properties.getHeartBeatInterval());
 	}
 
 	private void checkoutNacosDiscoveryIpDeleteTimeout() {
-		assertEquals("NacosDiscoveryProperties ip delete timeout was wrong", Integer.valueOf(9),
-				properties.getHeartBeatInterval());
+		assertEquals("NacosDiscoveryProperties ip delete timeout was wrong",
+				Integer.valueOf(9), properties.getHeartBeatInterval());
 	}
 
 	private void checkoutNacosDiscoveryServiceName() {
