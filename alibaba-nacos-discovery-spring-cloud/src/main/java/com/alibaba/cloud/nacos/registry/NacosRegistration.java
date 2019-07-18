@@ -80,16 +80,16 @@ public class NacosRegistration implements Registration, ServiceInstance {
 
 		if (null != nacosDiscoveryProperties.getHeartBeatInterval()) {
 			metadata.put(PreservedMetadataKeys.HEART_BEAT_INTERVAL,
-                    nacosDiscoveryProperties.getHeartBeatInterval().toString());
+					nacosDiscoveryProperties.getHeartBeatInterval().toString());
 		}
 		if (null != nacosDiscoveryProperties.getHeartBeatTimeout()) {
-		    metadata.put(PreservedMetadataKeys.HEART_BEAT_TIMEOUT,
-                    nacosDiscoveryProperties.getHeartBeatTimeout().toString());
-        }
+			metadata.put(PreservedMetadataKeys.HEART_BEAT_TIMEOUT,
+					nacosDiscoveryProperties.getHeartBeatTimeout().toString());
+		}
 		if (null != nacosDiscoveryProperties.getIpDeleteTimeout()) {
-		    metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
-                    nacosDiscoveryProperties.getIpDeleteTimeout().toString());
-        }
+			metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
+					nacosDiscoveryProperties.getIpDeleteTimeout().toString());
+		}
 	}
 
 	@Override
