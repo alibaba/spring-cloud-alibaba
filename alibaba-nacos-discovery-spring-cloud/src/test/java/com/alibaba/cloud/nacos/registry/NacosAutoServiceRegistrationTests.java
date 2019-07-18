@@ -56,7 +56,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.nacos.discovery.namingLoadCacheAtStart=true",
 		"spring.cloud.nacos.discovery.secure=true",
 		"spring.cloud.nacos.discovery.accessKey=test-accessKey",
-		"spring.cloud.nacos.discovery.secretKey=test-secretKey" }, webEnvironment = RANDOM_PORT)
+		"spring.cloud.nacos.discovery.secretKey=test-secretKey",
+		"spring.cloud.nacos.discovery.heart-beat-interval=3",
+		"spring.cloud.nacos.discovery.heart-beat-timeout=6",
+		"spring.cloud.nacos.discovery.ip-delete-timeout=9", }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationTests {
 
 	@Autowired
@@ -92,6 +95,9 @@ public class NacosAutoServiceRegistrationTests {
 		checkoutNacosDiscoverySecure();
 		checkoutNacosDiscoveryAccessKey();
 		checkoutNacosDiscoverySecrectKey();
+		checkoutNacosDiscoveryHeartBeatInterval();
+		checkoutNacosDiscoveryHeartBeatTimeout();
+		checkoutNacosDiscoveryIpDeleteTimeout();
 
 		checkoutNacosDiscoveryServiceName();
 		checkoutNacosDiscoveryServiceIP();
@@ -160,6 +166,21 @@ public class NacosAutoServiceRegistrationTests {
 	private void checkoutNacosDiscoverySecrectKey() {
 		assertEquals("NacosDiscoveryProperties is secret key was wrong", "test-secretKey",
 				properties.getSecretKey());
+	}
+
+	private void checkoutNacosDiscoveryHeartBeatInterval() {
+		assertEquals("NacosDiscoveryProperties heart beat interval was wrong", Integer.valueOf(3),
+				properties.getHeartBeatInterval());
+	}
+
+	private void checkoutNacosDiscoveryHeartBeatTimeout() {
+		assertEquals("NacosDiscoveryProperties heart beat timeout was wrong", Integer.valueOf(6),
+				properties.getHeartBeatInterval());
+	}
+
+	private void checkoutNacosDiscoveryIpDeleteTimeout() {
+		assertEquals("NacosDiscoveryProperties ip delete timeout was wrong", Integer.valueOf(9),
+				properties.getHeartBeatInterval());
 	}
 
 	private void checkoutNacosDiscoveryServiceName() {

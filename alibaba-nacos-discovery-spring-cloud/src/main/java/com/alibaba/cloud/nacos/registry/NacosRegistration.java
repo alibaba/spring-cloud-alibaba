@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.registry;
 
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
@@ -76,6 +77,19 @@ public class NacosRegistration implements Registration, ServiceInstance {
 				metadata.put(MANAGEMENT_ADDRESS, address);
 			}
 		}
+
+		if (null != nacosDiscoveryProperties.getHeartBeatInterval()) {
+			metadata.put(PreservedMetadataKeys.HEART_BEAT_INTERVAL,
+                    nacosDiscoveryProperties.getHeartBeatInterval().toString());
+		}
+		if (null != nacosDiscoveryProperties.getHeartBeatTimeout()) {
+		    metadata.put(PreservedMetadataKeys.HEART_BEAT_TIMEOUT,
+                    nacosDiscoveryProperties.getHeartBeatTimeout().toString());
+        }
+		if (null != nacosDiscoveryProperties.getIpDeleteTimeout()) {
+		    metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
+                    nacosDiscoveryProperties.getIpDeleteTimeout().toString());
+        }
 	}
 
 	@Override
