@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+<servers>
+	<server>
+		<id>nexus</id>
+		<username>admin</username>
+		<password>admin123</password>
+	</server>
+	<server>
+		<id>releases</id>
+		<username>admin</username>
+		<password>admin123</password>
+	</server>
+	<server>
+		<id>snapshots</id>
+		<username>admin</username>
+		<password>admin123</password>
+	</server>
+</servers>
+
+<mirrors>
+<mirror>
+      <id>nexus</id>
+      <mirrorOf>central</mirrorOf>
+      <url>http://nexus.zhenai.com:8081/content/groups/public/</url>
+   </mirror>
+</mirrors>
+
+<profiles>
+  	<profile>
+      <id>development</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+
+     	<pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+ 	<activeProfiles>
+    <activeProfile>development</activeProfile>
+  </activeProfiles>
+</settings>
