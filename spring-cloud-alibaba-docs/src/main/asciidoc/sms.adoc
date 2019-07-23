@@ -6,12 +6,12 @@ Spring Cloud AliCloud SMS provide an easier-to-use API for quick access to Aliba
 
 === 如何引入 Spring Cloud AliCloud SMS
 
-If you want to use SMS in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alicloud-sms`.
+If you want to use SMS in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alicloud-sms`.
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
 </dependency>
 ----
@@ -165,7 +165,7 @@ spring.cloud.alicloud.sms.report-queue-name=Alicom-Queue-********-SmsReport
 ----
 @Component
 public class SmsReportMessageListener
-		implements org.springframework.cloud.alicloud.sms.SmsReportMessageListener {
+		implements SmsReportMessageListener {
 
 	@Override
 	public boolean dealMessage(Message message) {
@@ -195,7 +195,7 @@ spring.cloud.alicloud.sms.up-queue-name=Alicom-Queue-********-SmsUp
 ----
 @Component
 public class SmsUpMessageListener
-		implements org.springframework.cloud.alicloud.sms.SmsUpMessageListener {
+		implements SmsUpMessageListener {
 
 	@Override
 	public boolean dealMessage(Message message) {

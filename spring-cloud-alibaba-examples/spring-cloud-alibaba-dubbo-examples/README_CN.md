@@ -46,13 +46,13 @@ Dubbo Spring Cloud 必要的依赖：
 
     <!-- Dubbo Spring Cloud Starter -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-dubbo</artifactId>
     </dependency>
 
     <!-- Spring Cloud Nacos Service Discovery -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
     </dependency>
 </dependencies>
@@ -119,7 +119,7 @@ class EchoServiceImpl implements EchoService {
 dubbo:
   scan:
     # dubbo 服务扫描基准包
-    base-packages: org.springframework.cloud.alibaba.dubbo.bootstrap
+    base-packages: com.alibaba.cloud.dubbo.bootstrap
   protocol:
     # dubbo 协议
     name: dubbo
@@ -234,13 +234,13 @@ public class DubboSpringCloudServerBootstrap {
 
     <!-- Dubbo Spring Cloud Starter -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-dubbo</artifactId>
     </dependency>
 
     <!-- Spring Cloud Nacos Service Discovery -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
     </dependency>
 </dependencies>

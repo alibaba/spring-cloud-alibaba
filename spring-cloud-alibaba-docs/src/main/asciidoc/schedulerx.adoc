@@ -4,12 +4,12 @@ SchedulerX（Distributed job scheduling） is a component of EDAS, an Alibaba Cl
 
 === How to Introduce Spring Cloud Alibaba Cloud SchedulerX
 
-If you want to use SchedulerX in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alicloud-schedulerX`.
+If you want to use SchedulerX in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alicloud-schedulerX`.
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-schedulerX</artifactId>
 </dependency>
 ----
@@ -75,7 +75,7 @@ Go to the https://edas.console.aliyun.com/#/edasSchedulerXJob?regionNo=cn-test[S
 [source,text]
 ----
 Job Group： Test——***-*-*-****
-Job process interface：org.springframework.cloud.alibaba.cloud.examples.SimpleTask
+Job process interface：SimpleTask
 Type： Simple Single-Server Job
 Quartz Cron Expression： Default Option——0 * * * * ?
 Job Description： Empty
