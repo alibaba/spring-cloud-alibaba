@@ -10,6 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-dubbo-client-sample</artifactId>
     <name>Spring Cloud Dubbo Client Sample</name>
     <version>0.9.1.BUILD-SNAPSHOT</version>
@@ -30,7 +31,7 @@
     <dependencies>
         <!-- Sample API -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-dubbo-sample-api</artifactId>
             <version>${project.version}</version>
         </dependency>
