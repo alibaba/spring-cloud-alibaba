@@ -24,11 +24,11 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @author xiaolongzuo
  */
 @SpringBootApplication
-@EnableFeignClients(basePackages = {"com.alibaba.cloud.examples"})
+@EnableFeignClients(basePackages = { "com.alibaba.cloud.examples" })
 public class ConsumerApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ConsumerApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(ConsumerApplication.class, args);
+	}
 
 }

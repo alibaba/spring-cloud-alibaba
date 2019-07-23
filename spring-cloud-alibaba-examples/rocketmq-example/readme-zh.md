@@ -40,7 +40,7 @@ Binding 在消息中间件与应用程序提供的 Provider 和 Consumer 之间�
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
 </dependency>
 ```

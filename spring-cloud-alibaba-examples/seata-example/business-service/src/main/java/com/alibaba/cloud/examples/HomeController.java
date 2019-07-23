@@ -16,11 +16,6 @@
 
 package com.alibaba.cloud.examples;
 
-import com.alibaba.cloud.examples.BusinessApplication.OrderService;
-import com.alibaba.cloud.examples.BusinessApplication.StorageService;
-
-import io.seata.spring.annotation.GlobalTransactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -33,6 +28,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import com.alibaba.cloud.examples.BusinessApplication.OrderService;
+import com.alibaba.cloud.examples.BusinessApplication.StorageService;
+
+import io.seata.spring.annotation.GlobalTransactional;
 
 /**
  * @author xiaojing
@@ -60,7 +60,7 @@ public class HomeController {
 	}
 
 	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
-	@RequestMapping(value = "/seata/rest", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/fescar/rest", method = RequestMethod.GET, produces = "application/json")
 	public String rest() {
 
 		String result = restTemplate.getForObject(
@@ -96,7 +96,7 @@ public class HomeController {
 	}
 
 	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
-	@RequestMapping(value = "/seata/feign", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/fescar/feign", method = RequestMethod.GET, produces = "application/json")
 	public String feign() {
 
 		String result = storageService.storage(COMMODITY_CODE, ORDER_COUNT);

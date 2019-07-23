@@ -29,18 +29,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);
 
-    @Autowired
-    private EchoService echoService;
+	@Autowired
+	private EchoService echoService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-    public String home() {
-        LOGGER.info("-----------------consumer调用开始-----------------");
-        String param = "Nice to meet you.";
-        LOGGER.info("消费者传递参数：" + param);
-        String result = echoService.echo(param);
-        LOGGER.info("收到提供者响应：" + result);
-        return param + "<br>" + result;
-    }
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
+	public String home() {
+		LOGGER.info("-----------------consumer调用开始-----------------");
+		String param = "Nice to meet you.";
+		LOGGER.info("消费者传递参数：" + param);
+		String result = echoService.echo(param);
+		LOGGER.info("收到提供者响应：" + result);
+		return param + "<br>" + result;
+	}
 }

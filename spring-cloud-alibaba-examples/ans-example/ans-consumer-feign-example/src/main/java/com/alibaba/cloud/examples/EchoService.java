@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "ans-provider")
 public interface EchoService {
 
-    @RequestMapping(path = "echo/{str}")
-    String echo(@RequestParam("str") String param);
+	@RequestMapping(path = "echo/{str}")
+	String echo(@RequestParam("str") String param);
 
 }

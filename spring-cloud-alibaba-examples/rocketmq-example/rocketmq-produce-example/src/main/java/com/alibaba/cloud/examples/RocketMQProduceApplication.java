@@ -1,7 +1,5 @@
 package com.alibaba.cloud.examples;
 
-import com.alibaba.cloud.examples.RocketMQProduceApplication.MySource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +9,8 @@ import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
+
+import com.alibaba.cloud.examples.RocketMQProduceApplication.MySource;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -81,7 +81,7 @@ public class RocketMQProduceApplication {
 				}
 			}
 			else if (this.bindingName.equals("output3")) {
-				int count = 50;
+				int count = 20;
 				for (int index = 1; index <= count; index++) {
 					String msgContent = "pullMsg-" + index;
 					mySource.output3()

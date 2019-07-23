@@ -37,18 +37,18 @@ public class SentinelWebFluxController {
 				.transform(new SentinelReactorTransformer<>("mono"));
 	}
 
+    @GetMapping("/test")
+    public Mono<String> test() {
+        return Mono.just("simple string")
+            // transform the publisher here.
+            .transform(new SentinelReactorTransformer<>("test"));
+    }
+
 	@GetMapping("/flux")
 	public Flux<String> flux() {
 		return Flux.fromArray(new String[] { "a", "b", "c" })
 				// transform the publisher here.
 				.transform(new SentinelReactorTransformer<>("flux"));
 	}
-
-    @GetMapping("/test")
-    public Flux<String> test() {
-        return Flux.fromArray(new String[] { "test" })
-            // transform the publisher here.
-            .transform(new SentinelReactorTransformer<>("test"));
-    }
 
 }

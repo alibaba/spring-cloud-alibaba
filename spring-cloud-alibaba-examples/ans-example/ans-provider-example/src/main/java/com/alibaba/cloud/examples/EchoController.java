@@ -29,14 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EchoController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EchoController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EchoController.class);
 
-    @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET, produces = "application/json")
-    public String echo(@PathVariable String str) {
-        LOGGER.info("-----------收到消费者请求-----------");
-        LOGGER.info("收到消费者传递的参数：" + str);
-        String result = "Nice to meet you, too.";
-        LOGGER.info("提供者返回结果：" + result);
-        return result;
-    }
+	@RequestMapping(value = "/echo/{str}", method = RequestMethod.GET, produces = "application/json")
+	public String echo(@PathVariable String str) {
+		LOGGER.info("-----------收到消费者请求-----------");
+		LOGGER.info("收到消费者传递的参数：" + str);
+		String result = "Nice to meet you, too.";
+		LOGGER.info("提供者返回结果：" + result);
+		return result;
+	}
 }

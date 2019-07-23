@@ -1,9 +1,9 @@
 package com.alibaba.cloud.examples;
 
-import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 
+import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 /**
