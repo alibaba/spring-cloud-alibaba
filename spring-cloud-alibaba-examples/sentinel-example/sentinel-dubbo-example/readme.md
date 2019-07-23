@@ -18,7 +18,7 @@ Before we start the demo, let's learn how to connect Sentinel with Dubbo to a Sp
 1. Add dependency spring-cloud-starter-alibaba-sentinel and dubbo-spring-boot-starter in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
         
@@ -64,7 +64,7 @@ Define some configs of dubbo in `application.properties` in provider side, like 
 
 `sentinel-dubbo-api` define a service named FooService:
 
-    package com.alibaba.cloud.examples.FooService;
+    package FooService;
     public interface FooService {
         String hello(String name);
     }
@@ -91,7 +91,7 @@ We will configure flow control rules before service invocation in consumer side.
 
 `sentinel-dubbo-api` define a service named FooService:
 
-    package com.alibaba.cloud.examples.FooService;
+    package FooService;
     public interface FooService {
         String hello(String name);
     }

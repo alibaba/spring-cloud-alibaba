@@ -18,12 +18,12 @@ package com.alibaba.cloud.examples;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.callback.RequestOriginParser;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.BlockResponse;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.ZuulBlockFallbackProvider;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -31,36 +31,38 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ZuulConfiguration {
 
-    @Bean
-    public ZuulBlockFallbackProvider zuulBlockFallbackProvider1() {
-        return new ZuulBlockFallbackProvider() {
-            @Override
-            public String getRoute() {
-                return "*";
-            }
+	@Bean
+	public ZuulBlockFallbackProvider zuulBlockFallbackProvider1() {
+		return new ZuulBlockFallbackProvider() {
+			@Override
+			public String getRoute() {
+				return "*";
+			}
 
-            @Override
-            public BlockResponse fallbackResponse(String route, Throwable cause) {
-                if (route.equals("my-service3")) {
-                    return new BlockResponse(433, "Sentinel Block3", route);
-                } else if (route.equals("my-service4")) {
-                    return new BlockResponse(444, "my-service4", route);
-                } else {
-                    return new BlockResponse(499, "Sentinel Block 499", route);
-                }
-            }
-        };
-    }
+			@Override
+			public BlockResponse fallbackResponse(String route, Throwable cause) {
+				if (route.equals("my-service3")) {
+					return new BlockResponse(433, "Sentinel Block3", route);
+				}
+				else if (route.equals("my-service4")) {
+					return new BlockResponse(444, "my-service4", route);
+				}
+				else {
+					return new BlockResponse(499, "Sentinel Block 499", route);
+				}
+			}
+		};
+	}
 
-    @Bean
-    public RequestOriginParser requestOriginParser() {
-        return new RequestOriginParser() {
+	@Bean
+	public RequestOriginParser requestOriginParser() {
+		return new RequestOriginParser() {
 
-            @Override
-            public String parseOrigin(HttpServletRequest request) {
-                return "123";
-            }
-        };
-    }
+			@Override
+			public String parseOrigin(HttpServletRequest request) {
+				return "123";
+			}
+		};
+	}
 
 }

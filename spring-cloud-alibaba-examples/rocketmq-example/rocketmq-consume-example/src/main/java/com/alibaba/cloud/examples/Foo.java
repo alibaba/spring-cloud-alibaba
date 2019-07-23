@@ -24,15 +24,15 @@ public class Foo {
 		this.id = id;
 	}
 
-    public String getBar() {
-        return bar;
-    }
+	public String getBar() {
+		return bar;
+	}
 
-    public void setBar(String bar) {
-        this.bar = bar;
-    }
+	public void setBar(String bar) {
+		this.bar = bar;
+	}
 
-    @Override
+	@Override
 	public String toString() {
 		return "Foo{" + "id=" + id + ", bar='" + bar + '\'' + '}';
 	}

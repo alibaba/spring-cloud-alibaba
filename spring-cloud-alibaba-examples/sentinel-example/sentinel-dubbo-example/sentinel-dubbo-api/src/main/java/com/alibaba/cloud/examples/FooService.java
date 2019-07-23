@@ -5,6 +5,6 @@ package com.alibaba.cloud.examples;
  */
 public interface FooService {
 
-    String hello(String name);
+	String hello(String name);
 
 }

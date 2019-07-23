@@ -2,10 +2,10 @@ package com.alibaba.cloud.examples;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.csp.sentinel.datasource.Converter;
 
 /**
