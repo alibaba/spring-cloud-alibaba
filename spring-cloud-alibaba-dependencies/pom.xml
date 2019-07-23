@@ -20,7 +20,7 @@
     <properties>
         <sentinel.version>1.6.2</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <seata.version>0.5.2</seata.version>
+        <seata.version>0.7.1</seata.version>
         <nacos.client.version>1.1.1</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.9</acm.version>
@@ -210,7 +210,7 @@
 
             <dependency>
                 <groupId>io.seata</groupId>
-                <artifactId>seata-spring</artifactId>
+                <artifactId>seata-all</artifactId>
                 <version>${seata.version}</version>
             </dependency>
 
