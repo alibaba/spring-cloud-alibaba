@@ -25,7 +25,7 @@ SchedulerX 是阿里中间件团队开发的一款分布式任务调度产品。
 6. 进入[SchedulerX任务列表](https://edas.console.aliyun.com/#/edasSchedulerXJob?regionNo=cn-test)页面，选择上方"测试"区域，点击右上角"新建Job"，创建一个Job，即如下所示。
 
         Job分组：测试——111-1-1-1111
-        Job处理接口：org.springframework.cloud.alibaba.cloud.examples.SimpleTask
+        Job处理接口：SimpleTask
         类型：简单Job单机版
         定时表达式：默认选项——0 * * * * ?
         Job描述：无
