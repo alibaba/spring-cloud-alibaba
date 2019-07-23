@@ -1,3 +1,0 @@
-# EnvironmentPostProcessor
-org.springframework.boot.env.EnvironmentPostProcessor=\
-com.alibaba.cloud.bus.rocketmq.env.RocketMQBusEnvironmentPostProcessor

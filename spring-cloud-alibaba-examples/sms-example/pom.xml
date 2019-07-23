@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>alicloud-sms-spring-cloud-starter</artifactId>
+            <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
         </dependency>
     </dependencies>
 

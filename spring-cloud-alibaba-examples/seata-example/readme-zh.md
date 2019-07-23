@@ -50,6 +50,7 @@ CREATE TABLE `undo_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `branch_id` bigint(20) NOT NULL,
   `xid` varchar(100) NOT NULL,
+  `context` varchar(128) NOT NULL,
   `rollback_info` longblob NOT NULL,
   `log_status` int(11) NOT NULL,
   `log_created` datetime NOT NULL,
@@ -101,13 +102,13 @@ CREATE TABLE `account_tbl` (
 进入解压之后的 bin 目录，执行如下命令来启动
 
 ```$shell
-sh seata-server.sh $LISTEN_PORT $MODE(file or db)
+sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db)
 ```
 
 在这个示例中，采用如下命令来启动 Seata Server
 
 ```$shell
-sh seata-server.sh 8091 file
+sh seata-server.sh -p 8091 -m file
 ```
 
 **注意** 如果你修改了endpoint且注册中心使用默认file类型，那么记得需要在各个示例工程中的 `file.conf` 文件中，修改 grouplist 的值(当registry.conf 中registry.type 或 config.type 为file 时会读取内部的file节点中的文件名，若type不为file将直接从配置类型的对应元数据的注册配置中心读取数据)，推荐大家使用 nacos 作为配置注册中心。
@@ -120,16 +121,16 @@ sh seata-server.sh 8091 file
 启动示例后，通过 HTTP 的 GET 方法访问如下两个 URL，可以分别验证在 `business-service` 中 通过 RestTemplate 和 FeignClient 调用其他服务的场景。
 
 ```$xslt
-http://127.0.0.1:18081/seata/feign
+http://127.0.0.1:18081/fescar/feign
 
-http://127.0.0.1:18081/seata/rest
+http://127.0.0.1:18081/fescar/rest
 ```
 
 ## 如何验证分布式事务成功？
 
 ### Xid 信息是否成功传递
 
-在 `account-server`、`order-service` 和 `storage-service` 三个 服务的 Controller 中，第一个执行的逻辑都是输出 RootContext 中的 Xid 信息，如果看到都输出了正确的 Xid 信息，即每次都发生变化，且同一次调用中所有服务的 Xid 都一致。则表明 Seata 的 Xid 的传递和还原是正常的。
+在 `account-server`、`order-service` 和 `storage-service` 三个 服务的 Controller 中，第一个执行的逻辑都是输出 RootContext 中的 Xid 信息，如果看到都输出了正确的 Xid 信息，即每次都发生变化，且同一次调用中所有服务的 Xid 都一致。则表明 Fescar 的 Xid 的传递和还原是正常的。
 
 ### 数据库中数据是否一致
 
