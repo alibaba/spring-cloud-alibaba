@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>alicloud-ans-spring-cloud-starter</artifactId>
+            <artifactId>spring-cloud-starter-alicloud-ans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

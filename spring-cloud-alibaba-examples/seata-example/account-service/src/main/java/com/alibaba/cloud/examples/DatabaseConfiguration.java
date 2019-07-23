@@ -17,14 +17,15 @@ package com.alibaba.cloud.examples;
 
 import java.sql.SQLException;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
-import io.seata.rm.datasource.DataSourceProxy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.alibaba.druid.pool.DruidDataSource;
+
+import io.seata.rm.datasource.DataSourceProxy;
 
 /**
  * @author xiaojing
@@ -51,7 +52,8 @@ public class DatabaseConfiguration {
 		String password = environment.getProperty("mysql.user.password");
 
 		DruidDataSource druidDataSource = new DruidDataSource();
-		druidDataSource.setUrl("jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?serverTimezone=UTC");
+		druidDataSource.setUrl(
+				"jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?serverTimezone=UTC");
 		druidDataSource.setUsername(userName);
 		druidDataSource.setPassword(password);
 		druidDataSource.setDriverClassName("com.mysql.jdbc.Driver");

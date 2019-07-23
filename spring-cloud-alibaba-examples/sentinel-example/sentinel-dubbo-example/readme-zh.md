@@ -66,7 +66,7 @@ Provider端在application.properties文件中定义dubbo相关的配置，比如
 
 `sentinel-dubbo-api`模块中定义了FooService服务，内容如下：
 
-    package com.alibaba.cloud.examples.FooService;
+    package FooService;
     public interface FooService {
         String hello(String name);
     }
@@ -93,7 +93,7 @@ Consumer端在服务调用之前，先定义限流规则。
 
 `sentinel-dubbo-api`模块中定义了FooService服务，内容如下：
 
-    package com.alibaba.cloud.examples.FooService;
+    package FooService;
     public interface FooService {
         String hello(String name);
     }

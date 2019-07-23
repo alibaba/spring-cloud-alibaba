@@ -4,12 +4,12 @@ ANS（Application Naming Service） 是隶属于阿里云 EDAS 产品的组件�
 
 === 如何引入 Spring Cloud AliCloud ANS
 
-如果要在您的项目中引入 ANS，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-ans` 的 starter。
+如果要在您的项目中引入 ANS，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-ans` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-ans</artifactId>
 </dependency>
 ----

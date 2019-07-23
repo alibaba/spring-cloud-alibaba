@@ -87,7 +87,6 @@ class SampleController {
 	@Value("${user.name}")
 	String userName;
 
-
 	@Value("${user.age:25}")
 	int age;
 

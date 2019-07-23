@@ -9,7 +9,7 @@ OSS（Object Storage Service）是阿里云的一款对象存储服务产品， 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
 </dependency>
 ----
