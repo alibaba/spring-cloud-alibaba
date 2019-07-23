@@ -139,4 +139,4 @@ spring-cloud-alibaba@googlegroups.com，欢迎通过此邮件列表讨论与 spr
 
 ### 钉钉群
 
-![DingQR](https://cdn.nlark.com/lark/0/2018/png/54319/1544667717958-b3022f21-3357-4270-836d-4064e7ac728c.png) 
+![DingQR](https://img.alicdn.com/tfs/TB1fr81ba61gK0jSZFlXXXDKFXa-892-1213.jpg) 
