@@ -31,6 +31,7 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 
 /**
  * @author xiaojing
