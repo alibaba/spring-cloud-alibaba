@@ -11,7 +11,7 @@ If you want to use ACM in your project, please use the starter with the group ID
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
 </dependency>
 ----

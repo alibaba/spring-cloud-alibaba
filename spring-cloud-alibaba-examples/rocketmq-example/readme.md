@@ -36,7 +36,7 @@ Before we start the demo, let's learn how to Integration with RocketMQ Binder to
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
 </dependency>
 ```

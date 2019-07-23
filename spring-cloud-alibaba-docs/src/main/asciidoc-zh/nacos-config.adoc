@@ -28,12 +28,12 @@ NOTE: 注意dataid是以 properties(默认的文件扩展名方式)为扩展名�
 
 ===== 客户端使用方式
 
-如果要在您的项目中使用 Nacos 来实现应用的外部化配置，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-config` 的 starter。
+如果要在您的项目中使用 Nacos 来实现应用的外部化配置，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-config` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
 </dependency>
 ----

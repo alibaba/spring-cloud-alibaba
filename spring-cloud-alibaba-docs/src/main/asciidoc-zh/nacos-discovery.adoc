@@ -11,12 +11,12 @@ Discovery Starter 也将服务实例自身的一些元数据信息-例如 host�
 
 ==== 如何引入 Nacos Discovery Starter
 
-如果要在您的项目中使用 Nacos 来实现服务发现，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-discovery` 的 starter。
+如果要在您的项目中使用 Nacos 来实现服务发现，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-discovery` 的 starter。
 
 [source,xml,indent=0]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
 </dependency>
 ----
@@ -61,7 +61,7 @@ Discovery Starter 也将服务实例自身的一些元数据信息-例如 host�
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring.cloud.alibaba.version}</version>
                 <type>pom</type>
@@ -82,7 +82,7 @@ Discovery Starter 也将服务实例自身的一些元数据信息-例如 host�
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
     </dependencies>

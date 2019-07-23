@@ -6,12 +6,12 @@ Spring Cloud AliCloud ACM 是 Config Server 和 Client 的替代方案，客户�
 
 === 如何引入 Spring Cloud AliCloud ACM
 
-如果要在您的项目中引入 ACM，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-acm` 的 starter。
+如果要在您的项目中引入 ACM，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-acm` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
 </dependency>
 ----

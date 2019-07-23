@@ -37,7 +37,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 **[Dubbo](https://github.com/apache/incubator-dubbo)**：Apache Dubbo™ (incubating) 是一款高性能 Java RPC 框架。
 
-**[Fescar](https://github.com/alibaba/fescar)**：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
+**[Seata](https://github.com/seata/seata)**：阿里巴巴开源产品，一个易于使用的高性能微服务分布式事务解决方案。
 
 **[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**：一款在分布式架构环境中对应用配置进行集中管理和推送的应用配置中心产品。
 
@@ -70,7 +70,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 	<dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>0.2.1.RELEASE</version>
                 <type>pom</type>
@@ -108,7 +108,7 @@ Example 列表：
 
 [RocketMQ Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/rocketmq-example/readme-zh.md)
 
-[Fescar Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/fescar-example/readme-zh.md)
+[Seata Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/seata-example/readme-zh.md)
 
 [Alibaba Cloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme-zh.md)
 

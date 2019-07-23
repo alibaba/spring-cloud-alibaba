@@ -16,7 +16,7 @@
 1. 修改 pom.xml 文件，引入 alicloud-oss starter。	
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
         </dependency>
 	

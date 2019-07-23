@@ -11,7 +11,7 @@ We’ve released Spring Cloud Alibaba version 0.2.1. You will need to add depend
 <dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
             <version>0.2.2.BUILD-SNAPSHOT</version>
             <type>pom</type>
@@ -26,7 +26,7 @@ Next we need to introduce Spring Cloud Alibaba Cloud OSS Starter.
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
 </dependency>
 ----
