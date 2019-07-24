@@ -19,6 +19,8 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 import java.io.File;
 import java.nio.charset.Charset;
 
+import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
+import com.alibaba.csp.sentinel.datasource.FileInJarReadableDataSource;
 import org.springframework.beans.factory.FactoryBean;
 
 import com.alibaba.csp.sentinel.datasource.Converter;
@@ -31,7 +33,7 @@ import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
  * @see FileRefreshableDataSource
  */
 public class FileRefreshableDataSourceFactoryBean
-		implements FactoryBean<FileRefreshableDataSource> {
+		implements FactoryBean<AbstractDataSource> {
 
 	private String file;
 	private String charset;
@@ -39,15 +41,30 @@ public class FileRefreshableDataSourceFactoryBean
 	private int bufSize;
 	private Converter converter;
 
+	private boolean inJar;
+	private String jarName;
+	private String fileInJarName;
+
 	@Override
-	public FileRefreshableDataSource getObject() throws Exception {
-		return new FileRefreshableDataSource(new File(file), converter,
-				recommendRefreshMs, bufSize, Charset.forName(charset));
+	public AbstractDataSource getObject() throws Exception {
+		if (inJar) {
+			return new FileInJarReadableDataSource(jarName, fileInJarName, converter,
+					bufSize, Charset.forName(charset));
+		}
+		else {
+			return new FileRefreshableDataSource(new File(file), converter,
+					recommendRefreshMs, bufSize, Charset.forName(charset));
+		}
 	}
 
 	@Override
 	public Class<?> getObjectType() {
-		return FileRefreshableDataSource.class;
+		if (inJar) {
+			return FileInJarReadableDataSource.class;
+		}
+		else {
+			return FileRefreshableDataSource.class;
+		}
 	}
 
 	public String getFile() {
@@ -88,5 +105,29 @@ public class FileRefreshableDataSourceFactoryBean
 
 	public void setConverter(Converter converter) {
 		this.converter = converter;
+	}
+
+	public boolean isInJar() {
+		return inJar;
+	}
+
+	public void setInJar(boolean inJar) {
+		this.inJar = inJar;
+	}
+
+	public String getJarName() {
+		return jarName;
+	}
+
+	public void setJarName(String jarName) {
+		this.jarName = jarName;
+	}
+
+	public String getFileInJarName() {
+		return fileInJarName;
+	}
+
+	public void setFileInJarName(String fileInJarName) {
+		this.fileInJarName = fileInJarName;
 	}
 }
