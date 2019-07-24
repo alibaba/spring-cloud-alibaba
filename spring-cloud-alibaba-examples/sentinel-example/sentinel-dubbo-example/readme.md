@@ -64,7 +64,7 @@ Define some configs of dubbo in `application.properties` in provider side, like 
 
 `sentinel-dubbo-api` define a service named FooService:
 
-    package FooService;
+    package com.alibaba.cloud.examples;
     public interface FooService {
         String hello(String name);
     }
@@ -91,7 +91,7 @@ We will configure flow control rules before service invocation in consumer side.
 
 `sentinel-dubbo-api` define a service named FooService:
 
-    package FooService;
+    package com.alibaba.cloud.examples;
     public interface FooService {
         String hello(String name);
     }
