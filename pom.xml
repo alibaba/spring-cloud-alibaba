@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
     <version>0.1.3.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -92,7 +92,6 @@
         <module>spring-cloud-alibaba-seata</module>
         <module>spring-cloud-stream-binder-rocketmq</module>
         <module>spring-cloud-alibaba-examples</module>
-        <module>spring-cloud-alibaba-test</module>
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-starter-alibaba</module>
         <module>spring-cloud-starter-alicloud</module>
@@ -108,7 +107,7 @@
         <dependencies>
 
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>

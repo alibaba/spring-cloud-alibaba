@@ -92,7 +92,7 @@ Go to the https://edas.console.aliyun.com/#/edasSchedulerXJob?regionNo=cn-test[S
 [source,text]
 ----
 Job Group： Test——***-*-*-****
-Job process interface：org.springframework.cloud.alibaba.cloud.examples.SimpleTask
+Job process interface：SimpleTask
 Type： Simple Single-Server Job
 Quartz Cron Expression： Default Option——0 * * * * ?
 Job Description： Empty

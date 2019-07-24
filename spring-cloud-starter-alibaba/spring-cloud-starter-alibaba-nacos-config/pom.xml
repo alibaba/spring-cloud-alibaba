@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba</artifactId>
         <version>0.1.3.BUILD-SNAPSHOT</version>
     </parent>
@@ -12,7 +12,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
         </dependency>
     </dependencies>

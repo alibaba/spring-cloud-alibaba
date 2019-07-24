@@ -120,9 +120,9 @@ sh seata-server.sh 8091 file
 启动示例后，通过 HTTP 的 GET 方法访问如下两个 URL，可以分别验证在 `business-service` 中 通过 RestTemplate 和 FeignClient 调用其他服务的场景。
 
 ```$xslt
-http://127.0.0.1:18081/fescar/feign
+http://127.0.0.1:18081/seata/feign
 
-http://127.0.0.1:18081/fescar/rest
+http://127.0.0.1:18081/seata/rest
 ```
 
 ## 如何验证分布式事务成功？

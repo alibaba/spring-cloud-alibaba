@@ -1,0 +1,132 @@
+/*
+ * Copyright (C) 2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.alibaba.cloud.sentinel.datasource;
+
+import org.springframework.util.StringUtils;
+
+import com.alibaba.cloud.sentinel.datasource.config.AbstractDataSourceProperties;
+import com.alibaba.csp.sentinel.slots.block.AbstractRule;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
+import com.alibaba.csp.sentinel.slots.system.SystemRule;
+
+/**
+ * Enum for {@link AbstractRule} class, using in
+ * {@link AbstractDataSourceProperties#ruleType}
+ *
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ */
+public enum RuleType {
+
+	/**
+	 * flow
+	 */
+	FLOW("flow", FlowRule.class),
+	/**
+	 * degrade
+	 */
+	DEGRADE("degrade", DegradeRule.class),
+	/**
+	 * param flow
+	 */
+	PARAM_FLOW("param-flow", ParamFlowRule.class),
+	/**
+	 * system
+	 */
+	SYSTEM("system", SystemRule.class),
+	/**
+	 * authority
+	 */
+	AUTHORITY("authority", AuthorityRule.class),
+	/**
+	 * gateway flow
+	 */
+	GW_FLOW("gw-flow",
+			"com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule"),
+	/**
+	 * api
+	 */
+	GW_API_GROUP("gw-api-group",
+			"com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition");
+
+	/**
+	 * alias for {@link AbstractRule}
+	 */
+	private final String name;
+
+	/**
+	 * concrete {@link AbstractRule} class
+	 */
+	private Class clazz;
+
+	/**
+	 * concrete {@link AbstractRule} class name
+	 */
+	private String clazzName;
+
+	RuleType(String name, Class clazz) {
+		this.name = name;
+		this.clazz = clazz;
+	}
+
+	RuleType(String name, String clazzName) {
+		this.name = name;
+		this.clazzName = clazzName;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Class getClazz() {
+		if (clazz != null) {
+			return clazz;
+		}
+		else {
+			try {
+				return Class.forName(clazzName);
+			}
+			catch (ClassNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	public static RuleType getByName(String name) {
+		if (StringUtils.isEmpty(name)) {
+			return null;
+		}
+		for (RuleType ruleType : RuleType.values()) {
+			if (name.equals(ruleType.getName())) {
+				return ruleType;
+			}
+		}
+		return null;
+	}
+
+	public static RuleType getByClass(Class clazz) {
+		for (RuleType ruleType : RuleType.values()) {
+			if (clazz.equals(ruleType.getClazz())) {
+				return ruleType;
+			}
+		}
+		return null;
+	}
+
+}

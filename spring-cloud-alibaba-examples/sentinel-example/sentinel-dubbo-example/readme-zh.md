@@ -50,7 +50,7 @@ Provider端在application.properties文件中定义dubbo相关的配置，比如
     
     foo.service.version = 1.0.0
     
-    dubbo.scan.basePackages = org.springframework.cloud.alibaba.cloud.examples
+    dubbo.scan.basePackages = com.alibaba.cloud.examples
     
     dubbo.application.id = dubbo-provider-demo
     dubbo.application.name = dubbo-provider-demo
@@ -66,7 +66,7 @@ Provider端在application.properties文件中定义dubbo相关的配置，比如
 
 `sentinel-dubbo-api`模块中定义了FooService服务，内容如下：
 
-    package org.springframework.cloud.alibaba.cloud.examples.FooService;
+    package com.alibaba.cloud.examples;
     public interface FooService {
         String hello(String name);
     }
@@ -93,17 +93,17 @@ Consumer端在服务调用之前，先定义限流规则。
 
 `sentinel-dubbo-api`模块中定义了FooService服务，内容如下：
 
-    package org.springframework.cloud.alibaba.cloud.examples.FooService;
+    package com.alibaba.cloud.examples;
     public interface FooService {
         String hello(String name);
     }
 
-该服务在Sentinel下对应的资源名是 `org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)` 。
+该服务在Sentinel下对应的资源名是 `com.alibaba.cloud.examples.FooService:hello(java.lang.String)` 。
 
 定义该资源名对应的限流规则：
 
     FlowRule flowRule = new FlowRule();
-    flowRule.setResource("org.springframework.cloud.alibaba.cloud.examples.dubbo.FooService:hello(java.lang.String)");
+    flowRule.setResource("com.alibaba.cloud.examples.FooService:hello(java.lang.String)");
     flowRule.setCount(10);
     flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
     flowRule.setLimitApp("default");

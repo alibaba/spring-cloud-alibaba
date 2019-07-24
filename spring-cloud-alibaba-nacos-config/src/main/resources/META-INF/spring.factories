@@ -1,7 +1,7 @@
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-org.springframework.cloud.alibaba.nacos.NacosConfigBootstrapConfiguration
+com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.cloud.alibaba.nacos.NacosConfigAutoConfiguration,\
-org.springframework.cloud.alibaba.nacos.endpoint.NacosConfigEndpointAutoConfiguration
+com.alibaba.cloud.nacos.NacosConfigAutoConfiguration,\
+com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration
 org.springframework.boot.diagnostics.FailureAnalyzer=\
-org.springframework.cloud.alibaba.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer
+com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer
