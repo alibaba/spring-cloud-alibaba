@@ -23,144 +23,154 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class RocketMQProducerProperties {
+    private Boolean orderly = true;
 
-	private Boolean enabled = true;
+    public Boolean getOrderly() {
+        return orderly;
+    }
 
-	/**
-	 * Name of producer.
-	 */
-	private String group;
+    public void setOrderly(Boolean orderly) {
+        this.orderly = orderly;
+    }
 
-	/**
-	 * Maximum allowed message size in bytes {@link DefaultMQProducer#maxMessageSize}.
-	 */
-	private Integer maxMessageSize = 1024 * 1024 * 4;
 
-	private Boolean transactional = false;
+    private Boolean enabled = true;
 
-	private Boolean sync = false;
+    /**
+     * Name of producer.
+     */
+    private String group;
 
-	private Boolean vipChannelEnabled = true;
+    /**
+     * Maximum allowed message size in bytes {@link DefaultMQProducer#maxMessageSize}.
+     */
+    private Integer maxMessageSize = 1024 * 1024 * 4;
 
-	/**
-	 * Millis of send message timeout.
-	 */
-	private int sendMessageTimeout = 3000;
+    private Boolean transactional = false;
 
-	/**
-	 * Compress message body threshold, namely, message body larger than 4k will be
-	 * compressed on default.
-	 */
-	private int compressMessageBodyThreshold = 1024 * 4;
+    private Boolean sync = false;
 
-	/**
-	 * Maximum number of retry to perform internally before claiming sending failure in
-	 * synchronous mode. This may potentially cause message duplication which is up to
-	 * application developers to resolve.
-	 */
-	private int retryTimesWhenSendFailed = 2;
+    private Boolean vipChannelEnabled = true;
 
-	/**
-	 * <p>
-	 * Maximum number of retry to perform internally before claiming sending failure in
-	 * asynchronous mode.
-	 * </p>
-	 * This may potentially cause message duplication which is up to application
-	 * developers to resolve.
-	 */
-	private int retryTimesWhenSendAsyncFailed = 2;
+    /**
+     * Millis of send message timeout.
+     */
+    private int sendMessageTimeout = 3000;
 
-	/**
-	 * Indicate whether to retry another broker on sending failure internally.
-	 */
-	private boolean retryNextServer = false;
+    /**
+     * Compress message body threshold, namely, message body larger than 4k will be
+     * compressed on default.
+     */
+    private int compressMessageBodyThreshold = 1024 * 4;
 
-	public String getGroup() {
-		return group;
-	}
+    /**
+     * Maximum number of retry to perform internally before claiming sending failure in
+     * synchronous mode. This may potentially cause message duplication which is up to
+     * application developers to resolve.
+     */
+    private int retryTimesWhenSendFailed = 2;
 
-	public void setGroup(String group) {
-		this.group = group;
-	}
+    /**
+     * <p>
+     * Maximum number of retry to perform internally before claiming sending failure in
+     * asynchronous mode.
+     * </p>
+     * This may potentially cause message duplication which is up to application
+     * developers to resolve.
+     */
+    private int retryTimesWhenSendAsyncFailed = 2;
 
-	public Boolean getEnabled() {
-		return enabled;
-	}
+    /**
+     * Indicate whether to retry another broker on sending failure internally.
+     */
+    private boolean retryNextServer = false;
 
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
+    public String getGroup() {
+        return group;
+    }
 
-	public Integer getMaxMessageSize() {
-		return maxMessageSize;
-	}
+    public void setGroup(String group) {
+        this.group = group;
+    }
 
-	public void setMaxMessageSize(Integer maxMessageSize) {
-		this.maxMessageSize = maxMessageSize;
-	}
+    public Boolean getEnabled() {
+        return enabled;
+    }
 
-	public Boolean getTransactional() {
-		return transactional;
-	}
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
 
-	public void setTransactional(Boolean transactional) {
-		this.transactional = transactional;
-	}
+    public Integer getMaxMessageSize() {
+        return maxMessageSize;
+    }
 
-	public Boolean getSync() {
-		return sync;
-	}
+    public void setMaxMessageSize(Integer maxMessageSize) {
+        this.maxMessageSize = maxMessageSize;
+    }
 
-	public void setSync(Boolean sync) {
-		this.sync = sync;
-	}
+    public Boolean getTransactional() {
+        return transactional;
+    }
 
-	public Boolean getVipChannelEnabled() {
-		return vipChannelEnabled;
-	}
+    public void setTransactional(Boolean transactional) {
+        this.transactional = transactional;
+    }
 
-	public void setVipChannelEnabled(Boolean vipChannelEnabled) {
-		this.vipChannelEnabled = vipChannelEnabled;
-	}
+    public Boolean getSync() {
+        return sync;
+    }
 
-	public int getSendMessageTimeout() {
-		return sendMessageTimeout;
-	}
+    public void setSync(Boolean sync) {
+        this.sync = sync;
+    }
 
-	public void setSendMessageTimeout(int sendMessageTimeout) {
-		this.sendMessageTimeout = sendMessageTimeout;
-	}
+    public Boolean getVipChannelEnabled() {
+        return vipChannelEnabled;
+    }
 
-	public int getCompressMessageBodyThreshold() {
-		return compressMessageBodyThreshold;
-	}
+    public void setVipChannelEnabled(Boolean vipChannelEnabled) {
+        this.vipChannelEnabled = vipChannelEnabled;
+    }
 
-	public void setCompressMessageBodyThreshold(int compressMessageBodyThreshold) {
-		this.compressMessageBodyThreshold = compressMessageBodyThreshold;
-	}
+    public int getSendMessageTimeout() {
+        return sendMessageTimeout;
+    }
 
-	public int getRetryTimesWhenSendFailed() {
-		return retryTimesWhenSendFailed;
-	}
+    public void setSendMessageTimeout(int sendMessageTimeout) {
+        this.sendMessageTimeout = sendMessageTimeout;
+    }
 
-	public void setRetryTimesWhenSendFailed(int retryTimesWhenSendFailed) {
-		this.retryTimesWhenSendFailed = retryTimesWhenSendFailed;
-	}
+    public int getCompressMessageBodyThreshold() {
+        return compressMessageBodyThreshold;
+    }
 
-	public int getRetryTimesWhenSendAsyncFailed() {
-		return retryTimesWhenSendAsyncFailed;
-	}
+    public void setCompressMessageBodyThreshold(int compressMessageBodyThreshold) {
+        this.compressMessageBodyThreshold = compressMessageBodyThreshold;
+    }
 
-	public void setRetryTimesWhenSendAsyncFailed(int retryTimesWhenSendAsyncFailed) {
-		this.retryTimesWhenSendAsyncFailed = retryTimesWhenSendAsyncFailed;
-	}
+    public int getRetryTimesWhenSendFailed() {
+        return retryTimesWhenSendFailed;
+    }
 
-	public boolean isRetryNextServer() {
-		return retryNextServer;
-	}
+    public void setRetryTimesWhenSendFailed(int retryTimesWhenSendFailed) {
+        this.retryTimesWhenSendFailed = retryTimesWhenSendFailed;
+    }
 
-	public void setRetryNextServer(boolean retryNextServer) {
-		this.retryNextServer = retryNextServer;
-	}
+    public int getRetryTimesWhenSendAsyncFailed() {
+        return retryTimesWhenSendAsyncFailed;
+    }
+
+    public void setRetryTimesWhenSendAsyncFailed(int retryTimesWhenSendAsyncFailed) {
+        this.retryTimesWhenSendAsyncFailed = retryTimesWhenSendAsyncFailed;
+    }
+
+    public boolean isRetryNextServer() {
+        return retryNextServer;
+    }
+
+    public void setRetryNextServer(boolean retryNextServer) {
+        this.retryNextServer = retryNextServer;
+    }
 
 }

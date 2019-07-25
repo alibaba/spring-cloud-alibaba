@@ -158,6 +158,7 @@ public class RocketMQMessageChannelBinder extends
 					instrumentationManager);
 			messageHandler.setBeanFactory(this.getApplicationContext().getBeanFactory());
 			messageHandler.setSync(producerProperties.getExtension().getSync());
+			messageHandler.setOrderly(producerProperties.getExtension().getOrderly());
 
 			if (errorChannel != null) {
 				messageHandler.setSendFailureChannel(errorChannel);
