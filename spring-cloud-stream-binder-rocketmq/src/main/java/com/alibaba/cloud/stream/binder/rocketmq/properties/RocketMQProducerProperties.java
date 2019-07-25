@@ -23,7 +23,7 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class RocketMQProducerProperties {
-    private Boolean orderly = true;
+    private Boolean orderly = false;
 
     public Boolean getOrderly() {
         return orderly;
