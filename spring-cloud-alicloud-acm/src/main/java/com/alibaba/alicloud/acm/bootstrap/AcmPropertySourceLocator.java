@@ -29,7 +29,7 @@ import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
  * @author juven.xuxb
  * @author xiaolongzuo
  */
-@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enable", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
 public class AcmPropertySourceLocator implements PropertySourceLocator {
 
 	private static final String DIAMOND_PROPERTY_SOURCE_NAME = "diamond";
