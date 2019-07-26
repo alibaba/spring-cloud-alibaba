@@ -17,6 +17,7 @@
 package com.alibaba.alicloud.acm.bootstrap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
@@ -28,6 +29,7 @@ import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
  * @author juven.xuxb
  * @author xiaolongzuo
  */
+@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
 public class AcmPropertySourceLocator implements PropertySourceLocator {
 
 	private static final String DIAMOND_PROPERTY_SOURCE_NAME = "diamond";
