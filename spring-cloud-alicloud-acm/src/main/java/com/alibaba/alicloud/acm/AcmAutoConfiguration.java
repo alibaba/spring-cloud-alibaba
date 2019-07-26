@@ -38,7 +38,7 @@ import com.taobao.diamond.client.Diamond;
  */
 @Configuration
 @ConditionalOnClass({ Diamond.class })
-@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enable", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
 public class AcmAutoConfiguration implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;

@@ -33,7 +33,7 @@ import com.alibaba.alicloud.context.acm.AcmProperties;
  */
 @ConditionalOnWebApplication
 @ConditionalOnClass(name = "org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration")
-@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enable", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
 public class AcmEndpointAutoConfiguration {
 
 	@Autowired
