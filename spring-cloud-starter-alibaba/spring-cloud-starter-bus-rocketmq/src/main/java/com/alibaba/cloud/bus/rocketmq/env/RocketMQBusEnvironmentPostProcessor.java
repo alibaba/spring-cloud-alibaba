@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.bus.rocketmq.env;
+package com.alibaba.cloud.bus.rocketmq.env;
 
 import static org.springframework.cloud.bus.SpringCloudBusClient.INPUT;
 
