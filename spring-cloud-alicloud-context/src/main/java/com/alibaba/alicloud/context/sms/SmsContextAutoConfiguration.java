@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(SmsProperties.class)
 @ConditionalOnClass(name = "com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest")
-@ConditionalOnProperty(value = "spring.cloud.alibaba.deshao.enable.sms", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.alicloud.sms.enabled", matchIfMissing = true)
 public class SmsContextAutoConfiguration {
 
 }

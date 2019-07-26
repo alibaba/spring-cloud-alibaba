@@ -155,6 +155,21 @@ public class NacosDiscoveryProperties {
 	 */
 	private String secretKey;
 
+	/**
+	 * Heart beat interval. Time unit: second.
+	 */
+	private Integer heartBeatInterval;
+
+	/**
+	 * Heart beat timeout. Time unit: second.
+	 */
+	private Integer heartBeatTimeout;
+
+	/**
+	 * Ip delete timeout. Time unit: second.
+	 */
+	private Integer ipDeleteTimeout;
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -337,6 +352,30 @@ public class NacosDiscoveryProperties {
 
 	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
+	}
+
+	public Integer getHeartBeatInterval() {
+		return heartBeatInterval;
+	}
+
+	public void setHeartBeatInterval(Integer heartBeatInterval) {
+		this.heartBeatInterval = heartBeatInterval;
+	}
+
+	public Integer getHeartBeatTimeout() {
+		return heartBeatTimeout;
+	}
+
+	public void setHeartBeatTimeout(Integer heartBeatTimeout) {
+		this.heartBeatTimeout = heartBeatTimeout;
+	}
+
+	public Integer getIpDeleteTimeout() {
+		return ipDeleteTimeout;
+	}
+
+	public void setIpDeleteTimeout(Integer ipDeleteTimeout) {
+		this.ipDeleteTimeout = ipDeleteTimeout;
 	}
 
 	public String getNamingLoadCacheAtStart() {
