@@ -16,20 +16,15 @@
 
 package com.alibaba.cloud.seata.feign;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.util.StringUtils;
-
 import feign.Client;
 import feign.Request;
 import feign.Response;
 import io.seata.core.context.RootContext;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author xiaojing
@@ -42,7 +37,7 @@ public class SeataFeignClient implements Client {
 
 	SeataFeignClient(BeanFactory beanFactory) {
 		this.beanFactory = beanFactory;
-		this.delegate = new Client.Default(null, null);
+		this.delegate = new Default(null, null);
 	}
 
 	SeataFeignClient(BeanFactory beanFactory, Client delegate) {
@@ -59,9 +54,9 @@ public class SeataFeignClient implements Client {
 
 	private Request getModifyRequest(Request request) {
 
-		String xid = RootContext.getXID();
+		String xid;
 
-		if (StringUtils.isEmpty(xid)) {
+		if (StringUtils.isEmpty(xid = RootContext.getXID())) {
 			return request;
 		}
 

@@ -15,12 +15,11 @@
  */
 package com.alibaba.cloud.seata.feign.hystrix;
 
-import java.util.concurrent.Callable;
-
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
-
 import io.seata.core.context.RootContext;
+
+import java.util.concurrent.Callable;
 
 /**
  * @author xiaojing
@@ -47,9 +46,6 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 		}
 		else {
 			wrappedCallable = c;
-		}
-		if (wrappedCallable instanceof SeataContextCallable) {
-			return wrappedCallable;
 		}
 
 		return new SeataContextCallable<>(wrappedCallable);
