@@ -189,9 +189,9 @@ spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
 
 `ds1` and `ds2` means the name of ReadableDataSource, you can write whatever you want. The `file` and `nacos` after name `ds1` and `ds2` means the type of ReadableDataSource. 
 
-Now ReadableDataSource type support 4 categories: `file`, `nacos`, `zk` and `apollo`.
+Now ReadableDataSource type support 5 categories: `file`, `nacos`, `zk`, `apollo` and `redis`.
 
-If you want to use `nacos`, `zk` or `apollo` ReadableDataSource, you could add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper` or `sentinel-datasource-apollo` dependency.
+If you want to use `nacos`, `zk`, `apollo` or `redis` ReadableDataSource, you could add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`,`sentinel-datasource-apollo` or `sentinel-datasource-redis` dependency.
 
 When ReadableDataSource load rule data successfully, console will print some logs:
 

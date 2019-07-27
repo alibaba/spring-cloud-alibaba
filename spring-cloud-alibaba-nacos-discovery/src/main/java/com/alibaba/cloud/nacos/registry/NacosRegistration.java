@@ -31,6 +31,7 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 
 /**
  * @author xiaojing
@@ -75,6 +76,19 @@ public class NacosRegistration implements Registration, ServiceInstance {
 			if (!StringUtils.isEmpty(address)) {
 				metadata.put(MANAGEMENT_ADDRESS, address);
 			}
+		}
+
+		if (null != nacosDiscoveryProperties.getHeartBeatInterval()) {
+			metadata.put(PreservedMetadataKeys.HEART_BEAT_INTERVAL,
+					nacosDiscoveryProperties.getHeartBeatInterval().toString());
+		}
+		if (null != nacosDiscoveryProperties.getHeartBeatTimeout()) {
+			metadata.put(PreservedMetadataKeys.HEART_BEAT_TIMEOUT,
+					nacosDiscoveryProperties.getHeartBeatTimeout().toString());
+		}
+		if (null != nacosDiscoveryProperties.getIpDeleteTimeout()) {
+			metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
+					nacosDiscoveryProperties.getIpDeleteTimeout().toString());
 		}
 	}
 

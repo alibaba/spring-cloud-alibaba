@@ -16,7 +16,7 @@
 
         <dependency>
             <groupId>io.seata</groupId>
-            <artifactId>seata-spring</artifactId>
+            <artifactId>seata-all</artifactId>
         </dependency>
 
         <dependency>

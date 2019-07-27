@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @see ApolloDataSourceProperties
  * @see ZookeeperDataSourceProperties
  * @see FileDataSourceProperties
+ * @see RedisDataSourceProperties
  */
 public class DataSourcePropertiesConfiguration {
 
@@ -43,6 +44,8 @@ public class DataSourcePropertiesConfiguration {
 	private ZookeeperDataSourceProperties zk;
 
 	private ApolloDataSourceProperties apollo;
+
+	private RedisDataSourceProperties redis;
 
 	public DataSourcePropertiesConfiguration() {
 	}
@@ -61,6 +64,10 @@ public class DataSourcePropertiesConfiguration {
 
 	public DataSourcePropertiesConfiguration(ApolloDataSourceProperties apollo) {
 		this.apollo = apollo;
+	}
+
+	public DataSourcePropertiesConfiguration(RedisDataSourceProperties redis) {
+		this.redis = redis;
 	}
 
 	public FileDataSourceProperties getFile() {
@@ -93,6 +100,14 @@ public class DataSourcePropertiesConfiguration {
 
 	public void setApollo(ApolloDataSourceProperties apollo) {
 		this.apollo = apollo;
+	}
+
+	public RedisDataSourceProperties getRedis() {
+		return redis;
+	}
+
+	public void setRedis(RedisDataSourceProperties redis) {
+		this.redis = redis;
 	}
 
 	@JsonIgnore

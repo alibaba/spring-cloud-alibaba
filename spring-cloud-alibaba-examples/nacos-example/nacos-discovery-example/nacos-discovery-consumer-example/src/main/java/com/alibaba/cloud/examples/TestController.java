@@ -75,6 +75,11 @@ public class TestController {
 		return echoService.divide(a, b);
 	}
 
+	@RequestMapping(value = "/divide-feign2", method = RequestMethod.GET)
+	public String divide(@RequestParam Integer a) {
+		return echoService.divide(a);
+	}
+
 	@RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
 	public String feign(@PathVariable String str) {
 		return echoService.echo(str);
