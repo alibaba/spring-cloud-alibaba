@@ -65,6 +65,8 @@ public class RocketMQConsumerProperties {
 
 	private Boolean enabled = true;
 
+	private int consumeMessageBatchMaxSize = 1;
+
 	// ------------ For Pull Consumer ------------
 
 	private long pullTimeout = 10 * 1000;
@@ -111,6 +113,14 @@ public class RocketMQConsumerProperties {
 
 	public void setBroadcasting(Boolean broadcasting) {
 		this.broadcasting = broadcasting;
+	}
+
+	public void setConsumeMessageBatchMaxSize(int consumeMessageBatchMaxSize) {
+		this.consumeMessageBatchMaxSize = consumeMessageBatchMaxSize;
+	}
+
+	public int getConsumeMessageBatchMaxSize() {
+		return consumeMessageBatchMaxSize;
 	}
 
 	public int getDelayLevelWhenNextConsume() {

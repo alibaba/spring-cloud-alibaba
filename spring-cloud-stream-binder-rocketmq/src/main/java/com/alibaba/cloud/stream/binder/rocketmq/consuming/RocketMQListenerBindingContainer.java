@@ -16,9 +16,9 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.consuming;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -86,6 +86,8 @@ public class RocketMQListenerBindingContainer
 
 	private DefaultMQPushConsumer consumer;
 
+	private int consumeMessageBatchMaxSize;
+
 	private boolean running;
 
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> rocketMQConsumerProperties;
@@ -120,6 +122,8 @@ public class RocketMQListenerBindingContainer
 		this.messageModel = rocketMQConsumerProperties.getExtension().getBroadcasting()
 				? MessageModel.BROADCASTING
 				: MessageModel.CLUSTERING;
+		this.consumeMessageBatchMaxSize = rocketMQConsumerProperties.getExtension()
+				.getConsumeMessageBatchMaxSize();
 	}
 
 	@Override
@@ -257,6 +261,8 @@ public class RocketMQListenerBindingContainer
 			throw new IllegalArgumentException("Property 'consumeMode' was wrong.");
 		}
 
+		consumer.setConsumeMessageBatchMaxSize(this.getConsumeMessageBatchMaxSize());
+
 		if (rocketMQListener instanceof RocketMQPushConsumerLifecycleListener) {
 			((RocketMQPushConsumerLifecycleListener) rocketMQListener)
 					.prepareStart(consumer);
@@ -345,6 +351,14 @@ public class RocketMQListenerBindingContainer
 		this.consumer = consumer;
 	}
 
+	public int getConsumeMessageBatchMaxSize() {
+		return consumeMessageBatchMaxSize;
+	}
+
+	public void setConsumeMessageBatchMaxSize(int consumeMessageBatchMaxSize) {
+		this.consumeMessageBatchMaxSize = consumeMessageBatchMaxSize;
+	}
+
 	public ExtendedConsumerProperties<RocketMQConsumerProperties> getRocketMQConsumerProperties() {
 		return rocketMQConsumerProperties;
 	}
@@ -367,53 +381,77 @@ public class RocketMQListenerBindingContainer
 
 	public class DefaultMessageListenerConcurrently
 			implements MessageListenerConcurrently {
+		HashSet<String> messageIndexs = null;
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
 				ConsumeConcurrentlyContext context) {
+			if (msgs.size() > 1 && null == messageIndexs)
+				messageIndexs = new HashSet<>();
+			List<String> records = new ArrayList<>();
 			for (MessageExt messageExt : msgs) {
 				log.debug("received msg: {}", messageExt);
+				if (messageIndexs.contains(messageExt.getMsgId())) {
+					records.add(messageExt.getMsgId());
+					continue;
+				}
 				try {
 					long now = System.currentTimeMillis();
 					rocketMQListener
 							.onMessage(RocketMQUtil.convertToSpringMessage(messageExt));
+					messageIndexs.add(messageExt.getMsgId());
 					long costTime = System.currentTimeMillis() - now;
 					log.debug("consume {} cost: {} ms", messageExt.getMsgId(), costTime);
 				}
 				catch (Exception e) {
 					log.warn("consume message failed. messageExt:{}", messageExt, e);
+					messageIndexs.remove(messageExt.getMsgId());
 					context.setDelayLevelWhenNextConsume(delayLevelWhenNextConsume);
 					return ConsumeConcurrentlyStatus.RECONSUME_LATER;
 				}
 			}
+
+			records.stream().forEach(index -> messageIndexs.remove(index));
 
 			return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
 		}
 	}
 
 	public class DefaultMessageListenerOrderly implements MessageListenerOrderly {
+		HashSet<String> messageIndexs = null;
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs,
 				ConsumeOrderlyContext context) {
+			if (msgs.size() > 1 && null == messageIndexs)
+				messageIndexs = new HashSet<>();
+			List<String> records = new ArrayList<>();
 			for (MessageExt messageExt : msgs) {
 				log.debug("received msg: {}", messageExt);
+				if (messageIndexs.contains(messageExt.getMsgId())) {
+					records.add(messageExt.getMsgId());
+					continue;
+				}
 				try {
 					long now = System.currentTimeMillis();
 					rocketMQListener
 							.onMessage(RocketMQUtil.convertToSpringMessage(messageExt));
 					long costTime = System.currentTimeMillis() - now;
+					messageIndexs.add(messageExt.getMsgId());
 					log.info("consume {} cost: {} ms", messageExt.getMsgId(), costTime);
 				}
 				catch (Exception e) {
 					log.warn("consume message failed. messageExt:{}", messageExt, e);
+					messageIndexs.remove(messageExt.getMsgId());
 					context.setSuspendCurrentQueueTimeMillis(
 							suspendCurrentQueueTimeMillis);
 					return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
 				}
 			}
+
+			records.stream().forEach(index -> messageIndexs.remove(index));
 
 			return ConsumeOrderlyStatus.SUCCESS;
 		}
