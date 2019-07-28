@@ -6,13 +6,5 @@
     "grade": 1,
     "limitApp": "default",
     "strategy": 0
-  },
-  {
-    "resource": "GET:http://service-provider/divide",
-    "controlBehavior": 0,
-    "count": 0,
-    "grade": 1,
-    "limitApp": "default",
-    "strategy": 0
   }
 ]
