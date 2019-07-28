@@ -10,7 +10,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
     <name>Spring Cloud Alibaba Bus RocketMQ</name>
 
