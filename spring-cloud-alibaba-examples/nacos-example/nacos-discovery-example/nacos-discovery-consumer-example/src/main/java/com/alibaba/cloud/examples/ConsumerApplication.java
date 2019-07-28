@@ -50,7 +50,7 @@ public class ConsumerApplication {
 		String divide(@RequestParam("a") Integer a, @RequestParam("b") Integer b);
 
 		default String divide(Integer a) {
-		    return divide(a, 1);
+		    return divide(a, 0);
         }
 
 		@RequestMapping(value = "/notFound", method = RequestMethod.GET)
