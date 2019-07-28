@@ -32,7 +32,7 @@ public class ZookeeperDataSourceProperties extends AbstractDataSourceProperties 
 		super(ZookeeperDataSourceFactoryBean.class.getName());
 	}
 
-	private String serverAddr;
+	private String serverAddr = "localhost:2181";
 
 	private String path;
 
