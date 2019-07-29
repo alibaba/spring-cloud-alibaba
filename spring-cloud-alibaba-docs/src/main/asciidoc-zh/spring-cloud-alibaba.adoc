@@ -1,6 +1,6 @@
 [[spring-cloud-alibaba-reference]]
 = Spring Cloud Alibaba 参考文档
-Jim Fang, Jing Xiao, Mercy Ma, Xiaolong Zuo, Bingting Peng; Yuxin Wang
+Jim Fang, Jing Xiao, Mercy Ma, Xiaolong Zuo, Bingting Peng, Yuxin Wang
 :doctype: book
 :toc:
 :toclevels: 4

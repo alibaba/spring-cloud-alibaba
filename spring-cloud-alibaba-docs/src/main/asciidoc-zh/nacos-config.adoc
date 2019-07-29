@@ -354,7 +354,7 @@ Nacos Config 目前提供了三种配置能力从 Nacos 拉取相关的配置
 
 Nacos Config 内部提供了一个 Endpoint, 对应的 endpoint id 为 `nacos-config`。
 
-Endpoint 暴露的 json 中包含了两种属性:
+Endpoint 暴露的 json 中包含了三种属性:
 
 1. Sources: 当前应用配置的数据信息
 
