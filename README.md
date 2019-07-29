@@ -2,12 +2,12 @@
 
 [![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/master.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/master)
 [![Maven Central](https://img.shields.io/maven-central/v/org.springframework.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:org.springframework.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
-[![Codecov](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba/branch/master/graph/badge.svg)](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba)
+[![Codecov](https://codecov.io/gh/alibaba/spring-cloud-alibaba/branch/master/graph/badge.svg)](https://codecov.io/gh/spring-cloud-incubator/spring-cloud-alibaba)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 A project maintained by Alibaba.
 
-See the [中文文档](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/README-zh.md) for Chinese readme.
+See the [中文文档](https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md) for Chinese readme.
 
 Spring Cloud Alibaba provides a one-stop solution for distributed application development. It contains all the components required to develop distributed applications, making it easy for you to develop your applications using Spring Cloud.
 
@@ -25,7 +25,7 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 * **Alibaba Cloud SchedulerX**：accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
 * **Alibaba Cloud SMS**： A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
 
-For more features, please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
+For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap.md).
 
 ## Components
 
@@ -47,7 +47,7 @@ For more features, please refer to [Roadmap](https://github.com/spring-cloud-inc
 
 **[Alibaba Cloud SchedulerX](https://www.aliyun.com/product/SchedulerX)**:accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds..
 
-For more features please refer to [Roadmap](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/Roadmap.md).
+For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap.md).
 
 ## How to build
 
@@ -71,7 +71,7 @@ These artifacts are available from Maven Central and Spring Release repository v
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>0.9.0.RELEASE</version>
+                <version>1.2.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -96,13 +96,13 @@ If you want to use the latest BUILD-SNAPSHOT version, add `Spring Snapshot Repos
 
 ### Reference Doc
 
-[Contents](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/spring-cloud-alibaba.adoc)
+[Contents](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/spring-cloud-alibaba.adoc)
 
-[Nacos Config](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
+[Nacos Config](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
 
-[Nacos Discovery](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
+[Nacos Discovery](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
 
-[ACM](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/acm.adoc)
+[ACM](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-docs/src/main/asciidoc-zh/acm.adoc)
 
 
 ## Examples
@@ -111,17 +111,17 @@ A `spring-cloud-alibaba-examples` module is included in our project for you to g
 
 Examples：
 
-[Sentinel Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
+[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
 
-[Nacos Config Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme.md)
+[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme.md)
 
-[Nacos Discovery Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme.md)
+[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme.md)
 
-[RocketMQ Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
+[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
 
-[Alibaba Cloud OSS Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme.md)
+[Alibaba Cloud OSS Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/oss-example/readme.md)
 
-[Duboo Spring Cloud Example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/spring-cloud-alibaba-dubbo-examples/README_CN.md)
+[Duboo Spring Cloud Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/spring-cloud-alibaba-dubbo-examples/README_CN.md)
 
 ## Version control guidelines
 The version number of the project is in the form of x.x.x, where x is a number, starting from 0, and is not limited to the range 0~9. When the project is in the incubator phase, the version number is 0.x.x.
