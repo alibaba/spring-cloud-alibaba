@@ -22,6 +22,7 @@ package com.alibaba.cloud.sentinel.gateway;
 public interface ConfigConstants {
 
 	String APP_TYPE_ZUUL_GATEWAY = "12";
+	String APP_TYPE_SCG_GATEWAY = "11";
 
 	String ZUUl_PREFIX = "spring.cloud.sentinel.zuul";
 
