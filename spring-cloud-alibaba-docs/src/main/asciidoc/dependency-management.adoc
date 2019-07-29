@@ -1,38 +1,19 @@
 == Dependency Management
 
-The Spring Cloud Alibaba Bill of Materials (BOM) contains the versions of all the dependencies it uses.
+If you’re a Maven Central user, add our BOM to your pom.xml <dependencyManagement> section. This will allow you to omit versions for any of the Maven dependencies and instead delegate versioning to the BOM.
 
-Version 0.2.1.RELEASE is compatible with the Spring Cloud Finchley. Version 0.1.2.BUILD-SNAPSHOT is compatible with the Spring Cloud Edgware.
-
-These artifacts are available from Maven Central and Spring Release repository via BOM:
-
-[source,xml]
-----
+```xml
 <dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>0.2.1.RELEASE</version>
+            <version>1.0.0.RELEASE</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
     </dependencies>
 </dependencyManagement>
-----
+```
 
-If you want to use the latest BUILD-SNAPSHOT version, add Spring Snapshot Repository in pom.xml , Attention: BUILD-SNAPSHOT may be updated in any time
-
-[source,xml]
-----
-<repositories>
-    <repository>
-        <id>spring-snapshot</id>
-        <name>Spring Snapshot Repository</name>
-        <url>https://repo.spring.io/snapshot</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
-----
+In the following sections, it will be assumed you are using the Spring Cloud Alibaba BOM and the dependency snippets will not contain versions.

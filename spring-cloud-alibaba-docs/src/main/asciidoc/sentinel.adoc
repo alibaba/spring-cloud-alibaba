@@ -14,11 +14,11 @@ https://github.com/alibaba/Sentinel[Sentinel] has the following features:
 
 ### How to Use Sentinel
 
-If you want to use Sentinel in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alibaba-sentinel`.
+If you want to use Sentinel in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alibaba-sentinel`.
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
 </dependency>
 ```
@@ -98,27 +98,20 @@ The port number specified in `spring.cloud.sentinel.transport.port` will start a
 
 For more information about Sentinel dashboard, please refer to https://github.com/alibaba/Sentinel/wiki/%E6%8E%A7%E5%88%B6%E5%8F%B0[Sentinel Dashboard].
 
-### Feign Support
+### OpenFeign Support
 
-Sentinel is compatible with the https://github.com/OpenFeign/feign[Feign] component. To use it, in addition to introducing the `sentinel-starter` dependency, complete the following 3 steps:
+Sentinel is compatible with the https://github.com/OpenFeign/feign[OpenFeign] component. To use it, in addition to introducing the `sentinel-starter` dependency, complete the following 2 steps:
 
 * Enable the Sentinel support for feign in the properties file. `feign.sentinel.enabled=true`
-* Add the `feign starter` dependency to trigger and enable `sentinel starter`:
+* Add the `openfeign starter` dependency to trigger and enable `sentinel starter`:
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-openfeign</artifactId>
 </dependency>
 ```
-* The `loadbalance` in `feign` is dependent on the `ribbon` module of Netflix (You do not need to introduce it if `loadbalance` is not used)：
-```xml
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-</dependency>
-```
 
-This is an interface for `FeignClient`:
+This is a simple usage of `FeignClient`:
 
 ```java
 @FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
@@ -142,11 +135,9 @@ class EchoServiceFallback implements EchoService {
 }
 ```
 
-NOTE: The resource name policy in the corresponding interface of Feign is：httpmethod:protocol://requesturl
+NOTE: The resource name policy in the corresponding interface of Feign is：httpmethod:protocol://requesturl. All the attributes in the `@FeignClient` annotation is supported by Sentinel.
 
 The corresponding resource name of the `echo` method in the `EchoService` interface is `GET:http://service-provider/echo/{str}`.
-
-Note: All the attributes in the `@FeignClient` annotation is supported by Sentinel.
 
 ### RestTemplate Support
 
@@ -160,14 +151,13 @@ public RestTemplate restTemplate() {
 }
 ```
 
-The parameter of the `@SentinelRestTemplate` annotation support flow control(`blockHandler`, `blockHandlerClass`) and circuit breaking(`fallback`, `fallbackClass`).
+The attribute of the `@SentinelRestTemplate` annotation support flow control(`blockHandler`, `blockHandlerClass`) and circuit breaking(`fallback`, `fallbackClass`).
 
 ==
 
 The `blockHandler` or `fallback` is the static method of `blockHandlerClass` or `fallbackClass`.
 
-The parameter of method in `@SentinelRestTemplate` is same as `ClientHttpRequestInterceptor`, but it has one more parameter `BlockException` and its value of return type should be `ClientHttpResponse`.
-If you do not continue to execute the following Http request interceptor after being restricted, you can use the instance of `SentinelClientHttpResponse` to customize the return value result after the current limit.
+The parameter and return value of method in `@SentinelRestTemplate` is same as `org.springframework.http.client.ClientHttpRequestInterceptor#interceptor`, but it has one more parameter `BlockException` to catch the exception by Sentinel.
 
 The method signature of `handleException` in `ExceptionUtil` above should be like this:
 
@@ -179,130 +169,192 @@ public class ExceptionUtil {
 }
 ```
 
-It will return `RestTemplate request block by sentinel` when you do not write any flow control(`blockHandler`, `blockHandlerClass`) configuration or circuit breaking configuration(`fallback`, `fallbackClass`), you can override it by using your own method.
+NOTE: When the application starts, it will check if the `@SentinelRestTemplate` annotation corresponding to the flow control or circuit breaking method exists, if it does not exist, it will throw an exception.
+
+The attribute of the `@SentinelRestTemplate` annotation is optional.
+
+It will return `RestTemplate request block by sentinel` when you using `RestTemplate` blocked by Sentinel. You can override it by your own logic. We provide `SentinelClientHttpResponse` to handle the response.
 
 Sentinel RestTemplate provides two granularities for resource rate limiting:
 
-* `schema://host:port/path`： Protocol, host, port and path
+* `httpmethod:schema://host:port/path`： Protocol, host, port and path
 
-* `schema://host:port`： Protocol, host and port
+* `httpmethod:schema://host:port`： Protocol, host and port
 
-NOTE: Take `https://www.taobao.com/test` as an example. The corresponding resource names have two levels of granularities, `https://www.taobao.com` and `https://www.taobao.com/test`.
+NOTE: Take Http GET `https://www.taobao.com/test` as an example. The corresponding resource names have two levels of granularities, `GET:https://www.taobao.com` and `GET:https://www.taobao.com/test`.
 
 ### Dynamic Data Source Support
 
-#### The usage of our first version 0.2.0.RELEASE or 0.1.0.RELEASE
-
-you need to complete the following 3 steps to configure your data source.
-
-* Define the data source information in your properties file. For example, you can use:
-
-.application.properties
-----
-spring.cloud.sentinel.datasource.type=file
-spring.cloud.sentinel.datasource.recommendRefreshMs=3000
-spring.cloud.sentinel.datasource.bufSize=4056196
-spring.cloud.sentinel.datasource.charset=utf-8
-spring.cloud.sentinel.datasource.converter=flowConverter
-spring.cloud.sentinel.datasource.file=/Users/you/yourrule.json
-----
-
-* Create a Converter class to implement the `com.alibaba.csp.sentinel.datasource.Converter` interface, and you need to have a bean of this class in `ApplicationContext`.
-
-```java
-@Component("flowConverter")
-public class JsonFlowRuleListParser implements Converter<String, List<FlowRule>> {
-	@Override
-	public List<FlowRule> convert(String source) {
-		return JSON.parseObject(source, new TypeReference<List<FlowRule>>() {
-		});
-	}
-}
-```
-
-The bean name of this Converter needs to be the same with the converter in the `application.properties` file.
-
-* Define a `ReadableDataSource` attribute that is modified by the `@SentinelDataSource` annotation in any Spring Bean `@SentinelDataSource`.
-
-```java
-@SentinelDataSource("spring.cloud.sentinel.datasource")
-private ReadableDataSource dataSource;
-```
-
-The value attribute of `@SentinelDataSource` means that the data source is in the prefix of the `application.properties` file. In this example, the prefix is `spring.cloud.sentinel.datasource`.
-
-If there are over 1 `ReadableDataSource` beans in `ApplicationContext`, then none of the data sources in `ReadableDataSource` will be loaded. It takes effect only when there is only 1 `ReadableDataSource` in `ApplicationContext`.
-
-If the data source takes effect and is loaded successfully, the dashboard will print information as shown below:
-
-```
-[Sentinel Starter] load 3 flow rules
-```
-
-#### The usage after first version
-
-You only need to complete 1 step to configure your data source:
-
-* Configure your data source in the `application.properties` file directly.
+`SentinelProperties` provide `datasource` attribute to configure datasource.
 
 For example, 4 data sources are configures：
 
 ```
 spring.cloud.sentinel.datasource.ds1.file.file=classpath: degraderule.json
+spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
+
+#spring.cloud.sentinel.datasource.ds1.file.file=classpath: flowrule.json
+#spring.cloud.sentinel.datasource.ds1.file.data-type=custom
+#spring.cloud.sentinel.datasource.ds1.file.converter-class=JsonFlowRuleListConverter
+#spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
 spring.cloud.sentinel.datasource.ds2.nacos.server-addr=localhost:8848
-spring.cloud.sentinel.datasource.ds2.nacos.dataId=sentinel
-spring.cloud.sentinel.datasource.ds2.nacos.groupId=DEFAULT_GROUP
+spring.cloud.sentinel.datasource.ds2.nacos.data-id=sentinel
+spring.cloud.sentinel.datasource.ds2.nacos.group-id=DEFAULT_GROUP
 spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
+spring.cloud.sentinel.datasource.ds2.nacos.rule-type=degrade
 
 spring.cloud.sentinel.datasource.ds3.zk.path = /Sentinel-Demo/SYSTEM-CODE-DEMO-FLOW
 spring.cloud.sentinel.datasource.ds3.zk.server-addr = localhost:2181
+spring.cloud.sentinel.datasource.ds3.zk.rule-type=authority
 
 spring.cloud.sentinel.datasource.ds4.apollo.namespace-name = application
 spring.cloud.sentinel.datasource.ds4.apollo.flow-rules-key = sentinel
 spring.cloud.sentinel.datasource.ds4.apollo.default-flow-rule-value = test
-
+spring.cloud.sentinel.datasource.ds4.apollo.rule-type=param-flow
 ```
 
 This method follows the configuration of Spring Cloud Stream Binder. `TreeMap` is used for storage internally, and comparator is `String.CASE_INSENSITIVE_ORDER`.
 
 NOTE: d1, ds2, ds3, ds4 are the names of `ReadableDataSource`, and can be coded as you like. The `file`, `zk`, `nacos` , `apollo` refer to the specific data sources. The configurations following them are the specific configurations of these data sources respecitively.
 
-Every data source has two common configuration items: `data-type` and `converter-class`.
+Every data source has 3 common configuration items: `data-type`, `converter-class` and `rule-type`.
 
-`data-type` refers to `Converter`. Spring Cloud Alibaba Sentinel provides two embedded values by defaul: `json` and `xml` (the default is json if not specified). If you do not want to use the embedded `json` or `xml` `Converter`, you can also fill in `custom` to indicate that you will define your own `Converter`, and then configure the `converter-class`. You need to specify the full path of the class for this configuration.
+`data-type` refers to `Converter`. Spring Cloud Alibaba Sentinel provides two embedded values by default: `json` and `xml` (the default is json if not specified). If you do not want to use the embedded `json` or `xml` `Converter`, you can also fill in `custom` to indicate that you will define your own `Converter`, and then configure the `converter-class`. You need to specify the full path of the class for this configuration.
 
-The two embedded `Converter` only supports parsing the Json array or XML array. Sentinel will determine automatically which of the 4 Sentinel rules that the Json or XML objext belongs to(`FlowRule`, `DegradeRule`, `SystemRule`, `AuthorityRule`, `ParamFlowRule`).
-
-For example, if 5 rate limiting rules and 5 degradation rules in the 10 rule arrays,  then the data source will not be registered, and there will be warnings in the logs.
-
-If there are 9 rate limiting rules among the 10 arrays, and 1 error parsing the 10th array, then there will be warning in the log indicating that there is error in one of the rules, while the other 9 rules will be registered.
-
-Here `jackson` is used to parse the Json or XML arrays. `ObjectMapper` or `XmlMapper` uses the default configuration and will report error if there are unrecognized fields. The reason behind this logic is that without this strict parsing, Json will also be parsed as system rules(all system rules have default values).
-
-In another case, the Json or XML object might match all of the 4 rules(for example, if only the `resource` field is configured in the Json object, then it will match all 4 rules). In this case, there will be warnings in the log, and this object will be filtered.
-
-When you use this configuration, you only need to fill in the Json or XML correctly, and any of the unreasonable information will be printed in the log.
-
-If the data source takes effect and is loaded successfully, the dashboard will print information as shown below:
-
-```
-[Sentinel Starter] DataSource ds1-sentinel-file-datasource load 3 DegradeRule
-[Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
-```
+`rule-type` refers to the rule type in datasource(`flow`，`degrade`，`authority`，`system`, `param-flow`, `gw-flow`, `gw-api-group`).
 
 NOTE: XML format is not supported by default. To make it effective, you need to add the  `jackson-dataformat-xml` dependency.
 
 To learn more about how dynamic data sources work in Sentinel, refer to https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95[Dynamic Rule Extension].
 
-### Endpoint Support
+### Support Zuul
 
-Before you use the Endpoint feature, please add the  `spring-boot-starter-actuator` dependency in Maven, and enable access of Endpoints in your configuration.
+https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
 
-* Add `management.security.enabled=false` in Spring Boot 1.x. The exposed endpoint path is `/sentinel`.
-* Add `management.endpoints.web.exposure.include=*` in Spring Boot 2.x. The exposed endpoint path is `/actuator/sentinel`.
+If you want to use Sentinel Starter with Zuul, you need to add the `spring-cloud-alibaba-sentinel-gateway` dependency, and you need to add the `spring-cloud-starter-netflix-zuul` dependency to let Zuul AutoConfiguration class in the gateway module takes effect:
 
-### More
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+</dependency>
+```
+
+### Sentinel Endpoint
+
+Sentinel provides an Endpoint internally with a corresponding endpoint id of `sentinel`.
+
+Endpoint exposed json contains multi properties:
+
+1. appName: application name
+2. logDir: the directory of log
+3. logUsePid: log name with pid ot not
+4. blockPage: redirect page after sentinel block
+5. metricsFileSize: the size of metrics file
+6. metricsFileCharset: metrics file charset
+7. totalMetricsFileCount: the total file count of of metrics file
+8. consoleServer: sentinel dashboard address
+9. clientIp: client ip
+10. heartbeatIntervalMs: client heartbeat interval with dashboard
+11. clientPort: the client needs to expose the port to interact with the dashboard
+12. coldFactor: cold factor
+13. filter: CommonFilter related properties, such as order, urlPatterns and enable
+14. datasource: datasource configuration info by client
+15. rules: the rule that the client takes effect internally contains flowRules, degradeRules, systemRules, authorityRule, paramFlowRule
+
+The followings shows how a service instance accesses the Endpoint:
+
+[source,json,indent=0]
+----
+{
+	"blockPage": null,
+	"appName": "sentinel-example",
+	"consoleServer": "localhost:8080",
+	"coldFactor": "3",
+	"rules": {
+		"flowRules": [{
+			"resource": "GET:http://www.taobao.com",
+			"limitApp": "default",
+			"grade": 1,
+			"count": 0.0,
+			"strategy": 0,
+			"refResource": null,
+			"controlBehavior": 0,
+			"warmUpPeriodSec": 10,
+			"maxQueueingTimeMs": 500,
+			"clusterMode": false,
+			"clusterConfig": null
+		}, {
+			"resource": "/test",
+			"limitApp": "default",
+			"grade": 1,
+			"count": 0.0,
+			"strategy": 0,
+			"refResource": null,
+			"controlBehavior": 0,
+			"warmUpPeriodSec": 10,
+			"maxQueueingTimeMs": 500,
+			"clusterMode": false,
+			"clusterConfig": null
+		}, {
+			"resource": "/hello",
+			"limitApp": "default",
+			"grade": 1,
+			"count": 1.0,
+			"strategy": 0,
+			"refResource": null,
+			"controlBehavior": 0,
+			"warmUpPeriodSec": 10,
+			"maxQueueingTimeMs": 500,
+			"clusterMode": false,
+			"clusterConfig": null
+		}]
+	},
+	"metricsFileCharset": "UTF-8",
+	"filter": {
+		"order": -2147483648,
+		"urlPatterns": ["/*"],
+		"enabled": true
+	},
+	"totalMetricsFileCount": 6,
+	"datasource": {
+		"ds1": {
+			"file": {
+				"dataType": "json",
+				"ruleType": "FLOW",
+				"converterClass": null,
+				"file": "...",
+				"charset": "utf-8",
+				"recommendRefreshMs": 3000,
+				"bufSize": 1048576
+			},
+			"nacos": null,
+			"zk": null,
+			"apollo": null,
+			"redis": null
+		}
+	},
+	"clientIp": "30.5.121.91",
+	"clientPort": "8719",
+	"logUsePid": false,
+	"metricsFileSize": 52428800,
+	"logDir": "...",
+	"heartbeatIntervalMs": 10000
+}
+----
+
+### Configuration
 
 The following table shows that when there are corresponding bean types in `ApplicationContext`, some actions will be taken:
 
@@ -312,6 +364,7 @@ The following table shows that when there are corresponding bean types in `Appli
 ^|Existing Bean Type ^|Action ^|Function
 |`UrlCleaner`|`WebCallbackManager.setUrlCleaner(urlCleaner)`|Resource cleaning(resource(for example, classify all URLs of /foo/:id to the  /foo/* resource))
 |`UrlBlockHandler`|`WebCallbackManager.setUrlBlockHandler(urlBlockHandler)`|Customize rate limiting logic
+|`RequestOriginParser`|`WebCallbackManager.setRequestOriginParser(requestOriginParser)`|Setting the origin
 |====
 
 The following table shows all the configurations of Spring Cloud Alibaba Sentinel:
@@ -320,18 +373,27 @@ The following table shows all the configurations of Spring Cloud Alibaba Sentine
 [width="60%",options="header"]
 |====
 ^|Configuration ^|Description ^|Default Value
+|`spring.application.name` or `project.name`|Project Name Of Sentinel|
 |`spring.cloud.sentinel.enabled`|Whether Sentinel automatic configuration takes effect|true
-|`spring.cloud.sentinel.eager`|Cancel Sentinel dashboard lazy load|false
-|`spring.cloud.sentinel.transport.port`|Port for the application to interact with Sentinel dashboard. An HTTP Server which uses this port will be started in the application|8721
+|`spring.cloud.sentinel.eager`|Whether to trigger Sentinel initialization in advance|false
+|`spring.cloud.sentinel.transport.port`|Port for the application to interact with Sentinel dashboard. An HTTP Server which uses this port will be started in the application|8719
 |`spring.cloud.sentinel.transport.dashboard`|Sentinel dashboard address|
 |`spring.cloud.sentinel.transport.heartbeatIntervalMs`|Hearbeat interval between the application and Sentinel dashboard|
+|`spring.cloud.sentinel.transport.client-ip`|The client IP of this configuration will be registered to the Sentinel Server side.|
 |`spring.cloud.sentinel.filter.order`|Loading order of Servlet Filter. The filter will be constructed in the Starter|Integer.MIN_VALUE
-|`spring.cloud.sentinel.filter.spring.url-patterns`|Data type is array. Refers to the collection of Servlet Filter ULR patterns|/*
+|`spring.cloud.sentinel.filter.url-patterns`|Data type is array. Refers to the collection of Servlet Filter ULR patterns|/*
+|`spring.cloud.sentinel.filter.enabled`|Enable to instance CommonFilter|true
 |`spring.cloud.sentinel.metric.charset`|metric file character set|UTF-8
 |`spring.cloud.sentinel.metric.fileSingleSize`|Sentinel metric single file size|
 |`spring.cloud.sentinel.metric.fileTotalCount`|Sentinel metric total file number|
 |`spring.cloud.sentinel.log.dir`|Directory of Sentinel log files|
 |`spring.cloud.sentinel.log.switch-pid`|If PID is required for Sentinel log file names|false
 |`spring.cloud.sentinel.servlet.blockPage`| Customized redirection URL. When rate limited, the request will be redirected to the pre-defined URL |
-|`spring.cloud.sentinel.flow.coldFactor`| https://github.com/alibaba/Sentinel/wiki/%E9%99%90%E6%B5%81---%E5%86%B7%E5%90%AF%E5%8A%A8[冷启动因子] |3
+|`spring.cloud.sentinel.flow.coldFactor`| https://github.com/alibaba/Sentinel/wiki/%E9%99%90%E6%B5%81---%E5%86%B7%E5%90%AF%E5%8A%A8[ColdFactor] |3
+|`spring.cloud.sentinel.zuul.order.pre`| The order of SentinelZuulPreFilter | 10000
+|`spring.cloud.sentinel.zuul.order.post`| The order of SentinelZuulPostFilter | 1000
+|`spring.cloud.sentinel.zuul.order.error`| The order of SentinelZuulErrorFilter | -1
 |====
+
+
+NOTE: These configurations will only take effect in servlet environment. RestTemplate and Feign will not take effect for these configurations.
