@@ -45,7 +45,6 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
 import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
-import com.alibaba.csp.sentinel.adapter.gateway.common.SentinelGatewayConstants;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.SentinelGatewayFilter;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
@@ -94,7 +93,7 @@ public class SentinelSCGAutoConfiguration {
 
 	private void initAppType() {
 		System.setProperty(SentinelConfig.APP_TYPE,
-				String.valueOf(SentinelGatewayConstants.APP_TYPE_GATEWAY));
+				String.valueOf(ConfigConstants.APP_TYPE_SCG_GATEWAY));
 	}
 
 	private void initFallback() {
@@ -149,8 +148,10 @@ public class SentinelSCGAutoConfiguration {
 	@Order(-1)
 	@ConditionalOnMissingBean
 	public SentinelGatewayFilter sentinelGatewayFilter() {
-		logger.info("[Sentinel SpringCloudGateway] register SentinelGatewayFilter");
-		return new SentinelGatewayFilter();
+		logger.info(
+				"[Sentinel SpringCloudGateway] register SentinelGatewayFilter with order: {}",
+				gatewayProperties.getOrder());
+		return new SentinelGatewayFilter(gatewayProperties.getOrder());
 	}
 
 }
