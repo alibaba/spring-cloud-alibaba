@@ -9,7 +9,7 @@ The features of Spring Cloud Alibaba:
 1. **Flow control and service degradation**：support WebServlet, WebFlux, OpenFeign, RestTemplate, Dubbo access to the function of limiting and degrading flow. It can modify the rules of limiting and degrading flow in real time through the console at run time, and it also supports the monitoring of limiting and degrading Metrics.
 2. **Service registration and discovery**：Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
 3. **Distributed configuration**：support for externalized configuration in a distributed system, auto refresh when configuration changes.
-5. **Rpc Service**：extend Spring Cloud client RestTemplate and OpenFeign to support calling Dubbo RPC services.
+4. **Rpc Service**：extend Spring Cloud client RestTemplate and OpenFeign to support calling Dubbo RPC services.
 5. **Event-driven**：support for building highly scalable event-driven microservices connected with shared messaging systems.
 6. **Distributed Transaction**：support for distributed transaction solution with high performance and ease of use.
 7. **Alibaba Cloud Object Storage**：massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
