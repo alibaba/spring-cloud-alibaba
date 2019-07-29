@@ -53,7 +53,7 @@ public class NacosConfigProperties {
 			.getLogger(NacosConfigProperties.class);
 
 	/**
-	 * nacos config server address
+	 * nacos config server address.
 	 */
 	private String serverAddr;
 
@@ -68,7 +68,7 @@ public class NacosConfigProperties {
 	private String group = "DEFAULT_GROUP";
 
 	/**
-	 * nacos config dataId prefix
+	 * nacos config dataId prefix.
 	 */
 	private String prefix;
 	/**
@@ -108,10 +108,13 @@ public class NacosConfigProperties {
 	private String contextPath;
 
 	/**
-	 * nacos config cluster name
+	 * nacos config cluster name.
 	 */
 	private String clusterName;
 
+    /**
+     * nacos config dataId name.
+     */
 	private String name;
 
 	/**

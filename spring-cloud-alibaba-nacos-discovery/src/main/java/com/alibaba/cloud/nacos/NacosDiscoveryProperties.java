@@ -66,7 +66,7 @@ public class NacosDiscoveryProperties {
 			.getLogger(NacosDiscoveryProperties.class);
 
 	/**
-	 * nacos discovery server address
+	 * nacos discovery server address.
 	 */
 	private String serverAddr;
 
@@ -87,12 +87,12 @@ public class NacosDiscoveryProperties {
 	private long watchDelay = 30000;
 
 	/**
-	 * nacos naming log file name
+	 * nacos naming log file name.
 	 */
 	private String logName;
 
 	/**
-	 * service name to registry
+	 * service name to registry.
 	 */
 	@Value("${spring.cloud.nacos.discovery.service:${spring.application.name:}}")
 	private String service;
@@ -108,7 +108,7 @@ public class NacosDiscoveryProperties {
 	private String clusterName = "DEFAULT";
 
 	/**
-	 * naming load from local cache at application start. true is load
+	 * naming load from local cache at application start. true is load.
 	 */
 	private String namingLoadCacheAtStart = "false";
 
@@ -130,18 +130,18 @@ public class NacosDiscoveryProperties {
 	private String ip;
 
 	/**
-	 * which network interface's ip you want to register
+	 * which network interface's ip you want to register.
 	 */
 	private String networkInterface = "";
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
-	 * auto detect port works well
+	 * auto detect port works well.
 	 */
 	private int port = -1;
 
 	/**
-	 * whether your service is a https service
+	 * whether your service is a https service.
 	 */
 	private boolean secure = false;
 

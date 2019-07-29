@@ -18,7 +18,7 @@ If you want to use Sentinel in your project, please use the starter with the gro
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
 </dependency>
 ```
@@ -244,7 +244,7 @@ Before you use the Endpoint feature, please add the  `spring-boot-starter-actuat
 
 The information exposed in Sentinel Endpoint is very useful. It includes all the rules of the current application, the log directory, the IP of the current instance, the Sentinel Dashboard address, the Block Page, the heartbeat frequency of the application and the Sentinel Dashboard, and so on.
 
-### More
+### Configuration
 
 The following table shows that when there are corresponding bean types in `ApplicationContext`, some actions will be taken:
 
