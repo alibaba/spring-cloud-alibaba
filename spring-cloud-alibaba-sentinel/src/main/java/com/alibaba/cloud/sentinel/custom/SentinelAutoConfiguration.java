@@ -152,6 +152,7 @@ public class SentinelAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public SentinelDataSourceHandler sentinelDataSourceHandler(
 			DefaultListableBeanFactory beanFactory, SentinelProperties sentinelProperties,
 			Environment env) {
