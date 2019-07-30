@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-import static org.apache.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**

@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.apache.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
 import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
 
 /**
