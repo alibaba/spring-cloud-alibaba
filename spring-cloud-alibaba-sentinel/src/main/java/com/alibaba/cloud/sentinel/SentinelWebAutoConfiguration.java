@@ -91,6 +91,8 @@ public class SentinelWebAutoConfiguration {
 		Filter filter = new CommonFilter();
 		registration.setFilter(filter);
 		registration.setOrder(filterConfig.getOrder());
+		registration.addInitParameter("HTTP_METHOD_SPECIFY",
+				String.valueOf(properties.getHttpMethodSpecify()));
 		log.info(
 				"[Sentinel Starter] register Sentinel CommonFilter with urlPatterns: {}.",
 				filterConfig.getUrlPatterns());
