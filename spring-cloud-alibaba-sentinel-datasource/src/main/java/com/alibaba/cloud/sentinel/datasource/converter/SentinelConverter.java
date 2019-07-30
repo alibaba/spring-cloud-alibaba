@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.sentinel.datasource.converter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,17 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.cloud.sentinel.datasource.RuleType;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleUtil;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -87,59 +84,35 @@ public abstract class SentinelConverter<T extends Object>
 			List sourceArray = objectMapper.readValue(source,
 					new TypeReference<List<HashMap>>() {
 					});
-
 			for (Object obj : sourceArray) {
 				String item = null;
 				try {
 					item = objectMapper.writeValueAsString(obj);
+					Object rule = convertRule(item);
+					if (rule != null) {
+						ruleCollection.add(rule);
+					}
 				}
-				catch (JsonProcessingException e) {
-					// won't be happen
+				catch (IOException e) {
+					log.error("sentinel rule convert error: " + e.getMessage(), e);
+					throw new IllegalArgumentException(
+							"sentinel rule convert error: " + e.getMessage(), e);
 				}
-
-				Object rule = convertRule(item);
-				if (rule != null) {
-					ruleCollection.add(rule);
-				}
-
-			}
-
-			if (ruleCollection.size() != sourceArray.size()) {
-				throw new IllegalArgumentException("convert " + ruleCollection.size()
-						+ " rules but there are " + sourceArray.size()
-						+ " rules from datasource. RuleClass: "
-						+ ruleClass.getSimpleName());
 			}
 		}
 		catch (Exception e) {
-			throw new RuntimeException("convert error: " + e.getMessage(), e);
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
+			}
+			else {
+				throw new RuntimeException("convert error: " + e.getMessage(), e);
+			}
 		}
 		return ruleCollection;
 	}
 
-	private Object convertRule(String ruleStr) {
-		try {
-			final Object rule = objectMapper.readValue(ruleStr, ruleClass);
-			RuleType ruleType = RuleType.getByClass(ruleClass);
-			switch (ruleType) {
-			case FLOW:
-				if (!FlowRuleUtil.isValidRule((FlowRule) rule)) {
-					return null;
-				}
-				break;
-			case DEGRADE:
-				if (!DegradeRuleManager.isValidRule((DegradeRule) rule)) {
-					return null;
-				}
-			default:
-				break;
-			}
-			return rule;
-		}
-		catch (Exception e) {
-			// ignore
-		}
-		return null;
+	private Object convertRule(String ruleStr) throws IOException {
+		return objectMapper.readValue(ruleStr, ruleClass);
 	}
 
 }
