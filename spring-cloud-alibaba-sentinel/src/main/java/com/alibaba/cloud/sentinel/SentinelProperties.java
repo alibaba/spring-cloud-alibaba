@@ -89,6 +89,11 @@ public class SentinelProperties {
 	 */
 	private Log log = new Log();
 
+	/**
+	 * Add HTTP method prefix for Sentinel Resource.
+	 */
+	private Boolean httpMethodSpecify = false;
+
 	public boolean isEager() {
 		return eager;
 	}
@@ -159,6 +164,14 @@ public class SentinelProperties {
 
 	public void setLog(Log log) {
 		this.log = log;
+	}
+
+	public Boolean getHttpMethodSpecify() {
+		return httpMethodSpecify;
+	}
+
+	public void setHttpMethodSpecify(Boolean httpMethodSpecify) {
+		this.httpMethodSpecify = httpMethodSpecify;
 	}
 
 	public static class Flow {
