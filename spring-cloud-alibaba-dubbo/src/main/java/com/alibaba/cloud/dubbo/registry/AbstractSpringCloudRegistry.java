@@ -16,18 +16,17 @@
  */
 package com.alibaba.cloud.dubbo.registry;
 
-import org.apache.dubbo.common.Constants;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.RegistryFactory;
 import org.apache.dubbo.registry.support.FailbackRegistry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
@@ -42,12 +41,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static org.apache.dubbo.common.Constants.APPLICATION_KEY;
-import static org.apache.dubbo.common.Constants.GROUP_KEY;
-import static org.apache.dubbo.common.Constants.PROTOCOL_KEY;
-import static org.apache.dubbo.common.Constants.PROVIDER_SIDE;
-import static org.apache.dubbo.common.Constants.SIDE_KEY;
-import static org.apache.dubbo.common.Constants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.APPLICATION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER_SIDE;
+import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.registry.Constants.ADMIN_PROTOCOL;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
@@ -268,7 +268,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
     }
 
     protected boolean isAdminURL(URL url) {
-        return Constants.ADMIN_PROTOCOL.equals(url.getProtocol());
+        return ADMIN_PROTOCOL.equals(url.getProtocol());
     }
 
     protected boolean isDubboMetadataServiceURL(URL url) {

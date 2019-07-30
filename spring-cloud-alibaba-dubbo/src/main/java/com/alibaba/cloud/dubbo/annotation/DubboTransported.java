@@ -16,7 +16,6 @@
  */
 package com.alibaba.cloud.dubbo.annotation;
 
-import org.apache.dubbo.common.Constants;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.rpc.ExporterListener;
 import org.apache.dubbo.rpc.Filter;
@@ -31,7 +30,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static org.apache.dubbo.common.Constants.DEFAULT_RETRIES;
+import static org.apache.dubbo.rpc.cluster.Constants.DEFAULT_RETRIES;
 
 /**
  * {@link DubboTransported @DubboTransported} annotation indicates that the traditional Spring Cloud Service-to-Service call is transported
@@ -76,7 +75,6 @@ public @interface DubboTransported {
      * Whether to reconnect if connection is lost, if not specify, reconnect is enabled by default, and the interval
      * for retry connecting is 2000 ms
      *
-     * @see Constants#DEFAULT_RECONNECT_PERIOD
      * @see Reference#reconnect()
      */
     String reconnect() default "${dubbo.transport.reconnect:2000}";
@@ -91,7 +89,6 @@ public @interface DubboTransported {
     /**
      * Service invocation retry times
      *
-     * @see Constants#DEFAULT_RETRIES
      * @see Reference#retries()
      */
     int retries() default DEFAULT_RETRIES;
@@ -99,7 +96,6 @@ public @interface DubboTransported {
     /**
      * Load balance strategy, legal values include: random, roundrobin, leastactive
      *
-     * @see Constants#DEFAULT_LOADBALANCE
      * @see Reference#loadbalance()
      */
     String loadbalance() default "${dubbo.transport.loadbalance:}";
