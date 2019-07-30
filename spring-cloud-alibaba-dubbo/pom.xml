@@ -182,11 +182,12 @@
             <version>${dubbo-spring-boot.version}</version>
         </dependency>
 
-        <!-- Dubbo Spring Boot Actuator -->
+        <!-- Dubbo Spring Boot Actuator (optional) -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-actuator</artifactId>
             <version>${dubbo-spring-boot.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- Netty -->
