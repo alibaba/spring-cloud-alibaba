@@ -54,13 +54,7 @@ public class SeataFeignClient implements Client {
 	public Response execute(Request request, Request.Options options) throws IOException {
 
 		Request modifiedRequest = getModifyRequest(request);
-
-		try {
-			return this.delegate.execute(modifiedRequest, options);
-		}
-		finally {
-
-		}
+		return this.delegate.execute(modifiedRequest, options);
 	}
 
 	private Request getModifyRequest(Request request) {
