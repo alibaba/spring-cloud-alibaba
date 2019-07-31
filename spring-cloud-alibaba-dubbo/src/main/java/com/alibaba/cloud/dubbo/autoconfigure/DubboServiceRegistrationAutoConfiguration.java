@@ -18,12 +18,15 @@ package com.alibaba.cloud.dubbo.autoconfigure;
 
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.ADDRESS;
+import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
@@ -43,10 +46,13 @@ import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaAutoServic
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaServiceRegistry;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
 
+import com.alibaba.cloud.dubbo.autoconfigure.condition.MissingSpringCloudRegistryConfigPropertyCondition;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.registry.DubboServiceRegistrationEventPublishingAspect;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
@@ -81,6 +87,12 @@ public class DubboServiceRegistrationAutoConfiguration {
 
 	@Autowired
 	private DubboServiceMetadataRepository dubboServiceMetadataRepository;
+
+	@Bean
+	@Conditional(value = { MissingSpringCloudRegistryConfigPropertyCondition.class })
+	public RegistryConfig defaultSpringCloudRegistryConfig() {
+		return new RegistryConfig(ADDRESS, PROTOCOL);
+	}
 
 	@EventListener(ServiceInstancePreRegisteredEvent.class)
 	public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {

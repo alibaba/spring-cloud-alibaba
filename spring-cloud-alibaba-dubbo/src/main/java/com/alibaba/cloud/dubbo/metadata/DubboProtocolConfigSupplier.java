@@ -16,7 +16,7 @@
  */
 package com.alibaba.cloud.dubbo.metadata;
 
-import static org.apache.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.Collection;

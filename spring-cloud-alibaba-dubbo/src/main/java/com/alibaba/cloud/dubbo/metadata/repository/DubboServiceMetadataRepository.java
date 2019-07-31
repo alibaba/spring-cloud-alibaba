@@ -16,6 +16,8 @@
  */
 package com.alibaba.cloud.dubbo.metadata.repository;
 
+import static com.alibaba.cloud.dubbo.env.DubboCloudProperties.ALL_DUBBO_SERVICES;
+import static com.alibaba.cloud.dubbo.http.DefaultHttpRequest.builder;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
@@ -23,8 +25,8 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
-import static org.apache.dubbo.common.Constants.APPLICATION_KEY;
-import static org.apache.dubbo.common.Constants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.APPLICATION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -35,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,6 +50,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -54,7 +58,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
-import com.alibaba.cloud.dubbo.http.DefaultHttpRequest;
 import com.alibaba.cloud.dubbo.http.matcher.RequestMetadataMatcher;
 import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
 import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
@@ -156,6 +159,9 @@ public class DubboServiceMetadataRepository {
 
 	@Autowired
 	private JSONUtils jsonUtils;
+
+	@Autowired
+	private InetUtils inetUtils;
 
 	@Value("${spring.application.name}")
 	private String currentApplicationName;
@@ -284,14 +290,27 @@ public class DubboServiceMetadataRepository {
 	}
 
 	public void exportURL(URL url) {
-		this.allExportedURLs.add(url.getServiceKey(), url);
+		URL actualURL = url;
+		InetUtils.HostInfo hostInfo = inetUtils.findFirstNonLoopbackHostInfo();
+		String ipAddress = hostInfo.getIpAddress();
+		// To use InetUtils to set IP if they are different
+		// issue :
+		// https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/589
+		if (!Objects.equals(url.getHost(), ipAddress)) {
+			actualURL = url.setHost(ipAddress);
+		}
+		this.allExportedURLs.add(actualURL.getServiceKey(), actualURL);
 	}
 
 	public void unexportURL(URL url) {
 		String key = url.getServiceKey();
+		// NPE issue :
+		// https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/591
 		List<URL> urls = allExportedURLs.get(key);
-		urls.remove(url);
-		this.allExportedURLs.addAll(key, urls);
+		if (!isEmpty(urls)) {
+			urls.remove(url);
+			allExportedURLs.addAll(key, urls);
+		}
 	}
 
 	/**
@@ -413,8 +432,7 @@ public class DubboServiceMetadataRepository {
 			object = map.get(matcher);
 			if (object == null) { // Can't match exactly
 				// Require to match one by one
-				HttpRequest request = DefaultHttpRequest.builder()
-						.method(requestMetadata.getMethod())
+				HttpRequest request = builder().method(requestMetadata.getMethod())
 						.path(requestMetadata.getPath())
 						.params(requestMetadata.getParams())
 						.headers(requestMetadata.getHeaders()).build();
@@ -491,8 +509,7 @@ public class DubboServiceMetadataRepository {
 
 	private void initSubscribedServices() {
 		// If subscribes all services
-		if (DubboCloudProperties.ALL_DUBBO_SERVICES
-				.equals(dubboCloudProperties.getSubscribedServices())) {
+		if (ALL_DUBBO_SERVICES.equals(dubboCloudProperties.getSubscribedServices())) {
 			List<String> services = discoveryClient.getServices();
 			subscribedServices = new HashSet<>(services);
 			if (logger.isWarnEnabled()) {

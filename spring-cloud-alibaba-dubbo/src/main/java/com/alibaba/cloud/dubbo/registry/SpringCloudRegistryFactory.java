@@ -42,6 +42,10 @@ import com.alibaba.cloud.dubbo.util.JSONUtils;
  */
 public class SpringCloudRegistryFactory implements RegistryFactory {
 
+	public static String PROTOCOL = "spring-cloud";
+
+	public static String ADDRESS = "localhost";
+
 	private static String SERVICES_LOOKUP_SCHEDULER_THREAD_NAME_PREFIX = getProperty(
 			"dubbo.services.lookup.scheduler.thread.name.prefix ",
 			"dubbo-services-lookup-");

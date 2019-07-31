@@ -16,7 +16,7 @@
  */
 package com.alibaba.cloud.dubbo.env;
 
-import static org.apache.dubbo.common.Constants.DEFAULT_PROTOCOL;
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
 import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
 
 import java.util.HashMap;

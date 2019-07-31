@@ -17,12 +17,13 @@
 package com.alibaba.cloud.dubbo.registry;
 
 import static java.util.Collections.emptyList;
-import static org.apache.dubbo.common.Constants.APPLICATION_KEY;
-import static org.apache.dubbo.common.Constants.GROUP_KEY;
-import static org.apache.dubbo.common.Constants.PROTOCOL_KEY;
-import static org.apache.dubbo.common.Constants.PROVIDER_SIDE;
-import static org.apache.dubbo.common.Constants.SIDE_KEY;
-import static org.apache.dubbo.common.Constants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.APPLICATION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER_SIDE;
+import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.registry.Constants.ADMIN_PROTOCOL;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.HashSet;
@@ -35,7 +36,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.dubbo.common.Constants;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.RegistryFactory;
@@ -66,7 +66,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	protected static final String DUBBO_METADATA_SERVICE_CLASS_NAME = DubboMetadataService.class
 			.getName();
 
-	private static final Set<String> schedulerTasks = new HashSet<>();
+	private static final Set<String> SCHEDULER_TASKS = new HashSet<>();
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -166,7 +166,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
 	private void submitSchedulerTaskIfAbsent(URL url, NotifyListener listener) {
 		String taskId = url.toIdentityString();
-		if (schedulerTasks.add(taskId)) {
+		if (SCHEDULER_TASKS.add(taskId)) {
 			schedule(() -> doSubscribeDubboServiceURLs(url, listener));
 		}
 	}
@@ -278,7 +278,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	}
 
 	protected boolean isAdminURL(URL url) {
-		return Constants.ADMIN_PROTOCOL.equals(url.getProtocol());
+		return ADMIN_PROTOCOL.equals(url.getProtocol());
 	}
 
 	protected boolean isDubboMetadataServiceURL(URL url) {
