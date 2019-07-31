@@ -19,6 +19,8 @@ package com.alibaba.cloud.dubbo.autoconfigure;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.spring.ServiceBean;
 
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
 import com.ecwid.consul.v1.agent.model.NewService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -30,8 +32,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
@@ -43,8 +43,8 @@ import org.springframework.context.event.EventListener;
 
 import java.util.List;
 
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.ZOOKEEPER_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.ZOOKEEPER_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
 
 /**
  * Dubbo Service Registration Auto-{@link Configuration} for Non-Web application
@@ -117,7 +117,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
     }
 
     @Configuration
-    @ConditionalOnBean(name = ZOOKEEPER_AUTO_CONFIGURATION_CLASS_NAME)
+    @ConditionalOnBean(name = ZOOKEEPER_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME)
     class ZookeeperConfiguration implements SmartInitializingSingleton {
 
         @Autowired
@@ -136,7 +136,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
     }
 
     @Configuration
-    @ConditionalOnBean(name = CONSUL_AUTO_CONFIGURATION_CLASS_NAME)
+    @ConditionalOnBean(name = CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME)
     class ConsulConfiguration {
 
         /**

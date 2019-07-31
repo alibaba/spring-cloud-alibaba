@@ -23,8 +23,7 @@ import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepositor
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-
-import java.util.concurrent.ScheduledExecutorService;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
@@ -39,8 +38,8 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
                                DubboServiceMetadataRepository dubboServiceMetadataRepository,
                                DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
                                JSONUtils jsonUtils,
-                               ScheduledExecutorService servicesLookupScheduler) {
-        super(url, discoveryClient, dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy, jsonUtils, servicesLookupScheduler);
+                               ConfigurableApplicationContext applicationContext) {
+        super(url, discoveryClient, dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy, jsonUtils, applicationContext);
         this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
     }
 
