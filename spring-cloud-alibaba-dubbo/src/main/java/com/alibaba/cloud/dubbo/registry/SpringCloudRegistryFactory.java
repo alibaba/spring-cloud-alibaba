@@ -17,7 +17,6 @@
 package com.alibaba.cloud.dubbo.registry;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.utils.NamedThreadFactory;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
 
@@ -27,10 +26,7 @@ import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.concurrent.ScheduledExecutorService;
-
 import static java.lang.System.getProperty;
-import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose protocol is "spring-cloud"
@@ -50,8 +46,6 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 
     private static ConfigurableApplicationContext applicationContext;
 
-    private final ScheduledExecutorService servicesLookupScheduler;
-
     private DiscoveryClient discoveryClient;
 
     private DubboServiceMetadataRepository dubboServiceMetadataRepository;
@@ -63,8 +57,6 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
     private volatile boolean initialized = false;
 
     public SpringCloudRegistryFactory() {
-        servicesLookupScheduler = newSingleThreadScheduledExecutor(
-                new NamedThreadFactory(SERVICES_LOOKUP_SCHEDULER_THREAD_NAME_PREFIX));
     }
 
     protected void init() {
@@ -81,7 +73,7 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
     public Registry getRegistry(URL url) {
         init();
         return new SpringCloudRegistry(url, discoveryClient, dubboServiceMetadataRepository,
-                dubboMetadataConfigServiceProxy, jsonUtils, servicesLookupScheduler);
+                dubboMetadataConfigServiceProxy, jsonUtils, applicationContext);
     }
 
     public static void setApplicationContext(ConfigurableApplicationContext applicationContext) {
