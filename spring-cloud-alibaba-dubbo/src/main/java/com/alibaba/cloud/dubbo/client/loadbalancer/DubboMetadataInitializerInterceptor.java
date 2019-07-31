@@ -46,7 +46,7 @@ public class DubboMetadataInitializerInterceptor implements ClientHttpRequestInt
 
         String serviceName = originalUri.getHost();
 
-        repository.initialize(serviceName);
+        repository.initializeMetadata(serviceName);
 
         // Execute next
         return execution.execute(request, body);

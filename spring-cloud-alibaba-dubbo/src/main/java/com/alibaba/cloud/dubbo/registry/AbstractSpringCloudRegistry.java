@@ -37,8 +37,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -178,7 +176,12 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
                 @Override
                 public void onApplicationEvent(ServiceInstancesChangedEvent event) {
                     String serviceName = event.getServiceName();
-                    subscribeDubboServiceURLs(url, listener, serviceName, s -> event.getServiceInstances());
+                    Collection<ServiceInstance> serviceInstances = event.getServiceInstances();
+                    if (logger.isInfoEnabled()) {
+                        logger.info("The event of the service instances[name : {} , size: {}] changed has been arrived",
+                                serviceName, serviceInstances.size());
+                    }
+                    subscribeDubboServiceURLs(url, listener, serviceName, s -> serviceInstances);
                 }
             });
         }
@@ -193,39 +196,54 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
     protected void subscribeDubboServiceURLs(URL url, NotifyListener listener, String serviceName,
                                              Function<String, Collection<ServiceInstance>> serviceInstancesFunction) {
-        Optional.ofNullable(serviceName)
-                .map(dubboMetadataConfigServiceProxy::getProxy)
-                .filter(Objects::nonNull)
-                .ifPresent(dubboMetadataService -> {
-                    List<URL> exportedURLs = getExportedURLs(dubboMetadataService, url);
-                    List<URL> allSubscribedURLs = new LinkedList<>();
-                    for (URL exportedURL : exportedURLs) {
-                        Collection<ServiceInstance> serviceInstances = serviceInstancesFunction.apply(serviceName);
-                        String protocol = exportedURL.getProtocol();
-                        List<URL> subscribedURLs = new LinkedList<>();
-                        serviceInstances.forEach(serviceInstance -> {
-                            Integer port = repository.getDubboProtocolPort(serviceInstance, protocol);
-                            String host = serviceInstance.getHost();
-                            if (port == null) {
-                                if (logger.isWarnEnabled()) {
-                                    logger.warn("The protocol[{}] port of Dubbo  service instance[host : {}] " +
-                                            "can't be resolved", protocol, host);
-                                }
-                            } else {
-                                URL subscribedURL = new URL(protocol, host, port, exportedURL.getParameters());
-                                subscribedURLs.add(subscribedURL);
-                            }
-                        });
 
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("The subscribed URL[{}] will notify all URLs : {}", url, subscribedURLs);
-                        }
+        DubboMetadataService dubboMetadataService = dubboMetadataConfigServiceProxy.getProxy(serviceName);
 
-                        allSubscribedURLs.addAll(subscribedURLs);
+        if (dubboMetadataService == null) { // If not found, try to initialize
+            if (logger.isInfoEnabled()) {
+                logger.info("The metadata of Dubbo service[key : {}] can't be found when the subscribed service[name : {}], " +
+                        "and then try to initialize it", url.getServiceKey(), serviceName);
+            }
+            repository.initializeMetadata(serviceName);
+            dubboMetadataService = dubboMetadataConfigServiceProxy.getProxy(serviceName);
+        }
+
+        if (dubboMetadataService == null) { // It makes sure not-found, return immediately
+            if (logger.isWarnEnabled()) {
+                logger.warn("The metadata of Dubbo service[key : {}] still can't be found, it could effect the further " +
+                        "Dubbo service invocation", url.getServiceKey());
+            }
+            return;
+        }
+
+        List<URL> exportedURLs = getExportedURLs(dubboMetadataService, url);
+        List<URL> allSubscribedURLs = new LinkedList<>();
+        for (URL exportedURL : exportedURLs) {
+            Collection<ServiceInstance> serviceInstances = serviceInstancesFunction.apply(serviceName);
+            String protocol = exportedURL.getProtocol();
+            List<URL> subscribedURLs = new LinkedList<>();
+            serviceInstances.forEach(serviceInstance -> {
+                Integer port = repository.getDubboProtocolPort(serviceInstance, protocol);
+                String host = serviceInstance.getHost();
+                if (port == null) {
+                    if (logger.isWarnEnabled()) {
+                        logger.warn("The protocol[{}] port of Dubbo  service instance[host : {}] " +
+                                "can't be resolved", protocol, host);
                     }
+                } else {
+                    URL subscribedURL = new URL(protocol, host, port, exportedURL.getParameters());
+                    subscribedURLs.add(subscribedURL);
+                }
+            });
 
-                    listener.notify(allSubscribedURLs);
-                });
+            if (logger.isDebugEnabled()) {
+                logger.debug("The subscribed URL[{}] will notify all URLs : {}", url, subscribedURLs);
+            }
+
+            allSubscribedURLs.addAll(subscribedURLs);
+        }
+
+        listener.notify(allSubscribedURLs);
     }
 
     private List<ServiceInstance> getServiceInstances(String serviceName) {
@@ -286,5 +304,4 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
     protected boolean isDubboMetadataServiceURL(URL url) {
         return DUBBO_METADATA_SERVICE_CLASS_NAME.equals(url.getServiceInterface());
     }
-
 }

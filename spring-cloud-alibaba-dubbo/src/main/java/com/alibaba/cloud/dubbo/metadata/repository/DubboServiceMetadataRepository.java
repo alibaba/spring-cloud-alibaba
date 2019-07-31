@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
@@ -38,12 +39,10 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -74,7 +73,7 @@ import static org.springframework.util.StringUtils.hasText;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Repository
-public class DubboServiceMetadataRepository {
+public class DubboServiceMetadataRepository implements SmartInitializingSingleton {
 
     /**
      * The prefix of {@link DubboMetadataService} : "dubbo.metadata-service."
@@ -95,6 +94,16 @@ public class DubboServiceMetadataRepository {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Monitor object for synchronization
+     */
+    private final Object monitor = new Object();
+
+    /**
+     * A {@link Set} of service names that had been initialized
+     */
+    private final Set<String> initializedServices = new LinkedHashSet<>();
+
     // =================================== Registration =================================== //
 
     /**
@@ -108,7 +117,7 @@ public class DubboServiceMetadataRepository {
 
     // =================================== Subscription =================================== //
 
-    private Set<String> subscribedServices;
+    private Set<String> subscribedServices = emptySet();
 
     /**
      * The subscribed {@link URL urls} {@link Map} of {@link DubboMetadataService},
@@ -162,13 +171,47 @@ public class DubboServiceMetadataRepository {
 
     // ==================================================================================== //
 
-
     @PostConstruct
     public void init() {
-        // Keep the order in following invocations
         initSubscribedServices();
-        initSubscribedDubboMetadataServices();
-        initDubboRestServiceMetadataRepository();
+    }
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        initializeMetadata();
+    }
+
+    /**
+     * Initialize the metadata
+     */
+    private void initializeMetadata() {
+        subscribedServices.forEach(this::initializeMetadata);
+        if (logger.isInfoEnabled()) {
+            logger.info("The metadata of Dubbo services has been initialized");
+        }
+    }
+
+    /**
+     * Initialize the metadata of Dubbo Services
+     */
+    public void initializeMetadata(String serviceName) {
+        synchronized (monitor) {
+            if (initializedServices.contains(serviceName)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("The metadata of Dubbo service[name : {}] has been initialized", serviceName);
+                }
+            } else {
+                if (logger.isInfoEnabled()) {
+                    logger.info("The metadata of Dubbo service[name : {}] is about to be initialized", serviceName);
+                }
+
+                // Keep the order in following invocations
+                initSubscribedDubboMetadataService(serviceName);
+                initDubboRestServiceMetadataRepository(serviceName);
+                // mark this service name having been initialized
+                initializedServices.add(serviceName);
+            }
+        }
     }
 
     /**
@@ -245,19 +288,15 @@ public class DubboServiceMetadataRepository {
         return unmodifiableSet(serviceRestMetadata);
     }
 
-//    /**
-//     * Get The subscribed {@link DubboMetadataService}'s {@link URL URLs}
-//     *
-//     * @return non-null read-only {@link List}
-//     */
-//    public List<URL> getSubscribedDubboMetadataServiceURLs() {
-//        return Collections.unmodifiableList(subscribedDubboMetadataServiceURLs);
-//    }
-
     public List<URL> findSubscribedDubboMetadataServiceURLs(String serviceName, String group, String version,
                                                             String protocol) {
         String serviceKey = URL.buildKey(serviceName, group, version);
-        List<URL> urls = subscribedDubboMetadataServiceURLs.get(serviceKey);
+
+        List<URL> urls = null;
+
+        synchronized (monitor) {
+            urls = subscribedDubboMetadataServiceURLs.get(serviceKey);
+        }
 
         if (isEmpty(urls)) {
             return emptyList();
@@ -348,7 +387,7 @@ public class DubboServiceMetadataRepository {
      *
      * @param serviceName the service name
      */
-    public void initialize(String serviceName) {
+    protected void initDubboRestServiceMetadataRepository(String serviceName) {
 
         if (dubboRestServiceMetadataRepository.containsKey(serviceName)) {
             return;
@@ -501,23 +540,26 @@ public class DubboServiceMetadataRepository {
         subscribedServices.remove(currentApplicationName);
     }
 
-    private void initSubscribedDubboMetadataServices() {
-        // clear subscribedDubboMetadataServiceURLs
-        subscribedDubboMetadataServiceURLs.clear();
-
-        subscribedServices.stream()
-                .map(discoveryClient::getInstances)
-                .filter(this::isNotEmpty)
-                .forEach(serviceInstances -> {
-                    ServiceInstance serviceInstance = serviceInstances.get(0);
-                    getDubboMetadataServiceURLs(serviceInstance).forEach(dubboMetadataServiceURL -> {
-                        initSubscribedDubboMetadataServiceURLs(dubboMetadataServiceURL);
-                        initDubboMetadataServiceProxy(dubboMetadataServiceURL);
+    protected void initSubscribedDubboMetadataService(String serviceName) {
+        discoveryClient.getInstances(serviceName)
+                .stream()
+                .findAny()
+                .map(this::getDubboMetadataServiceURLs)
+                .ifPresent(dubboMetadataServiceURLs -> {
+                    dubboMetadataServiceURLs.forEach(dubboMetadataServiceURL -> {
+                        try {
+                            initSubscribedDubboMetadataServiceURL(dubboMetadataServiceURL);
+                            initDubboMetadataServiceProxy(dubboMetadataServiceURL);
+                        } catch (Throwable e) {
+                            if (logger.isErrorEnabled()) {
+                                logger.error(e.getMessage(), e);
+                            }
+                        }
                     });
                 });
     }
 
-    private void initSubscribedDubboMetadataServiceURLs(URL dubboMetadataServiceURL) {
+    private void initSubscribedDubboMetadataServiceURL(URL dubboMetadataServiceURL) {
         // add subscriptions
         String serviceKey = dubboMetadataServiceURL.getServiceKey();
         subscribedDubboMetadataServiceURLs.add(serviceKey, dubboMetadataServiceURL);
@@ -528,13 +570,5 @@ public class DubboServiceMetadataRepository {
         String version = dubboMetadataServiceURL.getParameter(VERSION_KEY);
         // Initialize DubboMetadataService with right version
         dubboMetadataConfigServiceProxy.initProxy(serviceName, version);
-    }
-
-    private void initDubboRestServiceMetadataRepository() {
-        subscribedServices.forEach(this::initialize);
-    }
-
-    private boolean isNotEmpty(Collection collection) {
-        return !CollectionUtils.isEmpty(collection);
     }
 }
