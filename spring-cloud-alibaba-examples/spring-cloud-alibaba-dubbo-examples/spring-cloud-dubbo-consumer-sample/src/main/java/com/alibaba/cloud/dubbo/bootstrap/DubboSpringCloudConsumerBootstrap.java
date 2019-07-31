@@ -16,12 +16,12 @@
  */
 package com.alibaba.cloud.dubbo.bootstrap;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.dubbo.config.annotation.Reference;
+
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import com.alibaba.cloud.dubbo.service.RestService;
+import com.alibaba.cloud.dubbo.service.User;
+import com.alibaba.cloud.dubbo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -41,10 +41,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
-import com.alibaba.cloud.dubbo.service.RestService;
-import com.alibaba.cloud.dubbo.service.User;
-import com.alibaba.cloud.dubbo.service.UserService;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
  * Dubbo Spring Cloud Consumer Bootstrap
@@ -172,7 +172,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.pathVariables("c", "b", "a"));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.pathVariables("b", "a", "c"));
+//		System.out.println(feignRestService.pathVariables("b", "a", "c"));
 
 		// RestTemplate call
 		System.out.println(restTemplate.getForEntity(
@@ -186,7 +186,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.headers("b", 10, "a"));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.headers("b", "a", 10));
+//		System.out.println(feignRestService.headers("b", "a", 10));
 	}
 
 	private void callParam() {
@@ -195,7 +195,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.param("mercyblitz"));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.param("mercyblitz"));
+//		System.out.println(feignRestService.param("mercyblitz"));
 	}
 
 	private void callParams() {
@@ -204,7 +204,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.params("1", 1));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.params("1", 1));
+//		System.out.println(feignRestService.params("1", 1));
 
 		// RestTemplate call
 		System.out.println(restTemplate.getForEntity(
@@ -223,7 +223,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.requestBody("Hello,World", data));
+//		System.out.println(feignRestService.requestBody("Hello,World", data));
 
 		// RestTemplate call
 		System.out.println(restTemplate.postForObject(

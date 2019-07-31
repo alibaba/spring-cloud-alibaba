@@ -19,10 +19,6 @@ package com.alibaba.cloud.dubbo.openfeign;
 
 import org.apache.dubbo.rpc.service.GenericService;
 
-import feign.Contract;
-import feign.Target;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
 import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
@@ -33,6 +29,10 @@ import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepositor
 import com.alibaba.cloud.dubbo.metadata.resolver.DubboTransportedMethodMetadataResolver;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import feign.Contract;
+import feign.Target;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.core.env.Environment;
 
@@ -132,7 +132,7 @@ class TargeterInvocationHandler implements InvocationHandler {
         }
 
         // Update Metadata
-        repository.initialize(serviceName);
+        repository.initializeMetadata(serviceName);
 
         Map<Method, FeignMethodMetadata> feignMethodMetadataMap = getFeignMethodMetadataMap(serviceName, feignRestMethodMetadataMap);
 
