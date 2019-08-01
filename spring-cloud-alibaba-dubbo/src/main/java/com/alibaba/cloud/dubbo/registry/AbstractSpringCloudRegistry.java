@@ -175,6 +175,10 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
             applicationContext.addApplicationListener(new ApplicationListener<ServiceInstancesChangedEvent>() {
                 @Override
                 public void onApplicationEvent(ServiceInstancesChangedEvent event) {
+                    if (event.isProcessed()) { // If processed, return immediately
+                        return;
+                    }
+
                     String serviceName = event.getServiceName();
                     Collection<ServiceInstance> serviceInstances = event.getServiceInstances();
                     if (logger.isInfoEnabled()) {
@@ -182,6 +186,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
                                 serviceName, serviceInstances.size());
                     }
                     subscribeDubboServiceURLs(url, listener, serviceName, s -> serviceInstances);
+                    // Mark event to be processed
+                    event.process();
                 }
             });
         }

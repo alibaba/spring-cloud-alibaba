@@ -169,11 +169,29 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
     @Autowired
     private DubboMetadataServiceExporter dubboMetadataServiceExporter;
 
+
     // ==================================================================================== //
 
     @PostConstruct
-    public void init() {
-        initSubscribedServices();
+    public void initSubscribedServices() {
+        synchronized (monitor) {
+            // If subscribes all services
+            if (ALL_DUBBO_SERVICES.equals(dubboCloudProperties.getSubscribedServices())) {
+                List<String> services = discoveryClient.getServices();
+                subscribedServices = new HashSet<>(services);
+                if (logger.isWarnEnabled()) {
+                    logger.warn("Current application will subscribe all services(size:{}) in registry, " +
+                                    "a lot of memory and CPU cycles may be used, " +
+                                    "thus it's strongly recommend you using the externalized property '{}' " +
+                                    "to specify the services",
+                            subscribedServices.size(), "dubbo.cloud.subscribed-services");
+                }
+            } else {
+                subscribedServices = new HashSet<>(dubboCloudProperties.subscribedServices());
+            }
+            // exclude current application name
+            excludeSelf(subscribedServices);
+        }
     }
 
     @Override
@@ -185,7 +203,7 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
      * Initialize the metadata
      */
     private void initializeMetadata() {
-        subscribedServices.forEach(this::initializeMetadata);
+        doGetSubscribedServices().forEach(this::initializeMetadata);
         if (logger.isInfoEnabled()) {
             logger.info("The metadata of Dubbo services has been initialized");
         }
@@ -315,7 +333,7 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
      * @return
      */
     public boolean isSubscribedService(String serviceName) {
-        return subscribedServices.contains(serviceName);
+        return doGetSubscribedServices().contains(serviceName);
     }
 
     public void exportURL(URL url) {
@@ -431,8 +449,14 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
         return match(dubboRestServiceMetadataRepository, serviceName, requestMetadata);
     }
 
+    protected Set<String> doGetSubscribedServices() {
+        synchronized (monitor) {
+            return subscribedServices;
+        }
+    }
+
     public Set<String> getSubscribedServices() {
-        return Collections.unmodifiableSet(subscribedServices);
+        return unmodifiableSet(doGetSubscribedServices());
     }
 
     private <T> T match(Map<String, Map<RequestMetadataMatcher, T>> repository, String serviceName,
@@ -515,25 +539,6 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
 
     private static <K, V> Map<K, V> newHashMap() {
         return new LinkedHashMap<>();
-    }
-
-    private void initSubscribedServices() {
-        // If subscribes all services
-        if (ALL_DUBBO_SERVICES.equals(dubboCloudProperties.getSubscribedServices())) {
-            List<String> services = discoveryClient.getServices();
-            subscribedServices = new HashSet<>(services);
-            if (logger.isWarnEnabled()) {
-                logger.warn("Current application will subscribe all services(size:{}) in registry, " +
-                                "a lot of memory and CPU cycles may be used, " +
-                                "thus it's strongly recommend you using the externalized property '{}' " +
-                                "to specify the services",
-                        subscribedServices.size(), "dubbo.cloud.subscribed-services");
-            }
-        } else {
-            subscribedServices = new HashSet<>(dubboCloudProperties.subscribedServices());
-        }
-
-        excludeSelf(subscribedServices);
     }
 
     private void excludeSelf(Set<String> subscribedServices) {
