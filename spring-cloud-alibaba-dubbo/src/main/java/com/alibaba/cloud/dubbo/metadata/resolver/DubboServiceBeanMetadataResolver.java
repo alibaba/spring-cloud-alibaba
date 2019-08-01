@@ -16,18 +16,19 @@
  */
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.config.spring.ServiceBean;
+
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
 import feign.Contract;
 import feign.Feign;
 import feign.MethodMetadata;
 import feign.Util;
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.config.spring.ServiceBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
 import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Method;

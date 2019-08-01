@@ -78,6 +78,10 @@ class TargeterInvocationHandler implements InvocationHandler {
         this.contextFactory = contextFactory;
     }
 
+    private static <T> T cast(Object object) {
+        return (T) object;
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         /**
@@ -167,9 +171,5 @@ class TargeterInvocationHandler implements InvocationHandler {
         }
 
         return feignMethodMetadataMap;
-    }
-
-    private static <T> T cast(Object object) {
-        return (T) object;
     }
 }

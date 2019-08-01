@@ -71,6 +71,63 @@ public class RequestMetadata {
         headers(requestTemplate.headers());
     }
 
+    /**
+     * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}
+     *
+     * @param requestMetadataMap the source of  {@link NavigableMap}
+     * @param requestMetadata    the match object
+     * @return if not matched, return <code>null</code>
+     */
+    public static RequestMetadata getBestMatch(NavigableMap<RequestMetadata, RequestMetadata> requestMetadataMap,
+                                               RequestMetadata requestMetadata) {
+
+        RequestMetadata key = requestMetadata;
+
+        RequestMetadata result = requestMetadataMap.get(key);
+
+        if (result == null) {
+            SortedMap<RequestMetadata, RequestMetadata> headMap = requestMetadataMap.headMap(key, true);
+            result = headMap.isEmpty() ? null : requestMetadataMap.get(headMap.lastKey());
+        }
+
+        return result;
+    }
+
+    private static void add(String key, String value, MultiValueMap<String, String> destination) {
+        destination.add(key, value);
+    }
+
+    private static <T extends Collection<String>> void addAll(Map<String, T> source,
+                                                              MultiValueMap<String, String> destination) {
+        for (Map.Entry<String, T> entry : source.entrySet()) {
+            String key = entry.getKey();
+            for (String value : entry.getValue()) {
+                add(key, value, destination);
+            }
+        }
+    }
+
+    private static void mediaTypes(HttpHeaders httpHeaders, String headerName, Collection<String> destination) {
+        List<String> value = httpHeaders.get(headerName);
+        List<MediaType> mediaTypes = parseMediaTypes(value);
+        destination.addAll(toMediaTypeValues(mediaTypes));
+    }
+
+    private static List<String> toMediaTypeValues(List<MediaType> mediaTypes) {
+        List<String> list = new ArrayList<>(mediaTypes.size());
+        for (MediaType mediaType : mediaTypes) {
+            list.add(mediaType.toString());
+        }
+        return list;
+    }
+
+    private static List<MediaType> toMediaTypes(Collection<String> mediaTypeValues) {
+        if (mediaTypeValues.isEmpty()) {
+            return Collections.singletonList(MediaType.ALL);
+        }
+        return parseMediaTypes(new LinkedList<>(mediaTypeValues));
+    }
+
     public String getMethod() {
         return method;
     }
@@ -174,63 +231,6 @@ public class RequestMetadata {
             this.headers.putAll(httpHeaders);
         }
         return this;
-    }
-
-    /**
-     * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}
-     *
-     * @param requestMetadataMap the source of  {@link NavigableMap}
-     * @param requestMetadata    the match object
-     * @return if not matched, return <code>null</code>
-     */
-    public static RequestMetadata getBestMatch(NavigableMap<RequestMetadata, RequestMetadata> requestMetadataMap,
-                                               RequestMetadata requestMetadata) {
-
-        RequestMetadata key = requestMetadata;
-
-        RequestMetadata result = requestMetadataMap.get(key);
-
-        if (result == null) {
-            SortedMap<RequestMetadata, RequestMetadata> headMap = requestMetadataMap.headMap(key, true);
-            result = headMap.isEmpty() ? null : requestMetadataMap.get(headMap.lastKey());
-        }
-
-        return result;
-    }
-
-    private static void add(String key, String value, MultiValueMap<String, String> destination) {
-        destination.add(key, value);
-    }
-
-    private static <T extends Collection<String>> void addAll(Map<String, T> source,
-                                                              MultiValueMap<String, String> destination) {
-        for (Map.Entry<String, T> entry : source.entrySet()) {
-            String key = entry.getKey();
-            for (String value : entry.getValue()) {
-                add(key, value, destination);
-            }
-        }
-    }
-
-    private static void mediaTypes(HttpHeaders httpHeaders, String headerName, Collection<String> destination) {
-        List<String> value = httpHeaders.get(headerName);
-        List<MediaType> mediaTypes = parseMediaTypes(value);
-        destination.addAll(toMediaTypeValues(mediaTypes));
-    }
-
-    private static List<String> toMediaTypeValues(List<MediaType> mediaTypes) {
-        List<String> list = new ArrayList<>(mediaTypes.size());
-        for (MediaType mediaType : mediaTypes) {
-            list.add(mediaType.toString());
-        }
-        return list;
-    }
-
-    private static List<MediaType> toMediaTypes(Collection<String> mediaTypeValues) {
-        if (mediaTypeValues.isEmpty()) {
-            return Collections.singletonList(MediaType.ALL);
-        }
-        return parseMediaTypes(new LinkedList<>(mediaTypeValues));
     }
 
     @Override

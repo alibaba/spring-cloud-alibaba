@@ -27,6 +27,8 @@ import static java.util.Collections.unmodifiableCollection;
 
 /**
  * An event raised after the {@link ServiceInstance instances} of one service has been changed.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class ServiceInstancesChangedEvent extends ApplicationEvent {
 

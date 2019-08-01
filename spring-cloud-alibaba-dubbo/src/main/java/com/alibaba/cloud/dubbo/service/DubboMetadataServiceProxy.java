@@ -26,14 +26,14 @@ import static java.lang.reflect.Proxy.newProxyInstance;
 
 /**
  * The proxy of {@link DubboMetadataService}
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class DubboMetadataServiceProxy implements BeanClassLoaderAware, DisposableBean {
 
     private final DubboGenericServiceFactory dubboGenericServiceFactory;
-
-    private ClassLoader classLoader;
-
     private final Map<String, DubboMetadataService> dubboMetadataServiceCache = new ConcurrentHashMap<>();
+    private ClassLoader classLoader;
 
     public DubboMetadataServiceProxy(DubboGenericServiceFactory dubboGenericServiceFactory) {
         this.dubboGenericServiceFactory = dubboGenericServiceFactory;

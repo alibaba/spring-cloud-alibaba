@@ -102,29 +102,17 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
      * Monitor object for synchronization
      */
     private final Object monitor = new Object();
-
-    private ApplicationEventPublisher applicationEventPublisher;
-
     /**
      * A {@link Set} of service names that had been initialized
      */
     private final Set<String> initializedServices = new LinkedHashSet<>();
-
-    // =================================== Registration =================================== //
-
     /**
      * All exported {@link URL urls} {@link Map} whose key is the return value of {@link URL#getServiceKey()} method
      * and value is the {@link List} of {@link URL URLs}
      */
     private final MultiValueMap<String, URL> allExportedURLs = new LinkedMultiValueMap<>();
 
-    // ==================================================================================== //
-
-
-    // =================================== Subscription =================================== //
-
-    private volatile Set<String> subscribedServices = emptySet();
-
+    // =================================== Registration =================================== //
     /**
      * The subscribed {@link URL urls} {@link Map} of {@link DubboMetadataService},
      * whose key is the return value of {@link URL#getServiceKey()} method and value is the {@link List} of
@@ -135,14 +123,19 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
     // ==================================================================================== //
 
 
-    // =================================== REST Metadata ================================== //
-
+    // =================================== Subscription =================================== //
     /**
      * A Map to store REST metadata temporary, its' key is the special service name for a Dubbo service,
      * the value is a JSON content of JAX-RS or Spring MVC REST metadata from the annotated methods.
      */
     private final Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
+    private ApplicationEventPublisher applicationEventPublisher;
 
+    // ==================================================================================== //
+
+
+    // =================================== REST Metadata ================================== //
+    private volatile Set<String> subscribedServices = emptySet();
     /**
      * Key is application name
      * Value is  Map<RequestMetadata, DubboRestServiceMetadata>
@@ -177,6 +170,23 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
 
 
     // ==================================================================================== //
+
+    private static <K, V> Map<K, V> getMap(Map<String, Map<K, V>> repository, String key) {
+        return getOrDefault(repository, key, newHashMap());
+    }
+
+    private static <K, V> V getOrDefault(Map<K, V> source, K key, V defaultValue) {
+        V value = source.get(key);
+        if (value == null) {
+            value = defaultValue;
+            source.put(key, value);
+        }
+        return value;
+    }
+
+    private static <K, V> Map<K, V> newHashMap() {
+        return new LinkedHashMap<>();
+    }
 
     /**
      * Initialize {@link #subscribedServices the subscribed services}
@@ -554,23 +564,6 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
             }
         }
         return metadata;
-    }
-
-    private static <K, V> Map<K, V> getMap(Map<String, Map<K, V>> repository, String key) {
-        return getOrDefault(repository, key, newHashMap());
-    }
-
-    private static <K, V> V getOrDefault(Map<K, V> source, K key, V defaultValue) {
-        V value = source.get(key);
-        if (value == null) {
-            value = defaultValue;
-            source.put(key, value);
-        }
-        return value;
-    }
-
-    private static <K, V> Map<K, V> newHashMap() {
-        return new LinkedHashMap<>();
     }
 
     private void excludeSelf(Set<String> subscribedServices) {
