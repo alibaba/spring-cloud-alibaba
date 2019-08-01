@@ -49,6 +49,7 @@ import static org.apache.dubbo.rpc.cluster.Constants.DEFAULT_RETRIES;
  * </ol>
  * <p>
  *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see FeignClient
  * @see LoadBalanced
  */

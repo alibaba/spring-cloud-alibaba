@@ -16,11 +16,11 @@
  */
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
-import feign.Contract;
 import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.MethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import feign.Contract;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.PropertyResolver;
 

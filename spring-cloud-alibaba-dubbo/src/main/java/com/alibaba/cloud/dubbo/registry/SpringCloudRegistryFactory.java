@@ -59,6 +59,10 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
     public SpringCloudRegistryFactory() {
     }
 
+    public static void setApplicationContext(ConfigurableApplicationContext applicationContext) {
+        SpringCloudRegistryFactory.applicationContext = applicationContext;
+    }
+
     protected void init() {
         if (initialized || applicationContext == null) {
             return;
@@ -74,9 +78,5 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
         init();
         return new SpringCloudRegistry(url, discoveryClient, dubboServiceMetadataRepository,
                 dubboMetadataConfigServiceProxy, jsonUtils, applicationContext);
-    }
-
-    public static void setApplicationContext(ConfigurableApplicationContext applicationContext) {
-        SpringCloudRegistryFactory.applicationContext = applicationContext;
     }
 }

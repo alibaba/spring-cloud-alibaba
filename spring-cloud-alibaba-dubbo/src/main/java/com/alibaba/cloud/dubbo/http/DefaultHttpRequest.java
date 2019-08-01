@@ -49,6 +49,10 @@ public class DefaultHttpRequest implements HttpRequest {
         this.headers.putAll(headers);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     private URI buildURI(String path, Map<String, List<String>> params) {
         UriComponentsBuilder builder = fromPath(path)
                 .queryParams(new LinkedMultiValueMap<>(params));
@@ -73,10 +77,6 @@ public class DefaultHttpRequest implements HttpRequest {
     @Override
     public HttpHeaders getHeaders() {
         return headers;
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     /**

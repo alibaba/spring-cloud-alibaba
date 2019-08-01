@@ -70,6 +70,10 @@ public class DubboNonWebApplicationEnvironmentPostProcessor implements Environme
 
     private final Logger logger = LoggerFactory.getLogger(DubboNonWebApplicationEnvironmentPostProcessor.class);
 
+    private static boolean isRestProtocol(String protocol) {
+        return REST_PROTOCOL.equalsIgnoreCase(protocol);
+    }
+
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         WebApplicationType webApplicationType = application.getWebApplicationType();
@@ -199,9 +203,5 @@ public class DubboNonWebApplicationEnvironmentPostProcessor implements Environme
     @Override
     public int getOrder() { // Keep LOWEST_PRECEDENCE
         return LOWEST_PRECEDENCE;
-    }
-
-    private static boolean isRestProtocol(String protocol) {
-        return REST_PROTOCOL.equalsIgnoreCase(protocol);
     }
 }

@@ -17,6 +17,7 @@
 package com.alibaba.cloud.dubbo.openfeign;
 
 import org.apache.dubbo.rpc.service.GenericService;
+
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 
 import java.lang.reflect.Method;

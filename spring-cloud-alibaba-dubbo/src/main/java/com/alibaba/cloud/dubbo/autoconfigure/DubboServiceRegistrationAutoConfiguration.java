@@ -107,6 +107,23 @@ public class DubboServiceRegistrationAutoConfiguration {
         attachDubboMetadataServiceMetadata(registration);
     }
 
+    private void attachDubboMetadataServiceMetadata(Registration registration) {
+        if (registration == null) {
+            return;
+        }
+        synchronized (registration) {
+            Map<String, String> metadata = registration.getMetadata();
+            attachDubboMetadataServiceMetadata(metadata);
+        }
+    }
+
+    private void attachDubboMetadataServiceMetadata(Map<String, String> metadata) {
+        Map<String, String> serviceMetadata = dubboServiceMetadataRepository.getDubboMetadataServiceMetadata();
+        if (!isEmpty(serviceMetadata)) {
+            metadata.putAll(serviceMetadata);
+        }
+    }
+
     @Configuration
     @ConditionalOnBean(name = EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME)
     @Aspect
@@ -167,23 +184,6 @@ public class DubboServiceRegistrationAutoConfiguration {
                     tags.add(entry.getKey() + "=" + entry.getValue());
                 }
             }
-        }
-    }
-
-    private void attachDubboMetadataServiceMetadata(Registration registration) {
-        if (registration == null) {
-            return;
-        }
-        synchronized (registration) {
-            Map<String, String> metadata = registration.getMetadata();
-            attachDubboMetadataServiceMetadata(metadata);
-        }
-    }
-
-    private void attachDubboMetadataServiceMetadata(Map<String, String> metadata) {
-        Map<String, String> serviceMetadata = dubboServiceMetadataRepository.getDubboMetadataServiceMetadata();
-        if (!isEmpty(serviceMetadata)) {
-            metadata.putAll(serviceMetadata);
         }
     }
 }

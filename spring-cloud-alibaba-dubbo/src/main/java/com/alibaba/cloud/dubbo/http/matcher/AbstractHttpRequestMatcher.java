@@ -27,50 +27,50 @@ import java.util.Iterator;
  */
 public abstract class AbstractHttpRequestMatcher implements HttpRequestMatcher {
 
-	/**
-	 * Return the discrete items a request condition is composed of.
-	 * <p>
-	 * For example URL patterns, HTTP request methods, param expressions, etc.
-	 *
-	 * @return a collection of objects, never {@code null}
-	 */
-	protected abstract Collection<?> getContent();
+    /**
+     * Return the discrete items a request condition is composed of.
+     * <p>
+     * For example URL patterns, HTTP request methods, param expressions, etc.
+     *
+     * @return a collection of objects, never {@code null}
+     */
+    protected abstract Collection<?> getContent();
 
-	/**
-	 * The notation to use when printing discrete items of content.
-	 * <p>
-	 * For example {@code " || "} for URL patterns or {@code " && "} for param
-	 * expressions.
-	 */
-	protected abstract String getToStringInfix();
+    /**
+     * The notation to use when printing discrete items of content.
+     * <p>
+     * For example {@code " || "} for URL patterns or {@code " && "} for param
+     * expressions.
+     */
+    protected abstract String getToStringInfix();
 
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (other == null || getClass() != other.getClass()) {
-			return false;
-		}
-		return getContent().equals(((AbstractHttpRequestMatcher) other).getContent());
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        return getContent().equals(((AbstractHttpRequestMatcher) other).getContent());
+    }
 
-	@Override
-	public int hashCode() {
-		return getContent().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return getContent().hashCode();
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder("[");
-		for (Iterator<?> iterator = getContent().iterator(); iterator.hasNext();) {
-			Object expression = iterator.next();
-			builder.append(expression.toString());
-			if (iterator.hasNext()) {
-				builder.append(getToStringInfix());
-			}
-		}
-		builder.append("]");
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("[");
+        for (Iterator<?> iterator = getContent().iterator(); iterator.hasNext(); ) {
+            Object expression = iterator.next();
+            builder.append(expression.toString());
+            if (iterator.hasNext()) {
+                builder.append(getToStringInfix());
+            }
+        }
+        builder.append("]");
+        return builder.toString();
+    }
 }

@@ -16,18 +16,16 @@
  */
 package com.alibaba.cloud.dubbo.openfeign;
 
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-
 import org.springframework.core.env.Environment;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboOpenFeignAutoConfiguration.TARGETER_CLASS_NAME;
+import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.springframework.util.ClassUtils.getUserClass;
 import static org.springframework.util.ClassUtils.isPresent;
 import static org.springframework.util.ClassUtils.resolveClassName;

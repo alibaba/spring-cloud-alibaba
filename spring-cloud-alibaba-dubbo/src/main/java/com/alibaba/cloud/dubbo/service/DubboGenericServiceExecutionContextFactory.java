@@ -16,12 +16,12 @@
  */
 package com.alibaba.cloud.dubbo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.cloud.dubbo.http.HttpServerRequest;
 import com.alibaba.cloud.dubbo.metadata.MethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.MethodParameterMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.service.parameter.DubboGenericServiceParameterResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 import javax.annotation.PostConstruct;
