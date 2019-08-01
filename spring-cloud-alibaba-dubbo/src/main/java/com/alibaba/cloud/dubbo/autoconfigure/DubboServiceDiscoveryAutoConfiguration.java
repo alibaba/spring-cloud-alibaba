@@ -21,6 +21,7 @@ import org.apache.dubbo.registry.NotifyListener;
 
 import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.discovery.NacosWatch;
@@ -142,6 +143,10 @@ public class DubboServiceDiscoveryAutoConfiguration {
             return;
         }
         ServiceInstancesChangedEvent event = new ServiceInstancesChangedEvent(serviceName, serviceInstances);
+        if (logger.isInfoEnabled()) {
+            logger.info("The event of the service instances[name : {} , size : {}] change is about to be dispatched",
+                    serviceName, serviceInstances.size());
+        }
         applicationEventPublisher.publishEvent(event);
     }
 
