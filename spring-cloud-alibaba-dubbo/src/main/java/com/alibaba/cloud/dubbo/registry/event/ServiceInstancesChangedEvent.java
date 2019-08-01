@@ -18,6 +18,8 @@ package com.alibaba.cloud.dubbo.registry.event;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
 
 import java.util.Collection;
 
@@ -31,6 +33,14 @@ public class ServiceInstancesChangedEvent extends ApplicationEvent {
     private final String serviceName;
 
     private final Collection<ServiceInstance> serviceInstances;
+
+    /**
+     * Current event has been processed or not.
+     * Typically, Spring Event was based on sync {@link ApplicationEventMulticaster}
+     *
+     * @see SimpleApplicationEventMulticaster
+     */
+    private boolean processed = false;
 
     /**
      * @param serviceName      The name of service that was changed
@@ -55,5 +65,21 @@ public class ServiceInstancesChangedEvent extends ApplicationEvent {
      */
     public Collection<ServiceInstance> getServiceInstances() {
         return serviceInstances;
+    }
+
+    /**
+     * Mark current event being processed
+     */
+    public void process() {
+        processed = true;
+    }
+
+    /**
+     * Current event has been processed or not
+     *
+     * @return if processed, return <code>true</code>, or <code>false</code>
+     */
+    public boolean isProcessed() {
+        return processed;
     }
 }
