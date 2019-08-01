@@ -16,12 +16,12 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 
 /**
  * {@link HttpRequest} headers {@link HttpRequestMatcher matcher}
@@ -30,42 +30,42 @@ import java.util.Set;
  */
 public class HttpRequestHeadersMatcher extends AbstractHttpRequestMatcher {
 
-    private final Set<HeaderExpression> expressions;
+	private final Set<HeaderExpression> expressions;
 
-    public HttpRequestHeadersMatcher(String... headers) {
-        this.expressions = parseExpressions(headers);
-    }
+	public HttpRequestHeadersMatcher(String... headers) {
+		this.expressions = parseExpressions(headers);
+	}
 
-    private static Set<HeaderExpression> parseExpressions(String... headers) {
-        Set<HeaderExpression> expressions = new LinkedHashSet<>();
-        for (String header : headers) {
-            HeaderExpression expr = new HeaderExpression(header);
-            if (HttpHeaders.ACCEPT.equalsIgnoreCase(expr.name) ||
-                    HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(expr.name)) {
-                continue;
-            }
-            expressions.add(expr);
-        }
-        return expressions;
-    }
+	private static Set<HeaderExpression> parseExpressions(String... headers) {
+		Set<HeaderExpression> expressions = new LinkedHashSet<>();
+		for (String header : headers) {
+			HeaderExpression expr = new HeaderExpression(header);
+			if (HttpHeaders.ACCEPT.equalsIgnoreCase(expr.name)
+					|| HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(expr.name)) {
+				continue;
+			}
+			expressions.add(expr);
+		}
+		return expressions;
+	}
 
-    @Override
-    public boolean match(HttpRequest request) {
-        for (HeaderExpression expression : this.expressions) {
-            if (!expression.match(request)) {
-                return false;
-            }
-        }
-        return true;
-    }
+	@Override
+	public boolean match(HttpRequest request) {
+		for (HeaderExpression expression : this.expressions) {
+			if (!expression.match(request)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-    @Override
-    protected Collection<HeaderExpression> getContent() {
-        return this.expressions;
-    }
+	@Override
+	protected Collection<HeaderExpression> getContent() {
+		return this.expressions;
+	}
 
-    @Override
-    protected String getToStringInfix() {
-        return " && ";
-    }
+	@Override
+	protected String getToStringInfix() {
+		return " && ";
+	}
 }

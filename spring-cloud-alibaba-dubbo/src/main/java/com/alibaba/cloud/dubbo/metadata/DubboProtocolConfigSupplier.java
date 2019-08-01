@@ -16,16 +16,16 @@
  */
 package com.alibaba.cloud.dubbo.metadata;
 
-import org.apache.dubbo.config.ProtocolConfig;
-
-import org.springframework.beans.factory.ObjectProvider;
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import org.apache.dubbo.config.ProtocolConfig;
+
+import org.springframework.beans.factory.ObjectProvider;
 
 /**
  * Dubbo's {@link ProtocolConfig} {@link Supplier}
@@ -34,38 +34,40 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  */
 public class DubboProtocolConfigSupplier implements Supplier<ProtocolConfig> {
 
-    private final ObjectProvider<Collection<ProtocolConfig>> protocols;
+	private final ObjectProvider<Collection<ProtocolConfig>> protocols;
 
-    public DubboProtocolConfigSupplier(ObjectProvider<Collection<ProtocolConfig>> protocols) {
-        this.protocols = protocols;
-    }
+	public DubboProtocolConfigSupplier(
+			ObjectProvider<Collection<ProtocolConfig>> protocols) {
+		this.protocols = protocols;
+	}
 
-    @Override
-    public ProtocolConfig get() {
-        ProtocolConfig protocolConfig = null;
-        Collection<ProtocolConfig> protocols = this.protocols.getIfAvailable();
+	@Override
+	public ProtocolConfig get() {
+		ProtocolConfig protocolConfig = null;
+		Collection<ProtocolConfig> protocols = this.protocols.getIfAvailable();
 
-        if (!isEmpty(protocols)) {
-            for (ProtocolConfig protocol : protocols) {
-                String protocolName = protocol.getName();
-                if (DEFAULT_PROTOCOL.equals(protocolName)) {
-                    protocolConfig = protocol;
-                    break;
-                }
-            }
+		if (!isEmpty(protocols)) {
+			for (ProtocolConfig protocol : protocols) {
+				String protocolName = protocol.getName();
+				if (DEFAULT_PROTOCOL.equals(protocolName)) {
+					protocolConfig = protocol;
+					break;
+				}
+			}
 
-            if (protocolConfig == null) { // If The ProtocolConfig bean named "dubbo" is absent, take first one of them
-                Iterator<ProtocolConfig> iterator = protocols.iterator();
-                protocolConfig = iterator.hasNext() ? iterator.next() : null;
-            }
-        }
+			if (protocolConfig == null) { // If The ProtocolConfig bean named "dubbo" is
+											// absent, take first one of them
+				Iterator<ProtocolConfig> iterator = protocols.iterator();
+				protocolConfig = iterator.hasNext() ? iterator.next() : null;
+			}
+		}
 
-        if (protocolConfig == null) {
-            protocolConfig = new ProtocolConfig();
-            protocolConfig.setName(DEFAULT_PROTOCOL);
-            protocolConfig.setPort(-1);
-        }
+		if (protocolConfig == null) {
+			protocolConfig = new ProtocolConfig();
+			protocolConfig.setName(DEFAULT_PROTOCOL);
+			protocolConfig.setPort(-1);
+		}
 
-        return protocolConfig;
-    }
+		return protocolConfig;
+	}
 }
