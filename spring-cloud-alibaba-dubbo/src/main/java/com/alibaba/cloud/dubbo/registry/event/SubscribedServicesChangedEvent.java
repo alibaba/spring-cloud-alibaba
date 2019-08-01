@@ -16,11 +16,11 @@
  */
 package com.alibaba.cloud.dubbo.registry.event;
 
-import org.springframework.context.ApplicationEvent;
-
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import org.springframework.context.ApplicationEvent;
 
 /**
  * {@link ApplicationEvent Event} raised when the subscribed services are changed
@@ -31,35 +31,36 @@ import java.util.Set;
  */
 public class SubscribedServicesChangedEvent extends ApplicationEvent {
 
-    private final Set<String> oldSubscribedServices;
+	private final Set<String> oldSubscribedServices;
 
-    private final Set<String> newSubscribedServices;
+	private final Set<String> newSubscribedServices;
 
-    private final boolean changed;
+	private final boolean changed;
 
-    /**
-     * Create a new ApplicationEvent.
-     *
-     * @param source                the object on which the event initially occurred (never {@code null})
-     * @param oldSubscribedServices the subscribed services before changed
-     * @param newSubscribedServices the subscribed services after changed
-     */
-    public SubscribedServicesChangedEvent(Object source, Set<String> oldSubscribedServices, Set<String> newSubscribedServices) {
-        super(source);
-        this.oldSubscribedServices = new LinkedHashSet<>(oldSubscribedServices);
-        this.newSubscribedServices = new LinkedHashSet<>(newSubscribedServices);
-        this.changed = !Objects.equals(oldSubscribedServices, newSubscribedServices);
-    }
+	/**
+	 * Create a new ApplicationEvent.
+	 *
+	 * @param source the object on which the event initially occurred (never {@code null})
+	 * @param oldSubscribedServices the subscribed services before changed
+	 * @param newSubscribedServices the subscribed services after changed
+	 */
+	public SubscribedServicesChangedEvent(Object source,
+			Set<String> oldSubscribedServices, Set<String> newSubscribedServices) {
+		super(source);
+		this.oldSubscribedServices = new LinkedHashSet<>(oldSubscribedServices);
+		this.newSubscribedServices = new LinkedHashSet<>(newSubscribedServices);
+		this.changed = !Objects.equals(oldSubscribedServices, newSubscribedServices);
+	}
 
-    public Set<String> getOldSubscribedServices() {
-        return oldSubscribedServices;
-    }
+	public Set<String> getOldSubscribedServices() {
+		return oldSubscribedServices;
+	}
 
-    public Set<String> getNewSubscribedServices() {
-        return newSubscribedServices;
-    }
+	public Set<String> getNewSubscribedServices() {
+		return newSubscribedServices;
+	}
 
-    public boolean isChanged() {
-        return changed;
-    }
+	public boolean isChanged() {
+		return changed;
+	}
 }

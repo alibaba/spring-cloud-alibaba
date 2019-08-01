@@ -16,72 +16,74 @@
  */
 package com.alibaba.cloud.dubbo.registry.event;
 
+import static java.util.Collections.unmodifiableCollection;
+
+import java.util.Collection;
+
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 
-import java.util.Collection;
-
-import static java.util.Collections.unmodifiableCollection;
-
 /**
- * An event raised after the {@link ServiceInstance instances} of one service has been changed.
+ * An event raised after the {@link ServiceInstance instances} of one service has been
+ * changed.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class ServiceInstancesChangedEvent extends ApplicationEvent {
 
-    private final String serviceName;
+	private final String serviceName;
 
-    private final Collection<ServiceInstance> serviceInstances;
+	private final Collection<ServiceInstance> serviceInstances;
 
-    /**
-     * Current event has been processed or not.
-     * Typically, Spring Event was based on sync {@link ApplicationEventMulticaster}
-     *
-     * @see SimpleApplicationEventMulticaster
-     */
-    private boolean processed = false;
+	/**
+	 * Current event has been processed or not. Typically, Spring Event was based on sync
+	 * {@link ApplicationEventMulticaster}
+	 *
+	 * @see SimpleApplicationEventMulticaster
+	 */
+	private boolean processed = false;
 
-    /**
-     * @param serviceName      The name of service that was changed
-     * @param serviceInstances all {@link ServiceInstance service instances}
-     * @throws IllegalArgumentException if source is null.
-     */
-    public ServiceInstancesChangedEvent(String serviceName, Collection<ServiceInstance> serviceInstances) {
-        super(serviceName);
-        this.serviceName = serviceName;
-        this.serviceInstances = unmodifiableCollection(serviceInstances);
-    }
+	/**
+	 * @param serviceName The name of service that was changed
+	 * @param serviceInstances all {@link ServiceInstance service instances}
+	 * @throws IllegalArgumentException if source is null.
+	 */
+	public ServiceInstancesChangedEvent(String serviceName,
+			Collection<ServiceInstance> serviceInstances) {
+		super(serviceName);
+		this.serviceName = serviceName;
+		this.serviceInstances = unmodifiableCollection(serviceInstances);
+	}
 
-    /**
-     * @return The name of service that was changed
-     */
-    public String getServiceName() {
-        return serviceName;
-    }
+	/**
+	 * @return The name of service that was changed
+	 */
+	public String getServiceName() {
+		return serviceName;
+	}
 
-    /**
-     * @return all {@link ServiceInstance service instances}
-     */
-    public Collection<ServiceInstance> getServiceInstances() {
-        return serviceInstances;
-    }
+	/**
+	 * @return all {@link ServiceInstance service instances}
+	 */
+	public Collection<ServiceInstance> getServiceInstances() {
+		return serviceInstances;
+	}
 
-    /**
-     * Mark current event being processed
-     */
-    public void processed() {
-        processed = true;
-    }
+	/**
+	 * Mark current event being processed
+	 */
+	public void processed() {
+		processed = true;
+	}
 
-    /**
-     * Current event has been processed or not
-     *
-     * @return if processed, return <code>true</code>, or <code>false</code>
-     */
-    public boolean isProcessed() {
-        return processed;
-    }
+	/**
+	 * Current event has been processed or not
+	 *
+	 * @return if processed, return <code>true</code>, or <code>false</code>
+	 */
+	public boolean isProcessed() {
+		return processed;
+	}
 }

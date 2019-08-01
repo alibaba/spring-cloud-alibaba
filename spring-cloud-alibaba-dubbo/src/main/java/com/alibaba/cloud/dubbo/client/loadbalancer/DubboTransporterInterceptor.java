@@ -16,17 +16,16 @@
  */
 package com.alibaba.cloud.dubbo.client.loadbalancer;
 
+import static org.springframework.web.util.UriComponentsBuilder.fromUri;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.dubbo.rpc.service.GenericException;
 import org.apache.dubbo.rpc.service.GenericService;
 
-import com.alibaba.cloud.dubbo.http.MutableHttpServerRequest;
-import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -38,12 +37,14 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.util.UriComponents;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
-import static org.springframework.web.util.UriComponentsBuilder.fromUri;
+import com.alibaba.cloud.dubbo.http.MutableHttpServerRequest;
+import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
+import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 
 /**
  * Dubbo Transporter {@link ClientHttpRequestInterceptor} implementation
@@ -53,91 +54,100 @@ import static org.springframework.web.util.UriComponentsBuilder.fromUri;
  */
 public class DubboTransporterInterceptor implements ClientHttpRequestInterceptor {
 
-    private final DubboServiceMetadataRepository repository;
+	private final DubboServiceMetadataRepository repository;
 
-    private final DubboClientHttpResponseFactory clientHttpResponseFactory;
+	private final DubboClientHttpResponseFactory clientHttpResponseFactory;
 
-    private final Map<String, Object> dubboTranslatedAttributes;
+	private final Map<String, Object> dubboTranslatedAttributes;
 
-    private final DubboGenericServiceFactory serviceFactory;
+	private final DubboGenericServiceFactory serviceFactory;
 
-    private final DubboGenericServiceExecutionContextFactory contextFactory;
+	private final DubboGenericServiceExecutionContextFactory contextFactory;
 
-    private final PathMatcher pathMatcher = new AntPathMatcher();
+	private final PathMatcher pathMatcher = new AntPathMatcher();
 
-    public DubboTransporterInterceptor(DubboServiceMetadataRepository dubboServiceMetadataRepository,
-                                       List<HttpMessageConverter<?>> messageConverters,
-                                       ClassLoader classLoader,
-                                       Map<String, Object> dubboTranslatedAttributes,
-                                       DubboGenericServiceFactory serviceFactory,
-                                       DubboGenericServiceExecutionContextFactory contextFactory) {
-        this.repository = dubboServiceMetadataRepository;
-        this.dubboTranslatedAttributes = dubboTranslatedAttributes;
-        this.clientHttpResponseFactory = new DubboClientHttpResponseFactory(messageConverters, classLoader);
-        this.serviceFactory = serviceFactory;
-        this.contextFactory = contextFactory;
-    }
+	public DubboTransporterInterceptor(
+			DubboServiceMetadataRepository dubboServiceMetadataRepository,
+			List<HttpMessageConverter<?>> messageConverters, ClassLoader classLoader,
+			Map<String, Object> dubboTranslatedAttributes,
+			DubboGenericServiceFactory serviceFactory,
+			DubboGenericServiceExecutionContextFactory contextFactory) {
+		this.repository = dubboServiceMetadataRepository;
+		this.dubboTranslatedAttributes = dubboTranslatedAttributes;
+		this.clientHttpResponseFactory = new DubboClientHttpResponseFactory(
+				messageConverters, classLoader);
+		this.serviceFactory = serviceFactory;
+		this.contextFactory = contextFactory;
+	}
 
-    @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+	@Override
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+			ClientHttpRequestExecution execution) throws IOException {
 
-        URI originalUri = request.getURI();
+		URI originalUri = request.getURI();
 
-        String serviceName = originalUri.getHost();
+		String serviceName = originalUri.getHost();
 
-        RequestMetadata clientMetadata = buildRequestMetadata(request);
+		RequestMetadata clientMetadata = buildRequestMetadata(request);
 
-        DubboRestServiceMetadata metadata = repository.get(serviceName, clientMetadata);
+		DubboRestServiceMetadata metadata = repository.get(serviceName, clientMetadata);
 
-        if (metadata == null) {
-            // if DubboServiceMetadata is not found, executes next
-            return execution.execute(request, body);
-        }
+		if (metadata == null) {
+			// if DubboServiceMetadata is not found, executes next
+			return execution.execute(request, body);
+		}
 
-        RestMethodMetadata dubboRestMethodMetadata = metadata.getRestMethodMetadata();
+		RestMethodMetadata dubboRestMethodMetadata = metadata.getRestMethodMetadata();
 
-        GenericService genericService = serviceFactory.create(metadata, dubboTranslatedAttributes);
+		GenericService genericService = serviceFactory.create(metadata,
+				dubboTranslatedAttributes);
 
-        MutableHttpServerRequest httpServerRequest = new MutableHttpServerRequest(request, body);
+		MutableHttpServerRequest httpServerRequest = new MutableHttpServerRequest(request,
+				body);
 
-        customizeRequest(httpServerRequest, dubboRestMethodMetadata, clientMetadata);
+		customizeRequest(httpServerRequest, dubboRestMethodMetadata, clientMetadata);
 
-        DubboGenericServiceExecutionContext context = contextFactory.create(dubboRestMethodMetadata, httpServerRequest);
+		DubboGenericServiceExecutionContext context = contextFactory
+				.create(dubboRestMethodMetadata, httpServerRequest);
 
-        Object result = null;
-        GenericException exception = null;
+		Object result = null;
+		GenericException exception = null;
 
-        try {
-            result = genericService.$invoke(context.getMethodName(), context.getParameterTypes(), context.getParameters());
-        } catch (GenericException e) {
-            exception = e;
-        }
+		try {
+			result = genericService.$invoke(context.getMethodName(),
+					context.getParameterTypes(), context.getParameters());
+		}
+		catch (GenericException e) {
+			exception = e;
+		}
 
-        return clientHttpResponseFactory.build(result, exception, clientMetadata, dubboRestMethodMetadata);
-    }
+		return clientHttpResponseFactory.build(result, exception, clientMetadata,
+				dubboRestMethodMetadata);
+	}
 
-    protected void customizeRequest(MutableHttpServerRequest httpServerRequest,
-                                    RestMethodMetadata dubboRestMethodMetadata, RequestMetadata clientMetadata) {
+	protected void customizeRequest(MutableHttpServerRequest httpServerRequest,
+			RestMethodMetadata dubboRestMethodMetadata, RequestMetadata clientMetadata) {
 
-        RequestMetadata dubboRequestMetadata = dubboRestMethodMetadata.getRequest();
-        String pathPattern = dubboRequestMetadata.getPath();
+		RequestMetadata dubboRequestMetadata = dubboRestMethodMetadata.getRequest();
+		String pathPattern = dubboRequestMetadata.getPath();
 
-        Map<String, String> pathVariables = pathMatcher.extractUriTemplateVariables(pathPattern, httpServerRequest.getPath());
+		Map<String, String> pathVariables = pathMatcher
+				.extractUriTemplateVariables(pathPattern, httpServerRequest.getPath());
 
-        if (!CollectionUtils.isEmpty(pathVariables)) {
-            // Put path variables Map into query parameters Map
-            httpServerRequest.params(pathVariables);
-        }
+		if (!CollectionUtils.isEmpty(pathVariables)) {
+			// Put path variables Map into query parameters Map
+			httpServerRequest.params(pathVariables);
+		}
 
-    }
+	}
 
-    private RequestMetadata buildRequestMetadata(HttpRequest request) {
-        UriComponents uriComponents = fromUri(request.getURI()).build(true);
-        RequestMetadata requestMetadata = new RequestMetadata();
-        requestMetadata.setPath(uriComponents.getPath());
-        requestMetadata.setMethod(request.getMethod().name());
-        requestMetadata.setParams(uriComponents.getQueryParams());
-        requestMetadata.setHeaders(request.getHeaders());
-        return requestMetadata;
-    }
+	private RequestMetadata buildRequestMetadata(HttpRequest request) {
+		UriComponents uriComponents = fromUri(request.getURI()).build(true);
+		RequestMetadata requestMetadata = new RequestMetadata();
+		requestMetadata.setPath(uriComponents.getPath());
+		requestMetadata.setMethod(request.getMethod().name());
+		requestMetadata.setParams(uriComponents.getQueryParams());
+		requestMetadata.setHeaders(request.getHeaders());
+		return requestMetadata;
+	}
 }

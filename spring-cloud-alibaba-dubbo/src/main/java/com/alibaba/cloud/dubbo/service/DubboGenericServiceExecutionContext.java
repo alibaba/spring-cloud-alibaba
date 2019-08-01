@@ -25,27 +25,28 @@ import org.apache.dubbo.rpc.service.GenericService;
  */
 public class DubboGenericServiceExecutionContext {
 
-    private final String methodName;
+	private final String methodName;
 
-    private final String[] parameterTypes;
+	private final String[] parameterTypes;
 
-    private final Object[] parameters;
+	private final Object[] parameters;
 
-    public DubboGenericServiceExecutionContext(String methodName, String[] parameterTypes, Object[] parameters) {
-        this.methodName = methodName;
-        this.parameterTypes = parameterTypes;
-        this.parameters = parameters;
-    }
+	public DubboGenericServiceExecutionContext(String methodName, String[] parameterTypes,
+			Object[] parameters) {
+		this.methodName = methodName;
+		this.parameterTypes = parameterTypes;
+		this.parameters = parameters;
+	}
 
-    public String getMethodName() {
-        return methodName;
-    }
+	public String getMethodName() {
+		return methodName;
+	}
 
-    public String[] getParameterTypes() {
-        return parameterTypes;
-    }
+	public String[] getParameterTypes() {
+		return parameterTypes;
+	}
 
-    public Object[] getParameters() {
-        return parameters;
-    }
+	public Object[] getParameters() {
+		return parameters;
+	}
 }
