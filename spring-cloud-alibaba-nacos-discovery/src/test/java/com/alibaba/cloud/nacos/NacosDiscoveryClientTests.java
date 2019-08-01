@@ -53,7 +53,7 @@ public class NacosDiscoveryClientTests {
 		map.put("test-key", "test-value");
 		map.put("secure", "true");
 
-		instances.add(serviceInstance(serviceName, false, host, port, map));
+		instances.add(serviceInstance(serviceName, true, host, port, map));
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
