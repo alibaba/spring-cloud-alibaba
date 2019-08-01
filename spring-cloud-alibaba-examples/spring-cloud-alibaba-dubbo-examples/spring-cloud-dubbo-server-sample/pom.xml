@@ -14,7 +14,7 @@
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-dubbo-server-sample</artifactId>
     <name>Spring Cloud Dubbo Server Sample</name>
-    <version>0.9.1.BUILD-SNAPSHOT</version>
+    <version>2.1.0.RELEASE</version>
 
     <dependencyManagement>
         <dependencies>
