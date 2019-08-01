@@ -23,8 +23,12 @@ import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
+import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.discovery.NacosWatch;
+import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.netflix.discovery.CacheRefreshedEvent;
 import com.netflix.discovery.shared.Applications;
 import org.apache.curator.framework.CuratorFramework;
@@ -61,25 +65,30 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.ReflectionUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient.hostToServiceInstanceList;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Dubbo Service Discovery Auto {@link Configuration} (after {@link DubboServiceRegistrationAutoConfiguration})
  *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see DubboServiceRegistrationAutoConfiguration
  * @see Configuration
  * @see DiscoveryClient
@@ -124,11 +133,6 @@ public class DubboServiceDiscoveryAutoConfiguration {
         this.applicationEventPublisher = applicationEventPublisher;
         this.discoveryClient = discoveryClient;
         this.heartbeatEventChangedPredicate = heartbeatEventChangedPredicate;
-    }
-
-
-    private void forEachSubscribedServices(Consumer<String> serviceNameConsumer) {
-        dubboServiceMetadataRepository.getSubscribedServices().forEach(serviceNameConsumer);
     }
 
     /**
@@ -180,8 +184,8 @@ public class DubboServiceDiscoveryAutoConfiguration {
      * Because of some {@link DiscoveryClient} implementations have the better and fine-grained the event mechanism for service instances
      * change, thus {@link HeartbeatEvent} handle will be ignored in these scenarios:
      * <ul>
-     *      <li>Zookeeper : {@link Watcher}</li>
-     *      <li>Nacos : {@link com.alibaba.nacos.api.naming.listener.EventListener}</li>
+     *      <li>Zookeeper : {@link Watcher}, see {@link ZookeeperConfiguration#heartbeatEventChangedPredicate()}</li>
+     *      <li>Nacos : {@link com.alibaba.nacos.api.naming.listener.EventListener} , see {@link NacosConfiguration#heartbeatEventChangedPredicate()}</li>
      * </ul>
      * <p>
      * If the customized {@link DiscoveryClient} also providers the similar mechanism, the implementation could declare
@@ -193,16 +197,17 @@ public class DubboServiceDiscoveryAutoConfiguration {
      */
     @EventListener(HeartbeatEvent.class)
     public void onHeartbeatEvent(HeartbeatEvent event) {
+        /**
+         * Try to re-initialize the subscribed services, in order to sense the change of services if
+         * {@link DubboCloudProperties#getSubscribedServices()} is wildcard that indicates all services should be
+         * subscribed.
+         */
+        Stream<String> subscribedServices = dubboServiceMetadataRepository.initSubscribedServices();
+
         heartbeatEventChangedPredicate.ifAvailable(predicate -> {
             if (predicate.test(event)) {
-                /**
-                 * Try to re-initialize the subscribed services, in order to sense the change of services if
-                 * {@link DubboCloudProperties#getSubscribedServices()} is wildcard that indicates all services should be
-                 * subscribed.
-                 */
-                dubboServiceMetadataRepository.initSubscribedServices();
-                // Dispatch ServiceInstancesChangedEvent
-                forEachSubscribedServices(serviceName -> {
+                // Dispatch ServiceInstancesChangedEvent for each service
+                subscribedServices.forEach(serviceName -> {
                     List<ServiceInstance> serviceInstances = getInstances(serviceName);
                     dispatchServiceInstancesChangedEvent(serviceName, serviceInstances);
                 });
@@ -463,6 +468,18 @@ public class DubboServiceDiscoveryAutoConfiguration {
     @ConditionalOnBean(name = NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
     class NacosConfiguration {
 
+        private final NamingService namingService;
+
+        /**
+         * the set of services is listening
+         */
+        private final Set<String> listeningServices;
+
+        NacosConfiguration(NacosDiscoveryProperties nacosDiscoveryProperties) {
+            this.namingService = nacosDiscoveryProperties.namingServiceInstance();
+            this.listeningServices = new ConcurrentSkipListSet<>();
+        }
+
         /**
          * Nacos uses {@link EventListener} to trigger {@link #dispatchServiceInstancesChangedEvent(String, Collection)}
          * , thus {@link HeartbeatEvent} handle is always ignored
@@ -474,5 +491,26 @@ public class DubboServiceDiscoveryAutoConfiguration {
             return event -> false;
         }
 
+        @EventListener(SubscribedServicesChangedEvent.class)
+        public void onSubscribedServicesChangedEvent(SubscribedServicesChangedEvent event) throws Exception {
+            // subscribe EventListener for each service
+            event.getNewSubscribedServices().forEach(this::subscribeEventListener);
+        }
+
+        private void subscribeEventListener(String serviceName) {
+            if (listeningServices.add(serviceName)) {
+                try {
+                    namingService.subscribe(serviceName, event -> {
+                        if (event instanceof NamingEvent) {
+                            NamingEvent namingEvent = (NamingEvent) event;
+                            List<ServiceInstance> serviceInstances = hostToServiceInstanceList(namingEvent.getInstances(), serviceName);
+                            dispatchServiceInstancesChangedEvent(serviceName, serviceInstances);
+                        }
+                    });
+                } catch (NacosException e) {
+                    ReflectionUtils.rethrowRuntimeException(e);
+                }
+            }
+        }
     }
 }
