@@ -20,6 +20,8 @@
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-provider-example</module>
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-consumer-example</module>
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
+        <module>sentinel-example/sentinel-feign-example/sentinel-feign-consumer-example</module>
+        <module>sentinel-example/sentinel-feign-example/sentinel-feign-provider-example</module>
         <module>sentinel-example/sentinel-webflux-example</module>
         <module>sentinel-example/sentinel-spring-cloud-gateway-example</module>
         <module>sentinel-example/sentinel-zuul-example</module>
