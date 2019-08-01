@@ -442,12 +442,18 @@ public class DubboServiceDiscoveryAutoConfiguration {
         }
     }
 
+    /**
+     * Consul Customized Configuration
+     */
     @Configuration
     @ConditionalOnBean(name = CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
     class ConsulConfiguration {
 
     }
 
+    /**
+     * Nacos Customized Configuration
+     */
     @Configuration
     @ConditionalOnBean(name = NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
     class NacosConfiguration {

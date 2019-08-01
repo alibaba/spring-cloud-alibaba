@@ -32,6 +32,7 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,12 +42,15 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.apache.dubbo.common.URLBuilder.from;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER_SIDE;
 import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.RegistryConstants.EMPTY_PROTOCOL;
 import static org.apache.dubbo.registry.Constants.ADMIN_PROTOCOL;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -182,12 +186,12 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
                     String serviceName = event.getServiceName();
                     Collection<ServiceInstance> serviceInstances = event.getServiceInstances();
                     if (logger.isInfoEnabled()) {
-                        logger.info("The event of the service instances[name : {} , size: {}] changed has been arrived",
+                        logger.info("The event of the service instances[name : {} , size: {}] change has been arrived",
                                 serviceName, serviceInstances.size());
                     }
                     subscribeDubboServiceURLs(url, listener, serviceName, s -> serviceInstances);
                     // Mark event to be processed
-                    event.process();
+                    event.processed();
                 }
             });
         }
@@ -222,34 +226,48 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
             return;
         }
 
-        List<URL> exportedURLs = getExportedURLs(dubboMetadataService, url);
+        Collection<ServiceInstance> serviceInstances = serviceInstancesFunction.apply(serviceName);
+
         List<URL> allSubscribedURLs = new LinkedList<>();
-        for (URL exportedURL : exportedURLs) {
-            Collection<ServiceInstance> serviceInstances = serviceInstancesFunction.apply(serviceName);
-            String protocol = exportedURL.getProtocol();
-            List<URL> subscribedURLs = new LinkedList<>();
-            serviceInstances.forEach(serviceInstance -> {
-                Integer port = repository.getDubboProtocolPort(serviceInstance, protocol);
-                String host = serviceInstance.getHost();
-                if (port == null) {
-                    if (logger.isWarnEnabled()) {
-                        logger.warn("The protocol[{}] port of Dubbo  service instance[host : {}] " +
-                                "can't be resolved", protocol, host);
+
+        if (CollectionUtils.isEmpty(serviceInstances)) {
+            /**
+             * URLs with {@link RegistryConstants#EMPTY_PROTOCOL}
+             */
+            allSubscribedURLs.addAll(emptyURLs(url));
+        } else {
+            List<URL> exportedURLs = getExportedURLs(dubboMetadataService, url);
+
+            for (URL exportedURL : exportedURLs) {
+                String protocol = exportedURL.getProtocol();
+                List<URL> subscribedURLs = new LinkedList<>();
+                serviceInstances.forEach(serviceInstance -> {
+                    Integer port = repository.getDubboProtocolPort(serviceInstance, protocol);
+                    String host = serviceInstance.getHost();
+                    if (port == null) {
+                        if (logger.isWarnEnabled()) {
+                            logger.warn("The protocol[{}] port of Dubbo  service instance[host : {}] " +
+                                    "can't be resolved", protocol, host);
+                        }
+                    } else {
+                        URL subscribedURL = new URL(protocol, host, port, exportedURL.getParameters());
+                        subscribedURLs.add(subscribedURL);
                     }
-                } else {
-                    URL subscribedURL = new URL(protocol, host, port, exportedURL.getParameters());
-                    subscribedURLs.add(subscribedURL);
+                });
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("The subscribed URL[{}] will notify all URLs : {}", url, subscribedURLs);
                 }
-            });
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("The subscribed URL[{}] will notify all URLs : {}", url, subscribedURLs);
+                allSubscribedURLs.addAll(subscribedURLs);
             }
-
-            allSubscribedURLs.addAll(subscribedURLs);
         }
 
         listener.notify(allSubscribedURLs);
+    }
+
+    private List<URL> emptyURLs(URL url) {
+        return asList(from(url).setProtocol(EMPTY_PROTOCOL).build());
     }
 
     private List<ServiceInstance> getServiceInstances(String serviceName) {
