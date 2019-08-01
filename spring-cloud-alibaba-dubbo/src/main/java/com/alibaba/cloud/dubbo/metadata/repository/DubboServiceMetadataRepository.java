@@ -23,6 +23,7 @@ import com.alibaba.cloud.dubbo.http.matcher.RequestMetadataMatcher;
 import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
 import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
 import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
+import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
 import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceExporter;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
@@ -37,6 +38,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedMultiValueMap;
@@ -44,7 +48,6 @@ import org.springframework.util.MultiValueMap;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -52,6 +55,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.alibaba.cloud.dubbo.env.DubboCloudProperties.ALL_DUBBO_SERVICES;
 import static com.alibaba.cloud.dubbo.http.DefaultHttpRequest.builder;
@@ -73,7 +77,7 @@ import static org.springframework.util.StringUtils.hasText;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Repository
-public class DubboServiceMetadataRepository implements SmartInitializingSingleton {
+public class DubboServiceMetadataRepository implements SmartInitializingSingleton, ApplicationEventPublisherAware {
 
     /**
      * The prefix of {@link DubboMetadataService} : "dubbo.metadata-service."
@@ -99,6 +103,8 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
      */
     private final Object monitor = new Object();
 
+    private ApplicationEventPublisher applicationEventPublisher;
+
     /**
      * A {@link Set} of service names that had been initialized
      */
@@ -117,7 +123,7 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
 
     // =================================== Subscription =================================== //
 
-    private Set<String> subscribedServices = emptySet();
+    private volatile Set<String> subscribedServices = emptySet();
 
     /**
      * The subscribed {@link URL urls} {@link Map} of {@link DubboMetadataService},
@@ -172,26 +178,50 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
 
     // ==================================================================================== //
 
+    /**
+     * Initialize {@link #subscribedServices the subscribed services}
+     *
+     * @return
+     */
     @PostConstruct
-    public void initSubscribedServices() {
-        synchronized (monitor) {
-            // If subscribes all services
-            if (ALL_DUBBO_SERVICES.equals(dubboCloudProperties.getSubscribedServices())) {
-                List<String> services = discoveryClient.getServices();
-                subscribedServices = new HashSet<>(services);
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Current application will subscribe all services(size:{}) in registry, " +
-                                    "a lot of memory and CPU cycles may be used, " +
-                                    "thus it's strongly recommend you using the externalized property '{}' " +
-                                    "to specify the services",
-                            subscribedServices.size(), "dubbo.cloud.subscribed-services");
-                }
-            } else {
-                subscribedServices = new HashSet<>(dubboCloudProperties.subscribedServices());
+    public Stream<String> initSubscribedServices() {
+        Set<String> newSubscribedServices = new LinkedHashSet<>();
+
+        // If subscribes all services
+        if (ALL_DUBBO_SERVICES.equals(dubboCloudProperties.getSubscribedServices())) {
+            List<String> services = discoveryClient.getServices();
+            newSubscribedServices.addAll(services);
+            if (logger.isWarnEnabled()) {
+                logger.warn("Current application will subscribe all services(size:{}) in registry, " +
+                                "a lot of memory and CPU cycles may be used, " +
+                                "thus it's strongly recommend you using the externalized property '{}' " +
+                                "to specify the services",
+                        newSubscribedServices.size(), "dubbo.cloud.subscribed-services");
             }
-            // exclude current application name
-            excludeSelf(subscribedServices);
+        } else {
+            newSubscribedServices.addAll(dubboCloudProperties.subscribedServices());
         }
+
+        // exclude current application name
+        excludeSelf(newSubscribedServices);
+
+        // copy from subscribedServices
+        Set<String> oldSubscribedServices = this.subscribedServices;
+
+        // volatile update subscribedServices to be new one
+        this.subscribedServices = newSubscribedServices;
+
+        // dispatch SubscribedServicesChangedEvent
+        dispatchEvent(new SubscribedServicesChangedEvent(this, oldSubscribedServices, newSubscribedServices));
+
+        // clear old one, help GC
+        oldSubscribedServices.clear();
+
+        return newSubscribedServices.stream();
+    }
+
+    private void dispatchEvent(ApplicationEvent event) {
+        applicationEventPublisher.publishEvent(event);
     }
 
     @Override
@@ -449,10 +479,12 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
         return match(dubboRestServiceMetadataRepository, serviceName, requestMetadata);
     }
 
+    /**
+     * @return not-null
+     */
     protected Set<String> doGetSubscribedServices() {
-        synchronized (monitor) {
-            return subscribedServices;
-        }
+        Set<String> subscribedServices = this.subscribedServices;
+        return subscribedServices == null ? emptySet() : subscribedServices;
     }
 
     public Set<String> getSubscribedServices() {
@@ -575,5 +607,10 @@ public class DubboServiceMetadataRepository implements SmartInitializingSingleto
         String version = dubboMetadataServiceURL.getParameter(VERSION_KEY);
         // Initialize DubboMetadataService with right version
         dubboMetadataConfigServiceProxy.initProxy(serviceName, version);
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }
