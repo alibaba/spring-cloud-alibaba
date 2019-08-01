@@ -21,18 +21,19 @@ import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * The after-{@link ServiceRegistry#register(Registration) register} event for {@link Registration}
+ * The after-{@link ServiceRegistry#register(Registration) register} event for
+ * {@link Registration}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class ServiceInstanceRegisteredEvent extends ApplicationEvent {
 
-    public ServiceInstanceRegisteredEvent(Registration source) {
-        super(source);
-    }
+	public ServiceInstanceRegisteredEvent(Registration source) {
+		super(source);
+	}
 
-    @Override
-    public Registration getSource() {
-        return (Registration) super.getSource();
-    }
+	@Override
+	public Registration getSource() {
+		return (Registration) super.getSource();
+	}
 }

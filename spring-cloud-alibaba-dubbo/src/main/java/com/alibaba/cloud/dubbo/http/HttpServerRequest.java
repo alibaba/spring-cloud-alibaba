@@ -27,16 +27,16 @@ import org.springframework.util.MultiValueMap;
  */
 public interface HttpServerRequest extends HttpRequest, HttpInputMessage {
 
-    /**
-     * Return a path of current HTTP request
-     *
-     * @return
-     */
-    String getPath();
+	/**
+	 * Return a path of current HTTP request
+	 *
+	 * @return
+	 */
+	String getPath();
 
-    /**
-     * Return a map with parsed and decoded query parameter values.
-     */
-    MultiValueMap<String, String> getQueryParams();
+	/**
+	 * Return a map with parsed and decoded query parameter values.
+	 */
+	MultiValueMap<String, String> getQueryParams();
 
 }

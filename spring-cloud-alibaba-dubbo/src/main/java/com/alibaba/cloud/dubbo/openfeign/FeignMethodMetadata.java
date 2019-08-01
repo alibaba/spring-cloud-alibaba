@@ -16,11 +16,11 @@
  */
 package com.alibaba.cloud.dubbo.openfeign;
 
+import java.lang.reflect.Method;
+
 import org.apache.dubbo.rpc.service.GenericService;
 
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-
-import java.lang.reflect.Method;
 
 /**
  * Feign {@link Method} Metadata
@@ -29,29 +29,29 @@ import java.lang.reflect.Method;
  */
 class FeignMethodMetadata {
 
-    private final GenericService dubboGenericService;
+	private final GenericService dubboGenericService;
 
-    private final RestMethodMetadata dubboRestMethodMetadata;
+	private final RestMethodMetadata dubboRestMethodMetadata;
 
-    private final RestMethodMetadata feignMethodMetadata;
+	private final RestMethodMetadata feignMethodMetadata;
 
+	FeignMethodMetadata(GenericService dubboGenericService,
+			RestMethodMetadata dubboRestMethodMetadata,
+			RestMethodMetadata feignMethodMetadata) {
+		this.dubboGenericService = dubboGenericService;
+		this.dubboRestMethodMetadata = dubboRestMethodMetadata;
+		this.feignMethodMetadata = feignMethodMetadata;
+	}
 
-    FeignMethodMetadata(GenericService dubboGenericService, RestMethodMetadata dubboRestMethodMetadata,
-                        RestMethodMetadata feignMethodMetadata) {
-        this.dubboGenericService = dubboGenericService;
-        this.dubboRestMethodMetadata = dubboRestMethodMetadata;
-        this.feignMethodMetadata = feignMethodMetadata;
-    }
+	GenericService getDubboGenericService() {
+		return dubboGenericService;
+	}
 
-    GenericService getDubboGenericService() {
-        return dubboGenericService;
-    }
+	RestMethodMetadata getDubboRestMethodMetadata() {
+		return dubboRestMethodMetadata;
+	}
 
-    RestMethodMetadata getDubboRestMethodMetadata() {
-        return dubboRestMethodMetadata;
-    }
-
-    RestMethodMetadata getFeignMethodMetadata() {
-        return feignMethodMetadata;
-    }
+	RestMethodMetadata getFeignMethodMetadata() {
+		return feignMethodMetadata;
+	}
 }

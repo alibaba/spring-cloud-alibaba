@@ -16,12 +16,13 @@
  */
 package com.alibaba.cloud.dubbo.actuate.endpoint;
 
-import com.alibaba.cloud.dubbo.service.DubboMetadataService;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 
 /**
  * Dubbo Rest Metadata {@link Endpoint}
@@ -31,11 +32,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 @Endpoint(id = "dubborestmetadata")
 public class DubboRestMetadataEndpoint {
 
-    @Autowired
-    private DubboMetadataService dubboMetadataService;
+	@Autowired
+	private DubboMetadataService dubboMetadataService;
 
-    @ReadOperation(produces = APPLICATION_JSON_UTF8_VALUE)
-    public String get() {
-        return dubboMetadataService.getServiceRestMetadata();
-    }
+	@ReadOperation(produces = APPLICATION_JSON_UTF8_VALUE)
+	public String get() {
+		return dubboMetadataService.getServiceRestMetadata();
+	}
 }
