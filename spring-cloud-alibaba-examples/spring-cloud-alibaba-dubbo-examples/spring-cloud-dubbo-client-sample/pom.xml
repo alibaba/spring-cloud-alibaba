@@ -13,7 +13,7 @@
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-dubbo-client-sample</artifactId>
     <name>Spring Cloud Dubbo Client Sample</name>
-    <version>0.9.1.BUILD-SNAPSHOT</version>
+    <version>2.1.0.RELEASE</version>
 
     <dependencyManagement>
         <dependencies>
