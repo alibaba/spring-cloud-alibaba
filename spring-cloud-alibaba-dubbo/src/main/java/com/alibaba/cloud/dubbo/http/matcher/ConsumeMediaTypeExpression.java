@@ -29,16 +29,16 @@ import org.springframework.http.MediaType;
  */
 class ConsumeMediaTypeExpression extends AbstractMediaTypeExpression {
 
-    ConsumeMediaTypeExpression(String expression) {
-        super(expression);
-    }
+	ConsumeMediaTypeExpression(String expression) {
+		super(expression);
+	}
 
-    ConsumeMediaTypeExpression(MediaType mediaType, boolean negated) {
-        super(mediaType, negated);
-    }
+	ConsumeMediaTypeExpression(MediaType mediaType, boolean negated) {
+		super(mediaType, negated);
+	}
 
-    public final boolean match(MediaType contentType) {
-        boolean match = getMediaType().includes(contentType);
-        return (!isNegated() ? match : !match);
-    }
+	public final boolean match(MediaType contentType) {
+		boolean match = getMediaType().includes(contentType);
+		return (!isNegated() ? match : !match);
+	}
 }

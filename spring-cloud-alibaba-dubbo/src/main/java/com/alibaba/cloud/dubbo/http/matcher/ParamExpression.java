@@ -16,16 +16,17 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
+
 import org.springframework.http.HttpRequest;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 
-import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
-
 /**
  * Parses and matches a single param expression to a request.
  * <p>
- * The some source code is scratched from org.springframework.web.servlet.mvc.condition.ParamsRequestCondition.ParamExpression
+ * The some source code is scratched from
+ * org.springframework.web.servlet.mvc.condition.ParamsRequestCondition.ParamExpression
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
@@ -33,30 +34,30 @@ import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
  */
 class ParamExpression extends AbstractNameValueExpression<String> {
 
-    ParamExpression(String expression) {
-        super(expression);
-    }
+	ParamExpression(String expression) {
+		super(expression);
+	}
 
-    @Override
-    protected boolean isCaseSensitiveName() {
-        return true;
-    }
+	@Override
+	protected boolean isCaseSensitiveName() {
+		return true;
+	}
 
-    @Override
-    protected String parseValue(String valueExpression) {
-        return valueExpression;
-    }
+	@Override
+	protected String parseValue(String valueExpression) {
+		return valueExpression;
+	}
 
-    @Override
-    protected boolean matchName(HttpRequest request) {
-        MultiValueMap<String, String> parametersMap = getParameters(request);
-        return parametersMap.containsKey(this.name);
-    }
+	@Override
+	protected boolean matchName(HttpRequest request) {
+		MultiValueMap<String, String> parametersMap = getParameters(request);
+		return parametersMap.containsKey(this.name);
+	}
 
-    @Override
-    protected boolean matchValue(HttpRequest request) {
-        MultiValueMap<String, String> parametersMap = getParameters(request);
-        String parameterValue = parametersMap.getFirst(this.name);
-        return ObjectUtils.nullSafeEquals(this.value, parameterValue);
-    }
+	@Override
+	protected boolean matchValue(HttpRequest request) {
+		MultiValueMap<String, String> parametersMap = getParameters(request);
+		String parameterValue = parametersMap.getFirst(this.name);
+		return ObjectUtils.nullSafeEquals(this.value, parameterValue);
+	}
 }

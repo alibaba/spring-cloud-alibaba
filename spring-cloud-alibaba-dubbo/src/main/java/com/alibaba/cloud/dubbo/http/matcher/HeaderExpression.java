@@ -23,7 +23,8 @@ import org.springframework.util.ObjectUtils;
 /**
  * Parses and matches a single header expression to a request.
  * <p>
- * The some source code is scratched from org.springframework.web.servlet.mvc.condition.HeadersRequestCondition.HeaderExpression
+ * The some source code is scratched from
+ * org.springframework.web.servlet.mvc.condition.HeadersRequestCondition.HeaderExpression
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
@@ -31,30 +32,30 @@ import org.springframework.util.ObjectUtils;
  */
 class HeaderExpression extends AbstractNameValueExpression<String> {
 
-    HeaderExpression(String expression) {
-        super(expression);
-    }
+	HeaderExpression(String expression) {
+		super(expression);
+	}
 
-    @Override
-    protected boolean isCaseSensitiveName() {
-        return false;
-    }
+	@Override
+	protected boolean isCaseSensitiveName() {
+		return false;
+	}
 
-    @Override
-    protected String parseValue(String valueExpression) {
-        return valueExpression;
-    }
+	@Override
+	protected String parseValue(String valueExpression) {
+		return valueExpression;
+	}
 
-    @Override
-    protected boolean matchName(HttpRequest request) {
-        HttpHeaders httpHeaders = request.getHeaders();
-        return httpHeaders.containsKey(this.name);
-    }
+	@Override
+	protected boolean matchName(HttpRequest request) {
+		HttpHeaders httpHeaders = request.getHeaders();
+		return httpHeaders.containsKey(this.name);
+	}
 
-    @Override
-    protected boolean matchValue(HttpRequest request) {
-        HttpHeaders httpHeaders = request.getHeaders();
-        String headerValue = httpHeaders.getFirst(this.name);
-        return ObjectUtils.nullSafeEquals(this.value, headerValue);
-    }
+	@Override
+	protected boolean matchValue(HttpRequest request) {
+		HttpHeaders httpHeaders = request.getHeaders();
+		String headerValue = httpHeaders.getFirst(this.name);
+		return ObjectUtils.nullSafeEquals(this.value, headerValue);
+	}
 }

@@ -16,11 +16,12 @@
  */
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
+import java.util.Set;
+
 import org.apache.dubbo.config.spring.ServiceBean;
+
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
-
-import java.util.Set;
 
 /**
  * The REST metadata resolver
@@ -29,19 +30,19 @@ import java.util.Set;
  */
 public interface MetadataResolver {
 
-    /**
-     * Resolve the {@link ServiceRestMetadata} {@link Set set} from {@link ServiceBean}
-     *
-     * @param serviceBean {@link ServiceBean}
-     * @return non-null {@link Set}
-     */
-    Set<ServiceRestMetadata> resolveServiceRestMetadata(ServiceBean serviceBean);
+	/**
+	 * Resolve the {@link ServiceRestMetadata} {@link Set set} from {@link ServiceBean}
+	 *
+	 * @param serviceBean {@link ServiceBean}
+	 * @return non-null {@link Set}
+	 */
+	Set<ServiceRestMetadata> resolveServiceRestMetadata(ServiceBean serviceBean);
 
-    /**
-     * Resolve {@link RestMethodMetadata} {@link Set set} from {@link Class target type}
-     *
-     * @param targetType {@link Class target type}
-     * @return non-null {@link Set}
-     */
-    Set<RestMethodMetadata> resolveMethodRestMetadata(Class<?> targetType);
+	/**
+	 * Resolve {@link RestMethodMetadata} {@link Set set} from {@link Class target type}
+	 *
+	 * @param targetType {@link Class target type}
+	 * @return non-null {@link Set}
+	 */
+	Set<RestMethodMetadata> resolveMethodRestMetadata(Class<?> targetType);
 }
