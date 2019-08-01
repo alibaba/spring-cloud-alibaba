@@ -70,7 +70,7 @@ public class ServiceInstancesChangedEvent extends ApplicationEvent {
     /**
      * Mark current event being processed
      */
-    public void process() {
+    public void processed() {
         processed = true;
     }
 
