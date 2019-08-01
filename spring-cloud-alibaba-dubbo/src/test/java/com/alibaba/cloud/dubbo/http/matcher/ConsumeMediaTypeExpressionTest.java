@@ -25,22 +25,21 @@ import org.springframework.http.MediaType;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class ConsumeMediaTypeExpressionTest
-		extends AbstractMediaTypeExpressionTest<ConsumeMediaTypeExpression> {
+public class ConsumeMediaTypeExpressionTest extends AbstractMediaTypeExpressionTest<ConsumeMediaTypeExpression> {
 
-	@Test
-	public void testMatch() {
-		ConsumeMediaTypeExpression expression = createExpression(MediaType.ALL_VALUE);
+    @Test
+    public void testMatch() {
+        ConsumeMediaTypeExpression expression = createExpression(MediaType.ALL_VALUE);
 
-		Assert.assertTrue(expression.match(MediaType.APPLICATION_JSON_UTF8));
+        Assert.assertTrue(expression.match(MediaType.APPLICATION_JSON_UTF8));
 
-		expression = createExpression(MediaType.APPLICATION_JSON_VALUE);
-		Assert.assertTrue(expression.match(MediaType.APPLICATION_JSON_UTF8));
+        expression = createExpression(MediaType.APPLICATION_JSON_VALUE);
+        Assert.assertTrue(expression.match(MediaType.APPLICATION_JSON_UTF8));
 
-		expression = createExpression(MediaType.APPLICATION_JSON_VALUE + ";q=0.7");
-		Assert.assertTrue(expression.match(MediaType.APPLICATION_JSON_UTF8));
+        expression = createExpression(MediaType.APPLICATION_JSON_VALUE + ";q=0.7");
+        Assert.assertTrue(expression.match(MediaType.APPLICATION_JSON_UTF8));
 
-		expression = createExpression(MediaType.TEXT_HTML_VALUE);
-		Assert.assertFalse(expression.match(MediaType.APPLICATION_JSON_UTF8));
-	}
+        expression = createExpression(MediaType.TEXT_HTML_VALUE);
+        Assert.assertFalse(expression.match(MediaType.APPLICATION_JSON_UTF8));
+    }
 }

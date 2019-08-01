@@ -65,8 +65,11 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		}
 	}
 
-	private static ServiceInstance hostToServiceInstance(Instance instance,
+	public static ServiceInstance hostToServiceInstance(Instance instance,
 			String serviceId) {
+		if (instance == null || !instance.isEnabled() || !instance.isHealthy()) {
+			return null;
+		}
 		NacosServiceInstance nacosServiceInstance = new NacosServiceInstance();
 		nacosServiceInstance.setHost(instance.getIp());
 		nacosServiceInstance.setPort(instance.getPort());
@@ -87,11 +90,14 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 		return nacosServiceInstance;
 	}
 
-	private static List<ServiceInstance> hostToServiceInstanceList(
+	public static List<ServiceInstance> hostToServiceInstanceList(
 			List<Instance> instances, String serviceId) {
 		List<ServiceInstance> result = new ArrayList<>(instances.size());
 		for (Instance instance : instances) {
-			result.add(hostToServiceInstance(instance, serviceId));
+			ServiceInstance serviceInstance = hostToServiceInstance(instance, serviceId);
+			if (serviceInstance != null) {
+				result.add(serviceInstance);
+			}
 		}
 		return result;
 	}

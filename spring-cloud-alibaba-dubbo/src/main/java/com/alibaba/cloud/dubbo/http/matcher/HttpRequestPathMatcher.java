@@ -45,6 +45,17 @@ public class HttpRequestPathMatcher extends AbstractHttpRequestMatcher {
 		this.pathMatcher = new AntPathMatcher();
 	}
 
+	private static Set<String> prependLeadingSlash(String[] patterns) {
+		Set<String> result = new LinkedHashSet<>(patterns.length);
+		for (String pattern : patterns) {
+			if (StringUtils.hasLength(pattern) && !pattern.startsWith("/")) {
+				pattern = "/" + pattern;
+			}
+			result.add(pattern);
+		}
+		return result;
+	}
+
 	@Override
 	public boolean match(HttpRequest request) {
 		List<String> matches = getMatchingPatterns(request);
@@ -92,17 +103,6 @@ public class HttpRequestPathMatcher extends AbstractHttpRequestMatcher {
 	private String getPath(HttpRequest request) {
 		URI uri = request.getURI();
 		return uri.getPath();
-	}
-
-	private static Set<String> prependLeadingSlash(String[] patterns) {
-		Set<String> result = new LinkedHashSet<>(patterns.length);
-		for (String pattern : patterns) {
-			if (StringUtils.hasLength(pattern) && !pattern.startsWith("/")) {
-				pattern = "/" + pattern;
-			}
-			result.add(pattern);
-		}
-		return result;
 	}
 
 	@Override

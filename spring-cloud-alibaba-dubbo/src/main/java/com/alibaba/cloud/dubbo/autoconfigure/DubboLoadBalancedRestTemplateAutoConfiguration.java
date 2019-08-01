@@ -136,7 +136,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 	 * {@link DubboTransported @DubboTransported}
 	 *
 	 * @param beanName the bean name of {@link LoadBalanced @LoadBalanced}
-	 * {@link RestTemplate}
+	 *     {@link RestTemplate}
 	 * @param attributesResolver {@link DubboTransportedAttributesResolver}
 	 * @return non-null {@link Map}
 	 */
@@ -162,8 +162,8 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 	 *
 	 * @param restTemplate {@link LoadBalanced @LoadBalanced} {@link RestTemplate} Bean
 	 * @param dubboTranslatedAttributes the annotation dubboTranslatedAttributes
-	 * {@link RestTemplate} bean being annotated
-	 * {@link DubboTransported @DubboTransported}
+	 *     {@link RestTemplate} bean being annotated
+	 *     {@link DubboTransported @DubboTransported}
 	 */
 	private void adaptRestTemplate(RestTemplate restTemplate,
 			Map<String, Object> dubboTranslatedAttributes) {

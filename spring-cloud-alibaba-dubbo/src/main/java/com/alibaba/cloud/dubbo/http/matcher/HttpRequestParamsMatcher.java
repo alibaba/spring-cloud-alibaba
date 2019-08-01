@@ -34,13 +34,21 @@ public class HttpRequestParamsMatcher extends AbstractHttpRequestMatcher {
 
 	/**
 	 * @param params The pattern of params :
-	 * <ul>
-	 * <li>name=value</li>
-	 * <li>name</li>
-	 * </ul>
+	 *     <ul>
+	 *     <li>name=value</li>
+	 *     <li>name</li>
+	 *     </ul>
 	 */
 	public HttpRequestParamsMatcher(String... params) {
 		this.expressions = parseExpressions(params);
+	}
+
+	private static Set<ParamExpression> parseExpressions(String... params) {
+		Set<ParamExpression> expressions = new LinkedHashSet<>();
+		for (String param : params) {
+			expressions.add(new ParamExpression(param));
+		}
+		return expressions;
 	}
 
 	@Override
@@ -54,14 +62,6 @@ public class HttpRequestParamsMatcher extends AbstractHttpRequestMatcher {
 			}
 		}
 		return false;
-	}
-
-	private static Set<ParamExpression> parseExpressions(String... params) {
-		Set<ParamExpression> expressions = new LinkedHashSet<>();
-		for (String param : params) {
-			expressions.add(new ParamExpression(param));
-		}
-		return expressions;
 	}
 
 	@Override

@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.spring.ServiceBean;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.ObjectProvider;

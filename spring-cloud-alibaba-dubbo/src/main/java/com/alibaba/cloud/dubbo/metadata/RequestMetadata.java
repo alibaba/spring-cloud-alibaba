@@ -16,6 +16,7 @@
  */
 package com.alibaba.cloud.dubbo.metadata;
 
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.normalizePath;
 import static org.springframework.http.MediaType.parseMediaTypes;
 
 import java.util.ArrayList;
@@ -35,8 +36,6 @@ import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import com.alibaba.cloud.dubbo.http.util.HttpUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -74,6 +73,67 @@ public class RequestMetadata {
 		headers(requestTemplate.headers());
 	}
 
+	/**
+	 * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}
+	 *
+	 * @param requestMetadataMap the source of {@link NavigableMap}
+	 * @param requestMetadata the match object
+	 * @return if not matched, return <code>null</code>
+	 */
+	public static RequestMetadata getBestMatch(
+			NavigableMap<RequestMetadata, RequestMetadata> requestMetadataMap,
+			RequestMetadata requestMetadata) {
+
+		RequestMetadata key = requestMetadata;
+
+		RequestMetadata result = requestMetadataMap.get(key);
+
+		if (result == null) {
+			SortedMap<RequestMetadata, RequestMetadata> headMap = requestMetadataMap
+					.headMap(key, true);
+			result = headMap.isEmpty() ? null : requestMetadataMap.get(headMap.lastKey());
+		}
+
+		return result;
+	}
+
+	private static void add(String key, String value,
+			MultiValueMap<String, String> destination) {
+		destination.add(key, value);
+	}
+
+	private static <T extends Collection<String>> void addAll(Map<String, T> source,
+			MultiValueMap<String, String> destination) {
+		for (Map.Entry<String, T> entry : source.entrySet()) {
+			String key = entry.getKey();
+			for (String value : entry.getValue()) {
+				add(key, value, destination);
+			}
+		}
+	}
+
+	private static void mediaTypes(HttpHeaders httpHeaders, String headerName,
+			Collection<String> destination) {
+		List<String> value = httpHeaders.get(headerName);
+		List<MediaType> mediaTypes = parseMediaTypes(value);
+		destination.addAll(toMediaTypeValues(mediaTypes));
+	}
+
+	private static List<String> toMediaTypeValues(List<MediaType> mediaTypes) {
+		List<String> list = new ArrayList<>(mediaTypes.size());
+		for (MediaType mediaType : mediaTypes) {
+			list.add(mediaType.toString());
+		}
+		return list;
+	}
+
+	private static List<MediaType> toMediaTypes(Collection<String> mediaTypeValues) {
+		if (mediaTypeValues.isEmpty()) {
+			return Collections.singletonList(MediaType.ALL);
+		}
+		return parseMediaTypes(new LinkedList<>(mediaTypeValues));
+	}
+
 	public String getMethod() {
 		return method;
 	}
@@ -87,7 +147,7 @@ public class RequestMetadata {
 	}
 
 	public void setPath(String path) {
-		this.path = HttpUtils.normalizePath(path);
+		this.path = normalizePath(path);
 	}
 
 	public MultiValueMap<String, String> getParams() {
@@ -180,73 +240,14 @@ public class RequestMetadata {
 		return this;
 	}
 
-	/**
-	 * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}
-	 *
-	 * @param requestMetadataMap the source of {@link NavigableMap}
-	 * @param requestMetadata the match object
-	 * @return if not matched, return <code>null</code>
-	 */
-	public static RequestMetadata getBestMatch(
-			NavigableMap<RequestMetadata, RequestMetadata> requestMetadataMap,
-			RequestMetadata requestMetadata) {
-
-		RequestMetadata key = requestMetadata;
-
-		RequestMetadata result = requestMetadataMap.get(key);
-
-		if (result == null) {
-			SortedMap<RequestMetadata, RequestMetadata> headMap = requestMetadataMap
-					.headMap(key, true);
-			result = headMap.isEmpty() ? null : requestMetadataMap.get(headMap.lastKey());
-		}
-
-		return result;
-	}
-
-	private static void add(String key, String value,
-			MultiValueMap<String, String> destination) {
-		destination.add(key, value);
-	}
-
-	private static <T extends Collection<String>> void addAll(Map<String, T> source,
-			MultiValueMap<String, String> destination) {
-		for (Map.Entry<String, T> entry : source.entrySet()) {
-			String key = entry.getKey();
-			for (String value : entry.getValue()) {
-				add(key, value, destination);
-			}
-		}
-	}
-
-	private static void mediaTypes(HttpHeaders httpHeaders, String headerName,
-			Collection<String> destination) {
-		List<String> value = httpHeaders.get(headerName);
-		List<MediaType> mediaTypes = parseMediaTypes(value);
-		destination.addAll(toMediaTypeValues(mediaTypes));
-	}
-
-	private static List<String> toMediaTypeValues(List<MediaType> mediaTypes) {
-		List<String> list = new ArrayList<>(mediaTypes.size());
-		for (MediaType mediaType : mediaTypes) {
-			list.add(mediaType.toString());
-		}
-		return list;
-	}
-
-	private static List<MediaType> toMediaTypes(Collection<String> mediaTypeValues) {
-		if (mediaTypeValues.isEmpty()) {
-			return Collections.singletonList(MediaType.ALL);
-		}
-		return parseMediaTypes(new LinkedList<>(mediaTypeValues));
-	}
-
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (!(o instanceof RequestMetadata))
+		}
+		if (!(o instanceof RequestMetadata)) {
 			return false;
+		}
 		RequestMetadata that = (RequestMetadata) o;
 		return Objects.equals(method, that.method) && Objects.equals(path, that.path)
 				&& Objects.equals(consumes, that.consumes)

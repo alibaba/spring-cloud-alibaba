@@ -16,37 +16,34 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import org.junit.Assert;
 import org.springframework.http.HttpMethod;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * {@link HttpRequestMethodsMatcher} Test
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class HttpRequestMethodsMatcherTest
-		extends AbstractHttpRequestMatcherTest<HttpRequestMethodsMatcher> {
+public class HttpRequestMethodsMatcherTest extends AbstractHttpRequestMatcherTest<HttpRequestMethodsMatcher> {
 
-	HttpRequestMethodsMatcher matcher = new HttpRequestMethodsMatcher("GET");
+    HttpRequestMethodsMatcher matcher = new HttpRequestMethodsMatcher("GET");
 
-	@Override
-	public void testEqualsAndHashCode() {
-		Assert.assertEquals(new HashSet<>(Arrays.asList(HttpMethod.GET)),
-				matcher.getMethods());
-	}
+    @Override
+    public void testEqualsAndHashCode() {
+        Assert.assertEquals(new HashSet<>(Arrays.asList(HttpMethod.GET)), matcher.getMethods());
+    }
 
-	@Override
-	public void testGetContent() {
-		Assert.assertEquals(new HashSet<>(Arrays.asList(HttpMethod.GET)),
-				matcher.getContent());
-	}
+    @Override
+    public void testGetContent() {
+        Assert.assertEquals(new HashSet<>(Arrays.asList(HttpMethod.GET)), matcher.getContent());
+    }
 
-	@Override
-	public void testGetToStringInfix() {
-		Assert.assertEquals(" || ", matcher.getToStringInfix());
-	}
+    @Override
+    public void testGetToStringInfix() {
+        Assert.assertEquals(" || ", matcher.getToStringInfix());
+    }
 
 }

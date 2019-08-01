@@ -16,10 +16,9 @@
  */
 package com.alibaba.cloud.dubbo.registry.event;
 
-import java.util.EventObject;
-
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
+import org.springframework.context.ApplicationEvent;
 
 /**
  * The after-{@link ServiceRegistry#register(Registration) register} event for
@@ -27,7 +26,7 @@ import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class ServiceInstanceRegisteredEvent extends EventObject {
+public class ServiceInstanceRegisteredEvent extends ApplicationEvent {
 
 	public ServiceInstanceRegisteredEvent(Registration source) {
 		super(source);

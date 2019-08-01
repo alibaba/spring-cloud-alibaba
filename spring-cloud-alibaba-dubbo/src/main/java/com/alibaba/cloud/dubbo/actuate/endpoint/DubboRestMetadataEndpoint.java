@@ -26,6 +26,8 @@ import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 
 /**
  * Dubbo Rest Metadata {@link Endpoint}
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Endpoint(id = "dubborestmetadata")
 public class DubboRestMetadataEndpoint {

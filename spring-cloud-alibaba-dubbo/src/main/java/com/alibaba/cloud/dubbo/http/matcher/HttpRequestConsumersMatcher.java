@@ -42,7 +42,7 @@ public class HttpRequestConsumersMatcher extends AbstractHttpRequestMatcher {
 	 * Creates a new instance from 0 or more "consumes" expressions.
 	 *
 	 * @param consumes consumes expressions if 0 expressions are provided, the condition
-	 * will match to every request
+	 *     will match to every request
 	 */
 	public HttpRequestConsumersMatcher(String... consumes) {
 		this(consumes, null);
@@ -70,6 +70,26 @@ public class HttpRequestConsumersMatcher extends AbstractHttpRequestMatcher {
 		Collections.sort(this.expressions);
 	}
 
+	private static Set<ConsumeMediaTypeExpression> parseExpressions(String[] consumes,
+			String[] headers) {
+		Set<ConsumeMediaTypeExpression> result = new LinkedHashSet<>();
+		if (headers != null) {
+			for (String header : headers) {
+				HeaderExpression expr = new HeaderExpression(header);
+				if ("Content-Type".equalsIgnoreCase(expr.name) && expr.value != null) {
+					for (MediaType mediaType : MediaType.parseMediaTypes(expr.value)) {
+						result.add(
+								new ConsumeMediaTypeExpression(mediaType, expr.negated));
+					}
+				}
+			}
+		}
+		for (String consume : consumes) {
+			result.add(new ConsumeMediaTypeExpression(consume));
+		}
+		return result;
+	}
+
 	@Override
 	public boolean match(HttpRequest request) {
 
@@ -92,26 +112,6 @@ public class HttpRequestConsumersMatcher extends AbstractHttpRequestMatcher {
 		}
 
 		return true;
-	}
-
-	private static Set<ConsumeMediaTypeExpression> parseExpressions(String[] consumes,
-			String[] headers) {
-		Set<ConsumeMediaTypeExpression> result = new LinkedHashSet<>();
-		if (headers != null) {
-			for (String header : headers) {
-				HeaderExpression expr = new HeaderExpression(header);
-				if ("Content-Type".equalsIgnoreCase(expr.name) && expr.value != null) {
-					for (MediaType mediaType : MediaType.parseMediaTypes(expr.value)) {
-						result.add(
-								new ConsumeMediaTypeExpression(mediaType, expr.negated));
-					}
-				}
-			}
-		}
-		for (String consume : consumes) {
-			result.add(new ConsumeMediaTypeExpression(consume));
-		}
-		return result;
 	}
 
 	@Override

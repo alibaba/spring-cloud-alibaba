@@ -49,15 +49,6 @@ public class DubboServiceAutoConfiguration {
 		return new DubboGenericServiceFactory();
 	}
 
-	@Configuration
-	@Import(value = { DubboGenericServiceExecutionContextFactory.class,
-			RequestParamServiceParameterResolver.class,
-			RequestBodyServiceParameterResolver.class,
-			RequestHeaderServiceParameterResolver.class,
-			PathVariableServiceParameterResolver.class })
-	static class ParameterResolversConfiguration {
-	}
-
 	/**
 	 * Build a primary {@link PropertyResolver} bean to {@link Autowired @Autowired}
 	 *
@@ -68,5 +59,14 @@ public class DubboServiceAutoConfiguration {
 	@Primary
 	public PropertyResolver primaryPropertyResolver(Environment environment) {
 		return environment;
+	}
+
+	@Configuration
+	@Import(value = { DubboGenericServiceExecutionContextFactory.class,
+			RequestParamServiceParameterResolver.class,
+			RequestBodyServiceParameterResolver.class,
+			RequestHeaderServiceParameterResolver.class,
+			PathVariableServiceParameterResolver.class })
+	static class ParameterResolversConfiguration {
 	}
 }

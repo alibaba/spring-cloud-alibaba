@@ -26,16 +26,16 @@ import org.junit.Test;
  */
 public class HttpUtilsTest {
 
-	@Test
-	public void testEncodeAndDecode() {
+    @Test
+    public void testEncodeAndDecode() {
 
-		String whitespace = " ";
+        String whitespace = " ";
 
-		String encodedValue = HttpUtils.encode(" ");
+        String encodedValue = HttpUtils.encode(" ");
 
-		String decodedValue = HttpUtils.decode(encodedValue);
+        String decodedValue = HttpUtils.decode(encodedValue);
 
-		Assert.assertEquals(whitespace, decodedValue);
-	}
+        Assert.assertEquals(whitespace, decodedValue);
+    }
 
 }

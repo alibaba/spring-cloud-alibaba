@@ -17,6 +17,7 @@
 package com.alibaba.cloud.dubbo.service.parameter;
 
 import org.apache.dubbo.rpc.service.GenericService;
+
 import org.springframework.core.Ordered;
 
 import com.alibaba.cloud.dubbo.http.HttpServerRequest;

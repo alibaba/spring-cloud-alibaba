@@ -20,42 +20,41 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpRequest;
 
-import com.alibaba.cloud.dubbo.http.DefaultHttpRequest;
+import static com.alibaba.cloud.dubbo.http.DefaultHttpRequest.builder;
 
 /**
  * {@link ParamExpression} Test
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class ParamExpressionTest
-		extends AbstractNameValueExpressionTest<ParamExpression> {
+public class ParamExpressionTest extends AbstractNameValueExpressionTest<ParamExpression> {
 
-	@Test
-	public void testIsCaseSensitiveName() {
-		Assert.assertTrue(createExpression("a=1").isCaseSensitiveName());
-		Assert.assertTrue(createExpression("a=!1").isCaseSensitiveName());
-		Assert.assertTrue(createExpression("b=1").isCaseSensitiveName());
-	}
+    @Test
+    public void testIsCaseSensitiveName() {
+        Assert.assertTrue(createExpression("a=1").isCaseSensitiveName());
+        Assert.assertTrue(createExpression("a=!1").isCaseSensitiveName());
+        Assert.assertTrue(createExpression("b=1").isCaseSensitiveName());
+    }
 
-	@Test
-	public void testMatch() {
+    @Test
+    public void testMatch() {
 
-		ParamExpression expression = createExpression("a=1");
-		HttpRequest request = DefaultHttpRequest.builder().build();
+        ParamExpression expression = createExpression("a=1");
+        HttpRequest request = builder().build();
 
-		Assert.assertFalse(expression.match(request));
+        Assert.assertFalse(expression.match(request));
 
-		request = DefaultHttpRequest.builder().param("a", "").build();
-		Assert.assertFalse(expression.match(request));
+        request = builder().param("a", "").build();
+        Assert.assertFalse(expression.match(request));
 
-		request = DefaultHttpRequest.builder().param("a", "2").build();
-		Assert.assertFalse(expression.match(request));
+        request = builder().param("a", "2").build();
+        Assert.assertFalse(expression.match(request));
 
-		request = DefaultHttpRequest.builder().param("", "1").build();
-		Assert.assertFalse(expression.match(request));
+        request = builder().param("", "1").build();
+        Assert.assertFalse(expression.match(request));
 
-		request = DefaultHttpRequest.builder().param("a", "1").build();
-		Assert.assertTrue(expression.match(request));
-	}
+        request = builder().param("a", "1").build();
+        Assert.assertTrue(expression.match(request));
+    }
 
 }

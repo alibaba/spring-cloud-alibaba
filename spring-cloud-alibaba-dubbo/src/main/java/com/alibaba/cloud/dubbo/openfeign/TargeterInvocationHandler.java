@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.dubbo.rpc.service.GenericService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignContext;
@@ -75,6 +76,10 @@ class TargeterInvocationHandler implements InvocationHandler {
 		this.repository = repository;
 		this.dubboGenericServiceFactory = dubboGenericServiceFactory;
 		this.contextFactory = contextFactory;
+	}
+
+	private static <T> T cast(Object object) {
+		return (T) object;
 	}
 
 	@Override
@@ -134,7 +139,7 @@ class TargeterInvocationHandler implements InvocationHandler {
 		}
 
 		// Update Metadata
-		repository.initialize(serviceName);
+		repository.initializeMetadata(serviceName);
 
 		Map<Method, FeignMethodMetadata> feignMethodMetadataMap = getFeignMethodMetadataMap(
 				serviceName, feignRestMethodMetadataMap);
@@ -179,9 +184,5 @@ class TargeterInvocationHandler implements InvocationHandler {
 		}
 
 		return feignMethodMetadataMap;
-	}
-
-	private static <T> T cast(Object object) {
-		return (T) object;
 	}
 }

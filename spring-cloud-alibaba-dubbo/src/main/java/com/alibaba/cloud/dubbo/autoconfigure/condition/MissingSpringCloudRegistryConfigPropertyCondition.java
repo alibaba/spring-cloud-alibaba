@@ -34,6 +34,7 @@ import com.alibaba.cloud.dubbo.registry.SpringCloudRegistry;
 /**
  * Missing {@link SpringCloudRegistry} Property {@link Condition}
  *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see SpringCloudRegistry
  * @see Condition
  */

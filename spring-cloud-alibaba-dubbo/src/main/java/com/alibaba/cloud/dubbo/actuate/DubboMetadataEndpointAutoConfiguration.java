@@ -28,6 +28,8 @@ import com.alibaba.cloud.dubbo.actuate.endpoint.DubboRestMetadataEndpoint;
 
 /**
  * Dubbo Metadata Endpoints Auto-{@link Configuration}
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
 @PropertySource(value = "classpath:/META-INF/dubbo/default/actuator-endpoints.properties")

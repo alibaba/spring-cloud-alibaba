@@ -36,6 +36,7 @@ import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.ReferenceBean;
 import org.apache.dubbo.rpc.service.GenericService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.MutablePropertyValues;
@@ -118,6 +119,7 @@ public class DubboGenericServiceFactory {
 		dataBinder.registerCustomEditor(Map.class, "parameters",
 				new PropertyEditorSupport() {
 
+					@Override
 					public void setAsText(String text)
 							throws java.lang.IllegalArgumentException {
 						// Trim all whitespace

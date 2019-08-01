@@ -4,7 +4,8 @@ com.alibaba.cloud.dubbo.autoconfigure.DubboOpenFeignAutoConfiguration,\
 com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration,\
 com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationNonWebApplicationAutoConfiguration,\
 com.alibaba.cloud.dubbo.autoconfigure.DubboLoadBalancedRestTemplateAutoConfiguration,\
-com.alibaba.cloud.dubbo.autoconfigure.DubboServiceAutoConfiguration
+com.alibaba.cloud.dubbo.autoconfigure.DubboServiceAutoConfiguration,\
+com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration
 
 org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration=\
 com.alibaba.cloud.dubbo.actuate.DubboMetadataEndpointAutoConfiguration

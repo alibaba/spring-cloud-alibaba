@@ -70,26 +70,6 @@ public class HttpRequestProducesMatcher extends AbstractHttpRequestMatcher {
 		Collections.sort(this.expressions);
 	}
 
-	@Override
-	public boolean match(HttpRequest request) {
-
-		if (expressions.isEmpty()) {
-			return true;
-		}
-
-		HttpHeaders httpHeaders = request.getHeaders();
-
-		List<MediaType> acceptedMediaTypes = httpHeaders.getAccept();
-
-		for (ProduceMediaTypeExpression expression : expressions) {
-			if (!expression.match(acceptedMediaTypes)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	private static Set<ProduceMediaTypeExpression> parseExpressions(String[] produces,
 			String[] headers) {
 		Set<ProduceMediaTypeExpression> result = new LinkedHashSet<>();
@@ -109,6 +89,26 @@ public class HttpRequestProducesMatcher extends AbstractHttpRequestMatcher {
 			result.add(new ProduceMediaTypeExpression(produce));
 		}
 		return result;
+	}
+
+	@Override
+	public boolean match(HttpRequest request) {
+
+		if (expressions.isEmpty()) {
+			return true;
+		}
+
+		HttpHeaders httpHeaders = request.getHeaders();
+
+		List<MediaType> acceptedMediaTypes = httpHeaders.getAccept();
+
+		for (ProduceMediaTypeExpression expression : expressions) {
+			if (!expression.match(acceptedMediaTypes)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override

@@ -16,16 +16,15 @@
  */
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
-import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.mock.env.MockEnvironment;
 
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
-import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
+import java.util.Set;
 
 /**
  * {@link DubboTransportedMethodMetadataResolver} Test
@@ -34,28 +33,27 @@ import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
  */
 public class DubboTransportedMethodMetadataResolverTest {
 
-	private DubboTransportedMethodMetadataResolver resolver;
+    private DubboTransportedMethodMetadataResolver resolver;
 
-	private MockEnvironment environment;
+    private MockEnvironment environment;
 
-	@Before
-	public void init() {
-		environment = new MockEnvironment();
-		resolver = new DubboTransportedMethodMetadataResolver(environment,
-				new SpringMvcContract());
-	}
+    @Before
+    public void init() {
+        environment = new MockEnvironment();
+        resolver = new DubboTransportedMethodMetadataResolver(environment, new SpringMvcContract());
+    }
 
-	@Test
-	public void testResolve() {
-		Set<DubboTransportedMethodMetadata> metadataSet = resolver
-				.resolveDubboTransportedMethodMetadataSet(TestDefaultService.class);
-		Assert.assertEquals(1, metadataSet.size());
-	}
+    @Test
+    public void testResolve() {
+        Set<DubboTransportedMethodMetadata> metadataSet = resolver.resolveDubboTransportedMethodMetadataSet(TestDefaultService.class);
+        Assert.assertEquals(1, metadataSet.size());
+    }
 
-	@DubboTransported
-	interface TestDefaultService {
 
-		String test(String message);
+    @DubboTransported
+    interface TestDefaultService {
 
-	}
+        String test(String message);
+
+    }
 }
