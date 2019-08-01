@@ -16,24 +16,23 @@
 
 package com.alibaba.cloud.nacos;
 
-import static com.alibaba.cloud.nacos.test.NacosMockTest.serviceInstance;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.api.naming.pojo.ListView;
+import org.junit.Test;
+import org.springframework.cloud.client.ServiceInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Test;
-import org.springframework.cloud.client.ServiceInstance;
-
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.api.naming.pojo.ListView;
+import static com.alibaba.cloud.nacos.test.NacosMockTest.serviceInstance;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author xiaojing
@@ -53,7 +52,7 @@ public class NacosDiscoveryClientTests {
 		map.put("test-key", "test-value");
 		map.put("secure", "true");
 
-		instances.add(serviceInstance(serviceName, false, host, port, map));
+		instances.add(serviceInstance(serviceName, true, host, port, map));
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
