@@ -174,24 +174,14 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
      * @param listener {@link NotifyListener}
      */
     private void registerServiceInstancesChangedEventListener(URL url, NotifyListener listener) {
-        String listenerId = url.toIdentityString();
+        String listenerId = generateId(url);
         if (registerListeners.add(listenerId)) {
             applicationContext.addApplicationListener(new ApplicationListener<ServiceInstancesChangedEvent>() {
                 @Override
                 public void onApplicationEvent(ServiceInstancesChangedEvent event) {
-                    if (event.isProcessed()) { // If processed, return immediately
-                        return;
-                    }
-
                     String serviceName = event.getServiceName();
                     Collection<ServiceInstance> serviceInstances = event.getServiceInstances();
-                    if (logger.isInfoEnabled()) {
-                        logger.info("The event of the service instances[name : {} , size: {}] change has been arrived",
-                                serviceName, serviceInstances.size());
-                    }
-                    subscribeDubboServiceURLs(url, listener, serviceName, s -> serviceInstances);
-                    // Mark event to be processed
-                    event.processed();
+                    subscribeDubboServiceURL(url, listener, serviceName, s -> serviceInstances);
                 }
             });
         }
@@ -201,11 +191,16 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
         Set<String> subscribedServices = repository.getSubscribedServices();
         // Sync
-        subscribedServices.forEach(service -> subscribeDubboServiceURLs(url, listener, service, this::getServiceInstances));
+        subscribedServices.forEach(service -> subscribeDubboServiceURL(url, listener, service, this::getServiceInstances));
     }
 
-    protected void subscribeDubboServiceURLs(URL url, NotifyListener listener, String serviceName,
-                                             Function<String, Collection<ServiceInstance>> serviceInstancesFunction) {
+    protected void subscribeDubboServiceURL(URL url, NotifyListener listener, String serviceName,
+                                            Function<String, Collection<ServiceInstance>> serviceInstancesFunction) {
+
+        if (logger.isInfoEnabled()) {
+            logger.info("The Dubbo Service URL[ID : {}] is being subscribed for service[name : {}]",
+                    generateId(url), serviceName);
+        }
 
         DubboMetadataService dubboMetadataService = dubboMetadataConfigServiceProxy.getProxy(serviceName);
 
@@ -231,6 +226,10 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
         List<URL> allSubscribedURLs = new LinkedList<>();
 
         if (CollectionUtils.isEmpty(serviceInstances)) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("There is no instance from service[name : {}], and then Dubbo Service[key : {}] will not be " +
+                        "available , please make sure the further impact", serviceName, url.getServiceKey());
+            }
             /**
              * URLs with {@link RegistryConstants#EMPTY_PROTOCOL}
              */
@@ -255,15 +254,19 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
                     }
                 });
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("The subscribed URL[{}] will notify all URLs : {}", url, subscribedURLs);
-                }
-
                 allSubscribedURLs.addAll(subscribedURLs);
             }
         }
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("The subscribed URL[{}] will notify all URLs : {}", url, allSubscribedURLs);
+        }
+
         listener.notify(allSubscribedURLs);
+    }
+
+    private String generateId(URL url) {
+        return url.toString(VERSION_KEY, GROUP_KEY, PROTOCOL_KEY);
     }
 
     private List<URL> emptyURLs(URL url) {
