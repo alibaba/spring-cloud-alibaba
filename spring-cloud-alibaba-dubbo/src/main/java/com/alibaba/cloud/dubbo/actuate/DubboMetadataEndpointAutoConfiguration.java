@@ -20,25 +20,26 @@ import org.springframework.boot.actuate.autoconfigure.endpoint.condition.Conditi
 import org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import com.alibaba.cloud.dubbo.actuate.endpoint.DubboRestMetadataEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import com.alibaba.cloud.dubbo.actuate.endpoint.DubboRestMetadataEndpoint;
+
 /**
  * Dubbo Metadata Endpoints Auto-{@link Configuration}
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
 @PropertySource(value = "classpath:/META-INF/dubbo/default/actuator-endpoints.properties")
 @ManagementContextConfiguration
 public class DubboMetadataEndpointAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnEnabledEndpoint
-    public DubboRestMetadataEndpoint dubboRestMetadataEndpoint() {
-        return new DubboRestMetadataEndpoint();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnEnabledEndpoint
+	public DubboRestMetadataEndpoint dubboRestMetadataEndpoint() {
+		return new DubboRestMetadataEndpoint();
+	}
 }
-
-

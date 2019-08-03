@@ -16,17 +16,19 @@
  */
 package com.alibaba.cloud.dubbo.client.loadbalancer;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.dubbo.rpc.service.GenericException;
-import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
-import com.alibaba.cloud.dubbo.http.util.HttpMessageConverterResolver;
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
 
-import java.io.IOException;
-import java.util.List;
+import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
+import com.alibaba.cloud.dubbo.http.util.HttpMessageConverterResolver;
+import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 
 /**
  * Dubbo {@link ClientHttpResponse} Factory
@@ -35,29 +37,33 @@ import java.util.List;
  */
 class DubboClientHttpResponseFactory {
 
-    private final HttpMessageConverterResolver httpMessageConverterResolver;
+	private final HttpMessageConverterResolver httpMessageConverterResolver;
 
-    public DubboClientHttpResponseFactory(List<HttpMessageConverter<?>> messageConverters, ClassLoader classLoader) {
-        this.httpMessageConverterResolver = new HttpMessageConverterResolver(messageConverters, classLoader);
-    }
+	public DubboClientHttpResponseFactory(List<HttpMessageConverter<?>> messageConverters,
+			ClassLoader classLoader) {
+		this.httpMessageConverterResolver = new HttpMessageConverterResolver(
+				messageConverters, classLoader);
+	}
 
-    public ClientHttpResponse build(Object result, GenericException exception,
-                                    RequestMetadata requestMetadata, RestMethodMetadata restMethodMetadata) {
+	public ClientHttpResponse build(Object result, GenericException exception,
+			RequestMetadata requestMetadata, RestMethodMetadata restMethodMetadata) {
 
-        DubboHttpOutputMessage httpOutputMessage = new DubboHttpOutputMessage();
+		DubboHttpOutputMessage httpOutputMessage = new DubboHttpOutputMessage();
 
-        HttpMessageConverterHolder httpMessageConverterHolder = httpMessageConverterResolver.resolve(requestMetadata, restMethodMetadata);
+		HttpMessageConverterHolder httpMessageConverterHolder = httpMessageConverterResolver
+				.resolve(requestMetadata, restMethodMetadata);
 
-        if (httpMessageConverterHolder != null) {
-            MediaType mediaType = httpMessageConverterHolder.getMediaType();
-            HttpMessageConverter converter = httpMessageConverterHolder.getConverter();
-            try {
-                converter.write(result, mediaType, httpOutputMessage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+		if (httpMessageConverterHolder != null) {
+			MediaType mediaType = httpMessageConverterHolder.getMediaType();
+			HttpMessageConverter converter = httpMessageConverterHolder.getConverter();
+			try {
+				converter.write(result, mediaType, httpOutputMessage);
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
-        return new DubboClientHttpResponse(httpOutputMessage, exception);
-    }
+		return new DubboClientHttpResponse(httpOutputMessage, exception);
+	}
 }

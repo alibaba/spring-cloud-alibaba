@@ -19,12 +19,13 @@ package com.alibaba.cloud.dubbo.registry;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstanceRegisteredEvent;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstanceRegisteredEvent;
 
 /**
  * Dubbo Service Registration Event-Publishing Aspect
@@ -34,28 +35,31 @@ import org.springframework.context.ApplicationEventPublisherAware;
  * @see ServiceInstanceRegisteredEvent
  */
 @Aspect
-public class DubboServiceRegistrationEventPublishingAspect implements ApplicationEventPublisherAware {
+public class DubboServiceRegistrationEventPublishingAspect
+		implements ApplicationEventPublisherAware {
 
-    /**
-     * The pointcut expression for {@link ServiceRegistry#register(Registration)}
-     */
-    public static final String REGISTER_POINTCUT_EXPRESSION =
-            "execution(* org.springframework.cloud.client.serviceregistry.ServiceRegistry.register(*)) && args(registration)";
+	/**
+	 * The pointcut expression for {@link ServiceRegistry#register(Registration)}
+	 */
+	public static final String REGISTER_POINTCUT_EXPRESSION = "execution(* org.springframework.cloud.client.serviceregistry.ServiceRegistry.register(*)) && args(registration)";
 
-    private ApplicationEventPublisher applicationEventPublisher;
+	private ApplicationEventPublisher applicationEventPublisher;
 
-    @Before(REGISTER_POINTCUT_EXPRESSION)
-    public void beforeRegister(Registration registration) {
-        applicationEventPublisher.publishEvent(new ServiceInstancePreRegisteredEvent(registration));
-    }
+	@Before(REGISTER_POINTCUT_EXPRESSION)
+	public void beforeRegister(Registration registration) {
+		applicationEventPublisher
+				.publishEvent(new ServiceInstancePreRegisteredEvent(registration));
+	}
 
-    @After(REGISTER_POINTCUT_EXPRESSION)
-    public void afterRegister(Registration registration) {
-        applicationEventPublisher.publishEvent(new ServiceInstanceRegisteredEvent(registration));
-    }
+	@After(REGISTER_POINTCUT_EXPRESSION)
+	public void afterRegister(Registration registration) {
+		applicationEventPublisher
+				.publishEvent(new ServiceInstanceRegisteredEvent(registration));
+	}
 
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
+	@Override
+	public void setApplicationEventPublisher(
+			ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 }

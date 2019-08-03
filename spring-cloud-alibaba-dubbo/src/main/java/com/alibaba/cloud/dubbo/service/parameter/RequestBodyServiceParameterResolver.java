@@ -16,102 +16,112 @@
  */
 package com.alibaba.cloud.dubbo.service.parameter;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Objects;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+
 import com.alibaba.cloud.dubbo.http.HttpServerRequest;
 import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
 import com.alibaba.cloud.dubbo.http.util.HttpMessageConverterResolver;
 import com.alibaba.cloud.dubbo.metadata.MethodParameterMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Objects;
 
 /**
  * HTTP Request Body {@link DubboGenericServiceParameterResolver}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class RequestBodyServiceParameterResolver extends AbstractDubboGenericServiceParameterResolver {
+public class RequestBodyServiceParameterResolver
+		extends AbstractDubboGenericServiceParameterResolver {
 
-    public static final int DEFAULT_ORDER = 7;
+	public static final int DEFAULT_ORDER = 7;
 
-    @Autowired
-    private ObjectProvider<HttpMessageConverters> httpMessageConverters;
+	@Autowired
+	private ObjectProvider<HttpMessageConverters> httpMessageConverters;
 
-    private HttpMessageConverterResolver httpMessageConverterResolver;
+	private HttpMessageConverterResolver httpMessageConverterResolver;
 
-    public RequestBodyServiceParameterResolver() {
-        super();
-        setOrder(DEFAULT_ORDER);
-    }
+	public RequestBodyServiceParameterResolver() {
+		super();
+		setOrder(DEFAULT_ORDER);
+	}
 
-    @PostConstruct
-    public void init() {
-        HttpMessageConverters httpMessageConverters = this.httpMessageConverters.getIfAvailable();
+	@PostConstruct
+	public void init() {
+		HttpMessageConverters httpMessageConverters = this.httpMessageConverters
+				.getIfAvailable();
 
-        httpMessageConverterResolver = new HttpMessageConverterResolver(httpMessageConverters == null ?
-                Collections.emptyList() : httpMessageConverters.getConverters(),
-                getClassLoader());
-    }
+		httpMessageConverterResolver = new HttpMessageConverterResolver(
+				httpMessageConverters == null ? Collections.emptyList()
+						: httpMessageConverters.getConverters(),
+				getClassLoader());
+	}
 
-    private boolean supportParameter(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata) {
+	private boolean supportParameter(RestMethodMetadata restMethodMetadata,
+			MethodParameterMetadata methodParameterMetadata) {
 
-        Integer index = methodParameterMetadata.getIndex();
+		Integer index = methodParameterMetadata.getIndex();
 
-        Integer bodyIndex = restMethodMetadata.getBodyIndex();
+		Integer bodyIndex = restMethodMetadata.getBodyIndex();
 
-        if (!Objects.equals(index, bodyIndex)) {
-            return false;
-        }
+		if (!Objects.equals(index, bodyIndex)) {
+			return false;
+		}
 
-        Class<?> parameterType = resolveClass(methodParameterMetadata.getType());
+		Class<?> parameterType = resolveClass(methodParameterMetadata.getType());
 
-        Class<?> bodyType = resolveClass(restMethodMetadata.getBodyType());
+		Class<?> bodyType = resolveClass(restMethodMetadata.getBodyType());
 
-        return Objects.equals(parameterType, bodyType);
-    }
+		return Objects.equals(parameterType, bodyType);
+	}
 
-    @Override
-    public Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
-                          HttpServerRequest request) {
+	@Override
+	public Object resolve(RestMethodMetadata restMethodMetadata,
+			MethodParameterMetadata methodParameterMetadata, HttpServerRequest request) {
 
-        if (!supportParameter(restMethodMetadata, methodParameterMetadata)) {
-            return null;
-        }
+		if (!supportParameter(restMethodMetadata, methodParameterMetadata)) {
+			return null;
+		}
 
-        Object result = null;
+		Object result = null;
 
-        Class<?> parameterType = resolveClass(methodParameterMetadata.getType());
+		Class<?> parameterType = resolveClass(methodParameterMetadata.getType());
 
-        HttpMessageConverterHolder holder = httpMessageConverterResolver.resolve(request, parameterType);
+		HttpMessageConverterHolder holder = httpMessageConverterResolver.resolve(request,
+				parameterType);
 
-        if (holder != null) {
-            HttpMessageConverter converter = holder.getConverter();
-            try {
-                result = converter.read(parameterType, request);
-            } catch (IOException e) {
-                throw new HttpMessageNotReadableException("I/O error while reading input message", e);
-            }
-        }
+		if (holder != null) {
+			HttpMessageConverter converter = holder.getConverter();
+			try {
+				result = converter.read(parameterType, request);
+			}
+			catch (IOException e) {
+				throw new HttpMessageNotReadableException(
+						"I/O error while reading input message", e);
+			}
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public Object resolve(RestMethodMetadata restMethodMetadata, MethodParameterMetadata methodParameterMetadata,
-                          RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
+	@Override
+	public Object resolve(RestMethodMetadata restMethodMetadata,
+			MethodParameterMetadata methodParameterMetadata,
+			RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
 
-        if (!supportParameter(restMethodMetadata, methodParameterMetadata)) {
-            return null;
-        }
+		if (!supportParameter(restMethodMetadata, methodParameterMetadata)) {
+			return null;
+		}
 
-        Integer clientBodyIndex = clientRestMethodMetadata.getBodyIndex();
-        return arguments[clientBodyIndex];
-    }
+		Integer clientBodyIndex = clientRestMethodMetadata.getBodyIndex();
+		return arguments[clientBodyIndex];
+	}
 }

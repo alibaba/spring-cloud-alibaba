@@ -12,7 +12,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-    <version>0.9.1.BUILD-SNAPSHOT</version>
+    <version>2.1.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Dependencies</name>
     <description>Spring Cloud Alibaba Dependencies</description>
@@ -208,7 +208,6 @@
                 <artifactId>sentinel-api-gateway-adapter-common</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
-
 
 
             <!--Alibaba Seata-->

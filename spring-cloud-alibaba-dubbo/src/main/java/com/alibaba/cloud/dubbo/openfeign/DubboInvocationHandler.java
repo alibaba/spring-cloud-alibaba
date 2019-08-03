@@ -16,18 +16,19 @@
  */
 package com.alibaba.cloud.dubbo.openfeign;
 
-import org.apache.dubbo.rpc.service.GenericService;
-
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import org.springframework.util.ClassUtils;
+import static org.apache.dubbo.common.utils.PojoUtils.realize;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import static org.apache.dubbo.common.utils.PojoUtils.realize;
+import org.apache.dubbo.rpc.service.GenericService;
+
+import org.springframework.util.ClassUtils;
+
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
 
 /**
  * Dubbo {@link GenericService} for {@link InvocationHandler}
@@ -36,52 +37,56 @@ import static org.apache.dubbo.common.utils.PojoUtils.realize;
  */
 public class DubboInvocationHandler implements InvocationHandler {
 
-    private final Map<Method, FeignMethodMetadata> feignMethodMetadataMap;
+	private final Map<Method, FeignMethodMetadata> feignMethodMetadataMap;
 
-    private final InvocationHandler defaultInvocationHandler;
+	private final InvocationHandler defaultInvocationHandler;
 
-    private final DubboGenericServiceExecutionContextFactory contextFactory;
+	private final DubboGenericServiceExecutionContextFactory contextFactory;
 
-    private final ClassLoader classLoader;
+	private final ClassLoader classLoader;
 
-    public DubboInvocationHandler(Map<Method, FeignMethodMetadata> feignMethodMetadataMap,
-                                  InvocationHandler defaultInvocationHandler,
-                                  ClassLoader classLoader,
-                                  DubboGenericServiceExecutionContextFactory contextFactory) {
-        this.feignMethodMetadataMap = feignMethodMetadataMap;
-        this.defaultInvocationHandler = defaultInvocationHandler;
-        this.classLoader = classLoader;
-        this.contextFactory = contextFactory;
-    }
+	public DubboInvocationHandler(Map<Method, FeignMethodMetadata> feignMethodMetadataMap,
+			InvocationHandler defaultInvocationHandler, ClassLoader classLoader,
+			DubboGenericServiceExecutionContextFactory contextFactory) {
+		this.feignMethodMetadataMap = feignMethodMetadataMap;
+		this.defaultInvocationHandler = defaultInvocationHandler;
+		this.classLoader = classLoader;
+		this.contextFactory = contextFactory;
+	}
 
-    @Override
-    public Object invoke(Object proxy, Method feignMethod, Object[] args) throws Throwable {
+	@Override
+	public Object invoke(Object proxy, Method feignMethod, Object[] args)
+			throws Throwable {
 
-        FeignMethodMetadata feignMethodMetadata = feignMethodMetadataMap.get(feignMethod);
+		FeignMethodMetadata feignMethodMetadata = feignMethodMetadataMap.get(feignMethod);
 
-        if (feignMethodMetadata == null) {
-            return defaultInvocationHandler.invoke(proxy, feignMethod, args);
-        }
+		if (feignMethodMetadata == null) {
+			return defaultInvocationHandler.invoke(proxy, feignMethod, args);
+		}
 
-        GenericService dubboGenericService = feignMethodMetadata.getDubboGenericService();
-        RestMethodMetadata dubboRestMethodMetadata = feignMethodMetadata.getDubboRestMethodMetadata();
-        RestMethodMetadata feignRestMethodMetadata = feignMethodMetadata.getFeignMethodMetadata();
+		GenericService dubboGenericService = feignMethodMetadata.getDubboGenericService();
+		RestMethodMetadata dubboRestMethodMetadata = feignMethodMetadata
+				.getDubboRestMethodMetadata();
+		RestMethodMetadata feignRestMethodMetadata = feignMethodMetadata
+				.getFeignMethodMetadata();
 
-        DubboGenericServiceExecutionContext context = contextFactory.create(dubboRestMethodMetadata, feignRestMethodMetadata, args);
+		DubboGenericServiceExecutionContext context = contextFactory
+				.create(dubboRestMethodMetadata, feignRestMethodMetadata, args);
 
-        String methodName = context.getMethodName();
-        String[] parameterTypes = context.getParameterTypes();
-        Object[] parameters = context.getParameters();
+		String methodName = context.getMethodName();
+		String[] parameterTypes = context.getParameterTypes();
+		Object[] parameters = context.getParameters();
 
-        Object result = dubboGenericService.$invoke(methodName, parameterTypes, parameters);
+		Object result = dubboGenericService.$invoke(methodName, parameterTypes,
+				parameters);
 
-        Class<?> returnType = getReturnType(dubboRestMethodMetadata);
+		Class<?> returnType = getReturnType(dubboRestMethodMetadata);
 
-        return realize(result, returnType);
-    }
+		return realize(result, returnType);
+	}
 
-    private Class<?> getReturnType(RestMethodMetadata dubboRestMethodMetadata) {
-        String returnType = dubboRestMethodMetadata.getReturnType();
-        return ClassUtils.resolveClassName(returnType, classLoader);
-    }
+	private Class<?> getReturnType(RestMethodMetadata dubboRestMethodMetadata) {
+		String returnType = dubboRestMethodMetadata.getReturnType();
+		return ClassUtils.resolveClassName(returnType, classLoader);
+	}
 }
