@@ -16,9 +16,9 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-
 import static com.alibaba.cloud.dubbo.http.util.HttpUtils.toNameAndValues;
+
+import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
 
 /**
  * {@link RequestMetadata} {@link HttpRequestMatcher} implementation
@@ -27,20 +27,21 @@ import static com.alibaba.cloud.dubbo.http.util.HttpUtils.toNameAndValues;
  */
 public class RequestMetadataMatcher extends CompositeHttpRequestMatcher {
 
-    public RequestMetadataMatcher(RequestMetadata metadata) {
-        super(
-                // method
-                new HttpRequestMethodsMatcher(metadata.getMethod()),
-                // url
-                new HttpRequestPathMatcher(metadata.getPath()),
-                // params
-                new HttpRequestParamsMatcher(toNameAndValues(metadata.getParams())),
-                // headers
-                new HttpRequestHeadersMatcher(toNameAndValues(metadata.getHeaders())),
-                // consumes
-                new HttpRequestConsumersMatcher(metadata.getConsumes().toArray(new String[0])),
-                // produces
-                new HttpRequestProducesMatcher(metadata.getProduces().toArray(new String[0]))
-        );
-    }
+	public RequestMetadataMatcher(RequestMetadata metadata) {
+		super(
+				// method
+				new HttpRequestMethodsMatcher(metadata.getMethod()),
+				// url
+				new HttpRequestPathMatcher(metadata.getPath()),
+				// params
+				new HttpRequestParamsMatcher(toNameAndValues(metadata.getParams())),
+				// headers
+				new HttpRequestHeadersMatcher(toNameAndValues(metadata.getHeaders())),
+				// consumes
+				new HttpRequestConsumersMatcher(
+						metadata.getConsumes().toArray(new String[0])),
+				// produces
+				new HttpRequestProducesMatcher(
+						metadata.getProduces().toArray(new String[0])));
+	}
 }

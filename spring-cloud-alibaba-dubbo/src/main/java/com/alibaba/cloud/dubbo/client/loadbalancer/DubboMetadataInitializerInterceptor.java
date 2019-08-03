@@ -16,39 +16,42 @@
  */
 package com.alibaba.cloud.dubbo.client.loadbalancer;
 
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import java.io.IOException;
+import java.net.URI;
+
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-import java.io.IOException;
-import java.net.URI;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 
 /**
- * Dubbo Metadata {@link ClientHttpRequestInterceptor} Initializing Interceptor executes intercept before
- * {@link DubboTransporterInterceptor}
+ * Dubbo Metadata {@link ClientHttpRequestInterceptor} Initializing Interceptor executes
+ * intercept before {@link DubboTransporterInterceptor}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class DubboMetadataInitializerInterceptor implements ClientHttpRequestInterceptor {
 
-    private final DubboServiceMetadataRepository repository;
+	private final DubboServiceMetadataRepository repository;
 
-    public DubboMetadataInitializerInterceptor(DubboServiceMetadataRepository repository) {
-        this.repository = repository;
-    }
+	public DubboMetadataInitializerInterceptor(
+			DubboServiceMetadataRepository repository) {
+		this.repository = repository;
+	}
 
-    @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+	@Override
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+			ClientHttpRequestExecution execution) throws IOException {
 
-        URI originalUri = request.getURI();
+		URI originalUri = request.getURI();
 
-        String serviceName = originalUri.getHost();
+		String serviceName = originalUri.getHost();
 
-        repository.initialize(serviceName);
+		repository.initializeMetadata(serviceName);
 
-        // Execute next
-        return execution.execute(request, body);
-    }
+		// Execute next
+		return execution.execute(request, body);
+	}
 }

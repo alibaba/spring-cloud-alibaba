@@ -26,20 +26,21 @@ import org.springframework.http.converter.HttpMessageConverter;
  */
 public class HttpMessageConverterHolder {
 
-    private final MediaType mediaType;
+	private final MediaType mediaType;
 
-    private final HttpMessageConverter<?> converter;
+	private final HttpMessageConverter<?> converter;
 
-    public HttpMessageConverterHolder(MediaType mediaType, HttpMessageConverter<?> converter) {
-        this.mediaType = mediaType;
-        this.converter = converter;
-    }
+	public HttpMessageConverterHolder(MediaType mediaType,
+			HttpMessageConverter<?> converter) {
+		this.mediaType = mediaType;
+		this.converter = converter;
+	}
 
-    public MediaType getMediaType() {
-        return mediaType;
-    }
+	public MediaType getMediaType() {
+		return mediaType;
+	}
 
-    public HttpMessageConverter<?> getConverter() {
-        return converter;
-    }
+	public HttpMessageConverter<?> getConverter() {
+		return converter;
+	}
 }

@@ -16,24 +16,23 @@
  */
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-import com.alibaba.cloud.dubbo.service.parameter.PathVariableServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestBodyServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestHeaderServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestParamServiceParameterResolver;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
+
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import com.alibaba.cloud.dubbo.service.parameter.PathVariableServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestBodyServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestHeaderServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestParamServiceParameterResolver;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Service
@@ -44,32 +43,30 @@ import org.springframework.core.env.PropertyResolver;
 @EnableConfigurationProperties(DubboCloudProperties.class)
 public class DubboServiceAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DubboGenericServiceFactory dubboGenericServiceFactory() {
-        return new DubboGenericServiceFactory();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public DubboGenericServiceFactory dubboGenericServiceFactory() {
+		return new DubboGenericServiceFactory();
+	}
 
-    @Configuration
-    @Import(value = {
-            DubboGenericServiceExecutionContextFactory.class,
-            RequestParamServiceParameterResolver.class,
-            RequestBodyServiceParameterResolver.class,
-            RequestHeaderServiceParameterResolver.class,
-            PathVariableServiceParameterResolver.class
-    })
-    static class ParameterResolversConfiguration {
-    }
+	/**
+	 * Build a primary {@link PropertyResolver} bean to {@link Autowired @Autowired}
+	 *
+	 * @param environment {@link Environment}
+	 * @return alias bean for {@link Environment}
+	 */
+	@Bean
+	@Primary
+	public PropertyResolver primaryPropertyResolver(Environment environment) {
+		return environment;
+	}
 
-    /**
-     * Build a primary {@link PropertyResolver} bean to {@link Autowired @Autowired}
-     *
-     * @param environment {@link Environment}
-     * @return alias bean for {@link Environment}
-     */
-    @Bean
-    @Primary
-    public PropertyResolver primaryPropertyResolver(Environment environment) {
-        return environment;
-    }
+	@Configuration
+	@Import(value = { DubboGenericServiceExecutionContextFactory.class,
+			RequestParamServiceParameterResolver.class,
+			RequestBodyServiceParameterResolver.class,
+			RequestHeaderServiceParameterResolver.class,
+			PathVariableServiceParameterResolver.class })
+	static class ParameterResolversConfiguration {
+	}
 }
