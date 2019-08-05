@@ -51,7 +51,7 @@ public class GlobalTransactionAutoConfiguration {
 		String txServiceGroup = seataProperties.getTxServiceGroup();
 
 		if (StringUtils.isEmpty(txServiceGroup)) {
-			txServiceGroup = applicationName + "-fescar-service-group";
+			txServiceGroup = applicationName + "-seata-service-group";
 			seataProperties.setTxServiceGroup(txServiceGroup);
 		}
 

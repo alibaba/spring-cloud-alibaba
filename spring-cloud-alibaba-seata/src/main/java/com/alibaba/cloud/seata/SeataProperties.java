@@ -24,10 +24,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.cloud.alibaba.seata")
 public class SeataProperties {
 
-	// todo support config Fescar server information
+	// todo support config Seata server information
 
 	/**
-	 * Seata tx service group.default is ${spring.application.name}-fescar-service-group.
+	 * Seata tx service group.default is ${spring.application.name}-seata-service-group.
 	 */
 	private String txServiceGroup;
 
