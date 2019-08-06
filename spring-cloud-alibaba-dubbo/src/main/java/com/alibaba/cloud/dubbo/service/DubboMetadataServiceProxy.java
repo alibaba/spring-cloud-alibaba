@@ -52,6 +52,14 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 				name -> newProxy(name, version));
 	}
 
+    /**
+     * Remove {@link DubboMetadataService}'s Proxy by service name
+     * @param serviceName the service name
+     */
+	public void removeProxy(String serviceName) {
+		dubboMetadataServiceCache.remove(serviceName);
+	}
+
 	/**
 	 * Get a proxy instance of {@link DubboMetadataService} via the specified service name
 	 *
