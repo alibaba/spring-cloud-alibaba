@@ -85,25 +85,25 @@ public class NacosConfigProperties {
 	 */
 	private int timeout = 3000;
 
-    /**
-     * nacos maximum number of tolerable server reconnection errors
-     */
-    private String maxRetry;
+	/**
+	* nacos maximum number of tolerable server reconnection errors
+	*/
+	private String maxRetry;
 
-    /**
-     * nacos get config long poll timeout
-     */
-    private String configLongPollTimeout;
+	/**
+	* nacos get config long poll timeout
+	*/
+	private String configLongPollTimeout;
 
-    /**
-     * nacos get config failure retry time
-     */
-    private String configRetryTime;
+	/**
+	* nacos get config failure retry time
+	*/
+	private String configRetryTime;
 
-    /**
-     * nacos enable add a listener when the configuration is obtained
-     */
-    private boolean enableRemoteSyncConfig = false;
+	/**
+	* nacos enable add a listener when the configuration is obtained
+	*/
+	private boolean enableRemoteSyncConfig = false;
 
 	/**
 	 * endpoint for Nacos, the domain name of a service, through which the server address
@@ -201,37 +201,37 @@ public class NacosConfigProperties {
 		this.timeout = timeout;
 	}
 
-    public String getMaxRetry() {
-        return maxRetry;
-    }
+	public String getMaxRetry() {
+		return maxRetry;
+	}
 
-    public void setMaxRetry(String maxRetry) {
-        this.maxRetry = maxRetry;
-    }
+	public void setMaxRetry(String maxRetry) {
+        	this.maxRetry = maxRetry;
+	}
 
-    public String getConfigLongPollTimeout() {
-        return configLongPollTimeout;
-    }
+	public String getConfigLongPollTimeout() {
+        	return configLongPollTimeout;
+	}
 
-    public void setConfigLongPollTimeout(String configLongPollTimeout) {
-        this.configLongPollTimeout = configLongPollTimeout;
-    }
+	public void setConfigLongPollTimeout(String configLongPollTimeout) {
+        	this.configLongPollTimeout = configLongPollTimeout;
+	}
 
-    public String getConfigRetryTime() {
-        return configRetryTime;
-    }
+	public String getConfigRetryTime() {
+        	return configRetryTime;
+	}
 
-    public void setConfigRetryTime(String configRetryTime) {
-        this.configRetryTime = configRetryTime;
-    }
+	public void setConfigRetryTime(String configRetryTime) {
+        	this.configRetryTime = configRetryTime;
+	}
 
-    public Boolean getEnableRemoteSyncConfig() {
-        return enableRemoteSyncConfig;
-    }
+	public Boolean getEnableRemoteSyncConfig() {
+        	return enableRemoteSyncConfig;
+	}
 
-    public void setEnableRemoteSyncConfig(Boolean enableRemoteSyncConfig) {
-        this.enableRemoteSyncConfig = enableRemoteSyncConfig;
-    }
+	public void setEnableRemoteSyncConfig(Boolean enableRemoteSyncConfig) {
+		this.enableRemoteSyncConfig = enableRemoteSyncConfig;
+	}
 
 	public String getEndpoint() {
 		return endpoint;
@@ -387,10 +387,10 @@ public class NacosConfigProperties {
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
 		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
-        properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
-        properties.put(CONFIG_LONG_POLL_TIMEOUT, Objects.toString(this.configLongPollTimeout, ""));
-        properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
-        properties.put(ENABLE_REMOTE_SYNC_CONFIG, Objects.toString(this.enableRemoteSyncConfig, ""));
+		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
+		properties.put(CONFIG_LONG_POLL_TIMEOUT, Objects.toString(this.configLongPollTimeout, ""));
+		properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
+		properties.put(ENABLE_REMOTE_SYNC_CONFIG, Objects.toString(this.enableRemoteSyncConfig, ""));
 
 		String endpoint = Objects.toString(this.endpoint, "");
 		if (endpoint.contains(":")) {
