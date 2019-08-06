@@ -86,22 +86,22 @@ public class NacosConfigProperties {
 	private int timeout = 3000;
 
 	/**
-	* nacos maximum number of tolerable server reconnection errors
+	* nacos maximum number of tolerable server reconnection errors.
 	*/
 	private String maxRetry;
 
 	/**
-	* nacos get config long poll timeout
+	* nacos get config long poll timeout.
 	*/
 	private String configLongPollTimeout;
 
 	/**
-	* nacos get config failure retry time
+	* nacos get config failure retry time.
 	*/
 	private String configRetryTime;
 
 	/**
-	* nacos enable add a listener when the configuration is obtained
+	* nacos enable add a listener when the configuration is obtained.
 	*/
 	private boolean enableRemoteSyncConfig = false;
 
