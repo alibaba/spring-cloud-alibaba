@@ -101,8 +101,11 @@ public class NacosConfigProperties {
 	private String configRetryTime;
 
 	/**
-	* nacos enable add a listener when the configuration is obtained.
-	*/
+	 * If you want to pull it yourself when the program starts to get the configuration for the first time,
+	 * and the registered Listener is used for future configuration updates, you can keep the original
+	 * code unchanged, just add the system parameter: enableRemoteSyncConfig = "true" ( But there is network overhead);
+	 * therefore we recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
+	 */
 	private boolean enableRemoteSyncConfig = false;
 
 	/**
