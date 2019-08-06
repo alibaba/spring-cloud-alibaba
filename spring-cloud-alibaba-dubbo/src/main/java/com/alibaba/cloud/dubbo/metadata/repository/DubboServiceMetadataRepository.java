@@ -43,7 +43,6 @@ import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 
 import org.apache.dubbo.common.URL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -70,6 +69,7 @@ import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceExporter;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
@@ -288,6 +288,16 @@ public class DubboServiceMetadataRepository
 				// mark this service name having been initialized
 				initializedServices.add(serviceName);
 			}
+		}
+	}
+
+	/**
+	 * Remove the metadata of Dubbo Services if no there is no service instance
+	 * @param serviceName the service name
+	 */
+	public void removeInitializedService(String serviceName) {
+		synchronized (monitor) {
+			initializedServices.remove(serviceName);
 		}
 	}
 
@@ -565,7 +575,7 @@ public class DubboServiceMetadataRepository
 		if (object == null) {
 			if (logger.isWarnEnabled()) {
 				logger.warn(
-						"DubboServiceMetadata can't be found in the Spring application [%s] and %s",
+						"DubboServiceMetadata can't be found in the Spring application [{}] and {}",
 						serviceName, requestMetadata);
 			}
 		}
@@ -638,6 +648,10 @@ public class DubboServiceMetadataRepository
 		String version = dubboMetadataServiceURL.getParameter(VERSION_KEY);
 		// Initialize DubboMetadataService with right version
 		dubboMetadataConfigServiceProxy.initProxy(serviceName, version);
+	}
+
+	public void removeServiceMetadata(String serviceName) {
+		dubboRestServiceMetadataRepository.remove(serviceName);
 	}
 
 	@Override
