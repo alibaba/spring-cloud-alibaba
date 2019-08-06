@@ -75,7 +75,7 @@
         <spring-cloud-netflix.version>2.1.2.RELEASE</spring-cloud-netflix.version>
         <spring-cloud-openfeign.version>2.1.2.RELEASE</spring-cloud-openfeign.version>
         <spring-cloud-bus.version>2.1.2.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.1.2.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-gateway.version>2.1.3.RELEASE</spring-cloud-gateway.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
