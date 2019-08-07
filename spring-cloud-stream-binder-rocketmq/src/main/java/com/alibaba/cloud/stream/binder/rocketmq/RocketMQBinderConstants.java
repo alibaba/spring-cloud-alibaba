@@ -16,21 +16,29 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
+import static org.apache.rocketmq.spring.support.RocketMQHeaders.PREFIX;
+
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author <a href="mailto:jiashuai.xie01@gmail.com">Xiejiashuai</a>
  */
 public interface RocketMQBinderConstants {
 
-	/**
-	 * Header key
-	 */
-	String ROCKET_TRANSACTIONAL_ARG = "TRANSACTIONAL_ARG";
+    /**
+     * Header key
+     */
+    String ROCKET_TRANSACTIONAL_ARG = "TRANSACTIONAL_ARG";
 
-	/**
-	 * Default value
-	 */
-	String DEFAULT_NAME_SERVER = "127.0.0.1:9876";
+    /**
+     * Default value
+     */
+    String DEFAULT_NAME_SERVER = "127.0.0.1:9876";
 
-	String DEFAULT_GROUP = "rocketmq_binder_default_group_name";
+    String DEFAULT_GROUP = PREFIX + "binder_default_group_name";
+
+    /**
+     * RocketMQ re-consume times
+     */
+    String ROCKETMQ_RECONSUME_TIMES = PREFIX + "RECONSUME_TIMES";
 
 }
