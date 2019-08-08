@@ -15,7 +15,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 ## 主要功能
 
-* **服务限流降级**：默认支持 Servlet、Feign、RestTemplate、Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
+* **服务限流降级**：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
 * **服务注册与发现**：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。
 * **分布式配置管理**：支持分布式系统中的外部化配置，配置更改时自动刷新。
 * **消息驱动能力**：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。
@@ -51,7 +51,8 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 ## 如何构建
 
-* master 分支对应的是 Spring Cloud Finchley，最低支持 JDK 1.8。
+* master 分支对应的是 Spring Cloud Greenwich，最低支持 JDK 1.8。
+* finchley 分支对应的是 Spring Cloud Finchley，最低支持 JDK 1.8。
 * 1.x 分支对应的是 Spring Cloud Edgware，最低支持 JDK 1.7。
 
 Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone 到本地，然后执行以下命令：
@@ -63,8 +64,6 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 ## 如何使用
 
 ### 如何引入依赖
-项目的最新版本是 0.2.1.RELEASE 和 0.1.1.RELEASE，版本 0.2.1.RELEASE 对应的是 Spring Cloud Finchley 版本，版本 0.1.1.RELEASE 对应的是 Spring Cloud Edgware 版本。
-注意：如果默认不配置 Spring Cloud 版本，则对应的 Spring Boot 2.0.x 版本
 
 如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
 
@@ -81,19 +80,6 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
     </dependencyManagement>
 
 然后在 `dependencies` 中添加自己所需使用的依赖即可使用。
-
-如果您想体验最新的 BUILD-SNAPSHOT 的新功能，则可以将版本换成最新的版本，但是需要在 pom.xml 中配置 Spring BUILDSNAPSHOT 仓库，**注意: SNAPSHOT 版本随时可能更新**
-
-	<repositories>
-        <repository>
-            <id>spring-snapshot</id>
-            <name>Spring Snapshot Repository</name>
-            <url>https://repo.spring.io/snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
 ## 演示 Demo
 
@@ -120,15 +106,14 @@ Example 列表：
 [Alibaba Cloud SchedulerX Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/schedulerx-example/schedulerx-simple-task-example/readme-zh.md)
 
 ## 版本管理规范
+
 项目的版本号格式为 x.x.x 的形式，其中 x 的数值类型为数字，从 0 开始取值，且不限于 0~9 这个范围。项目处于孵化器阶段时，第一位版本号固定使用 0，即版本号为 0.x.x 的格式。
 
-由于 Spring Boot 1 和 Spring Boot 2 在 Actuator 模块的接口和注解有很大的变更，且 spring-cloud-commons 从 1.x.x 版本升级到 2.0.0 版本也有较大的变更，因此我们使用了两个不同分支来分别支持 Spring Boot 1 和 Spring Boot 2:
-* 0.1.x 版本适用于 Spring Boot 1
-* 0.2.x 版本适用于 Spring Boot 2
+由于 Spring Boot 1 和 Spring Boot 2 在 Actuator 模块的接口和注解有很大的变更，且 spring-cloud-commons 从 1.x.x 版本升级到 2.0.0 版本也有较大的变更，因此我们采取跟 SpringBoot 版本号一致的版本:
 
-项目孵化阶段，项目版本升级机制如下：
-* 功能改动的升级会增加第三位版本号的数值，例如 0.1.0 的下一个版本为0.1.1。
-
+* 1.5.x 版本适用于 Spring Boot 1.5.x
+* 2.0.x 版本适用于 Spring Boot 2.0.x
+* 2.1.x 版本适用于 Spring Boot 2.1.x
 
 
 ## 社区交流
