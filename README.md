@@ -51,8 +51,9 @@ For more features please refer to [Roadmap](https://github.com/alibaba/spring-cl
 
 ## How to build
 
-* **master branch**: Corresponds to Spring Boot 2.x. JDK 1.8 or later versions are supported.
-* **1.x branch**: Corresponds to Spring Boot 1.x, JDK 1.7 or later versions are supported.
+* **master branch**: Corresponds to Spring Cloud Greenwich & Spring Boot 2.x. JDK 1.8 or later versions are supported.
+* **finchley branch**: Corresponds to Spring Cloud Finchley & Spring Boot 2.x. JDK 1.8 or later versions are supported.
+* **1.x branch**: Corresponds to Spring Cloud Edgware & Spring Boot 1.x, JDK 1.7 or later versions are supported.
 
 Spring Cloud uses Maven for most build-related activities, and you should be able to get off the ground quite quickly by cloning the project you are interested in and typing:
 
@@ -62,7 +63,6 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 ## How to Use
 
 ### Add maven dependency 
-Version 0.2.1.RELEASE is compatible with the Spring Cloud Finchley. Version 0.1.1.RELEASE is compatible with the Spring Cloud Edgware.
 
 These artifacts are available from Maven Central and Spring Release repository via BOM:
 
@@ -79,19 +79,6 @@ These artifacts are available from Maven Central and Spring Release repository v
     </dependencyManagement>
 
 add the module in  `dependencies`.
-
-If you want to use the latest BUILD-SNAPSHOT version, add `Spring Snapshot Repository` in  pom.xml , **Attention: BUILD-SNAPSHOT may be updated in any time**
-
-	<repositories>
-        <repository>
-            <id>spring-snapshot</id>
-            <name>Spring Snapshot Repository</name>
-            <url>https://repo.spring.io/snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
 
 ### Reference Doc
@@ -126,13 +113,11 @@ Examples：
 ## Version control guidelines
 The version number of the project is in the form of x.x.x, where x is a number, starting from 0, and is not limited to the range 0~9. When the project is in the incubator phase, the version number is 0.x.x.
 
-As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been changed significantly in the Actuator module, and spring-cloud-commons is also changed quite a lot from 1.x.x to 2.0.0, we maintain two different branches to support Spring Boot 1 and Spring Boot 2:
-* 0.1.x for Spring Boot 1
-* 0.2.x for Spring Boot 2
+As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been changed significantly in the Actuator module, and spring-cloud-commons is also changed quite a lot from 1.x.x to 2.0.0, we take the same version rule as SpringBoot version number.
 
-During the incubation period, the version management of the project will follow these rules：
-* Functional updates will be reflected in the 3rd number of the version, for example, the next version of 0.1.0 will be 0.1.1.
-
+* 1.5.x for Spring Boot 1.5.x
+* 2.0.x for Spring Boot 2.0.x
+* 2.1.x for Spring Boot 2.1.x
 
 ## Code of Conduct
 This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
