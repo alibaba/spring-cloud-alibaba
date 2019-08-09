@@ -119,7 +119,7 @@ application.properties
 [source,properties,indent=0]
 ----
 server.port=8081
-spring.application.name=nacos-producer
+spring.application.name=nacos-provider
 spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
 management.endpoints.web.exposure.include=*
 ----
@@ -135,7 +135,7 @@ NOTE: 如果不想使用 Nacos 作为您的服务注册与发现，可以将 `sp
 public class NacosProviderDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NacosProducerDemoApplication.class, args);
+        SpringApplication.run(NacosProviderDemoApplication.class, args);
     }
 
     @RestController
@@ -177,7 +177,7 @@ public class NacosConsumerApp {
 
         @GetMapping("/echo/app-name")
         public String echoAppName(){
-            //使用 LoadBalanceClient 和 RestTemolate 结合的方式来访问
+            //使用 LoadBalanceClient 和 RestTemplate 结合的方式来访问
             ServiceInstance serviceInstance = loadBalancerClient.choose("nacos-provider");
             String url = String.format("http://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
             System.out.println("request url:"+url);
@@ -261,7 +261,7 @@ Endpoint 暴露的 json 中包含了两种属性:
       "lastRefTime": 1541755293119,
       "checksum": "e5a699c9201f5328241c178e804657e11541755293119",
       "allIPs": false,
-      "key": "nacos-producer",
+      "key": "nacos-provider",
       "valid": true
     }
   ],
@@ -306,7 +306,7 @@ Endpoint 暴露的 json 中包含了两种属性:
 |SecretKey|`spring.cloud.nacos.discovery.secret-key`||当要上阿里云时，阿里云上面的一个云账号密码
 |Metadata|`spring.cloud.nacos.discovery.metadata`||使用Map格式配置，用户可以根据自己的需要自定义一些和服务相关的元数据信息
 |日志文件名|`spring.cloud.nacos.discovery.log-name`||
-|集群|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|配置成Nacos集群名称
+|集群|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|Nacos集群名称
 |接入点|`spring.cloud.nacos.discovery.endpoint`||地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 |是否集成Ribbon|`ribbon.nacos.enabled`|`true`|一般都设置成true即可
 |是否开启Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|可以设置成false来关闭 watch
