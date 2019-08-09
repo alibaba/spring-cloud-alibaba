@@ -119,7 +119,7 @@ application.properties
 [source,properties]
 ----
 server.port=8081
-spring.application.name=nacos-producer
+spring.application.name=nacos-provider
 spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
 management.endpoints.web.exposure.include=*
 ----
@@ -135,7 +135,7 @@ NOTE: If you do not want to use Nacos for service registration and discovery, yo
 public class NacosProviderDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NacosProducerDemoApplication.class, args);
+        SpringApplication.run(NacosProviderDemoApplication.class, args);
     }
 
     @RestController
@@ -179,7 +179,7 @@ public class NacosConsumerApp {
 
         @GetMapping("/echo/app-name")
         public String echoAppName(){
-            //Access through the combination of LoadBalanceClient and RestTemolate
+            //Access through the combination of LoadBalanceClient and RestTemplate
             ServiceInstance serviceInstance = loadBalancerClient.choose("nacos-provider");
             String path = String.format("http://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
             System.out.println("request path:" +path);
@@ -264,7 +264,7 @@ The followings shows how a service instance accesses the Endpoint:
       "lastRefTime": 1541755293119,
       "checksum": "e5a699c9201f5328241c178e804657e11541755293119",
       "allIPs": false,
-      "key": "nacos-producer",
+      "key": "nacos-provider",
       "valid": true
     }
   ],
@@ -309,6 +309,7 @@ The following shows the other configurations of the starter of Nacos Discovery:
 |SecretKey|`spring.cloud.nacos.discovery.secret-key`||Alibaba Cloud account secretkey
 |Metadata|`spring.cloud.nacos.discovery.metadata`||You can define some of the metadata for your services in the Map format
 |Log file name|`spring.cloud.nacos.discovery.log-name`||
+|Cluster Name|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|Cluster name of Nacos
 |Endpoint|`spring.cloud.nacos.discovery.endpoint`||The domain name of a certain service in a specific region. You can retrieve the server address dynamically with this domain name
 |Integrate Ribbon or not|`ribbon.nacos.enabled`|`true`|Set to true in most cases
 |Enable Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|set to false to close watch
