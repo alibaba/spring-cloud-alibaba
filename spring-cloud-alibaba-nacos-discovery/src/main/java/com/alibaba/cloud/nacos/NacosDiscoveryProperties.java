@@ -57,6 +57,7 @@ import com.alibaba.nacos.client.naming.utils.UtilAndComs;
  * @author dungu.zpf
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  */
 
 @ConfigurationProperties("spring.cloud.nacos.discovery")
@@ -64,8 +65,6 @@ public class NacosDiscoveryProperties {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryProperties.class);
-
-	//TODO 这里引入上层配置可否？
 	
 	/**
 	 * nacos discovery server address.

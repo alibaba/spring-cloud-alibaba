@@ -26,11 +26,6 @@ import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
 import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -46,7 +41,6 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 
 /**
  * nacos properties
@@ -54,6 +48,7 @@ import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
  * @author leijuan
  * @author xiaojing
  * @author pbting
+ * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  */
 @ConfigurationProperties(NacosConfigProperties.PREFIX)
 public class NacosConfigProperties {
@@ -63,7 +58,6 @@ public class NacosConfigProperties {
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
 
-	//TODO config这里引入上层配置可否
 	@Autowired
 	private Environment environment;
 	
