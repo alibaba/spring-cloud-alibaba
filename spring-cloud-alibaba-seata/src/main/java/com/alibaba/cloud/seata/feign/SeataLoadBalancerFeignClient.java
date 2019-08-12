@@ -53,7 +53,7 @@ public class SeataLoadBalancerFeignClient extends LoadBalancerFeignClient {
 	@Override
 	public Response execute(Request request, Request.Options options) throws IOException {
 		Request modifiedRequest = getModifyRequest(request);
-		return super.execute(request, options);
+		return super.execute(modifiedRequest, options);
 	}
 
 	private static Client wrap(Client delegate, BeanFactory beanFactory) {
@@ -71,9 +71,9 @@ public class SeataLoadBalancerFeignClient extends LoadBalancerFeignClient {
 		Map<String, Collection<String>> headers = new HashMap<>(MAP_SIZE);
 		headers.putAll(request.headers());
 
-		List<String> fescarXid = new ArrayList<>();
-		fescarXid.add(xid);
-		headers.put(RootContext.KEY_XID, fescarXid);
+		List<String> seataXid = new ArrayList<>();
+		seataXid.add(xid);
+		headers.put(RootContext.KEY_XID, seataXid);
 
 		return Request.create(request.method(), request.url(), headers, request.body(),
 				request.charset());

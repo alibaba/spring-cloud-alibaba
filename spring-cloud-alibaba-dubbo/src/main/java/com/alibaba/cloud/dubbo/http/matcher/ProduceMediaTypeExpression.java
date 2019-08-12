@@ -16,9 +16,9 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import org.springframework.http.MediaType;
-
 import java.util.List;
+
+import org.springframework.http.MediaType;
 
 /**
  * Parses and matches a single media type expression to a request's 'Accept' header.
@@ -31,25 +31,25 @@ import java.util.List;
  */
 class ProduceMediaTypeExpression extends AbstractMediaTypeExpression {
 
-    ProduceMediaTypeExpression(String expression) {
-        super(expression);
-    }
+	ProduceMediaTypeExpression(String expression) {
+		super(expression);
+	}
 
-    ProduceMediaTypeExpression(MediaType mediaType, boolean negated) {
-        super(mediaType, negated);
-    }
+	ProduceMediaTypeExpression(MediaType mediaType, boolean negated) {
+		super(mediaType, negated);
+	}
 
-    public final boolean match(List<MediaType> acceptedMediaTypes) {
-        boolean match = matchMediaType(acceptedMediaTypes);
-        return (!isNegated() ? match : !match);
-    }
+	public final boolean match(List<MediaType> acceptedMediaTypes) {
+		boolean match = matchMediaType(acceptedMediaTypes);
+		return (!isNegated() ? match : !match);
+	}
 
-    private boolean matchMediaType(List<MediaType> acceptedMediaTypes) {
-        for (MediaType acceptedMediaType : acceptedMediaTypes) {
-            if (getMediaType().isCompatibleWith(acceptedMediaType)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private boolean matchMediaType(List<MediaType> acceptedMediaTypes) {
+		for (MediaType acceptedMediaType : acceptedMediaTypes) {
+			if (getMediaType().isCompatibleWith(acceptedMediaType)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

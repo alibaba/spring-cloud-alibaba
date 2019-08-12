@@ -18,6 +18,7 @@ package com.alibaba.cloud.sentinel.gateway.scg;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.core.Ordered;
 
 import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
 import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
@@ -31,6 +32,8 @@ public class SentinelGatewayProperties {
 	@NestedConfigurationProperty
 	private FallbackProperties fallback;
 
+	private Integer order = Ordered.HIGHEST_PRECEDENCE;
+
 	public FallbackProperties getFallback() {
 		return fallback;
 	}
@@ -40,4 +43,11 @@ public class SentinelGatewayProperties {
 		return this;
 	}
 
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
 }
