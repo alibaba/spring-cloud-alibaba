@@ -65,6 +65,8 @@ public class NacosDiscoveryProperties {
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryProperties.class);
 
+	//TODO 这里引入上层配置可否？
+	
 	/**
 	 * nacos discovery server address.
 	 */
@@ -411,8 +413,11 @@ public class NacosDiscoveryProperties {
 	public void overrideFromEnv(Environment env) {
 
 		if (StringUtils.isEmpty(this.getServerAddr())) {
-			this.setServerAddr(env
-					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}"));
+			String serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
+			if(StringUtils.isEmpty(serverAddr)) {
+				serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
+			}
+			this.setServerAddr(serverAddr);
 		}
 		if (StringUtils.isEmpty(this.getNamespace())) {
 			this.setNamespace(env
