@@ -49,6 +49,10 @@ public class ConsumerApplication {
 		@RequestMapping(value = "/divide", method = RequestMethod.GET)
 		String divide(@RequestParam("a") Integer a, @RequestParam("b") Integer b);
 
+		default String divide(Integer a) {
+		    return divide(a, 0);
+        }
+
 		@RequestMapping(value = "/notFound", method = RequestMethod.GET)
 		String notFound();
 	}

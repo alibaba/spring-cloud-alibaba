@@ -18,6 +18,7 @@ package com.alibaba.alicloud.acm;
 
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -37,6 +38,7 @@ import com.taobao.diamond.client.Diamond;
  */
 @Configuration
 @ConditionalOnClass({ Diamond.class })
+@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
 public class AcmAutoConfiguration implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;

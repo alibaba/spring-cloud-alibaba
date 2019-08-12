@@ -25,6 +25,10 @@ import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
 import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
+import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_LONG_POLL_TIMEOUT;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_RETRY_TIME;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENABLE_REMOTE_SYNC_CONFIG;
 
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +57,7 @@ public class NacosConfigProperties {
 			.getLogger(NacosConfigProperties.class);
 
 	/**
-	 * nacos config server address
+	 * nacos config server address.
 	 */
 	private String serverAddr;
 
@@ -68,7 +72,7 @@ public class NacosConfigProperties {
 	private String group = "DEFAULT_GROUP";
 
 	/**
-	 * nacos config dataId prefix
+	 * nacos config dataId prefix.
 	 */
 	private String prefix;
 	/**
@@ -80,6 +84,29 @@ public class NacosConfigProperties {
 	 * timeout for get config from nacos.
 	 */
 	private int timeout = 3000;
+
+	/**
+	* nacos maximum number of tolerable server reconnection errors.
+	*/
+	private String maxRetry;
+
+	/**
+	* nacos get config long poll timeout.
+	*/
+	private String configLongPollTimeout;
+
+	/**
+	* nacos get config failure retry time.
+	*/
+	private String configRetryTime;
+
+	/**
+	 * If you want to pull it yourself when the program starts to get the configuration for the first time,
+	 * and the registered Listener is used for future configuration updates, you can keep the original
+	 * code unchanged, just add the system parameter: enableRemoteSyncConfig = "true" ( But there is network overhead);
+	 * therefore we recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
+	 */
+	private boolean enableRemoteSyncConfig = false;
 
 	/**
 	 * endpoint for Nacos, the domain name of a service, through which the server address
@@ -108,10 +135,13 @@ public class NacosConfigProperties {
 	private String contextPath;
 
 	/**
-	 * nacos config cluster name
+	 * nacos config cluster name.
 	 */
 	private String clusterName;
 
+    /**
+     * nacos config dataId name.
+     */
 	private String name;
 
 	/**
@@ -172,6 +202,38 @@ public class NacosConfigProperties {
 
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
+	}
+
+	public String getMaxRetry() {
+		return maxRetry;
+	}
+
+	public void setMaxRetry(String maxRetry) {
+        	this.maxRetry = maxRetry;
+	}
+
+	public String getConfigLongPollTimeout() {
+        	return configLongPollTimeout;
+	}
+
+	public void setConfigLongPollTimeout(String configLongPollTimeout) {
+        	this.configLongPollTimeout = configLongPollTimeout;
+	}
+
+	public String getConfigRetryTime() {
+        	return configRetryTime;
+	}
+
+	public void setConfigRetryTime(String configRetryTime) {
+        	this.configRetryTime = configRetryTime;
+	}
+
+	public Boolean getEnableRemoteSyncConfig() {
+        	return enableRemoteSyncConfig;
+	}
+
+	public void setEnableRemoteSyncConfig(Boolean enableRemoteSyncConfig) {
+		this.enableRemoteSyncConfig = enableRemoteSyncConfig;
 	}
 
 	public String getEndpoint() {
@@ -328,6 +390,10 @@ public class NacosConfigProperties {
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
 		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
+		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
+		properties.put(CONFIG_LONG_POLL_TIMEOUT, Objects.toString(this.configLongPollTimeout, ""));
+		properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
+		properties.put(ENABLE_REMOTE_SYNC_CONFIG, Objects.toString(this.enableRemoteSyncConfig, ""));
 
 		String endpoint = Objects.toString(this.endpoint, "");
 		if (endpoint.contains(":")) {

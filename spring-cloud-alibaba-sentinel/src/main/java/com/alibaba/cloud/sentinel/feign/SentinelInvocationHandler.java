@@ -94,43 +94,49 @@ public class SentinelInvocationHandler implements InvocationHandler {
 					.get(hardCodedTarget.type().getName()
 							+ Feign.configKey(hardCodedTarget.type(), method));
 			// resource default is HttpMethod:protocol://url
-			String resourceName = methodMetadata.template().method().toUpperCase() + ":"
-					+ hardCodedTarget.url() + methodMetadata.template().path();
-			Entry entry = null;
-			try {
-				ContextUtil.enter(resourceName);
-				entry = SphU.entry(resourceName, EntryType.OUT, 1, args);
+			if (methodMetadata == null) {
 				result = methodHandler.invoke(args);
 			}
-			catch (Throwable ex) {
-				// fallback handle
-				if (!BlockException.isBlockException(ex)) {
-					Tracer.trace(ex);
+			else {
+				String resourceName = methodMetadata.template().method().toUpperCase()
+						+ ":" + hardCodedTarget.url() + methodMetadata.template().path();
+				Entry entry = null;
+				try {
+					ContextUtil.enter(resourceName);
+					entry = SphU.entry(resourceName, EntryType.OUT, 1, args);
+					result = methodHandler.invoke(args);
 				}
-				if (fallbackFactory != null) {
-					try {
-						Object fallbackResult = fallbackMethodMap.get(method)
-								.invoke(fallbackFactory.create(ex), args);
-						return fallbackResult;
+				catch (Throwable ex) {
+					// fallback handle
+					if (!BlockException.isBlockException(ex)) {
+						Tracer.trace(ex);
 					}
-					catch (IllegalAccessException e) {
-						// shouldn't happen as method is public due to being an interface
-						throw new AssertionError(e);
+					if (fallbackFactory != null) {
+						try {
+							Object fallbackResult = fallbackMethodMap.get(method)
+									.invoke(fallbackFactory.create(ex), args);
+							return fallbackResult;
+						}
+						catch (IllegalAccessException e) {
+							// shouldn't happen as method is public due to being an
+							// interface
+							throw new AssertionError(e);
+						}
+						catch (InvocationTargetException e) {
+							throw new AssertionError(e.getCause());
+						}
 					}
-					catch (InvocationTargetException e) {
-						throw new AssertionError(e.getCause());
+					else {
+						// throw exception if fallbackFactory is null
+						throw ex;
 					}
 				}
-				else {
-					// throw exception if fallbackFactory is null
-					throw ex;
+				finally {
+					if (entry != null) {
+						entry.exit(1, args);
+					}
+					ContextUtil.exit();
 				}
-			}
-			finally {
-				if (entry != null) {
-					entry.exit(1, args);
-				}
-				ContextUtil.exit();
 			}
 		}
 		else {

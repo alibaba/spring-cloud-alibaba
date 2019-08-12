@@ -1,9 +1,29 @@
 package com.alibaba.cloud.dubbo.gateway;
 
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBetween;
-import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
+import org.apache.dubbo.rpc.service.GenericException;
+import org.apache.dubbo.rpc.service.GenericService;
 
+import com.alibaba.cloud.dubbo.http.MutableHttpServerRequest;
+import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
+import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.servlet.HttpServletBean;
+import org.springframework.web.util.UriComponents;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,30 +35,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.dubbo.rpc.service.GenericException;
-import org.apache.dubbo.rpc.service.GenericService;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
-import org.springframework.util.StreamUtils;
-import org.springframework.web.servlet.HttpServletBean;
-import org.springframework.web.util.UriComponents;
-
-import com.alibaba.cloud.dubbo.http.MutableHttpServerRequest;
-import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
 @WebServlet(urlPatterns = "/dsc/*")
 public class DubboGatewayServlet extends HttpServletBean {
@@ -86,7 +85,7 @@ public class DubboGatewayServlet extends HttpServletBean {
 		String restPath = substringAfter(request.getRequestURI(), serviceName);
 
 		// 初始化 serviceName 的 REST 请求元数据
-		repository.initialize(serviceName);
+		repository.initializeMetadata(serviceName);
 		// 将 HttpServletRequest 转化为 RequestMetadata
 		RequestMetadata clientMetadata = buildRequestMetadata(request, restPath);
 

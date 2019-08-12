@@ -8,7 +8,7 @@
 
 [Dubbo](http://dubbo.apache.org/)是一款高性能Java RPC框架，有对应的[SpringBoot工程](https://github.com/apache/dubbo-spring-boot-project)。
 
-本项目专注于Sentinel与Dubbo的整合，关于Sentinel的更多特性可以查看[sentinel-core-example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example)。
+本项目专注于Sentinel与Dubbo的整合，关于Sentinel的更多特性可以查看[sentinel-core-example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example)。
 
 ## 示例
 
@@ -19,7 +19,7 @@
 1. 首先，修改 pom.xml 文件，引入 Sentinel starter 和 Dubbo starter。
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
         
