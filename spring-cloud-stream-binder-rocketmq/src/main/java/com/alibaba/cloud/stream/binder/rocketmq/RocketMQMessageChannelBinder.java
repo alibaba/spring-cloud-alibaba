@@ -32,11 +32,13 @@ import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
+import org.springframework.cloud.stream.binding.MessageConverterConfigurer;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.StaticMessageHeaderAccessor;
 import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.integration.acks.AcknowledgmentCallback.Status;
+import org.springframework.integration.channel.AbstractMessageChannel;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -53,7 +55,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerPrope
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
-
+import com.alibaba.cloud.stream.binder.rocketmq.provisioning.selector.PartitionMessageQueueSelector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -87,6 +89,7 @@ public class RocketMQMessageChannelBinder extends
 	@Override
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
 			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
+														  MessageChannel channel,
 			MessageChannel errorChannel) throws Exception {
 		if (producerProperties.getExtension().getEnabled()) {
 
@@ -150,12 +153,20 @@ public class RocketMQMessageChannelBinder extends
 				producer.setMaxMessageSize(
 						producerProperties.getExtension().getMaxMessageSize());
 				rocketMQTemplate.setProducer(producer);
+				if (producerProperties.isPartitioned()) {
+					rocketMQTemplate
+							.setMessageQueueSelector(new PartitionMessageQueueSelector());
+				}
 			}
 
 			RocketMQMessageHandler messageHandler = new RocketMQMessageHandler(
 					rocketMQTemplate, destination.getName(), producerGroup,
 					producerProperties.getExtension().getTransactional(),
-					instrumentationManager);
+					instrumentationManager, producerProperties,
+					((AbstractMessageChannel) channel).getChannelInterceptors().stream()
+							.filter(channelInterceptor -> channelInterceptor instanceof MessageConverterConfigurer.PartitioningInterceptor)
+							.map(channelInterceptor -> ((MessageConverterConfigurer.PartitioningInterceptor) channelInterceptor))
+							.findFirst().orElse(null));
 			messageHandler.setBeanFactory(this.getApplicationContext().getBeanFactory());
 			messageHandler.setSync(producerProperties.getExtension().getSync());
 
@@ -168,6 +179,14 @@ public class RocketMQMessageChannelBinder extends
 			throw new RuntimeException("Binding for channel " + destination.getName()
 					+ " has been disabled, message can't be delivered");
 		}
+	}
+
+	@Override
+	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
+			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
+			MessageChannel errorChannel) throws Exception {
+		throw new UnsupportedOperationException(
+				"The abstract binder should not call this method");
 	}
 
 	@Override
