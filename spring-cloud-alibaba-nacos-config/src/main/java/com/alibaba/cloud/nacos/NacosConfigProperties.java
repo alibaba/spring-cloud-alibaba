@@ -34,9 +34,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
@@ -47,6 +52,7 @@ import com.alibaba.nacos.api.config.ConfigService;
  * @author leijuan
  * @author xiaojing
  * @author pbting
+ * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  */
 @ConfigurationProperties(NacosConfigProperties.PREFIX)
 public class NacosConfigProperties {
@@ -55,6 +61,24 @@ public class NacosConfigProperties {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
+
+	@Autowired
+	private Environment environment;
+	
+	@PostConstruct
+	public void init() {
+		this.overrideFromEnv();
+	}
+	
+	private void overrideFromEnv() {
+		if (StringUtils.isEmpty(this.getServerAddr())) {
+			String serverAddr = environment.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}");
+			if(StringUtils.isEmpty(serverAddr)) {
+				serverAddr = environment.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
+			}
+			this.setServerAddr(serverAddr);
+		}
+	}
 
 	/**
 	 * nacos config server address.
