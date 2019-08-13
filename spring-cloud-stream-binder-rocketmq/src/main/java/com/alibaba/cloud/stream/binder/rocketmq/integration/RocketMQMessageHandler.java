@@ -117,8 +117,8 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 						.fetchPublishMessageQueues(destination);
 				if (producerProperties.getPartitionCount() != messageQueues.size()) {
 					logger.info(String.format(
-							"The partition count will change from '%s' to '%s'",
-							producerProperties.getPartitionCount(),
+							"The partition count of topic '%s' will change from '%s' to '%s'",
+							destination, producerProperties.getPartitionCount(),
 							messageQueues.size()));
 					producerProperties.setPartitionCount(messageQueues.size());
 					partitioningInterceptor

@@ -181,6 +181,16 @@ public class RocketMQMessageChannelBinder extends
 		}
 	}
 
+	/**
+	 * The abstract binder should not call this method.
+	 * @param destination
+	 * @param producerProperties
+	 * @param errorChannel
+	 * @return
+	 * @throws Exception
+	 * @see RocketMQMessageChannelBinder#createProducerMessageHandler(ProducerDestination,
+	 * ExtendedProducerProperties, MessageChannel, MessageChannel)
+	 */
 	@Override
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
 			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
