@@ -1,5 +1,16 @@
 {"properties": [
     {
+      "name": "spring.cloud.nacos.server-addr",
+      "type": "java.lang.String",
+      "description": "nacos server address."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.server-addr",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.server-addr}",
+      "description": "nacos discovery server address."
+    },
+    {
       "name": "spring.cloud.nacos.discovery.service",
       "type": "java.lang.String",
       "defaultValue": "${spring.application.name}",
