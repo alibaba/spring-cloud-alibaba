@@ -408,7 +408,7 @@ public class RocketMQListenerBindingContainer
 					long now = System.currentTimeMillis();
 					rocketMQListener.onMessage(convertToSpringMessage(messageExt));
 					long costTime = System.currentTimeMillis() - now;
-					log.debug("consume {} message key:[{}] cost: {} ms",
+					log.info("consume {} message key:[{}] cost: {} ms",
 							messageExt.getMsgId(), messageExt.getKeys(), costTime);
 				}
 				catch (Exception e) {
