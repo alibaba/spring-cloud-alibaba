@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.consuming;
 
+import static com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKETMQ_RECONSUME_TIMES;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -23,12 +25,7 @@ import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.MessageSelector;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
-import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
+import org.apache.rocketmq.client.consumer.listener.*;
 import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.UtilAll;
@@ -46,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -54,7 +52,13 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigu
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 
 /**
+ * A class that Listen on rocketmq message
+ * <p>
+ * this class will delegate {@link RocketMQListener} to handle message
+ *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author <a href="mailto:jiashuai.xie01@gmail.com">Xiejiashuai</a>
+ * @see RocketMQListener
  */
 public class RocketMQListenerBindingContainer
 		implements InitializingBean, RocketMQListenerContainer, SmartLifecycle {
@@ -368,7 +372,7 @@ public class RocketMQListenerBindingContainer
 	public class DefaultMessageListenerConcurrently
 			implements MessageListenerConcurrently {
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "Duplicates" })
 		@Override
 		public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
 				ConsumeConcurrentlyContext context) {
@@ -376,10 +380,10 @@ public class RocketMQListenerBindingContainer
 				log.debug("received msg: {}", messageExt);
 				try {
 					long now = System.currentTimeMillis();
-					rocketMQListener
-							.onMessage(RocketMQUtil.convertToSpringMessage(messageExt));
+					rocketMQListener.onMessage(convertToSpringMessage(messageExt));
 					long costTime = System.currentTimeMillis() - now;
-					log.debug("consume {} cost: {} ms", messageExt.getMsgId(), costTime);
+					log.debug("consume {} message key:[{}] cost: {} ms",
+							messageExt.getMsgId(), messageExt.getKeys(), costTime);
 				}
 				catch (Exception e) {
 					log.warn("consume message failed. messageExt:{}", messageExt, e);
@@ -394,7 +398,7 @@ public class RocketMQListenerBindingContainer
 
 	public class DefaultMessageListenerOrderly implements MessageListenerOrderly {
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "Duplicates" })
 		@Override
 		public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs,
 				ConsumeOrderlyContext context) {
@@ -402,10 +406,10 @@ public class RocketMQListenerBindingContainer
 				log.debug("received msg: {}", messageExt);
 				try {
 					long now = System.currentTimeMillis();
-					rocketMQListener
-							.onMessage(RocketMQUtil.convertToSpringMessage(messageExt));
+					rocketMQListener.onMessage(convertToSpringMessage(messageExt));
 					long costTime = System.currentTimeMillis() - now;
-					log.info("consume {} cost: {} ms", messageExt.getMsgId(), costTime);
+					log.info("consume {} message key:[{}] cost: {} ms",
+							messageExt.getMsgId(), messageExt.getKeys(), costTime);
 				}
 				catch (Exception e) {
 					log.warn("consume message failed. messageExt:{}", messageExt, e);
@@ -417,6 +421,22 @@ public class RocketMQListenerBindingContainer
 
 			return ConsumeOrderlyStatus.SUCCESS;
 		}
+	}
+
+	/**
+	 * Convert rocketmq {@link MessageExt} to Spring {@link Message}
+	 *
+	 * @param messageExt the rocketmq message
+	 * @return the converted Spring {@link Message}
+	 */
+	private Message convertToSpringMessage(MessageExt messageExt) {
+
+		// add reconsume-times header to messageExt
+		int reconsumeTimes = messageExt.getReconsumeTimes();
+		messageExt.putUserProperty(ROCKETMQ_RECONSUME_TIMES,
+				String.valueOf(reconsumeTimes));
+
+		return RocketMQUtil.convertToSpringMessage(messageExt);
 	}
 
 }
