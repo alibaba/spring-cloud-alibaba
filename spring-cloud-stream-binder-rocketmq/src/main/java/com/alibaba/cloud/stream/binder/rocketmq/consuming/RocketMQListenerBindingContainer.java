@@ -178,7 +178,12 @@ public class RocketMQListenerBindingContainer
 	public void stop() {
 		if (this.isRunning()) {
 			if (Objects.nonNull(consumer)) {
-				consumer.shutdown();
+				try {
+					consumer.shutdown();
+				}
+				catch (IllegalStateException e) {
+					log.info("container stop, {}", this.toString());
+				}
 			}
 			setRunning(false);
 		}
