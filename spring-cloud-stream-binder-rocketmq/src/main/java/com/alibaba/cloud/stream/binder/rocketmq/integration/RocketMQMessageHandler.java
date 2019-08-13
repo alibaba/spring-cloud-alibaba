@@ -16,19 +16,22 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.integration;
 
-import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
-import com.alibaba.cloud.stream.binder.rocketmq.metrics.Instrumentation;
-import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.common.message.MessageConst;
+import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.binder.BinderHeaders;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
+import org.springframework.cloud.stream.binding.MessageConverterConfigurer;
 import org.springframework.context.Lifecycle;
 import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.integration.support.DefaultErrorMessageStrategy;
@@ -40,7 +43,10 @@ import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.Optional;
+import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
+import com.alibaba.cloud.stream.binder.rocketmq.metrics.Instrumentation;
+import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
+import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -68,14 +74,22 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	private volatile boolean running = false;
 
+	private ExtendedProducerProperties<RocketMQProducerProperties> producerProperties;
+
+	private MessageConverterConfigurer.PartitioningInterceptor partitioningInterceptor;
+
 	public RocketMQMessageHandler(RocketMQTemplate rocketMQTemplate, String destination,
 			String groupName, Boolean transactional,
-			InstrumentationManager instrumentationManager) {
+			InstrumentationManager instrumentationManager,
+			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
+			MessageConverterConfigurer.PartitioningInterceptor partitioningInterceptor) {
 		this.rocketMQTemplate = rocketMQTemplate;
 		this.destination = destination;
 		this.groupName = groupName;
 		this.transactional = transactional;
 		this.instrumentationManager = instrumentationManager;
+		this.producerProperties = producerProperties;
+		this.partitioningInterceptor = partitioningInterceptor;
 	}
 
 	@Override
@@ -95,6 +109,24 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 				throw new MessagingException(MessageBuilder.withPayload(
 						"RocketMQTemplate startup failed, Caused by " + e.getMessage())
 						.build(), e);
+			}
+		}
+		if (producerProperties.isPartitioned()) {
+			try {
+				List<MessageQueue> messageQueues = rocketMQTemplate.getProducer()
+						.fetchPublishMessageQueues(destination);
+				if (producerProperties.getPartitionCount() != messageQueues.size()) {
+					logger.info(String.format(
+							"The partition count will change from '%s' to '%s'",
+							producerProperties.getPartitionCount(),
+							messageQueues.size()));
+					producerProperties.setPartitionCount(messageQueues.size());
+					partitioningInterceptor
+							.setPartitionCount(producerProperties.getPartitionCount());
+				}
+			}
+			catch (MQClientException e) {
+				logger.error("fetch publish message queues fail", e);
 			}
 		}
 		running = true;
@@ -146,13 +178,17 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 				catch (Exception e) {
 					// ignore
 				}
-				boolean needSelectQueue = message.getHeaders().containsKey(BinderHeaders.PARTITION_HEADER);
+				boolean needSelectQueue = message.getHeaders()
+						.containsKey(BinderHeaders.PARTITION_HEADER);
 				if (sync) {
 					if (needSelectQueue) {
-						sendRes = rocketMQTemplate.syncSendOrderly(topicWithTags.toString(), message, "",
+						sendRes = rocketMQTemplate.syncSendOrderly(
+								topicWithTags.toString(), message, "",
 								rocketMQTemplate.getProducer().getSendMsgTimeout());
-					} else {
-						sendRes = rocketMQTemplate.syncSend(topicWithTags.toString(), message,
+					}
+					else {
+						sendRes = rocketMQTemplate.syncSend(topicWithTags.toString(),
+								message,
 								rocketMQTemplate.getProducer().getSendMsgTimeout(),
 								delayLevel);
 					}
@@ -168,24 +204,24 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 						@Override
 						public void onException(Throwable e) {
-							log.error(
-									"RocketMQ Message hasn't been sent. Caused by "
-											+ e.getMessage());
+							log.error("RocketMQ Message hasn't been sent. Caused by "
+									+ e.getMessage());
 							if (getSendFailureChannel() != null) {
 								getSendFailureChannel().send(
 										RocketMQMessageHandler.this.errorMessageStrategy
-												.buildErrorMessage(
-														new MessagingException(
-																message, e),
-														null));
+												.buildErrorMessage(new MessagingException(
+														message, e), null));
 							}
 						}
 					};
 					if (needSelectQueue) {
-						rocketMQTemplate.asyncSendOrderly(topicWithTags.toString(), message, "", sendCallback,
+						rocketMQTemplate.asyncSendOrderly(topicWithTags.toString(),
+								message, "", sendCallback,
 								rocketMQTemplate.getProducer().getSendMsgTimeout());
-					} else {
-						rocketMQTemplate.asyncSend(topicWithTags.toString(), message, sendCallback);
+					}
+					else {
+						rocketMQTemplate.asyncSend(topicWithTags.toString(), message,
+								sendCallback);
 					}
 				}
 			}
