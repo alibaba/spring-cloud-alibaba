@@ -26,6 +26,7 @@ import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import feign.Contract;
 import feign.Feign;
@@ -82,20 +83,24 @@ public class SentinelFeign {
 							"fallback");
 					Class fallbackFactory = (Class) getFieldValue(feignClientFactoryBean,
 							"fallbackFactory");
-					String name = (String) getFieldValue(feignClientFactoryBean, "name");
+					String beanName = (String) getFieldValue(feignClientFactoryBean,
+							"contextId");
+					if (!StringUtils.hasText(beanName)) {
+						beanName = (String) getFieldValue(feignClientFactoryBean, "name");
+					}
 
 					Object fallbackInstance;
 					FallbackFactory fallbackFactoryInstance;
 					// check fallback and fallbackFactory properties
 					if (void.class != fallback) {
-						fallbackInstance = getFromContext(name, "fallback", fallback,
+						fallbackInstance = getFromContext(beanName, "fallback", fallback,
 								target.type());
 						return new SentinelInvocationHandler(target, dispatch,
 								new FallbackFactory.Default(fallbackInstance));
 					}
 					if (void.class != fallbackFactory) {
-						fallbackFactoryInstance = (FallbackFactory) getFromContext(name,
-								"fallbackFactory", fallbackFactory,
+						fallbackFactoryInstance = (FallbackFactory) getFromContext(
+								beanName, "fallbackFactory", fallbackFactory,
 								FallbackFactory.class);
 						return new SentinelInvocationHandler(target, dispatch,
 								fallbackFactoryInstance);
