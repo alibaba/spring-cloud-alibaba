@@ -83,23 +83,24 @@ public class NacosPropertySourceBuilder {
 		String data = null;
 		try {
 			data = configService.getConfig(dataId, group, timeout);
-			if (!StringUtils.isEmpty(data)) {
-				log.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
-						dataId, group));
+			if (StringUtils.isEmpty(data)) {
+				return EMPTY_PROPERTIES;
+			}
 
-				if (fileExtension.equalsIgnoreCase("properties")) {
-					Properties properties = new Properties();
+			log.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
+					dataId, group));
 
-					properties.load(new StringReader(data));
-					return properties;
-				}
-				else if (fileExtension.equalsIgnoreCase("yaml")
-						|| fileExtension.equalsIgnoreCase("yml")) {
-					YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
-					yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
-					return yamlFactory.getObject();
-				}
+			if (fileExtension.equalsIgnoreCase("properties")) {
+				Properties properties = new Properties();
 
+				properties.load(new StringReader(data));
+				return properties;
+			}
+			else if (fileExtension.equalsIgnoreCase("yaml")
+					|| fileExtension.equalsIgnoreCase("yml")) {
+				YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+				yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
+				return yamlFactory.getObject();
 			}
 		}
 		catch (NacosException e) {
