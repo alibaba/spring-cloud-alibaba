@@ -16,11 +16,11 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
+import com.google.common.collect.Lists;
 
 /**
  * @author xiaojing
@@ -34,9 +34,7 @@ public class NacosPropertySourceRepository {
 	 * @return all nacos properties from application context
 	 */
 	public static List<NacosPropertySource> getAll() {
-		List<NacosPropertySource> result = new ArrayList<>();
-		result.addAll(NACOS_PROPERTY_SOURCE_REPOSITORY.values());
-		return result;
+		return Lists.newArrayList(NACOS_PROPERTY_SOURCE_REPOSITORY.values());
 	}
 
 	public static void collectNacosPropertySources(
