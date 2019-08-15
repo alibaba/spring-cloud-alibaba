@@ -26,7 +26,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
@@ -47,8 +46,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final String SEP1 = "-";
 	private static final String DOT = ".";
 	private static final String SHARED_CONFIG_SEPARATOR_CHAR = "[,]";
-	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
-			"yaml", "yml");
+//	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
+//			"yaml", "yml");
 
 	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
 
@@ -126,7 +125,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 		for (NacosConfigProperties.Config config : extConfigs) {
 			String dataId = config.getDataId();
-			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
+			String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
 			loadNacosDataIfPresent(compositePropertySource, dataId, config.getGroup(),
 					fileExtension, config.isRefresh());
 		}
@@ -184,20 +183,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private static void checkDataIdFileExtension(String[] dataIdArray) {
-		StringBuilder stringBuilder = new StringBuilder();
-
-		for (String dataId : dataIdArray) {
-			if (!canLoadFileExtension(dataId)) {
-				stringBuilder.append(dataId).append(",");
-			}
+		if(dataIdArray == null || dataIdArray.length<1){
+			throw new IllegalStateException("The dataId cannot be empty");
 		}
-
-		if (stringBuilder.length() > 0) {
-			String result = stringBuilder.substring(0, stringBuilder.length() - 1);
-			throw new IllegalStateException(String.format(
-					"[%s] must end file extension with properties|yaml|yml",
-					result));
-		}
+		//Just decide that the current dataId must have a suffix
+		NacosDataParserHandler.getInstance().checkDataId(dataIdArray);
 	}
 
 	private static boolean canLoadFileExtension(String dataId) {
