@@ -16,9 +16,11 @@
 
 package com.alibaba.cloud.nacos.client;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
+import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
+import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
+import com.alibaba.nacos.api.config.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
@@ -28,10 +30,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
-import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
-import com.alibaba.nacos.api.config.ConfigService;
+import java.util.List;
 
 /**
  * @author xiaojing
@@ -46,8 +45,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final String SEP1 = "-";
 	private static final String DOT = ".";
 	private static final String SHARED_CONFIG_SEPARATOR_CHAR = "[,]";
-	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
-			"yaml", "yml");
+//	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
+//			"yaml", "yml");
 
 	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
 
@@ -104,7 +103,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 		for (int i = 0; i < sharedDataIdArry.length; i++) {
 			String dataId = sharedDataIdArry[i];
-			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
+			String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
 			boolean isRefreshable = checkDataIdIsRefreshbable(refreshDataIds,
 					sharedDataIdArry[i]);
 
@@ -119,13 +118,12 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			return;
 		}
 
-		List<NacosConfigProperties.Config> extConfigs = nacosConfigProperties
-				.getExtConfig();
+		List<NacosConfigProperties.Config> extConfigs = nacosConfigProperties.getExtConfig();
 		checkExtConfiguration(extConfigs);
 
 		for (NacosConfigProperties.Config config : extConfigs) {
 			String dataId = config.getDataId();
-			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
+			String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
 			loadNacosDataIfPresent(compositePropertySource, dataId, config.getGroup(),
 					fileExtension, config.isRefresh());
 		}
@@ -183,27 +181,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private static void checkDataIdFileExtension(String[] dataIdArray) {
-		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < dataIdArray.length; i++) {
-			boolean isLegal = false;
-			for (String fileExtension : SUPPORT_FILE_EXTENSION) {
-				if (dataIdArray[i].indexOf(fileExtension) > 0) {
-					isLegal = true;
-					break;
-				}
-			}
-			// add tips
-			if (!isLegal) {
-				stringBuilder.append(dataIdArray[i] + ",");
-			}
+		if(dataIdArray == null || dataIdArray.length<1){
+			throw new IllegalStateException("The dataId cannot be empty");
 		}
-
-		if (stringBuilder.length() > 0) {
-			String result = stringBuilder.substring(0, stringBuilder.length() - 1);
-			throw new IllegalStateException(String.format(
-					"[%s] must contains file extension with properties|yaml|yml",
-					result));
-		}
+		//Just decide that the current dataId must have a suffix
+		NacosDataParserHandler.getInstance().checkDataId(dataIdArray);
 	}
 
 	private boolean checkDataIdIsRefreshbable(String refreshDataIds,
