@@ -41,8 +41,7 @@ public class NacosConfigAutoConfiguration {
 			return BeanFactoryUtils.beanOfTypeIncludingAncestors(context.getParent(),
 					NacosConfigProperties.class);
 		}
-		NacosConfigProperties nacosConfigProperties = new NacosConfigProperties();
-		return nacosConfigProperties;
+		return new NacosConfigProperties();
 	}
 
 	@Bean
