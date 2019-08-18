@@ -3,16 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-build</artifactId>
-        <version>2.1.3.RELEASE</version>
-        <relativePath/>
+        <artifactId>spring-cloud-alibaba-examples</artifactId>
+        <groupId>com.alibaba.cloud</groupId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
-    <version>2.1.1.BUILD-SNAPSHOT</version>
+    <version>${revision}</version>
     <name>Spring Cloud Alibaba Dubbo Examples</name>
     <packaging>pom</packaging>
 
@@ -27,7 +27,7 @@
     </modules>
 
     <properties>
-        <dubbo.version>2.7.1</dubbo.version>
+        <dubbo.version>2.7.3</dubbo.version>
         <spring-cloud-commons.version>2.1.2.RELEASE</spring-cloud-commons.version>
         <spring-cloud-netflix.version>2.1.2.RELEASE</spring-cloud-netflix.version>
         <spring-cloud-openfeign.version>2.1.2.RELEASE</spring-cloud-openfeign.version>

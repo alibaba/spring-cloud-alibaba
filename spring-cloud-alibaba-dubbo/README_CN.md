@@ -1,6 +1,6 @@
 ## 简介
 
-Dubbo Spring Cloud 基于 Dubbo Spring Boot 2.7.1[1] 和 Spring Cloud 2.x 开发，无论开发人员是 Dubbo 用户还是 Spring Cloud 用户，
+Dubbo Spring Cloud 基于 Dubbo Spring Boot 2.7.x[1] 和 Spring Cloud 2.x 开发，无论开发人员是 Dubbo 用户还是 Spring Cloud 用户，
 都能轻松地驾驭，并以接近“零”成本的代价使应用向上迁移。Dubbo Spring Cloud 致力于简化 Cloud Native 开发成本，提高研发效能以及提升应用性能等目的。
 
 Dubbo Spring Cloud 首个 Preview Release，随同 Spring Cloud Alibaba `0.2.2.RELEASE` 和  `0.9.0.RELEASE` 一同发布[2]，

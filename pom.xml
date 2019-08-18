@@ -14,7 +14,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>2.1.1.BUILD-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
     <description>Spring Cloud Alibaba</description>
@@ -88,6 +88,8 @@
         <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
         <jacoco.version>0.8.3</jacoco.version>
+        <revision>2.1.1.BUILD-SNAPSHOT</revision>
+        <maven.flatten.version>1.1.0</maven.flatten.version>
     </properties>
 
     <modules>
@@ -215,6 +217,31 @@
                     <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${maven.flatten.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -283,7 +310,5 @@
         </profile>
 
     </profiles>
-
-
 
 </project>
