@@ -282,10 +282,12 @@ public class DubboServiceMetadataRepository
 				}
 
 				// Keep the order in following invocations
-				initSubscribedDubboMetadataService(serviceName);
+				boolean isInited = initSubscribedDubboMetadataService(serviceName);
 				initDubboRestServiceMetadataRepository(serviceName);
 				// mark this service name having been initialized
-				initializedServices.add(serviceName);
+				if (isInited) {
+					initializedServices.add(serviceName);
+				}
 			}
 		}
 	}
@@ -617,23 +619,32 @@ public class DubboServiceMetadataRepository
 		subscribedServices.remove(currentApplicationName);
 	}
 
-	protected void initSubscribedDubboMetadataService(String serviceName) {
-		discoveryClient.getInstances(serviceName).stream().findAny()
-				.map(this::getDubboMetadataServiceURLs)
-				.ifPresent(dubboMetadataServiceURLs -> {
-					dubboMetadataServiceURLs.forEach(dubboMetadataServiceURL -> {
-						try {
-							initSubscribedDubboMetadataServiceURL(
-									dubboMetadataServiceURL);
-							initDubboMetadataServiceProxy(dubboMetadataServiceURL);
-						}
-						catch (Throwable e) {
-							if (logger.isErrorEnabled()) {
-								logger.error(e.getMessage(), e);
-							}
-						}
-					});
-				});
+	protected boolean initSubscribedDubboMetadataService(String serviceName) {
+	    List<ServiceInstance> instances = discoveryClient.getInstances(serviceName);
+	    if (instances == null || instances.size() == 0) {
+	    	return false;
+		}
+	    boolean isInited = false;
+		for (ServiceInstance instance : instances) {
+			List<URL> urls = getDubboMetadataServiceURLs(instance);
+			if (urls == null || urls.size() == 0) {
+				continue;
+			}
+			for (URL url : urls) {
+				try {
+					initSubscribedDubboMetadataServiceURL(
+							url);
+					initDubboMetadataServiceProxy(url);
+					isInited = true;
+				}
+				catch (Throwable e) {
+					if (logger.isErrorEnabled()) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+			}
+		}
+		return isInited;
 	}
 
 	private void initSubscribedDubboMetadataServiceURL(URL dubboMetadataServiceURL) {
