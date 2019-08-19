@@ -16,6 +16,14 @@
 
 package com.alibaba.alicloud.oss.resource;
 
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.OSSObject;
+import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,15 +31,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
-
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.OSSObject;
+import java.util.Optional;
 
 /**
  * Implements {@link Resource} for reading and writing objects in Aliyun Object Storage
@@ -155,9 +155,9 @@ public class OssStorageResource implements Resource {
 	 * @return the bucket if it exists, or null otherwise
 	 */
 	public Bucket getBucket() {
-		return this.oss.listBuckets().stream()
-				.filter(bucket -> bucket.getName().equals(this.bucketName)).findFirst()
-				.get();
+		Optional<Bucket> value = this.oss.listBuckets().stream()
+				.filter(bucket -> bucket.getName().equals(this.bucketName)).findFirst();
+		return value.orElse(null);
 	}
 
 	/**
