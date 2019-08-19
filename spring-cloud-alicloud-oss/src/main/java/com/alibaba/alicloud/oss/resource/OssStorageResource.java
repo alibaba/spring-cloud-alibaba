@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Optional;
 
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
@@ -156,9 +155,9 @@ public class OssStorageResource implements Resource {
 	 * @return the bucket if it exists, or null otherwise
 	 */
 	public Bucket getBucket() {
-		Optional<Bucket> value = this.oss.listBuckets().stream()
-				.filter(bucket -> bucket.getName().equals(this.bucketName)).findFirst();
-		return value.orElse(null);
+		return this.oss.listBuckets().stream()
+				.filter(bucket -> bucket.getName().equals(this.bucketName)).findFirst()
+				.orElse(null);
 	}
 
 	/**
