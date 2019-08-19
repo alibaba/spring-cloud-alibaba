@@ -25,6 +25,7 @@ public interface SentinelConstants {
 
 	String BLOCK_TYPE = "block";
 	String FALLBACK_TYPE = "fallback";
+	String URLCLEANER_TYPE = "urlCleaner";
 
 	// commercialization
 
