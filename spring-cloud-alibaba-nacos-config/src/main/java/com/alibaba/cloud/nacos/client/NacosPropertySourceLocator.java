@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.nacos.client;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -26,10 +25,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
+import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.nacos.api.config.ConfigService;
 
@@ -46,8 +47,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final String SEP1 = "-";
 	private static final String DOT = ".";
 	private static final String SHARED_CONFIG_SEPARATOR_CHAR = "[,]";
-//	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
-//			"yaml", "yml");
 
 	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
 
@@ -183,21 +182,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private static void checkDataIdFileExtension(String[] dataIdArray) {
-		if(dataIdArray == null || dataIdArray.length<1){
+		if (dataIdArray == null || dataIdArray.length < 1) {
 			throw new IllegalStateException("The dataId cannot be empty");
 		}
-		//Just decide that the current dataId must have a suffix
+		// Just decide that the current dataId must have a suffix
 		NacosDataParserHandler.getInstance().checkDataId(dataIdArray);
 	}
 
-	private static boolean canLoadFileExtension(String dataId) {
-		return SUPPORT_FILE_EXTENSION.stream()
-				.anyMatch((fileExtension) -> StringUtils.endsWithIgnoreCase(dataId,
-						fileExtension));
-	}
-
-	private boolean checkDataIdIsRefreshable(String refreshDataIds,
-			String sharedDataId) {
+	private boolean checkDataIdIsRefreshable(String refreshDataIds, String sharedDataId) {
 		if (StringUtils.isEmpty(refreshDataIds)) {
 			return false;
 		}

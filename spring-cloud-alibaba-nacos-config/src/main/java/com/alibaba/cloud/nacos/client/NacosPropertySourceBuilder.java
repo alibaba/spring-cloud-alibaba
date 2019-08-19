@@ -16,19 +16,20 @@
 
 package com.alibaba.cloud.nacos.client;
 
-import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
-import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
-import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.exception.NacosException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
+import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
 
 /**
  * @author xiaojing
@@ -81,14 +82,17 @@ public class NacosPropertySourceBuilder {
 		try {
 			data = configService.getConfig(dataId, group, timeout);
 			if (StringUtils.isEmpty(data)) {
-				log.info("Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]"
-						,dataId,group);
+				log.info(
+						"Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]",
+						dataId, group);
 				return EMPTY_PROPERTIES;
 			}
-			log.info(String.format("Loading nacos data, dataId: '%s', group: '%s', data: %s",
-					dataId, group,data));
+			log.info(String.format(
+					"Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
+					group, data));
 
-			Properties properties = NacosDataParserHandler.getInstance().parseNacosData(data,fileExtension);
+			Properties properties = NacosDataParserHandler.getInstance()
+					.parseNacosData(data, fileExtension);
 			return properties == null ? EMPTY_PROPERTIES : properties;
 		}
 		catch (NacosException e) {

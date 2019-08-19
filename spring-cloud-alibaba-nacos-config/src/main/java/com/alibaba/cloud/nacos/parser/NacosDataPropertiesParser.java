@@ -9,15 +9,14 @@ import java.util.Properties;
  */
 public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 
+	public NacosDataPropertiesParser() {
+		super("properties");
+	}
 
-    public NacosDataPropertiesParser() {
-        super("properties");
-    }
-
-    @Override
-    protected Properties doParse(String data) throws IOException {
-        Properties properties = new Properties();
-        properties.load(new StringReader(data));
-        return properties;
-    }
+	@Override
+	protected Properties doParse(String data) throws IOException {
+		Properties properties = new Properties();
+		properties.load(new StringReader(data));
+		return properties;
+	}
 }
