@@ -16,14 +16,6 @@
 
 package com.alibaba.alicloud.oss.resource;
 
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.model.Bucket;
-import com.aliyun.oss.model.OSSObject;
-import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,6 +24,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
+
+import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
+
+import com.aliyun.oss.ClientException;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.Bucket;
+import com.aliyun.oss.model.OSSObject;
 
 /**
  * Implements {@link Resource} for reading and writing objects in Aliyun Object Storage
