@@ -65,6 +65,24 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		if (hostResource.equals(hostWithPathResource)) {
 			entryWithPath = false;
 		}
+		Method urlCleanerMethod = BlockClassRegistry.lookupUrlCleaner(
+				sentinelRestTemplate.urlCleanerClass(),
+				sentinelRestTemplate.urlCleaner());
+		if (urlCleanerMethod != null) {
+			try {
+				hostWithPathResource = (String) urlCleanerMethod.invoke(null,
+						hostWithPathResource);
+			}
+			catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+			catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		System.out.println("hostWithPathResource: " + hostWithPathResource);
+		System.out.println("entryWithPath: " + entryWithPath);
+
 		Entry hostEntry = null, hostWithPathEntry = null;
 		ClientHttpResponse response = null;
 		try {
