@@ -32,6 +32,6 @@ public class NacosConnectionFailureAnalyzer
 	protected FailureAnalysis analyze(Throwable rootFailure,
 			NacosConnectionFailureException cause) {
 		return new FailureAnalysis("Application failed to connect to Nacos server",
-				"check your nacos server config", cause);
+				"check your Nacos server config", cause);
 	}
 }

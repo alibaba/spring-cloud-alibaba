@@ -90,14 +90,14 @@ public class NacosPropertySourceBuilder {
 			log.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
 					dataId, group));
 
-			if (fileExtension.equalsIgnoreCase("properties")) {
+			if ("properties".equalsIgnoreCase(fileExtension)) {
 				Properties properties = new Properties();
 
 				properties.load(new StringReader(data));
 				return properties;
 			}
-			else if (fileExtension.equalsIgnoreCase("yaml")
-					|| fileExtension.equalsIgnoreCase("yml")) {
+			else if ("yaml".equalsIgnoreCase(fileExtension)
+					|| "yml".equalsIgnoreCase(fileExtension)) {
 				YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
 				yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
 				return yamlFactory.getObject();
@@ -118,9 +118,9 @@ public class NacosPropertySourceBuilder {
 		Enumeration<String> keys = (Enumeration<String>) properties.propertyNames();
 		while (keys.hasMoreElements()) {
 			String key = keys.nextElement();
-			Object value = properties.getProperty(key);
+			String value = properties.getProperty(key);
 			if (value != null) {
-				result.put(key, ((String) value).trim());
+				result.put(key, value.trim());
 			}
 			else {
 				result.put(key, null);

@@ -15,10 +15,7 @@
  */
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -148,8 +145,8 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 			MethodMetadata factoryMethodMetadata = annotatedBeanDefinition
 					.getFactoryMethodMetadata();
 			attributes = factoryMethodMetadata != null
-					? factoryMethodMetadata
-							.getAnnotationAttributes(DUBBO_TRANSPORTED_CLASS_NAME)
+					? Optional.ofNullable(factoryMethodMetadata
+							.getAnnotationAttributes(DUBBO_TRANSPORTED_CLASS_NAME)).orElse(attributes)
 					: Collections.emptyMap();
 		}
 		return attributesResolver.resolve(attributes);
