@@ -26,6 +26,7 @@ public class ConsumerApplication {
 
 	@LoadBalanced
 	@Bean
+	@SentinelRestTemplate(urlCleanerClass = UrlCleaner.class, urlCleaner = "clean")
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
