@@ -18,7 +18,7 @@ Dubbo Spring Cloud 首个 Preview Release，随同 Spring Cloud Alibaba `0.2.2.R
 | 功能组件                                             | Spring Cloud                           | Dubbo Spring Cloud                                     |
 | ---------------------------------------------------- | -------------------------------------- | ------------------------------------------------------ |
 | 分布式配置（Distributed configuration）              | Git、Zookeeper、Consul、JDBC           | Spring Cloud 分布式配置 + Dubbo 配置中心[6]          |
-| 服务注册与发现（Service registration and discovery） | Eureka、Zookeeper、Consul              | Spring Cloud 原生注册中心[7] + Dubbo 原生注册中[8] |
+| 服务注册与发现（Service registration and discovery） | Eureka、Zookeeper、Consul              | Spring Cloud 原生注册中心[7] + Dubbo 原生注册中心[8] |
 | 负载均衡（Load balancing）                           | Ribbon（随机、轮询等算法）             | Dubbo 内建实现（随机、轮询等算法 + 权重等特性）        |
 | 服务熔断（Circuit Breakers）                         | Spring Cloud Hystrix                   | Spring Cloud Hystrix + Alibaba Sentinel[9] 等        |
 | 服务调用（Service-to-service calls）                 | Open Feign、`RestTemplate`             | Spring Cloud 服务调用 + Dubbo `@Reference`             |
@@ -44,6 +44,6 @@ Dubbo Spring Cloud 首个 Preview Release，随同 Spring Cloud Alibaba `0.2.2.R
 
 [9]: Alibaba Sentinel：Sentinel 以流量为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性 - <https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B%E7%BB%8D>，目前 Sentinel 已被 Spring Cloud 项目纳为 Circuit Breaker  的候选实现 - <https://spring.io/blog/2011/04/8/introducing-spring-cloud-circuit-breaker>
 
-[10]:Spring Cloud Sleuth - <https://spring.io/projects/spring-cloud-sleuth>
+[10]: Spring Cloud Sleuth - <https://spring.io/projects/spring-cloud-sleuth>
 
 [11]: Zipkin - <https://github.com/apache/incubator-zipkin>
