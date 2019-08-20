@@ -100,7 +100,7 @@ user name :nacos-config-properties; age: 90
 
 Nacos Config supports yaml format as well. You only need to complete the following 2 steps.
 
-1. In the bootstrap.properties file, add the following line to claim that the format of DataId is yaml. As follows:
+1、In the bootstrap.properties file, add the following line to claim that the format of DataId is yaml. As follows:
 
 .bootstrap.properties
 [source,yaml]
@@ -108,7 +108,7 @@ Nacos Config supports yaml format as well. You only need to complete the followi
 spring.cloud.nacos.config.file-extension=yaml
 ----
 
-2. Add a configuration with the DataId in yaml format on the Nacos console, as shown below:
+2、Add a configuration with the DataId in yaml format on the Nacos console, as shown below:
 
 [source,subs="normal"]
 ----
