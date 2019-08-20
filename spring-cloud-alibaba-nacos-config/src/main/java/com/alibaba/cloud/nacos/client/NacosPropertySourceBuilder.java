@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.nacos.client;
 
-import java.io.StringReader;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -25,11 +24,10 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
+import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 
@@ -84,24 +82,18 @@ public class NacosPropertySourceBuilder {
 		try {
 			data = configService.getConfig(dataId, group, timeout);
 			if (StringUtils.isEmpty(data)) {
+				log.info(
+						"Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]",
+						dataId, group);
 				return EMPTY_PROPERTIES;
 			}
+			log.info(String.format(
+					"Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
+					group, data));
 
-			log.info(String.format("Loading nacos data, dataId: '%s', group: '%s'",
-					dataId, group));
-
-			if ("properties".equalsIgnoreCase(fileExtension)) {
-				Properties properties = new Properties();
-
-				properties.load(new StringReader(data));
-				return properties;
-			}
-			else if ("yaml".equalsIgnoreCase(fileExtension)
-					|| "yml".equalsIgnoreCase(fileExtension)) {
-				YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
-				yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
-				return yamlFactory.getObject();
-			}
+			Properties properties = NacosDataParserHandler.getInstance()
+					.parseNacosData(data, fileExtension);
+			return properties == null ? EMPTY_PROPERTIES : properties;
 		}
 		catch (NacosException e) {
 			log.error("get data from Nacos error,dataId:{}, ", dataId, e);
@@ -118,9 +110,9 @@ public class NacosPropertySourceBuilder {
 		Enumeration<String> keys = (Enumeration<String>) properties.propertyNames();
 		while (keys.hasMoreElements()) {
 			String key = keys.nextElement();
-			String value = properties.getProperty(key);
+			Object value = properties.getProperty(key);
 			if (value != null) {
-				result.put(key, value.trim());
+				result.put(key, ((String) value).trim());
 			}
 			else {
 				result.put(key, null);
