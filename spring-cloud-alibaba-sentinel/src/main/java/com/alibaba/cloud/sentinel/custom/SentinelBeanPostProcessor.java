@@ -149,8 +149,8 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 					beanName, standardReturnType.getName(), blockClass.getName(),
 					blockMethod, argsStr);
 			throw new IllegalArgumentException(type + " method return value in bean["
-					+ beanName + "] is not ClientHttpResponse: " + blockClass.getName()
-					+ "#" + blockMethod + argsStr);
+					+ beanName + "] is not " + standardReturnType.getName() + ": "
+					+ blockClass.getName() + "#" + blockMethod + argsStr);
 		}
 		if (type.equals(SentinelConstants.BLOCK_TYPE)) {
 			BlockClassRegistry.updateBlockHandlerFor(blockClass, blockMethod,
