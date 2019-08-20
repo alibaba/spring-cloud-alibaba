@@ -157,7 +157,7 @@ public class OssStorageResource implements Resource {
 	public Bucket getBucket() {
 		return this.oss.listBuckets().stream()
 				.filter(bucket -> bucket.getName().equals(this.bucketName)).findFirst()
-				.get();
+				.orElse(null);
 	}
 
 	/**
