@@ -110,9 +110,9 @@ public class NacosPropertySourceBuilder {
 		Enumeration<String> keys = (Enumeration<String>) properties.propertyNames();
 		while (keys.hasMoreElements()) {
 			String key = keys.nextElement();
-			Object value = properties.getProperty(key);
+			String value = properties.getProperty(key);
 			if (value != null) {
-				result.put(key, ((String) value).trim());
+				result.put(key, value.trim());
 			}
 			else {
 				result.put(key, null);
