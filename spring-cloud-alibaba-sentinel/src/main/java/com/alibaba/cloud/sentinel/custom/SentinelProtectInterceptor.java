@@ -69,19 +69,9 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				sentinelRestTemplate.urlCleanerClass(),
 				sentinelRestTemplate.urlCleaner());
 		if (urlCleanerMethod != null) {
-			try {
-				hostWithPathResource = (String) urlCleanerMethod.invoke(null,
-						hostWithPathResource);
-			}
-			catch (IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
-			catch (InvocationTargetException e) {
-				throw new RuntimeException(e);
-			}
+			hostWithPathResource = (String) methodInvoke(urlCleanerMethod,
+					hostWithPathResource);
 		}
-		System.out.println("hostWithPathResource: " + hostWithPathResource);
-		System.out.println("entryWithPath: " + entryWithPath);
 
 		Entry hostEntry = null, hostWithPathEntry = null;
 		ClientHttpResponse response = null;
@@ -123,7 +113,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			Method fallbackMethod = extractFallbackMethod(sentinelRestTemplate.fallback(),
 					sentinelRestTemplate.fallbackClass());
 			if (fallbackMethod != null) {
-				return methodInvoke(fallbackMethod, args);
+				return (ClientHttpResponse) methodInvoke(fallbackMethod, args);
 			}
 			else {
 				return new SentinelClientHttpResponse();
@@ -134,16 +124,16 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				sentinelRestTemplate.blockHandler(),
 				sentinelRestTemplate.blockHandlerClass());
 		if (blockHandler != null) {
-			return methodInvoke(blockHandler, args);
+			return (ClientHttpResponse) methodInvoke(blockHandler, args);
 		}
 		else {
 			return new SentinelClientHttpResponse();
 		}
 	}
 
-	private ClientHttpResponse methodInvoke(Method method, Object... args) {
+	private Object methodInvoke(Method method, Object... args) {
 		try {
-			return (ClientHttpResponse) method.invoke(null, args);
+			return method.invoke(null, args);
 		}
 		catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
