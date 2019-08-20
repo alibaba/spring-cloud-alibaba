@@ -16,16 +16,9 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
-import org.springframework.util.StringUtils;
 
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
-import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.nacos.api.config.ConfigService;
 
 /**
@@ -33,41 +26,17 @@ import com.alibaba.nacos.api.config.ConfigService;
  */
 public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 
-	private final NacosConfigProperties nacosConfigProperties;
-
-	private final List<String> dataIds;
-
 	private final ConfigService configService;
 
-	public NacosConfigHealthIndicator(NacosConfigProperties nacosConfigProperties,
-			ConfigService configService) {
-		this.nacosConfigProperties = nacosConfigProperties;
+	public NacosConfigHealthIndicator(ConfigService configService) {
 		this.configService = configService;
-
-		this.dataIds = new ArrayList<>();
-		for (NacosPropertySource nacosPropertySource : NacosPropertySourceRepository
-				.getAll()) {
-			this.dataIds.add(nacosPropertySource.getDataId());
-		}
 	}
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
-		for (String dataId : dataIds) {
-			try {
-				String config = configService.getConfig(dataId,
-						nacosConfigProperties.getGroup(),
-						nacosConfigProperties.getTimeout());
-				if (StringUtils.isEmpty(config)) {
-					builder.down().withDetail(String.format("dataId: '%s', group: '%s'",
-							dataId, nacosConfigProperties.getGroup()), "config is empty");
-				}
-			}
-			catch (Exception e) {
-				builder.down().withDetail(String.format("dataId: '%s', group: '%s'",
-						dataId, nacosConfigProperties.getGroup()), e.getMessage());
-			}
-		}
-		builder.up().withDetail("dataIds", dataIds);
+		builder.up();
+
+		String status = configService.getServerStatus();
+		builder.status(status);
 	}
 }
