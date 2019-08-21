@@ -61,6 +61,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!--stream binder test-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
