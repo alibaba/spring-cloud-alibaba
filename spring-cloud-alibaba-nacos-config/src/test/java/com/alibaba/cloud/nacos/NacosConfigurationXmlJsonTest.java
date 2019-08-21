@@ -47,7 +47,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
- * @author xiaojing
+ * @author zkz
  */
 
 @RunWith(PowerMockRunner.class)
