@@ -16,7 +16,7 @@ Before we start the demo, let's learn how to connect OSS to a Spring Cloud appli
 1. Add dependency spring-cloud-starter-alicloud-oss in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
         </dependency>
 

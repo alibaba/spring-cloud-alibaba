@@ -3,11 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
     <parent>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.9.1.BUILD-SNAPSHOT</version>
+        <version>2.1.1.BUILD-SNAPSHOT</version>
     </parent>
 
     <artifactId>spring-cloud-alicloud-acm</artifactId>
@@ -16,7 +15,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alicloud-context</artifactId>
         </dependency>
 

@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>0.9.1.BUILD-SNAPSHOT</version>
+        <version>2.1.1.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,9 +14,10 @@
     <name>Spring Cloud Alibaba Dubbo</name>
 
     <properties>
-        <dubbo.version>2.7.1</dubbo.version>
-        <spring-cloud-zookeeper.version>2.1.1.RELEASE</spring-cloud-zookeeper.version>
-        <spring-cloud-consul.version>2.1.1.RELEASE</spring-cloud-consul.version>
+        <dubbo.version>2.7.3</dubbo.version>
+        <dubbo-spring-boot.version>2.7.1</dubbo-spring-boot.version>
+        <spring-cloud-zookeeper.version>2.1.2.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-consul.version>2.1.2.RELEASE</spring-cloud-consul.version>
         <curator.version>4.0.1</curator.version>
     </properties>
 
@@ -142,7 +143,7 @@
 
         <!-- Nacos Service Discovery -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
             <optional>true</optional>
         </dependency>
@@ -178,14 +179,15 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo.version}</version>
+            <version>${dubbo-spring-boot.version}</version>
         </dependency>
 
-        <!-- Dubbo Spring Boot Actuator -->
+        <!-- Dubbo Spring Boot Actuator (optional) -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-actuator</artifactId>
-            <version>${dubbo.version}</version>
+            <version>${dubbo-spring-boot.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- Netty -->

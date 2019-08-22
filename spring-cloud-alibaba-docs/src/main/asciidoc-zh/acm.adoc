@@ -1,17 +1,19 @@
-== Spring Cloud Alibaba Cloud ACM
+== Spring Cloud AliCloud ACM
 
 Spring Cloud AliCloud ACM 是阿里云提供的商业版应用配置管理(Application Configuration Management) 产品 在 Spring Cloud 应用侧的客户端实现，且目前完全免费。
 
-Spring Cloud AliCloud ACM 是 Config Server 和 Client 的替代方案，客户端和服务器上的概念与 Spring Environment 和 PropertySource 有着一致的抽象，在特殊的 bootstrap 阶段，配置被加载到 Spring 环境中。当应用程序通过部署管道从开发到测试再到生产时，您可以管理这些环境之间的配置，并确保应用程序具有迁移时需要运行的所有内容。
+使用 Spring Cloud AliCloud ACM，可基于 Spring Cloud 的编程模型快速接入 ACM 配置管理功能。
+
+NOTE: 目前 EDAS 已经支持直接部署 Nacos Config 应用
 
 === 如何引入 Spring Cloud AliCloud ACM
 
-如果要在您的项目中引入 ACM，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-acm` 的 starter。
+如果要在您的项目中引入 ACM，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-acm` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
 </dependency>
 ----
@@ -171,4 +173,4 @@ NOTE: 如果设置了 `spring.profiles.active` ，DataId 的格式还支持 `{sp
 
 === Actuator 监控
 
-ACM 对应的 Actuator 监控地址为 `/acm`，其中 config 代表了 ACM 元数据配置的信息，`runtime.sources` 对应的是从 ACM 服务端获取的配置的信息及最后刷新时间， `runtime.refreshHistory` 对应的是动态刷新的历史记录。
+ACM 对应的 Actuator 监控地址为 `/acm`，其中 `config` 代表了 ACM 元数据配置的信息，`runtime.sources` 对应的是从 ACM 服务端获取的配置的信息及最后刷新时间， `runtime.refreshHistory` 对应的是动态刷新的历史记录。
