@@ -60,7 +60,8 @@ public class NacosDiscoveryClientTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(eq(serviceName), eq(true)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.selectInstances(eq(serviceName),eq("DEFAULT"), eq(true)))
 				.thenReturn(instances);
 
 		NacosDiscoveryClient discoveryClient = new NacosDiscoveryClient(
@@ -103,7 +104,8 @@ public class NacosDiscoveryClientTests {
 				nacosDiscoveryProperties);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE),eq("DEFAULT")))
 				.thenReturn(nacosServices);
 
 		List<String> services = discoveryClient.getServices();
