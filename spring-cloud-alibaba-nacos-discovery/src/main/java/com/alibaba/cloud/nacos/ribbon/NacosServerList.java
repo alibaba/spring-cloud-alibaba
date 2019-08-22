@@ -52,8 +52,9 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	private List<NacosServer> getServers() {
 		try {
+			String group = discoveryProperties.getGroup();
 			List<Instance> instances = discoveryProperties.namingServiceInstance()
-					.selectInstances(serviceId, true);
+					.selectInstances(serviceId, group,true);
 			return instancesToServerList(instances);
 		}
 		catch (Exception e) {
