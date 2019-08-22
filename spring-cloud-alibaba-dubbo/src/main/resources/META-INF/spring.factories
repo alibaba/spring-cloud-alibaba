@@ -1,16 +1,17 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboMetadataAutoConfiguration,\
-org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboOpenFeignAutoConfiguration,\
-org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration,\
-org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceRegistrationNonWebApplicationAutoConfiguration,\
-org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboLoadBalancedRestTemplateAutoConfiguration,\
-org.springframework.cloud.alibaba.dubbo.autoconfigure.DubboServiceAutoConfiguration
+com.alibaba.cloud.dubbo.autoconfigure.DubboMetadataAutoConfiguration,\
+com.alibaba.cloud.dubbo.autoconfigure.DubboOpenFeignAutoConfiguration,\
+com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration,\
+com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationNonWebApplicationAutoConfiguration,\
+com.alibaba.cloud.dubbo.autoconfigure.DubboLoadBalancedRestTemplateAutoConfiguration,\
+com.alibaba.cloud.dubbo.autoconfigure.DubboServiceAutoConfiguration,\
+com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration
 
 org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration=\
-org.springframework.cloud.alibaba.dubbo.actuate.DubboMetadataEndpointAutoConfiguration
+com.alibaba.cloud.dubbo.actuate.DubboMetadataEndpointAutoConfiguration
 
 org.springframework.context.ApplicationContextInitializer=\
-org.springframework.cloud.alibaba.dubbo.context.DubboServiceRegistrationApplicationContextInitializer
+com.alibaba.cloud.dubbo.context.DubboServiceRegistrationApplicationContextInitializer
 
 org.springframework.boot.env.EnvironmentPostProcessor=\
-org.springframework.cloud.alibaba.dubbo.env.DubboNonWebApplicationEnvironmentPostProcessor
+com.alibaba.cloud.dubbo.env.DubboNonWebApplicationEnvironmentPostProcessor

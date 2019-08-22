@@ -19,7 +19,7 @@
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
 </dependency>
 ```
@@ -214,9 +214,9 @@ spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
 
 `ds1` 和 `ds2` 表示ReadableDataSource的名称，可随意编写。`ds1` 和 `ds2` 后面的 `file` 和 `nacos` 表示ReadableDataSource的类型。
 
-目前支持`file`, `nacos`, `zk`, `apollo` 这4种类型。
+目前支持`file`, `nacos`, `zk`, `apollo`，`redis` 这5种类型。
 
-其中`nacos`，`zk`，`apollo`这3种类型的使用需要加上对应的依赖`sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`, `sentinel-datasource-apollo`。
+其中`nacos`，`zk`，`apollo`，`redis` 这4种类型的使用需要加上对应的依赖`sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`, `sentinel-datasource-apollo`, `sentinel-datasource-redis`。
 
 当ReadableDataSource加载规则数据成功的时候，控制台会打印出相应的日志信息：
 

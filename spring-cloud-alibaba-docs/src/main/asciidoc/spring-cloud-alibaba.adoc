@@ -1,17 +1,13 @@
 [[spring-cloud-alibaba-reference]]
 = Spring Cloud Alibaba Reference Documentation
-xiaojing; xiaolongzuo; jim fang; bingting peng; wangyuxin
+Jim Fang, Jing Xiao, Mercy Ma, Xiaolong Zuo, Bingting Peng, Yuxin Wang
 :doctype: book
 :toc:
 :toclevels: 4
 :source-highlighter: prettify
 :numbered:
 
-== Introduction
-
-Spring Cloud Alibaba aims to provide a one-stop solution for microservices development. This prjoect includes the required components for developing distributed applications and services, so that developers can develop distributed applications easily with the Spring Cloud programming models.
-
-With Spring Cloud Alibaba, you only need to add a few annotations and configurations, and you will be able to use the distributed solutions of Alibaba for your applications, and build a distributed system of your own with Alibaba middleware.
+include::introduction.adoc[]
 
 include::dependency-management.adoc[]
 
@@ -20,6 +16,8 @@ include::nacos-discovery.adoc[]
 include::nacos-config.adoc[]
 
 include::sentinel.adoc[]
+
+include::dubbo.adoc[]
 
 include::rocketmq.adoc[]
 
@@ -30,3 +28,5 @@ include::acm.adoc[]
 include::oss.adoc[]
 
 include::schedulerx.adoc[]
+
+include::sms.adoc[]

@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>0.9.1.BUILD-SNAPSHOT</version>
+        <version>2.1.1.BUILD-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -19,5 +19,7 @@
     <modules>
         <module>nacos-discovery-consumer-example</module>
         <module>nacos-discovery-provider-example</module>
+        <module>nacos-discovery-spring-cloud-config-server</module>
+        <module>nacos-discovery-spring-cloud-config-client</module>
     </modules>
 </project>

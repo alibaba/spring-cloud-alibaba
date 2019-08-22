@@ -86,7 +86,7 @@ There are two concepts in Spring Cloud Stream: Binder and Binding
 
 For example, `Kafka` uses `KafkaMessageChannelBinder`, `RabbitMQ` uses `RabbitMessageChannelBinder`, while `RocketMQ` uses `RocketMQMessageChannelBinder`.
 
-* Binding: Includes Input Binding and Output Binding。
+* Binding: Includes Input Binding and Output Binding.
 
 Binding serves as a bridge between message middleware and the provider and consumer of the applications. Developers only need to use the Provider or Consumer to produce or consume data, and do not need to worry about the interactions with the message middleware.
 
@@ -120,7 +120,7 @@ For using the Spring Cloud Alibaba RocketMQ Binder, you just need to add it to y
 
 ```xml
 <dependency>
-  <groupId>org.springframework.cloud</groupId>
+  <groupId>com.alibaba.cloud</groupId>
   <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
 </dependency>
 ```
@@ -129,12 +129,17 @@ Alternatively, you can also use the Spring Cloud Stream RocketMQ Starter:
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
 </dependency>
 ```
 
 ### How Spring Cloud Alibaba RocketMQ Binder Works
+
+This is the implementation architecture of Spring Cloud Stream RocketMQ Binder:
+
+.SCS RocketMQ Binder
+image::https://img.alicdn.com/tfs/TB1v8rcbUY1gK0jSZFCXXcwqXXa-1236-773.png[]
 
 The implementation of RocketMQ Binder depend on the https://github.com/apache/rocketmq-spring[RocketMQ-Spring] framework.
 
@@ -165,12 +170,64 @@ Message message = builder.build();
 output().send(message);
 ```
 
+### Support MessageSource
+
+SCS RocketMQ Binder support `MessageSource`，which can receive messages by pull mode：
+
+```java
+@SpringBootApplication
+@EnableBinding(MQApplication.PolledProcessor.class)
+public class MQApplication {
+
+  private final Logger logger =
+  	  LoggerFactory.getLogger(MQApplication.class);
+
+  public static void main(String[] args) {
+    SpringApplication.run(MQApplication.class, args);
+  }
+
+  @Bean
+  public ApplicationRunner runner(PollableMessageSource source,
+  	    MessageChannel dest) {
+    return args -> {
+      while (true) {
+        boolean result = source.poll(m -> {
+          String payload = (String) m.getPayload();
+          logger.info("Received: " + payload);
+          dest.send(MessageBuilder.withPayload(payload.toUpperCase())
+              .copyHeaders(m.getHeaders())
+              .build());
+        }, new ParameterizedTypeReference<String>() { });
+        if (result) {
+          logger.info("Processed a message");
+        }
+        else {
+          logger.info("Nothing to do");
+        }
+        Thread.sleep(5_000);
+      }
+    };
+  }
+
+  public static interface PolledProcessor {
+
+    @Input
+    PollableMessageSource source();
+
+    @Output
+    MessageChannel dest();
+
+  }
+
+}
+```
+
 ### Configuration Options
 
 #### RocketMQ Binder Properties
 
 spring.cloud.stream.rocketmq.binder.name-server::
-The name server of RocketMQ Server.
+The name server of RocketMQ Server(Older versions use the namesrv-addr configuration item).
 +
 Default: `127.0.0.1:9876`.
 spring.cloud.stream.rocketmq.binder.access-key::
