@@ -54,8 +54,9 @@ public class NacosDiscoveryClient implements DiscoveryClient {
     @Override
     public List<ServiceInstance> getInstances(String serviceId) {
         try {
+            String group = discoveryProperties.getGroup();
             List<Instance> instances = discoveryProperties.namingServiceInstance()
-                    .selectInstances(serviceId, true);
+                    .selectInstances(serviceId, group, true);
             return hostToServiceInstanceList(instances, serviceId);
         } catch (Exception e) {
             throw new RuntimeException(
