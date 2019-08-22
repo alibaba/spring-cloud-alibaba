@@ -65,7 +65,7 @@ public class NacosDiscoveryProperties {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryProperties.class);
-	
+
 	/**
 	 * nacos discovery server address.
 	 */
@@ -104,9 +104,14 @@ public class NacosDiscoveryProperties {
 	private float weight = 1;
 
 	/**
-	 * cluster name for nacos server.
+	 * cluster name for nacos .
 	 */
 	private String clusterName = "DEFAULT";
+
+	/**
+	 * group name for nacos
+	 */
+	private String group = "DEFAULT";
 
 	/**
 	 * naming load from local cache at application start. true is load.
@@ -395,25 +400,35 @@ public class NacosDiscoveryProperties {
 		this.watchDelay = watchDelay;
 	}
 
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
 				+ ", endpoint='" + endpoint + '\'' + ", namespace='" + namespace + '\''
 				+ ", watchDelay=" + watchDelay + ", logName='" + logName + '\''
 				+ ", service='" + service + '\'' + ", weight=" + weight
-				+ ", clusterName='" + clusterName + '\'' + ", namingLoadCacheAtStart='"
-				+ namingLoadCacheAtStart + '\'' + ", metadata=" + metadata
-				+ ", registerEnabled=" + registerEnabled + ", ip='" + ip + '\''
-				+ ", networkInterface='" + networkInterface + '\'' + ", port=" + port
-				+ ", secure=" + secure + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + '}';
+				+ ", clusterName='" + clusterName + '\'' + ", group='" + group + '\''
+				+ ", namingLoadCacheAtStart='" + namingLoadCacheAtStart + '\''
+				+ ", metadata=" + metadata + ", registerEnabled=" + registerEnabled
+				+ ", ip='" + ip + '\'' + ", networkInterface='" + networkInterface + '\''
+				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
+				+ '\'' + ", secretKey='" + secretKey + '\'' + ", heartBeatInterval="
+				+ heartBeatInterval + ", heartBeatTimeout=" + heartBeatTimeout
+				+ ", ipDeleteTimeout=" + ipDeleteTimeout + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {
 
 		if (StringUtils.isEmpty(this.getServerAddr())) {
 			String serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
-			if(StringUtils.isEmpty(serverAddr)) {
+			if (StringUtils.isEmpty(serverAddr)) {
 				serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
 			}
 			this.setServerAddr(serverAddr);
@@ -441,6 +456,10 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(this.getEndpoint())) {
 			this.setEndpoint(
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
+		}
+		if (StringUtils.isEmpty(this.getGroup())) {
+			this.setGroup(
+				env.resolvePlaceholders("${spring.cloud.nacos.discovery.group:}"));
 		}
 	}
 
