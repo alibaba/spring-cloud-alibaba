@@ -105,8 +105,9 @@ public class NacosDiscoveryClient implements DiscoveryClient {
     public List<String> getServices() {
 
         try {
+            String group = discoveryProperties.getGroup();
             ListView<String> services = discoveryProperties.namingServiceInstance()
-                    .getServicesOfServer(1, Integer.MAX_VALUE);
+                    .getServicesOfServer(1, Integer.MAX_VALUE, group);
             return services.getData();
         } catch (Exception e) {
             log.error("get service name from nacos server fail,", e);
