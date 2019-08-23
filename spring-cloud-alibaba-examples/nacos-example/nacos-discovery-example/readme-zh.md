@@ -102,7 +102,7 @@ Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon �
 
 	    @FeignClient(name = "service-provider")
 	    public interface EchoService {
-	        @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+	        @GetMapping(value = "/echo/{str}")
 	        String echo(@PathVariable("str") String str);
 	    }
 	    
