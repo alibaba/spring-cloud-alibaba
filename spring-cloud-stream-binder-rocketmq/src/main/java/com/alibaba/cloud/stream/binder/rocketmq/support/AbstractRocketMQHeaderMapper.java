@@ -1,0 +1,47 @@
+package com.alibaba.cloud.stream.binder.rocketmq.support;
+
+import org.apache.rocketmq.common.message.MessageConst;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.Assert;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+/**
+* Base for RocketMQ header mappers.
+*
+* @author caotc
+* @date 2019-08-22
+* @since 2.1.1
+*/
+public abstract class AbstractRocketMQHeaderMapper implements RocketMQHeaderMapper{
+    private static final Charset DEFAULT_CHARSET=StandardCharsets.UTF_8;
+
+    private Charset charset;
+
+    public AbstractRocketMQHeaderMapper() {
+        this(DEFAULT_CHARSET);
+    }
+
+    public AbstractRocketMQHeaderMapper(Charset charset) {
+        Assert.notNull(charset, "'charset' cannot be null");
+        this.charset = charset;
+    }
+
+    protected boolean matches(String headerName) {
+        return !MessageConst.STRING_HASH_SET.contains(headerName) && !MessageHeaders.ID.equals(headerName)
+                && !MessageHeaders.TIMESTAMP.equals(headerName) && !MessageHeaders.CONTENT_TYPE.equals(headerName)
+                && !MessageHeaders.REPLY_CHANNEL.equals(headerName) && !MessageHeaders.ERROR_CHANNEL.equals(headerName);
+    }
+
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public void setCharset(Charset charset) {
+        Assert.notNull(charset, "'charset' cannot be null");
+        this.charset = charset;
+    }
+}

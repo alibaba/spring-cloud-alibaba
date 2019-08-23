@@ -19,6 +19,8 @@ package com.alibaba.cloud.stream.binder.rocketmq;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
+import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -210,6 +212,9 @@ public class RocketMQMessageChannelBinder extends
 				consumerProperties.getExtension().getDelayLevelWhenNextConsume());
 		listenerContainer
 				.setNameServer(rocketBinderConfigurationProperties.getNameServer());
+		RocketMQHeaderMapper headerMapper=new JacksonRocketMQHeaderMapper(this.getApplicationContext()
+				.getBeansOfType(ObjectMapper.class).values().iterator().next());
+		listenerContainer.setHeaderMapper(headerMapper);
 
 		RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(
 				listenerContainer, consumerProperties, instrumentationManager);
