@@ -1,6 +1,6 @@
 == Spring Cloud Alibaba RocketMQ Binder
 
-### RocketMQ 介绍
+=== RocketMQ 介绍
 
 https://rocketmq.apache.org[RocketMQ] 是一款开源的分布式消息系统，基于高可用分布式集群技术，提供低延时的、高可靠的消息发布与订阅服务。同时，广泛应用于多个领域，包括异步通信解耦、企业解决方案、金融支付、电信、电子商务、快递物流、广告营销、社交、即时通信、移动应用、手游、视频、物联网、车联网等。
 
@@ -16,7 +16,7 @@ https://rocketmq.apache.org[RocketMQ] 是一款开源的分布式消息系统，
 
 * 亿级消息堆积能力
 
-### RocketMQ 基本使用
+=== RocketMQ 基本使用
 
 * 下载 RocketMQ
 
@@ -74,7 +74,7 @@ sh bin/mqshutdown broker
 sh bin/mqshutdown namesrv
 ```
 
-### Spring Cloud Stream 介绍
+=== Spring Cloud Stream 介绍
 
 Spring Cloud Stream 是一个用于构建基于消息的微服务应用框架。它基于 SpringBoot 来创建具有生产级别的单机 Spring 应用，并且使用 `Spring Integration` 与 Broker 进行连接。
 
@@ -115,7 +115,7 @@ messageChannel.send(MessageBuilder.withPayload("simple msg").build());
 **Spring Cloud Stream 底层基于这段代码去做了各种抽象。**
 
 
-### 如何使用 Spring Cloud Alibaba RocketMQ Binder ###
+=== 如何使用 Spring Cloud Alibaba RocketMQ Binder ###
 
 如果要在您的项目中引入 RocketMQ Binder，需要引入如下 maven 依赖：
 
@@ -135,7 +135,7 @@ messageChannel.send(MessageBuilder.withPayload("simple msg").build());
 </dependency>
 ```
 
-### Spring Cloud Alibaba RocketMQ Binder 实现
+=== Spring Cloud Alibaba RocketMQ Binder 实现
 
 这是 Spring Cloud Stream RocketMQ Binder 的实现架构:
 
@@ -171,7 +171,7 @@ Message message = builder.build();
 output().send(message);
 ```
 
-### MessageSource 支持
+=== MessageSource 支持
 
 SCS RocketMQ Binder 支持 `MessageSource`，可以进行消息的拉取，例子如下：
 
@@ -225,9 +225,9 @@ public class MQApplication {
 
 
 
-### 配置选项
+=== 配置选项
 
-#### RocketMQ Binder Properties
+==== RocketMQ Binder Properties
 
 spring.cloud.stream.rocketmq.binder.name-server::
 RocketMQ NameServer 地址(老版本使用 namesrv-addr 配置项)。
@@ -251,7 +251,7 @@ spring.cloud.stream.rocketmq.binder.customized-trace-topic::
 Default: `RMQ_SYS_TRACE_TOPIC`.
 
 
-#### RocketMQ Consumer Properties
+==== RocketMQ Consumer Properties
 
 下面的这些配置是以 `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.` 为前缀的 RocketMQ Consumer 相关的配置。
 
@@ -287,7 +287,7 @@ suspendCurrentQueueTimeMillis::
 +
 默认值: `1000`.
 
-#### RocketMQ Provider Properties
+==== RocketMQ Provider Properties
 
 下面的这些配置是以 `spring.cloud.stream.rocketmq.bindings.<channelName>.producer.` 为前缀的 RocketMQ Producer 相关的配置。
 
@@ -336,7 +336,7 @@ retryNextServer::
 +
 默认值: `false`.
 
-### 阿里云 MQ 服务
+=== 阿里云 MQ 服务
 
 使用阿里云 MQ 服务需要配置 AccessKey、SecretKey 以及云上的 NameServer 地址。
 
