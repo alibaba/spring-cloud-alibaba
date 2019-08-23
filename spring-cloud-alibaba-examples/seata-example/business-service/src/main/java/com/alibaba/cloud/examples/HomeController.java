@@ -97,7 +97,7 @@ public class HomeController {
 	}
 
 	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
-	@RequestMapping(value = "/seata/feign", method = RequestMethod.GET, produces = "application/json")
+	@GetMapping(value = "/seata/feign", produces = "application/json")
 	public String feign() {
 
 		String result = storageService.storage(COMMODITY_CODE, ORDER_COUNT);
