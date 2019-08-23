@@ -105,7 +105,7 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 
 	    @FeignClient(name = "service-provider")
 	    public interface EchoService {
-	        @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+	        @GetMapping(value = "/echo/{str}")
 	        String echo(@PathVariable("str") String str);
 	    }
 	    
