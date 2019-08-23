@@ -1,6 +1,7 @@
 package com.alibaba.cloud.examples;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,24 +18,24 @@ public class TestController {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	@GetMapping(value = "/hello")
 	@SentinelResource("resource")
 	public String hello() {
 		return "Hello";
 	}
 
-	@RequestMapping(value = "/aa", method = RequestMethod.GET)
+	@GetMapping(value = "/aa")
 	@SentinelResource("aa")
 	public String aa(int b, int a) {
 		return "Hello test";
 	}
 
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@GetMapping(value = "/test")
 	public String test1() {
 		return "Hello test";
 	}
 
-	@RequestMapping(value = "/template", method = RequestMethod.GET)
+	@GetMapping(value = "/template")
 	public String client() {
 		return restTemplate.getForObject("http://www.taobao.com/test", String.class);
 	}
