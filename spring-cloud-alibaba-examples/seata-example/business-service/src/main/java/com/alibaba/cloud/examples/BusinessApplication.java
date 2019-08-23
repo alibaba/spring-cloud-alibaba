@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,7 +55,7 @@ public class BusinessApplication {
 	@FeignClient(value = "order", url = "http://127.0.0.1:18083")
 	public interface OrderService {
 
-		@RequestMapping(path = "/order", method = RequestMethod.POST)
+		@PostMapping(path = "/order")
 		String order(@RequestParam("userId") String userId,
 				@RequestParam("commodityCode") String commodityCode,
 				@RequestParam("orderCount") int orderCount);
