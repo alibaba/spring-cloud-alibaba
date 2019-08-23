@@ -19,8 +19,11 @@ package com.alibaba.cloud.stream.binder.rocketmq.consuming;
 import static com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants.ROCKETMQ_RECONSUME_TIMES;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
+import com.google.common.collect.Maps;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -43,6 +46,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.integration.support.MessageBuilder;
+import org.springframework.integration.support.MutableMessageHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -87,6 +92,8 @@ public class RocketMQListenerBindingContainer
 	private String charset = "UTF-8";
 
 	private RocketMQListener rocketMQListener;
+
+	private RocketMQHeaderMapper headerMapper;
 
 	private DefaultMQPushConsumer consumer;
 
@@ -369,6 +376,14 @@ public class RocketMQListenerBindingContainer
 		return messageModel;
 	}
 
+	public RocketMQHeaderMapper getHeaderMapper() {
+		return headerMapper;
+	}
+
+	public void setHeaderMapper(RocketMQHeaderMapper headerMapper) {
+		this.headerMapper = headerMapper;
+	}
+
 	public class DefaultMessageListenerConcurrently
 			implements MessageListenerConcurrently {
 
@@ -435,8 +450,10 @@ public class RocketMQListenerBindingContainer
 		int reconsumeTimes = messageExt.getReconsumeTimes();
 		messageExt.putUserProperty(ROCKETMQ_RECONSUME_TIMES,
 				String.valueOf(reconsumeTimes));
-
-		return RocketMQUtil.convertToSpringMessage(messageExt);
+		Message message=RocketMQUtil.convertToSpringMessage(messageExt);
+		Map<String,Object> afterMapperHeaders= Maps.newHashMap();
+		headerMapper.toHeaders(messageExt.getProperties(),afterMapperHeaders);
+		return MessageBuilder.fromMessage(message).copyHeaders(afterMapperHeaders).build();
 	}
 
 }
