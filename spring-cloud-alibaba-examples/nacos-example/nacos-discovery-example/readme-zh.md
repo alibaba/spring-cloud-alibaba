@@ -35,7 +35,7 @@
 
 			@RestController
 			class EchoController {
-				@RequestMapping(value = "/echo/{string}", method = RequestMethod.GET)
+				@GetMapping(value = "/echo/{string}")
 				public String echo(@PathVariable String string) {
 						return string;
 				}
@@ -120,11 +120,11 @@ Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon �
 		    @Autowired
 		    private EchoService echoService;
 		
-		    @RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
+		    @GetMapping(value = "/echo-rest/{str}")
 		    public String rest(@PathVariable String str) {
 		        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
 		    }
-		    @RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
+		    @GetMapping(value = "/echo-feign/{str}")
 		    public String feign(@PathVariable String str) {
 		        return echoService.echo(str);
 		    }
