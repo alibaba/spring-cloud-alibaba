@@ -45,7 +45,7 @@ public class NacosPropertySourceBuilder {
 	private ConfigService configService;
 	private long timeout;
 
-	public NacosPropertySourceBuilder(ConfigService configService, long timeout) {
+	NacosPropertySourceBuilder(ConfigService configService, long timeout) {
 		this.configService = configService;
 		this.timeout = timeout;
 	}
