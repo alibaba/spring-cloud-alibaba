@@ -77,4 +77,35 @@ public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 		httpHeaders.putAll(headers);
 		return httpHeaders;
 	}
+
+	public static SentinelClientHttpResponse degradedHttpResponse() {
+		return new DegradedHttpResponse();
+	}
+
+	static MediaType degradedMediaType() {
+		return MediaType.valueOf(DegradedHttpResponse.DEGRADED);
+	}
+
+	private static class DegradedHttpResponse extends SentinelClientHttpResponse {
+		private final static String DEGRADED = "degraded/degraded;charset=UTF-8";
+
+		private DegradedHttpResponse() {
+			super("RestTemplate request degraded by sentinel");
+		}
+
+		HttpHeaders httpHeaders;
+		@Override
+		public HttpHeaders getHeaders() {
+			if(null == httpHeaders){
+				Map<String, List<String>> headers = new HashMap<>(4);
+				headers.put(HttpHeaders.CONTENT_TYPE, Arrays.asList(DEGRADED));
+				httpHeaders = new HttpHeaders();
+				httpHeaders.putAll(headers);
+			}
+			return httpHeaders;
+		}
+
+
+
+	}
 }

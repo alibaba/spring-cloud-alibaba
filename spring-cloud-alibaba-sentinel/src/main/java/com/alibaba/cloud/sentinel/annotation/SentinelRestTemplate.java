@@ -38,7 +38,5 @@ public @interface SentinelRestTemplate {
 
 	Class<?> fallbackClass() default void.class;
 
-	String urlCleaner() default "";
-
-	Class<?> urlCleanerClass() default void.class;
+	boolean mockEnabled() default true;
 }
