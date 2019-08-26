@@ -1,6 +1,6 @@
 == Spring Cloud Alibaba Sentinel
 
-### Sentinel 介绍
+=== Sentinel 介绍
 
 随着微服务的流行，服务和服务之间的稳定性变得越来越重要。 https://github.com/alibaba/Sentinel[Sentinel] 以流量为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
 
@@ -11,7 +11,7 @@ https://github.com/alibaba/Sentinel[Sentinel] 具有以下特征:
 * *广泛的开源生态*： Sentinel 提供开箱即用的与其它开源框架/库的整合模块，例如与 Spring Cloud、Dubbo、gRPC 的整合。您只需要引入相应的依赖并进行简单的配置即可快速地接入 Sentinel。
 * *完善的 SPI 扩展点*： Sentinel 提供简单易用、完善的 SPI 扩展点。您可以通过实现扩展点，快速的定制逻辑。例如定制规则管理、适配数据源等。
 
-### 如何使用 Sentinel
+=== 如何使用 Sentinel
 
 如果要在您的项目中引入 Sentinel，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-sentinel` 的 starter。
 
@@ -75,7 +75,7 @@ public class TestController {
 }
 ```
 
-##### Sentinel 控制台
+===== Sentinel 控制台
 
 Sentinel 控制台提供一个轻量级的控制台，它提供机器发现、单机资源实时监控、集群资源汇总，以及规则管理的功能。您只需要对应用进行简单的配置，就可以使用这些功能。
 
@@ -86,7 +86,7 @@ image::https://github.com/alibaba/Sentinel/wiki/image/dashboard.png[]
 
 开启该功能需要3个步骤：
 
-###### 获取控制台
+====== 获取控制台
 
 您可以从 https://github.com/alibaba/Sentinel/releases[release 页面] 下载最新版本的控制台 jar 包。
 
@@ -96,7 +96,7 @@ image::https://github.com/alibaba/Sentinel/wiki/image/dashboard.png[]
 * 使用以下命令将代码打包成一个 fat jar: `mvn clean package`
 
 
-###### 启动控制台
+====== 启动控制台
 
 Sentinel 控制台是一个标准的 SpringBoot 应用，以 SpringBoot 的方式运行 jar 包即可。
 
@@ -106,7 +106,7 @@ java -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject
 
 如若8080端口冲突，可使用 `-Dserver.port=新端口` 进行设置。
 
-#### 配置控制台信息
+==== 配置控制台信息
 
 .application.yml
 ----
@@ -122,7 +122,7 @@ spring:
 
 更多 Sentinel 控制台的使用及问题参考： https://github.com/alibaba/Sentinel/wiki/%E6%8E%A7%E5%88%B6%E5%8F%B0[Sentinel控制台]
 
-### OpenFeign 支持
+=== OpenFeign 支持
 
 Sentinel 适配了 https://github.com/OpenFeign/feign[OpenFeign] 组件。如果想使用，除了引入 `sentinel-starter` 的依赖外还需要 2 个步骤：
 
@@ -163,7 +163,7 @@ NOTE: Feign 对应的接口中的资源名策略定义：httpmethod:protocol://r
 
 `EchoService` 接口中方法 `echo` 对应的资源名为 `GET:http://service-provider/echo/{str}`。
 
-### RestTemplate 支持
+=== RestTemplate 支持
 
 Spring Cloud Alibaba Sentinel 支持对 `RestTemplate` 的服务调用使用 Sentinel 进行保护，在构造 `RestTemplate` bean的时候需要加上 `@SentinelRestTemplate` 注解。
 
@@ -205,7 +205,7 @@ Sentinel RestTemplate 限流的资源规则提供两种粒度：
 
 NOTE: 以 `https://www.taobao.com/test` 这个 url 并使用 GET 方法为例。对应的资源名有两种粒度，分别是 `GET:https://www.taobao.com` 以及 `GET:https://www.taobao.com/test`
 
-### 动态数据源支持
+=== 动态数据源支持
 
 `SentinelProperties` 内部提供了 `TreeMap` 类型的 `datasource` 属性用于配置数据源信息。
 
@@ -253,7 +253,7 @@ NOTE: 默认情况下，xml 格式是不支持的。需要添加 `jackson-datafo
 
 关于 Sentinel 动态数据源的实现原理，参考： https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95[动态规则扩展]
 
-### Zuul 支持
+=== Zuul 支持
 
 https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
 
@@ -276,7 +276,7 @@ https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[�
 </dependency>
 ```
 
-### Spring Cloud Gateway 支持
+=== Spring Cloud Gateway 支持
 
 https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
 
@@ -299,7 +299,7 @@ https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[�
 </dependency>
 ```
 
-### Sentinel 对外暴露的 Endpoint
+=== Sentinel 对外暴露的 Endpoint
 
 Sentinel 内部提供了一个 Endpoint, 对应的 endpoint id 为 `sentinel`。
 
@@ -403,7 +403,7 @@ Endpoint 暴露的 json 中包含了多种属性:
 }
 ----
 
-### 关于 Sentinel Starter 更多的配置项信息
+=== 关于 Sentinel Starter 更多的配置项信息
 
 下表显示当应用的 `ApplicationContext` 中存在对应的Bean的类型时，会进行自动化设置：
 
