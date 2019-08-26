@@ -111,7 +111,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * group name for nacos
 	 */
-	private String group = "DEFAULT";
+	private String group = "DEFAULT_GROUP";
 
 	/**
 	 * naming load from local cache at application start. true is load.
