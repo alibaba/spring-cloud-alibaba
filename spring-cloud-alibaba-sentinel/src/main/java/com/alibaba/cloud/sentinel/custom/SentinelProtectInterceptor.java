@@ -108,7 +108,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				return methodInvoke(fallbackMethod, args);
 			}
 			else {
-				return new SentinelClientHttpResponse();
+				return degradedHttpResponse(sentinelRestTemplate.mockEnabled(),ex);
 			}
 		}
 		// handle flow
@@ -119,7 +119,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			return methodInvoke(blockHandler, args);
 		}
 		else {
-			return new SentinelClientHttpResponse();
+			return degradedHttpResponse(sentinelRestTemplate.mockEnabled(),ex);
 		}
 	}
 
@@ -145,6 +145,14 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 
 	private boolean isDegradeFailure(BlockException ex) {
 		return ex instanceof DegradeException;
+	}
+
+
+	private SentinelClientHttpResponse degradedHttpResponse(boolean enabled,BlockException ex) {
+		if(enabled){
+			return SentinelClientHttpResponse.degradedHttpResponse();
+		}
+		throw new RuntimeException(ex);
 	}
 
 }

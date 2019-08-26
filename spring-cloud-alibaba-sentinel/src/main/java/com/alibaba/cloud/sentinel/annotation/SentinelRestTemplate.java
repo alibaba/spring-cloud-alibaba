@@ -38,4 +38,5 @@ public @interface SentinelRestTemplate {
 
 	Class<?> fallbackClass() default void.class;
 
+	boolean mockEnabled() default true;
 }
