@@ -52,7 +52,8 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper{
     }
 
     @Override
-    public void fromHeaders(Map<String,Object> headers, Map<String, String> target) {
+    public Map<String,String> fromHeaders(MessageHeaders headers) {
+        final Map<String, String> target = Maps.newHashMap();
         final Map<String, String> jsonHeaders = Maps.newHashMap();
         headers.forEach((key, value) -> {
             if (matches(key)) {
@@ -78,10 +79,12 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper{
                 log.error( "Could not add json types header",e);
             }
         }
+        return target;
     }
 
     @Override
-    public void toHeaders(Map<String, String> source, Map<String,Object> target) {
+    public MessageHeaders toHeaders(Map<String,String> source) {
+        final Map<String, Object> target = Maps.newHashMap();
         final Map<String, String> jsonTypes = decodeJsonTypes(source);
         source.forEach((key,value) -> {
             if (!(key.equals(JSON_TYPES))) {
@@ -116,6 +119,17 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper{
                 }
             }
         });
+        return new MessageHeaders(target);
+    }
+
+    /**
+     * @param packagesToTrust the packages to trust.
+     * @see #addTrustedPackages(Collection)
+     */
+    public void addTrustedPackages(String... packagesToTrust) {
+        if(Objects.nonNull(packagesToTrust)){
+            addTrustedPackages(Arrays.asList(packagesToTrust));
+        }
     }
 
     /**
@@ -126,7 +140,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper{
      * application with value of type {@link NonTrustedHeaderType}.
      * @param packagesToTrust the packages to trust.
      */
-    public void addTrustedPackages(String... packagesToTrust) {
+    public void addTrustedPackages(Collection<String> packagesToTrust) {
         if (packagesToTrust != null) {
             for (String whiteList : packagesToTrust) {
                 if ("*".equals(whiteList)) {
@@ -139,7 +153,6 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper{
             }
         }
     }
-
 
     public Set<String> getTrustedPackages() {
         return this.trustedPackages;

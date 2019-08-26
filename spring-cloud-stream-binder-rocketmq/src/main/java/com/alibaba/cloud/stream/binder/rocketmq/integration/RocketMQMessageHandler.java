@@ -67,7 +67,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	private final RocketMQTemplate rocketMQTemplate;
 
-    private final RocketMQHeaderMapper headerMapper;
+    private RocketMQHeaderMapper headerMapper;
 
 	private final Boolean transactional;
 
@@ -97,8 +97,6 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 		this.instrumentationManager = instrumentationManager;
 		this.producerProperties = producerProperties;
 		this.partitioningInterceptor = partitioningInterceptor;
-
-		this.headerMapper=new JacksonRocketMQHeaderMapper(rocketMQTemplate.getObjectMapper());
 	}
 
 	@Override
@@ -159,8 +157,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 			throws Exception {
 		try {
             //issue 737 fix
-            Map<String,String> jsonHeaders= Maps.newHashMap();
-            headerMapper.fromHeaders(message.getHeaders(),jsonHeaders);
+			Map<String,String> jsonHeaders=headerMapper.fromHeaders(message.getHeaders());
             message = org.springframework.messaging.support.MessageBuilder
                     .fromMessage(message).copyHeaders(jsonHeaders)
                     .build();
@@ -295,5 +292,13 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	public void setSync(boolean sync) {
 		this.sync = sync;
+	}
+
+	public RocketMQHeaderMapper getHeaderMapper() {
+		return headerMapper;
+	}
+
+	public void setHeaderMapper(RocketMQHeaderMapper headerMapper) {
+		this.headerMapper = headerMapper;
 	}
 }
