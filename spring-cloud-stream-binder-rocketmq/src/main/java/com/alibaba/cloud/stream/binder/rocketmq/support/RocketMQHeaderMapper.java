@@ -12,8 +12,16 @@ import java.util.Map;
 * @since 2.1.1
 */
 public interface RocketMQHeaderMapper {
-
-    void fromHeaders(Map<String,Object> headers, Map<String,String> target);
-
-    void toHeaders(Map<String,String> source, Map<String,Object> target);
+    /**
+     * Map from the given {@link MessageHeaders} to the specified target message.
+     * @param headers the abstracted MessageHeaders.
+     * @return  the native target message.
+     */
+    Map<String,String> fromHeaders(MessageHeaders headers);
+    /**
+     * Map from the given target message to abstracted {@link MessageHeaders}.
+     * @param source the native target message.
+     * @return  the target headers.
+     */
+    MessageHeaders toHeaders(Map<String,String> source);
 }
