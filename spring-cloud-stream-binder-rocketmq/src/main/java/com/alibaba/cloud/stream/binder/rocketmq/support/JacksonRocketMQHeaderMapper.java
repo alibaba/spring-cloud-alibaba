@@ -87,7 +87,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper{
         final Map<String, Object> target = Maps.newHashMap();
         final Map<String, String> jsonTypes = decodeJsonTypes(source);
         source.forEach((key,value) -> {
-            if (!(key.equals(JSON_TYPES))) {
+            if (matches(key) && !(key.equals(JSON_TYPES))) {
                 if (jsonTypes != null && jsonTypes.containsKey(key)) {
                     Class<?> type = Object.class;
                     String requestedType = jsonTypes.get(key);
@@ -113,8 +113,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper{
                     }else {
                         target.put(key, new NonTrustedHeaderType(value, requestedType));
                     }
-                }
-                else {
+                }else {
                     target.put(key, value);
                 }
             }
