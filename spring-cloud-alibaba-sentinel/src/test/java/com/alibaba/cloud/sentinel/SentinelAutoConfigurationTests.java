@@ -287,7 +287,7 @@ public class SentinelAutoConfigurationTests {
 	static class SentinelTestConfiguration {
 
 		@Bean
-		@SentinelRestTemplate
+		@SentinelRestTemplate(mockEnabled = false)
 		RestTemplate restTemplate() {
 			RestTemplate restTemplate = new RestTemplate();
 			restTemplate.getInterceptors().add(mock(ClientHttpRequestInterceptor.class));

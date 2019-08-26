@@ -108,7 +108,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				return methodInvoke(fallbackMethod, args);
 			}
 			else {
-				return degradedHttpResponse(sentinelRestTemplate.mockEnabled(),ex);
+				return degradedHttpResponse(sentinelRestTemplate.mockEnabled());
 			}
 		}
 		// handle flow
@@ -119,7 +119,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			return methodInvoke(blockHandler, args);
 		}
 		else {
-			return degradedHttpResponse(sentinelRestTemplate.mockEnabled(),ex);
+			return degradedHttpResponse(sentinelRestTemplate.mockEnabled());
 		}
 	}
 
@@ -148,11 +148,11 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 	}
 
 
-	private SentinelClientHttpResponse degradedHttpResponse(boolean enabled,BlockException ex) {
+	private SentinelClientHttpResponse degradedHttpResponse(boolean enabled) {
 		if(enabled){
 			return SentinelClientHttpResponse.degradedHttpResponse();
 		}
-		throw new RuntimeException(ex);
+		return new SentinelClientHttpResponse();
 	}
 
 }
