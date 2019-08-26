@@ -444,16 +444,15 @@ public class RocketMQListenerBindingContainer
 	 * @param messageExt the rocketmq message
 	 * @return the converted Spring {@link Message}
 	 */
-	private Message convertToSpringMessage(MessageExt messageExt) {
+	@SuppressWarnings("unchecked")
+    private Message convertToSpringMessage(MessageExt messageExt) {
 
 		// add reconsume-times header to messageExt
 		int reconsumeTimes = messageExt.getReconsumeTimes();
 		messageExt.putUserProperty(ROCKETMQ_RECONSUME_TIMES,
 				String.valueOf(reconsumeTimes));
 		Message message=RocketMQUtil.convertToSpringMessage(messageExt);
-		Map<String,Object> afterMapperHeaders= Maps.newHashMap();
-		headerMapper.toHeaders(messageExt.getProperties(),afterMapperHeaders);
-		return MessageBuilder.fromMessage(message).copyHeaders(afterMapperHeaders).build();
+		return MessageBuilder.fromMessage(message).copyHeaders(headerMapper.toHeaders(messageExt.getProperties())).build();
 	}
 
 }
