@@ -52,7 +52,8 @@ public class NacosServerListTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(anyString(), eq(true))).thenReturn(null);
+		when(namingService.selectInstances(anyString(), eq("DEFAULT"), eq(true)))
+				.thenReturn(null);
 
 		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
@@ -73,7 +74,9 @@ public class NacosServerListTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(eq("test-service"), eq(true)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances);
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
@@ -105,7 +108,8 @@ public class NacosServerListTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(eq("test-service"), eq(true)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances.stream().filter(Instance::isHealthy)
 						.collect(Collectors.toList()));
 
@@ -142,7 +146,8 @@ public class NacosServerListTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(eq("test-service"), eq(true)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances.stream().filter(Instance::isHealthy)
 						.collect(Collectors.toList()));
 
