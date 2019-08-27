@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
@@ -53,11 +52,12 @@ public class NacosServerListTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(anyString(), eq(true))).thenReturn(null);
+		when(namingService.selectInstances(anyString(), eq("DEFAULT"), eq(true)))
+				.thenReturn(null);
 
 		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
-		Assertions.assertThat(servers).isEmpty();
+		assertThat(servers).isEmpty();
 	}
 
 	@Test
@@ -74,7 +74,9 @@ public class NacosServerListTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(eq("test-service"), eq(true)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances);
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
@@ -82,10 +84,10 @@ public class NacosServerListTests {
 		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(clientConfig);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
-		Assertions.assertThat(servers).hasSize(1);
+		assertThat(servers).hasSize(1);
 
 		servers = serverList.getUpdatedListOfServers();
-		Assertions.assertThat(servers).hasSize(1);
+		assertThat(servers).hasSize(1);
 	}
 
 	@Test
@@ -106,7 +108,8 @@ public class NacosServerListTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(eq("test-service"), eq(true)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances.stream().filter(Instance::isHealthy)
 						.collect(Collectors.toList()));
 
@@ -115,7 +118,7 @@ public class NacosServerListTests {
 		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(clientConfig);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
-		Assertions.assertThat(servers).hasSize(1);
+		assertThat(servers).hasSize(1);
 
 		NacosServer nacosServer = servers.get(0);
 
@@ -143,7 +146,8 @@ public class NacosServerListTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(eq("test-service"), eq(true)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances.stream().filter(Instance::isHealthy)
 						.collect(Collectors.toList()));
 
@@ -153,7 +157,7 @@ public class NacosServerListTests {
 		serverList.initWithNiwsConfig(clientConfig);
 
 		List<NacosServer> servers = serverList.getUpdatedListOfServers();
-		Assertions.assertThat(servers).hasSize(1);
+		assertThat(servers).hasSize(1);
 
 		assertThat(servers.get(0).getInstance().isHealthy()).isEqualTo(true);
 		assertThat(servers.get(0).getInstance().getMetadata().get("instanceNum"))

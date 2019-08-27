@@ -66,7 +66,7 @@ public class NacosDiscoveryProperties {
 			.getLogger(NacosDiscoveryProperties.class);
 
 	/**
-	 * nacos discovery server address
+	 * nacos discovery server address.
 	 */
 	private String serverAddr;
 
@@ -87,12 +87,12 @@ public class NacosDiscoveryProperties {
 	private long watchDelay = 30000;
 
 	/**
-	 * nacos naming log file name
+	 * nacos naming log file name.
 	 */
 	private String logName;
 
 	/**
-	 * service name to registry
+	 * service name to registry.
 	 */
 	@Value("${spring.cloud.nacos.discovery.service:${spring.application.name:}}")
 	private String service;
@@ -103,12 +103,17 @@ public class NacosDiscoveryProperties {
 	private float weight = 1;
 
 	/**
-	 * cluster name for nacos server.
+	 * cluster name for nacos .
 	 */
 	private String clusterName = "DEFAULT";
 
 	/**
-	 * naming load from local cache at application start. true is load
+	 * group name for nacos
+	 */
+	private String group = "DEFAULT_GROUP";
+
+	/**
+	 * naming load from local cache at application start. true is load.
 	 */
 	private String namingLoadCacheAtStart = "false";
 
@@ -130,18 +135,18 @@ public class NacosDiscoveryProperties {
 	private String ip;
 
 	/**
-	 * which network interface's ip you want to register
+	 * which network interface's ip you want to register.
 	 */
 	private String networkInterface = "";
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
-	 * auto detect port works well
+	 * auto detect port works well.
 	 */
 	private int port = -1;
 
 	/**
-	 * whether your service is a https service
+	 * whether your service is a https service.
 	 */
 	private boolean secure = false;
 
@@ -189,7 +194,7 @@ public class NacosDiscoveryProperties {
 		}
 
 		serverAddr = Objects.toString(serverAddr, "");
-		if (serverAddr.lastIndexOf("/") != -1) {
+		if (serverAddr.endsWith("/")) {
 			serverAddr = serverAddr.substring(0, serverAddr.length() - 1);
 		}
 		endpoint = Objects.toString(endpoint, "");
@@ -394,25 +399,38 @@ public class NacosDiscoveryProperties {
 		this.watchDelay = watchDelay;
 	}
 
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
 				+ ", endpoint='" + endpoint + '\'' + ", namespace='" + namespace + '\''
 				+ ", watchDelay=" + watchDelay + ", logName='" + logName + '\''
 				+ ", service='" + service + '\'' + ", weight=" + weight
-				+ ", clusterName='" + clusterName + '\'' + ", namingLoadCacheAtStart='"
-				+ namingLoadCacheAtStart + '\'' + ", metadata=" + metadata
-				+ ", registerEnabled=" + registerEnabled + ", ip='" + ip + '\''
-				+ ", networkInterface='" + networkInterface + '\'' + ", port=" + port
-				+ ", secure=" + secure + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + '}';
+				+ ", clusterName='" + clusterName + '\'' + ", group='" + group + '\''
+				+ ", namingLoadCacheAtStart='" + namingLoadCacheAtStart + '\''
+				+ ", metadata=" + metadata + ", registerEnabled=" + registerEnabled
+				+ ", ip='" + ip + '\'' + ", networkInterface='" + networkInterface + '\''
+				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
+				+ '\'' + ", secretKey='" + secretKey + '\'' + ", heartBeatInterval="
+				+ heartBeatInterval + ", heartBeatTimeout=" + heartBeatTimeout
+				+ ", ipDeleteTimeout=" + ipDeleteTimeout + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {
 
 		if (StringUtils.isEmpty(this.getServerAddr())) {
-			this.setServerAddr(env
-					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}"));
+			String serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
+			if (StringUtils.isEmpty(serverAddr)) {
+				serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
+			}
+			this.setServerAddr(serverAddr);
 		}
 		if (StringUtils.isEmpty(this.getNamespace())) {
 			this.setNamespace(env
@@ -437,6 +455,10 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(this.getEndpoint())) {
 			this.setEndpoint(
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.endpoint:}"));
+		}
+		if (StringUtils.isEmpty(this.getGroup())) {
+			this.setGroup(
+				env.resolvePlaceholders("${spring.cloud.nacos.discovery.group:}"));
 		}
 	}
 

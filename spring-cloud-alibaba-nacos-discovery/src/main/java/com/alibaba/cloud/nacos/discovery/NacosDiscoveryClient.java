@@ -16,21 +16,20 @@
 
 package com.alibaba.cloud.nacos.discovery;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceInstance;
+import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.api.naming.pojo.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosServiceInstance;
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.api.naming.pojo.ListView;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaojing
@@ -55,8 +54,9 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	@Override
 	public List<ServiceInstance> getInstances(String serviceId) {
 		try {
+			String group = discoveryProperties.getGroup();
 			List<Instance> instances = discoveryProperties.namingServiceInstance()
-					.selectInstances(serviceId, true);
+					.selectInstances(serviceId, group, true);
 			return hostToServiceInstanceList(instances, serviceId);
 		}
 		catch (Exception e) {
@@ -106,8 +106,9 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public List<String> getServices() {
 
 		try {
+			String group = discoveryProperties.getGroup();
 			ListView<String> services = discoveryProperties.namingServiceInstance()
-					.getServicesOfServer(1, Integer.MAX_VALUE);
+					.getServicesOfServer(1, Integer.MAX_VALUE, group);
 			return services.getData();
 		}
 		catch (Exception e) {

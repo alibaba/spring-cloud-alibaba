@@ -54,11 +54,12 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		String serviceId = registration.getServiceId();
+		String group = nacosDiscoveryProperties.getGroup();
 
 		Instance instance = getNacosInstanceFromRegistration(registration);
 
 		try {
-			namingService.registerInstance(serviceId, instance);
+			namingService.registerInstance(serviceId, group, instance);
 			log.info("nacos registry, {} {}:{} register finished", serviceId,
 					instance.getIp(), instance.getPort());
 		}
@@ -80,9 +81,10 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
 		String serviceId = registration.getServiceId();
+		String group = nacosDiscoveryProperties.getGroup();
 
 		try {
-			namingService.deregisterInstance(serviceId, registration.getHost(),
+			namingService.deregisterInstance(serviceId, group, registration.getHost(),
 					registration.getPort(), nacosDiscoveryProperties.getClusterName());
 		}
 		catch (Exception e) {
@@ -153,6 +155,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		instance.setWeight(nacosDiscoveryProperties.getWeight());
 		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
 		instance.setMetadata(registration.getMetadata());
+
 		return instance;
 	}
 
