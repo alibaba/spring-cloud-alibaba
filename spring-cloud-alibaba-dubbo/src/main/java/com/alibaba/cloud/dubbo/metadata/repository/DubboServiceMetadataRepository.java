@@ -616,7 +616,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	protected void initSubscribedDubboMetadataService(String serviceName) {
-		Optional.of(loadBalancerClient.choose(serviceName))
+		Optional.ofNullable(loadBalancerClient.choose(serviceName))
 				.map(this::getDubboMetadataServiceURLs)
 				.ifPresent(dubboMetadataServiceURLs -> {
 					dubboMetadataServiceURLs.forEach(dubboMetadataServiceURL -> {
