@@ -54,8 +54,9 @@ public class NacosDiscoveryClient implements DiscoveryClient {
     @Override
     public List<ServiceInstance> getInstances(String serviceId) {
         try {
+            String group = discoveryProperties.getGroup();
             List<Instance> instances = discoveryProperties.namingServiceInstance()
-                    .selectInstances(serviceId, true);
+                    .selectInstances(serviceId, group, true);
             return hostToServiceInstanceList(instances, serviceId);
         } catch (Exception e) {
             throw new RuntimeException(
@@ -104,8 +105,9 @@ public class NacosDiscoveryClient implements DiscoveryClient {
     public List<String> getServices() {
 
         try {
+            String group = discoveryProperties.getGroup();
             ListView<String> services = discoveryProperties.namingServiceInstance()
-                    .getServicesOfServer(1, Integer.MAX_VALUE);
+                    .getServicesOfServer(1, Integer.MAX_VALUE, group);
             return services.getData();
         } catch (Exception e) {
             log.error("get service name from nacos server fail,", e);
