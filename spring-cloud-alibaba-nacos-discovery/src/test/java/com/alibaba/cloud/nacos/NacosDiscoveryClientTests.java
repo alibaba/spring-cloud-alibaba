@@ -16,24 +16,23 @@
 
 package com.alibaba.cloud.nacos;
 
-import static com.alibaba.cloud.nacos.test.NacosMockTest.serviceInstance;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.api.naming.pojo.ListView;
+import org.junit.Test;
+import org.springframework.cloud.client.ServiceInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Test;
-import org.springframework.cloud.client.ServiceInstance;
-
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.api.naming.pojo.ListView;
+import static com.alibaba.cloud.nacos.test.NacosMockTest.serviceInstance;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author xiaojing
@@ -61,7 +60,8 @@ public class NacosDiscoveryClientTests {
 		NamingService namingService = mock(NamingService.class);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.selectInstances(eq(serviceName), eq(true)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.selectInstances(eq(serviceName),eq("DEFAULT"), eq(true)))
 				.thenReturn(instances);
 
 		NacosDiscoveryClient discoveryClient = new NacosDiscoveryClient(
@@ -104,7 +104,8 @@ public class NacosDiscoveryClientTests {
 				nacosDiscoveryProperties);
 
 		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
-		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE)))
+		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
+		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE),eq("DEFAULT")))
 				.thenReturn(nacosServices);
 
 		List<String> services = discoveryClient.getServices();
