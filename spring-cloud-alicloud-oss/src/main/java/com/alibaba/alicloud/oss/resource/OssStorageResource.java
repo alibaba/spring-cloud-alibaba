@@ -22,6 +22,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 import org.springframework.util.Assert;
@@ -43,6 +45,10 @@ import com.aliyun.oss.model.OSSObject;
  * @see OSSObject
  */
 public class OssStorageResource implements WritableResource {
+
+	private static final Logger logger = LoggerFactory.getLogger(OssStorageResource.class);
+
+	private static final String MESSAGE_KEY_NOT_EXIST = "The specified key does not exist.";
 
 	private final OSS oss;
 	private final String bucketName;
@@ -217,6 +223,12 @@ public class OssStorageResource implements WritableResource {
 		return !isBucket() && (this.autoCreateFiles || exists());
 	}
 
+	/**
+	 * 获取一个OutputStream用于写操作。
+	 * 注意：写完成后必须关闭该流
+	 * @return
+	 * @throws IOException
+	 */
 	@Override
 	public OutputStream getOutputStream() throws IOException {
 		if (isBucket()) {
@@ -224,7 +236,17 @@ public class OssStorageResource implements WritableResource {
 				"Cannot open an output stream to a bucket: '" + getURI() + "'");
 		}
 		else {
-			OSSObject ossObject = this.getOSSObject();
+			OSSObject ossObject;
+
+		    try {
+				ossObject = this.getOSSObject();
+			} catch (OSSException ex) {
+		    	if (ex.getMessage() != null && ex.getMessage().startsWith(MESSAGE_KEY_NOT_EXIST)) {
+		    		ossObject = null;
+				} else {
+		    		throw ex;
+				}
+			}
 
 			if (ossObject == null ) {
 				if (!this.autoCreateFiles) {
@@ -237,7 +259,11 @@ public class OssStorageResource implements WritableResource {
 			final PipedOutputStream out = new PipedOutputStream(in);
 
 			executorService.submit(() -> {
-				    OssStorageResource.this.oss.putObject(bucketName, objectKey, in);
+				try {
+					OssStorageResource.this.oss.putObject(bucketName, objectKey, in);
+				} catch (Exception ex) {
+					logger.error("Failed to put object", ex);
+				}
 			});
 
 			return out;
