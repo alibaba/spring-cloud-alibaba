@@ -1,7 +1,9 @@
 package com.alibaba.cloud.examples;
 
-import java.nio.charset.Charset;
-
+import com.alibaba.alicloud.oss.resource.OssStorageResource;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.common.utils.IOUtils;
+import com.aliyun.oss.model.OSSObject;
 import org.apache.commons.codec.CharEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,9 +12,9 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.common.utils.IOUtils;
-import com.aliyun.oss.model.OSSObject;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * OSS Controller
@@ -25,8 +27,11 @@ public class OssController {
 	@Autowired
 	private OSS ossClient;
 
+	@Value("classpath:/oss-test.json")
+	private Resource localFile;
+
 	@Value("oss://" + OssApplication.BUCKET_NAME + "/oss-test.json")
-	private Resource file;
+	private Resource remoteFile;
 
 	@GetMapping("/upload")
 	public String upload() {
@@ -45,7 +50,7 @@ public class OssController {
 	public String fileResource() {
 		try {
 			return "get file resource success. content: " + StreamUtils.copyToString(
-					file.getInputStream(), Charset.forName(CharEncoding.UTF_8));
+					remoteFile.getInputStream(), Charset.forName(CharEncoding.UTF_8));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -65,6 +70,23 @@ public class OssController {
 			e.printStackTrace();
 			return "download fail: " + e.getMessage();
 		}
+	}
+
+	@GetMapping("/upload2")
+	public String uploadWithOutputStream() {
+		OssStorageResource ossStorageResource = new OssStorageResource(this.ossClient,
+			"oss://" + OssApplication.BUCKET_NAME + "/oss-test.json", true);
+		try {
+			InputStream inputStream = localFile.getInputStream();
+			OutputStream outputStream = ossStorageResource.getOutputStream();
+			StreamUtils.copy(inputStream, outputStream);
+			inputStream.close();
+			outputStream.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return "upload with outputStream failed";
+		}
+		return "upload success";
 	}
 
 }
