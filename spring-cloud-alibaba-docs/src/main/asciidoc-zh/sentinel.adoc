@@ -140,7 +140,7 @@ Sentinel 适配了 https://github.com/OpenFeign/feign[OpenFeign] 组件。如果
 ```java
 @FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 public interface EchoService {
-    @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+    @GetMapping(value = "/echo/{str}")
     String echo(@PathVariable("str") String str);
 }
 

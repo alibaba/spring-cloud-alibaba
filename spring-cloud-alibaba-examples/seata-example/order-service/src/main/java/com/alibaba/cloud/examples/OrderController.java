@@ -33,6 +33,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,7 +63,7 @@ public class OrderController {
 		this.random = new Random();
 	}
 
-	@RequestMapping(value = "/order", method = RequestMethod.POST, produces = "application/json")
+	@PostMapping(value = "/order", produces = "application/json")
 	public String order(String userId, String commodityCode, int orderCount) {
 		LOGGER.info("Order Service Begin ... xid: " + RootContext.getXID());
 
