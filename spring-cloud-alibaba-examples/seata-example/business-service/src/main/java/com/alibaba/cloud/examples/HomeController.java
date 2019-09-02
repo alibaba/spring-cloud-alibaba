@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,7 +61,7 @@ public class HomeController {
 	}
 
 	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
-	@RequestMapping(value = "/seata/rest", method = RequestMethod.GET, produces = "application/json")
+	@GetMapping(value = "/seata/rest", produces = "application/json")
 	public String rest() {
 
 		String result = restTemplate.getForObject(
@@ -96,7 +97,7 @@ public class HomeController {
 	}
 
 	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
-	@RequestMapping(value = "/seata/feign", method = RequestMethod.GET, produces = "application/json")
+	@GetMapping(value = "/seata/feign", produces = "application/json")
 	public String feign() {
 
 		String result = storageService.storage(COMMODITY_CODE, ORDER_COUNT);

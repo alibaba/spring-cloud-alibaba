@@ -141,7 +141,7 @@ This is a simple usage of `FeignClient`:
 ```java
 @FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 public interface EchoService {
-    @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+    @GetMapping(value = "/echo/{str}")
     String echo(@PathVariable("str") String str);
 }
 
