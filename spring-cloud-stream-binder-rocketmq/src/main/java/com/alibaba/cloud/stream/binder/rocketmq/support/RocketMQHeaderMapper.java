@@ -8,8 +8,7 @@ import org.springframework.messaging.MessageHeaders;
  * header value mapper for RocketMQ
  *
  * @author caotc
- * @date 2019-08-22
- * @since 2.1.1
+ * @since 2.1.1.RELEASE
  */
 public interface RocketMQHeaderMapper {
 	/**

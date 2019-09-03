@@ -11,8 +11,7 @@ import org.springframework.util.Assert;
  * Base for RocketMQ header mappers.
  *
  * @author caotc
- * @date 2019-08-22
- * @since 2.1.1
+ * @since 2.1.1.RELEASE
  */
 public abstract class AbstractRocketMQHeaderMapper implements RocketMQHeaderMapper {
 	private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
