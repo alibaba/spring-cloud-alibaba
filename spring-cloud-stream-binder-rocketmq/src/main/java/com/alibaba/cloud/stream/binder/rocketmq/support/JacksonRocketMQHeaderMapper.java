@@ -20,8 +20,7 @@ import com.google.common.collect.Maps;
  * {@link #JSON_TYPES}.
  *
  * @author caotc
- * @date 2019-08-22
- * @since 2.1.1
+ * @since 2.1.1.RELEASE
  */
 public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 	private final static Logger log = LoggerFactory
