@@ -67,7 +67,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	private final RocketMQTemplate rocketMQTemplate;
 
-    private RocketMQHeaderMapper headerMapper;
+	private RocketMQHeaderMapper headerMapper;
 
 	private final Boolean transactional;
 
@@ -156,12 +156,11 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 	protected void handleMessageInternal(org.springframework.messaging.Message<?> message)
 			throws Exception {
 		try {
-            //issue 737 fix
-			Map<String,String> jsonHeaders=headerMapper.fromHeaders(message.getHeaders());
-            message = org.springframework.messaging.support.MessageBuilder
-                    .fromMessage(message).copyHeaders(jsonHeaders)
-                    .build();
-
+			// issue 737 fix
+			Map<String, String> jsonHeaders = headerMapper
+					.fromHeaders(message.getHeaders());
+			message = org.springframework.messaging.support.MessageBuilder
+					.fromMessage(message).copyHeaders(jsonHeaders).build();
 
 			final StringBuilder topicWithTags = new StringBuilder(destination);
 			String tags = Optional
@@ -210,8 +209,8 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 					log.debug("sync send to topic " + topicWithTags + " " + sendRes);
 				}
 				else {
-                    Message<?> finalMessage = message;
-                    SendCallback sendCallback = new SendCallback() {
+					Message<?> finalMessage = message;
+					SendCallback sendCallback = new SendCallback() {
 						@Override
 						public void onSuccess(SendResult sendResult) {
 							log.debug("async send to topic " + topicWithTags + " "
@@ -226,7 +225,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 								getSendFailureChannel().send(
 										RocketMQMessageHandler.this.errorMessageStrategy
 												.buildErrorMessage(new MessagingException(
-                                                        finalMessage, e), null));
+														finalMessage, e), null));
 							}
 						}
 					};
