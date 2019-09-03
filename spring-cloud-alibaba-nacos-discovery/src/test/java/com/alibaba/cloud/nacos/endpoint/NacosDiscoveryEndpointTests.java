@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.client.naming.net.NamingProxy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,15 +59,12 @@ public class NacosDiscoveryEndpointTests {
 	}
 
 	@Autowired
-	private NacosDiscoveryProperties properties;
+	private NacosDiscoveryHealthIndicator healthIndicator;
 
 	@Test
 	public void checkoutNacosHealthIndicator() {
 		try {
 			Builder builder = new Builder();
-
-			NacosDiscoveryHealthIndicator healthIndicator = new NacosDiscoveryHealthIndicator(
-					properties.namingServiceInstance());
 			healthIndicator.doHealthCheck(builder);
 
 			Builder builder1 = new Builder();
