@@ -1,17 +1,19 @@
 == Spring Cloud Alibaba Cloud ACM
 
-Spring Cloud Alibaba Cloud ACM is an implementation of the commercial product Application Configuration Management(ACM) in the client side of Spring Cloud, and is free of charge.
+Spring Cloud AliCloud ACM is an implementation of the commercial product Application Configuration Management(ACM) in the client side of Spring Cloud, and is free of charge.
 
-Spring Cloud Alibaba Cloud ACM is an alternative solution for Config Server and Client. The concepts on the client and server have the  same abstractions with Spring Environment and PropertySource. In special Bootstrap phases, configurations are loaded to the Spring environment. During the application lifecycle from development, deployment, test to production, you can manage the configurations across all the environments, and make sure that all information required for application migration is ready when needed.
+Use Spring Cloud AliCloud ACM to quickly access ACM configuration management capabilities based on Spring Cloud's programming model.
+
+NOTE: Currently EDAS already supports direct deployment of the Nacos Config app.
 
 === How to Introduce Spring Cloud Alibaba Cloud ACM
 
-If you want to use ACM in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alicloud-acm`.
+If you want to use ACM in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alicloud-acm`.
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
 </dependency>
 ----
@@ -162,12 +164,12 @@ ACM provides a solution to share the same configuration across multiple applicat
 spring.application.group=company.department.team
 ----
 
-Then, you application will retrieve configurations from the following DataId in turn before it retrieves its own configuration: company:application.properties, company.department:application.properties, company.department.team:application.properties。
+Then, you application will retrieve configurations from the following DataId in turn before it retrieves its own configuration: company:application.properties, company.department:application.properties, company.department.team:application.properties.
 After that, it also retrieves configuration from  {spring.application.group}: {spring.application.name}. {file-extension}
 The later in order, the higer the priority, and the unique configuration of the application itself has the highest priority.
 
 
-NOTE: The default suffix of DataId is properties, and you can change it using spring.cloud.alicloud.acm.file-extension. `{spring.application.group}: {spring.application.name}. {file-extension}` 。
+NOTE: The default suffix of DataId is properties, and you can change it using spring.cloud.alicloud.acm.file-extension. `{spring.application.group}: {spring.application.name}. {file-extension}` .
 
 NOTE: If you configured `spring.profiles.active` , then the DataId format of `{spring.application.group}: {spring.application.name}-{spring.profiles.active}. {file-extension}` is also supported, and has higher priority than `{spring.application.group}: {spring.application.name}. {file-extension}`
 

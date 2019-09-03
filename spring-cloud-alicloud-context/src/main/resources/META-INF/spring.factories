@@ -1,15 +1,15 @@
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-  org.springframework.cloud.alicloud.context.acm.AcmContextBootstrapConfiguration
+  com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.springframework.cloud.alicloud.context.AliCloudContextAutoConfiguration,\
-  org.springframework.cloud.alicloud.context.edas.EdasContextAutoConfiguration,\
-  org.springframework.cloud.alicloud.context.ans.AnsContextAutoConfiguration,\
-  org.springframework.cloud.alicloud.context.oss.OssContextAutoConfiguration,\
-  org.springframework.cloud.alicloud.context.scx.ScxContextAutoConfiguration,\
-  org.springframework.cloud.alicloud.context.statistics.StatisticsTaskStarter,\
-  org.springframework.cloud.alicloud.context.sms.SmsContextAutoConfiguration
+  com.alibaba.alicloud.context.AliCloudContextAutoConfiguration,\
+  com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration,\
+  com.alibaba.alicloud.context.ans.AnsContextAutoConfiguration,\
+  com.alibaba.alicloud.context.oss.OssContextAutoConfiguration,\
+  com.alibaba.alicloud.context.scx.ScxContextAutoConfiguration,\
+  com.alibaba.alicloud.context.statistics.StatisticsTaskStarter,\
+  com.alibaba.alicloud.context.sms.SmsContextAutoConfiguration
 org.springframework.context.ApplicationListener=\
-  org.springframework.cloud.alicloud.context.ans.AnsContextApplicationListener,\
-  org.springframework.cloud.alicloud.context.nacos.NacosConfigParameterInitListener,\
-  org.springframework.cloud.alicloud.context.nacos.NacosDiscoveryParameterInitListener,\
-  org.springframework.cloud.alicloud.context.sentinel.SentinelAliCloudListener
+  com.alibaba.alicloud.context.ans.AnsContextApplicationListener,\
+  com.alibaba.alicloud.context.nacos.NacosConfigParameterInitListener,\
+  com.alibaba.alicloud.context.nacos.NacosDiscoveryParameterInitListener,\
+  com.alibaba.alicloud.context.sentinel.SentinelAliCloudListener

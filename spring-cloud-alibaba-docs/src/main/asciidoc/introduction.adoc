@@ -1,0 +1,19 @@
+== Introduction
+
+Spring Cloud Alibaba aims to provide a one-stop solution for microservices development. This prjoect includes the required components for developing distributed applications and services, so that developers can develop distributed applications easily with the Spring Cloud programming models.
+
+With Spring Cloud Alibaba, you only need to add a few annotations and configurations, and you will be able to use the distributed solutions of Alibaba for your applications, and build a distributed system of your own with Alibaba middleware.
+
+The features of Spring Cloud Alibaba:
+
+1. **Flow control and service degradation**：support WebServlet, WebFlux, OpenFeign, RestTemplate, Dubbo access to the function of limiting and degrading flow. It can modify the rules of limiting and degrading flow in real time through the console at run time, and it also supports the monitoring of limiting and degrading Metrics.
+2. **Service registration and discovery**：Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
+3. **Distributed configuration**：support for externalized configuration in a distributed system, auto refresh when configuration changes.
+4. **Rpc Service**：extend Spring Cloud client RestTemplate and OpenFeign to support calling Dubbo RPC services.
+5. **Event-driven**：support for building highly scalable event-driven microservices connected with shared messaging systems.
+6. **Distributed Transaction**：support for distributed transaction solution with high performance and ease of use.
+7. **Alibaba Cloud Object Storage**：massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
+8. **Alibaba Cloud SchedulerX**：accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
+9. **Alibaba Cloud SMS**： A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
+
+Spring Cloud Alibaba also provide rich https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples[examples].

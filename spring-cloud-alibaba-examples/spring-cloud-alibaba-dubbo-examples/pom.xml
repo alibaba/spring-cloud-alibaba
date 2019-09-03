@@ -10,9 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
-    <version>0.9.1.BUILD-SNAPSHOT</version>
+    <version>2.1.1.BUILD-SNAPSHOT</version>
     <name>Spring Cloud Alibaba Dubbo Examples</name>
     <packaging>pom</packaging>
 
@@ -28,11 +28,11 @@
 
     <properties>
         <dubbo.version>2.7.1</dubbo.version>
-        <spring-cloud-commons.version>2.1.1.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.1.1.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.1.1.RELEASE</spring-cloud-openfeign.version>
-        <spring-cloud-zookeeper.version>2.1.1.RELEASE</spring-cloud-zookeeper.version>
-        <spring-cloud-consul.version>2.1.1.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-commons.version>2.1.2.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.1.2.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.1.2.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-zookeeper.version>2.1.2.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-consul.version>2.1.2.RELEASE</spring-cloud-consul.version>
         <curator.version>4.0.1</curator.version>
     </properties>
 
@@ -49,7 +49,7 @@
 
             <!-- Spring Cloud Alibaba dependencies -->
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
@@ -89,6 +89,14 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>
