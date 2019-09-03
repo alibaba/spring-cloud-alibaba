@@ -25,16 +25,19 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.cloud.client.loadbalancer.RetryLoadBalancerInterceptor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -57,7 +60,7 @@ import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 @AutoConfigureAfter(name = {
 		"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration" })
 public class DubboLoadBalancedRestTemplateAutoConfiguration
-		implements BeanClassLoaderAware, SmartInitializingSingleton {
+		implements BeanClassLoaderAware, ApplicationContextAware, SmartInitializingSingleton {
 
 	private static final Class<DubboTransported> DUBBO_TRANSPORTED_CLASS = DubboTransported.class;
 
@@ -89,6 +92,9 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 	@Autowired(required = false)
 	private Map<String, RestTemplate> restTemplates = Collections.emptyMap();
 
+	@Nullable
+	private ApplicationContext applicationContext;
+
 	private ClassLoader classLoader;
 
 	/**
@@ -111,18 +117,21 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 	 * {@link SmartInitializingSingleton} beans or
 	 * {@link RestTemplateCustomizer#customize(RestTemplate) customization})
 	 */
-	@EventListener(ApplicationStartedEvent.class)
-	public void adaptRestTemplates() {
+	@EventListener(ContextRefreshedEvent.class)
+	public void adaptRestTemplates(ContextRefreshedEvent event) {
 
-		DubboTransportedAttributesResolver attributesResolver = new DubboTransportedAttributesResolver(
+		if (event.getApplicationContext() == this.applicationContext) {
+
+			DubboTransportedAttributesResolver attributesResolver = new DubboTransportedAttributesResolver(
 				environment);
 
-		for (Map.Entry<String, RestTemplate> entry : restTemplates.entrySet()) {
-			String beanName = entry.getKey();
-			Map<String, Object> dubboTranslatedAttributes = getDubboTranslatedAttributes(
-					beanName, attributesResolver);
-			if (!CollectionUtils.isEmpty(dubboTranslatedAttributes)) {
-				adaptRestTemplate(entry.getValue(), dubboTranslatedAttributes);
+			for (Map.Entry<String, RestTemplate> entry : restTemplates.entrySet()) {
+				String beanName = entry.getKey();
+				Map<String, Object> dubboTranslatedAttributes = getDubboTranslatedAttributes(
+						beanName, attributesResolver);
+				if (!CollectionUtils.isEmpty(dubboTranslatedAttributes)) {
+					adaptRestTemplate(entry.getValue(), dubboTranslatedAttributes);
+				}
 			}
 		}
 	}
@@ -186,6 +195,11 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 	@Override
 	public void setBeanClassLoader(ClassLoader classLoader) {
 		this.classLoader = classLoader;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
 	}
 
 }
