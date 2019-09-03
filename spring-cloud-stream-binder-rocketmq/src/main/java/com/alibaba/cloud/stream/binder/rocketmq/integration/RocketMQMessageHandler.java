@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
-import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
-import com.google.common.collect.Maps;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -52,6 +49,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.Instrumentation;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

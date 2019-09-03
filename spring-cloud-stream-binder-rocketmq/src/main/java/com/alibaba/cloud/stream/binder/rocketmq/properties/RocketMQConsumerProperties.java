@@ -16,7 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.properties;
 
-import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
+import java.util.Set;
+
 import org.apache.rocketmq.client.consumer.MQPushConsumer;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -24,8 +25,7 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
-import java.util.List;
-import java.util.Set;
+import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
 
 /**
  * @author Timur Valiev
