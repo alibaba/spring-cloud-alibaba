@@ -16,7 +16,11 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
@@ -26,7 +30,11 @@ import org.apache.rocketmq.remoting.RPCHook;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQUtil;
-import org.springframework.cloud.stream.binder.*;
+import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
+import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
+import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
 import org.springframework.cloud.stream.binding.MessageConverterConfigurer;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
@@ -53,6 +61,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvis
 import com.alibaba.cloud.stream.binder.rocketmq.provisioning.selector.PartitionMessageQueueSelector;
 import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
 import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
