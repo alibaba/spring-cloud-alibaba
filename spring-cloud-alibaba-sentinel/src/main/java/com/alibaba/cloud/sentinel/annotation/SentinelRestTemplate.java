@@ -30,16 +30,32 @@ import java.lang.annotation.Target;
 @Documented
 public @interface SentinelRestTemplate {
 
+	/** method of flow,it must be static and have this parameters
+	 * ,the argument returned must be SentinelClientHttpResponse
+	 * e.g :
+	 * public static SentinelClientHttpResponse block(
+	 * 		HttpRequest request, byte[] body, ClientHttpRequestExecution execution, BlockException ex)
+	 */
 	String blockHandler() default "";
 
+	/** class of flow , it must be public */
 	Class<?> blockHandlerClass() default void.class;
 
+	/** method of degrade,it must be static and have this parameters
+	 * ,the argument returned must be SentinelClientHttpResponse
+	 * e.g :
+	 * public static SentinelClientHttpResponse degrade(
+	 * 		HttpRequest request, byte[] body, ClientHttpRequestExecution execution, BlockException ex)
+	 */
 	String fallback() default "";
 
+	/** class of degrade , it must be public */
 	Class<?> fallbackClass() default void.class;
 
 	String urlCleaner() default "";
 
 	Class<?> urlCleanerClass() default void.class;
+
+	/** the mock result is used by default when degradation occurs */
 	boolean mockEnabled() default true;
 }

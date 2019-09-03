@@ -33,7 +33,9 @@ import org.springframework.core.type.StandardMethodMetadata;
 import org.springframework.core.type.classreading.MethodMetadataReadingVisitor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -54,6 +56,8 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 
 	private static final Logger log = LoggerFactory
 			.getLogger(SentinelBeanPostProcessor.class);
+
+	private static final String UNDERLINE = "_";
 
 	private final ApplicationContext applicationContext;
 
@@ -192,68 +196,58 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			SentinelRestTemplate sentinelRestTemplate = cache.get(beanName);
 
 			// register SentinelProtectInterceptor bean
-			this.registerInterceptorBean(sentinelRestTemplate, bean);
+			this.registerAndWrapBean(sentinelRestTemplate, bean,SentinelProtectInterceptor.class);
 
 			// register SentinelRestDegradedMessageConverter bean
-			this.registerMessageConverterBean(sentinelRestTemplate,bean);
+			this.registerAndWrapBean(sentinelRestTemplate, bean,SentinelRestDegradedMessageConverter.class);
 		}
 		return bean;
 	}
 
-	/** register SentinelProtectInterceptor bean */
-	private void registerInterceptorBean(SentinelRestTemplate sentinelRestTemplate, Object bean) {
-
-		String interceptorBeanName = this.getBeanNamePrefix(sentinelRestTemplate,
-				SentinelProtectInterceptor.class) + "@" + bean.toString();
-
-		RestTemplate restTemplate = (RestTemplate)bean;
-		DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext
-				.getAutowireCapableBeanFactory();
-		BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
-				.genericBeanDefinition(SentinelProtectInterceptor.class);
-		beanDefinitionBuilder.addConstructorArgValue(sentinelRestTemplate);
-		beanDefinitionBuilder.addConstructorArgValue(restTemplate);
-		BeanDefinition interceptorBeanDefinition = beanDefinitionBuilder
-				.getRawBeanDefinition();
-		beanFactory.registerBeanDefinition(interceptorBeanName,
-				interceptorBeanDefinition);
-
-		SentinelProtectInterceptor sentinelProtectInterceptor = applicationContext
-				.getBean(interceptorBeanName, SentinelProtectInterceptor.class);
-		restTemplate.getInterceptors().add(0, sentinelProtectInterceptor);
-
-	}
-
+	/** assemble bean name */
 	private String getBeanNamePrefix(SentinelRestTemplate restTemplate, Class clazz) {
 		StringBuilder beanNamePrefix = new StringBuilder()
-				.append(StringUtils.uncapitalize(clazz.getSimpleName())).append("_")
+				.append(StringUtils.uncapitalize(clazz.getSimpleName())).append(UNDERLINE)
 				.append(restTemplate.blockHandlerClass().getSimpleName())
-				.append(restTemplate.blockHandler()).append("_")
+				.append(restTemplate.blockHandler()).append(UNDERLINE)
 				.append(restTemplate.fallbackClass().getSimpleName())
-				.append(restTemplate.fallback()).append("_")
+				.append(restTemplate.fallback()).append(UNDERLINE)
+				.append(restTemplate.urlCleanerClass().getSimpleName())
+				.append(restTemplate.urlCleaner()).append(UNDERLINE)
 				.append(restTemplate.mockEnabled());
 		return beanNamePrefix.toString();
 	}
 
-	/** register SentinelRestDegradedMessageConverter bean */
-	private void registerMessageConverterBean(SentinelRestTemplate sentinelRestTemplate,
-			Object bean) {
-		String converterBeanName = this.getBeanNamePrefix(sentinelRestTemplate,
-				SentinelRestDegradedMessageConverter.class) + "@" + bean.toString();
+	/** register and wrap bean */
+	private void registerAndWrapBean(SentinelRestTemplate sentinelRestTemplate,
+			Object bean, Class<?> beanClass) {
 
+		String beanName = this.getBeanNamePrefix(sentinelRestTemplate, beanClass) + "@"
+				+ bean.toString();
+
+		RestTemplate restTemplate = (RestTemplate) bean;
 		DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext
 				.getAutowireCapableBeanFactory();
 		BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
-				.genericBeanDefinition(SentinelRestDegradedMessageConverter.class);
+				.genericBeanDefinition(beanClass);
+		if (beanClass == SentinelProtectInterceptor.class) {
+			beanDefinitionBuilder.addConstructorArgValue(sentinelRestTemplate);
+			beanDefinitionBuilder.addConstructorArgValue(restTemplate);
+		}
 		BeanDefinition interceptorBeanDefinition = beanDefinitionBuilder
 				.getRawBeanDefinition();
-		beanFactory.registerBeanDefinition(converterBeanName, interceptorBeanDefinition);
+		beanFactory.registerBeanDefinition(beanName, interceptorBeanDefinition);
 
-		SentinelRestDegradedMessageConverter messageConverter = applicationContext
-				.getBean(converterBeanName, SentinelRestDegradedMessageConverter.class);
+		Object beanIns = applicationContext.getBean(beanName, beanClass);
+		if (beanIns instanceof ClientHttpRequestInterceptor) {
+			restTemplate.getInterceptors().add(0,
+					(ClientHttpRequestInterceptor) beanIns);
+		}
+		if (beanIns instanceof HttpMessageConverter) {
+			restTemplate.getMessageConverters().add(0,
+					(HttpMessageConverter<?>) beanIns);
+		}
 
-		((RestTemplate) bean).getMessageConverters().add(0, messageConverter);
 	}
-
 
 }
