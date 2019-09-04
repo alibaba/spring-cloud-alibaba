@@ -182,9 +182,9 @@ public class NacosDiscoveryProperties {
 	@Autowired
 	private Environment environment;
 
-	private NamingService namingService;
+	private static NamingService NAMING_SERVICE;
 
-	private NamingMaintainService namingMaintainService;
+	private static NamingMaintainService NAMING_MAINTAIN_SERVICE;
 
 	@PostConstruct
 	public void init() throws SocketException {
@@ -465,35 +465,35 @@ public class NacosDiscoveryProperties {
 
 	public NamingService namingServiceInstance() {
 
-		if (null != namingService) {
-			return namingService;
+		if (null != NAMING_SERVICE) {
+			return NAMING_SERVICE;
 		}
 
 		try {
-			namingService = NacosFactory.createNamingService(getNacosProperties());
+			NAMING_SERVICE = NacosFactory.createNamingService(getNacosProperties());
 		}
 		catch (Exception e) {
 			log.error("create naming service error!properties={},e=,", this, e);
 			return null;
 		}
-		return namingService;
+		return NAMING_SERVICE;
 	}
 
 	public NamingMaintainService namingMaintainServiceInstance() {
 
-		if (null != namingMaintainService) {
-			return namingMaintainService;
+		if (null != NAMING_MAINTAIN_SERVICE) {
+			return NAMING_MAINTAIN_SERVICE;
 		}
 
 		try {
-			namingMaintainService = NamingMaintainFactory
+			NAMING_MAINTAIN_SERVICE = NamingMaintainFactory
 					.createMaintainService(getNacosProperties());
 		}
 		catch (Exception e) {
 			log.error("create naming service error!properties={},e=,", this, e);
 			return null;
 		}
-		return namingMaintainService;
+		return NAMING_MAINTAIN_SERVICE;
 	}
 
 	private Properties getNacosProperties() {
