@@ -61,7 +61,6 @@ public class NacosConfigAutoConfiguration {
 
 	@Bean
 	public NacosContextRefresher nacosContextRefresher(
-			NacosConfigProperties nacosConfigProperties,
 			NacosConfigManager nacosConfigManager,
 			NacosRefreshProperties nacosRefreshProperties,
 			NacosRefreshHistory refreshHistory) {

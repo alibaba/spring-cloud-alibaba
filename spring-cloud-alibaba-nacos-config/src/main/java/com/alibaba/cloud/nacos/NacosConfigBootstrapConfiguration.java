@@ -37,6 +37,7 @@ public class NacosConfigBootstrapConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
 	public NacosConfigManager nacosConfigManager() {
 		return new NacosConfigManager();
 	}
