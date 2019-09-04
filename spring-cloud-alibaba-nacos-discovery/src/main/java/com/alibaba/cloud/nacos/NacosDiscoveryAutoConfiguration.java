@@ -45,8 +45,9 @@ public class NacosDiscoveryAutoConfiguration {
 
 	@Bean
 	public NacosServiceRegistry nacosServiceRegistry(
+			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosServiceRegistry(nacosDiscoveryProperties);
+		return new NacosServiceRegistry(nacosNamingManager, nacosDiscoveryProperties);
 	}
 
 	@Bean
@@ -57,9 +58,10 @@ public class NacosDiscoveryAutoConfiguration {
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
 	public NacosRegistration nacosRegistration(
+			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
-		return new NacosRegistration(nacosDiscoveryProperties, context);
+		return new NacosRegistration(nacosNamingManager, nacosDiscoveryProperties, context);
 	}
 
 	@Bean
