@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.discovery;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.cloud.nacos.NacosServiceInstance;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
@@ -40,9 +41,11 @@ public class NacosDiscoveryClient implements DiscoveryClient {
     private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryClient.class);
     public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
+    private NacosNamingManager nacosNamingManager;
     private NacosDiscoveryProperties discoveryProperties;
 
-    public NacosDiscoveryClient(NacosDiscoveryProperties discoveryProperties) {
+    public NacosDiscoveryClient(NacosNamingManager nacosNamingManager, NacosDiscoveryProperties discoveryProperties) {
+        this.nacosNamingManager = nacosNamingManager;
         this.discoveryProperties = discoveryProperties;
     }
 
@@ -55,7 +58,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
     public List<ServiceInstance> getInstances(String serviceId) {
         try {
             String group = discoveryProperties.getGroup();
-            List<Instance> instances = discoveryProperties.namingServiceInstance()
+            List<Instance> instances = nacosNamingManager.getNamingService()
                     .selectInstances(serviceId, group, true);
             return hostToServiceInstanceList(instances, serviceId);
         } catch (Exception e) {
@@ -106,7 +109,7 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 
         try {
             String group = discoveryProperties.getGroup();
-            ListView<String> services = discoveryProperties.namingServiceInstance()
+            ListView<String> services = nacosNamingManager.getNamingService()
                     .getServicesOfServer(1, Integer.MAX_VALUE, group);
             return services.getData();
         } catch (Exception e) {

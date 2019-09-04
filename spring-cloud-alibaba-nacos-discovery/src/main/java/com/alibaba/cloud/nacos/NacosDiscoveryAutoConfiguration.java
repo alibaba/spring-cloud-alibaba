@@ -50,6 +50,11 @@ public class NacosDiscoveryAutoConfiguration {
 	}
 
 	@Bean
+	public NacosNamingManager nacosNamingManager() {
+		return new NacosNamingManager();
+	}
+
+	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
 	public NacosRegistration nacosRegistration(
 			NacosDiscoveryProperties nacosDiscoveryProperties,
