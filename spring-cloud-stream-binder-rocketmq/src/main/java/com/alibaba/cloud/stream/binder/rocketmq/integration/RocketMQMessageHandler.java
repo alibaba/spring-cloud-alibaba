@@ -17,6 +17,7 @@
 package com.alibaba.cloud.stream.binder.rocketmq.integration;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -37,6 +38,7 @@ import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.integration.support.DefaultErrorMessageStrategy;
 import org.springframework.integration.support.ErrorMessageStrategy;
 import org.springframework.integration.support.MessageBuilder;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.ErrorMessage;
@@ -47,6 +49,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.Instrumentation;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -61,6 +64,8 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 	private MessageChannel sendFailureChannel;
 
 	private final RocketMQTemplate rocketMQTemplate;
+
+	private RocketMQHeaderMapper headerMapper;
 
 	private final Boolean transactional;
 
@@ -149,6 +154,12 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 	protected void handleMessageInternal(org.springframework.messaging.Message<?> message)
 			throws Exception {
 		try {
+			// issue 737 fix
+			Map<String, String> jsonHeaders = headerMapper
+					.fromHeaders(message.getHeaders());
+			message = org.springframework.messaging.support.MessageBuilder
+					.fromMessage(message).copyHeaders(jsonHeaders).build();
+
 			final StringBuilder topicWithTags = new StringBuilder(destination);
 			String tags = Optional
 					.ofNullable(message.getHeaders().get(RocketMQHeaders.TAGS)).orElse("")
@@ -156,6 +167,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 			if (!StringUtils.isEmpty(tags)) {
 				topicWithTags.append(":").append(tags);
 			}
+
 			SendResult sendRes = null;
 			if (transactional) {
 				sendRes = rocketMQTemplate.sendMessageInTransaction(groupName,
@@ -195,6 +207,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 					log.debug("sync send to topic " + topicWithTags + " " + sendRes);
 				}
 				else {
+					Message<?> finalMessage = message;
 					SendCallback sendCallback = new SendCallback() {
 						@Override
 						public void onSuccess(SendResult sendResult) {
@@ -210,7 +223,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 								getSendFailureChannel().send(
 										RocketMQMessageHandler.this.errorMessageStrategy
 												.buildErrorMessage(new MessagingException(
-														message, e), null));
+														finalMessage, e), null));
 							}
 						}
 					};
@@ -276,5 +289,13 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	public void setSync(boolean sync) {
 		this.sync = sync;
+	}
+
+	public RocketMQHeaderMapper getHeaderMapper() {
+		return headerMapper;
+	}
+
+	public void setHeaderMapper(RocketMQHeaderMapper headerMapper) {
+		this.headerMapper = headerMapper;
 	}
 }

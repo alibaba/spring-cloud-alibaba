@@ -25,7 +25,12 @@ import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.MessageSelector;
-import org.apache.rocketmq.client.consumer.listener.*;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
+import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.UtilAll;
@@ -43,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -50,6 +56,7 @@ import org.springframework.util.StringUtils;
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
 
 /**
  * A class that Listen on rocketmq message
@@ -87,6 +94,8 @@ public class RocketMQListenerBindingContainer
 	private String charset = "UTF-8";
 
 	private RocketMQListener rocketMQListener;
+
+	private RocketMQHeaderMapper headerMapper;
 
 	private DefaultMQPushConsumer consumer;
 
@@ -369,6 +378,14 @@ public class RocketMQListenerBindingContainer
 		return messageModel;
 	}
 
+	public RocketMQHeaderMapper getHeaderMapper() {
+		return headerMapper;
+	}
+
+	public void setHeaderMapper(RocketMQHeaderMapper headerMapper) {
+		this.headerMapper = headerMapper;
+	}
+
 	public class DefaultMessageListenerConcurrently
 			implements MessageListenerConcurrently {
 
@@ -429,14 +446,16 @@ public class RocketMQListenerBindingContainer
 	 * @param messageExt the rocketmq message
 	 * @return the converted Spring {@link Message}
 	 */
+	@SuppressWarnings("unchecked")
 	private Message convertToSpringMessage(MessageExt messageExt) {
 
 		// add reconsume-times header to messageExt
 		int reconsumeTimes = messageExt.getReconsumeTimes();
 		messageExt.putUserProperty(ROCKETMQ_RECONSUME_TIMES,
 				String.valueOf(reconsumeTimes));
-
-		return RocketMQUtil.convertToSpringMessage(messageExt);
+		Message message = RocketMQUtil.convertToSpringMessage(messageExt);
+		return MessageBuilder.fromMessage(message)
+				.copyHeaders(headerMapper.toHeaders(messageExt.getProperties())).build();
 	}
 
 }
