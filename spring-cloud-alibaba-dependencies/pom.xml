@@ -416,6 +416,21 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- Apache Dubbo dependencies-->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-dependencies-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-actuator</artifactId>
+                <version>${dubbo-spring-boot.version}</version>
+                <optional>true</optional>
+            </dependency>
 
             <!-- Testing Dependencies -->
 

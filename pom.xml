@@ -71,16 +71,19 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.1.2.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.1.2.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.1.2.RELEASE</spring-cloud-openfeign.version>
-        <spring-cloud-bus.version>2.1.2.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.1.2.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud.version>2.1.2.RELEASE</spring-cloud.version>
+        <spring-cloud-commons.version>${spring-cloud.version}</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>${spring-cloud.version}</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>${spring-cloud.version}</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>${spring-cloud.version}</spring-cloud-bus.version>
+        <spring-cloud-gateway.version>${spring-cloud.version}</spring-cloud-gateway.version>
+        <spring-cloud-consul.version>${spring-cloud.version}</spring-cloud-consul.version>
+        <spring-cloud-zookeeper.version>${spring-cloud.version}</spring-cloud-zookeeper.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
         <slf4j-api.version>1.7.25</slf4j-api.version>
-
+        <feign-jaxrs2.version>9.7.0</feign-jaxrs2.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -180,6 +183,29 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-consul-dependencies</artifactId>
+                <version>${spring-cloud-consul.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-zookeeper-dependencies</artifactId>
+                <version>${spring-cloud-zookeeper.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-jaxrs2</artifactId>
+                <version>${feign-jaxrs2.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
