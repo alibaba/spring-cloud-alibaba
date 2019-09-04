@@ -184,7 +184,7 @@ public class NacosConfigProperties {
 	 */
 	private List<Config> extConfig;
 
-	private ConfigService configService;
+	private static ConfigService CONFIG_SERVICE;
 
 	// todo sts support
 
@@ -402,8 +402,8 @@ public class NacosConfigProperties {
 
 	public ConfigService configServiceInstance() {
 
-		if (null != configService) {
-			return configService;
+		if (null != CONFIG_SERVICE) {
+			return CONFIG_SERVICE;
 		}
 
 		Properties properties = new Properties();
@@ -430,8 +430,8 @@ public class NacosConfigProperties {
 		}
 
 		try {
-			configService = NacosFactory.createConfigService(properties);
-			return configService;
+			CONFIG_SERVICE = NacosFactory.createConfigService(properties);
+			return CONFIG_SERVICE;
 		}
 		catch (Exception e) {
 			log.error("create config service error!properties={},e=,", this, e);
