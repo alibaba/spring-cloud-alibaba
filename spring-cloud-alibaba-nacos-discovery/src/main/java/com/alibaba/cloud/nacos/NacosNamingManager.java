@@ -24,7 +24,6 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
- * @since
  */
 public class NacosNamingManager implements ApplicationContextAware {
 
