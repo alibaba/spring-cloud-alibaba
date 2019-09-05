@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
+import com.alibaba.cloud.nacos.NacosNamingManager;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,8 +37,10 @@ public class NacosRibbonClientConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ServerList<?> ribbonServerList(IClientConfig config,
+			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosNamingManager,
+				nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(config);
 		return serverList;
 	}

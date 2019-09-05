@@ -71,10 +71,10 @@ public class TestController {
 		return echoService.divide(a, b);
 	}
 
-    @GetMapping(value = "/divide-feign2")
-    public String divide(@RequestParam Integer a) {
-        return echoService.divide(a);
-    }
+	@GetMapping(value = "/divide-feign2")
+	public String divide(@RequestParam Integer a) {
+		return echoService.divide(a);
+	}
 
 	@GetMapping(value = "/echo-feign/{str}")
 	public String feign(@PathVariable String str) {
