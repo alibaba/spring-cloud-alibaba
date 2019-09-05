@@ -28,21 +28,23 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class NacosNamingManager implements ApplicationContextAware {
 
-    private NamingService namingService;
-    private NamingMaintainService namingMaintainService;
+	private NamingService namingService;
+	private NamingMaintainService namingMaintainService;
 
-    public NamingService getNamingService() {
-        return namingService;
-    }
+	public NamingService getNamingService() {
+		return namingService;
+	}
 
-    public NamingMaintainService getNamingMaintainService() {
-        return namingMaintainService;
-    }
+	public NamingMaintainService getNamingMaintainService() {
+		return namingMaintainService;
+	}
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        NacosDiscoveryProperties properties = applicationContext.getBean(NacosDiscoveryProperties.class);
-        namingService = properties.namingServiceInstance();
-        namingMaintainService = properties.namingMaintainServiceInstance();
-    }
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		NacosDiscoveryProperties properties = applicationContext
+				.getBean(NacosDiscoveryProperties.class);
+		namingService = properties.namingServiceInstance();
+		namingMaintainService = properties.namingMaintainServiceInstance();
+	}
 }

@@ -48,8 +48,8 @@ public class ConsumerApplication {
 		String divide(@RequestParam("a") Integer a, @RequestParam("b") Integer b);
 
 		default String divide(Integer a) {
-		    return divide(a, 0);
-        }
+			return divide(a, 0);
+		}
 
 		@GetMapping(value = "/notFound")
 		String notFound();

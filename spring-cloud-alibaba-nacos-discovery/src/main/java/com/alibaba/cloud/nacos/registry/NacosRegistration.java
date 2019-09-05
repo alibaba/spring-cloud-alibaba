@@ -49,7 +49,8 @@ public class NacosRegistration implements Registration, ServiceInstance {
 
 	private ApplicationContext context;
 
-	public NacosRegistration(NacosNamingManager nacosNamingManager, NacosDiscoveryProperties nacosDiscoveryProperties,
+	public NacosRegistration(NacosNamingManager nacosNamingManager,
+			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
 		this.nacosNamingManager = nacosNamingManager;
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;

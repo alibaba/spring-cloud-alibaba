@@ -39,7 +39,8 @@ public class NacosRibbonClientConfiguration {
 	public ServerList<?> ribbonServerList(IClientConfig config,
 			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		NacosServerList serverList = new NacosServerList(nacosNamingManager, nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosNamingManager,
+				nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(config);
 		return serverList;
 	}

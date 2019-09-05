@@ -44,7 +44,8 @@ public class NacosDiscoveryEndpoint {
 	private NacosNamingManager nacosNamingManager;
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	public NacosDiscoveryEndpoint(NacosNamingManager nacosNamingManager, NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public NacosDiscoveryEndpoint(NacosNamingManager nacosNamingManager,
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosNamingManager = nacosNamingManager;
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 	}
