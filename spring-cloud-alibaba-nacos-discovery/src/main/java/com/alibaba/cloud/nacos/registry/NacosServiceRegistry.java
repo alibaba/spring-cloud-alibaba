@@ -42,7 +42,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private final NamingService namingService;
 
-	public NacosServiceRegistry(NacosNamingManager nacosNamingManager, NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public NacosServiceRegistry(NacosNamingManager nacosNamingManager,
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosNamingManager = nacosNamingManager;
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 		this.namingService = nacosNamingManager.getNamingService();
@@ -123,8 +124,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		try {
-			nacosNamingManager.getNamingMaintainService()
-					.updateInstance(serviceId, instance);
+			nacosNamingManager.getNamingMaintainService().updateInstance(serviceId,
+					instance);
 		}
 		catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);

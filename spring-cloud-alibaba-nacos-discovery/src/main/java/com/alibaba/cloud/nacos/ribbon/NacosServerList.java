@@ -38,7 +38,8 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 
 	private String serviceId;
 
-	public NacosServerList(NacosNamingManager nacosNamingManager, NacosDiscoveryProperties discoveryProperties) {
+	public NacosServerList(NacosNamingManager nacosNamingManager,
+			NacosDiscoveryProperties discoveryProperties) {
 		this.nacosNamingManager = nacosNamingManager;
 		this.discoveryProperties = discoveryProperties;
 	}
@@ -57,7 +58,7 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 		try {
 			String group = discoveryProperties.getGroup();
 			List<Instance> instances = nacosNamingManager.getNamingService()
-					.selectInstances(serviceId, group,true);
+					.selectInstances(serviceId, group, true);
 			return instancesToServerList(instances);
 		}
 		catch (Exception e) {

@@ -27,15 +27,17 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class NacosConfigManager implements ApplicationContextAware {
 
-    private ConfigService configService;
+	private ConfigService configService;
 
-    public ConfigService getConfigService() {
-        return configService;
-    }
+	public ConfigService getConfigService() {
+		return configService;
+	}
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        NacosConfigProperties properties = applicationContext.getBean(NacosConfigProperties.class);
-        configService = properties.configServiceInstance();
-    }
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		NacosConfigProperties properties = applicationContext
+				.getBean(NacosConfigProperties.class);
+		configService = properties.configServiceInstance();
+	}
 }

@@ -57,11 +57,11 @@ public class NacosDiscoveryAutoConfiguration {
 
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
-	public NacosRegistration nacosRegistration(
-			NacosNamingManager nacosNamingManager,
+	public NacosRegistration nacosRegistration(NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
-		return new NacosRegistration(nacosNamingManager, nacosDiscoveryProperties, context);
+		return new NacosRegistration(nacosNamingManager, nacosDiscoveryProperties,
+				context);
 	}
 
 	@Bean

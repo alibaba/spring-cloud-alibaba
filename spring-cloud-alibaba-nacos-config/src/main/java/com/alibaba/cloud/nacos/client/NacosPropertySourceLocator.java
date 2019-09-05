@@ -57,7 +57,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private NacosConfigManager nacosConfigManager;
 
-	public NacosPropertySourceLocator(NacosConfigManager nacosConfigManager, NacosConfigProperties nacosConfigProperties) {
+	public NacosPropertySourceLocator(NacosConfigManager nacosConfigManager,
+			NacosConfigProperties nacosConfigProperties) {
 		this.nacosConfigManager = nacosConfigManager;
 		this.nacosConfigProperties = nacosConfigProperties;
 	}
@@ -199,19 +200,16 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		if (stringBuilder.length() > 0) {
 			String result = stringBuilder.substring(0, stringBuilder.length() - 1);
 			throw new IllegalStateException(String.format(
-					"[%s] must end file extension with properties|yaml|yml",
-					result));
+					"[%s] must end file extension with properties|yaml|yml", result));
 		}
 	}
 
 	private static boolean canLoadFileExtension(String dataId) {
-		return SUPPORT_FILE_EXTENSION.stream()
-				.anyMatch((fileExtension) -> StringUtils.endsWithIgnoreCase(dataId,
-						fileExtension));
+		return SUPPORT_FILE_EXTENSION.stream().anyMatch(
+				(fileExtension) -> StringUtils.endsWithIgnoreCase(dataId, fileExtension));
 	}
 
-	private boolean checkDataIdIsRefreshable(String refreshDataIds,
-			String sharedDataId) {
+	private boolean checkDataIdIsRefreshable(String refreshDataIds, String sharedDataId) {
 		if (StringUtils.isEmpty(refreshDataIds)) {
 			return false;
 		}

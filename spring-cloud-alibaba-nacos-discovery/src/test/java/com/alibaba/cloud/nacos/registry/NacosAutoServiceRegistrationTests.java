@@ -207,8 +207,8 @@ public class NacosAutoServiceRegistrationTests {
 	}
 
 	private void checkoutEndpoint() throws Exception {
-		NacosDiscoveryEndpoint nacosDiscoveryEndpoint = new NacosDiscoveryEndpoint(nacosNamingManager,
-				properties);
+		NacosDiscoveryEndpoint nacosDiscoveryEndpoint = new NacosDiscoveryEndpoint(
+				nacosNamingManager, properties);
 		Map<String, Object> map = nacosDiscoveryEndpoint.nacosDiscovery();
 		assertEquals(map.get("NacosDiscoveryProperties"), properties);
 		assertEquals(map.get("subscribe").toString(),

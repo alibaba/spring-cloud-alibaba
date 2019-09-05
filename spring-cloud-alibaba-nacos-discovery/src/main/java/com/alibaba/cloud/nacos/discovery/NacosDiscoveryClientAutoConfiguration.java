@@ -45,8 +45,7 @@ public class NacosDiscoveryClientAutoConfiguration {
 	}
 
 	@Bean
-	public DiscoveryClient nacosDiscoveryClient(
-			NacosNamingManager nacosNamingManager,
+	public DiscoveryClient nacosDiscoveryClient(NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties discoveryProperties) {
 		return new NacosDiscoveryClient(nacosNamingManager, discoveryProperties);
 	}

@@ -49,8 +49,7 @@ public class NacosServerListTests {
 	public void testEmptyInstancesReturnsEmptyList() throws Exception {
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(
-				NacosNamingManager.class);
+		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
@@ -58,7 +57,8 @@ public class NacosServerListTests {
 		when(namingService.selectInstances(anyString(), eq("DEFAULT"), eq(true)))
 				.thenReturn(null);
 
-		NacosServerList serverList = new NacosServerList(nacosNamingManager, nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosNamingManager,
+				nacosDiscoveryProperties);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
 		assertThat(servers).isEmpty();
 	}
@@ -73,8 +73,7 @@ public class NacosServerListTests {
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(
-				NacosNamingManager.class);
+		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
@@ -86,7 +85,8 @@ public class NacosServerListTests {
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");
-		NacosServerList serverList = new NacosServerList(nacosNamingManager, nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosNamingManager,
+				nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(clientConfig);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
 		assertThat(servers).hasSize(1);
@@ -109,8 +109,7 @@ public class NacosServerListTests {
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(
-				NacosNamingManager.class);
+		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
@@ -122,7 +121,8 @@ public class NacosServerListTests {
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");
-		NacosServerList serverList = new NacosServerList(nacosNamingManager, nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosNamingManager,
+				nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(clientConfig);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
 		assertThat(servers).hasSize(1);
@@ -149,11 +149,9 @@ public class NacosServerListTests {
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(
-				NacosNamingManager.class);
+		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
 
 		NamingService namingService = mock(NamingService.class);
-
 
 		when(nacosNamingManager.getNamingService()).thenReturn(namingService);
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
@@ -163,7 +161,8 @@ public class NacosServerListTests {
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");
-		NacosServerList serverList = new NacosServerList(nacosNamingManager, nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosNamingManager,
+				nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(clientConfig);
 
 		List<NacosServer> servers = serverList.getUpdatedListOfServers();
