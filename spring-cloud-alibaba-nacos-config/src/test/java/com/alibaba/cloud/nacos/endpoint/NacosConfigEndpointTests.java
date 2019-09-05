@@ -22,6 +22,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import com.alibaba.cloud.nacos.NacosConfigManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -84,6 +85,9 @@ public class NacosConfigEndpointTests {
 	private NacosConfigProperties properties;
 
 	@Autowired
+	private NacosConfigManager nacosConfigManager;
+
+	@Autowired
 	private NacosRefreshHistory refreshHistory;
 
 	@Test
@@ -99,7 +103,7 @@ public class NacosConfigEndpointTests {
 			Builder builder = new Builder();
 
 			NacosConfigHealthIndicator healthIndicator = new NacosConfigHealthIndicator(
-					properties.configServiceInstance());
+					nacosConfigManager.getConfigService());
 			healthIndicator.doHealthCheck(builder);
 
 			Builder builder1 = new Builder();

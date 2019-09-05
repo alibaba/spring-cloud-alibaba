@@ -24,19 +24,19 @@ import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = NacosDiscoveryPropertiesServerAddressTopLevelTests.TestConfig.class, properties = {
-		"spring.cloud.nacos.server-addr=123.123.123.123:8848"
-		}, webEnvironment = RANDOM_PORT)
+		"spring.cloud.nacos.server-addr=123.123.123.123:8848" }, webEnvironment = RANDOM_PORT)
 
 public class NacosDiscoveryPropertiesServerAddressTopLevelTests {
 
 	@Autowired
 	private NacosDiscoveryProperties properties;
-	
+
 	@Test
 	public void testGetServerAddr() {
-		assertEquals("NacosDiscoveryProperties server address was wrong","123.123.123.123:8848", properties.getServerAddr());
+		assertEquals("NacosDiscoveryProperties server address was wrong",
+				"123.123.123.123:8848", properties.getServerAddr());
 	}
-	
+
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
