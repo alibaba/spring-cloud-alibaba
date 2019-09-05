@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
+import com.alibaba.cloud.nacos.NacosNamingManager;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -38,8 +39,9 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
 	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint(
+			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosDiscoveryEndpoint(nacosDiscoveryProperties);
+		return new NacosDiscoveryEndpoint(nacosNamingManager, nacosDiscoveryProperties);
 	}
 
 }

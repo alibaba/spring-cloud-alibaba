@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.alibaba.cloud.nacos.NacosNamingManager;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.listen.Listenable;
 import org.apache.curator.framework.listen.ListenerContainer;
@@ -504,8 +505,8 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		 */
 		private final Set<String> listeningServices;
 
-		NacosConfiguration(NacosDiscoveryProperties nacosDiscoveryProperties) {
-			this.namingService = nacosDiscoveryProperties.namingServiceInstance();
+		NacosConfiguration(NacosNamingManager nacosNamingManager) {
+			this.namingService = nacosNamingManager.getNamingService();
 			this.listeningServices = new ConcurrentSkipListSet<>();
 		}
 

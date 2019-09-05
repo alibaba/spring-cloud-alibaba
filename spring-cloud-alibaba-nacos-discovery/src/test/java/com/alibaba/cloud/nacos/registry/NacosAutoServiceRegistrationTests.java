@@ -23,6 +23,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import java.util.Map;
 
+import com.alibaba.cloud.nacos.NacosNamingManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,9 @@ public class NacosAutoServiceRegistrationTests {
 
 	@Autowired
 	private NacosDiscoveryProperties properties;
+
+	@Autowired
+	private NacosNamingManager nacosNamingManager;
 
 	@Autowired
 	private InetUtils inetUtils;
@@ -204,11 +208,11 @@ public class NacosAutoServiceRegistrationTests {
 
 	private void checkoutEndpoint() throws Exception {
 		NacosDiscoveryEndpoint nacosDiscoveryEndpoint = new NacosDiscoveryEndpoint(
-				properties);
+				nacosNamingManager, properties);
 		Map<String, Object> map = nacosDiscoveryEndpoint.nacosDiscovery();
 		assertEquals(map.get("NacosDiscoveryProperties"), properties);
 		assertEquals(map.get("subscribe").toString(),
-				properties.namingServiceInstance().getSubscribeServices().toString());
+				nacosNamingManager.getNamingService().getSubscribeServices().toString());
 	}
 
 	@Configuration
