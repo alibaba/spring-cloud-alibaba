@@ -63,16 +63,8 @@ public class NacosConfigEndpointTests {
 
 		try {
 
-			Method method = PowerMockito.method(NacosConfigService.class, "getConfig",
-					String.class, String.class, long.class);
-			MethodProxy.proxy(method, (proxy, method1, args) -> {
-
-				if ("test-name.properties".equals(args[0])
-						&& "DEFAULT_GROUP".equals(args[1])) {
-					return "user.name=hello\nuser.age=12";
-				}
-				return "";
-			});
+			Method method = PowerMockito.method(NacosConfigService.class, "getServerStatus");
+			MethodProxy.proxy(method, (proxy, method1, args) -> "UP");
 
 		}
 		catch (Exception ignore) {

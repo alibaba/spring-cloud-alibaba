@@ -8,13 +8,13 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.2.0.BUILD-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>2.1.1.BUILD-SNAPSHOT</version>
+    <version>2.2.0.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
     <description>Spring Cloud Alibaba</description>
@@ -71,11 +71,12 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.1.2.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.1.2.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.1.2.RELEASE</spring-cloud-openfeign.version>
-        <spring-cloud-bus.version>2.1.2.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.1.2.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-commons.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-bus.version>
+        <spring-cloud-gateway.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-gateway.version>
+        <spring-cloud-stream.version>Horsham.BUILD-SNAPSHOT</spring-cloud-stream.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -101,6 +102,7 @@
         <module>spring-cloud-alibaba-sentinel</module>
         <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-sentinel-gateway</module>
+        <module>spring-cloud-circuitbreaker-sentinel</module>
         <module>spring-cloud-alibaba-nacos-config</module>
         <module>spring-cloud-alibaba-nacos-discovery</module>
         <module>spring-cloud-alibaba-seata</module>
@@ -183,6 +185,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-gateway-dependencies</artifactId>
                 <version>${spring-cloud-gateway.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-dependencies</artifactId>
+                <version>${spring-cloud-stream.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
