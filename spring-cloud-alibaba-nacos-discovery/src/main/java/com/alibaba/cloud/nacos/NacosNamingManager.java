@@ -27,15 +27,12 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class NacosNamingManager implements ApplicationContextAware {
 
-	private NamingService namingService;
-	private NamingMaintainService namingMaintainService;
-
 	public NamingService getNamingService() {
-		return namingService;
+		return ServiceHolder.getInstance().getNamingService();
 	}
 
 	public NamingMaintainService getNamingMaintainService() {
-		return namingMaintainService;
+		return ServiceHolder.getInstance().getNamingMaintainService();
 	}
 
 	@Override
@@ -43,7 +40,46 @@ public class NacosNamingManager implements ApplicationContextAware {
 			throws BeansException {
 		NacosDiscoveryProperties properties = applicationContext
 				.getBean(NacosDiscoveryProperties.class);
-		namingService = properties.namingServiceInstance();
-		namingMaintainService = properties.namingMaintainServiceInstance();
+		ServiceHolder holder = ServiceHolder.getInstance();
+		if (!holder.alreadyInit[0]) {
+			holder.setNamingService(properties.namingServiceInstance());
+		}
+		if (!holder.alreadyInit[1]) {
+			holder.setNamingMaintainService(properties.namingMaintainServiceInstance());
+		}
+	}
+
+	static class ServiceHolder {
+		private NamingService namingService = null;
+		private NamingMaintainService namingMaintainService = null;
+
+		final boolean[] alreadyInit = new boolean[2];
+
+		private static final ServiceHolder HOLDER = new ServiceHolder();
+
+		ServiceHolder() {
+		}
+
+		static ServiceHolder getInstance() {
+			return HOLDER;
+		}
+
+		public NamingService getNamingService() {
+			return namingService;
+		}
+
+		void setNamingService(NamingService namingService) {
+			alreadyInit[0] = true;
+			this.namingService = namingService;
+		}
+
+		NamingMaintainService getNamingMaintainService() {
+			return namingMaintainService;
+		}
+
+		void setNamingMaintainService(NamingMaintainService namingMaintainService) {
+			alreadyInit[1] = true;
+			this.namingMaintainService = namingMaintainService;
+		}
 	}
 }
