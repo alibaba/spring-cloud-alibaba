@@ -13,7 +13,7 @@ Sentinel can provide `ServiceId` level and `API Path` level flow control for spr
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
     <version>x.y.z</version>
 </dependency>

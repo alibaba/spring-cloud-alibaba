@@ -1,1 +1,1 @@
-spring-cloud=org.springframework.cloud.alibaba.dubbo.registry.SpringCloudRegistryFactory
+spring-cloud=com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory
