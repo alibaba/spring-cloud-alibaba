@@ -1,4 +1,4 @@
-== Spring Cloud Alibaba Cloud OSS
+== Spring Cloud AliCloud OSS
 
 OSS（Object Storage Service）是阿里云的一款对象存储服务产品， Spring Cloud AliCloud OSS 提供了Spring Cloud规范下商业版的对象存储服务，提供简单易用的API，并且支持与 Spring 框架中 Resource 的整合。
 
@@ -9,7 +9,7 @@ OSS（Object Storage Service）是阿里云的一款对象存储服务产品， 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
 </dependency>
 ----
