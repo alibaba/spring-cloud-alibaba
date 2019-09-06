@@ -26,10 +26,8 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class NacosConfigManager implements ApplicationContextAware {
 
-	private ConfigService configService;
-
 	public ConfigService getConfigService() {
-		return configService;
+		return ServiceHolder.getInstance().getService();
 	}
 
 	@Override
@@ -37,6 +35,34 @@ public class NacosConfigManager implements ApplicationContextAware {
 			throws BeansException {
 		NacosConfigProperties properties = applicationContext
 				.getBean(NacosConfigProperties.class);
-		configService = properties.configServiceInstance();
+		ServiceHolder holder = ServiceHolder.getInstance();
+		if (!holder.alreadyInit) {
+			ServiceHolder.getInstance().setService(properties.configServiceInstance());
+		}
 	}
+
+	static class ServiceHolder {
+		private ConfigService service = null;
+
+		private boolean alreadyInit = false;
+
+		private static final ServiceHolder holder = new ServiceHolder();
+
+		ServiceHolder() {
+		}
+
+		static ServiceHolder getInstance() {
+			return holder;
+		}
+
+		void setService(ConfigService service) {
+			alreadyInit = true;
+			this.service = service;
+		}
+
+		ConfigService getService() {
+			return service;
+		}
+	}
+
 }
