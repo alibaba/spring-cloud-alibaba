@@ -22,6 +22,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import com.alibaba.cloud.nacos.NacosConfigManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -62,16 +63,8 @@ public class NacosConfigEndpointTests {
 
 		try {
 
-			Method method = PowerMockito.method(NacosConfigService.class, "getConfig",
-					String.class, String.class, long.class);
-			MethodProxy.proxy(method, (proxy, method1, args) -> {
-
-				if ("test-name.properties".equals(args[0])
-						&& "DEFAULT_GROUP".equals(args[1])) {
-					return "user.name=hello\nuser.age=12";
-				}
-				return "";
-			});
+			Method method = PowerMockito.method(NacosConfigService.class, "getServerStatus");
+			MethodProxy.proxy(method, (proxy, method1, args) -> "UP");
 
 		}
 		catch (Exception ignore) {
@@ -82,6 +75,9 @@ public class NacosConfigEndpointTests {
 
 	@Autowired
 	private NacosConfigProperties properties;
+
+	@Autowired
+	private NacosConfigManager nacosConfigManager;
 
 	@Autowired
 	private NacosRefreshHistory refreshHistory;
@@ -99,7 +95,7 @@ public class NacosConfigEndpointTests {
 			Builder builder = new Builder();
 
 			NacosConfigHealthIndicator healthIndicator = new NacosConfigHealthIndicator(
-					properties.configServiceInstance());
+					nacosConfigManager.getConfigService());
 			healthIndicator.doHealthCheck(builder);
 
 			Builder builder1 = new Builder();

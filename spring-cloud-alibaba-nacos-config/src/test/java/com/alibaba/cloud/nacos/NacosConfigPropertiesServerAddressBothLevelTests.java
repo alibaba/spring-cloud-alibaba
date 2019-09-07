@@ -20,18 +20,18 @@ import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = NacosConfigPropertiesServerAddressBothLevelTests.TestConfig.class, properties = {
 		"spring.cloud.nacos.config.server-addr=321,321,321,321:8848",
-		"spring.cloud.nacos.server-addr=123.123.123.123:8848"
-		}, webEnvironment = RANDOM_PORT)
+		"spring.cloud.nacos.server-addr=123.123.123.123:8848" }, webEnvironment = RANDOM_PORT)
 public class NacosConfigPropertiesServerAddressBothLevelTests {
 
 	@Autowired
 	private NacosConfigProperties properties;
-	
+
 	@Test
 	public void testGetServerAddr() {
-		assertEquals("NacosConfigProperties server address was wrong","321,321,321,321:8848", properties.getServerAddr());
+		assertEquals("NacosConfigProperties server address was wrong",
+				"321,321,321,321:8848", properties.getServerAddr());
 	}
-	
+
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ NacosConfigEndpointAutoConfiguration.class,
