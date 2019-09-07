@@ -22,21 +22,20 @@ import static org.springframework.util.ClassUtils.isPresent;
 import static org.springframework.util.ClassUtils.resolveClassName;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.env.Environment;
 
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import org.springframework.util.ClassUtils;
 
 /**
  * org.springframework.cloud.openfeign.Targeter {@link BeanPostProcessor}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class TargeterBeanPostProcessor
-		implements BeanPostProcessor, BeanClassLoaderAware {
+public class TargeterBeanPostProcessor implements BeanPostProcessor {
 
 	private final Environment environment;
 
@@ -46,7 +45,7 @@ public class TargeterBeanPostProcessor
 
 	private final DubboGenericServiceExecutionContextFactory contextFactory;
 
-	private ClassLoader classLoader;
+	private static final ClassLoader CLASS_LOADER = ClassUtils.class.getClassLoader();
 
 	public TargeterBeanPostProcessor(Environment environment,
 			DubboServiceMetadataRepository dubboServiceMetadataRepository,
@@ -67,12 +66,12 @@ public class TargeterBeanPostProcessor
 	@Override
 	public Object postProcessAfterInitialization(final Object bean, String beanName)
 			throws BeansException {
-		if (isPresent(TARGETER_CLASS_NAME, classLoader)) {
+		if (isPresent(TARGETER_CLASS_NAME, CLASS_LOADER)) {
 			Class<?> beanClass = getUserClass(bean.getClass());
-			Class<?> targetClass = resolveClassName(TARGETER_CLASS_NAME, classLoader);
+			Class<?> targetClass = resolveClassName(TARGETER_CLASS_NAME, CLASS_LOADER);
 			if (targetClass.isAssignableFrom(beanClass)) {
-				return newProxyInstance(classLoader, new Class[] { targetClass },
-						new TargeterInvocationHandler(bean, environment, classLoader,
+				return newProxyInstance(CLASS_LOADER, new Class[] { targetClass },
+						new TargeterInvocationHandler(bean, environment, CLASS_LOADER,
 								dubboServiceMetadataRepository,
 								dubboGenericServiceFactory, contextFactory));
 			}
@@ -80,8 +79,4 @@ public class TargeterBeanPostProcessor
 		return bean;
 	}
 
-	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
-	}
 }
