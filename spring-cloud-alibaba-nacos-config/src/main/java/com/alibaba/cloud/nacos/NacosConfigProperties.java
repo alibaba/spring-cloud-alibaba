@@ -64,17 +64,19 @@ public class NacosConfigProperties {
 
 	@Autowired
 	private Environment environment;
-	
+
 	@PostConstruct
 	public void init() {
 		this.overrideFromEnv();
 	}
-	
+
 	private void overrideFromEnv() {
 		if (StringUtils.isEmpty(this.getServerAddr())) {
-			String serverAddr = environment.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}");
-			if(StringUtils.isEmpty(serverAddr)) {
-				serverAddr = environment.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
+			String serverAddr = environment
+					.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}");
+			if (StringUtils.isEmpty(serverAddr)) {
+				serverAddr = environment
+						.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
 			}
 			this.setServerAddr(serverAddr);
 		}
@@ -110,25 +112,26 @@ public class NacosConfigProperties {
 	private int timeout = 3000;
 
 	/**
-	* nacos maximum number of tolerable server reconnection errors.
-	*/
+	 * nacos maximum number of tolerable server reconnection errors.
+	 */
 	private String maxRetry;
 
 	/**
-	* nacos get config long poll timeout.
-	*/
+	 * nacos get config long poll timeout.
+	 */
 	private String configLongPollTimeout;
 
 	/**
-	* nacos get config failure retry time.
-	*/
+	 * nacos get config failure retry time.
+	 */
 	private String configRetryTime;
 
 	/**
-	 * If you want to pull it yourself when the program starts to get the configuration for the first time,
-	 * and the registered Listener is used for future configuration updates, you can keep the original
-	 * code unchanged, just add the system parameter: enableRemoteSyncConfig = "true" ( But there is network overhead);
-	 * therefore we recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
+	 * If you want to pull it yourself when the program starts to get the configuration
+	 * for the first time, and the registered Listener is used for future configuration
+	 * updates, you can keep the original code unchanged, just add the system parameter:
+	 * enableRemoteSyncConfig = "true" ( But there is network overhead); therefore we
+	 * recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
 	 */
 	private boolean enableRemoteSyncConfig = false;
 
@@ -163,9 +166,9 @@ public class NacosConfigProperties {
 	 */
 	private String clusterName;
 
-    /**
-     * nacos config dataId name.
-     */
+	/**
+	 * nacos config dataId name.
+	 */
 	private String name;
 
 	/**
@@ -233,27 +236,27 @@ public class NacosConfigProperties {
 	}
 
 	public void setMaxRetry(String maxRetry) {
-        	this.maxRetry = maxRetry;
+		this.maxRetry = maxRetry;
 	}
 
 	public String getConfigLongPollTimeout() {
-        	return configLongPollTimeout;
+		return configLongPollTimeout;
 	}
 
 	public void setConfigLongPollTimeout(String configLongPollTimeout) {
-        	this.configLongPollTimeout = configLongPollTimeout;
+		this.configLongPollTimeout = configLongPollTimeout;
 	}
 
 	public String getConfigRetryTime() {
-        	return configRetryTime;
+		return configRetryTime;
 	}
 
 	public void setConfigRetryTime(String configRetryTime) {
-        	this.configRetryTime = configRetryTime;
+		this.configRetryTime = configRetryTime;
 	}
 
 	public Boolean getEnableRemoteSyncConfig() {
-        	return enableRemoteSyncConfig;
+		return enableRemoteSyncConfig;
 	}
 
 	public void setEnableRemoteSyncConfig(Boolean enableRemoteSyncConfig) {
@@ -400,6 +403,7 @@ public class NacosConfigProperties {
 				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
 	}
 
+	@Deprecated
 	public ConfigService configServiceInstance() {
 
 		if (null != configService) {
@@ -415,9 +419,11 @@ public class NacosConfigProperties {
 		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
 		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
-		properties.put(CONFIG_LONG_POLL_TIMEOUT, Objects.toString(this.configLongPollTimeout, ""));
+		properties.put(CONFIG_LONG_POLL_TIMEOUT,
+				Objects.toString(this.configLongPollTimeout, ""));
 		properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
-		properties.put(ENABLE_REMOTE_SYNC_CONFIG, Objects.toString(this.enableRemoteSyncConfig, ""));
+		properties.put(ENABLE_REMOTE_SYNC_CONFIG,
+				Objects.toString(this.enableRemoteSyncConfig, ""));
 
 		String endpoint = Objects.toString(this.endpoint, "");
 		if (endpoint.contains(":")) {

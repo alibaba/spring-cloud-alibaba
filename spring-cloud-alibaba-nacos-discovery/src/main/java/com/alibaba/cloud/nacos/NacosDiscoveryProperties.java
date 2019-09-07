@@ -427,7 +427,8 @@ public class NacosDiscoveryProperties {
 	public void overrideFromEnv(Environment env) {
 
 		if (StringUtils.isEmpty(this.getServerAddr())) {
-			String serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
+			String serverAddr = env
+					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
 				serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
 			}
@@ -459,10 +460,11 @@ public class NacosDiscoveryProperties {
 		}
 		if (StringUtils.isEmpty(this.getGroup())) {
 			this.setGroup(
-				env.resolvePlaceholders("${spring.cloud.nacos.discovery.group:}"));
+					env.resolvePlaceholders("${spring.cloud.nacos.discovery.group:}"));
 		}
 	}
 
+	@Deprecated
 	public NamingService namingServiceInstance() {
 
 		if (null != namingService) {
@@ -479,6 +481,7 @@ public class NacosDiscoveryProperties {
 		return namingService;
 	}
 
+	@Deprecated
 	public NamingMaintainService namingMaintainServiceInstance() {
 
 		if (null != namingMaintainService) {

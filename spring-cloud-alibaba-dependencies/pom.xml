@@ -6,13 +6,13 @@
     <parent>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.2.0.BUILD-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-    <version>2.1.1.BUILD-SNAPSHOT</version>
+    <version>2.2.0.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Dependencies</name>
     <description>Spring Cloud Alibaba Dependencies</description>
@@ -28,11 +28,8 @@
         <aliyun.sdk.version>4.4.1</aliyun.sdk.version>
         <alicloud.context.version>1.0.5</alicloud.context.version>
         <aliyun.sdk.edas.version>2.44.0</aliyun.sdk.edas.version>
-        <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
         <dubbo.version>2.7.3</dubbo.version>
-        <dubbo-spring-boot.version>2.7.1</dubbo-spring-boot.version>
-        <dubbo-registry-nacos.version>2.7.1</dubbo-registry-nacos.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8.6</aliyun.sdk.mns>
         <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
@@ -103,13 +100,6 @@
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-config</artifactId>
                 <version>${nacos.config.version}</version>
-            </dependency>
-
-            <!-- Apache RocketMQ -->
-            <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-spring-boot-starter</artifactId>
-                <version>${rocketmq.starter.version}</version>
             </dependency>
 
             <!-- Sentinel -->
@@ -184,6 +174,11 @@
                 <version>${sentinel.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-reactor-adapter</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>sentinel-dubbo-api</artifactId>
                 <version>${project.version}</version>
@@ -211,46 +206,10 @@
 
 
             <!--Alibaba Seata-->
-
             <dependency>
                 <groupId>io.seata</groupId>
                 <artifactId>seata-all</artifactId>
                 <version>${seata.version}</version>
-            </dependency>
-
-            <!-- Dubbo -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo</artifactId>
-                <version>${dubbo.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- Dubbo Spring Boot Starter -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${dubbo-spring-boot.version}</version>
-            </dependency>
-
-            <!-- Dubbo Nacos registry dependency -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-registry-nacos</artifactId>
-                <version>${dubbo-registry-nacos.version}</version>
             </dependency>
 
             <!-- Aliyun OSS dependencies -->
