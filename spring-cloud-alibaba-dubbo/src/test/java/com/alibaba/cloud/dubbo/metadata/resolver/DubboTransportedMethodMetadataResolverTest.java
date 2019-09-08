@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (C) 2018 the original author or authors.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,15 +15,16 @@
  */
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
+import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
-import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.mock.env.MockEnvironment;
 
-import java.util.Set;
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
 
 /**
  * {@link DubboTransportedMethodMetadataResolver} Test
@@ -33,27 +33,28 @@ import java.util.Set;
  */
 public class DubboTransportedMethodMetadataResolverTest {
 
-    private DubboTransportedMethodMetadataResolver resolver;
+	private DubboTransportedMethodMetadataResolver resolver;
 
-    private MockEnvironment environment;
+	private MockEnvironment environment;
 
-    @Before
-    public void init() {
-        environment = new MockEnvironment();
-        resolver = new DubboTransportedMethodMetadataResolver(environment, new SpringMvcContract());
-    }
+	@Before
+	public void init() {
+		environment = new MockEnvironment();
+		resolver = new DubboTransportedMethodMetadataResolver(environment,
+				new SpringMvcContract());
+	}
 
-    @Test
-    public void testResolve() {
-        Set<DubboTransportedMethodMetadata> metadataSet = resolver.resolveDubboTransportedMethodMetadataSet(TestDefaultService.class);
-        Assert.assertEquals(1, metadataSet.size());
-    }
+	@Test
+	public void testResolve() {
+		Set<DubboTransportedMethodMetadata> metadataSet = resolver
+				.resolveDubboTransportedMethodMetadataSet(TestDefaultService.class);
+		Assert.assertEquals(1, metadataSet.size());
+	}
 
+	@DubboTransported
+	interface TestDefaultService {
 
-    @DubboTransported
-    interface TestDefaultService {
+		String test(String message);
 
-        String test(String message);
-
-    }
+	}
 }

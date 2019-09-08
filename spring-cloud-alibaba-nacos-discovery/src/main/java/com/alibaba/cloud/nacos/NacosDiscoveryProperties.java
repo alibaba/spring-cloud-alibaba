@@ -190,7 +190,7 @@ public class NacosDiscoveryProperties {
 		}
 
 		serverAddr = Objects.toString(serverAddr, "");
-		if (serverAddr.lastIndexOf("/") != -1) {
+		if (serverAddr.endsWith("/")) {
 			serverAddr = serverAddr.substring(0, serverAddr.length() - 1);
 		}
 		endpoint = Objects.toString(endpoint, "");

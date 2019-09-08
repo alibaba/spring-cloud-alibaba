@@ -26,6 +26,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
@@ -99,14 +100,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			return;
 		}
 
-		String[] sharedDataIdArry = sharedDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
-		checkDataIdFileExtension(sharedDataIdArry);
+		String[] sharedDataIdArray = sharedDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
+		checkDataIdFileExtension(sharedDataIdArray);
 
-		for (int i = 0; i < sharedDataIdArry.length; i++) {
-			String dataId = sharedDataIdArry[i];
+		for (int i = 0; i < sharedDataIdArray.length; i++) {
+			String dataId = sharedDataIdArray[i];
 			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
-			boolean isRefreshable = checkDataIdIsRefreshbable(refreshDataIds,
-					sharedDataIdArry[i]);
+			boolean isRefreshable = checkDataIdIsRefreshable(refreshDataIds,
+					sharedDataIdArray[i]);
 
 			loadNacosDataIfPresent(compositePropertySource, dataId, "DEFAULT_GROUP",
 					fileExtension, isRefreshable);
@@ -114,13 +115,13 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private void loadExtConfiguration(CompositePropertySource compositePropertySource) {
-		if (nacosConfigProperties.getExtConfig() == null
-				|| nacosConfigProperties.getExtConfig().isEmpty()) {
+		List<NacosConfigProperties.Config> extConfigs = nacosConfigProperties
+				.getExtConfig();
+
+		if (CollectionUtils.isEmpty(extConfigs)) {
 			return;
 		}
 
-		List<NacosConfigProperties.Config> extConfigs = nacosConfigProperties
-				.getExtConfig();
 		checkExtConfiguration(extConfigs);
 
 		for (NacosConfigProperties.Config config : extConfigs) {
@@ -137,7 +138,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			String dataId = extConfigs.get(i).getDataId();
 			if (dataId == null || dataId.trim().length() == 0) {
 				throw new IllegalStateException(String.format(
-						"the [ spring.cloud.nacos.config.ext-config[%s] ] must give a dataid",
+						"the [ spring.cloud.nacos.config.ext-config[%s] ] must give a dataId",
 						i));
 			}
 			dataIds[i] = dataId;
@@ -184,36 +185,35 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private static void checkDataIdFileExtension(String[] dataIdArray) {
 		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < dataIdArray.length; i++) {
-			boolean isLegal = false;
-			for (String fileExtension : SUPPORT_FILE_EXTENSION) {
-				if (dataIdArray[i].indexOf(fileExtension) > 0) {
-					isLegal = true;
-					break;
-				}
-			}
-			// add tips
-			if (!isLegal) {
-				stringBuilder.append(dataIdArray[i] + ",");
+
+		for (String dataId : dataIdArray) {
+			if (!canLoadFileExtension(dataId)) {
+				stringBuilder.append(dataId).append(",");
 			}
 		}
 
 		if (stringBuilder.length() > 0) {
 			String result = stringBuilder.substring(0, stringBuilder.length() - 1);
 			throw new IllegalStateException(String.format(
-					"[%s] must contains file extension with properties|yaml|yml",
+					"[%s] must end file extension with properties|yaml|yml",
 					result));
 		}
 	}
 
-	private boolean checkDataIdIsRefreshbable(String refreshDataIds,
+	private static boolean canLoadFileExtension(String dataId) {
+		return SUPPORT_FILE_EXTENSION.stream()
+				.anyMatch((fileExtension) -> StringUtils.endsWithIgnoreCase(dataId,
+						fileExtension));
+	}
+
+	private boolean checkDataIdIsRefreshable(String refreshDataIds,
 			String sharedDataId) {
-		if (refreshDataIds == null || "".equals(refreshDataIds)) {
+		if (StringUtils.isEmpty(refreshDataIds)) {
 			return false;
 		}
 
-		String[] refreshDataIdArry = refreshDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
-		for (String refreshDataId : refreshDataIdArry) {
+		String[] refreshDataIdArray = refreshDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
+		for (String refreshDataId : refreshDataIdArray) {
 			if (refreshDataId.equals(sharedDataId)) {
 				return true;
 			}
