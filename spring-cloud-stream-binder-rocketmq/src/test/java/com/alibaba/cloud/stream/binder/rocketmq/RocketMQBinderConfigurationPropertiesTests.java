@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * {@link RocketMQBinderConfigurationProperties} unit test
  *
  * @author <a href="mailto:jiashuai.xie01@gmail.com">Xiejiashuai</a>
- * @since 1.6.3-ext.RELEASE
  */
 public class RocketMQBinderConfigurationPropertiesTests {
 

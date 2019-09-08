@@ -33,7 +33,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindi
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 
 /**
- * RocketMQ binder configuration properties unit test class
+ * {@link RocketMQExtendedBindingProperties} unit test class
  *
  * @author <a href="mailto:jiashuai.xie01@gmail.com">Xiejiashuai</a>
  */
