@@ -114,7 +114,7 @@ All the message types in this code are provided by the `spring-messaging`module.
 
 **The lower layer of Spring Cloud Stream also implements various code abstractions based on the previous code.**
 
-=== How to use Spring Cloud Alibaba RocketMQ Binder ###
+=== How to use Spring Cloud Alibaba RocketMQ Binder
 
 For using the Spring Cloud Alibaba RocketMQ Binder, you just need to add it to your Spring Cloud Stream application, using the following Maven coordinates:
 
