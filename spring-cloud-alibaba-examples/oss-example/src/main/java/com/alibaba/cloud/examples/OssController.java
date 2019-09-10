@@ -1,6 +1,5 @@
 package com.alibaba.cloud.examples;
 
-import com.alibaba.alicloud.oss.resource.OssStorageResource;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.model.OSSObject;
@@ -8,6 +7,7 @@ import org.apache.commons.codec.CharEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.WritableResource;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -74,15 +74,14 @@ public class OssController {
 
 	@GetMapping("/upload2")
 	public String uploadWithOutputStream() {
-		OssStorageResource ossStorageResource = new OssStorageResource(this.ossClient,
-			"oss://" + OssApplication.BUCKET_NAME + "/oss-test.json", true);
 		try {
-			InputStream inputStream = localFile.getInputStream();
-			OutputStream outputStream = ossStorageResource.getOutputStream();
-			StreamUtils.copy(inputStream, outputStream);
-			inputStream.close();
-			outputStream.close();
-		} catch (Exception ex) {
+			try (OutputStream outputStream = ((WritableResource) this.remoteFile)
+					.getOutputStream();
+					InputStream inputStream = localFile.getInputStream()) {
+				StreamUtils.copy(inputStream, outputStream);
+			}
+		}
+		catch (Exception ex) {
 			ex.printStackTrace();
 			return "upload with outputStream failed";
 		}
