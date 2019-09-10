@@ -216,6 +216,10 @@ public class OssStorageResource implements WritableResource {
 		}
 	}
 
+	/**
+	 * create a bucket.
+	 * @return
+	 */
 	public Bucket createBucket() {
 		return this.oss.createBucket(this.bucketName);
 	}
@@ -226,33 +230,37 @@ public class OssStorageResource implements WritableResource {
 	}
 
 	/**
-     * 获取一个OutputStream用于写操作。
-	 * 注意：写完成后必须关闭该流
+	 * acquire an OutputStream for write.
+	 * Note: please close the stream after writing is done
 	 * @return
-     * @throws IOException
+	 * @throws IOException
 	 */
 	@Override
 	public OutputStream getOutputStream() throws IOException {
 		if (isBucket()) {
 			throw new IllegalStateException(
-				"Cannot open an output stream to a bucket: '" + getURI() + "'");
+					"Cannot open an output stream to a bucket: '" + getURI() + "'");
 		}
 		else {
 			OSSObject ossObject;
 
-		    try {
+			try {
 				ossObject = this.getOSSObject();
-			} catch (OSSException ex) {
-		    	if (ex.getMessage() != null && ex.getMessage().startsWith(MESSAGE_KEY_NOT_EXIST)) {
-		    		ossObject = null;
-				} else {
-		    		throw ex;
+			}
+			catch (OSSException ex) {
+				if (ex.getMessage() != null
+						&& ex.getMessage().startsWith(MESSAGE_KEY_NOT_EXIST)) {
+					ossObject = null;
+				}
+				else {
+					throw ex;
 				}
 			}
 
-			if (ossObject == null ) {
+			if (ossObject == null) {
 				if (!this.autoCreateFiles) {
-					throw new FileNotFoundException("The object was not found: " + getURI());
+					throw new FileNotFoundException(
+							"The object was not found: " + getURI());
 				}
 
 			}
@@ -263,7 +271,8 @@ public class OssStorageResource implements WritableResource {
 			executorService.submit(() -> {
 				try {
 					OssStorageResource.this.oss.putObject(bucketName, objectKey, in);
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					logger.error("Failed to put object", ex);
 				}
 			});
