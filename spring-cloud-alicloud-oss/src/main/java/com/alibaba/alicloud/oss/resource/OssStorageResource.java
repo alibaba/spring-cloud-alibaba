@@ -58,7 +58,8 @@ public class OssStorageResource implements WritableResource {
 	private final URI location;
 	private final boolean autoCreateFiles;
 
-	private final ExecutorService executorService;
+	private static final ExecutorService executorService = new ThreadPoolExecutor(8, 128,
+			60, TimeUnit.SECONDS, new SynchronousQueue<>());
 
 	public OssStorageResource(OSS oss, String location) {
 		this(oss, location, false);
@@ -86,9 +87,6 @@ public class OssStorageResource implements WritableResource {
 			throw new IllegalArgumentException("Invalid location: " + location, e);
 		}
 
-		this.executorService = new ThreadPoolExecutor(
-			1, 1, 60, TimeUnit.SECONDS,
-			new SynchronousQueue<>());
 	}
 
 	public boolean isAutoCreateFiles() {
