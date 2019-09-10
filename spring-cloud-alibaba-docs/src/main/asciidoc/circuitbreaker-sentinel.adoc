@@ -1,0 +1,73 @@
+=== Circuit Breaker: Spring Cloud Circuit Breaker With Sentinel & Configuring Sentinel Circuit Breakers
+
+==== Default Configuration
+
+To provide a default configuration for all of your circuit breakers create a `Customizer` bean that is passed a
+`SentinelCircuitBreakerFactory` or `ReactiveSentinelCircuitBreakerFactory`.
+The `configureDefault` method can be used to provide a default configuration.
+
+====
+[source,java]
+----
+@Bean
+public Customizer<SentinelCircuitBreakerFactory> defaultCustomizer() {
+	return factory -> factory.configureDefault(id -> new SentinelConfigBuilder(id)
+			.build());
+}
+----
+====
+
+You can choose to provide default circuit breaking rules via `SentinelConfigBuilder#rules(rules)`.
+You can also choose to load circuit breaking rules later elsewhere using
+`DegradeRuleManager.loadRules(rules)` API of Sentinel, or via Sentinel dashboard.
+
+===== Reactive Example
+
+====
+[source,java]
+----
+@Bean
+public Customizer<ReactiveSentinelCircuitBreakerFactory> defaultCustomizer() {
+	return factory -> factory.configureDefault(id -> new SentinelConfigBuilder(id)
+			.build());
+}
+----
+====
+
+==== Specific Circuit Breaker Configuration
+
+Similarly to providing a default configuration, you can create a `Customizer` bean this is passed a
+`SentinelCircuitBreakerFactory`.
+
+====
+[source,java]
+----
+@Bean
+public Customizer<SentinelCircuitBreakerFactory> slowCustomizer() {
+	String slowId = "slow";
+	List<DegradeRule> rules = Collections.singletonList(
+		new DegradeRule(slowId).setGrade(RuleConstant.DEGRADE_GRADE_RT)
+			.setCount(100)
+			.setTimeWindow(10)
+		);
+	return factory -> factory.configure(builder -> builder.rules(rules), slowId);
+}
+----
+====
+
+===== Reactive Example
+
+====
+[source,java]
+----
+@Bean
+public Customizer<ReactiveSentinelCircuitBreakerFactory> customizer() {
+	List<DegradeRule> rules = Collections.singletonList(
+		new DegradeRule().setGrade(RuleConstant.DEGRADE_GRADE_RT)
+			.setCount(100)
+			.setTimeWindow(10)
+		);
+	return factory -> factory.configure(builder -> builder.rules(rules), "foo", "bar");
+}
+----
+====
