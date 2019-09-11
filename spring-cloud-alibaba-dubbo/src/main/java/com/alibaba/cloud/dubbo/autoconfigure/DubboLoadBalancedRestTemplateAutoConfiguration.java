@@ -59,8 +59,8 @@ import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 @ConditionalOnClass(name = { "org.springframework.web.client.RestTemplate" })
 @AutoConfigureAfter(name = {
 		"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration" })
-public class DubboLoadBalancedRestTemplateAutoConfiguration
-		implements BeanClassLoaderAware, ApplicationContextAware, SmartInitializingSingleton {
+public class DubboLoadBalancedRestTemplateAutoConfiguration implements
+		BeanClassLoaderAware, ApplicationContextAware, SmartInitializingSingleton {
 
 	private static final Class<DubboTransported> DUBBO_TRANSPORTED_CLASS = DubboTransported.class;
 
@@ -123,7 +123,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 		if (event.getApplicationContext() == this.applicationContext) {
 
 			DubboTransportedAttributesResolver attributesResolver = new DubboTransportedAttributesResolver(
-				environment);
+					environment);
 
 			for (Map.Entry<String, RestTemplate> entry : restTemplates.entrySet()) {
 				String beanName = entry.getKey();
@@ -141,7 +141,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 	 * {@link DubboTransported @DubboTransported}
 	 *
 	 * @param beanName the bean name of {@link LoadBalanced @LoadBalanced}
-	 * {@link RestTemplate}
+	 *     {@link RestTemplate}
 	 * @param attributesResolver {@link DubboTransportedAttributesResolver}
 	 * @return non-null {@link Map}
 	 */
@@ -153,10 +153,10 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 			AnnotatedBeanDefinition annotatedBeanDefinition = (AnnotatedBeanDefinition) beanDefinition;
 			MethodMetadata factoryMethodMetadata = annotatedBeanDefinition
 					.getFactoryMethodMetadata();
-			attributes = factoryMethodMetadata != null
-					? Optional.ofNullable(factoryMethodMetadata
-							.getAnnotationAttributes(DUBBO_TRANSPORTED_CLASS_NAME)).orElse(attributes)
-					: Collections.emptyMap();
+			attributes = factoryMethodMetadata != null ? Optional
+					.ofNullable(factoryMethodMetadata
+							.getAnnotationAttributes(DUBBO_TRANSPORTED_CLASS_NAME))
+					.orElse(attributes) : Collections.emptyMap();
 		}
 		return attributesResolver.resolve(attributes);
 	}
@@ -167,8 +167,8 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration
 	 *
 	 * @param restTemplate {@link LoadBalanced @LoadBalanced} {@link RestTemplate} Bean
 	 * @param dubboTranslatedAttributes the annotation dubboTranslatedAttributes
-	 * {@link RestTemplate} bean being annotated
-	 * {@link DubboTransported @DubboTransported}
+	 *     {@link RestTemplate} bean being annotated
+	 *     {@link DubboTransported @DubboTransported}
 	 */
 	private void adaptRestTemplate(RestTemplate restTemplate,
 			Map<String, Object> dubboTranslatedAttributes) {
