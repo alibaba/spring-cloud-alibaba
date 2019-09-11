@@ -173,6 +173,12 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,
 			final String dataId, final String group, String fileExtension,
 			boolean isRefreshable) {
+		if (null == dataId || dataId.trim().length() < 1) {
+			return;
+		}
+		if (null == group || group.trim().length() < 1) {
+			return;
+		}
 		NacosPropertySource propertySource = this.loadNacosPropertySource(dataId, group,
 				fileExtension, isRefreshable);
 		this.addFirstPropertySource(composite, propertySource, false);
