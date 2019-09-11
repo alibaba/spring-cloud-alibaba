@@ -403,13 +403,19 @@ public class NacosConfigProperties {
 				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
 	}
 
+	/**
+	 * @see NacosConfigManager#getConfigService()
+	 */
 	@Deprecated
 	public ConfigService configServiceInstance() {
+		return configService;
+	}
 
-		if (null != configService) {
-			return configService;
-		}
+	public void initConfigService(ConfigService configService){
+		this.configService = configService;
+	}
 
+	public Properties getConfigServiceProperties(){
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
@@ -424,7 +430,6 @@ public class NacosConfigProperties {
 		properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
 		properties.put(ENABLE_REMOTE_SYNC_CONFIG,
 				Objects.toString(this.enableRemoteSyncConfig, ""));
-
 		String endpoint = Objects.toString(this.endpoint, "");
 		if (endpoint.contains(":")) {
 			int index = endpoint.indexOf(":");
@@ -434,14 +439,7 @@ public class NacosConfigProperties {
 		else {
 			properties.put(ENDPOINT, endpoint);
 		}
-
-		try {
-			configService = NacosFactory.createConfigService(properties);
-			return configService;
-		}
-		catch (Exception e) {
-			log.error("create config service error!properties={},e=,", this, e);
-			return null;
-		}
+		return properties;
 	}
+
 }
