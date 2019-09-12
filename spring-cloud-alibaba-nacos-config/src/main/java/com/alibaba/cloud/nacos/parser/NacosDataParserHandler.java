@@ -24,8 +24,6 @@ import java.util.Properties;
  */
 public class NacosDataParserHandler {
 
-	private static final NacosDataParserHandler HANDLER = new NacosDataParserHandler();
-
 	private AbstractNacosDataParser parser;
 
 	private NacosDataParserHandler() {
@@ -68,7 +66,10 @@ public class NacosDataParserHandler {
 	}
 
 	public static NacosDataParserHandler getInstance() {
-		return HANDLER;
+		return ParserHandler.HANDLER;
 	}
 
+	private static class ParserHandler {
+		private static final NacosDataParserHandler HANDLER = new NacosDataParserHandler();
+	}
 }

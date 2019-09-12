@@ -16,7 +16,12 @@
  */
 package com.alibaba.cloud.nacos;
 
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -25,7 +30,7 @@ import org.springframework.context.ApplicationContextAware;
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
  */
 public class NacosConfigManager implements ApplicationContextAware {
-
+	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
 	private ConfigService configService;
 
 	public ConfigService getConfigService() {
@@ -37,6 +42,13 @@ public class NacosConfigManager implements ApplicationContextAware {
 			throws BeansException {
 		NacosConfigProperties properties = applicationContext
 				.getBean(NacosConfigProperties.class);
-		configService = properties.configServiceInstance();
+		try {
+			configService = NacosFactory
+					.createConfigService(properties.getConfigServiceProperties());
+			properties.initConfigService(configService);
+		}
+		catch (NacosException e) {
+			log.error("create config service error!properties={},e=,", properties, e);
+		}
 	}
 }
