@@ -18,6 +18,8 @@ package com.alibaba.cloud.nacos;
 
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
@@ -26,6 +28,8 @@ import java.util.Objects;
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
  */
 public class NacosNamingManager {
+
+		private static final Logger log = LoggerFactory.getLogger(NacosNamingManager.class);
 
 	private static NamingService namingService = null;
 	private static NamingMaintainService namingMaintainService = null;

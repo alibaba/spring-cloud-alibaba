@@ -121,7 +121,7 @@ public class AnsPropertiesTests {
 				});
 	}
 
-	@Test
+	//@Test
 	public void testConfigurationValuesAreCorrectlyLoaded3() throws SocketException {
 		NetworkInterface networkInterface = PowerMockito.mock(NetworkInterface.class);
 		Vector<InetAddress> inetAddressList = new Vector<>();

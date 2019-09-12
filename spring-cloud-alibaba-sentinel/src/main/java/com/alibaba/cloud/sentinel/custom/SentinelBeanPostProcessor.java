@@ -29,8 +29,8 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.StandardMethodMetadata;
-import org.springframework.core.type.classreading.MethodMetadataReadingVisitor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpResponse;
@@ -167,19 +167,12 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	private boolean checkSentinelProtect(RootBeanDefinition beanDefinition,
 			Class<?> beanType) {
 		return beanType == RestTemplate.class
-				&& (checkStandardMethodMetadata(beanDefinition)
-						|| checkMethodMetadataReadingVisitor(beanDefinition));
-	}
-
-	private boolean checkStandardMethodMetadata(RootBeanDefinition beanDefinition) {
-		return beanDefinition.getSource() instanceof StandardMethodMetadata
-				&& ((StandardMethodMetadata) beanDefinition.getSource())
-						.isAnnotated(SentinelRestTemplate.class.getName());
+				&& checkMethodMetadataReadingVisitor(beanDefinition);
 	}
 
 	private boolean checkMethodMetadataReadingVisitor(RootBeanDefinition beanDefinition) {
-		return beanDefinition.getSource() instanceof MethodMetadataReadingVisitor
-				&& ((MethodMetadataReadingVisitor) beanDefinition.getSource())
+		return beanDefinition.getSource() instanceof MethodMetadata
+				&& ((MethodMetadata) beanDefinition.getSource())
 						.isAnnotated(SentinelRestTemplate.class.getName());
 	}
 
