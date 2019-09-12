@@ -16,8 +16,10 @@
 package com.alibaba.cloud.dubbo.autoconfigure;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.alibaba.cloud.dubbo.metadata.repository.MetadataServiceInstanceSelector;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
@@ -42,6 +44,7 @@ import com.alibaba.cloud.dubbo.service.IntrospectiveDubboMetadataService;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
 
 import feign.Contract;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata
@@ -66,6 +69,15 @@ public class DubboMetadataAutoConfiguration {
 	@ConditionalOnMissingBean
 	public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
 		return new DubboServiceBeanMetadataResolver(contract);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public MetadataServiceInstanceSelector metadataServiceInstanceSelector() {
+		return serviceInstances ->
+				CollectionUtils.isEmpty(serviceInstances)
+						? Optional.empty()
+						: serviceInstances.stream().findAny();
 	}
 
 	@Bean
