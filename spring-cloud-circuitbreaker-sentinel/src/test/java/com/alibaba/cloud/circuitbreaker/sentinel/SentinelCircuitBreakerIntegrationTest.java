@@ -48,7 +48,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author Eric Zhao
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = SentinelCircuitBreakerIntegrationTest.Application.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT, classes = SentinelCircuitBreakerIntegrationTest.Application.class, properties = {
+		"spring.cloud.discovery.client.health-indicator.enabled=false" })
 @DirtiesContext
 public class SentinelCircuitBreakerIntegrationTest {
 
