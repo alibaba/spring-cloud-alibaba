@@ -90,11 +90,8 @@ class SampleController {
 	@Value("${user.age:25}")
 	Integer age;
 
-	private final NacosConfigManager nacosConfigManager;
-
-	public SampleController(NacosConfigManager nacosConfigManager) {
-		this.nacosConfigManager = nacosConfigManager;
-	}
+	@Autowired
+	private NacosConfigManager nacosConfigManager;
 
 	@RequestMapping("/user")
 	public String simple() {
