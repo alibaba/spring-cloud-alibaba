@@ -31,7 +31,6 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.StandardMethodMetadata;
-import org.springframework.core.type.classreading.MethodMetadataReadingVisitor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpResponse;
@@ -170,12 +169,6 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		return beanType == RestTemplate.class
 				&& checkMethodMetadataReadingVisitor(beanDefinition);
 	}
-
-	// private boolean checkStandardMethodMetadata(RootBeanDefinition beanDefinition) {
-	// return beanDefinition.getSource() instanceof StandardMethodMetadata
-	// && ((StandardMethodMetadata) beanDefinition.getSource())
-	// .isAnnotated(SentinelRestTemplate.class.getName());
-	// }
 
 	private boolean checkMethodMetadataReadingVisitor(RootBeanDefinition beanDefinition) {
 		return beanDefinition.getSource() instanceof MethodMetadata
