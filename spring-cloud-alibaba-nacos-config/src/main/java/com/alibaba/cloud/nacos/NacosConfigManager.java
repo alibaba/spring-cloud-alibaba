@@ -30,8 +30,7 @@ import org.springframework.context.ApplicationContextAware;
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
  */
 public class NacosConfigManager implements ApplicationContextAware {
-	private static final Logger log = LoggerFactory
-			.getLogger(NacosConfigManager.class);
+	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
 	private ConfigService configService;
 
 	public ConfigService getConfigService() {
@@ -44,9 +43,11 @@ public class NacosConfigManager implements ApplicationContextAware {
 		NacosConfigProperties properties = applicationContext
 				.getBean(NacosConfigProperties.class);
 		try {
-			configService = NacosFactory.createConfigService(properties.getConfigServiceProperties());
+			configService = NacosFactory
+					.createConfigService(properties.getConfigServiceProperties());
 			properties.initConfigService(configService);
-		} catch (NacosException e) {
+		}
+		catch (NacosException e) {
 			log.error("create config service error!properties={},e=,", properties, e);
 		}
 	}

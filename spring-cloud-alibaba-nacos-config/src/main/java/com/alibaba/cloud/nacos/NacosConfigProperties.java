@@ -411,11 +411,11 @@ public class NacosConfigProperties {
 		return configService;
 	}
 
-	public void initConfigService(ConfigService configService){
+	public void initConfigService(ConfigService configService) {
 		this.configService = configService;
 	}
 
-	public Properties getConfigServiceProperties(){
+	public Properties getConfigServiceProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
