@@ -166,6 +166,9 @@ public class DubboServiceMetadataRepository
 	private DiscoveryClient discoveryClient;
 
 	@Autowired
+	private MetadataServiceInstanceSelector metadataServiceInstanceSelector;
+
+	@Autowired
 	private JSONUtils jsonUtils;
 
 	@Autowired
@@ -618,7 +621,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	protected void initSubscribedDubboMetadataService(String serviceName) {
-		discoveryClient.getInstances(serviceName).stream().findAny()
+		metadataServiceInstanceSelector.choose(discoveryClient.getInstances(serviceName))
 				.map(this::getDubboMetadataServiceURLs)
 				.ifPresent(dubboMetadataServiceURLs -> {
 					dubboMetadataServiceURLs.forEach(dubboMetadataServiceURL -> {
