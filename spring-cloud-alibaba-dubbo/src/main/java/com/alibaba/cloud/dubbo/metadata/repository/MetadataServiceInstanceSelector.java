@@ -16,10 +16,10 @@
 
 package com.alibaba.cloud.dubbo.metadata.repository;
 
-import org.springframework.cloud.client.ServiceInstance;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.cloud.client.ServiceInstance;
 
 /**
  * metadata service instance selector
@@ -28,11 +28,10 @@ import java.util.Optional;
  */
 public interface MetadataServiceInstanceSelector {
 
-
-    /**
-     * choose a service instance to get metadata
-     * @param serviceInstances all service instance
-     * @return the service instance to get metadata
-     */
-    Optional<ServiceInstance> choose(List<ServiceInstance> serviceInstances);
+	/**
+	 * choose a service instance to get metadata
+	 * @param serviceInstances all service instance
+	 * @return the service instance to get metadata
+	 */
+	Optional<ServiceInstance> choose(List<ServiceInstance> serviceInstances);
 }
