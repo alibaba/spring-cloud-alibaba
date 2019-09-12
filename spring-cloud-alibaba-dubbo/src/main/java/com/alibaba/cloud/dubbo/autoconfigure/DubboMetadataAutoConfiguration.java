@@ -16,6 +16,7 @@
 package com.alibaba.cloud.dubbo.autoconfigure;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.dubbo.config.ProtocolConfig;
@@ -30,9 +31,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.util.CollectionUtils;
 
 import com.alibaba.cloud.dubbo.metadata.DubboProtocolConfigSupplier;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.metadata.repository.MetadataServiceInstanceSelector;
 import com.alibaba.cloud.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import com.alibaba.cloud.dubbo.metadata.resolver.MetadataResolver;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
@@ -66,6 +69,14 @@ public class DubboMetadataAutoConfiguration {
 	@ConditionalOnMissingBean
 	public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
 		return new DubboServiceBeanMetadataResolver(contract);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public MetadataServiceInstanceSelector metadataServiceInstanceSelector() {
+		return serviceInstances -> CollectionUtils.isEmpty(serviceInstances)
+				? Optional.empty()
+				: serviceInstances.stream().findAny();
 	}
 
 	@Bean

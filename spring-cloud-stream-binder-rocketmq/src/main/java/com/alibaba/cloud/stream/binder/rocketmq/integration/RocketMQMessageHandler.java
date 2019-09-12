@@ -151,8 +151,8 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 	}
 
 	@Override
-	protected void handleMessageInternal(org.springframework.messaging.Message<?> message)
-			throws Exception {
+	protected void handleMessageInternal(
+			org.springframework.messaging.Message<?> message) {
 		try {
 			// issue 737 fix
 			Map<String, String> jsonHeaders = headerMapper

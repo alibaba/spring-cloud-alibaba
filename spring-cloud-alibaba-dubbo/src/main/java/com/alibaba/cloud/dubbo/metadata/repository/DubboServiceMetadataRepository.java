@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,7 +49,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -168,7 +166,7 @@ public class DubboServiceMetadataRepository
 	private DiscoveryClient discoveryClient;
 
 	@Autowired
-	private LoadBalancerClient loadBalancerClient;
+	private MetadataServiceInstanceSelector metadataServiceInstanceSelector;
 
 	@Autowired
 	private JSONUtils jsonUtils;
@@ -623,7 +621,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	protected void initSubscribedDubboMetadataService(String serviceName) {
-		Optional.ofNullable(loadBalancerClient.choose(serviceName))
+		metadataServiceInstanceSelector.choose(discoveryClient.getInstances(serviceName))
 				.map(this::getDubboMetadataServiceURLs)
 				.ifPresent(dubboMetadataServiceURLs -> {
 					dubboMetadataServiceURLs.forEach(dubboMetadataServiceURL -> {

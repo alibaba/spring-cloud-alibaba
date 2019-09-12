@@ -166,7 +166,7 @@ NOTE: 在使用 RocketMQ Binder 的同时也可以配置 rocketmq.** 用于触�
 MessageBuilder builder = MessageBuilder.withPayload(msg)
     .setHeader(RocketMQHeaders.TAGS, "binder")
     .setHeader(RocketMQHeaders.KEYS, "my-key")
-    .setHeader("DELAY", "1");
+    .setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, "1");
 Message message = builder.build();
 output().send(message);
 ```

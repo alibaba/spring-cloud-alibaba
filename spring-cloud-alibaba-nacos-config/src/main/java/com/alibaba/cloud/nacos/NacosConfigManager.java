@@ -16,7 +16,11 @@
  */
 package com.alibaba.cloud.nacos;
 
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
@@ -26,14 +30,23 @@ import java.util.Objects;
  */
 public class NacosConfigManager {
 
-	@Autowired
-	private NacosConfigProperties properties;
+	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
 
 	private static ConfigService service = null;
 
+	@Autowired
+	private NacosConfigProperties properties;
+
 	public ConfigService getConfigService() {
 		if (Objects.isNull(service)) {
-			service = properties.configServiceInstance();
+			try {
+				service = NacosFactory
+						.createConfigService(properties.getConfigServiceProperties());
+				properties.initConfigService(service);
+			}
+			catch (NacosException e) {
+				log.error("create config service error!properties={},e=,", properties, e);
+			}
 		}
 		return service;
 	}
