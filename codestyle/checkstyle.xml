@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="fileExtensions" value="java"/>
+
+    <!-- TreeWalker Checks -->
+    <module name="TreeWalker">
+
+
+    </module>
+</module>

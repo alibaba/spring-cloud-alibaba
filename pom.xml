@@ -92,6 +92,7 @@
         <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
 
         <!-- Maven Plugin Versions -->
+        <maven-checkstyle-plugin-version>3.0.0</maven-checkstyle-plugin-version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
@@ -264,6 +265,26 @@
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>checkstyle-validation</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <configLocation>codestyle/checkstyle.xml</configLocation>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>true</consoleOutput>
+                            <failOnViolation>true</failOnViolation>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
