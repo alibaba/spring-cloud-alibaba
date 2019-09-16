@@ -116,10 +116,10 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		}
 		Class[] args;
 		if (type.equals(SentinelConstants.URLCLEANER_TYPE)) {
-			args = new Class[] { String.class };
+			args = new Class[] {String.class };
 		}
 		else {
-			args = new Class[] { HttpRequest.class, byte[].class,
+			args = new Class[] {HttpRequest.class, byte[].class,
 					ClientHttpRequestExecution.class, BlockException.class };
 		}
 		String argsStr = Arrays.toString(

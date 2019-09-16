@@ -15,7 +15,19 @@
  */
 package com.alibaba.cloud.dubbo.openfeign;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import com.alibaba.cloud.dubbo.metadata.*;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.metadata.resolver.DubboTransportedMethodMetadataResolver;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import feign.Contract;
+import feign.Target;
+import org.apache.dubbo.rpc.service.GenericService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignContext;
+import org.springframework.core.env.Environment;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -23,25 +35,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.dubbo.rpc.service.GenericService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignContext;
-import org.springframework.core.env.Environment;
-
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
-import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
-import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.MethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.metadata.resolver.DubboTransportedMethodMetadataResolver;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-
-import feign.Contract;
-import feign.Target;
+import static java.lang.reflect.Proxy.newProxyInstance;
 
 /**
  * org.springframework.cloud.openfeign.Targeter {@link InvocationHandler}
@@ -108,7 +102,7 @@ class TargeterInvocationHandler implements InvocationHandler {
 		}
 
 		return newProxyInstance(target.type().getClassLoader(),
-				new Class<?>[] { target.type() }, dubboInvocationHandler);
+				new Class<?>[] {target.type() }, dubboInvocationHandler);
 	}
 
 	private DubboInvocationHandler createDubboInvocationHandler(FeignContext feignContext,

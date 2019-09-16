@@ -45,7 +45,7 @@ public class StorageController {
 		LOGGER.info("Storage Service Begin ... xid: " + RootContext.getXID());
 		int result = jdbcTemplate.update(
 				"update storage_tbl set count = count - ? where commodity_code = ?",
-				new Object[] { count, commodityCode });
+				new Object[] {count, commodityCode });
 		LOGGER.info("Storage Service End ... ");
 		if (result == 1) {
 			return SUCCESS;

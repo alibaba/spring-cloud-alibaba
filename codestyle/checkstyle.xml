@@ -9,7 +9,6 @@
 
     <!-- TreeWalker Checks -->
     <module name="TreeWalker">
-
-
+        <module name="NoWhitespaceAfter"/>
     </module>
 </module>

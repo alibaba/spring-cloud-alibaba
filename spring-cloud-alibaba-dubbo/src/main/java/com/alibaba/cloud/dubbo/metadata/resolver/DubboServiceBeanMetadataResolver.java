@@ -15,17 +15,12 @@
  */
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
+import feign.Contract;
+import feign.Feign;
+import feign.MethodMetadata;
+import feign.Util;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.springframework.beans.BeanUtils;
@@ -34,13 +29,11 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.util.ClassUtils;
 
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
-
-import feign.Contract;
-import feign.Feign;
-import feign.MethodMetadata;
-import feign.Util;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The metadata resolver for {@link Feign} for {@link ServiceBean Dubbo Service Bean} in
@@ -51,7 +44,7 @@ import feign.Util;
 public class DubboServiceBeanMetadataResolver
 		implements BeanClassLoaderAware, SmartInitializingSingleton, MetadataResolver {
 
-	private static final String[] CONTRACT_CLASS_NAMES = { "feign.jaxrs2.JAXRS2Contract",
+	private static final String[] CONTRACT_CLASS_NAMES = {"feign.jaxrs2.JAXRS2Contract",
 			"org.springframework.cloud.openfeign.support.SpringMvcContract", };
 
 	private final ObjectProvider<Contract> contractObjectProvider;

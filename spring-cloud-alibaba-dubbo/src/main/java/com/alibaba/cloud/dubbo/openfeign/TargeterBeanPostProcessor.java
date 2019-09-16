@@ -15,20 +15,17 @@
  */
 package com.alibaba.cloud.dubbo.openfeign;
 
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboOpenFeignAutoConfiguration.TARGETER_CLASS_NAME;
-import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.springframework.util.ClassUtils.getUserClass;
-import static org.springframework.util.ClassUtils.isPresent;
-import static org.springframework.util.ClassUtils.resolveClassName;
-
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.env.Environment;
 
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboOpenFeignAutoConfiguration.TARGETER_CLASS_NAME;
+import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.springframework.util.ClassUtils.*;
 
 /**
  * org.springframework.cloud.openfeign.Targeter {@link BeanPostProcessor}
@@ -71,7 +68,7 @@ public class TargeterBeanPostProcessor
 			Class<?> beanClass = getUserClass(bean.getClass());
 			Class<?> targetClass = resolveClassName(TARGETER_CLASS_NAME, classLoader);
 			if (targetClass.isAssignableFrom(beanClass)) {
-				return newProxyInstance(classLoader, new Class[] { targetClass },
+				return newProxyInstance(classLoader, new Class[] {targetClass },
 						new TargeterInvocationHandler(bean, environment, classLoader,
 								dubboServiceMetadataRepository,
 								dubboGenericServiceFactory, contextFactory));

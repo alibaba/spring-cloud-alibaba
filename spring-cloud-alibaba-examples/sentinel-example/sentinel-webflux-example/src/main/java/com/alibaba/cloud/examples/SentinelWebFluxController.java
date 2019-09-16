@@ -46,7 +46,7 @@ public class SentinelWebFluxController {
 
 	@GetMapping("/flux")
 	public Flux<String> flux() {
-		return Flux.fromArray(new String[] { "a", "b", "c" })
+		return Flux.fromArray(new String[] {"a", "b", "c" })
 				// transform the publisher here.
 				.transform(new SentinelReactorTransformer<>("flux"));
 	}

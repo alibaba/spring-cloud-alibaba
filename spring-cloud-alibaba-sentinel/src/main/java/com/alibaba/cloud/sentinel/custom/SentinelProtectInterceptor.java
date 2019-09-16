@@ -21,12 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestExecution;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.RestTemplate;
-
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
 import com.alibaba.csp.sentinel.Entry;
@@ -35,6 +29,12 @@ import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
+
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Interceptor using by SentinelRestTemplate
@@ -107,7 +107,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 
 	private ClientHttpResponse handleBlockException(HttpRequest request, byte[] body,
 			ClientHttpRequestExecution execution, BlockException ex) {
-		Object[] args = new Object[] { request, body, execution, ex };
+		Object[] args = new Object[] {request, body, execution, ex };
 		// handle degrade
 		if (isDegradeFailure(ex)) {
 			Method fallbackMethod = extractFallbackMethod(sentinelRestTemplate.fallback(),

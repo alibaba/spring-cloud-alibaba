@@ -15,13 +15,13 @@
  */
 package com.alibaba.cloud.dubbo.service;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
+import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.DisposableBean;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.DisposableBean;
+import static java.lang.reflect.Proxy.newProxyInstance;
 
 /**
  * The proxy of {@link DubboMetadataService}
@@ -88,7 +88,7 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	 */
 	protected DubboMetadataService newProxy(String serviceName, String version) {
 		return (DubboMetadataService) newProxyInstance(classLoader,
-				new Class[] { DubboMetadataService.class },
+				new Class[] {DubboMetadataService.class },
 				new DubboMetadataServiceInvocationHandler(serviceName, version,
 						dubboGenericServiceFactory));
 	}

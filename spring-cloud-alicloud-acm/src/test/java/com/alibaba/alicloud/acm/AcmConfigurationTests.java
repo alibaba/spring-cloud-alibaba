@@ -174,7 +174,7 @@ public class AcmConfigurationTests {
 
 	private void checkoutAcmProfiles() {
 		assertArrayEquals("AcmProperties' profiles is wrong",
-				new String[] { "dev", "test" },
+				new String[] {"dev", "test" },
 				integrationProperties.getActiveProfiles());
 	}
 

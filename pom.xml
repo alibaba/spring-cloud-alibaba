@@ -276,7 +276,6 @@
                         <phase>validate</phase>
                         <configuration>
                             <configLocation>codestyle/checkstyle.xml</configLocation>
-                            <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
                             <failOnViolation>true</failOnViolation>
                         </configuration>
