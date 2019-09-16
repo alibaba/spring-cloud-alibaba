@@ -63,7 +63,7 @@ public class OssStorageProtocolResolver
 		if (!location.startsWith(PROTOCOL)) {
 			return null;
 		}
-		return new OssStorageResource(getOSS(), location);
+		return new OssStorageResource(getOSS(), location, beanFactory);
 	}
 
 	@Override

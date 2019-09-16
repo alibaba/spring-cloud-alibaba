@@ -23,6 +23,7 @@ import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.OSSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 import org.springframework.util.Assert;
@@ -32,9 +33,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+
+import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
 
 /**
  * Implements {@link Resource} for reading and writing objects in Aliyun Object Storage
@@ -58,19 +58,21 @@ public class OssStorageResource implements WritableResource {
 	private final URI location;
 	private final boolean autoCreateFiles;
 
-	private static final ExecutorService executorService = new ThreadPoolExecutor(8, 128,
-			60, TimeUnit.SECONDS, new SynchronousQueue<>());
+	private final ExecutorService ossTaskExecutor;
 
-	public OssStorageResource(OSS oss, String location) {
-		this(oss, location, false);
+	private final ConfigurableListableBeanFactory beanFactory;
+
+	public OssStorageResource(OSS oss, String location, ConfigurableListableBeanFactory beanFactory) {
+		this(oss, location, beanFactory,false);
     }
 
-	public OssStorageResource(OSS oss, String location, boolean autoCreateFiles) {
+	public OssStorageResource(OSS oss, String location,ConfigurableListableBeanFactory beanFactory, boolean autoCreateFiles) {
 		Assert.notNull(oss, "Object Storage Service can not be null");
 		Assert.isTrue(location.startsWith(OssStorageProtocolResolver.PROTOCOL),
 				"Location must start with " + OssStorageProtocolResolver.PROTOCOL);
 		this.oss = oss;
 		this.autoCreateFiles = autoCreateFiles;
+		this.beanFactory = beanFactory;
 		try {
 			URI locationUri = new URI(location);
 			this.bucketName = locationUri.getAuthority();
@@ -87,6 +89,7 @@ public class OssStorageResource implements WritableResource {
 			throw new IllegalArgumentException("Invalid location: " + location, e);
 		}
 
+		this.ossTaskExecutor = this.beanFactory.getBean(OSS_TASK_EXECUTOR_BEAN_NAME, ExecutorService.class);
 	}
 
 	public boolean isAutoCreateFiles() {
@@ -146,7 +149,7 @@ public class OssStorageResource implements WritableResource {
 	@Override
 	public Resource createRelative(String relativePath) throws IOException {
 		return new OssStorageResource(this.oss,
-				this.location.resolve(relativePath).toString());
+				this.location.resolve(relativePath).toString(), this.beanFactory);
 	}
 
 	@Override
@@ -266,7 +269,7 @@ public class OssStorageResource implements WritableResource {
 			PipedInputStream in = new PipedInputStream();
 			final PipedOutputStream out = new PipedOutputStream(in);
 
-			executorService.submit(() -> {
+			ossTaskExecutor.submit(() -> {
 				try {
 					OssStorageResource.this.oss.putObject(bucketName, objectKey, in);
 				}

@@ -22,8 +22,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +39,12 @@ import org.springframework.util.StreamUtils;
 
 import java.io.*;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -52,6 +61,9 @@ public class OssStorageResourceTest {
 	 */
 	@Rule
 	public ExpectedException expectedEx = ExpectedException.none();
+
+	@Autowired
+	private ConfigurableListableBeanFactory beanFactory;
 
 	@Autowired
 	private OSS oss;
@@ -99,13 +111,14 @@ public class OssStorageResourceTest {
 	@Test
 	public void testBucketNotEndingInSlash() {
 		assertTrue(
-				new OssStorageResource(this.oss, "oss://aliyun-test-bucket").isBucket());
+				new OssStorageResource(this.oss, "oss://aliyun-test-bucket", beanFactory)
+						.isBucket());
 	}
 
 	@Test
 	public void testSpecifyPathCorrect() {
 		OssStorageResource ossStorageResource = new OssStorageResource(this.oss,
-				"oss://aliyun-test-bucket/myfilekey", false);
+				"oss://aliyun-test-bucket/myfilekey", beanFactory, false);
 
 		assertTrue(ossStorageResource.exists());
 	}
@@ -113,7 +126,7 @@ public class OssStorageResourceTest {
 	@Test
 	public void testSpecifyBucketCorrect() {
 		OssStorageResource ossStorageResource = new OssStorageResource(this.oss,
-				"oss://aliyun-test-bucket", false);
+				"oss://aliyun-test-bucket", beanFactory, false);
 
 		assertTrue(ossStorageResource.isBucket());
 		assertEquals("aliyun-test-bucket", ossStorageResource.getBucket().getName());
@@ -176,7 +189,7 @@ public class OssStorageResourceTest {
 	@Test
 	public void testWritableOutputStream() throws Exception {
 		String location = "oss://aliyun-test-bucket/test";
-		OssStorageResource resource = new OssStorageResource(this.oss, location, true);
+		OssStorageResource resource = new OssStorageResource(this.oss, location, beanFactory,true);
 		OutputStream os = resource.getOutputStream();
 		assertNotNull(os);
 
@@ -197,7 +210,7 @@ public class OssStorageResourceTest {
 	@Test
 	public void testCreateBucket() {
 		String location = "oss://my-new-test-bucket/";
-		OssStorageResource resource = new OssStorageResource(this.oss, location, true);
+		OssStorageResource resource = new OssStorageResource(this.oss, location, beanFactory, true);
 
 		resource.createBucket();
 
@@ -211,6 +224,13 @@ public class OssStorageResourceTest {
 	@Configuration
 	@Import(OssStorageProtocolResolver.class)
 	static class TestConfiguration {
+
+		@Bean(name = OSS_TASK_EXECUTOR_BEAN_NAME)
+		@ConditionalOnMissingBean
+		public ExecutorService ossTaskExecutor() {
+			return new ThreadPoolExecutor(8, 128,
+				60, TimeUnit.SECONDS, new SynchronousQueue<>());
+		}
 
 		@Bean
 		public static OSS mockOSS() {
