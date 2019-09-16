@@ -1,0 +1,12 @@
+sudo: required
+
+os:
+  - linux
+
+jdk:
+  - openjdk8
+
+language: java
+
+install:
+  - ./mvnw -DskipTests clean install --quiet
