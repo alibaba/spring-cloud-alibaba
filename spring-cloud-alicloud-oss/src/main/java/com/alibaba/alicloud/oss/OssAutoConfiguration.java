@@ -25,6 +25,11 @@ import org.springframework.context.annotation.Configuration;
 import com.alibaba.alicloud.oss.resource.OssStorageProtocolResolver;
 
 import com.aliyun.oss.OSS;
+import org.springframework.context.annotation.Lazy;
+
+import java.util.concurrent.*;
+
+import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
 
 /**
  * OSS Auto {@link Configuration}
@@ -40,6 +45,14 @@ public class OssAutoConfiguration {
 	@ConditionalOnMissingBean
 	public OssStorageProtocolResolver ossStorageProtocolResolver() {
 		return new OssStorageProtocolResolver();
+	}
+
+	@Bean(name = OSS_TASK_EXECUTOR_BEAN_NAME)
+	@ConditionalOnMissingBean
+	public ExecutorService ossTaskExecutor() {
+		int coreSize = Runtime.getRuntime().availableProcessors();
+		return new ThreadPoolExecutor(coreSize, 128, 60, TimeUnit.SECONDS,
+				new SynchronousQueue<>());
 	}
 
 }

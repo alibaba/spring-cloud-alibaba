@@ -16,22 +16,25 @@
 
 package com.alibaba.alicloud.oss.resource;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
-
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.OSSObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.WritableResource;
+import org.springframework.util.Assert;
+
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+
+import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
 
 /**
  * Implements {@link Resource} for reading and writing objects in Aliyun Object Storage
@@ -43,18 +46,33 @@ import com.aliyun.oss.model.OSSObject;
  * @see Bucket
  * @see OSSObject
  */
-public class OssStorageResource implements Resource {
+public class OssStorageResource implements WritableResource {
+
+	private static final Logger logger = LoggerFactory.getLogger(OssStorageResource.class);
+
+	private static final String MESSAGE_KEY_NOT_EXIST = "The specified key does not exist.";
 
 	private final OSS oss;
 	private final String bucketName;
 	private final String objectKey;
 	private final URI location;
+	private final boolean autoCreateFiles;
 
-	public OssStorageResource(OSS oss, String location) {
+	private final ExecutorService ossTaskExecutor;
+
+	private final ConfigurableListableBeanFactory beanFactory;
+
+	public OssStorageResource(OSS oss, String location, ConfigurableListableBeanFactory beanFactory) {
+		this(oss, location, beanFactory,false);
+    }
+
+	public OssStorageResource(OSS oss, String location,ConfigurableListableBeanFactory beanFactory, boolean autoCreateFiles) {
 		Assert.notNull(oss, "Object Storage Service can not be null");
 		Assert.isTrue(location.startsWith(OssStorageProtocolResolver.PROTOCOL),
 				"Location must start with " + OssStorageProtocolResolver.PROTOCOL);
 		this.oss = oss;
+		this.autoCreateFiles = autoCreateFiles;
+		this.beanFactory = beanFactory;
 		try {
 			URI locationUri = new URI(location);
 			this.bucketName = locationUri.getAuthority();
@@ -70,6 +88,12 @@ public class OssStorageResource implements Resource {
 		catch (URISyntaxException e) {
 			throw new IllegalArgumentException("Invalid location: " + location, e);
 		}
+
+		this.ossTaskExecutor = this.beanFactory.getBean(OSS_TASK_EXECUTOR_BEAN_NAME, ExecutorService.class);
+	}
+
+	public boolean isAutoCreateFiles() {
+		return this.autoCreateFiles;
 	}
 
 	@Override
@@ -125,7 +149,7 @@ public class OssStorageResource implements Resource {
 	@Override
 	public Resource createRelative(String relativePath) throws IOException {
 		return new OssStorageResource(this.oss,
-				this.location.resolve(relativePath).toString());
+				this.location.resolve(relativePath).toString(), this.beanFactory);
 	}
 
 	@Override
@@ -191,6 +215,72 @@ public class OssStorageResource implements Resource {
 		if (!exists()) {
 			throw new FileNotFoundException("Bucket or OSSObject not existed.");
 		}
+	}
+
+	/**
+	 * create a bucket.
+	 * @return
+	 */
+	public Bucket createBucket() {
+		return this.oss.createBucket(this.bucketName);
+	}
+
+	@Override
+	public boolean isWritable() {
+		return !isBucket() && (this.autoCreateFiles || exists());
+	}
+
+	/**
+	 * acquire an OutputStream for write.
+	 * Note: please close the stream after writing is done
+	 * @return
+	 * @throws IOException
+	 */
+	@Override
+	public OutputStream getOutputStream() throws IOException {
+		if (isBucket()) {
+			throw new IllegalStateException(
+					"Cannot open an output stream to a bucket: '" + getURI() + "'");
+		}
+		else {
+			OSSObject ossObject;
+
+			try {
+				ossObject = this.getOSSObject();
+			}
+			catch (OSSException ex) {
+				if (ex.getMessage() != null
+						&& ex.getMessage().startsWith(MESSAGE_KEY_NOT_EXIST)) {
+					ossObject = null;
+				}
+				else {
+					throw ex;
+				}
+			}
+
+			if (ossObject == null) {
+				if (!this.autoCreateFiles) {
+					throw new FileNotFoundException(
+							"The object was not found: " + getURI());
+				}
+
+			}
+
+			PipedInputStream in = new PipedInputStream();
+			final PipedOutputStream out = new PipedOutputStream(in);
+
+			ossTaskExecutor.submit(() -> {
+				try {
+					OssStorageResource.this.oss.putObject(bucketName, objectKey, in);
+				}
+				catch (Exception ex) {
+					logger.error("Failed to put object", ex);
+				}
+			});
+
+			return out;
+		}
+
 	}
 
 }
