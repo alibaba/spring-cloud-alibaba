@@ -19,36 +19,36 @@ package com.alibaba.cloud.nacos;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
  */
-public class NacosConfigManager implements ApplicationContextAware {
+public class NacosConfigManager {
+
 	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
-	private ConfigService configService;
+
+	private static ConfigService service = null;
+
+	@Autowired
+	private NacosConfigProperties properties;
 
 	public ConfigService getConfigService() {
-		return configService;
+		if (Objects.isNull(service)) {
+			try {
+				service = NacosFactory
+						.createConfigService(properties.getConfigServiceProperties());
+				properties.initConfigService(service);
+			}
+			catch (NacosException e) {
+				log.error("create config service error!properties={},e=,", properties, e);
+			}
+		}
+		return service;
 	}
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		NacosConfigProperties properties = applicationContext
-				.getBean(NacosConfigProperties.class);
-		try {
-			configService = NacosFactory
-					.createConfigService(properties.getConfigServiceProperties());
-			properties.initConfigService(configService);
-		}
-		catch (NacosException e) {
-			log.error("create config service error!properties={},e=,", properties, e);
-		}
-	}
 }

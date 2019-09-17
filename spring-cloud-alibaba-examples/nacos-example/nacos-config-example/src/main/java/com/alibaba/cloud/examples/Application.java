@@ -88,10 +88,14 @@ class SampleController {
 	String userName;
 
 	@Value("${user.age:25}")
-	int age;
+	Integer age;
+
+	@Autowired
+	private NacosConfigManager nacosConfigManager;
 
 	@RequestMapping("/user")
 	public String simple() {
-		return "Hello Nacos Config!" + "Hello " + userName + " " + age + "!";
+		return "Hello Nacos Config!" + "Hello " + userName + " " + age + "!"
+				+ nacosConfigManager.getConfigService();
 	}
 }
