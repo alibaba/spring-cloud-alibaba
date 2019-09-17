@@ -50,8 +50,9 @@ public class OssAutoConfiguration {
 	@Bean(name = OSS_TASK_EXECUTOR_BEAN_NAME)
 	@ConditionalOnMissingBean
 	public ExecutorService ossTaskExecutor() {
-		return new ThreadPoolExecutor(8, 128,
-			60, TimeUnit.SECONDS, new SynchronousQueue<>());
+		int coreSize = Runtime.getRuntime().availableProcessors();
+		return new ThreadPoolExecutor(coreSize, 128, 60, TimeUnit.SECONDS,
+				new SynchronousQueue<>());
 	}
 
 }
