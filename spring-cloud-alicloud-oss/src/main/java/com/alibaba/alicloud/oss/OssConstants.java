@@ -26,4 +26,6 @@ public interface OssConstants {
 	String PREFIX = "spring.cloud.alibaba.oss";
 	String ENABLED = PREFIX + ".enabled";
 
+	String OSS_TASK_EXECUTOR_BEAN_NAME = "ossTaskExecutor";
+
 }
