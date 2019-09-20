@@ -16,23 +16,29 @@
  */
 package com.alibaba.cloud.nacos;
 
-import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.spring.factory.CacheableEventPublishingNacosServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.Objects;
 
 /**
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
  */
-public class NacosConfigManager {
+public class NacosConfigManager implements ApplicationContextAware {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
 
 	private static ConfigService service = null;
+
+	private static final CacheableEventPublishingNacosServiceFactory SERVICE_FACTORY = CacheableEventPublishingNacosServiceFactory
+			.getSingleton();
 
 	@Autowired
 	private NacosConfigProperties properties;
@@ -40,7 +46,7 @@ public class NacosConfigManager {
 	public ConfigService getConfigService() {
 		if (Objects.isNull(service)) {
 			try {
-				service = NacosFactory
+				service = SERVICE_FACTORY
 						.createConfigService(properties.getConfigServiceProperties());
 				properties.initConfigService(service);
 			}
@@ -51,4 +57,11 @@ public class NacosConfigManager {
 		return service;
 	}
 
+	// Whenever the Context refresh NacosServiceFactory need change perception
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		SERVICE_FACTORY.setApplicationContext(applicationContext);
+	}
 }

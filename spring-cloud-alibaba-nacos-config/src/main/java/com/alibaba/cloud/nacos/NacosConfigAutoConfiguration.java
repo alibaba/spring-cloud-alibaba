@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos;
 
+import com.alibaba.cloud.nacos.bridge.NacosCloudBridgeBoot;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
@@ -47,6 +48,11 @@ public class NacosConfigAutoConfiguration {
 	@Bean
 	public NacosConfigManager nacosConfigManager() {
 		return new NacosConfigManager();
+	}
+
+	@Bean
+	public NacosCloudBridgeBoot nacosBootBridge() {
+		return new NacosCloudBridgeBoot();
 	}
 
 	@Bean

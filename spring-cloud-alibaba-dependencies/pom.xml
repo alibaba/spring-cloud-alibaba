@@ -23,6 +23,7 @@
         <seata.version>0.7.1</seata.version>
         <nacos.client.version>1.1.1</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
+        <nacos.springboot.version>0.2.3</nacos.springboot.version>
         <acm.version>1.0.9</acm.version>
         <ans.version>1.0.1</ans.version>
         <aliyun.sdk.version>4.4.1</aliyun.sdk.version>
@@ -100,6 +101,12 @@
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-config</artifactId>
                 <version>${nacos.config.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>nacos-config-spring-boot-starter</artifactId>
+                <version>${nacos.springboot.version}</version>
             </dependency>
 
             <!-- Sentinel -->

@@ -6,6 +6,8 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.nacos.api.config.annotation.NacosValue;
+import com.alibaba.nacos.spring.context.annotation.config.NacosPropertySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -31,6 +33,7 @@ public class Application {
 }
 
 @Component
+@NacosPropertySource(dataId = "nacos_cloud_boot", autoRefreshed = true)
 class SampleRunner implements ApplicationRunner {
 
 	@Value("${user.name}")
@@ -90,12 +93,15 @@ class SampleController {
 	@Value("${user.age:25}")
 	Integer age;
 
+	@NacosValue(value = "${nacos.test.value}", autoRefreshed = true)
+	String testValue;
+
 	@Autowired
 	private NacosConfigManager nacosConfigManager;
 
 	@RequestMapping("/user")
 	public String simple() {
-		return "Hello Nacos Config!" + "Hello " + userName + " " + age + "!"
+		return "Hello Nacos Config!" + "Hello " + userName + " " + age + " " + testValue + "!"
 				+ nacosConfigManager.getConfigService();
 	}
 }
