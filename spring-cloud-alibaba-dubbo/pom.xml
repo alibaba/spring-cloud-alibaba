@@ -13,37 +13,6 @@
     <artifactId>spring-cloud-alibaba-dubbo</artifactId>
     <name>Spring Cloud Alibaba Dubbo</name>
 
-    <properties>
-        <spring-cloud-zookeeper.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-zookeeper.version>
-        <spring-cloud-consul.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-consul.version>
-        <curator.version>4.0.1</curator.version>
-    </properties>
-
-    <dependencyManagement>
-
-        <dependencies>
-            <!-- Spring Boot dependencies -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- Apache Dubbo dependencies-->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-dependencies-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-        </dependencies>
-
-    </dependencyManagement>
-
     <dependencies>
 
         <!-- Spring Boot dependencies -->
@@ -101,7 +70,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
-            <version>${spring-cloud-zookeeper.version}</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
@@ -114,7 +82,6 @@
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
-            <version>3.4.12</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
@@ -127,7 +94,6 @@
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
-            <version>${curator.version}</version>
             <optional>true</optional>
         </dependency>
 
@@ -135,7 +101,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-consul-discovery</artifactId>
-            <version>${spring-cloud-consul.version}</version>
             <optional>true</optional>
         </dependency>
 
@@ -168,7 +133,6 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-actuator</artifactId>
-            <version>${dubbo-spring-boot.version}</version>
             <optional>true</optional>
         </dependency>
 
@@ -188,7 +152,6 @@
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-jaxrs2</artifactId>
-            <version>9.7.0</version>
         </dependency>
 
         <!-- Testing -->
@@ -224,7 +187,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
                 <executions>
                     <execution>
                         <id>jacoco-initialize</id>
