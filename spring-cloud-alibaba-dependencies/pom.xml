@@ -295,6 +295,11 @@
                 <artifactId>spring-cloud-alibaba-dubbo</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-sidecar</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Own dependencies - Starters -->
             <dependency>
@@ -358,6 +363,11 @@
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-sidecar</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
