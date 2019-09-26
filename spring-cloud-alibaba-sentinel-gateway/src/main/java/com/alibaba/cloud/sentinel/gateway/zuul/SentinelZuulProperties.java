@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package com.alibaba.cloud.sentinel.gateway.zuul;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-
 import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.constants.ZuulConstant;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulErrorFilter;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulPostFilter;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.filters.SentinelZuulPreFilter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -83,6 +83,7 @@ public class SentinelZuulProperties {
 		public void setError(int error) {
 			this.error = error;
 		}
+
 	}
 
 }

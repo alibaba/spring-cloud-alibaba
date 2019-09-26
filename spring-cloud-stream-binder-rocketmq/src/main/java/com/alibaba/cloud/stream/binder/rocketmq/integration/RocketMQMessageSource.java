@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ package com.alibaba.cloud.stream.binder.rocketmq.integration;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.cloud.stream.binder.rocketmq.consuming.RocketMQMessageQueueChooser;
+import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 import org.apache.rocketmq.client.consumer.DefaultMQPullConsumer;
 import org.apache.rocketmq.client.consumer.MessageQueueListener;
 import org.apache.rocketmq.client.consumer.MessageSelector;
@@ -31,6 +34,7 @@ import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.spring.support.RocketMQUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.context.Lifecycle;
@@ -42,10 +46,6 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.stream.binder.rocketmq.consuming.RocketMQMessageQueueChooser;
-import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
-import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -324,6 +324,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			return "RocketMQAckCallback{" + "ackInfo=" + ackInfo + ", acknowledged="
 					+ acknowledged + ", autoAckEnabled=" + autoAckEnabled + '}';
 		}
+
 	}
 
 	public class RocketMQAckInfo {
@@ -374,6 +375,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 					+ pullResult + ", consumer=" + consumer + ", oldOffset=" + oldOffset
 					+ '}';
 		}
+
 	}
 
 }

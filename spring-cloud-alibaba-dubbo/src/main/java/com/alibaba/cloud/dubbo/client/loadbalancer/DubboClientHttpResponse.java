@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.client.loadbalancer;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.dubbo.rpc.service.GenericException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 
 /**
- * Dubbo {@link ClientHttpResponse} implementation
+ * Dubbo {@link ClientHttpResponse} implementation.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see DubboTransporterInterceptor
@@ -39,7 +41,7 @@ class DubboClientHttpResponse implements ClientHttpResponse {
 
 	private final DubboHttpOutputMessage httpOutputMessage;
 
-	public DubboClientHttpResponse(DubboHttpOutputMessage httpOutputMessage,
+	DubboClientHttpResponse(DubboHttpOutputMessage httpOutputMessage,
 			GenericException exception) {
 		this.httpStatus = exception != null ? HttpStatus.INTERNAL_SERVER_ERROR
 				: HttpStatus.OK;
@@ -77,4 +79,5 @@ class DubboClientHttpResponse implements ClientHttpResponse {
 	public HttpHeaders getHeaders() {
 		return httpHeaders;
 	}
+
 }

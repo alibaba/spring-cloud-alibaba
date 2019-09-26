@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.openfeign;
 
-import static org.apache.dubbo.common.utils.PojoUtils.realize;
+package com.alibaba.cloud.dubbo.openfeign;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.dubbo.rpc.service.GenericService;
-import org.springframework.util.ClassUtils;
-
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import org.apache.dubbo.rpc.service.GenericService;
+
+import org.springframework.util.ClassUtils;
+
+import static org.apache.dubbo.common.utils.PojoUtils.realize;
 
 /**
- * Dubbo {@link GenericService} for {@link InvocationHandler}
+ * Dubbo {@link GenericService} for {@link InvocationHandler}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -87,4 +88,5 @@ public class DubboInvocationHandler implements InvocationHandler {
 		String returnType = dubboRestMethodMetadata.getReturnType();
 		return ClassUtils.resolveClassName(returnType, classLoader);
 	}
+
 }

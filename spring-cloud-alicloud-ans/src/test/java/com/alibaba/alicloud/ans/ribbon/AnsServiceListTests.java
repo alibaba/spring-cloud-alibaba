@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,20 +16,16 @@
 
 package com.alibaba.alicloud.ans.ribbon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+import com.netflix.loadbalancer.Server;
 import org.junit.Test;
 
-import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
-
-import com.netflix.loadbalancer.Server;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author xiaolongzuo
@@ -44,19 +40,18 @@ public class AnsServiceListTests {
 	public void testAnsServer() {
 		AnsServerList serverList = getAnsServerList();
 		List<AnsServer> servers = serverList.getInitialListOfServers();
-		assertNotNull("servers was null", servers);
-		assertEquals("servers was not size 1", 1, servers.size());
+		assertThat(servers).isNotNull();
+		assertThat(servers.size()).isEqualTo(1);
 		Server des = assertAnsServer(servers);
-		assertEquals("hostPort was wrong", IP_ADDR + ":" + PORT, des.getHostPort());
+		assertThat(des.getHostPort()).isEqualTo(IP_ADDR + ":" + PORT);
 	}
 
 	protected Server assertAnsServer(List<AnsServer> servers) {
 		Server actualServer = servers.get(0);
-		assertTrue("server was not a DomainExtractingServer",
-				actualServer instanceof AnsServer);
+		assertThat(actualServer instanceof AnsServer).isEqualTo(Boolean.TRUE);
 		AnsServer des = AnsServer.class.cast(actualServer);
-		assertNotNull("host is null", des.getHealthService());
-		assertEquals("unit was wrong", "DEFAULT", des.getHealthService().getUnit());
+		assertThat(des.getHealthService()).isNotNull();
+		assertThat(des.getHealthService().getUnit()).isEqualTo("DEFAULT");
 		return des;
 	}
 

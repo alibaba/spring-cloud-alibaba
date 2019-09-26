@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,15 +16,18 @@
 
 package com.alibaba.alicloud.acm.endpoint;
 
-import static org.junit.Assert.assertEquals;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.alicloud.acm.AcmAutoConfiguration;
+import com.alibaba.alicloud.acm.AcmPropertySourceRepository;
+import com.alibaba.alicloud.acm.refresh.AcmRefreshHistory;
+import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
+import com.alibaba.alicloud.context.acm.AcmProperties;
+import com.alibaba.edas.acm.ConfigService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +36,7 @@ import org.powermock.api.support.MethodProxy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -41,12 +45,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.alicloud.acm.AcmAutoConfiguration;
-import com.alibaba.alicloud.acm.AcmPropertySourceRepository;
-import com.alibaba.alicloud.acm.refresh.AcmRefreshHistory;
-import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
-import com.alibaba.alicloud.context.acm.AcmProperties;
-import com.alibaba.edas.acm.ConfigService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
  * @author xiaojing
@@ -55,11 +55,12 @@ import com.alibaba.edas.acm.ConfigService;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ConfigService.class })
-@SpringBootTest(classes = AcmEndpointTests.TestConfig.class, properties = {
-		"spring.application.name=test-name",
-		"spring.cloud.alicloud.acm.server-list=127.0.0.1",
-		"spring.cloud.alicloud.acm.server-port=8848",
-		"spring.cloud.alicloud.acm.file-extension=properties" }, webEnvironment = NONE)
+@SpringBootTest(classes = AcmEndpointTests.TestConfig.class,
+		properties = { "spring.application.name=test-name",
+				"spring.cloud.alicloud.acm.server-list=127.0.0.1",
+				"spring.cloud.alicloud.acm.server-port=8848",
+				"spring.cloud.alicloud.acm.file-extension=properties" },
+		webEnvironment = NONE)
 public class AcmEndpointTests {
 
 	static {
@@ -134,9 +135,9 @@ public class AcmEndpointTests {
 		AcmEndpoint acmEndpoint = new AcmEndpoint(properties, refreshHistory,
 				propertySourceRepository);
 		Map<String, Object> map = acmEndpoint.invoke();
-		assertEquals(map.get("config"), properties);
-		assertEquals(((Map) map.get("runtime")).get("refreshHistory"),
-				refreshHistory.getRecords());
+		assertThat(properties).isEqualTo(map.get("config"));
+		assertThat(refreshHistory.getRecords())
+				.isEqualTo(((Map) map.get("runtime")).get("refreshHistory"));
 	}
 
 	@Configuration
@@ -144,5 +145,7 @@ public class AcmEndpointTests {
 	@ImportAutoConfiguration({ AcmEndpointAutoConfiguration.class,
 			AcmAutoConfiguration.class, AcmContextBootstrapConfiguration.class })
 	public static class TestConfig {
+
 	}
+
 }

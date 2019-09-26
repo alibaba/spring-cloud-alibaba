@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.registry;
 
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstanceRegisteredEvent;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstanceRegisteredEvent;
-
 /**
- * Dubbo Service Registration Event-Publishing Aspect
+ * Dubbo Service Registration Event-Publishing Aspect.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see ServiceInstancePreRegisteredEvent
@@ -38,7 +39,7 @@ public class DubboServiceRegistrationEventPublishingAspect
 		implements ApplicationEventPublisherAware {
 
 	/**
-	 * The pointcut expression for {@link ServiceRegistry#register(Registration)}
+	 * The pointcut expression for {@link ServiceRegistry#register(Registration)}.
 	 */
 	public static final String REGISTER_POINTCUT_EXPRESSION = "execution(* org.springframework.cloud.client.serviceregistry.ServiceRegistry.register(*)) && args(registration)";
 
@@ -61,4 +62,5 @@ public class DubboServiceRegistrationEventPublishingAspect
 			ApplicationEventPublisher applicationEventPublisher) {
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
+
 }

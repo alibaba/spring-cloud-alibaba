@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,8 +19,14 @@ package com.alibaba.cloud.nacos.client;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
+import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
+import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
+import com.alibaba.nacos.api.config.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
@@ -28,12 +34,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
-import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
-import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
-import com.alibaba.nacos.api.config.ConfigService;
 
 /**
  * @author xiaojing
@@ -44,9 +44,13 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceLocator.class);
+
 	private static final String NACOS_PROPERTY_SOURCE_NAME = "NACOS";
+
 	private static final String SEP1 = "-";
+
 	private static final String DOT = ".";
+
 	private static final String SHARED_CONFIG_SEPARATOR_CHAR = "[,]";
 
 	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
@@ -197,7 +201,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	/**
 	 * Add the nacos configuration to the first place and maybe ignore the empty
-	 * configuration
+	 * configuration.
 	 */
 	private void addFirstPropertySource(final CompositePropertySource composite,
 			NacosPropertySource nacosPropertySource, boolean ignoreEmpty) {

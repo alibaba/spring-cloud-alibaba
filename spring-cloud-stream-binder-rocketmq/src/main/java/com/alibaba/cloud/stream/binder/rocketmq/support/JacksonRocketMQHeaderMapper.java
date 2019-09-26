@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,22 +20,22 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.Nullable;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.util.ClassUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.lang.Nullable;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.ClassUtils;
 
 /**
  * jackson header mapper for RocketMQ. Header types are added to a special header
@@ -45,6 +45,7 @@ import com.google.common.collect.Maps;
  * @since 2.1.1.RELEASE
  */
 public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
+
 	private final static Logger log = LoggerFactory
 			.getLogger(JacksonRocketMQHeaderMapper.class);
 
@@ -57,6 +58,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 	public static final String JSON_TYPES = "spring_json_header_types";
 
 	private final ObjectMapper objectMapper;
+
 	private final Set<String> trustedPackages = new LinkedHashSet<>(
 			DEFAULT_TRUSTED_PACKAGES);
 
@@ -71,8 +73,8 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 
 	@Override
 	public Map<String, String> fromHeaders(MessageHeaders headers) {
-		final Map<String, String> target = Maps.newHashMap();
-		final Map<String, String> jsonHeaders = Maps.newHashMap();
+		final Map<String, String> target = new HashMap<>();
+		final Map<String, String> jsonHeaders = new HashMap<>();
 		headers.forEach((key, value) -> {
 			if (matches(key)) {
 				if (value instanceof String) {
@@ -104,7 +106,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 
 	@Override
 	public MessageHeaders toHeaders(Map<String, String> source) {
-		final Map<String, Object> target = Maps.newHashMap();
+		final Map<String, Object> target = new HashMap<>();
 		final Map<String, String> jsonTypes = decodeJsonTypes(source);
 		source.forEach((key, value) -> {
 			if (matches(key) && !(key.equals(JSON_TYPES))) {
@@ -281,4 +283,5 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 		}
 
 	}
+
 }

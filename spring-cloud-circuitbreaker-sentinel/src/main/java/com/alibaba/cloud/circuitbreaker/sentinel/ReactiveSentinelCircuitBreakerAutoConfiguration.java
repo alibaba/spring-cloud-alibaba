@@ -33,8 +33,8 @@ import org.springframework.context.annotation.Configuration;
  * @author Eric Zhao
  */
 @Configuration
-@ConditionalOnClass(name = { "reactor.core.publisher.Mono",
-		"reactor.core.publisher.Flux" })
+@ConditionalOnClass(
+		name = { "reactor.core.publisher.Mono", "reactor.core.publisher.Flux" })
 public class ReactiveSentinelCircuitBreakerAutoConfiguration {
 
 	@Bean
@@ -44,8 +44,8 @@ public class ReactiveSentinelCircuitBreakerAutoConfiguration {
 	}
 
 	@Configuration
-	@ConditionalOnClass(name = { "reactor.core.publisher.Mono",
-			"reactor.core.publisher.Flux" })
+	@ConditionalOnClass(
+			name = { "reactor.core.publisher.Mono", "reactor.core.publisher.Flux" })
 	public static class ReactiveSentinelCustomizerConfiguration {
 
 		@Autowired(required = false)

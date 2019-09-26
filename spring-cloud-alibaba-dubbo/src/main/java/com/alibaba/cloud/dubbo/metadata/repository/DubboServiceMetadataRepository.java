@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.metadata.repository;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.PostConstruct;
+
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
+import com.alibaba.cloud.dubbo.http.matcher.RequestMetadataMatcher;
+import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
+import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
+import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
+import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
+import com.alibaba.cloud.dubbo.service.DubboMetadataService;
+import com.alibaba.cloud.dubbo.service.DubboMetadataServiceExporter;
+import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
+import com.alibaba.cloud.dubbo.util.JSONUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import org.apache.dubbo.common.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.http.HttpRequest;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static com.alibaba.cloud.dubbo.env.DubboCloudProperties.ALL_DUBBO_SERVICES;
 import static com.alibaba.cloud.dubbo.http.DefaultHttpRequest.builder;
@@ -29,51 +72,8 @@ import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.dubbo.common.URL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.commons.util.InetUtils;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.http.HttpRequest;
-import org.springframework.stereotype.Repository;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
-import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
-import com.alibaba.cloud.dubbo.http.matcher.RequestMetadataMatcher;
-import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
-import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
-import com.alibaba.cloud.dubbo.service.DubboMetadataService;
-import com.alibaba.cloud.dubbo.service.DubboMetadataServiceExporter;
-import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
-import com.alibaba.cloud.dubbo.util.JSONUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-
 /**
- * Dubbo Service Metadata {@link Repository}
+ * Dubbo Service Metadata {@link Repository}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -82,19 +82,19 @@ public class DubboServiceMetadataRepository
 		implements SmartInitializingSingleton, ApplicationEventPublisherAware {
 
 	/**
-	 * The prefix of {@link DubboMetadataService} : "dubbo.metadata-service."
+	 * The prefix of {@link DubboMetadataService} : "dubbo.metadata-service.".
 	 */
 	public static final String DUBBO_METADATA_SERVICE_PREFIX = "dubbo.metadata-service.";
 
 	/**
 	 * The {@link URL URLs} property name of {@link DubboMetadataService} :
-	 * "dubbo.metadata-service.urls"
+	 * "dubbo.metadata-service.urls".
 	 */
 	public static final String DUBBO_METADATA_SERVICE_URLS_PROPERTY_NAME = DUBBO_METADATA_SERVICE_PREFIX
 			+ "urls";
 
 	/**
-	 * The {@link String#format(String, Object...) pattern} of dubbo protocols port
+	 * The {@link String#format(String, Object...) pattern} of dubbo protocols port.
 	 */
 	public static final String DUBBO_PROTOCOLS_PORT_PROPERTY_NAME_PATTERN = "dubbo.protocols.%s.port";
 
@@ -103,17 +103,19 @@ public class DubboServiceMetadataRepository
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	/**
-	 * Monitor object for synchronization
+	 * Monitor object for synchronization.
 	 */
 	private final Object monitor = new Object();
+
 	/**
-	 * A {@link Set} of service names that had been initialized
+	 * A {@link Set} of service names that had been initialized.
 	 */
 	private final Set<String> initializedServices = new LinkedHashSet<>();
+
 	/**
 	 * All exported {@link URL urls} {@link Map} whose key is the return value of
 	 * {@link URL#getServiceKey()} method and value is the {@link List} of {@link URL
-	 * URLs}
+	 * URLs}.
 	 */
 	private final MultiValueMap<String, URL> allExportedURLs = new LinkedMultiValueMap<>();
 
@@ -122,7 +124,7 @@ public class DubboServiceMetadataRepository
 	/**
 	 * The subscribed {@link URL urls} {@link Map} of {@link DubboMetadataService}, whose
 	 * key is the return value of {@link URL#getServiceKey()} method and value is the
-	 * {@link List} of {@link URL URLs}
+	 * {@link List} of {@link URL URLs}.
 	 */
 	private final MultiValueMap<String, URL> subscribedDubboMetadataServiceURLs = new LinkedMultiValueMap<>();
 
@@ -137,6 +139,7 @@ public class DubboServiceMetadataRepository
 	 * from the annotated methods.
 	 */
 	private final Set<ServiceRestMetadata> serviceRestMetadata = new LinkedHashSet<>();
+
 	private ApplicationEventPublisher applicationEventPublisher;
 
 	// ====================================================================================
@@ -145,8 +148,10 @@ public class DubboServiceMetadataRepository
 	// =================================== REST Metadata
 	// ================================== //
 	private volatile Set<String> subscribedServices = emptySet();
+
 	/**
-	 * Key is application name Value is Map<RequestMetadata, DubboRestServiceMetadata>
+	 * Key is application name Value is Map&lt;RequestMetadata,
+	 * DubboRestServiceMetadata&gt;.
 	 */
 	private Map<String, Map<RequestMetadataMatcher, DubboRestServiceMetadata>> dubboRestServiceMetadataRepository = newHashMap();
 
@@ -202,9 +207,8 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Initialize {@link #subscribedServices the subscribed services}
-	 *
-	 * @return
+	 * Initialize {@link #subscribedServices the subscribed services}.
+	 * @return stream of subscribed services
 	 */
 	@PostConstruct
 	public Stream<String> initSubscribedServices() {
@@ -256,7 +260,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Initialize the metadata
+	 * Initialize the metadata.
 	 */
 	private void initializeMetadata() {
 		doGetSubscribedServices().forEach(this::initializeMetadata);
@@ -266,7 +270,8 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Initialize the metadata of Dubbo Services
+	 * Initialize the metadata of Dubbo Services.
+	 * @param serviceName service of name
 	 */
 	public void initializeMetadata(String serviceName) {
 		synchronized (monitor) {
@@ -294,7 +299,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Remove the metadata of Dubbo Services if no there is no service instance
+	 * Remove the metadata of Dubbo Services if no there is no service instance.
 	 * @param serviceName the service name
 	 */
 	public void removeInitializedService(String serviceName) {
@@ -304,8 +309,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Get the metadata {@link Map} of {@link DubboMetadataService}
-	 *
+	 * Get the metadata {@link Map} of {@link DubboMetadataService}.
 	 * @return non-null read-only {@link Map}
 	 */
 	public Map<String, String> getDubboMetadataServiceMetadata() {
@@ -345,8 +349,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Get the property name of Dubbo Protocol
-	 *
+	 * Get the property name of Dubbo Protocol.
 	 * @param protocol Dubbo Protocol
 	 * @return non-null
 	 */
@@ -355,8 +358,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Publish the {@link Set} of {@link ServiceRestMetadata}
-	 *
+	 * Publish the {@link Set} of {@link ServiceRestMetadata}.
 	 * @param serviceRestMetadataSet the {@link Set} of {@link ServiceRestMetadata}
 	 */
 	public void publishServiceRestMetadata(
@@ -369,8 +371,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Get the {@link Set} of {@link ServiceRestMetadata}
-	 *
+	 * Get the {@link Set} of {@link ServiceRestMetadata}.
 	 * @return non-null read-only {@link Set}
 	 */
 	public Set<ServiceRestMetadata> getServiceRestMetadata() {
@@ -391,18 +392,15 @@ public class DubboServiceMetadataRepository
 			return emptyList();
 		}
 
-		return hasText(protocol)
-				? urls.stream()
-						.filter(url -> url.getProtocol().equalsIgnoreCase(protocol))
-						.collect(Collectors.toList())
-				: unmodifiableList(urls);
+		return hasText(protocol) ? urls.stream()
+				.filter(url -> url.getProtocol().equalsIgnoreCase(protocol))
+				.collect(Collectors.toList()) : unmodifiableList(urls);
 	}
 
 	/**
-	 * The specified service is subscribe or not
-	 *
+	 * The specified service is subscribe or not.
 	 * @param serviceName the service name
-	 * @return
+	 * @return subscribe or not
 	 */
 	public boolean isSubscribedService(String serviceName) {
 		return doGetSubscribedServices().contains(serviceName);
@@ -434,7 +432,6 @@ public class DubboServiceMetadataRepository
 
 	/**
 	 * Get all exported {@link URL urls}.
-	 *
 	 * @return non-null read-only
 	 */
 	public Map<String, List<URL>> getAllExportedUrls() {
@@ -442,8 +439,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Get all exported {@link URL#getServiceKey() service keys}
-	 *
+	 * Get all exported {@link URL#getServiceKey() service keys}.
 	 * @return non-null read-only
 	 */
 	public Set<String> getAllServiceKeys() {
@@ -452,8 +448,7 @@ public class DubboServiceMetadataRepository
 
 	/**
 	 * Get the {@link URL urls} that {@link DubboMetadataService} exported by the
-	 * specified {@link ServiceInstance}
-	 *
+	 * specified {@link ServiceInstance}.
 	 * @param serviceInstance {@link ServiceInstance}
 	 * @return the mutable {@link URL urls}
 	 */
@@ -478,8 +473,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Initialize the specified service's {@link ServiceRestMetadata}
-	 *
+	 * Initialize the specified service's {@link ServiceRestMetadata}.
 	 * @param serviceName the service name
 	 */
 	protected void initDubboRestServiceMetadataRepository(String serviceName) {
@@ -524,8 +518,7 @@ public class DubboServiceMetadataRepository
 
 	/**
 	 * Get a {@link DubboRestServiceMetadata} by the specified service name if
-	 * {@link RequestMetadata} matched
-	 *
+	 * {@link RequestMetadata} matched.
 	 * @param serviceName service name
 	 * @param requestMetadata {@link RequestMetadata} to be matched
 	 * @return {@link DubboRestServiceMetadata} if matched, or <code>null</code>
@@ -661,4 +654,5 @@ public class DubboServiceMetadataRepository
 			ApplicationEventPublisher applicationEventPublisher) {
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
+
 }

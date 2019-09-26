@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.env;
 
-import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
-import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
+package com.alibaba.cloud.dubbo.env;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +22,7 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -35,9 +34,12 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
+import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
+
 /**
  * Dubbo {@link WebApplicationType#NONE Non-Web Application}
- * {@link EnvironmentPostProcessor}
+ * {@link EnvironmentPostProcessor}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -110,10 +112,9 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 
 	/**
 	 * Reset server port property if it's absent, whose value is configured by
-	 * "dubbbo.protocol.port" or "dubbo.protcols.rest.port"
-	 *
-	 * @param environment
-	 * @param defaultProperties
+	 * "dubbbo.protocol.port" or "dubbo.protcols.rest.port".
+	 * @param environment Spring Environment
+	 * @param defaultProperties defaultProperties
 	 */
 	private void resetServerPort(ConfigurableEnvironment environment,
 			Map<String, Object> defaultProperties) {
@@ -140,8 +141,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 				DEFAULT_PROTOCOL);
 
 		return isRestProtocol(protocol)
-				? environment.getProperty(PROTOCOL_PORT_PROPERTY_NAME)
-				: null;
+				? environment.getProperty(PROTOCOL_PORT_PROPERTY_NAME) : null;
 	}
 
 	private String getRestPortFromProtocolsProperties(
@@ -191,8 +191,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 	}
 
 	/**
-	 * Copy from BusEnvironmentPostProcessor#addOrReplace(MutablePropertySources, Map)
-	 *
+	 * Copy from BusEnvironmentPostProcessor#addOrReplace(MutablePropertySources, Map).
 	 * @param propertySources {@link MutablePropertySources}
 	 * @param map Default Dubbo Properties
 	 */
@@ -222,4 +221,5 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 	public int getOrder() { // Keep LOWEST_PRECEDENCE
 		return LOWEST_PRECEDENCE;
 	}
+
 }

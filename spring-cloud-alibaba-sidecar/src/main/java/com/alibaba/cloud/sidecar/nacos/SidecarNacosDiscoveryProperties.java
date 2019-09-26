@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,31 +16,34 @@
 
 package com.alibaba.cloud.sidecar.nacos;
 
+import java.net.SocketException;
+
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.sidecar.SidecarProperties;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.net.SocketException;
 
 /**
  * @author itmuch.com
  */
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SidecarNacosDiscoveryProperties extends NacosDiscoveryProperties {
-    private final SidecarProperties sidecarProperties;
 
-    @Override
-    public void init() throws SocketException {
-        super.init();
+	private final SidecarProperties sidecarProperties;
 
-        String ip = sidecarProperties.getIp();
-        if (StringUtils.isNotBlank(ip)) {
-            this.setIp(ip);
-        }
+	public SidecarNacosDiscoveryProperties(SidecarProperties sidecarProperties) {
+		this.sidecarProperties = sidecarProperties;
+	}
 
-        Integer port = sidecarProperties.getPort();
-        this.setPort(port);
-    }
+	@Override
+	public void init() throws SocketException {
+		super.init();
+
+		String ip = sidecarProperties.getIp();
+		if (StringUtils.isNotBlank(ip)) {
+			this.setIp(ip);
+		}
+
+		Integer port = sidecarProperties.getPort();
+		this.setPort(port);
+	}
+
 }

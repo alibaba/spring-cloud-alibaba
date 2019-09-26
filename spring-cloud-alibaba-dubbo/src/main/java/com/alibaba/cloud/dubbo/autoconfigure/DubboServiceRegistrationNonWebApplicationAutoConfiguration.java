@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.autoconfigure;
 
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.ZOOKEEPER_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
+package com.alibaba.cloud.dubbo.autoconfigure;
 
 import java.util.List;
 
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
+import com.ecwid.consul.v1.agent.model.NewService;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -41,19 +43,18 @@ import org.springframework.cloud.zookeeper.serviceregistry.ServiceInstanceRegist
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
-
-import com.ecwid.consul.v1.agent.model.NewService;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.ZOOKEEPER_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
 
 /**
- * Dubbo Service Registration Auto-{@link Configuration} for Non-Web application
+ * Dubbo Service Registration Auto-{@link Configuration} for Non-Web application.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
 @ConditionalOnNotWebApplication
-@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
+		matchIfMissing = true)
 @AutoConfigureAfter(DubboServiceRegistrationAutoConfiguration.class)
 @Aspect
 public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
@@ -134,6 +135,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 			// before register
 			registration.getServiceInstance();
 		}
+
 	}
 
 	@Configuration
@@ -141,8 +143,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 	class ConsulConfiguration {
 
 		/**
-		 * Handle the pre-registered event of {@link ServiceInstance} for Consul
-		 *
+		 * Handle the pre-registered event of {@link ServiceInstance} for Consul.
 		 * @param event {@link ServiceInstancePreRegisteredEvent}
 		 */
 		@EventListener(ServiceInstancePreRegisteredEvent.class)
@@ -154,8 +155,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 		}
 
 		/**
-		 * Set port on Non-Web Application
-		 *
+		 * Set port on Non-Web Application.
 		 * @param consulRegistration {@link ConsulRegistration}
 		 */
 		private void setPort(ConsulAutoRegistration consulRegistration) {
@@ -165,6 +165,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 				newService.setPort(port);
 			}
 		}
+
 	}
 
 }

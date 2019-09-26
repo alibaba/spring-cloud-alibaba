@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,16 +16,26 @@
 
 package com.alibaba.alicloud.oss.resource;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import com.aliyun.oss.OSS;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.BeansException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,15 +47,8 @@ import org.springframework.core.io.WritableResource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StreamUtils;
 
-import java.io.*;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
@@ -82,45 +85,46 @@ public class OssStorageResourceTest {
 
 	@Test
 	public void testResourceType() {
-		assertEquals(OssStorageResource.class, remoteResource.getClass());
+		assertThat(remoteResource.getClass()).isEqualTo(OssStorageResource.class);
 		OssStorageResource ossStorageResource = (OssStorageResource) remoteResource;
-		assertEquals("myfilekey", ossStorageResource.getFilename());
-		assertFalse(ossStorageResource.isBucket());
+		assertThat(ossStorageResource.getFilename()).isEqualTo("myfilekey");
+		assertThat(ossStorageResource.isBucket()).isEqualTo(false);
 	}
 
 	@Test
 	public void testValidObject() throws Exception {
-		assertTrue(remoteResource.exists());
+		assertThat(remoteResource.exists()).isEqualTo(true);
 		OssStorageResource ossStorageResource = (OssStorageResource) remoteResource;
-		assertTrue(ossStorageResource.bucketExists());
-		assertEquals(4096L, remoteResource.contentLength());
-		assertEquals("oss://aliyun-test-bucket/myfilekey",
-				remoteResource.getURI().toString());
-		assertEquals("myfilekey", remoteResource.getFilename());
+		assertThat(ossStorageResource.bucketExists()).isEqualTo(true);
+		assertThat(remoteResource.contentLength()).isEqualTo(4096L);
+		assertThat(remoteResource.getURI().toString())
+				.isEqualTo("oss://aliyun-test-bucket/myfilekey");
+		assertThat(remoteResource.getFilename()).isEqualTo("myfilekey");
 	}
 
 	@Test
 	public void testBucketResource() throws Exception {
-		assertTrue(bucketResource.exists());
-		assertTrue(((OssStorageResource) this.bucketResource).isBucket());
-		assertTrue(((OssStorageResource) this.bucketResource).bucketExists());
-		assertEquals("oss://aliyun-test-bucket/", bucketResource.getURI().toString());
-		assertEquals("aliyun-test-bucket", this.bucketResource.getFilename());
+		assertThat(bucketResource.exists()).isEqualTo(true);
+		assertThat(((OssStorageResource) this.bucketResource).isBucket()).isEqualTo(true);
+		assertThat(((OssStorageResource) this.bucketResource).bucketExists())
+				.isEqualTo(true);
+		assertThat(bucketResource.getURI().toString())
+				.isEqualTo("oss://aliyun-test-bucket/");
+		assertThat(this.bucketResource.getFilename()).isEqualTo("aliyun-test-bucket");
 	}
 
 	@Test
 	public void testBucketNotEndingInSlash() {
-		assertTrue(
+		assertThat(
 				new OssStorageResource(this.oss, "oss://aliyun-test-bucket", beanFactory)
-						.isBucket());
+						.isBucket()).isEqualTo(true);
 	}
 
 	@Test
 	public void testSpecifyPathCorrect() {
 		OssStorageResource ossStorageResource = new OssStorageResource(this.oss,
 				"oss://aliyun-test-bucket/myfilekey", beanFactory, false);
-
-		assertTrue(ossStorageResource.exists());
+		assertThat(ossStorageResource.exists()).isEqualTo(true);
 	}
 
 	@Test
@@ -128,9 +132,10 @@ public class OssStorageResourceTest {
 		OssStorageResource ossStorageResource = new OssStorageResource(this.oss,
 				"oss://aliyun-test-bucket", beanFactory, false);
 
-		assertTrue(ossStorageResource.isBucket());
-		assertEquals("aliyun-test-bucket", ossStorageResource.getBucket().getName());
-		assertTrue(ossStorageResource.exists());
+		assertThat(ossStorageResource.isBucket()).isEqualTo(true);
+		assertThat(ossStorageResource.getBucket().getName())
+				.isEqualTo("aliyun-test-bucket");
+		assertThat(ossStorageResource.exists()).isEqualTo(true);
 	}
 
 	@Test
@@ -173,25 +178,27 @@ public class OssStorageResourceTest {
 
 	@Test
 	public void testBucketResourceStatuses() {
-		assertFalse(this.bucketResource.isOpen());
-		assertFalse(((WritableResource) this.bucketResource).isWritable());
-		assertTrue(this.bucketResource.exists());
+		assertThat(this.bucketResource.isOpen()).isEqualTo(false);
+		assertThat(((WritableResource) this.bucketResource).isWritable())
+				.isEqualTo(false);
+		assertThat(this.bucketResource.exists()).isEqualTo(true);
 	}
 
 	@Test
 	public void testWritable() throws Exception {
-		assertTrue(this.remoteResource instanceof WritableResource);
+		assertThat(this.remoteResource instanceof WritableResource).isEqualTo(true);
 		WritableResource writableResource = (WritableResource) this.remoteResource;
-		assertTrue(writableResource.isWritable());
+		assertThat(writableResource.isWritable()).isEqualTo(true);
 		writableResource.getOutputStream();
 	}
 
 	@Test
 	public void testWritableOutputStream() throws Exception {
 		String location = "oss://aliyun-test-bucket/test";
-		OssStorageResource resource = new OssStorageResource(this.oss, location, beanFactory,true);
+		OssStorageResource resource = new OssStorageResource(this.oss, location,
+				beanFactory, true);
 		OutputStream os = resource.getOutputStream();
-		assertNotNull(os);
+		assertThat(os).isNotNull();
 
 		byte[] randomBytes = generateRandomBytes(1203);
 		String expectedString = new String(randomBytes);
@@ -204,18 +211,18 @@ public class OssStorageResourceTest {
 		byte[] result = StreamUtils.copyToByteArray(in);
 		String actualString = new String(result);
 
-		assertEquals(expectedString, actualString);
+		assertThat(actualString).isEqualTo(expectedString);
 	}
 
 	@Test
 	public void testCreateBucket() {
 		String location = "oss://my-new-test-bucket/";
-		OssStorageResource resource = new OssStorageResource(this.oss, location, beanFactory, true);
+		OssStorageResource resource = new OssStorageResource(this.oss, location,
+				beanFactory, true);
 
 		resource.createBucket();
 
-		assertTrue(resource.bucketExists());
-
+		assertThat(resource.bucketExists()).isEqualTo(true);
 	}
 
 	/**
@@ -228,8 +235,8 @@ public class OssStorageResourceTest {
 		@Bean(name = OSS_TASK_EXECUTOR_BEAN_NAME)
 		@ConditionalOnMissingBean
 		public ExecutorService ossTaskExecutor() {
-			return new ThreadPoolExecutor(8, 128,
-				60, TimeUnit.SECONDS, new SynchronousQueue<>());
+			return new ThreadPoolExecutor(8, 128, 60, TimeUnit.SECONDS,
+					new SynchronousQueue<>());
 		}
 
 		@Bean

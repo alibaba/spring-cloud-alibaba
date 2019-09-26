@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.nacos.config.server.environment;
 
-import static com.alibaba.nacos.config.server.constant.Constants.DEFAULT_GROUP;
+package com.alibaba.cloud.nacos.config.server.environment;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
+
+import com.alibaba.nacos.config.server.model.ConfigInfo;
+import com.alibaba.nacos.config.server.service.PersistService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.config.environment.Environment;
@@ -27,11 +29,10 @@ import org.springframework.cloud.config.environment.PropertySource;
 import org.springframework.cloud.config.server.environment.EnvironmentRepository;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.config.server.model.ConfigInfo;
-import com.alibaba.nacos.config.server.service.PersistService;
+import static com.alibaba.nacos.config.server.constant.Constants.DEFAULT_GROUP;
 
 /**
- * Nacos {@link EnvironmentRepository}
+ * Nacos {@link EnvironmentRepository}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 0.2.0
@@ -87,4 +88,5 @@ public class NacosEnvironmentRepository implements EnvironmentRepository {
 	private static String[] of(String... values) {
 		return values;
 	}
+
 }

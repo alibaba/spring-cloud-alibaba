@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.autoconfigure;
 
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient.hostToServiceInstanceList;
-import static org.springframework.util.StringUtils.hasText;
+package com.alibaba.cloud.dubbo.autoconfigure;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -33,7 +27,19 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
+import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosNamingManager;
+import com.alibaba.cloud.nacos.discovery.NacosWatch;
+import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.listener.NamingEvent;
+import com.netflix.discovery.CacheRefreshedEvent;
+import com.netflix.discovery.shared.Applications;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.listen.Listenable;
 import org.apache.curator.framework.listen.ListenerContainer;
@@ -49,6 +55,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -72,23 +79,16 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ReflectionUtils;
 
-import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
-import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.discovery.NacosWatch;
-import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.listener.NamingEvent;
-
-import com.netflix.discovery.CacheRefreshedEvent;
-import com.netflix.discovery.shared.Applications;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient.hostToServiceInstanceList;
+import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Dubbo Service Discovery Auto {@link Configuration} (after
- * {@link DubboServiceRegistrationAutoConfiguration})
+ * {@link DubboServiceRegistrationAutoConfiguration}).
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see DubboServiceRegistrationAutoConfiguration
@@ -98,17 +98,27 @@ import com.netflix.discovery.shared.Applications;
 @Configuration
 @ConditionalOnClass(name = "org.springframework.cloud.client.discovery.DiscoveryClient")
 @ConditionalOnProperty(name = "spring.cloud.discovery.enabled", matchIfMissing = true)
-@AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
-		ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
-		CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
-		NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME }, value = {
-				DubboServiceRegistrationAutoConfiguration.class })
+@AutoConfigureAfter(
+		name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
+				ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
+				CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
+				NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME },
+		value = { DubboServiceRegistrationAutoConfiguration.class })
 public class DubboServiceDiscoveryAutoConfiguration {
 
+	/**
+	 * ZookeeperDiscoveryAutoConfiguration.
+	 */
 	public static final String ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryAutoConfiguration";
 
+	/**
+	 * ConsulDiscoveryClientConfiguration.
+	 */
 	public static final String CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.consul.discovery.ConsulDiscoveryClientConfiguration";
 
+	/**
+	 * NacosDiscoveryAutoConfiguration.
+	 */
 	public static final String NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration";
 
 	private final DubboServiceMetadataRepository dubboServiceMetadataRepository;
@@ -138,8 +148,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	}
 
 	/**
-	 * Dispatch a {@link ServiceInstancesChangedEvent}
-	 *
+	 * Dispatch a {@link ServiceInstancesChangedEvent}.
 	 * @param serviceName the name of service
 	 * @param serviceInstances the {@link ServiceInstance instances} of some service
 	 * @see AbstractSpringCloudRegistry#registerServiceInstancesChangedEventListener(URL,
@@ -209,7 +218,6 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	 * implementation could declare a Spring Bean of {@link Predicate} of
 	 * {@link HeartbeatEvent} to override {@link #defaultHeartbeatEventChangePredicate()
 	 * default one}.
-	 *
 	 * @param event the instance of {@link HeartbeatEvent}
 	 * @see HeartbeatEvent
 	 */
@@ -238,8 +246,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	 * The default {@link Predicate} implementation of {@link HeartbeatEvent} based on the
 	 * comparison between previous and current {@link HeartbeatEvent#getValue() state
 	 * value}, the {@link DiscoveryClient} implementation may override current.
-	 *
-	 * @return {@link Predicate<HeartbeatEvent>}
+	 * @return {@link Predicate} {@link HeartbeatEvent}
 	 * @see EurekaConfiguration#heartbeatEventChangedPredicate()
 	 */
 	@Bean
@@ -254,7 +261,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	}
 
 	/**
-	 * Eureka Customized Configuration
+	 * Eureka Customized Configuration.
 	 */
 	@Configuration
 	@ConditionalOnBean(name = EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME)
@@ -267,6 +274,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		 * {@link Applications} and current.
 		 *
 		 * @see Applications#getAppsHashCode()
+		 * @return HeartbeatEvent Predicate
 		 */
 		@Bean
 		public Predicate<HeartbeatEvent> heartbeatEventChangedPredicate() {
@@ -280,34 +288,36 @@ public class DubboServiceDiscoveryAutoConfiguration {
 						&& !Objects.equals(oldAppsHashCode, appsHashCode);
 			};
 		}
+
 	}
 
 	/**
-	 * Zookeeper Customized Configuration
+	 * Zookeeper Customized Configuration.
 	 */
 	@Configuration
 	@ConditionalOnBean(name = ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
 	@Aspect
 	public class ZookeeperConfiguration
 			implements ApplicationListener<InstanceRegisteredEvent> {
+
 		/**
 		 * The pointcut expression for
-		 * {@link ZookeeperServiceWatch#childEvent(CuratorFramework, TreeCacheEvent)}
+		 * {@link ZookeeperServiceWatch#childEvent(CuratorFramework, TreeCacheEvent)}.
 		 */
 		public static final String CHILD_EVENT_POINTCUT_EXPRESSION = "execution(void org.springframework.cloud.zookeeper.discovery.ZookeeperServiceWatch.childEvent(..)) && args(client,event)";
 
 		/**
-		 * The path separator of Zookeeper node
+		 * The path separator of Zookeeper node.
 		 */
 		public static final String NODE_PATH_SEPARATOR = "/";
 
 		/**
-		 * The path variable name for the name of service
+		 * The path variable name for the name of service.
 		 */
 		private static final String SERVICE_NAME_PATH_VARIABLE_NAME = "serviceName";
 
 		/**
-		 * The path variable name for the id of {@link ServiceInstance service instance}
+		 * The path variable name for the id of {@link ServiceInstance service instance}.
 		 */
 		private static final String SERVICE_INSTANCE_ID_PATH_VARIABLE_NAME = "serviceInstanceId";
 
@@ -321,7 +331,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		 * Ant Path pattern for {@link ServiceInstance} :
 		 * <p>
 		 * <p>
-		 * ${{@link #rootPath}}/{serviceName}/{serviceInstanceId}
+		 * ${{@link #rootPath}}/{serviceName}/{serviceInstanceId}.
 		 *
 		 * @see #rootPath
 		 * @see #SERVICE_NAME_PATH_VARIABLE_NAME
@@ -330,7 +340,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		private final String serviceInstancePathPattern;
 
 		/**
-		 * The {@link ThreadLocal} holds the processed service name
+		 * The {@link ThreadLocal} holds the processed service name.
 		 */
 		private final ThreadLocal<String> processedServiceNameThreadLocal;
 
@@ -348,8 +358,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		/**
 		 * Zookeeper uses {@link TreeCacheEvent} to trigger
 		 * {@link #dispatchServiceInstancesChangedEvent(String, Collection)} , thus
-		 * {@link HeartbeatEvent} handle is always ignored
-		 *
+		 * {@link HeartbeatEvent} handle is always ignored.
 		 * @return <code>false</code> forever
 		 */
 		@Bean
@@ -359,8 +368,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 
 		/**
 		 * Handle on {@link InstanceRegisteredEvent} after
-		 * {@link ZookeeperServiceWatch#onApplicationEvent(InstanceRegisteredEvent)}
-		 *
+		 * {@link ZookeeperServiceWatch#onApplicationEvent(InstanceRegisteredEvent)}.
 		 * @param event {@link InstanceRegisteredEvent}
 		 * @see #reattachTreeCacheListeners()
 		 */
@@ -370,7 +378,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		}
 
 		/**
-		 * Re-attach the {@link TreeCacheListener TreeCacheListeners}
+		 * Re-attach the {@link TreeCacheListener TreeCacheListeners}.
 		 */
 		private void reattachTreeCacheListeners() {
 
@@ -381,7 +389,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 			/**
 			 * All registered TreeCacheListeners except {@link ZookeeperServiceWatch}.
 			 * Usually, "otherListeners" will be empty because Spring Cloud Zookeeper only
-			 * adds "zookeeperServiceWatch" bean as {@link TreeCacheListener}
+			 * adds "zookeeperServiceWatch" bean as {@link TreeCacheListener}.
 			 */
 			List<TreeCacheListener> otherListeners = new LinkedList<>();
 
@@ -392,7 +400,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 					 * Even though "listener" is an instance of
 					 * {@link ZookeeperServiceWatch}, "zookeeperServiceWatch" bean that
 					 * was enhanced by AOP is different from the former, thus it's
-					 * required to exclude "listener"
+					 * required to exclude "listener".
 					 */
 					if (!(listener instanceof ZookeeperServiceWatch)) {
 						otherListeners.add(listener);
@@ -420,8 +428,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		 * Try to {@link #dispatchServiceInstancesChangedEvent(String, Collection)
 		 * dispatch} {@link ServiceInstancesChangedEvent} before
 		 * {@link ZookeeperServiceWatch#childEvent(CuratorFramework, TreeCacheEvent)}
-		 * execution if required
-		 *
+		 * execution if required.
 		 * @param client {@link CuratorFramework}
 		 * @param event {@link TreeCacheEvent}
 		 */
@@ -441,8 +448,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		}
 
 		/**
-		 * Resolve the name of service
-		 *
+		 * Resolve the name of service.
 		 * @param event {@link TreeCacheEvent}
 		 * @return If the Zookeeper's {@link ChildData#getPath() node path} that was
 		 * notified comes from {@link ServiceInstance the service instance}, return it's
@@ -467,8 +473,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		}
 
 		/**
-		 * The {@link TreeCacheEvent#getType() event type} is supported or not
-		 *
+		 * The {@link TreeCacheEvent#getType() event type} is supported or not.
 		 * @param event {@link TreeCacheEvent}
 		 * @return the rule is same as
 		 * {@link ZookeeperServiceWatch#childEvent(CuratorFramework, TreeCacheEvent)}
@@ -480,10 +485,11 @@ public class DubboServiceDiscoveryAutoConfiguration {
 					|| eventType.equals(TreeCacheEvent.Type.NODE_REMOVED)
 					|| eventType.equals(TreeCacheEvent.Type.NODE_UPDATED);
 		}
+
 	}
 
 	/**
-	 * Consul Customized Configuration
+	 * Consul Customized Configuration.
 	 */
 	@Configuration
 	@ConditionalOnBean(name = CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
@@ -492,7 +498,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	}
 
 	/**
-	 * Nacos Customized Configuration
+	 * Nacos Customized Configuration.
 	 */
 	@Configuration
 	@ConditionalOnBean(name = NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
@@ -501,7 +507,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		private final NamingService namingService;
 
 		/**
-		 * the set of services is listening
+		 * the set of services is listening.
 		 */
 		private final Set<String> listeningServices;
 
@@ -511,10 +517,9 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		}
 
 		/**
-		 * Nacos uses {@link EventListener} to trigger
+		 * Nacos uses {@link EventListener} to trigger.
 		 * {@link #dispatchServiceInstancesChangedEvent(String, Collection)} , thus
 		 * {@link HeartbeatEvent} handle is always ignored
-		 *
 		 * @return <code>false</code> forever
 		 */
 		@Bean
@@ -547,5 +552,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 				}
 			}
 		}
+
 	}
+
 }

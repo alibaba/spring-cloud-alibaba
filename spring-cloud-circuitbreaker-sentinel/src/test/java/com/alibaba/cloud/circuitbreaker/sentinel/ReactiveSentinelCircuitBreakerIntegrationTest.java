@@ -50,8 +50,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author Ryan Baxter
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = ReactiveSentinelCircuitBreakerIntegrationTest.Application.class, properties = {
-		"spring.cloud.discovery.client.health-indicator.enabled=false" })
+@SpringBootTest(webEnvironment = RANDOM_PORT,
+		classes = ReactiveSentinelCircuitBreakerIntegrationTest.Application.class,
+		properties = { "spring.cloud.discovery.client.health-indicator.enabled=false" })
 @DirtiesContext
 public class ReactiveSentinelCircuitBreakerIntegrationTest {
 

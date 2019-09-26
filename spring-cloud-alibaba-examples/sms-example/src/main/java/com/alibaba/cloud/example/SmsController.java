@@ -1,16 +1,24 @@
+/*
+ * Copyright 2013-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.example;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.alicloud.sms.ISmsService;
-
 import com.aliyun.mns.model.Message;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
@@ -20,6 +28,13 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SmsController {
@@ -39,11 +54,6 @@ public class SmsController {
 		return environment.getProperty("spring.cloud.alicloud.sms.up-queue-name");
 	}
 
-	/**
-	 * 短信发送 Example
-	 * @param code
-	 * @return
-	 */
 	@RequestMapping("/batch-sms-send.do")
 	public SendBatchSmsResponse batchsendCheckCode(
 			@RequestParam(name = "code") String code) {
@@ -74,11 +84,6 @@ public class SmsController {
 		return new SendBatchSmsResponse();
 	}
 
-	/**
-	 * 短信发送 Example
-	 * @param code
-	 * @return
-	 */
 	@RequestMapping("/sms-send.do")
 	public SendSmsResponse sendCheckCode(@RequestParam(name = "code") String code) {
 		// 组装请求对象-具体描述见控制台-文档部分内容
@@ -107,12 +112,6 @@ public class SmsController {
 		return new SendSmsResponse();
 	}
 
-	/**
-	 *
-	 * 短信查询 Example
-	 * @param telephone
-	 * @return
-	 */
 	@RequestMapping("/query.do")
 	public QuerySendDetailsResponse querySendDetailsResponse(
 			@RequestParam(name = "tel") String telephone) {
@@ -142,4 +141,5 @@ public class SmsController {
 
 		return smsReportMessageListener.getSmsReportMessageSet();
 	}
+
 }
