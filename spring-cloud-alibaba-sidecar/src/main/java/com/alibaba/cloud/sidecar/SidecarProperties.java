@@ -52,7 +52,7 @@ public class SidecarProperties {
 	private URI healthCheckUrl;
 
 	/**
-	 * interval of health check
+	 * interval of health check.
 	 */
 	private long healthCheckInterval = 30000L;
 
