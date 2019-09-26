@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,15 +16,15 @@
 
 package com.alibaba.alicloud.acm;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.junit.Assert;
+import com.alibaba.alicloud.acm.bootstrap.AcmPropertySourceLocator;
+import com.alibaba.alicloud.acm.endpoint.AcmEndpointAutoConfiguration;
+import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
+import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
+import com.alibaba.alicloud.context.acm.AcmProperties;
+import com.alibaba.edas.acm.ConfigService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -32,6 +32,7 @@ import org.powermock.api.support.MethodProxy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -40,12 +41,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.alicloud.acm.bootstrap.AcmPropertySourceLocator;
-import com.alibaba.alicloud.acm.endpoint.AcmEndpointAutoConfiguration;
-import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
-import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
-import com.alibaba.alicloud.context.acm.AcmProperties;
-import com.alibaba.edas.acm.ConfigService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
  * @author xiaojing
@@ -54,16 +51,18 @@ import com.alibaba.edas.acm.ConfigService;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ConfigService.class })
-@SpringBootTest(classes = AcmConfigurationTests.TestConfig.class, properties = {
-		"spring.application.name=test-name", "spring.profiles.active=dev,test",
-		"spring.cloud.alicloud.acm.server-list=127.0.0.1",
-		"spring.cloud.alicloud.acm.server-port=8848",
-		"spring.cloud.alicloud.acm.endpoint=test-endpoint",
-		"spring.cloud.alicloud.acm.namespace=test-namespace",
-		"spring.cloud.alicloud.acm.timeout=1000",
-		"spring.cloud.alicloud.acm.group=test-group",
-		"spring.cloud.alicloud.acm.refresh-enabled=false",
-		"spring.cloud.alicloud.acm.file-extension=properties" }, webEnvironment = NONE)
+@SpringBootTest(classes = AcmConfigurationTests.TestConfig.class,
+		properties = { "spring.application.name=test-name",
+				"spring.profiles.active=dev,test",
+				"spring.cloud.alicloud.acm.server-list=127.0.0.1",
+				"spring.cloud.alicloud.acm.server-port=8848",
+				"spring.cloud.alicloud.acm.endpoint=test-endpoint",
+				"spring.cloud.alicloud.acm.namespace=test-namespace",
+				"spring.cloud.alicloud.acm.timeout=1000",
+				"spring.cloud.alicloud.acm.group=test-group",
+				"spring.cloud.alicloud.acm.refresh-enabled=false",
+				"spring.cloud.alicloud.acm.file-extension=properties" },
+		webEnvironment = NONE)
 public class AcmConfigurationTests {
 
 	static {
@@ -112,9 +111,9 @@ public class AcmConfigurationTests {
 	@Test
 	public void contextLoads() throws Exception {
 
-		assertNotNull("AcmPropertySourceLocator was not created", locator);
-		assertNotNull("AcmProperties was not created", properties);
-		assertNotNull("AcmIntegrationProperties was not created", integrationProperties);
+		assertThat(locator).isNotNull();
+		assertThat(properties).isNotNull();
+		assertThat(integrationProperties).isNotNull();
 
 		checkoutAcmServerAddr();
 		checkoutAcmServerPort();
@@ -130,60 +129,48 @@ public class AcmConfigurationTests {
 	}
 
 	private void checkoutAcmServerAddr() {
-		assertEquals("AcmProperties server address is wrong", "127.0.0.1",
-				properties.getServerList());
-
+		assertThat(properties.getServerList()).isEqualTo("127.0.0.1");
 	}
 
 	private void checkoutAcmServerPort() {
-		assertEquals("AcmProperties server port is wrong", "8848",
-				properties.getServerPort());
-
+		assertThat(properties.getServerPort()).isEqualTo("8848");
 	}
 
 	private void checkoutAcmEndpoint() {
-		assertEquals("AcmProperties endpoint is wrong", "test-endpoint",
-				properties.getEndpoint());
-
+		assertThat(properties.getEndpoint()).isEqualTo("test-endpoint");
 	}
 
 	private void checkoutAcmNamespace() {
-		assertEquals("AcmProperties namespace is wrong", "test-namespace",
-				properties.getNamespace());
-
+		assertThat(properties.getNamespace()).isEqualTo("test-namespace");
 	}
 
 	private void checkoutAcmGroup() {
-		assertEquals("AcmProperties' group is wrong", "test-group",
-				properties.getGroup());
+		assertThat(properties.getGroup()).isEqualTo("test-group");
 	}
 
 	private void checkoutAcmFileExtension() {
-		assertEquals("AcmProperties' file extension is wrong", "properties",
-				properties.getFileExtension());
+		assertThat(properties.getFileExtension()).isEqualTo("properties");
 	}
 
 	private void checkoutAcmTimeout() {
-		assertEquals("AcmProperties' timeout is wrong", 1000, properties.getTimeout());
+		assertThat(properties.getTimeout()).isEqualTo(1000);
 	}
 
 	private void checkoutAcmRefreshEnabled() {
-		assertEquals("AcmProperties' refresh enabled is wrong", false,
-				properties.isRefreshEnabled());
+		assertThat(properties.isRefreshEnabled()).isEqualTo(false);
 	}
 
 	private void checkoutAcmProfiles() {
-		assertArrayEquals("AcmProperties' profiles is wrong",
-				new String[] { "dev", "test" },
-				integrationProperties.getActiveProfiles());
+		assertThat(integrationProperties.getActiveProfiles())
+				.isEqualTo(new String[] { "dev", "test" });
 	}
 
 	private void checkoutDataLoad() {
-		Assert.assertEquals(environment.getProperty("user.age"), "12");
+		assertThat(environment.getProperty("user.age")).isEqualTo("12");
 	}
 
 	private void checkoutProfileDataLoad() {
-		Assert.assertEquals(environment.getProperty("user.name"), "dev");
+		assertThat(environment.getProperty("user.name")).isEqualTo("dev");
 	}
 
 	@Configuration
@@ -191,5 +178,7 @@ public class AcmConfigurationTests {
 	@ImportAutoConfiguration({ AcmEndpointAutoConfiguration.class,
 			AcmAutoConfiguration.class, AcmContextBootstrapConfiguration.class })
 	public static class TestConfig {
+
 	}
+
 }

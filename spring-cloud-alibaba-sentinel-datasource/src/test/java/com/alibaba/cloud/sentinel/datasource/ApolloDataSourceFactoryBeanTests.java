@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,18 +16,17 @@
 
 package com.alibaba.cloud.sentinel.datasource;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.factorybean.ApolloDataSourceFactoryBean;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.apollo.ApolloDataSource;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -35,7 +34,9 @@ import com.alibaba.csp.sentinel.datasource.apollo.ApolloDataSource;
 public class ApolloDataSourceFactoryBeanTests {
 
 	private String flowRuleKey = "sentinel";
+
 	private String namespace = "namespace";
+
 	private String defaultFlowValue = "{}";
 
 	@Test
@@ -54,18 +55,12 @@ public class ApolloDataSourceFactoryBeanTests {
 		when(apolloDataSource.readSource()).thenReturn("{}");
 		doReturn(apolloDataSource).when(factoryBean).getObject();
 
-		assertEquals("ApolloDataSourceFactoryBean getObject error", apolloDataSource,
-				factoryBean.getObject());
-		assertEquals("ApolloDataSource read source value was wrong", "{}",
-				factoryBean.getObject().readSource());
-		assertEquals("ApolloDataSource converter was wrong", converter,
-				factoryBean.getConverter());
-		assertEquals("ApolloDataSourceFactoryBean flowRuleKey was wrong", flowRuleKey,
-				factoryBean.getFlowRulesKey());
-		assertEquals("ApolloDataSourceFactoryBean namespace was wrong", namespace,
-				factoryBean.getNamespaceName());
-		assertEquals("ApolloDataSourceFactoryBean defaultFlowValue was wrong",
-				defaultFlowValue, factoryBean.getDefaultFlowRuleValue());
+		assertThat(factoryBean.getObject()).isEqualTo(apolloDataSource);
+		assertThat(factoryBean.getObject().readSource()).isEqualTo("{}");
+		assertThat(factoryBean.getConverter()).isEqualTo(converter);
+		assertThat(factoryBean.getFlowRulesKey()).isEqualTo(flowRuleKey);
+		assertThat(factoryBean.getNamespaceName()).isEqualTo(namespace);
+		assertThat(factoryBean.getDefaultFlowRuleValue()).isEqualTo(defaultFlowValue);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.autoconfigure;
 
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.ADDRESS;
-import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
-import static org.springframework.util.ObjectUtils.isEmpty;
+package com.alibaba.cloud.dubbo.autoconfigure;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.dubbo.autoconfigure.condition.MissingSpringCloudRegistryConfigPropertyCondition;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.registry.DubboServiceRegistrationEventPublishingAspect;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
+import com.ecwid.consul.v1.agent.model.NewService;
+import com.netflix.appinfo.InstanceInfo;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -51,34 +53,45 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
 
-import com.alibaba.cloud.dubbo.autoconfigure.condition.MissingSpringCloudRegistryConfigPropertyCondition;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.registry.DubboServiceRegistrationEventPublishingAspect;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
-
-import com.ecwid.consul.v1.agent.model.NewService;
-import com.netflix.appinfo.InstanceInfo;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.ADDRESS;
+import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
- * Dubbo Service Registration Auto-{@link Configuration}
+ * Dubbo Service Registration Auto-{@link Configuration}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration
 @Import({ DubboServiceRegistrationEventPublishingAspect.class })
-@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
+		matchIfMissing = true)
 @AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
 		CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME,
-		"org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration" }, value = {
-				DubboMetadataAutoConfiguration.class })
+		"org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration" },
+		value = { DubboMetadataAutoConfiguration.class })
 public class DubboServiceRegistrationAutoConfiguration {
 
+	/**
+	 * EurekaClientAutoConfiguration.
+	 */
 	public static final String EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration";
 
+	/**
+	 * ConsulAutoServiceRegistrationAutoConfiguration.
+	 */
 	public static final String CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration";
 
+	/**
+	 * ConsulAutoRegistration.
+	 */
 	public static final String CONSUL_AUTO_SERVICE_AUTO_REGISTRATION_CLASS_NAME = "org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration";
 
+	/**
+	 * ZookeeperAutoServiceRegistrationAutoConfiguration.
+	 */
 	public static final String ZOOKEEPER_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.zookeeper.serviceregistry.ZookeeperAutoServiceRegistrationAutoConfiguration";
 
 	private static final Logger logger = LoggerFactory
@@ -88,7 +101,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 	private DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
 	@Bean
-	@Conditional(value = { MissingSpringCloudRegistryConfigPropertyCondition.class })
+	@Conditional({ MissingSpringCloudRegistryConfigPropertyCondition.class })
 	public RegistryConfig defaultSpringCloudRegistryConfig() {
 		return new RegistryConfig(ADDRESS, PROTOCOL);
 	}
@@ -150,6 +163,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 				serviceBeans.forEach(ServiceBean::export);
 			}
 		}
+
 	}
 
 	@Configuration
@@ -158,8 +172,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 	class ConsulConfiguration {
 
 		/**
-		 * Handle the pre-registered event of {@link ServiceInstance} for Consul
-		 *
+		 * Handle the pre-registered event of {@link ServiceInstance} for Consul.
 		 * @param event {@link ServiceInstancePreRegisteredEvent}
 		 */
 		@EventListener(ServiceInstancePreRegisteredEvent.class)
@@ -186,5 +199,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 				}
 			}
 		}
+
 	}
+
 }

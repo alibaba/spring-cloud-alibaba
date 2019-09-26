@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.actuate;
+
+import com.alibaba.cloud.dubbo.actuate.endpoint.DubboRestMetadataEndpoint;
 
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration;
@@ -23,15 +26,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import com.alibaba.cloud.dubbo.actuate.endpoint.DubboRestMetadataEndpoint;
-
 /**
- * Dubbo Metadata Endpoints Auto-{@link Configuration}
+ * Dubbo Metadata Endpoints Auto-{@link Configuration}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
-@PropertySource(value = "classpath:/META-INF/dubbo/default/actuator-endpoints.properties")
+@ConditionalOnClass(
+		name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
+@PropertySource("classpath:/META-INF/dubbo/default/actuator-endpoints.properties")
 @ManagementContextConfiguration
 public class DubboMetadataEndpointAutoConfiguration {
 
@@ -41,4 +43,5 @@ public class DubboMetadataEndpointAutoConfiguration {
 	public DubboRestMetadataEndpoint dubboRestMetadataEndpoint() {
 		return new DubboRestMetadataEndpoint();
 	}
+
 }

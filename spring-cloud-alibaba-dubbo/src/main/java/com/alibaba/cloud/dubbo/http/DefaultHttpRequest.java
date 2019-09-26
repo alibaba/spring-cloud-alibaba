@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.http;
 
-import static org.springframework.web.util.UriComponentsBuilder.fromPath;
+package com.alibaba.cloud.dubbo.http;
 
 import java.net.URI;
 import java.util.List;
@@ -28,8 +27,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
+
 /**
- * Default {@link HttpRequest} implementation
+ * Default {@link HttpRequest} implementation.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -79,7 +80,7 @@ public class DefaultHttpRequest implements HttpRequest {
 	}
 
 	/**
-	 * {@link HttpRequest} Builder
+	 * {@link HttpRequest} Builder.
 	 */
 	public static class Builder {
 
@@ -124,6 +125,7 @@ public class DefaultHttpRequest implements HttpRequest {
 		public HttpRequest build() {
 			return new DefaultHttpRequest(method, path, params, headers);
 		}
+
 	}
 
 }

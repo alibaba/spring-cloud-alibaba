@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.http.matcher;
 
 import org.springframework.http.MediaType;
@@ -21,7 +22,7 @@ import org.springframework.http.MediaType;
  * Parses and matches a single media type expression to a request's 'Content-Type' header.
  * <p>
  * The source code is scratched from
- * org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition.ConsumeMediaTypeExpression
+ * org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition.ConsumeMediaTypeExpression.
  *
  * @author Rossen Stoyanchev
  * @author Arjen Poutsma
@@ -40,4 +41,5 @@ class ConsumeMediaTypeExpression extends AbstractMediaTypeExpression {
 		boolean match = getMediaType().includes(contentType);
 		return (!isNegated() ? match : !match);
 	}
+
 }

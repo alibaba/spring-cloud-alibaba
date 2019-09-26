@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,9 +22,7 @@ import java.util.Properties;
 /**
  * @author zkz
  */
-public class NacosDataParserHandler {
-
-	private static final NacosDataParserHandler HANDLER = new NacosDataParserHandler();
+public final class NacosDataParserHandler {
 
 	private AbstractNacosDataParser parser;
 
@@ -32,7 +30,13 @@ public class NacosDataParserHandler {
 		parser = this.createParser();
 	}
 
-	/** Parsing nacos configuration content */
+	/**
+	 * Parsing nacos configuration content.
+	 * @param data config from Nacos
+	 * @param extension file extension. json or xml or yml or yaml or properties
+	 * @return result of properties
+	 * @throws IOException thrown if there is a problem parsing config.
+	 */
 	public Properties parseNacosData(String data, String extension) throws IOException {
 		if (null == parser) {
 			parser = this.createParser();
@@ -40,7 +44,11 @@ public class NacosDataParserHandler {
 		return parser.parseNacosData(data, extension);
 	}
 
-	/** check the validity of file extensions in dataid */
+	/**
+	 * check the validity of file extensions in dataid.
+	 * @param dataIdAry array of dataId
+	 * @return dataId handle success or not
+	 */
 	public boolean checkDataId(String... dataIdAry) {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (String dataId : dataIdAry) {
@@ -68,7 +76,13 @@ public class NacosDataParserHandler {
 	}
 
 	public static NacosDataParserHandler getInstance() {
-		return HANDLER;
+		return ParserHandler.HANDLER;
+	}
+
+	private static class ParserHandler {
+
+		private static final NacosDataParserHandler HANDLER = new NacosDataParserHandler();
+
 	}
 
 }

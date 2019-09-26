@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.http;
 
-import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
+package com.alibaba.cloud.dubbo.http;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +27,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.util.MultiValueMap;
 
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
+
 /**
- * Mutable {@link HttpServerRequest} implementation
+ * Mutable {@link HttpServerRequest} implementation.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -96,4 +97,5 @@ public class MutableHttpServerRequest implements HttpServerRequest {
 	public MultiValueMap<String, String> getQueryParams() {
 		return queryParams;
 	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.metadata;
 
-import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
-import static org.springframework.util.CollectionUtils.isEmpty;
+package com.alibaba.cloud.dubbo.metadata;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
 import org.apache.dubbo.config.ProtocolConfig;
+
 import org.springframework.beans.factory.ObjectProvider;
 
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 /**
- * Dubbo's {@link ProtocolConfig} {@link Supplier}
+ * Dubbo's {@link ProtocolConfig} {@link Supplier}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -68,4 +70,5 @@ public class DubboProtocolConfigSupplier implements Supplier<ProtocolConfig> {
 
 		return protocolConfig;
 	}
+
 }

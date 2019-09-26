@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright 2013-2018 the original author or authors.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,29 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.nacos;
 
+import java.util.Objects;
+
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import com.alibaba.nacos.api.exception.NacosException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
  */
-public class NacosConfigManager implements ApplicationContextAware {
+public class NacosConfigManager {
 
-	private ConfigService configService;
+	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
+
+	private static ConfigService service = null;
+
+	@Autowired
+	private NacosConfigProperties properties;
 
 	public ConfigService getConfigService() {
-		return configService;
+		if (Objects.isNull(service)) {
+			try {
+				service = NacosFactory
+						.createConfigService(properties.getConfigServiceProperties());
+				properties.initConfigService(service);
+			}
+			catch (NacosException e) {
+				log.error("create config service error!properties={},e=,", properties, e);
+			}
+		}
+		return service;
 	}
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		NacosConfigProperties properties = applicationContext
-				.getBean(NacosConfigProperties.class);
-		configService = properties.configServiceInstance();
-	}
 }

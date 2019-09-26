@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.client.loadbalancer;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.dubbo.rpc.service.GenericException;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.converter.HttpMessageConverter;
-
 import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
 import com.alibaba.cloud.dubbo.http.util.HttpMessageConverterResolver;
 import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import org.apache.dubbo.rpc.service.GenericException;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.HttpMessageConverter;
 
 /**
- * Dubbo {@link ClientHttpResponse} Factory
+ * Dubbo {@link ClientHttpResponse} Factory.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -37,7 +38,7 @@ class DubboClientHttpResponseFactory {
 
 	private final HttpMessageConverterResolver httpMessageConverterResolver;
 
-	public DubboClientHttpResponseFactory(List<HttpMessageConverter<?>> messageConverters,
+	DubboClientHttpResponseFactory(List<HttpMessageConverter<?>> messageConverters,
 			ClassLoader classLoader) {
 		this.httpMessageConverterResolver = new HttpMessageConverterResolver(
 				messageConverters, classLoader);
@@ -64,4 +65,5 @@ class DubboClientHttpResponseFactory {
 
 		return new DubboClientHttpResponse(httpOutputMessage, exception);
 	}
+
 }

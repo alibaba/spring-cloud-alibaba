@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.service.parameter;
 
-import static org.springframework.util.ObjectUtils.isEmpty;
+package com.alibaba.cloud.dubbo.service.parameter;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.MultiValueMap;
-
 import com.alibaba.cloud.dubbo.http.HttpServerRequest;
 import com.alibaba.cloud.dubbo.metadata.MethodParameterMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 /**
  * Abstract HTTP Names Value {@link DubboGenericServiceParameterResolver Dubbo
- * GenericService Parameter Resolver}
+ * GenericService Parameter Resolver}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -38,10 +39,9 @@ public abstract class AbstractNamedValueServiceParameterResolver
 		extends AbstractDubboGenericServiceParameterResolver {
 
 	/**
-	 * Get the {@link MultiValueMap} of names and values
-	 *
-	 * @param request
-	 * @return
+	 * Get the {@link MultiValueMap} of names and values.
+	 * @param request Http server request
+	 * @return map of name and values
 	 */
 	protected abstract MultiValueMap<String, String> getNameAndValuesMap(
 			HttpServerRequest request);

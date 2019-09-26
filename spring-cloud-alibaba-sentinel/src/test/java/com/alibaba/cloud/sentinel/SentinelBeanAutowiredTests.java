@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,23 +16,10 @@
 
 package com.alibaba.cloud.sentinel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.RequestOriginParser;
@@ -41,13 +28,25 @@ import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
 import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
 import com.alibaba.csp.sentinel.adapter.servlet.util.FilterUtil;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SentinelBeanAutowiredTests.TestConfig.class }, properties = {
-		"spring.cloud.sentinel.filter.order=111" })
+@SpringBootTest(classes = { SentinelBeanAutowiredTests.TestConfig.class },
+		properties = { "spring.cloud.sentinel.filter.order=111" })
 public class SentinelBeanAutowiredTests {
 
 	@Autowired
@@ -64,31 +63,27 @@ public class SentinelBeanAutowiredTests {
 
 	@Test
 	public void contextLoads() throws Exception {
-		assertNotNull("UrlCleaner was not created", urlCleaner);
-		assertNotNull("UrlBlockHandler was not created", urlBlockHandler);
-		assertNotNull("RequestOriginParser was not created", requestOriginParser);
-		assertNotNull("SentinelProperties was not created", sentinelProperties);
+		assertThat(urlCleaner).isNotNull();
+		assertThat(urlBlockHandler).isNotNull();
+		assertThat(requestOriginParser).isNotNull();
+		assertThat(sentinelProperties).isNotNull();
 
 		checkUrlPattern();
 	}
 
 	private void checkUrlPattern() {
-		assertEquals("SentinelProperties filter order was wrong", 111,
-				sentinelProperties.getFilter().getOrder());
-		assertEquals("SentinelProperties filter url pattern size was wrong", 1,
-				sentinelProperties.getFilter().getUrlPatterns().size());
-		assertEquals("SentinelProperties filter url pattern was wrong", "/*",
-				sentinelProperties.getFilter().getUrlPatterns().get(0));
+		assertThat(sentinelProperties.getFilter().getOrder()).isEqualTo(111);
+		assertThat(sentinelProperties.getFilter().getUrlPatterns().size()).isEqualTo(1);
+		assertThat(sentinelProperties.getFilter().getUrlPatterns().get(0))
+				.isEqualTo("/*");
 	}
 
 	@Test
 	public void testBeanAutowired() {
-		assertEquals("UrlCleaner was not autowired", urlCleaner,
-				WebCallbackManager.getUrlCleaner());
-		assertEquals("UrlBlockHandler was not autowired", urlBlockHandler,
-				WebCallbackManager.getUrlBlockHandler());
-		assertEquals("RequestOriginParser was not autowired", requestOriginParser,
-				WebCallbackManager.getRequestOriginParser());
+		assertThat(WebCallbackManager.getUrlCleaner()).isEqualTo(urlCleaner);
+		assertThat(WebCallbackManager.getUrlBlockHandler()).isEqualTo(urlBlockHandler);
+		assertThat(WebCallbackManager.getRequestOriginParser())
+				.isEqualTo(requestOriginParser);
 	}
 
 	@Configuration

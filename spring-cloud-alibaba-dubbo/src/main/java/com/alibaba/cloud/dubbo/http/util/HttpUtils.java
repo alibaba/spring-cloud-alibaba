@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.http.util;
 
-import static org.springframework.util.StringUtils.delimitedListToStringArray;
-import static org.springframework.util.StringUtils.hasText;
-import static org.springframework.util.StringUtils.trimAllWhitespace;
+package com.alibaba.cloud.dubbo.http.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -34,25 +31,44 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
+import static org.springframework.util.StringUtils.delimitedListToStringArray;
+import static org.springframework.util.StringUtils.hasText;
+import static org.springframework.util.StringUtils.trimAllWhitespace;
+
 /**
- * Http Utilities class
+ * Http Utilities class.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public abstract class HttpUtils {
 
+	/**
+	 * Charset value for Http.
+	 */
 	private static final String UTF_8 = "UTF-8";
 
+	/**
+	 * Equal operator for Http.
+	 */
 	private static final String EQUAL = "=";
 
+	/**
+	 * And operator for Http.
+	 */
 	private static final String AND = "&";
 
+	/**
+	 * Semicolon operator for Http.
+	 */
 	private static final String SEMICOLON = ";";
 
+	/**
+	 * Question Mark operation for Http.
+	 */
 	private static final String QUESTION_MASK = "?";
 
 	/**
-	 * The empty value
+	 * The empty value.
 	 */
 	private static final String EMPTY_VALUE = "";
 
@@ -60,9 +76,8 @@ public abstract class HttpUtils {
 	 * Normalize path:
 	 * <ol>
 	 * <li>To remove query string if presents</li>
-	 * <li>To remove duplicated slash("/") if exists</li>
+	 * <li>To remove duplicated slash("/") if exists.</li>
 	 * </ol>
-	 *
 	 * @param path path to be normalized
 	 * @return a normalized path if required
 	 */
@@ -79,10 +94,9 @@ public abstract class HttpUtils {
 	}
 
 	/**
-	 * Get Parameters from the specified {@link HttpRequest request}
-	 *
+	 * Get Parameters from the specified {@link HttpRequest request}.
 	 * @param request the specified {@link HttpRequest request}
-	 * @return
+	 * @return map of parameters
 	 */
 	public static MultiValueMap<String, String> getParameters(HttpRequest request) {
 		URI uri = request.getURI();
@@ -92,7 +106,6 @@ public abstract class HttpUtils {
 	/**
 	 * Get Parameters from the specified query string.
 	 * <p>
-	 *
 	 * @param queryString The query string
 	 * @return The query parameters
 	 */
@@ -103,7 +116,6 @@ public abstract class HttpUtils {
 	/**
 	 * Get Parameters from the specified pairs of name-value.
 	 * <p>
-	 *
 	 * @param pairs The pairs of name-value
 	 * @return The query parameters
 	 */
@@ -124,7 +136,6 @@ public abstract class HttpUtils {
 	/**
 	 * Get Parameters from the specified pairs of name-value.
 	 * <p>
-	 *
 	 * @param pairs The pairs of name-value
 	 * @return The query parameters
 	 */
@@ -163,8 +174,7 @@ public abstract class HttpUtils {
 	// }
 
 	/**
-	 * To the name and value line sets
-	 *
+	 * To the name and value line sets.
 	 * @param nameAndValuesMap {@link MultiValueMap} the map of name and values
 	 * @return non-null
 	 */
@@ -187,8 +197,8 @@ public abstract class HttpUtils {
 	}
 
 	/**
-	 * Generate a string of query string from the specified request parameters {@link Map}
-	 *
+	 * Generate a string of query string from the specified request parameters
+	 * {@link Map}.
 	 * @param params the specified request parameters {@link Map}
 	 * @return non-null
 	 */
@@ -201,8 +211,7 @@ public abstract class HttpUtils {
 	}
 
 	/**
-	 * Decode value
-	 *
+	 * Decode value.
 	 * @param value the value requires to decode
 	 * @return the decoded value
 	 */
@@ -220,8 +229,7 @@ public abstract class HttpUtils {
 	}
 
 	/**
-	 * encode value
-	 *
+	 * encode value.
 	 * @param value the value requires to encode
 	 * @return the encoded value
 	 */
@@ -243,4 +251,5 @@ public abstract class HttpUtils {
 		}
 		paramsMap.add(trimAllWhitespace(name), paramValue);
 	}
+
 }

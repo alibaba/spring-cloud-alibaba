@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,12 +18,12 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 
 import java.util.Properties;
 
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 import com.alibaba.nacos.api.PropertyKeyConst;
+
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.StringUtils;
 
 /**
  * A {@link FactoryBean} for creating {@link NacosDataSource} instance.
@@ -34,13 +34,19 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> {
 
 	private String serverAddr;
+
 	private String groupId;
+
 	private String dataId;
+
 	private Converter converter;
 
 	private String endpoint;
+
 	private String namespace;
+
 	private String accessKey;
+
 	private String secretKey;
 
 	@Override
@@ -128,4 +134,5 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
 	}
+
 }

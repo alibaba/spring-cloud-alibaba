@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.service.parameter;
 
-import static org.springframework.context.ConfigurableApplicationContext.CONVERSION_SERVICE_BEAN_NAME;
-import static org.springframework.util.ClassUtils.resolveClassName;
+package com.alibaba.cloud.dubbo.service.parameter;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +22,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.format.support.DefaultFormattingConversionService;
 
+import static org.springframework.context.ConfigurableApplicationContext.CONVERSION_SERVICE_BEAN_NAME;
+import static org.springframework.util.ClassUtils.resolveClassName;
+
 /**
- * Abstract {@link DubboGenericServiceParameterResolver} implementation
+ * Abstract {@link DubboGenericServiceParameterResolver} implementation.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -78,4 +79,5 @@ public abstract class AbstractDubboGenericServiceParameterResolver
 	protected Object resolveValue(Object parameterValue, Class<?> parameterType) {
 		return conversionService.convert(parameterValue, parameterType);
 	}
+
 }

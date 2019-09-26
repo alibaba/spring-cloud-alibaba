@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,8 +20,12 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.cloud.sentinel.SentinelConstants;
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -31,7 +35,6 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.StandardMethodMetadata;
-import org.springframework.core.type.classreading.MethodMetadataReadingVisitor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpResponse;
@@ -39,12 +42,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.cloud.sentinel.SentinelConstants;
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
-
 /**
- * PostProcessor handle @SentinelRestTemplate Annotation, add interceptor for RestTemplate
+ * PostProcessor handle @SentinelRestTemplate Annotation, add interceptor for
+ * RestTemplate.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @see SentinelRestTemplate
@@ -170,12 +170,6 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		return beanType == RestTemplate.class
 				&& checkMethodMetadataReadingVisitor(beanDefinition);
 	}
-
-	// private boolean checkStandardMethodMetadata(RootBeanDefinition beanDefinition) {
-	// return beanDefinition.getSource() instanceof StandardMethodMetadata
-	// && ((StandardMethodMetadata) beanDefinition.getSource())
-	// .isAnnotated(SentinelRestTemplate.class.getName());
-	// }
 
 	private boolean checkMethodMetadataReadingVisitor(RootBeanDefinition beanDefinition) {
 		return beanDefinition.getSource() instanceof MethodMetadata

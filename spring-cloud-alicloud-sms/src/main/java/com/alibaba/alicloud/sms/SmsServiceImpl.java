@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.alicloud.sms;
 
 import java.text.ParseException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.sms.SmsProperties;
 import com.alibaba.alicloud.sms.base.DefaultAlicomMessagePuller;
 import com.alibaba.alicloud.sms.endpoint.EndpointManager;
 import com.alibaba.alicloud.sms.endpoint.ReceiveMessageEntity;
-
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.dysmsapi.model.v20170525.SendBatchSmsRequest;
@@ -34,6 +31,8 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author pbting
@@ -41,10 +40,9 @@ import com.aliyuncs.exceptions.ServerException;
 public final class SmsServiceImpl extends AbstractSmsService {
 
 	private static final Logger log = LoggerFactory.getLogger(SmsServiceImpl.class);
+
 	/**
-	 * will expose user to call this method send sms message
-	 * @param sendSmsRequest
-	 * @return
+	 * will expose user to call this method send sms message.
 	 */
 	private SmsProperties smsProperties;
 
@@ -64,17 +62,6 @@ public final class SmsServiceImpl extends AbstractSmsService {
 				aliCloudProperties.getSecretKey());
 	}
 
-	/**
-	 * 因为阿里云支持多个
-	 * accessKeyId/accessKeySecret,当不想使用默认的配置accessKeyId/accessKeySecret时，可以使用这个方法来支持额外
-	 * 的accessKeyId/accessKeySecret 发送
-	 * @param sendSmsRequest
-	 * @param accessKeyId
-	 * @param accessKeySecret
-	 * @throws ServerException
-	 * @throws ClientException
-	 * @return SendSmsResponse
-	 */
 	@Override
 	public SendSmsResponse sendSmsRequest(SendSmsRequest sendSmsRequest,
 			String accessKeyId, String accessKeySecret)
@@ -85,11 +72,6 @@ public final class SmsServiceImpl extends AbstractSmsService {
 				.getAcsResponse(sendSmsRequest);
 	}
 
-	/**
-	 * 
-	 * @param smsReportMessageListener
-	 * @return boolean
-	 */
 	@Override
 	public boolean startSmsReportMessageListener(
 			SmsReportMessageListener smsReportMessageListener) {
@@ -99,11 +81,6 @@ public final class SmsServiceImpl extends AbstractSmsService {
 		return startReceiveMsg(messageType, queueName, smsReportMessageListener);
 	}
 
-	/**
-	 * 
-	 * @param smsUpMessageListener
-	 * @return boolean
-	 */
 	@Override
 	public boolean startSmsUpMessageListener(SmsUpMessageListener smsUpMessageListener) {
 		// 短信回执：SmsReport，短信上行：SmsUp
@@ -112,13 +89,6 @@ public final class SmsServiceImpl extends AbstractSmsService {
 		return startReceiveMsg(messageType, queueName, smsUpMessageListener);
 	}
 
-	/**
-	 * 
-	 * @param messageType
-	 * @param queueName
-	 * @param messageListener
-	 * @return boolean
-	 */
 	private boolean startReceiveMsg(String messageType, String queueName,
 			SmsMessageListener messageListener) {
 		String accessKeyId = aliCloudProperties.getAccessKey();
@@ -141,13 +111,6 @@ public final class SmsServiceImpl extends AbstractSmsService {
 		return result;
 	}
 
-	/**
-	 * 
-	 * @param sendBatchSmsRequest
-	 * @throws ServerException
-	 * @throws ClientException
-	 * @return SendBatchSmsResponse
-	 */
 	@Override
 	public SendBatchSmsResponse sendSmsBatchRequest(
 			SendBatchSmsRequest sendBatchSmsRequest)
@@ -157,14 +120,6 @@ public final class SmsServiceImpl extends AbstractSmsService {
 				aliCloudProperties.getSecretKey());
 	}
 
-	/**
-	 * 
-	 * @param sendBatchSmsRequest
-	 * @param accessKeyId
-	 * @param accessKeySecret
-	 * @throws ClientException
-	 * @return SendBatchSmsResponse
-	 */
 	@Override
 	public SendBatchSmsResponse sendSmsBatchRequest(
 			SendBatchSmsRequest sendBatchSmsRequest, String accessKeyId,
@@ -174,14 +129,6 @@ public final class SmsServiceImpl extends AbstractSmsService {
 				.getAcsResponse(sendBatchSmsRequest);
 	}
 
-	/**
-	 * 
-	 * @param request
-	 * @param accessKeyId
-	 * @param accessKeySecret
-	 * @throws ClientException
-	 * @return QuerySendDetailsResponse
-	 */
 	@Override
 	public QuerySendDetailsResponse querySendDetails(QuerySendDetailsRequest request,
 			String accessKeyId, String accessKeySecret) throws ClientException {
@@ -189,16 +136,11 @@ public final class SmsServiceImpl extends AbstractSmsService {
 				.getAcsResponse(request);
 	}
 
-	/**
-	 * 
-	 * @param request
-	 * @throws ClientException
-	 * @return QuerySendDetailsResponse
-	 */
 	@Override
 	public QuerySendDetailsResponse querySendDetails(QuerySendDetailsRequest request)
 			throws ClientException {
 		return querySendDetails(request, aliCloudProperties.getAccessKey(),
 				aliCloudProperties.getSecretKey());
 	}
+
 }
