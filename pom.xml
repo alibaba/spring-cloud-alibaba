@@ -256,6 +256,35 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <useProjectReferences>false</useProjectReferences>
+                    <additionalConfig>
+                        <file>
+                            <name>.settings/org.eclipse.jdt.ui.prefs</name>
+                            <location>
+                                ${maven.multiModuleProjectDirectory}/eclipse/org.eclipse.jdt.ui.prefs
+                            </location>
+                        </file>
+                        <file>
+                            <name>.settings/org.eclipse.jdt.core.prefs</name>
+                            <location>
+                                ${maven.multiModuleProjectDirectory}/eclipse/org.eclipse.jdt.core.prefs
+                            </location>
+                        </file>
+                    </additionalConfig>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.spring.javaformat</groupId>
+                <artifactId>spring-javaformat-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <inherited>true</inherited>
@@ -277,6 +306,15 @@
             </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <profiles>
 
