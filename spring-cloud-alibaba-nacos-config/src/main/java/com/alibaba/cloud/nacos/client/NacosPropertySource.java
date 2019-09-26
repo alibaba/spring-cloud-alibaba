@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,22 +28,22 @@ import org.springframework.core.env.MapPropertySource;
 public class NacosPropertySource extends MapPropertySource {
 
 	/**
-	 * Nacos Group
+	 * Nacos Group.
 	 */
 	private final String group;
 
 	/**
-	 * Nacos dataID
+	 * Nacos dataID.
 	 */
 	private final String dataId;
 
 	/**
-	 * timestamp the property get
+	 * timestamp the property get.
 	 */
 	private final Date timestamp;
 
 	/**
-	 * Whether to support dynamic refresh for this Property Source
+	 * Whether to support dynamic refresh for this Property Source.
 	 */
 	private final boolean isRefreshable;
 
@@ -71,4 +71,5 @@ public class NacosPropertySource extends MapPropertySource {
 	public boolean isRefreshable() {
 		return isRefreshable;
 	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.autoconfigure;
+
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import com.alibaba.cloud.dubbo.service.parameter.PathVariableServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestBodyServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestHeaderServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestParamServiceParameterResolver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,16 +34,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
 
-import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-import com.alibaba.cloud.dubbo.service.parameter.PathVariableServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestBodyServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestHeaderServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestParamServiceParameterResolver;
-
 /**
- * Spring Boot Auto-Configuration class for Dubbo Service
+ * Spring Boot Auto-Configuration class for Dubbo Service.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -49,8 +50,7 @@ public class DubboServiceAutoConfiguration {
 	}
 
 	/**
-	 * Build a primary {@link PropertyResolver} bean to {@link Autowired @Autowired}
-	 *
+	 * Build a primary {@link PropertyResolver} bean to {@link Autowired @Autowired}.
 	 * @param environment {@link Environment}
 	 * @return alias bean for {@link Environment}
 	 */
@@ -61,11 +61,13 @@ public class DubboServiceAutoConfiguration {
 	}
 
 	@Configuration
-	@Import(value = { DubboGenericServiceExecutionContextFactory.class,
+	@Import({ DubboGenericServiceExecutionContextFactory.class,
 			RequestParamServiceParameterResolver.class,
 			RequestBodyServiceParameterResolver.class,
 			RequestHeaderServiceParameterResolver.class,
 			PathVariableServiceParameterResolver.class })
 	static class ParameterResolversConfiguration {
+
 	}
+
 }

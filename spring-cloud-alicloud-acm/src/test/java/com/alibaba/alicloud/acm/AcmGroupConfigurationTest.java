@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,11 +16,12 @@
 
 package com.alibaba.alicloud.acm;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import com.alibaba.alicloud.acm.endpoint.AcmEndpointAutoConfiguration;
+import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
+import com.alibaba.edas.acm.ConfigService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,7 @@ import org.powermock.api.support.MethodProxy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -37,9 +39,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.alicloud.acm.endpoint.AcmEndpointAutoConfiguration;
-import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
-import com.alibaba.edas.acm.ConfigService;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
  * @author xiaojing
@@ -48,12 +48,14 @@ import com.alibaba.edas.acm.ConfigService;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ ConfigService.class })
-@SpringBootTest(classes = AcmGroupConfigurationTest.TestConfig.class, properties = {
-		"spring.application.name=test-name", "spring.application.group=com.test.hello",
-		"spring.cloud.alicloud.acm.server-list=127.0.0.1",
-		"spring.cloud.alicloud.acm.server-port=8080",
-		"spring.cloud.alicloud.acm.timeout=1000",
-		"spring.cloud.alicloud.acm.group=test-group" }, webEnvironment = NONE)
+@SpringBootTest(classes = AcmGroupConfigurationTest.TestConfig.class,
+		properties = { "spring.application.name=test-name",
+				"spring.application.group=com.test.hello",
+				"spring.cloud.alicloud.acm.server-list=127.0.0.1",
+				"spring.cloud.alicloud.acm.server-port=8080",
+				"spring.cloud.alicloud.acm.timeout=1000",
+				"spring.cloud.alicloud.acm.group=test-group" },
+		webEnvironment = NONE)
 public class AcmGroupConfigurationTest {
 
 	static {
@@ -102,5 +104,7 @@ public class AcmGroupConfigurationTest {
 	@ImportAutoConfiguration({ AcmEndpointAutoConfiguration.class,
 			AcmAutoConfiguration.class, AcmContextBootstrapConfiguration.class })
 	public static class TestConfig {
+
 	}
+
 }

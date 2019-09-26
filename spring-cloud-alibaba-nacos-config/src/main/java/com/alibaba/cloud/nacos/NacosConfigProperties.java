@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,38 +16,37 @@
 
 package com.alibaba.cloud.nacos;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
-import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_LONG_POLL_TIMEOUT;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_RETRY_TIME;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENABLE_REMOTE_SYNC_CONFIG;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.nacos.api.config.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.config.ConfigService;
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_LONG_POLL_TIMEOUT;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_RETRY_TIME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENABLE_REMOTE_SYNC_CONFIG;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
+import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
- * nacos properties
+ * Nacos properties.
  *
  * @author leijuan
  * @author xiaojing
@@ -57,6 +56,9 @@ import com.alibaba.nacos.api.config.ConfigService;
 @ConfigurationProperties(NacosConfigProperties.PREFIX)
 public class NacosConfigProperties {
 
+	/**
+	 * Prefix of {@link NacosConfigProperties}.
+	 */
 	public static final String PREFIX = "spring.cloud.nacos.config";
 
 	private static final Logger log = LoggerFactory
@@ -101,6 +103,7 @@ public class NacosConfigProperties {
 	 * nacos config dataId prefix.
 	 */
 	private String prefix;
+
 	/**
 	 * the suffix of nacos config dataId, also the file extension of config content.
 	 */
@@ -351,60 +354,9 @@ public class NacosConfigProperties {
 		this.name = name;
 	}
 
-	public static class Config {
-		/**
-		 * the data id of extended configuration
-		 */
-		private String dataId;
-		/**
-		 * the group of extended configuration, the default value is DEFAULT_GROUP
-		 */
-		private String group = "DEFAULT_GROUP";
-		/**
-		 * whether to support dynamic refresh, the default does not support .
-		 */
-		private boolean refresh = false;
-
-		public String getDataId() {
-			return dataId;
-		}
-
-		public void setDataId(String dataId) {
-			this.dataId = dataId;
-		}
-
-		public String getGroup() {
-			return group;
-		}
-
-		public void setGroup(String group) {
-			this.group = group;
-		}
-
-		public boolean isRefresh() {
-			return refresh;
-		}
-
-		public void setRefresh(boolean refresh) {
-			this.refresh = refresh;
-		}
-	}
-
-	@Override
-	public String toString() {
-		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
-				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
-				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
-				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
-				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
-				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
-				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
-				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
-	}
-
 	/**
-	 * @see NacosConfigManager#getConfigService()
+	 * @see NacosConfigManager#getConfigService() .
+	 * @return ConfigService
 	 */
 	@Deprecated
 	public ConfigService configServiceInstance() {
@@ -440,6 +392,62 @@ public class NacosConfigProperties {
 			properties.put(ENDPOINT, endpoint);
 		}
 		return properties;
+	}
+
+	@Override
+	public String toString() {
+		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
+				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
+				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
+				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
+				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
+				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
+				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
+	}
+
+	public static class Config {
+
+		/**
+		 * the data id of extended configuration.
+		 */
+		private String dataId;
+
+		/**
+		 * the group of extended configuration, the default value is DEFAULT_GROUP.
+		 */
+		private String group = "DEFAULT_GROUP";
+
+		/**
+		 * whether to support dynamic refresh, the default does not support .
+		 */
+		private boolean refresh = false;
+
+		public String getDataId() {
+			return dataId;
+		}
+
+		public void setDataId(String dataId) {
+			this.dataId = dataId;
+		}
+
+		public String getGroup() {
+			return group;
+		}
+
+		public void setGroup(String group) {
+			this.group = group;
+		}
+
+		public boolean isRefresh() {
+			return refresh;
+		}
+
+		public void setRefresh(boolean refresh) {
+			this.refresh = refresh;
+		}
+
 	}
 
 }

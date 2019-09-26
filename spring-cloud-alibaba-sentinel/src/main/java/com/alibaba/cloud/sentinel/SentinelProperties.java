@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.Ordered;
-import org.springframework.validation.annotation.Validated;
-
 import com.alibaba.cloud.sentinel.datasource.config.DataSourcePropertiesConfiguration;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.Ordered;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * {@link ConfigurationProperties} for Sentinel.
@@ -89,9 +89,9 @@ public class SentinelProperties {
 	 */
 	private Log log = new Log();
 
-    /**
-     * Add HTTP method prefix for Sentinel Resource.
-     */
+	/**
+	 * Add HTTP method prefix for Sentinel Resource.
+	 */
 	private Boolean httpMethodSpecify = false;
 
 	public boolean isEager() {
@@ -166,15 +166,15 @@ public class SentinelProperties {
 		this.log = log;
 	}
 
-    public Boolean getHttpMethodSpecify() {
-        return httpMethodSpecify;
-    }
+	public Boolean getHttpMethodSpecify() {
+		return httpMethodSpecify;
+	}
 
-    public void setHttpMethodSpecify(Boolean httpMethodSpecify) {
-        this.httpMethodSpecify = httpMethodSpecify;
-    }
+	public void setHttpMethodSpecify(Boolean httpMethodSpecify) {
+		this.httpMethodSpecify = httpMethodSpecify;
+	}
 
-    public static class Flow {
+	public static class Flow {
 
 		/**
 		 * The cold factor {@link SentinelConfig#COLD_FACTOR}.
@@ -205,6 +205,7 @@ public class SentinelProperties {
 		public void setBlockPage(String blockPage) {
 			this.blockPage = blockPage;
 		}
+
 	}
 
 	public static class Metric {
@@ -248,6 +249,7 @@ public class SentinelProperties {
 		public void setCharset(String charset) {
 			this.charset = charset;
 		}
+
 	}
 
 	public static class Transport {
@@ -306,6 +308,7 @@ public class SentinelProperties {
 		public void setClientIp(String clientIp) {
 			this.clientIp = clientIp;
 		}
+
 	}
 
 	public static class Filter {
@@ -316,7 +319,7 @@ public class SentinelProperties {
 		private int order = Ordered.HIGHEST_PRECEDENCE;
 
 		/**
-		 * URL pattern for sentinel filter, default is /*
+		 * URL pattern for sentinel filter, default is /*.
 		 */
 		private List<String> urlPatterns;
 
@@ -349,6 +352,7 @@ public class SentinelProperties {
 		public void setEnabled(boolean enabled) {
 			this.enabled = enabled;
 		}
+
 	}
 
 	public static class Log {

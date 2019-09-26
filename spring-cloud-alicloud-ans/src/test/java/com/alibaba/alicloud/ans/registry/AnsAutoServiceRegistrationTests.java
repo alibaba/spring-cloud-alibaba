@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,18 +16,20 @@
 
 package com.alibaba.alicloud.ans.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.alicloud.ans.AnsAutoConfiguration;
+import com.alibaba.alicloud.ans.AnsDiscoveryClientAutoConfiguration;
+import com.alibaba.alicloud.ans.endpoint.AnsEndpoint;
+import com.alibaba.alicloud.context.ans.AnsProperties;
+import com.alibaba.ans.core.NamingService;
+import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -38,24 +40,21 @@ import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.alicloud.ans.AnsAutoConfiguration;
-import com.alibaba.alicloud.ans.AnsDiscoveryClientAutoConfiguration;
-import com.alibaba.alicloud.ans.endpoint.AnsEndpoint;
-import com.alibaba.alicloud.context.ans.AnsProperties;
-import com.alibaba.ans.core.NamingService;
-import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author xiaojing
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AnsAutoServiceRegistrationTests.TestConfig.class, properties = {
-		"spring.application.name=myTestService1",
-		"spring.cloud.alicloud.ans.server-list=127.0.0.1",
-		"spring.cloud.alicloud.ans.server-port=8080",
-		"spring.cloud.alicloud.ans.secure=true",
-		"spring.cloud.alicloud.ans.endpoint=test-endpoint" }, webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = AnsAutoServiceRegistrationTests.TestConfig.class,
+		properties = { "spring.application.name=myTestService1",
+				"spring.cloud.alicloud.ans.server-list=127.0.0.1",
+				"spring.cloud.alicloud.ans.server-port=8080",
+				"spring.cloud.alicloud.ans.secure=true",
+				"spring.cloud.alicloud.ans.endpoint=test-endpoint" },
+		webEnvironment = RANDOM_PORT)
 public class AnsAutoServiceRegistrationTests {
 
 	@Autowired
@@ -76,10 +75,9 @@ public class AnsAutoServiceRegistrationTests {
 	@Test
 	public void contextLoads() throws Exception {
 
-		assertNotNull("AnsRegistration was not created", registration);
-		assertNotNull("AnsProperties was not created", properties);
-		assertNotNull("AnsAutoServiceRegistration was not created",
-				ansAutoServiceRegistration);
+		assertThat(registration).isNotNull();
+		assertThat(properties).isNotNull();
+		assertThat(ansAutoServiceRegistration).isNotNull();
 
 		checkoutAnsDiscoveryServerList();
 		checkoutAnsDiscoveryServerPort();
@@ -96,45 +94,39 @@ public class AnsAutoServiceRegistrationTests {
 	}
 
 	private void checkAutoRegister() {
-		assertTrue("Ans Auto Registration was not start",
-				ansAutoServiceRegistration.isRunning());
+		assertThat(ansAutoServiceRegistration.isRunning()).isEqualTo(Boolean.TRUE);
 	}
 
 	private void checkoutAnsDiscoveryServerList() {
-		assertEquals("AnsDiscoveryProperties server list was wrong", "127.0.0.1",
-				properties.getServerList());
+		assertThat(properties.getServerList()).isEqualTo("127.0.0.1");
 	}
 
 	private void checkoutAnsDiscoveryServerPort() {
-		assertEquals("AnsDiscoveryProperties server port was wrong", "8080",
-				properties.getServerPort());
+		assertThat(properties.getServerPort()).isEqualTo("8080");
 	}
 
 	private void checkoutAnsDiscoveryServiceName() {
-		assertEquals("AnsDiscoveryProperties service name was wrong", "myTestService1",
-				properties.getClientDomains());
+		assertThat(properties.getClientDomains()).isEqualTo("myTestService1");
 	}
 
 	private void checkoutAnsDiscoveryServiceIP() {
-		assertEquals("AnsDiscoveryProperties service IP was wrong",
-				inetUtils.findFirstNonLoopbackHostInfo().getIpAddress(),
-				registration.getHost());
+		assertThat(registration.getHost())
+				.isEqualTo(inetUtils.findFirstNonLoopbackHostInfo().getIpAddress());
 	}
 
 	private void checkoutAnsDiscoveryServicePort() {
-		assertEquals("AnsDiscoveryProperties service Port was wrong", port,
-				registration.getPort());
+		assertThat(registration.getPort()).isEqualTo(port);
 	}
 
 	private void checkoutAnsDiscoverySecure() {
-		assertTrue("AnsDiscoveryProperties secure should be true", properties.isSecure());
+		assertThat(properties.isSecure()).isEqualTo(Boolean.TRUE);
 
 	}
 
 	private void checkoutEndpoint() throws Exception {
 		AnsEndpoint ansEndpoint = new AnsEndpoint(properties);
 		Map<String, Object> map = ansEndpoint.invoke();
-		assertEquals(map.get("ansProperties"), properties);
+		assertThat(properties).isEqualTo(map.get("ansProperties"));
 
 		Map<String, Object> subscribes = new HashMap<>();
 		Set<String> subscribeServices = NamingService.getDomsSubscribed();
@@ -148,7 +140,7 @@ public class AnsAutoServiceRegistrationTests {
 			}
 		}
 
-		assertEquals(map.get("subscribes"), subscribes);
+		assertThat(subscribes).isEqualTo(map.get("subscribes"));
 	}
 
 	@Configuration
@@ -156,5 +148,7 @@ public class AnsAutoServiceRegistrationTests {
 	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
 			AnsDiscoveryClientAutoConfiguration.class, AnsAutoConfiguration.class })
 	public static class TestConfig {
+
 	}
+
 }

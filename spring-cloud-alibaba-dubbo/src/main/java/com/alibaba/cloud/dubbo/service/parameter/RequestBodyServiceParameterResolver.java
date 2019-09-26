@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.service.parameter;
 
 import java.io.IOException;
@@ -21,26 +22,29 @@ import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-
 import com.alibaba.cloud.dubbo.http.HttpServerRequest;
 import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
 import com.alibaba.cloud.dubbo.http.util.HttpMessageConverterResolver;
 import com.alibaba.cloud.dubbo.metadata.MethodParameterMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+
 /**
- * HTTP Request Body {@link DubboGenericServiceParameterResolver}
+ * HTTP Request Body {@link DubboGenericServiceParameterResolver}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class RequestBodyServiceParameterResolver
 		extends AbstractDubboGenericServiceParameterResolver {
 
+	/**
+	 * Default order of RequestBodyServiceParameterResolver.
+	 */
 	public static final int DEFAULT_ORDER = 7;
 
 	@Autowired
@@ -123,4 +127,5 @@ public class RequestBodyServiceParameterResolver
 		Integer clientBodyIndex = clientRestMethodMetadata.getBodyIndex();
 		return arguments[clientBodyIndex];
 	}
+
 }

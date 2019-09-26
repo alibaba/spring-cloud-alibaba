@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.client.loadbalancer;
 
 import java.io.IOException;
 import java.net.URI;
+
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-
 /**
  * Dubbo Metadata {@link ClientHttpRequestInterceptor} Initializing Interceptor executes
- * intercept before {@link DubboTransporterInterceptor}
+ * intercept before {@link DubboTransporterInterceptor}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -53,4 +54,5 @@ public class DubboMetadataInitializerInterceptor implements ClientHttpRequestInt
 		// Execute next
 		return execution.execute(request, body);
 	}
+
 }

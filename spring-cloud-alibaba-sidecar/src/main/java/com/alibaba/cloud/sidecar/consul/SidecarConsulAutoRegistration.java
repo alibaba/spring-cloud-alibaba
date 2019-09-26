@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,11 @@
 
 package com.alibaba.cloud.sidecar.consul;
 
-import com.ecwid.consul.v1.agent.model.NewService;
+import java.util.List;
+
 import com.alibaba.cloud.sidecar.SidecarProperties;
+import com.ecwid.consul.v1.agent.model.NewService;
+
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
 import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import org.springframework.cloud.consul.discovery.HeartbeatProperties;
@@ -27,52 +30,58 @@ import org.springframework.cloud.consul.serviceregistry.ConsulRegistrationCustom
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
-import java.util.List;
-
 /**
  * @author www.itmuch.com
  */
 public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
-    public SidecarConsulAutoRegistration(NewService service, AutoServiceRegistrationProperties autoServiceRegistrationProperties, ConsulDiscoveryProperties properties, ApplicationContext context, HeartbeatProperties heartbeatProperties, List<ConsulManagementRegistrationCustomizer> managementRegistrationCustomizers) {
-        super(service, autoServiceRegistrationProperties, properties, context, heartbeatProperties, managementRegistrationCustomizers);
-    }
 
-    public static ConsulAutoRegistration registration(
-            AutoServiceRegistrationProperties autoServiceRegistrationProperties,
-            ConsulDiscoveryProperties properties, ApplicationContext context,
-            List<ConsulRegistrationCustomizer> registrationCustomizers,
-            List<ConsulManagementRegistrationCustomizer> managementRegistrationCustomizers,
-            HeartbeatProperties heartbeatProperties,
-            SidecarProperties sidecarProperties) {
+	public SidecarConsulAutoRegistration(NewService service,
+			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
+			ConsulDiscoveryProperties properties, ApplicationContext context,
+			HeartbeatProperties heartbeatProperties,
+			List<ConsulManagementRegistrationCustomizer> managementRegistrationCustomizers) {
+		super(service, autoServiceRegistrationProperties, properties, context,
+				heartbeatProperties, managementRegistrationCustomizers);
+	}
 
-        NewService service = new NewService();
-        String appName = getAppName(properties, context.getEnvironment());
-        service.setId(getInstanceId(sidecarProperties, context.getEnvironment()));
-        if (!properties.isPreferAgentAddress()) {
-            service.setAddress(sidecarProperties.getIp());
-        }
-        service.setName(normalizeForDns(appName));
-        service.setTags(createTags(properties));
+	public static ConsulAutoRegistration registration(
+			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
+			ConsulDiscoveryProperties properties, ApplicationContext context,
+			List<ConsulRegistrationCustomizer> registrationCustomizers,
+			List<ConsulManagementRegistrationCustomizer> managementRegistrationCustomizers,
+			HeartbeatProperties heartbeatProperties,
+			SidecarProperties sidecarProperties) {
 
-        // set health check, use alibaba sidecar self's port rather than polyglot app's port.
-        service.setPort(Integer.valueOf(context.getEnvironment().getProperty("server.port")));
-        setCheck(service, autoServiceRegistrationProperties, properties, context,
-                heartbeatProperties);
+		NewService service = new NewService();
+		String appName = getAppName(properties, context.getEnvironment());
+		service.setId(getInstanceId(sidecarProperties, context.getEnvironment()));
+		if (!properties.isPreferAgentAddress()) {
+			service.setAddress(sidecarProperties.getIp());
+		}
+		service.setName(normalizeForDns(appName));
+		service.setTags(createTags(properties));
 
-        service.setPort(sidecarProperties.getPort());
+		// set health check, use alibaba sidecar self's port rather than polyglot app's
+		// port.
+		service.setPort(
+				Integer.valueOf(context.getEnvironment().getProperty("server.port")));
+		setCheck(service, autoServiceRegistrationProperties, properties, context,
+				heartbeatProperties);
 
-        ConsulAutoRegistration registration = new ConsulAutoRegistration(service,
-                autoServiceRegistrationProperties, properties, context,
-                heartbeatProperties, managementRegistrationCustomizers);
-        customize(registrationCustomizers, registration);
-        return registration;
-    }
+		service.setPort(sidecarProperties.getPort());
 
-    public static String getInstanceId(SidecarProperties sidecarProperties,
-                                       Environment environment) {
-        return String.format("%s-%s-%s",
-                environment.getProperty("spring.application.name"),
-                sidecarProperties.getIp(),
-                sidecarProperties.getPort());
-    }
+		ConsulAutoRegistration registration = new ConsulAutoRegistration(service,
+				autoServiceRegistrationProperties, properties, context,
+				heartbeatProperties, managementRegistrationCustomizers);
+		customize(registrationCustomizers, registration);
+		return registration;
+	}
+
+	public static String getInstanceId(SidecarProperties sidecarProperties,
+			Environment environment) {
+		return String.format("%s-%s-%s",
+				environment.getProperty("spring.application.name"),
+				sidecarProperties.getIp(), sidecarProperties.getPort());
+	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.http.matcher;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 
 /**
- * {@link HttpRequest} 'Accept' header {@link HttpRequestMatcher matcher}
+ * {@link HttpRequest} 'Accept' header {@link HttpRequestMatcher matcher}.
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
@@ -40,7 +41,6 @@ public class HttpRequestProducesMatcher extends AbstractHttpRequestMatcher {
 	/**
 	 * Creates a new instance from "produces" expressions. If 0 expressions are provided
 	 * in total, this condition will match to any request.
-	 *
 	 * @param produces produces expressions
 	 */
 	public HttpRequestProducesMatcher(String... produces) {
@@ -52,7 +52,6 @@ public class HttpRequestProducesMatcher extends AbstractHttpRequestMatcher {
 	 * expressions where the header name is not 'Accept' or have no header value defined
 	 * are ignored. If 0 expressions are provided in total, this condition will match to
 	 * any request.
-	 *
 	 * @param produces produces expressions
 	 * @param headers headers expressions
 	 */
@@ -119,4 +118,5 @@ public class HttpRequestProducesMatcher extends AbstractHttpRequestMatcher {
 	protected String getToStringInfix() {
 		return " || ";
 	}
+
 }

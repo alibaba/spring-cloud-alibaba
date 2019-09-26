@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.alicloud.sms.base;
 
 import java.text.ParseException;
@@ -25,32 +26,40 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aliyun.mns.client.CloudQueue;
 import com.aliyun.mns.common.ClientException;
 import com.aliyun.mns.common.ServiceException;
 import com.aliyun.mns.model.Message;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 阿里通信官方消息默认拉取工具类
+ * 阿里通信官方消息默认拉取工具类.
  */
 public class DefaultAlicomMessagePuller {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(DefaultAlicomMessagePuller.class);
 
-	private String mnsAccountEndpoint = "https://1943695596114318.mns.cn-hangzhou.aliyuncs.com/";// 阿里通信消息的endpoint,固定。
+	private String mnsAccountEndpoint = "https://1943695596114318.mns.cn-hangzhou.aliyuncs.com/"; // 阿里通信消息的endpoint,固定。
+
 	private String endpointNameForPop = "cn-hangzhou";
+
 	private String regionIdForPop = "cn-hangzhou";
+
 	private String domainForPop = "dybaseapi.aliyuncs.com";
+
 	private TokenGetterForAlicom tokenGetter;
+
 	private MessageListener messageListener;
+
 	private boolean isRunning = false;
+
 	private Integer pullMsgThreadSize = 1;
+
 	private boolean debugLogOpen = false;
+
 	private Integer sleepSecondWhenNoData = 30;
 
 	public void openDebugLog(boolean debugLogOpen) {
@@ -86,7 +95,9 @@ public class DefaultAlicomMessagePuller {
 	}
 
 	protected static final Map<String, Object> S_LOCK_OBJ_MAP = new HashMap<>();
+
 	protected static Map<String, Boolean> sPollingMap = new ConcurrentHashMap<>();
+
 	protected Object lockObj;
 
 	public boolean setPolling(String queueName) {
@@ -118,8 +129,155 @@ public class DefaultAlicomMessagePuller {
 		isRunning = running;
 	}
 
+	/**
+	 * @param accessKeyId accessKeyId
+	 * @param accessKeySecret accessKeySecret
+	 * @param messageType 消息类型
+	 * @param queueName 队列名称
+	 * @param messageListener 回调的listener,用户自己实现
+	 * @throws com.aliyuncs.exceptions.ClientException throw by sdk
+	 * @throws ParseException throw parse exception
+	 */
+	public void startReceiveMsg(String accessKeyId, String accessKeySecret,
+			String messageType, String queueName, MessageListener messageListener)
+			throws com.aliyuncs.exceptions.ClientException, ParseException {
+
+		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
+				endpointNameForPop, regionIdForPop, domainForPop, null);
+
+		this.messageListener = messageListener;
+		isRunning = true;
+		PullMessageTask task = new PullMessageTask();
+		task.messageType = messageType;
+		task.queueName = queueName;
+
+		synchronized (S_LOCK_OBJ_MAP) {
+			lockObj = S_LOCK_OBJ_MAP.get(queueName);
+			if (lockObj == null) {
+				lockObj = new Object();
+				S_LOCK_OBJ_MAP.put(queueName, lockObj);
+			}
+		}
+
+		if (executorService == null) {
+			ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(
+					pullMsgThreadSize,
+					new BasicThreadFactory.Builder()
+							.namingPattern(
+									"PullMessageTask-" + messageType + "-thread-pool-%d")
+							.daemon(true).build());
+			executorService = scheduledExecutorService;
+		}
+		for (int i = 0; i < pullMsgThreadSize; i++) {
+			executorService.execute(task);
+		}
+	}
+
+	/**
+	 * @param accessKeyId accessKeyId
+	 * @param accessKeySecret accessKeySecret
+	 * @param messageType 消息类型
+	 * @param queueName 队列名称
+	 * @param regionIdForPop region
+	 * @param endpointNameForPop endpoint name
+	 * @param domainForPop domain
+	 * @param mnsAccountEndpoint mns account endpoint
+	 * @param messageListener 回调的listener,用户自己实现
+	 * @throws com.aliyuncs.exceptions.ClientException throw by sdk
+	 * @throws ParseException throw parse exception
+	 */
+	public void startReceiveMsgForVPC(String accessKeyId, String accessKeySecret,
+			String messageType, String queueName, String regionIdForPop,
+			String endpointNameForPop, String domainForPop, String mnsAccountEndpoint,
+			MessageListener messageListener)
+			throws com.aliyuncs.exceptions.ClientException, ParseException {
+		this.mnsAccountEndpoint = mnsAccountEndpoint;
+		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
+				endpointNameForPop, regionIdForPop, domainForPop, null);
+
+		this.messageListener = messageListener;
+		isRunning = true;
+		PullMessageTask task = new PullMessageTask();
+		task.messageType = messageType;
+		task.queueName = queueName;
+
+		synchronized (S_LOCK_OBJ_MAP) {
+			lockObj = S_LOCK_OBJ_MAP.get(queueName);
+			if (lockObj == null) {
+				lockObj = new Object();
+				S_LOCK_OBJ_MAP.put(queueName, lockObj);
+			}
+		}
+
+		if (executorService == null) {
+			ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(
+					pullMsgThreadSize,
+					new BasicThreadFactory.Builder()
+							.namingPattern(
+									"PullMessageTask-" + messageType + "-thread-pool-%d")
+							.daemon(true).build());
+			executorService = scheduledExecutorService;
+		}
+		for (int i = 0; i < pullMsgThreadSize; i++) {
+			executorService.execute(task);
+		}
+	}
+
+	/**
+	 * 虚商用户定制接收消息方法.
+	 * @param accessKeyId accessKeyId
+	 * @param accessKeySecret accessKeySecret
+	 * @param ownerId 实际的ownerId
+	 * @param messageType 消息类型
+	 * @param queueName 队列名称
+	 * @param messageListener 回调listener
+	 * @throws com.aliyuncs.exceptions.ClientException throw by sdk
+	 * @throws ParseException throw parse exception
+	 */
+	public void startReceiveMsgForPartnerUser(String accessKeyId, String accessKeySecret,
+			Long ownerId, String messageType, String queueName,
+			MessageListener messageListener)
+			throws com.aliyuncs.exceptions.ClientException, ParseException {
+
+		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
+				endpointNameForPop, regionIdForPop, domainForPop, ownerId);
+
+		this.messageListener = messageListener;
+		isRunning = true;
+		PullMessageTask task = new PullMessageTask();
+		task.messageType = messageType;
+		task.queueName = queueName;
+
+		synchronized (S_LOCK_OBJ_MAP) {
+			lockObj = S_LOCK_OBJ_MAP.get(queueName);
+			if (lockObj == null) {
+				lockObj = new Object();
+				S_LOCK_OBJ_MAP.put(queueName, lockObj);
+			}
+		}
+
+		if (executorService == null) {
+			ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(
+					pullMsgThreadSize,
+					new BasicThreadFactory.Builder()
+							.namingPattern(
+									"PullMessageTask-" + messageType + "-thread-pool-%d")
+							.daemon(true).build());
+			executorService = scheduledExecutorService;
+		}
+		for (int i = 0; i < pullMsgThreadSize; i++) {
+			executorService.execute(task);
+		}
+	}
+
+	public void stop() {
+		isRunning = false;
+	}
+
 	private class PullMessageTask implements Runnable {
+
 		private String messageType;
+
 		private String queueName;
 
 		@Override
@@ -285,147 +443,6 @@ public class DefaultAlicomMessagePuller {
 
 		}
 
-	}
-
-	/**
-	 * @param accessKeyId accessKeyId
-	 * @param accessKeySecret accessKeySecret
-	 * @param messageType 消息类型
-	 * @param queueName 队列名称
-	 * @param messageListener 回调的listener,用户自己实现
-	 * @throws com.aliyuncs.exceptions.ClientException
-	 * @throws ParseException
-	 */
-	public void startReceiveMsg(String accessKeyId, String accessKeySecret,
-			String messageType, String queueName, MessageListener messageListener)
-			throws com.aliyuncs.exceptions.ClientException, ParseException {
-
-		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
-				endpointNameForPop, regionIdForPop, domainForPop, null);
-
-		this.messageListener = messageListener;
-		isRunning = true;
-		PullMessageTask task = new PullMessageTask();
-		task.messageType = messageType;
-		task.queueName = queueName;
-
-		synchronized (S_LOCK_OBJ_MAP) {
-			lockObj = S_LOCK_OBJ_MAP.get(queueName);
-			if (lockObj == null) {
-				lockObj = new Object();
-				S_LOCK_OBJ_MAP.put(queueName, lockObj);
-			}
-		}
-
-		if (executorService == null) {
-			ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(
-					pullMsgThreadSize,
-					new BasicThreadFactory.Builder()
-							.namingPattern(
-									"PullMessageTask-" + messageType + "-thread-pool-%d")
-							.daemon(true).build());
-			executorService = scheduledExecutorService;
-		}
-		for (int i = 0; i < pullMsgThreadSize; i++) {
-			executorService.execute(task);
-		}
-	}
-
-	/**
-	 * @param accessKeyId accessKeyId
-	 * @param accessKeySecret accessKeySecret
-	 * @param messageType 消息类型
-	 * @param queueName 队列名称
-	 * @param messageListener 回调的listener,用户自己实现
-	 * @throws com.aliyuncs.exceptions.ClientException
-	 * @throws ParseException
-	 */
-	public void startReceiveMsgForVPC(String accessKeyId, String accessKeySecret,
-			String messageType, String queueName, String regionIdForPop,
-			String endpointNameForPop, String domainForPop, String mnsAccountEndpoint,
-			MessageListener messageListener)
-			throws com.aliyuncs.exceptions.ClientException, ParseException {
-		this.mnsAccountEndpoint = mnsAccountEndpoint;
-		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
-				endpointNameForPop, regionIdForPop, domainForPop, null);
-
-		this.messageListener = messageListener;
-		isRunning = true;
-		PullMessageTask task = new PullMessageTask();
-		task.messageType = messageType;
-		task.queueName = queueName;
-
-		synchronized (S_LOCK_OBJ_MAP) {
-			lockObj = S_LOCK_OBJ_MAP.get(queueName);
-			if (lockObj == null) {
-				lockObj = new Object();
-				S_LOCK_OBJ_MAP.put(queueName, lockObj);
-			}
-		}
-
-		if (executorService == null) {
-			ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(
-					pullMsgThreadSize,
-					new BasicThreadFactory.Builder()
-							.namingPattern(
-									"PullMessageTask-" + messageType + "-thread-pool-%d")
-							.daemon(true).build());
-			executorService = scheduledExecutorService;
-		}
-		for (int i = 0; i < pullMsgThreadSize; i++) {
-			executorService.execute(task);
-		}
-	}
-
-	/**
-	 * 虚商用户定制接收消息方法
-	 * @param accessKeyId accessKeyId
-	 * @param accessKeySecret accessKeySecret
-	 * @param ownerId 实际的ownerId
-	 * @param messageType 消息类型
-	 * @param queueName 队列名称
-	 * @param messageListener 回调listener
-	 * @throws com.aliyuncs.exceptions.ClientException
-	 * @throws ParseException
-	 */
-	public void startReceiveMsgForPartnerUser(String accessKeyId, String accessKeySecret,
-			Long ownerId, String messageType, String queueName,
-			MessageListener messageListener)
-			throws com.aliyuncs.exceptions.ClientException, ParseException {
-
-		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
-				endpointNameForPop, regionIdForPop, domainForPop, ownerId);
-
-		this.messageListener = messageListener;
-		isRunning = true;
-		PullMessageTask task = new PullMessageTask();
-		task.messageType = messageType;
-		task.queueName = queueName;
-
-		synchronized (S_LOCK_OBJ_MAP) {
-			lockObj = S_LOCK_OBJ_MAP.get(queueName);
-			if (lockObj == null) {
-				lockObj = new Object();
-				S_LOCK_OBJ_MAP.put(queueName, lockObj);
-			}
-		}
-
-		if (executorService == null) {
-			ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(
-					pullMsgThreadSize,
-					new BasicThreadFactory.Builder()
-							.namingPattern(
-									"PullMessageTask-" + messageType + "-thread-pool-%d")
-							.daemon(true).build());
-			executorService = scheduledExecutorService;
-		}
-		for (int i = 0; i < pullMsgThreadSize; i++) {
-			executorService.execute(task);
-		}
-	}
-
-	public void stop() {
-		isRunning = false;
 	}
 
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,23 +22,30 @@ import static org.apache.rocketmq.spring.support.RocketMQHeaders.PREFIX;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @author <a href="mailto:jiashuai.xie01@gmail.com">Xiejiashuai</a>
  */
-public interface RocketMQBinderConstants {
+public final class RocketMQBinderConstants {
 
 	/**
-	 * Header key
+	 * Header key for RocketMQ Transactional Args.
 	 */
-	String ROCKET_TRANSACTIONAL_ARG = "TRANSACTIONAL_ARG";
+	public static final String ROCKET_TRANSACTIONAL_ARG = "TRANSACTIONAL_ARG";
 
 	/**
-	 * Default value
+	 * Default NameServer value.
 	 */
-	String DEFAULT_NAME_SERVER = "127.0.0.1:9876";
-
-	String DEFAULT_GROUP = PREFIX + "binder_default_group_name";
+	public static final String DEFAULT_NAME_SERVER = "127.0.0.1:9876";
 
 	/**
-	 * RocketMQ re-consume times
+	 * Default group for SCS RocketMQ Binder.
 	 */
-	String ROCKETMQ_RECONSUME_TIMES = PREFIX + "RECONSUME_TIMES";
+	public static final String DEFAULT_GROUP = PREFIX + "binder_default_group_name";
+
+	/**
+	 * RocketMQ re-consume times.
+	 */
+	public static final String ROCKETMQ_RECONSUME_TIMES = PREFIX + "RECONSUME_TIMES";
+
+	private RocketMQBinderConstants() {
+		throw new AssertionError("Must not instantiate constant utility class");
+	}
 
 }

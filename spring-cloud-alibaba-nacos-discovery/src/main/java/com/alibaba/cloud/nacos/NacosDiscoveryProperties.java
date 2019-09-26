@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,15 +15,6 @@
  */
 
 package com.alibaba.cloud.nacos;
-
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMING_LOAD_CACHE_AT_START;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -37,8 +28,15 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.naming.NamingMaintainFactory;
+import com.alibaba.nacos.api.naming.NamingMaintainService;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
+import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -46,12 +44,14 @@ import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.naming.NamingMaintainFactory;
-import com.alibaba.nacos.api.naming.NamingMaintainService;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
-import com.alibaba.nacos.client.naming.utils.UtilAndComs;
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMING_LOAD_CACHE_AT_START;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
  * @author dungu.zpf
@@ -109,7 +109,7 @@ public class NacosDiscoveryProperties {
 	private String clusterName = "DEFAULT";
 
 	/**
-	 * group name for nacos
+	 * group name for nacos.
 	 */
 	private String group = "DEFAULT_GROUP";
 

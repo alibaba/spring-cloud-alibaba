@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,26 +16,24 @@
 
 package com.alibaba.cloud.sentinel.datasource;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ResourceUtils;
 
 import com.alibaba.cloud.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ResourceUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -46,24 +44,18 @@ public class FileRefreshableDataSourceFactoryBeanTests {
 	public void testFile() throws Exception {
 		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(
 				TestConfig.class);
-		assertNotNull("FileRefreshableDataSourceFactoryBean was not created",
-				annotationConfigApplicationContext.getBean("fileBean"));
+		assertThat(annotationConfigApplicationContext.getBean("fileBean")).isNotNull();
 		FileRefreshableDataSource fileRefreshableDataSource = annotationConfigApplicationContext
 				.getBean("fileBean", FileRefreshableDataSource.class);
-		assertEquals("FileRefreshableDataSourceFactoryBean flow rule size was wrong", 1,
-				((List<FlowRule>) fileRefreshableDataSource.loadConfig()).size());
+		assertThat(((List<FlowRule>) fileRefreshableDataSource.loadConfig()).size())
+				.isEqualTo(1);
 		FileRefreshableDataSourceFactoryBean factoryBean = annotationConfigApplicationContext
 				.getBean("&fileBean", FileRefreshableDataSourceFactoryBean.class);
-		assertEquals("FileRefreshableDataSourceFactoryBean buf size was wrong", 1024,
-				factoryBean.getBufSize());
-		assertEquals("FileRefreshableDataSourceFactoryBean charset was wrong", "utf-8",
-				factoryBean.getCharset());
-		assertEquals("FileRefreshableDataSourceFactoryBean recommendRefreshMs was wrong",
-				2000, factoryBean.getRecommendRefreshMs());
-		assertNotNull("FileRefreshableDataSourceFactoryBean file was null",
-				factoryBean.getFile());
-		assertNotNull("FileRefreshableDataSourceFactoryBean converter was null",
-				factoryBean.getConverter());
+		assertThat(factoryBean.getBufSize()).isEqualTo(1024);
+		assertThat(factoryBean.getCharset()).isEqualTo("utf-8");
+		assertThat(factoryBean.getRecommendRefreshMs()).isEqualTo(2000);
+		assertThat(factoryBean.getFile()).isNotNull();
+		assertThat(factoryBean.getConverter()).isNotNull();
 	}
 
 	@Configuration

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,9 @@
 
 package com.alibaba.cloud.sidecar;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.net.URI;
+import java.util.Map;
+
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.core.ParameterizedTypeReference;
@@ -25,52 +26,56 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.Map;
-
 /**
  * @author www.itmuch.com
  */
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SidecarHealthIndicator extends AbstractHealthIndicator {
-    private final SidecarProperties sidecarProperties;
-    private final RestTemplate restTemplate;
 
-    @Override
-    protected void doHealthCheck(Health.Builder builder) throws Exception {
-        try {
-            URI uri = this.sidecarProperties.getHealthCheckUrl();
-            if (uri == null) {
-                builder.up();
-                return;
-            }
+	private final SidecarProperties sidecarProperties;
 
-            ResponseEntity<Map<String, Object>> exchange = this.restTemplate.exchange(
-                    uri,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<Map<String, Object>>() {
-                    }
-            );
+	private final RestTemplate restTemplate;
 
-            Map<String, Object> map = exchange.getBody();
+	public SidecarHealthIndicator(SidecarProperties sidecarProperties,
+			RestTemplate restTemplate) {
+		this.sidecarProperties = sidecarProperties;
+		this.restTemplate = restTemplate;
+	}
 
-            if (map == null) {
-                this.getWarning(builder);
-                return;
-            }
-            Object status = map.get("status");
-            if (status instanceof String) {
-                builder.status(status.toString());
-            } else {
-                this.getWarning(builder);
-            }
-        } catch (Exception e) {
-            builder.down().withDetail("error", e.getMessage());
-        }
-    }
+	@Override
+	protected void doHealthCheck(Health.Builder builder) throws Exception {
+		try {
+			URI uri = this.sidecarProperties.getHealthCheckUrl();
+			if (uri == null) {
+				builder.up();
+				return;
+			}
 
-    private void getWarning(Health.Builder builder) {
-        builder.unknown().withDetail("warning", "no status field in response");
-    }
+			ResponseEntity<Map<String, Object>> exchange = this.restTemplate.exchange(uri,
+					HttpMethod.GET, null,
+					new ParameterizedTypeReference<Map<String, Object>>() {
+					});
+
+			Map<String, Object> map = exchange.getBody();
+
+			if (map == null) {
+				this.getWarning(builder);
+				return;
+			}
+			Object status = map.get("status");
+			if (status instanceof String) {
+				builder.status(status.toString());
+			}
+			else {
+				this.getWarning(builder);
+			}
+		}
+		catch (Exception e) {
+			builder.down().withDetail("error", e.getMessage());
+		}
+	}
+
+	private void getWarning(Health.Builder builder) {
+		builder.unknown().withDetail("warning", "no status field in response");
+	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,25 @@
 
 package com.alibaba.cloud.sentinel.gateway.scg;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
+import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
+import com.alibaba.csp.sentinel.adapter.gateway.sc.SentinelGatewayFilter;
+import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
+import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
+import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.RedirectBlockRequestHandler;
+import com.alibaba.csp.sentinel.adapter.gateway.sc.exception.SentinelGatewayBlockExceptionHandler;
+import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Mono;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -43,24 +52,15 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
-import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
-import com.alibaba.csp.sentinel.adapter.gateway.sc.SentinelGatewayFilter;
-import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
-import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
-import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.RedirectBlockRequestHandler;
-import com.alibaba.csp.sentinel.adapter.gateway.sc.exception.SentinelGatewayBlockExceptionHandler;
-import com.alibaba.csp.sentinel.config.SentinelConfig;
-import com.alibaba.csp.sentinel.util.StringUtil;
-
-import reactor.core.publisher.Mono;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @Configuration
 @ConditionalOnClass(GlobalFilter.class)
-@ConditionalOnProperty(prefix = ConfigConstants.GATEWAY_PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = ConfigConstants.GATEWAY_PREFIX, name = "enabled",
+		havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelGatewayProperties.class)
 public class SentinelSCGAutoConfiguration {
 
@@ -68,6 +68,7 @@ public class SentinelSCGAutoConfiguration {
 			.getLogger(SentinelSCGAutoConfiguration.class);
 
 	private final List<ViewResolver> viewResolvers;
+
 	private final ServerCodecConfigurer serverCodecConfigurer;
 
 	@Autowired
