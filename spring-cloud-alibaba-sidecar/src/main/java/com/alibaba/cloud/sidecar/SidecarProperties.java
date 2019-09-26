@@ -51,6 +51,11 @@ public class SidecarProperties {
 	 */
 	private URI healthCheckUrl;
 
+	/**
+	 * interval of health check.
+	 */
+	private long healthCheckInterval =30000L;
+
 	public String getIp() {
 		return ip;
 	}
@@ -73,6 +78,14 @@ public class SidecarProperties {
 
 	public void setHealthCheckUrl(URI healthCheckUrl) {
 		this.healthCheckUrl = healthCheckUrl;
+	}
+
+	public long getHealthCheckInterval() {
+		return healthCheckInterval;
+	}
+
+	public void setHealthCheckInterval(long healthCheckInterval) {
+		this.healthCheckInterval = healthCheckInterval;
 	}
 
 }
