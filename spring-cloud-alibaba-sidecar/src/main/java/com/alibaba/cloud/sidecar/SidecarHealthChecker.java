@@ -71,7 +71,7 @@ public class SidecarHealthChecker {
 				this.sidecarDiscoveryClient.deregisterInstance(applicationName, ip, port);
 			}
 
-		}, 0, 30, TimeUnit.SECONDS);
+		}, 0, sidecarProperties.getHealthCheckInterval(), TimeUnit.MILLISECONDS);
 	}
 
 }
