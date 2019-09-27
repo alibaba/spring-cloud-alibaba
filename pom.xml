@@ -44,8 +44,10 @@
             <email>flystar32@163.com</email>
         </developer>
         <developer>
-            <name>fangjian</name>
+            <name>Jim Fang</name>
             <email>fangjian0423@gmail.com</email>
+            <organization>Alibaba</organization>
+            <url>https://github.com/fangjian0423</url>
         </developer>
         <developer>
             <name>xiaolongzuo</name>
@@ -80,6 +82,12 @@
         <javax-servlet-api>3.0</javax-servlet-api>
         <slf4j-api.version>1.7.25</slf4j-api.version>
 
+        <!-- Apache Dubbo -->
+        <dubbo-spring-boot.version>2.7.1</dubbo-spring-boot.version>
+        <dubbo.version>2.7.3</dubbo.version>
+
+        <!-- Apache RocketMQ -->
+        <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -177,11 +185,72 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo-spring-boot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.starter.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <useProjectReferences>false</useProjectReferences>
+                    <additionalConfig>
+                        <file>
+                            <name>.settings/org.eclipse.jdt.ui.prefs</name>
+                            <location>
+                                ${maven.multiModuleProjectDirectory}/eclipse/org.eclipse.jdt.ui.prefs
+                            </location>
+                        </file>
+                        <file>
+                            <name>.settings/org.eclipse.jdt.core.prefs</name>
+                            <location>
+                                ${maven.multiModuleProjectDirectory}/eclipse/org.eclipse.jdt.core.prefs
+                            </location>
+                        </file>
+                    </additionalConfig>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.spring.javaformat</groupId>
+                <artifactId>spring-javaformat-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
