@@ -46,6 +46,7 @@ public class NacosConfigManager implements ApplicationContextAware {
 	public ConfigService getConfigService() {
 		if (Objects.isNull(service)) {
 			try {
+				// Using cache object creation factory
 				service = SERVICE_FACTORY
 						.createConfigService(properties.getConfigServiceProperties());
 				properties.initConfigService(service);

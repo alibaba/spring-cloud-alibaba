@@ -35,7 +35,6 @@ public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
 		builder.up();
-
 		String status = configService.getServerStatus();
 		builder.status(status);
 	}
