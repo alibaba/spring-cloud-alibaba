@@ -289,9 +289,7 @@ public class DubboServiceMetadataRepository
 							serviceName);
 				}
 
-				// Keep the order in following invocations
 				initSubscribedDubboMetadataService(serviceName);
-				initDubboRestServiceMetadataRepository(serviceName);
 				// mark this service name having been initialized
 				initializedServices.add(serviceName);
 			}
@@ -392,9 +390,11 @@ public class DubboServiceMetadataRepository
 			return emptyList();
 		}
 
-		return hasText(protocol) ? urls.stream()
-				.filter(url -> url.getProtocol().equalsIgnoreCase(protocol))
-				.collect(Collectors.toList()) : unmodifiableList(urls);
+		return hasText(protocol)
+				? urls.stream()
+						.filter(url -> url.getProtocol().equalsIgnoreCase(protocol))
+						.collect(Collectors.toList())
+				: unmodifiableList(urls);
 	}
 
 	/**
@@ -630,6 +630,7 @@ public class DubboServiceMetadataRepository
 						}
 					});
 				});
+		initDubboRestServiceMetadataRepository(serviceName);
 	}
 
 	private void initSubscribedDubboMetadataServiceURL(URL dubboMetadataServiceURL) {
