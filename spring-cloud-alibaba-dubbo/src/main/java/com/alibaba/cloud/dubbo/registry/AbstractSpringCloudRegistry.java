@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
@@ -90,12 +91,15 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
 	private final JSONUtils jsonUtils;
 
+	private final DubboGenericServiceFactory dubboGenericServiceFactory;
+
 	private final ConfigurableApplicationContext applicationContext;
 
 	public AbstractSpringCloudRegistry(URL url, DiscoveryClient discoveryClient,
 			DubboServiceMetadataRepository dubboServiceMetadataRepository,
 			DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
-			JSONUtils jsonUtils, ConfigurableApplicationContext applicationContext) {
+			JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
+			ConfigurableApplicationContext applicationContext) {
 		super(url);
 		this.servicesLookupInterval = url
 				.getParameter(SERVICES_LOOKUP_INTERVAL_PARAM_NAME, 60L);
@@ -103,6 +107,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		this.repository = dubboServiceMetadataRepository;
 		this.dubboMetadataConfigServiceProxy = dubboMetadataConfigServiceProxy;
 		this.jsonUtils = jsonUtils;
+		this.dubboGenericServiceFactory = dubboGenericServiceFactory;
 		this.applicationContext = applicationContext;
 	}
 
@@ -220,7 +225,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		if (CollectionUtils.isEmpty(serviceInstances)) {
 			dubboMetadataConfigServiceProxy.removeProxy(serviceName);
 			repository.removeInitializedService(serviceName);
-			repository.removeServiceMetadata(serviceName);
+			repository.removeMetadata(serviceName);
+			dubboGenericServiceFactory.destroy(serviceName);
 			if (logger.isWarnEnabled()) {
 				logger.warn(
 						"There is no instance from service[name : {}], and then Dubbo Service[key : {}] will not be "
