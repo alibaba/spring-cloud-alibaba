@@ -645,8 +645,9 @@ public class DubboServiceMetadataRepository
 		dubboMetadataConfigServiceProxy.initProxy(serviceName, version);
 	}
 
-	public void removeServiceMetadata(String serviceName) {
+	public void removeMetadata(String serviceName) {
 		dubboRestServiceMetadataRepository.remove(serviceName);
+		subscribedDubboMetadataServiceURLs.remove(serviceName);
 	}
 
 	@Override
