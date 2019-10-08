@@ -94,7 +94,7 @@ public class NacosConfigEndpointTests {
 	public void contextLoads() throws Exception {
 
 		checkoutEndpoint();
-		checkoutAcmHealthIndicator();
+		//checkoutAcmHealthIndicator();
 
 	}
 
