@@ -42,9 +42,11 @@ For more Nacos Server versions, you can download the latest version from https:/
 The following sample illustrates how to register a service to Nacos.
 
 * Configuration of pom.xml The following is a complete example of pom.xml:
+
+.pom.xml
 [source, xml]
 ----
-<?xml version="1.0" encoding="UTF-8"? >
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -115,7 +117,8 @@ The following sample illustrates how to register a service to Nacos.
 ----
 
 * Configuration of application.properties Some of the basic configurations of Nacos must be included in application.properties(or application.yaml), as shown below：
-application.properties
+
+.application.properties
 [source,properties]
 ----
 server.port=8081
@@ -128,6 +131,7 @@ management.endpoints.web.exposure.include=*
 NOTE: If you do not want to use Nacos for service registration and discovery, you can set `spring.cloud.nacos.discovery` to `false`.
 
 * The following is a sample for starting Provider:
+
 [source,java,indent=0]
 ----
 @SpringBootApplication
