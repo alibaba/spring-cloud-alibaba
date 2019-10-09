@@ -30,7 +30,7 @@ import org.springframework.util.StringUtils;
  */
 public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
-	private String serverAddr;
+	private String serverAddr = "localhost:8848";
 
 	@NotEmpty
 	private String groupId = "DEFAULT_GROUP";

@@ -69,7 +69,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * nacos discovery server address.
 	 */
-	private String serverAddr;
+	private String serverAddr = "localhost:8484";
 
 	/**
 	 * the domain name of a service, through which the server address can be dynamically

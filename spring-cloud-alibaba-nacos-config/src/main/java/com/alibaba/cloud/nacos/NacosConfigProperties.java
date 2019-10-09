@@ -87,7 +87,7 @@ public class NacosConfigProperties {
 	/**
 	 * nacos config server address.
 	 */
-	private String serverAddr;
+	private String serverAddr = "localhost:8848";
 
 	/**
 	 * encode for nacos config content.
