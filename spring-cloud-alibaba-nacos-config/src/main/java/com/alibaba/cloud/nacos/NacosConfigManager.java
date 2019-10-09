@@ -42,7 +42,7 @@ public class NacosConfigManager {
 		if (Objects.isNull(service)) {
 			try {
 				service = NacosFactory
-						.createConfigService(properties.getConfigServiceProperties());
+						.createConfigService(properties.assembleConfigServiceProperties());
 				properties.initConfigService(service);
 			}
 			catch (NacosException e) {

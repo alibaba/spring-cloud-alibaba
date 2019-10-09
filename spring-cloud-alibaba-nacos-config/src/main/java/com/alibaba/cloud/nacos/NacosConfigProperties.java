@@ -19,6 +19,8 @@ package com.alibaba.cloud.nacos;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
@@ -70,6 +72,8 @@ public class NacosConfigProperties {
 	@PostConstruct
 	public void init() {
 		this.overrideFromEnv();
+		// Compatible with the old configuration
+		this.compatibilityProcessing();
 	}
 
 	private void overrideFromEnv() {
@@ -82,6 +86,24 @@ public class NacosConfigProperties {
 			}
 			this.setServerAddr(serverAddr);
 		}
+	}
+
+	/**
+	 * Compatible with the old configuration
+	 */
+	private void compatibilityProcessing() {
+		if (null == this.getSharedConfigs() || this.getSharedConfigs().isEmpty()) {
+			if (!StringUtils.isEmpty(this.getSharedDataids())) {
+				this.setSharedConfigs(Stream.of(this.getSharedDataids().split(","))
+						.map(Config::new).collect(Collectors.toList()));
+			}
+		}
+		if (this.getExtConfigs() == null || this.getExtConfigs().isEmpty()) {
+			if (this.getExtConfig() != null && !this.getExtConfig().isEmpty()) {
+				this.setExtConfigs(this.getExtConfig());
+			}
+		}
+
 	}
 
 	/**
@@ -176,9 +198,15 @@ public class NacosConfigProperties {
 
 	/**
 	 * the dataids for configurable multiple shared configurations , multiple separated by
-	 * commas .
+	 * commas . recommend to use {@link NacosConfigProperties#sharedConfigs} .
 	 */
+	@Deprecated
 	private String sharedDataids;
+
+	/**
+	 * a set of shared configurations . eg: spring.cloud.nacos.config.shared-configs[0] .
+	 */
+	private List<Config> sharedConfigs;
 
 	/**
 	 * refreshable dataids , multiple separated by commas .
@@ -186,9 +214,16 @@ public class NacosConfigProperties {
 	private String refreshableDataids;
 
 	/**
-	 * a set of extended configurations .
+	 * a set of extended configurations . recommend to use
+	 * {@link NacosConfigProperties#extConfigs} .
 	 */
+	@Deprecated
 	private List<Config> extConfig;
+
+	/**
+	 * a set of extensional configurations .
+	 */
+	private List<Config> extConfigs;
 
 	private ConfigService configService;
 
@@ -334,6 +369,14 @@ public class NacosConfigProperties {
 		this.sharedDataids = sharedDataids;
 	}
 
+	public List<Config> getSharedConfigs() {
+		return sharedConfigs;
+	}
+
+	public void setSharedConfigs(List<Config> sharedConfigs) {
+		this.sharedConfigs = sharedConfigs;
+	}
+
 	public String getRefreshableDataids() {
 		return refreshableDataids;
 	}
@@ -348,6 +391,14 @@ public class NacosConfigProperties {
 
 	public void setExtConfig(List<Config> extConfig) {
 		this.extConfig = extConfig;
+	}
+
+	public List<Config> getExtConfigs() {
+		return extConfigs;
+	}
+
+	public void setExtConfigs(List<Config> extConfigs) {
+		this.extConfigs = extConfigs;
 	}
 
 	public void setName(String name) {
@@ -367,7 +418,10 @@ public class NacosConfigProperties {
 		this.configService = configService;
 	}
 
-	public Properties getConfigServiceProperties() {
+	/**
+	 * Remove the interference of auto prompts when writing,because autocue is based on get method.
+	 */
+	Properties assembleConfigServiceProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
@@ -396,15 +450,19 @@ public class NacosConfigProperties {
 
 	@Override
 	public String toString() {
-		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
-				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
-				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
-				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
-				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
-				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
-				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
-				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
+		return "NacosConfigProperties{" + "environment=" + environment + ", serverAddr='"
+				+ serverAddr + '\'' + ", encode='" + encode + '\'' + ", group='" + group
+				+ '\'' + ", prefix='" + prefix + '\'' + ", fileExtension='"
+				+ fileExtension + '\'' + ", timeout=" + timeout + ", maxRetry='"
+				+ maxRetry + '\'' + ", configLongPollTimeout='" + configLongPollTimeout
+				+ '\'' + ", configRetryTime='" + configRetryTime + '\''
+				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig + ", endpoint='"
+				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
+				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
+				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
+				+ '\'' + ", name='" + name + '\'' + ", sharedConfigs=" + sharedConfigs
+				+ ", refreshableDataids='" + refreshableDataids + '\'' + ", extConfigs="
+				+ extConfigs + '}';
 	}
 
 	public static class Config {
@@ -423,6 +481,18 @@ public class NacosConfigProperties {
 		 * whether to support dynamic refresh, the default does not support .
 		 */
 		private boolean refresh = false;
+
+		public Config() {
+		}
+
+		public Config(String dataId) {
+			this.dataId = dataId;
+		}
+
+		public Config(String dataId, String group) {
+			this.dataId = dataId;
+			this.group = group;
+		}
 
 		public String getDataId() {
 			return dataId;
