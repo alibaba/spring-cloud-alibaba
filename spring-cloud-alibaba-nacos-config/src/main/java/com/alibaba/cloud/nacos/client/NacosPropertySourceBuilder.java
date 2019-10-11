@@ -38,89 +38,92 @@ import org.springframework.util.StringUtils;
  */
 public class NacosPropertySourceBuilder {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(NacosPropertySourceBuilder.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosPropertySourceBuilder.class);
 
-    private static final Properties EMPTY_PROPERTIES = new Properties();
+	private static final Properties EMPTY_PROPERTIES = new Properties();
 
-    private ConfigService configService;
+	private ConfigService configService;
 
-    private long timeout;
+	private long timeout;
 
-    public NacosPropertySourceBuilder(ConfigService configService, long timeout) {
-        this.configService = configService;
-        this.timeout = timeout;
-    }
+	public NacosPropertySourceBuilder(ConfigService configService, long timeout) {
+		this.configService = configService;
+		this.timeout = timeout;
+	}
 
-    public long getTimeout() {
-        return timeout;
-    }
+	public long getTimeout() {
+		return timeout;
+	}
 
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
-    }
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
+	}
 
-    public ConfigService getConfigService() {
-        return configService;
-    }
+	public ConfigService getConfigService() {
+		return configService;
+	}
 
-    public void setConfigService(ConfigService configService) {
-        this.configService = configService;
-    }
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
+	}
 
-    /**
-     * @param dataId Nacos dataId
-     * @param group  Nacos group
-     */
-    NacosPropertySource build(String dataId, String group, String fileExtension,
-                              boolean isRefreshable) {
-        Properties p = loadNacosData(dataId, group, fileExtension);
-        NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
-                propertiesToMap(p), new Date(), isRefreshable);
-        NacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
-        return nacosPropertySource;
-    }
+	/**
+	 * @param dataId Nacos dataId
+	 * @param group Nacos group
+	 */
+	NacosPropertySource build(String dataId, String group, String fileExtension,
+			boolean isRefreshable) {
+		Properties p = loadNacosData(dataId, group, fileExtension);
+		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
+				propertiesToMap(p), new Date(), isRefreshable);
+		NacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
+		return nacosPropertySource;
+	}
 
-    private Properties loadNacosData(String dataId, String group, String fileExtension) {
-        String data = null;
-        try {
-            data = configService.getConfig(dataId, group, timeout);
-            if (StringUtils.isEmpty(data)) {
-                log.warn(
-                        "Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]",
-                        dataId, group);
-                return EMPTY_PROPERTIES;
-            }
-            log.info(String.format(
-                    "Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
-                    group, data));
+	private Properties loadNacosData(String dataId, String group, String fileExtension) {
+		String data = null;
+		try {
+			data = configService.getConfig(dataId, group, timeout);
+			if (StringUtils.isEmpty(data)) {
+				log.warn(
+						"Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]",
+						dataId, group);
+				return EMPTY_PROPERTIES;
+			}
+			log.info(String.format(
+					"Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
+					group, data));
 
-            Properties properties = NacosDataParserHandler.getInstance()
-                    .parseNacosData(data, fileExtension);
-            return properties == null ? EMPTY_PROPERTIES : properties;
-        } catch (NacosException e) {
-            log.error("get data from Nacos error,dataId:{}, ", dataId, e);
-        } catch (Exception e) {
-            log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
-        }
-        return EMPTY_PROPERTIES;
-    }
+			Properties properties = NacosDataParserHandler.getInstance()
+					.parseNacosData(data, fileExtension);
+			return properties == null ? EMPTY_PROPERTIES : properties;
+		}
+		catch (NacosException e) {
+			log.error("get data from Nacos error,dataId:{}, ", dataId, e);
+		}
+		catch (Exception e) {
+			log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
+		}
+		return EMPTY_PROPERTIES;
+	}
 
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> propertiesToMap(Properties properties) {
-        Map<String, Object> result = new LinkedHashMap<>(16);
-        Set<String> keys = properties.stringPropertyNames();
-        Iterator<String> iterator = keys.iterator();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            Object value = properties.get(key);
-            if (value instanceof String) {
-                result.put(key, ((String) value).trim());
-            } else {
-                result.put(key, value);
-            }
-        }
-        return result;
-    }
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> propertiesToMap(Properties properties) {
+		Map<String, Object> result = new LinkedHashMap<>(16);
+		Set<String> keys = properties.stringPropertyNames();
+		Iterator<String> iterator = keys.iterator();
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			Object value = properties.get(key);
+			if (value instanceof String) {
+				result.put(key, ((String) value).trim());
+			}
+			else {
+				result.put(key, value);
+			}
+		}
+		return result;
+	}
 
 }
