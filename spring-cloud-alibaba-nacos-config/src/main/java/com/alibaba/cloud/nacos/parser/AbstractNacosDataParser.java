@@ -17,7 +17,7 @@
 package com.alibaba.cloud.nacos.parser;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -115,7 +115,7 @@ public abstract class AbstractNacosDataParser {
 		if (null == map || map.isEmpty()) {
 			return null;
 		}
-		Properties properties = new Properties();
+		Properties properties = new OrderedProperties();
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			String key = entry.getKey();
 			if (StringUtils.isBlank(key)) {
@@ -134,7 +134,7 @@ public abstract class AbstractNacosDataParser {
 		if (map == null || map.isEmpty()) {
 			return null;
 		}
-		Map<String, String> result = new HashMap<>(map);
+		Map<String, String> result = new LinkedHashMap<>(map);
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			String key = entry.getKey();
 			if (key.contains(DOT)) {

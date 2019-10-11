@@ -17,8 +17,8 @@
 package com.alibaba.cloud.nacos.parser;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -51,7 +51,7 @@ public class NacosDataJsonParser extends AbstractNacosDataParser {
 	 * @throws IOException thrown if there is a problem parsing config.
 	 */
 	public static Map<String, String> parseJSON2Map(String json) throws IOException {
-		Map<String, String> map = new HashMap<>(32);
+		Map<String, String> map = new LinkedHashMap<>(32);
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonNode = mapper.readTree(json);
 		if (null == jsonNode) {

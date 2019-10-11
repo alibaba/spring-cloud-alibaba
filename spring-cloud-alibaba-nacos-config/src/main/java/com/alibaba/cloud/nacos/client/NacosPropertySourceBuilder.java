@@ -17,10 +17,11 @@
 package com.alibaba.cloud.nacos.client;
 
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
@@ -109,10 +110,12 @@ public class NacosPropertySourceBuilder {
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> propertiesToMap(Properties properties) {
-		Map<String, Object> result = new HashMap<>(16);
-		Enumeration<String> keys = (Enumeration<String>) properties.propertyNames();
-		while (keys.hasMoreElements()) {
-			String key = keys.nextElement();
+		Map<String, Object> result = new LinkedHashMap<>(16);
+		// Enumeration<String> keys = (Enumeration<String>) properties.propertyNames();
+		Set<String> keys = properties.stringPropertyNames();
+		Iterator<String> iterator = keys.iterator();
+		while (iterator.hasNext()) {
+			String key = iterator.next();
 			String value = properties.getProperty(key);
 			if (value != null) {
 				result.put(key, value.trim());

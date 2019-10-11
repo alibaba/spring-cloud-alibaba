@@ -18,7 +18,7 @@ package com.alibaba.cloud.nacos.parser;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -55,7 +55,7 @@ public class NacosDataXmlParser extends AbstractNacosDataParser {
 
 	private Map<String, String> parseXml2Map(String xml) throws IOException {
 		xml = xml.replaceAll("\\r", "").replaceAll("\\n", "").replaceAll("\\t", "");
-		Map<String, String> map = new HashMap<>(32);
+		Map<String, String> map = new LinkedHashMap<>(32);
 		try {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();

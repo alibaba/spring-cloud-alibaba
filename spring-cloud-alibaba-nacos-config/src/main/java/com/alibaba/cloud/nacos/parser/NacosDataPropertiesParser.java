@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.parser;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
@@ -31,8 +32,18 @@ public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 
 	@Override
 	protected Properties doParse(String data) throws IOException {
-		Properties properties = new Properties();
-		properties.load(new StringReader(data));
+		Properties properties = new OrderedProperties();
+		StringReader reader = new StringReader(data);
+		BufferedReader br = new BufferedReader(reader);
+
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] arr = line.split("=");
+			if (arr.length != 2) {
+				throw new IOException("error properties format");
+			}
+
+			properties.put(arr[0], arr[1]);
+		}
 		return properties;
 	}
 
