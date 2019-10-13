@@ -21,7 +21,6 @@ import java.util.Collections;
 
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
-
 import org.junit.After;
 import org.junit.Test;
 
@@ -78,7 +77,7 @@ public class SentinelCircuitBreakerTest {
 	public void testRunWithFallback() {
 		CircuitBreaker cb = new SentinelCircuitBreakerFactory()
 				.create("testSentinelRunWithFallback");
-		assertThat(cb.<String> run(() -> {
+		assertThat(cb.<String>run(() -> {
 			throw new RuntimeException("boom");
 		}, t -> "fallback")).isEqualTo("fallback");
 	}

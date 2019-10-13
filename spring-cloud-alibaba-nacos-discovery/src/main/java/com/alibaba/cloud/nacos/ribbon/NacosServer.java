@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,6 @@ package com.alibaba.cloud.nacos.ribbon;
 import java.util.Map;
 
 import com.alibaba.nacos.api.naming.pojo.Instance;
-
 import com.netflix.loadbalancer.Server;
 
 /**
@@ -29,7 +28,9 @@ import com.netflix.loadbalancer.Server;
 public class NacosServer extends Server {
 
 	private final MetaInfo metaInfo;
+
 	private final Instance instance;
+
 	private final Map<String, String> metadata;
 
 	public NacosServer(final Instance instance) {
@@ -71,4 +72,5 @@ public class NacosServer extends Server {
 	public Map<String, String> getMetadata() {
 		return metadata;
 	}
+
 }

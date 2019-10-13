@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,13 +16,13 @@
 
 package com.alibaba.alicloud.context.acm;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import com.alibaba.cloud.context.AliCloudServerMode;
 import com.alibaba.cloud.context.acm.AcmConfiguration;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
- * acm properties
+ * acm properties.
  *
  * @author leijuan
  * @author xiaolongzuo
@@ -37,27 +37,27 @@ public class AcmProperties implements AcmConfiguration {
 	private String serverPort = "8080";
 
 	/**
-	 * diamond group
+	 * diamond group.
 	 */
 	private String group = "DEFAULT_GROUP";
 
 	/**
-	 * timeout to get configuration
+	 * timeout to get configuration.
 	 */
 	private int timeout = 3000;
 
 	/**
-	 * the AliYun endpoint for ACM
+	 * the AliYun endpoint for ACM.
 	 */
 	private String endpoint;
 
 	/**
-	 * ACM namespace
+	 * ACM namespace.
 	 */
 	private String namespace;
 
 	/**
-	 * name of ram role granted to ECS
+	 * name of ram role granted to ECS.
 	 */
 	private String ramRoleName;
 
@@ -153,4 +153,5 @@ public class AcmProperties implements AcmConfiguration {
 	public void setServerMode(AliCloudServerMode serverMode) {
 		this.serverMode = serverMode;
 	}
+
 }

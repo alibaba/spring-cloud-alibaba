@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,14 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import com.alibaba.edas.acm.ConfigService;
+import com.alibaba.edas.acm.exception.ConfigException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.edas.acm.ConfigService;
-import com.alibaba.edas.acm.exception.ConfigException;
 
 /**
  * @author juven.xuxb
@@ -41,12 +41,11 @@ class AcmPropertySourceBuilder {
 	private Logger log = LoggerFactory.getLogger(AcmPropertySourceBuilder.class);
 
 	/**
-	 * 传入 ACM 的 DataId 和 groupID，获取到解析后的 AcmProperty 对象
-	 *
-	 * @param dataId
-	 * @param diamondGroup
-	 * @param groupLevel
-	 * @return
+	 * 传入 ACM 的 DataId 和 groupID，获取到解析后的 AcmProperty 对象.
+	 * @param dataId dataid of diamond
+	 * @param diamondGroup group of diamond
+	 * @param groupLevel group level of diamond
+	 * @return acm property source
 	 */
 	AcmPropertySource build(String dataId, String diamondGroup, boolean groupLevel) {
 		Properties properties = loadDiamondData(dataId, diamondGroup);
@@ -102,4 +101,5 @@ class AcmPropertySourceBuilder {
 		}
 		return result;
 	}
+
 }

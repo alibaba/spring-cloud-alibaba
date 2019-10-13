@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,12 @@
 
 package com.alibaba.cloud.nacos.discovery;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.cloud.nacos.NacosServiceInstance;
@@ -23,14 +29,9 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author xiaojing
@@ -39,9 +40,14 @@ import java.util.Map;
 public class NacosDiscoveryClient implements DiscoveryClient {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryClient.class);
+
+	/**
+	 * Nacos Discovery Client Description.
+	 */
 	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
 	private NacosNamingManager nacosNamingManager;
+
 	private NacosDiscoveryProperties discoveryProperties;
 
 	public NacosDiscoveryClient(NacosNamingManager nacosNamingManager,
@@ -120,4 +126,5 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 			return Collections.emptyList();
 		}
 	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.registry.event;
 
-import static java.util.Collections.unmodifiableCollection;
+package com.alibaba.cloud.dubbo.registry.event;
 
 import java.util.Collection;
 
@@ -23,6 +22,8 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
+
+import static java.util.Collections.unmodifiableCollection;
 
 /**
  * An event raised after the {@link ServiceInstance instances} of one service has been
@@ -64,25 +65,25 @@ public class ServiceInstancesChangedEvent extends ApplicationEvent {
 	}
 
 	/**
-	 * @return all {@link ServiceInstance service instances}
+	 * @return all {@link ServiceInstance service instances}.
 	 */
 	public Collection<ServiceInstance> getServiceInstances() {
 		return serviceInstances;
 	}
 
 	/**
-	 * Mark current event being processed
+	 * Mark current event being processed.
 	 */
 	public void processed() {
 		processed = true;
 	}
 
 	/**
-	 * Current event has been processed or not
-	 *
+	 * Current event has been processed or not.
 	 * @return if processed, return <code>true</code>, or <code>false</code>
 	 */
 	public boolean isProcessed() {
 		return processed;
 	}
+
 }

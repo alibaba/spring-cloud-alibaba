@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,14 +16,14 @@
 
 package com.alibaba.alicloud.context.ans;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.event.ContextRefreshedEvent;
-
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.edas.EdasProperties;
 import com.alibaba.alicloud.context.listener.AbstractOnceApplicationListener;
 import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
 import com.alibaba.cloud.context.edas.AliCloudEdasSdk;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
  * Init {@link com.alibaba.ans.core.NamingService} properties.

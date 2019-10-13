@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,18 @@
 
 package com.alibaba.alicloud.oss.resource;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSException;
@@ -23,16 +35,11 @@ import com.aliyun.oss.model.Bucket;
 import com.aliyun.oss.model.OSSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 import org.springframework.util.Assert;
-
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
 
 import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
 
@@ -48,25 +55,32 @@ import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
  */
 public class OssStorageResource implements WritableResource {
 
-	private static final Logger logger = LoggerFactory.getLogger(OssStorageResource.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(OssStorageResource.class);
 
 	private static final String MESSAGE_KEY_NOT_EXIST = "The specified key does not exist.";
 
 	private final OSS oss;
+
 	private final String bucketName;
+
 	private final String objectKey;
+
 	private final URI location;
+
 	private final boolean autoCreateFiles;
 
 	private final ExecutorService ossTaskExecutor;
 
 	private final ConfigurableListableBeanFactory beanFactory;
 
-	public OssStorageResource(OSS oss, String location, ConfigurableListableBeanFactory beanFactory) {
-		this(oss, location, beanFactory,false);
-    }
+	public OssStorageResource(OSS oss, String location,
+			ConfigurableListableBeanFactory beanFactory) {
+		this(oss, location, beanFactory, false);
+	}
 
-	public OssStorageResource(OSS oss, String location,ConfigurableListableBeanFactory beanFactory, boolean autoCreateFiles) {
+	public OssStorageResource(OSS oss, String location,
+			ConfigurableListableBeanFactory beanFactory, boolean autoCreateFiles) {
 		Assert.notNull(oss, "Object Storage Service can not be null");
 		Assert.isTrue(location.startsWith(OssStorageProtocolResolver.PROTOCOL),
 				"Location must start with " + OssStorageProtocolResolver.PROTOCOL);
@@ -89,7 +103,8 @@ public class OssStorageResource implements WritableResource {
 			throw new IllegalArgumentException("Invalid location: " + location, e);
 		}
 
-		this.ossTaskExecutor = this.beanFactory.getBean(OSS_TASK_EXECUTOR_BEAN_NAME, ExecutorService.class);
+		this.ossTaskExecutor = this.beanFactory.getBean(OSS_TASK_EXECUTOR_BEAN_NAME,
+				ExecutorService.class);
 	}
 
 	public boolean isAutoCreateFiles() {
@@ -219,7 +234,7 @@ public class OssStorageResource implements WritableResource {
 
 	/**
 	 * create a bucket.
-	 * @return
+	 * @return OSS Bucket
 	 */
 	public Bucket createBucket() {
 		return this.oss.createBucket(this.bucketName);
@@ -231,10 +246,10 @@ public class OssStorageResource implements WritableResource {
 	}
 
 	/**
-	 * acquire an OutputStream for write.
-	 * Note: please close the stream after writing is done
-	 * @return
-	 * @throws IOException
+	 * acquire an OutputStream for write. Note: please close the stream after writing is
+	 * done
+	 * @return OutputStream of OSS resource
+	 * @throws IOException throw by oss operation
 	 */
 	@Override
 	public OutputStream getOutputStream() throws IOException {

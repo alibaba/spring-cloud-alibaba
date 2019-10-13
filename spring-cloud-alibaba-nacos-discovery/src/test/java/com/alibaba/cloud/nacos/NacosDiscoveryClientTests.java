@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,17 +16,18 @@
 
 package com.alibaba.cloud.nacos;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 import org.junit.Test;
-import org.springframework.cloud.client.ServiceInstance;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import org.springframework.cloud.client.ServiceInstance;
 
 import static com.alibaba.cloud.nacos.test.NacosMockTest.serviceInstance;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +41,9 @@ import static org.mockito.Mockito.when;
 public class NacosDiscoveryClientTests {
 
 	private String host = "123.123.123.123";
+
 	private int port = 8888;
+
 	private String serviceName = "test-service";
 
 	@Test
@@ -127,4 +130,5 @@ public class NacosDiscoveryClientTests {
 
 		return "http://" + host + ":" + port;
 	}
+
 }

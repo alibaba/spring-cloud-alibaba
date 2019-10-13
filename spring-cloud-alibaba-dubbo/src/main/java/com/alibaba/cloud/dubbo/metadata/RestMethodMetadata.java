@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.metadata;
 
 import java.lang.reflect.Type;
@@ -21,13 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.core.ResolvableType;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.springframework.core.ResolvableType;
+
 /**
- * Method Request Metadata
+ * Method Request Metadata.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -229,4 +230,5 @@ public class RestMethodMetadata {
 				+ ", indexToName=" + indexToName + ", formParams=" + formParams
 				+ ", indexToEncoded=" + indexToEncoded + '}';
 	}
+
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,11 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosNamingManager;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
+
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
@@ -30,21 +34,33 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
-
 /**
  * @author xiaojing
  */
 public class NacosRegistration implements Registration, ServiceInstance {
 
+	/**
+	 * The metadata key of management port.
+	 */
 	public static final String MANAGEMENT_PORT = "management.port";
+
+	/**
+	 * The metadata key of management context-path.
+	 */
 	public static final String MANAGEMENT_CONTEXT_PATH = "management.context-path";
+
+	/**
+	 * The metadata key of management address.
+	 */
 	public static final String MANAGEMENT_ADDRESS = "management.address";
+
+	/**
+	 * The metadata key of management endpoints web base path.
+	 */
 	public static final String MANAGEMENT_ENDPOINT_BASE_PATH = "management.endpoints.web.base-path";
 
 	private NacosNamingManager nacosNamingManager;
+
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	private ApplicationContext context;
@@ -155,4 +171,5 @@ public class NacosRegistration implements Registration, ServiceInstance {
 		return "NacosRegistration{" + "nacosDiscoveryProperties="
 				+ nacosDiscoveryProperties + '}';
 	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.service;
 
 import java.util.Collections;
@@ -22,17 +23,17 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-
 import com.alibaba.cloud.dubbo.http.HttpServerRequest;
 import com.alibaba.cloud.dubbo.metadata.MethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.MethodParameterMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.service.parameter.DubboGenericServiceParameterResolver;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+
 /**
- * {@link DubboGenericServiceExecutionContext} Factory
+ * {@link DubboGenericServiceExecutionContext} Factory.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see DubboGenericServiceParameterResolver
@@ -154,4 +155,5 @@ public class DubboGenericServiceExecutionContextFactory {
 
 		return parameters;
 	}
+
 }

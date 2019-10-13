@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.openfeign;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
+package com.alibaba.cloud.dubbo.openfeign;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.dubbo.rpc.service.GenericService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignContext;
-import org.springframework.core.env.Environment;
 
 import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
@@ -39,12 +32,19 @@ import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepositor
 import com.alibaba.cloud.dubbo.metadata.resolver.DubboTransportedMethodMetadataResolver;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-
 import feign.Contract;
 import feign.Target;
+import org.apache.dubbo.rpc.service.GenericService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.cloud.openfeign.FeignContext;
+import org.springframework.core.env.Environment;
+
+import static java.lang.reflect.Proxy.newProxyInstance;
 
 /**
- * org.springframework.cloud.openfeign.Targeter {@link InvocationHandler}
+ * org.springframework.cloud.openfeign.Targeter {@link InvocationHandler}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -84,7 +84,7 @@ class TargeterInvocationHandler implements InvocationHandler {
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		/**
 		 * args[0]: FeignClientFactoryBean factory args[1]: Feign.Builder feign args[2]:
-		 * FeignContext context args[3]: Target.HardCodedTarget<T> target
+		 * FeignContext context args[3]: Target.HardCodedTarget&lt;T&gt; target
 		 */
 		FeignContext feignContext = cast(args[2]);
 		Target.HardCodedTarget<?> target = cast(args[3]);
@@ -183,4 +183,5 @@ class TargeterInvocationHandler implements InvocationHandler {
 
 		return feignMethodMetadataMap;
 	}
+
 }

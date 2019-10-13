@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.alicloud.sms.base;
 
 import java.text.ParseException;
@@ -20,9 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.aliyun.mns.client.CloudAccount;
 import com.aliyun.mns.client.CloudQueue;
@@ -36,23 +34,36 @@ import com.aliyuncs.http.MethodType;
 import com.aliyuncs.http.ProtocolType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 获取接收云通信消息的临时token
- *
+ * 获取接收云通信消息的临时token.
  */
 public class TokenGetterForAlicom {
+
 	private static final Logger log = LoggerFactory.getLogger(TokenGetterForAlicom.class);
+
 	private String accessKeyId;
+
 	private String accessKeySecret;
+
 	private String endpointNameForPop;
+
 	private String regionIdForPop;
+
 	private String domainForPop;
+
 	private IAcsClient iAcsClient;
+
 	private Long ownerId;
+
 	private final static String PRODUCT_NAME = "Dybaseapi";
-	private long bufferTime = 1000 * 60 * 2;// 过期时间小于2分钟则重新获取，防止服务器时间误差
+
+	private long bufferTime = 1000 * 60 * 2; // 过期时间小于2分钟则重新获取，防止服务器时间误差
+
 	private final Object lock = new Object();
+
 	private ConcurrentMap<String, TokenForAlicom> tokenMap = new ConcurrentHashMap<String, TokenForAlicom>();
 
 	public TokenGetterForAlicom(String accessKeyId, String accessKeySecret,
@@ -112,7 +123,7 @@ public class TokenGetterForAlicom {
 			throws ServerException, ClientException, ParseException {
 		TokenForAlicom token = tokenMap.get(messageType);
 		Long now = System.currentTimeMillis();
-		if (token == null || (token.getExpireTime() - now) < bufferTime) {// 过期时间小于2分钟则重新获取，防止服务器时间误差
+		if (token == null || (token.getExpireTime() - now) < bufferTime) { // 过期时间小于2分钟则重新获取，防止服务器时间误差
 			synchronized (lock) {
 				token = tokenMap.get(messageType);
 				if (token == null || (token.getExpireTime() - now) < bufferTime) {
@@ -138,4 +149,5 @@ public class TokenGetterForAlicom {
 		}
 		return token;
 	}
+
 }

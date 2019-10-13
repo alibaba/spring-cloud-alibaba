@@ -19,9 +19,9 @@ package com.alibaba.cloud.circuitbreaker.sentinel;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder.SentinelCircuitBreakerConfiguration;
 import com.alibaba.csp.sentinel.EntryType;
 
-import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder.SentinelCircuitBreakerConfiguration;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.util.Assert;
