@@ -19,12 +19,20 @@ package com.alibaba.cloud.nacos.parser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author zkz
+ * @author element
  */
 public class NacosDataPropertiesParser extends AbstractNacosDataParser {
+
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosDataPropertiesParser.class);
 
 	public NacosDataPropertiesParser() {
 		super("properties");
@@ -36,13 +44,19 @@ public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 		StringReader reader = new StringReader(data);
 		BufferedReader br = new BufferedReader(reader);
 
+		String key;
+		String value;
+		String[] sourceArr;
+		String[] valueArr;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			String[] arr = line.split("=");
-			if (arr.length != 2) {
-				throw new IOException("error properties format");
+			sourceArr = line.split("=");
+			if (sourceArr.length < 2) {
+				log.debug("ignore no properties format line :{}", line);
 			}
-
-			properties.put(arr[0], arr[1]);
+			key = sourceArr[0].trim();
+			valueArr = Arrays.copyOfRange(sourceArr, 1, sourceArr.length);
+			value = String.join("", valueArr).trim();
+			properties.put(key, value);
 		}
 		return properties;
 	}
