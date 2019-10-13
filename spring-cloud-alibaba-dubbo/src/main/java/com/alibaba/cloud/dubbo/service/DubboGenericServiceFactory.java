@@ -18,9 +18,11 @@ package com.alibaba.cloud.dubbo.service;
 
 import java.beans.PropertyEditorSupport;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -57,7 +59,7 @@ public class DubboGenericServiceFactory {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final ConcurrentMap<Integer, ReferenceBean<GenericService>> cache = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, ReferenceBean<GenericService>> cache = new ConcurrentHashMap<>();
 
 	@Autowired
 	private ObjectProvider<List<RegistryConfig>> registryConfigs;
@@ -96,12 +98,13 @@ public class DubboGenericServiceFactory {
 		Integer key = Objects.hash(interfaceName, version, group,
 				dubboTranslatedAttributes);
 
-		return cache.computeIfAbsent(key, k -> {
+		return cache.computeIfAbsent(group + key, k -> {
 			ReferenceBean<GenericService> referenceBean = new ReferenceBean<>();
 			referenceBean.setGeneric(true);
 			referenceBean.setInterface(interfaceName);
 			referenceBean.setVersion(version);
 			referenceBean.setGroup(group);
+			referenceBean.setCheck(false);
 			bindReferenceBean(referenceBean, dubboTranslatedAttributes);
 			return referenceBean;
 		});
@@ -149,7 +152,17 @@ public class DubboGenericServiceFactory {
 	@PreDestroy
 	public void destroy() {
 		destroyReferenceBeans();
-		cache.values();
+		cache.clear();
+	}
+
+	public synchronized void destroy(String serviceName) {
+		Set<String> removeGroups = new HashSet<>(cache.keySet());
+		for (String key : removeGroups) {
+			if (key.contains(serviceName)) {
+				ReferenceBean<GenericService> referenceBean = cache.remove(key);
+				referenceBean.destroy();
+			}
+		}
 	}
 
 	private void destroyReferenceBeans() {

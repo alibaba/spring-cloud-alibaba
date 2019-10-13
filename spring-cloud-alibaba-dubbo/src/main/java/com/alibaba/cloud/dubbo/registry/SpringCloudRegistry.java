@@ -17,6 +17,7 @@
 package com.alibaba.cloud.dubbo.registry;
 
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.apache.dubbo.common.URL;
@@ -38,9 +39,11 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
 	public SpringCloudRegistry(URL url, DiscoveryClient discoveryClient,
 			DubboServiceMetadataRepository dubboServiceMetadataRepository,
 			DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
-			JSONUtils jsonUtils, ConfigurableApplicationContext applicationContext) {
+			JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
+			ConfigurableApplicationContext applicationContext) {
 		super(url, discoveryClient, dubboServiceMetadataRepository,
-				dubboMetadataConfigServiceProxy, jsonUtils, applicationContext);
+				dubboMetadataConfigServiceProxy, jsonUtils, dubboGenericServiceFactory,
+				applicationContext);
 		this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
 	}
 

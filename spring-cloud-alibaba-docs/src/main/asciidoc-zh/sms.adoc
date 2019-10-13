@@ -186,6 +186,7 @@ public QuerySendDetailsResponse querySendDetailsResponse(
 1、在 `application.properties` 配置文件中(也可以是 application.yaml)配置 SmsReport 的队列名称。
 
 .application.properties
+[source,properties]
 ----
 spring.cloud.alicloud.sms.report-queue-name=Alicom-Queue-********-SmsReport
 ----
