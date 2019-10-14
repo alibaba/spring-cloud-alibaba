@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,9 +50,13 @@ public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 		String[] sourceArr;
 		String[] valueArr;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			line = line.trim();
+			if(StringUtils.startsWith(line,"#")){
+				continue;
+			}
 			sourceArr = line.split("=");
 			if (sourceArr.length < 2) {
-				log.debug("ignore no properties format line :{}", line);
+				log.warn("ignore no properties format line : {}", line);
 			}
 			key = sourceArr[0].trim();
 			valueArr = Arrays.copyOfRange(sourceArr, 1, sourceArr.length);
