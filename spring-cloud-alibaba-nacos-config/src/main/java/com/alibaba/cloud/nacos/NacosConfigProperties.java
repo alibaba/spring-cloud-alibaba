@@ -66,6 +66,8 @@ public class NacosConfigProperties {
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
 
+	private static final String SEPARATOR = "[,]";
+
 	@Autowired
 	private Environment environment;
 
@@ -94,7 +96,7 @@ public class NacosConfigProperties {
 	private void compatibilityProcessing() {
 		if (null == this.getSharedConfigs() || this.getSharedConfigs().isEmpty()) {
 			if (!StringUtils.isEmpty(this.getSharedDataids())) {
-				this.setSharedConfigs(Stream.of(this.getSharedDataids().split(","))
+				this.setSharedConfigs(Stream.of(this.getSharedDataids().split(SEPARATOR))
 						.map(Config::new).collect(Collectors.toList()));
 			}
 		}
@@ -104,6 +106,14 @@ public class NacosConfigProperties {
 			}
 		}
 
+		if (null == this.getRefreshableDataIds()
+				|| this.getRefreshableDataIds().isEmpty()) {
+			if (!StringUtils.isEmpty(this.getRefreshableDataids())) {
+				this.setRefreshableDataIds(
+						Stream.of(this.getRefreshableDataids().split(SEPARATOR))
+								.map(String::trim).collect(Collectors.toList()));
+			}
+		}
 	}
 
 	/**
@@ -209,9 +219,17 @@ public class NacosConfigProperties {
 	private List<Config> sharedConfigs;
 
 	/**
-	 * refreshable dataids , multiple separated by commas .
+	 * refreshable dataids , multiple separated by commas .recommend to use
+	 * {@link NacosConfigProperties#refreshableDataIds} .
 	 */
+	@Deprecated
 	private String refreshableDataids;
+
+	/**
+	 * a set of refreshable configurations , eg:
+	 * spring.cloud.nacos.config.refreshable-dataids[0] .
+	 */
+	private List<String> refreshableDataIds;
 
 	/**
 	 * a set of extended configurations . recommend to use
@@ -221,7 +239,7 @@ public class NacosConfigProperties {
 	private List<Config> extConfig;
 
 	/**
-	 * a set of extensional configurations .
+	 * a set of extensional configurations .eg: spring.cloud.nacos.config.ext-configs[0] .
 	 */
 	private List<Config> extConfigs;
 
@@ -361,10 +379,12 @@ public class NacosConfigProperties {
 		return name;
 	}
 
+	@Deprecated
 	public String getSharedDataids() {
 		return sharedDataids;
 	}
 
+	@Deprecated
 	public void setSharedDataids(String sharedDataids) {
 		this.sharedDataids = sharedDataids;
 	}
@@ -377,18 +397,30 @@ public class NacosConfigProperties {
 		this.sharedConfigs = sharedConfigs;
 	}
 
+	@Deprecated
 	public String getRefreshableDataids() {
 		return refreshableDataids;
 	}
 
+	@Deprecated
 	public void setRefreshableDataids(String refreshableDataids) {
 		this.refreshableDataids = refreshableDataids;
 	}
 
+	public List<String> getRefreshableDataIds() {
+		return refreshableDataIds;
+	}
+
+	public void setRefreshableDataIds(List<String> refreshableDataIds) {
+		this.refreshableDataIds = refreshableDataIds;
+	}
+
+	@Deprecated
 	public List<Config> getExtConfig() {
 		return extConfig;
 	}
 
+	@Deprecated
 	public void setExtConfig(List<Config> extConfig) {
 		this.extConfig = extConfig;
 	}
@@ -419,7 +451,8 @@ public class NacosConfigProperties {
 	}
 
 	/**
-	 * Remove the interference of auto prompts when writing,because autocue is based on get method.
+	 * assemble properties for configService. (cause by rename : Remove the interference
+	 * of auto prompts when writing,because autocue is based on get method.
 	 */
 	Properties assembleConfigServiceProperties() {
 		Properties properties = new Properties();
@@ -461,7 +494,7 @@ public class NacosConfigProperties {
 				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
 				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
 				+ '\'' + ", name='" + name + '\'' + ", sharedConfigs=" + sharedConfigs
-				+ ", refreshableDataids='" + refreshableDataids + '\'' + ", extConfigs="
+				+ ", refreshableDataIds=" + refreshableDataIds + ", extConfigs="
 				+ extConfigs + '}';
 	}
 
