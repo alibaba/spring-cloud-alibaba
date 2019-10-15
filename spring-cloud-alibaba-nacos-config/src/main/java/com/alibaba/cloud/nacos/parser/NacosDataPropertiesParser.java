@@ -46,19 +46,19 @@ public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 
 		String key;
 		String value;
-		int separator ;
+		int separator;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			line = line.trim();
-			if(StringUtils.startsWith(line,"#")){
+			if (StringUtils.startsWith(line, "#")) {
 				continue;
 			}
-			separator = line.indexOf("=") ;
-			if(separator < 1){
+			separator = line.indexOf("=");
+			if (separator < 1) {
 				log.warn("ignore no properties format line : {}", line);
 				continue;
 			}
-			key = line.substring(0,separator).trim();
-			value = line.substring(separator).trim();
+			key = line.substring(0, separator).trim();
+			value = line.substring(separator + 1).trim();
 			properties.put(key, value);
 		}
 		return properties;
