@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: springcloud/pipeline-base
-        user: appuser
+#        user: appuser
     environment:
       _JAVA_OPTIONS: "-Xms1024m -Xmx2048m"
       TERM: dumb
