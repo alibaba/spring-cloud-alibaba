@@ -17,7 +17,7 @@
 package com.alibaba.cloud.sidecar.nacos;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 import com.alibaba.cloud.sidecar.SidecarAutoConfiguration;
 import com.alibaba.cloud.sidecar.SidecarDiscoveryClient;
 import com.alibaba.cloud.sidecar.SidecarProperties;
@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Configuration;
  * @author www.itmuch.com
  */
 @Configuration
-@AutoConfigureBefore({ NacosDiscoveryClientAutoConfiguration.class,
+@AutoConfigureBefore({ NacosDiscoveryAutoConfiguration.class,
 		SidecarAutoConfiguration.class })
 @ConditionalOnClass(NacosDiscoveryProperties.class)
 public class SidecarNacosAutoConfiguration {
