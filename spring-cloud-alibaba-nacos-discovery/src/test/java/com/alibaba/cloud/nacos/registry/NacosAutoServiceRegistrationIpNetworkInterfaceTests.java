@@ -21,9 +21,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -104,8 +103,8 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
-			NacosDiscoveryClientAutoConfiguration.class,
-			NacosDiscoveryAutoConfiguration.class })
+			NacosDiscoveryClientConfiguration.class,
+			NacosServiceRegistryAutoConfiguration.class })
 	public static class TestConfig {
 
 		static boolean hasValidNetworkInterface = false;

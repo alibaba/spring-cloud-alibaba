@@ -16,9 +16,8 @@
 
 package com.alibaba.cloud.nacos.registry;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -77,8 +76,8 @@ public class NacosAutoServiceRegistrationManagementPortTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
-			NacosDiscoveryClientAutoConfiguration.class,
-			NacosDiscoveryAutoConfiguration.class })
+			NacosDiscoveryClientConfiguration.class,
+			NacosServiceRegistryAutoConfiguration.class })
 	public static class TestConfig {
 
 	}

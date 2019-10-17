@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos;
+package com.alibaba.cloud.nacos.registry;
 
-import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
-import com.alibaba.cloud.nacos.registry.NacosRegistration;
-import com.alibaba.cloud.nacos.registry.NacosServiceRegistry;
+import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -41,19 +42,15 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
 		matchIfMissing = true)
 @AutoConfigureAfter({ AutoServiceRegistrationConfiguration.class,
-		AutoServiceRegistrationAutoConfiguration.class })
-public class NacosDiscoveryAutoConfiguration {
+		AutoServiceRegistrationAutoConfiguration.class,
+		NacosDiscoveryAutoConfiguration.class })
+public class NacosServiceRegistryAutoConfiguration {
 
 	@Bean
 	public NacosServiceRegistry nacosServiceRegistry(
 			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		return new NacosServiceRegistry(nacosNamingManager, nacosDiscoveryProperties);
-	}
-
-	@Bean
-	public NacosNamingManager nacosNamingManager() {
-		return new NacosNamingManager();
 	}
 
 	@Bean
