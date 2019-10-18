@@ -99,12 +99,16 @@ CREATE TABLE `account_tbl` (
 点击这个页面 [https://github.com/seata/seata/releases](https://github.com/seata/seata/releases)，下载最新版本的 Seata Server 端.
 
 
-进入解压之后的 bin 目录，执行如下命令来启动
+进入解压之后的 bin 目录，执行如下命令来启动, 所有启动参数为可选项。
 
 ```$shell
-sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db)
+sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db) -h $HOST -e $ENV
 ```
-
+-p seata-server 监听服务端口号   
+-m 存储模式，可选值：file、db。file 用于单点模式，db用于ha模式，当使用db存储模式，需要修改配置中store配置节点的数据库配置，同时在数据库中初始化[global_table、branch_table和 
+lock_table](https://github.com/seata/seata/blob/develop/server/src/main/resources/db_store.sql)   
+-h 用于解决seata-server和业务侧跨网络问题，其配置的host值直接显示到注册中心的服务可用地址host，当跨网络时这里需要配置为公网IP或NATIP，若都在同一局域网则无需配置   
+-e 用于解决多环境配置中心隔离问题   
 在这个示例中，采用如下命令来启动 Seata Server
 
 ```$shell
