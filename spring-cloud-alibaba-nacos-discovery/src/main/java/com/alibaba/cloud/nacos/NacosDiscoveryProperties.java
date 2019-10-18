@@ -430,7 +430,8 @@ public class NacosDiscoveryProperties {
 			String serverAddr = env
 					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
-				serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
+				serverAddr = env
+						.resolvePlaceholders("${spring.cloud.nacos.server-addr:}");
 			}
 			this.setServerAddr(serverAddr);
 		}
