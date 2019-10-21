@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -121,6 +122,9 @@ public class NacosConfigurationTests {
 
 		}
 	}
+
+	@Autowired
+	private ApplicationContext applicationContext;
 
 	@Autowired
 	private Environment environment;
@@ -209,9 +213,12 @@ public class NacosConfigurationTests {
 	private void checkoutEndpoint() throws Exception {
 		NacosConfigEndpoint nacosConfigEndpoint = new NacosConfigEndpoint(properties,
 				refreshHistory);
+		nacosConfigEndpoint.setApplicationContext(applicationContext);
 		Map<String, Object> map = nacosConfigEndpoint.invoke();
+		Map<String, Object> nacosCloud = (Map<String, Object>) map.get("nacosCloud");
 		assertThat(map.get("NacosConfigProperties")).isEqualTo(properties);
-		assertThat(map.get("RefreshHistory")).isEqualTo(refreshHistory.getRecords());
+		assertThat(nacosCloud.get("RefreshHistory"))
+				.isEqualTo(refreshHistory.getRecords());
 	}
 
 	@Configuration

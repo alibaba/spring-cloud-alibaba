@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -148,6 +149,9 @@ public class NacosConfigurationXmlJsonTest {
 	}
 
 	@Autowired
+	private ApplicationContext applicationContext;
+
+	@Autowired
 	private NacosPropertySourceLocator locator;
 
 	@Autowired
@@ -225,9 +229,12 @@ public class NacosConfigurationXmlJsonTest {
 	private void checkoutEndpoint() throws Exception {
 		NacosConfigEndpoint nacosConfigEndpoint = new NacosConfigEndpoint(properties,
 				refreshHistory);
+		nacosConfigEndpoint.setApplicationContext(applicationContext);
 		Map<String, Object> map = nacosConfigEndpoint.invoke();
+		Map<String, Object> nacosCloud = (Map<String, Object>) map.get("nacosCloud");
 		assertThat(properties).isEqualTo(map.get("NacosConfigProperties"));
-		assertThat(refreshHistory.getRecords()).isEqualTo(map.get("RefreshHistory"));
+		assertThat(refreshHistory.getRecords())
+				.isEqualTo(nacosCloud.get("RefreshHistory"));
 	}
 
 	@Configuration

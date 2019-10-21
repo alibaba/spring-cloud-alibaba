@@ -17,7 +17,6 @@
 package com.alibaba.cloud.dubbo.bootstrap;
 
 import com.alibaba.cloud.dubbo.service.EchoService;
-
 import org.apache.dubbo.config.annotation.Reference;
 
 import org.springframework.boot.SpringApplication;

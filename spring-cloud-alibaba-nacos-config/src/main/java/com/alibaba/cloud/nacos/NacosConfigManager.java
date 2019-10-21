@@ -16,26 +16,18 @@
 
 package com.alibaba.cloud.nacos;
 
-<<<<<<< HEAD
-=======
 import java.util.Objects;
 
-import com.alibaba.nacos.api.NacosFactory;
->>>>>>> 1773b49872437dd18b80b7bb2ede42b2de7b7b0b
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.spring.factory.CacheableEventPublishingNacosServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-<<<<<<< HEAD
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-=======
->>>>>>> 1773b49872437dd18b80b7bb2ede42b2de7b7b0b
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
@@ -74,4 +66,5 @@ public class NacosConfigManager implements ApplicationContextAware {
 			throws BeansException {
 		SERVICE_FACTORY.setApplicationContext(applicationContext);
 	}
+
 }

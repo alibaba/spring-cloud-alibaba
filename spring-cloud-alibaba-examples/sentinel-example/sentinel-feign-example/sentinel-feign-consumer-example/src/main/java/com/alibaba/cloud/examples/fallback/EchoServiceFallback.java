@@ -35,7 +35,7 @@ public class EchoServiceFallback implements EchoService {
 	/**
 	 * 调用服务提供方的输出接口
 	 * @param str 用户输入
-	 * @return
+	 * @return string
 	 */
 	@Override
 	public String echo(String str) {

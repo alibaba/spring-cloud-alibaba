@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright 2013-2018 the original author or authors.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.examples;
 
 import java.util.Properties;
 import java.util.concurrent.Executors;
-import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
 
 import com.alibaba.nacos.api.config.annotation.NacosConfigListener;
 import com.alibaba.nacos.spring.util.parse.DefaultPropertiesConfigParse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PrintLogger {
+
 	private static Logger logger = LoggerFactory.getLogger(PrintLogger.class);
 
 	private static final String LOGGER_TAG = "logging.level.";
@@ -68,4 +71,5 @@ public class PrintLogger {
 			}
 		});
 	}
+
 }

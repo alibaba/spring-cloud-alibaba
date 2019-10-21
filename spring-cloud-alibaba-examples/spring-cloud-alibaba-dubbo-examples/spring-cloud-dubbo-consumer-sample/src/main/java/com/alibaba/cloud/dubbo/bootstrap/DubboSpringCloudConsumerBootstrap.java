@@ -23,7 +23,6 @@ import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.service.RestService;
 import com.alibaba.cloud.dubbo.service.User;
 import com.alibaba.cloud.dubbo.service.UserService;
-
 import org.apache.dubbo.config.annotation.Reference;
 
 import org.springframework.beans.factory.annotation.Autowired;

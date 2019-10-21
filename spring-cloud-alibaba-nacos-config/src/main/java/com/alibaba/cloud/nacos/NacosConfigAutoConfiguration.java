@@ -16,14 +16,11 @@
 
 package com.alibaba.cloud.nacos;
 
-<<<<<<< HEAD
 import com.alibaba.cloud.nacos.bridge.NacosCloudBridgeBoot;
-=======
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshProperties;
 
->>>>>>> 1773b49872437dd18b80b7bb2ede42b2de7b7b0b
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;

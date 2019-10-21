@@ -35,7 +35,7 @@ public interface EchoService {
 	/**
 	 * 调用服务提供方的输出接口
 	 * @param str 用户输入
-	 * @return
+	 * @return string
 	 */
 	@GetMapping("/echo/{str}")
 	String echo(@PathVariable("str") String str);

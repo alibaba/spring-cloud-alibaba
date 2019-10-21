@@ -16,12 +16,9 @@
 
 package com.alibaba.cloud.nacos;
 
-<<<<<<< HEAD
 import com.alibaba.cloud.nacos.bridge.NacosCloudBridgeBoot;
-=======
 import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
 
->>>>>>> 1773b49872437dd18b80b7bb2ede42b2de7b7b0b
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
