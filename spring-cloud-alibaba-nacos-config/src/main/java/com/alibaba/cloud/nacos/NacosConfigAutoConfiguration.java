@@ -22,7 +22,9 @@ import com.alibaba.cloud.nacos.refresh.NacosRefreshProperties;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,8 +47,9 @@ public class NacosConfigAutoConfiguration {
 	}
 
 	@Bean
-	public NacosConfigManager nacosConfigManager() {
-		return new NacosConfigManager();
+	public NacosConfigManager nacosConfigManager(
+			NacosConfigProperties nacosConfigProperties) {
+		return new NacosConfigManager(nacosConfigProperties);
 	}
 
 	@Bean
@@ -61,11 +64,16 @@ public class NacosConfigAutoConfiguration {
 
 	@Bean
 	public NacosContextRefresher nacosContextRefresher(
+			ConfigurableApplicationContext context, RefreshScope scope,
 			NacosConfigManager nacosConfigManager,
 			NacosRefreshProperties nacosRefreshProperties,
-			NacosRefreshHistory refreshHistory) {
-		return new NacosContextRefresher(nacosRefreshProperties, refreshHistory,
-				nacosConfigManager.getConfigService());
+			NacosRefreshHistory nacosRefreshHistory) {
+		if (nacosConfigManager.getNacosConfigProperties().isRefreshEnabled()
+				&& !nacosRefreshProperties.isEnabled()) {
+			nacosConfigManager.getNacosConfigProperties().setRefreshEnabled(false);
+		}
+		return new NacosContextRefresher(context, scope, nacosConfigManager,
+				nacosRefreshHistory);
 	}
 
 }
