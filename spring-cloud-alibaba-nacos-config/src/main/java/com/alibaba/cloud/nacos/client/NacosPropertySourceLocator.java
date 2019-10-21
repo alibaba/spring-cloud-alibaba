@@ -59,10 +59,9 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private NacosConfigManager nacosConfigManager;
 
-	public NacosPropertySourceLocator(NacosConfigManager nacosConfigManager,
-			NacosConfigProperties nacosConfigProperties) {
+	public NacosPropertySourceLocator(NacosConfigManager nacosConfigManager) {
 		this.nacosConfigManager = nacosConfigManager;
-		this.nacosConfigProperties = nacosConfigProperties;
+		this.nacosConfigProperties = nacosConfigManager.getNacosConfigProperties();
 	}
 
 	@Override

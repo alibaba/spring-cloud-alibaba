@@ -17,8 +17,6 @@
 package com.alibaba.cloud.nacos;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,20 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
-
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_LONG_POLL_TIMEOUT;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_RETRY_TIME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENABLE_REMOTE_SYNC_CONFIG;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
-import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
  * Nacos properties.
@@ -91,7 +75,7 @@ public class NacosConfigProperties {
 	}
 
 	/**
-	 * Compatible with the old configuration
+	 * Compatible with the old configuration.
 	 */
 	private void compatibilityProcessing() {
 		if (null == this.getSharedConfigs() || this.getSharedConfigs().isEmpty()) {
@@ -135,6 +119,16 @@ public class NacosConfigProperties {
 	 * nacos config dataId prefix.
 	 */
 	private String prefix;
+
+	/**
+	 * nacos config dataId name.
+	 */
+	private String name;
+
+	/**
+	 * the master switch for refresh configuration, it default opened(or true).
+	 */
+	private boolean refreshEnabled = true;
 
 	/**
 	 * the suffix of nacos config dataId, also the file extension of config content.
@@ -202,11 +196,6 @@ public class NacosConfigProperties {
 	private String clusterName;
 
 	/**
-	 * nacos config dataId name.
-	 */
-	private String name;
-
-	/**
 	 * the dataids for configurable multiple shared configurations , multiple separated by
 	 * commas . recommend to use {@link NacosConfigProperties#sharedConfigs} .
 	 */
@@ -242,10 +231,6 @@ public class NacosConfigProperties {
 	 * a set of extensional configurations .eg: spring.cloud.nacos.config.ext-configs[0] .
 	 */
 	private List<Config> extConfigs;
-
-	private ConfigService configService;
-
-	// todo sts support
 
 	public String getServerAddr() {
 		return serverAddr;
@@ -379,6 +364,10 @@ public class NacosConfigProperties {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Deprecated
 	public String getSharedDataids() {
 		return sharedDataids;
@@ -433,52 +422,12 @@ public class NacosConfigProperties {
 		this.extConfigs = extConfigs;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public boolean isRefreshEnabled() {
+		return refreshEnabled;
 	}
 
-	/**
-	 * @see NacosConfigManager#getConfigService() .
-	 * @return ConfigService
-	 */
-	@Deprecated
-	public ConfigService configServiceInstance() {
-		return configService;
-	}
-
-	public void initConfigService(ConfigService configService) {
-		this.configService = configService;
-	}
-
-	/**
-	 * assemble properties for configService. (cause by rename : Remove the interference
-	 * of auto prompts when writing,because autocue is based on get method.
-	 */
-	Properties assembleConfigServiceProperties() {
-		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
-		properties.put(ENCODE, Objects.toString(this.encode, ""));
-		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
-		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
-		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
-		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
-		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
-		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
-		properties.put(CONFIG_LONG_POLL_TIMEOUT,
-				Objects.toString(this.configLongPollTimeout, ""));
-		properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
-		properties.put(ENABLE_REMOTE_SYNC_CONFIG,
-				Objects.toString(this.enableRemoteSyncConfig, ""));
-		String endpoint = Objects.toString(this.endpoint, "");
-		if (endpoint.contains(":")) {
-			int index = endpoint.indexOf(":");
-			properties.put(ENDPOINT, endpoint.substring(0, index));
-			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
-		}
-		else {
-			properties.put(ENDPOINT, endpoint);
-		}
-		return properties;
+	public void setRefreshEnabled(boolean refreshEnabled) {
+		this.refreshEnabled = refreshEnabled;
 	}
 
 	@Override

@@ -214,6 +214,7 @@ public class NacosConfigurationNewTest {
 		assertThat(map.get("NacosConfigProperties")).isEqualTo(properties);
 		assertThat(map.get("RefreshHistory")).isEqualTo(refreshHistory.getRecords());
 	}
+
 	private void checkShareConfigs() throws Exception {
 		assertThat(properties.getSharedConfigs() != null);
 	}
