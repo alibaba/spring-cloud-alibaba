@@ -59,6 +59,10 @@ public class NacosRefreshHistory {
 		return records;
 	}
 
+	public static String getKey(String dataId, String groupId) {
+		return String.format("%s##%s", dataId, groupId);
+	}
+
 	private String md5(String data) {
 		if (StringUtils.isEmpty(data)) {
 			return null;
