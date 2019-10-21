@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author xiaojing
  */
+@Deprecated
 @Component
 public class NacosRefreshProperties {
 
