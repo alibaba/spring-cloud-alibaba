@@ -63,11 +63,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.nacos.config.cluster-name=test-cluster",
 		"spring.cloud.nacos.config.file-extension=properties",
 		"spring.cloud.nacos.config.contextPath=test-contextpath",
-		"spring.cloud.nacos.config.ext-configs[0].data-id=ext-config-common01.properties",
-		"spring.cloud.nacos.config.ext-configs[1].data-id=ext-config-common02.properties",
-		"spring.cloud.nacos.config.ext-configs[1].group=GLOBAL_GROUP",
-		"spring.cloud.nacos.config.shared-dataids[0]=common1.properties",
-		"spring.cloud.nacos.config.shared-dataids[1]=common2.properties",
+		"spring.cloud.nacos.config.extension-configs[0].data-id=ext-config-common01.properties",
+		"spring.cloud.nacos.config.extension-configs[1].data-id=ext-config-common02.properties",
+		"spring.cloud.nacos.config.extension-configs[1].group=GLOBAL_GROUP",
+		"spring.cloud.nacos.config.shared-configs[0]=common1.properties",
+		"spring.cloud.nacos.config.shared-configs[1]=common2.properties",
 		"spring.cloud.nacos.config.accessKey=test-accessKey",
 		"spring.cloud.nacos.config.secretKey=test-secretKey" }, webEnvironment = NONE)
 public class NacosConfigurationNewTest {

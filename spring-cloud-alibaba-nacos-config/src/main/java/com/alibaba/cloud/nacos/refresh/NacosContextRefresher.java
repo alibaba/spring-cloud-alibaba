@@ -29,16 +29,15 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.AbstractSharedListener;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * On application start up, NacosContextRefresher add nacos listeners to all application
@@ -54,6 +53,8 @@ public class NacosContextRefresher
 	private final static Logger log = LoggerFactory
 			.getLogger(NacosContextRefresher.class);
 
+	private static final String REFRESH_ARGS_PROPERTY_SOURCE = "refreshArgs";
+
 	private static final AtomicLong REFRESH_COUNT = new AtomicLong(0);
 
 	private final NacosConfigProperties nacosConfigProperties;
@@ -68,8 +69,7 @@ public class NacosContextRefresher
 
 	private Map<String, Listener> listenerMap = new ConcurrentHashMap<>(16);
 
-	public NacosContextRefresher(ConfigurableApplicationContext context,
-			RefreshScope scope, NacosConfigManager nacosConfigManager,
+	public NacosContextRefresher(NacosConfigManager nacosConfigManager,
 			NacosRefreshHistory nacosRefreshHistory) {
 		this.nacosConfigProperties = nacosConfigManager.getNacosConfigProperties();
 		this.configService = nacosConfigManager.getConfigService();
@@ -109,6 +109,7 @@ public class NacosContextRefresher
 							String configInfo) {
 						refreshCountIncrement();
 						nacosRefreshHistory.addRefreshRecord(dataId, group, configInfo);
+						//todo feature: support single refresh for listening configuration
 						applicationContext.publishEvent(
 								new RefreshEvent(this, null, "Refresh Nacos config"));
 						if (log.isDebugEnabled()) {

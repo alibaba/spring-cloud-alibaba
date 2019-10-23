@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.nacos.refresh;
 
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class NacosRefreshProperties {
 
+	/**
+	 * recommend to use {@code NacosConfigProperties#refreshEnabled}
+	 * {@link NacosConfigProperties#setRefreshEnabled(boolean)}
+	 */
 	@Value("${spring.cloud.nacos.config.refresh.enabled:true}")
 	private boolean enabled = true;
 
