@@ -32,39 +32,40 @@
     {
       "name": "spring.cloud.nacos.config.shared-dataids",
       "type": "java.lang.String",
-      "description": "the dataids for configurable multiple shared configurations , multiple separated by commas. recommend to use {@link NacosConfigProperties#sharedConfigs} ."
+      "description": "the dataids for configurable multiple shared configurations , multiple separated by commas ."
     },
     {
       "name": "spring.cloud.nacos.config.shared-configs",
       "type": "java.util.List",
-      "description": "a set of shared configurations . eg: spring.cloud.nacos.config.shared-configs[0] ."
+      "description": "a set of shared configurations .e.g: spring.cloud.nacos.config.shared-configs[0]=xxx ."
     },
-    {
-      "name": "spring.cloud.nacos.config.refreshableDataids",
-      "type": "java.lang.String",
-      "description": "refreshable dataids , multiple separated by commas ,recommend to use {@link NacosConfigProperties#refreshableDataIds} ."
-    },
+
     {
       "name": "spring.cloud.nacos.config.refreshable-dataids",
-      "type": "java.util.List",
-      "description": "a set of refreshable configurations , eg: spring.cloud.nacos.config.refreshable-dataids[0] ."
+      "type": "java.lang.String",
+      "description": "refreshable dataids , multiple separated by commas .Not providing support,the need to refresh is specified by the respective refresh configuration."
     },
     {
-      "name": "spring.cloud.nacos.config.ext-configs",
+      "name": "spring.cloud.nacos.config.ext-config",
       "type": "java.util.List",
-      "description": "a set of extended configurations. recommend to use {@link NacosConfigProperties#extConfigs} ."
+      "description": "a set of extended configurations ."
+    },
+    {
+      "name": "spring.cloud.nacos.config.extension-configs",
+      "type": "java.util.List",
+      "description": "a set of extensional configurations .e.g: spring.cloud.nacos.config.extension-configs[0]=xxx ."
+    },
+    {
+      "name": "spring.cloud.nacos.config.refresh-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "the master switch for refresh configuration, it default opened(true)."
     },
     {
       "name": "spring.cloud.nacos.config.enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,
       "description": "enable nacos config or not."
-    },
-    {
-      "name": "spring.cloud.nacos.config.refresh-enabled",
-      "type": "java.lang.Boolean",
-      "defaultValue": true,
-      "description": "the master switch for refresh configuration, enable nacos config refresh or not ."
     }
   ]
 }
