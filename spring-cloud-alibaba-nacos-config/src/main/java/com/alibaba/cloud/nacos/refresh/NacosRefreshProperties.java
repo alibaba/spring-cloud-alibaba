@@ -30,7 +30,7 @@ public class NacosRefreshProperties {
 
 	/**
 	 * recommend to use {@code NacosConfigProperties#refreshEnabled}
-	 * {@link NacosConfigProperties#setRefreshEnabled(boolean)}
+	 * {@link NacosConfigProperties#setRefreshEnabled(boolean)}.
 	 */
 	@Value("${spring.cloud.nacos.config.refresh.enabled:true}")
 	private boolean enabled = true;

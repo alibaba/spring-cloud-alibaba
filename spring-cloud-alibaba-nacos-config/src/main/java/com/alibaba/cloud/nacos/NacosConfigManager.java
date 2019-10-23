@@ -43,8 +43,8 @@ public class NacosConfigManager {
 	public ConfigService getConfigService() {
 		if (Objects.isNull(service)) {
 			try {
-				service = NacosFactory
-						.createConfigService(nacosConfigProperties.assembleConfigServiceProperties());
+				service = NacosFactory.createConfigService(
+						nacosConfigProperties.assembleConfigServiceProperties());
 			}
 			catch (NacosException e) {
 				log.error(e.getMessage());

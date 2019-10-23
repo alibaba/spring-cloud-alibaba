@@ -102,8 +102,7 @@ public class RocketMQMessageChannelBinder extends
 			// if producerGroup is empty, using destination
 			String extendedProducerGroup = producerProperties.getExtension().getGroup();
 			String producerGroup = StringUtils.isEmpty(extendedProducerGroup)
-					? destination.getName()
-					: extendedProducerGroup;
+					? destination.getName() : extendedProducerGroup;
 
 			RocketMQBinderConfigurationProperties mergedProperties = RocketMQBinderUtils
 					.mergeProperties(rocketBinderConfigurationProperties,

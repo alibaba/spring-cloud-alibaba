@@ -60,7 +60,9 @@ public class NacosConfigProperties {
 	 * Prefix of {@link NacosConfigProperties}.
 	 */
 	public static final String PREFIX = "spring.cloud.nacos.config";
+
 	private static final String SEPARATOR = "[,]";
+
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
 
@@ -83,7 +85,6 @@ public class NacosConfigProperties {
 			this.setServerAddr(serverAddr);
 		}
 	}
-
 
 	/**
 	 * nacos config server address.
@@ -184,7 +185,8 @@ public class NacosConfigProperties {
 	private String sharedDataids;
 
 	/**
-	 * a set of shared configurations .e.g: spring.cloud.nacos.config.shared-configs[0]=xxx .
+	 * a set of shared configurations .e.g:
+	 * spring.cloud.nacos.config.shared-configs[0]=xxx .
 	 */
 	private List<Config> sharedConfigs;
 
@@ -408,6 +410,7 @@ public class NacosConfigProperties {
 	/**
 	 * assemble properties for configService. (cause by rename : Remove the interference
 	 * of auto prompts when writing,because autocue is based on get method.
+	 * @return properties
 	 */
 	public Properties assembleConfigServiceProperties() {
 		Properties properties = new Properties();

@@ -29,7 +29,6 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.AbstractSharedListener;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +108,8 @@ public class NacosContextRefresher
 							String configInfo) {
 						refreshCountIncrement();
 						nacosRefreshHistory.addRefreshRecord(dataId, group, configInfo);
-						//todo feature: support single refresh for listening configuration
+						// todo feature: support single refresh for listening
+						// configuration
 						applicationContext.publishEvent(
 								new RefreshEvent(this, null, "Refresh Nacos config"));
 						if (log.isDebugEnabled()) {

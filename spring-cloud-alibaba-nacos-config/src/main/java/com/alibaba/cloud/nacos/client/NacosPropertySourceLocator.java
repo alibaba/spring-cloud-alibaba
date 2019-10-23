@@ -98,7 +98,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	/**
-	 * load shared configuration
+	 * load shared configuration.
 	 */
 	private void loadSharedConfiguration(
 			CompositePropertySource compositePropertySource) {
@@ -127,7 +127,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	/**
-	 * load extensional configuration
+	 * load extensional configuration.
 	 */
 	private void loadExtConfiguration(CompositePropertySource compositePropertySource) {
 		// old configuration
@@ -173,7 +173,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	/**
-	 * load configuration of application
+	 * load configuration of application.
 	 */
 	private void loadApplicationConfiguration(
 			CompositePropertySource compositePropertySource, String dataIdPrefix,
@@ -260,4 +260,5 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 		return false;
 	}
+
 }

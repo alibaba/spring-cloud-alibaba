@@ -56,4 +56,5 @@ public final class NacosPropertySourceRepository {
 	private static String getMapKey(String dataId, String group) {
 		return String.format("%s$%s", dataId, group);
 	}
+
 }
