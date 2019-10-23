@@ -43,12 +43,17 @@ public final class NacosPropertySourceRepository {
 
 	public static void collectNacosPropertySources(
 			NacosPropertySource nacosPropertySource) {
-		NACOS_PROPERTY_SOURCE_REPOSITORY.putIfAbsent(nacosPropertySource.getDataId(),
-				nacosPropertySource);
+		NACOS_PROPERTY_SOURCE_REPOSITORY
+				.putIfAbsent(getMapKey(nacosPropertySource.getDataId(),
+						nacosPropertySource.getGroup()), nacosPropertySource);
 	}
 
-	public static NacosPropertySource getNacosPropertySource(String dataId) {
-		return NACOS_PROPERTY_SOURCE_REPOSITORY.get(dataId);
+	public static NacosPropertySource getNacosPropertySource(String dataId,
+			String group) {
+		return NACOS_PROPERTY_SOURCE_REPOSITORY.get(getMapKey(dataId, group));
 	}
 
+	private static String getMapKey(String dataId, String group) {
+		return String.format("%s$%s", dataId, group);
+	}
 }
