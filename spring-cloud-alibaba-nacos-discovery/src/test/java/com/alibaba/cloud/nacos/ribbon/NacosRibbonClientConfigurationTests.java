@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.netflix.client.config.DefaultClientConfigImpl;
 import com.netflix.client.config.IClientConfig;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class NacosRibbonClientConfigurationTests {
 	private WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(NacosRibbonTestConfiguration.class,
 					NacosRibbonClientConfiguration.class,
-					NacosDiscoveryClientAutoConfiguration.class,
+					NacosDiscoveryClientConfiguration.class,
 					RibbonNacosAutoConfiguration.class))
 			.withPropertyValues("spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848")
 			.withPropertyValues("spring.cloud.nacos.discovery.port=18080")

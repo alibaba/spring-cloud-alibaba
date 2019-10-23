@@ -14,61 +14,61 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos;
+package com.alibaba.cloud.nacos.discovery.reactive;
 
-import java.util.List;
+import java.util.Arrays;
 
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
 import com.alibaba.cloud.nacos.discovery.NacosServiceDiscovery;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import org.springframework.cloud.client.ServiceInstance;
 
 import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * @author xiaojing
- * @author echooymxq
- */
+ * @author <a href="mailto:echooy.mxq@gmail.com">echooymxq</a>
+ **/
 @ExtendWith(MockitoExtension.class)
-public class NacosDiscoveryClientTests {
+class NacosReactiveDiscoveryClientTests {
 
 	@Mock
 	private NacosServiceDiscovery serviceDiscovery;
 
 	@Mock
-	private NacosServiceInstance serviceInstance;
+	private ServiceInstance serviceInstance;
 
 	@InjectMocks
-	private NacosDiscoveryClient client;
+	private NacosReactiveDiscoveryClient client;
 
 	@Test
-	public void testGetInstances() throws Exception {
+	void testGetInstances() throws NacosException {
 
-		when(serviceDiscovery.getInstances("service-1"))
+		when(serviceDiscovery.getInstances("reactive-service"))
 				.thenReturn(singletonList(serviceInstance));
 
-		List<ServiceInstance> serviceInstances = client.getInstances("service-1");
+		Flux<ServiceInstance> instances = this.client.getInstances("reactive-service");
 
-		assertThat(serviceInstances).isNotEmpty();
-
+		StepVerifier.create(instances).expectNextCount(1).expectComplete().verify();
 	}
 
 	@Test
-	public void testGetServices() throws Exception {
+	void testGetServices() throws NacosException {
 
-		when(serviceDiscovery.getServices()).thenReturn(singletonList("service-1"));
+		when(serviceDiscovery.getServices())
+				.thenReturn(Arrays.asList("reactive-service1", "reactive-service2"));
 
-		List<String> services = client.getServices();
+		Flux<String> services = this.client.getServices();
 
-		assertThat(services).contains("service-1").size().isEqualTo(1);
-
+		StepVerifier.create(services).expectNext("reactive-service1", "reactive-service2")
+				.expectComplete().verify();
 	}
 
 }
