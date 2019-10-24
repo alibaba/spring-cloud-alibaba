@@ -21,6 +21,7 @@ import org.springframework.cloud.client.ServiceInstance;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author xiaojing
@@ -82,4 +83,34 @@ public class NacosServiceInstance implements ServiceInstance {
 		this.metadata = metadata;
 	}
 
+
+    @Override
+    public String toString() {
+        return "NacosServiceInstance{" + ", serviceId='" + this.serviceId + '\'' + ", host='" + this.host + '\''
+                + ", port=" + this.port + ", secure=" + this.secure + ", metadata="
+                + this.metadata + '}';
+    }
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NacosServiceInstance that = (NacosServiceInstance) o;
+        return this.port == that.port && this.secure == that.secure
+                && Objects.equals(this.serviceId, that.serviceId)
+                && Objects.equals(this.host, that.host)
+                && Objects.equals(this.metadata, that.metadata);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.serviceId, this.host, this.port,
+                this.secure, this.metadata);
+    }
 }
