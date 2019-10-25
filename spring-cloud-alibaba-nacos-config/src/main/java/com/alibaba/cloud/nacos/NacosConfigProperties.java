@@ -78,7 +78,7 @@ public class NacosConfigProperties {
 					.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
 				serverAddr = environment
-						.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
+						.resolvePlaceholders("${spring.cloud.nacos.server-addr:}");
 			}
 			this.setServerAddr(serverAddr);
 		}

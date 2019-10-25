@@ -83,7 +83,7 @@ import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoCon
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient.hostToServiceInstanceList;
+import static com.alibaba.cloud.nacos.discovery.NacosServiceDiscovery.hostToServiceInstanceList;
 import static org.springframework.util.StringUtils.hasText;
 
 /**

@@ -18,11 +18,10 @@ package com.alibaba.cloud.nacos;
 
 import java.util.Objects;
 
+import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureException;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,8 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
  */
 public class NacosConfigManager {
-
-	private static final Logger log = LoggerFactory.getLogger(NacosConfigManager.class);
 
 	private static ConfigService service = null;
 
@@ -46,7 +43,8 @@ public class NacosConfigManager {
 				properties.initConfigService(service);
 			}
 			catch (NacosException e) {
-				log.error("create config service error!properties={},e=,", properties, e);
+				throw new NacosConnectionFailureException(properties.getServerAddr(),
+						e.getMessage(), e);
 			}
 		}
 		return service;
