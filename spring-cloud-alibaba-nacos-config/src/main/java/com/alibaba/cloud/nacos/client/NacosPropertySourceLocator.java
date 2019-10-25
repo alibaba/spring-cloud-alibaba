@@ -102,22 +102,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	 */
 	private void loadSharedConfiguration(
 			CompositePropertySource compositePropertySource) {
-		// old configuration
-		String sharedDataIds = nacosConfigProperties.getSharedDataids();
-		String refreshDataIds = nacosConfigProperties.getRefreshableDataids();
-		if (StringUtils.hasText(sharedDataIds)) {
-			String[] sharedDataIdArray = sharedDataIds
-					.split(SHARED_CONFIG_SEPARATOR_CHAR);
-			checkDataIdFileExtension(sharedDataIdArray);
-			for (String dataId : sharedDataIdArray) {
-				String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
-				boolean isRefreshable = checkDataIdIsRefreshable(refreshDataIds, dataId);
-				loadNacosDataIfPresent(compositePropertySource, dataId, "DEFAULT_GROUP",
-						fileExtension, isRefreshable);
-			}
-		}
-
-		// new configuration
 		List<NacosConfigProperties.Config> sharedConfigs = nacosConfigProperties
 				.getSharedConfigs();
 		if (!CollectionUtils.isEmpty(sharedConfigs)) {
@@ -130,16 +114,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	 * load extensional configuration.
 	 */
 	private void loadExtConfiguration(CompositePropertySource compositePropertySource) {
-		// old configuration
 		List<NacosConfigProperties.Config> extConfigs = nacosConfigProperties
-				.getExtConfig();
-		if (!CollectionUtils.isEmpty(extConfigs)) {
-			checkConfiguration(extConfigs, "ext-config");
-			loadNacosConfiguration(compositePropertySource, extConfigs);
-		}
-
-		// new configuration
-		extConfigs = nacosConfigProperties.getExtensionConfigs();
+				.getExtensionConfigs();
 		if (!CollectionUtils.isEmpty(extConfigs)) {
 			checkConfiguration(extConfigs, "extension-configs");
 			loadNacosConfiguration(compositePropertySource, extConfigs);
@@ -169,7 +145,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			}
 			dataIds[i] = dataId;
 		}
-		checkDataIdFileExtension(dataIds);
+		// Just decide that the current dataId must have a suffix
+		NacosDataParserHandler.getInstance().checkDataId(dataIds);
 	}
 
 	/**
@@ -235,30 +212,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			return;
 		}
 		composite.addFirstPropertySource(nacosPropertySource);
-	}
-
-	private static void checkDataIdFileExtension(String[] dataIdArray) {
-		if (dataIdArray == null || dataIdArray.length < 1) {
-			throw new IllegalStateException("The dataId cannot be empty");
-		}
-		// Just decide that the current dataId must have a suffix
-		NacosDataParserHandler.getInstance().checkDataId(dataIdArray);
-	}
-
-	private boolean checkDataIdIsRefreshable(String refreshDataIds, String sharedDataId) {
-		if (StringUtils.isEmpty(refreshDataIds)) {
-			return false;
-		}
-
-		String[] refreshDataIdArray = refreshDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
-		for (String refreshDataId : refreshDataIdArray) {
-			if (StringUtils.hasText(refreshDataId)
-					&& refreshDataId.equals(sharedDataId)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 }

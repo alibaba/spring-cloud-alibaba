@@ -16,9 +16,14 @@
 
 package com.alibaba.cloud.nacos;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
@@ -28,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
@@ -60,6 +66,8 @@ public class NacosConfigProperties {
 	 * Prefix of {@link NacosConfigProperties}.
 	 */
 	public static final String PREFIX = "spring.cloud.nacos.config";
+
+	private static final String COMMAS = ",";
 
 	private static final String SEPARATOR = "[,]";
 
@@ -177,32 +185,10 @@ public class NacosConfigProperties {
 	private String name;
 
 	/**
-	 * the dataids for configurable multiple shared configurations , multiple separated by
-	 * commas. recommend to use
-	 * {@link com.alibaba.cloud.nacos.NacosConfigProperties#sharedConfigs} .
-	 */
-	@Deprecated
-	private String sharedDataids;
-
-	/**
 	 * a set of shared configurations .e.g:
 	 * spring.cloud.nacos.config.shared-configs[0]=xxx .
 	 */
 	private List<Config> sharedConfigs;
-
-	/**
-	 * refreshable dataids , multiple separated by commas .Not providing support,the need
-	 * to refresh is specified by the respective refresh configuration.
-	 */
-	@Deprecated
-	private String refreshableDataids;
-
-	/**
-	 * a set of extended configurations. recommend to use
-	 * {@link com.alibaba.cloud.nacos.NacosConfigProperties#extensionConfigs} .
-	 */
-	@Deprecated
-	private List<Config> extConfig;
 
 	/**
 	 * a set of extensional configurations .e.g:
@@ -349,36 +335,6 @@ public class NacosConfigProperties {
 		return name;
 	}
 
-	@Deprecated
-	public String getSharedDataids() {
-		return sharedDataids;
-	}
-
-	@Deprecated
-	public void setSharedDataids(String sharedDataids) {
-		this.sharedDataids = sharedDataids;
-	}
-
-	@Deprecated
-	public String getRefreshableDataids() {
-		return refreshableDataids;
-	}
-
-	@Deprecated
-	public void setRefreshableDataids(String refreshableDataids) {
-		this.refreshableDataids = refreshableDataids;
-	}
-
-	@Deprecated
-	public List<Config> getExtConfig() {
-		return extConfig;
-	}
-
-	@Deprecated
-	public void setExtConfig(List<Config> extConfig) {
-		this.extConfig = extConfig;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -405,6 +361,102 @@ public class NacosConfigProperties {
 
 	public void setRefreshEnabled(boolean refreshEnabled) {
 		this.refreshEnabled = refreshEnabled;
+	}
+
+	/**
+	 * recommend to use {@link NacosConfigProperties#sharedConfigs} .
+	 * @return string
+	 */
+	@Deprecated
+	@DeprecatedConfigurationProperty(
+			reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.",
+			replacement = PREFIX + ".shared-configs[x]")
+	public String getSharedDataids() {
+		return null == getSharedConfigs() ? null : getSharedConfigs().stream()
+				.map(Config::getDataId).collect(Collectors.joining(COMMAS));
+	}
+
+	/**
+	 * recommend to use {@link NacosConfigProperties#sharedConfigs} and not use it at the
+	 * same time .
+	 * @param sharedDataids the dataids for configurable multiple shared configurations ,
+	 * multiple separated by commas .
+	 */
+	@Deprecated
+	public void setSharedDataids(String sharedDataids) {
+		if (null != sharedDataids && sharedDataids.trim().length() > 0) {
+			List<Config> list = new ArrayList<>();
+			Stream.of(sharedDataids.split(SEPARATOR))
+					.forEach(dataId -> list.add(new Config(dataId.trim())));
+			this.compatibleSharedConfigs(list);
+		}
+	}
+
+	/**
+	 * Not providing support,the need to refresh is specified by the respective refresh
+	 * configuration and not use it at the same time .
+	 * @return string
+	 */
+	@Deprecated
+	@DeprecatedConfigurationProperty(
+			reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.",
+			replacement = PREFIX + ".shared-configs[x].refresh")
+	public String getRefreshableDataids() {
+		return null == getSharedConfigs() ? null
+				: getSharedConfigs().stream().filter(Config::isRefresh)
+						.map(Config::getDataId).collect(Collectors.joining(COMMAS));
+	}
+
+	/**
+	 * Not providing support,the need to refresh is specified by the respective refresh
+	 * configuration and not use it at the same time .
+	 * @param refreshableDataids refreshable dataids ,multiple separated by commas .
+	 */
+	@Deprecated
+	public void setRefreshableDataids(String refreshableDataids) {
+		if (null != refreshableDataids && refreshableDataids.trim().length() > 0) {
+			List<Config> list = new ArrayList<>();
+			Stream.of(refreshableDataids.split(SEPARATOR)).forEach(
+					dataId -> list.add(new Config(dataId.trim()).setRefresh(true)));
+			this.compatibleSharedConfigs(list);
+		}
+	}
+
+	private void compatibleSharedConfigs(List<Config> configList) {
+		if (null != this.getSharedConfigs()) {
+			configList.addAll(this.getSharedConfigs());
+		}
+		List<Config> result = new ArrayList<>();
+		configList.stream()
+				.collect(Collectors.groupingBy(cfg -> (cfg.getGroup() + cfg.getDataId()),
+						() -> new ConcurrentHashMap<>(new LinkedHashMap<>()),
+						Collectors.toList()))
+				.forEach((key, list) -> {
+					list.stream()
+							.reduce((a, b) -> new Config(a.getDataId(), a.getGroup(),
+									a.isRefresh() || (b != null && b.isRefresh())))
+							.ifPresent(result::add);
+				});
+		this.setSharedConfigs(result);
+	}
+
+	/**
+	 * recommend to use
+	 * {@link com.alibaba.cloud.nacos.NacosConfigProperties#extensionConfigs} and not use
+	 * it at the same time .
+	 * @return extensionConfigs
+	 */
+	@Deprecated
+	@DeprecatedConfigurationProperty(
+			reason = "replaced to NacosConfigProperties#extensionConfigs and not use it at the same time .",
+			replacement = PREFIX + ".extension-configs[x]")
+	public List<Config> getExtConfig() {
+		return this.getExtensionConfigs();
+	}
+
+	@Deprecated
+	public void setExtConfig(List<Config> extConfig) {
+		this.setExtensionConfigs(extConfig);
 	}
 
 	/**
@@ -451,10 +503,9 @@ public class NacosConfigProperties {
 				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
 				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
 				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
-				+ '\'' + ", name='" + name + '\'' + ", sharedDataids='" + sharedDataids
-				+ '\'' + ", shares=" + sharedConfigs + ", refreshableDataids='"
-				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + ", extensions="
-				+ extensionConfigs + ", refreshEnabled=" + refreshEnabled + '}';
+				+ '\'' + ", name='" + name + '\'' + '\'' + ", shares=" + sharedConfigs
+				+ ", extensions=" + extensionConfigs + ", refreshEnabled="
+				+ refreshEnabled + '}';
 	}
 
 	public static class Config {
@@ -486,28 +537,43 @@ public class NacosConfigProperties {
 			this.group = group;
 		}
 
+		public Config(String dataId, String group, boolean refresh) {
+			this.dataId = dataId;
+			this.group = group;
+			this.refresh = refresh;
+		}
+
 		public String getDataId() {
 			return dataId;
 		}
 
-		public void setDataId(String dataId) {
+		public Config setDataId(String dataId) {
 			this.dataId = dataId;
+			return this;
 		}
 
 		public String getGroup() {
 			return group;
 		}
 
-		public void setGroup(String group) {
+		public Config setGroup(String group) {
 			this.group = group;
+			return this;
 		}
 
 		public boolean isRefresh() {
 			return refresh;
 		}
 
-		public void setRefresh(boolean refresh) {
+		public Config setRefresh(boolean refresh) {
 			this.refresh = refresh;
+			return this;
+		}
+
+		@Override
+		public String toString() {
+			return "Config{" + "dataId='" + dataId + '\'' + ", group='" + group + '\''
+					+ ", refresh=" + refresh + '}';
 		}
 
 	}
