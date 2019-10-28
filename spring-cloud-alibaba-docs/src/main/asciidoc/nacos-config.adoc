@@ -1,16 +1,35 @@
 == Spring Cloud Alibaba Nacos Config
 
-Nacos provides key/value storage of configurations and other metadata as well as server and client support for externalized configurations in distributed systems. With Spring Cloud Alibaba Nacos Config, you can manage externalized configurations of your Spring Cloud applications in the Nacos Server.
+Nacos is an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 
-Spring Cloud Alibaba Nacos Config is an alternative solution for Config Server and Client. The concepts on the client and server have the same abstractions with Spring Environment and PropertySource. In special Bootstrap phases, configurations are loaded to the Spring environment. During the application lifecycle from development, deployment, test to production, you can manage the configurations across all the environments, and make sure that all information required for application migration is ready when needed.
+Use Spring Cloud Alibaba Nacos Config to quickly access Nacos configuration management capabilities based on Spring Cloud's programming model.
+
+=== How to Introduce Nacos Config for configuration
+
+please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-config`.
+
+[source,xml,indent=0]
+----
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+</dependency>
+----
 
 === Quickstart
 
-===== Initialize Nacos Server
+Nacos Config uses DataId and GROUP to determine a configuration.
 
-1. Start Nacos Server. Refer to https://nacos.io/zh-cn/docs/quick-start.html[Nacos Documentation] for details about how to start the Nacos server.
+The following figure shows that the DataId uses `myDataid`, GROUP uses `DEFAULT_GROUP`, and configures a configuration item of the format Properties:
 
-2. Add the following configurations in Nacos:
+.Nacos Config Item
+image::https://img.alicdn.com/tfs/TB1N2nxbRr0gK0jSZFnXXbRRXXa-2448-1194.png[]
+
+==== Initialize Nacos Server
+
+For specific startup methods, refer to the "Nacos Server Startup" section of the Spring Cloud Alibaba Nacos Discovery section.
+
+After the Nacos Server is started, add how to configure it:
 
 [source,subs="normal"]
 ----
@@ -24,16 +43,16 @@ Configuration content:   user.name=nacos-config-properties
             user.age=90
 ----
 
-NOTE: The default file extension of dataid is properties.
+NOTE: The default file extension of DataId is properties.
 
 ===== Usage on the Client
 
-If you want to use Nacos to manage externalized configurations for your applications, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-config`.
+If you want to use Nacos to manage externalized configurations for your applications, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-config`.
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
 </dependency>
 ----
@@ -43,10 +62,10 @@ Now we can create a standard Spring Boot application.
 [source,java]
 ----
 @SpringBootApplication
-public class ProviderApplication {
+public class NacosConfigApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(NacosConfigApplication.class, args);
         String userName = applicationContext.getEnvironment().getProperty("user.name");
         String userAge = applicationContext.getEnvironment().getProperty("user.age");
         System.err.println("user name :" +userName+"; age: "+userAge);
@@ -59,6 +78,7 @@ Before running this example, we need to configure the address of the Nacos serve
 .bootstrap.properties
 [source,properties]
 ----
+# DataId By default, the `spring.application.name` configuration is combined with the file extension (the configuration format uses properties by default), and the GROUP is not configured to use DEFAULT_GROUP by default. Therefore, the Nacos Config configuration corresponding to the configuration file has a DataId of nacos-config.properties and a GROUP of DEFAULT_GROUP
 spring.application.name=nacos-config
 spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 ----
@@ -71,17 +91,16 @@ Run this example and you can see the following output:
 
 [source,subs="normal"]
 ----
-2018-11-02 14:24:51.638  INFO 32700 --- [main] c.a.demo.provider.ProviderApplication    : Started ProviderApplication in 14.645 seconds (JVM running for 15.139)
+2018-11-02 14:24:51.638  INFO 32700 --- [main] c.a.demo.provider.NacosConfigApplication    : Started NacosConfigApplication in 14.645 seconds (JVM running for 15.139)
 user name :nacos-config-properties; age: 90
 2018-11-02 14:24:51.688  INFO 32700 --- [-127.0.0.1:8848] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@a8c5e74: startup date [Fri Nov 02 14:24:51 CST 2018]; root of context hierarchy
-2018-11
 ----
 
 === Add Configurations with DataId in YAML Format
 
-spring-cloud-starter-alibaba-nacos-config supports yaml format as well. You only need to complete the following 2 steps.
+Nacos Config supports yaml format as well. You only need to complete the following 2 steps.
 
-1. In the bootstrap.properties file, add the following line to claim that the format of dataid is yaml. As follows:
+1、In the bootstrap.properties file, add the following line to claim that the format of DataId is yaml. As follows:
 
 .bootstrap.properties
 [source,yaml]
@@ -89,7 +108,7 @@ spring-cloud-starter-alibaba-nacos-config supports yaml format as well. You only
 spring.cloud.nacos.config.file-extension=yaml
 ----
 
-2. Add a configuration with the dataId in yaml format on the Nacos console, as shown below:
+2、Add a configuration with the DataId in yaml format on the Nacos console, as shown below:
 
 [source,subs="normal"]
 ----
@@ -100,29 +119,29 @@ Group  :        DEFAULT_GROUP
 Configuration format:        YAML
 
 Configuration content:        user.name: nacos-config-yaml
-                user.age: 68
+                              user.age: 68
 ----
 
 After completing the preivous two steps, restart the testing program and you will see the following result.
 
 [source,subs="normal"]
 ----
-2018-11-02 14:59:00.484  INFO 32928 --- [main] c.a.demo.provider.ProviderApplication:Started ProviderApplication in 14.183 seconds (JVM running for 14.671)
+2018-11-02 14:59:00.484  INFO 32928 --- [main] c.a.demo.provider.NacosConfigApplication:Started NacosConfigApplication in 14.183 seconds (JVM running for 14.671)
 user name :nacos-config-yaml; age: 68
 2018-11-02 14:59:00.529  INFO 32928 --- [-127.0.0.1:8848] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@265a478e: startup date [Fri Nov 02 14:59:00 CST 2018]; root of context hierarchy
 ----
 
 === Support Dynamic Configuration Udpates
 
-spring-cloud-starter-alibaba-nacos-config also supports dynamic configuration updates. The code for starting Spring Boot application testing is as follows:
+Nacos Config also supports dynamic configuration updates. The code for starting Spring Boot application testing is as follows:
 
 [source,java]
 ----
 @SpringBootApplication
-public class ProviderApplication {
+public class NacosConfigApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(NacosConfigApplication.class, args);
         while(true) {
             //When configurations are refreshed dynamically, they will be updated in the Enviroment, therefore here we retrieve configurations from Environment every other second.
             String userName = applicationContext.getEnvironment().getProperty("user.name");
@@ -153,7 +172,7 @@ NOTE: You can disable automatic refresh with this setting`spring.cloud.nacos.con
 
 === Support configurations at the profile level
 
-When configurations are loaded by spring-cloud-starter-alibaba-nacos-config, basic configurations with  dataid of `${spring.application.name}. ${file-extension:properties}` , and dataid of `${spring.application.name}-${profile}. ${file-extension:properties}` are also loaded. If you need to use different configurations from different environments, you can use the `${spring.profiles.active}` configuration provided by Spring.
+When configurations are loaded by Nacos Config, basic configurations with  DataId of `${spring.application.name}. ${file-extension:properties}` , and DataId of `${spring.application.name}-${profile}. ${file-extension:properties}` are also loaded. If you need to use different configurations from different environments, you can use the `${spring.profiles.active}` configuration provided by Spring.
 
 [source,properties]
 ----
@@ -162,7 +181,7 @@ spring.profiles.active=develop
 
 NOTE: When specified in configuration files, ${spring.profiles.active} must be placed in bootstrap.properties.
 
-Add a basic configuration in Nacos, with a dataid of nacos-config-develop.yaml, as shown below:
+Add a basic configuration in Nacos, with a DataId of nacos-config-develop.yaml, as shown below:
 
 [source,subs="normal"]
 ----
@@ -180,10 +199,10 @@ Run the following Spring Boot application testing code:
 [source,java]
 ----
 @SpringBootApplication
-public class ProviderApplication {
+public class NacosConfigApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(NacosConfigApplication.class, args);
         while(true) {
             String userName = applicationContext.getEnvironment().getProperty("user.name");
             String userAge = applicationContext.getEnvironment().getProperty("user.age");
@@ -210,7 +229,7 @@ To switch to the production environment, you only need to change the parameter o
 spring.profiles.active=product
 ----
 
-At the same time, add the basic configuration with the dataid in the  Nacos of your production environment. For example, you can add the configuration with the dataid of nacos-config-product.yaml in Nacos of your production environment:
+At the same time, add the basic configuration with the DataId in the  Nacos of your production environment. For example, you can add the configuration with the DataId of nacos-config-product.yaml in Nacos of your production environment:
 
 [source,subs="normal"]
 ----
@@ -319,3 +338,85 @@ NOTE: When using `spring.cloud.nacos.config.shared-dataids`, the data Id must ha
 And the configuration in `spring.cloud.nacos.config.file-extension` does not have any impact on the customized Data Id file extension.
 
 NOTE: When `spring.cloud.nacos.config.refreshable-dataids` specifies the data ids that support dynamic refresh, the corresponding values of the data ids should also specify file extensions.
+
+=== Nacos Config Endpoint
+
+Nacos Config provides an Endpoint internally with a corresponding endpoint id of `nacos-config`.
+
+Endpoint exposed json contains three properties:
+
+1. Sources: Current application configuration data information
+
+2. RefreshHistory: Configuration refresh history
+
+3. NacosConfigProperties: Shows the current basic Nacos configurations of the current service
+
+The followings shows how a service instance accesses the Endpoint:
+
+[source,json,indent=0]
+----
+{
+	"NacosConfigProperties": {
+		"serverAddr": "127.0.0.1:8848",
+		"encode": null,
+		"group": "DEFAULT_GROUP",
+		"prefix": null,
+		"fileExtension": "properties",
+		"timeout": 3000,
+		"endpoint": null,
+		"namespace": null,
+		"accessKey": null,
+		"secretKey": null,
+		"contextPath": null,
+		"clusterName": null,
+		"name": null,
+		"sharedDataids": "base-common.properties,common.properties",
+		"refreshableDataids": "common.properties",
+		"extConfig": null
+	},
+	"RefreshHistory": [{
+		"timestamp": "2019-07-29 11:20:04",
+		"dataId": "nacos-config-example.properties",
+		"md5": "7d5d7f1051ff6571e2ec9f90887d9d91"
+	}],
+	"Sources": [{
+		"lastSynced": "2019-07-29 11:19:04",
+		"dataId": "common.properties"
+	}, {
+		"lastSynced": "2019-07-29 11:19:04",
+		"dataId": "base-common.properties"
+	}, {
+		"lastSynced": "2019-07-29 11:19:04",
+		"dataId": "nacos-config-example.properties"
+	}]
+}
+----
+
+
+=== Disable Nacos Config AutoConfiguration
+
+set spring.cloud.nacos.config.enabled = false to disable Spring Cloud Nacos Config AutoConfiguration.
+
+=== More Information about Nacos Config Starter Configurations
+
+The following shows the other configurations of the starter of Nacos Config:
+
+|===
+|Configuration |Key |Default Value |Description
+|Server address|`spring.cloud.nacos.config.server-addr`|| IP and port of the Nacos Server listener
+|Dataid from nacos config|`spring.cloud.nacos.config.name`|| First take the prefix, then go to the name, and finally take spring.application.name
+|Dataid from nacos config|`spring.cloud.nacos.config.prefix`|| First take the prefix, then go to the name, and finally take spring.application.name
+|Encode for nacos config content|`spring.cloud.nacos.config.encode`||Encode for nacos config content
+|GROUP for nacos config|`spring.cloud.nacos.config.group`|`DEFAULT_GROUP`|GROUP for nacos config
+|The suffix of nacos config dataId, also the file extension of config content.|`spring.cloud.nacos.config.fileExtension`|`properties`|The suffix of nacos config dataId, also the file extension of config content(now support properties or yaml(yml))
+|Timeout for get config from nacos|`spring.cloud.nacos.config.timeout`|`3000`|Timeout for get config from nacos
+|Endpoint|`spring.cloud.nacos.config.endpoint`||Endpoint
+|Namespace|`spring.cloud.nacos.config.namespace`||Namespace
+|AccessKey|`spring.cloud.nacos.config.accessKey`||Alibaba Cloud account accesskey
+|SecretKey|`spring.cloud.nacos.config.secretKey`||Alibaba Cloud account secretkey
+|The context path of Nacos Server|`spring.cloud.nacos.config.contextPath`||The context path of Nacos Server
+|Cluster name|`spring.cloud.nacos.config.clusterName`||Cluster name
+|Dataid for Shared Configuration|`spring.cloud.nacos.config.sharedDataids`||Dataid for Shared Configuration, split by ","
+|Dynamic refresh dataid for Shared Configuration|`spring.cloud.nacos.config.refreshableDataids`||Dynamic refresh dataid for Shared Configuration, split by ","
+|custom dataid|`spring.cloud.nacos.config.extConfig`||It's a List，build up by `Config` POJO. `Config` has 3 attributes, `dataId`, `group` and `refresh`
+|===

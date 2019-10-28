@@ -1,34 +1,52 @@
 == Spring Cloud Alibaba Nacos Discovery
 
-This project provides seamless integration with Nacos for Spring Boot applications in terms of service registration and discovery through automatic configurations and other standard usages of the Spring programming model.
-Nacos has endured the tough tests of the Double 11 Shopping festivals for years. By adding a few simple annotations, you can register a service quickly and use Nacos as the service registration center for a large scale distributed system.
+Nacos is an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 
-=== Service Registration and Discovery: Nacos Discovery Starter
+With Spring Cloud Alibaba Nacos Discovery, you can quickly access the Nacos service registration feature based on Spring Cloud's programming model.
+
+=== Service Registration/Discovery: Nacos Discovery
 
 Service discovery is one of the key components in the microservices architecture. In such a architecture, configuring a service list for every client manually could be a daunting task, and makes dynamic scaling extremely difficult.
- Nacos Discovery Starter helps you to register your service to the Nacos server automatically, and the Nacos server keeps track of the services and refreshes the service list dynamically. In addition, Nacos
-Discovery Starter registers some of the metadata of the service instance, such as host, port, health check URL, homepage to Nacos. For details about how to download and start Nacos, refer to the https://nacos.io/zh-cn/docs/quick-start.html[Nacos Website]。
+ Nacos Discovery helps you to register your service to the Nacos server automatically, and the Nacos server keeps track of the services and refreshes the service list dynamically. In addition, Nacos
+Discovery registers some of the metadata of the service instance, such as host, port, health check URL, homepage to Nacos. For details about how to download and start Nacos, refer to the https://nacos.io/zh-cn/docs/quick-start.html[Nacos Website].
 
-==== How to Introduce Nacos Discovery Starter
+=== How to Introduce Nacos Discovery for service registration/discovery
 
-please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-discovery`.
+please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alibaba-nacos-discovery`.
 
 [source,xml,indent=0]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
 </dependency>
 ----
+
+=== An example of using Nacos Discovery for service registration/discovery and call
+
+Nacos Discovery integrate with the Netflix Ribbon, RestTemplate or OpenFeign can be used for service-to-service calls.
+
+==== Nacos Server Startup
+
+For details about how to download and start Nacos, refer to the https://nacos.io/zh-cn/docs/quick-start.html[Nacos Website].
+
+After Nacos Server starts, go to http://ip:8848 to view the console (default account name/password is nacos/nacos):
+
+.Nacos Dashboard
+image::https://img.alicdn.com/tfs/TB1XEfwbQH0gK0jSZPiXXavapXa-2790-1060.png[]
+
+For more Nacos Server versions, you can download the latest version from https://github.com/alibaba/nacos/releases[release page].
 
 ==== Start a Provider Application
 
 The following sample illustrates how to register a service to Nacos.
 
-1. Configuration of pom.xml The following is a complete example of pom.xml:
-[source, xml]
+* Configuration of pom.xml The following is a complete example of pom.xml：
+
+.pom.xml
+[source,xml]
 ----
-<?xml version="1.0" encoding="UTF-8"? >
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -61,7 +79,7 @@ The following sample illustrates how to register a service to Nacos.
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring.cloud.alibaba.version}</version>
                 <type>pom</type>
@@ -82,7 +100,7 @@ The following sample illustrates how to register a service to Nacos.
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
     </dependencies>
@@ -98,12 +116,13 @@ The following sample illustrates how to register a service to Nacos.
 </project>
 ----
 
-2. Configuration of application.properties Some of the basic configurations of Nacos must be included in application.properties(or application.yaml), as shown below：
-application.properties
+* Configuration of application.properties Some of the basic configurations of Nacos must be included in application.properties(or application.yaml), as shown below：
+
+.application.properties
 [source,properties]
 ----
 server.port=8081
-spring.application.name=nacos-producer
+spring.application.name=nacos-provider
 spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
 management.endpoints.web.exposure.include=*
 ----
@@ -111,7 +130,8 @@ management.endpoints.web.exposure.include=*
 
 NOTE: If you do not want to use Nacos for service registration and discovery, you can set `spring.cloud.nacos.discovery` to `false`.
 
-3. The following is a sample for starting Provider:
+* The following is a sample for starting Provider:
+
 [source,java,indent=0]
 ----
 @SpringBootApplication
@@ -119,7 +139,7 @@ NOTE: If you do not want to use Nacos for service registration and discovery, yo
 public class NacosProviderDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NacosProducerDemoApplication.class, args);
+        SpringApplication.run(NacosProviderDemoApplication.class, args);
     }
 
     @RestController
@@ -136,15 +156,78 @@ Now you can see the registered services on the Nacos console.
 
 NOTE: Before you start the provider application, please start Nacos first. Refer to https://nacos.io/zh-cn/docs/quick-start.html[Naco Website] for more details.
 
-=== Service EndPoint
+==== Start a Consumer Application
 
-spring-cloud-starter-alibaba-nacos-discovery provides an EndPoint, and the address is `http://ip:port/actuator/nacos-discovery`.
-The EndPoint mainly provides two types of information:
+It might not be as easy as starting a provider application, because the consumer needs to call the RESTful service of the provider. In this example, we will use the most primitive way, that is,
+combining the LoadBalanceClient and RestTemolate explicitly to access the RESTful service.
+You can refer to section 1.2 for pom.xml and application.properties configurations. The following is the sample code for starting a consumer application.
 
-    1. Subscribe: Shows the current service subscribers
-    2. NacosDiscoveryProperties: Shows the current basic Nacos configurations of the current service
+NOTE: You can also access the service by using RestTemplate and FeignClient with load balancing.
 
-The followings shows how a service instance accesses the EndPoint:
+[source, java]
+----
+@SpringBootApplication
+@EnableDiscoveryClient
+public class NacosConsumerApp {
+
+    @RestController
+    public class NacosController{
+
+        @Autowired
+        private LoadBalancerClient loadBalancerClient;
+        @Autowired
+        private RestTemplate restTemplate;
+
+        @Value("${spring.application.name}")
+        private String appName;
+
+        @GetMapping("/echo/app-name")
+        public String echoAppName(){
+            //Access through the combination of LoadBalanceClient and RestTemplate
+            ServiceInstance serviceInstance = loadBalancerClient.choose("nacos-provider");
+            String path = String.format("http://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
+            System.out.println("request path:" +path);
+            return restTemplate.getForObject(path,String.class);
+        }
+
+    }
+
+    //Instantiate RestTemplate Instance
+    @Bean
+    public RestTemplate restTemplate(){
+
+        return new RestTemplate();
+    }
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(NacosConsumerApp.class,args);
+    }
+}
+----
+
+In this example, we injected a LoadBalancerClient instance, and instantiated a RestTemplate manually. At the same time, we injected the configuration value of `spring.application.name` into the application,
+so that the current application name can be displayed when calling the service of the provider.
+
+NOTE: Please start Nacos before you start the consumer application. For details, please refer to https://nacos.io/zh-cn/docs/quick-start.html[Nacos Website].
+
+Next, access the `http://ip:port/echo/app-name` interface provided by the consumer. Here we started the port of 8082. The access result is shown below：
+
+ Address：http://127.0.0.1:8082/echo/app-name
+ Access result： Hello Nacos Discovery nacos-consumer
+
+
+=== Nacos Discovery Endpoint
+
+Nacos Discovery provides an Endpoint internally with a corresponding endpoint id of `nacos-discovery`.
+
+Endpoint exposed json contains two properties:
+
+1. subscribe: Shows the current service subscribers
+
+2. NacosDiscoveryProperties: Shows the current basic Nacos configurations of the current service
+
+The followings shows how a service instance accesses the Endpoint:
 
 [source, json]
 ----
@@ -185,7 +268,7 @@ The followings shows how a service instance accesses the EndPoint:
       "lastRefTime": 1541755293119,
       "checksum": "e5a699c9201f5328241c178e804657e11541755293119",
       "allIPs": false,
-      "key": "nacos-producer",
+      "key": "nacos-provider",
       "valid": true
     }
   ],
@@ -211,86 +294,26 @@ The followings shows how a service instance accesses the EndPoint:
 }
 ----
 
-=== Start a Consumer Application
+=== More Information about Nacos Discovery Starter Configurations
 
-It might not be as easy as starting a provider application, because the consumer needs to call the RESTful service of the provider. In this example, we will use the most primitive way, that is,
-combining the LoadBalanceClient and RestTemolate explicitly to access the RESTful service.
-You can refer to section 1.2 for pom.xml and application.properties configurations. The following is the sample code for starting a consumer application.
+The following shows the other configurations of the starter of Nacos Discovery:
 
-NOTE: You can also access the service by using RestTemplate and FeignClient with load balancing.
-
-[source, java]
-----
-@SpringBootApplication
-@EnableDiscoveryClient
-public class NacosConsumerApp {
-
-    @RestController
-    public class NacosController{
-
-        @Autowired
-        private LoadBalancerClient loadBalancerClient;
-        @Autowired
-        private RestTemplate restTemplate;
-
-        @Value("${spring.application.name}")
-        private String appName;
-
-        @GetMapping("/echo/app-name")
-        public String echoAppName(){
-            //Access through the combination of LoadBalanceClient and RestTemolate
-            ServiceInstance serviceInstance = loadBalancerClient.choose("nacos-provider");
-            String path = String.format("http://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
-            System.out.println("request path:" +path);
-            return restTemplate.getForObject(path,String.class);
-        }
-
-    }
-
-    //Instantiate RestTemplate Instance
-    @Bean
-    public RestTemplate restTemplate(){
-
-        return new RestTemplate();
-    }
-
-    public static void main(String[] args) {
-
-        SpringApplication.run(NacosConsumerApp.class,args);
-    }
-}
-----
-
-In this example, we injected a LoadBalancerClient instance, and instantiated a RestTemplate manually. At the same time, we injected the configuration value of `spring.application.name` into the application,
-so that the current application name can be displayed when calling the service of the provider.
-
-NOTE: Please start Nacos before you start the consumer application. For details, please refer to https://nacos.io/zh-cn/docs/quick-start.html[Nacos Website].
-
-Next, access the `http://ip:port/echo/app-name` interface provided by the consumer. Here we started the port of 8082. The access result is shown below：
-
- Address：http://127.0.0.1:8082/echo/app-name
- Access result： Hello Nacos Discovery nacos-consumer
-
-=== More Information about Nacos Starter Configurations
-
-The following shows the other configurations of the starter of spring-cloud-starter-alibaba-nacos-discovery:
-
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Configuration ^|Key ^|Default Value ^|Description
-|`Server address`|`spring.cloud.nacos.discovery.server-addr`|`No default value`|`IP and port of the Nacos Server listener`
-|`Service name`|`spring.cloud.nacos.discovery.service`|`${spring.application.name}`|`Name the current service`
-|`Weight`|`spring.cloud.nacos.discovery.weight`|`1`|`Value range: 1 to 100. The bigger the value, the greater the weight`
-|`Network card name`|`spring.cloud.nacos.discovery.network-interface`|`No default value`|`If the IP address is not specified, the registered IP address is the IP address of the network card. If this is not specified either, the IP address of the first network card will be used by default.`
-|`Registered IP address`|`spring.cloud.nacos.discovery.ip`|`No default value`|`Highest priority`
-|`Registered port`|`spring.cloud.nacos.discovery.port`|`-1`|`Will be detected automatically by default. Do not need to be configured.`
-|`Namespace`|`spring.cloud.nacos.discovery.namespace`|`No default value`|`A typical scenario is to isolate the service registration for different environment, such as resource (configurations, services etc.) isolation between testing and production environment` `
-|`AccessKey`|`spring.cloud.nacos.discovery.access-key`|`No default value`|`Alibaba Cloud account`
-|`SecretKey`|`spring.cloud.nacos.discovery.secret-key`|`No default value`|`Alibaba Cloud account accesskey`
-|`Metadata`|`spring.cloud.nacos.discovery.metadata`|`No default value`|`You can define some of the metadata for your services in the Map format`
-|`Log file name`|`spring.cloud.nacos.discovery.log-name`|`No default value`|
-|`Endpoint`|`spring.cloud.nacos.discovery.enpoint`|`UTF-8`|`The domain name of a certain service in a specific region. You can retrieve the server address dynamically with this domain name`
-|`Integrate Ribbon or not`|`ribbon.nacos.enabled`|`true`|`Set to true in most cases`
-|====
+|===
+|Configuration |Key |Default Value |Description
+|Server address|`spring.cloud.nacos.discovery.server-addr`||IP and port of the Nacos Server listener
+|Service name|`spring.cloud.nacos.discovery.service`|`${spring.application.name}`|Name the current service
+|Weight|`spring.cloud.nacos.discovery.weight`|`1`|Value range: 1 to 100. The bigger the value, the greater the weight
+|Network card name|`spring.cloud.nacos.discovery.network-interface`||If the IP address is not specified, the registered IP address is the IP address of the network card. If this is not specified either, the IP address of the first network card will be used by default.
+|Registered IP address|`spring.cloud.nacos.discovery.ip`||Highest priority
+|Registered port|`spring.cloud.nacos.discovery.port`|`-1`|Will be detected automatically by default. Do not need to be configured.
+|Namespace|`spring.cloud.nacos.discovery.namespace`||A typical scenario is to isolate the service registration for different environment, such as resource (configurations, services etc.) isolation between testing and production environment
+|AccessKey|`spring.cloud.nacos.discovery.access-key`||Alibaba Cloud account accesskey
+|SecretKey|`spring.cloud.nacos.discovery.secret-key`||Alibaba Cloud account secretkey
+|Metadata|`spring.cloud.nacos.discovery.metadata`||You can define some of the metadata for your services in the Map format
+|Log file name|`spring.cloud.nacos.discovery.log-name`||
+|Cluster Name|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|Cluster name of Nacos
+|Endpoint|`spring.cloud.nacos.discovery.endpoint`||The domain name of a certain service in a specific region. You can retrieve the server address dynamically with this domain name
+|Integrate Ribbon or not|`ribbon.nacos.enabled`|`true`|Set to true in most cases
+|Enable Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|set to false to close watch
+|===
 

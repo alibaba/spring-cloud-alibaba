@@ -37,5 +37,7 @@ spring:
           mode: response
           response-status: 444
           response-body: 1234
+      scg:
+        order: -100
 
 management.endpoints.web.exposure.include: "*"

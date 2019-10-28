@@ -1,0 +1,45 @@
+== Spring Cloud Alibaba Dubbo
+
+=== Introduction
+
+Dubbo Spring Cloud is based on Dubbo Spring Boot 2.7.3[1] and Spring Cloud 2.x development, whether the developer is a Dubbo user or a Spring Cloud user.
+Easily navigate and move apps up at a cost close to “zero” costs. Dubbo Spring Cloud is designed to simplify Cloud Native development costs, improve R&D performance, and improve application performance.
+
+=== Features
+
+Since Dubbo Spring Cloud is built on top of the native Spring Cloud, its service governance capabilities are considered Spring Cloud Plus.
+Not only does it fully cover the Spring Cloud native features [5], but it also provides a more stable and mature implementation, as shown in the following table:
+
+|===
+|Feature |Spring Cloud |Dubbo Spring Cloud
+| Distributed configuration              | Git、Zookeeper、Consul、JDBC           | Spring Cloud Distributed Configuration + Dubbo Configuration Center[6]
+| Service registration and discovery | Eureka、Zookeeper、Consul              | Spring Cloud Native Registration Center[7] + Dubbo Native Registration Center[8]
+| Load balancing                           | Ribbon（Random, RoundRobin）             | Dubbo built-in implementation (random, polling, etc. + weights, etc.)
+| Circuit Breakers                         | Spring Cloud Hystrix                   | Spring Cloud Hystrix + Alibaba Sentinel[9] etc.
+| Service-to-service calls                 | Open Feign、`RestTemplate`             | Spring Cloud service call + Dubbo `@Reference`.
+| Tracing                                  | Spring Cloud Sleuth[10] + Zipkin[11] | Zipkin、opentracing, etc.
+|===
+
+=== Reference
+
+[1]: Starting with 2.7.0, Dubbo Spring Boot and Dubbo are consistent in version
+
+[2]: Preview releases of Spring Cloud Alibaba are available: 0.9.0, 0.2.2, and 0.1.2 - https://spring.io/blog/2011/04/11/preview-releases-of-spring-cloud-alibaba-are-available-0-9-0-0-2-2-and-0-1-2
+
+[3]: The current version of the Spring Cloud "F" is: `Finchley.SR2` - https://cloud.spring.io/spring-cloud-static/Finchley.SR2/single/spring-cloud.html
+
+[4]: The current Spring Cloud "G" version is `Greenwich.RELEASE`
+
+[5]:  Spring Cloud feature list - https://cloud.spring.io/spring-cloud-static/Greenwich.RELEASE/single/spring-cloud.html#_features
+
+[6]:  Dubbo 2.7 starts supporting the configuration center and can be customized - http://dubbo.apache.org/en-us/docs/user/configuration/config-center.html
+
+[7]: Spring Cloud native registry, in addition to Eureka, Zookeeper, and Consul, includes Nacos in Spring Cloud Alibaba
+
+[8]: Dubbo Native Registration Center - http://dubbo.apache.org/en-us/docs/user/references/registry/introduction.html
+
+[9]: Alibaba Sentinel: Sentinel uses traffic as an entry point to protect service stability from multiple dimensions such as flow control, blowdown, and system load protection - https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B %E7%BB%8D, currently Sentinel has been accepted as a candidate for Circuit Breaker by the Spring Cloud project - https://spring.io/blog/2011/04/8/introducing-spring-cloud-circuit-breaker
+
+[10]:Spring Cloud Sleuth - https://spring.io/projects/spring-cloud-sleuth
+
+[11]: Zipkin - https://github.com/apache/incubator-zipkin
