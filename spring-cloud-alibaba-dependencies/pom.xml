@@ -179,11 +179,6 @@
                 <version>${sentinel.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>sentinel-dubbo-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-cluster-server-default</artifactId>
                 <version>${sentinel.version}</version>
