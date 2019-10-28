@@ -24,7 +24,11 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 /**
  * @author xiaojing
  */
-public class NacosMockTest {
+public final class NacosMockTest {
+
+	private NacosMockTest() {
+
+	}
 
 	public static Instance serviceInstance(String serviceName, boolean isHealthy,
 			Map<String, String> metadata) {

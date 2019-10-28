@@ -35,6 +35,9 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class OssApplication {
 
+	/**
+	 * Bucket Name of OSS Example.
+	 */
 	public static final String BUCKET_NAME = "spring-cloud-alibaba-test";
 
 	public static void main(String[] args) throws URISyntaxException {

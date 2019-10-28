@@ -26,7 +26,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.http.MediaType;
 
 /**
- * {@link AbstractMediaTypeExpression} Test
+ * {@link AbstractMediaTypeExpression} Test.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
