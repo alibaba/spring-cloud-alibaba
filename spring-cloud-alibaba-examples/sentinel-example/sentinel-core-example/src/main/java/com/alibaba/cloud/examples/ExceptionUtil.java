@@ -25,7 +25,11 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 /**
  * @author fangjian
  */
-public class ExceptionUtil {
+public final class ExceptionUtil {
+
+	private ExceptionUtil() {
+
+	}
 
 	public static SentinelClientHttpResponse handleException(HttpRequest request,
 			byte[] body, ClientHttpRequestExecution execution, BlockException ex) {

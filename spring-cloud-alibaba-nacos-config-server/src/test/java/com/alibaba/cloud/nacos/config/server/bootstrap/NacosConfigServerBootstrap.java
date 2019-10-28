@@ -23,7 +23,7 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Nacos Config Server Bootstrap
+ * Nacos Config Server Bootstrap.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 0.2.0

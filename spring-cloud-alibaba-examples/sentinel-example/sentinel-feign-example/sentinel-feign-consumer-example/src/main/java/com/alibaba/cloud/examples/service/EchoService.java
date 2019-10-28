@@ -33,9 +33,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface EchoService {
 
 	/**
-	 * 调用服务提供方的输出接口
+	 * 调用服务提供方的输出接口.
 	 * @param str 用户输入
-	 * @return
+	 * @return echo result
 	 */
 	@GetMapping("/echo/{str}")
 	String echo(@PathVariable("str") String str);

@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Add this unit test to verify https://github.com/alibaba/spring-cloud-alibaba/pull/838
+ * Add this unit test to verify https://github.com/alibaba/spring-cloud-alibaba/pull/838.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
