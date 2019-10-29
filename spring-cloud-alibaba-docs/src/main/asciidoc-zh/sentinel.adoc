@@ -16,6 +16,7 @@ https://github.com/alibaba/Sentinel[Sentinel] 具有以下特征:
 如果要在您的项目中引入 Sentinel，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-sentinel` 的 starter。
 
 ```xml
+[source,yaml]
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
@@ -109,7 +110,6 @@ java -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject
 ==== 配置控制台信息
 
 .application.yml
-[source,yaml]
 ----
 spring:
   cloud:

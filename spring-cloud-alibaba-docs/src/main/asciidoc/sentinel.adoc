@@ -257,7 +257,7 @@ To learn more about how dynamic data sources work in Sentinel, refer to https://
 
 === Support Zuul
 
-https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
+Refer https://github.com/alibaba/Sentinel/wiki/API-Gateway-Flow-Control[API Gateway Flow Control]
 
 If you want to use Sentinel Starter with Zuul, you need to add the `spring-cloud-alibaba-sentinel-gateway` dependency, and you need to add the `spring-cloud-starter-netflix-zuul` dependency to let Zuul AutoConfiguration class in the gateway module takes effect:
 
@@ -280,7 +280,7 @@ If you want to use Sentinel Starter with Zuul, you need to add the `spring-cloud
 
 === Support Spring Cloud Gateway
 
-https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
+Refer https://github.com/alibaba/Sentinel/wiki/API-Gateway-Flow-Control[API Gateway Flow Control]
 
 If you want to use Sentinel Starter with Spring Cloud Gateway, you need to add the `spring-cloud-alibaba-sentinel-gateway` dependency and add the `spring-cloud-starter-gateway` dependency to let Spring Cloud Gateway AutoConfiguration class in the module takes effect:
 
@@ -300,6 +300,8 @@ If you want to use Sentinel Starter with Spring Cloud Gateway, you need to add t
     <artifactId>spring-cloud-starter-gateway</artifactId>
 </dependency>
 ```
+
+include::circuitbreaker-sentinel.adoc[]
 
 === Sentinel Endpoint
 

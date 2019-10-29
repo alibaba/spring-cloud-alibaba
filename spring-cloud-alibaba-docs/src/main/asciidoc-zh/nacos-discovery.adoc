@@ -44,7 +44,7 @@ image::https://img.alicdn.com/tfs/TB1dyWJbQL0gK0jSZFtXXXQCXXa-2788-1086.png[]
 * pom.xml的配置。一个完整的 pom.xml 配置如下所示：
 
 .pom.xml
-[source,xml,indent=0]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
