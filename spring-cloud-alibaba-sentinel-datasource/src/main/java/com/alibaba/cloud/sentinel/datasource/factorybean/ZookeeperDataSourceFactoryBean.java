@@ -35,6 +35,7 @@ public class ZookeeperDataSourceFactoryBean implements FactoryBean<ZookeeperData
 	private String path;
 
 	private String groupId;
+
 	private String dataId;
 
 	private Converter converter;

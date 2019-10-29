@@ -29,9 +29,11 @@ import com.alibaba.nacos.client.utils.StringUtils;
 public abstract class AbstractNacosDataParser {
 
 	protected static final String DOT = ".";
+
 	protected static final String VALUE = "value";
 
 	private String extension;
+
 	private AbstractNacosDataParser nextParser;
 
 	protected AbstractNacosDataParser(String extension) {
@@ -41,7 +43,11 @@ public abstract class AbstractNacosDataParser {
 		this.extension = extension.toLowerCase();
 	}
 
-	/** Verify file extensions */
+	/**
+	 * Verify dataId extensions.
+	 * @param extension file extension. json or xml or yml or yaml or properties
+	 * @return valid or not
+	 */
 	public final boolean checkFileExtension(String extension) {
 		if (this.isLegal(extension.toLowerCase())) {
 			return true;
@@ -53,7 +59,13 @@ public abstract class AbstractNacosDataParser {
 
 	}
 
-	/** Parsing nacos configuration content */
+	/**
+	 * Parsing nacos configuration content.
+	 * @param data config data from Nacos
+	 * @param extension file extension. json or xml or yml or yaml or properties
+	 * @return result of Properties
+	 * @throws IOException thrown if there is a problem parsing config.
+	 */
 	public final Properties parseNacosData(String data, String extension)
 			throws IOException {
 		if (extension == null || extension.length() < 1) {
@@ -68,7 +80,12 @@ public abstract class AbstractNacosDataParser {
 		return this.nextParser.parseNacosData(data, extension);
 	}
 
-	/** Core logic for parsing */
+	/**
+	 * Core logic for parsing.
+	 * @param data config from Nacos
+	 * @return result of Properties
+	 * @throws IOException thrown if there is a problem parsing config.
+	 */
 	protected abstract Properties doParse(String data) throws IOException;
 
 	protected AbstractNacosDataParser setNextParser(AbstractNacosDataParser nextParser) {
@@ -76,7 +93,6 @@ public abstract class AbstractNacosDataParser {
 		return this;
 	}
 
-	/** add the next parser */
 	public AbstractNacosDataParser addNextParser(AbstractNacosDataParser nextParser) {
 		if (this.nextParser == null) {
 			this.nextParser = nextParser;
@@ -93,7 +109,7 @@ public abstract class AbstractNacosDataParser {
 	}
 
 	/**
-	 * Generate key-value pairs from the map
+	 * Generate key-value pairs from the map.
 	 */
 	protected Properties generateProperties(Map<String, String> map) {
 		if (null == map || map.isEmpty()) {
@@ -112,7 +128,7 @@ public abstract class AbstractNacosDataParser {
 	}
 
 	/**
-	 * Reload the key ending in `value`,if you need
+	 * Reload the key ending in `value` if need.
 	 */
 	protected Map<String, String> reloadMap(Map<String, String> map) {
 		if (map == null || map.isEmpty()) {

@@ -73,8 +73,7 @@ public class RequestMetadata {
 	}
 
 	/**
-	 * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}
-	 *
+	 * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}.
 	 * @param requestMetadataMap the source of {@link NavigableMap}
 	 * @param requestMetadata the match object
 	 * @return if not matched, return <code>null</code>

@@ -32,7 +32,8 @@ import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 
 /**
- * Endpoint for Nacos, contains config data and refresh history
+ * Endpoint for Nacos, contains config data and refresh history.
+ *
  * @author xiaojing
  */
 @Endpoint(id = "nacos-config")

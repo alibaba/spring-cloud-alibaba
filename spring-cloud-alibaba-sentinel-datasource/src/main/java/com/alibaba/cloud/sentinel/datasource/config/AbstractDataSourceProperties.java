@@ -42,11 +42,15 @@ public class AbstractDataSourceProperties {
 
 	@NotEmpty
 	private String dataType = "json";
+
 	@NotNull
 	private RuleType ruleType;
+
 	private String converterClass;
+
 	@JsonIgnore
 	private final String factoryBeanName;
+
 	@JsonIgnore
 	private Environment env;
 

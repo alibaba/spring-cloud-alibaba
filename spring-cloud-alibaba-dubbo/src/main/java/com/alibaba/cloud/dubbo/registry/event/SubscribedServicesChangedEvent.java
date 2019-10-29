@@ -38,7 +38,6 @@ public class SubscribedServicesChangedEvent extends ApplicationEvent {
 
 	/**
 	 * Create a new ApplicationEvent.
-	 *
 	 * @param source the object on which the event initially occurred (never {@code null})
 	 * @param oldSubscribedServices the subscribed services before changed
 	 * @param newSubscribedServices the subscribed services after changed

@@ -44,7 +44,10 @@ public class NacosDataJsonParser extends AbstractNacosDataParser {
 	}
 
 	/**
-	 * JSON to Map
+	 * JSON to Map.
+	 * @param json json data
+	 * @return the map convert by json string
+	 * @throws IOException thrown if there is a problem parsing config.
 	 */
 	public static Map<String, String> parseJSON2Map(String json) throws IOException {
 		Map<String, String> map = new HashMap<>(32);

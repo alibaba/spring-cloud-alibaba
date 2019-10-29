@@ -23,25 +23,24 @@ import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
 
 /**
- * The REST metadata resolver
+ * The REST metadata resolver.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public interface MetadataResolver {
 
 	/**
-	 * Resolve the {@link ServiceRestMetadata} {@link Set set} from {@link ServiceBean}
-	 *
+	 * Resolve the {@link ServiceRestMetadata} {@link Set set} from {@link ServiceBean}.
 	 * @param serviceBean {@link ServiceBean}
 	 * @return non-null {@link Set}
 	 */
 	Set<ServiceRestMetadata> resolveServiceRestMetadata(ServiceBean serviceBean);
 
 	/**
-	 * Resolve {@link RestMethodMetadata} {@link Set set} from {@link Class target type}
-	 *
+	 * Resolve {@link RestMethodMetadata} {@link Set set} from {@link Class target type}.
 	 * @param targetType {@link Class target type}
 	 * @return non-null {@link Set}
 	 */
 	Set<RestMethodMetadata> resolveMethodRestMetadata(Class<?> targetType);
+
 }

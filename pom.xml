@@ -76,6 +76,7 @@
         <spring-cloud-openfeign.version>2.1.3.RELEASE</spring-cloud-openfeign.version>
         <spring-cloud-bus.version>2.1.3.RELEASE</spring-cloud-bus.version>
         <spring-cloud-gateway.version>2.1.3.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-consul.version>2.1.3.RELEASE</spring-cloud-consul.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -118,6 +119,7 @@
         <module>spring-cloud-alicloud-schedulerx</module>
         <module>spring-cloud-alicloud-sms</module>
         <module>spring-cloud-alibaba-coverage</module>
+        <module>spring-cloud-alibaba-sidecar</module>
     </modules>
 
     <dependencyManagement>
@@ -188,6 +190,14 @@
             </dependency>
 
             <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-consul-dependencies</artifactId>
+                <version>${spring-cloud-consul.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${dubbo-spring-boot.version}</version>
@@ -218,6 +228,7 @@
                 <artifactId>rocketmq-spring-boot-starter</artifactId>
                 <version>${rocketmq.starter.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

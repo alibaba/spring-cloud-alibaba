@@ -15,23 +15,25 @@
  */
 package com.alibaba.cloud.dubbo.service;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.DisposableBean;
 
+import static java.lang.reflect.Proxy.newProxyInstance;
+
 /**
- * The proxy of {@link DubboMetadataService}
+ * The proxy of {@link DubboMetadataService}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class DubboMetadataServiceProxy implements BeanClassLoaderAware, DisposableBean {
 
 	private final DubboGenericServiceFactory dubboGenericServiceFactory;
+
 	private final Map<String, DubboMetadataService> dubboMetadataServiceCache = new ConcurrentHashMap<>();
+
 	private ClassLoader classLoader;
 
 	public DubboMetadataServiceProxy(
@@ -40,8 +42,7 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	}
 
 	/**
-	 * Initializes {@link DubboMetadataService}'s Proxy
-	 *
+	 * Initializes {@link DubboMetadataService}'s Proxy.
 	 * @param serviceName the service name
 	 * @param version the service version
 	 * @return a {@link DubboMetadataService} proxy
@@ -52,7 +53,7 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	}
 
 	/**
-	 * Remove {@link DubboMetadataService}'s Proxy by service name
+	 * Remove {@link DubboMetadataService}'s Proxy by service name.
 	 * @param serviceName the service name
 	 */
 	public void removeProxy(String serviceName) {
@@ -60,8 +61,8 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	}
 
 	/**
-	 * Get a proxy instance of {@link DubboMetadataService} via the specified service name
-	 *
+	 * Get a proxy instance of {@link DubboMetadataService} via the specified service
+	 * name.
 	 * @param serviceName the service name
 	 * @return a {@link DubboMetadataService} proxy
 	 */
@@ -80,8 +81,8 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	}
 
 	/**
-	 * New a proxy instance of {@link DubboMetadataService} via the specified service name
-	 *
+	 * New a proxy instance of {@link DubboMetadataService} via the specified service
+	 * name.
 	 * @param serviceName the service name
 	 * @param version the service version
 	 * @return a {@link DubboMetadataService} proxy
@@ -92,4 +93,5 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 				new DubboMetadataServiceInvocationHandler(serviceName, version,
 						dubboGenericServiceFactory));
 	}
+
 }

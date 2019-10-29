@@ -109,7 +109,7 @@ public class NacosDiscoveryProperties {
 	private String clusterName = "DEFAULT";
 
 	/**
-	 * group name for nacos
+	 * group name for nacos.
 	 */
 	private String group = "DEFAULT_GROUP";
 
@@ -430,7 +430,7 @@ public class NacosDiscoveryProperties {
 			String serverAddr = env
 					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
-				serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
+				serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.server-addr:}");
 			}
 			this.setServerAddr(serverAddr);
 		}

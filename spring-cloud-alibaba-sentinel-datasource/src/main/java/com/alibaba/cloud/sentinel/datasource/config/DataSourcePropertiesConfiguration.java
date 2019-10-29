@@ -66,11 +66,11 @@ public class DataSourcePropertiesConfiguration {
 		this.apollo = apollo;
 	}
 
-    public DataSourcePropertiesConfiguration(RedisDataSourceProperties redis) {
-        this.redis = redis;
-    }
+	public DataSourcePropertiesConfiguration(RedisDataSourceProperties redis) {
+		this.redis = redis;
+	}
 
-    public FileDataSourceProperties getFile() {
+	public FileDataSourceProperties getFile() {
 		return file;
 	}
 

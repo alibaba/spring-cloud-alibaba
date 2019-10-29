@@ -15,12 +15,13 @@
  */
 package com.alibaba.cloud.dubbo.service.parameter;
 
-import org.apache.dubbo.rpc.service.GenericService;
-import org.springframework.core.Ordered;
-
 import com.alibaba.cloud.dubbo.http.HttpServerRequest;
 import com.alibaba.cloud.dubbo.metadata.MethodParameterMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+
+import org.apache.dubbo.rpc.service.GenericService;
+
+import org.springframework.core.Ordered;
 
 /**
  * Dubbo {@link GenericService} Parameter Resolver
@@ -31,8 +32,10 @@ public interface DubboGenericServiceParameterResolver extends Ordered {
 
 	/**
 	 * Resolves a method parameter into an argument value from a given request.
-	 *
-	 * @return
+	 * @param restMethodMetadata method request metadata
+	 * @param methodParameterMetadata metadata of method
+	 * @param request Http server request
+	 * @return the result of resolve
 	 */
 	Object resolve(RestMethodMetadata restMethodMetadata,
 			MethodParameterMetadata methodParameterMetadata, HttpServerRequest request);

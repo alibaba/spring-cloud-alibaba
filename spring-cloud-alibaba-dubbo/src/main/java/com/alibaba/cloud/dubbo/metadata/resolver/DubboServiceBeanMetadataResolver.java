@@ -59,7 +59,7 @@ public class DubboServiceBeanMetadataResolver
 	private ClassLoader classLoader;
 
 	/**
-	 * Feign Contracts
+	 * Feign Contracts.
 	 */
 	private Collection<Contract> contracts;
 
@@ -153,9 +153,8 @@ public class DubboServiceBeanMetadataResolver
 	 * Select feign contract methods
 	 * <p>
 	 * extract some code from
-	 * {@link Contract.BaseContract#parseAndValidatateMetadata(java.lang.Class)}
-	 *
-	 * @param targetType
+	 * {@link Contract.BaseContract#parseAndValidatateMetadata(java.lang.Class)}.
+	 * @param targetType class of type
 	 * @return non-null
 	 */
 	private List<Method> selectFeignContractMethods(Class<?> targetType) {

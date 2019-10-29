@@ -30,8 +30,10 @@ public class ApolloDataSourceProperties extends AbstractDataSourceProperties {
 
 	@NotEmpty
 	private String namespaceName;
+
 	@NotEmpty
 	private String flowRulesKey;
+
 	private String defaultFlowRuleValue;
 
 	public ApolloDataSourceProperties() {

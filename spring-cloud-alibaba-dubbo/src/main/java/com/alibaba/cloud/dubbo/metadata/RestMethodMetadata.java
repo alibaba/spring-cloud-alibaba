@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Method Request Metadata
+ * Method Request Metadata.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */

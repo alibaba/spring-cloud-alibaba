@@ -59,7 +59,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerPrope
 import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
 
 /**
- * A class that Listen on rocketmq message
+ * A class that Listen on rocketmq message.
  * <p>
  * this class will delegate {@link RocketMQListener} to handle message
  *
@@ -104,12 +104,16 @@ public class RocketMQListenerBindingContainer
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> rocketMQConsumerProperties;
 
 	private final RocketMQMessageChannelBinder rocketMQMessageChannelBinder;
+
 	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
 	// The following properties came from RocketMQConsumerProperties.
 	private ConsumeMode consumeMode;
+
 	private SelectorType selectorType;
+
 	private String selectorExpression;
+
 	private MessageModel messageModel;
 
 	public RocketMQListenerBindingContainer(
@@ -120,8 +124,7 @@ public class RocketMQListenerBindingContainer
 		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
 		this.rocketMQMessageChannelBinder = rocketMQMessageChannelBinder;
 		this.consumeMode = rocketMQConsumerProperties.getExtension().getOrderly()
-				? ConsumeMode.ORDERLY
-				: ConsumeMode.CONCURRENTLY;
+				? ConsumeMode.ORDERLY : ConsumeMode.CONCURRENTLY;
 		if (StringUtils.isEmpty(rocketMQConsumerProperties.getExtension().getSql())) {
 			this.selectorType = SelectorType.TAG;
 			this.selectorExpression = rocketMQConsumerProperties.getExtension().getTags();
@@ -131,8 +134,7 @@ public class RocketMQListenerBindingContainer
 			this.selectorExpression = rocketMQConsumerProperties.getExtension().getSql();
 		}
 		this.messageModel = rocketMQConsumerProperties.getExtension().getBroadcasting()
-				? MessageModel.BROADCASTING
-				: MessageModel.CLUSTERING;
+				? MessageModel.BROADCASTING : MessageModel.CLUSTERING;
 	}
 
 	@Override
@@ -386,6 +388,23 @@ public class RocketMQListenerBindingContainer
 		this.headerMapper = headerMapper;
 	}
 
+	/**
+	 * Convert rocketmq {@link MessageExt} to Spring {@link Message}.
+	 * @param messageExt the rocketmq message
+	 * @return the converted Spring {@link Message}
+	 */
+	@SuppressWarnings("unchecked")
+	private Message convertToSpringMessage(MessageExt messageExt) {
+
+		// add reconsume-times header to messageExt
+		int reconsumeTimes = messageExt.getReconsumeTimes();
+		messageExt.putUserProperty(ROCKETMQ_RECONSUME_TIMES,
+				String.valueOf(reconsumeTimes));
+		Message message = RocketMQUtil.convertToSpringMessage(messageExt);
+		return MessageBuilder.fromMessage(message)
+				.copyHeaders(headerMapper.toHeaders(messageExt.getProperties())).build();
+	}
+
 	public class DefaultMessageListenerConcurrently
 			implements MessageListenerConcurrently {
 
@@ -411,6 +430,7 @@ public class RocketMQListenerBindingContainer
 
 			return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
 		}
+
 	}
 
 	public class DefaultMessageListenerOrderly implements MessageListenerOrderly {
@@ -438,24 +458,7 @@ public class RocketMQListenerBindingContainer
 
 			return ConsumeOrderlyStatus.SUCCESS;
 		}
-	}
 
-	/**
-	 * Convert rocketmq {@link MessageExt} to Spring {@link Message}
-	 *
-	 * @param messageExt the rocketmq message
-	 * @return the converted Spring {@link Message}
-	 */
-	@SuppressWarnings("unchecked")
-	private Message convertToSpringMessage(MessageExt messageExt) {
-
-		// add reconsume-times header to messageExt
-		int reconsumeTimes = messageExt.getReconsumeTimes();
-		messageExt.putUserProperty(ROCKETMQ_RECONSUME_TIMES,
-				String.valueOf(reconsumeTimes));
-		Message message = RocketMQUtil.convertToSpringMessage(messageExt);
-		return MessageBuilder.fromMessage(message)
-				.copyHeaders(headerMapper.toHeaders(messageExt.getProperties())).build();
 	}
 
 }

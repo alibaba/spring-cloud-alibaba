@@ -38,48 +38,48 @@ import com.alibaba.csp.sentinel.slots.system.SystemRule;
 public enum RuleType {
 
 	/**
-	 * flow
+	 * flow.
 	 */
 	FLOW("flow", FlowRule.class),
 	/**
-	 * degrade
+	 * degrade.
 	 */
 	DEGRADE("degrade", DegradeRule.class),
 	/**
-	 * param flow
+	 * param flow.
 	 */
 	PARAM_FLOW("param-flow", ParamFlowRule.class),
 	/**
-	 * system
+	 * system.
 	 */
 	SYSTEM("system", SystemRule.class),
 	/**
-	 * authority
+	 * authority.
 	 */
 	AUTHORITY("authority", AuthorityRule.class),
 	/**
-	 * gateway flow
+	 * gateway flow.
 	 */
 	GW_FLOW("gw-flow",
 			"com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule"),
 	/**
-	 * api
+	 * api.
 	 */
 	GW_API_GROUP("gw-api-group",
 			"com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition");
 
 	/**
-	 * alias for {@link AbstractRule}
+	 * alias for {@link AbstractRule}.
 	 */
 	private final String name;
 
 	/**
-	 * concrete {@link AbstractRule} class
+	 * concrete {@link AbstractRule} class.
 	 */
 	private Class clazz;
 
 	/**
-	 * concrete {@link AbstractRule} class name
+	 * concrete {@link AbstractRule} class name.
 	 */
 	private String clazzName;
 

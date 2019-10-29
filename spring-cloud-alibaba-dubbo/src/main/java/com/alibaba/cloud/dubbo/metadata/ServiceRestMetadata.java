@@ -21,7 +21,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
- * Service Rest Metadata
+ * Service Rest Metadata.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see RestMethodMetadata

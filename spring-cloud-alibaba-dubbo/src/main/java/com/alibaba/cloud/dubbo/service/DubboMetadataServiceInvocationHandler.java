@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link DubboMetadataService} {@link InvocationHandler}
+ * {@link DubboMetadataService} {@link InvocationHandler}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -34,7 +34,7 @@ class DubboMetadataServiceInvocationHandler implements InvocationHandler {
 
 	private final GenericService genericService;
 
-	public DubboMetadataServiceInvocationHandler(String serviceName, String version,
+	DubboMetadataServiceInvocationHandler(String serviceName, String version,
 			DubboGenericServiceFactory dubboGenericServiceFactory) {
 		this.genericService = dubboGenericServiceFactory.create(serviceName,
 				DubboMetadataService.class, version);
@@ -60,4 +60,5 @@ class DubboMetadataServiceInvocationHandler implements InvocationHandler {
 		return Stream.of(parameterTypes).map(Class::getName)
 				.toArray(length -> new String[length]);
 	}
+
 }

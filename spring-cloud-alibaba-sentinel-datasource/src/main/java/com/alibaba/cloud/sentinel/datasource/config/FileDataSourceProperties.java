@@ -35,8 +35,11 @@ public class FileDataSourceProperties extends AbstractDataSourceProperties {
 
 	@NotEmpty
 	private String file;
+
 	private String charset = "utf-8";
+
 	private long recommendRefreshMs = 3000L;
+
 	private int bufSize = 1024 * 1024;
 
 	public FileDataSourceProperties() {

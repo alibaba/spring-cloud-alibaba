@@ -105,10 +105,19 @@ import com.netflix.discovery.shared.Applications;
 				DubboServiceRegistrationAutoConfiguration.class })
 public class DubboServiceDiscoveryAutoConfiguration {
 
+	/**
+	 * ZookeeperDiscoveryAutoConfiguration.
+	 */
 	public static final String ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryAutoConfiguration";
 
+	/**
+	 * ConsulDiscoveryClientConfiguration.
+	 */
 	public static final String CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.consul.discovery.ConsulDiscoveryClientConfiguration";
 
+	/**
+	 * NacosDiscoveryAutoConfiguration.
+	 */
 	public static final String NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration";
 
 	private final DubboServiceMetadataRepository dubboServiceMetadataRepository;

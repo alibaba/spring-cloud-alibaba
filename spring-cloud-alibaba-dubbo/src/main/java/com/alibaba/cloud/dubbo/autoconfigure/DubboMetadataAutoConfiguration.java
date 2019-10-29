@@ -16,23 +16,12 @@
 package com.alibaba.cloud.dubbo.autoconfigure;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
-
-import org.apache.dubbo.config.ProtocolConfig;
-import org.apache.dubbo.config.spring.ServiceBean;
-import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.event.ApplicationFailedEvent;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.context.event.EventListener;
 
 import com.alibaba.cloud.dubbo.metadata.DubboProtocolConfigSupplier;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.metadata.repository.MetadataServiceInstanceSelector;
 import com.alibaba.cloud.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import com.alibaba.cloud.dubbo.metadata.resolver.MetadataResolver;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
@@ -42,6 +31,20 @@ import com.alibaba.cloud.dubbo.service.IntrospectiveDubboMetadataService;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
 
 import feign.Contract;
+import org.apache.dubbo.config.ProtocolConfig;
+import org.apache.dubbo.config.spring.ServiceBean;
+import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
+
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata
@@ -66,6 +69,14 @@ public class DubboMetadataAutoConfiguration {
 	@ConditionalOnMissingBean
 	public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
 		return new DubboServiceBeanMetadataResolver(contract);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public MetadataServiceInstanceSelector metadataServiceInstanceSelector() {
+		return serviceInstances -> CollectionUtils.isEmpty(serviceInstances)
+				? Optional.empty()
+				: serviceInstances.stream().findAny();
 	}
 
 	@Bean

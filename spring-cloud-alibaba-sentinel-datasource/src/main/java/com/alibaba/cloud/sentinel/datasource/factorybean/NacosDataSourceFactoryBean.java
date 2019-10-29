@@ -34,13 +34,19 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> {
 
 	private String serverAddr;
+
 	private String groupId;
+
 	private String dataId;
+
 	private Converter converter;
 
 	private String endpoint;
+
 	private String namespace;
+
 	private String accessKey;
+
 	private String secretKey;
 
 	@Override

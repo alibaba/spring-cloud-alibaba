@@ -31,7 +31,7 @@ class DelegatingRegistration implements Registration {
 
 	private final ServiceInstance delegate;
 
-	public DelegatingRegistration(ServiceInstance delegate) {
+	DelegatingRegistration(ServiceInstance delegate) {
 		this.delegate = delegate;
 	}
 
@@ -69,4 +69,5 @@ class DelegatingRegistration implements Registration {
 	public String getScheme() {
 		return delegate.getScheme();
 	}
+
 }

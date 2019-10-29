@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.registry;
 
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
+import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.RegistryFactory;
+
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
-import com.alibaba.cloud.dubbo.util.JSONUtils;
-
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose
- * protocol is "spring-cloud"
+ * protocol is "spring-cloud".
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -37,9 +39,11 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
 	public SpringCloudRegistry(URL url, DiscoveryClient discoveryClient,
 			DubboServiceMetadataRepository dubboServiceMetadataRepository,
 			DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
-			JSONUtils jsonUtils, ConfigurableApplicationContext applicationContext) {
+			JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
+			ConfigurableApplicationContext applicationContext) {
 		super(url, discoveryClient, dubboServiceMetadataRepository,
-				dubboMetadataConfigServiceProxy, jsonUtils, applicationContext);
+				dubboMetadataConfigServiceProxy, jsonUtils, dubboGenericServiceFactory,
+				applicationContext);
 		this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
 	}
 
@@ -52,4 +56,5 @@ public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
 	protected void doUnregister0(URL url) {
 		dubboServiceMetadataRepository.unexportURL(url);
 	}
+
 }

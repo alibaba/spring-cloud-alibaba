@@ -30,8 +30,11 @@ import com.alibaba.csp.sentinel.datasource.apollo.ApolloDataSource;
 public class ApolloDataSourceFactoryBean implements FactoryBean<ApolloDataSource> {
 
 	private String namespaceName;
+
 	private String flowRulesKey;
+
 	private String defaultFlowRuleValue;
+
 	private Converter converter;
 
 	@Override

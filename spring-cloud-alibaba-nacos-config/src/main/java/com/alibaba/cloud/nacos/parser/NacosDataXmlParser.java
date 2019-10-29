@@ -25,17 +25,17 @@ import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import com.alibaba.nacos.client.utils.StringUtils;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.alibaba.nacos.client.utils.StringUtils;
-
 /**
  * With relatively few usage scenarios, only simple parsing is performed to reduce jar
- * dependencies
+ * dependencies.
  *
  * @author zkz
  */
@@ -55,9 +55,7 @@ public class NacosDataXmlParser extends AbstractNacosDataParser {
 	}
 
 	private Map<String, String> parseXml2Map(String xml) throws IOException {
-		xml = xml.replaceAll("\\r", "")
-                .replaceAll("\\n", "")
-                .replaceAll("\\t", "");
+		xml = xml.replaceAll("\\r", "").replaceAll("\\n", "").replaceAll("\\t", "");
 		Map<String, String> map = new HashMap<>(32);
 		try {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()

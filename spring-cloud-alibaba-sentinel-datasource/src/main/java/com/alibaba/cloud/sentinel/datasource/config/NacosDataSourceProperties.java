@@ -39,8 +39,11 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 	private String dataId;
 
 	private String endpoint;
+
 	private String namespace;
+
 	private String accessKey;
+
 	private String secretKey;
 
 	public NacosDataSourceProperties() {

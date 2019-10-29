@@ -14,29 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.nacos;
 
+import java.util.Objects;
+
+import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureException;
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import com.alibaba.nacos.api.exception.NacosException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
  */
-public class NacosConfigManager implements ApplicationContextAware {
+public class NacosConfigManager {
 
-	private ConfigService configService;
+	private static ConfigService service = null;
+
+	@Autowired
+	private NacosConfigProperties properties;
 
 	public ConfigService getConfigService() {
-		return configService;
+		if (Objects.isNull(service)) {
+			try {
+				service = NacosFactory
+						.createConfigService(properties.getConfigServiceProperties());
+				properties.initConfigService(service);
+			}
+			catch (NacosException e) {
+				throw new NacosConnectionFailureException(properties.getServerAddr(),
+						e.getMessage(), e);
+			}
+		}
+		return service;
 	}
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		NacosConfigProperties properties = applicationContext
-				.getBean(NacosConfigProperties.class);
-		configService = properties.configServiceInstance();
-	}
 }

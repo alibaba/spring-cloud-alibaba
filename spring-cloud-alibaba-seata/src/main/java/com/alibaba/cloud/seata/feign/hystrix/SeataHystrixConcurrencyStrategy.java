@@ -58,6 +58,7 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 	private static class SeataContextCallable<K> implements Callable<K> {
 
 		private final Callable<K> actual;
+
 		private final String xid;
 
 		SeataContextCallable(Callable<K> actual) {

@@ -39,6 +39,9 @@ import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 @Configuration
 public class DubboOpenFeignAutoConfiguration {
 
+	/**
+	 * OpenFeign Targeter class name.
+	 */
 	public static final String TARGETER_CLASS_NAME = "org.springframework.cloud.openfeign.Targeter";
 
 	@Bean

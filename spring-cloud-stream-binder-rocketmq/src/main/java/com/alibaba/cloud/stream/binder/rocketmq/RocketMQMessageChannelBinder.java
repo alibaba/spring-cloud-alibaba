@@ -22,6 +22,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.cloud.stream.binder.rocketmq.consuming.RocketMQListenerBindingContainer;
+import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQInboundChannelAdapter;
+import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQMessageHandler;
+import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQMessageSource;
+import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
+import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
+import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
+import com.alibaba.cloud.stream.binder.rocketmq.provisioning.selector.PartitionMessageQueueSelector;
+import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
+import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -30,6 +44,7 @@ import org.apache.rocketmq.remoting.RPCHook;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQUtil;
+
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -47,22 +62,6 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.stream.binder.rocketmq.consuming.RocketMQListenerBindingContainer;
-import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQInboundChannelAdapter;
-import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQMessageHandler;
-import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQMessageSource;
-import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
-import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
-import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
-import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
-import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
-import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
-import com.alibaba.cloud.stream.binder.rocketmq.provisioning.selector.PartitionMessageQueueSelector;
-import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
-import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

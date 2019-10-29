@@ -34,9 +34,13 @@ public class FileRefreshableDataSourceFactoryBean
 		implements FactoryBean<FileRefreshableDataSource> {
 
 	private String file;
+
 	private String charset;
+
 	private long recommendRefreshMs;
+
 	private int bufSize;
+
 	private Converter converter;
 
 	@Override
