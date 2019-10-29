@@ -23,7 +23,11 @@ import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 /**
  * @author xiaojing
  */
-public class AnsMockTest {
+public final class AnsMockTest {
+
+	private AnsMockTest() {
+
+	}
 
 	public static Host hostInstance(String serviceName, boolean valid,
 			Map<String, String> metadata) {

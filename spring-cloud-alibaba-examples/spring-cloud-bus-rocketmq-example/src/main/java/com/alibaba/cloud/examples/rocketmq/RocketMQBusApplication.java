@@ -65,7 +65,7 @@ public class RocketMQBusApplication {
 	private ObjectMapper objectMapper;
 
 	/**
-	 * Publish the {@link UserRemoteApplicationEvent}
+	 * Publish the {@link UserRemoteApplicationEvent}.
 	 * @param name the user name
 	 * @param destination the destination
 	 * @return If published
@@ -82,7 +82,7 @@ public class RocketMQBusApplication {
 	}
 
 	/**
-	 * Listener on the {@link UserRemoteApplicationEvent}
+	 * Listener on the {@link UserRemoteApplicationEvent}.
 	 * @param event {@link UserRemoteApplicationEvent}
 	 */
 	@EventListener
