@@ -76,14 +76,16 @@
         <spring-cloud-bus.version>2.0.2.RELEASE</spring-cloud-bus.version>
         <spring-cloud-gateway.version>2.0.4.RELEASE</spring-cloud-gateway.version>
         <spring-cloud-consul.version>2.0.3.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-zookeeper.version>2.0.2.RELEASE</spring-cloud-zookeeper.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
         <slf4j-api.version>1.7.25</slf4j-api.version>
 
         <!-- Apache Dubbo -->
-        <dubbo-spring-boot.version>2.7.1</dubbo-spring-boot.version>
+        <dubbo-spring-boot.version>2.7.3</dubbo-spring-boot.version>
         <dubbo.version>2.7.3</dubbo.version>
+        <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
         <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
@@ -190,6 +192,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-consul-dependencies</artifactId>
                 <version>${spring-cloud-consul.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-zookeeper-dependencies</artifactId>
+                <version>${spring-cloud-zookeeper.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

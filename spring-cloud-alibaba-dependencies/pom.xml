@@ -29,7 +29,6 @@
         <alicloud.context.version>1.0.5</alicloud.context.version>
         <aliyun.sdk.edas.version>2.44.0</aliyun.sdk.edas.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
-        <dubbo.version>2.7.3</dubbo.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8.6</aliyun.sdk.mns>
         <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
