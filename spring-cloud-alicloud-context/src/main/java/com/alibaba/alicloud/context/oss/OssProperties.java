@@ -16,12 +16,12 @@
 
 package com.alibaba.alicloud.context.oss;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import com.alibaba.cloud.context.AliCloudAuthorizationMode;
 
 import com.aliyun.oss.ClientBuilderConfiguration;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * {@link ConfigurationProperties} for configuring OSS.

@@ -16,18 +16,18 @@
 
 package com.alibaba.cloud.sentinel.datasource;
 
+import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
+import com.alibaba.cloud.sentinel.datasource.factorybean.ZookeeperDataSourceFactoryBean;
+import com.alibaba.csp.sentinel.datasource.Converter;
+import com.alibaba.csp.sentinel.datasource.zookeeper.ZookeeperDataSource;
+
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-
-import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
-import com.alibaba.cloud.sentinel.datasource.factorybean.ZookeeperDataSourceFactoryBean;
-import com.alibaba.csp.sentinel.datasource.Converter;
-import com.alibaba.csp.sentinel.datasource.zookeeper.ZookeeperDataSource;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

@@ -16,10 +16,10 @@
 
 package com.alibaba.alicloud.context.edas;
 
+import com.alibaba.cloud.context.edas.EdasConfiguration;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import com.alibaba.cloud.context.edas.EdasConfiguration;
 
 /**
  * @author xiaolongzuo

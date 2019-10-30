@@ -16,19 +16,20 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.config;
 
-import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
-import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
+
+import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
+import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author Timur Valiev

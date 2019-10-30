@@ -19,13 +19,14 @@ package com.alibaba.alicloud.scx.endpoint;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-
 import com.alibaba.alicloud.context.edas.EdasProperties;
 import com.alibaba.alicloud.context.scx.ScxProperties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
 /**
  * @author xiaolongzuo

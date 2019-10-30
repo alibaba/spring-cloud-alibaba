@@ -60,7 +60,7 @@ public class RocketMQApplication {
 配置 Binding 信息：
 ```properties
 # 配置rocketmq的nameserver地址
-spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876
+spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876
 # 定义name为output的binding
 spring.cloud.stream.bindings.output.destination=test-topic
 spring.cloud.stream.bindings.output.content-type=application/json
@@ -125,7 +125,7 @@ server.port=28081
 配置信息如下：
 
 ```properties
-spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876
+spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876
 
 spring.cloud.stream.bindings.output.destination=test-topic
 spring.cloud.stream.bindings.output.content-type=application/json

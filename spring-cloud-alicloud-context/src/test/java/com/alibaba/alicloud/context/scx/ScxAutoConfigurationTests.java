@@ -16,13 +16,14 @@
 
 package com.alibaba.alicloud.context.scx;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.alibaba.alicloud.context.edas.EdasProperties;
 
 import org.junit.Test;
+
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import com.alibaba.alicloud.context.edas.EdasProperties;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author xiaolongzuo

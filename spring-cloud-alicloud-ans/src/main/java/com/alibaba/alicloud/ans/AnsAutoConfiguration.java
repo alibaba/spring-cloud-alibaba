@@ -16,6 +16,11 @@
 
 package com.alibaba.alicloud.ans;
 
+import com.alibaba.alicloud.ans.registry.AnsAutoServiceRegistration;
+import com.alibaba.alicloud.ans.registry.AnsRegistration;
+import com.alibaba.alicloud.ans.registry.AnsServiceRegistry;
+import com.alibaba.alicloud.context.ans.AnsProperties;
+
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -27,11 +32,6 @@ import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationP
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.alicloud.ans.registry.AnsAutoServiceRegistration;
-import com.alibaba.alicloud.ans.registry.AnsRegistration;
-import com.alibaba.alicloud.ans.registry.AnsServiceRegistry;
-import com.alibaba.alicloud.context.ans.AnsProperties;
 
 /**
  * @author xiaolongzuo

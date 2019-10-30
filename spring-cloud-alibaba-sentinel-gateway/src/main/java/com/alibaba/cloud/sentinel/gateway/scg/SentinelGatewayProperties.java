@@ -16,12 +16,12 @@
 
 package com.alibaba.cloud.sentinel.gateway.scg;
 
+import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
+import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.core.Ordered;
-
-import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
-import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

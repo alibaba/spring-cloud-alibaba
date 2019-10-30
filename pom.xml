@@ -28,12 +28,12 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/spring-cloud-incubator/spring-cloud-alibaba</url>
+        <url>https://github.com/alibaba/spring-cloud-alibaba</url>
         <connection>
-            scm:git:git://github.com/spring-cloud-incubator/spring-cloud-alibaba.git
+            scm:git:git://github.com/alibaba/spring-cloud-alibaba.git
         </connection>
         <developerConnection>
-            scm:git:ssh://git@github.com/spring-cloud-incubator/spring-cloud-alibaba.git
+            scm:git:ssh://git@github.com/alibaba/spring-cloud-alibaba.git
         </developerConnection>
         <tag>HEAD</tag>
     </scm>
@@ -44,10 +44,8 @@
             <email>flystar32@163.com</email>
         </developer>
         <developer>
-            <name>Jim Fang</name>
+            <name>fangjian</name>
             <email>fangjian0423@gmail.com</email>
-            <organization>Alibaba</organization>
-            <url>https://github.com/fangjian0423</url>
         </developer>
         <developer>
             <name>xiaolongzuo</name>
@@ -77,6 +75,7 @@
         <spring-cloud-openfeign.version>2.0.4.RELEASE</spring-cloud-openfeign.version>
         <spring-cloud-bus.version>2.0.2.RELEASE</spring-cloud-bus.version>
         <spring-cloud-gateway.version>2.0.4.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-consul.version>2.0.3.RELEASE</spring-cloud-consul.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -117,6 +116,7 @@
         <module>spring-cloud-alicloud-ans</module>
         <module>spring-cloud-alicloud-schedulerx</module>
         <module>spring-cloud-alicloud-sms</module>
+        <module>spring-cloud-alibaba-sidecar</module>
     </modules>
 
     <dependencyManagement>
@@ -182,6 +182,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-gateway-dependencies</artifactId>
                 <version>${spring-cloud-gateway.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-consul-dependencies</artifactId>
+                <version>${spring-cloud-consul.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

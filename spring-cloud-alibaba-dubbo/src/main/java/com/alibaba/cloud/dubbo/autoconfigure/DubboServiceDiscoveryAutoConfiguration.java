@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (C) 2018 the original author or authors.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,13 +14,6 @@
  * limitations under the License.
  */
 package com.alibaba.cloud.dubbo.autoconfigure;
-
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
-import static com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient.hostToServiceInstanceList;
-import static org.springframework.util.StringUtils.hasText;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -34,6 +26,20 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
+import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
+import com.alibaba.cloud.nacos.discovery.NacosWatch;
+import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.listener.NamingEvent;
+
+import com.netflix.discovery.CacheRefreshedEvent;
+import com.netflix.discovery.shared.Applications;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.listen.Listenable;
 import org.apache.curator.framework.listen.ListenerContainer;
@@ -41,16 +47,15 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.NotifyListener;
-
 import org.apache.zookeeper.Watcher;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -74,18 +79,12 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ReflectionUtils;
 
-import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
-import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.discovery.NacosWatch;
-import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.listener.NamingEvent;
-import com.netflix.discovery.CacheRefreshedEvent;
-import com.netflix.discovery.shared.Applications;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration.ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
+import static com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient.hostToServiceInstanceList;
+import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Dubbo Service Discovery Auto {@link Configuration} (after
@@ -106,10 +105,19 @@ import com.netflix.discovery.shared.Applications;
 				DubboServiceRegistrationAutoConfiguration.class })
 public class DubboServiceDiscoveryAutoConfiguration {
 
+	/**
+	 * ZookeeperDiscoveryAutoConfiguration.
+	 */
 	public static final String ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryAutoConfiguration";
 
+	/**
+	 * ConsulDiscoveryClientConfiguration.
+	 */
 	public static final String CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.consul.discovery.ConsulDiscoveryClientConfiguration";
 
+	/**
+	 * NacosDiscoveryAutoConfiguration.
+	 */
 	public static final String NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration";
 
 	private final DubboServiceMetadataRepository dubboServiceMetadataRepository;
@@ -506,8 +514,8 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		 */
 		private final Set<String> listeningServices;
 
-		NacosConfiguration(NacosDiscoveryProperties nacosDiscoveryProperties) {
-			this.namingService = nacosDiscoveryProperties.namingServiceInstance();
+		NacosConfiguration(NacosNamingManager nacosNamingManager) {
+			this.namingService = nacosNamingManager.getNamingService();
 			this.listeningServices = new ConcurrentSkipListSet<>();
 		}
 

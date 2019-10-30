@@ -19,8 +19,6 @@ package com.alibaba.cloud.sentinel.datasource.config;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.core.env.Environment;
-
 import com.alibaba.cloud.sentinel.datasource.RuleType;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.GatewayApiDefinitionManager;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayRuleManager;
@@ -33,6 +31,8 @@ import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.springframework.core.env.Environment;
+
 /**
  * Abstract class Using by {@link DataSourcePropertiesConfiguration}
  *
@@ -42,11 +42,15 @@ public class AbstractDataSourceProperties {
 
 	@NotEmpty
 	private String dataType = "json";
+
 	@NotNull
 	private RuleType ruleType;
+
 	private String converterClass;
+
 	@JsonIgnore
 	private final String factoryBeanName;
+
 	@JsonIgnore
 	private Environment env;
 

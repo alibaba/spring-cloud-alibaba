@@ -20,8 +20,13 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.cloud.sentinel.SentinelConstants;
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -37,10 +42,6 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-
-import com.alibaba.cloud.sentinel.SentinelConstants;
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 /**
  * PostProcessor handle @SentinelRestTemplate Annotation, add interceptor for RestTemplate
@@ -90,6 +91,9 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		checkBlock4RestTemplate(sentinelRestTemplate.fallbackClass(),
 				sentinelRestTemplate.fallback(), beanName,
 				SentinelConstants.FALLBACK_TYPE);
+		checkBlock4RestTemplate(sentinelRestTemplate.urlCleanerClass(),
+				sentinelRestTemplate.urlCleaner(), beanName,
+				SentinelConstants.URLCLEANER_TYPE);
 	}
 
 	private void checkBlock4RestTemplate(Class<?> blockClass, String blockMethod,
@@ -111,8 +115,14 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			throw new IllegalArgumentException(type + " method attribute exists but "
 					+ type + " class attribute is not exists in bean[" + beanName + "]");
 		}
-		Class[] args = new Class[] { HttpRequest.class, byte[].class,
-				ClientHttpRequestExecution.class, BlockException.class };
+		Class[] args;
+		if (type.equals(SentinelConstants.URLCLEANER_TYPE)) {
+			args = new Class[] { String.class };
+		}
+		else {
+			args = new Class[] { HttpRequest.class, byte[].class,
+					ClientHttpRequestExecution.class, BlockException.class };
+		}
 		String argsStr = Arrays.toString(
 				Arrays.stream(args).map(clazz -> clazz.getSimpleName()).toArray());
 		Method foundMethod = ClassUtils.getStaticMethod(blockClass, blockMethod, args);
@@ -127,20 +137,31 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 					+ ", please check your class name, method name and arguments");
 		}
 
-		if (!ClientHttpResponse.class.isAssignableFrom(foundMethod.getReturnType())) {
-			log.error(
-					"{} method return value in bean[{}] is not ClientHttpResponse: {}#{}{}",
-					type, beanName, blockClass.getName(), blockMethod, argsStr);
+		Class<?> standardReturnType;
+		if (type.equals(SentinelConstants.URLCLEANER_TYPE)) {
+			standardReturnType = String.class;
+		}
+		else {
+			standardReturnType = ClientHttpResponse.class;
+		}
+
+		if (!standardReturnType.isAssignableFrom(foundMethod.getReturnType())) {
+			log.error("{} method return value in bean[{}] is not {}: {}#{}{}", type,
+					beanName, standardReturnType.getName(), blockClass.getName(),
+					blockMethod, argsStr);
 			throw new IllegalArgumentException(type + " method return value in bean["
-					+ beanName + "] is not ClientHttpResponse: " + blockClass.getName()
-					+ "#" + blockMethod + argsStr);
+					+ beanName + "] is not " + standardReturnType.getName() + ": "
+					+ blockClass.getName() + "#" + blockMethod + argsStr);
 		}
 		if (type.equals(SentinelConstants.BLOCK_TYPE)) {
 			BlockClassRegistry.updateBlockHandlerFor(blockClass, blockMethod,
 					foundMethod);
 		}
-		else {
+		else if (type.equals(SentinelConstants.FALLBACK_TYPE)) {
 			BlockClassRegistry.updateFallbackFor(blockClass, blockMethod, foundMethod);
+		}
+		else {
+			BlockClassRegistry.updateUrlCleanerFor(blockClass, blockMethod, foundMethod);
 		}
 	}
 
@@ -177,7 +198,9 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 					.append(sentinelRestTemplate.blockHandlerClass().getSimpleName())
 					.append(sentinelRestTemplate.blockHandler()).append("_")
 					.append(sentinelRestTemplate.fallbackClass().getSimpleName())
-					.append(sentinelRestTemplate.fallback());
+					.append(sentinelRestTemplate.fallback()).append("_")
+					.append(sentinelRestTemplate.urlCleanerClass().getSimpleName())
+					.append(sentinelRestTemplate.urlCleaner());
 			RestTemplate restTemplate = (RestTemplate) bean;
 			String interceptorBeanName = interceptorBeanNamePrefix + "@"
 					+ bean.toString();

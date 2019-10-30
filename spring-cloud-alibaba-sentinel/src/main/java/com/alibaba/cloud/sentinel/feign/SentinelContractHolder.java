@@ -38,7 +38,7 @@ public class SentinelContractHolder implements Contract {
 	 * map key is constructed by ClassFullName + configKey. configKey is constructed by
 	 * {@link feign.Feign#configKey}
 	 */
-	public final static Map<String, MethodMetadata> METADATA_MAP = new HashMap();
+	public final static Map<String, MethodMetadata> METADATA_MAP = new HashMap<>();
 
 	public SentinelContractHolder(Contract delegate) {
 		this.delegate = delegate;

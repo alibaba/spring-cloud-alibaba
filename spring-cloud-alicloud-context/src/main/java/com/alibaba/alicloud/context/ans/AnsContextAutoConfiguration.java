@@ -16,12 +16,12 @@
 
 package com.alibaba.alicloud.context.ans;
 
+import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
+
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
 
 /**
  * @author xiaolongzuo

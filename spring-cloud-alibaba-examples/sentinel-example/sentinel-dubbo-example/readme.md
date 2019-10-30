@@ -7,7 +7,7 @@ This example illustrates how to use Sentinel starter to implement flow control f
 
 [Dubbo](http://dubbo.apache.org/) is a high-performance, java based open source RPC framework.
 
-This example focus on the integration of Sentinel and Dubbo. You can see more features on [sentinel-core-example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example).
+This example focus on the integration of Sentinel and Dubbo. You can see more features on [sentinel-core-example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example).
 
 ## Demo
 
@@ -64,7 +64,7 @@ Define some configs of dubbo in `application.properties` in provider side, like 
 
 `sentinel-dubbo-api` define a service named FooService:
 
-    package FooService;
+    package com.alibaba.cloud.examples;
     public interface FooService {
         String hello(String name);
     }
@@ -91,7 +91,7 @@ We will configure flow control rules before service invocation in consumer side.
 
 `sentinel-dubbo-api` define a service named FooService:
 
-    package FooService;
+    package com.alibaba.cloud.examples;
     public interface FooService {
         String hello(String name);
     }

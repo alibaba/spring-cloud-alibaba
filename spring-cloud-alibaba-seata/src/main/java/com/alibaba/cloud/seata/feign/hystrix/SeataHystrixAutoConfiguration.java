@@ -15,11 +15,11 @@
  */
 package com.alibaba.cloud.seata.feign.hystrix;
 
+import com.netflix.hystrix.HystrixCommand;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.netflix.hystrix.HystrixCommand;
 
 /**
  * @author xiaojing

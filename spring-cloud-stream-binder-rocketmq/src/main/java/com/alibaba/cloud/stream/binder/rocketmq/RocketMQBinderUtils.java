@@ -16,10 +16,11 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
-import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
+
+import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
+
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

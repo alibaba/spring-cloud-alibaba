@@ -19,14 +19,14 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 import java.time.Duration;
 import java.util.List;
 
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.redis.RedisDataSource;
 import com.alibaba.csp.sentinel.datasource.redis.config.RedisConnectionConfig;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * A {@link FactoryBean} for creating {@link RedisDataSource} instance.
@@ -52,17 +52,17 @@ public class RedisDataSourceFactoryBean implements FactoryBean<RedisDataSource> 
 	private Converter converter;
 
 	/**
-	 * data key in Redis
+	 * data key in Redis.
 	 */
 	private String ruleKey;
 
 	/**
-	 * channel to subscribe in Redis
+	 * channel to subscribe in Redis.
 	 */
 	private String channel;
 
 	/**
-	 * redis server password
+	 * redis server password.
 	 */
 	private String password;
 

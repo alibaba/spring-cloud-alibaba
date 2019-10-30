@@ -18,9 +18,9 @@ package com.alibaba.cloud.sentinel.datasource.config;
 
 import javax.validation.constraints.NotEmpty;
 
-import org.springframework.util.StringUtils;
-
 import com.alibaba.cloud.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
+
+import org.springframework.util.StringUtils;
 
 /**
  * Nacos Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -39,8 +39,11 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 	private String dataId;
 
 	private String endpoint;
+
 	private String namespace;
+
 	private String accessKey;
+
 	private String secretKey;
 
 	public NacosDataSourceProperties() {

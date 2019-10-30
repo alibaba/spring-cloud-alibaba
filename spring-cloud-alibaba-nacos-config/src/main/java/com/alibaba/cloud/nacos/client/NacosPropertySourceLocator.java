@@ -16,22 +16,25 @@
 
 package com.alibaba.cloud.nacos.client;
 
-import java.util.Arrays;
 import java.util.List;
+
+import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
+import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
+import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
+import com.alibaba.nacos.api.config.ConfigService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
-import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
-import com.alibaba.nacos.api.config.ConfigService;
 
 /**
  * @author xiaojing
@@ -42,25 +45,31 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceLocator.class);
+
 	private static final String NACOS_PROPERTY_SOURCE_NAME = "NACOS";
+
 	private static final String SEP1 = "-";
+
 	private static final String DOT = ".";
+
 	private static final String SHARED_CONFIG_SEPARATOR_CHAR = "[,]";
-	private static final List<String> SUPPORT_FILE_EXTENSION = Arrays.asList("properties",
-			"yaml", "yml");
 
 	private NacosPropertySourceBuilder nacosPropertySourceBuilder;
 
 	private NacosConfigProperties nacosConfigProperties;
 
-	public NacosPropertySourceLocator(NacosConfigProperties nacosConfigProperties) {
+	private NacosConfigManager nacosConfigManager;
+
+	public NacosPropertySourceLocator(NacosConfigManager nacosConfigManager,
+			NacosConfigProperties nacosConfigProperties) {
+		this.nacosConfigManager = nacosConfigManager;
 		this.nacosConfigProperties = nacosConfigProperties;
 	}
 
 	@Override
 	public PropertySource<?> locate(Environment env) {
 
-		ConfigService configService = nacosConfigProperties.configServiceInstance();
+		ConfigService configService = nacosConfigManager.getConfigService();
 
 		if (null == configService) {
 			log.warn("no instance of config service found, can't load config from nacos");
@@ -99,14 +108,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			return;
 		}
 
-		String[] sharedDataIdArry = sharedDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
-		checkDataIdFileExtension(sharedDataIdArry);
+		String[] sharedDataIdArray = sharedDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
+		checkDataIdFileExtension(sharedDataIdArray);
 
-		for (int i = 0; i < sharedDataIdArry.length; i++) {
-			String dataId = sharedDataIdArry[i];
+		for (int i = 0; i < sharedDataIdArray.length; i++) {
+			String dataId = sharedDataIdArray[i];
 			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
-			boolean isRefreshable = checkDataIdIsRefreshbable(refreshDataIds,
-					sharedDataIdArry[i]);
+			boolean isRefreshable = checkDataIdIsRefreshable(refreshDataIds,
+					sharedDataIdArray[i]);
 
 			loadNacosDataIfPresent(compositePropertySource, dataId, "DEFAULT_GROUP",
 					fileExtension, isRefreshable);
@@ -114,18 +123,18 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	}
 
 	private void loadExtConfiguration(CompositePropertySource compositePropertySource) {
-		if (nacosConfigProperties.getExtConfig() == null
-				|| nacosConfigProperties.getExtConfig().isEmpty()) {
+		List<NacosConfigProperties.Config> extConfigs = nacosConfigProperties
+				.getExtConfig();
+
+		if (CollectionUtils.isEmpty(extConfigs)) {
 			return;
 		}
 
-		List<NacosConfigProperties.Config> extConfigs = nacosConfigProperties
-				.getExtConfig();
 		checkExtConfiguration(extConfigs);
 
 		for (NacosConfigProperties.Config config : extConfigs) {
 			String dataId = config.getDataId();
-			String fileExtension = dataId.substring(dataId.lastIndexOf(".") + 1);
+			String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
 			loadNacosDataIfPresent(compositePropertySource, dataId, config.getGroup(),
 					fileExtension, config.isRefresh());
 		}
@@ -137,7 +146,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			String dataId = extConfigs.get(i).getDataId();
 			if (dataId == null || dataId.trim().length() == 0) {
 				throw new IllegalStateException(String.format(
-						"the [ spring.cloud.nacos.config.ext-config[%s] ] must give a dataid",
+						"the [ spring.cloud.nacos.config.ext-config[%s] ] must give a dataId",
 						i));
 			}
 			dataIds[i] = dataId;
@@ -152,8 +161,13 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		String fileExtension = properties.getFileExtension();
 		String nacosGroup = properties.getGroup();
 
+		// load directly once by default
+		loadNacosDataIfPresent(compositePropertySource, dataIdPrefix, nacosGroup,
+				fileExtension, true);
+		// load with suffix, which have a higher priority than the default
 		loadNacosDataIfPresent(compositePropertySource,
 				dataIdPrefix + DOT + fileExtension, nacosGroup, fileExtension, true);
+		// Loaded with profile, which have a higher priority than the suffix
 		for (String profile : environment.getActiveProfiles()) {
 			String dataId = dataIdPrefix + SEP1 + profile + DOT + fileExtension;
 			loadNacosDataIfPresent(compositePropertySource, dataId, nacosGroup,
@@ -164,56 +178,58 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,
 			final String dataId, final String group, String fileExtension,
 			boolean isRefreshable) {
-		if (NacosContextRefresher.getRefreshCount() != 0) {
-			NacosPropertySource ps;
-			if (!isRefreshable) {
-				ps = NacosPropertySourceRepository.getNacosPropertySource(dataId);
-			}
-			else {
-				ps = nacosPropertySourceBuilder.build(dataId, group, fileExtension, true);
-			}
+		if (null == dataId || dataId.trim().length() < 1) {
+			return;
+		}
+		if (null == group || group.trim().length() < 1) {
+			return;
+		}
+		NacosPropertySource propertySource = this.loadNacosPropertySource(dataId, group,
+				fileExtension, isRefreshable);
+		this.addFirstPropertySource(composite, propertySource, false);
+	}
 
-			composite.addFirstPropertySource(ps);
+	private NacosPropertySource loadNacosPropertySource(final String dataId,
+			final String group, String fileExtension, boolean isRefreshable) {
+		if (NacosContextRefresher.getRefreshCount() != 0) {
+			if (!isRefreshable) {
+				return NacosPropertySourceRepository.getNacosPropertySource(dataId);
+			}
 		}
-		else {
-			NacosPropertySource ps = nacosPropertySourceBuilder.build(dataId, group,
-					fileExtension, isRefreshable);
-			composite.addFirstPropertySource(ps);
+		return nacosPropertySourceBuilder.build(dataId, group, fileExtension,
+				isRefreshable);
+	}
+
+	/**
+	 * Add the nacos configuration to the first place and maybe ignore the empty
+	 * configuration.
+	 */
+	private void addFirstPropertySource(final CompositePropertySource composite,
+			NacosPropertySource nacosPropertySource, boolean ignoreEmpty) {
+		if (null == nacosPropertySource || null == composite) {
+			return;
 		}
+		if (ignoreEmpty && nacosPropertySource.getSource().isEmpty()) {
+			return;
+		}
+		composite.addFirstPropertySource(nacosPropertySource);
 	}
 
 	private static void checkDataIdFileExtension(String[] dataIdArray) {
-		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < dataIdArray.length; i++) {
-			boolean isLegal = false;
-			for (String fileExtension : SUPPORT_FILE_EXTENSION) {
-				if (dataIdArray[i].indexOf(fileExtension) > 0) {
-					isLegal = true;
-					break;
-				}
-			}
-			// add tips
-			if (!isLegal) {
-				stringBuilder.append(dataIdArray[i] + ",");
-			}
+		if (dataIdArray == null || dataIdArray.length < 1) {
+			throw new IllegalStateException("The dataId cannot be empty");
 		}
-
-		if (stringBuilder.length() > 0) {
-			String result = stringBuilder.substring(0, stringBuilder.length() - 1);
-			throw new IllegalStateException(String.format(
-					"[%s] must contains file extension with properties|yaml|yml",
-					result));
-		}
+		// Just decide that the current dataId must have a suffix
+		NacosDataParserHandler.getInstance().checkDataId(dataIdArray);
 	}
 
-	private boolean checkDataIdIsRefreshbable(String refreshDataIds,
-			String sharedDataId) {
-		if (refreshDataIds == null || "".equals(refreshDataIds)) {
+	private boolean checkDataIdIsRefreshable(String refreshDataIds, String sharedDataId) {
+		if (StringUtils.isEmpty(refreshDataIds)) {
 			return false;
 		}
 
-		String[] refreshDataIdArry = refreshDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
-		for (String refreshDataId : refreshDataIdArry) {
+		String[] refreshDataIdArray = refreshDataIds.split(SHARED_CONFIG_SEPARATOR_CHAR);
+		for (String refreshDataId : refreshDataIdArray) {
 			if (refreshDataId.equals(sharedDataId)) {
 				return true;
 			}

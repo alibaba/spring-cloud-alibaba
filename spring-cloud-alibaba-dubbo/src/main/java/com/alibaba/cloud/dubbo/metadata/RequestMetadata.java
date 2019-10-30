@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (C) 2018 the original author or authors.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,9 +14,6 @@
  * limitations under the License.
  */
 package com.alibaba.cloud.dubbo.metadata;
-
-import static com.alibaba.cloud.dubbo.http.util.HttpUtils.normalizePath;
-import static org.springframework.http.MediaType.parseMediaTypes;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,16 +27,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import feign.RequestTemplate;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import feign.RequestTemplate;
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.normalizePath;
+import static org.springframework.http.MediaType.parseMediaTypes;
 
 /**
  * Request Metadata
@@ -74,8 +72,7 @@ public class RequestMetadata {
 	}
 
 	/**
-	 * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}
-	 *
+	 * Get the best matched {@link RequestMetadata} via specified {@link RequestMetadata}.
 	 * @param requestMetadataMap the source of {@link NavigableMap}
 	 * @param requestMetadata the match object
 	 * @return if not matched, return <code>null</code>

@@ -16,15 +16,16 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
+import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
+
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 
 /**
  * @author xiaojing
@@ -38,8 +39,9 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
 	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint(
+			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosDiscoveryEndpoint(nacosDiscoveryProperties);
+		return new NacosDiscoveryEndpoint(nacosNamingManager, nacosDiscoveryProperties);
 	}
 
 }

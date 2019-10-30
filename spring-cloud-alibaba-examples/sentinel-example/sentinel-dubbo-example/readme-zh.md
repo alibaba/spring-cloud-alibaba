@@ -6,9 +6,9 @@
 
 [Sentinel](https://github.com/alibaba/Sentinel) 是阿里巴巴开源的分布式系统的流量防卫组件，Sentinel 把流量作为切入点，从流量控制，熔断降级，系统负载保护等多个维度保护服务的稳定性。
 
-[Dubbo](http://dubbo.apache.org/)是一款高性能Java RPC框架，有对应的[SpringBoot工程](https://github.com/apache/incubator-dubbo-spring-boot-project)。
+[Dubbo](http://dubbo.apache.org/)是一款高性能Java RPC框架，有对应的[SpringBoot工程](https://github.com/apache/dubbo-spring-boot-project)。
 
-本项目专注于Sentinel与Dubbo的整合，关于Sentinel的更多特性可以查看[sentinel-core-example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example)。
+本项目专注于Sentinel与Dubbo的整合，关于Sentinel的更多特性可以查看[sentinel-core-example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example)。
 
 ## 示例
 
@@ -66,7 +66,7 @@ Provider端在application.properties文件中定义dubbo相关的配置，比如
 
 `sentinel-dubbo-api`模块中定义了FooService服务，内容如下：
 
-    package FooService;
+    package com.alibaba.cloud.examples;
     public interface FooService {
         String hello(String name);
     }
@@ -93,7 +93,7 @@ Consumer端在服务调用之前，先定义限流规则。
 
 `sentinel-dubbo-api`模块中定义了FooService服务，内容如下：
 
-    package FooService;
+    package com.alibaba.cloud.examples;
     public interface FooService {
         String hello(String name);
     }

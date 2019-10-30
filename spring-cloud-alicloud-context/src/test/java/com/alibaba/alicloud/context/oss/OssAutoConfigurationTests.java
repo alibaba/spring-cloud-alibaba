@@ -16,16 +16,16 @@
 
 package com.alibaba.alicloud.context.oss;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.Test;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-
 import com.alibaba.alicloud.context.AliCloudProperties;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
+import org.junit.Test;
+
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * {@link OSS} {@link OssProperties} Test

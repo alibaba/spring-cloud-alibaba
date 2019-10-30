@@ -19,7 +19,6 @@ import java.util.concurrent.Callable;
 
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
-
 import io.seata.core.context.RootContext;
 
 /**
@@ -58,6 +57,7 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 	private static class SeataContextCallable<K> implements Callable<K> {
 
 		private final Callable<K> actual;
+
 		private final String xid;
 
 		SeataContextCallable(Callable<K> actual) {

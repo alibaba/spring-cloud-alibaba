@@ -16,12 +16,12 @@
 
 package com.alibaba.cloud.seata.feign;
 
-import org.springframework.beans.factory.BeanFactory;
-
 import com.alibaba.cloud.sentinel.feign.SentinelFeign;
 
 import feign.Feign;
 import feign.Retryer;
+
+import org.springframework.beans.factory.BeanFactory;
 
 /**
  * @author xiaojing

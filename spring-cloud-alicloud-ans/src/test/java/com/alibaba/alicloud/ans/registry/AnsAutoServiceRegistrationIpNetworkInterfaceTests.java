@@ -16,17 +16,18 @@
 
 package com.alibaba.alicloud.ans.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+import com.alibaba.alicloud.ans.AnsAutoConfiguration;
+import com.alibaba.alicloud.ans.AnsDiscoveryClientAutoConfiguration;
+import com.alibaba.alicloud.context.ans.AnsProperties;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -36,9 +37,9 @@ import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.alicloud.ans.AnsAutoConfiguration;
-import com.alibaba.alicloud.ans.AnsDiscoveryClientAutoConfiguration;
-import com.alibaba.alicloud.context.ans.AnsProperties;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author xiaojing

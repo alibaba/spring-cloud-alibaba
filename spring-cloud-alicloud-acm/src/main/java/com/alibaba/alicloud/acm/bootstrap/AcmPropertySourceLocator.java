@@ -16,14 +16,14 @@
 
 package com.alibaba.alicloud.acm.bootstrap;
 
+import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
-
-import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
 
 /**
  * @author juven.xuxb

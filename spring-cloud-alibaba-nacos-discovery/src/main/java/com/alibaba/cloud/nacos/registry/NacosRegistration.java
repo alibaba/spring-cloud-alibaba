@@ -21,6 +21,11 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
+
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
@@ -28,10 +33,6 @@ import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 
 /**
  * @author xiaojing
@@ -43,12 +44,15 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	public static final String MANAGEMENT_ADDRESS = "management.address";
 	public static final String MANAGEMENT_ENDPOINT_BASE_PATH = "management.endpoints.web.base-path";
 
+	private NacosNamingManager nacosNamingManager;
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	private ApplicationContext context;
 
-	public NacosRegistration(NacosDiscoveryProperties nacosDiscoveryProperties,
+	public NacosRegistration(NacosNamingManager nacosNamingManager,
+			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
+		this.nacosNamingManager = nacosNamingManager;
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 		this.context = context;
 	}
@@ -143,7 +147,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	}
 
 	public NamingService getNacosNamingService() {
-		return nacosDiscoveryProperties.namingServiceInstance();
+		return nacosNamingManager.getNamingService();
 	}
 
 	@Override

@@ -16,18 +16,24 @@
 
 package com.alibaba.alicloud.oss;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import com.alibaba.alicloud.oss.resource.OssStorageProtocolResolver;
+import com.aliyun.oss.OSS;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.alicloud.oss.resource.OssStorageProtocolResolver;
-
-import com.aliyun.oss.OSS;
+import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
 
 /**
- * OSS Auto {@link Configuration}
+ * OSS Auto {@link Configuration}.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
@@ -40,6 +46,14 @@ public class OssAutoConfiguration {
 	@ConditionalOnMissingBean
 	public OssStorageProtocolResolver ossStorageProtocolResolver() {
 		return new OssStorageProtocolResolver();
+	}
+
+	@Bean(name = OSS_TASK_EXECUTOR_BEAN_NAME)
+	@ConditionalOnMissingBean
+	public ExecutorService ossTaskExecutor() {
+		int coreSize = Runtime.getRuntime().availableProcessors();
+		return new ThreadPoolExecutor(coreSize, 128, 60, TimeUnit.SECONDS,
+				new SynchronousQueue<>());
 	}
 
 }

@@ -19,9 +19,9 @@ package com.alibaba.cloud.sentinel.datasource.config;
 import java.time.Duration;
 import java.util.List;
 
-import org.springframework.util.StringUtils;
-
 import com.alibaba.cloud.sentinel.datasource.factorybean.RedisDataSourceFactoryBean;
+
+import org.springframework.util.StringUtils;
 
 /**
  * Zookeeper Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -36,27 +36,27 @@ public class RedisDataSourceProperties extends AbstractDataSourceProperties {
 	}
 
 	/**
-	 * redis server host
+	 * redis server host.
 	 */
 	private String host = "localhost";
 
 	/**
-	 * redis server port
+	 * redis server port.
 	 */
 	private int port = 6379;
 
 	/**
-	 * redis server password
+	 * redis server password.
 	 */
 	private String password;
 
 	/**
-	 * redis server default select database
+	 * redis server default select database.
 	 */
 	private int database;
 
 	/**
-	 * redis server timeout
+	 * redis server timeout.
 	 */
 	private Duration timeout;
 
@@ -66,17 +66,17 @@ public class RedisDataSourceProperties extends AbstractDataSourceProperties {
 	private List<String> nodes;
 
 	/**
-	 * data key in Redis
+	 * data key in Redis.
 	 */
 	private String ruleKey;
 
 	/**
-	 * channel to subscribe in Redis
+	 * channel to subscribe in Redis.
 	 */
 	private String channel;
 
 	/**
-	 * redis sentinel model
+	 * redis sentinel model.
 	 */
 	private String masterId;
 

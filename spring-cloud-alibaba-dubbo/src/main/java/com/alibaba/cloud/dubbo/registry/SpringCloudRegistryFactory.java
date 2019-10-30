@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (C) 2018 the original author or authors.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.registry;
 
-import static java.lang.System.getProperty;
-
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
+import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
@@ -25,13 +27,11 @@ import org.apache.dubbo.registry.RegistryFactory;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
-import com.alibaba.cloud.dubbo.util.JSONUtils;
+import static java.lang.System.getProperty;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose
- * protocol is "spring-cloud"
+ * protocol is "spring-cloud".
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see RegistryFactory
@@ -39,8 +39,14 @@ import com.alibaba.cloud.dubbo.util.JSONUtils;
  */
 public class SpringCloudRegistryFactory implements RegistryFactory {
 
+	/**
+	 * Spring Cloud Protocol.
+	 */
 	public static String PROTOCOL = "spring-cloud";
 
+	/**
+	 * Spring Cloud Address.
+	 */
 	public static String ADDRESS = "localhost";
 
 	private static String SERVICES_LOOKUP_SCHEDULER_THREAD_NAME_PREFIX = getProperty(
@@ -56,6 +62,8 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 	private DubboMetadataServiceProxy dubboMetadataConfigServiceProxy;
 
 	private JSONUtils jsonUtils;
+
+	private DubboGenericServiceFactory dubboGenericServiceFactory;
 
 	private volatile boolean initialized = false;
 
@@ -77,6 +85,8 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 		this.dubboMetadataConfigServiceProxy = applicationContext
 				.getBean(DubboMetadataServiceProxy.class);
 		this.jsonUtils = applicationContext.getBean(JSONUtils.class);
+		this.dubboGenericServiceFactory = applicationContext
+				.getBean(DubboGenericServiceFactory.class);
 	}
 
 	@Override
@@ -84,6 +94,7 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 		init();
 		return new SpringCloudRegistry(url, discoveryClient,
 				dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
-				jsonUtils, applicationContext);
+				jsonUtils, dubboGenericServiceFactory, applicationContext);
 	}
+
 }

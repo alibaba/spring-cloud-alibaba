@@ -16,9 +16,13 @@
 
 package com.alibaba.cloud.sentinel;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+import com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor;
+import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 import org.junit.Test;
+
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -28,10 +32,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-import com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor;
-import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -89,6 +90,26 @@ public class SentinelRestTemplateTests {
 	@Test
 	public void testNormalWithoutParam() {
 		new AnnotationConfigApplicationContext(TestConfig10.class);
+	}
+
+	@Test(expected = BeanCreationException.class)
+	public void testUrlClnMethod() {
+		new AnnotationConfigApplicationContext(TestConfig11.class);
+	}
+
+	@Test(expected = BeanCreationException.class)
+	public void testUrlClnClass() {
+		new AnnotationConfigApplicationContext(TestConfig12.class);
+	}
+
+	@Test(expected = BeanCreationException.class)
+	public void testUrlClnMethodExists() {
+		new AnnotationConfigApplicationContext(TestConfig13.class);
+	}
+
+	@Test(expected = BeanCreationException.class)
+	public void testUrlClnReturnValue() {
+		new AnnotationConfigApplicationContext(TestConfig14.class);
 	}
 
 	@Configuration
@@ -160,7 +181,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(blockHandlerClass = SentinelRestTemplateTests.ExceptionUtil.class, blockHandler = "handleException", fallbackClass = SentinelRestTemplateTests.ExceptionUtil.class, fallback = "fallbackException")
+		@SentinelRestTemplate(blockHandlerClass = SentinelRestTemplateTests.ExceptionUtil.class, blockHandler = "handleException", fallbackClass = SentinelRestTemplateTests.ExceptionUtil.class, fallback = "fallbackException", urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class, urlCleaner = "clean")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -247,6 +268,66 @@ public class SentinelRestTemplateTests {
 		}
 	}
 
+	@Configuration
+	public static class TestConfig11 {
+		@Bean
+		SentinelBeanPostProcessor sentinelBeanPostProcessor(
+				ApplicationContext applicationContext) {
+			return new SentinelBeanPostProcessor(applicationContext);
+		}
+
+		@Bean
+		@SentinelRestTemplate(urlCleaner = "cln")
+		RestTemplate restTemplate() {
+			return new RestTemplate();
+		}
+	}
+
+	@Configuration
+	public static class TestConfig12 {
+		@Bean
+		SentinelBeanPostProcessor sentinelBeanPostProcessor(
+				ApplicationContext applicationContext) {
+			return new SentinelBeanPostProcessor(applicationContext);
+		}
+
+		@Bean
+		@SentinelRestTemplate(urlCleanerClass = UrlCleanUtil.class)
+		RestTemplate restTemplate() {
+			return new RestTemplate();
+		}
+	}
+
+	@Configuration
+	public static class TestConfig13 {
+		@Bean
+		SentinelBeanPostProcessor sentinelBeanPostProcessor(
+				ApplicationContext applicationContext) {
+			return new SentinelBeanPostProcessor(applicationContext);
+		}
+
+		@Bean
+		@SentinelRestTemplate(urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class, urlCleaner = "clean1")
+		RestTemplate restTemplate() {
+			return new RestTemplate();
+		}
+	}
+
+	@Configuration
+	public static class TestConfig14 {
+		@Bean
+		SentinelBeanPostProcessor sentinelBeanPostProcessor(
+				ApplicationContext applicationContext) {
+			return new SentinelBeanPostProcessor(applicationContext);
+		}
+
+		@Bean
+		@SentinelRestTemplate(urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class, urlCleaner = "clean2")
+		RestTemplate restTemplate() {
+			return new RestTemplate();
+		}
+	}
+
 	public static class ExceptionUtil {
 		public static SentinelClientHttpResponse handleException(HttpRequest request,
 				byte[] body, ClientHttpRequestExecution execution, BlockException ex) {
@@ -268,6 +349,15 @@ public class SentinelRestTemplateTests {
 		public static void fallbackException2(HttpRequest request, byte[] body,
 				ClientHttpRequestExecution execution, BlockException ex) {
 			System.out.println("Oops: " + ex.getClass().getCanonicalName());
+		}
+	}
+
+	public static class UrlCleanUtil {
+		public static String clean(String url) {
+			return url;
+		}
+
+		public static void clean2(String url) {
 		}
 	}
 

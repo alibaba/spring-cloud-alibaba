@@ -16,15 +16,8 @@
 
 package com.alibaba.cloud.sentinel.datasource;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.IOException;
 import java.util.List;
-
-import org.junit.Test;
-import org.springframework.util.ResourceUtils;
-import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.sentinel.datasource.config.ApolloDataSourceProperties;
 import com.alibaba.cloud.sentinel.datasource.config.FileDataSourceProperties;
@@ -39,6 +32,13 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

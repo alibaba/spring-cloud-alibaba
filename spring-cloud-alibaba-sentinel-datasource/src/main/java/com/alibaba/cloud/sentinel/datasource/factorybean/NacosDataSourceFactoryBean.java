@@ -18,12 +18,12 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 
 import java.util.Properties;
 
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 import com.alibaba.nacos.api.PropertyKeyConst;
+
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.StringUtils;
 
 /**
  * A {@link FactoryBean} for creating {@link NacosDataSource} instance.
@@ -34,13 +34,19 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> {
 
 	private String serverAddr;
+
 	private String groupId;
+
 	private String dataId;
+
 	private Converter converter;
 
 	private String endpoint;
+
 	private String namespace;
+
 	private String accessKey;
+
 	private String secretKey;
 
 	@Override

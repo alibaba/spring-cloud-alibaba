@@ -35,7 +35,7 @@
 
 			@RestController
 			class EchoController {
-				@RequestMapping(value = "/echo/{string}", method = RequestMethod.GET)
+				@GetMapping(value = "/echo/{string}")
 				public String echo(@PathVariable String string) {
 						return string;
 				}
@@ -70,7 +70,7 @@
 ### 验证
 
 #### 查询服务
-在浏览器输入此地址 `http://127.0.0.1:8848/nacos/v1/ns/instances?serviceName=service-provider`，并点击跳转，可以看到服务节点已经成功注册到 Nacos Server。
+在浏览器输入此地址 `http://127.0.0.1:8848/nacos/v1/ns/catalog/instances?serviceName=service-provider&clusterName=DEFAULT&pageSize=10&pageNo=1&namespaceId=`，并点击跳转，可以看到服务节点已经成功注册到 Nacos Server。
 
 ![查询服务](https://cdn.nlark.com/lark/0/2018/png/54319/1536986288092-5cf96af9-9a26-466b-85f6-39ad1d92dfdc.png)
 
@@ -102,7 +102,7 @@ Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon �
 
 	    @FeignClient(name = "service-provider")
 	    public interface EchoService {
-	        @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+	        @GetMapping(value = "/echo/{str}")
 	        String echo(@PathVariable("str") String str);
 	    }
 	    
@@ -120,11 +120,11 @@ Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon �
 		    @Autowired
 		    private EchoService echoService;
 		
-		    @RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
+		    @GetMapping(value = "/echo-rest/{str}")
 		    public String rest(@PathVariable String str) {
 		        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
 		    }
-		    @RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
+		    @GetMapping(value = "/echo-feign/{str}")
 		    public String feign(@PathVariable String str) {
 		        return echoService.echo(str);
 		    }

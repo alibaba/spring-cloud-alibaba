@@ -18,6 +18,11 @@ package com.alibaba.alicloud.context.acm;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.alicloud.context.AliCloudProperties;
+import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
+import com.alibaba.alicloud.context.edas.EdasProperties;
+import com.alibaba.cloud.context.acm.AliCloudAcmInitializer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -27,11 +32,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.alicloud.context.AliCloudProperties;
-import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
-import com.alibaba.alicloud.context.edas.EdasProperties;
-import com.alibaba.cloud.context.acm.AliCloudAcmInitializer;
 
 /**
  * @author xiaolongzuo

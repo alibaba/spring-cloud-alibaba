@@ -20,3 +20,4 @@ Spring Cloud Alibaba BOM 包含了它所使用的所有依赖的版本。
 
 在下面的章节中，假设您使用的是 Spring Cloud Alibaba bom，相关 starter 依赖将不包含版本号。
 
+

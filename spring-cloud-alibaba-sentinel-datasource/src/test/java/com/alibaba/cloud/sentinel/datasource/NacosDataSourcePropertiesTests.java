@@ -16,12 +16,12 @@
 
 package com.alibaba.cloud.sentinel.datasource;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.cloud.sentinel.datasource.config.NacosDataSourceProperties;
+import com.alibaba.cloud.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
 
 import org.junit.Test;
 
-import com.alibaba.cloud.sentinel.datasource.config.NacosDataSourceProperties;
-import com.alibaba.cloud.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

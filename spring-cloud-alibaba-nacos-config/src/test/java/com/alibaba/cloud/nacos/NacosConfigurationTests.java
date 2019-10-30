@@ -16,13 +16,15 @@
 
 package com.alibaba.cloud.nacos;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
+import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpoint;
+import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
+import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
+import com.alibaba.nacos.client.config.NacosConfigService;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,6 +35,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -41,11 +44,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
-import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpoint;
-import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
-import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
-import com.alibaba.nacos.client.config.NacosConfigService;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
  * @author xiaojing

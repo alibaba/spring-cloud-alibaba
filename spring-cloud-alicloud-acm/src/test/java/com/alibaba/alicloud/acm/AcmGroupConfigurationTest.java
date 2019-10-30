@@ -16,10 +16,12 @@
 
 package com.alibaba.alicloud.acm;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+
+import com.alibaba.alicloud.acm.endpoint.AcmEndpointAutoConfiguration;
+import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
+import com.alibaba.edas.acm.ConfigService;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,6 +31,7 @@ import org.powermock.api.support.MethodProxy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -37,9 +40,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.alicloud.acm.endpoint.AcmEndpointAutoConfiguration;
-import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
-import com.alibaba.edas.acm.ConfigService;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
  * @author xiaojing

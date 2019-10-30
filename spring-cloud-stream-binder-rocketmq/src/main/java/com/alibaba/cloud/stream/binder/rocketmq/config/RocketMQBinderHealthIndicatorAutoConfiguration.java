@@ -16,12 +16,12 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.config;
 
+import com.alibaba.cloud.stream.binder.rocketmq.actuator.RocketMQBinderHealthIndicator;
+
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.cloud.stream.binder.rocketmq.actuator.RocketMQBinderHealthIndicator;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

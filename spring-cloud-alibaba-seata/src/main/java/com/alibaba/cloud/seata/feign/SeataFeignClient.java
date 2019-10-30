@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.util.StringUtils;
-
 import feign.Client;
 import feign.Request;
 import feign.Response;
 import io.seata.core.context.RootContext;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
@@ -68,9 +68,9 @@ public class SeataFeignClient implements Client {
 		Map<String, Collection<String>> headers = new HashMap<>(MAP_SIZE);
 		headers.putAll(request.headers());
 
-		List<String> fescarXid = new ArrayList<>();
-		fescarXid.add(xid);
-		headers.put(RootContext.KEY_XID, fescarXid);
+		List<String> seataXid = new ArrayList<>();
+		seataXid.add(xid);
+		headers.put(RootContext.KEY_XID, seataXid);
 
 		return Request.create(request.method(), request.url(), headers, request.body(),
 				request.charset());

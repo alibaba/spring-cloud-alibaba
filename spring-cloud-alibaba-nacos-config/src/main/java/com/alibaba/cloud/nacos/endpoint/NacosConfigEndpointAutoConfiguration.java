@@ -16,6 +16,10 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
+import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -24,9 +28,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
-
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 
 /**
  * @author xiaojing
@@ -40,6 +41,9 @@ public class NacosConfigEndpointAutoConfiguration {
 	private NacosConfigProperties nacosConfigProperties;
 
 	@Autowired
+	private NacosConfigManager nacosConfigManager;
+
+	@Autowired
 	private NacosRefreshHistory nacosRefreshHistory;
 
 	@ConditionalOnMissingBean
@@ -51,7 +55,6 @@ public class NacosConfigEndpointAutoConfiguration {
 
 	@Bean
 	public NacosConfigHealthIndicator nacosConfigHealthIndicator() {
-		return new NacosConfigHealthIndicator(nacosConfigProperties,
-				nacosConfigProperties.configServiceInstance());
+		return new NacosConfigHealthIndicator(nacosConfigManager.getConfigService());
 	}
 }

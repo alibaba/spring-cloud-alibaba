@@ -19,10 +19,10 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 import java.io.File;
 import java.nio.charset.Charset;
 
-import org.springframework.beans.factory.FactoryBean;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
+
+import org.springframework.beans.factory.FactoryBean;
 
 /**
  * A {@link FactoryBean} for creating {@link FileRefreshableDataSource} instance.
@@ -34,9 +34,13 @@ public class FileRefreshableDataSourceFactoryBean
 		implements FactoryBean<FileRefreshableDataSource> {
 
 	private String file;
+
 	private String charset;
+
 	private long recommendRefreshMs;
+
 	private int bufSize;
+
 	private Converter converter;
 
 	@Override

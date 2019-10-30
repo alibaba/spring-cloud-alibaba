@@ -16,6 +16,9 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.config;
 
+import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -24,6 +27,7 @@ import org.apache.rocketmq.spring.config.RocketMQConfigUtils;
 import org.apache.rocketmq.spring.config.RocketMQTransactionAnnotationProcessor;
 import org.apache.rocketmq.spring.config.TransactionHandlerRegistry;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,10 +35,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

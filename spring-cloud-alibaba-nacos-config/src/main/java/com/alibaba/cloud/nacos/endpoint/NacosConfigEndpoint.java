@@ -23,16 +23,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+
 /**
- * Endpoint for Nacos, contains config data and refresh history
+ * Endpoint for Nacos, contains config data and refresh history.
+ *
  * @author xiaojing
  */
 @Endpoint(id = "nacos-config")
@@ -42,12 +43,8 @@ public class NacosConfigEndpoint {
 
 	private final NacosRefreshHistory refreshHistory;
 
-	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
-		@Override
-		protected DateFormat initialValue() {
-			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		}
-	};
+	private ThreadLocal<DateFormat> dateFormat = ThreadLocal
+			.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
 	public NacosConfigEndpoint(NacosConfigProperties properties,
 			NacosRefreshHistory refreshHistory) {

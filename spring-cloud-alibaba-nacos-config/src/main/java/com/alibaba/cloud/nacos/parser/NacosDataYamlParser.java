@@ -14,13 +14,26 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.sentinel.datasource;
+package com.alibaba.cloud.nacos.parser;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ByteArrayResource;
 
 /**
- * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author zkz
  */
-public interface SentinelDataSourceConstants {
+public class NacosDataYamlParser extends AbstractNacosDataParser {
 
-	String PROPERTY_PREFIX = "spring.cloud.sentinel";
+	public NacosDataYamlParser() {
+		super(",yml,yaml,");
+	}
 
+	@Override
+	protected Properties doParse(String data) {
+		YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+		yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
+		return yamlFactory.getObject();
+	}
 }

@@ -16,12 +16,12 @@
 
 package com.alibaba.cloud.sentinel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
+import com.alibaba.cloud.sentinel.datasource.RuleType;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -29,8 +29,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
-import com.alibaba.cloud.sentinel.datasource.RuleType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

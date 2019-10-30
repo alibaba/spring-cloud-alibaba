@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (C) 2018 the original author or authors.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +14,6 @@
  * limitations under the License.
  */
 package com.alibaba.cloud.dubbo.http;
-
-import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +25,8 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.util.MultiValueMap;
+
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
 
 /**
  * Mutable {@link HttpServerRequest} implementation

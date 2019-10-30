@@ -16,14 +16,13 @@
 
 package com.alibaba.cloud.nacos.registry;
 
-import static com.alibaba.cloud.nacos.registry.NacosRegistration.MANAGEMENT_CONTEXT_PATH;
-import static com.alibaba.cloud.nacos.registry.NacosRegistration.MANAGEMENT_PORT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -32,9 +31,9 @@ import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationC
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author xiaojing
@@ -71,11 +70,11 @@ public class NacosAutoServiceRegistrationManagementPortTests {
 
 	private void checkoutNacosDiscoveryManagementData() {
 		assertEquals("NacosDiscoveryProperties management port was wrong", "8888",
-				properties.getMetadata().get(MANAGEMENT_PORT));
+				properties.getMetadata().get(NacosRegistration.MANAGEMENT_PORT));
 
 		assertEquals("NacosDiscoveryProperties management context path was wrong",
 				"/test-context-path",
-				properties.getMetadata().get(MANAGEMENT_CONTEXT_PATH));
+				properties.getMetadata().get(NacosRegistration.MANAGEMENT_CONTEXT_PATH));
 
 	}
 

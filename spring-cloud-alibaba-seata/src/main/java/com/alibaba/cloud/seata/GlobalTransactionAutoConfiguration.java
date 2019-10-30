@@ -16,13 +16,13 @@
 
 package com.alibaba.cloud.seata;
 
+import io.seata.spring.annotation.GlobalTransactionScanner;
+
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
-
-import io.seata.spring.annotation.GlobalTransactionScanner;
 
 /**
  * @author xiaojing
@@ -51,7 +51,7 @@ public class GlobalTransactionAutoConfiguration {
 		String txServiceGroup = seataProperties.getTxServiceGroup();
 
 		if (StringUtils.isEmpty(txServiceGroup)) {
-			txServiceGroup = applicationName + "-fescar-service-group";
+			txServiceGroup = applicationName + "-seata-service-group";
 			seataProperties.setTxServiceGroup(txServiceGroup);
 		}
 

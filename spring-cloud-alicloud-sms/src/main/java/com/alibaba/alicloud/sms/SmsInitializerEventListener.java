@@ -18,15 +18,15 @@ package com.alibaba.alicloud.sms;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
-
 import com.alibaba.alicloud.context.sms.SmsProperties;
 import com.alibaba.alicloud.sms.base.MessageListener;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
+
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 
 /**
  * @author pbting

@@ -19,6 +19,7 @@ package com.alibaba.cloud.examples;
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
+
 import org.springframework.messaging.Message;
 
 /**

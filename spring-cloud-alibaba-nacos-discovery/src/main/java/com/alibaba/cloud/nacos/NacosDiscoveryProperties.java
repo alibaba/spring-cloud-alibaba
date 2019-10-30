@@ -16,15 +16,6 @@
 
 package com.alibaba.cloud.nacos;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMING_LOAD_CACHE_AT_START;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -37,15 +28,6 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.commons.util.InetUtils;
-import org.springframework.core.env.Environment;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingMaintainFactory;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
@@ -53,10 +35,30 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
+
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMING_LOAD_CACHE_AT_START;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
+
 /**
  * @author dungu.zpf
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  */
 
 @ConfigurationProperties("spring.cloud.nacos.discovery")
@@ -108,7 +110,7 @@ public class NacosDiscoveryProperties {
 	private String clusterName = "DEFAULT";
 
 	/**
-	 * group name for nacos
+	 * group name for nacos.
 	 */
 	private String group = "DEFAULT_GROUP";
 
@@ -426,9 +428,11 @@ public class NacosDiscoveryProperties {
 	public void overrideFromEnv(Environment env) {
 
 		if (StringUtils.isEmpty(this.getServerAddr())) {
-			String serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
+			String serverAddr = env
+					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
-				serverAddr = env.resolvePlaceholders("${spring.cloud.nacos.server-addr}");
+				serverAddr = env
+						.resolvePlaceholders("${spring.cloud.nacos.server-addr:}");
 			}
 			this.setServerAddr(serverAddr);
 		}
@@ -458,10 +462,11 @@ public class NacosDiscoveryProperties {
 		}
 		if (StringUtils.isEmpty(this.getGroup())) {
 			this.setGroup(
-				env.resolvePlaceholders("${spring.cloud.nacos.discovery.group:}"));
+					env.resolvePlaceholders("${spring.cloud.nacos.discovery.group:}"));
 		}
 	}
 
+	@Deprecated
 	public NamingService namingServiceInstance() {
 
 		if (null != namingService) {
@@ -478,6 +483,7 @@ public class NacosDiscoveryProperties {
 		return namingService;
 	}
 
+	@Deprecated
 	public NamingMaintainService namingMaintainServiceInstance() {
 
 		if (null != namingMaintainService) {

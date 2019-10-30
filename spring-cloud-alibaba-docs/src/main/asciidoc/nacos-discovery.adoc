@@ -41,10 +41,10 @@ For more Nacos Server versions, you can download the latest version from https:/
 
 The following sample illustrates how to register a service to Nacos.
 
-* Configuration of pom.xml The following is a complete example of pom.xml:
+* Configuration of pom.xml The following is a complete example of pom.xml：
 
 .pom.xml
-[source, xml]
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

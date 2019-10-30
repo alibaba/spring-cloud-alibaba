@@ -1,5 +1,7 @@
 package com.alibaba.cloud.examples;
 
+import com.alibaba.cloud.examples.RocketMQConsumerApplication.MySink;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,8 +12,6 @@ import org.springframework.cloud.stream.binder.PollableMessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.messaging.SubscribableChannel;
-
-import com.alibaba.cloud.examples.RocketMQConsumerApplication.MySink;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

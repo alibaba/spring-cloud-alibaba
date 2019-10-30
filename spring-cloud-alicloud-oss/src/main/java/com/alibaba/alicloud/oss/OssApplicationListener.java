@@ -18,12 +18,12 @@ package com.alibaba.alicloud.oss;
 
 import java.util.Map;
 
+import com.aliyun.oss.OSS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-
-import com.aliyun.oss.OSS;
 
 /**
  * Shutdown All OSS Clients when {@code ApplicationContext} gets closed

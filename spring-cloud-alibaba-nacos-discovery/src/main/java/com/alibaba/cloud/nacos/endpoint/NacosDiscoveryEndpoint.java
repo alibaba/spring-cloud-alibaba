@@ -21,14 +21,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.ServiceInfo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
 /**
  * Endpoint for nacos discovery, get nacos properties and subscribed services
@@ -40,9 +42,12 @@ public class NacosDiscoveryEndpoint {
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryEndpoint.class);
 
+	private NacosNamingManager nacosNamingManager;
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	public NacosDiscoveryEndpoint(NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public NacosDiscoveryEndpoint(NacosNamingManager nacosNamingManager,
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		this.nacosNamingManager = nacosNamingManager;
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 	}
 
@@ -54,7 +59,7 @@ public class NacosDiscoveryEndpoint {
 		Map<String, Object> result = new HashMap<>();
 		result.put("NacosDiscoveryProperties", nacosDiscoveryProperties);
 
-		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
+		NamingService namingService = nacosNamingManager.getNamingService();
 		List<ServiceInfo> subscribe = Collections.emptyList();
 
 		try {

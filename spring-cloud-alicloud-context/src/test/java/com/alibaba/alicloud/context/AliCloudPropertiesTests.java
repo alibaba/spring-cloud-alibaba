@@ -16,11 +16,12 @@
 
 package com.alibaba.alicloud.context;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import org.junit.Test;
+
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * @author xiaolongzuo

@@ -23,14 +23,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import com.alibaba.edas.acm.ConfigService;
+import com.alibaba.edas.acm.exception.ConfigException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.edas.acm.ConfigService;
-import com.alibaba.edas.acm.exception.ConfigException;
 
 /**
  * @author juven.xuxb

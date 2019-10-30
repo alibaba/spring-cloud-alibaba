@@ -16,6 +16,12 @@
 
 package com.alibaba.alicloud.acm;
 
+import com.alibaba.alicloud.acm.refresh.AcmContextRefresher;
+import com.alibaba.alicloud.acm.refresh.AcmRefreshHistory;
+import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
+
+import com.taobao.diamond.client.Diamond;
+
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,12 +30,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.alicloud.acm.refresh.AcmContextRefresher;
-import com.alibaba.alicloud.acm.refresh.AcmRefreshHistory;
-import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
-
-import com.taobao.diamond.client.Diamond;
 
 /**
  * Created on 01/10/2017.

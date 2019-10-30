@@ -56,7 +56,7 @@ public class RocketMQApplication {
 Configure Binding:
 ```properties
 # configure the nameserver of rocketmq
-spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876
+spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876
 # configure the output binding named output
 spring.cloud.stream.bindings.output.destination=test-topic
 spring.cloud.stream.bindings.output.content-type=application/json
@@ -121,7 +121,7 @@ And using two input bindings to subscribe messages.
 see the configuration below:
 
 ```properties
-spring.cloud.stream.rocketmq.binder.namesrv-addr=127.0.0.1:9876
+spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876
 
 spring.cloud.stream.bindings.output.destination=test-topic
 spring.cloud.stream.bindings.output.content-type=application/json

@@ -16,15 +16,16 @@
 
 package com.alibaba.alicloud.context.acm;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
-import org.junit.Test;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-
 import com.alibaba.alicloud.context.AliCloudContextAutoConfiguration;
 import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
 import com.alibaba.cloud.context.AliCloudServerMode;
+
+import org.junit.Test;
+
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 /**
  * @author xiaolongzuo
