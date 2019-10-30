@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.util.ObjectUtils;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.springframework.util.ObjectUtils;
 
 /**
  * Using By ConfigurationProperties.

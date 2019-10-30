@@ -15,16 +15,17 @@
  */
 package com.alibaba.cloud.dubbo.registry;
 
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstanceRegisteredEvent;
+
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
-import com.alibaba.cloud.dubbo.registry.event.ServiceInstanceRegisteredEvent;
 
 /**
  * Dubbo Service Registration Event-Publishing Aspect

@@ -15,11 +15,11 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
-
 import org.springframework.http.HttpRequest;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
+
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
 
 /**
  * Parses and matches a single param expression to a request.

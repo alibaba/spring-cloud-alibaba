@@ -15,24 +15,25 @@
  */
 package com.alibaba.cloud.dubbo.service;
 
-import static java.util.Collections.unmodifiableMap;
-import static org.springframework.util.CollectionUtils.isEmpty;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.dubbo.common.URL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
+
+import org.apache.dubbo.common.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static java.util.Collections.unmodifiableMap;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Introspective {@link DubboMetadataService} implementation

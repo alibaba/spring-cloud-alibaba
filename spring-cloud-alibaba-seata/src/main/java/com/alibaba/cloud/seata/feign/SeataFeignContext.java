@@ -19,9 +19,9 @@ package com.alibaba.cloud.seata.feign;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.cloud.openfeign.FeignContext;
-
 import feign.Client;
+
+import org.springframework.cloud.openfeign.FeignContext;
 
 /**
  *

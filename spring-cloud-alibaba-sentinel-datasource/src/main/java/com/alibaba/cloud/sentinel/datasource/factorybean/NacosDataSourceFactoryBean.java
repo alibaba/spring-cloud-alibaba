@@ -18,12 +18,12 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 
 import java.util.Properties;
 
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
 import com.alibaba.nacos.api.PropertyKeyConst;
+
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.StringUtils;
 
 /**
  * A {@link FactoryBean} for creating {@link NacosDataSource} instance.

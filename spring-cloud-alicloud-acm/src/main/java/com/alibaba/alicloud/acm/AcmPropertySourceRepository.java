@@ -19,12 +19,12 @@ package com.alibaba.alicloud.acm;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.alicloud.acm.bootstrap.AcmPropertySource;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.PropertySource;
-
-import com.alibaba.alicloud.acm.bootstrap.AcmPropertySource;
 
 /**
  * @author juven.xuxb, 5/17/16.

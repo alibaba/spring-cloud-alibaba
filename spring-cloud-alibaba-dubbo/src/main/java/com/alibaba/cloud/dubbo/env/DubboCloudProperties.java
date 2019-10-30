@@ -15,15 +15,15 @@
  */
 package com.alibaba.cloud.dubbo.env;
 
-import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
-import static org.springframework.util.StringUtils.hasText;
-import static org.springframework.util.StringUtils.trimAllWhitespace;
-
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
+import static org.springframework.util.StringUtils.hasText;
+import static org.springframework.util.StringUtils.trimAllWhitespace;
 
 /**
  * Dubbo Cloud {@link ConfigurationProperties Properties}

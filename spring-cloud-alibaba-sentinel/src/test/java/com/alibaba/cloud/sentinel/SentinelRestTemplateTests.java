@@ -16,9 +16,13 @@
 
 package com.alibaba.cloud.sentinel;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+import com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor;
+import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 import org.junit.Test;
+
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -28,10 +32,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-import com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor;
-import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

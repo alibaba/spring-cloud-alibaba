@@ -15,11 +15,12 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import static com.alibaba.cloud.dubbo.http.DefaultHttpRequest.builder;
-
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.springframework.http.HttpRequest;
+
+import static com.alibaba.cloud.dubbo.http.DefaultHttpRequest.builder;
 
 /**
  * {@link HeaderExpression} Test

@@ -20,10 +20,10 @@ import java.io.IOException;
 
 import javax.validation.constraints.NotEmpty;
 
+import com.alibaba.cloud.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
+
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
 
 /**
  * File Properties class Using by {@link DataSourcePropertiesConfiguration} and

@@ -15,8 +15,6 @@
  */
 package com.alibaba.cloud.dubbo.http;
 
-import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -27,6 +25,8 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.util.MultiValueMap;
+
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.getParameters;
 
 /**
  * Mutable {@link HttpServerRequest} implementation

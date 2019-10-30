@@ -6,6 +6,8 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.nacos.api.config.listener.Listener;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -16,9 +18,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.nacos.api.config.listener.Listener;
 
 /**
  * @author xiaojing, Jianwei Mao

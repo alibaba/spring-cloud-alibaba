@@ -19,6 +19,7 @@ import java.lang.reflect.Constructor;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ResolvableType;
 import org.springframework.http.MediaType;

@@ -15,13 +15,13 @@
  */
 package com.alibaba.cloud.dubbo.actuate.endpoint;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
-import com.alibaba.cloud.dubbo.service.DubboMetadataService;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
  * Dubbo Rest Metadata {@link Endpoint}

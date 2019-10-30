@@ -15,14 +15,14 @@
  */
 package com.alibaba.cloud.dubbo.registry.event;
 
-import static java.util.Collections.unmodifiableCollection;
-
 import java.util.Collection;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
+
+import static java.util.Collections.unmodifiableCollection;
 
 /**
  * An event raised after the {@link ServiceInstance instances} of one service has been

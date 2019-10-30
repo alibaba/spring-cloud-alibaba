@@ -16,10 +16,10 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
+import com.alibaba.nacos.api.config.ConfigService;
+
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
-
-import com.alibaba.nacos.api.config.ConfigService;
 
 /**
  * @author xiaojing

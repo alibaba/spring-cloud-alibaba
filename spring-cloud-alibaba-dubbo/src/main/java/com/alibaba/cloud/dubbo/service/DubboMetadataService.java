@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
+
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.annotation.Service;
-
-import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
 
 /**
  * Dubbo Metadata Service is a core interface for service subscribers, it must keep the

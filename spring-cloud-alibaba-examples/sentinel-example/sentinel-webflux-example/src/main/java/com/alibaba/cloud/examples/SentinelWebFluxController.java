@@ -16,13 +16,13 @@
 
 package com.alibaba.cloud.examples;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.csp.sentinel.adapter.reactor.SentinelReactorTransformer;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -37,12 +37,12 @@ public class SentinelWebFluxController {
 				.transform(new SentinelReactorTransformer<>("mono"));
 	}
 
-    @GetMapping("/test")
-    public Mono<String> test() {
-        return Mono.just("simple string")
-            // transform the publisher here.
-            .transform(new SentinelReactorTransformer<>("test"));
-    }
+	@GetMapping("/test")
+	public Mono<String> test() {
+		return Mono.just("simple string")
+				// transform the publisher here.
+				.transform(new SentinelReactorTransformer<>("test"));
+	}
 
 	@GetMapping("/flux")
 	public Flux<String> flux() {

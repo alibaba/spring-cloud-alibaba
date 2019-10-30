@@ -20,8 +20,13 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.cloud.sentinel.SentinelConstants;
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -37,10 +42,6 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-
-import com.alibaba.cloud.sentinel.SentinelConstants;
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 /**
  * PostProcessor handle @SentinelRestTemplate Annotation, add interceptor for RestTemplate

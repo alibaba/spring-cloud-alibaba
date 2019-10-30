@@ -15,10 +15,9 @@
  */
 package com.alibaba.cloud.dubbo.autoconfigure.condition;
 
-import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
-import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
-
 import java.util.Map;
+
+import com.alibaba.cloud.dubbo.registry.SpringCloudRegistry;
 
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
@@ -28,7 +27,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.cloud.dubbo.registry.SpringCloudRegistry;
+import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
+import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
 
 /**
  * Missing {@link SpringCloudRegistry} Property {@link Condition}

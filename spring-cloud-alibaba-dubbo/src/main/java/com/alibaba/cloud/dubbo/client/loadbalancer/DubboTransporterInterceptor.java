@@ -15,15 +15,23 @@
  */
 package com.alibaba.cloud.dubbo.client.loadbalancer;
 
-import static org.springframework.web.util.UriComponentsBuilder.fromUri;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.dubbo.http.MutableHttpServerRequest;
+import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
+import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+
 import org.apache.dubbo.rpc.service.GenericException;
 import org.apache.dubbo.rpc.service.GenericService;
+
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -35,14 +43,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.util.UriComponents;
 
-import com.alibaba.cloud.dubbo.http.MutableHttpServerRequest;
-import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 /**
  * Dubbo Transporter {@link ClientHttpRequestInterceptor} implementation

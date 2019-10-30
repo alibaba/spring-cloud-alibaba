@@ -15,18 +15,18 @@
  */
 package com.alibaba.cloud.dubbo.service.parameter;
 
-import static org.springframework.util.ObjectUtils.isEmpty;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.MultiValueMap;
-
 import com.alibaba.cloud.dubbo.http.HttpServerRequest;
 import com.alibaba.cloud.dubbo.metadata.MethodParameterMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * Abstract HTTP Names Value {@link DubboGenericServiceParameterResolver Dubbo

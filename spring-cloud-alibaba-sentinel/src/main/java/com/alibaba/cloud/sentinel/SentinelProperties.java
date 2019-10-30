@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.Ordered;
-import org.springframework.validation.annotation.Validated;
-
 import com.alibaba.cloud.sentinel.datasource.config.DataSourcePropertiesConfiguration;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.Ordered;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * {@link ConfigurationProperties} for Sentinel.
@@ -89,9 +89,9 @@ public class SentinelProperties {
 	 */
 	private Log log = new Log();
 
-    /**
-     * Add HTTP method prefix for Sentinel Resource.
-     */
+	/**
+	 * Add HTTP method prefix for Sentinel Resource.
+	 */
 	private Boolean httpMethodSpecify = false;
 
 	public boolean isEager() {
@@ -166,15 +166,15 @@ public class SentinelProperties {
 		this.log = log;
 	}
 
-    public Boolean getHttpMethodSpecify() {
-        return httpMethodSpecify;
-    }
+	public Boolean getHttpMethodSpecify() {
+		return httpMethodSpecify;
+	}
 
-    public void setHttpMethodSpecify(Boolean httpMethodSpecify) {
-        this.httpMethodSpecify = httpMethodSpecify;
-    }
+	public void setHttpMethodSpecify(Boolean httpMethodSpecify) {
+		this.httpMethodSpecify = httpMethodSpecify;
+	}
 
-    public static class Flow {
+	public static class Flow {
 
 		/**
 		 * The cold factor {@link SentinelConfig#COLD_FACTOR}.

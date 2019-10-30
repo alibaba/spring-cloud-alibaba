@@ -23,8 +23,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.alicloud.acm.AcmPropertySourceRepository;
+import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
+import com.alibaba.edas.acm.ConfigService;
+import com.alibaba.edas.acm.listener.ConfigChangeListener;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.context.refresh.ContextRefresher;
@@ -33,11 +39,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.alicloud.acm.AcmPropertySourceRepository;
-import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
-import com.alibaba.edas.acm.ConfigService;
-import com.alibaba.edas.acm.listener.ConfigChangeListener;
 
 /**
  * On application start up, AcmContextRefresher add diamond listeners to all application

@@ -15,15 +15,16 @@
  */
 package com.alibaba.cloud.dubbo.metadata;
 
-import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
-import static org.springframework.util.CollectionUtils.isEmpty;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
 import org.apache.dubbo.config.ProtocolConfig;
+
 import org.springframework.beans.factory.ObjectProvider;
+
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Dubbo's {@link ProtocolConfig} {@link Supplier}

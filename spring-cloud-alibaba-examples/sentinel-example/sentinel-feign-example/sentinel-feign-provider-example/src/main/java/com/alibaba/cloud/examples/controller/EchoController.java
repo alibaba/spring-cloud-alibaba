@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EchoController {
 
-    @GetMapping("/echo/{str}")
-    public String echo(@PathVariable String str) {
-        return "provider-" + str;
-    }
+	@GetMapping("/echo/{str}")
+	public String echo(@PathVariable String str) {
+		return "provider-" + str;
+	}
 
 }

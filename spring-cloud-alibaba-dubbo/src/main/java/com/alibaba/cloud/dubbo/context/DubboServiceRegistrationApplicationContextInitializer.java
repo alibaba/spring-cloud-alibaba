@@ -15,10 +15,10 @@
  */
 package com.alibaba.cloud.dubbo.context;
 
+import com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory;
+
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory;
 
 /**
  * The Dubbo services will be registered as the specified Spring cloud applications that

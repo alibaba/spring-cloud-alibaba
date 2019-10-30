@@ -15,12 +15,13 @@
  */
 package com.alibaba.cloud.dubbo.bootstrap;
 
+import com.alibaba.cloud.dubbo.service.EchoService;
+
 import org.apache.dubbo.config.annotation.Service;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-
-import com.alibaba.cloud.dubbo.service.EchoService;
 
 /**
  * Dubbo Spring Cloud Server Bootstrap

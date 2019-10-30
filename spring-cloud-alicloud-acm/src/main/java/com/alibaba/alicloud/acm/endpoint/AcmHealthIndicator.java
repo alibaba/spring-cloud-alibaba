@@ -19,14 +19,14 @@ package com.alibaba.alicloud.acm.endpoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.alicloud.acm.AcmPropertySourceRepository;
 import com.alibaba.alicloud.acm.bootstrap.AcmPropertySource;
 import com.alibaba.alicloud.context.acm.AcmProperties;
 import com.alibaba.edas.acm.ConfigService;
+
+import org.springframework.boot.actuate.health.AbstractHealthIndicator;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.util.StringUtils;
 
 /**
  * @author leijuan

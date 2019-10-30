@@ -15,8 +15,6 @@
  */
 package com.alibaba.cloud.dubbo.http;
 
-import static org.springframework.web.util.UriComponentsBuilder.fromPath;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +25,8 @@ import org.springframework.http.HttpRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 /**
  * Default {@link HttpRequest} implementation

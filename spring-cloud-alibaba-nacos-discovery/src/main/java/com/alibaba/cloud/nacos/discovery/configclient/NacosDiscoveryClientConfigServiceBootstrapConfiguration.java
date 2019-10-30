@@ -16,14 +16,14 @@
 
 package com.alibaba.cloud.nacos.discovery.configclient;
 
+import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.config.client.ConfigServicePropertySourceLocator;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
 
 /**
  * Helper for config client that wants to lookup the config server via discovery.

@@ -15,16 +15,11 @@
  */
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
-import static feign.Feign.configKey;
-
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.env.PropertyResolver;
 
 import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
@@ -32,6 +27,11 @@ import com.alibaba.cloud.dubbo.metadata.MethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 
 import feign.Contract;
+
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.env.PropertyResolver;
+
+import static feign.Feign.configKey;
 
 /**
  * {@link MethodMetadata} Resolver for the {@link DubboTransported} annotated classes or

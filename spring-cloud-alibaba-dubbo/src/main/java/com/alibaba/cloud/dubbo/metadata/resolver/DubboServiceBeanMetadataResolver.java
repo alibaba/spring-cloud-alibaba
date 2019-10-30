@@ -26,14 +26,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.config.spring.ServiceBean;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.util.ClassUtils;
-
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
 
@@ -41,6 +33,14 @@ import feign.Contract;
 import feign.Feign;
 import feign.MethodMetadata;
 import feign.Util;
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.config.spring.ServiceBean;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.util.ClassUtils;
 
 /**
  * The metadata resolver for {@link Feign} for {@link ServiceBean Dubbo Service Bean} in

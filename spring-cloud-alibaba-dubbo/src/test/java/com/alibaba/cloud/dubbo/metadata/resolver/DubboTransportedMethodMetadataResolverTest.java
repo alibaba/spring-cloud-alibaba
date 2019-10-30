@@ -17,14 +17,15 @@ package com.alibaba.cloud.dubbo.metadata.resolver;
 
 import java.util.Set;
 
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.mock.env.MockEnvironment;
-
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
-import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
 
 /**
  * {@link DubboTransportedMethodMetadataResolver} Test

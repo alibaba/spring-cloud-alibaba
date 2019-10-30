@@ -15,9 +15,6 @@
  */
 package com.alibaba.cloud.dubbo.metadata;
 
-import static com.alibaba.cloud.dubbo.http.util.HttpUtils.normalizePath;
-import static org.springframework.http.MediaType.parseMediaTypes;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,16 +27,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import feign.RequestTemplate;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import feign.RequestTemplate;
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.normalizePath;
+import static org.springframework.http.MediaType.parseMediaTypes;
 
 /**
  * Request Metadata

@@ -15,8 +15,6 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import static org.springframework.http.HttpMethod.resolve;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -24,6 +22,8 @@ import java.util.Set;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.util.StringUtils;
+
+import static org.springframework.http.HttpMethod.resolve;
 
 /**
  * {@link HttpRequest} {@link HttpMethod methods} {@link HttpRequestMatcher matcher}

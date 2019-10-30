@@ -15,19 +15,11 @@
  */
 package com.alibaba.cloud.dubbo.openfeign;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.dubbo.rpc.service.GenericService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignContext;
-import org.springframework.core.env.Environment;
 
 import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
@@ -42,6 +34,14 @@ import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 
 import feign.Contract;
 import feign.Target;
+import org.apache.dubbo.rpc.service.GenericService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.cloud.openfeign.FeignContext;
+import org.springframework.core.env.Environment;
+
+import static java.lang.reflect.Proxy.newProxyInstance;
 
 /**
  * org.springframework.cloud.openfeign.Targeter {@link InvocationHandler}

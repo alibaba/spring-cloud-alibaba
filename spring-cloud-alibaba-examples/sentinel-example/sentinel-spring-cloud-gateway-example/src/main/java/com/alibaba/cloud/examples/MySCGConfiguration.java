@@ -16,7 +16,9 @@
 
 package com.alibaba.cloud.examples;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
+
+import reactor.core.publisher.Mono;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
-
-import reactor.core.publisher.Mono;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

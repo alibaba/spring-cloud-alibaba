@@ -15,9 +15,6 @@
  */
 package com.alibaba.cloud.dubbo.service;
 
-import static com.alibaba.cloud.dubbo.util.LoggerUtils.log;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +32,9 @@ import javax.ws.rs.core.MediaType;
 import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.alibaba.cloud.dubbo.util.LoggerUtils.log;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 /**
  * Default {@link RestService}

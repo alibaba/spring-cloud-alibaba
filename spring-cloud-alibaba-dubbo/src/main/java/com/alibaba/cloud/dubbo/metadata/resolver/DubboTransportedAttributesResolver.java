@@ -15,14 +15,14 @@
  */
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
-import static org.springframework.core.annotation.AnnotationUtils.getAnnotationAttributes;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+
 import org.springframework.core.env.PropertyResolver;
 
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import static org.springframework.core.annotation.AnnotationUtils.getAnnotationAttributes;
 
 /**
  * {@link DubboTransported} annotation attributes resolver

@@ -15,13 +15,15 @@
  */
 package com.alibaba.cloud.dubbo.http.util;
 
-import static java.util.Collections.unmodifiableList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
+import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -34,9 +36,7 @@ import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
-import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * {@link HttpMessageConverter} Resolver

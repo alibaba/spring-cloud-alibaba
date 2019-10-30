@@ -16,15 +16,15 @@
 
 package com.alibaba.cloud.nacos;
 
+import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
+import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
+import com.alibaba.cloud.nacos.refresh.NacosRefreshProperties;
+
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
-import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
-import com.alibaba.cloud.nacos.refresh.NacosRefreshProperties;
 
 /**
  * @author juven.xuxb

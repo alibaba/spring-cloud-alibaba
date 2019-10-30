@@ -16,17 +16,19 @@
 
 package com.alibaba.cloud.nacos;
 
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.api.naming.pojo.ListView;
-import org.junit.Test;
-import org.springframework.cloud.client.ServiceInstance;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.api.naming.pojo.ListView;
+
+import org.junit.Test;
+
+import org.springframework.cloud.client.ServiceInstance;
 
 import static com.alibaba.cloud.nacos.test.NacosMockTest.serviceInstance;
 import static org.assertj.core.api.Assertions.assertThat;

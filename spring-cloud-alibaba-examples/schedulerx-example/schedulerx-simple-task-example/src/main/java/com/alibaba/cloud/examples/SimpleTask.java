@@ -16,11 +16,11 @@
 
 package com.alibaba.cloud.examples;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.alibaba.edas.schedulerx.ProcessResult;
 import com.alibaba.edas.schedulerx.ScxSimpleJobContext;
 import com.alibaba.edas.schedulerx.ScxSimpleJobProcessor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xiaolongzuo

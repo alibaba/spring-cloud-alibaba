@@ -15,11 +15,11 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import static org.springframework.util.StringUtils.trimWhitespace;
-
 import org.springframework.http.HttpRequest;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import static org.springframework.util.StringUtils.trimWhitespace;
 
 /**
  * The some source code is scratched from

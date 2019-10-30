@@ -15,9 +15,9 @@
  */
 package com.alibaba.cloud.dubbo.http.matcher;
 
-import static com.alibaba.cloud.dubbo.http.util.HttpUtils.toNameAndValues;
-
 import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
+
+import static com.alibaba.cloud.dubbo.http.util.HttpUtils.toNameAndValues;
 
 /**
  * {@link RequestMetadata} {@link HttpRequestMatcher} implementation

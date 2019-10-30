@@ -16,15 +16,15 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
-import com.alibaba.cloud.nacos.NacosNamingManager;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
 
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.ServerList;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * integrated Ribbon by default

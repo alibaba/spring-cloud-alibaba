@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.csp.sentinel.util.StringUtil;
-import org.springframework.util.StringUtils;
 
 /**
  * @author fangjian

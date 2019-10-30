@@ -15,6 +15,14 @@
  */
 package com.alibaba.cloud.dubbo.autoconfigure;
 
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
+import com.alibaba.cloud.dubbo.service.parameter.PathVariableServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestBodyServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestHeaderServiceParameterResolver;
+import com.alibaba.cloud.dubbo.service.parameter.RequestParamServiceParameterResolver;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -24,14 +32,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
-
-import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-import com.alibaba.cloud.dubbo.service.parameter.PathVariableServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestBodyServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestHeaderServiceParameterResolver;
-import com.alibaba.cloud.dubbo.service.parameter.RequestParamServiceParameterResolver;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Service

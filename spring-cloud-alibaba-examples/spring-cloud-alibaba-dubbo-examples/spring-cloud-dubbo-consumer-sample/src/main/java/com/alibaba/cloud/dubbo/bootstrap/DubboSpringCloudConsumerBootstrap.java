@@ -15,12 +15,16 @@
  */
 package com.alibaba.cloud.dubbo.bootstrap;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import com.alibaba.cloud.dubbo.service.RestService;
+import com.alibaba.cloud.dubbo.service.User;
+import com.alibaba.cloud.dubbo.service.UserService;
+
 import org.apache.dubbo.config.annotation.Reference;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -43,10 +47,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
-import com.alibaba.cloud.dubbo.service.RestService;
-import com.alibaba.cloud.dubbo.service.User;
-import com.alibaba.cloud.dubbo.service.UserService;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
  * Dubbo Spring Cloud Consumer Bootstrap

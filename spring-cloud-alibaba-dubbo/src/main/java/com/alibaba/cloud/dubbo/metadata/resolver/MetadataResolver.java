@@ -17,10 +17,10 @@ package com.alibaba.cloud.dubbo.metadata.resolver;
 
 import java.util.Set;
 
-import org.apache.dubbo.config.spring.ServiceBean;
-
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
+
+import org.apache.dubbo.config.spring.ServiceBean;
 
 /**
  * The REST metadata resolver.

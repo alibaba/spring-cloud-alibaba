@@ -18,12 +18,12 @@ package com.alibaba.cloud.dubbo.client.loadbalancer;
 import java.io.IOException;
 import java.net.URI;
 
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 
 /**
  * Dubbo Metadata {@link ClientHttpRequestInterceptor} Initializing Interceptor executes

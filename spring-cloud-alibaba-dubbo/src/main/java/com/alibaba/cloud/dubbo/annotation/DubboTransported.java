@@ -15,8 +15,6 @@
  */
 package com.alibaba.cloud.dubbo.annotation;
 
-import static org.apache.dubbo.rpc.cluster.Constants.DEFAULT_RETRIES;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,9 +24,12 @@ import java.lang.annotation.Target;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.rpc.ExporterListener;
 import org.apache.dubbo.rpc.Filter;
+
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.client.RestTemplate;
+
+import static org.apache.dubbo.rpc.cluster.Constants.DEFAULT_RETRIES;
 
 /**
  * {@link DubboTransported @DubboTransported} annotation indicates that the traditional

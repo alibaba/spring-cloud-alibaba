@@ -15,10 +15,6 @@
  */
 package com.alibaba.cloud.dubbo.http.util;
 
-import static org.springframework.util.StringUtils.delimitedListToStringArray;
-import static org.springframework.util.StringUtils.hasText;
-import static org.springframework.util.StringUtils.trimAllWhitespace;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -33,6 +29,10 @@ import org.springframework.http.HttpRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
+
+import static org.springframework.util.StringUtils.delimitedListToStringArray;
+import static org.springframework.util.StringUtils.hasText;
+import static org.springframework.util.StringUtils.trimAllWhitespace;
 
 /**
  * Http Utilities class

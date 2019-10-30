@@ -15,18 +15,19 @@
  */
 package com.alibaba.cloud.dubbo.openfeign;
 
-import static org.apache.dubbo.common.utils.PojoUtils.realize;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.dubbo.rpc.service.GenericService;
-import org.springframework.util.ClassUtils;
-
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+
+import org.apache.dubbo.rpc.service.GenericService;
+
+import org.springframework.util.ClassUtils;
+
+import static org.apache.dubbo.common.utils.PojoUtils.realize;
 
 /**
  * Dubbo {@link GenericService} for {@link InvocationHandler}
