@@ -16,25 +16,26 @@
 
 package com.alibaba.alicloud.context.ans;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Vector;
 
+import com.alibaba.alicloud.context.AliCloudContextAutoConfiguration;
+import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
+import com.alibaba.cloud.context.AliCloudServerMode;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import com.alibaba.alicloud.context.AliCloudContextAutoConfiguration;
-import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
-import com.alibaba.cloud.context.AliCloudServerMode;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 /**
  * @author xiaolongzuo

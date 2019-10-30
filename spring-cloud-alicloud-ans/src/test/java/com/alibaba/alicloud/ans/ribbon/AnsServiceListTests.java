@@ -16,20 +16,19 @@
 
 package com.alibaba.alicloud.ans.ribbon;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+
+import com.netflix.loadbalancer.Server;
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Test;
-
-import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
-
-import com.netflix.loadbalancer.Server;
 
 /**
  * @author xiaolongzuo

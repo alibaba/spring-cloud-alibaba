@@ -16,14 +16,14 @@
 
 package com.alibaba.alicloud.context.ans;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.event.ContextRefreshedEvent;
-
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.edas.EdasProperties;
 import com.alibaba.alicloud.context.listener.AbstractOnceApplicationListener;
 import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
 import com.alibaba.cloud.context.edas.AliCloudEdasSdk;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
  * Init {@link com.alibaba.ans.core.NamingService} properties.

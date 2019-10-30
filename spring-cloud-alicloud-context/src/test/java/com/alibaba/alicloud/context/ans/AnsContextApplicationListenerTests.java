@@ -16,11 +16,11 @@
 
 package com.alibaba.alicloud.context.ans;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import com.alibaba.alicloud.context.BaseAliCloudSpringApplication;
 
 import org.junit.Test;
 
-import com.alibaba.alicloud.context.BaseAliCloudSpringApplication;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 /**
  * @author xiaolongzuo

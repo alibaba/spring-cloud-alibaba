@@ -16,16 +16,16 @@
 
 package com.alibaba.alicloud.context.nacos;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import com.alibaba.alicloud.context.BaseAliCloudSpringApplication;
+import com.alibaba.alicloud.utils.ChangeOrderUtils;
+import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
+import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
-import com.alibaba.alicloud.context.BaseAliCloudSpringApplication;
-import com.alibaba.alicloud.utils.ChangeOrderUtils;
-import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
-import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * @author xiaolongzuo

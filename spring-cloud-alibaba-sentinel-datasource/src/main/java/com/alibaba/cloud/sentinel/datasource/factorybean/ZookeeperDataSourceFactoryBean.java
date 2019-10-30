@@ -16,11 +16,12 @@
 
 package com.alibaba.cloud.sentinel.datasource.factorybean;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.FactoryBean;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.zookeeper.ZookeeperDataSource;
+
+import org.apache.commons.lang3.StringUtils;
+
+import org.springframework.beans.factory.FactoryBean;
 
 /**
  * A {@link FactoryBean} for creating {@link ZookeeperDataSource} instance.

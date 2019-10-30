@@ -16,9 +16,9 @@
 
 package com.alibaba.alicloud.context;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import com.alibaba.cloud.context.AliCloudConfiguration;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author xiaolongzuo

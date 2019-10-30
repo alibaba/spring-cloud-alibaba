@@ -26,14 +26,14 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.cloud.context.AliCloudServerMode;
+import com.alibaba.cloud.context.ans.AnsConfiguration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.context.AliCloudServerMode;
-import com.alibaba.cloud.context.ans.AnsConfiguration;
 
 /**
  * @author xiaolongzuo

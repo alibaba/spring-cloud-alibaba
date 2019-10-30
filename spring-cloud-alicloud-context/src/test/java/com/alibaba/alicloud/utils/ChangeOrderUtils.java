@@ -16,10 +16,10 @@
 
 package com.alibaba.alicloud.utils;
 
-import org.powermock.api.mockito.PowerMockito;
-
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+
+import org.powermock.api.mockito.PowerMockito;
 
 /**
  * @author xiaolongzuo

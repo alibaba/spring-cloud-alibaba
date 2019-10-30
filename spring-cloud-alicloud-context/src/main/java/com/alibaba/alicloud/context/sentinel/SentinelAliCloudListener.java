@@ -16,14 +16,15 @@
 
 package com.alibaba.alicloud.context.sentinel;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
-
 import com.alibaba.alicloud.context.Constants;
 import com.alibaba.alicloud.context.listener.AbstractOnceApplicationListener;
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfiguration;
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
