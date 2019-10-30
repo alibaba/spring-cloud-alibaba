@@ -16,6 +16,8 @@
 
 package com.alibaba.alicloud.context.ans;
 
+import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
+
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -24,8 +26,6 @@ import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.InetUtilsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
 
 /**
  * @author xiaolongzuo

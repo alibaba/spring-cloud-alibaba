@@ -19,7 +19,7 @@
 
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
 </dependency>
 ```
@@ -122,28 +122,30 @@
 
 ## 自定义限流处理逻辑
 
-1. URL 限流触发后默认处理逻辑是，直接返回 "Blocked by Sentinel (flow limiting)"。
+* 默认限流异常处理
+
+URL 限流触发后默认处理逻辑是，直接返回 "Blocked by Sentinel (flow limiting)"。
 	如果需要自定义处理逻辑，实现的方式如下：
 
-	```java
-	public class CustomUrlBlockHandler implements UrlBlockHandler {
-		@Override
-		public void blocked(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-			// todo add your logic
-		}
-	}
+```java
+public class CustomUrlBlockHandler implements UrlBlockHandler {
+    @Override
+    public void blocked(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        // todo add your logic
+    }
+}
 
-	WebCallbackManager.setUrlBlockHandler(new CustomUrlBlockHandler());
-	```
+WebCallbackManager.setUrlBlockHandler(new CustomUrlBlockHandler());
+```
 
-2. 自定义限流触发后，默认的处理逻辑是抛出异常。
+* 使用 `@SentinelResource` 注解下的限流异常处理
 
 如果需要自定义处理逻辑，填写 `@SentinelResource` 注解的 `blockHandler` 属性（针对所有类型的 `BlockException`，需自行判断）或 `fallback` 属性（针对熔断降级异常），注意**对应方法的签名和位置有限制**，详情见 [Sentinel 注解支持文档](https://github.com/alibaba/Sentinel/wiki/%E6%B3%A8%E8%A7%A3%E6%94%AF%E6%8C%81#sentinelresource-%E6%B3%A8%E8%A7%A3)。示例实现如下：
 
 ```java
 public class TestService {
 
-	// blockHandler 是位于 ExceptionUtil 类下的 handleException 静态方法，需符合对应的类型限制.
+    // blockHandler 是位于 ExceptionUtil 类下的 handleException 静态方法，需符合对应的类型限制.
     @SentinelResource(value = "test", blockHandler = "handleException", blockHandlerClass = {ExceptionUtil.class})
     public void test() {
         System.out.println("Test");
@@ -172,7 +174,7 @@ public final class ExceptionUtil {
 }
 ```
 
-一个简单的示例可以见 [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/master/sentinel-demo/sentinel-demo-annotation-spring-aop)。
+一个简单的 `@SentinelResource` 示例可以见 [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/master/sentinel-demo/sentinel-demo-annotation-spring-aop)。
 
 ## Endpoint 信息查看
 
@@ -212,9 +214,9 @@ spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
 
 `ds1` 和 `ds2` 表示ReadableDataSource的名称，可随意编写。`ds1` 和 `ds2` 后面的 `file` 和 `nacos` 表示ReadableDataSource的类型。
 
-目前支持`file`, `nacos`, `zk`, `apollo` 这4种类型。
+目前支持`file`, `nacos`, `zk`, `apollo`，`redis` 这5种类型。
 
-其中`nacos`，`zk`，`apollo`这3种类型的使用需要加上对应的依赖`sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`, `sentinel-datasource-apollo`。
+其中`nacos`，`zk`，`apollo`，`redis` 这4种类型的使用需要加上对应的依赖`sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`, `sentinel-datasource-apollo`, `sentinel-datasource-redis`。
 
 当ReadableDataSource加载规则数据成功的时候，控制台会打印出相应的日志信息：
 

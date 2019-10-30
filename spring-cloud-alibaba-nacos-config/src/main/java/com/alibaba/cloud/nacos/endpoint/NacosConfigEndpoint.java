@@ -23,12 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
-
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
+
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 
 /**
  * Endpoint for Nacos, contains config data and refresh history

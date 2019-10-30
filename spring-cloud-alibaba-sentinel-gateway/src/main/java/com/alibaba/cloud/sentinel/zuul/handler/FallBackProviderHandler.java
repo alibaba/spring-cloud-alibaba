@@ -2,15 +2,16 @@ package com.alibaba.cloud.sentinel.zuul.handler;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.util.CollectionUtils;
-
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.DefaultBlockFallbackProvider;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.ZuulBlockFallbackManager;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.ZuulBlockFallbackProvider;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author tiger

@@ -3,9 +3,9 @@ package com.alibaba.cloud.example;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.aliyun.mns.model.Message;
+
+import org.springframework.stereotype.Component;
 
 /***
  * 

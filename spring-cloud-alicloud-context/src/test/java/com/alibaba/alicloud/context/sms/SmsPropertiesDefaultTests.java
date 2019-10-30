@@ -16,12 +16,13 @@
 
 package com.alibaba.alicloud.context.sms;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.alibaba.alicloud.context.BaseAliCloudSpringApplication;
 
 import org.junit.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alibaba.alicloud.context.BaseAliCloudSpringApplication;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author xiaolongzuo

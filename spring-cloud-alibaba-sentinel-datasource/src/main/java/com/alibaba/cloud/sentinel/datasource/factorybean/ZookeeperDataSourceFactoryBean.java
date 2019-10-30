@@ -1,10 +1,10 @@
 package com.alibaba.cloud.sentinel.datasource.factorybean;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.FactoryBean;
-
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.zookeeper.ZookeeperDataSource;
+
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.StringUtils;
 
 /**
  * A {@link FactoryBean} for creating {@link ZookeeperDataSource} instance.
@@ -25,7 +25,7 @@ public class ZookeeperDataSourceFactoryBean implements FactoryBean<ZookeeperData
 
 	@Override
 	public ZookeeperDataSource getObject() throws Exception {
-		if (StringUtils.isNotEmpty(groupId) && StringUtils.isNotEmpty(dataId)) {
+		if (!StringUtils.isEmpty(groupId) && !StringUtils.isEmpty(dataId)) {
 			// the path will be /{groupId}/{dataId}
 			return new ZookeeperDataSource(serverAddr, groupId, dataId, converter);
 		}

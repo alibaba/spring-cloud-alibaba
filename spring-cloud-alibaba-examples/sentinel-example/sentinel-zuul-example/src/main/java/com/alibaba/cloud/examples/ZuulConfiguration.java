@@ -18,12 +18,12 @@ package com.alibaba.cloud.examples;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.callback.RequestOriginParser;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.BlockResponse;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.fallback.ZuulBlockFallbackProvider;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

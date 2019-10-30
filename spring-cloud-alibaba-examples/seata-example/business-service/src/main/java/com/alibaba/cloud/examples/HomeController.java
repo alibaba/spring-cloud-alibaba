@@ -16,8 +16,13 @@
 
 package com.alibaba.cloud.examples;
 
+import com.alibaba.cloud.examples.BusinessApplication.OrderService;
+import com.alibaba.cloud.examples.BusinessApplication.StorageService;
+
+import io.seata.spring.annotation.GlobalTransactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,11 +33,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import com.alibaba.cloud.examples.BusinessApplication.OrderService;
-import com.alibaba.cloud.examples.BusinessApplication.StorageService;
-
-import io.seata.spring.annotation.GlobalTransactional;
 
 /**
  * @author xiaojing

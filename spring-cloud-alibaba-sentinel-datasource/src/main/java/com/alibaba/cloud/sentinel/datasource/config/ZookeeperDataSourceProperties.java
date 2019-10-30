@@ -16,9 +16,9 @@
 
 package com.alibaba.cloud.sentinel.datasource.config;
 
-import org.springframework.util.StringUtils;
-
 import com.alibaba.cloud.sentinel.datasource.factorybean.ZookeeperDataSourceFactoryBean;
+
+import org.springframework.util.StringUtils;
 
 /**
  * Zookeeper Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -32,7 +32,7 @@ public class ZookeeperDataSourceProperties extends AbstractDataSourceProperties 
 		super(ZookeeperDataSourceFactoryBean.class.getName());
 	}
 
-	private String serverAddr;
+	private String serverAddr = "localhost:2181";
 
 	private String path;
 

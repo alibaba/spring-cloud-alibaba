@@ -17,9 +17,6 @@ package com.alibaba.alicloud.sms;
 
 import java.text.ParseException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.sms.SmsProperties;
 import com.alibaba.alicloud.sms.base.DefaultAlicomMessagePuller;
@@ -34,6 +31,8 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author pbting

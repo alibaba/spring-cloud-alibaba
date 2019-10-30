@@ -19,8 +19,6 @@ package com.alibaba.cloud.sentinel.endpoint;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
-
 import com.alibaba.cloud.sentinel.SentinelProperties;
 import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
@@ -32,6 +30,8 @@ import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.csp.sentinel.util.AppNameUtil;
+
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 
 /**
  * Endpoint for Sentinel, contains ans properties and rules

@@ -1,12 +1,12 @@
 package com.alibaba.cloud.examples;
 
+import com.alibaba.cloud.examples.RocketMQConsumerApplication.MySink;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;
-
-import com.alibaba.cloud.examples.RocketMQConsumerApplication.MySink;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

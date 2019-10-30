@@ -16,14 +16,15 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
 
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.ServerList;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * integrated Ribbon by default
@@ -36,8 +37,10 @@ public class NacosRibbonClientConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ServerList<?> ribbonServerList(IClientConfig config,
+			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosNamingManager,
+				nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(config);
 		return serverList;
 	}

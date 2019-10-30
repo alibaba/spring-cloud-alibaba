@@ -19,18 +19,18 @@ package com.alibaba.cloud.sentinel.endpoint;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.cloud.sentinel.SentinelProperties;
+import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
+import com.alibaba.csp.sentinel.heartbeat.HeartbeatSenderProvider;
+import com.alibaba.csp.sentinel.transport.HeartbeatSender;
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.cloud.sentinel.SentinelProperties;
-import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
-import com.alibaba.csp.sentinel.heartbeat.HeartbeatSenderProvider;
-import com.alibaba.csp.sentinel.transport.HeartbeatSender;
-import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 
 /**
  * A {@link HealthIndicator} for Sentinel, which checks the status of Sentinel Dashboard

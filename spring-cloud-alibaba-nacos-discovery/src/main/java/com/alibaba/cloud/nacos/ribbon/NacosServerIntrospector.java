@@ -18,9 +18,9 @@ package com.alibaba.cloud.nacos.ribbon;
 
 import java.util.Map;
 
-import org.springframework.cloud.netflix.ribbon.DefaultServerIntrospector;
-
 import com.netflix.loadbalancer.Server;
+
+import org.springframework.cloud.netflix.ribbon.DefaultServerIntrospector;
 
 /**
  * @author xiaojing

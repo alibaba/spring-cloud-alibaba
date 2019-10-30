@@ -19,7 +19,6 @@ import java.util.concurrent.Callable;
 
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
-
 import io.seata.core.context.RootContext;
 
 /**

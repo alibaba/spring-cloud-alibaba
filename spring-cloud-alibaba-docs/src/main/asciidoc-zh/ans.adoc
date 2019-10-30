@@ -93,3 +93,4 @@ access-key 和 secret-key 则是阿里云账号的 AK/SK，需要首先注册阿
 namespace 是阿里云 EDAS 产品的概念，用于隔离不同的环境，比如测试环境和生产环境。要获取 namespace 需要 https://common-buy.aliyun.com/?spm=5176.11451019.0.0.6f5965c0Uq5tue&commodityCode=edaspostpay#/buy[开通 EDAS 服务]，按量计费模式下开通是免费的，开通以后进入 https://edas.console.aliyun.com/#/namespaces?regionNo=cn-hangzhou[EDAS控制台]，即可看到对应的 namespace，比如 cn-hangzhou。
 
 NOTE: EDAS 提供应用托管服务，如果你将应用托管到 EDAS，那么 EDAS 将会自动为你填充所有配置。
+

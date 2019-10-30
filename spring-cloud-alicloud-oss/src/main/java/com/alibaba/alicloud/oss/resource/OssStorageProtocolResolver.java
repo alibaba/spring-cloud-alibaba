@@ -16,8 +16,10 @@
 
 package com.alibaba.alicloud.oss.resource;
 
+import com.aliyun.oss.OSS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -27,8 +29,6 @@ import org.springframework.core.io.ProtocolResolver;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import com.aliyun.oss.OSS;
-
 /**
  * A {@link ProtocolResolver} implementation for the {@code oss://} protocol.
  *
@@ -37,6 +37,9 @@ import com.aliyun.oss.OSS;
 public class OssStorageProtocolResolver
 		implements ProtocolResolver, BeanFactoryPostProcessor, ResourceLoaderAware {
 
+	/**
+	 * protocol of oss resource.
+	 */
 	public static final String PROTOCOL = "oss://";
 
 	private static final Logger log = LoggerFactory
@@ -63,7 +66,7 @@ public class OssStorageProtocolResolver
 		if (!location.startsWith(PROTOCOL)) {
 			return null;
 		}
-		return new OssStorageResource(getOSS(), location);
+		return new OssStorageResource(getOSS(), location, beanFactory);
 	}
 
 	@Override
@@ -82,4 +85,5 @@ public class OssStorageProtocolResolver
 			throws BeansException {
 		this.beanFactory = beanFactory;
 	}
+
 }

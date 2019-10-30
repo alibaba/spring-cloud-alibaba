@@ -21,18 +21,18 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.springframework.beans.BeansException;
-import org.springframework.cloud.netflix.feign.FeignContext;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.ReflectionUtils;
-
 import feign.Contract;
 import feign.Feign;
 import feign.InvocationHandlerFactory;
 import feign.Target;
 import feign.hystrix.FallbackFactory;
 import feign.hystrix.HystrixFeign;
+
+import org.springframework.beans.BeansException;
+import org.springframework.cloud.netflix.feign.FeignContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * {@link Feign.Builder} like {@link HystrixFeign.Builder}

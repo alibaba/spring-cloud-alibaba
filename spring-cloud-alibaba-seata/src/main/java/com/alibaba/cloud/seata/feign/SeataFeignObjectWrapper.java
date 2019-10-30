@@ -16,12 +16,12 @@
 
 package com.alibaba.cloud.seata.feign;
 
+import feign.Client;
+
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.cloud.netflix.feign.ribbon.CachingSpringLoadBalancerFactory;
 import org.springframework.cloud.netflix.feign.ribbon.LoadBalancerFeignClient;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
-
-import feign.Client;
 
 /**
  * @author xiaojing

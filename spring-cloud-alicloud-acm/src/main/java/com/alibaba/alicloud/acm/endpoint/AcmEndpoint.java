@@ -23,12 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
-
 import com.alibaba.alicloud.acm.AcmPropertySourceRepository;
 import com.alibaba.alicloud.acm.bootstrap.AcmPropertySource;
 import com.alibaba.alicloud.acm.refresh.AcmRefreshHistory;
 import com.alibaba.alicloud.context.acm.AcmProperties;
+
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 
 /**
  * Created on 01/10/2017.

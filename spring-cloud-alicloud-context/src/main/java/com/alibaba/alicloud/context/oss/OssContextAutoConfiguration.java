@@ -16,6 +16,13 @@
 
 package com.alibaba.alicloud.context.oss;
 
+import com.alibaba.alicloud.context.AliCloudContextAutoConfiguration;
+import com.alibaba.alicloud.context.AliCloudProperties;
+import com.alibaba.cloud.context.AliCloudAuthorizationMode;
+
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,13 +32,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.alicloud.context.AliCloudContextAutoConfiguration;
-import com.alibaba.alicloud.context.AliCloudProperties;
-import com.alibaba.cloud.context.AliCloudAuthorizationMode;
-
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
 
 /**
  * OSS Auto {@link Configuration}

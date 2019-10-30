@@ -15,7 +15,7 @@
 1. 首先，修改 pom.xml 文件，引入 Nacos Config Starter。
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 	
@@ -43,12 +43,10 @@
 	1. 直接下载：[Nacos Server 下载页](https://github.com/alibaba/nacos/releases) 
 	2. 源码构建：进入 Nacos [Github 项目页面](https://github.com/alibaba/nacos)，将代码 git clone 到本地自行编译打包，[参考此文档](https://nacos.io/zh-cn/docs/quick-start.html)。
 	
-
-
 2. 启动 Server，进入下载到本地并解压完成后的文件夹(使用源码构建的方式则进入编译打包好的文件夹)，再进去其相对文件夹 nacos/bin，并对照操作系统实际情况执行如下命令。[详情参考此文档](https://nacos.io/zh-cn/docs/quick-start.html)。
 	
 	1. Linux/Unix/Mac 操作系统，执行命令 `sh startup.sh -m standalone`
-	1. Windows 操作系统，执行命令 `cmd startup.cmd`
+	2. Windows 操作系统，执行命令 `cmd startup.cmd`
 
 3. 在命令行执行如下命令，向 Nacos Server 中添加一条配置。
 	
@@ -113,11 +111,11 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 在 Nacos Config Starter 中，dataId 的拼接格式如下
 
-	${prefix} - ${spring.active.profile} . ${file-extension}
+	${prefix} - ${spring.profiles.active} . ${file-extension}
 
 * `prefix` 默认为 `spring.application.name` 的值，也可以通过配置项 `spring.cloud.nacos.config.prefix`来配置。
 
-* `spring.active.profile` 即为当前环境对应的 profile，详情可以参考 [Spring Boot文档](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
+* `spring.profiles.active` 即为当前环境对应的 profile，详情可以参考 [Spring Boot文档](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
 	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${file-extension}`**
 

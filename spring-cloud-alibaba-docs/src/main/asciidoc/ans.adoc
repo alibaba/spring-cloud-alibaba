@@ -93,3 +93,4 @@ Access-key and secret-key are the AK/SK of your Alibaba Cloud account. Register 
 Namespace is a concept in EDAS, which is used to isolate environments, such as testing environment and production environment. To find your namespace, click to https://common-buy.aliyun.com/?spm=5176.11451019.0.0.6f5965c0Uq5tue&commodityCode=edaspostpay#/buy[Sign up for EDAS] first. You will not be charged under the pay-as-you-go mode. Then log on to the https://edas.console.aliyun.com/#/namespaces?regionNo=cn-hangzhou[EDAS Console] and you will be able to see your namespace, for example cn-hangzhou.
 
 NOTE: EDAS provides application hosting service and will fill in all configurations automatically for the hosted applications.
+

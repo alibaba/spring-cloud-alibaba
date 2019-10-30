@@ -1,8 +1,8 @@
 package com.alibaba.cloud.example;
 
-import org.springframework.stereotype.Component;
-
 import com.aliyun.mns.model.Message;
+
+import org.springframework.stereotype.Component;
 
 /***
  * 

@@ -1,4 +1,4 @@
-# Sentinel Provider Example
+# Sentinel Dubbo Example
 ## Project Instruction
 
 This example illustrates how to use Sentinel starter to implement flow control for Spring Cloud applications.
@@ -7,7 +7,7 @@ This example illustrates how to use Sentinel starter to implement flow control f
 
 [Dubbo](http://dubbo.apache.org/) is a high-performance, java based open source RPC framework.
 
-This example focus on the integration of Sentinel and Dubbo. You can see more features on [sentinel-core-example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example).
+This example focus on the integration of Sentinel and Dubbo. You can see more features on [sentinel-core-example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example).
 
 ## Demo
 
@@ -18,7 +18,7 @@ Before we start the demo, let's learn how to connect Sentinel with Dubbo to a Sp
 1. Add dependency spring-cloud-starter-alibaba-sentinel and dubbo-spring-boot-starter in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
         
@@ -110,7 +110,7 @@ Configure rules:
 Using the `@Reference` annotation to inject service:
 
     @Reference(version = "${foo.service.version}", application = "${dubbo.application.id}",
-            url = "dubbo://localhost:12345", timeout = 30000)
+            path = "dubbo://localhost:12345", timeout = 30000)
 	private FooService fooService;
 
 Because QPS is 10, we can see that flow control takes effect in this invocation:
@@ -143,4 +143,3 @@ Consumer side:
 
 1. Start in IDE: Find main class  `SentinelDubboConsumerApp`, and execute the main method.
 2. Build a fatjar: Execute command `mvn clean package` to build a fatjar, and run command `java -jar sentinel-dubbo-consumer-example.jar` to start the application.
-

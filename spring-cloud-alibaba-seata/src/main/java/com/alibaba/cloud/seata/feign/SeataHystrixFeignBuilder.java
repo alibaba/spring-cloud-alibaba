@@ -16,11 +16,11 @@
 
 package com.alibaba.cloud.seata.feign;
 
-import org.springframework.beans.factory.BeanFactory;
-
 import feign.Feign;
 import feign.Retryer;
 import feign.hystrix.HystrixFeign;
+
+import org.springframework.beans.factory.BeanFactory;
 
 /**
  * @author xiaojing

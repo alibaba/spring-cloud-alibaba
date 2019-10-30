@@ -16,10 +16,12 @@
 
 package com.alibaba.cloud.nacos;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+import com.alibaba.cloud.nacos.registry.NacosRegistration;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -30,8 +32,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
-import com.alibaba.cloud.nacos.registry.NacosRegistration;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author xiaojing

@@ -16,9 +16,9 @@
 
 package com.alibaba.alicloud.context.scx;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import com.alibaba.cloud.context.scx.ScxConfiguration;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author xiaolongzuo

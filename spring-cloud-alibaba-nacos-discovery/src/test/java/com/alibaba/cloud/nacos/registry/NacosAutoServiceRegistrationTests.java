@@ -16,15 +16,17 @@
 
 package com.alibaba.cloud.nacos.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
 import java.util.Map;
+
+import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+import com.alibaba.cloud.nacos.endpoint.NacosDiscoveryEndpoint;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -35,10 +37,10 @@ import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
-import com.alibaba.cloud.nacos.endpoint.NacosDiscoveryEndpoint;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author xiaojing
@@ -56,7 +58,10 @@ import com.alibaba.cloud.nacos.endpoint.NacosDiscoveryEndpoint;
 		"spring.cloud.nacos.discovery.namingLoadCacheAtStart=true",
 		"spring.cloud.nacos.discovery.secure=true",
 		"spring.cloud.nacos.discovery.accessKey=test-accessKey",
-		"spring.cloud.nacos.discovery.secretKey=test-secretKey" }, webEnvironment = RANDOM_PORT)
+		"spring.cloud.nacos.discovery.secretKey=test-secretKey",
+		"spring.cloud.nacos.discovery.heart-beat-interval=3",
+		"spring.cloud.nacos.discovery.heart-beat-timeout=6",
+		"spring.cloud.nacos.discovery.ip-delete-timeout=9", }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationTests {
 
 	@Autowired
@@ -70,6 +75,9 @@ public class NacosAutoServiceRegistrationTests {
 
 	@Autowired
 	private NacosDiscoveryProperties properties;
+
+	@Autowired
+	private NacosNamingManager nacosNamingManager;
 
 	@Autowired
 	private InetUtils inetUtils;
@@ -92,6 +100,9 @@ public class NacosAutoServiceRegistrationTests {
 		checkoutNacosDiscoverySecure();
 		checkoutNacosDiscoveryAccessKey();
 		checkoutNacosDiscoverySecrectKey();
+		checkoutNacosDiscoveryHeartBeatInterval();
+		checkoutNacosDiscoveryHeartBeatTimeout();
+		checkoutNacosDiscoveryIpDeleteTimeout();
 
 		checkoutNacosDiscoveryServiceName();
 		checkoutNacosDiscoveryServiceIP();
@@ -162,6 +173,21 @@ public class NacosAutoServiceRegistrationTests {
 				properties.getSecretKey());
 	}
 
+	private void checkoutNacosDiscoveryHeartBeatInterval() {
+		assertEquals("NacosDiscoveryProperties heart beat interval was wrong",
+				Integer.valueOf(3), properties.getHeartBeatInterval());
+	}
+
+	private void checkoutNacosDiscoveryHeartBeatTimeout() {
+		assertEquals("NacosDiscoveryProperties heart beat timeout was wrong",
+				Integer.valueOf(6), properties.getHeartBeatTimeout());
+	}
+
+	private void checkoutNacosDiscoveryIpDeleteTimeout() {
+		assertEquals("NacosDiscoveryProperties ip delete timeout was wrong",
+				Integer.valueOf(9), properties.getIpDeleteTimeout());
+	}
+
 	private void checkoutNacosDiscoveryServiceName() {
 		assertEquals("NacosDiscoveryProperties service name was wrong", "myTestService1",
 				properties.getService());
@@ -183,11 +209,11 @@ public class NacosAutoServiceRegistrationTests {
 
 	private void checkoutEndpoint() throws Exception {
 		NacosDiscoveryEndpoint nacosDiscoveryEndpoint = new NacosDiscoveryEndpoint(
-				properties);
+				nacosNamingManager, properties);
 		Map<String, Object> map = nacosDiscoveryEndpoint.invoke();
 		assertEquals(map.get("NacosDiscoveryProperties"), properties);
 		assertEquals(map.get("subscribe").toString(),
-				properties.namingServiceInstance().getSubscribeServices().toString());
+				nacosNamingManager.getNamingService().getSubscribeServices().toString());
 	}
 
 	@Configuration

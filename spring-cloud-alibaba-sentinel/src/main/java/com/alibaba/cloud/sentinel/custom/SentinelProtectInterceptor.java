@@ -21,12 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestExecution;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.RestTemplate;
-
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
 import com.alibaba.csp.sentinel.Entry;
@@ -35,6 +29,12 @@ import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
+
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Interceptor using by SentinelRestTemplate
@@ -65,6 +65,14 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		if (hostResource.equals(hostWithPathResource)) {
 			entryWithPath = false;
 		}
+		Method urlCleanerMethod = BlockClassRegistry.lookupUrlCleaner(
+				sentinelRestTemplate.urlCleanerClass(),
+				sentinelRestTemplate.urlCleaner());
+		if (urlCleanerMethod != null) {
+			hostWithPathResource = (String) methodInvoke(urlCleanerMethod,
+					hostWithPathResource);
+		}
+
 		Entry hostEntry = null, hostWithPathEntry = null;
 		ClientHttpResponse response = null;
 		try {
@@ -105,7 +113,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			Method fallbackMethod = extractFallbackMethod(sentinelRestTemplate.fallback(),
 					sentinelRestTemplate.fallbackClass());
 			if (fallbackMethod != null) {
-				return methodInvoke(fallbackMethod, args);
+				return (ClientHttpResponse) methodInvoke(fallbackMethod, args);
 			}
 			else {
 				return new SentinelClientHttpResponse();
@@ -116,16 +124,16 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				sentinelRestTemplate.blockHandler(),
 				sentinelRestTemplate.blockHandlerClass());
 		if (blockHandler != null) {
-			return methodInvoke(blockHandler, args);
+			return (ClientHttpResponse) methodInvoke(blockHandler, args);
 		}
 		else {
 			return new SentinelClientHttpResponse();
 		}
 	}
 
-	private ClientHttpResponse methodInvoke(Method method, Object... args) {
+	private Object methodInvoke(Method method, Object... args) {
 		try {
-			return (ClientHttpResponse) method.invoke(null, args);
+			return method.invoke(null, args);
 		}
 		catch (IllegalAccessException e) {
 			throw new RuntimeException(e);

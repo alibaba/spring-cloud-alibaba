@@ -16,6 +16,8 @@
 
 package com.alibaba.alicloud.ans;
 
+import com.alibaba.alicloud.ans.registry.AnsRegistration;
+
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,8 +25,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.alicloud.ans.registry.AnsRegistration;
 
 /**
  * @author xiaolongzuo

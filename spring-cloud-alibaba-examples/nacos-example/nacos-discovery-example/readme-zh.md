@@ -15,7 +15,7 @@
 1. 首先，修改 pom.xml 文件，引入 Nacos Discovery Starter。
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 	
@@ -35,7 +35,7 @@
 
 			@RestController
 			class EchoController {
-				@RequestMapping(value = "/echo/{string}", method = RequestMethod.GET)
+				@GetMapping(value = "/echo/{string}")
 				public String echo(@PathVariable String string) {
 						return string;
 				}
@@ -70,7 +70,7 @@
 ### 验证
 
 #### 查询服务
-在浏览器输入此地址 `http://127.0.0.1:8848/nacos/v1/ns/instances?serviceName=service-provider`，并点击跳转，可以看到服务节点已经成功注册到 Nacos Server。
+在浏览器输入此地址 `http://127.0.0.1:8848/nacos/v1/ns/catalog/instances?serviceName=service-provider&clusterName=DEFAULT&pageSize=10&pageNo=1&namespaceId=`，并点击跳转，可以看到服务节点已经成功注册到 Nacos Server。
 
 ![查询服务](https://cdn.nlark.com/lark/0/2018/png/54319/1536986288092-5cf96af9-9a26-466b-85f6-39ad1d92dfdc.png)
 
@@ -102,7 +102,7 @@ Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon �
 
 	    @FeignClient(name = "service-provider")
 	    public interface EchoService {
-	        @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+	        @GetMapping(value = "/echo/{str}")
 	        String echo(@PathVariable("str") String str);
 	    }
 	    
@@ -120,11 +120,11 @@ Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon �
 		    @Autowired
 		    private EchoService echoService;
 		
-		    @RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
+		    @GetMapping(value = "/echo-rest/{str}")
 		    public String rest(@PathVariable String str) {
 		        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
 		    }
-		    @RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
+		    @GetMapping(value = "/echo-feign/{str}")
 		    public String feign(@PathVariable String str) {
 		        return echoService.echo(str);
 		    }
@@ -141,11 +141,11 @@ Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon �
 	2. 打包编译后启动：在 nacos-discovery-consumer-example 项目中执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar nacos-discovery-consumer-example.jar`启动应用。
 
 #### 验证
-1. 在流量器地址栏中输入 http://127.0.0.1:18083/echo-rest/1234，点击跳转，可以看到浏览器显示了 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 1234"，证明服务发现生效。
+1. 在浏览器地址栏中输入 http://127.0.0.1:18083/echo-rest/1234，点击跳转，可以看到浏览器显示了 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 1234"，证明服务发现生效。
 
 ![rest](https://cdn.nlark.com/lark/0/2018/png/54319/1536986302124-ee27670d-bdcc-4210-9f5d-875acec6d3ea.png)
 
-1. 在流量器地址栏中输入 http://127.0.0.1:18083/echo-feign/12345，点击跳转，可以看到浏览器显示 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 12345"，证明服务发现生效。
+1. 在浏览器地址栏中输入 http://127.0.0.1:18083/echo-feign/12345，点击跳转，可以看到浏览器显示 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 12345"，证明服务发现生效。
 
 ![feign](https://cdn.nlark.com/lark/0/2018/png/54319/1536986311685-6d0c1f9b-a453-4ec3-88ab-f7922d210f65.png)
 ## 原理

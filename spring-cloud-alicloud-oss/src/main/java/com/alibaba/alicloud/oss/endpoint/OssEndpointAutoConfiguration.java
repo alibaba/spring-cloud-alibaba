@@ -16,6 +16,8 @@
 
 package com.alibaba.alicloud.oss.endpoint;
 
+import com.alibaba.alicloud.context.oss.OssProperties;
+
 import org.springframework.boot.actuate.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -23,8 +25,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.alicloud.context.oss.OssProperties;
 
 /**
  * OSS {@link Endpoint} Auto-{@link Configuration}

@@ -15,7 +15,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 1. Add dependency spring-cloud-starter-alibaba-nacos-config in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 	
@@ -42,12 +42,10 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 	1. Download: Download Nacos Server [download page](https://github.com/alibaba/nacos/releases) 
 	2. Build from source code: Get source code by git clone git@github.com:alibaba/Nacos.git from Github Nacos and build your code. See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
 	
-
-
 2. Unzip the downloaded file and go to the nacos/bin folder(), And according to the actual situation of the operating system, execute the following command。[see reference for more detail](https://nacos.io/en-us/docs/quick-start.html)。
 	
 	1. Linux/Unix/Mac , execute `sh startup.sh -m standalone`
-	1. Windows , execute `cmd startup.cmd`
+	2. Windows , execute `cmd startup.cmd`
 
 3. Execute the following command to add a configuration to Nacos Server.
 	
@@ -114,11 +112,11 @@ Nacos Client gets data from Nacos Server through this method. `ConfigService.get
 
 In Nacos Config Starter, the splicing format of dataId is as follows
 
-	${prefix} - ${spring.active.profile} . ${file-extension}
+	${prefix} - ${spring.profiles.active} . ${file-extension}
 
 * `prefix` default value is `spring.application.name` value, which can also be configured via the configuration item `spring.cloud.nacos.config.prefix`.
 
-* `spring.active.profile` is the profile corresponding to the current environment. For details, please refer to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
+* `spring.profiles.active` is the profile corresponding to the current environment. For details, please refer to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
 	**Note: when the activeprofile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
 

@@ -2,15 +2,15 @@ package com.alibaba.cloud.examples;
 
 import java.util.Collections;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.SentinelRpcException;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author fangjian
@@ -26,7 +26,8 @@ public class SentinelDubboConsumerApp {
 	public static void main(String[] args) {
 
 		FlowRule flowRule = new FlowRule();
-		flowRule.setResource("com.alibaba.cloud.examples.FooService:hello(java.lang.String)");
+		flowRule.setResource(
+				"com.alibaba.cloud.examples.FooService:hello(java.lang.String)");
 		flowRule.setCount(10);
 		flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
 		flowRule.setLimitApp("default");

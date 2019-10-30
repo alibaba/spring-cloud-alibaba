@@ -16,18 +16,19 @@
 
 package com.alibaba.alicloud.context.scx;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.alibaba.alicloud.context.AliCloudContextAutoConfiguration;
 import com.alibaba.alicloud.context.ans.AnsContextAutoConfiguration;
 import com.alibaba.alicloud.context.edas.EdasContextAutoConfiguration;
 import com.alibaba.alicloud.context.edas.EdasProperties;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author xiaolongzuo

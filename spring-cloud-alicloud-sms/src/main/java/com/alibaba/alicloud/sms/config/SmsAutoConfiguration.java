@@ -15,12 +15,6 @@
  */
 package com.alibaba.alicloud.sms.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.sms.SmsProperties;
 import com.alibaba.alicloud.sms.ISmsService;
@@ -28,6 +22,12 @@ import com.alibaba.alicloud.sms.SmsInitializer;
 import com.alibaba.alicloud.sms.SmsServiceImpl;
 
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author pbting

@@ -16,11 +16,17 @@
 
 package com.alibaba.cloud.sentinel;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
+import com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor;
+import com.alibaba.cloud.sentinel.custom.SentinelProtectInterceptor;
+import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -31,12 +37,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
-import com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor;
-import com.alibaba.cloud.sentinel.custom.SentinelProtectInterceptor;
-import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author fangjian

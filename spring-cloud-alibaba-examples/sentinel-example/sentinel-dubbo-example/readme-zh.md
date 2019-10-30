@@ -6,9 +6,9 @@
 
 [Sentinel](https://github.com/alibaba/Sentinel) 是阿里巴巴开源的分布式系统的流量防卫组件，Sentinel 把流量作为切入点，从流量控制，熔断降级，系统负载保护等多个维度保护服务的稳定性。
 
-[Dubbo](http://dubbo.apache.org/)是一款高性能Java RPC框架，有对应的[SpringBoot工程](https://github.com/apache/incubator-dubbo-spring-boot-project)。
+[Dubbo](http://dubbo.apache.org/)是一款高性能Java RPC框架，有对应的[SpringBoot工程](https://github.com/apache/dubbo-spring-boot-project)。
 
-本项目专注于Sentinel与Dubbo的整合，关于Sentinel的更多特性可以查看[sentinel-core-example](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example)。
+本项目专注于Sentinel与Dubbo的整合，关于Sentinel的更多特性可以查看[sentinel-core-example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example)。
 
 ## 示例
 
@@ -19,7 +19,7 @@
 1. 首先，修改 pom.xml 文件，引入 Sentinel starter 和 Dubbo starter。
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
         
@@ -112,7 +112,7 @@ Consumer端在服务调用之前，先定义限流规则。
 根据Provider端中发布的定义，使用Dubbo的@Reference注解注入服务对应的Bean：
 
     @Reference(version = "${foo.service.version}", application = "${dubbo.application.id}",
-            url = "dubbo://localhost:12345", timeout = 30000)
+            path = "dubbo://localhost:12345", timeout = 30000)
 	private FooService fooService;
 
 由于设置的qps是10。调用15次查看是否被限流：
@@ -146,4 +146,3 @@ Consumer端：
 
 1. IDE直接启动：找到主类 `SentinelDubboConsumerApp`，执行 main 方法启动应用。
 2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar sentinel-dubbo-consumer-example.jar`启动应用。
-

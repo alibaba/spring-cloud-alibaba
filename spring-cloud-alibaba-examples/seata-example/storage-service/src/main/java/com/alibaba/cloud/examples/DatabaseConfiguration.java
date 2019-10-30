@@ -18,16 +18,16 @@ package com.alibaba.cloud.examples;
 
 import java.sql.SQLException;
 
+import com.alibaba.druid.pool.DruidDataSource;
+
+import io.seata.rm.datasource.DataSourceProxy;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import com.alibaba.druid.pool.DruidDataSource;
-
-import io.seata.rm.datasource.DataSourceProxy;
 
 /**
  * @author xiaojing

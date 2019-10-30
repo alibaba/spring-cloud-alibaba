@@ -16,44 +16,76 @@
 
 package com.alibaba.cloud.nacos;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
+
+import com.alibaba.nacos.api.config.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.config.ConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
+
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_LONG_POLL_TIMEOUT;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_RETRY_TIME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENABLE_REMOTE_SYNC_CONFIG;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
+import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
- * nacos properties
+ * Nacos properties.
  *
  * @author leijuan
  * @author xiaojing
  * @author pbting
+ * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  */
 @ConfigurationProperties(NacosConfigProperties.PREFIX)
 public class NacosConfigProperties {
 
+	/**
+	 * Prefix of {@link NacosConfigProperties}.
+	 */
 	public static final String PREFIX = "spring.cloud.nacos.config";
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
 
+	@Autowired
+	private Environment environment;
+
+	@PostConstruct
+	public void init() {
+		this.overrideFromEnv();
+	}
+
+	private void overrideFromEnv() {
+		if (StringUtils.isEmpty(this.getServerAddr())) {
+			String serverAddr = environment
+					.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}");
+			if (StringUtils.isEmpty(serverAddr)) {
+				serverAddr = environment
+						.resolvePlaceholders("${spring.cloud.nacos.server-addr:}");
+			}
+			this.setServerAddr(serverAddr);
+		}
+	}
+
 	/**
-	 * nacos config server address
+	 * nacos config server address.
 	 */
 	private String serverAddr;
 
@@ -68,9 +100,10 @@ public class NacosConfigProperties {
 	private String group = "DEFAULT_GROUP";
 
 	/**
-	 * nacos config dataId prefix
+	 * nacos config dataId prefix.
 	 */
 	private String prefix;
+
 	/**
 	 * the suffix of nacos config dataId, also the file extension of config content.
 	 */
@@ -80,6 +113,30 @@ public class NacosConfigProperties {
 	 * timeout for get config from nacos.
 	 */
 	private int timeout = 3000;
+
+	/**
+	 * nacos maximum number of tolerable server reconnection errors.
+	 */
+	private String maxRetry;
+
+	/**
+	 * nacos get config long poll timeout.
+	 */
+	private String configLongPollTimeout;
+
+	/**
+	 * nacos get config failure retry time.
+	 */
+	private String configRetryTime;
+
+	/**
+	 * If you want to pull it yourself when the program starts to get the configuration
+	 * for the first time, and the registered Listener is used for future configuration
+	 * updates, you can keep the original code unchanged, just add the system parameter:
+	 * enableRemoteSyncConfig = "true" ( But there is network overhead); therefore we
+	 * recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
+	 */
+	private boolean enableRemoteSyncConfig = false;
 
 	/**
 	 * endpoint for Nacos, the domain name of a service, through which the server address
@@ -108,10 +165,13 @@ public class NacosConfigProperties {
 	private String contextPath;
 
 	/**
-	 * nacos config cluster name
+	 * nacos config cluster name.
 	 */
 	private String clusterName;
 
+	/**
+	 * nacos config dataId name.
+	 */
 	private String name;
 
 	/**
@@ -172,6 +232,38 @@ public class NacosConfigProperties {
 
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
+	}
+
+	public String getMaxRetry() {
+		return maxRetry;
+	}
+
+	public void setMaxRetry(String maxRetry) {
+		this.maxRetry = maxRetry;
+	}
+
+	public String getConfigLongPollTimeout() {
+		return configLongPollTimeout;
+	}
+
+	public void setConfigLongPollTimeout(String configLongPollTimeout) {
+		this.configLongPollTimeout = configLongPollTimeout;
+	}
+
+	public String getConfigRetryTime() {
+		return configRetryTime;
+	}
+
+	public void setConfigRetryTime(String configRetryTime) {
+		this.configRetryTime = configRetryTime;
+	}
+
+	public Boolean getEnableRemoteSyncConfig() {
+		return enableRemoteSyncConfig;
+	}
+
+	public void setEnableRemoteSyncConfig(Boolean enableRemoteSyncConfig) {
+		this.enableRemoteSyncConfig = enableRemoteSyncConfig;
 	}
 
 	public String getEndpoint() {
@@ -262,15 +354,71 @@ public class NacosConfigProperties {
 		this.name = name;
 	}
 
+	/**
+	 * @see NacosConfigManager#getConfigService() .
+	 * @return ConfigService
+	 */
+	@Deprecated
+	public ConfigService configServiceInstance() {
+		return configService;
+	}
+
+	public void initConfigService(ConfigService configService) {
+		this.configService = configService;
+	}
+
+	public Properties getConfigServiceProperties() {
+		Properties properties = new Properties();
+		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
+		properties.put(ENCODE, Objects.toString(this.encode, ""));
+		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
+		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
+		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
+		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
+		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
+		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
+		properties.put(CONFIG_LONG_POLL_TIMEOUT,
+				Objects.toString(this.configLongPollTimeout, ""));
+		properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
+		properties.put(ENABLE_REMOTE_SYNC_CONFIG,
+				Objects.toString(this.enableRemoteSyncConfig, ""));
+		String endpoint = Objects.toString(this.endpoint, "");
+		if (endpoint.contains(":")) {
+			int index = endpoint.indexOf(":");
+			properties.put(ENDPOINT, endpoint.substring(0, index));
+			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
+		}
+		else {
+			properties.put(ENDPOINT, endpoint);
+		}
+		return properties;
+	}
+
+	@Override
+	public String toString() {
+		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
+				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
+				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
+				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
+				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
+				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
+				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
+	}
+
 	public static class Config {
+
 		/**
-		 * the data id of extended configuration
+		 * the data id of extended configuration.
 		 */
 		private String dataId;
+
 		/**
-		 * the group of extended configuration, the default value is DEFAULT_GROUP
+		 * the group of extended configuration, the default value is DEFAULT_GROUP.
 		 */
 		private String group = "DEFAULT_GROUP";
+
 		/**
 		 * whether to support dynamic refresh, the default does not support .
 		 */
@@ -299,53 +447,7 @@ public class NacosConfigProperties {
 		public void setRefresh(boolean refresh) {
 			this.refresh = refresh;
 		}
+
 	}
 
-	@Override
-	public String toString() {
-		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
-				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
-				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
-				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
-				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
-				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
-				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
-				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
-	}
-
-	public ConfigService configServiceInstance() {
-
-		if (null != configService) {
-			return configService;
-		}
-
-		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
-		properties.put(ENCODE, Objects.toString(this.encode, ""));
-		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
-		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
-		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
-		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
-		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
-
-		String endpoint = Objects.toString(this.endpoint, "");
-		if (endpoint.contains(":")) {
-			int index = endpoint.indexOf(":");
-			properties.put(ENDPOINT, endpoint.substring(0, index));
-			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
-		}
-		else {
-			properties.put(ENDPOINT, endpoint);
-		}
-
-		try {
-			configService = NacosFactory.createConfigService(properties);
-			return configService;
-		}
-		catch (Exception e) {
-			log.error("create config service error!properties={},e=,", this, e);
-			return null;
-		}
-	}
 }

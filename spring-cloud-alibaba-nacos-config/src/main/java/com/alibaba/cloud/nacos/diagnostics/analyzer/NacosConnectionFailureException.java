@@ -24,29 +24,21 @@ package com.alibaba.cloud.nacos.diagnostics.analyzer;
  */
 public class NacosConnectionFailureException extends RuntimeException {
 
-	private final String domain;
+	private final String serverAddr;
 
-	private final String port;
-
-	public NacosConnectionFailureException(String domain, String port, String message) {
+	public NacosConnectionFailureException(String serverAddr, String message) {
 		super(message);
-		this.domain = domain;
-		this.port = port;
+		this.serverAddr = serverAddr;
 	}
 
-	public NacosConnectionFailureException(String domain, String port, String message,
+	public NacosConnectionFailureException(String serverAddr, String message,
 			Throwable cause) {
 		super(message, cause);
-		this.domain = domain;
-		this.port = port;
+		this.serverAddr = serverAddr;
 	}
 
-	String getDomain() {
-		return domain;
-	}
-
-	String getPort() {
-		return port;
+	public String getServerAddr() {
+		return serverAddr;
 	}
 
 }

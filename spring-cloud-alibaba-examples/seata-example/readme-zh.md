@@ -99,12 +99,16 @@ CREATE TABLE `account_tbl` (
 点击这个页面 [https://github.com/seata/seata/releases](https://github.com/seata/seata/releases)，下载最新版本的 Seata Server 端.
 
 
-进入解压之后的 bin 目录，执行如下命令来启动
+进入解压之后的 bin 目录，执行如下命令来启动, 所有启动参数为可选项。
 
 ```$shell
-sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db)
+sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db) -h $HOST -e $ENV
 ```
-
+-p seata-server 监听服务端口号   
+-m 存储模式，可选值：file、db。file 用于单点模式，db用于ha模式，当使用db存储模式，需要修改配置中store配置节点的数据库配置，同时在数据库中初始化[global_table、branch_table和 
+lock_table](https://github.com/seata/seata/blob/develop/server/src/main/resources/db_store.sql)   
+-h 用于解决seata-server和业务侧跨网络问题，其配置的host值直接显示到注册中心的服务可用地址host，当跨网络时这里需要配置为公网IP或NATIP，若都在同一局域网则无需配置   
+-e 用于解决多环境配置中心隔离问题   
 在这个示例中，采用如下命令来启动 Seata Server
 
 ```$shell
@@ -130,7 +134,7 @@ http://127.0.0.1:18081/seata/rest
 
 ### Xid 信息是否成功传递
 
-在 `account-server`、`order-service` 和 `storage-service` 三个 服务的 Controller 中，第一个执行的逻辑都是输出 RootContext 中的 Xid 信息，如果看到都输出了正确的 Xid 信息，即每次都发生变化，且同一次调用中所有服务的 Xid 都一致。则表明 Fescar 的 Xid 的传递和还原是正常的。
+在 `account-server`、`order-service` 和 `storage-service` 三个 服务的 Controller 中，第一个执行的逻辑都是输出 RootContext 中的 Xid 信息，如果看到都输出了正确的 Xid 信息，即每次都发生变化，且同一次调用中所有服务的 Xid 都一致。则表明 Seata 的 Xid 的传递和还原是正常的。
 
 ### 数据库中数据是否一致
 

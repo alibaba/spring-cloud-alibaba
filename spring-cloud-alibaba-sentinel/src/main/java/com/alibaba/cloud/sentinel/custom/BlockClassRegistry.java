@@ -29,6 +29,7 @@ final class BlockClassRegistry {
 
 	private static final Map<String, Method> FALLBACK_MAP = new ConcurrentHashMap<>();
 	private static final Map<String, Method> BLOCK_HANDLER_MAP = new ConcurrentHashMap<>();
+	private static final Map<String, Method> URL_CLEANER_MAP = new ConcurrentHashMap<>();
 
 	static Method lookupFallback(Class<?> clazz, String name) {
 		return FALLBACK_MAP.get(getKey(clazz, name));
@@ -36,6 +37,10 @@ final class BlockClassRegistry {
 
 	static Method lookupBlockHandler(Class<?> clazz, String name) {
 		return BLOCK_HANDLER_MAP.get(getKey(clazz, name));
+	}
+
+	static Method lookupUrlCleaner(Class<?> clazz, String name) {
+		return URL_CLEANER_MAP.get(getKey(clazz, name));
 	}
 
 	static void updateFallbackFor(Class<?> clazz, String name, Method method) {
@@ -50,6 +55,13 @@ final class BlockClassRegistry {
 			throw new IllegalArgumentException("Bad argument");
 		}
 		BLOCK_HANDLER_MAP.put(getKey(clazz, name), method);
+	}
+
+	static void updateUrlCleanerFor(Class<?> clazz, String name, Method method) {
+		if (clazz == null || StringUtil.isBlank(name)) {
+			throw new IllegalArgumentException("Bad argument");
+		}
+		URL_CLEANER_MAP.put(getKey(clazz, name), method);
 	}
 
 	private static String getKey(Class<?> clazz, String name) {

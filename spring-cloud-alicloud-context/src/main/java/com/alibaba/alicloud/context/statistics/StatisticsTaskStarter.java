@@ -19,11 +19,6 @@ package com.alibaba.alicloud.context.statistics;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.context.annotation.Configuration;
-
 import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
 import com.alibaba.alicloud.context.acm.AcmProperties;
 import com.alibaba.alicloud.context.ans.AnsContextAutoConfiguration;
@@ -36,6 +31,11 @@ import com.alibaba.alicloud.context.scx.ScxProperties;
 import com.alibaba.cloud.context.AliCloudServerMode;
 import com.alibaba.cloud.context.edas.AliCloudEdasSdk;
 import com.alibaba.cloud.context.statistics.StatisticsTask;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xiaolongzuo

@@ -18,7 +18,9 @@ package com.alibaba.cloud.examples;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author xiaolongzuo
  */
 @RestController
+@RefreshScope
 public class EchoController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EchoController.class);

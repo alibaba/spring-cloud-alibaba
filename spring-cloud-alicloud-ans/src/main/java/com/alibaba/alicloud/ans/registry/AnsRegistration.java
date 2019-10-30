@@ -21,6 +21,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.alicloud.context.ans.AnsProperties;
+
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
@@ -28,8 +30,6 @@ import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
-
-import com.alibaba.alicloud.context.ans.AnsProperties;
 
 /**
  * @author xiaolongzuo

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author xiaojing
  */
-@SpringBootApplication
 @EnableDiscoveryClient
+@SpringBootApplication
 public class ProviderApplication {
 
 	public static void main(String[] args) {
@@ -24,6 +24,7 @@ public class ProviderApplication {
 
 	@RestController
 	class EchoController {
+
 		@RequestMapping(value = "/", method = RequestMethod.GET)
 		public ResponseEntity index() {
 			return new ResponseEntity("index error", HttpStatus.INTERNAL_SERVER_ERROR);

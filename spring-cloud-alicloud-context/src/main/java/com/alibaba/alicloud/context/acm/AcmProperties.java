@@ -16,10 +16,10 @@
 
 package com.alibaba.alicloud.context.acm;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import com.alibaba.cloud.context.AliCloudServerMode;
 import com.alibaba.cloud.context.acm.AcmConfiguration;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * acm properties

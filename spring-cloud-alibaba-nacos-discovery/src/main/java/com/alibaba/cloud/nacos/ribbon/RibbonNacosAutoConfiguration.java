@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
+import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
+
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,8 +25,6 @@ import org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration;
 import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.context.annotation.Configuration;
-
-import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 
 /**
  * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration
