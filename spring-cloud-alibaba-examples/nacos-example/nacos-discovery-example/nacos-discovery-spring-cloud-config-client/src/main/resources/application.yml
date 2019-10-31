@@ -1,1 +1,3 @@
 config: config-from-yml
+server:
+  port: 7777

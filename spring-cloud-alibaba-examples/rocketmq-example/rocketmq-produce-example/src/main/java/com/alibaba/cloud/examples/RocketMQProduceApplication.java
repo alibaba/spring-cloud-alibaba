@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 
@@ -28,6 +29,9 @@ public class RocketMQProduceApplication {
 
 		@Output("output3")
 		MessageChannel output3();
+
+		@Output("output4")
+		MessageChannel output4();
 	}
 
 	public static void main(String[] args) {
@@ -42,6 +46,11 @@ public class RocketMQProduceApplication {
 	@Bean
 	public CustomRunner customRunner2() {
 		return new CustomRunner("output3");
+	}
+
+	@Bean
+	public CustomRunner customRunner3() {
+		return new CustomRunner("output4");
 	}
 
 	@Bean
@@ -86,6 +95,15 @@ public class RocketMQProduceApplication {
 					String msgContent = "pullMsg-" + index;
 					mySource.output3()
 							.send(MessageBuilder.withPayload(msgContent).build());
+				}
+			}
+			else if (this.bindingName.equals("output4")) {
+				int count = 5;
+				for (int index = 1; index <= count; index++) {
+					String msgContent = "partitionMsg-" + index;
+					Message message = MessageBuilder.withPayload(msgContent)
+							.setHeader("myPartitionKey", "myPartitionKey").build();
+					mySource.output4().send(message);
 				}
 			}
 

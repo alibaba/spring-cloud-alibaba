@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2018 the original author or authors.
+ * Copyright (C) 2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,15 @@
 
 package com.alibaba.cloud.examples;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.springframework.cloud.stream.binder.PartitionSelectorStrategy;
 
 /**
- * @author fangjian
+ * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Service(version = "${foo.service.version}", application = "${dubbo.application.id}",
-		protocol = "${dubbo.protocol.id}", registry = "${dubbo.registry.id}")
-public class FooServiceImpl implements FooService {
-
-	@Override
-	public String hello(String name) {
-		return "hello, " + name;
-	}
-
+public class MyPartitionSelectorStrategy implements PartitionSelectorStrategy {
+    @Override
+    public int selectPartition(Object key, int partitionCount) {
+        System.out.println("partition key: " + key + ", partitionCount: " + partitionCount);
+        return 0;
+    }
 }

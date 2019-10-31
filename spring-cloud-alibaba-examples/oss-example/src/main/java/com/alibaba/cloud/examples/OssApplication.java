@@ -12,14 +12,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- * OSS Application
+ * OSS Application.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @SpringBootApplication
 public class OssApplication {
 
-	public static final String BUCKET_NAME = "spring-cloud-alibaba-test";
+	/**
+	 * Bucket Name of OSS Example.
+	 */
+	public static final String BUCKET_NAME = "spring-cloud-alibaba";
 
 	public static void main(String[] args) throws URISyntaxException {
 		SpringApplication.run(OssApplication.class, args);
@@ -31,6 +34,7 @@ public class OssApplication {
 	}
 
 	class AppRunner implements ApplicationRunner {
+
 		@Autowired
 		private OSS ossClient;
 
@@ -46,6 +50,7 @@ public class OssApplication {
 				System.exit(-1);
 			}
 		}
+
 	}
 
 }

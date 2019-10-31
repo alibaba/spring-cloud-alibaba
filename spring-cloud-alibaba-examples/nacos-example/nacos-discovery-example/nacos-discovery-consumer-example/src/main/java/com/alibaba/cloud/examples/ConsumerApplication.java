@@ -41,7 +41,7 @@ public class ConsumerApplication {
 		SpringApplication.run(ConsumerApplication.class, args);
 	}
 
-	@FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
+	@FeignClient(contextId = "tt", name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 	public interface EchoService {
 		@GetMapping(value = "/echo/{str}")
 		String echo(@PathVariable("str") String str);

@@ -1,6 +1,7 @@
 package com.alibaba.cloud.examples;
 
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Service;
 public class ReceiveService {
 
 	@StreamListener("input1")
-	public void receiveInput1(String receiveMsg) {
-		System.out.println("input1 receive: " + receiveMsg);
+	public void receiveInput1(Message message) {
+		System.out.println("input1 receive: " + message.getPayload() + ", foo header: " + message.getHeaders().get("foo"));
 	}
 
 	@StreamListener("input2")
