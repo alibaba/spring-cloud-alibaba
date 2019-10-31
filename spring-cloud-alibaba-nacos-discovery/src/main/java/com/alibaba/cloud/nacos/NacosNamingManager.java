@@ -17,7 +17,9 @@
 package com.alibaba.cloud.nacos;
 
 import java.util.Objects;
+import java.util.Properties;
 
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
 import org.slf4j.Logger;
@@ -41,14 +43,29 @@ public class NacosNamingManager {
 
 	public NamingService getNamingService() {
 		if (Objects.isNull(namingService)) {
-			namingService = discoveryProperties.namingServiceInstance();
+			Properties nacosProperties = discoveryProperties.getNacosProperties();
+			try {
+				namingService = NacosFactory.createNamingService(nacosProperties);
+			}
+			catch (Exception e) {
+				log.error("create namingService error, properties {}", nacosProperties,
+						e);
+			}
 		}
 		return namingService;
 	}
 
 	public NamingMaintainService getNamingMaintainService() {
 		if (Objects.isNull(namingMaintainService)) {
-			namingMaintainService = discoveryProperties.namingMaintainServiceInstance();
+			Properties nacosProperties = discoveryProperties.getNacosProperties();
+			try {
+				namingMaintainService = NacosFactory
+						.createMaintainService(nacosProperties);
+			}
+			catch (Exception e) {
+				log.error("create namingMaintainService error, properties {}",
+						nacosProperties, e);
+			}
 		}
 		return namingMaintainService;
 	}

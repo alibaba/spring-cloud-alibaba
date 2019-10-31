@@ -17,6 +17,7 @@
 package com.alibaba.cloud.sidecar.nacos;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 import com.alibaba.cloud.sidecar.SidecarAutoConfiguration;
 import com.alibaba.cloud.sidecar.SidecarDiscoveryClient;
@@ -47,8 +48,8 @@ public class SidecarNacosAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SidecarDiscoveryClient sidecarDiscoveryClient(
-			SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties) {
-		return new SidecarNacosDiscoveryClient(sidecarNacosDiscoveryProperties);
+			NacosNamingManager nacosNamingManager) {
+		return new SidecarNacosDiscoveryClient(nacosNamingManager);
 	}
 
 }
