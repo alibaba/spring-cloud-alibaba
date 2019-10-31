@@ -28,10 +28,6 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.naming.NamingMaintainFactory;
-import com.alibaba.nacos.api.naming.NamingMaintainService;
-import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import org.slf4j.Logger;
@@ -181,10 +177,6 @@ public class NacosDiscoveryProperties {
 
 	@Autowired
 	private Environment environment;
-
-	private NamingService namingService;
-
-	private NamingMaintainService namingMaintainService;
 
 	@PostConstruct
 	public void init() throws SocketException {
@@ -465,42 +457,7 @@ public class NacosDiscoveryProperties {
 		}
 	}
 
-	@Deprecated
-	public NamingService namingServiceInstance() {
-
-		if (null != namingService) {
-			return namingService;
-		}
-
-		try {
-			namingService = NacosFactory.createNamingService(getNacosProperties());
-		}
-		catch (Exception e) {
-			log.error("create naming service error!properties={},e=,", this, e);
-			return null;
-		}
-		return namingService;
-	}
-
-	@Deprecated
-	public NamingMaintainService namingMaintainServiceInstance() {
-
-		if (null != namingMaintainService) {
-			return namingMaintainService;
-		}
-
-		try {
-			namingMaintainService = NamingMaintainFactory
-					.createMaintainService(getNacosProperties());
-		}
-		catch (Exception e) {
-			log.error("create naming service error!properties={},e=,", this, e);
-			return null;
-		}
-		return namingMaintainService;
-	}
-
-	private Properties getNacosProperties() {
+	public Properties getNacosProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, serverAddr);
 		properties.put(NAMESPACE, namespace);

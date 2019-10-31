@@ -34,14 +34,15 @@ import org.springframework.context.annotation.Configuration;
 public class NacosDiscoveryAutoConfiguration {
 
 	@Bean
-	public NacosNamingManager nacosNamingManager() {
-		return new NacosNamingManager();
-	}
-
-	@Bean
 	@ConditionalOnMissingBean
 	public NacosDiscoveryProperties nacosProperties() {
 		return new NacosDiscoveryProperties();
+	}
+
+	@Bean
+	public NacosNamingManager nacosNamingManager(
+			NacosDiscoveryProperties discoveryProperties) {
+		return new NacosNamingManager(discoveryProperties);
 	}
 
 	@Bean

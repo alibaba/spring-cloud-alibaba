@@ -17,13 +17,14 @@
 package com.alibaba.cloud.nacos;
 
 import java.util.Objects;
+import java.util.Properties;
 
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.naming.NamingMaintainFactory;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author <a href="mailto:liaochunyhm@live.com">liaochuntao</a>
@@ -36,19 +37,37 @@ public class NacosNamingManager {
 
 	private static NamingMaintainService namingMaintainService = null;
 
-	@Autowired
 	private NacosDiscoveryProperties discoveryProperties;
+
+	public NacosNamingManager(NacosDiscoveryProperties discoveryProperties) {
+		this.discoveryProperties = discoveryProperties;
+	}
 
 	public NamingService getNamingService() {
 		if (Objects.isNull(namingService)) {
-			namingService = discoveryProperties.namingServiceInstance();
+			Properties nacosProperties = discoveryProperties.getNacosProperties();
+			try {
+				namingService = NacosFactory.createNamingService(nacosProperties);
+			}
+			catch (Exception e) {
+				log.error("create naming service error! properties: {}", nacosProperties,
+						e);
+			}
 		}
 		return namingService;
 	}
 
 	public NamingMaintainService getNamingMaintainService() {
 		if (Objects.isNull(namingMaintainService)) {
-			namingMaintainService = discoveryProperties.namingMaintainServiceInstance();
+			Properties nacosProperties = discoveryProperties.getNacosProperties();
+			try {
+				namingMaintainService = NamingMaintainFactory
+						.createMaintainService(nacosProperties);
+			}
+			catch (Exception e) {
+				log.error("create naming service error! properties: {}", nacosProperties,
+						e);
+			}
 		}
 		return namingMaintainService;
 	}
