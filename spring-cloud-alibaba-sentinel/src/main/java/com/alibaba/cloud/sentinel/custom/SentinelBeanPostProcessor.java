@@ -91,6 +91,9 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		checkBlock4RestTemplate(sentinelRestTemplate.fallbackClass(),
 				sentinelRestTemplate.fallback(), beanName,
 				SentinelConstants.FALLBACK_TYPE);
+		checkBlock4RestTemplate(sentinelRestTemplate.urlCleanerClass(),
+				sentinelRestTemplate.urlCleaner(), beanName,
+				SentinelConstants.URLCLEANER_TYPE);
 	}
 
 	private void checkBlock4RestTemplate(Class<?> blockClass, String blockMethod,
