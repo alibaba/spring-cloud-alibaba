@@ -199,6 +199,7 @@ public class RocketMQMessageChannelBinder extends
 				consumerProperties.getExtension().getDelayLevelWhenNextConsume());
 		listenerContainer
 				.setNameServer(rocketBinderConfigurationProperties.getNameServer());
+		listenerContainer.setHeaderMapper(createHeaderMapper(consumerProperties));
 
 		RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(
 				listenerContainer, consumerProperties, instrumentationManager);
