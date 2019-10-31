@@ -2,7 +2,6 @@ package com.alibaba.cloud.examples;
 
 import com.alibaba.cloud.examples.ConsumerApplication.EchoService;
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

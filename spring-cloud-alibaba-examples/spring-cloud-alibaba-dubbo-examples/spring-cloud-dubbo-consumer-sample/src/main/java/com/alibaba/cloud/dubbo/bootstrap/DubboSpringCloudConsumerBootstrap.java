@@ -30,12 +30,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +55,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 @EnableDiscoveryClient
 @EnableAutoConfiguration
 @EnableFeignClients
+@EnableScheduling
+@EnableCaching
 public class DubboSpringCloudConsumerBootstrap {
 
 	@Reference
@@ -147,23 +152,31 @@ public class DubboSpringCloudConsumerBootstrap {
 	@Bean
 	public ApplicationRunner callRunner() {
 		return arguments -> {
-
-			// To call /path-variables
-			callPathVariables();
-
-			// To call /headers
-			callHeaders();
-
-			// To call /param
-			callParam();
-
-			// To call /params
-			callParams();
-
-			// To call /request/body/map
-			callRequestBodyMap();
-
+			callAll();
 		};
+	}
+
+	private void callAll() {
+
+		// To call /path-variables
+		callPathVariables();
+
+		// To call /headers
+		callHeaders();
+
+		// To call /param
+		callParam();
+
+		// To call /params
+		callParams();
+
+		// To call /request/body/map
+		callRequestBodyMap();
+	}
+
+	@Scheduled(fixedDelay = 10 * 1000L)
+	public void onScheduled() {
+		callAll();
 	}
 
 	private void callPathVariables() {
@@ -172,7 +185,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.pathVariables("c", "b", "a"));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.pathVariables("b", "a", "c"));
+		// System.out.println(feignRestService.pathVariables("b", "a", "c"));
 
 		// RestTemplate call
 		System.out.println(restTemplate.getForEntity(
@@ -186,7 +199,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.headers("b", 10, "a"));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.headers("b", "a", 10));
+		// System.out.println(feignRestService.headers("b", "a", 10));
 	}
 
 	private void callParam() {
@@ -195,7 +208,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.param("mercyblitz"));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.param("mercyblitz"));
+		// System.out.println(feignRestService.param("mercyblitz"));
 	}
 
 	private void callParams() {
@@ -204,7 +217,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.params("1", 1));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.params("1", 1));
+		// System.out.println(feignRestService.params("1", 1));
 
 		// RestTemplate call
 		System.out.println(restTemplate.getForEntity(
@@ -223,7 +236,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		// Spring Cloud Open Feign REST Call (Dubbo Transported)
 		System.out.println(dubboFeignRestService.requestBody("Hello,World", data));
 		// Spring Cloud Open Feign REST Call
-		System.out.println(feignRestService.requestBody("Hello,World", data));
+		// System.out.println(feignRestService.requestBody("Hello,World", data));
 
 		// RestTemplate call
 		System.out.println(restTemplate.postForObject(
