@@ -88,6 +88,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 		this.groupName = groupName;
 		this.transactional = transactional;
 		this.instrumentationManager = instrumentationManager;
+		this.producerProperties = producerProperties;
 	}
 
 	@Override
