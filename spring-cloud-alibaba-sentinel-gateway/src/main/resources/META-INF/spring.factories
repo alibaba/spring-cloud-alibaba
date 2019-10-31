@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.alibaba.cloud.sentinel.zuul.SentinelZuulAutoConfiguration,\
 com.alibaba.cloud.sentinel.zuul.SentinelGatewayAutoConfiguration
+org.springframework.boot.env.EnvironmentPostProcessor=com.alibaba.cloud.sentinel.zuul.GatewayEnvironmentPostProcessor
