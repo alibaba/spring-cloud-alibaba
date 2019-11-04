@@ -129,7 +129,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-consul-discovery</artifactId>
-            <version>${spring-cloud-consul.version}</version>
             <optional>true</optional>
         </dependency>
 
@@ -156,7 +155,6 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo-spring-boot.version}</version>
         </dependency>
 
         <!-- Dubbo Spring Boot Actuator (optional) -->

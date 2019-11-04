@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
 import com.alibaba.cloud.dubbo.metadata.DubboProtocolConfigSupplier;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.metadata.repository.MetadataServiceInstanceSelector;
@@ -65,6 +66,9 @@ public class DubboMetadataAutoConfiguration {
 	@Autowired
 	private DubboMetadataServiceExporter dubboMetadataConfigServiceExporter;
 
+	@Autowired
+	private DubboCloudProperties dubboCloudProperties;
+
 	@Bean
 	@ConditionalOnMissingBean
 	public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
@@ -89,7 +93,7 @@ public class DubboMetadataAutoConfiguration {
 	@ConditionalOnMissingBean
 	public DubboMetadataServiceProxy dubboMetadataConfigServiceProxy(
 			DubboGenericServiceFactory factory) {
-		return new DubboMetadataServiceProxy(factory);
+		return new DubboMetadataServiceProxy(factory, dubboCloudProperties);
 	}
 
 	// Event-Handling

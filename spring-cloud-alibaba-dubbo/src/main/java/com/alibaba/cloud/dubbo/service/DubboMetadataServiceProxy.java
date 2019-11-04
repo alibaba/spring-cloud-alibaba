@@ -18,6 +18,8 @@ package com.alibaba.cloud.dubbo.service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
+
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.DisposableBean;
 
@@ -32,13 +34,17 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 
 	private final DubboGenericServiceFactory dubboGenericServiceFactory;
 
+	private final DubboCloudProperties dubboCloudProperties;
+
 	private final Map<String, DubboMetadataService> dubboMetadataServiceCache = new ConcurrentHashMap<>();
 
 	private ClassLoader classLoader;
 
 	public DubboMetadataServiceProxy(
-			DubboGenericServiceFactory dubboGenericServiceFactory) {
+			DubboGenericServiceFactory dubboGenericServiceFactory,
+			DubboCloudProperties dubboCloudProperties) {
 		this.dubboGenericServiceFactory = dubboGenericServiceFactory;
+		this.dubboCloudProperties = dubboCloudProperties;
 	}
 
 	/**
@@ -91,7 +97,7 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 		return (DubboMetadataService) newProxyInstance(classLoader,
 				new Class[] { DubboMetadataService.class },
 				new DubboMetadataServiceInvocationHandler(serviceName, version,
-						dubboGenericServiceFactory));
+						dubboGenericServiceFactory, dubboCloudProperties));
 	}
 
 }

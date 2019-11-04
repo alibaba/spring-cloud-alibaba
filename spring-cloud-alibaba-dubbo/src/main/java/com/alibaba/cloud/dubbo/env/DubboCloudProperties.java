@@ -46,12 +46,40 @@ public class DubboCloudProperties {
 	 */
 	private String subscribedServices = ALL_DUBBO_SERVICES;
 
+	/**
+	 * The Service Instance changed do not means Dubbo service ready, need retry
+	 * mechanism. Retry count of Generic Invoke.
+	 */
+	private int retryCount = 5;
+
+	/**
+	 * The Service Instance changed do not means Dubbo service ready, need retry
+	 * mechanism. Retry interval of Generic Invoke, milliseconds unit.
+	 */
+	private int interval = 10000;
+
 	public String getSubscribedServices() {
 		return subscribedServices;
 	}
 
 	public void setSubscribedServices(String subscribedServices) {
 		this.subscribedServices = subscribedServices;
+	}
+
+	public int getRetryCount() {
+		return retryCount;
+	}
+
+	public void setRetryCount(int retryCount) {
+		this.retryCount = retryCount;
+	}
+
+	public int getInterval() {
+		return interval;
+	}
+
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 
 	/**
