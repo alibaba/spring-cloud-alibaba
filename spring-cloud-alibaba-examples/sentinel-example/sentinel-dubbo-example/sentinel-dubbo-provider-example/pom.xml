@@ -25,6 +25,7 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>sentinel-dubbo-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -41,7 +42,6 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>

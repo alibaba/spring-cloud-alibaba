@@ -19,7 +19,7 @@ package com.alibaba.cloud.dubbo.autoconfigure;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * {@link DubboServiceRegistrationAutoConfiguration} Test
+ * {@link DubboServiceRegistrationAutoConfiguration} Test.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */

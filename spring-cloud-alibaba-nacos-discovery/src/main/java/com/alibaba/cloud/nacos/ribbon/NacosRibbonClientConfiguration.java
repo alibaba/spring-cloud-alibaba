@@ -37,8 +37,7 @@ public class NacosRibbonClientConfiguration {
 	@ConditionalOnMissingBean
 	public ServerList<?> ribbonServerList(IClientConfig config,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		NacosServerList serverList = new NacosServerList(
-				nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(config);
 		return serverList;
 	}

@@ -27,7 +27,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link OSS} {@link OssProperties} Test
+ * {@link OSS} {@link OssProperties} Test.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */

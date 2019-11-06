@@ -176,13 +176,13 @@ public class NacosAutoServiceRegistrationTests {
 	}
 
 	private void checkoutEndpoint() throws Exception {
-		NacosDiscoveryEndpoint nacosDiscoveryEndpoint = new NacosDiscoveryEndpoint(properties);
+		NacosDiscoveryEndpoint nacosDiscoveryEndpoint = new NacosDiscoveryEndpoint(
+				properties);
 		Map<String, Object> map = nacosDiscoveryEndpoint.nacosDiscovery();
 
 		assertThat(properties).isEqualTo(map.get("NacosDiscoveryProperties"));
-		assertThat(
-				properties.namingServiceInstance().getSubscribeServices().toString())
-						.isEqualTo(map.get("subscribe").toString());
+		assertThat(properties.namingServiceInstance().getSubscribeServices().toString())
+				.isEqualTo(map.get("subscribe").toString());
 	}
 
 	@Configuration

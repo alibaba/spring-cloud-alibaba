@@ -51,7 +51,8 @@ public class NacosConfigEndpointAutoConfiguration {
 
 	@Bean
 	public NacosConfigHealthIndicator nacosConfigHealthIndicator() {
-		return new NacosConfigHealthIndicator(nacosConfigProperties.configServiceInstance());
+		return new NacosConfigHealthIndicator(
+				nacosConfigProperties.configServiceInstance());
 	}
 
 }
