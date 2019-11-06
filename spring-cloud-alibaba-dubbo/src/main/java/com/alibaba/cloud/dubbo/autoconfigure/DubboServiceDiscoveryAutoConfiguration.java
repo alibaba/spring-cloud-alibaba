@@ -505,14 +505,16 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	class NacosConfiguration {
 
 		private final NamingService namingService;
+		private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
 		/**
 		 * the set of services is listening.
 		 */
 		private final Set<String> listeningServices;
 
-		NacosConfiguration(NacosNamingManager nacosNamingManager) {
+		NacosConfiguration(NacosNamingManager nacosNamingManager, NacosDiscoveryProperties nacosDiscoveryProperties) {
 			this.namingService = nacosNamingManager.getNamingService();
+			this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 			this.listeningServices = new ConcurrentSkipListSet<>();
 		}
 
@@ -537,7 +539,8 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		private void subscribeEventListener(String serviceName) {
 			if (listeningServices.add(serviceName)) {
 				try {
-					namingService.subscribe(serviceName, event -> {
+					String group = nacosDiscoveryProperties.getGroup();
+					namingService.subscribe(serviceName, group, event -> {
 						if (event instanceof NamingEvent) {
 							NamingEvent namingEvent = (NamingEvent) event;
 							List<ServiceInstance> serviceInstances = hostToServiceInstanceList(
