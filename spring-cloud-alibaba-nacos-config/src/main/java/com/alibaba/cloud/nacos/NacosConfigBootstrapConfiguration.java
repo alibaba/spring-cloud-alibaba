@@ -37,16 +37,8 @@ public class NacosConfigBootstrapConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	public NacosConfigManager nacosConfigManager() {
-		return new NacosConfigManager();
-	}
-
-	@Bean
-	public NacosPropertySourceLocator nacosPropertySourceLocator(
-			NacosConfigManager nacosConfigManager,
-			NacosConfigProperties nacosConfigProperties) {
-		return new NacosPropertySourceLocator(nacosConfigManager, nacosConfigProperties);
+	public NacosPropertySourceLocator nacosPropertySourceLocator(NacosConfigProperties nacosConfigProperties) {
+		return new NacosPropertySourceLocator(nacosConfigProperties);
 	}
 
 }

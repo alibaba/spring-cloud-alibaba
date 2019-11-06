@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.client.config.IClientConfig;
@@ -48,9 +47,6 @@ public class NacosRule extends AbstractLoadBalancerRule {
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	@Autowired
-	private NacosNamingManager nacosNamingManager;
-
 	@Override
 	public Server choose(Object key) {
 		try {
@@ -58,7 +54,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
 			String name = loadBalancer.getName();
 
-			NamingService namingService = this.nacosNamingManager.getNamingService();
+			NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
 			List<Instance> instances = namingService.selectInstances(name, true);
 			if (CollectionUtils.isEmpty(instances)) {
 				LOGGER.warn("no instance in service {}", name);

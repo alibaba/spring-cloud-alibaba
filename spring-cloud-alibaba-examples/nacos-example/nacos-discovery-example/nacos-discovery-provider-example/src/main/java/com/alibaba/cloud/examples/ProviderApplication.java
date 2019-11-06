@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author xiaojing
  */
-@EnableDiscoveryClient
+@EnableDiscoveryClient(autoRegister = false)
 @SpringBootApplication
 public class ProviderApplication {
 

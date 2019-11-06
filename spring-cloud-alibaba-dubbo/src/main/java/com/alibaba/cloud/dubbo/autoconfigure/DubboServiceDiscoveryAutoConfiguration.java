@@ -33,7 +33,6 @@ import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
 import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.cloud.nacos.discovery.NacosWatch;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
@@ -511,8 +510,8 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		 */
 		private final Set<String> listeningServices;
 
-		NacosConfiguration(NacosNamingManager nacosNamingManager) {
-			this.namingService = nacosNamingManager.getNamingService();
+		NacosConfiguration(NacosDiscoveryProperties nacosDiscoveryProperties) {
+			this.namingService = nacosDiscoveryProperties.namingServiceInstance();
 			this.listeningServices = new ConcurrentSkipListSet<>();
 		}
 

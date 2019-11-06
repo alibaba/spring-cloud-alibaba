@@ -22,7 +22,9 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,7 +192,7 @@ public class NacosConfigProperties {
 	 */
 	private List<Config> extConfig;
 
-	private ConfigService configService;
+	private static ConfigService configService;
 
 	// todo sts support
 
@@ -355,16 +357,19 @@ public class NacosConfigProperties {
 	}
 
 	/**
-	 * @see NacosConfigManager#getConfigService() .
 	 * @return ConfigService
 	 */
 	@Deprecated
 	public ConfigService configServiceInstance() {
+		if (null == configService) {
+			try {
+				configService = NacosFactory.createConfigService(getConfigServiceProperties());
+			} catch (NacosException e) {
+				log.error("create naming service error!properties={},e=,", this, e);
+				return null;
+			}
+		}
 		return configService;
-	}
-
-	public void initConfigService(ConfigService configService) {
-		this.configService = configService;
 	}
 
 	public Properties getConfigServiceProperties() {
