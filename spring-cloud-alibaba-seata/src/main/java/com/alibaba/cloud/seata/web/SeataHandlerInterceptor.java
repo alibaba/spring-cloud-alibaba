@@ -23,7 +23,6 @@ import io.seata.core.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -36,7 +35,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * And clean up Seata information after servlet method invocation in
  * {@link org.springframework.web.servlet.HandlerInterceptor#afterCompletion(HttpServletRequest, HttpServletResponse, Object, Exception)}
  */
-@ConditionalOnWebApplication
 public class SeataHandlerInterceptor implements HandlerInterceptor {
 
 	private static final Logger log = LoggerFactory
