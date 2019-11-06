@@ -120,8 +120,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		try {
-			nacosDiscoveryProperties.namingMaintainServiceInstance().updateInstance(serviceId,
-					instance);
+			nacosDiscoveryProperties.namingMaintainServiceInstance()
+					.updateInstance(serviceId, instance);
 		}
 		catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);

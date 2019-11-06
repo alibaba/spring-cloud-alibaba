@@ -68,7 +68,8 @@ public class NacosServiceDiscoveryTest {
 		when(namingService.selectInstances(eq(serviceName), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances);
 
-		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(nacosDiscoveryProperties);
+		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(
+				nacosDiscoveryProperties);
 
 		List<ServiceInstance> serviceInstances = serviceDiscovery
 				.getInstances(serviceName);
@@ -106,7 +107,8 @@ public class NacosServiceDiscoveryTest {
 		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE),
 				eq("DEFAULT"))).thenReturn(nacosServices);
 
-		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(nacosDiscoveryProperties);
+		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(
+				nacosDiscoveryProperties);
 
 		List<String> services = serviceDiscovery.getServices();
 

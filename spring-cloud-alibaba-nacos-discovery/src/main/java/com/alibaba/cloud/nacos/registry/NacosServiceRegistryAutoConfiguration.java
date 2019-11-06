@@ -46,16 +46,17 @@ import org.springframework.context.annotation.Configuration;
 public class NacosServiceRegistryAutoConfiguration {
 
 	@Bean
-	public NacosServiceRegistry nacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public NacosServiceRegistry nacosServiceRegistry(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		return new NacosServiceRegistry(nacosDiscoveryProperties);
 	}
 
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
-	public NacosRegistration nacosRegistration(NacosDiscoveryProperties nacosDiscoveryProperties,
+	public NacosRegistration nacosRegistration(
+			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
-		return new NacosRegistration(nacosDiscoveryProperties,
-				context);
+		return new NacosRegistration(nacosDiscoveryProperties, context);
 	}
 
 	@Bean

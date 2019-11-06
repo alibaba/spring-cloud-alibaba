@@ -363,8 +363,10 @@ public class NacosConfigProperties {
 	public ConfigService configServiceInstance() {
 		if (null == configService) {
 			try {
-				configService = NacosFactory.createConfigService(getConfigServiceProperties());
-			} catch (NacosException e) {
+				configService = NacosFactory
+						.createConfigService(getConfigServiceProperties());
+			}
+			catch (NacosException e) {
 				log.error("create naming service error!properties={},e=,", this, e);
 				return null;
 			}
