@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.cloud.nacos.NacosServiceInstance;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.pojo.Instance;
@@ -35,13 +34,9 @@ import org.springframework.cloud.client.ServiceInstance;
  **/
 public class NacosServiceDiscovery {
 
-	private NacosNamingManager nacosNamingManager;
-
 	private NacosDiscoveryProperties discoveryProperties;
 
-	public NacosServiceDiscovery(NacosNamingManager nacosNamingManager,
-			NacosDiscoveryProperties discoveryProperties) {
-		this.nacosNamingManager = nacosNamingManager;
+	public NacosServiceDiscovery(NacosDiscoveryProperties discoveryProperties) {
 		this.discoveryProperties = discoveryProperties;
 	}
 
@@ -53,7 +48,7 @@ public class NacosServiceDiscovery {
 	 */
 	public List<ServiceInstance> getInstances(String serviceId) throws NacosException {
 		String group = discoveryProperties.getGroup();
-		List<Instance> instances = nacosNamingManager.getNamingService()
+		List<Instance> instances = discoveryProperties.namingServiceInstance()
 				.selectInstances(serviceId, group, true);
 		return hostToServiceInstanceList(instances, serviceId);
 	}
@@ -65,7 +60,7 @@ public class NacosServiceDiscovery {
 	 */
 	public List<String> getServices() throws NacosException {
 		String group = discoveryProperties.getGroup();
-		ListView<String> services = nacosNamingManager.getNamingService()
+		ListView<String> services = discoveryProperties.namingServiceInstance()
 				.getServicesOfServer(1, Integer.MAX_VALUE, group);
 		return services.getData();
 	}
