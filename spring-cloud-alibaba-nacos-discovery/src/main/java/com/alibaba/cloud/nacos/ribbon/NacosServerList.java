@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import com.netflix.client.config.IClientConfig;
@@ -32,15 +31,11 @@ import com.netflix.loadbalancer.AbstractServerList;
  */
 public class NacosServerList extends AbstractServerList<NacosServer> {
 
-	private NacosNamingManager nacosNamingManager;
-
 	private NacosDiscoveryProperties discoveryProperties;
 
 	private String serviceId;
 
-	public NacosServerList(NacosNamingManager nacosNamingManager,
-			NacosDiscoveryProperties discoveryProperties) {
-		this.nacosNamingManager = nacosNamingManager;
+	public NacosServerList(NacosDiscoveryProperties discoveryProperties) {
 		this.discoveryProperties = discoveryProperties;
 	}
 
@@ -57,7 +52,7 @@ public class NacosServerList extends AbstractServerList<NacosServer> {
 	private List<NacosServer> getServers() {
 		try {
 			String group = discoveryProperties.getGroup();
-			List<Instance> instances = nacosNamingManager.getNamingService()
+			List<Instance> instances = discoveryProperties.namingServiceInstance()
 					.selectInstances(serviceId, group, true);
 			return instancesToServerList(instances);
 		}

@@ -182,9 +182,9 @@ public class NacosDiscoveryProperties {
 	@Autowired
 	private Environment environment;
 
-	private NamingService namingService;
+	private static NamingService namingService;
 
-	private NamingMaintainService namingMaintainService;
+	private static NamingMaintainService namingMaintainService;
 
 	@PostConstruct
 	public void init() throws SocketException {
