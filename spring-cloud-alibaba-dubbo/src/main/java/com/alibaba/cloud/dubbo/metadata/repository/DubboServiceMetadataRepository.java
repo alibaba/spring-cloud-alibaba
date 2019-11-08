@@ -390,11 +390,9 @@ public class DubboServiceMetadataRepository
 			return emptyList();
 		}
 
-		return hasText(protocol)
-				? urls.stream()
-						.filter(url -> url.getProtocol().equalsIgnoreCase(protocol))
-						.collect(Collectors.toList())
-				: unmodifiableList(urls);
+		return hasText(protocol) ? urls.stream()
+				.filter(url -> url.getProtocol().equalsIgnoreCase(protocol))
+				.collect(Collectors.toList()) : unmodifiableList(urls);
 	}
 
 	/**

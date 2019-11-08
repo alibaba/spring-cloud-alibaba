@@ -17,7 +17,6 @@
 package com.alibaba.cloud.nacos.discovery;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -39,7 +38,6 @@ public class NacosDiscoveryAutoConfigurationTests {
 	public void testDefaultInitialization() {
 		contextRunner.run(context -> {
 			assertThat(context).hasSingleBean(NacosDiscoveryProperties.class);
-			assertThat(context).hasSingleBean(NacosNamingManager.class);
 			assertThat(context).hasSingleBean(NacosServiceDiscovery.class);
 		});
 	}

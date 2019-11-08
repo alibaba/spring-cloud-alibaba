@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 
@@ -59,16 +58,12 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	 */
 	public static final String MANAGEMENT_ENDPOINT_BASE_PATH = "management.endpoints.web.base-path";
 
-	private NacosNamingManager nacosNamingManager;
-
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	private ApplicationContext context;
 
-	public NacosRegistration(NacosNamingManager nacosNamingManager,
-			NacosDiscoveryProperties nacosDiscoveryProperties,
+	public NacosRegistration(NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
-		this.nacosNamingManager = nacosNamingManager;
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 		this.context = context;
 	}
@@ -163,7 +158,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	}
 
 	public NamingService getNacosNamingService() {
-		return nacosNamingManager.getNamingService();
+		return nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 	@Override

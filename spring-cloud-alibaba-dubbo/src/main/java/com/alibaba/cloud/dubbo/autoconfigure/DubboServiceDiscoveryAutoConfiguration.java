@@ -33,7 +33,6 @@ import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
 import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.cloud.nacos.discovery.NacosWatch;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
@@ -506,13 +505,16 @@ public class DubboServiceDiscoveryAutoConfiguration {
 
 		private final NamingService namingService;
 
+		private final NacosDiscoveryProperties nacosDiscoveryProperties;
+
 		/**
 		 * the set of services is listening.
 		 */
 		private final Set<String> listeningServices;
 
-		NacosConfiguration(NacosNamingManager nacosNamingManager) {
-			this.namingService = nacosNamingManager.getNamingService();
+		NacosConfiguration(NacosDiscoveryProperties nacosDiscoveryProperties) {
+			this.namingService = nacosDiscoveryProperties.namingServiceInstance();
+			this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 			this.listeningServices = new ConcurrentSkipListSet<>();
 		}
 
@@ -537,7 +539,8 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		private void subscribeEventListener(String serviceName) {
 			if (listeningServices.add(serviceName)) {
 				try {
-					namingService.subscribe(serviceName, event -> {
+					String group = nacosDiscoveryProperties.getGroup();
+					namingService.subscribe(serviceName, group, event -> {
 						if (event instanceof NamingEvent) {
 							NamingEvent namingEvent = (NamingEvent) event;
 							List<ServiceInstance> serviceInstances = hostToServiceInstanceList(
