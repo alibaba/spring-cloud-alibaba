@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.alibaba.nacos.client.utils.StringUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author zkz
@@ -118,7 +118,7 @@ public abstract class AbstractNacosDataParser {
 		Properties properties = new Properties();
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			String key = entry.getKey();
-			if (StringUtils.isBlank(key)) {
+			if (StringUtils.isEmpty(key)) {
 				continue;
 			}
 			key = key.startsWith(DOT) ? key.replaceFirst("\\.", "") : key;

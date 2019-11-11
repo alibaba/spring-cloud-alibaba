@@ -25,13 +25,13 @@ import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.alibaba.nacos.client.utils.StringUtils;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import org.springframework.util.StringUtils;
 
 /**
  * With relatively few usage scenarios, only simple parsing is performed to reduce jar
