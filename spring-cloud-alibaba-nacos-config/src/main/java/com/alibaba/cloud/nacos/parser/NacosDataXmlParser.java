@@ -25,8 +25,7 @@ import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.alibaba.nacos.client.utils.StringUtils;
-
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
