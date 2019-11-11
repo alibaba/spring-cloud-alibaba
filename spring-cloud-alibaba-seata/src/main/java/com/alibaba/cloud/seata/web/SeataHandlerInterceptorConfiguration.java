@@ -16,12 +16,14 @@
 
 package com.alibaba.cloud.seata.web;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * @author xiaojing
  */
+@ConditionalOnWebApplication
 public class SeataHandlerInterceptorConfiguration extends WebMvcConfigurerAdapter {
 
 	@Override

@@ -47,23 +47,16 @@ public class NacosDiscoveryAutoConfiguration {
 
 	@Bean
 	public NacosServiceRegistry nacosServiceRegistry(
-			NacosNamingManager nacosNamingManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosServiceRegistry(nacosNamingManager, nacosDiscoveryProperties);
-	}
-
-	@Bean
-	public NacosNamingManager nacosNamingManager() {
-		return new NacosNamingManager();
+		return new NacosServiceRegistry(nacosDiscoveryProperties);
 	}
 
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
-	public NacosRegistration nacosRegistration(NacosNamingManager nacosNamingManager,
+	public NacosRegistration nacosRegistration(
 			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
-		return new NacosRegistration(nacosNamingManager, nacosDiscoveryProperties,
-				context);
+		return new NacosRegistration(nacosDiscoveryProperties, context);
 	}
 
 	@Bean

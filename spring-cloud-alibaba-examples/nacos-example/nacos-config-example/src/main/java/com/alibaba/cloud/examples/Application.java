@@ -5,7 +5,7 @@ import java.io.StringReader;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.nacos.api.config.listener.Listener;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +39,14 @@ class SampleRunner implements ApplicationRunner {
 	int userAge;
 
 	@Autowired
-	private NacosConfigManager nacosConfigManager;
+	private NacosConfigProperties nacosConfigProperties;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		System.out.println(
 				String.format("Initial username=%s, userAge=%d", userName, userAge));
 
-		nacosConfigManager.getConfigService().addListener(
+		nacosConfigProperties.configServiceInstance().addListener(
 				"nacos-config-example.properties", "DEFAULT_GROUP", new Listener() {
 
 					/**
