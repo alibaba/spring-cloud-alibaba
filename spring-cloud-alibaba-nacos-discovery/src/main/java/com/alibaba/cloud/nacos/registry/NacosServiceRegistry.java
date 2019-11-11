@@ -19,7 +19,6 @@ package com.alibaba.cloud.nacos.registry;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 
@@ -38,16 +37,13 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosServiceRegistry.class);
 
-	private final NacosNamingManager nacosNamingManager;
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	private final NamingService namingService;
 
-	public NacosServiceRegistry(NacosNamingManager nacosNamingManager,
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		this.nacosNamingManager = nacosNamingManager;
+	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
-		this.namingService = nacosNamingManager.getNamingService();
+		this.namingService = nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 	@Override
@@ -84,7 +80,6 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
-		NamingService namingService = nacosNamingManager.getNamingService();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
@@ -125,8 +120,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		try {
-			nacosNamingManager.getNamingMaintainService().updateInstance(serviceId,
-					instance);
+			nacosDiscoveryProperties.namingMaintainServiceInstance()
+					.updateInstance(serviceId, instance);
 		}
 		catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);
@@ -139,7 +134,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		String serviceName = registration.getServiceId();
 		try {
-			List<Instance> instances = nacosNamingManager.getNamingService()
+			List<Instance> instances = nacosDiscoveryProperties.namingServiceInstance()
 					.getAllInstances(serviceName);
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())

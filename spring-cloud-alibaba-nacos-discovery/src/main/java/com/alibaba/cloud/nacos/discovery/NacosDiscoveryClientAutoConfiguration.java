@@ -18,7 +18,6 @@ package com.alibaba.cloud.nacos.discovery;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosNamingManager;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -45,9 +44,9 @@ public class NacosDiscoveryClientAutoConfiguration {
 	}
 
 	@Bean
-	public DiscoveryClient nacosDiscoveryClient(NacosNamingManager nacosNamingManager,
+	public DiscoveryClient nacosDiscoveryClient(
 			NacosDiscoveryProperties discoveryProperties) {
-		return new NacosDiscoveryClient(nacosNamingManager, discoveryProperties);
+		return new NacosDiscoveryClient(discoveryProperties);
 	}
 
 	@Bean
