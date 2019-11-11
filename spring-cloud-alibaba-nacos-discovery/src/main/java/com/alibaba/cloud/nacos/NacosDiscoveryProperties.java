@@ -183,9 +183,9 @@ public class NacosDiscoveryProperties {
 	@Autowired
 	private Environment environment;
 
-	private NamingService namingService;
+	private static NamingService namingService;
 
-	private NamingMaintainService namingMaintainService;
+	private static NamingMaintainService namingMaintainService;
 
 	@PostConstruct
 	public void init() throws SocketException {
@@ -466,7 +466,6 @@ public class NacosDiscoveryProperties {
 		}
 	}
 
-	@Deprecated
 	public NamingService namingServiceInstance() {
 
 		if (null != namingService) {
@@ -483,7 +482,6 @@ public class NacosDiscoveryProperties {
 		return namingService;
 	}
 
-	@Deprecated
 	public NamingMaintainService namingMaintainServiceInstance() {
 
 		if (null != namingMaintainService) {

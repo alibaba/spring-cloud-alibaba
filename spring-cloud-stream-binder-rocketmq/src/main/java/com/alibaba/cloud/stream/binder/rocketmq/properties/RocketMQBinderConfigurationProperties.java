@@ -16,26 +16,22 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.properties;
 
-import javax.validation.constraints.Pattern;
-
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
+
 import org.apache.rocketmq.common.MixAll;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = "spring.cloud.stream.rocketmq.binder")
-@Validated
 public class RocketMQBinderConfigurationProperties {
 
 	/**
 	 * The name server for rocketMQ, formats: `host:port;host:port`.
 	 */
-	@Pattern(regexp = "^[\\d.:;]+$", message = "nameServer needs to match expression \"host:port;host:port\"")
 	private String nameServer = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
 
 	/**

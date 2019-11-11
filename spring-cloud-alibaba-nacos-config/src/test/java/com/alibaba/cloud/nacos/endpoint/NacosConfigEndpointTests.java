@@ -21,7 +21,6 @@ import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
-import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.nacos.client.config.NacosConfigService;
@@ -86,9 +85,6 @@ public class NacosConfigEndpointTests {
 	private NacosConfigProperties properties;
 
 	@Autowired
-	private NacosConfigManager nacosConfigManager;
-
-	@Autowired
 	private NacosRefreshHistory refreshHistory;
 
 	@Test
@@ -104,7 +100,7 @@ public class NacosConfigEndpointTests {
 			Builder builder = new Builder();
 
 			NacosConfigHealthIndicator healthIndicator = new NacosConfigHealthIndicator(
-					nacosConfigManager.getConfigService());
+					properties.configServiceInstance());
 			healthIndicator.doHealthCheck(builder);
 
 			Builder builder1 = new Builder();

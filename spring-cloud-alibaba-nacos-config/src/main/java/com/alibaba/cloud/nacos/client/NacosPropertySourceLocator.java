@@ -18,7 +18,6 @@ package com.alibaba.cloud.nacos.client;
 
 import java.util.List;
 
-import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
@@ -58,18 +57,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private NacosConfigProperties nacosConfigProperties;
 
-	private NacosConfigManager nacosConfigManager;
-
-	public NacosPropertySourceLocator(NacosConfigManager nacosConfigManager,
-			NacosConfigProperties nacosConfigProperties) {
-		this.nacosConfigManager = nacosConfigManager;
+	public NacosPropertySourceLocator(NacosConfigProperties nacosConfigProperties) {
 		this.nacosConfigProperties = nacosConfigProperties;
 	}
 
 	@Override
 	public PropertySource<?> locate(Environment env) {
 
-		ConfigService configService = nacosConfigManager.getConfigService();
+		ConfigService configService = nacosConfigProperties.configServiceInstance();
 
 		if (null == configService) {
 			log.warn("no instance of config service found, can't load config from nacos");
