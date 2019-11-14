@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureException;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
@@ -367,8 +368,8 @@ public class NacosConfigProperties {
 						.createConfigService(getConfigServiceProperties());
 			}
 			catch (NacosException e) {
-				log.error("create naming service error!properties={},e=,", this, e);
-				return null;
+                throw new NacosConnectionFailureException(this.getServerAddr(),
+                    e.getMessage(), e);
 			}
 		}
 		return configService;
