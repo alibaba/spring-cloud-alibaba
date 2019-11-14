@@ -14,7 +14,7 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>1.5.1.BUILD-SNAPSHOT</version>
+    <version>1.5.1.RELEASE</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
 
@@ -267,6 +267,7 @@
                 </pluginRepository>
             </pluginRepositories>
         </profile>
+
     </profiles>
 
 </project>
