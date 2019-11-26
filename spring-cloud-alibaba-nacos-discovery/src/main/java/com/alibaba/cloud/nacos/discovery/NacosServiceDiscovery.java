@@ -28,6 +28,8 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:echooy.mxq@gmail.com">echooymxq</a>
@@ -47,10 +49,32 @@ public class NacosServiceDiscovery {
 	 * @throws NacosException nacosException
 	 */
 	public List<ServiceInstance> getInstances(String serviceId) throws NacosException {
-		String group = discoveryProperties.getGroup();
-		List<Instance> instances = discoveryProperties.namingServiceInstance()
-				.selectInstances(serviceId, group, true);
+		List<Instance> instances = selectInstance(serviceId);
 		return hostToServiceInstanceList(instances, serviceId);
+	}
+
+	private List<Instance> selectInstance(String serviceId) throws NacosException {
+		List<Instance> instances = discoveryProperties.namingServiceInstance()
+				.selectInstances(serviceId, discoveryProperties.getGroup(), true);
+		// get external groups instances
+		if (CollectionUtils.isEmpty(instances)
+				&& !StringUtils.isEmpty(discoveryProperties.getExternalGroups())) {
+			return selectInstance(serviceId, discoveryProperties.getExternalGroups());
+		}
+		return instances;
+	}
+
+	private List<Instance> selectInstance(String serviceId, String groups) throws NacosException {
+		List<Instance> instances = new ArrayList<>();
+		String[] groupArray = groups.split(",");
+		for (String group : groupArray) {
+			instances = discoveryProperties.namingServiceInstance()
+					.selectInstances(serviceId, group, true);
+			if (!CollectionUtils.isEmpty(instances)) {
+				return instances;
+			}
+		}
+		return instances;
 	}
 
 	/**

@@ -33,5 +33,11 @@
       "type": "java.lang.Boolean",
       "defaultValue": "true",
       "description": "enable nacos discovery watch or not ."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.external-groups",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "discovery external group name for naocs."
     }
 ]}

@@ -114,6 +114,11 @@ public class NacosDiscoveryProperties {
 	private String group = "DEFAULT_GROUP";
 
 	/**
+	 * discovery external group name for naocs.
+	 */
+	private String externalGroups;
+
+	/**
 	 * naming load from local cache at application start. true is load.
 	 */
 	private String namingLoadCacheAtStart = "false";
@@ -406,6 +411,14 @@ public class NacosDiscoveryProperties {
 
 	public void setGroup(String group) {
 		this.group = group;
+	}
+
+	public String getExternalGroups() {
+		return externalGroups;
+	}
+
+	public void setExternalGroups(String externalGroups) {
+		this.externalGroups = externalGroups;
 	}
 
 	@Override
