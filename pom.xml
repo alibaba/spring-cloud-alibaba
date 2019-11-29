@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.2.0.BUILD-SNAPSHOT</version>
+        <version>2.2.0.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -73,13 +73,14 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-openfeign.version>
-        <spring-cloud-bus.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-gateway.version>
-        <spring-cloud-stream.version>Horsham.BUILD-SNAPSHOT</spring-cloud-stream.version>
-        <spring-cloud-consul.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-consul.version>
+        <spring-cloud-commons.version>2.2.0.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.2.0.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.2.0.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>2.2.0.RELEASE</spring-cloud-bus.version>
+        <spring-cloud-gateway.version>2.2.0.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-stream.version>Horsham.RELEASE</spring-cloud-stream.version>
+        <spring-cloud-consul.version>2.2.0.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-config.version>2.2.0.RELEASE</spring-cloud-config.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -163,7 +164,7 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-netflix</artifactId>
+                <artifactId>spring-cloud-netflix-dependencies</artifactId>
                 <version>${spring-cloud-netflix.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -173,6 +174,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-openfeign-dependencies</artifactId>
                 <version>${spring-cloud-openfeign.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-config-dependencies</artifactId>
+                <version>${spring-cloud-config.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
