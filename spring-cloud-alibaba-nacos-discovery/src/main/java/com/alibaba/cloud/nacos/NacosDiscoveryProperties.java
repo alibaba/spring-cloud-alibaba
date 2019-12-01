@@ -465,7 +465,6 @@ public class NacosDiscoveryProperties {
 		}
 	}
 
-	@Deprecated
 	public NamingService namingServiceInstance() {
 
 		if (null != namingService) {
