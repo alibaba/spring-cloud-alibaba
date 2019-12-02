@@ -22,9 +22,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import com.alibaba.nacos.client.utils.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.util.StringUtils;
 
 /**
  * @author zkz
