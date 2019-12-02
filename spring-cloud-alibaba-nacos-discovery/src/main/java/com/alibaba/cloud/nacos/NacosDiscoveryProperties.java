@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -41,7 +43,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.util.StringUtils;
 
 import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
@@ -60,11 +65,18 @@ import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  */
 
-@ConfigurationProperties("spring.cloud.nacos.discovery")
+@ConfigurationProperties(NacosDiscoveryProperties.PREFIX)
 public class NacosDiscoveryProperties {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryProperties.class);
+
+	/**
+	 * Prefix of {@link NacosDiscoveryProperties}.
+	 */
+	public static final String PREFIX = "spring.cloud.nacos.discovery";
+
+	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	/**
 	 * nacos discovery server address.
@@ -519,7 +531,44 @@ public class NacosDiscoveryProperties {
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
+
+		enrichNacosProperties(properties);
 		return properties;
+	}
+
+	private void enrichNacosProperties(Properties properties) {
+		Map<String, String> configurationItem = getConfigurationItemFromEnv();
+		configurationItem.forEach((k, v) -> properties.putIfAbsent(k, v));
+	}
+
+	private Map<String, String> getConfigurationItemFromEnv() {
+		Map<String, String> configurationItems = new HashMap<>();
+		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
+
+		MutablePropertySources propertySources = configurableEnvironment
+				.getPropertySources();
+		propertySources.stream().forEach(propertySource -> {
+			if (propertySource instanceof MapPropertySource) {
+				MapPropertySource mps = (MapPropertySource) propertySource;
+				mps.getSource().forEach((key, value) -> {
+					if (StringUtils.startsWithIgnoreCase(key, PREFIX)) {
+						configurationItems.put(
+								resolveKey(key.substring(PREFIX.length() + 1)), String.valueOf(value));
+					}
+				});
+			}
+		});
+		return configurationItems;
+	}
+
+	private String resolveKey(String key) {
+		Matcher matcher = PATTERN.matcher(key);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
 	}
 
 }

@@ -16,9 +16,13 @@
 
 package com.alibaba.cloud.nacos;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -30,7 +34,10 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.util.StringUtils;
 
 import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
@@ -62,6 +69,8 @@ public class NacosConfigProperties {
 	 * Prefix of {@link NacosConfigProperties}.
 	 */
 	public static final String PREFIX = "spring.cloud.nacos.config";
+
+	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
@@ -356,6 +365,14 @@ public class NacosConfigProperties {
 		this.name = name;
 	}
 
+	public Environment getEnvironment() {
+		return environment;
+	}
+
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
+
 	/**
 	 * @return ConfigService
 	 */
@@ -398,7 +415,45 @@ public class NacosConfigProperties {
 		else {
 			properties.put(ENDPOINT, endpoint);
 		}
+
+		enrichNacosProperties(properties);
 		return properties;
+	}
+
+	private void enrichNacosProperties(Properties properties) {
+		Map<String, String> configurationItem = getConfigurationItemFromEnv();
+		configurationItem.forEach((k, v) -> properties.putIfAbsent(k, v));
+	}
+
+	private Map<String, String> getConfigurationItemFromEnv() {
+		Map<String, String> configurationItems = new HashMap<>();
+		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
+
+		MutablePropertySources propertySources = configurableEnvironment
+				.getPropertySources();
+		propertySources.stream().forEach(propertySource -> {
+			if (propertySource instanceof MapPropertySource) {
+				MapPropertySource mps = (MapPropertySource) propertySource;
+				mps.getSource().forEach((key, value) -> {
+					if (StringUtils.startsWithIgnoreCase(key, PREFIX)) {
+						configurationItems.put(
+								resolveKey(key.substring(PREFIX.length() + 1)),
+								String.valueOf(value));
+					}
+				});
+			}
+		});
+		return configurationItems;
+	}
+
+	private String resolveKey(String key) {
+		Matcher matcher = PATTERN.matcher(key);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
 	}
 
 	@Override
