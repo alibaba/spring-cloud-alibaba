@@ -2,6 +2,7 @@
     {
       "name": "spring.cloud.nacos.server-addr",
       "type": "java.lang.String",
+      "defaultValue": "localhost:8848",
       "description": "nacos server address."
     },
     {
