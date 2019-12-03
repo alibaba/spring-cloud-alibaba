@@ -65,13 +65,13 @@ import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  */
 
-@ConfigurationProperties("spring.cloud.nacos.discovery")
+@ConfigurationProperties(NacosDiscoveryProperties.PREFIX)
 public class NacosDiscoveryProperties {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryProperties.class);
 
-	private static final String PREFIX = "spring.cloud.nacos.discovery";
+	public static final String PREFIX = "spring.cloud.nacos.discovery";
 
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 

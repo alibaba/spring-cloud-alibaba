@@ -16,9 +16,13 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -30,22 +34,14 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.util.StringUtils;
 
-import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_LONG_POLL_TIMEOUT;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_RETRY_TIME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENABLE_REMOTE_SYNC_CONFIG;
-import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
-import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
-import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
-import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
-import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
  * Nacos properties.
@@ -62,6 +58,8 @@ public class NacosConfigProperties {
 	 * Prefix of {@link NacosConfigProperties}.
 	 */
 	public static final String PREFIX = "spring.cloud.nacos.config";
+
+	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
@@ -376,19 +374,6 @@ public class NacosConfigProperties {
 
 	public Properties getConfigServiceProperties() {
 		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
-		properties.put(ENCODE, Objects.toString(this.encode, ""));
-		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
-		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
-		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
-		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
-		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
-		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
-		properties.put(CONFIG_LONG_POLL_TIMEOUT,
-				Objects.toString(this.configLongPollTimeout, ""));
-		properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
-		properties.put(ENABLE_REMOTE_SYNC_CONFIG,
-				Objects.toString(this.enableRemoteSyncConfig, ""));
 		String endpoint = Objects.toString(this.endpoint, "");
 		if (endpoint.contains(":")) {
 			int index = endpoint.indexOf(":");
@@ -398,6 +383,8 @@ public class NacosConfigProperties {
 		else {
 			properties.put(ENDPOINT, endpoint);
 		}
+
+		enrichNacosProperties(properties);
 		return properties;
 	}
 
@@ -455,6 +442,43 @@ public class NacosConfigProperties {
 			this.refresh = refresh;
 		}
 
+	}
+
+	private void enrichNacosProperties(Properties properties) {
+		Map<String, Object> configurationItem = getConfigurationItemFromEnv(PREFIX);
+		configurationItem.forEach((k, v) -> {
+			if (!properties.contains(k)) {
+				properties.put(k, v);
+			}
+		});
+	}
+
+	private Map<String, Object> getConfigurationItemFromEnv(String prefix) {
+		Map<String, Object> configurationItems = new HashMap<>();
+		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
+
+		MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
+		propertySources.stream().forEach(propertySource -> {
+			if (propertySource instanceof MapPropertySource) {
+				MapPropertySource mps = (MapPropertySource) propertySource;
+				mps.getSource().forEach((key, value) -> {
+					if (StringUtils.startsWithIgnoreCase(key, prefix)) {
+						configurationItems.put(resolveKey(key.substring(prefix.length() + 1)), value);
+					}
+				});
+			}
+		});
+		return configurationItems;
+	}
+
+	private String resolveKey(String key) {
+		Matcher matcher = PATTERN.matcher(key);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
 	}
 
 }
