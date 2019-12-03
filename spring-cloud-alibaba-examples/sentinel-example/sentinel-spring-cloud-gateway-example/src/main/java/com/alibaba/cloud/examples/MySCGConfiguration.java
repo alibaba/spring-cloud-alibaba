@@ -25,7 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -39,9 +39,8 @@ public class MySCGConfiguration {
 			@Override
 			public Mono<ServerResponse> handleRequest(ServerWebExchange exchange,
 					Throwable t) {
-				return ServerResponse.status(444)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.body(fromObject("SCS Sentinel block"));
+				return ServerResponse.status(444).contentType(MediaType.APPLICATION_JSON)
+						.body(fromValue("SCS Sentinel block"));
 			}
 		};
 	}
