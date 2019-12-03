@@ -48,7 +48,7 @@ public class FallbackProperties {
 	/**
 	 * Content-Type for `response` mode.
 	 */
-	private String contentType = MediaType.APPLICATION_JSON_UTF8.toString();
+	private String contentType = MediaType.APPLICATION_JSON.toString();
 
 	public String getMode() {
 		return mode;
