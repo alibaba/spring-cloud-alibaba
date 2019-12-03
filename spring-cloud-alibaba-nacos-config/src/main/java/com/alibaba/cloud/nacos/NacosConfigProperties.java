@@ -16,10 +16,10 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.util.Objects;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -388,6 +388,45 @@ public class NacosConfigProperties {
 		return properties;
 	}
 
+	private void enrichNacosProperties(Properties properties) {
+		Map<String, Object> configurationItem = getConfigurationItemFromEnv(PREFIX);
+		configurationItem.forEach((k, v) -> {
+			if (!properties.contains(k)) {
+				properties.put(k, v);
+			}
+		});
+	}
+
+	private Map<String, Object> getConfigurationItemFromEnv(String prefix) {
+		Map<String, Object> configurationItems = new HashMap<>();
+		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
+
+		MutablePropertySources propertySources = configurableEnvironment
+				.getPropertySources();
+		propertySources.stream().forEach(propertySource -> {
+			if (propertySource instanceof MapPropertySource) {
+				MapPropertySource mps = (MapPropertySource) propertySource;
+				mps.getSource().forEach((key, value) -> {
+					if (StringUtils.startsWithIgnoreCase(key, prefix)) {
+						configurationItems.put(
+								resolveKey(key.substring(prefix.length() + 1)), value);
+					}
+				});
+			}
+		});
+		return configurationItems;
+	}
+
+	private String resolveKey(String key) {
+		Matcher matcher = PATTERN.matcher(key);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
+	}
+
 	@Override
 	public String toString() {
 		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
@@ -442,43 +481,6 @@ public class NacosConfigProperties {
 			this.refresh = refresh;
 		}
 
-	}
-
-	private void enrichNacosProperties(Properties properties) {
-		Map<String, Object> configurationItem = getConfigurationItemFromEnv(PREFIX);
-		configurationItem.forEach((k, v) -> {
-			if (!properties.contains(k)) {
-				properties.put(k, v);
-			}
-		});
-	}
-
-	private Map<String, Object> getConfigurationItemFromEnv(String prefix) {
-		Map<String, Object> configurationItems = new HashMap<>();
-		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
-
-		MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
-		propertySources.stream().forEach(propertySource -> {
-			if (propertySource instanceof MapPropertySource) {
-				MapPropertySource mps = (MapPropertySource) propertySource;
-				mps.getSource().forEach((key, value) -> {
-					if (StringUtils.startsWithIgnoreCase(key, prefix)) {
-						configurationItems.put(resolveKey(key.substring(prefix.length() + 1)), value);
-					}
-				});
-			}
-		});
-		return configurationItems;
-	}
-
-	private String resolveKey(String key) {
-		Matcher matcher = PATTERN.matcher(key);
-		StringBuffer sb = new StringBuffer();
-		while (matcher.find()) {
-			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
-		}
-		matcher.appendTail(sb);
-		return sb.toString();
 	}
 
 }

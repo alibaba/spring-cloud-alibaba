@@ -71,6 +71,9 @@ public class NacosDiscoveryProperties {
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryProperties.class);
 
+	/**
+	 * Prefix of {@link NacosDiscoveryProperties}.
+	 */
 	public static final String PREFIX = "spring.cloud.nacos.discovery";
 
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
@@ -546,13 +549,15 @@ public class NacosDiscoveryProperties {
 		Map<String, Object> configurationItems = new HashMap<>();
 		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
 
-		MutablePropertySources propertySources = configurableEnvironment.getPropertySources();
+		MutablePropertySources propertySources = configurableEnvironment
+				.getPropertySources();
 		propertySources.stream().forEach(propertySource -> {
 			if (propertySource instanceof MapPropertySource) {
 				MapPropertySource mps = (MapPropertySource) propertySource;
 				mps.getSource().forEach((key, value) -> {
 					if (StringUtils.startsWithIgnoreCase(key, prefix)) {
-						configurationItems.put(resolveKey(key.substring(prefix.length() + 1)), value);
+						configurationItems.put(
+								resolveKey(key.substring(prefix.length() + 1)), value);
 					}
 				});
 			}
