@@ -10,7 +10,7 @@ jobs:
     branches:
       ignore:
         - gh-pages # list of branches to ignore
-    resource_class: medium
+    resource_class: large
     steps:
       - checkout
       - restore_cache:
