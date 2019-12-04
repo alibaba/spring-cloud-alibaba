@@ -66,7 +66,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition,
 			Class<?> beanType, String beanName) {
-		if (checkSentinelProtect(beanDefinition, beanType, beanName)) {
+		if (checkSentinelProtect(beanDefinition, beanType)) {
 			SentinelRestTemplate sentinelRestTemplate;
 			if (beanDefinition.getSource() instanceof StandardMethodMetadata) {
 				sentinelRestTemplate = ((StandardMethodMetadata) beanDefinition
@@ -166,8 +166,8 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	}
 
 	private boolean checkSentinelProtect(RootBeanDefinition beanDefinition,
-			Class<?> beanType, String beanName) {
-		return beanName != null && beanType == RestTemplate.class
+			Class<?> beanType) {
+		return beanType == RestTemplate.class
 				&& checkMethodMetadataReadingVisitor(beanDefinition);
 	}
 
@@ -180,7 +180,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName)
 			throws BeansException {
-		if (beanName != null && cache.containsKey(beanName)) {
+		if (cache.containsKey(beanName)) {
 			// add interceptor for each RestTemplate with @SentinelRestTemplate annotation
 			StringBuilder interceptorBeanNamePrefix = new StringBuilder();
 			SentinelRestTemplate sentinelRestTemplate = cache.get(beanName);
