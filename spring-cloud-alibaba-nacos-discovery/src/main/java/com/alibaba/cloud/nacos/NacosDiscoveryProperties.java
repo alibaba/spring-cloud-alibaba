@@ -537,7 +537,7 @@ public class NacosDiscoveryProperties {
 	}
 
 	private void enrichNacosProperties(Properties properties) {
-		Map<String, Object> configurationItem = getConfigurationItemFromEnv(PREFIX);
+		Map<String, String> configurationItem = getConfigurationItemFromEnv();
 		configurationItem.forEach((k, v) -> {
 			if (!properties.contains(k)) {
 				properties.put(k, v);
@@ -545,8 +545,8 @@ public class NacosDiscoveryProperties {
 		});
 	}
 
-	private Map<String, Object> getConfigurationItemFromEnv(String prefix) {
-		Map<String, Object> configurationItems = new HashMap<>();
+	private Map<String, String> getConfigurationItemFromEnv() {
+		Map<String, String> configurationItems = new HashMap<>();
 		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
 
 		MutablePropertySources propertySources = configurableEnvironment
@@ -555,9 +555,11 @@ public class NacosDiscoveryProperties {
 			if (propertySource instanceof MapPropertySource) {
 				MapPropertySource mps = (MapPropertySource) propertySource;
 				mps.getSource().forEach((key, value) -> {
-					if (StringUtils.startsWithIgnoreCase(key, prefix)) {
+					if (StringUtils.startsWithIgnoreCase(key, PREFIX)) {
+
 						configurationItems.put(
-								resolveKey(key.substring(prefix.length() + 1)), value);
+								resolveKey(key.substring(PREFIX.length() + 1)),
+								String.valueOf(value));
 					}
 				});
 			}

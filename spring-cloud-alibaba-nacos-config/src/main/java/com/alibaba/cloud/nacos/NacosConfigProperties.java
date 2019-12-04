@@ -40,8 +40,19 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.util.StringUtils;
 
+import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_LONG_POLL_TIMEOUT;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_RETRY_TIME;
+import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENABLE_REMOTE_SYNC_CONFIG;
+import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
+import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
+import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
+import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 
 /**
  * Nacos properties.
@@ -354,6 +365,14 @@ public class NacosConfigProperties {
 		this.name = name;
 	}
 
+	public Environment getEnvironment() {
+		return environment;
+	}
+
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
+
 	/**
 	 * @return ConfigService
 	 */
@@ -374,6 +393,19 @@ public class NacosConfigProperties {
 
 	public Properties getConfigServiceProperties() {
 		Properties properties = new Properties();
+		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
+		properties.put(ENCODE, Objects.toString(this.encode, ""));
+		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
+		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
+		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
+		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
+		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
+		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
+		properties.put(CONFIG_LONG_POLL_TIMEOUT,
+				Objects.toString(this.configLongPollTimeout, ""));
+		properties.put(CONFIG_RETRY_TIME, Objects.toString(this.configRetryTime, ""));
+		properties.put(ENABLE_REMOTE_SYNC_CONFIG,
+				Objects.toString(this.enableRemoteSyncConfig, ""));
 		String endpoint = Objects.toString(this.endpoint, "");
 		if (endpoint.contains(":")) {
 			int index = endpoint.indexOf(":");
@@ -389,7 +421,7 @@ public class NacosConfigProperties {
 	}
 
 	private void enrichNacosProperties(Properties properties) {
-		Map<String, Object> configurationItem = getConfigurationItemFromEnv(PREFIX);
+		Map<String, String> configurationItem = getConfigurationItemFromEnv();
 		configurationItem.forEach((k, v) -> {
 			if (!properties.contains(k)) {
 				properties.put(k, v);
@@ -397,8 +429,8 @@ public class NacosConfigProperties {
 		});
 	}
 
-	private Map<String, Object> getConfigurationItemFromEnv(String prefix) {
-		Map<String, Object> configurationItems = new HashMap<>();
+	private Map<String, String> getConfigurationItemFromEnv() {
+		Map<String, String> configurationItems = new HashMap<>();
 		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
 
 		MutablePropertySources propertySources = configurableEnvironment
@@ -407,9 +439,9 @@ public class NacosConfigProperties {
 			if (propertySource instanceof MapPropertySource) {
 				MapPropertySource mps = (MapPropertySource) propertySource;
 				mps.getSource().forEach((key, value) -> {
-					if (StringUtils.startsWithIgnoreCase(key, prefix)) {
+					if (StringUtils.startsWithIgnoreCase(key, PREFIX)) {
 						configurationItems.put(
-								resolveKey(key.substring(prefix.length() + 1)), value);
+								resolveKey(key.substring(PREFIX.length() + 1)), String.valueOf(value));
 					}
 				});
 			}
