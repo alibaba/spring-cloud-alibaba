@@ -26,7 +26,6 @@ import com.alibaba.csp.sentinel.SphU;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.context.annotation.Bean;
@@ -39,8 +38,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnClass({ SphU.class })
-@ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled",
-		havingValue = "true", matchIfMissing = true)
 public class SentinelCircuitBreakerAutoConfiguration {
 
 	@Bean
