@@ -16,7 +16,7 @@ Before we start the demo, let's learn how to connect OSS to a Spring Cloud appli
 1. Add dependency spring-cloud-starter-alicloud-oss in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
         </dependency>
 
@@ -114,7 +114,7 @@ You can verify results on the OSS console when you finish uploading or downloadi
 
 ## Endpoint
 
-OSS starter also supports the implmentation of Spring Boot acutator endpoints.
+OSS starter also supports the implementation of Spring Boot actuator endpoints.
 
 **Prerequisite:**
 
@@ -127,7 +127,7 @@ To view the endpoint information, visit the following URLs:
 
 Spring Boot1.x: OSS Endpoint URL is http://127.0.0.1:18084/oss.
 
-Spring Boot2.x: OSS Endpoint URL is http://127.0.0.1:18084/acutator/oss.
+Spring Boot2.x: OSS Endpoint URL is http://127.0.0.1:18084/actuator/oss.
 
 Endpoint will show the configurations and the list of buckets of all OSSClients.
 

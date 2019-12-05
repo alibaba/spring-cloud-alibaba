@@ -1,15 +1,15 @@
-== Spring Cloud Alibaba Cloud SchedulerX
+== Spring Cloud AliCloud SchedulerX
 
 SchedulerX（分布式任务调度） 是隶属于阿里云EDAS产品的组件， Spring Cloud AliCloud SchedulerX 提供了在Spring Cloud的配置规范下，分布式任务调度的功能支持。SchedulerX可提供秒级、精准、高可靠、高可用的定时任务调度服务，并支持多种类型的任务调度，如简单单机任务、简单多机任务、脚本任务以及网格任务。
 
 === 如何引入 Spring Cloud AliCloud SchedulerX
 
-如果要在您的项目中引入 SchedulerX，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-schedulerX` 的 starter。
+如果要在您的项目中引入 SchedulerX，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-schedulerX` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-schedulerX</artifactId>
 </dependency>
 ----

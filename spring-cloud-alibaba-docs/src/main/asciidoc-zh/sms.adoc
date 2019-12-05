@@ -1,15 +1,15 @@
-== Spring Cloud Alibaba Cloud SMS
+== Spring Cloud AliCloud SMS
 
 短信服务（Short Message Service）是阿里云为用户提供的一种通信服务的能力。 Spring Cloud AliCloud SMS 实现了与 SMS 的简单集成，提供更为简单易用的 API，可以基于 Spring Cloud Alibaba SMS 来快速的接入阿里云的 SMS 服务。
 
 === 如何引入 Spring Cloud AliCloud SMS
 
-如果要在您的项目中引入 SMS，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-sms` 的 starter。
+如果要在您的项目中引入 SMS，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-sms` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
 </dependency>
 ----
@@ -31,7 +31,7 @@ access-key 和 secret-key 是阿里云账号的 AK/SK，需要首先注册阿里
 
 ==== 引入 SMS API
 
-Spring Cloud Alicloud SMS 中的 SMS API 基于阿里云官方 SMS SDK 提供，具备单个短信发送、多个短信批量发送、短信查询、短信消息(短信回执消息 和 上行短信消息) 类行操作API。
+Spring Cloud Alicloud SMS 中的 SMS API 基于阿里云官方 SMS SDK ,提供具备单个短信发送、多个短信批量发送、短信查询、短信消息(`短信回执消息` 和 `上行短信消息`) 类型操作API。
 
 一个简单的使用 SMS API 发送短信的应用如下。
 
@@ -43,7 +43,13 @@ public class SmsApplication {
     @Autowired
     private ISmsService smsService;
 
+    /**
+     * 短信发送 Example
+     * @param code
+     * @return
+     */
     @RequestMapping("/batch-sms-send.do")
+
     public SendBatchSmsResponse batchsendCheckCode(
             @RequestParam(name = "code") String code) {
 
@@ -69,6 +75,7 @@ public class SmsApplication {
     }
 
     public static void main(String[] args) throws URISyntaxException {
+
         SpringApplication.run(SmsApplication.class, args);
     }
 
@@ -88,10 +95,15 @@ Spring Cloud Alicloud SMS 封装的 API 接口为了降低学习的成本，尽�
 
 * 批量短信发送
 
-参考以下的 Example ，来快速开发一个具有批量短信发送的功能。在 Controller 中或者新建一个 Controller 新增如下代码：
+参考以下的 Example ，来快速开发一个具有批量短信发送的功能。在 Controller 中或者新建一个 Controler 新增如下代码：
 
 [source,java]
 ----
+/**
+ * 批量短信发送 Example
+ * @param code
+ * @return
+ */
 @RequestMapping("/batch-sms-send.do")
 public SendBatchSmsResponse batchsendCheckCode(
         @RequestParam(name = "code") String code) {
@@ -129,10 +141,16 @@ NOTE: 这里设置请求的 MethodType 为 GET，和官网给出的例子还有�
 
 * 短信查询
 
-参考以下的 Example ，可以快速开发根据某个指定的号码查询短信历史发送状态。在 Controller 中或者新建一个 Controller 新增如下代码：
+参考以下的 Example ，可以快速开发根据某个指定的号码查询短信历史发送状态。在 Controller 中或者新建一个 Controler 新增如下代码：
 
 [source,java]
 ----
+/**
+ *
+ * 短信查询 Example
+ * @param telephone
+ * @return
+ */
 @RequestMapping("/query.do")
 public QuerySendDetailsResponse querySendDetailsResponse(
         @RequestParam(name = "tel") String telephone) {
@@ -168,6 +186,7 @@ public QuerySendDetailsResponse querySendDetailsResponse(
 1、在 `application.properties` 配置文件中(也可以是 application.yaml)配置 SmsReport 的队列名称。
 
 .application.properties
+[source,properties]
 ----
 spring.cloud.alicloud.sms.report-queue-name=Alicom-Queue-********-SmsReport
 ----
@@ -199,7 +218,7 @@ public class SmsReportMessageListener
 
 * 上行短信消息
 
-通过订阅 SmsUp 上行短信消息，可以获知终端用户回复短信的内容。这些工作也已经被 Spring Cloud AliCloud SMS 封装好了。你只需要完成以下两步即可。
+通过订阅SmsUp上行短信消息，可以获知终端用户回复短信的内容。这些工作也已经被 Spring Cloud AliCloud SMS 封装好了。你只需要完成以下两步即可。
 
 1、 在 `application.properties` 配置文件中(也可以是 application.yaml)配置 SmsReport 的队列名称。
 

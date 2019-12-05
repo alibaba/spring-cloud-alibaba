@@ -2,16 +2,16 @@
 
 SMS（Short Message Service）is a messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
 
-Spring Cloud AliCloud SMS provide an easier-to-use API for quick access to Alibaba Cloud's SMS service based on Spring Cloud Alibaba SMS.
+Spring Cloud Alibaba Cloud SMS provide an easier-to-use API for quick access to Alibaba Cloud's SMS service based on Spring Cloud Alibaba SMS.
 
-=== 如何引入 Spring Cloud AliCloud SMS
+=== How to Introduce Spring Cloud Alibaba Cloud SMS
 
-If you want to use SMS in your project, please use the starter with the group ID as `org.springframework.cloud` and the artifact ID as `spring-cloud-starter-alicloud-sms`.
+If you want to use SMS in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alicloud-sms`.
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
 </dependency>
 ----
@@ -165,7 +165,7 @@ spring.cloud.alicloud.sms.report-queue-name=Alicom-Queue-********-SmsReport
 ----
 @Component
 public class SmsReportMessageListener
-		implements org.springframework.cloud.alicloud.sms.SmsReportMessageListener {
+		implements SmsReportMessageListener {
 
 	@Override
 	public boolean dealMessage(Message message) {
@@ -185,6 +185,7 @@ By subscribing to the SmsUp upstream SMS message, you can know the content of th
 1、Configure the queue name for SmsReport in the `application.properties` configuration file (which can also be application.yaml).
 
 .application.properties
+[source,properties]
 ----
 spring.cloud.alicloud.sms.up-queue-name=Alicom-Queue-********-SmsUp
 ----

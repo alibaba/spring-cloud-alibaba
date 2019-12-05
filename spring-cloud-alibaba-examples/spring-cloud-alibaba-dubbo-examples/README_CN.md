@@ -15,7 +15,7 @@ public interface EchoService {
 ```
 
 为了确保契约的一致性，推荐的做法是将 Dubbo 服务接口打包在第二方或者第三方的 artifact（jar）中，如以上接口就存放在
- artifact [spring-cloud-dubbo-sample-api](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/spring-cloud-alibaba-dubbo-examples/spring-cloud-dubbo-sample-api) 之中。
+ artifact [spring-cloud-dubbo-sample-api](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/spring-cloud-alibaba-dubbo-examples/spring-cloud-dubbo-sample-api) 之中。
 对于服务提供方而言，不仅通过依赖 artifact 的形式引入 Dubbo 服务接口，而且需要将其实现。对应的服务消费端，同样地需要依赖该 artifact，
 并以接口调用的方式执行远程方法。接下来进一步讨论怎样实现 Dubbo 服务提供方和消费方。
 
@@ -46,13 +46,13 @@ Dubbo Spring Cloud 必要的依赖：
 
     <!-- Dubbo Spring Cloud Starter -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-dubbo</artifactId>
     </dependency>
 
     <!-- Spring Cloud Nacos Service Discovery -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
     </dependency>
 </dependencies>
@@ -119,7 +119,7 @@ class EchoServiceImpl implements EchoService {
 dubbo:
   scan:
     # dubbo 服务扫描基准包
-    base-packages: org.springframework.cloud.alibaba.dubbo.bootstrap
+    base-packages: com.alibaba.cloud.dubbo.bootstrap
   protocol:
     # dubbo 协议
     name: dubbo
@@ -149,15 +149,15 @@ spring:
 - `dubbo.protocol` : Dubbo 服务暴露的协议配置，其中子属性 `name` 为协议名称，`port` 为协议端口（ -1 表示自增端口，从 20880 开始）
 - `dubbo.registry` : Dubbo 服务注册中心配置，其中子属性 `address` 的值 "spring-cloud://localhost"，说明挂载到 Spring Cloud 注册中心
 > 当前 Dubbo Spring Cloud 实现必须配置 `dubbo.registry.address = spring-cloud://localhost`，下一个版本将其配置变为可选
-（参考 [issue #592](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/592)），
-> 并且支持传统 Dubbo 协议的支持（参考 [issue #588](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/588)）
+（参考 [issue #592](https://github.com/alibaba/spring-cloud-alibaba/issues/592)），
+> 并且支持传统 Dubbo 协议的支持（参考 [issue #588](https://github.com/alibaba/spring-cloud-alibaba/issues/588)）
 
 下半部分则是 Spring Cloud 相关配置：
 
 - `spring.application.name` : Spring 应用名称，用于 Spring Cloud 服务注册和发现。
 > 该值在 Dubbo Spring Cloud 加持下被视作 `dubbo.application.name`，因此，无需再显示地配置 `dubbo.application.name`
 - `spring.main.allow-bean-definition-overriding` : 在 Spring Boot 2.1 以及更高的版本增加该设定，
-因为 Spring Boot 默认调整了 Bean 定义覆盖行为。（推荐一个好的 Dubbo 讨论 [issue #3193](https://github.com/apache/incubator-dubbo/issues/3193#issuecomment-474340165)）
+因为 Spring Boot 默认调整了 Bean 定义覆盖行为。（推荐一个好的 Dubbo 讨论 [issue #3193](https://github.com/apache/dubbo/issues/3193#issuecomment-474340165)）
 - `spring.cloud.nacos.discovery` : Nacos 服务发现与注册配置，其中子属性 server-addr 指定 Nacos 服务器主机和端口
 
 > 以上完整的 YAML 配置文件，请参考 `spring-cloud-dubbo-server-sample` [`bootstrap.yaml`](spring-cloud-dubbo-server-sample/src/main/resources/bootstrap.yaml) 文件
@@ -234,13 +234,13 @@ public class DubboSpringCloudServerBootstrap {
 
     <!-- Dubbo Spring Cloud Starter -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-dubbo</artifactId>
     </dependency>
 
     <!-- Spring Cloud Nacos Service Discovery -->
     <dependency>
-        <groupId>org.springframework.cloud</groupId>
+        <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
     </dependency>
 </dependencies>

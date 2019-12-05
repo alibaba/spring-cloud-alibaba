@@ -18,7 +18,7 @@
 	
 	```xml
 	<dependency>
-	    <groupId>org.springframework.cloud</groupId>
+	    <groupId>com.alibaba.cloud</groupId>
 	    <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
 	</dependency>
 	```
@@ -234,7 +234,7 @@ public QuerySendDetailsResponse querySendDetailsResponse(
 	 */
 	@Component
 	public class SmsReportMessageListener
-			implements org.springframework.cloud.alicloud.sms.SmsReportMessageListener {
+			implements SmsReportMessageListener {
 	
 		@Override
 		public boolean dealMessage(Message message) {
@@ -251,7 +251,7 @@ public QuerySendDetailsResponse querySendDetailsResponse(
 发送状态的回执消息如下所示：
 
 ```plain
-org.springframework.cloud.alibaba.cloud.example.SmsReportMessageListener; MessageID:9F3CFCE6BB3B2C8F-2-1682D84D9AD-20000000A,MessageMD5:C6AFEE0EE560BBC3380252337AC36985,RequestID:5C349CCEB8C115CCF344A3EB,MessageBody:"{"send_time":"2019-01-08 20:51:40","report_time":"2019-01-08 20:51:47","success":true,"err_msg":"用户接收成功","err_code":"DELIVERED","phone_number":"152********","sms_size":"1","biz_id":"667618746951900475^0","out_id":"edasTraceId"}",ReceiptHandle:"1-ODU4OTkzNDYwMi0xNTQ2OTUxOTM3LTItOA==",DequeueCount:"1",EnqueueTime:"Tue Jan 08 20:51:47 CST 2019",FirstDequeueTime:"Tue Jan 08 20:51:47 CST 2019",NextVisibleTime:"Tue Jan 08 20:52:17 CST 2019",Priority:"8"
+SmsReportMessageListener; MessageID:9F3CFCE6BB3B2C8F-2-1682D84D9AD-20000000A,MessageMD5:C6AFEE0EE560BBC3380252337AC36985,RequestID:5C349CCEB8C115CCF344A3EB,MessageBody:"{"send_time":"2019-01-08 20:51:40","report_time":"2019-01-08 20:51:47","success":true,"err_msg":"用户接收成功","err_code":"DELIVERED","phone_number":"152********","sms_size":"1","biz_id":"667618746951900475^0","out_id":"edasTraceId"}",ReceiptHandle:"1-ODU4OTkzNDYwMi0xNTQ2OTUxOTM3LTItOA==",DequeueCount:"1",EnqueueTime:"Tue Jan 08 20:51:47 CST 2019",FirstDequeueTime:"Tue Jan 08 20:51:47 CST 2019",NextVisibleTime:"Tue Jan 08 20:52:17 CST 2019",Priority:"8"
 ```
 
 ### 上行短信消息   
@@ -273,7 +273,7 @@ org.springframework.cloud.alibaba.cloud.example.SmsReportMessageListener; Messag
 	 */
 	@Component
 	public class SmsUpMessageListener
-			implements org.springframework.cloud.alicloud.sms.SmsUpMessageListener {
+			implements SmsUpMessageListener {
 	
 		@Override
 		public boolean dealMessage(Message message) {
@@ -290,7 +290,7 @@ org.springframework.cloud.alibaba.cloud.example.SmsReportMessageListener; Messag
 短信成功恢复后，上行短信消息 SmsUpMessageListener 回调后的信息如下所示：
 
 ```plain
-org.springframework.cloud.alibaba.cloud.example.SmsUpMessageListener; MessageID:BF030215BA85BB41-1-1682D85425F-400000003,MessageMD5:D1AF5C2D7410EF190532CBF8E17FE2B7,RequestID:5C349CEE36AF628D2A847D50,MessageBody:"{"dest_code":"2493559","send_time":"2019-01-08 20:52:14","sign_name":"【企业级分布式应用服务】","sequence_id":568585703,"phone_number":"152********","content":"5279"}",ReceiptHandle:"1-MTcxNzk4NjkxODctMTU0Njk1MTk2NC0xLTg=",DequeueCount:"1",EnqueueTime:"Tue Jan 08 20:52:14 CST 2019",FirstDequeueTime:"Tue Jan 08 20:52:14 CST 2019",NextVisibleTime:"Tue Jan 08 20:52:44 CST 2019",Priority:"8"
+SmsUpMessageListener; MessageID:BF030215BA85BB41-1-1682D85425F-400000003,MessageMD5:D1AF5C2D7410EF190532CBF8E17FE2B7,RequestID:5C349CEE36AF628D2A847D50,MessageBody:"{"dest_code":"2493559","send_time":"2019-01-08 20:52:14","sign_name":"【企业级分布式应用服务】","sequence_id":568585703,"phone_number":"152********","content":"5279"}",ReceiptHandle:"1-MTcxNzk4NjkxODctMTU0Njk1MTk2NC0xLTg=",DequeueCount:"1",EnqueueTime:"Tue Jan 08 20:52:14 CST 2019",FirstDequeueTime:"Tue Jan 08 20:52:14 CST 2019",NextVisibleTime:"Tue Jan 08 20:52:44 CST 2019",Priority:"8"
 ```
 
 ## 查看 Endpoint 信息
@@ -306,7 +306,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，SMS Starter 也�
 
 Spring Boot1.x 可以通过访问 http://127.0.0.1:18084/sms-info 来查看 SMS Endpoint 的信息。
 
-Spring Boot2.x 可以通过访问 http://127.0.0.1:18084/acutator/sms-info 来访问。
+Spring Boot2.x 可以通过访问 http://127.0.0.1:18084/actuator/sms-info 来访问。
 
 Endpoint 内部会显示最近 20 条单个短信发送的记录和批量短信发送的记录，以及当前短信消息的配置信息(包括是**SmsReport** 还是 **SmsUp**，**队列名称**，以及对应的 **MessageListener** )。
 

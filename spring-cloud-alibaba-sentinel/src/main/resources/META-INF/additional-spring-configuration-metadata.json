@@ -88,6 +88,18 @@
       "type": "java.lang.String",
       "defaultValue": "3",
       "description": "sentinel the cold factor."
+    },
+    {
+      "name": "management.health.sentinel.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable sentinel health check.",
+      "defaultValue": true
+    },
+    {
+      "defaultValue": "false",
+      "name": "feign.sentinel.enabled",
+      "description": "If true, an OpenFeign client will be wrapped with a Sentinel circuit breaker.",
+      "type": "java.lang.Boolean"
     }
   ]
 }
