@@ -60,7 +60,7 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = { "org.springframework.web.client.RestTemplate" })
 @AutoConfigureAfter(name = {
 		"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration" })

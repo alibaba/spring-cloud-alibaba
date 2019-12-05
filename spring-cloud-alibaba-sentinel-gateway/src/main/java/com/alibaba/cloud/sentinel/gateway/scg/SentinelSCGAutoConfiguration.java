@@ -57,7 +57,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromObject
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(GlobalFilter.class)
 @ConditionalOnProperty(prefix = ConfigConstants.GATEWAY_PREFIX, name = "enabled",
 		havingValue = "true", matchIfMissing = true)

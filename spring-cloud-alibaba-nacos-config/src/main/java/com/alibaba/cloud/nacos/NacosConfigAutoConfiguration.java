@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author juven.xuxb
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
 public class NacosConfigAutoConfiguration {
 

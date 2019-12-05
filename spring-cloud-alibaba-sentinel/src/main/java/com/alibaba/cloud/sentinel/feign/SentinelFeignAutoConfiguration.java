@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Scope;
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ SphU.class, Feign.class })
 public class SentinelFeignAutoConfiguration {
 
