@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaojing
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(HystrixCommand.class)
 public class SeataHystrixAutoConfiguration {
 

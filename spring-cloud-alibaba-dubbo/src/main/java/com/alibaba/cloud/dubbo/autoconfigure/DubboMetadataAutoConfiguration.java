@@ -51,7 +51,7 @@ import org.springframework.util.CollectionUtils;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import({ DubboServiceMetadataRepository.class, IntrospectiveDubboMetadataService.class,
 		DubboMetadataServiceExporter.class, JSONUtils.class })
 public class DubboMetadataAutoConfiguration {

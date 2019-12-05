@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author Eric Zhao
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(
 		name = { "reactor.core.publisher.Mono", "reactor.core.publisher.Flux" })
 @ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled",
@@ -46,7 +46,7 @@ public class ReactiveSentinelCircuitBreakerAutoConfiguration {
 		return new ReactiveSentinelCircuitBreakerFactory();
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(
 			name = { "reactor.core.publisher.Mono", "reactor.core.publisher.Flux" })
 	public static class ReactiveSentinelCustomizerConfiguration {

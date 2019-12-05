@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Import;
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import({ RocketMQAutoConfiguration.class,
 		RocketMQBinderHealthIndicatorAutoConfiguration.class })
 @EnableConfigurationProperties({ RocketMQBinderConfigurationProperties.class,

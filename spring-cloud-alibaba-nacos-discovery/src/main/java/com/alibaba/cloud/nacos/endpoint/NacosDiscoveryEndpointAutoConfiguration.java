@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaojing
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Endpoint.class)
 @ConditionalOnNacosDiscoveryEnabled
 public class NacosDiscoveryEndpointAutoConfiguration {

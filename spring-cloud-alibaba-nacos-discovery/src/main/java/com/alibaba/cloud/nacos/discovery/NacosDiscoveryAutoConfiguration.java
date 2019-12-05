@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author <a href="mailto:echooy.mxq@gmail.com">echooymxq</a>
  **/
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnDiscoveryEnabled
 @ConditionalOnNacosDiscoveryEnabled
 public class NacosDiscoveryAutoConfiguration {

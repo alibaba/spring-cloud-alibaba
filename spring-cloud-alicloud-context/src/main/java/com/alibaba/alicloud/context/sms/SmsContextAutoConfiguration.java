@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
  * @author pbting
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SmsProperties.class)
 @ConditionalOnClass(name = "com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest")
 @ConditionalOnProperty(name = "spring.cloud.alicloud.sms.enabled", matchIfMissing = true)

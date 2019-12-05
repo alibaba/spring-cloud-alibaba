@@ -94,7 +94,7 @@ import static org.springframework.util.StringUtils.hasText;
  * @see Configuration
  * @see DiscoveryClient
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.springframework.cloud.client.discovery.DiscoveryClient")
 @ConditionalOnProperty(name = "spring.cloud.discovery.enabled", matchIfMissing = true)
 @AutoConfigureAfter(
@@ -262,7 +262,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	/**
 	 * Eureka Customized Configuration.
 	 */
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME)
 	public class EurekaConfiguration {
 
@@ -293,7 +293,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	/**
 	 * Zookeeper Customized Configuration.
 	 */
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
 	@Aspect
 	public class ZookeeperConfiguration
@@ -490,7 +490,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	/**
 	 * Consul Customized Configuration.
 	 */
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
 	class ConsulConfiguration {
 
@@ -499,7 +499,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	/**
 	 * Nacos Customized Configuration.
 	 */
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME)
 	class NacosConfiguration {
 

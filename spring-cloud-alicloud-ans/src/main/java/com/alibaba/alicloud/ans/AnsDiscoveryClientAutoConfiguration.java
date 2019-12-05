@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
  * @author xiaolongzuo
  * @author pbting
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnMissingBean(DiscoveryClient.class)
 @EnableConfigurationProperties
 @AutoConfigureBefore(SimpleDiscoveryClientAutoConfiguration.class)

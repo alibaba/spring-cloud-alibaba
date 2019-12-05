@@ -37,7 +37,7 @@ import static com.alibaba.alicloud.oss.OssConstants.OSS_TASK_EXECUTOR_BEAN_NAME;
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(OSS.class)
 @ConditionalOnProperty(name = OssConstants.ENABLED, havingValue = "true",
 		matchIfMissing = true)
