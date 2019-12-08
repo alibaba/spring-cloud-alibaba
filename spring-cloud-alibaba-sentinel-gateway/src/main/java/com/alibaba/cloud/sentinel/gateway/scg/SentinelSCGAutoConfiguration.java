@@ -120,7 +120,7 @@ public class SentinelSCGAutoConfiguration {
 						"[Sentinel SpringCloudGateway] using AnonymousBlockRequestHandler, responseStatus: "
 								+ fallbackProperties.getResponseStatus()
 								+ ", responseBody: "
-								+ fallbackProperties.getResponseStatus());
+								+ fallbackProperties.getResponseBody());
 			}
 		}
 		String redirectUrl = fallbackProperties.getRedirect();
