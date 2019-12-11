@@ -1,0 +1,24 @@
+server:
+  port: 8070
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+    consul:
+      host: localhost
+      port: 8500
+  application:
+    name: node-service
+sidecar:
+  # 异构微服务的IP
+  ip: 127.0.0.1
+  # 异构微服务的端口
+  port: 8060
+  # 异构微服务的健康检查URL
+  health-check-url: http://localhost:8060/health.json
+management:
+  endpoint:
+    health:
+      show-details: always

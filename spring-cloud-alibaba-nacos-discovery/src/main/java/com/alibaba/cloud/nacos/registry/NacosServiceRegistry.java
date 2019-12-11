@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,16 +18,15 @@ package com.alibaba.cloud.nacos.registry;
 
 import java.util.List;
 
-import com.alibaba.cloud.nacos.NacosNamingManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
-import org.springframework.util.StringUtils;
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.cloud.client.serviceregistry.Registration;
+import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
+import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
@@ -37,16 +36,13 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosServiceRegistry.class);
 
-	private final NacosNamingManager nacosNamingManager;
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	private final NamingService namingService;
 
-	public NacosServiceRegistry(NacosNamingManager nacosNamingManager,
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		this.nacosNamingManager = nacosNamingManager;
+	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
-		this.namingService = nacosNamingManager.getNamingService();
+		this.namingService = nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 	@Override
@@ -83,7 +79,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
-		NamingService namingService = nacosNamingManager.getNamingService();
+		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
@@ -124,8 +120,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		try {
-			nacosNamingManager.getNamingMaintainService().updateInstance(serviceId,
-					instance);
+			nacosDiscoveryProperties.namingMaintainServiceInstance()
+					.updateInstance(serviceId, instance);
 		}
 		catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);
@@ -138,12 +134,13 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		String serviceName = registration.getServiceId();
 		try {
-			List<Instance> instances = nacosNamingManager.getNamingService()
+			List<Instance> instances = nacosDiscoveryProperties.namingServiceInstance()
 					.getAllInstances(serviceName);
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
-						&& instance.getPort() == nacosDiscoveryProperties.getPort())
+						&& instance.getPort() == nacosDiscoveryProperties.getPort()) {
 					return instance.isEnabled() ? "UP" : "DOWN";
+				}
 			}
 		}
 		catch (Exception e) {

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,11 @@
  */
 
 package com.alibaba.alicloud.ans;
+
+import com.alibaba.alicloud.ans.registry.AnsAutoServiceRegistration;
+import com.alibaba.alicloud.ans.registry.AnsRegistration;
+import com.alibaba.alicloud.ans.registry.AnsServiceRegistry;
+import com.alibaba.alicloud.context.ans.AnsProperties;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -28,18 +33,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.alicloud.ans.registry.AnsAutoServiceRegistration;
-import com.alibaba.alicloud.ans.registry.AnsRegistration;
-import com.alibaba.alicloud.ans.registry.AnsServiceRegistry;
-import com.alibaba.alicloud.context.ans.AnsProperties;
-
 /**
  * @author xiaolongzuo
  */
 @Configuration
 @EnableConfigurationProperties
-@ConditionalOnClass(name = "org.springframework.boot.web.context.WebServerInitializedEvent")
-@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
+@ConditionalOnClass(
+		name = "org.springframework.boot.web.context.WebServerInitializedEvent")
+@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
+		matchIfMissing = true)
 @ConditionalOnAnsEnabled
 @AutoConfigureAfter({ AutoServiceRegistrationConfiguration.class,
 		AutoServiceRegistrationAutoConfiguration.class })
@@ -52,7 +54,9 @@ public class AnsAutoConfiguration {
 
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
-	@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
+	@ConditionalOnProperty(
+			value = "spring.cloud.service-registry.auto-registration.enabled",
+			matchIfMissing = true)
 	public AnsRegistration ansRegistration(AnsProperties ansProperties,
 			ApplicationContext applicationContext) {
 		return new AnsRegistration(ansProperties, applicationContext);
@@ -60,7 +64,9 @@ public class AnsAutoConfiguration {
 
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
-	@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
+	@ConditionalOnProperty(
+			value = "spring.cloud.service-registry.auto-registration.enabled",
+			matchIfMissing = true)
 	public AnsAutoServiceRegistration ansAutoServiceRegistration(
 			AnsServiceRegistry registry,
 			AutoServiceRegistrationProperties autoServiceRegistrationProperties,

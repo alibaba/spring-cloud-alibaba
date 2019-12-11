@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,62 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.sentinel.gateway;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.core.env.*;
+package com.alibaba.cloud.sentinel.gateway;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
 
 /**
  * @author zhuhonghan
  */
 public class GatewayEnvironmentPostProcessor implements EnvironmentPostProcessor {
-    private final static String SENTINEL_FILTER_ENABLED = "spring.cloud.sentinel.filter.enabled";
-    private final static String PROPERTY_SOURCE_NAME = "defaultProperties";
 
-    @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication springApplication) {
-        addDefaultPropertySource(environment);
-    }
+	private final static String SENTINEL_FILTER_ENABLED = "spring.cloud.sentinel.filter.enabled";
 
-    private void addDefaultPropertySource(ConfigurableEnvironment environment) {
+	private final static String PROPERTY_SOURCE_NAME = "defaultProperties";
 
-        Map<String, Object> map = new HashMap<String, Object>();
+	@Override
+	public void postProcessEnvironment(ConfigurableEnvironment environment,
+			SpringApplication springApplication) {
+		addDefaultPropertySource(environment);
+	}
 
-        configureDefaultProperties(map);
+	private void addDefaultPropertySource(ConfigurableEnvironment environment) {
 
-        addOrReplace(environment.getPropertySources(), map);
-    }
+		Map<String, Object> map = new HashMap<String, Object>();
 
-    private void configureDefaultProperties(Map<String, Object> source) {
-        // Required Properties
-        source.put(SENTINEL_FILTER_ENABLED, "false");
-    }
+		configureDefaultProperties(map);
 
-    private void addOrReplace(MutablePropertySources propertySources,
-                              Map<String, Object> map) {
-        MapPropertySource target = null;
-        if (propertySources.contains(PROPERTY_SOURCE_NAME)) {
-            PropertySource<?> source = propertySources.get(PROPERTY_SOURCE_NAME);
-            if (source instanceof MapPropertySource) {
-                target = (MapPropertySource) source;
-                for (String key : map.keySet()) {
-                    if (!target.containsProperty(key)) {
-                        target.getSource().put(key, map.get(key));
-                    }
-                }
-            }
-        }
-        if (target == null) {
-            target = new MapPropertySource(PROPERTY_SOURCE_NAME, map);
-        }
-        if (!propertySources.contains(PROPERTY_SOURCE_NAME)) {
-            propertySources.addLast(target);
-        }
-    }
+		addOrReplace(environment.getPropertySources(), map);
+	}
 
+	private void configureDefaultProperties(Map<String, Object> source) {
+		// Required Properties
+		source.put(SENTINEL_FILTER_ENABLED, "false");
+	}
+
+	private void addOrReplace(MutablePropertySources propertySources,
+			Map<String, Object> map) {
+		MapPropertySource target = null;
+		if (propertySources.contains(PROPERTY_SOURCE_NAME)) {
+			PropertySource<?> source = propertySources.get(PROPERTY_SOURCE_NAME);
+			if (source instanceof MapPropertySource) {
+				target = (MapPropertySource) source;
+				for (String key : map.keySet()) {
+					if (!target.containsProperty(key)) {
+						target.getSource().put(key, map.get(key));
+					}
+				}
+			}
+		}
+		if (target == null) {
+			target = new MapPropertySource(PROPERTY_SOURCE_NAME, map);
+		}
+		if (!propertySources.contains(PROPERTY_SOURCE_NAME)) {
+			propertySources.addLast(target);
+		}
+	}
 
 }

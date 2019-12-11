@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.metadata.resolver;
 
-import static feign.Feign.configKey;
+package com.alibaba.cloud.dubbo.metadata.resolver;
 
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
@@ -23,15 +22,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.env.PropertyResolver;
-
 import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.metadata.DubboTransportedMethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.MethodMetadata;
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-
 import feign.Contract;
+
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.env.PropertyResolver;
+
+import static feign.Feign.configKey;
 
 /**
  * {@link MethodMetadata} Resolver for the {@link DubboTransported} annotated classes or
@@ -115,4 +115,5 @@ public class DubboTransportedMethodMetadataResolver {
 		}
 		return dubboTransported;
 	}
+
 }

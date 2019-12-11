@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.nacos.config.server;
+
+import com.alibaba.cloud.nacos.config.server.environment.NacosEnvironmentRepository;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -23,17 +26,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.cloud.nacos.config.server.environment.NacosEnvironmentRepository;
-
 /**
- * Nacos Config Server Auto-Configuration
+ * Nacos Config Server Auto-Configuration.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 0.2.0
  */
 @ConditionalOnClass(EnableConfigServer.class) // If class of @EnableConfigServer is
 												// present in class-path
-@ComponentScan(basePackages = { "com.alibaba.nacos.config.server", })
+@ComponentScan(basePackages = { "com.alibaba.nacos.config.server" })
 @AutoConfigureBefore(ConfigServerAutoConfiguration.class)
 @Configuration
 public class NacosConfigServerAutoConfiguration {

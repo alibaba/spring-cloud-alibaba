@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,17 +16,17 @@
 
 package com.alibaba.alicloud.ans.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+import com.alibaba.alicloud.ans.AnsAutoConfiguration;
+import com.alibaba.alicloud.ans.AnsDiscoveryClientAutoConfiguration;
+import com.alibaba.alicloud.context.ans.AnsProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -36,19 +36,20 @@ import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.alicloud.ans.AnsAutoConfiguration;
-import com.alibaba.alicloud.ans.AnsDiscoveryClientAutoConfiguration;
-import com.alibaba.alicloud.context.ans.AnsProperties;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author xiaojing
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AnsAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class, properties = {
-		"spring.application.name=myTestService1",
-		"spring.cloud.alicloud.ans.server-list=127.0.0.1",
-		"spring.cloud.alicloud.ans.server-port=8080" }, webEnvironment = RANDOM_PORT)
+@SpringBootTest(
+		classes = AnsAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class,
+		properties = { "spring.application.name=myTestService1",
+				"spring.cloud.alicloud.ans.server-list=127.0.0.1",
+				"spring.cloud.alicloud.ans.server-port=8080" },
+		webEnvironment = RANDOM_PORT)
 public class AnsAutoServiceRegistrationIpNetworkInterfaceTests {
 
 	@Autowired
@@ -66,20 +67,17 @@ public class AnsAutoServiceRegistrationIpNetworkInterfaceTests {
 	@Test
 	public void contextLoads() throws Exception {
 
-		assertNotNull("AnsRegistration was not created", registration);
-		assertNotNull("AnsProperties was not created", properties);
-		assertNotNull("AnsAutoServiceRegistration was not created",
-				ansAutoServiceRegistration);
+		assertThat(registration).isNotNull();
+		assertThat(properties).isNotNull();
+		assertThat(ansAutoServiceRegistration).isNotNull();
 
 		checkoutAnsDiscoveryServiceIP();
 
 	}
 
 	private void checkoutAnsDiscoveryServiceIP() {
-		assertEquals("AnsProperties service IP was wrong",
-				getIPFromNetworkInterface(TestConfig.netWorkInterfaceName),
-				registration.getHost());
-
+		assertThat(registration.getHost())
+				.isEqualTo(getIPFromNetworkInterface(TestConfig.netWorkInterfaceName));
 	}
 
 	private String getIPFromNetworkInterface(String networkInterface) {
@@ -143,6 +141,7 @@ public class AnsAutoServiceRegistrationIpNetworkInterfaceTests {
 
 			}
 		}
+
 	}
 
 }

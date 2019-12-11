@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,26 +16,26 @@
 
 package com.alibaba.alicloud.ans;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.alicloud.ans.test.AnsMockTest;
+import com.alibaba.ans.core.NamingService;
+import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
 import org.springframework.cloud.client.ServiceInstance;
 
-import com.alibaba.alicloud.ans.test.AnsMockTest;
-import com.alibaba.ans.core.NamingService;
-import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 /**
  * @author xiaojing
@@ -45,7 +45,9 @@ import com.alibaba.ans.shaded.com.taobao.vipserver.client.core.Host;
 public class AnsDiscoveryClientTests {
 
 	private String host = "123.123.123.123";
+
 	private int port = 8888;
+
 	private String serviceName = "test-service";
 
 	@Test
@@ -113,4 +115,5 @@ public class AnsDiscoveryClientTests {
 
 		return "http://" + host + ":" + port;
 	}
+
 }

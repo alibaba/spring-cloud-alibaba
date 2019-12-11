@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.metadata.resolver;
 
-import static org.springframework.core.annotation.AnnotationUtils.getAnnotationAttributes;
+package com.alibaba.cloud.dubbo.metadata.resolver;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.springframework.core.env.PropertyResolver;
-
 import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 
+import org.springframework.core.env.PropertyResolver;
+
+import static org.springframework.core.annotation.AnnotationUtils.getAnnotationAttributes;
+
 /**
- * {@link DubboTransported} annotation attributes resolver
+ * {@link DubboTransported} annotation attributes resolver.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -53,4 +54,5 @@ public class DubboTransportedAttributesResolver {
 		}
 		return resolvedAttributes;
 	}
+
 }

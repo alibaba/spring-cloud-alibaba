@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.http.matcher;
 
-import static org.springframework.util.StringUtils.trimWhitespace;
+package com.alibaba.cloud.dubbo.http.matcher;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import static org.springframework.util.StringUtils.trimWhitespace;
+
 /**
  * The some source code is scratched from
- * org.springframework.web.servlet.mvc.condition.AbstractNameValueExpression
+ * org.springframework.web.servlet.mvc.condition.AbstractNameValueExpression.
  *
  * @author Rossen Stoyanchev
  * @author Arjen Poutsma
@@ -63,9 +64,8 @@ abstract class AbstractNameValueExpression<T> implements NameValueExpression<T> 
 	/**
 	 * Exclude the pattern value Expression: "{value}", subclass could override this
 	 * method.
-	 *
-	 * @param valueExpression
-	 * @return
+	 * @param valueExpression expression of value
+	 * @return exclude or not
 	 */
 	protected boolean isExcludedValue(String valueExpression) {
 		return StringUtils.hasText(valueExpression) && valueExpression.startsWith("{")

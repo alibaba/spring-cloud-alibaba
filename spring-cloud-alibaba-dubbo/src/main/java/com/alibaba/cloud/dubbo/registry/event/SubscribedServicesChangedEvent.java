@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.registry.event;
 
 import java.util.LinkedHashSet;
@@ -22,7 +23,7 @@ import java.util.Set;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * {@link ApplicationEvent Event} raised when the subscribed services are changed
+ * {@link ApplicationEvent Event} raised when the subscribed services are changed.
  * <p>
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
@@ -38,7 +39,6 @@ public class SubscribedServicesChangedEvent extends ApplicationEvent {
 
 	/**
 	 * Create a new ApplicationEvent.
-	 *
 	 * @param source the object on which the event initially occurred (never {@code null})
 	 * @param oldSubscribedServices the subscribed services before changed
 	 * @param newSubscribedServices the subscribed services after changed
@@ -62,4 +62,5 @@ public class SubscribedServicesChangedEvent extends ApplicationEvent {
 	public boolean isChanged() {
 		return changed;
 	}
+
 }

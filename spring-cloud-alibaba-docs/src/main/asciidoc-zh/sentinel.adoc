@@ -16,6 +16,7 @@ https://github.com/alibaba/Sentinel[Sentinel] 具有以下特征:
 如果要在您的项目中引入 Sentinel，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-sentinel` 的 starter。
 
 ```xml
+[source,yaml]
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
@@ -211,7 +212,8 @@ NOTE: 以 `https://www.taobao.com/test` 这个 url 并使用 GET 方法为例。
 
 比如配置 4 个数据源：
 
-```
+[source,properties]
+----
 spring.cloud.sentinel.datasource.ds1.file.file=classpath: degraderule.json
 spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
@@ -234,8 +236,7 @@ spring.cloud.sentinel.datasource.ds4.apollo.namespace-name = application
 spring.cloud.sentinel.datasource.ds4.apollo.flow-rules-key = sentinel
 spring.cloud.sentinel.datasource.ds4.apollo.default-flow-rule-value = test
 spring.cloud.sentinel.datasource.ds4.apollo.rule-type=param-flow
-
-```
+----
 
 这种配置方式参考了 Spring Cloud Stream Binder 的配置，内部使用了 `TreeMap` 进行存储，comparator 为 `String.CASE_INSENSITIVE_ORDER` 。
 
@@ -407,22 +408,18 @@ Endpoint 暴露的 json 中包含了多种属性:
 
 下表显示当应用的 `ApplicationContext` 中存在对应的Bean的类型时，会进行自动化设置：
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|存在Bean的类型 ^|操作 ^|作用
+|===
+|存在Bean的类型 |操作 |作用
 |`UrlCleaner`|`WebCallbackManager.setUrlCleaner(urlCleaner)`|资源清理(资源（比如将满足 /foo/:id 的 URL 都归到 /foo/* 资源下）)
 |`UrlBlockHandler`|`WebCallbackManager.setUrlBlockHandler(urlBlockHandler)`|自定义限流处理逻辑
 |`RequestOriginParser`|`WebCallbackManager.setRequestOriginParser(requestOriginParser)`|设置来源信息
-|====
+|===
 
 
 Spring Cloud Alibaba Sentinel 提供了这些配置选项
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|配置项 ^|含义 ^|默认值
+|===
+|配置项 |含义 |默认值
 |`spring.application.name` or `project.name`|Sentinel项目名|
 |`spring.cloud.sentinel.enabled`|Sentinel自动化配置是否生效|true
 |`spring.cloud.sentinel.eager`|是否提前触发 Sentinel 初始化|false
@@ -449,6 +446,6 @@ Spring Cloud Alibaba Sentinel 提供了这些配置选项
 |`spring.cloud.sentinel.scg.fallback.response-body`| Spring Cloud Gateway 响应模式为 'response' 模式对应的响应内容 |
 |`spring.cloud.sentinel.scg.fallback.response-status`| Spring Cloud Gateway 响应模式为 'response' 模式对应的响应码 | 429
 |`spring.cloud.sentinel.scg.fallback.content-type`| Spring Cloud Gateway 响应模式为 'response' 模式对应的 content-type | application/json
-|====
+|===
 
 NOTE: 请注意。这些配置只有在 Servlet 环境下才会生效，RestTemplate 和 Feign 针对这些配置都无法生效

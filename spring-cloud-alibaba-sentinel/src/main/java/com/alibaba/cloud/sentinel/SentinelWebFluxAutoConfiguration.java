@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,8 +22,14 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.csp.sentinel.adapter.reactor.SentinelReactorTransformer;
+import com.alibaba.csp.sentinel.adapter.spring.webflux.SentinelWebFluxFilter;
+import com.alibaba.csp.sentinel.adapter.spring.webflux.callback.BlockRequestHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webflux.callback.WebFluxCallbackManager;
+import com.alibaba.csp.sentinel.adapter.spring.webflux.exception.SentinelBlockExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -36,12 +42,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.result.view.ViewResolver;
-
-import com.alibaba.csp.sentinel.adapter.reactor.SentinelReactorTransformer;
-import com.alibaba.csp.sentinel.adapter.spring.webflux.SentinelWebFluxFilter;
-import com.alibaba.csp.sentinel.adapter.spring.webflux.callback.BlockRequestHandler;
-import com.alibaba.csp.sentinel.adapter.spring.webflux.callback.WebFluxCallbackManager;
-import com.alibaba.csp.sentinel.adapter.spring.webflux.exception.SentinelBlockExceptionHandler;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -57,6 +57,7 @@ public class SentinelWebFluxAutoConfiguration {
 			.getLogger(SentinelWebFluxAutoConfiguration.class);
 
 	private final List<ViewResolver> viewResolvers;
+
 	private final ServerCodecConfigurer serverCodecConfigurer;
 
 	@Autowired
@@ -76,14 +77,16 @@ public class SentinelWebFluxAutoConfiguration {
 
 	@Bean
 	@Order(-2)
-	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled", matchIfMissing = true)
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
+			matchIfMissing = true)
 	public SentinelBlockExceptionHandler sentinelBlockExceptionHandler() {
 		return new SentinelBlockExceptionHandler(viewResolvers, serverCodecConfigurer);
 	}
 
 	@Bean
 	@Order(-1)
-	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled", matchIfMissing = true)
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
+			matchIfMissing = true)
 	public SentinelWebFluxFilter sentinelWebFluxFilter() {
 		log.info("[Sentinel Starter] register Sentinel SentinelWebFluxFilter");
 		return new SentinelWebFluxFilter();

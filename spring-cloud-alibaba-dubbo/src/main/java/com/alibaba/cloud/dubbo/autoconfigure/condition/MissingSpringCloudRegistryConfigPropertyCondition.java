@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.autoconfigure.condition;
 
-import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
-import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
-
 import java.util.Map;
+
+import com.alibaba.cloud.dubbo.registry.SpringCloudRegistry;
 
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
@@ -28,10 +28,11 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.cloud.dubbo.registry.SpringCloudRegistry;
+import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
+import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
 
 /**
- * Missing {@link SpringCloudRegistry} Property {@link Condition}
+ * Missing {@link SpringCloudRegistry} Property {@link Condition}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see SpringCloudRegistry
@@ -76,4 +77,5 @@ public class MissingSpringCloudRegistryConfigPropertyCondition
 						"'spring-cloud' protocol was found in 'dubbo.registries.*'")
 				: ConditionOutcome.match();
 	}
+
 }

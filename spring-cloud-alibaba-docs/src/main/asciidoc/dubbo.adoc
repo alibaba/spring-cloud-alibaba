@@ -10,17 +10,15 @@ Easily navigate and move apps up at a cost close to “zero” costs. Dubbo Spri
 Since Dubbo Spring Cloud is built on top of the native Spring Cloud, its service governance capabilities are considered Spring Cloud Plus.
 Not only does it fully cover the Spring Cloud native features [5], but it also provides a more stable and mature implementation, as shown in the following table:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Feature ^|Spring Cloud ^|Dubbo Spring Cloud
+|===
+|Feature |Spring Cloud |Dubbo Spring Cloud
 | Distributed configuration              | Git、Zookeeper、Consul、JDBC           | Spring Cloud Distributed Configuration + Dubbo Configuration Center[6]
 | Service registration and discovery | Eureka、Zookeeper、Consul              | Spring Cloud Native Registration Center[7] + Dubbo Native Registration Center[8]
 | Load balancing                           | Ribbon（Random, RoundRobin）             | Dubbo built-in implementation (random, polling, etc. + weights, etc.)
 | Circuit Breakers                         | Spring Cloud Hystrix                   | Spring Cloud Hystrix + Alibaba Sentinel[9] etc.
 | Service-to-service calls                 | Open Feign、`RestTemplate`             | Spring Cloud service call + Dubbo `@Reference`.
 | Tracing                                  | Spring Cloud Sleuth[10] + Zipkin[11] | Zipkin、opentracing, etc.
-|====
+|===
 
 === Reference
 

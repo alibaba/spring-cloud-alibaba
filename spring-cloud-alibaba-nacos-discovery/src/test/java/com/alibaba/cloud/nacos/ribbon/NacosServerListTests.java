@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,27 +16,24 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.nacos.NacosNamingManager;
-import org.junit.Test;
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.test.NacosMockTest;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-
 import com.netflix.client.config.IClientConfig;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author xiaojing
@@ -49,16 +46,14 @@ public class NacosServerListTests {
 	public void testEmptyInstancesReturnsEmptyList() throws Exception {
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
-		when(nacosNamingManager.getNamingService()).thenReturn(namingService);
+		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
 		when(namingService.selectInstances(anyString(), eq("DEFAULT"), eq(true)))
 				.thenReturn(null);
 
-		NacosServerList serverList = new NacosServerList(nacosNamingManager,
-				nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
 		assertThat(servers).isEmpty();
 	}
@@ -73,11 +68,10 @@ public class NacosServerListTests {
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
-		when(nacosNamingManager.getNamingService()).thenReturn(namingService);
+		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
 		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
@@ -85,8 +79,7 @@ public class NacosServerListTests {
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");
-		NacosServerList serverList = new NacosServerList(nacosNamingManager,
-				nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(clientConfig);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
 		assertThat(servers).hasSize(1);
@@ -109,11 +102,10 @@ public class NacosServerListTests {
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
-		when(nacosNamingManager.getNamingService()).thenReturn(namingService);
+		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
 		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances.stream().filter(Instance::isHealthy)
@@ -121,8 +113,7 @@ public class NacosServerListTests {
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");
-		NacosServerList serverList = new NacosServerList(nacosNamingManager,
-				nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(clientConfig);
 		List<NacosServer> servers = serverList.getInitialListOfServers();
 		assertThat(servers).hasSize(1);
@@ -149,11 +140,10 @@ public class NacosServerListTests {
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
-		when(nacosNamingManager.getNamingService()).thenReturn(namingService);
+		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
 		when(namingService.selectInstances(eq("test-service"), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances.stream().filter(Instance::isHealthy)
@@ -161,8 +151,7 @@ public class NacosServerListTests {
 
 		IClientConfig clientConfig = mock(IClientConfig.class);
 		when(clientConfig.getClientName()).thenReturn("test-service");
-		NacosServerList serverList = new NacosServerList(nacosNamingManager,
-				nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(clientConfig);
 
 		List<NacosServer> servers = serverList.getUpdatedListOfServers();
@@ -172,4 +161,5 @@ public class NacosServerListTests {
 		assertThat(servers.get(0).getInstance().getMetadata().get("instanceNum"))
 				.isEqualTo("1");
 	}
+
 }

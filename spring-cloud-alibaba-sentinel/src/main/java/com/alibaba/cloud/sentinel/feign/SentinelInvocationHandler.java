@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,6 @@
  */
 
 package com.alibaba.cloud.sentinel.feign;
-
-import static feign.Util.checkNotNull;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -31,24 +29,27 @@ import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.context.ContextUtil;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-
 import feign.Feign;
 import feign.InvocationHandlerFactory.MethodHandler;
 import feign.MethodMetadata;
 import feign.Target;
 import feign.hystrix.FallbackFactory;
 
+import static feign.Util.checkNotNull;
+
 /**
- * {@link InvocationHandler} handle invocation that protected by Sentinel
+ * {@link InvocationHandler} handle invocation that protected by Sentinel.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class SentinelInvocationHandler implements InvocationHandler {
 
 	private final Target<?> target;
+
 	private final Map<Method, MethodHandler> dispatch;
 
 	private FallbackFactory fallbackFactory;
+
 	private Map<Method, Method> fallbackMethodMap;
 
 	SentinelInvocationHandler(Target<?> target, Map<Method, MethodHandler> dispatch,
@@ -70,8 +71,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 		if ("equals".equals(method.getName())) {
 			try {
 				Object otherHandler = args.length > 0 && args[0] != null
-						? Proxy.getInvocationHandler(args[0])
-						: null;
+						? Proxy.getInvocationHandler(args[0]) : null;
 				return equals(otherHandler);
 			}
 			catch (IllegalArgumentException e) {

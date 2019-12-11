@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,12 +16,12 @@
 
 package com.alibaba.alicloud.ans.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
+import com.alibaba.alicloud.ans.AnsAutoConfiguration;
+import com.alibaba.alicloud.ans.AnsDiscoveryClientAutoConfiguration;
+import com.alibaba.alicloud.context.ans.AnsProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -30,22 +30,22 @@ import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationC
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.alicloud.ans.AnsAutoConfiguration;
-import com.alibaba.alicloud.ans.AnsDiscoveryClientAutoConfiguration;
-import com.alibaba.alicloud.context.ans.AnsProperties;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author xiaojing
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = AnsAutoServiceRegistrationIpTests.TestConfig.class, properties = {
-		"spring.application.name=myTestService1",
-		"spring.cloud.alicloud.ans.client-domains=myTestService2",
-		"spring.cloud.alicloud.ans.server-list=127.0.0.1",
-		"spring.cloud.alicloud.ans.client-weight=2",
-		"spring.cloud.alicloud.ans.server-port=8080",
-		"spring.cloud.alicloud.ans.client-ip=123.123.123.123" }, webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = AnsAutoServiceRegistrationIpTests.TestConfig.class,
+		properties = { "spring.application.name=myTestService1",
+				"spring.cloud.alicloud.ans.client-domains=myTestService2",
+				"spring.cloud.alicloud.ans.server-list=127.0.0.1",
+				"spring.cloud.alicloud.ans.client-weight=2",
+				"spring.cloud.alicloud.ans.server-port=8080",
+				"spring.cloud.alicloud.ans.client-ip=123.123.123.123" },
+		webEnvironment = RANDOM_PORT)
 public class AnsAutoServiceRegistrationIpTests {
 
 	@Autowired
@@ -60,10 +60,9 @@ public class AnsAutoServiceRegistrationIpTests {
 	@Test
 	public void contextLoads() throws Exception {
 
-		assertNotNull("AnsRegistration was not created", registration);
-		assertNotNull("AnsProperties was not created", properties);
-		assertNotNull("AnsAutoServiceRegistration was not created",
-				ansAutoServiceRegistration);
+		assertThat(registration).isNotNull();
+		assertThat(properties).isNotNull();
+		assertThat(ansAutoServiceRegistration).isNotNull();
 
 		checkoutAnsDiscoveryServiceIP();
 		checkoutAnsDiscoveryServiceName();
@@ -71,17 +70,15 @@ public class AnsAutoServiceRegistrationIpTests {
 	}
 
 	private void checkoutAnsDiscoveryServiceIP() {
-		assertEquals("AnsProperties service IP was wrong", "123.123.123.123",
-				registration.getHost());
+		assertThat(registration.getHost()).isEqualTo("123.123.123.123");
 	}
 
 	private void checkoutAnsDiscoveryServiceName() {
-		assertEquals("AnsDiscoveryProperties service name was wrong", "myTestService2",
-				properties.getClientDomains());
+		assertThat(properties.getClientDomains()).isEqualTo("myTestService2");
 	}
 
 	private void checkoutAnsDiscoveryWeight() {
-		assertEquals(2L, properties.getClientWeight(), 0);
+		assertThat(properties.getClientWeight()).isEqualTo(2L);
 	}
 
 	@Configuration
@@ -89,5 +86,7 @@ public class AnsAutoServiceRegistrationIpTests {
 	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
 			AnsDiscoveryClientAutoConfiguration.class, AnsAutoConfiguration.class })
 	public static class TestConfig {
+
 	}
+
 }

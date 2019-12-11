@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,18 +29,22 @@ public class FallbackProperties {
 	 * `response`.
 	 */
 	private String mode;
+
 	/**
 	 * Redirect Url for `redirect` mode.
 	 */
 	private String redirect;
+
 	/**
 	 * Response Body for `response` mode.
 	 */
 	private String responseBody;
+
 	/**
 	 * Response Status for `response` mode.
 	 */
 	private Integer responseStatus = HttpStatus.TOO_MANY_REQUESTS.value();
+
 	/**
 	 * Content-Type for `response` mode.
 	 */
@@ -90,4 +94,5 @@ public class FallbackProperties {
 		this.contentType = contentType;
 		return this;
 	}
+
 }

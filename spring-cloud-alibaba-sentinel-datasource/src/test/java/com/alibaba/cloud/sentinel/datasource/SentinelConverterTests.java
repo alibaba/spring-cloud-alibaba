@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,23 +16,22 @@
 
 package com.alibaba.cloud.sentinel.datasource;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-import org.springframework.util.ResourceUtils;
-import org.springframework.util.StringUtils;
 
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -48,27 +47,23 @@ public class SentinelConverterTests {
 		JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
 		List<FlowRule> flowRules = (List<FlowRule>) jsonConverter
 				.convert(readFileContent("classpath: flowrule.json"));
-		assertEquals("json converter flow rule size was wrong", 1, flowRules.size());
-		assertEquals("json converter flow rule resource name was wrong", "resource",
-				flowRules.get(0).getResource());
-		assertEquals("json converter flow rule limit app was wrong", "default",
-				flowRules.get(0).getLimitApp());
-		assertEquals("json converter flow rule count was wrong", "1.0",
-				String.valueOf(flowRules.get(0).getCount()));
-		assertEquals("json converter flow rule control behavior was wrong",
-				RuleConstant.CONTROL_BEHAVIOR_DEFAULT,
-				flowRules.get(0).getControlBehavior());
-		assertEquals("json converter flow rule strategy was wrong",
-				RuleConstant.STRATEGY_DIRECT, flowRules.get(0).getStrategy());
-		assertEquals("json converter flow rule grade was wrong",
-				RuleConstant.FLOW_GRADE_QPS, flowRules.get(0).getGrade());
+
+		assertThat(flowRules.size()).isEqualTo(1);
+		assertThat(flowRules.get(0).getResource()).isEqualTo("resource");
+		assertThat(flowRules.get(0).getLimitApp()).isEqualTo("default");
+		assertThat(String.valueOf(flowRules.get(0).getCount())).isEqualTo("1.0");
+		assertThat(flowRules.get(0).getControlBehavior())
+				.isEqualTo(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
+		assertThat(flowRules.get(0).getStrategy())
+				.isEqualTo(RuleConstant.STRATEGY_DIRECT);
+		assertThat(flowRules.get(0).getGrade()).isEqualTo(RuleConstant.FLOW_GRADE_QPS);
 	}
 
 	@Test
 	public void testConverterEmptyContent() {
 		JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
 		List<FlowRule> flowRules = (List<FlowRule>) jsonConverter.convert("");
-		assertEquals("json converter flow rule size was not empty", 0, flowRules.size());
+		assertThat(flowRules.size()).isEqualTo(0);
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -88,34 +83,25 @@ public class SentinelConverterTests {
 		XmlConverter jsonConverter = new XmlConverter(xmlMapper, FlowRule.class);
 		List<FlowRule> flowRules = (List<FlowRule>) jsonConverter
 				.convert(readFileContent("classpath: flowrule.xml"));
-		assertEquals("xml converter flow rule size was wrong", 2, flowRules.size());
-		assertEquals("xml converter flow rule1 resource name was wrong", "resource",
-				flowRules.get(0).getResource());
-		assertEquals("xml converter flow rule2 limit app was wrong", "default",
-				flowRules.get(0).getLimitApp());
-		assertEquals("xml converter flow rule1 count was wrong", "1.0",
-				String.valueOf(flowRules.get(0).getCount()));
-		assertEquals("xml converter flow rule1 control behavior was wrong",
-				RuleConstant.CONTROL_BEHAVIOR_DEFAULT,
-				flowRules.get(0).getControlBehavior());
-		assertEquals("xml converter flow rule1 strategy was wrong",
-				RuleConstant.STRATEGY_DIRECT, flowRules.get(0).getStrategy());
-		assertEquals("xml converter flow rule1 grade was wrong",
-				RuleConstant.FLOW_GRADE_QPS, flowRules.get(0).getGrade());
 
-		assertEquals("xml converter flow rule2 resource name was wrong", "test",
-				flowRules.get(1).getResource());
-		assertEquals("xml converter flow rule2 limit app was wrong", "default",
-				flowRules.get(1).getLimitApp());
-		assertEquals("xml converter flow rule2 count was wrong", "1.0",
-				String.valueOf(flowRules.get(1).getCount()));
-		assertEquals("xml converter flow rule2 control behavior was wrong",
-				RuleConstant.CONTROL_BEHAVIOR_DEFAULT,
-				flowRules.get(1).getControlBehavior());
-		assertEquals("xml converter flow rule2 strategy was wrong",
-				RuleConstant.STRATEGY_DIRECT, flowRules.get(1).getStrategy());
-		assertEquals("xml converter flow rule2 grade was wrong",
-				RuleConstant.FLOW_GRADE_QPS, flowRules.get(1).getGrade());
+		assertThat(flowRules.size()).isEqualTo(2);
+		assertThat(flowRules.get(0).getResource()).isEqualTo("resource");
+		assertThat(flowRules.get(0).getLimitApp()).isEqualTo("default");
+		assertThat(String.valueOf(flowRules.get(0).getCount())).isEqualTo("1.0");
+		assertThat(flowRules.get(0).getControlBehavior())
+				.isEqualTo(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
+		assertThat(flowRules.get(0).getStrategy())
+				.isEqualTo(RuleConstant.STRATEGY_DIRECT);
+		assertThat(flowRules.get(0).getGrade()).isEqualTo(RuleConstant.FLOW_GRADE_QPS);
+
+		assertThat(flowRules.get(1).getResource()).isEqualTo("test");
+		assertThat(flowRules.get(1).getLimitApp()).isEqualTo("default");
+		assertThat(String.valueOf(flowRules.get(1).getCount())).isEqualTo("1.0");
+		assertThat(flowRules.get(1).getControlBehavior())
+				.isEqualTo(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
+		assertThat(flowRules.get(1).getStrategy())
+				.isEqualTo(RuleConstant.STRATEGY_DIRECT);
+		assertThat(flowRules.get(1).getGrade()).isEqualTo(RuleConstant.FLOW_GRADE_QPS);
 	}
 
 	private String readFileContent(String file) {

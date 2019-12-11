@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,12 +16,11 @@
 
 package com.alibaba.cloud.sentinel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
+import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
+import com.alibaba.cloud.sentinel.datasource.RuleType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -29,8 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
-import com.alibaba.cloud.sentinel.datasource.RuleType;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -62,38 +60,31 @@ public class SentinelDataSourceTests {
 
 	@Test
 	public void contextLoads() throws Exception {
-		assertNotNull("SentinelProperties was not created", sentinelProperties);
+		assertThat(sentinelProperties).isNotNull();
 
 		checkUrlPattern();
 	}
 
 	private void checkUrlPattern() {
-		assertEquals("SentinelProperties filter order was wrong", Integer.MIN_VALUE,
-				sentinelProperties.getFilter().getOrder());
-		assertEquals("SentinelProperties filter url pattern size was wrong", 1,
-				sentinelProperties.getFilter().getUrlPatterns().size());
-		assertEquals("SentinelProperties filter url pattern was wrong", "/*",
-				sentinelProperties.getFilter().getUrlPatterns().get(0));
+		assertThat(sentinelProperties.getFilter().getOrder())
+				.isEqualTo(Integer.MIN_VALUE);
+		assertThat(sentinelProperties.getFilter().getUrlPatterns().size()).isEqualTo(1);
+		assertThat(sentinelProperties.getFilter().getUrlPatterns().get(0))
+				.isEqualTo("/*");
 	}
 
 	@Test
 	public void testDataSource() {
-		assertEquals("DataSource size was wrong", 5,
-				sentinelProperties.getDatasource().size());
-		assertNull("DataSource ds1 apollo is not null",
-				sentinelProperties.getDatasource().get("ds1").getApollo());
-		assertNull("DataSource ds1 nacos is not null",
-				sentinelProperties.getDatasource().get("ds1").getNacos());
-		assertNull("DataSource ds1 zk is not null",
-				sentinelProperties.getDatasource().get("ds1").getZk());
-		assertNotNull("DataSource ds1 file is null",
-				sentinelProperties.getDatasource().get("ds1").getFile());
+		assertThat(sentinelProperties.getDatasource().size()).isEqualTo(5);
+		assertThat(sentinelProperties.getDatasource().get("ds1").getApollo()).isNull();
+		assertThat(sentinelProperties.getDatasource().get("ds1").getNacos()).isNull();
+		assertThat(sentinelProperties.getDatasource().get("ds1").getZk()).isNull();
+		assertThat(sentinelProperties.getDatasource().get("ds1").getFile()).isNotNull();
 
-		assertEquals("DataSource ds1 file dataType was wrong", "json",
-				sentinelProperties.getDatasource().get("ds1").getFile().getDataType());
-		assertEquals("DataSource ds1 file ruleType was wrong", RuleType.FLOW,
-				sentinelProperties.getDatasource().get("ds1").getFile().getRuleType());
-
+		assertThat(sentinelProperties.getDatasource().get("ds1").getFile().getDataType())
+				.isEqualTo("json");
+		assertThat(sentinelProperties.getDatasource().get("ds1").getFile().getRuleType())
+				.isEqualTo(RuleType.FLOW);
 	}
 
 	@Configuration

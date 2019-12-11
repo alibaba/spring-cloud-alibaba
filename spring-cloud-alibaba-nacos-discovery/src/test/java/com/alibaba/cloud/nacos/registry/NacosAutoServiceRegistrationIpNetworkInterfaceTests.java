@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,17 +16,16 @@
 
 package com.alibaba.cloud.nacos.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -36,18 +35,19 @@ import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration;
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientAutoConfiguration;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author xiaojing
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class, properties = {
-		"spring.application.name=myTestService1",
-		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" }, webEnvironment = RANDOM_PORT)
+@SpringBootTest(
+		classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class,
+		properties = { "spring.application.name=myTestService1",
+				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" },
+		webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 
 	@Autowired
@@ -64,21 +64,16 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 
 	@Test
 	public void contextLoads() throws Exception {
-
-		assertNotNull("NacosRegistration was not created", registration);
-		assertNotNull("NacosDiscoveryProperties was not created", properties);
-		assertNotNull("NacosAutoServiceRegistration was not created",
-				nacosAutoServiceRegistration);
+		assertThat(registration).isNotNull();
+		assertThat(properties).isNotNull();
+		assertThat(nacosAutoServiceRegistration).isNotNull();
 
 		checkoutNacosDiscoveryServiceIP();
-
 	}
 
 	private void checkoutNacosDiscoveryServiceIP() {
-		assertEquals("NacosDiscoveryProperties service IP was wrong",
-				getIPFromNetworkInterface(TestConfig.netWorkInterfaceName),
-				registration.getHost());
-
+		assertThat(registration.getHost())
+				.isEqualTo(getIPFromNetworkInterface(TestConfig.netWorkInterfaceName));
 	}
 
 	private String getIPFromNetworkInterface(String networkInterface) {
@@ -108,8 +103,8 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
-			NacosDiscoveryClientAutoConfiguration.class,
-			NacosDiscoveryAutoConfiguration.class })
+			NacosDiscoveryClientConfiguration.class,
+			NacosServiceRegistryAutoConfiguration.class })
 	public static class TestConfig {
 
 		static boolean hasValidNetworkInterface = false;
@@ -143,6 +138,7 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 
 			}
 		}
+
 	}
 
 }

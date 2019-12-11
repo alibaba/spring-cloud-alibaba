@@ -185,6 +185,7 @@ By subscribing to the SmsUp upstream SMS message, you can know the content of th
 1、Configure the queue name for SmsReport in the `application.properties` configuration file (which can also be application.yaml).
 
 .application.properties
+[source,properties]
 ----
 spring.cloud.alicloud.sms.up-queue-name=Alicom-Queue-********-SmsUp
 ----

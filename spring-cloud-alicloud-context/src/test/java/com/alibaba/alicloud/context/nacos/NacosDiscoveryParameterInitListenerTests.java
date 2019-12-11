@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,16 +16,15 @@
 
 package com.alibaba.alicloud.context.nacos;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-
 import com.alibaba.alicloud.context.BaseAliCloudSpringApplication;
 import com.alibaba.alicloud.utils.ChangeOrderUtils;
 import com.alibaba.cloud.context.ans.AliCloudAnsInitializer;
 import com.alibaba.cloud.context.edas.EdasChangeOrderConfigurationFactory;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * @author xiaolongzuo
@@ -59,4 +58,5 @@ public class NacosDiscoveryParameterInitListenerTests
 		assertThat(System.getProperties().getProperty("nacos.naming.exposed.port"))
 				.isEqualTo("80");
 	}
+
 }

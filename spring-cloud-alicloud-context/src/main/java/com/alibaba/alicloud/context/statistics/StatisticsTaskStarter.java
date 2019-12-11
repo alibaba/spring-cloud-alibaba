@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,11 +19,6 @@ package com.alibaba.alicloud.context.statistics;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.context.annotation.Configuration;
-
 import com.alibaba.alicloud.context.acm.AcmContextBootstrapConfiguration;
 import com.alibaba.alicloud.context.acm.AcmProperties;
 import com.alibaba.alicloud.context.ans.AnsContextAutoConfiguration;
@@ -36,6 +31,11 @@ import com.alibaba.alicloud.context.scx.ScxProperties;
 import com.alibaba.cloud.context.AliCloudServerMode;
 import com.alibaba.cloud.context.edas.AliCloudEdasSdk;
 import com.alibaba.cloud.context.statistics.StatisticsTask;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xiaolongzuo
