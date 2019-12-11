@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.bus.rocketmq.env;
 
-import static org.springframework.cloud.bus.SpringCloudBusClient.INPUT;
+package com.alibaba.cloud.bus.rocketmq.env;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,19 +28,21 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 
+import static org.springframework.cloud.bus.SpringCloudBusClient.INPUT;
+
 /**
  * The lowest precedence {@link EnvironmentPostProcessor} configures default RocketMQ Bus
- * Properties that will be appended into {@link SpringApplication#defaultProperties}
+ * Properties that will be appended into {@link SpringApplication#defaultProperties}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
- * @see BusEnvironmentPostProcessor
  * @since 0.2.1
+ * @see BusEnvironmentPostProcessor
  */
 public class RocketMQBusEnvironmentPostProcessor
 		implements EnvironmentPostProcessor, Ordered {
 
 	/**
-	 * The name of {@link PropertySource} of {@link SpringApplication#defaultProperties}
+	 * The name of {@link PropertySource} of {@link SpringApplication#defaultProperties}.
 	 */
 	private static final String PROPERTY_SOURCE_NAME = "defaultProperties";
 
@@ -81,9 +82,8 @@ public class RocketMQBusEnvironmentPostProcessor
 	}
 
 	/**
-	 * Copy from
+	 * Copy from.
 	 * {@link BusEnvironmentPostProcessor#addOrReplace(MutablePropertySources, Map)}
-	 *
 	 * @param propertySources {@link MutablePropertySources}
 	 * @param map Default RocketMQ Bus Properties
 	 */
@@ -113,4 +113,5 @@ public class RocketMQBusEnvironmentPostProcessor
 	public int getOrder() {
 		return LOWEST_PRECEDENCE;
 	}
+
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,17 +16,16 @@
 
 package com.alibaba.cloud.sentinel;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Arrays;
 
+import com.alibaba.cloud.sentinel.feign.SentinelFeignAutoConfiguration;
+import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -39,17 +38,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.alibaba.cloud.sentinel.feign.SentinelFeignAutoConfiguration;
-import com.alibaba.csp.sentinel.slots.block.RuleConstant;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class }, properties = {
-		"feign.sentinel.enabled=true" })
+@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class },
+		properties = { "feign.sentinel.enabled=true" })
 public class SentinelFeignTests {
 
 	@Autowired
@@ -99,29 +96,26 @@ public class SentinelFeignTests {
 
 	@Test
 	public void contextLoads() throws Exception {
-		assertNotNull("EchoService was not created", echoService);
-		assertNotNull("FooService was not created", fooService);
+		assertThat(echoService).isNotNull();
+		assertThat(fooService).isNotNull();
 	}
 
 	@Test
 	public void testFeignClient() {
-		assertEquals("Sentinel Feign Client fallback success", "echo fallback",
-				echoService.echo("test"));
-		assertEquals("Sentinel Feign Client fallbackFactory success", "foo fallback",
-				fooService.echo("test"));
-		assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-			barService.bar();
-		});
-		assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
-			bazService.baz();
-		});
+		assertThat(echoService.echo("test")).isEqualTo("echo fallback");
+		assertThat(fooService.echo("test")).isEqualTo("foo fallback");
 
-		assertNotEquals("ToString method invoke was not in SentinelInvocationHandler",
-				echoService.toString(), fooService.toString());
-		assertNotEquals("HashCode method invoke was not in SentinelInvocationHandler",
-				echoService.hashCode(), fooService.hashCode());
-		assertFalse("Equals method invoke was not in SentinelInvocationHandler",
-				echoService.equals(fooService));
+		assertThatThrownBy(() -> {
+			barService.bar();
+		}).isInstanceOf(Exception.class);
+
+		assertThatThrownBy(() -> {
+			bazService.baz();
+		}).isInstanceOf(Exception.class);
+
+		assertThat(fooService.toString()).isNotEqualTo(echoService.toString());
+		assertThat(fooService.hashCode()).isNotEqualTo(echoService.hashCode());
+		assertThat(echoService.equals(fooService)).isEqualTo(Boolean.FALSE);
 	}
 
 	@Configuration
@@ -144,29 +138,38 @@ public class SentinelFeignTests {
 
 	@FeignClient(value = "test-service", fallback = EchoServiceFallback.class)
 	public interface EchoService {
+
 		@RequestMapping(path = "echo/{str}")
 		String echo(@RequestParam("str") String param);
+
 	}
 
 	@FeignClient(value = "foo-service", fallbackFactory = CustomFallbackFactory.class)
 	public interface FooService {
+
 		@RequestMapping(path = "echo/{str}")
 		String echo(@RequestParam("str") String param);
+
 	}
 
-	@FeignClient(value = "bar-service")
+	@FeignClient("bar-service")
 	public interface BarService {
+
 		@RequestMapping(path = "bar")
 		String bar();
+
 	}
 
 	public interface BazService {
+
 		@RequestMapping(path = "baz")
 		String baz();
+
 	}
 
-	@FeignClient(value = "baz-service")
+	@FeignClient("baz-service")
 	public interface BazClient extends BazService {
+
 	}
 
 	public static class EchoServiceFallback implements EchoService {
@@ -184,6 +187,7 @@ public class SentinelFeignTests {
 		public String echo(@RequestParam("str") String param) {
 			return "foo fallback";
 		}
+
 	}
 
 	public static class CustomFallbackFactory
@@ -195,6 +199,7 @@ public class SentinelFeignTests {
 		public FooService create(Throwable throwable) {
 			return fooService;
 		}
+
 	}
 
 }

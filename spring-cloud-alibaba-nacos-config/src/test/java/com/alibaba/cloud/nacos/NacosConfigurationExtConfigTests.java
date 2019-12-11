@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,13 +16,12 @@
 
 package com.alibaba.cloud.nacos;
 
-import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.junit.Assert;
+import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
+import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
+import com.alibaba.nacos.client.config.NacosConfigService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -31,6 +30,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -39,9 +39,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
-import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
-import com.alibaba.nacos.client.config.NacosConfigService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
  * @author xiaojing
@@ -51,18 +50,20 @@ import com.alibaba.nacos.client.config.NacosConfigService;
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
-@SpringBootTest(classes = NacosConfigurationExtConfigTests.TestConfig.class, properties = {
-		"spring.application.name=myTestService1", "spring.profiles.active=dev,test",
-		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
-		"spring.cloud.nacos.config.encode=utf-8",
-		"spring.cloud.nacos.config.timeout=1000",
-		"spring.cloud.nacos.config.file-extension=properties",
-		"spring.cloud.nacos.config.ext-config[0].data-id=ext-config-common01.properties",
-		"spring.cloud.nacos.config.ext-config[1].data-id=ext-config-common02.properties",
-		"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
-		"spring.cloud.nacos.config.shared-dataids=common1.properties,common2.properties",
-		"spring.cloud.nacos.config.accessKey=test-accessKey",
-		"spring.cloud.nacos.config.secretKey=test-secretKey" }, webEnvironment = NONE)
+@SpringBootTest(classes = NacosConfigurationExtConfigTests.TestConfig.class,
+		properties = { "spring.application.name=myTestService1",
+				"spring.profiles.active=dev,test",
+				"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
+				"spring.cloud.nacos.config.encode=utf-8",
+				"spring.cloud.nacos.config.timeout=1000",
+				"spring.cloud.nacos.config.file-extension=properties",
+				"spring.cloud.nacos.config.ext-config[0].data-id=ext-config-common01.properties",
+				"spring.cloud.nacos.config.ext-config[1].data-id=ext-config-common02.properties",
+				"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
+				"spring.cloud.nacos.config.shared-dataids=common1.properties,common2.properties",
+				"spring.cloud.nacos.config.accessKey=test-accessKey",
+				"spring.cloud.nacos.config.secretKey=test-secretKey" },
+		webEnvironment = NONE)
 public class NacosConfigurationExtConfigTests {
 
 	static {
@@ -130,14 +131,13 @@ public class NacosConfigurationExtConfigTests {
 	@Test
 	public void contextLoads() throws Exception {
 
-		assertNotNull("NacosPropertySourceLocator was not created", locator);
-		assertNotNull("NacosConfigProperties was not created", properties);
+		assertThat(locator).isNotNull();
+		assertThat(properties).isNotNull();
 
-		Assert.assertEquals(environment.getProperty("test-ext-config1"), "config1");
-		Assert.assertEquals(environment.getProperty("test-ext-config2"), "config2");
-		Assert.assertEquals(environment.getProperty("test-common1"), "common1");
-		Assert.assertEquals(environment.getProperty("test-common2"), "common2");
-
+		assertThat("config1").isEqualTo(environment.getProperty("test-ext-config1"));
+		assertThat("config2").isEqualTo(environment.getProperty("test-ext-config2"));
+		assertThat("common1").isEqualTo(environment.getProperty("test-common1"));
+		assertThat("common2").isEqualTo(environment.getProperty("test-common2"));
 	}
 
 	@Configuration
@@ -145,5 +145,7 @@ public class NacosConfigurationExtConfigTests {
 	@ImportAutoConfiguration({ NacosConfigEndpointAutoConfiguration.class,
 			NacosConfigAutoConfiguration.class, NacosConfigBootstrapConfiguration.class })
 	public static class TestConfig {
+
 	}
+
 }

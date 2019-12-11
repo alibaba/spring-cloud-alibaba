@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.http;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.dubbo.common.io.UnsafeByteArrayInputStream;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 
 /**
- * Byte array {@link HttpInputMessage} implementation
+ * Byte array {@link HttpInputMessage} implementation.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -33,11 +35,11 @@ class ByteArrayHttpInputMessage implements HttpInputMessage {
 
 	private final InputStream inputStream;
 
-	public ByteArrayHttpInputMessage(byte[] body) {
+	ByteArrayHttpInputMessage(byte[] body) {
 		this(new HttpHeaders(), body);
 	}
 
-	public ByteArrayHttpInputMessage(HttpHeaders httpHeaders, byte[] body) {
+	ByteArrayHttpInputMessage(HttpHeaders httpHeaders, byte[] body) {
 		this.httpHeaders = httpHeaders;
 		this.inputStream = new UnsafeByteArrayInputStream(body);
 	}
@@ -51,4 +53,5 @@ class ByteArrayHttpInputMessage implements HttpInputMessage {
 	public HttpHeaders getHeaders() {
 		return httpHeaders;
 	}
+
 }

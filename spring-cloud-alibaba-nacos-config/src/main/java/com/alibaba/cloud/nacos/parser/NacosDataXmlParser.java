@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,11 +31,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.alibaba.nacos.client.utils.StringUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * With relatively few usage scenarios, only simple parsing is performed to reduce jar
- * dependencies
+ * dependencies.
  *
  * @author zkz
  */
@@ -55,9 +55,7 @@ public class NacosDataXmlParser extends AbstractNacosDataParser {
 	}
 
 	private Map<String, String> parseXml2Map(String xml) throws IOException {
-		xml = xml.replaceAll("\\r", "")
-                .replaceAll("\\n", "")
-                .replaceAll("\\t", "");
+		xml = xml.replaceAll("\\r", "").replaceAll("\\n", "").replaceAll("\\t", "");
 		Map<String, String> map = new HashMap<>(32);
 		try {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()

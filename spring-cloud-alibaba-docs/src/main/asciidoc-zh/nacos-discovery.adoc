@@ -42,7 +42,9 @@ image::https://img.alicdn.com/tfs/TB1dyWJbQL0gK0jSZFtXXXQCXXa-2788-1086.png[]
 以下步骤向您展示了如何将一个服务注册到 Nacos。
 
 * pom.xml的配置。一个完整的 pom.xml 配置如下所示：
-[source,xml,indent=0]
+
+.pom.xml
+[source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -115,7 +117,8 @@ image::https://img.alicdn.com/tfs/TB1dyWJbQL0gK0jSZFtXXXQCXXa-2788-1086.png[]
 ----
 
 * application.properties 配置。一些关于 Nacos 基本的配置也必须在 application.properties(也可以是application.yaml)配置，如下所示：
-application.properties
+
+.application.properties
 [source,properties,indent=0]
 ----
 server.port=8081
@@ -128,6 +131,7 @@ management.endpoints.web.exposure.include=*
 NOTE: 如果不想使用 Nacos 作为您的服务注册与发现，可以将 `spring.cloud.nacos.discovery` 设置为 `false`。
 
 * 启动 Provider 示例。如下所示：
+
 [source,java,indent=0]
 ----
 @SpringBootApplication
@@ -291,10 +295,8 @@ Endpoint 暴露的 json 中包含了两种属性:
 
 更多关于 Nacos Discovery Starter 的配置项如下所示:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|配置项 ^|Key ^|默认值 ^|说明
+|===
+|配置项 |Key |默认值 |说明
 |服务端地址|`spring.cloud.nacos.discovery.server-addr`|| Nacos Server 启动监听的ip地址和端口
 |服务名|`spring.cloud.nacos.discovery.service`|`${spring.application.name}`|注册的服务名
 |权重|`spring.cloud.nacos.discovery.weight`|`1`|取值范围 1 到 100，数值越大，权重越大
@@ -310,5 +312,5 @@ Endpoint 暴露的 json 中包含了两种属性:
 |接入点|`spring.cloud.nacos.discovery.endpoint`||地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 |是否集成Ribbon|`ribbon.nacos.enabled`|`true`|一般都设置成true即可
 |是否开启Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|可以设置成false来关闭 watch
-|====
+|===
 

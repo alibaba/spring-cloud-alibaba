@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.http.util;
 
-import static java.util.Collections.unmodifiableList;
+package com.alibaba.cloud.dubbo.http.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,23 +22,22 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.core.MethodParameter;
+import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
+import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.GenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
-import com.alibaba.cloud.dubbo.http.converter.HttpMessageConverterHolder;
-import com.alibaba.cloud.dubbo.metadata.RequestMetadata;
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import static java.util.Collections.unmodifiableList;
 
 /**
- * {@link HttpMessageConverter} Resolver
+ * {@link HttpMessageConverter} Resolver.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -96,11 +94,10 @@ public class HttpMessageConverterResolver {
 	}
 
 	/**
-	 * Resolve the most match {@link HttpMessageConverter} from {@link RequestMetadata}
-	 *
+	 * Resolve the most match {@link HttpMessageConverter} from {@link RequestMetadata}.
 	 * @param requestMetadata {@link RequestMetadata}
 	 * @param restMethodMetadata {@link RestMethodMetadata}
-	 * @return
+	 * @return instance of {@link HttpMessageConverterHolder}
 	 */
 	public HttpMessageConverterHolder resolve(RequestMetadata requestMetadata,
 			RestMethodMetadata restMethodMetadata) {
@@ -110,7 +107,7 @@ public class HttpMessageConverterResolver {
 		Class<?> returnValueClass = resolveReturnValueClass(restMethodMetadata);
 
 		/**
-		 * @see AbstractMessageConverterMethodProcessor#writeWithMessageConverters(Object,
+		 * @see AbstractMessageConverterMethodProcessor#writeWithMessageConverters(T,
 		 * MethodParameter, ServletServerHttpRequest, ServletServerHttpResponse)
 		 */
 		List<MediaType> requestedMediaTypes = getAcceptableMediaTypes(requestMetadata);
@@ -172,8 +169,7 @@ public class HttpMessageConverterResolver {
 	}
 
 	/**
-	 * Resolve the {@link MediaType media-types}
-	 *
+	 * Resolve the {@link MediaType media-types}.
 	 * @param requestMetadata {@link RequestMetadata} from client side
 	 * @return non-null {@link List}
 	 */
@@ -187,9 +183,8 @@ public class HttpMessageConverterResolver {
 	 * <li>The producible media types specified in the request mappings, or
 	 * <li>Media types of configured converters that can write the specific return value,
 	 * or
-	 * <li>{@link MediaType#ALL}
+	 * <li>{@link MediaType#ALL}.
 	 * </ul>
-	 *
 	 * @param restMethodMetadata {@link RestMethodMetadata} from server side
 	 * @param returnValueClass the class of return value
 	 * @return non-null {@link List}
@@ -218,9 +213,8 @@ public class HttpMessageConverterResolver {
 	/**
 	 * Return the media types supported by all provided message converters sorted by
 	 * specificity via {@link MediaType#sortBySpecificity(List)}.
-	 *
-	 * @param messageConverters
-	 * @return
+	 * @param messageConverters list of converters
+	 * @return list of MediaTypes
 	 */
 	private List<MediaType> getAllSupportedMediaTypes(
 			List<HttpMessageConverter<?>> messageConverters) {
@@ -243,4 +237,5 @@ public class HttpMessageConverterResolver {
 		return (MediaType.SPECIFICITY_COMPARATOR.compare(acceptType,
 				produceTypeToUse) <= 0 ? acceptType : produceTypeToUse);
 	}
+
 }

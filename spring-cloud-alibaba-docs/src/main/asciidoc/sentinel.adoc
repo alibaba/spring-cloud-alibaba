@@ -110,6 +110,7 @@ If there is conflict with the 8080 port, you can use `-Dserver.port=new port` to
 ==== Configure the Dashboard
 
 .application.yml
+[source,yaml]
 ----
 spring:
   cloud:
@@ -214,7 +215,8 @@ NOTE: Take Http GET `https://www.taobao.com/test` as an example. The correspondi
 
 For example, 4 data sources are configures：
 
-```
+[source,properties]
+----
 spring.cloud.sentinel.datasource.ds1.file.file=classpath: degraderule.json
 spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
@@ -237,7 +239,7 @@ spring.cloud.sentinel.datasource.ds4.apollo.namespace-name = application
 spring.cloud.sentinel.datasource.ds4.apollo.flow-rules-key = sentinel
 spring.cloud.sentinel.datasource.ds4.apollo.default-flow-rule-value = test
 spring.cloud.sentinel.datasource.ds4.apollo.rule-type=param-flow
-```
+----
 
 This method follows the configuration of Spring Cloud Stream Binder. `TreeMap` is used for storage internally, and comparator is `String.CASE_INSENSITIVE_ORDER`.
 
@@ -408,21 +410,17 @@ The followings shows how a service instance accesses the Endpoint:
 
 The following table shows that when there are corresponding bean types in `ApplicationContext`, some actions will be taken:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Existing Bean Type ^|Action ^|Function
+|===
+|Existing Bean Type |Action |Function
 |`UrlCleaner`|`WebCallbackManager.setUrlCleaner(urlCleaner)`|Resource cleaning(resource(for example, classify all URLs of /foo/:id to the  /foo/* resource))
 |`UrlBlockHandler`|`WebCallbackManager.setUrlBlockHandler(urlBlockHandler)`|Customize rate limiting logic
 |`RequestOriginParser`|`WebCallbackManager.setRequestOriginParser(requestOriginParser)`|Setting the origin
-|====
+|===
 
 The following table shows all the configurations of Spring Cloud Alibaba Sentinel:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Configuration ^|Description ^|Default Value
+|===
+|Configuration |Description |Default Value
 |`spring.application.name` or `project.name`|Project Name Of Sentinel|
 |`spring.cloud.sentinel.enabled`|Whether Sentinel automatic configuration takes effect|true
 |`spring.cloud.sentinel.eager`|Whether to trigger Sentinel initialization in advance|false
@@ -448,7 +446,7 @@ The following table shows all the configurations of Spring Cloud Alibaba Sentine
 |`spring.cloud.sentinel.scg.fallback.response-body`| Spring Cloud Gateway response mode is response content corresponding to 'response' mode |
 |`spring.cloud.sentinel.scg.fallback.response-status`| Spring Cloud Gateway response mode is the response code corresponding to 'response' mode | 429
 |`spring.cloud.sentinel.scg.fallback.content-type`| The Spring Cloud Gateway response mode is the content-type corresponding to the 'response' mode. | application/json
-|====
+|===
 
 
 NOTE: These configurations will only take effect in servlet environment. RestTemplate and Feign will not take effect for these configurations.

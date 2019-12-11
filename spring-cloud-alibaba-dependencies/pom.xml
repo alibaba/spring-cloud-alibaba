@@ -6,7 +6,7 @@
     <parent>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>2.2.0.BUILD-SNAPSHOT</version>
+        <version>2.2.0.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -20,8 +20,8 @@
     <properties>
         <sentinel.version>1.6.3</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <seata.version>0.7.1</seata.version>
-        <nacos.client.version>1.1.1</nacos.client.version>
+        <seata.version>0.9.0</seata.version>
+        <nacos.client.version>1.1.4</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.9</acm.version>
         <ans.version>1.0.1</ans.version>
@@ -179,11 +179,6 @@
                 <version>${sentinel.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>sentinel-dubbo-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-cluster-server-default</artifactId>
                 <version>${sentinel.version}</version>
@@ -295,11 +290,21 @@
                 <artifactId>spring-cloud-alibaba-dubbo</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-sidecar</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Own dependencies - Starters -->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-circuitbreaker-sentinel</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -358,6 +363,11 @@
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-sidecar</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

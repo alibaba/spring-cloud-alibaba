@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,29 +24,21 @@ package com.alibaba.cloud.nacos.diagnostics.analyzer;
  */
 public class NacosConnectionFailureException extends RuntimeException {
 
-	private final String domain;
+	private final String serverAddr;
 
-	private final String port;
-
-	public NacosConnectionFailureException(String domain, String port, String message) {
+	public NacosConnectionFailureException(String serverAddr, String message) {
 		super(message);
-		this.domain = domain;
-		this.port = port;
+		this.serverAddr = serverAddr;
 	}
 
-	public NacosConnectionFailureException(String domain, String port, String message,
+	public NacosConnectionFailureException(String serverAddr, String message,
 			Throwable cause) {
 		super(message, cause);
-		this.domain = domain;
-		this.port = port;
+		this.serverAddr = serverAddr;
 	}
 
-	String getDomain() {
-		return domain;
-	}
-
-	String getPort() {
-		return port;
+	public String getServerAddr() {
+		return serverAddr;
 	}
 
 }

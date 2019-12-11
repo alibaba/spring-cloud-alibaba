@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.env;
 
-import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
-import static org.springframework.util.StringUtils.hasText;
-import static org.springframework.util.StringUtils.trimAllWhitespace;
+package com.alibaba.cloud.dubbo.env;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -25,8 +22,12 @@ import java.util.Set;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
+import static org.springframework.util.StringUtils.hasText;
+import static org.springframework.util.StringUtils.trimAllWhitespace;
+
 /**
- * Dubbo Cloud {@link ConfigurationProperties Properties}
+ * Dubbo Cloud {@link ConfigurationProperties Properties}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -34,7 +35,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class DubboCloudProperties {
 
 	/**
-	 * All services of Dubbo
+	 * All services of Dubbo.
 	 */
 	public static final String ALL_DUBBO_SERVICES = "*";
 
@@ -56,7 +57,6 @@ public class DubboCloudProperties {
 
 	/**
 	 * Get the subscribed services as a {@link Set} with configuration order.
-	 *
 	 * @return non-null Read-only {@link Set}
 	 */
 	public Set<String> subscribedServices() {
@@ -78,4 +78,5 @@ public class DubboCloudProperties {
 
 		return Collections.unmodifiableSet(subscribedServices);
 	}
+
 }

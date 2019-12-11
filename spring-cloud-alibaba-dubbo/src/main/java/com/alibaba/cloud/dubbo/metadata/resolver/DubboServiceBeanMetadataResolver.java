@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.metadata.resolver;
 
 import java.lang.reflect.Method;
@@ -26,21 +27,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
+import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
+import feign.Contract;
+import feign.Feign;
+import feign.MethodMetadata;
+import feign.Util;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.config.spring.ServiceBean;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.util.ClassUtils;
-
-import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
-import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
-
-import feign.Contract;
-import feign.Feign;
-import feign.MethodMetadata;
-import feign.Util;
 
 /**
  * The metadata resolver for {@link Feign} for {@link ServiceBean Dubbo Service Bean} in
@@ -59,7 +59,7 @@ public class DubboServiceBeanMetadataResolver
 	private ClassLoader classLoader;
 
 	/**
-	 * Feign Contracts
+	 * Feign Contracts.
 	 */
 	private Collection<Contract> contracts;
 
@@ -153,9 +153,8 @@ public class DubboServiceBeanMetadataResolver
 	 * Select feign contract methods
 	 * <p>
 	 * extract some code from
-	 * {@link Contract.BaseContract#parseAndValidatateMetadata(java.lang.Class)}
-	 *
-	 * @param targetType
+	 * {@link Contract.BaseContract#parseAndValidatateMetadata(java.lang.Class)}.
+	 * @param targetType class of type
 	 * @return non-null
 	 */
 	private List<Method> selectFeignContractMethods(Class<?> targetType) {

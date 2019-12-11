@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,13 +18,13 @@ package com.alibaba.cloud.sentinel.datasource.config;
 
 import javax.validation.constraints.NotEmpty;
 
-import org.springframework.util.StringUtils;
-
 import com.alibaba.cloud.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
+
+import org.springframework.util.StringUtils;
 
 /**
  * Nacos Properties class Using by {@link DataSourcePropertiesConfiguration} and
- * {@link NacosDataSourceFactoryBean}
+ * {@link NacosDataSourceFactoryBean}.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
@@ -39,8 +39,11 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 	private String dataId;
 
 	private String endpoint;
+
 	private String namespace;
+
 	private String accessKey;
+
 	private String secretKey;
 
 	public NacosDataSourceProperties() {

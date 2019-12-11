@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.service;
 
-import static java.util.Collections.emptyMap;
-import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
-import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
+package com.alibaba.cloud.dubbo.service;
 
 import java.beans.PropertyEditorSupport;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PreDestroy;
 
+import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
+import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.RegistryConfig;
@@ -37,6 +37,7 @@ import org.apache.dubbo.config.spring.ReferenceBean;
 import org.apache.dubbo.rpc.service.GenericService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,13 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.DataBinder;
 
-import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
-import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
+import static java.util.Collections.emptyMap;
+import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
 
 /**
- * Dubbo {@link GenericService} Factory
+ * Dubbo {@link GenericService} Factory.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -56,7 +59,7 @@ public class DubboGenericServiceFactory {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final ConcurrentMap<Integer, ReferenceBean<GenericService>> cache = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, ReferenceBean<GenericService>> cache = new ConcurrentHashMap<>();
 
 	@Autowired
 	private ObjectProvider<List<RegistryConfig>> registryConfigs;
@@ -95,12 +98,13 @@ public class DubboGenericServiceFactory {
 		Integer key = Objects.hash(interfaceName, version, group,
 				dubboTranslatedAttributes);
 
-		return cache.computeIfAbsent(key, k -> {
+		return cache.computeIfAbsent(group + key, k -> {
 			ReferenceBean<GenericService> referenceBean = new ReferenceBean<>();
 			referenceBean.setGeneric(true);
 			referenceBean.setInterface(interfaceName);
 			referenceBean.setVersion(version);
 			referenceBean.setGroup(group);
+			referenceBean.setCheck(false);
 			bindReferenceBean(referenceBean, dubboTranslatedAttributes);
 			return referenceBean;
 		});
@@ -148,7 +152,17 @@ public class DubboGenericServiceFactory {
 	@PreDestroy
 	public void destroy() {
 		destroyReferenceBeans();
-		cache.values();
+		cache.clear();
+	}
+
+	public synchronized void destroy(String serviceName) {
+		Set<String> removeGroups = new HashSet<>(cache.keySet());
+		for (String key : removeGroups) {
+			if (key.contains(serviceName)) {
+				ReferenceBean<GenericService> referenceBean = cache.remove(key);
+				referenceBean.destroy();
+			}
+		}
 	}
 
 	private void destroyReferenceBeans() {

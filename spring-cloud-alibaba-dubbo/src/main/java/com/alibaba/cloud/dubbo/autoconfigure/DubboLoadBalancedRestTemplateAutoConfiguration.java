@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import com.alibaba.cloud.dubbo.client.loadbalancer.DubboMetadataInitializerInterceptor;
+import com.alibaba.cloud.dubbo.client.loadbalancer.DubboTransporterInterceptor;
+import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
+import com.alibaba.cloud.dubbo.metadata.resolver.DubboTransportedAttributesResolver;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
+import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -41,17 +54,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
-import com.alibaba.cloud.dubbo.client.loadbalancer.DubboMetadataInitializerInterceptor;
-import com.alibaba.cloud.dubbo.client.loadbalancer.DubboTransporterInterceptor;
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.metadata.resolver.DubboTransportedAttributesResolver;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-
 /**
  * Dubbo Auto-{@link Configuration} for {@link LoadBalanced @LoadBalanced}
- * {@link RestTemplate}
+ * {@link RestTemplate}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -99,15 +104,14 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements
 
 	/**
 	 * The {@link ClientHttpRequestInterceptor} bean that may be
-	 * {@link LoadBalancerInterceptor} or {@link RetryLoadBalancerInterceptor}
+	 * {@link LoadBalancerInterceptor} or {@link RetryLoadBalancerInterceptor}.
 	 */
 	private ClientHttpRequestInterceptor loadBalancerInterceptorBean;
 
 	@Override
 	public void afterSingletonsInstantiated() {
 		loadBalancerInterceptorBean = retryLoadBalancerInterceptor != null
-				? retryLoadBalancerInterceptor
-				: loadBalancerInterceptor;
+				? retryLoadBalancerInterceptor : loadBalancerInterceptor;
 	}
 
 	/**
@@ -115,7 +119,8 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements
 	 * {@link LoadBalanced @LoadBalanced} and {@link LoadBalanced @LoadBalanced} when
 	 * Spring Boot application started (after the callback of
 	 * {@link SmartInitializingSingleton} beans or
-	 * {@link RestTemplateCustomizer#customize(RestTemplate) customization})
+	 * {@link RestTemplateCustomizer#customize(RestTemplate) customization}).
+	 * @param event spring event
 	 */
 	@EventListener(ContextRefreshedEvent.class)
 	public void adaptRestTemplates(ContextRefreshedEvent event) {
@@ -138,10 +143,9 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements
 
 	/**
 	 * Gets the annotation attributes {@link RestTemplate} bean being annotated
-	 * {@link DubboTransported @DubboTransported}
-	 *
+	 * {@link DubboTransported @DubboTransported}.
 	 * @param beanName the bean name of {@link LoadBalanced @LoadBalanced}
-	 *     {@link RestTemplate}
+	 * {@link RestTemplate}
 	 * @param attributesResolver {@link DubboTransportedAttributesResolver}
 	 * @return non-null {@link Map}
 	 */
@@ -164,11 +168,10 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements
 	/**
 	 * Adapt the instance of {@link DubboTransporterInterceptor} to the
 	 * {@link LoadBalancerInterceptor} Bean.
-	 *
 	 * @param restTemplate {@link LoadBalanced @LoadBalanced} {@link RestTemplate} Bean
 	 * @param dubboTranslatedAttributes the annotation dubboTranslatedAttributes
-	 *     {@link RestTemplate} bean being annotated
-	 *     {@link DubboTransported @DubboTransported}
+	 * {@link RestTemplate} bean being annotated
+	 * {@link DubboTransported @DubboTransported}
 	 */
 	private void adaptRestTemplate(RestTemplate restTemplate,
 			Map<String, Object> dubboTranslatedAttributes) {

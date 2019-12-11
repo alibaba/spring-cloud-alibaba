@@ -31,4 +31,6 @@ include::schedulerx.adoc[]
 
 include::sms.adoc[]
 
+include::sidecar.adoc[]
+
 

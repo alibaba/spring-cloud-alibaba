@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,115 +16,59 @@
 
 package com.alibaba.cloud.nacos;
 
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.api.naming.pojo.ListView;
-import org.junit.Test;
-import org.springframework.cloud.client.ServiceInstance;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
-import static com.alibaba.cloud.nacos.test.NacosMockTest.serviceInstance;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
+import com.alibaba.cloud.nacos.discovery.NacosServiceDiscovery;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.cloud.client.ServiceInstance;
+
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * @author xiaojing
+ * @author echooymxq
  */
+@ExtendWith(MockitoExtension.class)
 public class NacosDiscoveryClientTests {
 
-	private String host = "123.123.123.123";
-	private int port = 8888;
-	private String serviceName = "test-service";
+	@Mock
+	private NacosServiceDiscovery serviceDiscovery;
+
+	@Mock
+	private NacosServiceInstance serviceInstance;
+
+	@InjectMocks
+	private NacosDiscoveryClient client;
 
 	@Test
-	public void testGetServers() throws Exception {
+	public void testGetInstances() throws Exception {
 
-		ArrayList<Instance> instances = new ArrayList<>();
+		when(serviceDiscovery.getInstances("service-1"))
+				.thenReturn(singletonList(serviceInstance));
 
-		HashMap<String, String> map = new HashMap<>();
-		map.put("test-key", "test-value");
-		map.put("secure", "true");
+		List<ServiceInstance> serviceInstances = client.getInstances("service-1");
 
-		instances.add(serviceInstance(serviceName, true, host, port, map));
-
-		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
-				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
-
-		NamingService namingService = mock(NamingService.class);
-
-		when(nacosNamingManager.getNamingService()).thenReturn(namingService);
-		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
-		when(namingService.selectInstances(eq(serviceName), eq("DEFAULT"), eq(true)))
-				.thenReturn(instances);
-
-		NacosDiscoveryClient discoveryClient = new NacosDiscoveryClient(
-				nacosNamingManager, nacosDiscoveryProperties);
-
-		List<ServiceInstance> serviceInstances = discoveryClient
-				.getInstances(serviceName);
-
-		assertThat(serviceInstances.size()).isEqualTo(1);
-
-		ServiceInstance serviceInstance = serviceInstances.get(0);
-
-		assertThat(serviceInstance.getServiceId()).isEqualTo(serviceName);
-		assertThat(serviceInstance.getHost()).isEqualTo(host);
-		assertThat(serviceInstance.getPort()).isEqualTo(port);
-		assertThat(serviceInstance.isSecure()).isEqualTo(true);
-		assertThat(serviceInstance.getUri().toString())
-				.isEqualTo(getUri(serviceInstance));
-		assertThat(serviceInstance.getMetadata().get("test-key")).isEqualTo("test-value");
+		assertThat(serviceInstances).isNotEmpty();
 
 	}
 
 	@Test
-	public void testGetAllService() throws Exception {
+	public void testGetServices() throws Exception {
 
-		ListView<String> nacosServices = new ListView<>();
+		when(serviceDiscovery.getServices()).thenReturn(singletonList("service-1"));
 
-		nacosServices.setData(new LinkedList<>());
+		List<String> services = client.getServices();
 
-		nacosServices.getData().add(serviceName + "1");
-		nacosServices.getData().add(serviceName + "2");
-		nacosServices.getData().add(serviceName + "3");
-
-		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
-				NacosDiscoveryProperties.class);
-		NacosNamingManager nacosNamingManager = mock(NacosNamingManager.class);
-
-		NamingService namingService = mock(NamingService.class);
-
-		NacosDiscoveryClient discoveryClient = new NacosDiscoveryClient(
-				nacosNamingManager, nacosDiscoveryProperties);
-
-		when(nacosNamingManager.getNamingService()).thenReturn(namingService);
-		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
-		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE),
-				eq("DEFAULT"))).thenReturn(nacosServices);
-
-		List<String> services = discoveryClient.getServices();
-
-		assertThat(services.size()).isEqualTo(3);
-		assertThat(services.contains(serviceName + "1"));
-		assertThat(services.contains(serviceName + "2"));
-		assertThat(services.contains(serviceName + "3"));
+		assertThat(services).contains("service-1").size().isEqualTo(1);
 
 	}
 
-	private String getUri(ServiceInstance instance) {
-
-		if (instance.isSecure()) {
-			return "https://" + host + ":" + port;
-		}
-
-		return "http://" + host + ":" + port;
-	}
 }

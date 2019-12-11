@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.alicloud.sms.base;
 
 import com.aliyuncs.AcsResponse;
 import com.aliyuncs.transform.UnmarshallerContext;
 
 public class QueryTokenForMnsQueueResponse extends AcsResponse {
+
 	private String requestId;
+
 	private String code;
+
 	private String message;
+
 	private QueryTokenForMnsQueueResponse.MessageTokenDTO messageTokenDTO;
 
 	public QueryTokenForMnsQueueResponse() {
@@ -66,10 +71,15 @@ public class QueryTokenForMnsQueueResponse extends AcsResponse {
 	}
 
 	public static class MessageTokenDTO {
+
 		private String accessKeyId;
+
 		private String accessKeySecret;
+
 		private String securityToken;
+
 		private String createTime;
+
 		private String expireTime;
 
 		public MessageTokenDTO() {
@@ -114,5 +124,7 @@ public class QueryTokenForMnsQueueResponse extends AcsResponse {
 		public void setExpireTime(String expireTime) {
 			this.expireTime = expireTime;
 		}
+
 	}
+
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,8 +19,6 @@ package com.alibaba.cloud.sentinel.datasource;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.springframework.util.StringUtils;
-
 import com.alibaba.cloud.sentinel.datasource.config.AbstractDataSourceProperties;
 import com.alibaba.csp.sentinel.slots.block.AbstractRule;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
@@ -29,57 +27,59 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 
+import org.springframework.util.StringUtils;
+
 /**
  * Enum for {@link AbstractRule} class, using in
- * {@link AbstractDataSourceProperties#ruleType}
+ * {@link AbstractDataSourceProperties#ruleType}.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public enum RuleType {
 
 	/**
-	 * flow
+	 * flow.
 	 */
 	FLOW("flow", FlowRule.class),
 	/**
-	 * degrade
+	 * degrade.
 	 */
 	DEGRADE("degrade", DegradeRule.class),
 	/**
-	 * param flow
+	 * param flow.
 	 */
 	PARAM_FLOW("param-flow", ParamFlowRule.class),
 	/**
-	 * system
+	 * system.
 	 */
 	SYSTEM("system", SystemRule.class),
 	/**
-	 * authority
+	 * authority.
 	 */
 	AUTHORITY("authority", AuthorityRule.class),
 	/**
-	 * gateway flow
+	 * gateway flow.
 	 */
 	GW_FLOW("gw-flow",
 			"com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule"),
 	/**
-	 * api
+	 * api.
 	 */
 	GW_API_GROUP("gw-api-group",
 			"com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition");
 
 	/**
-	 * alias for {@link AbstractRule}
+	 * alias for {@link AbstractRule}.
 	 */
 	private final String name;
 
 	/**
-	 * concrete {@link AbstractRule} class
+	 * concrete {@link AbstractRule} class.
 	 */
 	private Class clazz;
 
 	/**
-	 * concrete {@link AbstractRule} class name
+	 * concrete {@link AbstractRule} class name.
 	 */
 	private String clazzName;
 

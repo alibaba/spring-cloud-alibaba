@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.bootstrap;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+package com.alibaba.cloud.dubbo.bootstrap;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.cloud.dubbo.annotation.DubboTransported;
+import com.alibaba.cloud.dubbo.service.RestService;
+import com.alibaba.cloud.dubbo.service.User;
+import com.alibaba.cloud.dubbo.service.UserService;
+
 import org.apache.dubbo.config.annotation.Reference;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -43,13 +48,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.cloud.dubbo.annotation.DubboTransported;
-import com.alibaba.cloud.dubbo.service.RestService;
-import com.alibaba.cloud.dubbo.service.User;
-import com.alibaba.cloud.dubbo.service.UserService;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
- * Dubbo Spring Cloud Consumer Bootstrap
+ * Dubbo Spring Cloud Consumer Bootstrap.
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration

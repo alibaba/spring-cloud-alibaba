@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.sentinel.custom;
 
 import java.lang.reflect.Field;
@@ -7,8 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.alibaba.cloud.sentinel.SentinelProperties;
+import com.alibaba.cloud.sentinel.datasource.config.AbstractDataSourceProperties;
+import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
+import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
+import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -16,16 +39,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.cloud.sentinel.SentinelProperties;
-import com.alibaba.cloud.sentinel.datasource.config.AbstractDataSourceProperties;
-import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
-import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
-import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
-import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
-
 /**
  * Sentinel {@link ReadableDataSource} Handler Handle the configurations of
- * 'spring.cloud.sentinel.datasource'
+ * 'spring.cloud.sentinel.datasource'.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @see SentinelProperties#datasource
@@ -40,7 +56,9 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 	private List<String> dataTypeList = Arrays.asList("json", "xml");
 
 	private final String DATA_TYPE_FIELD = "dataType";
+
 	private final String CUSTOM_DATA_TYPE = "custom";
+
 	private final String CONVERTER_CLASS_FIELD = "converterClass";
 
 	private final DefaultListableBeanFactory beanFactory;

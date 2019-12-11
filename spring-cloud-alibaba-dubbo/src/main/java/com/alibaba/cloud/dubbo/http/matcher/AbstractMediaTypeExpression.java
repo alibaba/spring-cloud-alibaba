@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.http.matcher;
 
 import org.springframework.http.MediaType;
 
 /**
  * The some source code is scratched from
- * org.springframework.web.servlet.mvc.condition.AbstractMediaTypeExpression
+ * org.springframework.web.servlet.mvc.condition.AbstractMediaTypeExpression.
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
@@ -91,4 +92,5 @@ public class AbstractMediaTypeExpression
 		builder.append(this.mediaType.toString());
 		return builder.toString();
 	}
+
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,21 +16,27 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.properties;
 
-import org.apache.rocketmq.common.MixAll;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import javax.validation.constraints.Pattern;
 
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
+import org.apache.rocketmq.common.MixAll;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = "spring.cloud.stream.rocketmq.binder")
+@Validated
 public class RocketMQBinderConfigurationProperties {
 
 	/**
 	 * The name server for rocketMQ, formats: `host:port;host:port`.
 	 */
+	@Pattern(regexp = "^[\\d.:;]+$",
+			message = "nameServer needs to match expression \"host:port;host:port\"")
 	private String nameServer = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
 
 	/**
@@ -93,4 +99,5 @@ public class RocketMQBinderConfigurationProperties {
 	public void setCustomizedTraceTopic(String customizedTraceTopic) {
 		this.customizedTraceTopic = customizedTraceTopic;
 	}
+
 }
