@@ -62,7 +62,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	@Override
 	public PropertySource<?> locate(Environment env) {
-
+		nacosConfigProperties.setEnvironment(env);
 		ConfigService configService = nacosConfigProperties.configServiceInstance();
 
 		if (null == configService) {

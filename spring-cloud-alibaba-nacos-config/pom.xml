@@ -19,6 +19,11 @@
             <artifactId>nacos-client</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba.spring</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+
         <!--spring cloud-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
