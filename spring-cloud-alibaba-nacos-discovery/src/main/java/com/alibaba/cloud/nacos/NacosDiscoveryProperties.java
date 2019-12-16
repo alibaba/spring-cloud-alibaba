@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -34,6 +36,7 @@ import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
+import com.alibaba.spring.util.PropertySourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
@@ -65,6 +69,13 @@ public class NacosDiscoveryProperties {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDiscoveryProperties.class);
+
+	/**
+	 * Prefix of {@link NacosDiscoveryProperties}.
+	 */
+	public static final String PREFIX = "spring.cloud.nacos.discovery";
+
+	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	/**
 	 * nacos discovery server address.
@@ -430,8 +441,8 @@ public class NacosDiscoveryProperties {
 			String serverAddr = env
 					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
-				serverAddr = env
-						.resolvePlaceholders("${spring.cloud.nacos.server-addr:}");
+				serverAddr = env.resolvePlaceholders(
+						"${spring.cloud.nacos.server-addr:localhost:8848}");
 			}
 			this.setServerAddr(serverAddr);
 		}
@@ -518,7 +529,26 @@ public class NacosDiscoveryProperties {
 		properties.put(SECRET_KEY, secretKey);
 		properties.put(CLUSTER_NAME, clusterName);
 		properties.put(NAMING_LOAD_CACHE_AT_START, namingLoadCacheAtStart);
+
+		enrichNacosDiscoveryProperties(properties);
 		return properties;
+	}
+
+	private void enrichNacosDiscoveryProperties(Properties nacosDiscoveryProperties) {
+		Map<String, Object> properties = PropertySourcesUtils
+				.getSubProperties((ConfigurableEnvironment) environment, PREFIX);
+		properties.forEach((k, v) -> nacosDiscoveryProperties.putIfAbsent(resolveKey(k),
+				String.valueOf(v)));
+	}
+
+	private String resolveKey(String key) {
+		Matcher matcher = PATTERN.matcher(key);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
 	}
 
 }

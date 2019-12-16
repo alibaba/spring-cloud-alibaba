@@ -33,6 +33,7 @@
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8.6</aliyun.sdk.mns>
         <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
+        <spring.context.support.version>1.0.5</spring.context.support.version>
     </properties>
 
     <dependencyManagement>
@@ -385,6 +386,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.alibaba.spring</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring.context.support.version}</version>
+            </dependency>
 
             <!-- Testing Dependencies -->
 
@@ -421,6 +427,13 @@
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
+                </repository>
+                <repository>
+                    <id>sonatype-nexus</id>
+                    <url>https://oss.sonatype.org/content/repositories/releases</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
                 </repository>
             </repositories>
             <pluginRepositories>
