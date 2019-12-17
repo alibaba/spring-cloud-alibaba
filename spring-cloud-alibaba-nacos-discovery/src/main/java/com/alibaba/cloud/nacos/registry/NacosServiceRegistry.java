@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.registry;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosRegistryFailureException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
@@ -64,8 +65,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 					instance.getIp(), instance.getPort());
 		}
 		catch (Exception e) {
-			log.error("nacos registry, {} register failed...{},", serviceId,
-					registration.toString(), e);
+			throw new NacosRegistryFailureException(registration, e);
 		}
 	}
 
