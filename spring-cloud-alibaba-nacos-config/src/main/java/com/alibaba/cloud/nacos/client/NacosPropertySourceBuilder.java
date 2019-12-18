@@ -76,7 +76,7 @@ public class NacosPropertySourceBuilder {
 		Properties p = loadNacosData(dataId, group, fileExtension);
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
 				propertiesToMap(p), new Date(), isRefreshable);
-		NacosPropertySourceRepository.collectNacosPropertySources(nacosPropertySource);
+		NacosPropertySourceRepository.collectNacosPropertySource(nacosPropertySource);
 		return nacosPropertySource;
 	}
 
@@ -90,10 +90,11 @@ public class NacosPropertySourceBuilder {
 						dataId, group);
 				return EMPTY_PROPERTIES;
 			}
-			log.info(String.format(
-					"Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
-					group, data));
-
+			if (log.isDebugEnabled()) {
+				log.debug(String.format(
+						"Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
+						group, data));
+			}
 			Properties properties = NacosDataParserHandler.getInstance()
 					.parseNacosData(data, fileExtension);
 			return properties == null ? EMPTY_PROPERTIES : properties;

@@ -49,7 +49,7 @@ public class NacosPropertySource extends MapPropertySource {
 
 	NacosPropertySource(String group, String dataId, Map<String, Object> source,
 			Date timestamp, boolean isRefreshable) {
-		super(dataId, source);
+		super(String.format("%s#%s", dataId, group), source);
 		this.group = group;
 		this.dataId = dataId;
 		this.timestamp = timestamp;
