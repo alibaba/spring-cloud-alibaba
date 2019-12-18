@@ -55,12 +55,23 @@ public class NacosConfigAutoConfiguration {
 	}
 
 	@Bean
+	public NacosConfigManager nacosConfigManager(
+			NacosConfigProperties nacosConfigProperties) {
+		return new NacosConfigManager(nacosConfigProperties);
+	}
+
+	@Bean
 	public NacosContextRefresher nacosContextRefresher(
-			NacosConfigProperties configProperties,
+			NacosConfigManager nacosConfigManager,
 			NacosRefreshProperties nacosRefreshProperties,
-			NacosRefreshHistory refreshHistory) {
-		return new NacosContextRefresher(nacosRefreshProperties, refreshHistory,
-				configProperties.configServiceInstance());
+			NacosRefreshHistory nacosRefreshHistory) {
+		// Compatible with older configurations
+		if (nacosConfigManager.getNacosConfigProperties().isRefreshEnabled()
+				&& null != nacosRefreshProperties
+				&& !nacosRefreshProperties.isEnabled()) {
+			nacosConfigManager.getNacosConfigProperties().setRefreshEnabled(false);
+		}
+		return new NacosContextRefresher(nacosConfigManager, nacosRefreshHistory);
 	}
 
 }
