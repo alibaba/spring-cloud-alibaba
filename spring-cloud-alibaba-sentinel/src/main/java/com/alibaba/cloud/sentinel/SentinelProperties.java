@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.alibaba.cloud.sentinel.datasource.config.DataSourcePropertiesConfiguration;
+import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
@@ -326,6 +327,13 @@ public class SentinelProperties {
 		 */
 		private boolean enabled = true;
 
+		/**
+		 * If enabled, use the URL path as the context name, or else use the default
+		 * {@link WebServletConfig#WEB_SERVLET_CONTEXT_NAME}. Please pay attention to the number of context (EntranceNode),
+		 * which may affect the memory footprint.
+		 */
+		private boolean webContextUnify = true;
+
 		public int getOrder() {
 			return this.order;
 		}
@@ -349,6 +357,10 @@ public class SentinelProperties {
 		public void setEnabled(boolean enabled) {
 			this.enabled = enabled;
 		}
+
+		public boolean isWebContextUnify() { return webContextUnify; }
+
+		public void setWebContextUnify(boolean webContextUnify) { this.webContextUnify = webContextUnify; }
 	}
 
 	public static class Log {
