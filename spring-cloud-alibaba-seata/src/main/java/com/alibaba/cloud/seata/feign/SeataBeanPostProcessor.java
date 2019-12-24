@@ -22,7 +22,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 /**
  * @author xiaojing
  */
-final class SeataBeanPostProcessor implements BeanPostProcessor {
+public class SeataBeanPostProcessor implements BeanPostProcessor {
 
 	private final SeataFeignObjectWrapper seataFeignObjectWrapper;
 
