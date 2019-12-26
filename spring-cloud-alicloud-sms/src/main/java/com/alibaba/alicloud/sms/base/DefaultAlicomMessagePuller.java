@@ -142,35 +142,8 @@ public class DefaultAlicomMessagePuller {
 			String messageType, String queueName, MessageListener messageListener)
 			throws com.aliyuncs.exceptions.ClientException, ParseException {
 
-		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
-				endpointNameForPop, regionIdForPop, domainForPop, null);
-
-		this.messageListener = messageListener;
-		isRunning = true;
-		PullMessageTask task = new PullMessageTask();
-		task.messageType = messageType;
-		task.queueName = queueName;
-
-		synchronized (S_LOCK_OBJ_MAP) {
-			lockObj = S_LOCK_OBJ_MAP.get(queueName);
-			if (lockObj == null) {
-				lockObj = new Object();
-				S_LOCK_OBJ_MAP.put(queueName, lockObj);
-			}
-		}
-
-		if (executorService == null) {
-			ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(
-					pullMsgThreadSize,
-					new BasicThreadFactory.Builder()
-							.namingPattern(
-									"PullMessageTask-" + messageType + "-thread-pool-%d")
-							.daemon(true).build());
-			executorService = scheduledExecutorService;
-		}
-		for (int i = 0; i < pullMsgThreadSize; i++) {
-			executorService.execute(task);
-		}
+		startReceiveMsg0(accessKeyId, accessKeySecret, null,  messageType, queueName,
+				regionIdForPop, endpointNameForPop, domainForPop, mnsAccountEndpoint, messageListener);
 	}
 
 	/**
@@ -191,36 +164,9 @@ public class DefaultAlicomMessagePuller {
 			String endpointNameForPop, String domainForPop, String mnsAccountEndpoint,
 			MessageListener messageListener)
 			throws com.aliyuncs.exceptions.ClientException, ParseException {
-		this.mnsAccountEndpoint = mnsAccountEndpoint;
-		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
-				endpointNameForPop, regionIdForPop, domainForPop, null);
 
-		this.messageListener = messageListener;
-		isRunning = true;
-		PullMessageTask task = new PullMessageTask();
-		task.messageType = messageType;
-		task.queueName = queueName;
-
-		synchronized (S_LOCK_OBJ_MAP) {
-			lockObj = S_LOCK_OBJ_MAP.get(queueName);
-			if (lockObj == null) {
-				lockObj = new Object();
-				S_LOCK_OBJ_MAP.put(queueName, lockObj);
-			}
-		}
-
-		if (executorService == null) {
-			ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(
-					pullMsgThreadSize,
-					new BasicThreadFactory.Builder()
-							.namingPattern(
-									"PullMessageTask-" + messageType + "-thread-pool-%d")
-							.daemon(true).build());
-			executorService = scheduledExecutorService;
-		}
-		for (int i = 0; i < pullMsgThreadSize; i++) {
-			executorService.execute(task);
-		}
+		startReceiveMsg0(accessKeyId, accessKeySecret, null,  messageType, queueName,
+				regionIdForPop, endpointNameForPop, domainForPop, mnsAccountEndpoint, messageListener);
 	}
 
 	/**
@@ -238,6 +184,24 @@ public class DefaultAlicomMessagePuller {
 			Long ownerId, String messageType, String queueName,
 			MessageListener messageListener)
 			throws com.aliyuncs.exceptions.ClientException, ParseException {
+
+		startReceiveMsg0(accessKeyId, accessKeySecret, ownerId, messageType, queueName,
+				regionIdForPop, endpointNameForPop, domainForPop, mnsAccountEndpoint, messageListener);
+	}
+
+	public void stop() {
+		isRunning = false;
+	}
+
+	private void startReceiveMsg0(String accessKeyId, String accessKeySecret, Long ownerId,
+			String messageType, String queueName, String regionIdForPop,
+			String endpointNameForPop, String domainForPop, String mnsAccountEndpoint,
+			 MessageListener messageListener)
+			throws com.aliyuncs.exceptions.ClientException {
+
+		if(mnsAccountEndpoint != null) {
+			this.mnsAccountEndpoint = mnsAccountEndpoint;
+		}
 
 		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
 				endpointNameForPop, regionIdForPop, domainForPop, ownerId);
@@ -268,10 +232,6 @@ public class DefaultAlicomMessagePuller {
 		for (int i = 0; i < pullMsgThreadSize; i++) {
 			executorService.execute(task);
 		}
-	}
-
-	public void stop() {
-		isRunning = false;
 	}
 
 	private class PullMessageTask implements Runnable {
