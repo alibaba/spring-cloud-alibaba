@@ -38,4 +38,5 @@ public interface RestService {
 	User requestBodyMap(Map<String, Object> data, String param);
 
 	Map<String, Object> requestBodyUser(User user);
+
 }

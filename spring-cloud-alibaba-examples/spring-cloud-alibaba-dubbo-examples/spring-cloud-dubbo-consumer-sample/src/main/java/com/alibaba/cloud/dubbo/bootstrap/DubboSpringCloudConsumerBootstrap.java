@@ -23,7 +23,6 @@ import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.service.RestService;
 import com.alibaba.cloud.dubbo.service.User;
 import com.alibaba.cloud.dubbo.service.UserService;
-
 import org.apache.dubbo.config.annotation.Reference;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Dubbo Spring Cloud Consumer Bootstrap.
@@ -80,51 +80,6 @@ public class DubboSpringCloudConsumerBootstrap {
 	@Autowired
 	@LoadBalanced
 	private RestTemplate restTemplate;
-
-	@FeignClient("${provider.application.name}")
-	public interface FeignRestService {
-
-		@GetMapping(value = "/param")
-		String param(@RequestParam("param") String param);
-
-		@PostMapping("/params")
-		public String params(@RequestParam("b") String b, @RequestParam("a") int a);
-
-		@PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_UTF8_VALUE)
-		User requestBody(@RequestParam("param") String param,
-				@RequestBody Map<String, Object> data);
-
-		@GetMapping("/headers")
-		public String headers(@RequestHeader("h2") String header2,
-				@RequestHeader("h") String header, @RequestParam("v") Integer value);
-
-		@GetMapping("/path-variables/{p1}/{p2}")
-		public String pathVariables(@PathVariable("p2") String path2,
-				@PathVariable("p1") String path1, @RequestParam("v") String param);
-	}
-
-	@FeignClient("${provider.application.name}")
-	@DubboTransported(protocol = "dubbo")
-	public interface DubboFeignRestService {
-
-		@GetMapping(value = "/param")
-		String param(@RequestParam("param") String param);
-
-		@PostMapping("/params")
-		String params(@RequestParam("b") String paramB, @RequestParam("a") int paramA);
-
-		@PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_UTF8_VALUE)
-		User requestBody(@RequestParam("param") String param,
-				@RequestBody Map<String, Object> data);
-
-		@GetMapping("/headers")
-		public String headers(@RequestHeader("h2") String header2,
-				@RequestParam("v") Integer value, @RequestHeader("h") String header);
-
-		@GetMapping("/path-variables/{p1}/{p2}")
-		public String pathVariables(@RequestParam("v") String param,
-				@PathVariable("p2") String path2, @PathVariable("p1") String path1);
-	}
 
 	@Bean
 	public ApplicationRunner userServiceRunner() {
@@ -256,4 +211,52 @@ public class DubboSpringCloudConsumerBootstrap {
 		new SpringApplicationBuilder(DubboSpringCloudConsumerBootstrap.class)
 				.properties("spring.profiles.active=nacos").run(args);
 	}
+
+	@FeignClient("${provider.application.name}")
+	public interface FeignRestService {
+
+		@GetMapping("/param")
+		String param(@RequestParam("param") String param);
+
+		@PostMapping("/params")
+		String params(@RequestParam("b") String b, @RequestParam("a") int a);
+
+		@PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_VALUE)
+		User requestBody(@RequestParam("param") String param,
+				@RequestBody Map<String, Object> data);
+
+		@GetMapping("/headers")
+		String headers(@RequestHeader("h2") String header2,
+				@RequestHeader("h") String header, @RequestParam("v") Integer value);
+
+		@GetMapping("/path-variables/{p1}/{p2}")
+		String pathVariables(@PathVariable("p2") String path2,
+				@PathVariable("p1") String path1, @RequestParam("v") String param);
+
+	}
+
+	@FeignClient("${provider.application.name}")
+	@DubboTransported(protocol = "dubbo")
+	public interface DubboFeignRestService {
+
+		@GetMapping("/param")
+		String param(@RequestParam("param") String param);
+
+		@PostMapping("/params")
+		String params(@RequestParam("b") String paramB, @RequestParam("a") int paramA);
+
+		@PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_UTF8_VALUE)
+		User requestBody(@RequestParam("param") String param,
+				@RequestBody Map<String, Object> data);
+
+		@GetMapping("/headers")
+		String headers(@RequestHeader("h2") String header2,
+				@RequestParam("v") Integer value, @RequestHeader("h") String header);
+
+		@GetMapping("/path-variables/{p1}/{p2}")
+		String pathVariables(@RequestParam("v") String param,
+				@PathVariable("p2") String path2, @PathVariable("p1") String path1);
+
+	}
+
 }

@@ -31,4 +31,5 @@ public class DubboSpringCloudWebProviderBootstrap {
 		new SpringApplicationBuilder(DubboSpringCloudWebProviderBootstrap.class)
 				.properties("spring.profiles.active=nacos").run(args);
 	}
+
 }
