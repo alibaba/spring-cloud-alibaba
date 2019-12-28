@@ -17,7 +17,6 @@
 package com.alibaba.cloud.dubbo.bootstrap;
 
 import com.alibaba.cloud.dubbo.service.EchoService;
-
 import org.apache.dubbo.config.annotation.Reference;
 
 import org.springframework.boot.SpringApplication;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Dubbo Spring Cloud Client Bootstrap
+ * Dubbo Spring Cloud Client Bootstrap.
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration
@@ -45,4 +44,5 @@ public class DubboSpringCloudClientBootstrap {
 	public static void main(String[] args) {
 		SpringApplication.run(DubboSpringCloudClientBootstrap.class);
 	}
+
 }

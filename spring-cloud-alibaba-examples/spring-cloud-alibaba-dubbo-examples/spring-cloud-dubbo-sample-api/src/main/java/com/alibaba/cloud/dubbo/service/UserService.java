@@ -30,4 +30,5 @@ public interface UserService {
 	boolean remove(Long userId);
 
 	Collection<User> findAll();
+
 }
