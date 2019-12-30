@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
 @ConditionalOnClass(
 		name = "org.springframework.boot.web.context.WebServerInitializedEvent")

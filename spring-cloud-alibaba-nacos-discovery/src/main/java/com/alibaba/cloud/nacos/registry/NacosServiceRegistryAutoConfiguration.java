@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Configuration;
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
 @ConditionalOnNacosDiscoveryEnabled
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",

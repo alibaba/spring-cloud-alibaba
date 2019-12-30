@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ AliCloudProperties.class, InetUtilsProperties.class })
 public class AliCloudContextAutoConfiguration {
 

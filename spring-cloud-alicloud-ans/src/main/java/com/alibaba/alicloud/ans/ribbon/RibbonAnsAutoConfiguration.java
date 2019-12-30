@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
 @ConditionalOnAnsEnabled
 @ConditionalOnBean(SpringClientFactory.class)

@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
  * <p>
  * support @EnableCircuitBreaker ,Do nothing
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class SentinelCircuitBreakerConfiguration {
 
 }
