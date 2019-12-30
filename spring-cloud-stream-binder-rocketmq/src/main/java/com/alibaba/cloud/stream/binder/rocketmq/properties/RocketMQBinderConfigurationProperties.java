@@ -16,28 +16,26 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.properties;
 
-import javax.validation.constraints.Pattern;
+import java.util.Arrays;
+import java.util.List;
 
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import org.apache.rocketmq.common.MixAll;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = "spring.cloud.stream.rocketmq.binder")
-@Validated
 public class RocketMQBinderConfigurationProperties {
 
 	/**
-	 * The name server for rocketMQ, formats: `host:port;host:port`.
+	 * The name server list for rocketMQ.
 	 */
-	@Pattern(regexp = "^[\\d.:;]+$",
-			message = "nameServer needs to match expression \"host:port;host:port\"")
-	private String nameServer = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
+	private List<String> nameServer = Arrays
+			.asList(RocketMQBinderConstants.DEFAULT_NAME_SERVER);
 
 	/**
 	 * The property of "access-key".
@@ -60,11 +58,11 @@ public class RocketMQBinderConfigurationProperties {
 	 */
 	private String customizedTraceTopic = MixAll.RMQ_SYS_TRACE_TOPIC;
 
-	public String getNameServer() {
+	public List<String> getNameServer() {
 		return nameServer;
 	}
 
-	public void setNameServer(String nameServer) {
+	public void setNameServer(List<String> nameServer) {
 		this.nameServer = nameServer;
 	}
 
