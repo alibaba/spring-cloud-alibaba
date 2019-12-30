@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author www.itmuch.com
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ConsulServiceRegistryAutoConfiguration.class)
 @AutoConfigureBefore({ ConsulAutoServiceRegistrationAutoConfiguration.class,
 		SidecarAutoConfiguration.class })

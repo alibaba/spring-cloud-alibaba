@@ -51,7 +51,7 @@ import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAuto
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnNotWebApplication
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
 		matchIfMissing = true)
@@ -116,7 +116,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 		}
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = ZOOKEEPER_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME)
 	class ZookeeperConfiguration implements SmartInitializingSingleton {
 
@@ -138,7 +138,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME)
 	class ConsulConfiguration {
 

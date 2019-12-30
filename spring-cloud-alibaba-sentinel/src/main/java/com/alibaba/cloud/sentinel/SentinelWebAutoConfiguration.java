@@ -44,7 +44,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaojing
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication(type = Type.SERVLET)
 @ConditionalOnClass(CommonFilter.class)
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)

@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaojing
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
 public class NacosConfigBootstrapConfiguration {
 

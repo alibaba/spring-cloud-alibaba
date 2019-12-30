@@ -28,7 +28,7 @@ import org.springframework.util.StringUtils;
  * @author xiaojing
  */
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SeataProperties.class)
 public class GlobalTransactionAutoConfiguration {
 
