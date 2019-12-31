@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author xiaojing
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnRibbonNacos
 public class NacosRibbonClientConfiguration {
 

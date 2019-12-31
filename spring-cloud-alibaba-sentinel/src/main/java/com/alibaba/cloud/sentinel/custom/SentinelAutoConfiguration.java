@@ -55,7 +55,7 @@ import org.springframework.util.StringUtils;
  * @author jiashuai.xie
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelAutoConfiguration {
@@ -160,10 +160,10 @@ public class SentinelAutoConfiguration {
 	}
 
 	@ConditionalOnClass(ObjectMapper.class)
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class SentinelConverterConfiguration {
 
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelJsonConfiguration {
 
 			private ObjectMapper objectMapper = new ObjectMapper();
@@ -201,7 +201,7 @@ public class SentinelAutoConfiguration {
 		}
 
 		@ConditionalOnClass(XmlMapper.class)
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelXmlConfiguration {
 
 			private XmlMapper xmlMapper = new XmlMapper();

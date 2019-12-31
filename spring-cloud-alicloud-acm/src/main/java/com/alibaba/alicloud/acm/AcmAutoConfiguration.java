@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author juven.xuxb
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Diamond.class })
 @ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
 public class AcmAutoConfiguration implements ApplicationContextAware {

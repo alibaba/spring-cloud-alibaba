@@ -38,7 +38,7 @@ import org.springframework.util.StringUtils;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "com.alibaba.alicloud.oss.OssAutoConfiguration")
 @ConditionalOnProperty(name = "spring.cloud.alicloud.oss.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(OssProperties.class)

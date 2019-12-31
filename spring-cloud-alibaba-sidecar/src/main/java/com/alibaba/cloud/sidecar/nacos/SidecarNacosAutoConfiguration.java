@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author www.itmuch.com
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore({ NacosDiscoveryAutoConfiguration.class,
 		SidecarAutoConfiguration.class })
 @ConditionalOnClass(NacosDiscoveryProperties.class)

@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Endpoint.class)
 public class RocketMQBinderHealthIndicatorAutoConfiguration {
 

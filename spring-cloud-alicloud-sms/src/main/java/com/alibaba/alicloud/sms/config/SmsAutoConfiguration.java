@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author pbting
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
 @ConditionalOnClass(SendSmsRequest.class)
 @ConditionalOnProperty(value = "spring.cloud.alicloud.sms.enable", matchIfMissing = true)
