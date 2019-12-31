@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -87,11 +88,13 @@ public class HomeController {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(
 				map, headers);
 
-		ResponseEntity<String> response = restTemplate.postForEntity(url, request,
-				String.class);
-
+		ResponseEntity<String> response;
+		try {
+			response = restTemplate.postForEntity(url, request, String.class);
+		} catch (Exception exx) {
+			return "mock error";
+		}
 		result = response.getBody();
-
 		if (!SUCCESS.equals(result)) {
 			throw new RuntimeException();
 		}
