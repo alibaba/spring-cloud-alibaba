@@ -36,7 +36,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(AcmProperties.class)
 @ConditionalOnClass(name = "com.alibaba.alicloud.acm.AcmAutoConfiguration")
 @ImportAutoConfiguration(EdasContextAutoConfiguration.class)

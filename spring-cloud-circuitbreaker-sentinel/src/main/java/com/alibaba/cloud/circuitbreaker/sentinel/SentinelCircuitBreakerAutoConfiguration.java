@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Eric Zhao
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ SphU.class })
 @ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled",
 		havingValue = "true", matchIfMissing = true)
@@ -49,7 +49,7 @@ public class SentinelCircuitBreakerAutoConfiguration {
 		return new SentinelCircuitBreakerFactory();
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	public static class SentinelCustomizerConfiguration {
 
 		@Autowired(required = false)

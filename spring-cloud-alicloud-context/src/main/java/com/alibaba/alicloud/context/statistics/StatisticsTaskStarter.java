@@ -40,7 +40,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter({ ScxContextAutoConfiguration.class,
 		OssContextAutoConfiguration.class, AnsContextAutoConfiguration.class,
 		AcmContextBootstrapConfiguration.class })
