@@ -32,20 +32,20 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @Configuration
 public class DatabaseConfiguration {
 
-    @Bean
-    @Primary
-    @ConfigurationProperties("spring.datasource")
-    public DataSource storageDataSource() {
-        return new DruidDataSource();
-    }
+	@Bean
+	@Primary
+	@ConfigurationProperties("spring.datasource")
+	public DataSource storageDataSource() {
+		return new DruidDataSource();
+	}
 
-    @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+	@Bean
+	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-        jdbcTemplate.execute("TRUNCATE TABLE order_tbl");
+		jdbcTemplate.execute("TRUNCATE TABLE order_tbl");
 
-        return jdbcTemplate;
-    }
+		return jdbcTemplate;
+	}
 
 }
