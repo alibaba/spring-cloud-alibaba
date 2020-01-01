@@ -18,9 +18,7 @@ package com.alibaba.cloud.examples;
 
 import com.alibaba.cloud.examples.BusinessApplication.OrderService;
 import com.alibaba.cloud.examples.BusinessApplication.StorageService;
-
 import io.seata.spring.annotation.GlobalTransactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +90,8 @@ public class HomeController {
 		ResponseEntity<String> response;
 		try {
 			response = restTemplate.postForEntity(url, request, String.class);
-		} catch (Exception exx) {
+		}
+		catch (Exception exx) {
 			return "mock error";
 		}
 		result = response.getBody();
