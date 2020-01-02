@@ -17,7 +17,6 @@
 package com.alibaba.cloud.dubbo.bootstrap;
 
 import com.alibaba.cloud.dubbo.service.EchoService;
-
 import org.apache.dubbo.config.annotation.Service;
 
 import org.springframework.boot.SpringApplication;
@@ -34,6 +33,7 @@ public class DubboSpringCloudServerBootstrap {
 	public static void main(String[] args) {
 		SpringApplication.run(DubboSpringCloudServerBootstrap.class);
 	}
+
 }
 
 @Service
@@ -43,4 +43,5 @@ class EchoServiceImpl implements EchoService {
 	public String echo(String message) {
 		return "[echo] Hello, " + message;
 	}
+
 }

@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Scope;
  * @author xiaojing
  */
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Client.class)
 @AutoConfigureBefore(FeignAutoConfiguration.class)
 public class SeataFeignClientAutoConfiguration {
@@ -61,7 +61,7 @@ public class SeataFeignClientAutoConfiguration {
 		return SeataFeignBuilder.builder(beanFactory);
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class FeignBeanPostProcessorConfiguration {
 
 		@Bean

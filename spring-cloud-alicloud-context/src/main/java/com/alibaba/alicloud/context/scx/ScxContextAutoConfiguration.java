@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "com.alibaba.alicloud.scx.ScxAutoConfiguration")
 @ConditionalOnProperty(name = "spring.cloud.alicloud.scx.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(ScxProperties.class)

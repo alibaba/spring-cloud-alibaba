@@ -33,7 +33,6 @@ import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,14 +49,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.result.view.ViewResolver;
-import org.springframework.web.server.ServerWebExchange;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(GlobalFilter.class)
 @ConditionalOnProperty(prefix = ConfigConstants.GATEWAY_PREFIX, name = "enabled",
 		havingValue = "true", matchIfMissing = true)
@@ -93,8 +91,7 @@ public class SentinelSCGAutoConfiguration {
 	}
 
 	private void initAppType() {
-		System.setProperty(SentinelConfig.APP_TYPE,
-				String.valueOf(ConfigConstants.APP_TYPE_SCG_GATEWAY));
+		System.setProperty(SentinelConfig.APP_TYPE, ConfigConstants.APP_TYPE_SCG_GATEWAY);
 	}
 
 	private void initFallback() {
@@ -105,17 +102,11 @@ public class SentinelSCGAutoConfiguration {
 		}
 		if (ConfigConstants.FALLBACK_MSG_RESPONSE.equals(fallbackProperties.getMode())) {
 			if (StringUtil.isNotBlank(fallbackProperties.getResponseBody())) {
-				GatewayCallbackManager.setBlockHandler(new BlockRequestHandler() {
-					@Override
-					public Mono<ServerResponse> handleRequest(ServerWebExchange exchange,
-							Throwable t) {
-						return ServerResponse
-								.status(fallbackProperties.getResponseStatus())
-								.contentType(MediaType
-										.valueOf(fallbackProperties.getContentType()))
-								.body(fromObject(fallbackProperties.getResponseBody()));
-					}
-				});
+				GatewayCallbackManager.setBlockHandler((exchange, t) -> ServerResponse
+						.status(fallbackProperties.getResponseStatus())
+						.contentType(
+								MediaType.valueOf(fallbackProperties.getContentType()))
+						.body(fromValue(fallbackProperties.getResponseBody())));
 				logger.info(
 						"[Sentinel SpringCloudGateway] using AnonymousBlockRequestHandler, responseStatus: "
 								+ fallbackProperties.getResponseStatus()

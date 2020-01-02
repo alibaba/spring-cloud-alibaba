@@ -13,12 +13,6 @@
     <artifactId>spring-cloud-alibaba-dubbo</artifactId>
     <name>Spring Cloud Alibaba Dubbo</name>
 
-    <properties>
-        <spring-cloud-zookeeper.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-zookeeper.version>
-        <spring-cloud-consul.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-consul.version>
-        <curator.version>4.0.1</curator.version>
-    </properties>
-
     <dependencyManagement>
 
         <dependencies>
