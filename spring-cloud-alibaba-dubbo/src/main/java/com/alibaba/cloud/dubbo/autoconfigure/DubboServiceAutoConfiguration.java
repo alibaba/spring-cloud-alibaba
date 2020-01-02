@@ -39,7 +39,7 @@ import org.springframework.core.env.PropertyResolver;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(DubboCloudProperties.class)
 public class DubboServiceAutoConfiguration {
 
@@ -60,7 +60,7 @@ public class DubboServiceAutoConfiguration {
 		return environment;
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@Import({ DubboGenericServiceExecutionContextFactory.class,
 			RequestParamServiceParameterResolver.class,
 			RequestBodyServiceParameterResolver.class,

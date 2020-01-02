@@ -35,4 +35,5 @@ public class DubboSpringCloudServletGatewayBootstrap {
 		new SpringApplicationBuilder(DubboSpringCloudServletGatewayBootstrap.class)
 				.properties("spring.profiles.active=nacos").run(args);
 	}
+
 }

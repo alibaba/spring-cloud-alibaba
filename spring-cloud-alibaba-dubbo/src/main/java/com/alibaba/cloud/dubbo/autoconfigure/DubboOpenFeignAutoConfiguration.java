@@ -37,7 +37,7 @@ import static com.alibaba.cloud.dubbo.autoconfigure.DubboOpenFeignAutoConfigurat
 @ConditionalOnClass(name = { "feign.Feign", TARGETER_CLASS_NAME })
 @AutoConfigureAfter(
 		name = { "org.springframework.cloud.openfeign.FeignAutoConfiguration" })
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class DubboOpenFeignAutoConfiguration {
 
 	/**

@@ -32,7 +32,7 @@ import org.springframework.web.client.RestTemplate;
  * @author xiaojing
  */
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class SeataRestTemplateAutoConfiguration {
 
 	@Bean

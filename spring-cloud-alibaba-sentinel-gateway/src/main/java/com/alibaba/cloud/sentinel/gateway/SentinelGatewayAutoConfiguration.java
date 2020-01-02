@@ -48,12 +48,12 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
 public class SentinelGatewayAutoConfiguration {
 
 	@ConditionalOnClass(ObjectMapper.class)
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class SentinelConverterConfiguration {
 
 		static class ApiPredicateItemDeserializer
@@ -93,7 +93,7 @@ public class SentinelGatewayAutoConfiguration {
 
 		}
 
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelJsonConfiguration {
 
 			private ObjectMapper objectMapper = new ObjectMapper();
@@ -127,7 +127,7 @@ public class SentinelGatewayAutoConfiguration {
 		}
 
 		@ConditionalOnClass(XmlMapper.class)
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelXmlConfiguration {
 
 			private XmlMapper xmlMapper = new XmlMapper();
