@@ -16,16 +16,6 @@
 
 package com.alibaba.alicloud.sms.base;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-
 import com.aliyun.mns.client.CloudQueue;
 import com.aliyun.mns.common.ClientException;
 import com.aliyun.mns.common.ServiceException;
@@ -33,6 +23,14 @@ import com.aliyun.mns.model.Message;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * 阿里通信官方消息默认拉取工具类.
@@ -42,7 +40,8 @@ public class DefaultAlicomMessagePuller {
 	private static final Logger log = LoggerFactory
 			.getLogger(DefaultAlicomMessagePuller.class);
 
-	private String mnsAccountEndpoint = "https://1943695596114318.mns.cn-hangzhou.aliyuncs.com/"; // 阿里通信消息的endpoint,固定。
+	// 阿里通信消息的endpoint,固定。
+	private String mnsAccountEndpoint = "https://1943695596114318.mns.cn-hangzhou.aliyuncs.com/";
 
 	private String endpointNameForPop = "cn-hangzhou";
 
@@ -136,11 +135,10 @@ public class DefaultAlicomMessagePuller {
 	 * @param queueName 队列名称
 	 * @param messageListener 回调的listener,用户自己实现
 	 * @throws com.aliyuncs.exceptions.ClientException throw by sdk
-	 * @throws ParseException throw parse exception
 	 */
 	public void startReceiveMsg(String accessKeyId, String accessKeySecret,
 			String messageType, String queueName, MessageListener messageListener)
-			throws com.aliyuncs.exceptions.ClientException, ParseException {
+			throws com.aliyuncs.exceptions.ClientException {
 
 		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
 				endpointNameForPop, regionIdForPop, domainForPop, null);
@@ -184,13 +182,12 @@ public class DefaultAlicomMessagePuller {
 	 * @param mnsAccountEndpoint mns account endpoint
 	 * @param messageListener 回调的listener,用户自己实现
 	 * @throws com.aliyuncs.exceptions.ClientException throw by sdk
-	 * @throws ParseException throw parse exception
 	 */
 	public void startReceiveMsgForVPC(String accessKeyId, String accessKeySecret,
 			String messageType, String queueName, String regionIdForPop,
 			String endpointNameForPop, String domainForPop, String mnsAccountEndpoint,
 			MessageListener messageListener)
-			throws com.aliyuncs.exceptions.ClientException, ParseException {
+			throws com.aliyuncs.exceptions.ClientException {
 		this.mnsAccountEndpoint = mnsAccountEndpoint;
 		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
 				endpointNameForPop, regionIdForPop, domainForPop, null);
@@ -232,12 +229,11 @@ public class DefaultAlicomMessagePuller {
 	 * @param queueName 队列名称
 	 * @param messageListener 回调listener
 	 * @throws com.aliyuncs.exceptions.ClientException throw by sdk
-	 * @throws ParseException throw parse exception
 	 */
 	public void startReceiveMsgForPartnerUser(String accessKeyId, String accessKeySecret,
 			Long ownerId, String messageType, String queueName,
 			MessageListener messageListener)
-			throws com.aliyuncs.exceptions.ClientException, ParseException {
+			throws com.aliyuncs.exceptions.ClientException {
 
 		tokenGetter = new TokenGetterForAlicom(accessKeyId, accessKeySecret,
 				endpointNameForPop, regionIdForPop, domainForPop, ownerId);
@@ -316,11 +312,10 @@ public class DefaultAlicomMessagePuller {
 					if (!polling) {
 						popMsg = queue.popMessage();
 						if (debugLogOpen) {
-							SimpleDateFormat format = new SimpleDateFormat(
-									"yyyy-MM-dd HH:mm:ss");
+
 							log.info("PullMessageTask_popMessage:"
 									+ Thread.currentThread().getName() + "-popDone at "
-									+ "," + format.format(new Date()) + " msgSize="
+									+ LocalDateTime.now() + " msgSize="
 									+ (popMsg == null ? 0 : popMsg.getMessageId()));
 						}
 						if (popMsg == null) {

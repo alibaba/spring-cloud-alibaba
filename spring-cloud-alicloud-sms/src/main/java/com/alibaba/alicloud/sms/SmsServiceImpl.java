@@ -113,8 +113,7 @@ public final class SmsServiceImpl extends AbstractSmsService {
 
 	@Override
 	public SendBatchSmsResponse sendSmsBatchRequest(
-			SendBatchSmsRequest sendBatchSmsRequest)
-			throws ServerException, ClientException {
+			SendBatchSmsRequest sendBatchSmsRequest) throws ClientException {
 
 		return sendSmsBatchRequest(sendBatchSmsRequest, aliCloudProperties.getAccessKey(),
 				aliCloudProperties.getSecretKey());

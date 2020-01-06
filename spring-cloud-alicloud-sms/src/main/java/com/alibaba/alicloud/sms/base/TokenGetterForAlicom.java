@@ -16,12 +16,6 @@
 
 package com.alibaba.alicloud.sms.base;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import com.aliyun.mns.client.CloudAccount;
 import com.aliyun.mns.client.CloudQueue;
 import com.aliyun.mns.client.MNSClient;
@@ -36,6 +30,13 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * 获取接收云通信消息的临时token.
@@ -60,7 +61,8 @@ public class TokenGetterForAlicom {
 
 	private final static String PRODUCT_NAME = "Dybaseapi";
 
-	private long bufferTime = 1000 * 60 * 2; // 过期时间小于2分钟则重新获取，防止服务器时间误差
+	// 过期时间小于2分钟则重新获取，防止服务器时间误差
+	private long bufferTime = 1000 * 60 * 2;
 
 	private final Object lock = new Object();
 
@@ -88,9 +90,8 @@ public class TokenGetterForAlicom {
 	}
 
 	private TokenForAlicom getTokenFromRemote(String messageType)
-			throws ServerException, ClientException, ParseException {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+			throws ClientException {
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		QueryTokenForMnsQueueRequest request = new QueryTokenForMnsQueueRequest();
 		request.setAcceptFormat(FormatType.JSON);
 		request.setMessageType(messageType);
@@ -104,8 +105,10 @@ public class TokenGetterForAlicom {
 					.getMessageTokenDTO();
 			TokenForAlicom token = new TokenForAlicom();
 			String timeStr = dto.getExpireTime();
+			TemporalAccessor parse = df.parse(timeStr);
+			LocalDateTime date = LocalDateTime.from(parse);
 			token.setMessageType(messageType);
-			token.setExpireTime(df.parse(timeStr).getTime());
+			token.setExpireTime(date.toEpochSecond(ZoneOffset.of("+8")));
 			token.setToken(dto.getSecurityToken());
 			token.setTempAccessKeyId(dto.getAccessKeyId());
 			token.setTempAccessKeySecret(dto.getAccessKeySecret());
@@ -120,10 +123,11 @@ public class TokenGetterForAlicom {
 
 	public TokenForAlicom getTokenByMessageType(String messageType, String queueName,
 			String mnsAccountEndpoint)
-			throws ServerException, ClientException, ParseException {
+			throws ClientException {
 		TokenForAlicom token = tokenMap.get(messageType);
-		Long now = System.currentTimeMillis();
-		if (token == null || (token.getExpireTime() - now) < bufferTime) { // 过期时间小于2分钟则重新获取，防止服务器时间误差
+		long now = System.currentTimeMillis();
+		// 过期时间小于2分钟则重新获取，防止服务器时间误差
+		if (token == null || (token.getExpireTime() - now) < bufferTime) {
 			synchronized (lock) {
 				token = tokenMap.get(messageType);
 				if (token == null || (token.getExpireTime() - now) < bufferTime) {
