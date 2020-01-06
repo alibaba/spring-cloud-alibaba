@@ -16,6 +16,13 @@
 
 package com.alibaba.alicloud.sms.base;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import com.aliyun.mns.client.CloudAccount;
 import com.aliyun.mns.client.CloudQueue;
 import com.aliyun.mns.client.MNSClient;
@@ -30,13 +37,6 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * 获取接收云通信消息的临时token.
@@ -89,8 +89,7 @@ public class TokenGetterForAlicom {
 		iAcsClient = new DefaultAcsClient(profile);
 	}
 
-	private TokenForAlicom getTokenFromRemote(String messageType)
-			throws ClientException {
+	private TokenForAlicom getTokenFromRemote(String messageType) throws ClientException {
 		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		QueryTokenForMnsQueueRequest request = new QueryTokenForMnsQueueRequest();
 		request.setAcceptFormat(FormatType.JSON);
@@ -122,8 +121,7 @@ public class TokenGetterForAlicom {
 	}
 
 	public TokenForAlicom getTokenByMessageType(String messageType, String queueName,
-			String mnsAccountEndpoint)
-			throws ClientException {
+			String mnsAccountEndpoint) throws ClientException {
 		TokenForAlicom token = tokenMap.get(messageType);
 		long now = System.currentTimeMillis();
 		// 过期时间小于2分钟则重新获取，防止服务器时间误差

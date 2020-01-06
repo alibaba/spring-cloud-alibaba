@@ -16,8 +16,6 @@
 
 package com.alibaba.alicloud.sms;
 
-import java.text.ParseException;
-
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.sms.SmsProperties;
 import com.alibaba.alicloud.sms.base.DefaultAlicomMessagePuller;
@@ -101,10 +99,6 @@ public final class SmsServiceImpl extends AbstractSmsService {
 					new ReceiveMessageEntity(messageType, queueName, messageListener));
 		}
 		catch (ClientException e) {
-			log.error("start sms report message listener cause an exception", e);
-			result = false;
-		}
-		catch (ParseException e) {
 			log.error("start sms report message listener cause an exception", e);
 			result = false;
 		}

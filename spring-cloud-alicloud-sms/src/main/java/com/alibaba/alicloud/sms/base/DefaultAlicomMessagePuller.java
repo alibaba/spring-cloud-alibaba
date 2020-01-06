@@ -16,14 +16,6 @@
 
 package com.alibaba.alicloud.sms.base;
 
-import com.aliyun.mns.client.CloudQueue;
-import com.aliyun.mns.common.ClientException;
-import com.aliyun.mns.common.ServiceException;
-import com.aliyun.mns.model.Message;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +23,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+import com.aliyun.mns.client.CloudQueue;
+import com.aliyun.mns.common.ClientException;
+import com.aliyun.mns.common.ServiceException;
+import com.aliyun.mns.model.Message;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 阿里通信官方消息默认拉取工具类.
