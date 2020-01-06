@@ -19,6 +19,7 @@ package com.alibaba.cloud.stream.binder.rocketmq.integration;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderUtils;
 import com.alibaba.cloud.stream.binder.rocketmq.consuming.RocketMQMessageQueueChooser;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
@@ -103,8 +104,8 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		}
 		try {
 			consumer = new DefaultMQPullConsumer(group);
-			consumer.setNamesrvAddr(
-					rocketMQBinderConfigurationProperties.getNameServer());
+			consumer.setNamesrvAddr(RocketMQBinderUtils.getNameServerStr(
+					rocketMQBinderConfigurationProperties.getNameServer()));
 			consumer.setConsumerPullTimeoutMillis(
 					rocketMQConsumerProperties.getExtension().getPullTimeout());
 			consumer.setMessageModel(MessageModel.CLUSTERING);
