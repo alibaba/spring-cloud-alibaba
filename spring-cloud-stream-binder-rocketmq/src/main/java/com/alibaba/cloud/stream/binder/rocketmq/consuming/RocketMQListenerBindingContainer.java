@@ -19,6 +19,7 @@ package com.alibaba.cloud.stream.binder.rocketmq.consuming;
 import java.util.List;
 import java.util.Objects;
 
+import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderUtils;
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
@@ -83,7 +84,7 @@ public class RocketMQListenerBindingContainer
 	 */
 	private int delayLevelWhenNextConsume = 0;
 
-	private String nameServer;
+	private List<String> nameServer;
 
 	private String consumerGroup;
 
@@ -233,7 +234,7 @@ public class RocketMQListenerBindingContainer
 					rocketBinderConfigurationProperties.getCustomizedTraceTopic());
 		}
 
-		consumer.setNamesrvAddr(nameServer);
+		consumer.setNamesrvAddr(RocketMQBinderUtils.getNameServerStr(nameServer));
 		consumer.setConsumeThreadMax(rocketMQConsumerProperties.getConcurrency());
 		consumer.setConsumeThreadMin(rocketMQConsumerProperties.getConcurrency());
 
@@ -304,11 +305,11 @@ public class RocketMQListenerBindingContainer
 		this.delayLevelWhenNextConsume = delayLevelWhenNextConsume;
 	}
 
-	public String getNameServer() {
+	public List<String> getNameServer() {
 		return nameServer;
 	}
 
-	public void setNameServer(String nameServer) {
+	public void setNameServer(List<String> nameServer) {
 		this.nameServer = nameServer;
 	}
 
