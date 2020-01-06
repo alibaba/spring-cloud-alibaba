@@ -144,7 +144,8 @@ public class RocketMQMessageChannelBinder extends
 					producer.setVipChannelEnabled(
 							producerProperties.getExtension().getVipChannelEnabled());
 				}
-				producer.setNamesrvAddr(mergedProperties.getNameServer());
+				producer.setNamesrvAddr(RocketMQBinderUtils
+						.getNameServerStr(mergedProperties.getNameServer()));
 				producer.setSendMsgTimeout(
 						producerProperties.getExtension().getSendMessageTimeout());
 				producer.setRetryTimesWhenSendFailed(
