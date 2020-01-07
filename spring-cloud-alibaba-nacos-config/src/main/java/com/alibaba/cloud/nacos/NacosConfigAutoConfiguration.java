@@ -63,14 +63,9 @@ public class NacosConfigAutoConfiguration {
 	@Bean
 	public NacosContextRefresher nacosContextRefresher(
 			NacosConfigManager nacosConfigManager,
-			NacosRefreshProperties nacosRefreshProperties,
 			NacosRefreshHistory nacosRefreshHistory) {
-		// Compatible with older configurations
-		if (nacosConfigManager.getNacosConfigProperties().isRefreshEnabled()
-				&& null != nacosRefreshProperties
-				&& !nacosRefreshProperties.isEnabled()) {
-			nacosConfigManager.getNacosConfigProperties().setRefreshEnabled(false);
-		}
+		// Consider that it is not necessary to be compatible with the previous configuration
+		// and use the new configuration if necessary.
 		return new NacosContextRefresher(nacosConfigManager, nacosRefreshHistory);
 	}
 
