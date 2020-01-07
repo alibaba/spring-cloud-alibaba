@@ -61,7 +61,7 @@ public class TokenGetterForAlicom {
 
 	private final static String PRODUCT_NAME = "Dybaseapi";
 
-	// 过期时间小于2分钟则重新获取，防止服务器时间误差
+	//过期时间小于2分钟则重新获取，防止服务器时间误差
 	private long bufferTime = 1000 * 60 * 2;
 
 	private final Object lock = new Object();
