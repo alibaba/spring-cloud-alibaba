@@ -26,9 +26,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.util.StringUtils;
 
 public class NacosRefreshHistory {
+
+	private final static Logger log = LoggerFactory.getLogger(NacosRefreshHistory.class);
 
 	private static final int MAX_SIZE = 20;
 
@@ -43,7 +48,8 @@ public class NacosRefreshHistory {
 		try {
 			md = MessageDigest.getInstance("MD5");
 		}
-		catch (NoSuchAlgorithmException ignored) {
+		catch (NoSuchAlgorithmException e) {
+			log.error("failed to initialize MessageDigest : ", e);
 		}
 	}
 
