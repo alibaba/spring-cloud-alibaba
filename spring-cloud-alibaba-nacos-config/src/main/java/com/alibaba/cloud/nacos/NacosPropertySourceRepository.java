@@ -76,7 +76,8 @@ public final class NacosPropertySourceRepository {
 	}
 
 	public static String getMapKey(String dataId, String group) {
-		return String.format("%s$%s", String.valueOf(dataId), String.valueOf(group));
+		return String.join(NacosConfigProperties.COMMAS, String.valueOf(dataId),
+				String.valueOf(group));
 	}
 
 }
