@@ -64,7 +64,8 @@ public class NacosConfigAutoConfiguration {
 	public NacosContextRefresher nacosContextRefresher(
 			NacosConfigManager nacosConfigManager,
 			NacosRefreshHistory nacosRefreshHistory) {
-		// Consider that it is not necessary to be compatible with the previous configuration
+		// Consider that it is not necessary to be compatible with the previous
+		// configuration
 		// and use the new configuration if necessary.
 		return new NacosContextRefresher(nacosConfigManager, nacosRefreshHistory);
 	}

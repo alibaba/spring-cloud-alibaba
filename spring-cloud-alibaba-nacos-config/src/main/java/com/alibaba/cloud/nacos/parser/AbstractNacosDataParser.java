@@ -111,12 +111,12 @@ public abstract class AbstractNacosDataParser {
 	/**
 	 * Generate key-value pairs from the map.
 	 */
-	protected Properties generateProperties(Map<String, String> map) {
+	protected Properties generateProperties(Map<String, Object> map) {
 		if (null == map || map.isEmpty()) {
 			return null;
 		}
 		Properties properties = new Properties();
-		for (Map.Entry<String, String> entry : map.entrySet()) {
+		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			String key = entry.getKey();
 			if (StringUtils.isEmpty(key)) {
 				continue;
@@ -130,12 +130,12 @@ public abstract class AbstractNacosDataParser {
 	/**
 	 * Reload the key ending in `value` if need.
 	 */
-	protected Map<String, String> reloadMap(Map<String, String> map) {
+	protected Map<String, Object> reloadMap(Map<String, Object> map) {
 		if (map == null || map.isEmpty()) {
 			return null;
 		}
-		Map<String, String> result = new HashMap<>(map);
-		for (Map.Entry<String, String> entry : map.entrySet()) {
+		Map<String, Object> result = new HashMap<>(map);
+		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			String key = entry.getKey();
 			if (key.contains(DOT)) {
 				int idx = key.lastIndexOf(DOT);

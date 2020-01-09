@@ -44,9 +44,9 @@ public class NacosRibbonClientConfiguration {
 	public ServerList<?> ribbonServerList(IClientConfig config,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		if (this.propertiesFactory.isSet(ServerList.class, config.getClientName())) {
-            ServerList serverList = this.propertiesFactory.get(ServerList.class, config,
-                    config.getClientName());
-            return serverList;
+			ServerList serverList = this.propertiesFactory.get(ServerList.class, config,
+					config.getClientName());
+			return serverList;
 		}
 		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(config);
