@@ -92,7 +92,7 @@ public class HomeController {
 			response = restTemplate.postForEntity(url, request, String.class);
 		}
 		catch (Exception exx) {
-			return "mock error";
+			throw new RuntimeException("mock error");
 		}
 		result = response.getBody();
 		if (!SUCCESS.equals(result)) {
