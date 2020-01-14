@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,13 @@ public class ConsumerSCLBApplication {
 		return new RestTemplate();
 	}
 
+	public static void main(String[] args) {
+		SpringApplication.run(ConsumerSCLBApplication.class, args);
+	}
+
 	@Configuration
-	@LoadBalancerClient(value = "service-provider", configuration = MyLoadBalancerConfiguration.class)
+	@LoadBalancerClient(value = "service-provider",
+			configuration = MyLoadBalancerConfiguration.class)
 	class MySCLBConfiguration {
 
 	}
@@ -79,7 +84,7 @@ public class ConsumerSCLBApplication {
 
 		private final Random random;
 
-		public RandomLoadBalancer(
+		RandomLoadBalancer(
 				ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
 				String serviceId) {
 			this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
@@ -104,6 +109,7 @@ public class ConsumerSCLBApplication {
 
 			return new DefaultResponse(instance);
 		}
+
 	}
 
 	@FeignClient(name = "service-provider")
@@ -126,6 +132,7 @@ public class ConsumerSCLBApplication {
 
 	@RestController
 	class TestController {
+
 		@Autowired
 		private RestTemplate restTemplate;
 
@@ -143,10 +150,6 @@ public class ConsumerSCLBApplication {
 			return echoService.echo(str);
 		}
 
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(ConsumerSCLBApplication.class, args);
 	}
 
 }
