@@ -38,7 +38,8 @@ import org.springframework.web.client.RestTemplate;
 public class ServiceApplication {
 
 	@Bean
-	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
+	@SentinelRestTemplate(blockHandler = "handleException",
+			blockHandlerClass = ExceptionUtil.class)
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
