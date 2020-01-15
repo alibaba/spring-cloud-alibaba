@@ -73,14 +73,14 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.2.0.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.2.0.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.2.0.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-commons.version>2.2.1.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.2.1.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.2.1.RELEASE</spring-cloud-openfeign.version>
         <spring-cloud-bus.version>2.2.0.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.2.0.RELEASE</spring-cloud-gateway.version>
-        <spring-cloud-stream.version>Horsham.RELEASE</spring-cloud-stream.version>
-        <spring-cloud-consul.version>2.2.0.RELEASE</spring-cloud-consul.version>
-        <spring-cloud-config.version>2.2.0.RELEASE</spring-cloud-config.version>
+        <spring-cloud-gateway.version>2.2.1.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-stream.version>Horsham.SR1</spring-cloud-stream.version>
+        <spring-cloud-consul.version>2.2.1.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-config.version>2.2.1.RELEASE</spring-cloud-config.version>
         <spring-cloud-zookeeper.version>2.2.0.RELEASE</spring-cloud-zookeeper.version>
 
         <junit.version>4.12</junit.version>
