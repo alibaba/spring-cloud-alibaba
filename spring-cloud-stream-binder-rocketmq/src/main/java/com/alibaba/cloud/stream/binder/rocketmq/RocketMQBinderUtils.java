@@ -42,7 +42,8 @@ public final class RocketMQBinderUtils {
 			result.setNameServer(rocketBinderConfigurationProperties.getNameServer());
 		}
 		else {
-			result.setNameServer(Arrays.asList(rocketMQProperties.getNameServer().split(";")));
+			result.setNameServer(
+					Arrays.asList(rocketMQProperties.getNameServer().split(";")));
 		}
 		if (rocketMQProperties.getProducer() == null
 				|| StringUtils.isEmpty(rocketMQProperties.getProducer().getAccessKey())) {

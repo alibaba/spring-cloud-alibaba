@@ -35,50 +35,47 @@ import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
 /**
  * @author liujunjie
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes =
-    NacosRibbonClientPropertyOverrideTests.TestConfiguration.class,
-    properties = {"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
-        "spring.cloud.nacos.discovery.port=18080",
-        "spring.cloud.nacos.discovery.service=remoteApp",
-        "localApp.ribbon.NIWSServerListClassName="
-            + "com.netflix.loadbalancer.ConfigurationBasedServerList",
-        "localApp.ribbon.listOfServers=127.0.0.1:19090",
-        "localApp.ribbon.ServerListRefreshInterval=15000"})
+@SpringBootTest(classes = NacosRibbonClientPropertyOverrideTests.TestConfiguration.class,
+		properties = { "spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+				"spring.cloud.nacos.discovery.port=18080",
+				"spring.cloud.nacos.discovery.service=remoteApp",
+				"localApp.ribbon.NIWSServerListClassName="
+						+ "com.netflix.loadbalancer.ConfigurationBasedServerList",
+				"localApp.ribbon.listOfServers=127.0.0.1:19090",
+				"localApp.ribbon.ServerListRefreshInterval=15000" })
 public class NacosRibbonClientPropertyOverrideTests {
 
-  @Autowired
-  private SpringClientFactory factory;
+	@Autowired
+	private SpringClientFactory factory;
 
+	@Test
+	public void serverListOverridesToTest() {
+		ConfigurationBasedServerList.class
+				.cast(getLoadBalancer("localApp").getServerListImpl());
+	}
 
-  @Test
-  public void serverListOverridesToTest() {
-    ConfigurationBasedServerList.class
-        .cast(getLoadBalancer("localApp").getServerListImpl());
-  }
+	@Test
+	public void serverListRemoteTest() {
+		NacosServerList.class.cast(getLoadBalancer("remoteApp").getServerListImpl());
+	}
 
-  @Test
-  public void serverListRemoteTest() {
-    NacosServerList.class
-        .cast(getLoadBalancer("remoteApp").getServerListImpl());
-  }
+	@SuppressWarnings("unchecked")
+	private ZoneAwareLoadBalancer<Server> getLoadBalancer(String name) {
+		return (ZoneAwareLoadBalancer<Server>) this.factory.getLoadBalancer(name);
+	}
 
-  @SuppressWarnings("unchecked")
-  private ZoneAwareLoadBalancer<Server> getLoadBalancer(String name) {
-    return (ZoneAwareLoadBalancer<Server>) this.factory.getLoadBalancer(name);
-  }
+	@Configuration
+	@RibbonClients
+	@EnableAutoConfiguration
+	@ImportAutoConfiguration({ UtilAutoConfiguration.class,
+			PropertyPlaceholderAutoConfiguration.class, ArchaiusAutoConfiguration.class,
+			RibbonNacosAutoConfiguration.class, NacosDiscoveryClientConfiguration.class })
+	protected static class TestConfiguration {
 
-  @Configuration
-  @RibbonClients
-  @EnableAutoConfiguration
-  @ImportAutoConfiguration({UtilAutoConfiguration.class, PropertyPlaceholderAutoConfiguration.class,
-      ArchaiusAutoConfiguration.class, RibbonNacosAutoConfiguration.class,
-      NacosDiscoveryClientConfiguration.class})
-  protected static class TestConfiguration {
+	}
 
-  }
 }

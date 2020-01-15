@@ -24,7 +24,6 @@ import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
 import com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor;
 import com.alibaba.cloud.sentinel.endpoint.SentinelEndpoint;
 import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
-import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
@@ -43,7 +42,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpRequest;
@@ -55,6 +53,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import static com.alibaba.cloud.sentinel.SentinelConstants.BLOCK_PAGE_URL_CONF_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
@@ -70,7 +69,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 				"spring.cloud.sentinel.filter.urlPatterns=/*,/test",
 				"spring.cloud.sentinel.metric.fileSingleSize=9999",
 				"spring.cloud.sentinel.metric.fileTotalCount=100",
-				"spring.cloud.sentinel.servlet.blockPage=/error",
+				"spring.cloud.sentinel.blockPage=/error",
 				"spring.cloud.sentinel.flow.coldFactor=3",
 				"spring.cloud.sentinel.eager=true",
 				"spring.cloud.sentinel.log.switchPid=true",
@@ -83,9 +82,6 @@ public class SentinelAutoConfigurationTests {
 
 	@Autowired
 	private SentinelProperties sentinelProperties;
-
-	@Autowired
-	private FilterRegistrationBean filterRegistrationBean;
 
 	@Autowired
 	private SentinelBeanPostProcessor sentinelBeanPostProcessor;
@@ -130,9 +126,6 @@ public class SentinelAutoConfigurationTests {
 
 	@Test
 	public void contextLoads() throws Exception {
-
-		assertThat(filterRegistrationBean).isNotNull();
-		assertThat(filterRegistrationBean).isNotNull();
 		assertThat(sentinelBeanPostProcessor).isNotNull();
 
 		checkSentinelLog();
@@ -196,12 +189,6 @@ public class SentinelAutoConfigurationTests {
 	}
 
 	@Test
-	public void testFilter() {
-		assertThat(123).isEqualTo(filterRegistrationBean.getOrder());
-		assertThat(2).isEqualTo(filterRegistrationBean.getUrlPatterns().size());
-	}
-
-	@Test
 	public void testSentinelSystemProperties() {
 		assertThat(LogBase.isLogNameUsePid()).isEqualTo(true);
 		assertThat(TransportConfig.getConsoleServer()).isEqualTo("http://localhost:8080");
@@ -212,7 +199,7 @@ public class SentinelAutoConfigurationTests {
 		assertThat(SentinelConfig.singleMetricFileSize()).isEqualTo(9999);
 		assertThat(SentinelConfig.totalMetricFileCount()).isEqualTo(100);
 		assertThat(SentinelConfig.charset()).isEqualTo("UTF-8");
-		assertThat(WebServletConfig.getBlockPage()).isEqualTo("/error");
+		assertThat(SentinelConfig.getConfig(BLOCK_PAGE_URL_CONF_KEY)).isEqualTo("/error");
 	}
 
 	@Test
