@@ -39,6 +39,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,24 +52,23 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
-@SpringBootTest(classes = NacosConfigurationXmlJsonTest.TestConfig.class,
-		properties = { "spring.application.name=xmlApp", "spring.profiles.active=dev",
-				"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
-				"spring.cloud.nacos.config.namespace=test-namespace",
-				"spring.cloud.nacos.config.encode=utf-8",
-				"spring.cloud.nacos.config.timeout=1000",
-				"spring.cloud.nacos.config.group=test-group",
-				"spring.cloud.nacos.config.name=test-name",
-				"spring.cloud.nacos.config.cluster-name=test-cluster",
-				"spring.cloud.nacos.config.file-extension=xml",
-				"spring.cloud.nacos.config.contextPath=test-contextpath",
-				"spring.cloud.nacos.config.ext-config[0].data-id=ext-json-test.json",
-				"spring.cloud.nacos.config.ext-config[1].data-id=ext-common02.properties",
-				"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
-				"spring.cloud.nacos.config.shared-dataids=shared-data1.properties",
-				"spring.cloud.nacos.config.accessKey=test-accessKey",
-				"spring.cloud.nacos.config.secretKey=test-secretKey" },
-		webEnvironment = NONE)
+@SpringBootTest(classes = NacosConfigurationXmlJsonTest.TestConfig.class, properties = {
+		"spring.application.name=xmlApp", "spring.profiles.active=dev",
+		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
+		"spring.cloud.nacos.config.namespace=test-namespace",
+		"spring.cloud.nacos.config.encode=utf-8",
+		"spring.cloud.nacos.config.timeout=1000",
+		"spring.cloud.nacos.config.group=test-group",
+		"spring.cloud.nacos.config.name=test-name",
+		"spring.cloud.nacos.config.cluster-name=test-cluster",
+		"spring.cloud.nacos.config.file-extension=xml",
+		"spring.cloud.nacos.config.contextPath=test-contextpath",
+		"spring.cloud.nacos.config.ext-config[0].data-id=ext-json-test.json",
+		"spring.cloud.nacos.config.ext-config[1].data-id=ext-common02.properties",
+		"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
+		"spring.cloud.nacos.config.shared-dataids=shared-data1.properties,shared-data.json",
+		"spring.cloud.nacos.config.accessKey=test-accessKey",
+		"spring.cloud.nacos.config.secretKey=test-secretKey" }, webEnvironment = NONE)
 public class NacosConfigurationXmlJsonTest {
 
 	static {
@@ -136,6 +136,22 @@ public class NacosConfigurationXmlJsonTest {
 						return "shared-name=shared-value-1";
 					}
 
+					if ("shared-data.json".equals(args[0])
+							&& "DEFAULT_GROUP".equals(args[1])) {
+						return "{\n" + "    \"test\" : {\n"
+								+ "        \"name\" : \"test\",\n"
+								+ "        \"list\" : [\n" + "            {\n"
+								+ "                \"name\" :\"listname1\",\n"
+								+ "                \"age\":1\n" + "            },\n"
+								+ "            {\n"
+								+ "                \"name\" :\"listname2\",\n"
+								+ "                \"age\":2\n" + "            }\n"
+								+ "        ],\n" + "        \"metadata\" : {\n"
+								+ "            \"intKey\" : 123,\n"
+								+ "            \"booleanKey\" : true\n" + "        }\n"
+								+ "    }\n" + "}";
+					}
+
 					return "";
 				}
 			});
@@ -155,6 +171,9 @@ public class NacosConfigurationXmlJsonTest {
 
 	@Autowired
 	private NacosRefreshHistory refreshHistory;
+
+	@Autowired
+	private Environment environment;
 
 	@Test
 	public void contextLoads() throws Exception {
@@ -176,6 +195,27 @@ public class NacosConfigurationXmlJsonTest {
 
 		checkoutEndpoint();
 
+		checkJsonParser();
+	}
+
+	private void checkJsonParser() {
+		assertThat(environment.getProperty("test.name", String.class)).isEqualTo("test");
+
+		assertThat(environment.getProperty("test.list[0].name", String.class))
+				.isEqualTo("listname1");
+		assertThat(environment.getProperty("test.list[0].age", Integer.class))
+				.isEqualTo(1);
+
+		assertThat(environment.getProperty("test.list[1].name", String.class))
+				.isEqualTo("listname2");
+		assertThat(environment.getProperty("test.list[1].age", Integer.class))
+				.isEqualTo(2);
+
+		assertThat(
+				(Integer) environment.getProperty("test.metadata.intKey", Object.class))
+						.isEqualTo(123);
+		assertThat((Boolean) environment.getProperty("test.metadata.booleanKey",
+				Object.class)).isEqualTo(true);
 	}
 
 	private void checkoutNacosConfigServerAddr() {

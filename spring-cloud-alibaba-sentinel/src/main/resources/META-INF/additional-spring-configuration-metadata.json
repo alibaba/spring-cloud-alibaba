@@ -43,13 +43,13 @@
       "name": "spring.cloud.sentinel.filter.order",
       "type": "java.lang.Integer",
       "defaultValue": "Integer.MIN_VALUE",
-      "description": "sentinel filter chain order, will be set to FilterRegistrationBean."
+      "description": "SentinelWebInterceptor order, will be register to InterceptorRegistry."
     },
     {
       "name": "spring.cloud.sentinel.filter.enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,
-      "description": "Enable to instance com.alibaba.csp.sentinel.adapter.servlet.CommonFilter."
+      "description": "Enable to register com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor."
     },
     {
       "name": "spring.cloud.sentinel.metric.charset",
@@ -79,9 +79,14 @@
       "description": "log file should with pid."
     },
     {
-      "name": "spring.cloud.sentinel.servlet.blockPage",
+      "name": "spring.cloud.sentinel.block-page",
       "type": "java.lang.String",
       "description": "the process page when the flow control is triggered."
+    },
+    {
+      "name": "spring.cloud.sentinel.servlet.block-page",
+      "type": "java.lang.String",
+      "description": "recommoned use spring.cloud.sentinel.block-page."
     },
     {
       "name": "spring.cloud.sentinel.flow.coldFactor",

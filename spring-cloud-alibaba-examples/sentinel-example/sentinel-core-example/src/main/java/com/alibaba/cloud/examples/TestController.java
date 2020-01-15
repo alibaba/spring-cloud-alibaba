@@ -19,6 +19,7 @@ package com.alibaba.cloud.examples;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -31,6 +32,9 @@ public class TestController {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private CircuitBreakerFactory circuitBreakerFactory;
 
 	@GetMapping("/hello")
 	@SentinelResource("resource")
@@ -52,6 +56,19 @@ public class TestController {
 	@GetMapping("/template")
 	public String client() {
 		return restTemplate.getForObject("http://www.taobao.com/test", String.class);
+	}
+
+	@GetMapping("/slow")
+	public String slow() {
+		return circuitBreakerFactory.create("show").run(() -> {
+			try {
+				Thread.sleep(1000L);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return "success";
+		}, throwable -> "fallback");
 	}
 
 }

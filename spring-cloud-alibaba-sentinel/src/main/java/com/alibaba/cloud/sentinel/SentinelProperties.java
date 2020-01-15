@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.sentinel;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -26,7 +27,9 @@ import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
 import org.springframework.core.Ordered;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -53,6 +56,11 @@ public class SentinelProperties {
 	private boolean enabled = true;
 
 	/**
+	 * The process page when the flow control is triggered.
+	 */
+	private String blockPage;
+
+	/**
 	 * Configurations about datasource, like 'nacos', 'apollo', 'file', 'zookeeper'.
 	 */
 	private Map<String, DataSourcePropertiesConfiguration> datasource = new TreeMap<>(
@@ -75,7 +83,7 @@ public class SentinelProperties {
 	private Servlet servlet = new Servlet();
 
 	/**
-	 * Sentinel filter when the application is web, the configuration is effective.
+	 * Sentinel interceptor when the application is web, the configuration is effective.
 	 */
 	private Filter filter = new Filter();
 
@@ -174,12 +182,23 @@ public class SentinelProperties {
 		this.httpMethodSpecify = httpMethodSpecify;
 	}
 
+	public String getBlockPage() {
+		if (StringUtils.hasText(this.blockPage)) {
+			return this.blockPage;
+		}
+		return this.servlet.getBlockPage();
+	}
+
+	public void setBlockPage(String blockPage) {
+		this.blockPage = blockPage;
+	}
+
 	public static class Flow {
 
 		/**
 		 * The cold factor {@link SentinelConfig#COLD_FACTOR}.
 		 */
-		private String coldFactor = "3";
+		private String coldFactor = SentinelConstants.COLD_FACTOR;
 
 		public String getColdFactor() {
 			return coldFactor;
@@ -198,10 +217,15 @@ public class SentinelProperties {
 		 */
 		private String blockPage;
 
+		@Deprecated
+		@DeprecatedConfigurationProperty(
+				reason = "replaced to SentinelProperties#blockPage.",
+				replacement = SentinelConstants.PROPERTY_PREFIX + ".block-page")
 		public String getBlockPage() {
 			return blockPage;
 		}
 
+		@Deprecated
 		public void setBlockPage(String blockPage) {
 			this.blockPage = blockPage;
 		}
@@ -224,7 +248,7 @@ public class SentinelProperties {
 		 * Charset when sentinel write or search metric file.
 		 * {@link SentinelConfig#CHARSET}
 		 */
-		private String charset = "UTF-8";
+		private String charset = SentinelConstants.CHARSET;
 
 		public String getFileSingleSize() {
 			return fileSingleSize;
@@ -257,7 +281,7 @@ public class SentinelProperties {
 		/**
 		 * Sentinel api port, default value is 8719 {@link TransportConfig#SERVER_PORT}.
 		 */
-		private String port = "8719";
+		private String port = SentinelConstants.API_PORT;
 
 		/**
 		 * Sentinel dashboard address, won't try to connect dashboard when address is
@@ -314,18 +338,18 @@ public class SentinelProperties {
 	public static class Filter {
 
 		/**
-		 * Sentinel filter chain order.
+		 * SentinelWebInterceptor order, will be register to InterceptorRegistry.
 		 */
 		private int order = Ordered.HIGHEST_PRECEDENCE;
 
 		/**
-		 * URL pattern for sentinel filter, default is /*.
+		 * URL pattern for SentinelWebInterceptor, default is /*.
 		 */
-		private List<String> urlPatterns;
+		private List<String> urlPatterns = Arrays.asList("/*");
 
 		/**
 		 * Enable to instance
-		 * {@link com.alibaba.csp.sentinel.adapter.servlet.CommonFilter}.
+		 * {@link com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor}.
 		 */
 		private boolean enabled = true;
 
