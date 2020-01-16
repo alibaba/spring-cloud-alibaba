@@ -17,7 +17,7 @@
 package com.alibaba.cloud.nacos.parser;
 
 import java.io.IOException;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * @author zkz
@@ -34,10 +34,11 @@ public final class NacosDataParserHandler {
 	 * Parsing nacos configuration content.
 	 * @param data config from Nacos
 	 * @param extension file extension. json or xml or yml or yaml or properties
-	 * @return result of properties
+	 * @return result of LinkedHashMap
 	 * @throws IOException thrown if there is a problem parsing config.
 	 */
-	public Properties parseNacosData(String data, String extension) throws IOException {
+	public Map<String, Object> parseNacosData(String data, String extension)
+			throws IOException {
 		if (null == parser) {
 			parser = this.createParser();
 		}

@@ -17,9 +17,8 @@
 package com.alibaba.cloud.nacos.client;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
@@ -39,7 +38,7 @@ public class NacosPropertySourceBuilder {
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceBuilder.class);
 
-	private static final Properties EMPTY_PROPERTIES = new Properties();
+	private static final Map<String, Object> EMPTY_MAP = new LinkedHashMap();
 
 	private ConfigService configService;
 
@@ -72,14 +71,15 @@ public class NacosPropertySourceBuilder {
 	 */
 	NacosPropertySource build(String dataId, String group, String fileExtension,
 			boolean isRefreshable) {
-		Properties p = loadNacosData(dataId, group, fileExtension);
+		Map<String, Object> p = loadNacosData(dataId, group, fileExtension);
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
-				propertiesToMap(p), new Date(), isRefreshable);
+				p, new Date(), isRefreshable);
 		NacosPropertySourceRepository.collectNacosPropertySource(nacosPropertySource);
 		return nacosPropertySource;
 	}
 
-	private Properties loadNacosData(String dataId, String group, String fileExtension) {
+	private Map<String, Object> loadNacosData(String dataId, String group,
+			String fileExtension) {
 		String data = null;
 		try {
 			data = configService.getConfig(dataId, group, timeout);
@@ -87,16 +87,16 @@ public class NacosPropertySourceBuilder {
 				log.warn(
 						"Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]",
 						dataId, group);
-				return EMPTY_PROPERTIES;
+				return EMPTY_MAP;
 			}
 			if (log.isDebugEnabled()) {
 				log.debug(String.format(
 						"Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
 						group, data));
 			}
-			Properties properties = NacosDataParserHandler.getInstance()
+			Map<String, Object> dataMap = NacosDataParserHandler.getInstance()
 					.parseNacosData(data, fileExtension);
-			return properties == null ? EMPTY_PROPERTIES : properties;
+			return dataMap == null ? EMPTY_MAP : dataMap;
 		}
 		catch (NacosException e) {
 			log.error("get data from Nacos error,dataId:{}, ", dataId, e);
@@ -104,14 +104,7 @@ public class NacosPropertySourceBuilder {
 		catch (Exception e) {
 			log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
 		}
-		return EMPTY_PROPERTIES;
-	}
-
-	@SuppressWarnings("unchecked")
-	private Map<String, Object> propertiesToMap(Properties properties) {
-		Map<String, Object> result = new HashMap<>(16);
-		properties.forEach((k, v) -> result.put(String.valueOf(k), v));
-		return result;
+		return EMPTY_MAP;
 	}
 
 }
