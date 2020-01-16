@@ -96,9 +96,6 @@ public class AcmEndpointTests {
 	private AcmRefreshHistory refreshHistory;
 
 	@Autowired
-	private AcmPropertySourceRepository propertySourceRepository;
-
-	@Autowired
 	private AcmPropertySourceRepository acmPropertySourceRepository;
 
 	@Test
@@ -133,7 +130,7 @@ public class AcmEndpointTests {
 
 	private void checkoutEndpoint() throws Exception {
 		AcmEndpoint acmEndpoint = new AcmEndpoint(properties, refreshHistory,
-				propertySourceRepository);
+				acmPropertySourceRepository);
 		Map<String, Object> map = acmEndpoint.invoke();
 		assertThat(properties).isEqualTo(map.get("config"));
 		assertThat(refreshHistory.getRecords())

@@ -43,13 +43,11 @@ public class AcmEndpointAutoConfiguration {
 	@Autowired
 	private AcmRefreshHistory acmRefreshHistory;
 
-	@Autowired
-	private AcmPropertySourceRepository acmPropertySourceRepository;
-
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
 	@Bean
-	public AcmEndpoint acmEndpoint() {
+	public AcmEndpoint acmEndpoint(
+			AcmPropertySourceRepository acmPropertySourceRepository) {
 		return new AcmEndpoint(acmProperties, acmRefreshHistory,
 				acmPropertySourceRepository);
 	}

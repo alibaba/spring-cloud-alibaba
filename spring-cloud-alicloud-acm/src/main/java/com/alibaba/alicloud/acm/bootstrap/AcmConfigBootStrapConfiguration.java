@@ -14,41 +14,36 @@
  * limitations under the License.
  */
 
-package com.alibaba.alicloud.acm;
+package com.alibaba.alicloud.acm.bootstrap;
 
-import com.alibaba.alicloud.acm.refresh.AcmContextRefresher;
-import com.alibaba.alicloud.acm.refresh.AcmRefreshHistory;
+import com.alibaba.alicloud.acm.AcmPropertySourceRepository;
 import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
 import com.taobao.diamond.client.Diamond;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Created on 01/10/2017.
- *
- * @author juven.xuxb
+ * @author yuhuangbin
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Diamond.class })
 @ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
-public class AcmAutoConfiguration {
+public class AcmConfigBootStrapConfiguration {
 
 	@Bean
-	public AcmRefreshHistory acmRefreshHistory() {
-		return new AcmRefreshHistory();
+	public AcmPropertySourceRepository acmPropertySourceRepository() {
+		return new AcmPropertySourceRepository();
 	}
 
 	@Bean
-	public AcmContextRefresher acmContextRefresher(
-			AcmIntegrationProperties acmIntegrationProperties,
-			ContextRefresher contextRefresher, AcmRefreshHistory refreshHistory,
-			AcmPropertySourceRepository acmPropertySourceRepository) {
-		return new AcmContextRefresher(contextRefresher, acmIntegrationProperties,
-				refreshHistory, acmPropertySourceRepository);
+	public AcmPropertySourceLocator acmPropertySourceLocator(
+			AcmPropertySourceRepository acmPropertySourceRepository,
+			AcmIntegrationProperties acmIntegrationProperties) {
+		return new AcmPropertySourceLocator(acmIntegrationProperties,
+				acmPropertySourceRepository);
 	}
 
 }
