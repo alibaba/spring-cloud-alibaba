@@ -43,7 +43,7 @@ public class AcmEndpoint {
 
 	private final AcmRefreshHistory refreshHistory;
 
-	private final AcmPropertySourceRepository propertySourceRepository;
+	private final AcmPropertySourceRepository acmPropertySourceRepository;
 
 	private ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
 		@Override
@@ -53,10 +53,10 @@ public class AcmEndpoint {
 	};
 
 	public AcmEndpoint(AcmProperties properties, AcmRefreshHistory refreshHistory,
-			AcmPropertySourceRepository propertySourceRepository) {
+			AcmPropertySourceRepository acmPropertySourceRepository) {
 		this.properties = properties;
 		this.refreshHistory = refreshHistory;
-		this.propertySourceRepository = propertySourceRepository;
+		this.acmPropertySourceRepository = acmPropertySourceRepository;
 	}
 
 	@ReadOperation
@@ -65,7 +65,7 @@ public class AcmEndpoint {
 		result.put("config", properties);
 
 		Map<String, Object> runtime = new HashMap<>();
-		List<AcmPropertySource> all = propertySourceRepository.getAll();
+		List<AcmPropertySource> all = acmPropertySourceRepository.allAcmPropertySource();
 
 		List<Map<String, Object>> sources = new ArrayList<>();
 		for (AcmPropertySource ps : all) {
