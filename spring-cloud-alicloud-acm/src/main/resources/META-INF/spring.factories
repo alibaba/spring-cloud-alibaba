@@ -1,5 +1,5 @@
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-com.alibaba.alicloud.acm.bootstrap.AcmPropertySourceLocator
+com.alibaba.alicloud.acm.bootstrap.AcmConfigBootStrapConfiguration
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.alibaba.alicloud.acm.AcmAutoConfiguration,\

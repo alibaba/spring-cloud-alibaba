@@ -17,54 +17,46 @@
 package com.alibaba.alicloud.acm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.alicloud.acm.bootstrap.AcmPropertySource;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.PropertySource;
 
 /**
  * @author juven.xuxb, 5/17/16.
+ * @author yuhuangbin
  */
 public class AcmPropertySourceRepository {
 
-	private final ApplicationContext applicationContext;
-
-	public AcmPropertySourceRepository(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
+	private Map<String, AcmPropertySource> acmPropertySourceMap = new ConcurrentHashMap<>();
 
 	/**
-	 * get all acm properties from application context.
+	 * get all acm properties from AcmPropertySourceRepository.
 	 * @return list of acm propertysource
 	 */
-	public List<AcmPropertySource> getAll() {
+	public List<AcmPropertySource> allAcmPropertySource() {
 		List<AcmPropertySource> result = new ArrayList<>();
-		ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) applicationContext;
-		for (PropertySource p : ctx.getEnvironment().getPropertySources()) {
-			if (p instanceof AcmPropertySource) {
-				result.add((AcmPropertySource) p);
-			}
-			else if (p instanceof CompositePropertySource) {
-				collectAcmPropertySources((CompositePropertySource) p, result);
-			}
-		}
+		result.addAll(this.acmPropertySourceMap.values());
 		return result;
 	}
 
-	private void collectAcmPropertySources(CompositePropertySource composite,
-			List<AcmPropertySource> result) {
-		for (PropertySource p : composite.getPropertySources()) {
-			if (p instanceof AcmPropertySource) {
-				result.add((AcmPropertySource) p);
+	public void collectAcmPropertySource(
+			Collection<PropertySource<?>> acmPropertySources) {
+		acmPropertySources.forEach(propertySource -> {
+			if (propertySource.getClass().isAssignableFrom(AcmPropertySource.class)) {
+				AcmPropertySource acmPropertySource = (AcmPropertySource) propertySource;
+				this.acmPropertySourceMap.put(getMapKey(acmPropertySource.getDataId(),
+						acmPropertySource.getGroup()), acmPropertySource);
 			}
-			else if (p instanceof CompositePropertySource) {
-				collectAcmPropertySources((CompositePropertySource) p, result);
-			}
-		}
+		});
+	}
+
+	public String getMapKey(String dataId, String group) {
+		return String.join(",", dataId, group);
 	}
 
 }
