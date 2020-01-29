@@ -60,14 +60,14 @@ public class TestController {
 
 	@GetMapping("/slow")
 	public String slow() {
-		return circuitBreakerFactory.create("show").run(() -> {
+		return circuitBreakerFactory.create("slow").run(() -> {
 			try {
-				Thread.sleep(1000L);
+				Thread.sleep(500L);
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			return "success";
+			return "slow";
 		}, throwable -> "fallback");
 	}
 
