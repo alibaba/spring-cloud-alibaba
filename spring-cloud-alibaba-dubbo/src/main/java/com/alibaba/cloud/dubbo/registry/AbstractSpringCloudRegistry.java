@@ -224,8 +224,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
 		if (CollectionUtils.isEmpty(serviceInstances)) {
 			dubboMetadataConfigServiceProxy.removeProxy(serviceName);
-			repository.removeInitializedService(serviceName);
-			repository.removeMetadata(serviceName);
+			repository.removeMetadataAndInitializedService(serviceName);
 			dubboGenericServiceFactory.destroy(serviceName);
 			if (logger.isWarnEnabled()) {
 				logger.warn(
