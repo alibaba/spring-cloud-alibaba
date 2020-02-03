@@ -29,7 +29,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.StringUtils;
 
 import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
-import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getSubProperties;
+import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getPrefixedProperties;
 
 /**
  * Missing {@link SpringCloudRegistry} Property {@link Condition}.
@@ -61,8 +61,8 @@ public class MissingSpringCloudRegistryConfigPropertyCondition
 					"'spring-cloud' protocol was found from 'dubbo.registry.address'");
 		}
 
-		Map<String, Object> properties = getSubProperties(environment,
-				"dubbo.registries.");
+		Map<String, Object> properties = getPrefixedProperties(
+				environment.getPropertySources(), "dubbo.registries.");
 
 		boolean found = properties.entrySet().stream().anyMatch(entry -> {
 			String key = entry.getKey();
