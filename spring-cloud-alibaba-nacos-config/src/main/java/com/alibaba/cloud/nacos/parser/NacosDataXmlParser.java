@@ -18,9 +18,8 @@ package com.alibaba.cloud.nacos.parser;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -46,17 +45,17 @@ public class NacosDataXmlParser extends AbstractNacosDataParser {
 	}
 
 	@Override
-	protected Properties doParse(String data) throws IOException {
+	protected Map<String, Object> doParse(String data) throws IOException {
 		if (StringUtils.isEmpty(data)) {
 			return null;
 		}
-		Map<String, String> map = parseXml2Map(data);
-		return this.generateProperties(this.reloadMap(map));
+		Map<String, Object> map = parseXml2Map(data);
+		return this.reloadMap(map);
 	}
 
-	private Map<String, String> parseXml2Map(String xml) throws IOException {
+	private Map<String, Object> parseXml2Map(String xml) throws IOException {
 		xml = xml.replaceAll("\\r", "").replaceAll("\\n", "").replaceAll("\\t", "");
-		Map<String, String> map = new HashMap<>(32);
+		Map<String, Object> map = new LinkedHashMap<>(32);
 		try {
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
@@ -73,7 +72,7 @@ public class NacosDataXmlParser extends AbstractNacosDataParser {
 		return map;
 	}
 
-	private void parseNodeList(NodeList nodeList, Map<String, String> map,
+	private void parseNodeList(NodeList nodeList, Map<String, Object> map,
 			String parentKey) {
 		if (nodeList == null || nodeList.getLength() < 1) {
 			return;
@@ -104,7 +103,7 @@ public class NacosDataXmlParser extends AbstractNacosDataParser {
 		}
 	}
 
-	private void parseNodeAttr(NamedNodeMap nodeMap, Map<String, String> map,
+	private void parseNodeAttr(NamedNodeMap nodeMap, Map<String, Object> map,
 			String parentKey) {
 		if (null == nodeMap || nodeMap.getLength() < 1) {
 			return;

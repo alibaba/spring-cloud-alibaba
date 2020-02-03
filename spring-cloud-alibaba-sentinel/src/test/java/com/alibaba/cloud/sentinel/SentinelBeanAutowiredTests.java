@@ -16,18 +16,14 @@
 
 package com.alibaba.cloud.sentinel;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.RequestOriginParser;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
-import com.alibaba.csp.sentinel.adapter.servlet.util.FilterUtil;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.DefaultBlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.UrlCleaner;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -53,7 +49,7 @@ public class SentinelBeanAutowiredTests {
 	private UrlCleaner urlCleaner;
 
 	@Autowired
-	private UrlBlockHandler urlBlockHandler;
+	private BlockExceptionHandler blockExceptionHandler;
 
 	@Autowired
 	private RequestOriginParser requestOriginParser;
@@ -61,10 +57,13 @@ public class SentinelBeanAutowiredTests {
 	@Autowired
 	private SentinelProperties sentinelProperties;
 
+	@Autowired
+	private SentinelWebMvcConfig sentinelWebMvcConfig;
+
 	@Test
 	public void contextLoads() throws Exception {
 		assertThat(urlCleaner).isNotNull();
-		assertThat(urlBlockHandler).isNotNull();
+		assertThat(blockExceptionHandler).isNotNull();
 		assertThat(requestOriginParser).isNotNull();
 		assertThat(sentinelProperties).isNotNull();
 
@@ -80,10 +79,10 @@ public class SentinelBeanAutowiredTests {
 
 	@Test
 	public void testBeanAutowired() {
-		assertThat(WebCallbackManager.getUrlCleaner()).isEqualTo(urlCleaner);
-		assertThat(WebCallbackManager.getUrlBlockHandler()).isEqualTo(urlBlockHandler);
-		assertThat(WebCallbackManager.getRequestOriginParser())
-				.isEqualTo(requestOriginParser);
+		assertThat(sentinelWebMvcConfig.getUrlCleaner()).isEqualTo(urlCleaner);
+		assertThat(sentinelWebMvcConfig.getBlockExceptionHandler())
+				.isEqualTo(blockExceptionHandler);
+		assertThat(sentinelWebMvcConfig.getOriginParser()).isEqualTo(requestOriginParser);
 	}
 
 	@Configuration
@@ -113,15 +112,8 @@ public class SentinelBeanAutowiredTests {
 		}
 
 		@Bean
-		public UrlBlockHandler urlBlockHandler() {
-			return new UrlBlockHandler() {
-				@Override
-				public void blocked(HttpServletRequest httpServletRequest,
-						HttpServletResponse httpServletResponse, BlockException e)
-						throws IOException {
-					FilterUtil.blockRequest(httpServletRequest, httpServletResponse);
-				}
-			};
+		public BlockExceptionHandler blockExceptionHandler() {
+			return new DefaultBlockExceptionHandler();
 		}
 
 	}

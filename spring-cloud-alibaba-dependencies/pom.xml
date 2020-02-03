@@ -6,7 +6,7 @@
     <parent>
         <artifactId>spring-cloud-dependencies-parent</artifactId>
         <groupId>org.springframework.cloud</groupId>
-        <version>2.2.0.RELEASE</version>
+        <version>2.2.1.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -18,9 +18,9 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <sentinel.version>1.6.3</sentinel.version>
+        <sentinel.version>1.7.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <seata.version>0.9.0</seata.version>
+        <seata.version>1.0.0</seata.version>
         <nacos.client.version>1.1.4</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.9</acm.version>
@@ -198,12 +198,17 @@
                 <artifactId>sentinel-api-gateway-adapter-common</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-spring-webmvc-adapter</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
 
 
             <!--Alibaba Seata-->
             <dependency>
                 <groupId>io.seata</groupId>
-                <artifactId>seata-all</artifactId>
+                <artifactId>seata-spring-boot-starter</artifactId>
                 <version>${seata.version}</version>
             </dependency>
 

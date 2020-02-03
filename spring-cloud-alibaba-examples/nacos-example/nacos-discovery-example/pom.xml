@@ -18,6 +18,8 @@
 
     <modules>
         <module>nacos-discovery-consumer-example</module>
+        <module>nacos-discovery-consumer-sclb-example</module>
+        <module>nacos-reactivediscovery-consumer-example</module>
         <module>nacos-discovery-provider-example</module>
         <module>nacos-discovery-spring-cloud-config-server-example</module>
         <module>nacos-discovery-spring-cloud-config-client-example</module>

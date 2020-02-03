@@ -297,12 +297,15 @@ public class DubboServiceMetadataRepository
 	}
 
 	/**
-	 * Remove the metadata of Dubbo Services if no there is no service instance.
+	 * Remove the metadata and initialized service of Dubbo Services if no there is no
+	 * service instance.
 	 * @param serviceName the service name
 	 */
-	public void removeInitializedService(String serviceName) {
+	public void removeMetadataAndInitializedService(String serviceName) {
 		synchronized (monitor) {
 			initializedServices.remove(serviceName);
+			dubboRestServiceMetadataRepository.remove(serviceName);
+			subscribedDubboMetadataServiceURLs.remove(serviceName);
 		}
 	}
 
@@ -642,11 +645,6 @@ public class DubboServiceMetadataRepository
 		String version = dubboMetadataServiceURL.getParameter(VERSION_KEY);
 		// Initialize DubboMetadataService with right version
 		dubboMetadataConfigServiceProxy.initProxy(serviceName, version);
-	}
-
-	public void removeMetadata(String serviceName) {
-		dubboRestServiceMetadataRepository.remove(serviceName);
-		subscribedDubboMetadataServiceURLs.remove(serviceName);
 	}
 
 	@Override
