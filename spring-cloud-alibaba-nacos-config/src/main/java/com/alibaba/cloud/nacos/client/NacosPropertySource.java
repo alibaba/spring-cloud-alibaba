@@ -19,6 +19,8 @@ package com.alibaba.cloud.nacos.client;
 import java.util.Date;
 import java.util.Map;
 
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+
 import org.springframework.core.env.MapPropertySource;
 
 /**
@@ -49,7 +51,7 @@ public class NacosPropertySource extends MapPropertySource {
 
 	NacosPropertySource(String group, String dataId, Map<String, Object> source,
 			Date timestamp, boolean isRefreshable) {
-		super(dataId, source);
+		super(String.join(NacosConfigProperties.COMMAS, dataId, group), source);
 		this.group = group;
 		this.dataId = dataId;
 		this.timestamp = timestamp;

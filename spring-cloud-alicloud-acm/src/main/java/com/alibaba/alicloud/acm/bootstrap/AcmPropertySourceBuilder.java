@@ -52,7 +52,8 @@ class AcmPropertySourceBuilder {
 		if (properties == null) {
 			return null;
 		}
-		return new AcmPropertySource(dataId, toMap(properties), new Date(), groupLevel);
+		return new AcmPropertySource(dataId, diamondGroup, toMap(properties), new Date(),
+				groupLevel);
 	}
 
 	private Properties loadDiamondData(String dataId, String diamondGroup) {

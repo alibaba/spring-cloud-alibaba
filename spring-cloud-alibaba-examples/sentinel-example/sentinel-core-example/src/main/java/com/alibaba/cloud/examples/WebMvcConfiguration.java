@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.seata;
+package com.alibaba.cloud.examples;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author xiaojing
+ * @author yuhuangbin
  */
-@ConfigurationProperties("spring.cloud.alibaba.seata")
-public class SeataProperties {
+@Configuration
+@EnableWebMvc
+public class WebMvcConfiguration implements WebMvcConfigurer {
 
-	// todo support config Seata server information
-
-	/**
-	 * Seata tx service group.default is ${spring.application.name}-seata-service-group.
-	 */
-	private String txServiceGroup;
-
-	public String getTxServiceGroup() {
-		return txServiceGroup;
-	}
-
-	public void setTxServiceGroup(String txServiceGroup) {
-		this.txServiceGroup = txServiceGroup;
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/errorPage").setViewName("errorPage");
 	}
 
 }
