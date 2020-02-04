@@ -16,7 +16,6 @@
  */
 package com.alibaba.cloud.nacos.discovery.actuate.health;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.api.naming.NamingService;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
@@ -26,22 +25,20 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 /**
  * The {@link HealthIndicator} for Nacos Discovery
  * 
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 2.2.0
- * 
  * @see HealthIndicator
  */
 public class NacosDiscoveryHealthIndicator extends AbstractHealthIndicator {
 
-	private final NacosDiscoveryProperties nacosDiscoveryProperties;
+	private final NamingService namingService;
 
-	public NacosDiscoveryHealthIndicator(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+	public NacosDiscoveryHealthIndicator(NamingService namingService) {
+		this.namingService = namingService;
 	}
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
-		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
 		// Just return "UP" or "DOWN"
 		String status = namingService.getServerStatus();
 		// Set the status to Builder
