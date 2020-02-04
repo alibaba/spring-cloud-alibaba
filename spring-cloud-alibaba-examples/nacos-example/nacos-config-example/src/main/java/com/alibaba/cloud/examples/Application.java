@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.alibaba.nacos.api.config.listener.Listener;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ class SampleRunner implements ApplicationRunner {
 					 *
 					 * user.name=Nacos user.age=25
 					 * @param configInfo latest config data for specific dataId in Nacos
-					 * server
+					 *     server
 					 */
 					@Override
 					public void receiveConfigInfo(String configInfo) {
@@ -107,13 +108,16 @@ class SampleController {
 	@Value("${user.age:25}")
 	Integer age;
 
+	@NacosValue(value = "${user.remark}", autoRefreshed = true)
+	String remark;
+
 	@Autowired
 	private NacosConfigProperties nacosConfigProperties;
 
 	@RequestMapping("/user")
 	public String simple() {
-		return "Hello Nacos Config!" + "Hello " + userName + " " + age + "!"
-				+ nacosConfigProperties.configServiceInstance();
+		return "Hello Nacos Config!" + "Hello : " + userName + ", remark : " + remark
+				+ ", age : " + age + "!" + nacosConfigProperties.configServiceInstance();
 	}
 
 }

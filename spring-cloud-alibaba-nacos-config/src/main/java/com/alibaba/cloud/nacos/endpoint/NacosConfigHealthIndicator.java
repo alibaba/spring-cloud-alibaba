@@ -16,15 +16,26 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
+import com.alibaba.boot.nacos.common.PropertiesUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.ConfigService;
 
+import com.alibaba.nacos.spring.factory.CacheableEventPublishingNacosServiceFactory;
+import com.alibaba.nacos.spring.factory.NacosServiceFactory;
+import com.alibaba.nacos.spring.metadata.NacosServiceMetaData;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Properties;
 
 /**
  * @author xiaojing
  */
 public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
+
+	private static final String UP_STATUS = "up";
 
 	private final ConfigService configService;
 
@@ -35,8 +46,25 @@ public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
 		builder.up();
-
 		String status = configService.getServerStatus();
+		NacosServiceFactory nacosServiceFactory = CacheableEventPublishingNacosServiceFactory
+				.getSingleton();
+		Collection<ConfigService> configServices = new ArrayList<>(
+				nacosServiceFactory.getConfigServices());
+		configServices.add(configService);
+		for (ConfigService configService : configServices) {
+			if (configService instanceof NacosServiceMetaData) {
+				NacosServiceMetaData nacosServiceMetaData = (NacosServiceMetaData) configService;
+				Properties properties = nacosServiceMetaData.getProperties();
+				builder.withDetail(
+						JSON.toJSONString(
+								PropertiesUtils.extractSafeProperties(properties)),
+						configService.getServerStatus());
+			}
+			if (!configService.getServerStatus().toLowerCase().equals(UP_STATUS)) {
+				builder.down();
+			}
+		}
 		builder.status(status);
 	}
 
