@@ -28,6 +28,8 @@ import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.StringUtils;
 
+import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
+
 /**
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
@@ -66,6 +68,9 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		catch (Exception e) {
 			log.error("nacos registry, {} register failed...{},", serviceId,
 					registration.toString(), e);
+			// rethrow a RuntimeException if the registration is failed.
+			// issue : https://github.com/alibaba/spring-cloud-alibaba/issues/1132
+			rethrowRuntimeException(e);
 		}
 	}
 
