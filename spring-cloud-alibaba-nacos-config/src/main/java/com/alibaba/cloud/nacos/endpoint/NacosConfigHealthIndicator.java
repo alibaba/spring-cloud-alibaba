@@ -20,9 +20,13 @@ import com.alibaba.nacos.api.config.ConfigService;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
 
 /**
+ * The {@link HealthIndicator} for Nacos Config
+ * 
  * @author xiaojing
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 
@@ -34,10 +38,21 @@ public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
-		builder.up();
-
+		// Just return "UP" or "DOWN"
 		String status = configService.getServerStatus();
+		// Set the status to Builder
 		builder.status(status);
+		switch (status) {
+		case "UP":
+			builder.up();
+			break;
+		case "DOWN":
+			builder.down();
+			break;
+		default:
+			builder.unknown();
+			break;
+		}
 	}
 
 }
