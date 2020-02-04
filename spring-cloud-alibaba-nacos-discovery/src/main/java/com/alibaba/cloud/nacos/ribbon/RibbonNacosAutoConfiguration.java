@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
  * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration
  * Auto-configuration} that sets up Ribbon for Nacos.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
 @ConditionalOnBean(SpringClientFactory.class)
 @ConditionalOnRibbonNacos

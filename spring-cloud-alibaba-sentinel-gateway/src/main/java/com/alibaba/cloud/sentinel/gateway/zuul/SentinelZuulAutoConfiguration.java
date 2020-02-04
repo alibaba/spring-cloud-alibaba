@@ -45,7 +45,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author tiger
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ZuulServlet.class)
 @ConditionalOnProperty(prefix = ConfigConstants.ZUUl_PREFIX, name = "enabled",
 		havingValue = "true", matchIfMissing = true)

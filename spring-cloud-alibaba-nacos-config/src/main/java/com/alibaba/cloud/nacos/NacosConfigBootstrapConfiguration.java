@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaojing
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
 public class NacosConfigBootstrapConfiguration {
 
@@ -37,9 +37,16 @@ public class NacosConfigBootstrapConfiguration {
 	}
 
 	@Bean
-	public NacosPropertySourceLocator nacosPropertySourceLocator(
+	@ConditionalOnMissingBean
+	public NacosConfigManager nacosConfigManager(
 			NacosConfigProperties nacosConfigProperties) {
-		return new NacosPropertySourceLocator(nacosConfigProperties);
+		return new NacosConfigManager(nacosConfigProperties);
+	}
+
+	@Bean
+	public NacosPropertySourceLocator nacosPropertySourceLocator(
+			NacosConfigManager nacosConfigManager) {
+		return new NacosPropertySourceLocator(nacosConfigManager);
 	}
 
 }

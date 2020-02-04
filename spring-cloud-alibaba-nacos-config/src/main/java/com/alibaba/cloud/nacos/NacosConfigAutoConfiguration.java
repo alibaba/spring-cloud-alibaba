@@ -21,15 +21,18 @@ import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshProperties;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 /**
  * @author juven.xuxb
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
 public class NacosConfigAutoConfiguration {
 
@@ -55,12 +58,19 @@ public class NacosConfigAutoConfiguration {
 	}
 
 	@Bean
+	public NacosConfigManager nacosConfigManager(
+			NacosConfigProperties nacosConfigProperties) {
+		return new NacosConfigManager(nacosConfigProperties);
+	}
+
+	@Bean
 	public NacosContextRefresher nacosContextRefresher(
-			NacosConfigProperties configProperties,
-			NacosRefreshProperties nacosRefreshProperties,
-			NacosRefreshHistory refreshHistory) {
-		return new NacosContextRefresher(nacosRefreshProperties, refreshHistory,
-				configProperties.configServiceInstance());
+			NacosConfigManager nacosConfigManager,
+			NacosRefreshHistory nacosRefreshHistory) {
+		// Consider that it is not necessary to be compatible with the previous
+		// configuration
+		// and use the new configuration if necessary.
+		return new NacosContextRefresher(nacosConfigManager, nacosRefreshHistory);
 	}
 
 }

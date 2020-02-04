@@ -44,4 +44,5 @@ public class InMemoryUserService implements UserService {
 	public Collection<User> findAll() {
 		return usersRepository.values();
 	}
+
 }

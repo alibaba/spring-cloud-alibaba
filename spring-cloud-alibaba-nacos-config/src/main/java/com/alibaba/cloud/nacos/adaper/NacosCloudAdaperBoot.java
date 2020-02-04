@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import com.alibaba.boot.nacos.config.NacosConfigConstants;
-import com.alibaba.boot.nacos.config.util.AttributeExtractTask;
+import com.alibaba.boot.nacos.config.util.AttributeExtractUtils;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,8 @@ public class NacosCloudAdaperBoot implements EnvironmentPostProcessor, Ordered {
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment,
 			SpringApplication application) {
-		AttributeExtractTask extractTask = new AttributeExtractTask(NACOS_CLOUD_PREFIX,
+
+		AttributeExtractUtils extractTask = new AttributeExtractUtils(NACOS_CLOUD_PREFIX,
 				environment);
 		try {
 			// Read the necessary, generic configuration information from the nacos cloud
@@ -82,6 +83,11 @@ public class NacosCloudAdaperBoot implements EnvironmentPostProcessor, Ordered {
 				Map<String, Object> now = propertySource.getSource();
 				now.putAll(holder.getSource());
 			}
+
+			// disable open log-level load config
+
+			propertySource.getSource().put("nacos.config.bootstrap.log-enable", "false");
+
 			// In order to avoid the automatic analytic nacos-springboot configuration
 			environment.getPropertySources()
 					.addAfter(SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME, propertySource);

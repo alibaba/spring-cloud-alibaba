@@ -49,11 +49,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
-@SpringBootTest(classes = NacosFileExtensionTest.TestConfig.class,
-		properties = { "spring.application.name=test-name",
-				"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
-				"spring.cloud.nacos.config.file-extension=yaml" },
-		webEnvironment = NONE)
+@SpringBootTest(classes = NacosFileExtensionTest.TestConfig.class, properties = {
+		"spring.application.name=test-name",
+		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
+		"spring.cloud.nacos.config.file-extension=yaml" }, webEnvironment = NONE)
 public class NacosFileExtensionTest {
 
 	static {

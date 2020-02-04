@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(EdasProperties.class)
 @ImportAutoConfiguration(AliCloudContextAutoConfiguration.class)
 public class EdasContextAutoConfiguration {

@@ -16,18 +16,14 @@
 
 package com.alibaba.cloud.sentinel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.Filter;
-
-import com.alibaba.csp.sentinel.adapter.servlet.CommonFilter;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.RequestOriginParser;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlBlockHandler;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.UrlCleaner;
-import com.alibaba.csp.sentinel.adapter.servlet.callback.WebCallbackManager;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.DefaultBlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.UrlCleaner;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,19 +33,22 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author xiaojing
+ * @author yuhuangbin
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication(type = Type.SERVLET)
-@ConditionalOnClass(CommonFilter.class)
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
+@ConditionalOnClass(SentinelWebInterceptor.class)
 @EnableConfigurationProperties(SentinelProperties.class)
-public class SentinelWebAutoConfiguration {
+public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(SentinelWebAutoConfiguration.class);
@@ -61,44 +60,61 @@ public class SentinelWebAutoConfiguration {
 	private Optional<UrlCleaner> urlCleanerOptional;
 
 	@Autowired
-	private Optional<UrlBlockHandler> urlBlockHandlerOptional;
+	private Optional<BlockExceptionHandler> blockExceptionHandlerOptional;
 
 	@Autowired
 	private Optional<RequestOriginParser> requestOriginParserOptional;
 
-	@PostConstruct
-	public void init() {
-		urlBlockHandlerOptional.ifPresent(WebCallbackManager::setUrlBlockHandler);
-		urlCleanerOptional.ifPresent(WebCallbackManager::setUrlCleaner);
-		requestOriginParserOptional.ifPresent(WebCallbackManager::setRequestOriginParser);
+	@Autowired
+	private Optional<SentinelWebInterceptor> sentinelWebInterceptorOptional;
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		if (!sentinelWebInterceptorOptional.isPresent()) {
+			return;
+		}
+		SentinelProperties.Filter filterConfig = properties.getFilter();
+		registry.addInterceptor(sentinelWebInterceptorOptional.get())
+				.order(filterConfig.getOrder())
+				.addPathPatterns(filterConfig.getUrlPatterns());
+		log.info(
+				"[Sentinel Starter] register SentinelWebInterceptor with urlPatterns: {}.",
+				filterConfig.getUrlPatterns());
 	}
 
 	@Bean
 	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
 			matchIfMissing = true)
-	public FilterRegistrationBean sentinelFilter() {
-		FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
+	public SentinelWebInterceptor sentinelWebInterceptor(
+			SentinelWebMvcConfig sentinelWebMvcConfig) {
+		return new SentinelWebInterceptor(sentinelWebMvcConfig);
+	}
 
-		SentinelProperties.Filter filterConfig = properties.getFilter();
+	@Bean
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
+			matchIfMissing = true)
+	public SentinelWebMvcConfig sentinelWebMvcConfig() {
+		SentinelWebMvcConfig sentinelWebMvcConfig = new SentinelWebMvcConfig();
+		sentinelWebMvcConfig.setHttpMethodSpecify(properties.getHttpMethodSpecify());
 
-		if (filterConfig.getUrlPatterns() == null
-				|| filterConfig.getUrlPatterns().isEmpty()) {
-			List<String> defaultPatterns = new ArrayList<>();
-			defaultPatterns.add("/*");
-			filterConfig.setUrlPatterns(defaultPatterns);
+		if (blockExceptionHandlerOptional.isPresent()) {
+			blockExceptionHandlerOptional
+					.ifPresent(sentinelWebMvcConfig::setBlockExceptionHandler);
+		}
+		else {
+			if (StringUtils.hasText(properties.getBlockPage())) {
+				sentinelWebMvcConfig.setBlockExceptionHandler(((request, response,
+						e) -> response.sendRedirect(properties.getBlockPage())));
+			}
+			else {
+				sentinelWebMvcConfig
+						.setBlockExceptionHandler(new DefaultBlockExceptionHandler());
+			}
 		}
 
-		registration.addUrlPatterns(filterConfig.getUrlPatterns().toArray(new String[0]));
-		Filter filter = new CommonFilter();
-		registration.setFilter(filter);
-		registration.setOrder(filterConfig.getOrder());
-		registration.addInitParameter("HTTP_METHOD_SPECIFY",
-				String.valueOf(properties.getHttpMethodSpecify()));
-		log.info(
-				"[Sentinel Starter] register Sentinel CommonFilter with urlPatterns: {}.",
-				filterConfig.getUrlPatterns());
-		return registration;
-
+		urlCleanerOptional.ifPresent(sentinelWebMvcConfig::setUrlCleaner);
+		requestOriginParserOptional.ifPresent(sentinelWebMvcConfig::setOriginParser);
+		return sentinelWebMvcConfig;
 	}
 
 }

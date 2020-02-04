@@ -16,24 +16,49 @@
 
 package com.alibaba.cloud.nacos.parser;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Properties;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.util.StringUtils;
 
 /**
  * @author zkz
  */
 public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosDataPropertiesParser.class);
+
 	public NacosDataPropertiesParser() {
 		super("properties");
 	}
 
 	@Override
-	protected Properties doParse(String data) throws IOException {
-		Properties properties = new Properties();
-		properties.load(new StringReader(data));
-		return properties;
+	protected Map<String, Object> doParse(String data) throws IOException {
+		Map<String, Object> result = new LinkedHashMap<>();
+
+		try (BufferedReader reader = new BufferedReader(new StringReader(data))) {
+			for (String line = reader.readLine(); line != null; line = reader
+					.readLine()) {
+				String dataLine = line.trim();
+				if (StringUtils.isEmpty(dataLine) || dataLine.startsWith("#")) {
+					continue;
+				}
+				int index = dataLine.indexOf("=");
+				if (index == -1) {
+					log.warn("the config data is invalid {}", dataLine);
+					continue;
+				}
+				result.put(dataLine.substring(0, index), dataLine.substring(index + 1));
+			}
+		}
+		return result;
 	}
 
 }

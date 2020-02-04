@@ -26,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * @author www.itmuch.com
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SidecarProperties.class)
 public class SidecarAutoConfiguration {
 

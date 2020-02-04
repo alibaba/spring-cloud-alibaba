@@ -29,14 +29,17 @@ public class AcmPropertySource extends MapPropertySource {
 
 	private final String dataId;
 
+	private final String group;
+
 	private final Date timestamp;
 
 	private final boolean groupLevel;
 
-	AcmPropertySource(String dataId, Map<String, Object> source, Date timestamp,
-			boolean groupLevel) {
+	AcmPropertySource(String dataId, String group, Map<String, Object> source,
+			Date timestamp, boolean groupLevel) {
 		super(dataId, source);
 		this.dataId = dataId;
+		this.group = group;
 		this.timestamp = timestamp;
 		this.groupLevel = groupLevel;
 	}
@@ -47,6 +50,10 @@ public class AcmPropertySource extends MapPropertySource {
 
 	public Date getTimestamp() {
 		return timestamp;
+	}
+
+	public String getGroup() {
+		return group;
 	}
 
 	public boolean isGroupLevel() {

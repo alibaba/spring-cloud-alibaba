@@ -6,4 +6,5 @@ com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration
 org.springframework.boot.diagnostics.FailureAnalyzer=\
 com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer
 org.springframework.boot.env.EnvironmentPostProcessor=\
-  com.alibaba.cloud.nacos.adaper.NacosCloudAdaperBoot
+  com.alibaba.cloud.nacos.adaper.NacosCloudAdaperBoot, \
+  com.alibaba.cloud.nacos.adaper.NacosEnvironmentPostProcessor

@@ -16,19 +16,19 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
-import com.alibaba.boot.nacos.common.PropertiesUtils;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.nacos.api.config.ConfigService;
-
-import com.alibaba.nacos.spring.factory.CacheableEventPublishingNacosServiceFactory;
-import com.alibaba.nacos.spring.factory.NacosServiceFactory;
-import com.alibaba.nacos.spring.metadata.NacosServiceMetaData;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
+
+import com.alibaba.boot.nacos.common.PropertiesUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.spring.factory.CacheableEventPublishingNacosServiceFactory;
+import com.alibaba.nacos.spring.factory.NacosServiceFactory;
+import com.alibaba.nacos.spring.metadata.NacosServiceMetaData;
+
+import org.springframework.boot.actuate.health.AbstractHealthIndicator;
+import org.springframework.boot.actuate.health.Health;
 
 /**
  * @author xiaojing

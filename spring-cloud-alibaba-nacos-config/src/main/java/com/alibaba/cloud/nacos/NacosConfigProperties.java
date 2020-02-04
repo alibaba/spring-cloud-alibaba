@@ -16,25 +16,29 @@
 
 package com.alibaba.cloud.nacos;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
-import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureException;
-import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.spring.util.PropertySourcesUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
@@ -69,13 +73,111 @@ public class NacosConfigProperties {
 	 */
 	public static final String PREFIX = "spring.cloud.nacos.config";
 
+	/**
+	 * COMMAS , .
+	 */
+	public static final String COMMAS = ",";
+
+	/**
+	 * SEPARATOR , .
+	 */
+	public static final String SEPARATOR = "[,]";
+
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosConfigProperties.class);
 
 	@Autowired
+	@JsonIgnore
 	private Environment environment;
+	/**
+	 * nacos config server address.
+	 */
+	private String serverAddr;
+	/**
+	 * encode for nacos config content.
+	 */
+	private String encode;
+	/**
+	 * nacos config group, group is config data meta info.
+	 */
+	private String group = "DEFAULT_GROUP";
+	/**
+	 * nacos config dataId prefix.
+	 */
+	private String prefix;
+	/**
+	 * the suffix of nacos config dataId, also the file extension of config content.
+	 */
+	private String fileExtension = "properties";
+	/**
+	 * timeout for get config from nacos.
+	 */
+	private int timeout = 3000;
+	/**
+	 * nacos maximum number of tolerable server reconnection errors.
+	 */
+	private String maxRetry;
+	/**
+	 * nacos get config long poll timeout.
+	 */
+	private String configLongPollTimeout;
+	/**
+	 * nacos get config failure retry time.
+	 */
+	private String configRetryTime;
+	/**
+	 * If you want to pull it yourself when the program starts to get the configuration
+	 * for the first time, and the registered Listener is used for future configuration
+	 * updates, you can keep the original code unchanged, just add the system parameter:
+	 * enableRemoteSyncConfig = "true" ( But there is network overhead); therefore we
+	 * recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
+	 */
+	private boolean enableRemoteSyncConfig = false;
+	/**
+	 * endpoint for Nacos, the domain name of a service, through which the server address
+	 * can be dynamically obtained.
+	 */
+	private String endpoint;
+	/**
+	 * namespace, separation configuration of different environments.
+	 */
+	private String namespace;
+	/**
+	 * access key for namespace.
+	 */
+	private String accessKey;
+	/**
+	 * secret key for namespace.
+	 */
+	private String secretKey;
+	/**
+	 * context path for nacos config server.
+	 */
+	private String contextPath;
+	/**
+	 * nacos config cluster name.
+	 */
+	private String clusterName;
+	/**
+	 * nacos config dataId name.
+	 */
+	private String name;
+	/**
+	 * a set of shared configurations .e.g:
+	 * spring.cloud.nacos.config.shared-configs[0]=xxx .
+	 */
+	private List<Config> sharedConfigs;
+	/**
+	 * a set of extensional configurations .e.g:
+	 * spring.cloud.nacos.config.extension-configs[0]=xxx .
+	 */
+	private List<Config> extensionConfigs;
+	/**
+	 * the master switch for refresh configuration, it default opened(true).
+	 */
+	private boolean refreshEnabled = true;
 
 	@PostConstruct
 	public void init() {
@@ -93,114 +195,6 @@ public class NacosConfigProperties {
 			this.setServerAddr(serverAddr);
 		}
 	}
-
-	/**
-	 * nacos config server address.
-	 */
-	private String serverAddr;
-
-	/**
-	 * encode for nacos config content.
-	 */
-	private String encode;
-
-	/**
-	 * nacos config group, group is config data meta info.
-	 */
-	private String group = "DEFAULT_GROUP";
-
-	/**
-	 * nacos config dataId prefix.
-	 */
-	private String prefix;
-
-	/**
-	 * the suffix of nacos config dataId, also the file extension of config content.
-	 */
-	private String fileExtension = "properties";
-
-	/**
-	 * timeout for get config from nacos.
-	 */
-	private int timeout = 3000;
-
-	/**
-	 * nacos maximum number of tolerable server reconnection errors.
-	 */
-	private String maxRetry;
-
-	/**
-	 * nacos get config long poll timeout.
-	 */
-	private String configLongPollTimeout;
-
-	/**
-	 * nacos get config failure retry time.
-	 */
-	private String configRetryTime;
-
-	/**
-	 * If you want to pull it yourself when the program starts to get the configuration
-	 * for the first time, and the registered Listener is used for future configuration
-	 * updates, you can keep the original code unchanged, just add the system parameter:
-	 * enableRemoteSyncConfig = "true" ( But there is network overhead); therefore we
-	 * recommend that you use {@link ConfigService#getConfigAndSignListener} directly.
-	 */
-	private boolean enableRemoteSyncConfig = false;
-
-	/**
-	 * endpoint for Nacos, the domain name of a service, through which the server address
-	 * can be dynamically obtained.
-	 */
-	private String endpoint;
-
-	/**
-	 * namespace, separation configuration of different environments.
-	 */
-	private String namespace;
-
-	/**
-	 * access key for namespace.
-	 */
-	private String accessKey;
-
-	/**
-	 * secret key for namespace.
-	 */
-	private String secretKey;
-
-	/**
-	 * context path for nacos config server.
-	 */
-	private String contextPath;
-
-	/**
-	 * nacos config cluster name.
-	 */
-	private String clusterName;
-
-	/**
-	 * nacos config dataId name.
-	 */
-	private String name;
-
-	/**
-	 * the dataids for configurable multiple shared configurations , multiple separated by
-	 * commas .
-	 */
-	private String sharedDataids;
-
-	/**
-	 * refreshable dataids , multiple separated by commas .
-	 */
-	private String refreshableDataids;
-
-	/**
-	 * a set of extended configurations .
-	 */
-	private List<Config> extConfig;
-
-	private static ConfigService configService;
 
 	// todo sts support
 
@@ -336,30 +330,6 @@ public class NacosConfigProperties {
 		return name;
 	}
 
-	public String getSharedDataids() {
-		return sharedDataids;
-	}
-
-	public void setSharedDataids(String sharedDataids) {
-		this.sharedDataids = sharedDataids;
-	}
-
-	public String getRefreshableDataids() {
-		return refreshableDataids;
-	}
-
-	public void setRefreshableDataids(String refreshableDataids) {
-		this.refreshableDataids = refreshableDataids;
-	}
-
-	public List<Config> getExtConfig() {
-		return extConfig;
-	}
-
-	public void setExtConfig(List<Config> extConfig) {
-		this.extConfig = extConfig;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -372,25 +342,149 @@ public class NacosConfigProperties {
 		this.environment = environment;
 	}
 
+	public List<Config> getSharedConfigs() {
+		return sharedConfigs;
+	}
+
+	public void setSharedConfigs(List<Config> sharedConfigs) {
+		this.sharedConfigs = sharedConfigs;
+	}
+
+	public List<Config> getExtensionConfigs() {
+		return extensionConfigs;
+	}
+
+	public void setExtensionConfigs(List<Config> extensionConfigs) {
+		this.extensionConfigs = extensionConfigs;
+	}
+
+	public boolean isRefreshEnabled() {
+		return refreshEnabled;
+	}
+
+	public void setRefreshEnabled(boolean refreshEnabled) {
+		this.refreshEnabled = refreshEnabled;
+	}
+
 	/**
+	 * recommend to use {@link NacosConfigProperties#sharedConfigs} .
+	 * @return string
+	 */
+	@Deprecated
+	@DeprecatedConfigurationProperty(reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.", replacement = PREFIX
+			+ ".shared-configs[x]")
+	public String getSharedDataids() {
+		return null == getSharedConfigs() ? null
+				: getSharedConfigs().stream().map(Config::getDataId)
+						.collect(Collectors.joining(COMMAS));
+	}
+
+	/**
+	 * recommend to use {@link NacosConfigProperties#sharedConfigs} and not use it at the
+	 * same time .
+	 * @param sharedDataids the dataids for configurable multiple shared configurations ,
+	 *     multiple separated by commas .
+	 */
+	@Deprecated
+	public void setSharedDataids(String sharedDataids) {
+		if (null != sharedDataids && sharedDataids.trim().length() > 0) {
+			List<Config> list = new ArrayList<>();
+			Stream.of(sharedDataids.split(SEPARATOR))
+					.forEach(dataId -> list.add(new Config(dataId.trim())));
+			this.compatibleSharedConfigs(list);
+		}
+	}
+
+	/**
+	 * Not providing support,the need to refresh is specified by the respective refresh
+	 * configuration and not use it at the same time .
+	 * @return string
+	 */
+	@Deprecated
+	@DeprecatedConfigurationProperty(reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.", replacement = PREFIX
+			+ ".shared-configs[x].refresh")
+	public String getRefreshableDataids() {
+		return null == getSharedConfigs() ? null
+				: getSharedConfigs().stream().filter(Config::isRefresh)
+						.map(Config::getDataId).collect(Collectors.joining(COMMAS));
+	}
+
+	/**
+	 * Not providing support,the need to refresh is specified by the respective refresh
+	 * configuration and not use it at the same time .
+	 * @param refreshableDataids refreshable dataids ,multiple separated by commas .
+	 */
+	@Deprecated
+	public void setRefreshableDataids(String refreshableDataids) {
+		if (null != refreshableDataids && refreshableDataids.trim().length() > 0) {
+			List<Config> list = new ArrayList<>();
+			Stream.of(refreshableDataids.split(SEPARATOR)).forEach(
+					dataId -> list.add(new Config(dataId.trim()).setRefresh(true)));
+			this.compatibleSharedConfigs(list);
+		}
+	}
+
+	private void compatibleSharedConfigs(List<Config> configList) {
+		if (null != this.getSharedConfigs()) {
+			configList.addAll(this.getSharedConfigs());
+		}
+		List<Config> result = new ArrayList<>();
+		configList.stream()
+				.collect(Collectors.groupingBy(cfg -> (cfg.getGroup() + cfg.getDataId()),
+						() -> new ConcurrentHashMap<>(new LinkedHashMap<>()),
+						Collectors.toList()))
+				.forEach((key, list) -> {
+					list.stream()
+							.reduce((a, b) -> new Config(a.getDataId(), a.getGroup(),
+									a.isRefresh() || (b != null && b.isRefresh())))
+							.ifPresent(result::add);
+				});
+		this.setSharedConfigs(result);
+	}
+
+	/**
+	 * recommend to use
+	 * {@link com.alibaba.cloud.nacos.NacosConfigProperties#extensionConfigs} and not use
+	 * it at the same time .
+	 * @return extensionConfigs
+	 */
+	@Deprecated
+	@DeprecatedConfigurationProperty(reason = "replaced to NacosConfigProperties#extensionConfigs and not use it at the same time .", replacement = PREFIX
+			+ ".extension-configs[x]")
+	public List<Config> getExtConfig() {
+		return this.getExtensionConfigs();
+	}
+
+	@Deprecated
+	public void setExtConfig(List<Config> extConfig) {
+		this.setExtensionConfigs(extConfig);
+	}
+
+	/**
+	 * recommend to use {@link NacosConfigManager#getConfigService()}.
 	 * @return ConfigService
 	 */
 	@Deprecated
 	public ConfigService configServiceInstance() {
-		if (null == configService) {
-			try {
-				configService = NacosFactory
-						.createConfigService(getConfigServiceProperties());
-			}
-			catch (NacosException e) {
-				throw new NacosConnectionFailureException(this.getServerAddr(),
-						e.getMessage(), e);
-			}
-		}
-		return configService;
+		// The following code will be migrated
+		return NacosConfigManager.createConfigService(this);
 	}
 
+	/**
+	 * recommend to use {@link NacosConfigProperties#assembleConfigServiceProperties()}.
+	 * @return ConfigServiceProperties
+	 */
+	@Deprecated
 	public Properties getConfigServiceProperties() {
+		return this.assembleConfigServiceProperties();
+	}
+
+	/**
+	 * assemble properties for configService. (cause by rename : Remove the interference
+	 * of auto prompts when writing,because autocue is based on get method.
+	 * @return properties
+	 */
+	public Properties assembleConfigServiceProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
@@ -441,12 +535,16 @@ public class NacosConfigProperties {
 		return "NacosConfigProperties{" + "serverAddr='" + serverAddr + '\''
 				+ ", encode='" + encode + '\'' + ", group='" + group + '\'' + ", prefix='"
 				+ prefix + '\'' + ", fileExtension='" + fileExtension + '\''
-				+ ", timeout=" + timeout + ", endpoint='" + endpoint + '\''
-				+ ", namespace='" + namespace + '\'' + ", accessKey='" + accessKey + '\''
-				+ ", secretKey='" + secretKey + '\'' + ", contextPath='" + contextPath
-				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
-				+ ", sharedDataids='" + sharedDataids + '\'' + ", refreshableDataids='"
-				+ refreshableDataids + '\'' + ", extConfig=" + extConfig + '}';
+				+ ", timeout=" + timeout + ", maxRetry='" + maxRetry + '\''
+				+ ", configLongPollTimeout='" + configLongPollTimeout + '\''
+				+ ", configRetryTime='" + configRetryTime + '\''
+				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig + ", endpoint='"
+				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
+				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
+				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
+				+ '\'' + ", name='" + name + '\'' + '\'' + ", shares=" + sharedConfigs
+				+ ", extensions=" + extensionConfigs + ", refreshEnabled="
+				+ refreshEnabled + '}';
 	}
 
 	public static class Config {
@@ -466,28 +564,77 @@ public class NacosConfigProperties {
 		 */
 		private boolean refresh = false;
 
+		public Config() {
+		}
+
+		public Config(String dataId) {
+			this.dataId = dataId;
+		}
+
+		public Config(String dataId, String group) {
+			this(dataId);
+			this.group = group;
+		}
+
+		public Config(String dataId, boolean refresh) {
+			this(dataId);
+			this.refresh = refresh;
+		}
+
+		public Config(String dataId, String group, boolean refresh) {
+			this(dataId, group);
+			this.refresh = refresh;
+		}
+
 		public String getDataId() {
 			return dataId;
 		}
 
-		public void setDataId(String dataId) {
+		public Config setDataId(String dataId) {
 			this.dataId = dataId;
+			return this;
 		}
 
 		public String getGroup() {
 			return group;
 		}
 
-		public void setGroup(String group) {
+		public Config setGroup(String group) {
 			this.group = group;
+			return this;
 		}
 
 		public boolean isRefresh() {
 			return refresh;
 		}
 
-		public void setRefresh(boolean refresh) {
+		public Config setRefresh(boolean refresh) {
 			this.refresh = refresh;
+			return this;
+		}
+
+		@Override
+		public String toString() {
+			return "Config{" + "dataId='" + dataId + '\'' + ", group='" + group + '\''
+					+ ", refresh=" + refresh + '}';
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) {
+				return true;
+			}
+			if (o == null || getClass() != o.getClass()) {
+				return false;
+			}
+			Config config = (Config) o;
+			return refresh == config.refresh && Objects.equals(dataId, config.dataId)
+					&& Objects.equals(group, config.group);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(dataId, group, refresh);
 		}
 
 	}
