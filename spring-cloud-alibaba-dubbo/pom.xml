@@ -13,30 +13,6 @@
     <artifactId>spring-cloud-alibaba-dubbo</artifactId>
     <name>Spring Cloud Alibaba Dubbo</name>
 
-    <dependencyManagement>
-
-        <dependencies>
-            <!-- Spring Boot dependencies -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- Apache Dubbo dependencies-->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-dependencies-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-        </dependencies>
-
-    </dependencyManagement>
 
     <dependencies>
 
@@ -162,7 +138,6 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-actuator</artifactId>
-            <version>${dubbo-spring-boot.version}</version>
             <optional>true</optional>
         </dependency>
 

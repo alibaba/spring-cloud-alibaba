@@ -16,18 +16,15 @@
 
 package com.alibaba.cloud.nacos.discovery;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.nacos.api.naming.listener.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.client.discovery.event.HeartbeatEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -54,10 +51,6 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 
 	private ScheduledFuture<?> watchFuture;
 
-	private Set<String> cacheServices = new HashSet<>();
-
-	private HashMap<String, EventListener> subscribeListeners = new HashMap<>();
-
 	public NacosWatch(NacosDiscoveryProperties properties) {
 		this(properties, getTaskScheduler());
 	}
@@ -67,8 +60,21 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 		this.taskScheduler = taskScheduler;
 	}
 
+	/**
+	 * The constructor with {@link NacosDiscoveryProperties} bean and the optional
+	 * {@link TaskScheduler} bean
+	 * @param properties {@link NacosDiscoveryProperties} bean
+	 * @param taskScheduler the optional {@link TaskScheduler} bean
+	 * @since 2.2.0
+	 */
+	public NacosWatch(NacosDiscoveryProperties properties,
+			ObjectProvider<TaskScheduler> taskScheduler) {
+		this(properties, taskScheduler.getIfAvailable(NacosWatch::getTaskScheduler));
+	}
+
 	private static ThreadPoolTaskScheduler getTaskScheduler() {
 		ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+		taskScheduler.setBeanName("Nacso-Watch-Task-Scheduler");
 		taskScheduler.initialize();
 		return taskScheduler;
 	}
