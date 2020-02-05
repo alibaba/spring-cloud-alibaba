@@ -88,8 +88,7 @@
         <slf4j-api.version>1.7.25</slf4j-api.version>
 
         <!-- Apache Dubbo -->
-        <dubbo-spring-boot.version>2.7.3</dubbo-spring-boot.version>
-        <dubbo.version>2.7.3</dubbo.version>
+        <dubbo.version>2.7.4.1</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
@@ -132,7 +131,7 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- Spring Boot -->
+            <!-- Spring Dependencies -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -228,10 +227,31 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- Dubbo Dependencies -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-dependencies-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-framework-bom</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${dubbo-spring-boot.version}</version>
+                <version>${dubbo.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-actuator</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
@@ -241,15 +261,7 @@
                 <exclusions>
                     <exclusion>
                         <groupId>org.springframework</groupId>
-                        <artifactId>spring</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
+                        <artifactId>spring-context</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -418,7 +430,6 @@
         </profile>
 
     </profiles>
-
 
 
 </project>
