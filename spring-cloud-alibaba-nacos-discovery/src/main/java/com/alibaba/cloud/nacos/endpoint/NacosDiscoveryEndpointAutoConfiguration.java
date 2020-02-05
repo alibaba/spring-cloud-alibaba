@@ -30,8 +30,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * The AutoConfiguration class for Nacos Discovery's Endpoints
- * 
+ * The AutoConfiguration class for Nacos Discovery's Endpoints.
+ *
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
@@ -55,4 +55,5 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 		return new NacosDiscoveryHealthIndicator(
 				nacosDiscoveryProperties.namingServiceInstance());
 	}
+
 }

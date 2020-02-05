@@ -23,8 +23,8 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 
 /**
- * The {@link HealthIndicator} for Nacos Config
- * 
+ * The {@link HealthIndicator} for Nacos Config.
+ *
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
