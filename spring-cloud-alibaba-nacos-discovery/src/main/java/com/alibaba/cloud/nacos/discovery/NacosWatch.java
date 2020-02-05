@@ -61,7 +61,7 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 	}
 
 	/**
-	 * The constructor with {@link NacosDiscoveryProperties} bean and the optional
+	 * The constructor with {@link NacosDiscoveryProperties} bean and the optional.
 	 * {@link TaskScheduler} bean
 	 * @param properties {@link NacosDiscoveryProperties} bean
 	 * @param taskScheduler the optional {@link TaskScheduler} bean

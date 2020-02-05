@@ -65,8 +65,9 @@ public final class NacosPropertySourceRepository {
 
 	public static void collectNacosPropertySource(
 			NacosPropertySource nacosPropertySource) {
-		NACOS_PROPERTY_SOURCE_REPOSITORY.putIfAbsent(getMapKey(nacosPropertySource.getDataId(),
-				nacosPropertySource.getGroup()), nacosPropertySource);
+		NACOS_PROPERTY_SOURCE_REPOSITORY
+				.putIfAbsent(getMapKey(nacosPropertySource.getDataId(),
+						nacosPropertySource.getGroup()), nacosPropertySource);
 	}
 
 	public static NacosPropertySource getNacosPropertySource(String dataId,
