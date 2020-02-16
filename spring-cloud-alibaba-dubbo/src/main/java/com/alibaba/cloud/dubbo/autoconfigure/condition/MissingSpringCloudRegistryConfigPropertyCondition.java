@@ -67,7 +67,7 @@ public class MissingSpringCloudRegistryConfigPropertyCondition
 		boolean found = properties.entrySet().stream().anyMatch(entry -> {
 			String key = entry.getKey();
 			String value = String.valueOf(entry.getValue());
-			return (key.endsWith(".address") && value.startsWith(PROTOCOL))
+			return (key.endsWith("address") && value.startsWith(PROTOCOL))
 					|| (key.endsWith(".protocol") && PROTOCOL.equals(value));
 
 		});
