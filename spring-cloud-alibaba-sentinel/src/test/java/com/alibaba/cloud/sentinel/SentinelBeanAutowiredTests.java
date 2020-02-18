@@ -74,7 +74,7 @@ public class SentinelBeanAutowiredTests {
 		assertThat(sentinelProperties.getFilter().getOrder()).isEqualTo(111);
 		assertThat(sentinelProperties.getFilter().getUrlPatterns().size()).isEqualTo(1);
 		assertThat(sentinelProperties.getFilter().getUrlPatterns().get(0))
-				.isEqualTo("/*");
+				.isEqualTo("/**");
 	}
 
 	@Test
