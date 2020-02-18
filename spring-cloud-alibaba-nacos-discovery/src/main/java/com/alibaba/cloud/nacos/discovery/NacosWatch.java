@@ -106,13 +106,17 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 	@Override
 	public void stop() {
 		if (this.running.compareAndSet(true, false) && this.watchFuture != null) {
+			// shutdown current user-thread,
+			// then the other daemon-threads will terminate automatic.
+			((ThreadPoolTaskScheduler)this.taskScheduler).shutdown();
+			
 			this.watchFuture.cancel(true);
 		}
 	}
 
 	@Override
 	public boolean isRunning() {
-		return false;
+		return this.running.get();
 	}
 
 	@Override
