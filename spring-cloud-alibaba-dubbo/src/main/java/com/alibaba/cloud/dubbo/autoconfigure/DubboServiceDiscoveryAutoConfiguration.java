@@ -118,7 +118,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	/**
 	 * NacosDiscoveryAutoConfiguration.
 	 */
-	public static final String NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "com.alibaba.cloud.nacos.NacosDiscoveryAutoConfiguration";
+	public static final String NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME = "com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration";
 
 	private final DubboServiceMetadataRepository dubboServiceMetadataRepository;
 

@@ -57,9 +57,9 @@ public class AcmContextRefresher
 
 	private final AcmRefreshHistory refreshHistory;
 
-	private ApplicationContext applicationContext;
+	private AcmPropertySourceRepository acmPropertySourceRepository;
 
-	private final AcmPropertySourceRepository acmPropertySourceRepository;
+	private ApplicationContext applicationContext;
 
 	private Map<String, ConfigChangeListener> listenerMap = new ConcurrentHashMap<>(16);
 
@@ -82,14 +82,15 @@ public class AcmContextRefresher
 		if (acmIntegrationProperties.getAcmProperties().isRefreshEnabled()) {
 			for (String dataId : acmIntegrationProperties
 					.getApplicationConfigurationDataIds()) {
-				registerDiamondListener(dataId);
+				registerDiamondListener(dataId,
+						acmIntegrationProperties.getAcmProperties().getGroup());
 			}
 		}
 	}
 
-	private void registerDiamondListener(final String dataId) {
-
-		ConfigChangeListener listener = listenerMap.computeIfAbsent(dataId,
+	private void registerDiamondListener(final String dataId, final String group) {
+		String key = acmPropertySourceRepository.getMapKey(dataId, group);
+		ConfigChangeListener listener = listenerMap.computeIfAbsent(key,
 				i -> new ConfigChangeListener() {
 					@Override
 					public void receiveConfigInfo(String configInfo) {
@@ -111,8 +112,7 @@ public class AcmContextRefresher
 								"ACM Refresh, dataId=" + dataId));
 					}
 				});
-		ConfigService.addListener(dataId,
-				acmIntegrationProperties.getAcmProperties().getGroup(), listener);
+		ConfigService.addListener(dataId, group, listener);
 	}
 
 	@Override

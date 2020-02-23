@@ -21,12 +21,9 @@ import com.alibaba.alicloud.acm.refresh.AcmRefreshHistory;
 import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
 import com.taobao.diamond.client.Diamond;
 
-import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.context.refresh.ContextRefresher;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,14 +35,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Diamond.class })
 @ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
-public class AcmAutoConfiguration implements ApplicationContextAware {
-
-	private ApplicationContext applicationContext;
-
-	@Bean
-	public AcmPropertySourceRepository acmPropertySourceRepository() {
-		return new AcmPropertySourceRepository(applicationContext);
-	}
+public class AcmAutoConfiguration {
 
 	@Bean
 	public AcmRefreshHistory acmRefreshHistory() {
@@ -56,15 +46,9 @@ public class AcmAutoConfiguration implements ApplicationContextAware {
 	public AcmContextRefresher acmContextRefresher(
 			AcmIntegrationProperties acmIntegrationProperties,
 			ContextRefresher contextRefresher, AcmRefreshHistory refreshHistory,
-			AcmPropertySourceRepository propertySourceRepository) {
+			AcmPropertySourceRepository acmPropertySourceRepository) {
 		return new AcmContextRefresher(contextRefresher, acmIntegrationProperties,
-				refreshHistory, propertySourceRepository);
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.applicationContext = applicationContext;
+				refreshHistory, acmPropertySourceRepository);
 	}
 
 }

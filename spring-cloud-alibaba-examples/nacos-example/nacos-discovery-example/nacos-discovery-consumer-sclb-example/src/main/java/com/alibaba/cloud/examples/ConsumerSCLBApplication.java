@@ -19,6 +19,8 @@ package com.alibaba.cloud.examples;
 import java.util.List;
 import java.util.Random;
 
+import com.alibaba.cloud.examples.ConsumerSCLBApplication.EchoService;
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
@@ -28,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.reactive.DefaultResponse;
@@ -58,7 +61,15 @@ public class ConsumerSCLBApplication {
 
 	@LoadBalanced
 	@Bean
+	@SentinelRestTemplate(urlCleanerClass = UrlCleaner.class, urlCleaner = "clean")
 	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
+	@LoadBalanced
+	@Bean
+	@SentinelRestTemplate
+	public RestTemplate restTemplate1() {
 		return new RestTemplate();
 	}
 
@@ -112,7 +123,8 @@ public class ConsumerSCLBApplication {
 
 	}
 
-	@FeignClient(name = "service-provider")
+	@FeignClient(name = "service-provider", fallback = EchoServiceFallback.class,
+			configuration = FeignConfiguration.class)
 	public interface EchoService {
 
 		@GetMapping("/echo/{str}")
@@ -137,7 +149,13 @@ public class ConsumerSCLBApplication {
 		private RestTemplate restTemplate;
 
 		@Autowired
+		private RestTemplate restTemplate1;
+
+		@Autowired
 		private EchoService echoService;
+
+		@Autowired
+		private DiscoveryClient discoveryClient;
 
 		@GetMapping("/echo-rest/{str}")
 		public String rest(@PathVariable String str) {
@@ -150,6 +168,76 @@ public class ConsumerSCLBApplication {
 			return echoService.echo(str);
 		}
 
+		@GetMapping("/index")
+		public String index() {
+			return restTemplate1.getForObject("http://service-provider", String.class);
+		}
+
+		@GetMapping("/test")
+		public String test() {
+			return restTemplate1.getForObject("http://service-provider/test",
+					String.class);
+		}
+
+		@GetMapping("/sleep")
+		public String sleep() {
+			return restTemplate1.getForObject("http://service-provider/sleep",
+					String.class);
+		}
+
+		@GetMapping("/notFound-feign")
+		public String notFound() {
+			return echoService.notFound();
+		}
+
+		@GetMapping("/divide-feign")
+		public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+			return echoService.divide(a, b);
+		}
+
+		@GetMapping("/divide-feign2")
+		public String divide(@RequestParam Integer a) {
+			return echoService.divide(a);
+		}
+
+		@GetMapping("/services/{service}")
+		public Object client(@PathVariable String service) {
+			return discoveryClient.getInstances(service);
+		}
+
+		@GetMapping("/services")
+		public Object services() {
+			return discoveryClient.getServices();
+		}
+
+	}
+
+}
+
+class FeignConfiguration {
+
+	@Bean
+	public EchoServiceFallback echoServiceFallback() {
+		return new EchoServiceFallback();
+	}
+
+}
+
+class EchoServiceFallback implements EchoService {
+
+	@Override
+	public String echo(@PathVariable("str") String str) {
+		return "echo fallback";
+	}
+
+	@Override
+	public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+		return "divide fallback";
+	}
+
+	@Override
+	public String notFound() {
+		return "notFound fallback";
 	}
 
 }
