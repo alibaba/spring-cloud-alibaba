@@ -123,7 +123,7 @@ class SampleRunner implements ApplicationRunner {
 					 *
 					 * user.name=Nacos user.age=25
 					 * @param configInfo latest config data for specific dataId in Nacos
-					 *     server
+					 * server
 					 */
 					@Override
 					public void receiveConfigInfo(String configInfo) {

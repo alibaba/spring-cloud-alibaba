@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.discovery;
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -30,6 +31,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
 
 /**
  * @author xiaojing
@@ -54,8 +56,9 @@ public class NacosDiscoveryClientConfiguration {
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.watch.enabled",
 			matchIfMissing = true)
-	public NacosWatch nacosWatch(NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosWatch(nacosDiscoveryProperties);
+	public NacosWatch nacosWatch(NacosDiscoveryProperties nacosDiscoveryProperties,
+			ObjectProvider<TaskScheduler> taskScheduler) {
+		return new NacosWatch(nacosDiscoveryProperties, taskScheduler);
 	}
 
 }

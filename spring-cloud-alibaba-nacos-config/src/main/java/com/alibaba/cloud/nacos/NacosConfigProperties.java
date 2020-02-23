@@ -32,6 +32,7 @@ import javax.annotation.PostConstruct;
 
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.spring.util.PropertySourcesUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +89,7 @@ public class NacosConfigProperties {
 			.getLogger(NacosConfigProperties.class);
 
 	@Autowired
+	@JsonIgnore
 	private Environment environment;
 
 	@PostConstruct
