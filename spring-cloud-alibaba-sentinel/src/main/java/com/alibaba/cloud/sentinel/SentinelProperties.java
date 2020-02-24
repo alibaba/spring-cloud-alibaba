@@ -343,9 +343,9 @@ public class SentinelProperties {
 		private int order = Ordered.HIGHEST_PRECEDENCE;
 
 		/**
-		 * URL pattern for SentinelWebInterceptor, default is /*.
+		 * URL pattern for SentinelWebInterceptor, default is /**.
 		 */
-		private List<String> urlPatterns = Arrays.asList("/*");
+		private List<String> urlPatterns = Arrays.asList("/**");
 
 		/**
 		 * Enable to instance
