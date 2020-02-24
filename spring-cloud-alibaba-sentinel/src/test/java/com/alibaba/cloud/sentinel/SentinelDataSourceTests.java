@@ -70,7 +70,7 @@ public class SentinelDataSourceTests {
 				.isEqualTo(Integer.MIN_VALUE);
 		assertThat(sentinelProperties.getFilter().getUrlPatterns().size()).isEqualTo(1);
 		assertThat(sentinelProperties.getFilter().getUrlPatterns().get(0))
-				.isEqualTo("/*");
+				.isEqualTo("/**");
 	}
 
 	@Test
