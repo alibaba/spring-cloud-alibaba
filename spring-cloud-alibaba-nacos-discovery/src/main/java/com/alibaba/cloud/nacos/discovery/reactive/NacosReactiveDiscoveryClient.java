@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
@@ -51,7 +52,8 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 	@Override
 	public Flux<ServiceInstance> getInstances(String serviceId) {
 
-		return Mono.justOrEmpty(serviceId).flatMapMany(loadInstancesFromNacos());
+		return Mono.justOrEmpty(serviceId).flatMapMany(loadInstancesFromNacos())
+				.subscribeOn(Schedulers.boundedElastic());
 	}
 
 	private Function<String, Publisher<ServiceInstance>> loadInstancesFromNacos() {
@@ -76,7 +78,7 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 				log.error("get services from nacos server fail,", e);
 				return Flux.empty();
 			}
-		});
+		}).subscribeOn(Schedulers.boundedElastic());
 	}
 
 }
