@@ -32,7 +32,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class SentinelZuulProperties {
 
 	@NestedConfigurationProperty
-	private SentinelZuulProperties.Order order;
+	private SentinelZuulProperties.Order order = new SentinelZuulProperties.Order();
 
 	public Order getOrder() {
 		return order;
