@@ -1,6 +1,6 @@
 # Roadmap
 
-See the [中文文档](https://github.com/spring-cloud-incubator/spring-cloud-alibabacloud/blob/master/Roadmap-zh.md) for Chinese Roadmap.
+See the [中文文档](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap-zh.md) for Chinese Roadmap.
 
 
 Spring Cloud Alibaba provides a one-stop solution for distributed application development. It contains all the components required to develop distributed applications, making it easy for you to develop your applications using Spring Cloud.
@@ -26,9 +26,9 @@ Apache RocketMQ™ is an open source distributed messaging and streaming data pl
 
 **Dubbo**
 
-Apache Dubbo™ (incubating) is a high-performance, Java based open source RPC framework.
+Apache Dubbo™ is a high-performance, Java based open source RPC framework.
 
-**Fescar**
+**Seata**
 
 A distributed transaction solution with high performance and ease of use for microservices architecture.
 

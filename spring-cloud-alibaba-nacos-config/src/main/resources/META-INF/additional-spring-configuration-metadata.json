@@ -1,6 +1,18 @@
 {
   "properties": [
     {
+      "name": "spring.cloud.nacos.server-addr",
+      "type": "java.lang.String",
+      "defaultValue": "localhost:8848",
+      "description": "nacos server address."
+    },
+    {
+      "name": "spring.cloud.nacos.config.server-addr",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.server-addr}",
+      "description": "nacos config server address."
+    },
+    {
       "name": "spring.cloud.nacos.config.encode",
       "type": "java.lang.String",
       "defaultValue": "UTF-8",
@@ -24,14 +36,31 @@
       "description": "the dataids for configurable multiple shared configurations , multiple separated by commas ."
     },
     {
+      "name": "spring.cloud.nacos.config.shared-configs",
+      "type": "java.util.List",
+      "description": "a set of shared configurations .e.g: spring.cloud.nacos.config.shared-configs[0]=xxx ."
+    },
+
+    {
       "name": "spring.cloud.nacos.config.refreshable-dataids",
       "type": "java.lang.String",
-      "description": "refreshable dataids , multiple separated by commas ."
+      "description": "refreshable dataids , multiple separated by commas .Not providing support,the need to refresh is specified by the respective refresh configuration."
     },
     {
       "name": "spring.cloud.nacos.config.ext-config",
       "type": "java.util.List",
       "description": "a set of extended configurations ."
+    },
+    {
+      "name": "spring.cloud.nacos.config.extension-configs",
+      "type": "java.util.List",
+      "description": "a set of extensional configurations .e.g: spring.cloud.nacos.config.extension-configs[0]=xxx ."
+    },
+    {
+      "name": "spring.cloud.nacos.config.refresh-enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "the master switch for refresh configuration, it default opened(true)."
     },
     {
       "name": "spring.cloud.nacos.config.enabled",

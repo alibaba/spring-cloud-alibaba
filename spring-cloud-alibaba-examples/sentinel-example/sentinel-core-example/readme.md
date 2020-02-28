@@ -15,7 +15,7 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 1. Add dependency spring-cloud-starter-alibaba-sentinel in the pom.xml file in your Spring Cloud project.
 
 	    <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
 	
@@ -189,9 +189,11 @@ spring.cloud.sentinel.datasource.ds2.nacos.data-type=json
 
 `ds1` and `ds2` means the name of ReadableDataSource, you can write whatever you want. The `file` and `nacos` after name `ds1` and `ds2` means the type of ReadableDataSource. 
 
-Now ReadableDataSource type support 4 categories: `file`, `nacos`, `zk` and `apollo`.
+Now ReadableDataSource type support 5 categories: `file`, `nacos`, `zk`, `apollo` and `redis`.
 
-If you want to use `nacos`, `zk` or `apollo` ReadableDataSource, you could add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper` or `sentinel-datasource-apollo` dependency.
+If you want to use `nacos`, `zk`, `apollo` or `redis` ReadableDataSource, you could add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`,`sentinel-datasource-apollo` or `sentinel-datasource-redis` dependency.
+
+
 
 When ReadableDataSource load rule data successfully, console will print some logs:
 
@@ -199,9 +201,19 @@ When ReadableDataSource load rule data successfully, console will print some log
 [Sentinel Starter] DataSource ds1-sentinel-file-datasource load 3 DegradeRule
 [Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
 ```   
+## Warning
+You should  use `file` ReadableDataSource in a fatjar carefully or you may get error like this below
+
+```
+java.lang.RuntimeException: [Sentinel Starter] DataSource ds1 handle file [classpath: flowrule.json] error: class path resource [flowrule.json] cannot be resolved to absolute file path because it does not reside in the file system: jar:file:xxx/xxx.jar!/BOOT-INF/classes!/flowrule.jso
+```
+
+You could use absolute path when you use File datasource & fat jar.
+It is recommended to use Nacos/Apollo/Zookeeper/Redis datasource to store rules.
+
+https://github.com/alibaba/spring-cloud-alibaba/issues/428
 
 ## More
 For more information about Sentinel, see [Sentinel Project](https://github.com/alibaba/Sentinel).
 
 If you have any ideas or suggestions for Spring Cloud Sentinel starter, please don't hesitate to tell us by submitting github issues.
-

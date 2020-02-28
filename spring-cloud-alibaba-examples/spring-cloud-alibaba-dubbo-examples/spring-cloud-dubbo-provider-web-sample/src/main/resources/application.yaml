@@ -1,15 +1,18 @@
 dubbo:
   scan:
-    base-packages: org.springframework.cloud.alibaba.dubbo.service
+    base-packages: com.alibaba.cloud.dubbo.service
   protocols:
     dubbo:
       name: dubbo
       port: -1
-  registry:
+  registries:
+    new:
+      address: spring-cloud://localhost
+#  registry:
 #   The Spring Cloud Dubbo's registry extension
-    address: spring-cloud://localhost
+#    address: spring-cloud://localhost
 #   The traditional Dubbo's registry
-#   address: zookeeper://127.0.0.1:2181
+#   address: nacos://127.0.0.1:8848
 
 feign:
   hystrix:
@@ -17,3 +20,9 @@ feign:
 
 server:
   port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: dubborestmetadata

@@ -1,8 +1,9 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.cloud.alibaba.sentinel.SentinelWebAutoConfiguration,\
-org.springframework.cloud.alibaba.sentinel.endpoint.SentinelEndpointAutoConfiguration,\
-org.springframework.cloud.alibaba.sentinel.custom.SentinelAutoConfiguration,\
-org.springframework.cloud.alibaba.sentinel.feign.SentinelFeignAutoConfiguration
+com.alibaba.cloud.sentinel.SentinelWebAutoConfiguration,\
+com.alibaba.cloud.sentinel.SentinelWebFluxAutoConfiguration,\
+com.alibaba.cloud.sentinel.endpoint.SentinelEndpointAutoConfiguration,\
+com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration,\
+com.alibaba.cloud.sentinel.feign.SentinelFeignAutoConfiguration
 
 org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker=\
-org.springframework.cloud.alibaba.sentinel.custom.SentinelCircuitBreakerConfiguration
+com.alibaba.cloud.sentinel.custom.SentinelCircuitBreakerConfiguration

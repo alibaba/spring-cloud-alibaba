@@ -1,6 +1,6 @@
 [
   {
-    "resource": "resource",
+    "resource": "/hello",
     "controlBehavior": 0,
     "count": 1,
     "grade": 1,
@@ -8,9 +8,9 @@
     "strategy": 0
   },
   {
-    "resource": "p",
+    "resource": "/test",
     "controlBehavior": 0,
-    "count": 1,
+    "count": 0,
     "grade": 1,
     "limitApp": "default",
     "strategy": 0
