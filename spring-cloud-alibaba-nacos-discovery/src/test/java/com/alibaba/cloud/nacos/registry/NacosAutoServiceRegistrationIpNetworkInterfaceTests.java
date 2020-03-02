@@ -16,15 +16,25 @@
 
 package com.alibaba.cloud.nacos.registry;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
+import java.util.Properties;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
+import com.alibaba.nacos.api.NacosFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.support.MethodProxy;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -42,7 +52,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author xiaojing
  */
 
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore("javax.management.*")
+@PowerMockRunnerDelegate(SpringRunner.class)
+@PrepareForTest({ NacosFactory.class })
 @SpringBootTest(
 		classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class,
 		properties = { "spring.application.name=myTestService1",
@@ -61,6 +74,23 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 
 	@Autowired
 	private InetUtils inetUtils;
+
+	static {
+		try {
+			Method method = PowerMockito.method(NacosFactory.class, "createNamingService",
+					Properties.class);
+			MethodProxy.proxy(method, new InvocationHandler() {
+				@Override
+				public Object invoke(Object proxy, Method method, Object[] args)
+						throws Throwable {
+					return new MockNamingService();
+				}
+			});
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void contextLoads() throws Exception {

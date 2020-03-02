@@ -119,4 +119,5 @@ public class StandardRestService implements RestService {
 		map.put("age", user.getAge());
 		return map;
 	}
+
 }

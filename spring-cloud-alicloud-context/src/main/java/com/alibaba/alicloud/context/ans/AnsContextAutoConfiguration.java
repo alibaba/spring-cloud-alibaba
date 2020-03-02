@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaolongzuo
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "com.alibaba.alicloud.ans.AnsAutoConfiguration")
 @EnableConfigurationProperties(AnsProperties.class)
 @ImportAutoConfiguration(EdasContextAutoConfiguration.class)

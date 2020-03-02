@@ -18,18 +18,24 @@ package com.alibaba.cloud.nacos.endpoint;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.discovery.actuate.health.NacosDiscoveryHealthIndicator;
 
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
+import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * The AutoConfiguration class for Nacos Discovery's Endpoints.
+ *
  * @author xiaojing
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Endpoint.class)
 @ConditionalOnNacosDiscoveryEnabled
 public class NacosDiscoveryEndpointAutoConfiguration {
@@ -40,6 +46,14 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint(
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		return new NacosDiscoveryEndpoint(nacosDiscoveryProperties);
+	}
+
+	@Bean
+	@ConditionalOnEnabledHealthIndicator("nacos-discovery")
+	public HealthIndicator nacosDiscoveryHealthIndicator(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		return new NacosDiscoveryHealthIndicator(
+				nacosDiscoveryProperties.namingServiceInstance());
 	}
 
 }

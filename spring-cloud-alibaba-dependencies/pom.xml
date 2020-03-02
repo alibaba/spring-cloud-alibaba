@@ -12,15 +12,15 @@
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-    <version>2.2.0.BUILD-SNAPSHOT</version>
+    <version>2.2.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Dependencies</name>
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <sentinel.version>1.6.3</sentinel.version>
+        <sentinel.version>1.7.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <seata.version>0.9.0</seata.version>
+        <seata.version>1.0.0</seata.version>
         <nacos.client.version>1.1.4</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.9</acm.version>
@@ -29,7 +29,6 @@
         <alicloud.context.version>1.0.5</alicloud.context.version>
         <aliyun.sdk.edas.version>2.44.0</aliyun.sdk.edas.version>
         <schedulerX.client.version>2.1.6</schedulerX.client.version>
-        <dubbo.version>2.7.3</dubbo.version>
         <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
         <aliyun.sdk.mns>1.1.8.6</aliyun.sdk.mns>
         <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
@@ -199,12 +198,17 @@
                 <artifactId>sentinel-api-gateway-adapter-common</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-spring-webmvc-adapter</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
 
 
             <!--Alibaba Seata-->
             <dependency>
                 <groupId>io.seata</groupId>
-                <artifactId>seata-all</artifactId>
+                <artifactId>seata-spring-boot-starter</artifactId>
                 <version>${seata.version}</version>
             </dependency>
 
@@ -398,6 +402,7 @@
     </dependencyManagement>
 
     <profiles>
+
         <profile>
             <id>spring</id>
             <repositories>
@@ -428,13 +433,6 @@
                         <enabled>false</enabled>
                     </snapshots>
                 </repository>
-                <repository>
-                    <id>sonatype-nexus</id>
-                    <url>https://oss.sonatype.org/content/repositories/releases</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </repository>
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
@@ -456,7 +454,16 @@
                         <enabled>false</enabled>
                     </snapshots>
                 </pluginRepository>
+                <pluginRepository>
+                    <id>spring-releases</id>
+                    <name>Spring Releases</name>
+                    <url>https://repo.spring.io/libs-release-local</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
             </pluginRepositories>
         </profile>
+
     </profiles>
 </project>

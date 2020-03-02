@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.cloud.sentinel.SentinelProperties;
-import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;
@@ -33,6 +32,8 @@ import com.alibaba.csp.sentinel.util.AppNameUtil;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+
+import static com.alibaba.cloud.sentinel.SentinelConstants.BLOCK_PAGE_URL_CONF_KEY;
 
 /**
  * Endpoint for Sentinel, contains ans properties and rules.
@@ -56,7 +57,7 @@ public class SentinelEndpoint {
 			result.put("appName", AppNameUtil.getAppName());
 			result.put("logDir", LogBase.getLogBaseDir());
 			result.put("logUsePid", LogBase.isLogNameUsePid());
-			result.put("blockPage", WebServletConfig.getBlockPage());
+			result.put("blockPage", SentinelConfig.getConfig(BLOCK_PAGE_URL_CONF_KEY));
 			result.put("metricsFileSize", SentinelConfig.singleMetricFileSize());
 			result.put("metricsFileCharset", SentinelConfig.charset());
 			result.put("totalMetricsFileCount", SentinelConfig.totalMetricFileCount());

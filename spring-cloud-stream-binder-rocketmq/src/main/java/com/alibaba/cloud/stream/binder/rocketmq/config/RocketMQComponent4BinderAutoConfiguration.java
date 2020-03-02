@@ -38,7 +38,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(RocketMQAutoConfiguration.class)
 @ConditionalOnMissingBean(DefaultMQProducer.class)
 public class RocketMQComponent4BinderAutoConfiguration {

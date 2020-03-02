@@ -46,7 +46,7 @@ import org.springframework.web.reactive.result.view.ViewResolver;
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication(type = Type.REACTIVE)
 @ConditionalOnClass(SentinelReactorTransformer.class)
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)

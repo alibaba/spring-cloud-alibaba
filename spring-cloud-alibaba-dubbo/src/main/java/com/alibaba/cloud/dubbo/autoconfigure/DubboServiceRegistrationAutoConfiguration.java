@@ -64,7 +64,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import({ DubboServiceRegistrationEventPublishingAspect.class })
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
 		matchIfMissing = true)
@@ -130,7 +130,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 		}
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME)
 	@Aspect
 	class EurekaConfiguration implements SmartInitializingSingleton {
@@ -166,7 +166,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 
 	}
 
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME)
 	@AutoConfigureOrder
 	class ConsulConfiguration {

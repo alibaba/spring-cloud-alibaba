@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
 												// present in class-path
 @ComponentScan(basePackages = { "com.alibaba.nacos.config.server" })
 @AutoConfigureBefore(ConfigServerAutoConfiguration.class)
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class NacosConfigServerAutoConfiguration {
 
 	@Bean

@@ -16,10 +16,9 @@
 
 package com.alibaba.alicloud.acm.bootstrap;
 
+import com.alibaba.alicloud.acm.AcmPropertySourceRepository;
 import com.alibaba.alicloud.context.acm.AcmIntegrationProperties;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
@@ -28,16 +27,23 @@ import org.springframework.core.env.PropertySource;
 /**
  * @author juven.xuxb
  * @author xiaolongzuo
+ * @author yuhuangbin
  */
-@ConditionalOnProperty(name = "spring.cloud.alicloud.acm.enabled", matchIfMissing = true)
 public class AcmPropertySourceLocator implements PropertySourceLocator {
 
 	private static final String DIAMOND_PROPERTY_SOURCE_NAME = "diamond";
 
 	private AcmPropertySourceBuilder acmPropertySourceBuilder = new AcmPropertySourceBuilder();
 
-	@Autowired
 	private AcmIntegrationProperties acmIntegrationProperties;
+
+	private AcmPropertySourceRepository acmPropertySourceRepository;
+
+	public AcmPropertySourceLocator(AcmIntegrationProperties acmIntegrationProperties,
+			AcmPropertySourceRepository acmPropertySourceRepository) {
+		this.acmIntegrationProperties = acmIntegrationProperties;
+		this.acmPropertySourceRepository = acmPropertySourceRepository;
+	}
 
 	@Override
 	public PropertySource<?> locate(Environment environment) {
@@ -57,7 +63,8 @@ public class AcmPropertySourceLocator implements PropertySourceLocator {
 			loadDiamondDataIfPresent(compositePropertySource, dataId,
 					acmIntegrationProperties.getAcmProperties().getGroup(), false);
 		}
-
+		acmPropertySourceRepository
+				.collectAcmPropertySource(compositePropertySource.getPropertySources());
 		return compositePropertySource;
 	}
 

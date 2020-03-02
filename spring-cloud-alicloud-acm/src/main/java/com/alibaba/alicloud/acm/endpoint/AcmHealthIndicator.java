@@ -36,9 +36,9 @@ public class AcmHealthIndicator extends AbstractHealthIndicator {
 
 	private final AcmProperties acmProperties;
 
-	private final AcmPropertySourceRepository acmPropertySourceRepository;
-
 	private final List<String> dataIds;
+
+	private final AcmPropertySourceRepository acmPropertySourceRepository;
 
 	public AcmHealthIndicator(AcmProperties acmProperties,
 			AcmPropertySourceRepository acmPropertySourceRepository) {
@@ -47,7 +47,7 @@ public class AcmHealthIndicator extends AbstractHealthIndicator {
 
 		this.dataIds = new ArrayList<>();
 		for (AcmPropertySource acmPropertySource : this.acmPropertySourceRepository
-				.getAll()) {
+				.allAcmPropertySource()) {
 			this.dataIds.add(acmPropertySource.getDataId());
 		}
 	}

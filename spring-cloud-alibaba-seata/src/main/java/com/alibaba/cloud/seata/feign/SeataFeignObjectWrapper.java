@@ -41,8 +41,6 @@ public class SeataFeignObjectWrapper {
 
 	private SpringClientFactory springClientFactory;
 
-	private BlockingLoadBalancerClient loadBalancerClient;
-
 	SeataFeignObjectWrapper(BeanFactory beanFactory) {
 		this.beanFactory = beanFactory;
 	}
@@ -57,7 +55,7 @@ public class SeataFeignObjectWrapper {
 			if (bean.getClass().getName().equals(
 					"org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient")) {
 				return new SeataFeignBlockingLoadBalancerClient(getClient(bean),
-						loadBalancerClient());
+						beanFactory.getBean(BlockingLoadBalancerClient.class));
 			}
 			return new SeataFeignClient(this.beanFactory, (Client) bean);
 		}
@@ -80,13 +78,6 @@ public class SeataFeignObjectWrapper {
 			client.setAccessible(oldAccessible);
 		}
 		return null;
-	}
-
-	private BlockingLoadBalancerClient loadBalancerClient() {
-		if (this.loadBalancerClient != null) {
-			return this.loadBalancerClient;
-		}
-		return beanFactory.getBean(BlockingLoadBalancerClient.class);
 	}
 
 	CachingSpringLoadBalancerFactory factory() {

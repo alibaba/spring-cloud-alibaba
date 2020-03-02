@@ -16,9 +16,13 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -38,7 +42,8 @@ public final class RocketMQBinderUtils {
 			result.setNameServer(rocketBinderConfigurationProperties.getNameServer());
 		}
 		else {
-			result.setNameServer(rocketMQProperties.getNameServer());
+			result.setNameServer(
+					Arrays.asList(rocketMQProperties.getNameServer().split(";")));
 		}
 		if (rocketMQProperties.getProducer() == null
 				|| StringUtils.isEmpty(rocketMQProperties.getProducer().getAccessKey())) {
@@ -72,6 +77,13 @@ public final class RocketMQBinderUtils {
 					rocketBinderConfigurationProperties.isEnableMsgTrace());
 		}
 		return result;
+	}
+
+	public static String getNameServerStr(List<String> nameServerList) {
+		if (CollectionUtils.isEmpty(nameServerList)) {
+			return null;
+		}
+		return String.join(";", nameServerList);
 	}
 
 }

@@ -21,7 +21,6 @@ import javax.annotation.PostConstruct;
 import com.alibaba.cloud.sentinel.SentinelProperties;
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
-import com.alibaba.csp.sentinel.adapter.servlet.config.WebServletConfig;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
@@ -50,12 +49,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
+import static com.alibaba.cloud.sentinel.SentinelConstants.BLOCK_PAGE_URL_CONF_KEY;
+import static com.alibaba.csp.sentinel.config.SentinelConfig.setConfig;
+
 /**
  * @author xiaojing
  * @author jiashuai.xie
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelAutoConfiguration {
@@ -124,8 +126,8 @@ public class SentinelAutoConfiguration {
 			System.setProperty(SentinelConfig.COLD_FACTOR,
 					properties.getFlow().getColdFactor());
 		}
-		if (StringUtils.hasText(properties.getServlet().getBlockPage())) {
-			WebServletConfig.setBlockPage(properties.getServlet().getBlockPage());
+		if (StringUtils.hasText(properties.getBlockPage())) {
+			setConfig(BLOCK_PAGE_URL_CONF_KEY, properties.getBlockPage());
 		}
 
 		// earlier initialize
@@ -160,10 +162,10 @@ public class SentinelAutoConfiguration {
 	}
 
 	@ConditionalOnClass(ObjectMapper.class)
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	protected static class SentinelConverterConfiguration {
 
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelJsonConfiguration {
 
 			private ObjectMapper objectMapper = new ObjectMapper();
@@ -201,7 +203,7 @@ public class SentinelAutoConfiguration {
 		}
 
 		@ConditionalOnClass(XmlMapper.class)
-		@Configuration
+		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelXmlConfiguration {
 
 			private XmlMapper xmlMapper = new XmlMapper();
