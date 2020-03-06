@@ -18,7 +18,7 @@
         <!-- Spring Cloud Stream RocketMQ -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+            <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
         </dependency>
 
         <!-- Spring Cloud Bus -->

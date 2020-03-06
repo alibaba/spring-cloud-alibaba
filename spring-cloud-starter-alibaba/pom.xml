@@ -11,15 +11,44 @@
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Starters</name>
     <description>Spring Cloud Alibaba Starters</description>
+    
     <modules>
         <module>spring-cloud-starter-alibaba-nacos-config</module>
         <module>spring-cloud-starter-alibaba-nacos-config-server</module>
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
-        <module>spring-cloud-starter-alibaba-sentinel</module>
         <module>spring-cloud-starter-alibaba-seata</module>
         <module>spring-cloud-starter-stream-rocketmq</module>
         <module>spring-cloud-starter-bus-rocketmq</module>
         <module>spring-cloud-starter-dubbo</module>
         <module>spring-cloud-starter-alibaba-sidecar</module>
+        <module>spring-cloud-circuitbreaker-sentinel</module>
+        <module>spring-cloud-starter-alibaba-sentinel</module>
+        <module>spring-cloud-alibaba-sentinel-datasource</module>
+        <module>spring-cloud-alibaba-sentinel-gateway</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

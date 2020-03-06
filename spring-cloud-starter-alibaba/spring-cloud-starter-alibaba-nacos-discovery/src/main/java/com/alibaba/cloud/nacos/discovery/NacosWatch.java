@@ -108,8 +108,8 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 		if (this.running.compareAndSet(true, false) && this.watchFuture != null) {
 			// shutdown current user-thread,
 			// then the other daemon-threads will terminate automatic.
-			((ThreadPoolTaskScheduler)this.taskScheduler).shutdown();
-			
+			((ThreadPoolTaskScheduler) this.taskScheduler).shutdown();
+
 			this.watchFuture.cancel(true);
 		}
 	}
