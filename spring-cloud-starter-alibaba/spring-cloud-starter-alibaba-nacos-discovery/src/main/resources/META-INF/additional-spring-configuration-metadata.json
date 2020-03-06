@@ -34,5 +34,27 @@
       "type": "java.lang.Boolean",
       "defaultValue": "true",
       "description": "enable nacos discovery watch or not ."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.username",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.username}",
+      "description": "nacos discovery service's username to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.password",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.password}",
+      "description": "nacos discovery service's password to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.username",
+      "type": "java.lang.String",
+      "description": "nacos userName to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.password",
+      "type": "java.lang.String",
+      "description": "nacos password to authenticate."
     }
 ]}
