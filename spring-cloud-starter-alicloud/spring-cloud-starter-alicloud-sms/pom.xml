@@ -6,7 +6,9 @@
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-alicloud</artifactId>
         <version>2.2.1.BUILD-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
     <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
     <name>Spring Cloud Starter Alibaba Cloud SMS</name>
 
