@@ -8,6 +8,7 @@
         <version>2.2.1.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+
     <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
     <name>Spring Cloud Starter Stream RocketMQ</name>
 
