@@ -16,6 +16,7 @@
 
 package com.alibaba.alicloud.context;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
@@ -27,13 +28,23 @@ import org.springframework.context.annotation.Configuration;
  * @author xiaolongzuo
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties({ AliCloudProperties.class, InetUtilsProperties.class })
 public class AliCloudContextAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public InetUtils inetUtils(InetUtilsProperties inetUtilsProperties) {
-		return new InetUtils(inetUtilsProperties);
+	@EnableConfigurationProperties(AliCloudProperties.class)
+	static class AliCloudPropertiesInit {
+
+	}
+
+	@EnableConfigurationProperties(InetUtilsProperties.class)
+	@ConditionalOnClass(InetUtilsProperties.class)
+	static class InetUtilsPropertiesInit {
+
+		@Bean
+		@ConditionalOnMissingBean
+		public InetUtils inetUtils(InetUtilsProperties inetUtilsProperties) {
+			return new InetUtils(inetUtilsProperties);
+		}
+
 	}
 
 }
