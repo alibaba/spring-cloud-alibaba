@@ -412,10 +412,8 @@ Endpoint 暴露的 json 中包含了三种属性:
 
 更多关于 Nacos Config Starter 的配置项如下所示:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|配置项 ^|Key ^|默认值 ^|说明
+|===
+|配置项 |Key |默认值 |说明
 |服务端地址|`spring.cloud.nacos.config.server-addr`|| Nacos Server 启动监听的ip地址和端口
 |配置对应的 DataId|`spring.cloud.nacos.config.name`|| 先取 prefix，再去 name，最后取 spring.application.name
 |配置对应的 DataId|`spring.cloud.nacos.config.prefix`|| 先取 prefix，再去 name，最后取 spring.application.name
@@ -432,4 +430,4 @@ Endpoint 暴露的 json 中包含了三种属性:
 |共享配置|`spring.cloud.nacos.config.sharedDataids`||共享配置的 DataId, "," 分割
 |共享配置动态刷新|`spring.cloud.nacos.config.refreshableDataids`||共享配置中需要动态刷新的 DataId, "," 分割
 |自定义 Data Id 配置|`spring.cloud.nacos.config.extConfig`||属性是个集合，内部由 `Config` POJO 组成。`Config` 有 3 个属性，分别是 `dataId`, `group` 以及 `refresh`
-|====
+|===

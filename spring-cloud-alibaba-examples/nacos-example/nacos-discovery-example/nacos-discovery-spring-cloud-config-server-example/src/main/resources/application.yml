@@ -1,0 +1,18 @@
+server:
+  port: 7070
+
+spring:
+  application:
+    name: configserver
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        server-addr: localhost:8848
+    config:
+      server:
+        git:
+          uri: https://github.com/fangjian0423/blogimages
+          search-paths: /
+

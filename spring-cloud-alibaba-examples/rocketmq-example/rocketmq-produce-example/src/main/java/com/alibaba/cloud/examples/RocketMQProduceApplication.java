@@ -1,4 +1,22 @@
+/*
+ * Copyright 2013-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.examples;
+
+import com.alibaba.cloud.examples.RocketMQProduceApplication.MySource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -10,25 +28,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 
-import com.alibaba.cloud.examples.RocketMQProduceApplication.MySource;
-
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @SpringBootApplication
 @EnableBinding({ MySource.class })
 public class RocketMQProduceApplication {
-
-	public interface MySource {
-		@Output("output1")
-		MessageChannel output1();
-
-		@Output("output2")
-		MessageChannel output2();
-
-		@Output("output3")
-		MessageChannel output3();
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(RocketMQProduceApplication.class, args);
@@ -47,6 +52,19 @@ public class RocketMQProduceApplication {
 	@Bean
 	public CustomRunnerWithTransactional customRunnerWithTransactional() {
 		return new CustomRunnerWithTransactional();
+	}
+
+	public interface MySource {
+
+		@Output("output1")
+		MessageChannel output1();
+
+		@Output("output2")
+		MessageChannel output2();
+
+		@Output("output3")
+		MessageChannel output3();
+
 	}
 
 	public static class CustomRunner implements CommandLineRunner {
@@ -90,9 +108,11 @@ public class RocketMQProduceApplication {
 			}
 
 		}
+
 	}
 
 	public static class CustomRunnerWithTransactional implements CommandLineRunner {
+
 		@Autowired
 		private SenderService senderService;
 
@@ -107,6 +127,7 @@ public class RocketMQProduceApplication {
 			// COMMIT_MESSAGE message
 			senderService.sendTransactionalMsg("transactional-msg4", 4);
 		}
+
 	}
 
 }
