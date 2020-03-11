@@ -26,18 +26,21 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xiaolongzuo
+ * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
 @Configuration(proxyBeanMethods = false)
 public class AliCloudContextAutoConfiguration {
 
+	@Configuration(proxyBeanMethods = false)
 	@EnableConfigurationProperties(AliCloudProperties.class)
-	static class AliCloudPropertiesAutoConfiguration {
+	static class AliCloudPropertiesConfiguration {
 
 	}
 
+	@Configuration(proxyBeanMethods = false)
 	@EnableConfigurationProperties(InetUtilsProperties.class)
 	@ConditionalOnClass(InetUtilsProperties.class)
-	static class InetUtilsAutoConfiguration {
+	static class InetUtilsConfiguration {
 
 		@Bean
 		@ConditionalOnMissingBean
