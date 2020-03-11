@@ -31,13 +31,13 @@ import org.springframework.context.annotation.Configuration;
 public class AliCloudContextAutoConfiguration {
 
 	@EnableConfigurationProperties(AliCloudProperties.class)
-	static class AliCloudPropertiesInit {
+	static class AliCloudPropertiesAutoConfiguration {
 
 	}
 
 	@EnableConfigurationProperties(InetUtilsProperties.class)
 	@ConditionalOnClass(InetUtilsProperties.class)
-	static class InetUtilsPropertiesInit {
+	static class InetUtilsAutoConfiguration {
 
 		@Bean
 		@ConditionalOnMissingBean
