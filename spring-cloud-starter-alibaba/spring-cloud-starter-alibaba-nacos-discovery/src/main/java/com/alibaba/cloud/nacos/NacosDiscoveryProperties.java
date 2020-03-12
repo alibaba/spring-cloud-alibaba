@@ -54,8 +54,10 @@ import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMING_LOAD_CACHE_AT_START;
+import static com.alibaba.nacos.api.PropertyKeyConst.PASSWORD;
 import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
+import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
 
 /**
  * @author dungu.zpf
@@ -81,6 +83,16 @@ public class NacosDiscoveryProperties {
 	 * nacos discovery server address.
 	 */
 	private String serverAddr;
+
+	/**
+	 * the nacos authentication username.
+	 */
+	private String username;
+
+	/**
+	 * the nacos authentication password.
+	 */
+	private String password;
 
 	/**
 	 * the domain name of a service, through which the server address can be dynamically
@@ -419,6 +431,22 @@ public class NacosDiscoveryProperties {
 		this.group = group;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
@@ -474,6 +502,12 @@ public class NacosDiscoveryProperties {
 			this.setGroup(
 					env.resolvePlaceholders("${spring.cloud.nacos.discovery.group:}"));
 		}
+		if (StringUtils.isEmpty(this.getUsername())) {
+			this.setUsername(env.resolvePlaceholders("${spring.cloud.nacos.username:}"));
+		}
+		if (StringUtils.isEmpty(this.getPassword())) {
+			this.setPassword(env.resolvePlaceholders("${spring.cloud.nacos.password:}"));
+		}
 	}
 
 	public NamingService namingServiceInstance() {
@@ -513,6 +547,8 @@ public class NacosDiscoveryProperties {
 	private Properties getNacosProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, serverAddr);
+		properties.put(USERNAME, Objects.toString(username,""));
+		properties.put(PASSWORD, Objects.toString(password,""));
 		properties.put(NAMESPACE, namespace);
 		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME, logName);
 
