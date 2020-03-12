@@ -10,6 +10,9 @@ dubbo:
     # The subscribed services in consumer side
     subscribed-services: ${provider.application.name}
 
+  consumer:
+    check: false
+
 server:
   port: 0
 

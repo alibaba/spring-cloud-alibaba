@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>2.2.0.BUILD-SNAPSHOT</version>
+        <version>2.2.1.BUILD-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,6 +13,12 @@
     <description>Example demonstrating how to use Spring Cloud Alibaba Sidecar with nacos</description>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sidecar</artifactId>
