@@ -20,6 +20,7 @@
         <module>spring-cloud-starter-alicloud-ans</module>
         <module>spring-cloud-starter-alicloud-schedulerx</module>
         <module>spring-cloud-starter-alicloud-sms</module>
+        <module>spring-cloud-starter-alicloud-redis</module>
     </modules>
 
     <build>

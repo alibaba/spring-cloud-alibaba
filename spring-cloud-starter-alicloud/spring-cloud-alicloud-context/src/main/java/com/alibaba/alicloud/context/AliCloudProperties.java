@@ -20,11 +20,35 @@ import com.alibaba.cloud.context.AliCloudConfiguration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import static com.alibaba.alicloud.context.AliCloudProperties.PROPERTY_PREFIX;
+
 /**
  * @author xiaolongzuo
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@ConfigurationProperties("spring.cloud.alicloud")
+@ConfigurationProperties(PROPERTY_PREFIX)
 public class AliCloudProperties implements AliCloudConfiguration {
+
+	/**
+	 * The prefix of the property of {@link AliCloudProperties}
+	 * 
+	 * @since 2.2.1
+	 */
+	public static final String PROPERTY_PREFIX = "spring.cloud.alicloud";
+
+	/**
+	 * The the property of {@link #getAccessKey()}
+	 *
+	 * @since 2.2.1
+	 */
+	public static final String ACCESS_KEY_PROPERTY = PROPERTY_PREFIX + ".access-key";
+
+	/**
+	 * The prefix of the property of {@link #getSecretKey()}
+	 *
+	 * @since 2.2.1
+	 */
+	public static final String SECRET_KEY_PROPERTY = PROPERTY_PREFIX + ".secret-key";
 
 	/**
 	 * alibaba cloud access key.
