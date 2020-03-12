@@ -222,7 +222,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		Collection<ServiceInstance> serviceInstances = serviceInstancesFunction
 				.apply(serviceName);
 
-		// issue : restart consumer and provider together
+		// issue : ReStarting a consumer and then starting a provider does not automatically discover the registration
 		// fix https://github.com/alibaba/spring-cloud-alibaba/issues/753
 		// Re-obtain the latest list of available metadata address here, ip or port may change.
 		dubboMetadataConfigServiceProxy.removeProxy(serviceName);
