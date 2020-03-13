@@ -16,40 +16,45 @@
  */
 package com.alibaba.alicloud.context.condition;
 
-import com.alibaba.alicloud.context.AliCloudProperties;
+import java.util.Map;
 
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
-import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
+import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-import static com.alibaba.alicloud.context.AliCloudProperties.ACCESS_KEY_PROPERTY;
-import static com.alibaba.alicloud.context.AliCloudProperties.SECRET_KEY_PROPERTY;
 import static com.alibaba.alicloud.context.condition.OnRequiredPropertyCondition.doGetMatchOutcome;
 
 /**
- * {@link Condition} that checks whether an endpoint of Alibaba Cloud is available or not
- * if and only if the properties that are "spring.cloud.alicloud.access-key" and
- * "spring.cloud.alicloud.secret-key" must be present.
+ * Multiple {@link OnRequiredPropertyCondition}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 2.2.1
- * @see ConditionalOnAliCloudEndpoint
- * @see AliCloudProperties
  */
-class OnAliCloudEndpointCondition extends SpringBootCondition {
+public class OnRequiredPropertiesCondition extends SpringBootCondition {
+
+	private static final String annotationName = ConditionalOnRequiredProperties.class
+			.getName();
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context,
 			AnnotatedTypeMetadata metadata) {
 
-		ConditionOutcome result = doGetMatchOutcome(context, ACCESS_KEY_PROPERTY);
+		Map<String, Object> annotationAttributes = metadata
+				.getAnnotationAttributes(annotationName);
 
-		if (result.isMatch()) {
-			result = doGetMatchOutcome(context, SECRET_KEY_PROPERTY);
+		AnnotationAttributes[] value = (AnnotationAttributes[]) annotationAttributes
+				.get("value");
+
+		ConditionOutcome result = null;
+
+		for (AnnotationAttributes attributes : value) {
+			result = doGetMatchOutcome(context, attributes);
+			if (!result.isMatch()) {
+				break;
+			}
 		}
-
 		return result;
 	}
 }

@@ -16,40 +16,50 @@
  */
 package com.alibaba.alicloud.context.condition;
 
-import com.alibaba.alicloud.context.AliCloudProperties;
+import java.util.Map;
 
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
-import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.core.env.PropertySources;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
-import static com.alibaba.alicloud.context.AliCloudProperties.ACCESS_KEY_PROPERTY;
-import static com.alibaba.alicloud.context.AliCloudProperties.SECRET_KEY_PROPERTY;
-import static com.alibaba.alicloud.context.condition.OnRequiredPropertyCondition.doGetMatchOutcome;
-
 /**
- * {@link Condition} that checks whether an endpoint of Alibaba Cloud is available or not
- * if and only if the properties that are "spring.cloud.alicloud.access-key" and
- * "spring.cloud.alicloud.secret-key" must be present.
+ * {@link Conditional} checks the required property is present or not in the
+ * {@link PropertySources}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 2.2.1
- * @see ConditionalOnAliCloudEndpoint
- * @see AliCloudProperties
  */
-class OnAliCloudEndpointCondition extends SpringBootCondition {
+class OnRequiredPropertyCondition extends SpringBootCondition {
+
+	private static final String annotationName = ConditionalOnRequiredProperty.class
+			.getName();
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context,
 			AnnotatedTypeMetadata metadata) {
 
-		ConditionOutcome result = doGetMatchOutcome(context, ACCESS_KEY_PROPERTY);
+		Map<String, Object> annotationAttributes = metadata
+				.getAnnotationAttributes(annotationName);
 
-		if (result.isMatch()) {
-			result = doGetMatchOutcome(context, SECRET_KEY_PROPERTY);
-		}
+		return doGetMatchOutcome(context, annotationAttributes);
+	}
 
-		return result;
+	protected static ConditionOutcome doGetMatchOutcome(ConditionContext context,
+			Map<String, Object> annotationAttributes) {
+
+		String propertyName = (String) annotationAttributes.get("value");
+
+		return doGetMatchOutcome(context, propertyName);
+	}
+
+	protected static ConditionOutcome doGetMatchOutcome(ConditionContext context,
+			String propertyName) {
+		return context.getEnvironment().containsProperty(propertyName)
+				? ConditionOutcome.match()
+				: ConditionOutcome.noMatch("The property '" + propertyName
+						+ "' is abstract in the PropertySources");
 	}
 }
