@@ -16,7 +16,15 @@
  */
 package com.alibaba.alicloud.redis.actuate.endpoint;
 
+import java.util.concurrent.Callable;
+
 import com.alibaba.alicloud.context.AliCloudProperties;
+import com.alibaba.alicloud.redis.env.RedisProperties;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.profile.DefaultProfile;
+
+import static com.aliyuncs.profile.DefaultProfile.getProfile;
 
 /**
  * The abstract implementation for Alibaba Cloud Redis
@@ -28,8 +36,12 @@ public abstract class AbstractRedisEndpoint {
 
 	private final AliCloudProperties aliCloudProperties;
 
-	public AbstractRedisEndpoint(AliCloudProperties aliCloudProperties) {
+	private final RedisProperties redisProperties;
+
+	public AbstractRedisEndpoint(AliCloudProperties aliCloudProperties,
+			RedisProperties redisProperties) {
 		this.aliCloudProperties = aliCloudProperties;
+		this.redisProperties = redisProperties;
 	}
 
 	public AliCloudProperties getAliCloudProperties() {
@@ -42,5 +54,29 @@ public abstract class AbstractRedisEndpoint {
 
 	public String getSecretKey() {
 		return getAliCloudProperties().getSecretKey();
+	}
+
+	protected IAcsClient createIAcsClient(String regionId) {
+		DefaultProfile profile = getProfile(regionId, getAccessKey(), getSecretKey());
+		return new DefaultAcsClient(profile);
+	}
+
+	protected Object execute(Callable<?> task) {
+		Object result = null;
+		try {
+			result = task.call();
+		}
+		catch (Exception e) {
+			result = e;
+		}
+		return result;
+	}
+
+	public String getInstanceId() {
+		return redisProperties.getInstanceId();
+	}
+
+	public String getDefaultRegionID() {
+		return redisProperties.getDefaultRegionId();
 	}
 }

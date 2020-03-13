@@ -18,40 +18,39 @@ package com.alibaba.alicloud.redis.actuate.endpoint;
 
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.redis.env.RedisProperties;
-import com.aliyuncs.r_kvstore.model.v20150101.DescribeInstancesRequest;
+import com.aliyuncs.r_kvstore.model.v20150101.DescribeAccountsRequest;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
-import org.springframework.lang.Nullable;
 
 /**
- * The {@link Endpoint} for Alibaba Cloud Redis's <a href=
- * "https://help.aliyun.com/document_detail/120580.html">DescribeAvailableResource</a>
+ * The {@link Endpoint} for Alibaba Cloud Redis's
+ * <a href= "https://help.aliyun.com/document_detail/95802.html">DescribeAccounts</a>
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 2.2.1
  */
-@Endpoint(id = "redisDescribeAvailableResource")
-public class RedisDescribeAvailableResourceEndpoint extends AbstractRedisEndpoint {
+@Endpoint(id = "redisDescribeAccounts")
+public class RedisDescribeAccountsEndpoint extends AbstractRedisEndpoint {
 
-	public RedisDescribeAvailableResourceEndpoint(AliCloudProperties aliCloudProperties,
+	public RedisDescribeAccountsEndpoint(AliCloudProperties aliCloudProperties,
 			RedisProperties redisProperties) {
 		super(aliCloudProperties, redisProperties);
 	}
 
 	@ReadOperation
-	public Object describeAvailableResourceWithDefaultRegionId() {
-		return describeAvailableResource(getDefaultRegionID());
+	public Object describeAccountsWithDefaultRegionId() {
+		return describeAccounts(getDefaultRegionID());
 	}
 
 	@ReadOperation
-	public Object describeAvailableResource(@Selector @Nullable String regionId) {
+	public Object describeAccounts(@Selector String regionId) {
 		return execute(() -> {
-			DescribeInstancesRequest request = new DescribeInstancesRequest();
+			DescribeAccountsRequest request = new DescribeAccountsRequest();
 			request.setSysRegionId(regionId);
+			request.setInstanceId(getInstanceId());
 			return createIAcsClient(regionId).getAcsResponse(request);
 		});
 	}
-
 }

@@ -19,7 +19,12 @@ package com.alibaba.alicloud.redis.actuate.autoconfigure;
 import com.alibaba.alicloud.context.AliCloudContextAutoConfiguration;
 import com.alibaba.alicloud.context.AliCloudProperties;
 import com.alibaba.alicloud.context.condition.ConditionalOnAliCloudEndpoint;
+import com.alibaba.alicloud.context.condition.ConditionalOnRequiredProperty;
+import com.alibaba.alicloud.redis.actuate.endpoint.RedisDescribeAccountsEndpoint;
 import com.alibaba.alicloud.redis.actuate.endpoint.RedisDescribeAvailableResourceEndpoint;
+import com.alibaba.alicloud.redis.actuate.endpoint.RedisDescribeInstancesEndpoint;
+import com.alibaba.alicloud.redis.autocofigure.RedisAutoConfiguration;
+import com.alibaba.alicloud.redis.env.RedisProperties;
 
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -29,6 +34,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+
+import static com.alibaba.alicloud.redis.env.RedisProperties.INSTANCE_ID_PROPERTY;
 
 /**
  * The endpoint Auto-Configuration for Alibaba Cloud Redis
@@ -41,19 +48,40 @@ import org.springframework.context.annotation.PropertySource;
 @ConditionalOnAliCloudEndpoint
 @PropertySource(name = "Alibaba Cloud Redis Endpoints Default Properties", value = "classpath:/META-INF/redis/default/actuator-endpoints.properties")
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(AliCloudContextAutoConfiguration.class)
+@AutoConfigureAfter(value = { AliCloudContextAutoConfiguration.class,
+		RedisAutoConfiguration.class })
 public class RedisEndpointAutoConfiguration {
 
 	private final AliCloudProperties aliCloudProperties;
 
-	public RedisEndpointAutoConfiguration(AliCloudProperties aliCloudProperties) {
+	private final RedisProperties redisProperties;
+
+	public RedisEndpointAutoConfiguration(AliCloudProperties aliCloudProperties,
+			RedisProperties redisProperties) {
 		this.aliCloudProperties = aliCloudProperties;
+		this.redisProperties = redisProperties;
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnAvailableEndpoint
 	public RedisDescribeAvailableResourceEndpoint redisDescribeAvailableResourceEndpoint() {
-		return new RedisDescribeAvailableResourceEndpoint(aliCloudProperties);
+		return new RedisDescribeAvailableResourceEndpoint(aliCloudProperties,
+				redisProperties);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnAvailableEndpoint
+	@ConditionalOnRequiredProperty(INSTANCE_ID_PROPERTY)
+	public RedisDescribeAccountsEndpoint redisDescribeAccountsEndpoint() {
+		return new RedisDescribeAccountsEndpoint(aliCloudProperties, redisProperties);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnAvailableEndpoint
+	public RedisDescribeInstancesEndpoint redisDescribeInstancesEndpoint() {
+		return new RedisDescribeInstancesEndpoint(aliCloudProperties, redisProperties);
 	}
 }

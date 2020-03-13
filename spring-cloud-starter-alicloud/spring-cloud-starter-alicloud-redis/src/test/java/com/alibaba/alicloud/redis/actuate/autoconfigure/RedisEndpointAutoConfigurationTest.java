@@ -17,8 +17,6 @@
 package com.alibaba.alicloud.redis.actuate.autoconfigure;
 
 import com.alibaba.alicloud.redis.actuate.endpoint.RedisDescribeAvailableResourceEndpoint;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.r_kvstore.model.v20150101.DescribeInstancesResponse;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,11 +50,8 @@ public class RedisEndpointAutoConfigurationTest {
 	private RedisDescribeAvailableResourceEndpoint redisDescribeAvailableResourceEndpoint;
 
 	@Test
-	public void testRedisDescribeAvailableResourceEndpoint() throws ClientException {
-
-		DescribeInstancesResponse response = redisDescribeAvailableResourceEndpoint
-				.execute("cn-hangzhou");
-
+	public void testRedisDescribeAvailableResourceEndpoint() {
+		Object response = redisDescribeAvailableResourceEndpoint.describeAvailableResource("cn-hangzhou");
 		assertNotNull(response);
 	}
 }

@@ -23,35 +23,34 @@ import com.aliyuncs.r_kvstore.model.v20150101.DescribeInstancesRequest;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
-import org.springframework.lang.Nullable;
 
 /**
- * The {@link Endpoint} for Alibaba Cloud Redis's <a href=
- * "https://help.aliyun.com/document_detail/120580.html">DescribeAvailableResource</a>
- *
+ * The {@link Endpoint} for Alibaba Cloud Redis's
+ * <a href= "https://help.aliyun.com/document_detail/60933.html">DescribeInstances</a>
+ * 
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 2.2.1
  */
-@Endpoint(id = "redisDescribeAvailableResource")
-public class RedisDescribeAvailableResourceEndpoint extends AbstractRedisEndpoint {
+@Endpoint(id = "redisDescribeInstances")
+public class RedisDescribeInstancesEndpoint extends AbstractRedisEndpoint {
 
-	public RedisDescribeAvailableResourceEndpoint(AliCloudProperties aliCloudProperties,
+	public RedisDescribeInstancesEndpoint(AliCloudProperties aliCloudProperties,
 			RedisProperties redisProperties) {
 		super(aliCloudProperties, redisProperties);
 	}
 
 	@ReadOperation
-	public Object describeAvailableResourceWithDefaultRegionId() {
-		return describeAvailableResource(getDefaultRegionID());
+	public Object describeInstancesWithDefaultRegion() {
+		return describeInstances(getDefaultRegionID());
 	}
 
 	@ReadOperation
-	public Object describeAvailableResource(@Selector @Nullable String regionId) {
+	public Object describeInstances(@Selector String regionId) {
 		return execute(() -> {
 			DescribeInstancesRequest request = new DescribeInstancesRequest();
 			request.setSysRegionId(regionId);
+			request.setInstanceStatus("Normal");
 			return createIAcsClient(regionId).getAcsResponse(request);
 		});
 	}
-
 }

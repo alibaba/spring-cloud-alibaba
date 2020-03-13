@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.alibaba.alicloud.redis.autocofigure.RedisAutoConfiguration,\
 com.alibaba.alicloud.redis.actuate.autoconfigure.RedisEndpointAutoConfiguration
