@@ -90,7 +90,7 @@ public class DubboTransportedMethodMetadataResolver {
 
 	private Map<String, RestMethodMetadata> resolveRestRequestMetadataMap(
 			Class<?> targetType) {
-		return contract.parseAndValidatateMetadata(targetType).stream().collect(Collectors
+		return contract.parseAndValidateMetadata(targetType).stream().collect(Collectors
 				.toMap(feign.MethodMetadata::configKey, this::restMethodMetadata));
 	}
 
