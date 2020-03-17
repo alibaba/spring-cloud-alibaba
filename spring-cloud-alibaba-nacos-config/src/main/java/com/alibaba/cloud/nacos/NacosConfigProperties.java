@@ -39,15 +39,16 @@ import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
 import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_LONG_POLL_TIMEOUT;
 import static com.alibaba.nacos.api.PropertyKeyConst.CONFIG_RETRY_TIME;
-import static com.alibaba.nacos.api.PropertyKeyConst.CONTEXT_PATH;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENABLE_REMOTE_SYNC_CONFIG;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENCODE;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
 import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
+import static com.alibaba.nacos.api.PropertyKeyConst.PASSWORD;
 import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
+import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
 
 /**
  * Nacos properties.
@@ -86,12 +87,26 @@ public class NacosConfigProperties {
 			}
 			this.setServerAddr(serverAddr);
 		}
+		if (StringUtils.isEmpty(this.getUsername())) {
+			this.setUsername(environment.resolvePlaceholders("${spring.cloud.nacos.username:}"));
+		}
+		if (StringUtils.isEmpty(this.getPassword())) {
+			this.setPassword(environment.resolvePlaceholders("${spring.cloud.nacos.password:}"));
+		}
 	}
 
 	/**
 	 * nacos config server address.
 	 */
 	private String serverAddr;
+	/**
+	 * nacos auth username.
+	 */
+	private String username;
+	/**
+	 * nacos auth password.
+	 */
+	private String password;
 
 	/**
 	 * encode for nacos config content.
@@ -358,6 +373,22 @@ public class NacosConfigProperties {
 		this.name = name;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	/**
 	 * @return ConfigService
 	 */
@@ -378,11 +409,12 @@ public class NacosConfigProperties {
 	public Properties getConfigServiceProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
+		properties.put(USERNAME, Objects.toString(this.username, ""));
+		properties.put(PASSWORD, Objects.toString(this.password, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
 		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
 		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
-		properties.put(CONTEXT_PATH, Objects.toString(this.contextPath, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
 		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
 		properties.put(CONFIG_LONG_POLL_TIMEOUT,

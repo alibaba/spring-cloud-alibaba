@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author xiaojing
  */
-@EnableDiscoveryClient(autoRegister = false)
+@EnableDiscoveryClient(autoRegister = true)
 @SpringBootApplication
 public class ProviderApplication {
 
