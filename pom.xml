@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.2.0.RELEASE</version>
+        <version>2.2.2.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -73,15 +73,15 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.2.0.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.2.0.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.2.0.RELEASE</spring-cloud-openfeign.version>
-        <spring-cloud-bus.version>2.2.0.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.2.0.RELEASE</spring-cloud-gateway.version>
-        <spring-cloud-stream.version>Horsham.RELEASE</spring-cloud-stream.version>
-        <spring-cloud-consul.version>2.2.0.RELEASE</spring-cloud-consul.version>
-        <spring-cloud-config.version>2.2.0.RELEASE</spring-cloud-config.version>
-        <spring-cloud-zookeeper.version>2.2.0.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-commons.version>2.2.2.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.2.2.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.2.2.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>2.2.1.RELEASE</spring-cloud-bus.version>
+        <spring-cloud-gateway.version>2.2.2.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-stream.version>Horsham.SR3</spring-cloud-stream.version>
+        <spring-cloud-consul.version>2.2.2.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-config.version>2.2.2.RELEASE</spring-cloud-config.version>
+        <spring-cloud-zookeeper.version>2.2.1.RELEASE</spring-cloud-zookeeper.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
@@ -104,28 +104,11 @@
 
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
-        <module>spring-cloud-alibaba-sentinel</module>
-        <module>spring-cloud-alibaba-sentinel-datasource</module>
-        <module>spring-cloud-alibaba-sentinel-gateway</module>
-        <module>spring-cloud-circuitbreaker-sentinel</module>
-        <module>spring-cloud-alibaba-nacos-config</module>
-        <module>spring-cloud-alibaba-nacos-discovery</module>
-        <module>spring-cloud-alibaba-seata</module>
-        <module>spring-cloud-stream-binder-rocketmq</module>
-        <module>spring-cloud-alibaba-nacos-config-server</module>
-        <module>spring-cloud-alibaba-dubbo</module>
-        <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-starter-alibaba</module>
         <module>spring-cloud-starter-alicloud</module>
-        <module>spring-cloud-alicloud-oss</module>
-        <module>spring-cloud-alicloud-acm</module>
-        <module>spring-cloud-alicloud-ans</module>
-        <module>spring-cloud-alicloud-schedulerx</module>
-        <module>spring-cloud-alicloud-sms</module>
         <module>spring-cloud-alibaba-coverage</module>
-        <module>spring-cloud-alibaba-sidecar</module>
     </modules>
 
     <dependencyManagement>
