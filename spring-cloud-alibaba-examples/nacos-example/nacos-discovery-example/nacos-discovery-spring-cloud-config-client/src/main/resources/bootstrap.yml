@@ -5,6 +5,8 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
+      username: nacos
+      password: nacos
     config:
       discovery:
         enabled: true
