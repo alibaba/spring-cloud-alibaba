@@ -226,6 +226,10 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		// fix https://github.com/alibaba/spring-cloud-alibaba/issues/753
 		// Re-obtain the latest list of available metadata address here, ip or port may change.
 		// by https://github.com/wangzihaogithub
+		dubboMetadataConfigServiceProxy.removeProxy(serviceName);
+		repository.removeMetadataAndInitializedService(serviceName);
+		dubboGenericServiceFactory.destroy(serviceName);
+		repository.initializeMetadata(serviceName);
 		if (CollectionUtils.isEmpty(serviceInstances)) {
 			if (logger.isWarnEnabled()) {
 				logger.warn(
