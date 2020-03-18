@@ -51,6 +51,8 @@ public class NacosConfigEndpointAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnProperty(name = "spring.cloud.nacos.config.health.enabled", matchIfMissing = true)
 	public NacosConfigHealthIndicator nacosConfigHealthIndicator() {
 		return new NacosConfigHealthIndicator(nacosConfigManager.getConfigService());
 	}
