@@ -49,6 +49,28 @@
       "type": "java.lang.Boolean",
       "defaultValue": true,
       "description": "enable nacos config or not."
+    },
+    {
+      "name": "spring.cloud.nacos.config.username",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.username}",
+      "description": "nacos config service's userName to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.config.password",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.password}",
+      "description": "nacos config service's password to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.username",
+      "type": "java.lang.String",
+      "description": "nacos userName to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.password",
+      "type": "java.lang.String",
+      "description": "nacos password to authenticate."
     }
   ]
 }
