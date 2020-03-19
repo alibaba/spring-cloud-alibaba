@@ -20,8 +20,8 @@
     <properties>
         <sentinel.version>1.7.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
-        <seata.version>1.0.0</seata.version>
-        <nacos.client.version>1.1.4</nacos.client.version>
+        <seata.version>1.1.0</seata.version>
+        <nacos.client.version>1.2.0</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
         <acm.version>1.0.9</acm.version>
         <ans.version>1.0.1</ans.version>
@@ -44,6 +44,7 @@
                 <artifactId>alicloud-context</artifactId>
                 <version>${alicloud.context.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.aliyun</groupId>
                 <artifactId>aliyun-java-sdk-edas</artifactId>
@@ -55,21 +56,25 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>com.aliyun</groupId>
                 <artifactId>aliyun-java-sdk-core</artifactId>
                 <version>${aliyun.sdk.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.ans</groupId>
                 <artifactId>ans-sdk</artifactId>
                 <version>${ans.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.edas.acm</groupId>
                 <artifactId>acm-sdk</artifactId>
                 <version>${acm.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.edas</groupId>
                 <artifactId>schedulerX-client</artifactId>
@@ -108,6 +113,7 @@
                 <artifactId>sentinel-core</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-parameter-flow-control</artifactId>
@@ -118,31 +124,37 @@
                 <artifactId>sentinel-datasource-extension</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-datasource-apollo</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-datasource-zookeeper</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-datasource-nacos</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-datasource-redis</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-web-servlet</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-zuul-adapter</artifactId>
@@ -153,41 +165,49 @@
                 <artifactId>sentinel-spring-cloud-gateway-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-transport-simple-http</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-annotation-aspectj</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-dubbo-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-apache-dubbo-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-reactor-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-cluster-server-default</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-cluster-client-default</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-spring-webflux-adapter</artifactId>
@@ -198,12 +218,12 @@
                 <artifactId>sentinel-api-gateway-adapter-common</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-spring-webmvc-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
-
 
             <!--Alibaba Seata-->
             <dependency>
@@ -222,11 +242,6 @@
             <!-- Own dependencies  -->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-sentinel</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -235,69 +250,10 @@
                 <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alicloud-oss</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-nacos-config-server</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-seata</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alicloud-acm</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alicloud-ans</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alicloud-schedulerx</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alicloud-sms</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alicloud-context</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dubbo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-sidecar</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -307,11 +263,13 @@
                 <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-circuitbreaker-sentinel</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
@@ -370,6 +328,7 @@
                 <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-sidecar</artifactId>
