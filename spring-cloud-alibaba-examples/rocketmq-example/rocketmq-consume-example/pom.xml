@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>0.9.1.BUILD-SNAPSHOT</version>
+        <version>2.2.1.BUILD-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>rocketmq-spring-cloud-starter-stream</artifactId>
+            <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
         </dependency>
 
         <dependency>

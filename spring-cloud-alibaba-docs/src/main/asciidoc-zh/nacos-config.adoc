@@ -1,16 +1,35 @@
 == Spring Cloud Alibaba Nacos Config
 
-Nacos 提供用于存储配置和其他元数据的 key/value 存储，为分布式系统中的外部化配置提供服务器端和客户端支持。使用 Spring Cloud Alibaba Nacos Config，您可以在 Nacos Server 集中管理你 Spring Cloud 应用的外部属性配置。
+Nacos 是一个 Alibaba 开源的、易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 
-Spring Cloud Alibaba Nacos Config 是 Config Server 和 Client 的替代方案，客户端和服务器上的概念与 Spring Environment 和 PropertySource 有着一致的抽象，在特殊的 bootstrap 阶段，配置被加载到 Spring 环境中。当应用程序通过部署管道从开发到测试再到生产时，您可以管理这些环境之间的配置，并确保应用程序具有迁移时需要运行的所有内容。
+使用 Spring Cloud Alibaba Nacos Config，可基于 Spring Cloud 的编程模型快速接入 Nacos 配置管理功能。
+
+=== 如何引入 Nacos Config 进行配置管理
+
+如果要在您的项目中使用 Nacos 来实现配置管理，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-config` 的 starter。
+
+[source,xml,indent=0]
+----
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+</dependency>
+----
 
 === 快速开始
 
-===== Nacos 服务端初始化
+Nacos Config 使用 DataId 和 GROUP 确定一个配置。
 
-1、启动Nacos Server。启动方式可见 https://nacos.io/zh-cn/docs/quick-start.html[Nacos 官网]
+下图表示 DataId 使用 `myDataid`, GROUP 使用 `DEFAULT_GROUP`，配置格式为 Properties 的一个配置项:
 
-2、启动好Nacos之后，在Nacos添加如下的配置：
+.Nacos Config Item
+image::https://img.alicdn.com/tfs/TB1Yli3bUY1gK0jSZFMXXaWcVXa-2436-1138.png[]
+
+==== Nacos 服务端初始化
+
+具体启动方式参考 Spring Cloud Alibaba Nacos Discovery 小节的 "Nacos Server 启动" 章节。
+
+Nacos Server 启动完毕后，添加如何配置:
 
 [source,subs="normal"]
 ----
@@ -24,29 +43,29 @@ Group  :    DEFAULT_GROUP
             user.age=90
 ----
 
-NOTE: 注意dataid是以 properties(默认的文件扩展名方式)为扩展名。
+NOTE: 注意DataId是以 properties(默认的文件扩展名方式)为扩展名。
 
-===== 客户端使用方式
+==== 客户端使用方式
 
-如果要在您的项目中使用 Nacos 来实现应用的外部化配置，使用 group ID 为 `org.springframework.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-config` 的 starter。
+如果要在您的项目中使用 Nacos 来实现应用的外部化配置，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-nacos-config` 的 starter。
 
 [source,xml]
 ----
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
 </dependency>
 ----
 
-现在就可以创建一个标准的 Spring Boot 应用。
+现在创建一个标准的 Spring Boot 应用。
 
 [source,java]
 ----
 @SpringBootApplication
-public class ProviderApplication {
+public class NacosConfigApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(ConfigApplication.class, args);
         String userName = applicationContext.getEnvironment().getProperty("user.name");
         String userAge = applicationContext.getEnvironment().getProperty("user.age");
         System.err.println("user name :"+userName+"; age: "+userAge);
@@ -54,11 +73,12 @@ public class ProviderApplication {
 }
 ----
 
-在运行此 Example 之前， 必须使用 bootstrap.properties 配置文件来配置Nacos Server 地址，例如：
+在运行此 NacosConfigApplication 之前， 必须使用 `bootstrap.properties` 配置文件来配置 Nacos Server 地址，例如：
 
 .bootstrap.properties
 [source,properties]
 ----
+# DataId 默认使用 `spring.application.name` 配置跟文件扩展名结合(配置格式默认使用 properties), GROUP 不配置默认使用 DEFAULT_GROUP。因此该配置文件对应的 Nacos Config 配置的 DataId 为 nacos-config.properties, GROUP 为 DEFAULT_GROUP
 spring.application.name=nacos-config
 spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 ----
@@ -71,17 +91,16 @@ NOTE: 注意当你使用域名的方式来访问 Nacos 时，`spring.cloud.nacos
 
 [source,subs="normal"]
 ----
-2018-11-02 14:24:51.638  INFO 32700 --- [main] c.a.demo.provider.ProviderApplication    : Started ProviderApplication in 14.645 seconds (JVM running for 15.139)
+2018-11-02 14:24:51.638  INFO 32700 --- [main] c.a.demo.provider.ConfigApplication    : Started ConfigApplication in 14.645 seconds (JVM running for 15.139)
 user name :nacos-config-properties; age: 90
 2018-11-02 14:24:51.688  INFO 32700 --- [-127.0.0.1:8848] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@a8c5e74: startup date [Fri Nov 02 14:24:51 CST 2018]; root of context hierarchy
-2018-11
 ----
 
-=== 基于 dataid 为 yaml 的文件扩展名配置方式
+=== 基于 DataId 为 yaml 的文件扩展名配置方式
 
-spring-cloud-starter-alibaba-nacos-config 对于 yaml 格式也是完美支持的。这个时候只需要完成以下两步：
+Nacos Config 除了支持 properties 格式以外，也支持 yaml 格式。这个时候只需要完成以下两步：
 
-1、在应用的 bootstrap.properties 配置文件中显示的声明 dataid 文件扩展名。如下所示
+1、在应用的 bootstrap.properties 配置文件中显示的声明 DataId 文件扩展名。如下所示
 
 .bootstrap.properties
 [source,yaml]
@@ -89,7 +108,7 @@ spring-cloud-starter-alibaba-nacos-config 对于 yaml 格式也是完美支持�
 spring.cloud.nacos.config.file-extension=yaml
 ----
 
-2、在 Nacos 的控制台新增一个dataid为yaml为扩展名的配置，如下所示：
+2、在 Nacos 的控制台新增一个DataId为yaml为扩展名的配置，如下所示：
 
 [source,subs="normal"]
 ----
@@ -107,22 +126,22 @@ Group  :        DEFAULT_GROUP
 
 [source,subs="normal"]
 ----
-2018-11-02 14:59:00.484  INFO 32928 --- [main] c.a.demo.provider.ProviderApplication:Started ProviderApplication in 14.183 seconds (JVM running for 14.671)
+2018-11-02 14:59:00.484  INFO 32928 --- [main] c.a.demo.provider.ConfigApplication:Started ConfigApplication in 14.183 seconds (JVM running for 14.671)
 user name :nacos-config-yaml; age: 68
 2018-11-02 14:59:00.529  INFO 32928 --- [-127.0.0.1:8848] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@265a478e: startup date [Fri Nov 02 14:59:00 CST 2018]; root of context hierarchy
 ----
 
 === 支持配置的动态更新
 
-spring-cloud-starter-alibaba-nacos-config 也支持配置的动态更新，启动 Spring Boot 应用测试的代码如下：
+Nacos Config 默认支持配置的动态更新，启动 Spring Boot 应用测试的代码如下：
 
 [source,java]
 ----
 @SpringBootApplication
-public class ProviderApplication {
+public class ConfigApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(ConfigApplication.class, args);
         while(true) {
             //当动态配置刷新时，会更新到 Enviroment中，因此这里每隔一秒中从Enviroment中获取配置
             String userName = applicationContext.getEnvironment().getProperty("user.name");
@@ -151,9 +170,9 @@ user name :nacos-config-yaml-update; age: 68
 
 NOTE: 你可以通过配置 `spring.cloud.nacos.config.refresh.enabled=false` 来关闭动态刷新
 
-=== 可支持profile粒度的配置
+=== 支持profile粒度的配置
 
-spring-cloud-starter-alibaba-nacos-config 在加载配置的时候，不仅仅加载了以 dataid 为 `${spring.application.name}.${file-extension:properties}`   为前缀的基础配置，还加载了dataid为 `${spring.application.name}-${profile}.${file-extension:properties}` 的基础配置。在日常开发中如果遇到多套环境下的不同配置，可以通过Spring 提供的 `${spring.profiles.active}` 这个配置项来配置。
+Nacos Config 在加载配置的时候，不仅仅加载了以 DataId 为 `${spring.application.name}.${file-extension:properties}`   为前缀的基础配置，还加载了DataId为 `${spring.application.name}-${profile}.${file-extension:properties}` 的基础配置。在日常开发中如果遇到多套环境下的不同配置，可以通过Spring 提供的 `${spring.profiles.active}` 这个配置项来配置。
 
 [source,properties]
 ----
@@ -162,7 +181,7 @@ spring.profiles.active=develop
 
 NOTE: ${spring.profiles.active} 当通过配置文件来指定时必须放在 bootstrap.properties 文件中。
 
-Nacos 上新增一个dataid为：nacos-config-develop.yaml的基础配置，如下所示：
+Nacos 上新增一个DataId为：nacos-config-develop.yaml的基础配置，如下所示：
 
 [source,subs="normal"]
 ----
@@ -180,10 +199,10 @@ Group  :        DEFAULT_GROUP
 [source,java]
 ----
 @SpringBootApplication
-public class ProviderApplication {
+public class ConfigApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(ConfigApplication.class, args);
         while(true) {
             String userName = applicationContext.getEnvironment().getProperty("user.name");
             String userAge = applicationContext.getEnvironment().getProperty("user.age");
@@ -210,7 +229,7 @@ in develop-env enviroment; user name :nacos-config-yaml-update; age: 68
 spring.profiles.active=product
 ----
 
-同时生产环境上 Nacos 需要添加对应 dataid 的基础配置。例如，在生成环境下的 Naocs 添加了dataid为：nacos-config-product.yaml的配置：
+同时生产环境上 Nacos 需要添加对应 DataId 的基础配置。例如，在生成环境下的 Naocs 添加了DataId为：nacos-config-product.yaml的配置：
 
 [source,subs="normal"]
 ----
@@ -235,7 +254,8 @@ in product-env enviroment; user name :nacos-config-yaml-update; age: 68
 NOTE: 此案例中我们通过 `spring.profiles.active=<profilename>` 的方式写死在配置文件中，而在真正的项目实施过程中这个变量的值是需要不同环境而有不同的值。这个时候通常的做法是通过 `-Dspring.profiles.active=<profile>` 参数指定其配置来达到环境间灵活的切换。
 
 === 支持自定义 namespace 的配置
-首先看一下 Nacos 的 Namespace 的概念， https://nacos.io/zh-cn/docs/concepts.html[Nacos 概念]
+
+Nacos 内部有 https://nacos.io/zh-cn/docs/concepts.html[Namespace 的概念]:
 
 [quote]
 用于进行租户粒度的配置隔离。不同的命名空间下，可以存在相同的 Group 或 Data ID 的配置。Namespace 的常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等。
@@ -261,7 +281,7 @@ NOTE: 该配置必须放在 bootstrap.properties 文件中。并且在添加配�
 
 === 支持自定义扩展的 Data Id 配置
 
-Spring Cloud Alibaba Nacos Config 从 0.2.1 版本后，可支持自定义 Data Id 的配置。关于这部分详细的设计可参考 https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/141[这里]。
+Nacos Config 从 0.2.1 版本后，可支持自定义 Data Id 的配置。关于这部分详细的设计可参考 https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/141[这里]。
 一个完整的配置案例如下所示：
 
 [source,properties]
@@ -322,10 +342,92 @@ NOTE: `spring.cloud.nacos.config.refreshable-dataids` 给出哪些需要支持�
 
 === 配置的优先级
 
-Spring Cloud Alibaba Nacos Config 目前提供了三种配置能力从 Nacos 拉取相关的配置。
+Nacos Config 目前提供了三种配置能力从 Nacos 拉取相关的配置
 
 * A: 通过 `spring.cloud.nacos.config.shared-dataids` 支持多个共享 Data Id 的配置
 * B: 通过 `spring.cloud.nacos.config.ext-config[n].data-id` 的方式支持多个扩展 Data Id 的配置
 * C: 通过内部相关规则(应用名、应用名+ Profile )自动生成相关的 Data Id 配置
 
 当三种方式共同使用时，他们的一个优先级关系是:A < B < C
+
+=== Nacos Config 对外暴露的 Endpoint
+
+Nacos Config 内部提供了一个 Endpoint, 对应的 endpoint id 为 `nacos-config`。
+
+Endpoint 暴露的 json 中包含了三种属性:
+
+1. Sources: 当前应用配置的数据信息
+
+2. RefreshHistory: 配置刷新的历史记录
+
+3. NacosConfigProperties: 当前应用 Nacos 的基础配置信息
+
+这是 Endpoint 暴露的 json 示例:
+
+[source,json,indent=0]
+----
+{
+	"NacosConfigProperties": {
+		"serverAddr": "127.0.0.1:8848",
+		"encode": null,
+		"group": "DEFAULT_GROUP",
+		"prefix": null,
+		"fileExtension": "properties",
+		"timeout": 3000,
+		"endpoint": null,
+		"namespace": null,
+		"accessKey": null,
+		"secretKey": null,
+		"contextPath": null,
+		"clusterName": null,
+		"name": null,
+		"sharedDataids": "base-common.properties,common.properties",
+		"refreshableDataids": "common.properties",
+		"extConfig": null
+	},
+	"RefreshHistory": [{
+		"timestamp": "2019-07-29 11:20:04",
+		"dataId": "nacos-config-example.properties",
+		"md5": "7d5d7f1051ff6571e2ec9f90887d9d91"
+	}],
+	"Sources": [{
+		"lastSynced": "2019-07-29 11:19:04",
+		"dataId": "common.properties"
+	}, {
+		"lastSynced": "2019-07-29 11:19:04",
+		"dataId": "base-common.properties"
+	}, {
+		"lastSynced": "2019-07-29 11:19:04",
+		"dataId": "nacos-config-example.properties"
+	}]
+}
+----
+
+
+=== 完全关闭 Nacos Config 的自动化配置
+
+通过设置 spring.cloud.nacos.config.enabled = false 来完全关闭 Spring Cloud Nacos Config
+
+=== 关于 Nacos Config Starter 更多的配置项信息
+
+更多关于 Nacos Config Starter 的配置项如下所示:
+
+|===
+|配置项 |Key |默认值 |说明
+|服务端地址|`spring.cloud.nacos.config.server-addr`|| Nacos Server 启动监听的ip地址和端口
+|配置对应的 DataId|`spring.cloud.nacos.config.name`|| 先取 prefix，再去 name，最后取 spring.application.name
+|配置对应的 DataId|`spring.cloud.nacos.config.prefix`|| 先取 prefix，再去 name，最后取 spring.application.name
+|配置内容编码|`spring.cloud.nacos.config.encode`||读取的配置内容对应的编码
+|GROUP|`spring.cloud.nacos.config.group`|`DEFAULT_GROUP`|配置对应的组
+|文件扩展名|`spring.cloud.nacos.config.fileExtension`|`properties`|配置项对应的文件扩展名，目前支持 properties 和 yaml(yml)
+|获取配置超时时间|`spring.cloud.nacos.config.timeout`|`3000`|客户端获取配置的超时时间(毫秒)
+|接入点|`spring.cloud.nacos.config.endpoint`||地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
+|命名空间|`spring.cloud.nacos.config.namespace`||常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等
+|AccessKey|`spring.cloud.nacos.config.accessKey`||当要上阿里云时，阿里云上面的一个云账号名
+|SecretKey|`spring.cloud.nacos.config.secretKey`||当要上阿里云时，阿里云上面的一个云账号密码
+|Nacos Server 对应的 context path|`spring.cloud.nacos.config.contextPath`||Nacos Server 对外暴露的 context path
+|集群|`spring.cloud.nacos.config.clusterName`||配置成Nacos集群名称
+|共享配置|`spring.cloud.nacos.config.sharedDataids`||共享配置的 DataId, "," 分割
+|共享配置动态刷新|`spring.cloud.nacos.config.refreshableDataids`||共享配置中需要动态刷新的 DataId, "," 分割
+|自定义 Data Id 配置|`spring.cloud.nacos.config.extConfig`||属性是个集合，内部由 `Config` POJO 组成。`Config` 有 3 个属性，分别是 `dataId`, `group` 以及 `refresh`
+|===

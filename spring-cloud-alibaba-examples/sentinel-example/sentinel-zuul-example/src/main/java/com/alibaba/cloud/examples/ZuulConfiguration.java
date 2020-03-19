@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,36 +31,38 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ZuulConfiguration {
 
-    @Bean
-    public ZuulBlockFallbackProvider zuulBlockFallbackProvider1() {
-        return new ZuulBlockFallbackProvider() {
-            @Override
-            public String getRoute() {
-                return "*";
-            }
+	@Bean
+	public ZuulBlockFallbackProvider zuulBlockFallbackProvider1() {
+		return new ZuulBlockFallbackProvider() {
+			@Override
+			public String getRoute() {
+				return "*";
+			}
 
-            @Override
-            public BlockResponse fallbackResponse(String route, Throwable cause) {
-                if (route.equals("my-service3")) {
-                    return new BlockResponse(433, "Sentinel Block3", route);
-                } else if (route.equals("my-service4")) {
-                    return new BlockResponse(444, "my-service4", route);
-                } else {
-                    return new BlockResponse(499, "Sentinel Block 499", route);
-                }
-            }
-        };
-    }
+			@Override
+			public BlockResponse fallbackResponse(String route, Throwable cause) {
+				if (route.equals("my-service3")) {
+					return new BlockResponse(433, "Sentinel Block3", route);
+				}
+				else if (route.equals("my-service4")) {
+					return new BlockResponse(444, "my-service4", route);
+				}
+				else {
+					return new BlockResponse(499, "Sentinel Block 499", route);
+				}
+			}
+		};
+	}
 
-    @Bean
-    public RequestOriginParser requestOriginParser() {
-        return new RequestOriginParser() {
+	@Bean
+	public RequestOriginParser requestOriginParser() {
+		return new RequestOriginParser() {
 
-            @Override
-            public String parseOrigin(HttpServletRequest request) {
-                return "123";
-            }
-        };
-    }
+			@Override
+			public String parseOrigin(HttpServletRequest request) {
+				return "123";
+			}
+		};
+	}
 
 }

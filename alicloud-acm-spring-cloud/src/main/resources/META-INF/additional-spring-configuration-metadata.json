@@ -1,9 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "spring.application.group",
-      "type": "java.lang.String",
-      "description": "spring application group."
-    }
-  ]
-}

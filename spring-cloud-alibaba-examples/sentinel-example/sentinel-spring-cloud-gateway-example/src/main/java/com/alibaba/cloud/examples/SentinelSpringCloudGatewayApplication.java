@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SentinelSpringCloudGatewayApplication {
 
-    public static void main(String[] args) {
-        //GatewayCallbackManager.setRequestOriginParser(s -> "123");
-        SpringApplication.run(SentinelSpringCloudGatewayApplication.class, args);
-    }
+	public static void main(String[] args) {
+		// GatewayCallbackManager.setRequestOriginParser(s -> "123");
+		SpringApplication.run(SentinelSpringCloudGatewayApplication.class, args);
+	}
 
 }

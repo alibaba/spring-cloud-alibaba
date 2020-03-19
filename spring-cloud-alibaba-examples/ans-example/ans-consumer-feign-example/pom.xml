@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
         <groupId>com.alibaba.cloud</groupId>
-        <version>0.9.1.BUILD-SNAPSHOT</version>
+        <version>2.2.1.BUILD-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>alicloud-ans-spring-cloud-starter</artifactId>
+            <artifactId>spring-cloud-starter-alicloud-ans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

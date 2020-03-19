@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: spring-cloud-alibaba-dubbo
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+    zookeeper:
+      enabled: false
+
+  main:
+    allow-bean-definition-overriding: true
+
+eureka:
+  client:
+    enabled: false
+
+---
+spring:
+  profiles: eureka
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+        register-enabled: false
+
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:9090/eureka/
+
+---
+spring:
+  profiles: zookeeper
+
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+        register-enabled: false
+
+    zookeeper:
+      enabled: true
+      connect-string: localhost:2181

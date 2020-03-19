@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,15 @@
 package com.alibaba.cloud.examples;
 
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
+import reactor.core.publisher.Mono;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -33,16 +33,16 @@ import static org.springframework.web.reactive.function.BodyInserters.fromObject
 @Configuration
 public class MySCGConfiguration {
 
-    @Bean
-    public BlockRequestHandler blockRequestHandler() {
-        return new BlockRequestHandler() {
-            @Override
-            public Mono<ServerResponse> handleRequest(ServerWebExchange exchange, Throwable t) {
-                return ServerResponse.status(444)
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .body(fromObject("SCS Sentinel block"));
-            }
-        };
-    }
+	@Bean
+	public BlockRequestHandler blockRequestHandler() {
+		return new BlockRequestHandler() {
+			@Override
+			public Mono<ServerResponse> handleRequest(ServerWebExchange exchange,
+					Throwable t) {
+				return ServerResponse.status(444).contentType(MediaType.APPLICATION_JSON)
+						.body(fromValue("SCS Sentinel block"));
+			}
+		};
+	}
 
 }

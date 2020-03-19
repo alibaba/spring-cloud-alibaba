@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import reactor.core.publisher.Mono;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -36,19 +36,19 @@ import reactor.core.publisher.Mono;
 @RestController
 public class RulesWebFluxController {
 
-    @GetMapping("/api")
-    public Mono<Set<ApiDefinition>> apiRules() {
-        return Mono.just(GatewayApiDefinitionManager.getApiDefinitions());
-    }
+	@GetMapping("/api")
+	public Mono<Set<ApiDefinition>> apiRules() {
+		return Mono.just(GatewayApiDefinitionManager.getApiDefinitions());
+	}
 
-    @GetMapping("/gateway")
-    public Mono<Set<GatewayFlowRule>> apiGateway() {
-        return Mono.just(GatewayRuleManager.getRules());
-    }
+	@GetMapping("/gateway")
+	public Mono<Set<GatewayFlowRule>> apiGateway() {
+		return Mono.just(GatewayRuleManager.getRules());
+	}
 
-    @GetMapping("/flow")
-    public Mono<List<FlowRule>> apiFlow() {
-        return Mono.just(FlowRuleManager.getRules());
-    }
+	@GetMapping("/flow")
+	public Mono<List<FlowRule>> apiFlow() {
+		return Mono.just(FlowRuleManager.getRules());
+	}
 
 }
