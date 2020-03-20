@@ -40,7 +40,6 @@
       "type": "java.util.List",
       "description": "a set of shared configurations .e.g: spring.cloud.nacos.config.shared-configs[0]=xxx ."
     },
-
     {
       "name": "spring.cloud.nacos.config.refreshable-dataids",
       "type": "java.lang.String",
@@ -57,6 +56,12 @@
       "description": "a set of extensional configurations .e.g: spring.cloud.nacos.config.extension-configs[0]=xxx ."
     },
     {
+      "name": "spring.cloud.nacos.config.health.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "the switch for health check, it default enabled(true)."
+    },
+    {
       "name": "spring.cloud.nacos.config.refresh-enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,
@@ -67,6 +72,28 @@
       "type": "java.lang.Boolean",
       "defaultValue": true,
       "description": "enable nacos config or not."
+    },
+    {
+      "name": "spring.cloud.nacos.config.username",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.username}",
+      "description": "nacos config service's userName to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.config.password",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.password}",
+      "description": "nacos config service's password to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.username",
+      "type": "java.lang.String",
+      "description": "nacos userName to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.password",
+      "type": "java.lang.String",
+      "description": "nacos password to authenticate."
     }
   ]
 }
