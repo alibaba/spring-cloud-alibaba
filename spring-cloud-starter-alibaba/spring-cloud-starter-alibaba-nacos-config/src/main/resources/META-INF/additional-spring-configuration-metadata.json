@@ -40,7 +40,6 @@
       "type": "java.util.List",
       "description": "a set of shared configurations .e.g: spring.cloud.nacos.config.shared-configs[0]=xxx ."
     },
-
     {
       "name": "spring.cloud.nacos.config.refreshable-dataids",
       "type": "java.lang.String",
@@ -55,6 +54,12 @@
       "name": "spring.cloud.nacos.config.extension-configs",
       "type": "java.util.List",
       "description": "a set of extensional configurations .e.g: spring.cloud.nacos.config.extension-configs[0]=xxx ."
+    },
+    {
+      "name": "spring.cloud.nacos.config.health.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "the switch for health check, it default enabled(true)."
     },
     {
       "name": "spring.cloud.nacos.config.refresh-enabled",
