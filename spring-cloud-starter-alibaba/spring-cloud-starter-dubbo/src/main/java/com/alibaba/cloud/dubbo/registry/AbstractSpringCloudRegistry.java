@@ -222,10 +222,15 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		Collection<ServiceInstance> serviceInstances = serviceInstancesFunction
 				.apply(serviceName);
 
+		// issue : ReStarting a consumer and then starting a provider does not automatically discover the registration
+		// fix https://github.com/alibaba/spring-cloud-alibaba/issues/753
+		// Re-obtain the latest list of available metadata address here, ip or port may change.
+		// by https://github.com/wangzihaogithub
+		dubboMetadataConfigServiceProxy.removeProxy(serviceName);
+		repository.removeMetadataAndInitializedService(serviceName);
+		dubboGenericServiceFactory.destroy(serviceName);
+		repository.initializeMetadata(serviceName);
 		if (CollectionUtils.isEmpty(serviceInstances)) {
-			dubboMetadataConfigServiceProxy.removeProxy(serviceName);
-			repository.removeMetadataAndInitializedService(serviceName);
-			dubboGenericServiceFactory.destroy(serviceName);
 			if (logger.isWarnEnabled()) {
 				logger.warn(
 						"There is no instance from service[name : {}], and then Dubbo Service[key : {}] will not be "
@@ -246,18 +251,6 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
 		DubboMetadataService dubboMetadataService = dubboMetadataConfigServiceProxy
 				.getProxy(serviceName);
-
-		if (dubboMetadataService == null) { // If not found, try to initialize
-			if (logger.isInfoEnabled()) {
-				logger.info(
-						"The metadata of Dubbo service[key : {}] can't be found when the subscribed service[name : {}], "
-								+ "and then try to initialize it",
-						url.getServiceKey(), serviceName);
-			}
-			repository.initializeMetadata(serviceName);
-			dubboMetadataService = dubboMetadataConfigServiceProxy.getProxy(serviceName);
-		}
-
 		if (dubboMetadataService == null) { // It makes sure not-found, return immediately
 			if (logger.isWarnEnabled()) {
 				logger.warn(
@@ -269,7 +262,6 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		}
 
 		List<URL> exportedURLs = getExportedURLs(dubboMetadataService, url);
-
 		for (URL exportedURL : exportedURLs) {
 			String protocol = exportedURL.getProtocol();
 			List<URL> subscribedURLs = new LinkedList<>();
