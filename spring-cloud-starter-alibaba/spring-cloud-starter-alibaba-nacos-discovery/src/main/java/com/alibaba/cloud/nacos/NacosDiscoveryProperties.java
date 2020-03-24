@@ -547,8 +547,8 @@ public class NacosDiscoveryProperties {
 	private Properties getNacosProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, serverAddr);
-		properties.put(USERNAME, Objects.toString(username,""));
-		properties.put(PASSWORD, Objects.toString(password,""));
+		properties.put(USERNAME, Objects.toString(username, ""));
+		properties.put(PASSWORD, Objects.toString(password, ""));
 		properties.put(NAMESPACE, namespace);
 		properties.put(UtilAndComs.NACOS_NAMING_LOG_NAME, logName);
 
