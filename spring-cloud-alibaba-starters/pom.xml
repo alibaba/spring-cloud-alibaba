@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>spring-cloud-starter-alibaba</artifactId>
+    <artifactId>spring-cloud-alibaba-starters</artifactId>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Starters</name>
     <description>Spring Cloud Alibaba Starters</description>
