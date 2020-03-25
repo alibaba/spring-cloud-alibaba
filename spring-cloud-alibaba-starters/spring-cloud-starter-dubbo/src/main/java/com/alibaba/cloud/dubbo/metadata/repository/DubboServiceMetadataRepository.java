@@ -16,18 +16,6 @@
 
 package com.alibaba.cloud.dubbo.metadata.repository;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
 import com.alibaba.cloud.dubbo.http.matcher.RequestMetadataMatcher;
 import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
@@ -58,15 +46,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import javax.annotation.PostConstruct;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static com.alibaba.cloud.dubbo.env.DubboCloudProperties.ALL_DUBBO_SERVICES;
 import static com.alibaba.cloud.dubbo.http.DefaultHttpRequest.builder;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
+import static java.util.Collections.*;
 import static org.apache.dubbo.common.constants.CommonConstants.APPLICATION_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -289,9 +278,12 @@ public class DubboServiceMetadataRepository
 							serviceName);
 				}
 
-				initSubscribedDubboMetadataService(serviceName);
-				// mark this service name having been initialized
-				initializedServices.add(serviceName);
+
+				if (initSubscribedDubboMetadataService(serviceName)){
+					// mark this service name having been initialized
+					initializedServices.add(serviceName);
+				}
+
 			}
 		}
 	}
@@ -301,11 +293,17 @@ public class DubboServiceMetadataRepository
 	 * service instance.
 	 * @param serviceName the service name
 	 */
-	public void removeMetadataAndInitializedService(String serviceName) {
+	public void removeMetadataAndInitializedService(String serviceName, URL url) {
 		synchronized (monitor) {
 			initializedServices.remove(serviceName);
 			dubboRestServiceMetadataRepository.remove(serviceName);
-			subscribedDubboMetadataServiceURLs.remove(serviceName);
+			// fix #1260 if the subscribedDubboMetadataServiceURLs removed fail，old meta information will be retained
+			if( DubboMetadataService.class
+					.getName().equals(url.getServiceInterface() )) {
+				String serviceKey = url.getServiceKey();
+				subscribedDubboMetadataServiceURLs.remove(serviceKey);
+			}
+
 		}
 	}
 
@@ -614,24 +612,66 @@ public class DubboServiceMetadataRepository
 		subscribedServices.remove(currentApplicationName);
 	}
 
-	protected void initSubscribedDubboMetadataService(String serviceName) {
-		metadataServiceInstanceSelector.choose(discoveryClient.getInstances(serviceName))
+	protected Boolean initSubscribedDubboMetadataService(String serviceName) {
+		// this need to judge whether the initialization is successful or not. The failed initialization will not change the initializedServices
+		Optional<ServiceInstance> optionalServiceInstance = metadataServiceInstanceSelector.choose(discoveryClient.getInstances(serviceName));
+		if(!optionalServiceInstance.isPresent() ){
+			return false;
+		}
+		ServiceInstance serviceInstance = optionalServiceInstance.get();
+		if(null == serviceInstance ){
+			return false;
+		}
+		List<URL> dubboMetadataServiceURLs = getDubboMetadataServiceURLs(serviceInstance);
+		if(dubboMetadataServiceURLs.isEmpty()){
+			return false;
+		}
+		for(URL dubboMetadataServiceURL : dubboMetadataServiceURLs){
+			try {
+				initSubscribedDubboMetadataServiceURL(
+						dubboMetadataServiceURL);
+				DubboMetadataService dubboMetadataService = dubboMetadataConfigServiceProxy.getProxy(serviceName);
+				if(dubboMetadataService == null){
+					dubboMetadataService = initDubboMetadataServiceProxy(dubboMetadataServiceURL);
+				}
+
+				if(dubboMetadataService == null){
+					removeMetadataAndInitializedService(serviceName, dubboMetadataServiceURL);
+					return false;
+				}
+			}
+			catch (Throwable e) {
+				if (logger.isErrorEnabled()) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
+		/*metadataServiceInstanceSelector.choose(discoveryClient.getInstances(serviceName))
 				.map(this::getDubboMetadataServiceURLs)
 				.ifPresent(dubboMetadataServiceURLs -> {
-					dubboMetadataServiceURLs.forEach(dubboMetadataServiceURL -> {
-						try {
-							initSubscribedDubboMetadataServiceURL(
-									dubboMetadataServiceURL);
-							initDubboMetadataServiceProxy(dubboMetadataServiceURL);
-						}
-						catch (Throwable e) {
-							if (logger.isErrorEnabled()) {
-								logger.error(e.getMessage(), e);
+					if( dubboMetadataServiceURLs.isEmpty()){
+						initializedServices.remove(serviceName);
+					}else{
+						dubboMetadataServiceURLs.forEach(dubboMetadataServiceURL -> {
+							try {
+								initSubscribedDubboMetadataServiceURL(
+										dubboMetadataServiceURL);
+								DubboMetadataService dubboMetadataService = initDubboMetadataServiceProxy(dubboMetadataServiceURL);
+								if(dubboMetadataService == null){
+									initializedServices.remove(serviceName);
+								}
 							}
-						}
-					});
-				});
+							catch (Throwable e) {
+								if (logger.isErrorEnabled()) {
+									logger.error(e.getMessage(), e);
+								}
+							}
+						});
+					}
+
+				});*/
 		initDubboRestServiceMetadataRepository(serviceName);
+		return true;
 	}
 
 	private void initSubscribedDubboMetadataServiceURL(URL dubboMetadataServiceURL) {
@@ -640,11 +680,12 @@ public class DubboServiceMetadataRepository
 		subscribedDubboMetadataServiceURLs.add(serviceKey, dubboMetadataServiceURL);
 	}
 
-	private void initDubboMetadataServiceProxy(URL dubboMetadataServiceURL) {
+	private DubboMetadataService initDubboMetadataServiceProxy(URL dubboMetadataServiceURL) {
 		String serviceName = dubboMetadataServiceURL.getParameter(APPLICATION_KEY);
 		String version = dubboMetadataServiceURL.getParameter(VERSION_KEY);
 		// Initialize DubboMetadataService with right version
-		dubboMetadataConfigServiceProxy.initProxy(serviceName, version);
+		return dubboMetadataConfigServiceProxy.initProxy(serviceName, version);
+
 	}
 
 	@Override
