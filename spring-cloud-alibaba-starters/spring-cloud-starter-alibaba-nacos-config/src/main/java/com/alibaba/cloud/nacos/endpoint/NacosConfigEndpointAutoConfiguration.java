@@ -21,6 +21,7 @@ import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
+import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -52,8 +53,7 @@ public class NacosConfigEndpointAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(name = "spring.cloud.nacos.config.health.enabled",
-			matchIfMissing = true)
+	@ConditionalOnEnabledHealthIndicator("nacos-config")
 	public NacosConfigHealthIndicator nacosConfigHealthIndicator() {
 		return new NacosConfigHealthIndicator(nacosConfigManager.getConfigService());
 	}
