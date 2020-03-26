@@ -253,6 +253,24 @@
                 <artifactId>rocketmq-spring-boot-starter</artifactId>
                 <version>${rocketmq.starter.version}</version>
             </dependency>
+
+            <!--
+                TODO:
+                check it every times, whern spring-boot-starter-webflux:2.2.4.RELEASE or spring-cloud-gateway-core:2.2.2.RELEASE has bean upgrade
+                due to spring-cloud-build:2.2.2.RELEASE has not support spring-cloud-gateway-dependencies:2.2.2.RELEASE very well
+                it cource some compatibility problem between ReactorNettyWebSocketClient and GatewayAutoConfiguration
+            -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>5.2.4.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webflux</artifactId>
+                <version>5.2.4.RELEASE</version>
+                <scope>compile</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
