@@ -660,6 +660,7 @@ public class DubboServiceMetadataRepository
 				if (logger.isErrorEnabled()) {
 					logger.error(e.getMessage(), e);
 				}
+				return false;
 			}
 		}
 		initDubboRestServiceMetadataRepository(serviceName);
