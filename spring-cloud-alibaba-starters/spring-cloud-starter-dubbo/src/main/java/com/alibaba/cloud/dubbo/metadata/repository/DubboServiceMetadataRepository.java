@@ -16,6 +16,19 @@
 
 package com.alibaba.cloud.dubbo.metadata.repository;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.PostConstruct;
+
 import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
 import com.alibaba.cloud.dubbo.http.matcher.RequestMetadataMatcher;
 import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
@@ -46,16 +59,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import javax.annotation.PostConstruct;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static com.alibaba.cloud.dubbo.env.DubboCloudProperties.ALL_DUBBO_SERVICES;
 import static com.alibaba.cloud.dubbo.http.DefaultHttpRequest.builder;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 import static org.apache.dubbo.common.constants.CommonConstants.APPLICATION_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -291,6 +303,7 @@ public class DubboServiceMetadataRepository
 	 * Remove the metadata and initialized service of Dubbo Services if no there is no
 	 * service instance.
 	 * @param serviceName the service name
+	 * @param url the meta service url
 	 */
 	public void removeMetadataAndInitializedService(String serviceName, URL url) {
 		synchronized (monitor) {
@@ -616,7 +629,7 @@ public class DubboServiceMetadataRepository
 		// initialization will not change the initializedServices
 		Optional<ServiceInstance> optionalServiceInstance = metadataServiceInstanceSelector
 				.choose(discoveryClient.getInstances(serviceName));
-		if (!optionalServiceInstance.isPresent()) {
+		if (!((Optional) optionalServiceInstance).isPresent()) {
 			return false;
 		}
 		ServiceInstance serviceInstance = optionalServiceInstance.get();
