@@ -139,6 +139,9 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			throw new RuntimeException(e);
 		}
 		catch (InvocationTargetException e) {
+			if (e.getTargetException() instanceof RuntimeException) {
+				throw (RuntimeException) e.getTargetException();
+			}
 			throw new RuntimeException(e);
 		}
 	}
