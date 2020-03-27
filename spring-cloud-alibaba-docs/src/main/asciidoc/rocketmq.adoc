@@ -1,6 +1,6 @@
 == Spring Cloud Alibaba RocketMQ Binder
 
-### Introduction of RocketMQ
+=== Introduction of RocketMQ
 
 https://rocketmq.apache.org[RocketMQ] is an open-source distributed message system. It is based on highly available distributed cluster technologies and provides message publishing and subscription service with low latency and high stability. RocketMQ is widely used in a variety of industries, such as decoupling of asynchronous communication, enterprise sulotions, financial settlements, telecommunication, e-commerce, logistics, marketing, social media, instant messaging, mobile applications, mobile games, vedios, IoT, and Internet of Vehicles.
 
@@ -16,7 +16,7 @@ It has the following features:
 
 * Billion-level message accumulation capability
 
-### RocketMQ Usages
+=== RocketMQ Usages
 
 * Download RocketMQ
 
@@ -74,7 +74,7 @@ sh bin/mqshutdown broker
 sh bin/mqshutdown namesrv
 ```
 
-### Introduction of Spring Cloud Stream
+=== Introduction of Spring Cloud Stream
 
 Spring Cloud Stream is a microservice framework used to build architectures based on messages. It helps you to create production-ready single-server Spring applications based on SpringBoot, and connects with Broker using `Spring Integration`.
 
@@ -114,7 +114,7 @@ All the message types in this code are provided by the `spring-messaging`module.
 
 **The lower layer of Spring Cloud Stream also implements various code abstractions based on the previous code.**
 
-### How to use Spring Cloud Alibaba RocketMQ Binder ###
+=== How to use Spring Cloud Alibaba RocketMQ Binder
 
 For using the Spring Cloud Alibaba RocketMQ Binder, you just need to add it to your Spring Cloud Stream application, using the following Maven coordinates:
 
@@ -134,7 +134,7 @@ Alternatively, you can also use the Spring Cloud Stream RocketMQ Starter:
 </dependency>
 ```
 
-### How Spring Cloud Alibaba RocketMQ Binder Works
+=== How Spring Cloud Alibaba RocketMQ Binder Works
 
 This is the implementation architecture of Spring Cloud Stream RocketMQ Binder:
 
@@ -165,12 +165,12 @@ For example, `TAGS`, `DELAY`, `TRANSACTIONAL_ARG`, `KEYS`, `WAIT_STORE_MSG_OK`, 
 MessageBuilder builder = MessageBuilder.withPayload(msg)
     .setHeader(RocketMQHeaders.TAGS, "binder")
     .setHeader(RocketMQHeaders.KEYS, "my-key")
-    .setHeader("DELAY", "1");
+    .setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, "1");
 Message message = builder.build();
 output().send(message);
 ```
 
-### Support MessageSource
+=== Support MessageSource
 
 SCS RocketMQ Binder support `MessageSource`，which can receive messages by pull mode：
 
@@ -222,9 +222,9 @@ public class MQApplication {
 }
 ```
 
-### Configuration Options
+=== Configuration Options
 
-#### RocketMQ Binder Properties
+==== RocketMQ Binder Properties
 
 spring.cloud.stream.rocketmq.binder.name-server::
 The name server of RocketMQ Server(Older versions use the namesrv-addr configuration item).
@@ -248,7 +248,7 @@ The trace topic for message trace.
 Default: `RMQ_SYS_TRACE_TOPIC`.
 
 
-#### RocketMQ Consumer Properties
+==== RocketMQ Consumer Properties
 
 The following properties are available for RocketMQ producers only and must be prefixed with `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.`.
 
@@ -284,7 +284,7 @@ Time interval of message consume retry for orderly consume.
 +
 Default: `1000`.
 
-#### RocketMQ Provider Properties
+==== RocketMQ Provider Properties
 
 The following properties are available for RocketMQ producers only and must be prefixed with `spring.cloud.stream.rocketmq.bindings.<channelName>.producer.`.
 

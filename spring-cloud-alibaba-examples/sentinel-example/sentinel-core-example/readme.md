@@ -193,12 +193,25 @@ Now ReadableDataSource type support 5 categories: `file`, `nacos`, `zk`, `apollo
 
 If you want to use `nacos`, `zk`, `apollo` or `redis` ReadableDataSource, you could add `sentinel-datasource-nacos`, `sentinel-datasource-zookeeper`,`sentinel-datasource-apollo` or `sentinel-datasource-redis` dependency.
 
+
+
 When ReadableDataSource load rule data successfully, console will print some logs:
 
 ```
 [Sentinel Starter] DataSource ds1-sentinel-file-datasource load 3 DegradeRule
 [Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
 ```   
+## Warning
+You should  use `file` ReadableDataSource in a fatjar carefully or you may get error like this below
+
+```
+java.lang.RuntimeException: [Sentinel Starter] DataSource ds1 handle file [classpath: flowrule.json] error: class path resource [flowrule.json] cannot be resolved to absolute file path because it does not reside in the file system: jar:file:xxx/xxx.jar!/BOOT-INF/classes!/flowrule.jso
+```
+
+You could use absolute path when you use File datasource & fat jar.
+It is recommended to use Nacos/Apollo/Zookeeper/Redis datasource to store rules.
+
+https://github.com/alibaba/spring-cloud-alibaba/issues/428
 
 ## More
 For more information about Sentinel, see [Sentinel Project](https://github.com/alibaba/Sentinel).

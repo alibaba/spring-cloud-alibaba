@@ -34,7 +34,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 			@RestController
 			class EchoController {
-				@RequestMapping(value = "/echo/{string}", method = RequestMethod.GET)
+				@GetMapping(value = "/echo/{string}")
 				public String echo(@PathVariable String string) {
 						return string;
 				}
@@ -105,7 +105,7 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 
 	    @FeignClient(name = "service-provider")
 	    public interface EchoService {
-	        @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+	        @GetMapping(value = "/echo/{str}")
 	        String echo(@PathVariable("str") String str);
 	    }
 	    
@@ -123,11 +123,11 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 		    @Autowired
 		    private EchoService echoService;
 		
-		    @RequestMapping(value = "/echo-rest/{str}", method = RequestMethod.GET)
+		    @GetMapping(value = "/echo-rest/{str}")
 		    public String rest(@PathVariable String str) {
 		        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
 		    }
-		    @RequestMapping(value = "/echo-feign/{str}", method = RequestMethod.GET)
+		    @GetMapping(value = "/echo-feign/{str}")
 		    public String feign(@PathVariable String str) {
 		        return echoService.echo(str);
 		    }

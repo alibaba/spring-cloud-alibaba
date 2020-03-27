@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,8 +21,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Random;
 
+import io.seata.core.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -33,12 +35,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import io.seata.core.context.RootContext;
 
 /**
  * @author xiaojing
@@ -47,13 +46,19 @@ import io.seata.core.context.RootContext;
 public class OrderController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
+
 	private static final String SUCCESS = "SUCCESS";
+
 	private static final String FAIL = "FAIL";
+
 	private static final String USER_ID = "U100001";
+
 	private static final String COMMODITY_CODE = "C00321";
 
 	private final JdbcTemplate jdbcTemplate;
+
 	private final RestTemplate restTemplate;
+
 	private Random random;
 
 	public OrderController(JdbcTemplate jdbcTemplate, RestTemplate restTemplate) {
@@ -62,7 +67,7 @@ public class OrderController {
 		this.random = new Random();
 	}
 
-	@RequestMapping(value = "/order", method = RequestMethod.POST, produces = "application/json")
+	@PostMapping(value = "/order", produces = "application/json")
 	public String order(String userId, String commodityCode, int orderCount) {
 		LOGGER.info("Order Service Begin ... xid: " + RootContext.getXID());
 
@@ -128,4 +133,5 @@ public class OrderController {
 		ResponseEntity<String> response = restTemplate.postForEntity(url, request,
 				String.class);
 	}
+
 }

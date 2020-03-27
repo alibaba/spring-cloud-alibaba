@@ -100,7 +100,7 @@ user name :nacos-config-properties; age: 90
 
 Nacos Config supports yaml format as well. You only need to complete the following 2 steps.
 
-1. In the bootstrap.properties file, add the following line to claim that the format of DataId is yaml. As follows:
+1、In the bootstrap.properties file, add the following line to claim that the format of DataId is yaml. As follows:
 
 .bootstrap.properties
 [source,yaml]
@@ -108,7 +108,7 @@ Nacos Config supports yaml format as well. You only need to complete the followi
 spring.cloud.nacos.config.file-extension=yaml
 ----
 
-2. Add a configuration with the DataId in yaml format on the Nacos console, as shown below:
+2、Add a configuration with the DataId in yaml format on the Nacos console, as shown below:
 
 [source,subs="normal"]
 ----
@@ -401,10 +401,8 @@ set spring.cloud.nacos.config.enabled = false to disable Spring Cloud Nacos Conf
 
 The following shows the other configurations of the starter of Nacos Config:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Configuration ^|Key ^|Default Value ^|Description
+|===
+|Configuration |Key |Default Value |Description
 |Server address|`spring.cloud.nacos.config.server-addr`|| IP and port of the Nacos Server listener
 |Dataid from nacos config|`spring.cloud.nacos.config.name`|| First take the prefix, then go to the name, and finally take spring.application.name
 |Dataid from nacos config|`spring.cloud.nacos.config.prefix`|| First take the prefix, then go to the name, and finally take spring.application.name
@@ -421,4 +419,4 @@ The following shows the other configurations of the starter of Nacos Config:
 |Dataid for Shared Configuration|`spring.cloud.nacos.config.sharedDataids`||Dataid for Shared Configuration, split by ","
 |Dynamic refresh dataid for Shared Configuration|`spring.cloud.nacos.config.refreshableDataids`||Dynamic refresh dataid for Shared Configuration, split by ","
 |custom dataid|`spring.cloud.nacos.config.extConfig`||It's a List，build up by `Config` POJO. `Config` has 3 attributes, `dataId`, `group` and `refresh`
-|====
+|===

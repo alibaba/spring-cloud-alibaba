@@ -41,10 +41,12 @@ For more Nacos Server versions, you can download the latest version from https:/
 
 The following sample illustrates how to register a service to Nacos.
 
-* Configuration of pom.xml The following is a complete example of pom.xml:
-[source, xml]
+* Configuration of pom.xml The following is a complete example of pom.xml：
+
+.pom.xml
+[source,xml]
 ----
-<?xml version="1.0" encoding="UTF-8"? >
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -115,11 +117,12 @@ The following sample illustrates how to register a service to Nacos.
 ----
 
 * Configuration of application.properties Some of the basic configurations of Nacos must be included in application.properties(or application.yaml), as shown below：
-application.properties
+
+.application.properties
 [source,properties]
 ----
 server.port=8081
-spring.application.name=nacos-producer
+spring.application.name=nacos-provider
 spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
 management.endpoints.web.exposure.include=*
 ----
@@ -128,6 +131,7 @@ management.endpoints.web.exposure.include=*
 NOTE: If you do not want to use Nacos for service registration and discovery, you can set `spring.cloud.nacos.discovery` to `false`.
 
 * The following is a sample for starting Provider:
+
 [source,java,indent=0]
 ----
 @SpringBootApplication
@@ -135,7 +139,7 @@ NOTE: If you do not want to use Nacos for service registration and discovery, yo
 public class NacosProviderDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NacosProducerDemoApplication.class, args);
+        SpringApplication.run(NacosProviderDemoApplication.class, args);
     }
 
     @RestController
@@ -179,7 +183,7 @@ public class NacosConsumerApp {
 
         @GetMapping("/echo/app-name")
         public String echoAppName(){
-            //Access through the combination of LoadBalanceClient and RestTemolate
+            //Access through the combination of LoadBalanceClient and RestTemplate
             ServiceInstance serviceInstance = loadBalancerClient.choose("nacos-provider");
             String path = String.format("http://%s:%s/echo/%s",serviceInstance.getHost(),serviceInstance.getPort(),appName);
             System.out.println("request path:" +path);
@@ -264,7 +268,7 @@ The followings shows how a service instance accesses the Endpoint:
       "lastRefTime": 1541755293119,
       "checksum": "e5a699c9201f5328241c178e804657e11541755293119",
       "allIPs": false,
-      "key": "nacos-producer",
+      "key": "nacos-provider",
       "valid": true
     }
   ],
@@ -294,10 +298,8 @@ The followings shows how a service instance accesses the Endpoint:
 
 The following shows the other configurations of the starter of Nacos Discovery:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Configuration ^|Key ^|Default Value ^|Description
+|===
+|Configuration |Key |Default Value |Description
 |Server address|`spring.cloud.nacos.discovery.server-addr`||IP and port of the Nacos Server listener
 |Service name|`spring.cloud.nacos.discovery.service`|`${spring.application.name}`|Name the current service
 |Weight|`spring.cloud.nacos.discovery.weight`|`1`|Value range: 1 to 100. The bigger the value, the greater the weight
@@ -309,8 +311,9 @@ The following shows the other configurations of the starter of Nacos Discovery:
 |SecretKey|`spring.cloud.nacos.discovery.secret-key`||Alibaba Cloud account secretkey
 |Metadata|`spring.cloud.nacos.discovery.metadata`||You can define some of the metadata for your services in the Map format
 |Log file name|`spring.cloud.nacos.discovery.log-name`||
+|Cluster Name|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|Cluster name of Nacos
 |Endpoint|`spring.cloud.nacos.discovery.endpoint`||The domain name of a certain service in a specific region. You can retrieve the server address dynamically with this domain name
 |Integrate Ribbon or not|`ribbon.nacos.enabled`|`true`|Set to true in most cases
 |Enable Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|set to false to close watch
-|====
+|===
 

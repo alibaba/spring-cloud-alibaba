@@ -1,6 +1,6 @@
 == Spring Cloud Alibaba Sentinel
 
-### Introduction of Sentinel
+=== Introduction of Sentinel
 
 As microservices become popular, the stability of service calls is becoming increasingly important. https://github.com/alibaba/Sentinel[Sentinel] takes "flow" as the breakthrough point, and works on multiple fields including flow control, circuit breaking and load protection to protect service reliability.
 
@@ -12,7 +12,7 @@ https://github.com/alibaba/Sentinel[Sentinel] has the following features:
 * *Extensive Open-Source Ecosystem*： Sentinel provides out-of-box modules that can be easily integrated with other open-source frameworks/libraries, such as Spring Cloud, Dubbo, and gRPC. To use Sentinel, you only need to introduce the related dependency and make a few simple configurations.
 * *Sound SPI Extensions*： Sentinel provides easy-to-use and sound SPI extension interfaces. You can customize logics with the SPI extensions quickly, for example, you can define your own rule management, or adapt to specific data sources.
 
-### How to Use Sentinel
+=== How to Use Sentinel
 
 If you want to use Sentinel in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alibaba-sentinel`.
 
@@ -76,7 +76,7 @@ public class TestController {
 }
 ```
 
-##### Sentinel Dashboard
+===== Sentinel Dashboard
 
 Sentinel dashboard is a lightweight console that provides functions such as machine discovery, single-server resource monitoring, overview of cluster resource data, as well as rule management. To use these features, you only need to complete a few steps.
 
@@ -87,7 +87,7 @@ image::https://github.com/alibaba/Sentinel/wiki/image/dashboard.png[]
 
 To use the Sentinel dashboard, simply complete the following 3 steps.
 
-###### Get the Dashboard
+====== Get the Dashboard
 
 You can download the latest dashboard JAR file from the https://github.com/alibaba/Sentinel/releases[Release Page].
 
@@ -97,7 +97,7 @@ You can also get the latest source code to build your own Sentinel dashboard：
 * Run the following command to package the code into a FatJar: `mvn clean package`
 
 
-###### Start the Dashboard
+====== Start the Dashboard
 
 Sentinel dashboard is a standard SpringBoot application, and you can run the JAR file in the Spring Boot mode.
 
@@ -107,9 +107,10 @@ java -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject
 
 If there is conflict with the 8080 port, you can use `-Dserver.port=new port` to define a new port.
 
-#### Configure the Dashboard
+==== Configure the Dashboard
 
 .application.yml
+[source,yaml]
 ----
 spring:
   cloud:
@@ -123,7 +124,7 @@ The port number specified in `spring.cloud.sentinel.transport.port` will start a
 
 For more information about Sentinel dashboard, please refer to https://github.com/alibaba/Sentinel/wiki/%E6%8E%A7%E5%88%B6%E5%8F%B0[Sentinel Dashboard].
 
-### OpenFeign Support
+=== OpenFeign Support
 
 Sentinel is compatible with the https://github.com/OpenFeign/feign[OpenFeign] component. To use it, in addition to introducing the `sentinel-starter` dependency, complete the following 2 steps:
 
@@ -141,7 +142,7 @@ This is a simple usage of `FeignClient`:
 ```java
 @FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 public interface EchoService {
-    @RequestMapping(value = "/echo/{str}", method = RequestMethod.GET)
+    @GetMapping(value = "/echo/{str}")
     String echo(@PathVariable("str") String str);
 }
 
@@ -164,7 +165,7 @@ NOTE: The resource name policy in the corresponding interface of Feign is：http
 
 The corresponding resource name of the `echo` method in the `EchoService` interface is `GET:http://service-provider/echo/{str}`.
 
-### RestTemplate Support
+=== RestTemplate Support
 
 Spring Cloud Alibaba Sentinel supports the protection of `RestTemplate` service calls using Sentinel. To do this, you need to add the `@SentinelRestTemplate` annotation when constructing the `RestTemplate` bean.
 
@@ -208,13 +209,14 @@ Sentinel RestTemplate provides two granularities for resource rate limiting:
 
 NOTE: Take Http GET `https://www.taobao.com/test` as an example. The corresponding resource names have two levels of granularities, `GET:https://www.taobao.com` and `GET:https://www.taobao.com/test`.
 
-### Dynamic Data Source Support
+=== Dynamic Data Source Support
 
 `SentinelProperties` provide `datasource` attribute to configure datasource.
 
 For example, 4 data sources are configures：
 
-```
+[source,properties]
+----
 spring.cloud.sentinel.datasource.ds1.file.file=classpath: degraderule.json
 spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
@@ -237,7 +239,7 @@ spring.cloud.sentinel.datasource.ds4.apollo.namespace-name = application
 spring.cloud.sentinel.datasource.ds4.apollo.flow-rules-key = sentinel
 spring.cloud.sentinel.datasource.ds4.apollo.default-flow-rule-value = test
 spring.cloud.sentinel.datasource.ds4.apollo.rule-type=param-flow
-```
+----
 
 This method follows the configuration of Spring Cloud Stream Binder. `TreeMap` is used for storage internally, and comparator is `String.CASE_INSENSITIVE_ORDER`.
 
@@ -253,9 +255,9 @@ NOTE: XML format is not supported by default. To make it effective, you need to 
 
 To learn more about how dynamic data sources work in Sentinel, refer to https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95[Dynamic Rule Extension].
 
-### Support Zuul
+=== Support Zuul
 
-https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
+Refer https://github.com/alibaba/Sentinel/wiki/API-Gateway-Flow-Control[API Gateway Flow Control]
 
 If you want to use Sentinel Starter with Zuul, you need to add the `spring-cloud-alibaba-sentinel-gateway` dependency, and you need to add the `spring-cloud-starter-netflix-zuul` dependency to let Zuul AutoConfiguration class in the gateway module takes effect:
 
@@ -276,9 +278,9 @@ If you want to use Sentinel Starter with Zuul, you need to add the `spring-cloud
 </dependency>
 ```
 
-### Support Spring Cloud Gateway
+=== Support Spring Cloud Gateway
 
-https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
+Refer https://github.com/alibaba/Sentinel/wiki/API-Gateway-Flow-Control[API Gateway Flow Control]
 
 If you want to use Sentinel Starter with Spring Cloud Gateway, you need to add the `spring-cloud-alibaba-sentinel-gateway` dependency and add the `spring-cloud-starter-gateway` dependency to let Spring Cloud Gateway AutoConfiguration class in the module takes effect:
 
@@ -299,7 +301,9 @@ If you want to use Sentinel Starter with Spring Cloud Gateway, you need to add t
 </dependency>
 ```
 
-### Sentinel Endpoint
+include::circuitbreaker-sentinel.adoc[]
+
+=== Sentinel Endpoint
 
 Sentinel provides an Endpoint internally with a corresponding endpoint id of `sentinel`.
 
@@ -402,25 +406,21 @@ The followings shows how a service instance accesses the Endpoint:
 }
 ----
 
-### Configuration
+=== Configuration
 
 The following table shows that when there are corresponding bean types in `ApplicationContext`, some actions will be taken:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Existing Bean Type ^|Action ^|Function
+|===
+|Existing Bean Type |Action |Function
 |`UrlCleaner`|`WebCallbackManager.setUrlCleaner(urlCleaner)`|Resource cleaning(resource(for example, classify all URLs of /foo/:id to the  /foo/* resource))
 |`UrlBlockHandler`|`WebCallbackManager.setUrlBlockHandler(urlBlockHandler)`|Customize rate limiting logic
 |`RequestOriginParser`|`WebCallbackManager.setRequestOriginParser(requestOriginParser)`|Setting the origin
-|====
+|===
 
 The following table shows all the configurations of Spring Cloud Alibaba Sentinel:
 
-:frame: topbot
-[width="60%",options="header"]
-|====
-^|Configuration ^|Description ^|Default Value
+|===
+|Configuration |Description |Default Value
 |`spring.application.name` or `project.name`|Project Name Of Sentinel|
 |`spring.cloud.sentinel.enabled`|Whether Sentinel automatic configuration takes effect|true
 |`spring.cloud.sentinel.eager`|Whether to trigger Sentinel initialization in advance|false
@@ -446,7 +446,7 @@ The following table shows all the configurations of Spring Cloud Alibaba Sentine
 |`spring.cloud.sentinel.scg.fallback.response-body`| Spring Cloud Gateway response mode is response content corresponding to 'response' mode |
 |`spring.cloud.sentinel.scg.fallback.response-status`| Spring Cloud Gateway response mode is the response code corresponding to 'response' mode | 429
 |`spring.cloud.sentinel.scg.fallback.content-type`| The Spring Cloud Gateway response mode is the content-type corresponding to the 'response' mode. | application/json
-|====
+|===
 
 
 NOTE: These configurations will only take effect in servlet environment. RestTemplate and Feign will not take effect for these configurations.

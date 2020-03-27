@@ -8,13 +8,13 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.2.2.RELEASE</version>
         <relativePath/>
     </parent>
 
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba</artifactId>
-    <version>2.1.0.RELEASE</version>
+    <version>2.2.1.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
     <description>Spring Cloud Alibaba</description>
@@ -45,8 +45,10 @@
             <email>flystar32@163.com</email>
         </developer>
         <developer>
-            <name>fangjian</name>
+            <name>Jim Fang</name>
             <email>fangjian0423@gmail.com</email>
+            <organization>Alibaba</organization>
+            <url>https://github.com/fangjian0423</url>
         </developer>
         <developer>
             <name>xiaolongzuo</name>
@@ -71,16 +73,26 @@
 
     <properties>
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.1.2.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.1.2.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.1.2.RELEASE</spring-cloud-openfeign.version>
-        <spring-cloud-bus.version>2.1.2.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.1.2.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-commons.version>2.2.2.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.2.2.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.2.2.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>2.2.1.RELEASE</spring-cloud-bus.version>
+        <spring-cloud-gateway.version>2.2.2.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-stream.version>Horsham.SR3</spring-cloud-stream.version>
+        <spring-cloud-consul.version>2.2.2.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-config.version>2.2.2.RELEASE</spring-cloud-config.version>
+        <spring-cloud-zookeeper.version>2.2.1.RELEASE</spring-cloud-zookeeper.version>
 
         <junit.version>4.12</junit.version>
         <javax-servlet-api>3.0</javax-servlet-api>
         <slf4j-api.version>1.7.25</slf4j-api.version>
 
+        <!-- Apache Dubbo -->
+        <dubbo.version>2.7.4.1</dubbo.version>
+        <curator.version>4.0.1</curator.version>
+
+        <!-- Apache RocketMQ -->
+        <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -92,32 +104,16 @@
 
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
-        <module>spring-cloud-alibaba-sentinel</module>
-        <module>spring-cloud-alibaba-sentinel-datasource</module>
-        <module>spring-cloud-alibaba-sentinel-gateway</module>
-        <module>spring-cloud-alibaba-nacos-config</module>
-        <module>spring-cloud-alibaba-nacos-discovery</module>
-        <module>spring-cloud-alibaba-seata</module>
-        <module>spring-cloud-stream-binder-rocketmq</module>
-        <module>spring-cloud-alibaba-nacos-config-server</module>
-        <module>spring-cloud-alibaba-dubbo</module>
-        <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-docs</module>
-        <module>spring-cloud-starter-alibaba</module>
-        <module>spring-cloud-starter-alicloud</module>
-        <module>spring-cloud-alicloud-oss</module>
-        <module>spring-cloud-alicloud-acm</module>
-        <module>spring-cloud-alicloud-ans</module>
-        <module>spring-cloud-alicloud-schedulerx</module>
-        <module>spring-cloud-alicloud-sms</module>
+        <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- Spring Boot -->
+            <!-- Spring Dependencies -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -151,7 +147,7 @@
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-netflix</artifactId>
+                <artifactId>spring-cloud-netflix-dependencies</artifactId>
                 <version>${spring-cloud-netflix.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -161,6 +157,14 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-openfeign-dependencies</artifactId>
                 <version>${spring-cloud-openfeign.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-config-dependencies</artifactId>
+                <version>${spring-cloud-config.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -180,6 +184,75 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-dependencies</artifactId>
+                <version>${spring-cloud-stream.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-consul-dependencies</artifactId>
+                <version>${spring-cloud-consul.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-zookeeper-dependencies</artifactId>
+                <version>${spring-cloud-zookeeper.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Dubbo Dependencies -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-dependencies-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-framework-bom</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-actuator</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.starter.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -194,6 +267,53 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <useProjectReferences>false</useProjectReferences>
+                    <additionalConfig>
+                        <file>
+                            <name>.settings/org.eclipse.jdt.ui.prefs</name>
+                            <location>
+                                ${maven.multiModuleProjectDirectory}/eclipse/org.eclipse.jdt.ui.prefs
+                            </location>
+                        </file>
+                        <file>
+                            <name>.settings/org.eclipse.jdt.core.prefs</name>
+                            <location>
+                                ${maven.multiModuleProjectDirectory}/eclipse/org.eclipse.jdt.core.prefs
+                            </location>
+                        </file>
+                    </additionalConfig>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.spring.javaformat</groupId>
+                <artifactId>spring-javaformat-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>checkstyle-validation</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Checkstyle rules inherited from spring-cloud-build -->
+                            <suppressionsLocation>eclipse/checkstyle-suppressions.xml</suppressionsLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <failOnViolation>true</failOnViolation>
+                            <violationSeverity>warning</violationSeverity>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -217,6 +337,15 @@
             </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <profiles>
 
@@ -283,7 +412,6 @@
         </profile>
 
     </profiles>
-
 
 
 </project>
