@@ -56,12 +56,6 @@
       "description": "a set of extensional configurations .e.g: spring.cloud.nacos.config.extension-configs[0]=xxx ."
     },
     {
-      "name": "spring.cloud.nacos.config.health.enabled",
-      "type": "java.lang.Boolean",
-      "defaultValue": true,
-      "description": "the switch for health check, it default enabled(true)."
-    },
-    {
       "name": "spring.cloud.nacos.config.refresh-enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,

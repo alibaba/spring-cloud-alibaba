@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.sidecar;
 
+import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,7 @@ public class SidecarAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnEnabledHealthIndicator("sidecar")
 	public SidecarHealthIndicator sidecarHealthIndicator(
 			SidecarProperties sidecarProperties, RestTemplate restTemplate) {
 		return new SidecarHealthIndicator(sidecarProperties, restTemplate);
