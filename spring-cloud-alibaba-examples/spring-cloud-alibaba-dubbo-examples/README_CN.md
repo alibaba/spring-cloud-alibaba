@@ -345,4 +345,4 @@ HTTP 响应为：
 - [spring-cloud-dubbo-provider-web-sample](spring-cloud-dubbo-provider-web-sample)：Dubbo Spring Cloud 服务提供方示例（Web 应用）
 - [spring-cloud-dubbo-provider-sample](spring-cloud-dubbo-provider-sample)：Dubbo Spring Cloud 服务提供方示例（非 Web 应用）
 - [spring-cloud-dubbo-consumer-sample](spring-cloud-dubbo-consumer-sample)：Dubbo Spring Cloud 服务消费方示例
-- [spring-cloud-dubbo-servlet-gateway](spring-cloud-dubbo-servlet-gateway)-sample：Dubbo Spring Cloud Servlet 网关简易实现示例
+- [spring-cloud-dubbo-servlet-gateway](spring-cloud-dubbo-servlet-gateway-sample)：Dubbo Spring Cloud Servlet 网关简易实现示例
