@@ -34,8 +34,8 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
 import static com.alibaba.spring.util.PropertySourcesUtils.getSubProperties;
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
 
 /**
  * Dubbo {@link WebApplicationType#NONE Non-Web Application}
