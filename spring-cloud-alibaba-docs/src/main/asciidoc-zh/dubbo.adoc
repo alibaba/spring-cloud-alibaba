@@ -26,7 +26,7 @@ Dubbo Spring Cloud 基于 Dubbo Spring Boot 2.7.3[1] 和 Spring Cloud 2.x 开发
 
 [2]: Preview releases of Spring Cloud Alibaba are available: 0.9.0, 0.2.2, and 0.1.2 - https://spring.io/blog/2011/04/11/preview-releases-of-spring-cloud-alibaba-are-available-0-9-0-0-2-2-and-0-1-2
 
-[3]: 目前最新的 Spring Cloud “F” 版的版本为：`Finchley.SR2` - https://cloud.spring.io/spring-cloud-static/Finchley.SR2/single/spring-cloud.html
+[3]: 目前最新的 Spring Cloud “F” 版的版本为：`Finchley.SR4` - https://cloud.spring.io/spring-cloud-static/Finchley.SR4/single/spring-cloud.html
 
 [4]: 当前Spring Cloud “G” 版为 `Greenwich.RELEASE`
 

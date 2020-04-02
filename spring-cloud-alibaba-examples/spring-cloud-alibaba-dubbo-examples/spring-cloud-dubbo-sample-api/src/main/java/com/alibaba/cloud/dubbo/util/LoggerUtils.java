@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.util;
 
 import org.apache.dubbo.rpc.RpcContext;
@@ -20,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Logger Utilities
+ * Logger Utilities.
  */
 public abstract class LoggerUtils {
 
@@ -37,4 +38,5 @@ public abstract class LoggerUtils {
 			logger.info(message);
 		}
 	}
+
 }

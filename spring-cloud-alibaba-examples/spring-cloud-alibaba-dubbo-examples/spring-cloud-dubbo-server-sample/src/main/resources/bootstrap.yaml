@@ -1,0 +1,18 @@
+dubbo:
+  scan:
+    base-packages: com.alibaba.cloud.dubbo.bootstrap
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: spring-cloud://localhost
+
+spring:
+  application:
+    name: spring-cloud-alibaba-dubbo-server
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848

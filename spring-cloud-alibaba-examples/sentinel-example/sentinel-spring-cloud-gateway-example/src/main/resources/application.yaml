@@ -31,15 +31,13 @@ spring:
         ruleType: gw-api-group
       transport:
         dashboard: localhost:8080
-#      filter:
-#        enabled: true
+      filter:
+        enabled: true
       scg.fallback:
-        mode: redirect
-        redirect: http://www.taobao.com
+          mode: response
+          response-status: 444
+          response-body: 1234
       scg:
         order: -100
-#        response-status: 444
-#        response-body: 1234
-#        content-type: text/plain
 
 management.endpoints.web.exposure.include: "*"

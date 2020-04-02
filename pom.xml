@@ -17,7 +17,8 @@
     <version>2.0.1.RELEASE</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba</name>
-
+    <description>Spring Cloud Alibaba</description>
+    <url>https://github.com/alibaba/spring-cloud-alibaba/tree/finchley</url>
 
     <licenses>
         <license>
@@ -83,7 +84,6 @@
         <slf4j-api.version>1.7.25</slf4j-api.version>
 
         <!-- Apache Dubbo -->
-        <dubbo-spring-boot.version>2.7.3</dubbo-spring-boot.version>
         <dubbo.version>2.7.3</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
@@ -95,30 +95,15 @@
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
+        <jacoco.version>0.8.3</jacoco.version>
     </properties>
 
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
-        <module>spring-cloud-alibaba-sentinel</module>
-        <module>spring-cloud-alibaba-sentinel-datasource</module>
-        <module>spring-cloud-alibaba-sentinel-gateway</module>
-        <module>spring-cloud-alibaba-nacos-config</module>
-        <module>spring-cloud-alibaba-nacos-discovery</module>
-        <module>spring-cloud-alibaba-seata</module>
-        <module>spring-cloud-stream-binder-rocketmq</module>
-        <module>spring-cloud-alibaba-nacos-config-server</module>
-        <module>spring-cloud-alibaba-dubbo</module>
-        <module>spring-cloud-alicloud-context</module>
         <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-docs</module>
-        <module>spring-cloud-starter-alibaba</module>
-        <module>spring-cloud-starter-alicloud</module>
-        <module>spring-cloud-alicloud-oss</module>
-        <module>spring-cloud-alicloud-acm</module>
-        <module>spring-cloud-alicloud-ans</module>
-        <module>spring-cloud-alicloud-schedulerx</module>
-        <module>spring-cloud-alicloud-sms</module>
-        <module>spring-cloud-alibaba-sidecar</module>
+        <module>spring-cloud-alibaba-starters</module>
+        <module>spring-cloud-alibaba-coverage</module>
     </modules>
 
     <dependencyManagement>
@@ -207,7 +192,13 @@
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${dubbo-spring-boot.version}</version>
+                <version>${dubbo.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-actuator</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>

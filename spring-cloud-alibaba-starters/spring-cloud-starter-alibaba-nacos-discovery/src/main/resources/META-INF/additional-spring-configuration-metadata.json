@@ -1,0 +1,60 @@
+{"properties": [
+    {
+      "name": "spring.cloud.nacos.server-addr",
+      "type": "java.lang.String",
+      "defaultValue": "localhost:8848",
+      "description": "nacos server address."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.server-addr",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.server-addr}",
+      "description": "nacos discovery server address."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.service",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.application.name}",
+      "description": "the service name to register, default value is ${spring.application.name}."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "enable nacos discovery or not."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.namingLoadCacheAtStart",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "naming load from local cache at application start ."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.watch.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": "true",
+      "description": "enable nacos discovery watch or not ."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.username",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.username}",
+      "description": "nacos discovery service's username to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.password",
+      "type": "java.lang.String",
+      "defaultValue": "${spring.cloud.nacos.password}",
+      "description": "nacos discovery service's password to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.username",
+      "type": "java.lang.String",
+      "description": "nacos userName to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.password",
+      "type": "java.lang.String",
+      "description": "nacos password to authenticate."
+    }
+]}
