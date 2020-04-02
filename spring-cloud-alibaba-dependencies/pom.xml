@@ -23,6 +23,7 @@
         <seata.version>1.1.0</seata.version>
         <nacos.client.version>1.2.1</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
+        <spring.context.support.version>1.0.6</spring.context.support.version>
     </properties>
 
     <dependencyManagement>
