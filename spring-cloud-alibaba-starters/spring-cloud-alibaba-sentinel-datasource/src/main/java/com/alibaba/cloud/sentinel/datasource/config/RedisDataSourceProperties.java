@@ -24,7 +24,7 @@ import com.alibaba.cloud.sentinel.datasource.factorybean.RedisDataSourceFactoryB
 import org.springframework.util.StringUtils;
 
 /**
- * Zookeeper Properties class Using by {@link DataSourcePropertiesConfiguration} and
+ * Redis Properties class Using by {@link DataSourcePropertiesConfiguration} and
  * {@link RedisDataSourceFactoryBean}.
  *
  * @author <a href="mailto:wangiegie@gmail.com">lengleng</a>
