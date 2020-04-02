@@ -54,7 +54,6 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 
     @Override
     public void preCheck(String dataSourceName) {
-        super.preCheck(dataSourceName);
         if(StringUtils.isEmpty(host)){
             throw new IllegalArgumentException(
                     "ConsulDataSource server-host is empty");
