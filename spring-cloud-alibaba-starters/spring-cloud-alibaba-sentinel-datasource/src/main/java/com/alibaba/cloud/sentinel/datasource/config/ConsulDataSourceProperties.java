@@ -17,6 +17,7 @@
 package com.alibaba.cloud.sentinel.datasource.config;
 
 import com.alibaba.cloud.sentinel.datasource.factorybean.ConsulDataSourceFactoryBean;
+
 import org.springframework.util.StringUtils;
 
 /**
@@ -32,12 +33,12 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
     }
 
     /**
-     * consul server host
+     * consul server host.
      */
     private String host;
 
     /**
-     * consul server port
+     * consul server port.
      */
     private int port=8500;
 

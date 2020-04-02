@@ -18,6 +18,7 @@ package com.alibaba.cloud.sentinel.datasource.factorybean;
 
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.consul.ConsulDataSource;
+
 import org.springframework.beans.factory.FactoryBean;
 
 /**
