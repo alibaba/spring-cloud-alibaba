@@ -40,8 +40,8 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 	@Override
 	public void registerInstance(String applicationName, String ip, Integer port) {
 		try {
-			this.nacosDiscoveryProperties.namingServiceInstance()
-					.registerInstance(applicationName, nacosDiscoveryProperties.getGroup(), ip, port);
+			this.nacosDiscoveryProperties.namingServiceInstance().registerInstance(
+					applicationName, nacosDiscoveryProperties.getGroup(), ip, port);
 		}
 		catch (NacosException e) {
 			log.warn("nacos exception happens", e);
@@ -51,8 +51,8 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 	@Override
 	public void deregisterInstance(String applicationName, String ip, Integer port) {
 		try {
-			this.nacosDiscoveryProperties.namingServiceInstance()
-					.deregisterInstance(applicationName, nacosDiscoveryProperties.getGroup(), ip, port);
+			this.nacosDiscoveryProperties.namingServiceInstance().deregisterInstance(
+					applicationName, nacosDiscoveryProperties.getGroup(), ip, port);
 		}
 		catch (NacosException e) {
 			log.warn("nacos exception happens", e);
