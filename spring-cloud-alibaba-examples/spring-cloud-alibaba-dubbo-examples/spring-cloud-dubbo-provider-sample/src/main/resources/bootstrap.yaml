@@ -27,6 +27,8 @@ spring:
 
   cloud:
     nacos:
+      username: nacos
+      password: nacos
       discovery:
         enabled: true
         register-enabled: true
