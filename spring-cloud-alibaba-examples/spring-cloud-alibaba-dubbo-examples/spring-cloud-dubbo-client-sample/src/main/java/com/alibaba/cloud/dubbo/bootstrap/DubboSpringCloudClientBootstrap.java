@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.dubbo.bootstrap;
 
 import com.alibaba.cloud.dubbo.service.EchoService;
-
 import org.apache.dubbo.config.annotation.Reference;
 
 import org.springframework.boot.SpringApplication;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Dubbo Spring Cloud Client Bootstrap
+ * Dubbo Spring Cloud Client Bootstrap.
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration
@@ -44,4 +44,5 @@ public class DubboSpringCloudClientBootstrap {
 	public static void main(String[] args) {
 		SpringApplication.run(DubboSpringCloudClientBootstrap.class);
 	}
+
 }

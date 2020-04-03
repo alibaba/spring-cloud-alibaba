@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.examples.rocketmq;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * RocketMQ Bus Spring Application
+ * RocketMQ Bus Spring Application.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @since 0.2.1
@@ -64,8 +65,7 @@ public class RocketMQBusApplication {
 	private ObjectMapper objectMapper;
 
 	/**
-	 * Publish the {@link UserRemoteApplicationEvent}
-	 *
+	 * Publish the {@link UserRemoteApplicationEvent}.
 	 * @param name the user name
 	 * @param destination the destination
 	 * @return If published
@@ -82,8 +82,7 @@ public class RocketMQBusApplication {
 	}
 
 	/**
-	 * Listener on the {@link UserRemoteApplicationEvent}
-	 *
+	 * Listener on the {@link UserRemoteApplicationEvent}.
 	 * @param event {@link UserRemoteApplicationEvent}
 	 */
 	@EventListener
@@ -98,4 +97,5 @@ public class RocketMQBusApplication {
 		System.out.printf("Server [port : %d] listeners on %s\n", localServerPort,
 				objectMapper.writeValueAsString(event));
 	}
+
 }

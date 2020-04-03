@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.alibaba.cloud.examples;
 
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.BlockRequestHandler;
-
 import reactor.core.publisher.Mono;
 
 import org.springframework.context.annotation.Bean;
@@ -40,8 +39,7 @@ public class MySCGConfiguration {
 			@Override
 			public Mono<ServerResponse> handleRequest(ServerWebExchange exchange,
 					Throwable t) {
-				return ServerResponse.status(444)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
+				return ServerResponse.status(444).contentType(MediaType.APPLICATION_JSON)
 						.body(fromObject("SCS Sentinel block"));
 			}
 		};

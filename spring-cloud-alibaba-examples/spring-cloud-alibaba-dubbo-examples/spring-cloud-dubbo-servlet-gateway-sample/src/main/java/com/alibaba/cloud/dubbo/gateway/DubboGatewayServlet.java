@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.dubbo.gateway;
 
 import java.io.IOException;
@@ -25,7 +41,6 @@ import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepositor
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-
 import org.apache.dubbo.rpc.service.GenericException;
 import org.apache.dubbo.rpc.service.GenericService;
 
@@ -132,37 +147,6 @@ public class DubboGatewayServlet extends HttpServletBean {
 		return StreamUtils.copyToByteArray(inputStream);
 	}
 
-	private static class HttpRequestAdapter implements HttpRequest {
-
-		private final HttpServletRequest request;
-
-		private HttpRequestAdapter(HttpServletRequest request) {
-			this.request = request;
-		}
-
-		@Override
-		public String getMethodValue() {
-			return request.getMethod();
-		}
-
-		@Override
-		public URI getURI() {
-			try {
-				return new URI(request.getRequestURL().toString() + "?"
-						+ request.getQueryString());
-			}
-			catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-			throw new RuntimeException();
-		}
-
-		@Override
-		public HttpHeaders getHeaders() {
-			return new HttpHeaders();
-		}
-	}
-
 	private RequestMetadata buildRequestMetadata(HttpServletRequest request,
 			String restPath) {
 		UriComponents uriComponents = fromUriString(request.getRequestURI()).build(true);
@@ -192,4 +176,37 @@ public class DubboGatewayServlet extends HttpServletBean {
 		}
 		return map;
 	}
+
+	private final static class HttpRequestAdapter implements HttpRequest {
+
+		private final HttpServletRequest request;
+
+		private HttpRequestAdapter(HttpServletRequest request) {
+			this.request = request;
+		}
+
+		@Override
+		public String getMethodValue() {
+			return request.getMethod();
+		}
+
+		@Override
+		public URI getURI() {
+			try {
+				return new URI(request.getRequestURL().toString() + "?"
+						+ request.getQueryString());
+			}
+			catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			throw new RuntimeException();
+		}
+
+		@Override
+		public HttpHeaders getHeaders() {
+			return new HttpHeaders();
+		}
+
+	}
+
 }
