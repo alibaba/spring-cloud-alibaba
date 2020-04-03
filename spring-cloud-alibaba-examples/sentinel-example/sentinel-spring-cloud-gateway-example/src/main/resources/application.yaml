@@ -31,8 +31,8 @@ spring:
         ruleType: gw-api-group
       transport:
         dashboard: localhost:8080
-#      filter:
-#        enabled: true
+      filter:
+        enabled: true
       scg.fallback:
           mode: response
           response-status: 444

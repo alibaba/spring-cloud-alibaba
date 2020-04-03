@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.examples;
 
 import com.alibaba.cloud.examples.ConsumerApplication.EchoService;
@@ -19,7 +35,7 @@ import org.springframework.web.client.RestTemplate;
  * @author xiaojing
  */
 @SpringBootApplication
-@EnableDiscoveryClient
+@EnableDiscoveryClient(autoRegister = true)
 @EnableFeignClients
 public class ConsumerApplication {
 
@@ -41,32 +57,37 @@ public class ConsumerApplication {
 		SpringApplication.run(ConsumerApplication.class, args);
 	}
 
-	@FeignClient(contextId = "tt", name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
+	@FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 	public interface EchoService {
-		@GetMapping(value = "/echo/{str}")
+
+		@GetMapping("/echo/{str}")
 		String echo(@PathVariable("str") String str);
 
-		@GetMapping(value = "/divide")
+		@GetMapping("/divide")
 		String divide(@RequestParam("a") Integer a, @RequestParam("b") Integer b);
 
 		default String divide(Integer a) {
 			return divide(a, 0);
 		}
 
-		@GetMapping(value = "/notFound")
+		@GetMapping("/notFound")
 		String notFound();
+
 	}
 
 }
 
 class FeignConfiguration {
+
 	@Bean
 	public EchoServiceFallback echoServiceFallback() {
 		return new EchoServiceFallback();
 	}
+
 }
 
 class EchoServiceFallback implements EchoService {
+
 	@Override
 	public String echo(@PathVariable("str") String str) {
 		return "echo fallback";
@@ -81,4 +102,5 @@ class EchoServiceFallback implements EchoService {
 	public String notFound() {
 		return "notFound fallback";
 	}
+
 }
