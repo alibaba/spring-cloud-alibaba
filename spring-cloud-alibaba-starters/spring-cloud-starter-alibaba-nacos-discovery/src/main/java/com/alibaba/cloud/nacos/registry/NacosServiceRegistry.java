@@ -50,6 +50,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	@Override
 	public void register(Registration registration) {
 
+		// Fix #1325 the register-enabled configuration doesn't work in non-web environment
+		if (!nacosDiscoveryProperties.isRegisterEnabled()) {
+			return;
+		}
+
 		if (StringUtils.isEmpty(registration.getServiceId())) {
 			log.warn("No service to register for nacos client...");
 			return;
