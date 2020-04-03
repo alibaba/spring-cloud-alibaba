@@ -23,16 +23,7 @@
         <seata.version>1.1.0</seata.version>
         <nacos.client.version>1.2.1</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
-        <acm.version>1.0.9</acm.version>
-        <ans.version>1.0.1</ans.version>
-        <aliyun.sdk.version>4.4.1</aliyun.sdk.version>
-        <alicloud.context.version>1.0.5</alicloud.context.version>
-        <aliyun.sdk.edas.version>2.44.0</aliyun.sdk.edas.version>
-        <schedulerX.client.version>2.1.6</schedulerX.client.version>
-        <aliyun.java.sdk.dysmsapi>1.1.0</aliyun.java.sdk.dysmsapi>
-        <aliyun.sdk.mns>1.1.8.6</aliyun.sdk.mns>
-        <aliyun.java.sdk.dyvmsapi>1.1.1</aliyun.java.sdk.dyvmsapi>
-        <spring.context.support.version>1.0.5</spring.context.support.version>
+        <spring.context.support.version>1.0.6</spring.context.support.version>
     </properties>
 
     <dependencyManagement>
@@ -90,6 +81,12 @@
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-datasource-redis</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-datasource-consul</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
 
