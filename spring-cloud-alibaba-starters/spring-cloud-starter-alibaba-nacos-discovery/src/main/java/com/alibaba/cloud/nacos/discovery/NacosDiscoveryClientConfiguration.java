@@ -25,7 +25,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.CommonsClientAutoConfiguration;
-import org.springframework.cloud.client.ConditionalOnBlockingDiscoveryEnabled;
 import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
@@ -39,7 +38,9 @@ import org.springframework.scheduling.TaskScheduler;
  */
 @Configuration
 @ConditionalOnDiscoveryEnabled
-@ConditionalOnBlockingDiscoveryEnabled
+//@ConditionalOnBlockingDiscoveryEnabled
+@ConditionalOnProperty(value = "spring.cloud.discovery.blocking.enabled",
+		matchIfMissing = true)
 @ConditionalOnNacosDiscoveryEnabled
 @AutoConfigureBefore({ SimpleDiscoveryClientAutoConfiguration.class,
 		CommonsClientAutoConfiguration.class })

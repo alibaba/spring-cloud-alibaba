@@ -25,7 +25,6 @@ import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationP
 import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import org.springframework.cloud.consul.discovery.HeartbeatProperties;
 import org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration;
-import org.springframework.cloud.consul.serviceregistry.ConsulManagementRegistrationCustomizer;
 import org.springframework.cloud.consul.serviceregistry.ConsulRegistrationCustomizer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -38,17 +37,15 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 	public SidecarConsulAutoRegistration(NewService service,
 			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
 			ConsulDiscoveryProperties properties, ApplicationContext context,
-			HeartbeatProperties heartbeatProperties,
-			List<ConsulManagementRegistrationCustomizer> managementRegistrationCustomizers) {
+			HeartbeatProperties heartbeatProperties) {
 		super(service, autoServiceRegistrationProperties, properties, context,
-				heartbeatProperties, managementRegistrationCustomizers);
+				heartbeatProperties);
 	}
 
 	public static ConsulAutoRegistration registration(
 			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
 			ConsulDiscoveryProperties properties, ApplicationContext context,
 			List<ConsulRegistrationCustomizer> registrationCustomizers,
-			List<ConsulManagementRegistrationCustomizer> managementRegistrationCustomizers,
 			HeartbeatProperties heartbeatProperties,
 			SidecarProperties sidecarProperties) {
 
@@ -72,7 +69,7 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 
 		ConsulAutoRegistration registration = new ConsulAutoRegistration(service,
 				autoServiceRegistrationProperties, properties, context,
-				heartbeatProperties, managementRegistrationCustomizers);
+				heartbeatProperties);
 		customize(registrationCustomizers, registration);
 		return registration;
 	}

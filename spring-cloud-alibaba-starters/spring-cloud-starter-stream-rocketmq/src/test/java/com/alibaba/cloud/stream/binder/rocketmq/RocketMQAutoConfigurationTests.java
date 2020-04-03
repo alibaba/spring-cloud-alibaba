@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
+import java.util.Arrays;
+
 import com.alibaba.cloud.stream.binder.rocketmq.config.RocketMQBinderAutoConfiguration;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
@@ -56,7 +58,7 @@ public class RocketMQAutoConfigurationTests {
 			RocketMQBinderConfigurationProperties binderConfigurationProperties = context
 					.getBean(RocketMQBinderConfigurationProperties.class);
 			assertThat(binderConfigurationProperties.getNameServer())
-					.isEqualTo("127.0.0.1:9876");
+					.isEqualTo(Arrays.asList("127.0.0.1:9876"));
 			RocketMQExtendedBindingProperties bindingProperties = context
 					.getBean(RocketMQExtendedBindingProperties.class);
 			assertThat(

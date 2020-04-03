@@ -141,7 +141,7 @@ public class DubboServiceBeanMetadataResolver
 			Class<?> targetType) {
 		List<MethodMetadata> methodMetadataList = Collections.emptyList();
 		try {
-			methodMetadataList = contract.parseAndValidateMetadata(targetType);
+			methodMetadataList = contract.parseAndValidatateMetadata(targetType);
 		}
 		catch (Throwable ignored) {
 			// ignore
@@ -153,7 +153,7 @@ public class DubboServiceBeanMetadataResolver
 	 * Select feign contract methods
 	 * <p>
 	 * extract some code from
-	 * {@link Contract.BaseContract#parseAndValidateMetadata(Class)}.
+	 * {@link Contract.BaseContract#parseAndValidatateMetadata(Class)}.
 	 * @param targetType class of type
 	 * @return non-null
 	 */

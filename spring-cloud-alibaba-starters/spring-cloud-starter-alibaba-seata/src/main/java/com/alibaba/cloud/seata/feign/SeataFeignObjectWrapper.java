@@ -21,9 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.cloud.loadbalancer.blocking.client.BlockingLoadBalancerClient;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
-import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
 import org.springframework.cloud.openfeign.ribbon.CachingSpringLoadBalancerFactory;
 import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 
@@ -50,11 +48,6 @@ public class SeataFeignObjectWrapper {
 				LoadBalancerFeignClient client = ((LoadBalancerFeignClient) bean);
 				return new SeataLoadBalancerFeignClient(client.getDelegate(), factory(),
 						clientFactory(), this);
-			}
-			if (bean instanceof FeignBlockingLoadBalancerClient) {
-				FeignBlockingLoadBalancerClient client = (FeignBlockingLoadBalancerClient) bean;
-				return new SeataFeignBlockingLoadBalancerClient(client.getDelegate(),
-						beanFactory.getBean(BlockingLoadBalancerClient.class), this);
 			}
 			return new SeataFeignClient(this.beanFactory, (Client) bean);
 		}

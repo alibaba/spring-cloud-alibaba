@@ -23,7 +23,6 @@
         <module>spring-cloud-starter-bus-rocketmq</module>
         <module>spring-cloud-starter-dubbo</module>
         <module>spring-cloud-starter-alibaba-sidecar</module>
-        <module>spring-cloud-circuitbreaker-sentinel</module>
         <module>spring-cloud-starter-alibaba-sentinel</module>
         <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-sentinel-gateway</module>

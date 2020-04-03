@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.stream.binder.BinderHeaders;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
-import org.springframework.cloud.stream.binding.MessageConverterConfigurer;
 import org.springframework.context.Lifecycle;
 import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.integration.support.DefaultErrorMessageStrategy;
@@ -81,20 +80,16 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 
 	private ExtendedProducerProperties<RocketMQProducerProperties> producerProperties;
 
-	private MessageConverterConfigurer.PartitioningInterceptor partitioningInterceptor;
-
 	public RocketMQMessageHandler(RocketMQTemplate rocketMQTemplate, String destination,
 			String groupName, Boolean transactional,
 			InstrumentationManager instrumentationManager,
-			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
-			MessageConverterConfigurer.PartitioningInterceptor partitioningInterceptor) {
+			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties) {
 		this.rocketMQTemplate = rocketMQTemplate;
 		this.destination = destination;
 		this.groupName = groupName;
 		this.transactional = transactional;
 		this.instrumentationManager = instrumentationManager;
 		this.producerProperties = producerProperties;
-		this.partitioningInterceptor = partitioningInterceptor;
 	}
 
 	@Override
@@ -126,8 +121,6 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 							destination, producerProperties.getPartitionCount(),
 							messageQueues.size()));
 					producerProperties.setPartitionCount(messageQueues.size());
-					partitioningInterceptor
-							.setPartitionCount(producerProperties.getPartitionCount());
 				}
 			}
 			catch (MQClientException e) {

@@ -99,7 +99,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 			}
 			else {
 				String resourceName = methodMetadata.template().method().toUpperCase()
-						+ ":" + hardCodedTarget.url() + methodMetadata.template().path();
+						+ ":" + hardCodedTarget.url() + methodMetadata.template().url();
 				Entry entry = null;
 				try {
 					ContextUtil.enter(resourceName);

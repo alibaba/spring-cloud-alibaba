@@ -40,8 +40,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.context.Lifecycle;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
-import org.springframework.integration.acks.AcknowledgmentCallback;
-import org.springframework.integration.acks.AcknowledgmentCallbackFactory;
+import org.springframework.integration.support.AcknowledgmentCallback;
+import org.springframework.integration.support.AcknowledgmentCallbackFactory;
 import org.springframework.integration.endpoint.AbstractMessageSource;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -235,6 +235,11 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		synchronized (this.consumerMonitor) {
 			this.messageQueueChooser.reset(queueSet);
 		}
+	}
+
+	@Override
+	public void destroy() throws Exception {
+
 	}
 
 	public static class RocketMQCallbackFactory

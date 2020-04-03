@@ -30,7 +30,6 @@ import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import org.springframework.cloud.consul.discovery.HeartbeatProperties;
 import org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration;
 import org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration;
-import org.springframework.cloud.consul.serviceregistry.ConsulManagementRegistrationCustomizer;
 import org.springframework.cloud.consul.serviceregistry.ConsulRegistrationCustomizer;
 import org.springframework.cloud.consul.serviceregistry.ConsulServiceRegistry;
 import org.springframework.cloud.consul.serviceregistry.ConsulServiceRegistryAutoConfiguration;
@@ -52,13 +51,12 @@ public class SidecarConsulAutoConfiguration {
 			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
 			ConsulDiscoveryProperties properties, ApplicationContext applicationContext,
 			ObjectProvider<List<ConsulRegistrationCustomizer>> registrationCustomizers,
-			ObjectProvider<List<ConsulManagementRegistrationCustomizer>> managementRegistrationCustomizers,
 			HeartbeatProperties heartbeatProperties,
 			SidecarProperties sidecarProperties) {
 		return SidecarConsulAutoRegistration.registration(
 				autoServiceRegistrationProperties, properties, applicationContext,
 				registrationCustomizers.getIfAvailable(),
-				managementRegistrationCustomizers.getIfAvailable(), heartbeatProperties,
+				heartbeatProperties,
 				sidecarProperties);
 	}
 
