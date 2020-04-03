@@ -21,16 +21,6 @@ include::dubbo.adoc[]
 
 include::rocketmq.adoc[]
 
-include::ans.adoc[]
-
-include::acm.adoc[]
-
-include::oss.adoc[]
-
-include::schedulerx.adoc[]
-
-include::sms.adoc[]
-
 include::sidecar.adoc[]
 
 
