@@ -32,3 +32,11 @@ hs_err_pid*
 target
 .DS_Store
 
+# temp ignore
+*.cache
+*.diff
+*.patch
+*.tmp
+
+# Maven ignore
+.flattened-pom.xml
