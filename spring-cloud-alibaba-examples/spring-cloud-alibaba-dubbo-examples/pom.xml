@@ -5,20 +5,25 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>2.0.1.RELEASE</version>
+        <version>2.0.2.BUILD-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
+    <version>2.0.2.BUILD-SNAPSHOT</version>
     <name>Spring Cloud Alibaba Dubbo Examples</name>
     <packaging>pom</packaging>
 
     <modules>
         <module>spring-cloud-dubbo-sample-api</module>
+        <module>spring-cloud-dubbo-server-sample</module>
+        <module>spring-cloud-dubbo-client-sample</module>
         <module>spring-cloud-dubbo-provider-sample</module>
         <module>spring-cloud-dubbo-consumer-sample</module>
         <module>spring-cloud-dubbo-provider-web-sample</module>
+        <module>spring-cloud-dubbo-servlet-gateway-sample</module>
     </modules>
 
 </project>

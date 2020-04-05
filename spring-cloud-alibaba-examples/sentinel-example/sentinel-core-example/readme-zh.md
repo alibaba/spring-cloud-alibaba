@@ -184,7 +184,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Sentinel Starter
 * Spring Boot 1.x 中添加配置 `management.security.enabled=false`
 * Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`
 
-Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/sentinel 来查看 Sentinel Endpoint 的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/acutator/sentinel 来访问。
+Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/sentinel 来查看 Sentinel Endpoint 的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/sentinel 来访问。
 
 <p align="center"><img src="https://cdn.yuque.com/lark/0/2018/png/54319/1532084199224-1a41591d-7a06-4680-be8a-5de319ac635d.png" width="480" heigh='360' ></p>
 
