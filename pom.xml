@@ -73,7 +73,7 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.1.BUILD-SNAPSHOT</revision>
+        <revision>2.2.1.RELEASE</revision>
 
         <!-- Dependency Versions -->
         <spring-cloud-commons.version>2.2.2.RELEASE</spring-cloud-commons.version>
