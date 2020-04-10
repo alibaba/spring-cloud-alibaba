@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
-        <version>2.2.1.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,6 @@
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-dubbo-client-sample</artifactId>
     <name>Spring Cloud Dubbo Client Sample</name>
-    <version>2.2.1.BUILD-SNAPSHOT</version>
 
     <dependencies>
         <!-- Sample API -->

@@ -30,7 +30,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.client.RestTemplate;
 
-import static org.apache.dubbo.rpc.cluster.Constants.DEFAULT_RETRIES;
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_RETRIES;
 
 /**
  * {@link DubboTransported @DubboTransported} annotation indicates that the traditional
