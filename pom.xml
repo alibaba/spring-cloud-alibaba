@@ -69,6 +69,13 @@
             <name>yunzheng</name>
             <email>yunzheng1228@gmail.com</email>
         </developer>
+        <developer>
+            <id>theonefx</id>
+            <name>theonefx</name>
+            <email>chenxilzx1@gmail.com</email>
+            <organization>Alibaba</organization>
+            <url>https://github.com/theonefx</url>
+        </developer>
     </developers>
 
     <properties>
