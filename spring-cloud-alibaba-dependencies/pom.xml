@@ -18,7 +18,7 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <revision>2.2.1.BUILD-SNAPSHOT</revision>
+        <revision>2.2.1.RELEASE</revision>
         <sentinel.version>1.7.1</sentinel.version>
         <oss.version>3.1.0</oss.version>
         <seata.version>1.1.0</seata.version>
