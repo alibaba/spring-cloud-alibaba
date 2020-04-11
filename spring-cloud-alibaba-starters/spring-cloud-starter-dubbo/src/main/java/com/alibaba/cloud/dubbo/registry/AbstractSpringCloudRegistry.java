@@ -48,9 +48,11 @@ import static java.util.Collections.emptyList;
 import static org.apache.dubbo.common.URLBuilder.from;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER;
 import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER_SIDE;
 import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.RegistryConstants.CATEGORY_KEY;
 import static org.apache.dubbo.common.constants.RegistryConstants.EMPTY_PROTOCOL;
 import static org.apache.dubbo.registry.Constants.ADMIN_PROTOCOL;
 import static org.springframework.util.StringUtils.hasText;
@@ -161,6 +163,13 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		}
 		else if (isDubboMetadataServiceURL(url)) { // for DubboMetadataService
 			subscribeDubboMetadataServiceURLs(url, listener);
+			if (from(url).getParameter(CATEGORY_KEY) != null
+					&& from(url).getParameter(CATEGORY_KEY).contains(PROVIDER)) {
+				// Fix #1259 and #753 Listene meta service change events to remove useless
+				// clients
+				registerServiceInstancesChangedEventListener(url, listener);
+			}
+
 		}
 		else { // for general Dubbo Services
 			subscribeDubboServiceURLs(url, listener);
@@ -228,10 +237,13 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		// Re-obtain the latest list of available metadata address here, ip or port may
 		// change.
 		// by https://github.com/wangzihaogithub
-		dubboMetadataConfigServiceProxy.removeProxy(serviceName);
-		repository.removeMetadataAndInitializedService(serviceName);
-		dubboGenericServiceFactory.destroy(serviceName);
-		repository.initializeMetadata(serviceName);
+		// When the last service provider is closed, 【fix 1259】while close the
+		// channel，when up a new provider then repository.initializeMetadata(serviceName)
+		// will throw Exception.
+		// dubboMetadataConfigServiceProxy.removeProxy(serviceName);
+		// repository.removeMetadataAndInitializedService(serviceName);
+		// dubboGenericServiceFactory.destroy(serviceName);
+		// repository.initializeMetadata(serviceName);
 		if (CollectionUtils.isEmpty(serviceInstances)) {
 			if (logger.isWarnEnabled()) {
 				logger.warn(
@@ -239,6 +251,18 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 								+ "available , please make sure the further impact",
 						serviceName, url.getServiceKey());
 			}
+			if (isDubboMetadataServiceURL(url)) {
+				// if meta service change, and serviceInstances is zero, will clean up
+				// information about this client
+				dubboMetadataConfigServiceProxy.removeProxy(serviceName);
+				repository.removeMetadataAndInitializedService(serviceName, url);
+				dubboGenericServiceFactory.destroy(serviceName);
+				String listenerId = generateId(url);
+				// The metaservice will restart the new listener. It needs to be optimized
+				// to see whether the original listener can be reused.
+				this.registerListeners.remove(listenerId);
+			}
+
 			/**
 			 * URLs with {@link RegistryConstants#EMPTY_PROTOCOL}
 			 */
@@ -250,6 +274,11 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 			listener.notify(allSubscribedURLs);
 			return;
 		}
+		if (isDubboMetadataServiceURL(url)) {
+			// Prevent duplicate generation of DubboMetadataService
+			return;
+		}
+		repository.initializeMetadata(serviceName);
 
 		DubboMetadataService dubboMetadataService = dubboMetadataConfigServiceProxy
 				.getProxy(serviceName);
@@ -301,7 +330,11 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	}
 
 	private List<URL> emptyURLs(URL url) {
-		return asList(from(url).setProtocol(EMPTY_PROTOCOL).build());
+		// issue : When the last service provider is closed, the client still periodically
+		// connects to the last provider.n
+		// fix https://github.com/alibaba/spring-cloud-alibaba/issues/1259
+		return asList(from(url).setProtocol(EMPTY_PROTOCOL).removeParameter(CATEGORY_KEY)
+				.build());
 	}
 
 	private List<ServiceInstance> getServiceInstances(String serviceName) {
