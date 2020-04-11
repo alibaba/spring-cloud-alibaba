@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-starters</artifactId>
-        <version>2.2.1.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -80,6 +80,12 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-redis</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-consul</artifactId>
             <optional>true</optional>
         </dependency>
 
