@@ -34,8 +34,8 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static com.alibaba.spring.util.PropertySourcesUtils.getSubProperties;
 import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_PROTOCOL;
-import static org.apache.dubbo.config.spring.util.PropertySourcesUtils.getPrefixedProperties;
 
 /**
  * Dubbo {@link WebApplicationType#NONE Non-Web Application}
@@ -84,7 +84,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment,
-			SpringApplication application) {
+									   SpringApplication application) {
 		WebApplicationType webApplicationType = application.getWebApplicationType();
 
 		if (!WebApplicationType.NONE.equals(webApplicationType)) { // Just works in
@@ -117,7 +117,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 	 * @param defaultProperties defaultProperties
 	 */
 	private void resetServerPort(ConfigurableEnvironment environment,
-			Map<String, Object> defaultProperties) {
+								 Map<String, Object> defaultProperties) {
 
 		String serverPort = environment.getProperty(SERVER_PORT_PROPERTY_NAME,
 				environment.getProperty(PORT_PROPERTY_NAME));
@@ -149,7 +149,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 
 		String restPort = null;
 
-		Map<String, Object> subProperties = getPrefixedProperties(
+		Map<String, Object> subProperties = getSubProperties(
 				environment.getPropertySources(), PROTOCOLS_PROPERTY_NAME_PREFIX);
 
 		Properties properties = new Properties();
@@ -181,7 +181,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 	}
 
 	private void setServerPort(ConfigurableEnvironment environment, String serverPort,
-			Map<String, Object> defaultProperties) {
+							   Map<String, Object> defaultProperties) {
 		if (serverPort == null) {
 			return;
 		}
@@ -196,7 +196,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 	 * @param map Default Dubbo Properties
 	 */
 	private void addOrReplace(MutablePropertySources propertySources,
-			Map<String, Object> map) {
+							  Map<String, Object> map) {
 		MapPropertySource target = null;
 		if (propertySources.contains(PROPERTY_SOURCE_NAME)) {
 			PropertySource<?> source = propertySources.get(PROPERTY_SOURCE_NAME);

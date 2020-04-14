@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-dubbo-examples</artifactId>
-        <version>2.1.2.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -14,7 +14,7 @@
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-dubbo-server-sample</artifactId>
     <name>Spring Cloud Dubbo Server Sample</name>
-    <version>2.1.2.BUILD-SNAPSHOT</version>
+    <version>${revision}</version>
 
     <dependencies>
 
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-dubbo-sample-api</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Spring Boot dependencies -->

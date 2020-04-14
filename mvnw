@@ -227,7 +227,7 @@ export MAVEN_CMD_LINE_ARGS
 WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
 echo "Running version check"
-VERSION=$( sed '\!<parent!,\!</parent!d' `dirname $0`/pom.xml | grep '<version' | head -1 | sed -e 's/.*<version>//' -e 's!</version>.*$!!' )
+VERSION=$( sed '\!<parent!,\!</parent!d' `dirname $0`/pom.xml | grep '<revision' | head -1 | sed -e 's/.*<revision>//' -e 's!</revision>.*$!!' )
 echo "The found version is [${VERSION}]"
 
 if echo $VERSION | egrep -q 'M|RC'; then
