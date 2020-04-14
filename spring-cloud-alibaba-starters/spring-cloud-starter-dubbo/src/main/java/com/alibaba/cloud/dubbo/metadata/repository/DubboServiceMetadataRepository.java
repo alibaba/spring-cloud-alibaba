@@ -689,5 +689,4 @@ public class DubboServiceMetadataRepository
 			ApplicationEventPublisher applicationEventPublisher) {
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
-
 }
