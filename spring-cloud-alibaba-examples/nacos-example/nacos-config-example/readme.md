@@ -179,7 +179,7 @@ AccessKey|spring.cloud.nacos.config.access-key||
 SecretKey|spring.cloud.nacos.config.secret-key||
 context-path|spring.cloud.nacos.config.context-path||Relative path of the server API
 endpoint|spring.cloud.nacos.config.endpoint|UTF-8|The domain name of a service, through which the server address can be dynamically obtained.
-refresh|spring.cloud.nacos.config.refresh.enabled|true|enable auto refresh
+refresh|spring.cloud.nacos.config.refresh-enabled|true|enable auto refresh
 
 
 
