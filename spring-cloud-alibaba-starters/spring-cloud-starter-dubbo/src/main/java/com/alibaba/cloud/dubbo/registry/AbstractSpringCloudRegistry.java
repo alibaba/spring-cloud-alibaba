@@ -98,10 +98,10 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	private final ConfigurableApplicationContext applicationContext;
 
 	public AbstractSpringCloudRegistry(URL url, DiscoveryClient discoveryClient,
-									   DubboServiceMetadataRepository dubboServiceMetadataRepository,
-									   DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
-									   JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
-									   ConfigurableApplicationContext applicationContext) {
+			DubboServiceMetadataRepository dubboServiceMetadataRepository,
+			DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
+			JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
+			ConfigurableApplicationContext applicationContext) {
 		super(url);
 		this.servicesLookupInterval = url
 				.getParameter(SERVICES_LOOKUP_INTERVAL_PARAM_NAME, 60L);
@@ -190,7 +190,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	 * @param listener {@link NotifyListener}
 	 */
 	private void registerServiceInstancesChangedEventListener(URL url,
-															  NotifyListener listener) {
+			NotifyListener listener) {
 		String listenerId = generateId(url);
 		if (registerListeners.add(listenerId)) {
 			applicationContext.addApplicationListener(
@@ -217,8 +217,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	}
 
 	protected void subscribeDubboServiceURL(URL url, NotifyListener listener,
-											String serviceName,
-											Function<String, Collection<ServiceInstance>> serviceInstancesFunction) {
+			String serviceName,
+			Function<String, Collection<ServiceInstance>> serviceInstancesFunction) {
 
 		if (logger.isInfoEnabled()) {
 			logger.info(
@@ -355,7 +355,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	}
 
 	private List<URL> getExportedURLs(DubboMetadataService dubboMetadataService,
-									  URL url) {
+			URL url) {
 		String serviceInterface = url.getServiceInterface();
 		String group = url.getParameter(GROUP_KEY);
 		String version = url.getParameter(VERSION_KEY);
