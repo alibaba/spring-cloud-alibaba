@@ -1,6 +1,4 @@
 dubbo:
-  registry:
-    address: spring-cloud://localhost
   cloud:
     subscribed-services: spring-cloud-alibaba-dubbo-server
 
@@ -11,5 +9,7 @@ spring:
     allow-bean-definition-overriding: true
   cloud:
     nacos:
+      username: nacos
+      password: nacos
       discovery:
         server-addr: 127.0.0.1:8848
