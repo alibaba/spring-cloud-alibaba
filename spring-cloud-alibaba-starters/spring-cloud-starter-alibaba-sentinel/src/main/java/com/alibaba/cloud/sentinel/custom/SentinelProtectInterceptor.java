@@ -75,7 +75,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 
 		Entry hostEntry = null;
 		Entry hostWithPathEntry = null;
-		ClientHttpResponse response = null;
+		ClientHttpResponse response;
 		try {
 			hostEntry = SphU.entry(hostResource, EntryType.OUT);
 			if (entryWithPath) {
@@ -83,13 +83,24 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			}
 			response = execution.execute(request, body);
 			if (this.restTemplate.getErrorHandler().hasError(response)) {
-				Tracer.trace(
-						new IllegalStateException("RestTemplate ErrorHandler has error"));
+				if (entryWithPath) {
+					Tracer.traceEntry(
+							new IllegalStateException(
+									"RestTemplate ErrorHandler has error"),
+							hostWithPathEntry);
+				}
+				Tracer.traceEntry(
+						new IllegalStateException("RestTemplate ErrorHandler has error"),
+						hostEntry);
 			}
 		}
 		catch (Throwable e) {
 			if (!BlockException.isBlockException(e)) {
-				Tracer.trace(e);
+				if (entryWithPath) {
+					Tracer.traceEntry(e, hostWithPathEntry);
+				}
+				Tracer.traceEntry(e, hostEntry);
+				throw (IOException) e;
 			}
 			else {
 				return handleBlockException(request, body, execution, (BlockException) e);
