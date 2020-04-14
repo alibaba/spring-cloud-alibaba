@@ -91,6 +91,12 @@
 
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-datasource-consul</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-web-servlet</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
