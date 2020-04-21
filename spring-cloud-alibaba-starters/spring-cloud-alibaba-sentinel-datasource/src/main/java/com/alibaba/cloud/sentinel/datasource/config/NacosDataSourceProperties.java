@@ -52,6 +52,14 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	@Override
 	public void preCheck(String dataSourceName) {
+		/**
+		 * @see NacosDataSourceFactoryBean#getObject()
+		 *
+		 * add this check so that sentinel can use Aliyun ACM
+		 */
+		if (!StringUtils.isEmpty(endpoint)) {
+			return;
+		}
 		if (StringUtils.isEmpty(serverAddr)) {
 			serverAddr = this.getEnv().getProperty(
 					"spring.cloud.sentinel.datasource.nacos.server-addr",
