@@ -47,8 +47,8 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 			Object handler) {
-        Object xid_status = request.getAttribute(BIND_XID);
-        if (null == xid_status || !(boolean)xid_status) {
+        Object xidStatus = request.getAttribute(BIND_XID);
+        if (null == xidStatus || !(boolean)xidStatus) {
             String xid = RootContext.getXID();
             String rpcXid = request.getHeader(RootContext.KEY_XID);
             if (log.isDebugEnabled()) {
@@ -76,8 +76,8 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
             return;
         }
 
-        Object xid_status = request.getAttribute(UNBIND_XID);
-        if (null == xid_status || !(boolean)xid_status) {
+        Object xidStatus = request.getAttribute(UNBIND_XID);
+        if (null == xidStatus || !(boolean)xidStatus) {
             String unbindXid = RootContext.unbind();
             if (log.isDebugEnabled()) {
                 log.debug("unbind {} from RootContext", unbindXid);
