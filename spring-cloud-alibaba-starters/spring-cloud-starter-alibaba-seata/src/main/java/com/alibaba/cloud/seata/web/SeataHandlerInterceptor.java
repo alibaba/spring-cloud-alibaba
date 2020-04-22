@@ -39,10 +39,10 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(SeataHandlerInterceptor.class);
-	
-	public static final String BIND_XID = "BIND_XID";
 
-	public static final String UNBIND_XID = "UNBIND_XID";
+    private static final String BIND_XID = "BIND_XID";
+
+    private static final String UNBIND_XID = "UNBIND_XID";
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
