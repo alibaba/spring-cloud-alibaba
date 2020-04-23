@@ -47,20 +47,17 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 			Object handler) {
-        Object xidStatus = request.getAttribute(BIND_XID);
-        if (null == xidStatus || !(boolean)xidStatus) {
-            String xid = RootContext.getXID();
-            String rpcXid = request.getHeader(RootContext.KEY_XID);
-            if (log.isDebugEnabled()) {
-                log.debug("xid in RootContext {} xid in RpcContext {}", xid, rpcXid);
-            }
+        String xid = RootContext.getXID();
+        String rpcXid = request.getHeader(RootContext.KEY_XID);
+        if (log.isDebugEnabled()) {
+            log.debug("xid in RootContext {} xid in RpcContext {}", xid, rpcXid);
+        }
 
-            if (xid == null && rpcXid != null) {
-                RootContext.bind(rpcXid);
-                request.setAttribute(BIND_XID, true);
-                if (log.isDebugEnabled()) {
-                    log.debug("bind {} to RootContext", rpcXid);
-                }
+        if (xid == null && rpcXid != null) {
+            RootContext.bind(rpcXid);
+            request.setAttribute(BIND_XID, true);
+            if (log.isDebugEnabled()) {
+                log.debug("bind {} to RootContext", rpcXid);
             }
         }
         return true;
@@ -86,7 +83,6 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
                 log.warn("xid in change during RPC from {} to {}", rpcXid, unbindXid);
                 if (unbindXid != null) {
                     RootContext.bind(unbindXid);
-                    request.setAttribute(UNBIND_XID, true);
                     log.warn("bind {} back to RootContext", unbindXid);
                 }
             }
