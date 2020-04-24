@@ -33,6 +33,7 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
 /**
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author <a href="mailto:78552423@qq.com">esun</a>
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
@@ -40,11 +41,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private final NamingService namingService;
-
 	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
-		this.namingService = nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 	@Override
@@ -61,11 +59,10 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		Instance instance = getNacosInstanceFromRegistration(registration);
 
 		try {
-			namingService.registerInstance(serviceId, group, instance);
+			namingService().registerInstance(serviceId, group, instance);
 			log.info("nacos registry, {} {} {}:{} register finished", group, serviceId,
 					instance.getIp(), instance.getPort());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.error("nacos registry, {} register failed...{},", serviceId,
 					registration.toString(), e);
 			// rethrow a RuntimeException if the registration is failed.
@@ -84,15 +81,13 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
-		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
 		try {
-			namingService.deregisterInstance(serviceId, group, registration.getHost(),
+			namingService().deregisterInstance(serviceId, group, registration.getHost(),
 					registration.getPort(), nacosDiscoveryProperties.getClusterName());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.error("ERR_NACOS_DEREGISTER, de-register failed...{},",
 					registration.toString(), e);
 		}
@@ -119,16 +114,14 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		if (status.equalsIgnoreCase("DOWN")) {
 			instance.setEnabled(false);
-		}
-		else {
+		} else {
 			instance.setEnabled(true);
 		}
 
 		try {
 			nacosDiscoveryProperties.namingMaintainServiceInstance()
 					.updateInstance(serviceId, instance);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);
 		}
 
@@ -147,8 +140,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 					return instance.isEnabled() ? "UP" : "DOWN";
 				}
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.error("get all instance of {} error,", serviceName, e);
 		}
 		return null;
@@ -163,6 +155,10 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		instance.setMetadata(registration.getMetadata());
 
 		return instance;
+	}
+
+	private NamingService namingService() {
+		return nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 }
