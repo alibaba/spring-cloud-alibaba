@@ -76,12 +76,17 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 
 	@Around("execution(* org.springframework.cloud.client.serviceregistry.Registration.getPort())")
 	public Object getPort(ProceedingJoinPoint pjp) throws Throwable {
+		/**
+		 * move setServerPort from onApplicationStarted() to here for this issue :
+		 * https://github.com/alibaba/spring-cloud-alibaba/issues/1383
+		 * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
+		 */
+		setServerPort();
 		return serverPort != null ? serverPort : pjp.proceed();
 	}
 
 	@EventListener(ApplicationStartedEvent.class)
 	public void onApplicationStarted() {
-		setServerPort();
 		register();
 	}
 
@@ -99,18 +104,22 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 	 */
 	private void setServerPort() {
 		if (serverPort == null) {
-			for (List<URL> urls : repository.getAllExportedUrls().values()) {
-				urls.stream()
-						.filter(url -> REST_PROTOCOL.equalsIgnoreCase(url.getProtocol()))
-						.findFirst().ifPresent(url -> {
-							serverPort = url.getPort();
-						});
-
-				// If REST protocol is not present, use any applied port.
+			synchronized (DubboServiceRegistrationNonWebApplicationAutoConfiguration.class) {
 				if (serverPort == null) {
-					urls.stream().findAny().ifPresent(url -> {
-						serverPort = url.getPort();
-					});
+					for (List<URL> urls : repository.getAllExportedUrls().values()) {
+						urls.stream().filter(
+								url -> REST_PROTOCOL.equalsIgnoreCase(url.getProtocol()))
+								.findFirst().ifPresent(url -> {
+									serverPort = url.getPort();
+								});
+
+						// If REST protocol is not present, use any applied port.
+						if (serverPort == null) {
+							urls.stream().findAny().ifPresent(url -> {
+								serverPort = url.getPort();
+							});
+						}
+					}
 				}
 			}
 		}
@@ -126,6 +135,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 		@EventListener(ServiceInstancePreRegisteredEvent.class)
 		public void onServiceInstancePreRegistered(
 				ServiceInstancePreRegisteredEvent event) {
+			setServerPort();
 			registration.setPort(serverPort);
 		}
 
