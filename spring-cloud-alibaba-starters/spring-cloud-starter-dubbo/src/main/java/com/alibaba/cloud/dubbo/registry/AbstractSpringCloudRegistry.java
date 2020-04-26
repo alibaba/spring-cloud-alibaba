@@ -260,7 +260,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 				String listenerId = generateId(url);
 				// The metaservice will restart the new listener. It needs to be optimized
 				// to see whether the original listener can be reused.
-				this.registerListeners.remove(listenerId);
+				registerListeners.remove(listenerId);
 			}
 
 			/**
