@@ -53,16 +53,18 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
+		NamingService namingService = namingService();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
 		Instance instance = getNacosInstanceFromRegistration(registration);
 
 		try {
-			namingService().registerInstance(serviceId, group, instance);
+			namingService.registerInstance(serviceId, group, instance);
 			log.info("nacos registry, {} {} {}:{} register finished", group, serviceId,
 					instance.getIp(), instance.getPort());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			log.error("nacos registry, {} register failed...{},", serviceId,
 					registration.toString(), e);
 			// rethrow a RuntimeException if the registration is failed.
@@ -81,13 +83,15 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
+		NamingService namingService = namingService();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
 		try {
-			namingService().deregisterInstance(serviceId, group, registration.getHost(),
+			namingService.deregisterInstance(serviceId, group, registration.getHost(),
 					registration.getPort(), nacosDiscoveryProperties.getClusterName());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			log.error("ERR_NACOS_DEREGISTER, de-register failed...{},",
 					registration.toString(), e);
 		}
@@ -114,14 +118,16 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		if (status.equalsIgnoreCase("DOWN")) {
 			instance.setEnabled(false);
-		} else {
+		}
+		else {
 			instance.setEnabled(true);
 		}
 
 		try {
 			nacosDiscoveryProperties.namingMaintainServiceInstance()
 					.updateInstance(serviceId, instance);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);
 		}
 
@@ -140,7 +146,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 					return instance.isEnabled() ? "UP" : "DOWN";
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			log.error("get all instance of {} error,", serviceName, e);
 		}
 		return null;
