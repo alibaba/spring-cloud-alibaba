@@ -61,7 +61,7 @@ public class SentinelEndpoint {
 			result.put("metricsFileSize", SentinelConfig.singleMetricFileSize());
 			result.put("metricsFileCharset", SentinelConfig.charset());
 			result.put("totalMetricsFileCount", SentinelConfig.totalMetricFileCount());
-			result.put("consoleServer", TransportConfig.getConsoleServer());
+			result.put("consoleServer", TransportConfig.getConsoleServerList());
 			result.put("clientIp", TransportConfig.getHeartbeatClientIp());
 			result.put("heartbeatIntervalMs", TransportConfig.getHeartbeatIntervalMs());
 			result.put("clientPort", TransportConfig.getPort());
