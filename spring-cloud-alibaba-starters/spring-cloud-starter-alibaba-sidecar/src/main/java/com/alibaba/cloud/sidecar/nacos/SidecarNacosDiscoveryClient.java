@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.sidecar.nacos;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.sidecar.SidecarDiscoveryClient;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.slf4j.Logger;
@@ -30,18 +29,19 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 	private static final Logger log = LoggerFactory
 			.getLogger(SidecarNacosDiscoveryClient.class);
 
-	private final NacosDiscoveryProperties nacosDiscoveryProperties;
+	private final SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties;
 
 	public SidecarNacosDiscoveryClient(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+			SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties) {
+		this.sidecarNacosDiscoveryProperties = sidecarNacosDiscoveryProperties;
 	}
 
 	@Override
 	public void registerInstance(String applicationName, String ip, Integer port) {
 		try {
-			this.nacosDiscoveryProperties.namingServiceInstance().registerInstance(
-					applicationName, nacosDiscoveryProperties.getGroup(), ip, port);
+			this.sidecarNacosDiscoveryProperties.namingServiceInstance().registerInstance(
+					applicationName, sidecarNacosDiscoveryProperties.getGroup(), ip,
+					port);
 		}
 		catch (NacosException e) {
 			log.warn("nacos exception happens", e);
@@ -51,8 +51,9 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 	@Override
 	public void deregisterInstance(String applicationName, String ip, Integer port) {
 		try {
-			this.nacosDiscoveryProperties.namingServiceInstance().deregisterInstance(
-					applicationName, nacosDiscoveryProperties.getGroup(), ip, port);
+			this.sidecarNacosDiscoveryProperties.namingServiceInstance()
+					.deregisterInstance(applicationName,
+							sidecarNacosDiscoveryProperties.getGroup(), ip, port);
 		}
 		catch (NacosException e) {
 			log.warn("nacos exception happens", e);
