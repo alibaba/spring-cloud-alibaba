@@ -23,8 +23,8 @@ import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
-
 import org.apache.dubbo.registry.support.AbstractRegistryFactory;
+
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
