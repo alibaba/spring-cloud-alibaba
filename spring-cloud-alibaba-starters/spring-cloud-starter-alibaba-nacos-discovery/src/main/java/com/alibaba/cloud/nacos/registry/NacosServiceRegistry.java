@@ -33,7 +33,7 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
 /**
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
- * @author <a href="mailto:78552423@qq.com">esun</a>
+ * @author <a href="mailto:78552423@qq.com">eshun</a>
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 

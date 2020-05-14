@@ -64,7 +64,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
- * @author <a href="mailto:78552423@qq.com">esun</a>
+ * @author <a href="mailto:78552423@qq.com">eshun</a>
  */
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
