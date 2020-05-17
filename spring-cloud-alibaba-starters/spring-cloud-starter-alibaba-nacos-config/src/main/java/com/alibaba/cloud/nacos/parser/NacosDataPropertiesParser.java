@@ -55,7 +55,9 @@ public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 					log.warn("the config data is invalid {}", dataLine);
 					continue;
 				}
-				result.put(dataLine.substring(0, index), dataLine.substring(index + 1));
+				String key = dataLine.substring(0, index);
+				String value = dataLine.substring(index + 1);
+				result.put(key.trim(), value.trim());
 			}
 		}
 		return result;

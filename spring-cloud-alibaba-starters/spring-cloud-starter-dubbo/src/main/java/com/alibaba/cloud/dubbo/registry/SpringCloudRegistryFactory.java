@@ -23,6 +23,7 @@ import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
+import org.apache.dubbo.registry.support.AbstractRegistryFactory;
 
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -37,7 +38,7 @@ import static java.lang.System.getProperty;
  * @see RegistryFactory
  * @see SpringCloudRegistry
  */
-public class SpringCloudRegistryFactory implements RegistryFactory {
+public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 
 	/**
 	 * Spring Cloud Protocol.
@@ -65,8 +66,6 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 
 	private DubboGenericServiceFactory dubboGenericServiceFactory;
 
-	private volatile boolean initialized = false;
-
 	public SpringCloudRegistryFactory() {
 	}
 
@@ -76,9 +75,6 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 	}
 
 	protected void init() {
-		if (initialized || applicationContext == null) {
-			return;
-		}
 		this.discoveryClient = applicationContext.getBean(DiscoveryClient.class);
 		this.dubboServiceMetadataRepository = applicationContext
 				.getBean(DubboServiceMetadataRepository.class);
@@ -90,7 +86,7 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 	}
 
 	@Override
-	public Registry getRegistry(URL url) {
+	public Registry createRegistry(URL url) {
 		init();
 		return new SpringCloudRegistry(url, discoveryClient,
 				dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
