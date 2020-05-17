@@ -199,6 +199,11 @@ public class NacosDiscoveryProperties {
 	 */
 	private Integer ipDeleteTimeout;
 
+	/**
+	 * If instance is enabled to accept request. The default value is true.
+	 */
+	private boolean instanceEnabled = true;
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -446,6 +451,14 @@ public class NacosDiscoveryProperties {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public boolean isInstanceEnabled() {
+		return instanceEnabled;
+	}
+
+	public void setInstanceEnabled(boolean instanceEnabled) {
+		this.instanceEnabled = instanceEnabled;
 	}
 
 	@Override
