@@ -65,7 +65,6 @@ public class DubboProtocolConfigSupplier implements Supplier<ProtocolConfig> {
 		if (protocolConfig == null) {
 			protocolConfig = new ProtocolConfig();
 			protocolConfig.setName(DEFAULT_PROTOCOL);
-			protocolConfig.setPort(-1);
 		}
 
 		return protocolConfig;
