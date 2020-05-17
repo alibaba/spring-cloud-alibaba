@@ -33,6 +33,7 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import com.alibaba.csp.sentinel.util.function.Tuple2;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,7 +74,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 				"spring.cloud.sentinel.flow.coldFactor=3",
 				"spring.cloud.sentinel.eager=true",
 				"spring.cloud.sentinel.log.switchPid=true",
-				"spring.cloud.sentinel.transport.dashboard=http://localhost:8080",
+				"spring.cloud.sentinel.transport.dashboard=http://localhost:8080,http://localhost:8081",
 				"spring.cloud.sentinel.transport.port=9999",
 				"spring.cloud.sentinel.transport.clientIp=1.1.1.1",
 				"spring.cloud.sentinel.transport.heartbeatIntervalMs=20000" },
@@ -142,7 +143,9 @@ public class SentinelAutoConfigurationTests {
 		Map<String, Object> map = sentinelEndpoint.invoke();
 
 		assertThat(map.get("logUsePid")).isEqualTo(Boolean.TRUE);
-		assertThat(map.get("consoleServer")).isEqualTo("http://localhost:8080");
+		assertThat(map.get("consoleServer").toString()).isEqualTo(
+				Arrays.asList(Tuple2.of("localhost", 8080), Tuple2.of("localhost", 8081))
+						.toString());
 		assertThat(map.get("clientPort")).isEqualTo("9999");
 		assertThat(map.get("heartbeatIntervalMs")).isEqualTo(20000L);
 		assertThat(map.get("clientIp")).isEqualTo("1.1.1.1");
@@ -174,7 +177,7 @@ public class SentinelAutoConfigurationTests {
 	private void checkSentinelTransport() {
 		assertThat(sentinelProperties.getTransport().getPort()).isEqualTo("9999");
 		assertThat(sentinelProperties.getTransport().getDashboard())
-				.isEqualTo("http://localhost:8080");
+				.isEqualTo("http://localhost:8080,http://localhost:8081");
 		assertThat(sentinelProperties.getTransport().getClientIp()).isEqualTo("1.1.1.1");
 		assertThat(sentinelProperties.getTransport().getHeartbeatIntervalMs())
 				.isEqualTo("20000");
@@ -191,7 +194,9 @@ public class SentinelAutoConfigurationTests {
 	@Test
 	public void testSentinelSystemProperties() {
 		assertThat(LogBase.isLogNameUsePid()).isEqualTo(true);
-		assertThat(TransportConfig.getConsoleServer()).isEqualTo("http://localhost:8080");
+		assertThat(TransportConfig.getConsoleServerList().toString()).isEqualTo(
+				Arrays.asList(Tuple2.of("localhost", 8080), Tuple2.of("localhost", 8081))
+						.toString());
 		assertThat(TransportConfig.getPort()).isEqualTo("9999");
 		assertThat(TransportConfig.getHeartbeatIntervalMs().longValue())
 				.isEqualTo(20000L);
