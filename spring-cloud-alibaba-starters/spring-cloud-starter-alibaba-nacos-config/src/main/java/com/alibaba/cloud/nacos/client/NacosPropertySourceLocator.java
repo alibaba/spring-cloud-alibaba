@@ -138,6 +138,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			NacosConfigProperties properties, Environment environment) {
 		String fileExtension = properties.getFileExtension();
 		String nacosGroup = properties.getGroup();
+		// load directly once by application
+		loadNacosDataIfPresent(compositePropertySource, "application", nacosGroup,
+				fileExtension, true);
+		loadNacosDataIfPresent(compositePropertySource, "application" + DOT + fileExtension, nacosGroup,
+				fileExtension, true);
 		// load directly once by default
 		loadNacosDataIfPresent(compositePropertySource, dataIdPrefix, nacosGroup,
 				fileExtension, true);
@@ -149,6 +154,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			String dataId = dataIdPrefix + SEP1 + profile + DOT + fileExtension;
 			loadNacosDataIfPresent(compositePropertySource, dataId, nacosGroup,
 					fileExtension, true);
+			loadNacosDataIfPresent(compositePropertySource, "application" + SEP1 + profile + DOT + fileExtension,
+					nacosGroup, fileExtension, true);
 		}
 
 	}
