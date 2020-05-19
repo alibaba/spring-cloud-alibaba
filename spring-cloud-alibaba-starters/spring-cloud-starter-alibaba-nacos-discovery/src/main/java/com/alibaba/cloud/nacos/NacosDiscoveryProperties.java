@@ -64,8 +64,8 @@ import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
+ * @author <a href="mailto:78552423@qq.com">eshun</a>
  */
-
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
 
@@ -199,6 +199,11 @@ public class NacosDiscoveryProperties {
 	 */
 	private Integer ipDeleteTimeout;
 
+	/**
+	 * If instance is enabled to accept request. The default value is true.
+	 */
+	private boolean instanceEnabled = true;
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -211,6 +216,7 @@ public class NacosDiscoveryProperties {
 
 	@PostConstruct
 	public void init() throws SocketException {
+		namingService = null;
 
 		metadata.put(PreservedMetadataKeys.REGISTER_SOURCE, "SPRING_CLOUD");
 		if (secure) {
@@ -445,6 +451,14 @@ public class NacosDiscoveryProperties {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public boolean isInstanceEnabled() {
+		return instanceEnabled;
+	}
+
+	public void setInstanceEnabled(boolean instanceEnabled) {
+		this.instanceEnabled = instanceEnabled;
 	}
 
 	@Override

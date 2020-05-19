@@ -33,6 +33,7 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
 /**
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author <a href="mailto:78552423@qq.com">eshun</a>
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
@@ -40,11 +41,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private final NamingService namingService;
-
 	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
-		this.namingService = nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 	@Override
@@ -55,6 +53,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
+		NamingService namingService = namingService();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
@@ -84,7 +83,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
-		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
+		NamingService namingService = namingService();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
@@ -160,9 +159,14 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		instance.setPort(registration.getPort());
 		instance.setWeight(nacosDiscoveryProperties.getWeight());
 		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
+		instance.setEnabled(nacosDiscoveryProperties.isInstanceEnabled());
 		instance.setMetadata(registration.getMetadata());
 
 		return instance;
+	}
+
+	private NamingService namingService() {
+		return nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 }
