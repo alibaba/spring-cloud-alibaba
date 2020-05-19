@@ -151,11 +151,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 				dataIdPrefix + DOT + fileExtension, nacosGroup, fileExtension, true);
 		// Loaded with profile, which have a higher priority than the suffix
 		for (String profile : environment.getActiveProfiles()) {
+			loadNacosDataIfPresent(compositePropertySource, "application" + SEP1 + profile + DOT + fileExtension,
+					nacosGroup, fileExtension, true);
 			String dataId = dataIdPrefix + SEP1 + profile + DOT + fileExtension;
 			loadNacosDataIfPresent(compositePropertySource, dataId, nacosGroup,
 					fileExtension, true);
-			loadNacosDataIfPresent(compositePropertySource, "application" + SEP1 + profile + DOT + fileExtension,
-					nacosGroup, fileExtension, true);
 		}
 
 	}
