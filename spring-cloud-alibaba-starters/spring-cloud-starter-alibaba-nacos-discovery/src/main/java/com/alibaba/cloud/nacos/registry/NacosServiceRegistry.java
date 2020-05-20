@@ -159,6 +159,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		instance.setPort(registration.getPort());
 		instance.setWeight(nacosDiscoveryProperties.getWeight());
 		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
+		instance.setEnabled(nacosDiscoveryProperties.isInstanceEnabled());
 		instance.setMetadata(registration.getMetadata());
 
 		return instance;
