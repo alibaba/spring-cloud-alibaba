@@ -92,6 +92,7 @@ public class NacosServiceDiscovery {
 		metadata.put("nacos.weight", instance.getWeight() + "");
 		metadata.put("nacos.healthy", instance.isHealthy() + "");
 		metadata.put("nacos.cluster", instance.getClusterName() + "");
+		metadata.put("nacos.ephemeral",String.valueOf(instance.isEphemeral()));
 		metadata.putAll(instance.getMetadata());
 		nacosServiceInstance.setMetadata(metadata);
 

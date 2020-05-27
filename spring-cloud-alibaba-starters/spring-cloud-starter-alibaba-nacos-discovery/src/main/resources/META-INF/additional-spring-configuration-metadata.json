@@ -30,6 +30,12 @@
       "description": "If instance is enabled to accept request. The default value is true."
     },
     {
+      "name": "spring.cloud.nacos.discovery.ephemeral",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "If instance is ephemeral.The default value is true."
+    },
+    {
       "name": "spring.cloud.nacos.discovery.namingLoadCacheAtStart",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
