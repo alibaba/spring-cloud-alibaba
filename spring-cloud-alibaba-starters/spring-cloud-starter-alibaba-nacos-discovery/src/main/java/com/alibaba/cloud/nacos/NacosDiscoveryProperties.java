@@ -204,6 +204,11 @@ public class NacosDiscoveryProperties {
 	 */
 	private boolean instanceEnabled = true;
 
+	/**
+	 * If instance is ephemeral.The default value is true.
+	 */
+	private boolean ephemeral = true;
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -459,6 +464,14 @@ public class NacosDiscoveryProperties {
 
 	public void setInstanceEnabled(boolean instanceEnabled) {
 		this.instanceEnabled = instanceEnabled;
+	}
+
+	public boolean isEphemeral() {
+		return ephemeral;
+	}
+
+	public void setEphemeral(boolean ephemeral) {
+		this.ephemeral = ephemeral;
 	}
 
 	@Override
