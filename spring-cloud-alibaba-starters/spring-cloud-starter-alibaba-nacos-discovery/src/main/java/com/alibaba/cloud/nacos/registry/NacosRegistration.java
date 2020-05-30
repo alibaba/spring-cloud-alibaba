@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.registry;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -62,8 +63,11 @@ public class NacosRegistration implements Registration, ServiceInstance {
 
 	private ApplicationContext context;
 
+	private List<NacosRegistrationCustomizer> registrationCustomizers;
+
 	public NacosRegistration(NacosDiscoveryProperties nacosDiscoveryProperties,
-			ApplicationContext context) {
+							 ApplicationContext context,
+							 List<NacosRegistrationCustomizer> registrationCustomizers) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 		this.context = context;
 	}
@@ -104,6 +108,15 @@ public class NacosRegistration implements Registration, ServiceInstance {
 		if (null != nacosDiscoveryProperties.getIpDeleteTimeout()) {
 			metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
 					nacosDiscoveryProperties.getIpDeleteTimeout().toString());
+		}
+		customize(registrationCustomizers,this);
+	}
+
+	private static void customize(List<NacosRegistrationCustomizer> registrationCustomizers, NacosRegistration registration) {
+		if (registrationCustomizers != null) {
+			for (NacosRegistrationCustomizer customizer : registrationCustomizers) {
+				customizer.customize(registration);
+			}
 		}
 	}
 
