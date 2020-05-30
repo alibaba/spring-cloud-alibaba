@@ -22,8 +22,7 @@ package com.alibaba.cloud.nacos.registry;
 public interface NacosRegistrationCustomizer {
 
 	/**
-	 * customize NacosRegistration
-	 *
+	 * customize NacosRegistration.
 	 * @param registration NacosRegistration
 	 */
 	void customize(NacosRegistration registration);
