@@ -20,6 +20,7 @@ import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,6 +31,8 @@ import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationP
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * @author xiaojing
@@ -53,10 +56,10 @@ public class NacosServiceRegistryAutoConfiguration {
 
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
-	public NacosRegistration nacosRegistration(
-			NacosDiscoveryProperties nacosDiscoveryProperties,
-			ApplicationContext context) {
-		return new NacosRegistration(nacosDiscoveryProperties, context);
+	public NacosRegistration nacosRegistration(NacosDiscoveryProperties nacosDiscoveryProperties,
+											   ApplicationContext context,
+											   ObjectProvider<List<NacosRegistrationCustomizer>> registrationCustomizers) {
+		return new NacosRegistration(nacosDiscoveryProperties, context, registrationCustomizers.getIfAvailable());
 	}
 
 	@Bean
