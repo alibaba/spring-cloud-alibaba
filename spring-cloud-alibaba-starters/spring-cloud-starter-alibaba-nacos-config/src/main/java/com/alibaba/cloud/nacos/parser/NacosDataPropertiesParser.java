@@ -16,21 +16,26 @@
 
 package com.alibaba.cloud.nacos.parser;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.LinkedHashMap;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.util.StringUtils;
+import org.springframework.boot.env.PropertiesPropertySourceLoader;
+import org.springframework.core.env.PropertySource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 
 /**
  * @author zkz
  */
 public class NacosDataPropertiesParser extends AbstractNacosDataParser {
+
+	private static final String NAME = "NACOS";
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosDataPropertiesParser.class);
@@ -41,26 +46,14 @@ public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 
 	@Override
 	protected Map<String, Object> doParse(String data) throws IOException {
-		Map<String, Object> result = new LinkedHashMap<>();
-
-		try (BufferedReader reader = new BufferedReader(new StringReader(data))) {
-			for (String line = reader.readLine(); line != null; line = reader
-					.readLine()) {
-				String dataLine = line.trim();
-				if (StringUtils.isEmpty(dataLine) || dataLine.startsWith("#")) {
-					continue;
-				}
-				int index = dataLine.indexOf("=");
-				if (index == -1) {
-					log.warn("the config data is invalid {}", dataLine);
-					continue;
-				}
-				String key = dataLine.substring(0, index);
-				String value = dataLine.substring(index + 1);
-				result.put(key.trim(), value.trim());
-			}
+		Resource resource = new ByteArrayResource(data.getBytes(StandardCharsets.UTF_8));
+		PropertiesPropertySourceLoader loader = new PropertiesPropertySourceLoader();
+		List<PropertySource<?>> list = loader.load(NAME, resource);
+		if (list.isEmpty()) {
+			log.warn("The current configuration resolution result is empty");
+			return Collections.emptyMap();
 		}
-		return result;
+		return (Map<String, Object>) list.get(0).getSource();
 	}
 
 }
