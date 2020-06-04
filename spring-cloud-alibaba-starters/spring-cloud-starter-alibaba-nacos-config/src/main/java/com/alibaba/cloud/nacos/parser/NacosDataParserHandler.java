@@ -76,10 +76,6 @@ public final class NacosDataParserHandler {
 				.addNextParser(new NacosDataJsonParser());
 	}
 
-	public static NacosDataParserHandler getInstance() {
-		return ParserHandler.HANDLER;
-	}
-
 	private static class ParserHandler {
 
 		private static final NacosDataParserHandler HANDLER = new NacosDataParserHandler();

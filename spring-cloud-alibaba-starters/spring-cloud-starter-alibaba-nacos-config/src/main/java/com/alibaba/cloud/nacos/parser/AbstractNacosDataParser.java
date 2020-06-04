@@ -48,6 +48,12 @@ public abstract class AbstractNacosDataParser {
 		this.extension = extension.toLowerCase();
 	}
 
+	public static String getTips(String fileName) {
+		return String.format(
+				"[%s] must contains file extension with properties|yaml|yml|xml|json",
+				fileName);
+	}
+
 	/**
 	 * Verify dataId extensions.
 	 * @param extension file extension. json or xml or yml or yaml or properties
@@ -122,8 +128,9 @@ public abstract class AbstractNacosDataParser {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 
-			String fullKey = StringUtils.isEmpty(parentKey) ? key : key.startsWith("[")
-					? parentKey.concat(key) : parentKey.concat(DOT).concat(key);
+			String fullKey = StringUtils.isEmpty(parentKey) ? key
+					: key.startsWith("[") ? parentKey.concat(key)
+							: parentKey.concat(DOT).concat(key);
 
 			if (value instanceof Map) {
 				Map<String, Object> map = (Map<String, Object>) value;
@@ -164,12 +171,6 @@ public abstract class AbstractNacosDataParser {
 			}
 		}
 		return result;
-	}
-
-	public static String getTips(String fileName) {
-		return String.format(
-				"[%s] must contains file extension with properties|yaml|yml|xml|json",
-				fileName);
 	}
 
 }

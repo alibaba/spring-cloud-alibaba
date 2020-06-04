@@ -53,15 +53,10 @@ public class NacosContextRefresher
 			.getLogger(NacosContextRefresher.class);
 
 	private static final AtomicLong REFRESH_COUNT = new AtomicLong(0);
-
-	private NacosConfigProperties nacosConfigProperties;
-
 	private final boolean isRefreshEnabled;
-
 	private final NacosRefreshHistory nacosRefreshHistory;
-
 	private final ConfigService configService;
-
+	private NacosConfigProperties nacosConfigProperties;
 	private ApplicationContext applicationContext;
 
 	private AtomicBoolean ready = new AtomicBoolean(false);
@@ -89,6 +84,14 @@ public class NacosContextRefresher
 		this.isRefreshEnabled = refreshProperties.isEnabled();
 		this.nacosRefreshHistory = refreshHistory;
 		this.configService = configService;
+	}
+
+	public static long getRefreshCount() {
+		return REFRESH_COUNT.get();
+	}
+
+	public static void refreshCountIncrement() {
+		REFRESH_COUNT.incrementAndGet();
 	}
 
 	@Override
@@ -168,14 +171,6 @@ public class NacosContextRefresher
 			return false;
 		}
 		return isRefreshEnabled;
-	}
-
-	public static long getRefreshCount() {
-		return REFRESH_COUNT.get();
-	}
-
-	public static void refreshCountIncrement() {
-		REFRESH_COUNT.incrementAndGet();
 	}
 
 }
