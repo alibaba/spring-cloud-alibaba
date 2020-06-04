@@ -29,68 +29,64 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource> {
 
-    private String    host;
+	private String host;
 
-    private int       port;
+	private int port;
 
-    private String    ruleKey;
+	private String ruleKey;
 
-    private int       waitTimeoutInSecond;
+	private int waitTimeoutInSecond;
 
-    private Converter converter;
+	private Converter converter;
 
-    @Override
-    public ConsulDataSource getObject() throws Exception {
-        return new ConsulDataSource(
-                host,
-                port,
-                ruleKey,
-                waitTimeoutInSecond,
-                converter);
-    }
+	@Override
+	public ConsulDataSource getObject() throws Exception {
+		return new ConsulDataSource(host, port, ruleKey, waitTimeoutInSecond, converter);
+	}
 
-    @Override
-    public Class<?> getObjectType() {
-        return ConsulDataSource.class;
-    }
+	@Override
+	public Class<?> getObjectType() {
+		return ConsulDataSource.class;
+	}
 
-    public String getHost() {
-        return host;
-    }
+	public String getHost() {
+		return host;
+	}
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+	public void setHost(String host) {
+		this.host = host;
+	}
 
-    public int getPort() {
-        return port;
-    }
+	public int getPort() {
+		return port;
+	}
 
-    public void setPort(int port) {
-        this.port = port;
-    }
+	public void setPort(int port) {
+		this.port = port;
+	}
 
-    public String getRuleKey() {
-        return ruleKey;
-    }
+	public String getRuleKey() {
+		return ruleKey;
+	}
 
-    public void setRuleKey(String ruleKey) {
-        this.ruleKey = ruleKey;
-    }
+	public void setRuleKey(String ruleKey) {
+		this.ruleKey = ruleKey;
+	}
 
-    public int getWaitTimeoutInSecond() {
-        return waitTimeoutInSecond;
-    }
+	public int getWaitTimeoutInSecond() {
+		return waitTimeoutInSecond;
+	}
 
-    public void setWaitTimeoutInSecond(int waitTimeoutInSecond) {
-        this.waitTimeoutInSecond = waitTimeoutInSecond;
-    }
+	public void setWaitTimeoutInSecond(int waitTimeoutInSecond) {
+		this.waitTimeoutInSecond = waitTimeoutInSecond;
+	}
 
-    public Converter getConverter() {
-        return converter;
-    }
+	public Converter getConverter() {
+		return converter;
+	}
 
-    public void setConverter(Converter converter) {
-        this.converter = converter;
-    }
+	public void setConverter(Converter converter) {
+		this.converter = converter;
+	}
+
 }

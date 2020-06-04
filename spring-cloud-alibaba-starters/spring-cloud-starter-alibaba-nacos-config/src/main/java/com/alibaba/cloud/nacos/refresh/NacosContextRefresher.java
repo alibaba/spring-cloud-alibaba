@@ -53,10 +53,15 @@ public class NacosContextRefresher
 			.getLogger(NacosContextRefresher.class);
 
 	private static final AtomicLong REFRESH_COUNT = new AtomicLong(0);
+
 	private final boolean isRefreshEnabled;
+
 	private final NacosRefreshHistory nacosRefreshHistory;
+
 	private final ConfigService configService;
+
 	private NacosConfigProperties nacosConfigProperties;
+
 	private ApplicationContext applicationContext;
 
 	private AtomicBoolean ready = new AtomicBoolean(false);

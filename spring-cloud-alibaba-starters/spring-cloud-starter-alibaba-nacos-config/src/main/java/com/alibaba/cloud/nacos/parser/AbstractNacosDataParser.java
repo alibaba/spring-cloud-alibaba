@@ -128,9 +128,8 @@ public abstract class AbstractNacosDataParser {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 
-			String fullKey = StringUtils.isEmpty(parentKey) ? key
-					: key.startsWith("[") ? parentKey.concat(key)
-							: parentKey.concat(DOT).concat(key);
+			String fullKey = StringUtils.isEmpty(parentKey) ? key : key.startsWith("[")
+					? parentKey.concat(key) : parentKey.concat(DOT).concat(key);
 
 			if (value instanceof Map) {
 				Map<String, Object> map = (Map<String, Object>) value;
