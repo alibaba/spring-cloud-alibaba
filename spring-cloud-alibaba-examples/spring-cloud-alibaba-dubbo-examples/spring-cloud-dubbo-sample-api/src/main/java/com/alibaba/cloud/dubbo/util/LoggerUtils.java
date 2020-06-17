@@ -38,4 +38,5 @@ public abstract class LoggerUtils {
 			logger.info(message);
 		}
 	}
+
 }

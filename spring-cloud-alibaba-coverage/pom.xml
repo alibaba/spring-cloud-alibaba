@@ -2,69 +2,83 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>2.2.0.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-cloud-alibaba-coverage</artifactId>
     <name>Spring Cloud Alibaba Coverage</name>
 
-    <properties>
-        <spring.cloud.alibaba.version>2.2.0.BUILD-SNAPSHOT</spring.cloud.alibaba.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dubbo</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-nacos-config</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-sentinel</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-circuitbreaker-sentinel</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-acm</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config-server</artifactId>
+            <version>${revision}</version>
         </dependency>
+
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-ans</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
+            <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+            <version>${revision}</version>
         </dependency>
+
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alicloud-context</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
+            <artifactId>spring-cloud-starter-bus-rocketmq</artifactId>
+            <version>${revision}</version>
         </dependency>
+
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
+            <artifactId>spring-cloud-starter-alibaba-sidecar</artifactId>
+            <version>${revision}</version>
         </dependency>
+
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-seata</artifactId>
-            <version>${spring.cloud.alibaba.version}</version>
+            <artifactId>spring-cloud-starter-dubbo</artifactId>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 

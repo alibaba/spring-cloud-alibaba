@@ -3,12 +3,16 @@ server:
 spring:
   cloud:
     nacos:
+      username: nacos
+      password: nacos
       discovery:
-        server-addr: localhost:8848
+        server-addr: 127.0.0.1:8848
+        group: test
     gateway:
       discovery:
         locator:
           enabled: true
+
   application:
     name: node-service
 sidecar:
@@ -16,8 +20,9 @@ sidecar:
   ip: 127.0.0.1
   # 异构微服务的端口
   port: 8060
+
   # 异构微服务的健康检查URL
-  health-check-url: http://localhost:8060/health.json
+  #health-check-url: http://localhost:8060/health.json
 management:
   endpoint:
     health:

@@ -5,21 +5,23 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>2.2.0.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-
     <artifactId>nacos-discovery-example</artifactId>
-    <packaging>pom</packaging>
+    <name>Spring Cloud Starter Alibaba Nacos Discovery Examples</name>
     <description>Example demonstrating how to use nacos discovery</description>
+    <packaging>pom</packaging>
 
 
     <modules>
         <module>nacos-discovery-consumer-example</module>
+        <module>nacos-discovery-consumer-sclb-example</module>
+        <module>nacos-reactivediscovery-consumer-example</module>
         <module>nacos-discovery-provider-example</module>
-        <module>nacos-discovery-spring-cloud-config-server</module>
-        <module>nacos-discovery-spring-cloud-config-client</module>
+        <module>nacos-discovery-spring-cloud-config-server-example</module>
+        <module>nacos-discovery-spring-cloud-config-client-example</module>
     </modules>
 </project>

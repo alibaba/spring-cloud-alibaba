@@ -5,18 +5,25 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>2.2.0.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
 
     <artifactId>sentinel-dubbo-provider-example</artifactId>
-    <packaging>jar</packaging>
+    <name>Spring Cloud Starter Alibaba Sentinel x Dubbo - Provider Example</name>
     <description>Example demonstrating how to use sentinel with dubbo</description>
+    <packaging>jar</packaging>
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
@@ -25,6 +32,7 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>sentinel-dubbo-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -41,7 +49,6 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>

@@ -72,7 +72,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>2.1.0.RELEASE</version>
+                <version>2.2.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -114,6 +114,7 @@ Example 列表：
 * 1.5.x 版本适用于 Spring Boot 1.5.x
 * 2.0.x 版本适用于 Spring Boot 2.0.x
 * 2.1.x 版本适用于 Spring Boot 2.1.x
+* 2.2.x 版本适用于 Spring Boot 2.2.x
 
 
 ## 社区交流
@@ -124,6 +125,10 @@ spring-cloud-alibaba@googlegroups.com，欢迎通过此邮件列表讨论与 spr
 
 ### 钉钉群
 
-![DingQR](https://img.alicdn.com/tfs/TB1zrRie4v1gK0jSZFFXXb0sXXa-7862-3570.png)
+![DingQR](https://img.alicdn.com/tfs/TB1jXikzAL0gK0jSZFtXXXQCXXa-1002-323.png)
 
-如图片有问题，访问 https://img.alicdn.com/tfs/TB1zrRie4v1gK0jSZFFXXb0sXXa-7862-3570.png
+如图片有问题，访问 https://img.alicdn.com/tfs/TB1jXikzAL0gK0jSZFtXXXQCXXa-1002-323.png
+
+## 社区相关开源
+
+**[Nepxion Discovery](https://github.com/Nepxion/Discovery)**：一款集成Spring Cloud Alibaba、Nacos、Sentinel等阿里巴巴中间件，实现网关和服务的灰度发布、路由、权重、限流、熔断、降级、隔离、监控、追踪等功能的微服务开源解决。使用指南 请参考 **[Nepxion Discovery Guide](https://github.com/Nepxion/DiscoveryGuide)**。

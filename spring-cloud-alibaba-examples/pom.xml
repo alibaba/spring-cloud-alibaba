@@ -5,9 +5,10 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba</artifactId>
-        <version>2.2.0.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-cloud-alibaba-examples</artifactId>
@@ -28,20 +29,13 @@
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
         <module>nacos-example/nacos-gateway-example</module>
-        <module>oss-example</module>
-        <module>ans-example/ans-consumer-feign-example</module>
-        <module>ans-example/ans-consumer-ribbon-example</module>
-        <module>ans-example/ans-provider-example</module>
         <module>seata-example/business-service</module>
         <module>seata-example/order-service</module>
         <module>seata-example/storage-service</module>
         <module>seata-example/account-service</module>
-        <module>acm-example/acm-local-example</module>
         <module>rocketmq-example/rocketmq-consume-example</module>
         <module>rocketmq-example/rocketmq-produce-example</module>
-        <module>sms-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
-        <module>schedulerx-example/schedulerx-simple-task-example</module>
         <module>spring-cloud-alibaba-dubbo-examples</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example</module>

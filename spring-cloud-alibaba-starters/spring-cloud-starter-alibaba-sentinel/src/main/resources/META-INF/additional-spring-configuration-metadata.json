@@ -1,0 +1,116 @@
+{
+  "properties": [
+    {
+      "name": "spring.cloud.sentinel.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "enable or disable sentinel auto configure."
+    },
+    {
+      "name": "resttemplate.sentinel.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "enable or disable @SentinelRestTemplate."
+    },
+    {
+      "name": "spring.cloud.sentinel.eager",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "earlier initialize heart-beat when the spring container starts when the transport dependency is on classpath, the configuration is effective."
+    },
+    {
+      "name": "spring.cloud.sentinel.web-context-unify",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Specify whether unify web context(i.e. use the default context name), and is true by default."
+    },
+    {
+      "name": "spring.cloud.sentinel.transport.port",
+      "type": "java.lang.String",
+      "defaultValue": "8719",
+      "description": "sentinel api port."
+    },
+    {
+      "name": "spring.cloud.sentinel.transport.clientIp",
+      "type": "java.lang.String",
+      "description": "sentinel client ip connect to dashboard."
+    },
+    {
+      "name": "spring.cloud.sentinel.transport.dashboard",
+      "type": "java.lang.String",
+      "description": "sentinel dashboard address, won't try to connect dashboard when address is empty."
+    },
+    {
+      "name": "spring.cloud.sentinel.transport.heartbeatIntervalMs",
+      "type": "java.lang.String",
+      "description": "send heartbeat interval millisecond."
+    },
+    {
+      "name": "spring.cloud.sentinel.filter.order",
+      "type": "java.lang.Integer",
+      "defaultValue": "Integer.MIN_VALUE",
+      "description": "SentinelWebInterceptor order, will be register to InterceptorRegistry."
+    },
+    {
+      "name": "spring.cloud.sentinel.filter.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Enable to register com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor."
+    },
+    {
+      "name": "spring.cloud.sentinel.metric.charset",
+      "type": "java.lang.String",
+      "defaultValue": "UTF-8",
+      "description": "charset when sentinel write or search metric file."
+    },
+    {
+      "name": "spring.cloud.sentinel.metric.fileSingleSize",
+      "type": "java.lang.String",
+      "description": "the metric file size."
+    },
+    {
+      "name": "spring.cloud.sentinel.metric.fileTotalCount",
+      "type": "java.lang.String",
+      "description": "the total metric file count."
+    },
+    {
+      "name": "spring.cloud.sentinel.log.dir",
+      "type": "java.lang.String",
+      "description": "log base directory."
+    },
+    {
+      "name": "spring.cloud.sentinel.log.switch-pid",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "log file should with pid."
+    },
+    {
+      "name": "spring.cloud.sentinel.block-page",
+      "type": "java.lang.String",
+      "description": "the process page when the flow control is triggered."
+    },
+    {
+      "name": "spring.cloud.sentinel.servlet.block-page",
+      "type": "java.lang.String",
+      "description": "recommoned use spring.cloud.sentinel.block-page."
+    },
+    {
+      "name": "spring.cloud.sentinel.flow.coldFactor",
+      "type": "java.lang.String",
+      "defaultValue": "3",
+      "description": "sentinel the cold factor."
+    },
+    {
+      "name": "management.health.sentinel.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable sentinel health check.",
+      "defaultValue": true
+    },
+    {
+      "defaultValue": "false",
+      "name": "feign.sentinel.enabled",
+      "description": "If true, an OpenFeign client will be wrapped with a Sentinel circuit breaker.",
+      "type": "java.lang.Boolean"
+    }
+  ]
+}

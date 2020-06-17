@@ -71,7 +71,7 @@ These artifacts are available from Maven Central and Spring Release repository v
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>2.1.0.RELEASE</version>
+                <version>2.2.1.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -118,6 +118,7 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 * 1.5.x for Spring Boot 1.5.x
 * 2.0.x for Spring Boot 2.0.x
 * 2.1.x for Spring Boot 2.1.x
+* 2.2.x for Spring Boot 2.2.x
 
 ## Code of Conduct
 This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.

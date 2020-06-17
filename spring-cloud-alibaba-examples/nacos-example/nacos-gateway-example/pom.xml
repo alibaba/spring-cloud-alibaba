@@ -5,15 +5,16 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>2.2.0.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
 
     <artifactId>nacos-gateway-example</artifactId>
-    <packaging>pom</packaging>
+    <name>Spring Cloud Starter Alibaba Nacos Discovery x Gateway Examples</name>
     <description>Example demonstrating how to use gateway with nacos</description>
+    <packaging>pom</packaging>
 
 
     <modules>

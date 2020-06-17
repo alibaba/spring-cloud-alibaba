@@ -41,7 +41,6 @@ import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepositor
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContextFactory;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
-
 import org.apache.dubbo.rpc.service.GenericException;
 import org.apache.dubbo.rpc.service.GenericService;
 
@@ -148,37 +147,6 @@ public class DubboGatewayServlet extends HttpServletBean {
 		return StreamUtils.copyToByteArray(inputStream);
 	}
 
-	private static class HttpRequestAdapter implements HttpRequest {
-
-		private final HttpServletRequest request;
-
-		private HttpRequestAdapter(HttpServletRequest request) {
-			this.request = request;
-		}
-
-		@Override
-		public String getMethodValue() {
-			return request.getMethod();
-		}
-
-		@Override
-		public URI getURI() {
-			try {
-				return new URI(request.getRequestURL().toString() + "?"
-						+ request.getQueryString());
-			}
-			catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-			throw new RuntimeException();
-		}
-
-		@Override
-		public HttpHeaders getHeaders() {
-			return new HttpHeaders();
-		}
-	}
-
 	private RequestMetadata buildRequestMetadata(HttpServletRequest request,
 			String restPath) {
 		UriComponents uriComponents = fromUriString(request.getRequestURI()).build(true);
@@ -208,4 +176,37 @@ public class DubboGatewayServlet extends HttpServletBean {
 		}
 		return map;
 	}
+
+	private final static class HttpRequestAdapter implements HttpRequest {
+
+		private final HttpServletRequest request;
+
+		private HttpRequestAdapter(HttpServletRequest request) {
+			this.request = request;
+		}
+
+		@Override
+		public String getMethodValue() {
+			return request.getMethod();
+		}
+
+		@Override
+		public URI getURI() {
+			try {
+				return new URI(request.getRequestURL().toString() + "?"
+						+ request.getQueryString());
+			}
+			catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			throw new RuntimeException();
+		}
+
+		@Override
+		public HttpHeaders getHeaders() {
+			return new HttpHeaders();
+		}
+
+	}
+
 }

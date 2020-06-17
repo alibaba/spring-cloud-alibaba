@@ -35,7 +35,7 @@ import org.springframework.web.client.RestTemplate;
  * @author xiaojing
  */
 @SpringBootApplication
-@EnableDiscoveryClient
+@EnableDiscoveryClient(autoRegister = true)
 @EnableFeignClients
 public class ConsumerApplication {
 
