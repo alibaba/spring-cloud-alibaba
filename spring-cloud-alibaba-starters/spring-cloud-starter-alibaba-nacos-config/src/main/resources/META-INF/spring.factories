@@ -5,3 +5,5 @@ com.alibaba.cloud.nacos.NacosConfigAutoConfiguration,\
 com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration
 org.springframework.boot.diagnostics.FailureAnalyzer=\
 com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer
+org.springframework.boot.env.PropertySourceLoader=\
+com.alibaba.cloud.nacos.parser.JsonPropertySourceLoader
