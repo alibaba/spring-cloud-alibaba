@@ -29,10 +29,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SentinelEndpointConditionalOnAvailableEndpointTests {
 
-	private  ApplicationContextRunner contextRunner;
+	private ApplicationContextRunner contextRunner;
 
 	@Before
-	public void setUp(){
+	public void setUp() {
 		contextRunner = new ApplicationContextRunner()
 				.withUserConfiguration(SentinelEndpointAutoConfiguration.class);
 	}
@@ -50,7 +50,8 @@ public class SentinelEndpointConditionalOnAvailableEndpointTests {
 		this.contextRunner
 				.withPropertyValues("management.endpoints.web.exposure.include=*",
 						"management.endpoint.sentinel.enabled=false")
-				.run((context) -> assertThat(context).doesNotHaveBean("sentinelEndPoint"));
+				.run((context) -> assertThat(context)
+						.doesNotHaveBean("sentinelEndPoint"));
 	}
 
 }

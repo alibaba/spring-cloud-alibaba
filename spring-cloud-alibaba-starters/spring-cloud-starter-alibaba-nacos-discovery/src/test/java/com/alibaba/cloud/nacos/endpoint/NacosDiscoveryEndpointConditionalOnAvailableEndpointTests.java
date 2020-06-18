@@ -32,29 +32,31 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class NacosDiscoveryEndpointConditionalOnAvailableEndpointTests {
 
-    private ApplicationContextRunner contextRunner;
+	private ApplicationContextRunner contextRunner;
 
-    @Before
-    public void setUp() {
-        contextRunner = new ApplicationContextRunner()
-                .withConfiguration(AutoConfigurations.of(UtilAutoConfiguration.class,
-                        NacosDiscoveryAutoConfiguration.class, NacosDiscoveryEndpointAutoConfiguration.class));
-    }
+	@Before
+	public void setUp() {
+		contextRunner = new ApplicationContextRunner()
+				.withConfiguration(AutoConfigurations.of(UtilAutoConfiguration.class,
+						NacosDiscoveryAutoConfiguration.class,
+						NacosDiscoveryEndpointAutoConfiguration.class));
+	}
 
-    @Test
-    public void testNacosDiscoveryEndpointEnabled() {
-        this.contextRunner
-                .withPropertyValues("management.endpoints.web.exposure.include=*",
-                        "management.endpoint.nacos-discovery.enabled=true")
-                .run((context) -> assertThat(context).hasBean("nacosDiscoveryEndpoint"));
-    }
+	@Test
+	public void testNacosDiscoveryEndpointEnabled() {
+		this.contextRunner
+				.withPropertyValues("management.endpoints.web.exposure.include=*",
+						"management.endpoint.nacos-discovery.enabled=true")
+				.run((context) -> assertThat(context).hasBean("nacosDiscoveryEndpoint"));
+	}
 
-    @Test
-    public void testNacosDiscoveryEndpointNotEnabled() {
-        this.contextRunner
-                .withPropertyValues("management.endpoints.web.exposure.include=*",
-                        "management.endpoint.nacos-discovery.enabled=false")
-                .run((context) -> assertThat(context).doesNotHaveBean("nacosDiscoveryEndpoint"));
-    }
+	@Test
+	public void testNacosDiscoveryEndpointNotEnabled() {
+		this.contextRunner
+				.withPropertyValues("management.endpoints.web.exposure.include=*",
+						"management.endpoint.nacos-discovery.enabled=false")
+				.run((context) -> assertThat(context)
+						.doesNotHaveBean("nacosDiscoveryEndpoint"));
+	}
 
 }
