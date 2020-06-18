@@ -49,7 +49,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author zkz
  */
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({ "javax.management.*", "javax.xml.parsers.*",
+		"com.sun.org.apache.xerces.internal.jaxp.*", "org.w3c.dom.*" })
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
 @SpringBootTest(classes = NacosConfigurationXmlJsonTest.TestConfig.class, properties = {
@@ -83,13 +84,15 @@ public class NacosConfigurationXmlJsonTest {
 						throws Throwable {
 
 					if ("xmlApp.xml".equals(args[0]) && "test-group".equals(args[1])) {
-						return "<top>\n" + "    <first>one</first>\n"
+						return "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + "<top>\n"
+								+ "    <first>one</first>\n"
 								+ "    <sencond value=\"two\">\n"
 								+ "        <third>three</third>\n" + "    </sencond>\n"
 								+ "</top>";
 					}
 					if ("test-name.xml".equals(args[0]) && "test-group".equals(args[1])) {
-						return "<Server port=\"8005\" shutdown=\"SHUTDOWN\"> \n"
+						return "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+								+ "<Server port=\"8005\" shutdown=\"SHUTDOWN\"> \n"
 								+ "    <Service name=\"Catalina\"> \n"
 								+ "        <Connector value=\"第二个连接器\"> \n"
 								+ "            <open>开启服务</open> \n"
@@ -108,7 +111,8 @@ public class NacosConfigurationXmlJsonTest {
 
 					if ("test-name-dev.xml".equals(args[0])
 							&& "test-group".equals(args[1])) {
-						return "<application android:label=\"@string/app_name\" android:icon=\"@drawable/osg\">\n"
+						return "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+								+ "<application android:label=\"@string/app_name\" android:icon=\"@drawable/osg\">\n"
 								+ "    <activity android:name=\".osgViewer\"\n"
 								+ "              android:label=\"@string/app_name\" android:screenOrientation=\"landscape\">\n"
 								+ "        <intent-filter>\n"

@@ -24,7 +24,6 @@ import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,10 +98,10 @@ public class NacosPropertySourceBuilder {
 					fileExtension);
 		}
 		catch (NacosException e) {
-			log.error("get data from Nacos error,dataId:{}, ", dataId, e);
+			log.error("get data from Nacos error,dataId:{} ", dataId, e);
 		}
 		catch (Exception e) {
-			log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
+			log.error("parse data from Nacos error,dataId:{},data:{}", dataId, data, e);
 		}
 		return Collections.emptyList();
 	}

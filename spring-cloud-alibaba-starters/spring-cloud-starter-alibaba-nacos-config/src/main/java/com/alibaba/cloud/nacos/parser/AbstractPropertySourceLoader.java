@@ -50,9 +50,10 @@ public abstract class AbstractPropertySourceLoader implements PropertySourceLoad
 	/**
 	 * Prevent interference with other loaders.Nacos-specific loader, unless the reload
 	 * changes it.
-	 * @param name
-	 * @param resource
-	 * @return
+	 * @param name the root name of the property source. If multiple documents are loaded
+	 * an additional suffix should be added to the name for each source loaded.
+	 * @param resource the resource to load
+	 * @return if the resource can be loaded
 	 */
 	protected boolean canLoad(String name, Resource resource) {
 		return resource instanceof NacosByteArrayResource;

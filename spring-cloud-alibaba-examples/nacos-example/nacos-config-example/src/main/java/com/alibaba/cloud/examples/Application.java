@@ -65,9 +65,11 @@ class UserConfig {
 	private int age;
 
 	private String name;
+
 	private String hr;
 
 	private Map<String, Object> map;
+
 	private List<User> users;
 
 	public int getAge() {
@@ -112,18 +114,16 @@ class UserConfig {
 
 	@Override
 	public String toString() {
-		return "UserConfig{" +
-				"age=" + age +
-				", name='" + name + '\'' +
-				", map=" + map +
-				", hr='" + hr + '\'' +
-				", users=" + JSON.toJSONString(users) +
-				'}';
+		return "UserConfig{" + "age=" + age + ", name='" + name + '\'' + ", map=" + map
+				+ ", hr='" + hr + '\'' + ", users=" + JSON.toJSONString(users) + '}';
 	}
 
 	public static class User {
+
 		private String name;
+
 		private String hr;
+
 		private String avg;
 
 		public String getName() {
@@ -152,13 +152,11 @@ class UserConfig {
 
 		@Override
 		public String toString() {
-			return "User{" +
-					"name='" + name + '\'' +
-					", hr=" + hr +
-					", avg=" + avg +
-					'}';
+			return "User{" + "name='" + name + '\'' + ", hr=" + hr + ", avg=" + avg + '}';
 		}
+
 	}
+
 }
 
 @Component
@@ -215,7 +213,6 @@ class SampleRunner implements ApplicationRunner {
 @RefreshScope
 class SampleController {
 
-
 	@Autowired
 	UserConfig userConfig;
 
@@ -238,7 +235,7 @@ class SampleController {
 	}
 
 	@RequestMapping("/get/{name}")
-	public String getValue(@PathVariable(value = "name")String name) {
+	public String getValue(@PathVariable String name) {
 		return String.valueOf(environment.getProperty(name));
 	}
 

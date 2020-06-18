@@ -19,7 +19,7 @@ package com.alibaba.cloud.nacos.parser;
 import org.springframework.core.io.ByteArrayResource;
 
 /**
- * Nacos-specific resource
+ * Nacos-specific resource.
  *
  * @author zkz
  */
