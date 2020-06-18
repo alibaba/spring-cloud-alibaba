@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.discovery;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class NacosServiceDiscovery {
 		metadata.put("nacos.weight", instance.getWeight() + "");
 		metadata.put("nacos.healthy", instance.isHealthy() + "");
 		metadata.put("nacos.cluster", instance.getClusterName() + "");
-		metadata.putAll(instance.getMetadata());
+		metadata.putAll(instance.getMetadata() != null ? instance.getMetadata() : Collections.emptyMap());
 		nacosServiceInstance.setMetadata(metadata);
 
 		if (metadata.containsKey("secure")) {
