@@ -18,6 +18,7 @@ package com.alibaba.cloud.sentinel.endpoint;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;

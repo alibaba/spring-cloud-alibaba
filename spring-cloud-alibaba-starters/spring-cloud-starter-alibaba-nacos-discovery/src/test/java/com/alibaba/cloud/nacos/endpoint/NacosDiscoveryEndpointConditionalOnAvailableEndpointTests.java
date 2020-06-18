@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.endpoint;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.commons.util.UtilAutoConfiguration;
