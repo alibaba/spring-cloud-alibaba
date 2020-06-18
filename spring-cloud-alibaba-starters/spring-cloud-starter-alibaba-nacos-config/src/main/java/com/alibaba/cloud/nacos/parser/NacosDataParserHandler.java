@@ -28,11 +28,9 @@ import java.util.stream.Collectors;
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.util.StringUtils;
 
 /**
@@ -40,10 +38,19 @@ import org.springframework.util.StringUtils;
  */
 public final class NacosDataParserHandler {
 
+	/**
+	 * symbol: dot.
+	 */
 	public static final String DOT = ".";
 
+	/**
+	 * constant.
+	 */
 	public static final String VALUE = "value";
 
+	/**
+	 * default extension.
+	 */
 	public static final String DEFAULT_EXTENSION = "properties";
 
 	private static List<PropertySourceLoader> propertySourceLoaders;
@@ -101,6 +108,12 @@ public final class NacosDataParserHandler {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * check the current extension can be processed.
+	 * @param loader the propertySourceLoader
+	 * @param extension file extension
+	 * @return if can match extension
+	 */
 	private boolean canLoadFileExtension(PropertySourceLoader loader, String extension) {
 		return Arrays.stream(loader.getFileExtensions())
 				.anyMatch((fileExtension) -> StringUtils.endsWithIgnoreCase(extension,

@@ -34,7 +34,7 @@ import static com.alibaba.cloud.nacos.parser.NacosDataParserHandler.VALUE;
 /**
  * @author zkz
  */
-public class JsonPropertySourceLoader extends AbstractPropertySourceLoader {
+public class NacosJsonPropertySourceLoader extends AbstractPropertySourceLoader {
 
 	/**
 	 * Returns the file extensions that the loader supports (excluding the '.').
@@ -46,9 +46,14 @@ public class JsonPropertySourceLoader extends AbstractPropertySourceLoader {
 	}
 
 	/**
-	 * @param name
-	 * @param resource
-	 * @return
+	 * Load the resource into one or more property sources. Implementations may either
+	 * return a list containing a single source, or in the case of a multi-document format
+	 * such as yaml a source for each document in the resource.
+	 * @param name the root name of the property source. If multiple documents are loaded
+	 * an additional suffix should be added to the name for each source loaded.
+	 * @param resource the resource to load
+	 * @return a list property sources
+	 * @throws IOException if the source cannot be loaded
 	 */
 	@Override
 	protected List<PropertySource<?>> doLoad(String name, Resource resource)
@@ -57,9 +62,9 @@ public class JsonPropertySourceLoader extends AbstractPropertySourceLoader {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> nacosDataMap = mapper.readValue(resource.getInputStream(),
 				LinkedHashMap.class);
-		flattenedMap(result, this.reloadMap(nacosDataMap), null);
+		flattenedMap(result, nacosDataMap, null);
 		return Collections.singletonList(
-				new OriginTrackedMapPropertySource(name, nacosDataMap, true));
+				new OriginTrackedMapPropertySource(name, this.reloadMap(result), true));
 
 	}
 
