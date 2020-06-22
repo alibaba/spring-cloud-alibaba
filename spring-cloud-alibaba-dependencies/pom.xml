@@ -25,6 +25,7 @@
         <nacos.client.version>1.2.1</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
         <spring.context.support.version>1.0.6</spring.context.support.version>
+        <dubbo.version>2.7.6</dubbo.version>
 
         <!-- Maven Plugin Versions -->
         <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
@@ -54,6 +55,13 @@
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-core</artifactId>
                 <version>${sentinel.version}</version>
+            </dependency>
+
+            <!-- Dubbo -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
