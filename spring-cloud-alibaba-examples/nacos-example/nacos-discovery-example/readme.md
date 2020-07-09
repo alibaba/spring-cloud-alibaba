@@ -29,7 +29,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		public class ProviderApplication {
 
 			public static void main(String[] args) {
-				SpringApplication.run(Application.class, args);
+				SpringApplication.run(ProviderApplication.class, args);
 			}
 
 			@RestController

@@ -169,7 +169,7 @@ public class RocketMQMessageChannelBinder extends
 					rocketMQTemplate, destination.getName(), producerGroup,
 					producerProperties.getExtension().getTransactional(),
 					instrumentationManager, producerProperties,
-					((AbstractMessageChannel) channel).getChannelInterceptors().stream()
+					((AbstractMessageChannel) channel).getInterceptors().stream()
 							.filter(channelInterceptor -> channelInterceptor instanceof MessageConverterConfigurer.PartitioningInterceptor)
 							.map(channelInterceptor -> ((MessageConverterConfigurer.PartitioningInterceptor) channelInterceptor))
 							.findFirst().orElse(null));
