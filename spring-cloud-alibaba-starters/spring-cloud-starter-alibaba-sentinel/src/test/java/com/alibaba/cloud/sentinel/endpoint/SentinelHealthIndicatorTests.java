@@ -163,7 +163,7 @@ public class SentinelHealthIndicatorTests {
 
 		Health health = sentinelHealthIndicator.health();
 
-		assertThat(health.getStatus()).isEqualTo(Status.DOWN);
+		assertThat(health.getStatus()).isEqualTo(Status.UNKNOWN);
 		Map<String, Status> dataSourceDetailMap = (Map<String, Status>) health
 				.getDetails().get("dataSource");
 		assertThat(dataSourceDetailMap.get("ds1-sentinel-file-datasource"))
