@@ -51,12 +51,13 @@ public class NacosRule extends AbstractLoadBalancerRule {
 	public Server choose(Object key) {
 		try {
 			String clusterName = this.nacosDiscoveryProperties.getClusterName();
+			String group = this.nacosDiscoveryProperties.getGroup();
 			DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
 			String name = loadBalancer.getName();
 
 			NamingService namingService = nacosDiscoveryProperties
 					.namingServiceInstance();
-			List<Instance> instances = namingService.selectInstances(name, true);
+			List<Instance> instances = namingService.selectInstances(name, group, true);
 			if (CollectionUtils.isEmpty(instances)) {
 				LOGGER.warn("no instance in service {}", name);
 				return null;
