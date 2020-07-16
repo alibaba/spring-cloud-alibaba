@@ -109,9 +109,9 @@ public class SentinelHealthIndicatorTests {
 
 		Health health = sentinelHealthIndicator.health();
 
-		assertThat(health.getStatus()).isEqualTo(Status.DOWN);
+		assertThat(health.getStatus()).isEqualTo(Status.UNKNOWN);
 		assertThat(health.getDetails().get("dashboard")).isEqualTo(
-				new Status(Status.DOWN.getCode(), "localhost:8080 can't be connected"));
+				new Status(Status.UNKNOWN.getCode(), "localhost:8080 can't be connected"));
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public class SentinelHealthIndicatorTests {
 		assertThat(dataSourceDetailMap.get("ds1-sentinel-file-datasource"))
 				.isEqualTo(Status.UP);
 		assertThat(dataSourceDetailMap.get("ds2-sentinel-file-datasource"))
-				.isEqualTo(new Status(Status.DOWN.getCode(), "fileDataSource2 error"));
+				.isEqualTo(new Status(Status.UNKNOWN.getCode(), "fileDataSource2 error"));
 	}
 
 }
