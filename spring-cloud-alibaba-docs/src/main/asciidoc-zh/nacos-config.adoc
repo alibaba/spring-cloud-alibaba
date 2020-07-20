@@ -415,8 +415,8 @@ Endpoint 暴露的 json 中包含了三种属性:
 |===
 |配置项 |Key |默认值 |说明
 |服务端地址|`spring.cloud.nacos.config.server-addr`|| Nacos Server 启动监听的ip地址和端口
-|配置对应的 DataId|`spring.cloud.nacos.config.name`|| 先取 prefix，再去 name，最后取 spring.application.name
-|配置对应的 DataId|`spring.cloud.nacos.config.prefix`|| 先取 prefix，再去 name，最后取 spring.application.name
+|配置对应的 DataId|`spring.cloud.nacos.config.name`|| 先取 prefix，再取 name，最后取 spring.application.name
+|配置对应的 DataId|`spring.cloud.nacos.config.prefix`|| 先取 prefix，再取 name，最后取 spring.application.name
 |配置内容编码|`spring.cloud.nacos.config.encode`||读取的配置内容对应的编码
 |GROUP|`spring.cloud.nacos.config.group`|`DEFAULT_GROUP`|配置对应的组
 |文件扩展名|`spring.cloud.nacos.config.fileExtension`|`properties`|配置项对应的文件扩展名，目前支持 properties 和 yaml(yml)

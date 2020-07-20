@@ -5,21 +5,27 @@
     <parent>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-alibaba-examples</artifactId>
-        <version>2.2.1.BUILD-SNAPSHOT</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
 
     <artifactId>sentinel-core-example</artifactId>
-    <packaging>jar</packaging>
+    <name>Spring Cloud Starter Alibaba Sentinel Core Example</name>
     <description>Example demonstrating how to use sentinel</description>
+    <packaging>jar</packaging>
 
 
     <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>
         </dependency>
 
         <dependency>
@@ -35,10 +41,10 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>com.alibaba.csp</groupId>-->
-        <!--<artifactId>sentinel-datasource-nacos</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
+        </dependency>
         <!--<dependency>-->
         <!--<groupId>com.alibaba.csp</groupId>-->
         <!--<artifactId>sentinel-datasource-zookeeper</artifactId>-->
