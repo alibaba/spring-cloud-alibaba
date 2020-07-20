@@ -16,20 +16,28 @@
 
 package com.alibaba.cloud.seata.feign;
 
-import feign.Feign;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import io.seata.core.context.RootContext;
+import org.springframework.util.StringUtils;
 
-import org.springframework.beans.factory.BeanFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author xiaojing
+ * @author wang.liang
  */
-final class SeataFeignBuilder {
+public class SeataFeignRequestInterceptor implements RequestInterceptor {
 
-	private SeataFeignBuilder() {
-	}
+    @Override
+    public void apply(RequestTemplate template) {
+        String xid = RootContext.getXID();
+        if (StringUtils.isEmpty(xid)) {
+            return;
+        }
 
-	static Feign.Builder builder(BeanFactory beanFactory) {
-		return Feign.builder().client(new SeataFeignClient(beanFactory));
-	}
-
+        List<String> seataXid = new ArrayList<>();
+        seataXid.add(xid);
+        template.header(RootContext.KEY_XID, xid);
+    }
 }
