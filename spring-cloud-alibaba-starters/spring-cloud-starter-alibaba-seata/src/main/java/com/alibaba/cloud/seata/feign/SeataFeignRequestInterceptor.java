@@ -16,13 +16,14 @@
 
 package com.alibaba.cloud.seata.feign;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import io.seata.core.context.RootContext;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.util.StringUtils;
 
 /**
  * @author wang.liang
