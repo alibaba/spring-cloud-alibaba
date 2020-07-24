@@ -95,6 +95,7 @@ public class NacosServiceDiscovery {
 		if (instance.getMetadata() != null) {
 			metadata.putAll(instance.getMetadata());
 		}
+		metadata.put("nacos.ephemeral",String.valueOf(instance.isEphemeral()));
 		nacosServiceInstance.setMetadata(metadata);
 
 		if (metadata.containsKey("secure")) {
