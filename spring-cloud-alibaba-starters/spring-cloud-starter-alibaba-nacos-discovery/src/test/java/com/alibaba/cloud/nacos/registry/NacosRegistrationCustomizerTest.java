@@ -16,6 +16,11 @@
 
 package com.alibaba.cloud.nacos.registry;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Properties;
+
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.alibaba.nacos.api.NacosFactory;
 import org.junit.Assert;
@@ -27,6 +32,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -35,11 +41,6 @@ import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationC
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Properties;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -50,54 +51,54 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosFactory.class })
-@SpringBootTest(
-        classes = NacosRegistrationCustomizerTest.TestConfig.class,
-        properties = { "spring.application.name=myTestService1",
-                "spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" },
-        webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = NacosRegistrationCustomizerTest.TestConfig.class,
+		properties = { "spring.application.name=myTestService1",
+				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" },
+		webEnvironment = RANDOM_PORT)
 public class NacosRegistrationCustomizerTest {
 
-    @Autowired
-    private NacosAutoServiceRegistration nacosAutoServiceRegistration;
+	@Autowired
+	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
 
-    static {
-        try {
-            Method method = PowerMockito.method(NacosFactory.class, "createNamingService",
-                    Properties.class);
-            MethodProxy.proxy(method, new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args)
-                        throws Throwable {
-                    return new MockNamingService();
-                }
-            });
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	static {
+		try {
+			Method method = PowerMockito.method(NacosFactory.class, "createNamingService",
+					Properties.class);
+			MethodProxy.proxy(method, new InvocationHandler() {
+				@Override
+				public Object invoke(Object proxy, Method method, Object[] args)
+						throws Throwable {
+					return new MockNamingService();
+				}
+			});
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    @Test
-    public void contextLoads() throws Exception {
-        NacosRegistration registration = nacosAutoServiceRegistration.getRegistration();
-        Map<String, String> metadata = registration.getMetadata();
-        Assert.assertEquals("test1", metadata.get("test1"));
-    }
+	@Test
+	public void contextLoads() throws Exception {
+		NacosRegistration registration = nacosAutoServiceRegistration.getRegistration();
+		Map<String, String> metadata = registration.getMetadata();
+		Assert.assertEquals("test1", metadata.get("test1"));
+	}
 
-    @Configuration
-    @EnableAutoConfiguration
-    @ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
-            NacosDiscoveryClientConfiguration.class,
-            NacosServiceRegistryAutoConfiguration.class })
-    public static class TestConfig {
+	@Configuration
+	@EnableAutoConfiguration
+	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
+			NacosDiscoveryClientConfiguration.class,
+			NacosServiceRegistryAutoConfiguration.class })
+	public static class TestConfig {
 
-        @Bean
-        public NacosRegistrationCustomizer nacosRegistrationCustomizer() {
-            return registration -> {
-                Map<String, String> metadata = registration.getMetadata();
-                metadata.put("test1", "test1");
-            };
-        }
-    }
+		@Bean
+		public NacosRegistrationCustomizer nacosRegistrationCustomizer() {
+			return registration -> {
+				Map<String, String> metadata = registration.getMetadata();
+				metadata.put("test1", "test1");
+			};
+		}
+
+	}
 
 }
