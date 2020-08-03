@@ -82,7 +82,7 @@ public final class NacosDataParserHandler {
 			}
 			NacosByteArrayResource nacosByteArrayResource = new NacosByteArrayResource(
 					configValue.getBytes(), configName);
-			nacosByteArrayResource.setFilename(configName + DOT + extension);
+			nacosByteArrayResource.setFilename(getFileName(configName , extension));
 			List<PropertySource<?>> propertySourceList = propertySourceLoader
 					.load(configName, nacosByteArrayResource);
 			if (CollectionUtils.isEmpty(propertySourceList)) {
@@ -133,6 +133,23 @@ public final class NacosDataParserHandler {
 			return name.substring(idx + 1);
 		}
 		return DEFAULT_EXTENSION;
+	}
+
+	private String getFileName(String name,String extension){
+		if(StringUtils.isEmpty(extension)){
+			return name;
+		}
+		if (StringUtils.isEmpty(name)) {
+			return extension;
+		}
+		int idx = name.lastIndexOf(DOT);
+		if (idx > 0 && idx < name.length() - 1) {
+			String ext = name.substring(idx + 1);
+			if(extension.equalsIgnoreCase(ext)){
+				return name;
+			}
+		}
+		return name + DOT + extension;
 	}
 
 	public static NacosDataParserHandler getInstance() {
