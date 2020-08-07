@@ -229,7 +229,7 @@ in develop-env enviroment; user name :nacos-config-yaml-update; age: 68
 spring.profiles.active=product
 ----
 
-同时生产环境上 Nacos 需要添加对应 DataId 的基础配置。例如，在生成环境下的 Naocs 添加了DataId为：nacos-config-product.yaml的配置：
+同时生产环境上 Nacos 需要添加对应 DataId 的基础配置。例如，在生产环境下的 Naocs 添加了DataId为：nacos-config-product.yaml的配置：
 
 [source,subs="normal"]
 ----
