@@ -122,6 +122,7 @@
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
+        <module>spring-cloud-alibaba-dubbo-gateway</module>
     </modules>
 
     <dependencyManagement>
