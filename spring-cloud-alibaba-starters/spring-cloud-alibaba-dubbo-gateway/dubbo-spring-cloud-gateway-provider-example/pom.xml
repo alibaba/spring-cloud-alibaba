@@ -9,20 +9,19 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.alibaba.cloud</groupId>
-	<artifactId>dubbo-demo-spring-cloud-gateway</artifactId>
+	<artifactId>dubbo-spring-cloud-gateway-provider-example</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dubbo-demo-spring-cloud-gateway</name>
-	<description>Spring Cloud Gateway For Dubbo</description>
+	<name>dubbo-spring-cloud-gateway-provider-example</name>
+	<description>Placeholder provider for Dubbo</description>
 
 	<properties>
 		<java.version>1.8</java.version>
-		<spring-cloud.version>Hoxton.SR6</spring-cloud.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-gateway</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
 		<dependency>
@@ -36,25 +35,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>dubbo-spring-cloud-gateway-adapter</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
