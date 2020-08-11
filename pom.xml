@@ -98,7 +98,7 @@
         <slf4j-api.version>1.7.25</slf4j-api.version>
 
         <!-- Apache Dubbo -->
-        <dubbo.version>2.7.6</dubbo.version>
+        <dubbo.version>2.7.8</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
