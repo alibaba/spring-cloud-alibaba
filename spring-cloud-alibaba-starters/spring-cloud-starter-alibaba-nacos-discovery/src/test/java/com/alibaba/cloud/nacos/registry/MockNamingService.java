@@ -328,4 +328,9 @@ public class MockNamingService implements NamingService {
 		return null;
 	}
 
+	@Override
+	public void shutDown() throws NacosException {
+
+	}
+
 }
