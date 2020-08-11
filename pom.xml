@@ -80,7 +80,7 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.1.RELEASE</revision>
+        <revision>2.2.2-SNAPSHOT</revision>
 
         <!-- Dependency Versions -->
         <spring-cloud-commons.version>2.2.2.RELEASE</spring-cloud-commons.version>
