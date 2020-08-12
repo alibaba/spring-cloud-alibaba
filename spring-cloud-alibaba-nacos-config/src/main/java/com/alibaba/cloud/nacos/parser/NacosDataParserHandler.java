@@ -56,7 +56,7 @@ public final class NacosDataParserHandler {
 			if (idx > 0 && idx < dataId.length() - 1) {
 				String extension = dataId.substring(idx + 1);
 				if (parser.checkFileExtension(extension)) {
-					break;
+					continue;
 				}
 			}
 			// add tips
