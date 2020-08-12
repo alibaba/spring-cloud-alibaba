@@ -17,7 +17,6 @@ public class PlaceholderProvider {
     public String pathVariables(@RequestParam String name) {
         if (!name.isEmpty()) {
             return "The name is " + name;
-
         }
 
     return "Name not found !!";
