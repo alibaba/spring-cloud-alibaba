@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.sidecar.nacos;
 
-import java.net.SocketException;
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.sidecar.SidecarProperties;
 
@@ -35,7 +33,7 @@ public class SidecarNacosDiscoveryProperties extends NacosDiscoveryProperties {
 	}
 
 	@Override
-	public void init() throws SocketException {
+	public void init() throws Exception {
 		super.init();
 
 		String ip = sidecarProperties.getIp();

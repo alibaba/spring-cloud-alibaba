@@ -19,7 +19,6 @@ package com.alibaba.cloud.nacos;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,9 +28,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.naming.NamingMaintainFactory;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
@@ -48,6 +46,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
+import static com.alibaba.nacos.api.NacosFactory.createMaintainService;
+import static com.alibaba.nacos.api.NacosFactory.createNamingService;
 import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
@@ -215,13 +215,12 @@ public class NacosDiscoveryProperties {
 	@Autowired
 	private Environment environment;
 
-	private static NamingService namingService;
+	private NamingService namingService;
 
-	private static NamingMaintainService namingMaintainService;
+	private NamingMaintainService namingMaintainService;
 
 	@PostConstruct
-	public void init() throws SocketException {
-		namingService = null;
+	public void init() throws Exception {
 
 		metadata.put(PreservedMetadataKeys.REGISTER_SOURCE, "SPRING_CLOUD");
 		if (secure) {
@@ -268,6 +267,15 @@ public class NacosDiscoveryProperties {
 		}
 
 		this.overrideFromEnv(environment);
+
+		Properties properties = getNacosProperties();
+		this.namingService = createNamingService(properties);
+		this.namingMaintainService = createMaintainService(properties);
+	}
+
+	@PreDestroy
+	public void destroy() {
+
 	}
 
 	public String getEndpoint() {
@@ -538,36 +546,11 @@ public class NacosDiscoveryProperties {
 	}
 
 	public NamingService namingServiceInstance() {
-
-		if (null != namingService) {
-			return namingService;
-		}
-
-		try {
-			namingService = NacosFactory.createNamingService(getNacosProperties());
-		}
-		catch (Exception e) {
-			log.error("create naming service error!properties={},e=,", this, e);
-			return null;
-		}
 		return namingService;
 	}
 
 	@Deprecated
 	public NamingMaintainService namingMaintainServiceInstance() {
-
-		if (null != namingMaintainService) {
-			return namingMaintainService;
-		}
-
-		try {
-			namingMaintainService = NamingMaintainFactory
-					.createMaintainService(getNacosProperties());
-		}
-		catch (Exception e) {
-			log.error("create naming service error!properties={},e=,", this, e);
-			return null;
-		}
 		return namingMaintainService;
 	}
 
