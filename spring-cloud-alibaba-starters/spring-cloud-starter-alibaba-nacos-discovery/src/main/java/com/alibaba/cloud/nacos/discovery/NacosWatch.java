@@ -74,7 +74,7 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 
 	private static ThreadPoolTaskScheduler getTaskScheduler() {
 		ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-		taskScheduler.setBeanName("Nacso-Watch-Task-Scheduler");
+		taskScheduler.setBeanName("Nacos-Watch-Task-Scheduler");
 		taskScheduler.initialize();
 		return taskScheduler;
 	}
