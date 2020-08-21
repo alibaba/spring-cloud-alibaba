@@ -5,9 +5,8 @@ dubbo:
     dubbo:
       name: dubbo
       port: -1
-  registries:
-    new:
-      address: spring-cloud://localhost
+
+
 #  registry:
 #   The Spring Cloud Dubbo's registry extension
 #    address: spring-cloud://localhost
@@ -19,7 +18,7 @@ feign:
     enabled: true
 
 server:
-  port: 8080
+  port: 8081
 
 management:
   endpoints:
