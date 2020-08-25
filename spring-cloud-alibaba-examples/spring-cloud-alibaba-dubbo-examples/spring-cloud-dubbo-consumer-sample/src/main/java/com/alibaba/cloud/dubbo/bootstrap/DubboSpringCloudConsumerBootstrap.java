@@ -23,7 +23,8 @@ import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.service.RestService;
 import com.alibaba.cloud.dubbo.service.User;
 import com.alibaba.cloud.dubbo.service.UserService;
-import org.apache.dubbo.config.annotation.Reference;
+
+import org.apache.dubbo.config.annotation.DubboReference;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,10 +61,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @EnableCaching
 public class DubboSpringCloudConsumerBootstrap {
 
-	@Reference
+	@DubboReference
 	private UserService userService;
 
-	@Reference(version = "1.0.0", protocol = "dubbo")
+	@DubboReference(version = "1.0.0", protocol = "dubbo")
 	private RestService restService;
 
 	@Autowired
