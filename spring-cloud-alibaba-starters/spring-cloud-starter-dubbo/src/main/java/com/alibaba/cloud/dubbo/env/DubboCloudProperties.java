@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import static com.alibaba.cloud.dubbo.util.DubboCloudConstants.CONFIG_PROPERTY_PREFIX;
 import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
 import static org.springframework.util.StringUtils.hasText;
 import static org.springframework.util.StringUtils.trimAllWhitespace;
@@ -31,7 +32,7 @@ import static org.springframework.util.StringUtils.trimAllWhitespace;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@ConfigurationProperties(prefix = "dubbo.cloud")
+@ConfigurationProperties(prefix = CONFIG_PROPERTY_PREFIX)
 public class DubboCloudProperties {
 
 	/**
