@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.dubbo.rpc.service.GenericException;
 import org.apache.dubbo.rpc.service.GenericService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -32,19 +33,21 @@ public class DubboGatewayFilter implements GlobalFilter, Ordered {
 
     Log log = LogFactory.getLog(getClass());
 
-   private  int orderValue;
 
-    private final DubboServiceMetadataRepository repository;
+    private int orderValue;
 
-    private final DubboGenericServiceFactory serviceFactory;
+    private DubboServiceMetadataRepository repository;
 
-    private final DubboGenericServiceExecutionContextFactory contextFactory;
+    private DubboGenericServiceFactory serviceFactory;
+
+    private DubboGenericServiceExecutionContextFactory contextFactory;
 
     private final Map<String, Object> dubboTranslatedAttributes = new HashMap<>();
 
-    public DubboGatewayFilter(DubboServiceMetadataRepository repository,
-                              DubboGenericServiceFactory serviceFactory,
-                              DubboGenericServiceExecutionContextFactory contextFactory) {
+
+    public DubboGatewayFilter( DubboServiceMetadataRepository repository,
+                               DubboGenericServiceFactory serviceFactory,
+                               DubboGenericServiceExecutionContextFactory contextFactory) {
         this.repository = repository;
         this.serviceFactory = serviceFactory;
         this.contextFactory = contextFactory;
@@ -52,8 +55,9 @@ public class DubboGatewayFilter implements GlobalFilter, Ordered {
         this.dubboTranslatedAttributes.put("cluster", "failover");
     }
 
+    public DubboGatewayFilter() {
 
-
+    }
 
     @Override
     public int getOrder() {
@@ -121,7 +125,7 @@ public class DubboGatewayFilter implements GlobalFilter, Ordered {
         return Mono.empty();
     }
 
-    private String resolveServiceName(ServerHttpRequest request) {
+    public String resolveServiceName(ServerHttpRequest request) {
         // /g/{app-name}/{rest-path}
         String requestURI = request.getPath().value();
         // /g/
@@ -131,7 +135,7 @@ public class DubboGatewayFilter implements GlobalFilter, Ordered {
 
         String serviceName = substringBetween(part, "/", "/");
 
-        return serviceName;
+        return serviceName ;
     }
 
     private byte[] getRequestBody(ServerHttpRequest request) {

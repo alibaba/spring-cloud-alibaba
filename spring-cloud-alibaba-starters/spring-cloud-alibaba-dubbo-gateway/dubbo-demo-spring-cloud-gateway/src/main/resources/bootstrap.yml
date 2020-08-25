@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: spring-cloud-alibaba-dubbo-provider

@@ -6,7 +6,6 @@ dubbo:
       name: dubbo
       port: -1
 
-
 #  registry:
 #   The Spring Cloud Dubbo's registry extension
 #    address: spring-cloud://localhost

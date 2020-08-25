@@ -21,6 +21,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-jaxrs2</artifactId>
+			<version>10.1.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>

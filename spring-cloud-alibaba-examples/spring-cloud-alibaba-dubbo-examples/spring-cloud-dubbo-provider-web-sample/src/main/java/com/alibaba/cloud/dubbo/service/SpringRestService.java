@@ -24,13 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.alibaba.cloud.dubbo.util.LoggerUtils.log;
 
@@ -39,6 +33,9 @@ import static com.alibaba.cloud.dubbo.util.LoggerUtils.log;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
+//@RequestMapping(value = "/spring-cloud-alibaba-dubbo-provider", method = RequestMethod.GET)
+//@ResponseBody
+
 @Service(version = "1.0.0")
 @RestController
 public class SpringRestService implements RestService {
