@@ -20,12 +20,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 /**
  * In-Memory {@link UserService} implementation.
  */
-@Service(protocol = "dubbo")
+@DubboService(protocol = "dubbo")
 public class InMemoryUserService implements UserService {
 
 	private Map<Long, User> usersRepository = new HashMap<>();
