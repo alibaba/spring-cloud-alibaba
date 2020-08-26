@@ -78,9 +78,9 @@ public class SentinelAutoConfiguration {
 			System.setProperty(LogBase.LOG_NAME_USE_PID,
 					String.valueOf(properties.getLog().isSwitchPid()));
 		}
-		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.getAppName()))
+		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.APP_NAME_PROP_KEY))
 				&& StringUtils.hasText(projectName)) {
-			System.setProperty(SentinelConfig.getAppName(), projectName);
+			System.setProperty(SentinelConfig.APP_NAME_PROP_KEY, projectName);
 		}
 		if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))
 				&& StringUtils.hasText(properties.getTransport().getPort())) {
