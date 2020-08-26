@@ -17,6 +17,7 @@
 package com.alibaba.cloud.dubbo.gateway.standard;
 
 import com.alibaba.cloud.dubbo.gateway.DubboCloudGatewayExecutor;
+import com.alibaba.cloud.dubbo.gateway.DubboCloudGatewayProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Mono;
@@ -47,9 +48,12 @@ public class DubboSpringCloudGatewayFilter
 		this.dubboCloudGatewayExecutor = dubboCloudGatewayExecutor;
 	}
 
+	DubboCloudGatewayProperties properties = new DubboCloudGatewayProperties();
+
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+		properties.setContextPath("");
 		Object result = dubboCloudGatewayExecutor.execute(exchange.getRequest());
 
 		if (result == null) {

@@ -18,6 +18,9 @@ package com.alibaba.cloud.dubbo.gateway;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.alibaba.cloud.dubbo.gateway.DubboCloudGatewayConstants.CONFIG_PROPERTY_PREFIX;
 
 /**
@@ -36,7 +39,17 @@ public class DubboCloudGatewayProperties {
 	/**
 	 * The context path for the gateway request mapping
 	 */
-	private String contextPath = "";
+	private String contextPath;
+
+	public String getDubboProtocols(String key){
+
+		Map<String,Object> protocols = new HashMap<>();
+
+		protocols.put("protocol", "dubbo");
+		protocols.put("cluster", "failover");
+
+		return protocols.get(key).toString();
+	}
 
 	public boolean isEnabled() {
 		return enabled;

@@ -67,6 +67,8 @@ public class DubboCloudGatewayExecutor {
 
 	private final Map<String, Object> dubboTranslatedAttributes = new HashMap<>();
 
+	DubboCloudGatewayProperties properties = new DubboCloudGatewayProperties();
+
 	public DubboCloudGatewayExecutor(DubboServiceMetadataRepository repository,
 			DubboGenericServiceFactory serviceFactory,
 			DubboGenericServiceExecutionContextFactory contextFactory,
@@ -78,9 +80,8 @@ public class DubboCloudGatewayExecutor {
 		this.dubboCloudGatewayProperties = dubboCloudGatewayProperties;
 		this.conversionService = conversionServices
 				.getIfAvailable(DefaultFormattingConversionService::new);
-		// TODO : Replace these hard-code configurations
-		this.dubboTranslatedAttributes.put("protocol", "dubbo");
-		this.dubboTranslatedAttributes.put("cluster", "failover");
+		this.dubboTranslatedAttributes.put("protocol",properties.getDubboProtocols("protocol"));
+		this.dubboTranslatedAttributes.put("cluster",properties.getDubboProtocols("cluster"));
 	}
 
 	public Object execute(HttpRequest request) {
