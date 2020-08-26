@@ -3,16 +3,7 @@ dubbo:
     base-packages: com.alibaba.cloud.dubbo.service
   protocols:
     dubbo:
-      name: dubbo
       port: -1
-  registries:
-    new:
-      address: spring-cloud://localhost
-#  registry:
-#   The Spring Cloud Dubbo's registry extension
-#    address: spring-cloud://localhost
-#   The traditional Dubbo's registry
-#   address: nacos://127.0.0.1:8848
 
 feign:
   hystrix:
