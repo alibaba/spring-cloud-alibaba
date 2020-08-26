@@ -22,6 +22,7 @@
         <module>spring-cloud-starter-stream-rocketmq</module>
         <module>spring-cloud-starter-bus-rocketmq</module>
         <module>spring-cloud-starter-dubbo</module>
+        <module>spring-cloud-starter-dubbo-gateway</module>
         <module>spring-cloud-starter-alibaba-sidecar</module>
         <module>spring-cloud-circuitbreaker-sentinel</module>
         <module>spring-cloud-starter-alibaba-sentinel</module>
