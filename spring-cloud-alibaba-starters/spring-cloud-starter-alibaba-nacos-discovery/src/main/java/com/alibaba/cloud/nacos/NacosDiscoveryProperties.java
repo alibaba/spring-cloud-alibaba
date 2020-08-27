@@ -209,6 +209,21 @@ public class NacosDiscoveryProperties {
 	 */
 	private boolean ephemeral = true;
 
+	/**
+	 * retry enabled when register and deregister. The default value is false.
+	 */
+	private boolean retryEnabled;
+
+	/**
+	 * retry times when register/deregister service failed.
+	 */
+	private Integer retryTimes;
+
+	/**
+	 * retry period when register/deregister service failed. Time unit: MILLISECONDS.
+	 */
+	private Long retryPeriod;
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -482,6 +497,30 @@ public class NacosDiscoveryProperties {
 		this.ephemeral = ephemeral;
 	}
 
+	public boolean isRetryEnabled() {
+		return retryEnabled;
+	}
+
+	public void setRetryEnabled(boolean retryEnabled) {
+		this.retryEnabled = retryEnabled;
+	}
+
+	public Integer getRetryTimes() {
+		return retryTimes;
+	}
+
+	public void setRetryTimes(Integer retryTimes) {
+		this.retryTimes = retryTimes;
+	}
+
+	public Long getRetryPeriod() {
+		return retryPeriod;
+	}
+
+	public void setRetryPeriod(Long retryPeriod) {
+		this.retryPeriod = retryPeriod;
+	}
+
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
@@ -495,7 +534,9 @@ public class NacosDiscoveryProperties {
 				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
 				+ '\'' + ", secretKey='" + secretKey + '\'' + ", heartBeatInterval="
 				+ heartBeatInterval + ", heartBeatTimeout=" + heartBeatTimeout
-				+ ", ipDeleteTimeout=" + ipDeleteTimeout + '}';
+				+ ", retryEnabled=" + retryEnabled + ", retryTimes=" + retryTimes
+				+ ", retryPeriod=" + retryPeriod + ", ipDeleteTimeout=" + ipDeleteTimeout
+				+ '}';
 	}
 
 	public void overrideFromEnv(Environment env) {

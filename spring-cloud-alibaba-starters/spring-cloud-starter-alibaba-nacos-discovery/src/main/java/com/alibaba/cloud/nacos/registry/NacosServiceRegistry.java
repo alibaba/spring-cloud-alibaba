@@ -17,18 +17,24 @@
 package com.alibaba.cloud.nacos.registry;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.common.timer.HashedWheelTimer;
+import com.alibaba.cloud.nacos.registry.retry.FailedDeregisteredTask;
+import com.alibaba.cloud.nacos.registry.retry.FailedRegisteredTask;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.common.executor.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.StringUtils;
-
-import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
 
 /**
  * @author xiaojing
@@ -39,10 +45,28 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosServiceRegistry.class);
 
+	private final ConcurrentMap<Registration, FailedRegisteredTask> failedRegistered = new ConcurrentHashMap<Registration, FailedRegisteredTask>();
+
+	private final ConcurrentMap<Registration, FailedDeregisteredTask> failedDeregistered = new ConcurrentHashMap<Registration, FailedDeregisteredTask>();
+
+	private HashedWheelTimer retryTimer;
+
+	private long retryPeriod = 5000;
+
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+		if (nacosDiscoveryProperties != null
+				&& nacosDiscoveryProperties.isRetryEnabled()) {
+			ThreadFactory threadFactory = new NameThreadFactory(
+					"NacosServiceRegistryRetryTimer");
+			if (nacosDiscoveryProperties.getRetryPeriod() != null) {
+				retryPeriod = nacosDiscoveryProperties.getRetryPeriod().longValue();
+			}
+			retryTimer = new HashedWheelTimer(threadFactory, retryPeriod,
+					TimeUnit.MILLISECONDS, 128);
+		}
 	}
 
 	@Override
@@ -52,25 +76,31 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			log.warn("No service to register for nacos client...");
 			return;
 		}
-
-		NamingService namingService = namingService();
-		String serviceId = registration.getServiceId();
-		String group = nacosDiscoveryProperties.getGroup();
-
-		Instance instance = getNacosInstanceFromRegistration(registration);
-
+		removeFailedRegistered(registration);
+		removeFailedDeregistered(registration);
 		try {
-			namingService.registerInstance(serviceId, group, instance);
-			log.info("nacos registry, {} {} {}:{} register finished", group, serviceId,
-					instance.getIp(), instance.getPort());
+			doRegister(registration);
 		}
 		catch (Exception e) {
-			log.error("nacos registry, {} register failed...{},", serviceId,
-					registration.toString(), e);
+			log.error("nacos registry, {} register failed...{},",
+					registration.getServiceId(), registration.toString(), e);
 			// rethrow a RuntimeException if the registration is failed.
 			// issue : https://github.com/alibaba/spring-cloud-alibaba/issues/1132
-			rethrowRuntimeException(e);
+			if (nacosDiscoveryProperties.isRetryEnabled()) {
+				addFailedRegistered(registration);
+			}
+			// rethrowRuntimeException(e);
 		}
+	}
+
+	public void doRegister(Registration registration) throws Exception {
+		NamingService namingService = namingService();
+		String serviceId = registration.getServiceId();
+		Instance instance = getNacosInstanceFromRegistration(registration);
+		String group = nacosDiscoveryProperties.getGroup();
+		namingService.registerInstance(serviceId, group, instance);
+		log.info("nacos registry, {} {} {}:{} register finished", group, serviceId,
+				instance.getIp(), instance.getPort());
 	}
 
 	@Override
@@ -82,21 +112,32 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			log.warn("No dom to de-register for nacos client...");
 			return;
 		}
-
-		NamingService namingService = namingService();
-		String serviceId = registration.getServiceId();
-		String group = nacosDiscoveryProperties.getGroup();
-
+		removeFailedRegistered(registration);
+		removeFailedDeregistered(registration);
 		try {
-			namingService.deregisterInstance(serviceId, group, registration.getHost(),
-					registration.getPort(), nacosDiscoveryProperties.getClusterName());
+			doDeRegister(registration);
 		}
 		catch (Exception e) {
 			log.error("ERR_NACOS_DEREGISTER, de-register failed...{},",
 					registration.toString(), e);
+			if (nacosDiscoveryProperties.isRetryEnabled()) {
+				addFailedDeregistered(registration);
+			}
+			// rethrowRuntimeException(e);
 		}
 
 		log.info("De-registration finished.");
+	}
+
+	public void doDeRegister(Registration registration) throws Exception {
+		NamingService namingService = namingService();
+		String serviceId = registration.getServiceId();
+		Instance instance = getNacosInstanceFromRegistration(registration);
+		String group = nacosDiscoveryProperties.getGroup();
+		namingService.deregisterInstance(serviceId, group, registration.getHost(),
+				registration.getPort(), nacosDiscoveryProperties.getClusterName());
+		log.info("nacos registry, {} {} {}:{} de-register finished", group, serviceId,
+				instance.getIp(), instance.getPort());
 	}
 
 	@Override
@@ -167,6 +208,56 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private NamingService namingService() {
 		return nacosDiscoveryProperties.namingServiceInstance();
+	}
+
+	private void addFailedRegistered(Registration registration) {
+		FailedRegisteredTask oldOne = failedRegistered.get(registration);
+		if (oldOne != null) {
+			return;
+		}
+		FailedRegisteredTask newTask = new FailedRegisteredTask(
+				(NacosRegistration) registration, this, nacosDiscoveryProperties);
+		oldOne = failedRegistered.putIfAbsent(registration, newTask);
+		if (oldOne == null) {
+			// never has a retry task. then start a new task for retry.
+			retryTimer.newTimeout(newTask, retryPeriod, TimeUnit.MILLISECONDS);
+		}
+	}
+
+	private void removeFailedRegistered(Registration registration) {
+		FailedRegisteredTask f = failedRegistered.remove(registration);
+		if (f != null) {
+			f.cancel();
+		}
+	}
+
+	private void addFailedDeregistered(Registration registration) {
+		FailedDeregisteredTask oldOne = failedDeregistered.get(registration);
+		if (oldOne != null) {
+			return;
+		}
+		FailedDeregisteredTask newTask = new FailedDeregisteredTask(
+				(NacosRegistration) registration, this, nacosDiscoveryProperties);
+		oldOne = failedDeregistered.putIfAbsent(registration, newTask);
+		if (oldOne == null) {
+			// never has a retry task. then start a new task for retry.
+			retryTimer.newTimeout(newTask, retryPeriod, TimeUnit.MILLISECONDS);
+		}
+	}
+
+	private void removeFailedDeregistered(Registration registration) {
+		FailedDeregisteredTask f = failedDeregistered.remove(registration);
+		if (f != null) {
+			f.cancel();
+		}
+	}
+
+	public void removeFailedRegisteredTask(Registration registration) {
+		failedRegistered.remove(registration);
+	}
+
+	public void removeFailedDeregisteredTask(Registration registration) {
+		failedDeregistered.remove(registration);
 	}
 
 }
