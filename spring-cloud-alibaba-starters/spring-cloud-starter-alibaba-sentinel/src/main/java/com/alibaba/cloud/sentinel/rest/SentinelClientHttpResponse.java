@@ -39,23 +39,30 @@ import org.springframework.http.client.AbstractClientHttpResponse;
  */
 public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
-	private String blockResponse = "RestTemplate request block by sentinel";
+	public static final String BLOCK_RESPONSE = "RestTemplate request block by sentinel";
 
-	public SentinelClientHttpResponse() {
+	private String responseBody;
+
+	private HttpStatus httpStatus;
+
+	public SentinelClientHttpResponse(Throwable throwable) {
+		this.responseBody = throwable.getMessage();
+		this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 	}
 
 	public SentinelClientHttpResponse(String blockResponse) {
-		this.blockResponse = blockResponse;
+		this.responseBody = blockResponse;
+		this.httpStatus = HttpStatus.OK;
 	}
 
 	@Override
 	public int getRawStatusCode() throws IOException {
-		return HttpStatus.OK.value();
+		return httpStatus.value();
 	}
 
 	@Override
 	public String getStatusText() throws IOException {
-		return blockResponse;
+		return responseBody;
 	}
 
 	@Override
@@ -65,7 +72,7 @@ public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
 	@Override
 	public InputStream getBody() throws IOException {
-		return new ByteArrayInputStream(blockResponse.getBytes());
+		return new ByteArrayInputStream(responseBody.getBytes());
 	}
 
 	@Override

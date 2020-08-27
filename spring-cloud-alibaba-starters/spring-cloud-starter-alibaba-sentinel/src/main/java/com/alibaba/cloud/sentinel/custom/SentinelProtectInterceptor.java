@@ -36,6 +36,8 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 
+import static com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse.BLOCK_RESPONSE;
+
 /**
  * Interceptor using by SentinelRestTemplate.
  *
@@ -90,10 +92,9 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		catch (Throwable e) {
 			if (!BlockException.isBlockException(e)) {
 				Tracer.trace(e);
+				return new SentinelClientHttpResponse(e);
 			}
-			else {
-				return handleBlockException(request, body, execution, (BlockException) e);
-			}
+			return handleBlockException(request, body, execution, (BlockException) e);
 		}
 		finally {
 			if (hostWithPathEntry != null) {
@@ -117,7 +118,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				return (ClientHttpResponse) methodInvoke(fallbackMethod, args);
 			}
 			else {
-				return new SentinelClientHttpResponse();
+				return new SentinelClientHttpResponse(BLOCK_RESPONSE);
 			}
 		}
 		// handle flow
@@ -128,7 +129,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			return (ClientHttpResponse) methodInvoke(blockHandler, args);
 		}
 		else {
-			return new SentinelClientHttpResponse();
+			return new SentinelClientHttpResponse(BLOCK_RESPONSE);
 		}
 	}
 
