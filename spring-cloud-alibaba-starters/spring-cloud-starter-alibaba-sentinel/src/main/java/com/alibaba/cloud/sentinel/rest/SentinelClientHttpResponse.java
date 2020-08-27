@@ -39,6 +39,9 @@ import org.springframework.http.client.AbstractClientHttpResponse;
  */
 public class SentinelClientHttpResponse extends AbstractClientHttpResponse {
 
+	/**
+	 * default sentinel blocked response body.
+	 */
 	public static final String BLOCK_RESPONSE = "RestTemplate request block by sentinel";
 
 	private String responseBody;
