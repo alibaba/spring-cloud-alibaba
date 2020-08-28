@@ -28,8 +28,6 @@ import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
@@ -116,13 +114,6 @@ public class SentinelAutoConfigurationTests {
 		rule.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
 		rule.setStrategy(RuleConstant.STRATEGY_DIRECT);
 		FlowRuleManager.loadRules(Arrays.asList(rule));
-
-		DegradeRule degradeRule = new DegradeRule();
-		degradeRule.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT);
-		degradeRule.setResource("GET:" + degradeUrl);
-		degradeRule.setCount(0);
-		degradeRule.setTimeWindow(60);
-		DegradeRuleManager.loadRules(Arrays.asList(degradeRule));
 	}
 
 	@Test
@@ -208,7 +199,7 @@ public class SentinelAutoConfigurationTests {
 	}
 
 	@Test
-	public void testFlowRestTemplate() {
+	public void testRestTemplateBlockHandler() {
 
 		assertThat(restTemplate.getInterceptors().size()).isEqualTo(2);
 		assertThat(restTemplateWithBlockClass.getInterceptors().size()).isEqualTo(1);
@@ -234,15 +225,6 @@ public class SentinelAutoConfigurationTests {
 		assertThatThrownBy(() -> {
 			restTemplateWithoutBlockClass.getForEntity(flowUrl, String.class);
 		}).isInstanceOf(RestClientException.class);
-	}
-
-	@Test
-	public void testFallbackRestTemplate() {
-		ResponseEntity responseEntity = restTemplateWithFallbackClass
-				.getForEntity(degradeUrl, String.class);
-
-		assertThat(responseEntity.getBody()).isEqualTo("Oops fallback");
-		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@Configuration
