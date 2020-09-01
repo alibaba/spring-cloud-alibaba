@@ -17,32 +17,14 @@
 package com.alibaba.cloud.dubbo.bootstrap;
 
 import com.alibaba.cloud.dubbo.service.EchoService;
-import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+@DubboService
+public class EchoServiceImpl implements EchoService {
 
-/**
- * Dubbo Spring Cloud Client Bootstrap.
- */
-@EnableDiscoveryClient
-@EnableAutoConfiguration
-@RestController
-public class DubboSpringCloudClientBootstrap {
-
-	@DubboReference
-	private EchoService echoService;
-
-	@GetMapping("/echo")
+	@Override
 	public String echo(String message) {
-		return echoService.echo(message);
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(DubboSpringCloudClientBootstrap.class);
+		return "[echo] Hello, " + message;
 	}
 
 }

@@ -16,10 +16,6 @@
 
 package com.alibaba.cloud.dubbo.bootstrap;
 
-import com.alibaba.cloud.dubbo.service.EchoService;
-
-import org.apache.dubbo.config.annotation.DubboService;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -37,12 +33,3 @@ public class DubboSpringCloudServerBootstrap {
 
 }
 
-@DubboService
-class EchoServiceImpl implements EchoService {
-
-	@Override
-	public String echo(String message) {
-		return "[echo] Hello, " + message;
-	}
-
-}
