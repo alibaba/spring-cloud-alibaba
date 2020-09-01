@@ -92,7 +92,10 @@ public class NacosServiceDiscovery {
 		metadata.put("nacos.weight", instance.getWeight() + "");
 		metadata.put("nacos.healthy", instance.isHealthy() + "");
 		metadata.put("nacos.cluster", instance.getClusterName() + "");
-		metadata.putAll(instance.getMetadata());
+		if (instance.getMetadata() != null) {
+			metadata.putAll(instance.getMetadata());
+		}
+		metadata.put("nacos.ephemeral", String.valueOf(instance.isEphemeral()));
 		nacosServiceInstance.setMetadata(metadata);
 
 		if (metadata.containsKey("secure")) {

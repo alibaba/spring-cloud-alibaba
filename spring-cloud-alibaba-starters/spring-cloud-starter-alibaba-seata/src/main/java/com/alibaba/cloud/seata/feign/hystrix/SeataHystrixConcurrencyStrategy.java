@@ -44,7 +44,9 @@ import org.springframework.web.context.request.RequestContextHolder;
  */
 public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
 
-	private final Logger logger = LoggerFactory.getLogger(SeataHystrixConcurrencyStrategy.class);
+	private final Logger logger = LoggerFactory
+			.getLogger(SeataHystrixConcurrencyStrategy.class);
+
 	private HystrixConcurrencyStrategy delegate;
 
 	public SeataHystrixConcurrencyStrategy() {
@@ -53,45 +55,54 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 			if (this.delegate instanceof SeataHystrixConcurrencyStrategy) {
 				return;
 			}
-			HystrixCommandExecutionHook commandExecutionHook = HystrixPlugins.getInstance().getCommandExecutionHook();
-			HystrixEventNotifier eventNotifier = HystrixPlugins.getInstance().getEventNotifier();
-			HystrixMetricsPublisher metricsPublisher = HystrixPlugins.getInstance().getMetricsPublisher();
-			HystrixPropertiesStrategy propertiesStrategy = HystrixPlugins.getInstance().getPropertiesStrategy();
-			logCurrentStateOfHystrixPlugins(eventNotifier, metricsPublisher, propertiesStrategy);
+			HystrixCommandExecutionHook commandExecutionHook = HystrixPlugins
+					.getInstance().getCommandExecutionHook();
+			HystrixEventNotifier eventNotifier = HystrixPlugins.getInstance()
+					.getEventNotifier();
+			HystrixMetricsPublisher metricsPublisher = HystrixPlugins.getInstance()
+					.getMetricsPublisher();
+			HystrixPropertiesStrategy propertiesStrategy = HystrixPlugins.getInstance()
+					.getPropertiesStrategy();
+			logCurrentStateOfHystrixPlugins(eventNotifier, metricsPublisher,
+					propertiesStrategy);
 			HystrixPlugins.reset();
 			HystrixPlugins.getInstance().registerConcurrencyStrategy(this);
-			HystrixPlugins.getInstance().registerCommandExecutionHook(commandExecutionHook);
+			HystrixPlugins.getInstance()
+					.registerCommandExecutionHook(commandExecutionHook);
 			HystrixPlugins.getInstance().registerEventNotifier(eventNotifier);
 			HystrixPlugins.getInstance().registerMetricsPublisher(metricsPublisher);
 			HystrixPlugins.getInstance().registerPropertiesStrategy(propertiesStrategy);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex) {
 			logger.error("Failed to register Seata Hystrix Concurrency Strategy", ex);
 		}
 	}
 
 	private void logCurrentStateOfHystrixPlugins(HystrixEventNotifier eventNotifier,
-												 HystrixMetricsPublisher metricsPublisher,
-												 HystrixPropertiesStrategy propertiesStrategy) {
+			HystrixMetricsPublisher metricsPublisher,
+			HystrixPropertiesStrategy propertiesStrategy) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Current Hystrix plugins configuration is [" + "concurrencyStrategy [" + this.delegate + "],"
-				+ "eventNotifier [" + eventNotifier + "]," + "metricPublisher [" + metricsPublisher + "],"
-				+ "propertiesStrategy [" + propertiesStrategy + "]," + "]");
+			logger.debug("Current Hystrix plugins configuration is ["
+					+ "concurrencyStrategy [" + this.delegate + "]," + "eventNotifier ["
+					+ eventNotifier + "]," + "metricPublisher [" + metricsPublisher + "],"
+					+ "propertiesStrategy [" + propertiesStrategy + "]," + "]");
 			logger.debug("Registering Seata Hystrix Concurrency Strategy.");
 		}
 	}
 
 	@Override
-	public ThreadPoolExecutor getThreadPool(HystrixThreadPoolKey threadPoolKey, HystrixProperty<Integer> corePoolSize,
-											HystrixProperty<Integer> maximumPoolSize,
-											HystrixProperty<Integer> keepAliveTime, TimeUnit unit,
-											BlockingQueue<Runnable> workQueue) {
-		return this.delegate.getThreadPool(threadPoolKey, corePoolSize, maximumPoolSize, keepAliveTime, unit,
-			workQueue);
+	public ThreadPoolExecutor getThreadPool(HystrixThreadPoolKey threadPoolKey,
+			HystrixProperty<Integer> corePoolSize,
+			HystrixProperty<Integer> maximumPoolSize,
+			HystrixProperty<Integer> keepAliveTime, TimeUnit unit,
+			BlockingQueue<Runnable> workQueue) {
+		return this.delegate.getThreadPool(threadPoolKey, corePoolSize, maximumPoolSize,
+				keepAliveTime, unit, workQueue);
 	}
 
 	@Override
 	public ThreadPoolExecutor getThreadPool(HystrixThreadPoolKey threadPoolKey,
-											HystrixThreadPoolProperties threadPoolProperties) {
+			HystrixThreadPoolProperties threadPoolProperties) {
 		return this.delegate.getThreadPool(threadPoolKey, threadPoolProperties);
 	}
 
@@ -101,7 +112,8 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 	}
 
 	@Override
-	public <T> HystrixRequestVariable<T> getRequestVariable(HystrixRequestVariableLifecycle<T> rv) {
+	public <T> HystrixRequestVariable<T> getRequestVariable(
+			HystrixRequestVariableLifecycle<T> rv) {
 		return this.delegate.getRequestVariable(rv);
 	}
 
@@ -114,14 +126,16 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 		Callable<K> wrappedCallable;
 		if (this.delegate != null) {
 			wrappedCallable = this.delegate.wrapCallable(c);
-		} else {
+		}
+		else {
 			wrappedCallable = c;
 		}
 		if (wrappedCallable instanceof SeataContextCallable) {
 			return wrappedCallable;
 		}
 
-		return new SeataContextCallable<>(wrappedCallable, RequestContextHolder.getRequestAttributes());
+		return new SeataContextCallable<>(wrappedCallable,
+				RequestContextHolder.getRequestAttributes());
 	}
 
 	private static class SeataContextCallable<K> implements Callable<K> {
@@ -144,7 +158,8 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 				RequestContextHolder.setRequestAttributes(requestAttributes);
 				RootContext.bind(xid);
 				return actual.call();
-			} finally {
+			}
+			finally {
 				RootContext.unbind();
 				RequestContextHolder.resetRequestAttributes();
 			}
