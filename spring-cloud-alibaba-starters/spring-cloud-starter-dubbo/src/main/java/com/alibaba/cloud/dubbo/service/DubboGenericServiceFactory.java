@@ -30,11 +30,13 @@ import javax.annotation.PreDestroy;
 
 import com.alibaba.cloud.dubbo.metadata.DubboRestServiceMetadata;
 import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
+
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.ReferenceBean;
 import org.apache.dubbo.rpc.service.GenericService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,10 +97,9 @@ public class DubboGenericServiceFactory {
 	private ReferenceBean<GenericService> build(String interfaceName, String version,
 			String group, Map<String, Object> dubboTranslatedAttributes) {
 
-		Integer key = Objects.hash(interfaceName, version, group,
-				dubboTranslatedAttributes);
+		String key = createKey(interfaceName, version, group, dubboTranslatedAttributes);
 
-		return cache.computeIfAbsent(group + key, k -> {
+		return cache.computeIfAbsent(key, k -> {
 			ReferenceBean<GenericService> referenceBean = new ReferenceBean<>();
 			referenceBean.setGeneric(true);
 			referenceBean.setInterface(interfaceName);
@@ -108,6 +109,12 @@ public class DubboGenericServiceFactory {
 			bindReferenceBean(referenceBean, dubboTranslatedAttributes);
 			return referenceBean;
 		});
+	}
+
+	private String createKey(String interfaceName, String version, String group,
+			Map<String, Object> dubboTranslatedAttributes) {
+		return group + "#"
+				+ Objects.hash(interfaceName, version, group, dubboTranslatedAttributes);
 	}
 
 	private void bindReferenceBean(ReferenceBean<GenericService> referenceBean,
@@ -155,7 +162,7 @@ public class DubboGenericServiceFactory {
 		cache.clear();
 	}
 
-	public synchronized void destroy(String serviceName) {
+	public void destroy(String serviceName) {
 		Set<String> removeGroups = new HashSet<>(cache.keySet());
 		for (String key : removeGroups) {
 			if (key.contains(serviceName)) {

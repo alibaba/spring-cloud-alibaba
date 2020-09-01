@@ -26,13 +26,13 @@ import org.springframework.cloud.client.ServiceInstance;
  *
  * @author <a href="mailto:liuxx-u@outlook.com">liuxx</a>
  */
-public interface MetadataServiceInstanceSelector {
+public interface ServiceInstanceSelector {
 
 	/**
-	 * choose a service instance to get metadata.
+	 * Select a service instance to get metadata.
 	 * @param serviceInstances all service instance
 	 * @return the service instance to get metadata
 	 */
-	Optional<ServiceInstance> choose(List<ServiceInstance> serviceInstances);
+	Optional<ServiceInstance> select(List<ServiceInstance> serviceInstances);
 
 }
