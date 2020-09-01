@@ -14,33 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.util;
+package com.alibaba.cloud.dubbo.metadata.repository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.springframework.cloud.client.ServiceInstance;
+
+import static java.util.Optional.of;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
- * The constants for Dubbo Spring Cloud
+ * Random {@link ServiceInstanceSelector}
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public interface DubboCloudConstants {
+public class RandomServiceInstanceSelector implements ServiceInstanceSelector {
 
-	/**
-	 * The property prefix of Configuration
-	 */
-	String CONFIG_PROPERTY_PREFIX = "dubbo.cloud";
-
-	/**
-	 * The property name of Registry type
-	 */
-	String REGISTRY_TYPE_PROPERTY_NAME = CONFIG_PROPERTY_PREFIX + ".registry-type";
-
-	/**
-	 * The property value of Spring Cloud Registry
-	 */
-	String SPRING_CLOUD_REGISTRY_PROPERTY_VALUE = "spring-cloud";
-
-	/**
-	 * The property value of Dubbo Cloud Registry
-	 */
-	String DUBBO_CLOUD_REGISTRY_PROPERTY_VALUE = "dubbo-cloud";
-
+	@Override
+	public Optional<ServiceInstance> select(List<ServiceInstance> serviceInstances) {
+		if (isEmpty(serviceInstances)) {
+			return Optional.empty();
+		}
+		ThreadLocalRandom random = ThreadLocalRandom.current();
+		return of(serviceInstances.get(random.nextInt(serviceInstances.size())));
+	}
 }

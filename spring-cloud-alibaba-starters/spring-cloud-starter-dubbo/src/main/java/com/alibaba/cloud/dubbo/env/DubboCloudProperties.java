@@ -23,6 +23,7 @@ import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import static com.alibaba.cloud.dubbo.util.DubboCloudConstants.CONFIG_PROPERTY_PREFIX;
+import static com.alibaba.cloud.dubbo.util.DubboCloudConstants.DUBBO_CLOUD_REGISTRY_PROPERTY_VALUE;
 import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
 import static org.springframework.util.StringUtils.hasText;
 import static org.springframework.util.StringUtils.trimAllWhitespace;
@@ -47,6 +48,8 @@ public class DubboCloudProperties {
 	 * @see #ALL_DUBBO_SERVICES
 	 */
 	private String subscribedServices = ALL_DUBBO_SERVICES;
+
+	private String registryType = DUBBO_CLOUD_REGISTRY_PROPERTY_VALUE;
 
 	public String getSubscribedServices() {
 		return subscribedServices;
@@ -80,4 +83,11 @@ public class DubboCloudProperties {
 		return Collections.unmodifiableSet(subscribedServices);
 	}
 
+	public String getRegistryType() {
+		return registryType;
+	}
+
+	public void setRegistryType(String registryType) {
+		this.registryType = registryType;
+	}
 }
