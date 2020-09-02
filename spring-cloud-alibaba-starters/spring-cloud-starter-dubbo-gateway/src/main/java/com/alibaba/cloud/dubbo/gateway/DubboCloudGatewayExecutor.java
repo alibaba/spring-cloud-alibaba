@@ -71,12 +71,12 @@ public class DubboCloudGatewayExecutor {
 			DubboGenericServiceFactory serviceFactory,
 			DubboGenericServiceExecutionContextFactory contextFactory,
 			DubboCloudGatewayProperties dubboCloudGatewayProperties,
-			ObjectProvider<ConversionService> conversionServices) {
+			ObjectProvider<ConversionService> conversionService) {
 		this.repository = repository;
 		this.serviceFactory = serviceFactory;
 		this.contextFactory = contextFactory;
 		this.dubboCloudGatewayProperties = dubboCloudGatewayProperties;
-		this.conversionService = conversionServices
+		this.conversionService = conversionService
 				.getIfAvailable(DefaultFormattingConversionService::new);
 		// TODO : Replace these hard-code configurations
 		this.dubboTranslatedAttributes.put("protocol", "dubbo");
