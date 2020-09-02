@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.dubbo.gateway.standard;
+package com.alibaba.cloud.dubbo.gateway.autoconfigure;
 
 import com.alibaba.cloud.dubbo.autoconfigure.DubboMetadataAutoConfiguration;
 import com.alibaba.cloud.dubbo.autoconfigure.DubboServiceAutoConfiguration;
 import com.alibaba.cloud.dubbo.gateway.DubboCloudGatewayExecutor;
 import com.alibaba.cloud.dubbo.gateway.DubboCloudGatewayProperties;
-import com.alibaba.cloud.dubbo.gateway.autoconfigure.DubboCloudGatewayAutoConfiguration;
+import com.alibaba.cloud.dubbo.gateway.standard.DubboSpringCloudGatewayFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

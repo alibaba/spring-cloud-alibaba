@@ -106,12 +106,12 @@
             <scope>test</scope>
         </dependency>
 
-<!--        &lt;!&ndash; Eureka Service Discovery &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <!-- Eureka Service Discovery -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Zookeeper Service Discovery -->
         <dependency>
@@ -147,20 +147,20 @@
             <scope>test</scope>
         </dependency>
 
-<!--        &lt;!&ndash; Spring Cloud Consul &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-consul-discovery</artifactId>-->
-<!--            <version>${spring-cloud-consul.version}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <!-- Spring Cloud Consul -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+            <version>${spring-cloud-consul.version}</version>
+            <scope>test</scope>
+        </dependency>
 
-<!--        &lt;!&ndash; Nacos Service Discovery &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <!-- Nacos Service Discovery -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

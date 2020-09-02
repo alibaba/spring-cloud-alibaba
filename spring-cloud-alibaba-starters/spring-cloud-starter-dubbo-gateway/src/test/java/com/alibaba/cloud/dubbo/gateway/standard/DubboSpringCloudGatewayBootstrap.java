@@ -31,7 +31,7 @@ public class DubboSpringCloudGatewayBootstrap {
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder(DubboSpringCloudGatewayBootstrap.class)
-				.properties("spring.profiles.active=zookeeper").run(args);
+				.properties("spring.profiles.active=nacos").run(args);
 	}
 
 }
