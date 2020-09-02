@@ -51,7 +51,6 @@ import org.springframework.util.CollectionUtils;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
 import static java.util.stream.StreamSupport.stream;
 import static org.apache.dubbo.common.URLBuilder.from;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
@@ -437,19 +436,19 @@ public class DubboCloudRegistry extends FailbackRegistry {
 
 		// Sync subscription
 		subscribeDubboMetadataServiceURLs(subscribedURL, listener,
-				singleton(getServiceName(subscribedURL)));
+				getServiceName(subscribedURL));
 
 		// Sync subscription
 		if (containsProviderCategory(subscribedURL)) {
 			registerServiceInstancesChangedListener(subscribedURL, event -> {
 
-				Set<String> serviceNames = getServices(subscribedURL);
+				String sourceServiceName = event.getServiceName();
+				String serviceName = getServiceName(subscribedURL);
 
-				if (!serviceNames.contains(event.getServiceName())) {
-					return;
+				if (Objects.equals(sourceServiceName, serviceName)) {
+					subscribeDubboMetadataServiceURLs(subscribedURL, listener,
+							sourceServiceName);
 				}
-
-				subscribeDubboMetadataServiceURLs(subscribedURL, listener, serviceNames);
 			});
 		}
 	}
@@ -459,19 +458,34 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	}
 
 	private void subscribeDubboMetadataServiceURLs(URL subscribedURL,
-			NotifyListener listener, Set<String> serviceNames) {
+			NotifyListener listener, String serviceName) {
 
 		String serviceInterface = subscribedURL.getServiceInterface();
 		String version = subscribedURL.getParameter(VERSION_KEY);
 		String protocol = subscribedURL.getParameter(PROTOCOL_KEY);
 
-		List<ServiceInstance> serviceInstances = getServiceInstances(serviceNames);
+		List<ServiceInstance> serviceInstances = getServiceInstances(serviceName);
 
 		List<URL> urls = dubboMetadataUtils.getDubboMetadataServiceURLs(serviceInstances,
 				serviceInterface, version, protocol);
 
 		notifyAllSubscribedURLs(subscribedURL, urls, listener);
 	}
+
+	// private void subscribeDubboMetadataServiceURLs(URL subscribedURL,
+	// NotifyListener listener, Set<String> serviceNames) {
+	//
+	// String serviceInterface = subscribedURL.getServiceInterface();
+	// String version = subscribedURL.getParameter(VERSION_KEY);
+	// String protocol = subscribedURL.getParameter(PROTOCOL_KEY);
+	//
+	// List<ServiceInstance> serviceInstances = getServiceInstances(serviceNames);
+	//
+	// List<URL> urls = dubboMetadataUtils.getDubboMetadataServiceURLs(serviceInstances,
+	// serviceInterface, version, protocol);
+	//
+	// notifyAllSubscribedURLs(subscribedURL, urls, listener);
+	// }
 
 	private boolean containsProviderCategory(URL subscribedURL) {
 		String category = subscribedURL.getParameter(CATEGORY_KEY);
