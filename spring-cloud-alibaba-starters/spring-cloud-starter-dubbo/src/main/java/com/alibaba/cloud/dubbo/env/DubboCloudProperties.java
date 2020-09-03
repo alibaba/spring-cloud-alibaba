@@ -90,4 +90,5 @@ public class DubboCloudProperties {
 	public void setRegistryType(String registryType) {
 		this.registryType = registryType;
 	}
+
 }

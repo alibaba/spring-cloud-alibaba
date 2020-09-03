@@ -21,7 +21,6 @@ import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepositor
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
-
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
@@ -31,7 +30,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import static com.alibaba.cloud.dubbo.util.DubboCloudConstants.SPRING_CLOUD_REGISTRY_PROPERTY_VALUE;
-import static java.lang.System.getProperty;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose
@@ -52,12 +50,6 @@ public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 	 * Spring Cloud Address.
 	 */
 	public static String ADDRESS = "localhost";
-
-	public static String MODE = "dubbo.cloud.";
-
-	private static String SERVICES_LOOKUP_SCHEDULER_THREAD_NAME_PREFIX = getProperty(
-			"dubbo.services.lookup.scheduler.thread.name.prefix ",
-			"dubbo-services-lookup-");
 
 	private static ConfigurableApplicationContext applicationContext;
 

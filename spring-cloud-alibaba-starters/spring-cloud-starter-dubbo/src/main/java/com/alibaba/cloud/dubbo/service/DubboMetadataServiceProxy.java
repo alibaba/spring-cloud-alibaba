@@ -24,9 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.metadata.repository.ServiceInstanceSelector;
 import com.alibaba.cloud.dubbo.util.DubboMetadataUtils;
-
 import org.apache.dubbo.common.URL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +80,7 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	}
 
 	/**
-	 * Get the proxy of {@link DubboMetadataService} if possible
+	 * Get the proxy of {@link DubboMetadataService} if possible.
 	 * @param serviceInstances the instances of {@link DubboMetadataService}
 	 * @return <code>null</code> if initialization can't be done
 	 */
@@ -114,7 +112,7 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	}
 
 	/**
-	 * Is the {@link DubboMetadataService}'s Proxy initialized or not
+	 * Is the {@link DubboMetadataService}'s Proxy initialized or not.
 	 * @param serviceName the service name
 	 * @return <code>true</code> if initialized , or return <code>false</code>
 	 */

@@ -31,7 +31,6 @@ import com.alibaba.cloud.dubbo.service.IntrospectiveDubboMetadataService;
 import com.alibaba.cloud.dubbo.util.DubboMetadataUtils;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
 import feign.Contract;
-
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
