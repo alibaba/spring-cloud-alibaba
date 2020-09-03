@@ -17,18 +17,18 @@
 package com.alibaba.cloud.dubbo.autoconfigure;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.alibaba.cloud.dubbo.metadata.DubboProtocolConfigSupplier;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.metadata.repository.MetadataServiceInstanceSelector;
+import com.alibaba.cloud.dubbo.metadata.repository.RandomServiceInstanceSelector;
+import com.alibaba.cloud.dubbo.metadata.repository.ServiceInstanceSelector;
 import com.alibaba.cloud.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import com.alibaba.cloud.dubbo.metadata.resolver.MetadataResolver;
-import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceExporter;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.service.IntrospectiveDubboMetadataService;
+import com.alibaba.cloud.dubbo.util.DubboMetadataUtils;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
 import feign.Contract;
 import org.apache.dubbo.config.ProtocolConfig;
@@ -44,7 +44,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.util.CollectionUtils;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata.
@@ -53,7 +52,8 @@ import org.springframework.util.CollectionUtils;
  */
 @Configuration(proxyBeanMethods = false)
 @Import({ DubboServiceMetadataRepository.class, IntrospectiveDubboMetadataService.class,
-		DubboMetadataServiceExporter.class, JSONUtils.class })
+		DubboMetadataServiceExporter.class, JSONUtils.class,
+		DubboMetadataServiceProxy.class, DubboMetadataUtils.class })
 public class DubboMetadataAutoConfiguration {
 
 	@Autowired
@@ -73,9 +73,8 @@ public class DubboMetadataAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public MetadataServiceInstanceSelector metadataServiceInstanceSelector() {
-		return serviceInstances -> CollectionUtils.isEmpty(serviceInstances)
-				? Optional.empty() : serviceInstances.stream().findAny();
+	public ServiceInstanceSelector metadataServiceInstanceSelector() {
+		return new RandomServiceInstanceSelector();
 	}
 
 	@Bean
@@ -84,15 +83,7 @@ public class DubboMetadataAutoConfiguration {
 		return new DubboProtocolConfigSupplier(protocols);
 	}
 
-	@Bean
-	@ConditionalOnMissingBean
-	public DubboMetadataServiceProxy dubboMetadataConfigServiceProxy(
-			DubboGenericServiceFactory factory) {
-		return new DubboMetadataServiceProxy(factory);
-	}
-
 	// Event-Handling
-
 	@EventListener(ServiceBeanExportedEvent.class)
 	public void onServiceBeanExported(ServiceBeanExportedEvent event) {
 		ServiceBean serviceBean = event.getServiceBean();
