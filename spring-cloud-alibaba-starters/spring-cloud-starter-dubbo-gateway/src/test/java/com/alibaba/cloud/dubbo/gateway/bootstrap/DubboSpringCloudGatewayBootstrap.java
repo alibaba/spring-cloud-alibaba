@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.bootstrap;
+package com.alibaba.cloud.dubbo.gateway.bootstrap;
 
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
- * Dubbo Spring Cloud Provider Bootstrap.
+ * The bootstrap class of Dubbo Spring Cloud Gateway.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@EnableDiscoveryClient
 @EnableAutoConfiguration
-public class DubboSpringCloudProviderBootstrap {
+@EnableDiscoveryClient
+public final class DubboSpringCloudGatewayBootstrap {
+
+	private DubboSpringCloudGatewayBootstrap() {
+	}
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(DubboSpringCloudProviderBootstrap.class)
-				.properties("spring.profiles.active=nacos").web(WebApplicationType.NONE)
-				.run(args);
+		new SpringApplicationBuilder(DubboSpringCloudGatewayBootstrap.class)
+				.properties("spring.profiles.active=nacos").run(args);
 	}
 
 }

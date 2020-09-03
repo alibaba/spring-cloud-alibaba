@@ -6,12 +6,9 @@ com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationNonWebApplicationA
 com.alibaba.cloud.dubbo.autoconfigure.DubboLoadBalancedRestTemplateAutoConfiguration,\
 com.alibaba.cloud.dubbo.autoconfigure.DubboServiceAutoConfiguration,\
 com.alibaba.cloud.dubbo.autoconfigure.DubboServiceDiscoveryAutoConfiguration
-
 org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration=\
 com.alibaba.cloud.dubbo.actuate.DubboMetadataEndpointAutoConfiguration
-
 org.springframework.context.ApplicationContextInitializer=\
 com.alibaba.cloud.dubbo.context.DubboServiceRegistrationApplicationContextInitializer
-
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.alibaba.cloud.dubbo.env.DubboNonWebApplicationEnvironmentPostProcessor
