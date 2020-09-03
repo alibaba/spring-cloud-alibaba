@@ -40,9 +40,7 @@ import com.alibaba.cloud.dubbo.util.DubboMetadataUtils;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-
 import org.apache.dubbo.common.URL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

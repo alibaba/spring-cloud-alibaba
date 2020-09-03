@@ -98,11 +98,12 @@ import static org.springframework.util.StringUtils.hasText;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.springframework.cloud.client.discovery.DiscoveryClient")
 @ConditionalOnProperty(name = "spring.cloud.discovery.enabled", matchIfMissing = true)
-@AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
-		ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
-		CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
-		NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME }, value = {
-				DubboServiceRegistrationAutoConfiguration.class })
+@AutoConfigureAfter(
+		name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
+				ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
+				CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
+				NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME },
+		value = { DubboServiceRegistrationAutoConfiguration.class })
 public class DubboServiceDiscoveryAutoConfiguration {
 
 	/**

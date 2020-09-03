@@ -23,28 +23,29 @@ package com.alibaba.cloud.dubbo.util;
  */
 public final class DubboCloudConstants {
 
-	private DubboCloudConstants() {
-		throw new AssertionError("Must not instantiate constant utility class");
-	}
-
 	/**
 	 * The property prefix of Configuration.
 	 */
 	public static final String CONFIG_PROPERTY_PREFIX = "dubbo.cloud";
 
 	/**
-	 * The property name of Registry type
+	 * The property name of Registry type.
 	 */
-	String REGISTRY_TYPE_PROPERTY_NAME = CONFIG_PROPERTY_PREFIX + ".registry-type";
+	public static final String REGISTRY_TYPE_PROPERTY_NAME = CONFIG_PROPERTY_PREFIX
+			+ ".registry-type";
 
 	/**
-	 * The property value of Spring Cloud Registry
+	 * The property value of Spring Cloud Registry.
 	 */
-	String SPRING_CLOUD_REGISTRY_PROPERTY_VALUE = "spring-cloud";
+	public static final String SPRING_CLOUD_REGISTRY_PROPERTY_VALUE = "spring-cloud";
 
 	/**
-	 * The property value of Dubbo Cloud Registry
+	 * The property value of Dubbo Cloud Registry.
 	 */
-	String DUBBO_CLOUD_REGISTRY_PROPERTY_VALUE = "dubbo-cloud";
+	public static final String DUBBO_CLOUD_REGISTRY_PROPERTY_VALUE = "dubbo-cloud";
+
+	private DubboCloudConstants() {
+		throw new AssertionError("Must not instantiate constant utility class");
+	}
 
 }
