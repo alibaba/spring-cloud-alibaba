@@ -16,6 +16,9 @@
 
 package com.alibaba.cloud.sidecar;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -28,10 +31,13 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * @author www.itmuch.com
+ * @author yuhuangbin
  */
 public class SidecarHealthChecker {
 
 	private static final Logger log = LoggerFactory.getLogger(SidecarHealthChecker.class);
+
+	private final Map<String, SidecarInstanceCache> sidecarInstanceCacheMap = new ConcurrentHashMap<>();
 
 	private final SidecarDiscoveryClient sidecarDiscoveryClient;
 
@@ -52,26 +58,60 @@ public class SidecarHealthChecker {
 
 	public void check() {
 		Schedulers.single().schedulePeriodically(() -> {
+			String applicationName = environment.getProperty("spring.application.name");
 			String ip = sidecarProperties.getIp();
 			Integer port = sidecarProperties.getPort();
 
 			Status status = healthIndicator.health().getStatus();
-			String applicationName = environment.getProperty("spring.application.name");
 
+			instanceCache(applicationName, ip, port, status);
 			if (status.equals(Status.UP)) {
-				this.sidecarDiscoveryClient.registerInstance(applicationName, ip, port);
-				log.debug(
-						"Health check success. register this instance. applicationName = {}, ip = {}, port = {}, status = {}",
-						applicationName, ip, port, status);
+				if (needRegister(applicationName, ip, port, status)) {
+					this.sidecarDiscoveryClient.registerInstance(applicationName, ip,
+							port);
+					log.info(
+							"Polyglot service changed and Health check success. register the new instance. applicationName = {}, ip = {}, port = {}, status = {}",
+							applicationName, ip, port, status);
+				}
 			}
 			else {
 				log.warn(
 						"Health check failed. unregister this instance. applicationName = {}, ip = {}, port = {}, status = {}",
 						applicationName, ip, port, status);
 				this.sidecarDiscoveryClient.deregisterInstance(applicationName, ip, port);
+
+				sidecarInstanceCacheMap.put(applicationName,
+						buildCache(ip, port, status));
 			}
 
 		}, 0, sidecarProperties.getHealthCheckInterval(), TimeUnit.MILLISECONDS);
+	}
+
+	private void instanceCache(String applicationName, String ip, Integer port,
+			Status status) {
+		sidecarInstanceCacheMap.putIfAbsent(applicationName,
+				buildCache(ip, port, status));
+	}
+
+	private boolean needRegister(String applicationName, String ip, Integer port,
+			Status status) {
+		SidecarInstanceCache cacheRecord = sidecarInstanceCacheMap.get(applicationName);
+		SidecarInstanceCache cache = buildCache(ip, port, status);
+
+		if (!Objects.equals(cache, cacheRecord)) {
+			// modify the cache info
+			sidecarInstanceCacheMap.put(applicationName, cache);
+			return true;
+		}
+		return false;
+	}
+
+	private SidecarInstanceCache buildCache(String ip, Integer port, Status status) {
+		SidecarInstanceCache cache = new SidecarInstanceCache();
+		cache.setIp(ip);
+		cache.setPort(port);
+		cache.setStatus(status);
+		return cache;
 	}
 
 }
