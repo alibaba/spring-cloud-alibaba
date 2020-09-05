@@ -1,6 +1,6 @@
 dubbo:
   cloud:
-    subscribed-services: spring-cloud-alibaba-dubbo-server,test-fix1529
+    subscribed-services: spring-cloud-alibaba-dubbo-server
 
 spring:
   application:
