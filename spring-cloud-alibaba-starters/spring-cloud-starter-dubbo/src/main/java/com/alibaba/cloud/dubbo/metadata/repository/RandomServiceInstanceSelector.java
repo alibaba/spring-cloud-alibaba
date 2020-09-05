@@ -18,21 +18,27 @@ package com.alibaba.cloud.dubbo.metadata.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.cloud.client.ServiceInstance;
 
-/**
- * metadata service instance selector.
- *
- * @author <a href="mailto:liuxx-u@outlook.com">liuxx</a>
- */
-public interface MetadataServiceInstanceSelector {
+import static java.util.Optional.of;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
-	/**
-	 * choose a service instance to get metadata.
-	 * @param serviceInstances all service instance
-	 * @return the service instance to get metadata
-	 */
-	Optional<ServiceInstance> choose(List<ServiceInstance> serviceInstances);
+/**
+ * Random {@link ServiceInstanceSelector}.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ */
+public class RandomServiceInstanceSelector implements ServiceInstanceSelector {
+
+	@Override
+	public Optional<ServiceInstance> select(List<ServiceInstance> serviceInstances) {
+		if (isEmpty(serviceInstances)) {
+			return Optional.empty();
+		}
+		ThreadLocalRandom random = ThreadLocalRandom.current();
+		return of(serviceInstances.get(random.nextInt(serviceInstances.size())));
+	}
 
 }
