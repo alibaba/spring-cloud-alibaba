@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.registry;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
@@ -101,7 +102,12 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	@Override
 	public void close() {
-
+		try {
+			nacosDiscoveryProperties.namingServiceInstance().shutDown();
+		}
+		catch (NacosException e) {
+			log.error("Nacos namingService shutDown failed", e);
+		}
 	}
 
 	@Override
