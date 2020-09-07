@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
@@ -210,11 +211,19 @@ public class NacosDiscoveryProperties {
 	 */
 	private boolean ephemeral = true;
 
+	/**
+	 * If the instance needs to be re-registered. The default value is false.
+	 */
+	private boolean needNewlyRegister = false;
+
 	@Autowired
 	private InetUtils inetUtils;
 
 	@Autowired
 	private Environment environment;
+
+	@Autowired
+	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
 
 	private NamingService namingService;
 
@@ -272,12 +281,16 @@ public class NacosDiscoveryProperties {
 		Properties properties = getNacosProperties();
 		this.namingService = createNamingService(properties);
 		this.namingMaintainService = createMaintainService(properties);
+
+		if (needNewlyRegister) {
+			nacosAutoServiceRegistration.start();
+		}
 	}
 
-    @PreDestroy
-    public void destroy() throws NacosException {
-        namingService.shutDown();
-    }
+	@PreDestroy
+	public void destroy() throws NacosException {
+		shutdownNacosService();
+	}
 
 	public String getEndpoint() {
 		return endpoint;
@@ -596,6 +609,11 @@ public class NacosDiscoveryProperties {
 		}
 		matcher.appendTail(sb);
 		return sb.toString();
+	}
+
+	private void shutdownNacosService() throws NacosException {
+		nacosAutoServiceRegistration.stop();
+		needNewlyRegister = true;
 	}
 
 }
