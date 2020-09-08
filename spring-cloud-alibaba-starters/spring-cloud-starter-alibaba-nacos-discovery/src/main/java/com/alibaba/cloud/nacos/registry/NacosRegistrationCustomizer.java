@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.gateway;
-
-import com.alibaba.cloud.dubbo.util.DubboCloudConstants;
+package com.alibaba.cloud.nacos.registry;
 
 /**
- * The constants of Dubbo Cloud Gateway.
- *
- * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author L.cm
  */
-public abstract class DubboCloudGatewayConstants {
+public interface NacosRegistrationCustomizer {
 
 	/**
-	 * The property prefix of Configuration.
+	 * customize NacosRegistration.
+	 * @param registration NacosRegistration
 	 */
-	public static final String CONFIG_PROPERTY_PREFIX = DubboCloudConstants.CONFIG_PROPERTY_PREFIX
-			+ ".gateway";
+	void customize(NacosRegistration registration);
 
 }

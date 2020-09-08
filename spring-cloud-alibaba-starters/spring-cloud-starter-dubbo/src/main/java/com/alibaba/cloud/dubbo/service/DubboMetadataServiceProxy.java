@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.metadata.repository.ServiceInstanceSelector;
 import com.alibaba.cloud.dubbo.util.DubboMetadataUtils;
 import org.apache.dubbo.common.URL;
@@ -60,7 +59,6 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 
 	public DubboMetadataServiceProxy(
 			DubboGenericServiceFactory dubboGenericServiceFactory,
-			DubboServiceMetadataRepository dubboServiceMetadataRepository,
 			DubboMetadataUtils dubboMetadataUtils,
 			ServiceInstanceSelector serviceInstanceSelector,
 			DiscoveryClient discoveryClient) {
