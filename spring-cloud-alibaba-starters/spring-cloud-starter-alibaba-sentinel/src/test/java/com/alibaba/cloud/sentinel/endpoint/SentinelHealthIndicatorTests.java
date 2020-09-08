@@ -110,8 +110,8 @@ public class SentinelHealthIndicatorTests {
 		Health health = sentinelHealthIndicator.health();
 
 		assertThat(health.getStatus()).isEqualTo(Status.UNKNOWN);
-		assertThat(health.getDetails().get("dashboard")).isEqualTo(
-				new Status(Status.UNKNOWN.getCode(), "localhost:8080 can't be connected"));
+		assertThat(health.getDetails().get("dashboard")).isEqualTo(new Status(
+				Status.UNKNOWN.getCode(), "localhost:8080 can't be connected"));
 	}
 
 	@Test
