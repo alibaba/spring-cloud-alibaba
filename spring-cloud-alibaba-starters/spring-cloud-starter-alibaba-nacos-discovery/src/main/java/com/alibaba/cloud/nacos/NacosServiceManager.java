@@ -111,4 +111,7 @@ public class NacosServiceManager {
 		namingMaintainService = createNamingMaintainService(nacosProperties);
 	}
 
+    public void nacosServiceShutDown() throws NacosException {
+	    this.namingService.shutDown();
+    }
 }
