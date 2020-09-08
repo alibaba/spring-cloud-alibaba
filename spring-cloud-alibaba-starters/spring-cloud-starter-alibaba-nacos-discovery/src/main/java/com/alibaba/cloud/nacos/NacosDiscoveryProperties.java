@@ -274,10 +274,10 @@ public class NacosDiscoveryProperties {
 		this.namingMaintainService = createMaintainService(properties);
 	}
 
-    @PreDestroy
-    public void destroy() throws NacosException {
-        namingService.shutDown();
-    }
+	@PreDestroy
+	public void destroy() throws NacosException {
+		namingService.shutDown();
+	}
 
 	public String getEndpoint() {
 		return endpoint;

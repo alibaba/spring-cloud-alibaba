@@ -1,7 +1,0 @@
-dubbo:
-  protocols:
-    dubbo:
-      port: -1
-
-server:
-  port: 9090
