@@ -105,7 +105,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 				// If failed to send heartbeat message, means that the Dashboard is DOWN
 				dashboardUp = false;
 				detailMap.put("dashboard",
-						new Status(Status.DOWN.getCode(), String.format(
+						new Status(Status.UNKNOWN.getCode(), String.format(
 								"the dashboard servers [%s] one of them can't be connected",
 								consoleServerList)));
 			}
@@ -138,7 +138,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 				// DOWN
 				dataSourceUp = false;
 				dataSourceDetailMap.put(dataSourceBeanName,
-						new Status(Status.DOWN.getCode(), e.getMessage()));
+						new Status(Status.UNKNOWN.getCode(), e.getMessage()));
 			}
 		}
 
@@ -147,7 +147,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 			builder.up().withDetails(detailMap);
 		}
 		else {
-			builder.down().withDetails(detailMap);
+			builder.unknown().withDetails(detailMap);
 		}
 	}
 
