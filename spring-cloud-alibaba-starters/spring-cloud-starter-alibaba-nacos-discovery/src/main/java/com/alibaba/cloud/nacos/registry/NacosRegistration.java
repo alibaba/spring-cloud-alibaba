@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 
 import org.springframework.cloud.client.DefaultServiceInstance;
@@ -155,10 +154,6 @@ public class NacosRegistration implements Registration, ServiceInstance {
 
 	public NacosDiscoveryProperties getNacosDiscoveryProperties() {
 		return nacosDiscoveryProperties;
-	}
-
-	public NamingService getNacosNamingService() {
-		return nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 	@Override

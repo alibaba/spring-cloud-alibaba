@@ -28,12 +28,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
-import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.api.naming.NamingMaintainService;
-import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import com.alibaba.spring.util.PropertySourcesUtils;
@@ -48,8 +44,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
-import static com.alibaba.nacos.api.NacosFactory.createMaintainService;
-import static com.alibaba.nacos.api.NacosFactory.createNamingService;
 import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
 import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT;
@@ -211,11 +205,6 @@ public class NacosDiscoveryProperties {
 	 */
 	private boolean ephemeral = true;
 
-	/**
-	 * If the instance needs to be re-registered. The default value is false.
-	 */
-	private boolean needNewlyRegister = false;
-
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -223,11 +212,10 @@ public class NacosDiscoveryProperties {
 	private Environment environment;
 
 	@Autowired
+	private NacosServiceManager nacosServiceManager;
+
+	@Autowired
 	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
-
-	private NamingService namingService;
-
-	private NamingMaintainService namingMaintainService;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -278,18 +266,11 @@ public class NacosDiscoveryProperties {
 
 		this.overrideFromEnv(environment);
 
-		Properties properties = getNacosProperties();
-		this.namingService = createNamingService(properties);
-		this.namingMaintainService = createMaintainService(properties);
-
-		if (needNewlyRegister) {
+		if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
+			nacosAutoServiceRegistration.stop();
+			nacosServiceManager.reBuildNacosService(getNacosProperties());
 			nacosAutoServiceRegistration.start();
 		}
-	}
-
-	@PreDestroy
-	public void destroy() throws NacosException {
-		shutdownNacosService();
 	}
 
 	public String getEndpoint() {
@@ -497,6 +478,42 @@ public class NacosDiscoveryProperties {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		NacosDiscoveryProperties that = (NacosDiscoveryProperties) o;
+		return Objects.equals(serverAddr, that.serverAddr)
+				&& Objects.equals(username, that.username)
+				&& Objects.equals(password, that.password)
+				&& Objects.equals(endpoint, that.endpoint)
+				&& Objects.equals(namespace, that.namespace)
+				&& Objects.equals(logName, that.logName)
+				&& Objects.equals(service, that.service)
+				&& Objects.equals(clusterName, that.clusterName)
+				&& Objects.equals(group, that.group) && Objects.equals(ip, that.ip)
+				&& Objects.equals(port, that.port)
+				&& Objects.equals(networkInterface, that.networkInterface)
+				&& Objects.equals(accessKey, that.accessKey)
+				&& Objects.equals(secretKey, that.secretKey)
+				&& Objects.equals(heartBeatInterval, that.heartBeatInterval)
+				&& Objects.equals(heartBeatTimeout, that.heartBeatTimeout)
+				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(serverAddr, username, password, endpoint, namespace,
+				watchDelay, logName, service, weight, clusterName, group,
+				namingLoadCacheAtStart, registerEnabled, ip, networkInterface, port,
+				secure, accessKey, secretKey, heartBeatInterval, heartBeatTimeout,
+				ipDeleteTimeout, instanceEnabled, ephemeral);
+	}
+
+	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
 				+ ", endpoint='" + endpoint + '\'' + ", namespace='" + namespace + '\''
@@ -559,16 +576,7 @@ public class NacosDiscoveryProperties {
 		}
 	}
 
-	public NamingService namingServiceInstance() {
-		return namingService;
-	}
-
-	@Deprecated
-	public NamingMaintainService namingMaintainServiceInstance() {
-		return namingMaintainService;
-	}
-
-	private Properties getNacosProperties() {
+	public Properties getNacosProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, serverAddr);
 		properties.put(USERNAME, Objects.toString(username, ""));
@@ -609,11 +617,6 @@ public class NacosDiscoveryProperties {
 		}
 		matcher.appendTail(sb);
 		return sb.toString();
-	}
-
-	private void shutdownNacosService() throws NacosException {
-		nacosAutoServiceRegistration.stop();
-		needNewlyRegister = true;
 	}
 
 }
