@@ -109,7 +109,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	@Override
 	public void close() {
 		try {
-			namingService().shutDown();
+			nacosServiceManager.nacosServiceShutDown();
 		}
 		catch (NacosException e) {
 			log.error("Nacos namingService shutDown failed", e);
