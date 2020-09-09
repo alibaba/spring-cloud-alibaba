@@ -101,7 +101,8 @@ public class SentinelCircuitBreakerIntegrationTest {
 	protected static class Application {
 
 		@GetMapping("/slow")
-		public String slow(@RequestParam(required = false) Boolean slow) throws InterruptedException {
+		public String slow(@RequestParam(required = false) Boolean slow)
+				throws InterruptedException {
 			if (slow == null || slow) {
 				Thread.sleep(80);
 			}
@@ -116,10 +117,10 @@ public class SentinelCircuitBreakerIntegrationTest {
 		@Bean
 		public Customizer<SentinelCircuitBreakerFactory> slowCustomizer() {
 			String slowId = "slow";
-			List<DegradeRule> rules = Collections.singletonList(
-					new DegradeRule(slowId).setGrade(RuleConstant.DEGRADE_GRADE_RT)
-							.setCount(50).setSlowRatioThreshold(0.7).setMinRequestAmount(5)
-                    		.setStatIntervalMs(30000).setTimeWindow(5));
+			List<DegradeRule> rules = Collections.singletonList(new DegradeRule(slowId)
+					.setGrade(RuleConstant.DEGRADE_GRADE_RT).setCount(50)
+					.setSlowRatioThreshold(0.7).setMinRequestAmount(5)
+					.setStatIntervalMs(30000).setTimeWindow(5));
 			return factory -> {
 				factory.configure(builder -> builder.rules(rules), slowId);
 				factory.configureDefault(id -> new SentinelConfigBuilder()
@@ -146,7 +147,8 @@ public class SentinelCircuitBreakerIntegrationTest {
 
 			public String slow(boolean slow) {
 				return cbFactory.create("slow").run(
-						() -> rest.getForObject("/slow?slow=" + slow, String.class), t -> "fallback");
+						() -> rest.getForObject("/slow?slow=" + slow, String.class),
+						t -> "fallback");
 			}
 
 			public String normal() {
