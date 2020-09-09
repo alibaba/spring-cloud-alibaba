@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.bootstrap;
+package com.alibaba.cloud.dubbo.metadata.repository;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.cloud.client.ServiceInstance;
 
 /**
- * Dubbo Spring Cloud Provider Bootstrap.
+ * metadata service instance selector.
  *
- * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author <a href="mailto:liuxx-u@outlook.com">liuxx</a>
  */
-@EnableDiscoveryClient
-@EnableAutoConfiguration
-public class DubboSpringCloudWebProviderBootstrap {
+public interface ServiceInstanceSelector {
 
-	public static void main(String[] args) {
-		new SpringApplicationBuilder(DubboSpringCloudWebProviderBootstrap.class)
-				.properties("spring.profiles.active=nacos").run(args);
-	}
+	/**
+	 * Select a service instance to get metadata.
+	 * @param serviceInstances all service instance
+	 * @return the service instance to get metadata
+	 */
+	Optional<ServiceInstance> select(List<ServiceInstance> serviceInstances);
 
 }

@@ -23,7 +23,6 @@ import com.alibaba.cloud.dubbo.annotation.DubboTransported;
 import com.alibaba.cloud.dubbo.service.RestService;
 import com.alibaba.cloud.dubbo.service.User;
 import com.alibaba.cloud.dubbo.service.UserService;
-
 import org.apache.dubbo.config.annotation.DubboReference;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +52,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Dubbo Spring Cloud Consumer Bootstrap.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration
