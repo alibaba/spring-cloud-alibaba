@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.alibaba.cloud.nacos.endpoint.NacosDiscoveryEndpoint;
 import com.alibaba.nacos.api.NacosFactory;
@@ -85,6 +86,9 @@ public class NacosAutoServiceRegistrationTests {
 
 	@Autowired
 	private NacosDiscoveryProperties properties;
+
+	@Autowired
+	private NacosServiceManager nacosServiceManager;
 
 	@Autowired
 	private InetUtils inetUtils;
@@ -207,7 +211,7 @@ public class NacosAutoServiceRegistrationTests {
 
 	private void checkoutEndpoint() throws Exception {
 		NacosDiscoveryEndpoint nacosDiscoveryEndpoint = new NacosDiscoveryEndpoint(
-				properties);
+				nacosServiceManager, properties);
 		Map<String, Object> map = nacosDiscoveryEndpoint.nacosDiscovery();
 
 		assertThat(properties).isEqualTo(map.get("NacosDiscoveryProperties"));

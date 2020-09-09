@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.ribbon;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.ServerList;
 
@@ -42,13 +43,15 @@ public class NacosRibbonClientConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ServerList<?> ribbonServerList(IClientConfig config,
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
+			NacosDiscoveryProperties nacosDiscoveryProperties,
+			NacosServiceManager nacosServiceManager) {
 		if (this.propertiesFactory.isSet(ServerList.class, config.getClientName())) {
 			ServerList serverList = this.propertiesFactory.get(ServerList.class, config,
 					config.getClientName());
 			return serverList;
 		}
-		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
+		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties,
+				nacosServiceManager);
 		serverList.initWithNiwsConfig(config);
 		return serverList;
 	}
