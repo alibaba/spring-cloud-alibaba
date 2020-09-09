@@ -19,9 +19,14 @@ package com.alibaba.cloud.nacos;
 import java.util.Objects;
 import java.util.Properties;
 
+import com.alibaba.cloud.nacos.registry.NacosRegistration;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
+
+import org.springframework.cloud.client.discovery.event.InstancePreRegisteredEvent;
+import org.springframework.cloud.client.serviceregistry.Registration;
+import org.springframework.context.event.EventListener;
 
 import static com.alibaba.nacos.api.NacosFactory.createMaintainService;
 import static com.alibaba.nacos.api.NacosFactory.createNamingService;
@@ -54,12 +59,8 @@ public class NacosServiceManager {
 
 	public boolean isNacosDiscoveryInfoChanged(
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		if (Objects.isNull(nacosDiscoveryPropertiesCache)) {
-			nacosDiscoveryPropertiesCache = new NacosDiscoveryProperties();
-			copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
-			return false;
-		}
-		if (this.nacosDiscoveryPropertiesCache.equals(nacosDiscoveryProperties)) {
+		if (Objects.isNull(nacosDiscoveryPropertiesCache)
+				|| this.nacosDiscoveryPropertiesCache.equals(nacosDiscoveryProperties)) {
 			return false;
 		}
 		copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
@@ -111,7 +112,22 @@ public class NacosServiceManager {
 		namingMaintainService = createNamingMaintainService(nacosProperties);
 	}
 
-    public void nacosServiceShutDown() throws NacosException {
-	    this.namingService.shutDown();
-    }
+	public void nacosServiceShutDown() throws NacosException {
+		this.namingService.shutDown();
+	}
+
+	@EventListener
+	public void onInstancePreRegisteredEvent(
+			InstancePreRegisteredEvent instancePreRegisteredEvent) {
+		Registration registration = instancePreRegisteredEvent.getRegistration();
+		if (Objects.isNull(nacosDiscoveryPropertiesCache)
+				&& registration instanceof NacosRegistration) {
+			NacosDiscoveryProperties nacosDiscoveryProperties = ((NacosRegistration) registration)
+					.getNacosDiscoveryProperties();
+
+			nacosDiscoveryPropertiesCache = new NacosDiscoveryProperties();
+			copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
+		}
+	}
+
 }
