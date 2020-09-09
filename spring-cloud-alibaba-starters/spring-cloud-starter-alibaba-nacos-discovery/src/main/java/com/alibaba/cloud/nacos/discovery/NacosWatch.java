@@ -19,7 +19,7 @@ package com.alibaba.cloud.nacos.discovery;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -41,6 +41,7 @@ import org.springframework.context.SmartLifecycle;
 
 /**
  * @author xiaojing
+ * @author yuhuangbin
  */
 public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycle {
 
@@ -88,13 +89,13 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 							if (event instanceof NamingEvent) {
 								List<Instance> instances = ((NamingEvent) event)
 										.getInstances();
-								Instance currentInstance = selectCurrentInstance(
+								Optional<Instance> instanceOptional = selectCurrentInstance(
 										instances);
-								if (Objects.nonNull(currentInstance)) {
+								instanceOptional.ifPresent(currentInstance -> {
 									resetIfNeeded(currentInstance);
 									publisher.publishEvent(
 											new HeartbeatEvent(this, currentInstance));
-								}
+								});
 							}
 						}
 					});
@@ -121,11 +122,11 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 		}
 	}
 
-	private Instance selectCurrentInstance(List<Instance> instances) {
+	private Optional<Instance> selectCurrentInstance(List<Instance> instances) {
 		return instances.stream()
 				.filter(instance -> properties.getIp().equals(instance.getIp())
 						&& properties.getPort() == instance.getPort())
-				.findFirst().orElse(null);
+				.findFirst();
 	}
 
 	@Override
