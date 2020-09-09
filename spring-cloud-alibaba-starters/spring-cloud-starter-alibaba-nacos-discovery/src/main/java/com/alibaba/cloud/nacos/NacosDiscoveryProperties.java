@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -215,7 +216,7 @@ public class NacosDiscoveryProperties {
 	private NacosServiceManager nacosServiceManager;
 
 	@Autowired
-	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
+	private Optional<NacosAutoServiceRegistration> nacosAutoServiceRegistrationOptional;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -266,11 +267,13 @@ public class NacosDiscoveryProperties {
 
 		this.overrideFromEnv(environment);
 
-		if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
-			nacosAutoServiceRegistration.stop();
-			nacosServiceManager.reBuildNacosService(getNacosProperties());
-			nacosAutoServiceRegistration.start();
-		}
+		nacosAutoServiceRegistrationOptional.ifPresent(nacosAutoServiceRegistration -> {
+			if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
+				nacosAutoServiceRegistration.stop();
+				nacosServiceManager.reBuildNacosService(getNacosProperties());
+				nacosAutoServiceRegistration.start();
+			}
+		});
 	}
 
 	public String getEndpoint() {
