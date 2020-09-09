@@ -18,7 +18,7 @@ package com.alibaba.cloud.dubbo.actuate;
 
 import com.alibaba.cloud.dubbo.actuate.endpoint.DubboRestMetadataEndpoint;
 
-import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
+import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
 import org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -39,7 +39,7 @@ public class DubboMetadataEndpointAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnEnabledEndpoint
+	@ConditionalOnAvailableEndpoint
 	public DubboRestMetadataEndpoint dubboRestMetadataEndpoint() {
 		return new DubboRestMetadataEndpoint();
 	}
