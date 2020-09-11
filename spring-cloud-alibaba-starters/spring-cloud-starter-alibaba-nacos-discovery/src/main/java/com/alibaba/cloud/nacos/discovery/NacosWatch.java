@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
@@ -51,8 +50,6 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 	private Map<String, EventListener> listenerMap = new ConcurrentHashMap<>(16);
 
 	private final AtomicBoolean running = new AtomicBoolean(false);
-
-	private final AtomicLong nacosWatchIndex = new AtomicLong(0);
 
 	private ApplicationEventPublisher publisher;
 
@@ -96,9 +93,9 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 										instances);
 								instanceOptional.ifPresent(currentInstance -> {
 									resetIfNeeded(currentInstance);
+									publisher.publishEvent(
+											new HeartbeatEvent(this, currentInstance));
 								});
-								publisher.publishEvent(
-										new HeartbeatEvent(this, nacosWatchIndex.getAndIncrement()));
 							}
 						}
 					});
