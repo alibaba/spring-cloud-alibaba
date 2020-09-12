@@ -97,8 +97,8 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 								instanceOptional.ifPresent(currentInstance -> {
 									resetIfNeeded(currentInstance);
 								});
-								publisher.publishEvent(
-										new HeartbeatEvent(NacosWatch.this, nacosWatchIndex.getAndIncrement()));
+								publisher.publishEvent(new HeartbeatEvent(NacosWatch.this,
+										nacosWatchIndex.getAndIncrement()));
 							}
 						}
 					});
