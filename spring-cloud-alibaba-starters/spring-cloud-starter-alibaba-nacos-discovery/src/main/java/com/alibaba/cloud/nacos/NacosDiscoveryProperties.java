@@ -23,14 +23,13 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
-import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
+import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoInitializedEvent;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import com.alibaba.spring.util.PropertySourcesUtils;
@@ -41,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
@@ -213,10 +213,7 @@ public class NacosDiscoveryProperties {
 	private Environment environment;
 
 	@Autowired
-	private NacosServiceManager nacosServiceManager;
-
-	@Autowired
-	private Optional<NacosAutoServiceRegistration> nacosAutoServiceRegistrationOptional;
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -267,13 +264,8 @@ public class NacosDiscoveryProperties {
 
 		this.overrideFromEnv(environment);
 
-		nacosAutoServiceRegistrationOptional.ifPresent(nacosAutoServiceRegistration -> {
-			if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
-				nacosAutoServiceRegistration.stop();
-				nacosServiceManager.reBuildNacosService(getNacosProperties());
-				nacosAutoServiceRegistration.start();
-			}
-		});
+		applicationEventPublisher
+				.publishEvent(new NacosDiscoveryInfoInitializedEvent(this));
 	}
 
 	public String getEndpoint() {
