@@ -29,7 +29,8 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
-import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoInitializedEvent;
+import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
+import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import com.alibaba.spring.util.PropertySourcesUtils;
@@ -213,6 +214,9 @@ public class NacosDiscoveryProperties {
 	private Environment environment;
 
 	@Autowired
+	private NacosServiceManager nacosServiceManager;
+
+	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
 
 	@PostConstruct
@@ -263,9 +267,19 @@ public class NacosDiscoveryProperties {
 		}
 
 		this.overrideFromEnv(environment);
+		if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
+			applicationEventPublisher
+					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
+		}
+	}
 
-		applicationEventPublisher
-				.publishEvent(new NacosDiscoveryInfoInitializedEvent(this));
+	/**
+	 * recommend to use {@link NacosServiceManager#getNamingService(Properties)}.
+	 * @return NamingService
+	 */
+	@Deprecated
+	public NamingService namingServiceInstance() {
+		return nacosServiceManager.getNamingService(this.getNacosProperties());
 	}
 
 	public String getEndpoint() {
