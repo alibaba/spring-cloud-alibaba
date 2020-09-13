@@ -25,10 +25,10 @@ import org.springframework.web.client.RestTemplate;
  * @author xiaojing
  */
 @SpringBootApplication
-public class OderApplication {
+public class OrderApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OderApplication.class, args);
+		SpringApplication.run(OrderApplication.class, args);
 	}
 
 	@Bean
