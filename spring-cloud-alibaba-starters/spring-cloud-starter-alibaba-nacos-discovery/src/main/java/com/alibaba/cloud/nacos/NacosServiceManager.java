@@ -17,13 +17,17 @@
 package com.alibaba.cloud.nacos;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 
+import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoInitializedEvent;
+import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
 import com.alibaba.cloud.nacos.registry.NacosRegistration;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.event.InstancePreRegisteredEvent;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.event.EventListener;
@@ -42,6 +46,9 @@ public class NacosServiceManager {
 	private NamingService namingService;
 
 	private NamingMaintainService namingMaintainService;
+
+	@Autowired
+	private Optional<NacosAutoServiceRegistration> nacosAutoServiceRegistrationOptional;
 
 	public NamingService getNamingService(Properties properties) {
 		if (Objects.isNull(this.namingService)) {
@@ -107,7 +114,7 @@ public class NacosServiceManager {
 		}
 	}
 
-	public void reBuildNacosService(Properties nacosProperties) {
+	private void reBuildNacosService(Properties nacosProperties) {
 		namingService = createNewNamingService(nacosProperties);
 		namingMaintainService = createNamingMaintainService(nacosProperties);
 	}
@@ -127,6 +134,21 @@ public class NacosServiceManager {
 
 			nacosDiscoveryPropertiesCache = new NacosDiscoveryProperties();
 			copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
+		}
+	}
+
+	@EventListener
+	public void onNacosDiscoveryInfoInitializedEvent(
+			NacosDiscoveryInfoInitializedEvent nacosDiscoveryInfoInitializedEvent) {
+		NacosDiscoveryProperties nacosDiscoveryProperties = nacosDiscoveryInfoInitializedEvent
+				.getSource();
+		if (isNacosDiscoveryInfoChanged(nacosDiscoveryProperties)
+				&& nacosAutoServiceRegistrationOptional.isPresent()) {
+			NacosAutoServiceRegistration nacosAutoServiceRegistration = nacosAutoServiceRegistrationOptional
+					.get();
+			nacosAutoServiceRegistration.stop();
+			reBuildNacosService(nacosDiscoveryProperties.getNacosProperties());
+			nacosAutoServiceRegistration.start();
 		}
 	}
 
