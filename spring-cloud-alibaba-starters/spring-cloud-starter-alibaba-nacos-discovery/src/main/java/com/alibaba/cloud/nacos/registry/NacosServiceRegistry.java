@@ -27,6 +27,7 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.StringUtils;
@@ -44,12 +45,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
+	@Autowired
 	private NacosServiceManager nacosServiceManager;
 
-	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties,
-			NacosServiceManager nacosServiceManager) {
+	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
-		this.nacosServiceManager = nacosServiceManager;
 	}
 
 	@Override
