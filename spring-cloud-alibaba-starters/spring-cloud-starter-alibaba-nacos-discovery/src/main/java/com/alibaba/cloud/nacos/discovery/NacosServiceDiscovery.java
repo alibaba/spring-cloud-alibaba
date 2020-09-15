@@ -54,7 +54,8 @@ public class NacosServiceDiscovery {
 	 */
 	public List<ServiceInstance> getInstances(String serviceId) throws NacosException {
 		String group = discoveryProperties.getGroup();
-		List<Instance> instances = namingService().selectInstances(serviceId, group, true);
+		List<Instance> instances = namingService().selectInstances(serviceId, group,
+				true);
 		return hostToServiceInstanceList(instances, serviceId);
 	}
 
@@ -111,7 +112,8 @@ public class NacosServiceDiscovery {
 	}
 
 	private NamingService namingService() {
-		return nacosServiceManager.getNamingService(discoveryProperties.getNacosProperties());
+		return nacosServiceManager
+				.getNamingService(discoveryProperties.getNacosProperties());
 	}
 
 }
