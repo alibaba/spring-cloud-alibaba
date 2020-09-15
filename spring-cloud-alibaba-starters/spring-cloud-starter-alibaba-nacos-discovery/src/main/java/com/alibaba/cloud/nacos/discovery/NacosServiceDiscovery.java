@@ -38,13 +38,12 @@ public class NacosServiceDiscovery {
 
 	private NacosDiscoveryProperties discoveryProperties;
 
-	private NamingService namingService;
+	private NacosServiceManager nacosServiceManager;
 
 	public NacosServiceDiscovery(NacosDiscoveryProperties discoveryProperties,
 			NacosServiceManager nacosServiceManager) {
 		this.discoveryProperties = discoveryProperties;
-		this.namingService = nacosServiceManager
-				.getNamingService(discoveryProperties.getNacosProperties());
+		this.nacosServiceManager = nacosServiceManager;
 	}
 
 	/**
@@ -55,7 +54,8 @@ public class NacosServiceDiscovery {
 	 */
 	public List<ServiceInstance> getInstances(String serviceId) throws NacosException {
 		String group = discoveryProperties.getGroup();
-		List<Instance> instances = namingService.selectInstances(serviceId, group, true);
+		List<Instance> instances = namingService().selectInstances(serviceId, group,
+				true);
 		return hostToServiceInstanceList(instances, serviceId);
 	}
 
@@ -66,7 +66,7 @@ public class NacosServiceDiscovery {
 	 */
 	public List<String> getServices() throws NacosException {
 		String group = discoveryProperties.getGroup();
-		ListView<String> services = namingService.getServicesOfServer(1,
+		ListView<String> services = namingService().getServicesOfServer(1,
 				Integer.MAX_VALUE, group);
 		return services.getData();
 	}
@@ -109,6 +109,11 @@ public class NacosServiceDiscovery {
 			nacosServiceInstance.setSecure(secure);
 		}
 		return nacosServiceInstance;
+	}
+
+	private NamingService namingService() {
+		return nacosServiceManager
+				.getNamingService(discoveryProperties.getNacosProperties());
 	}
 
 }
