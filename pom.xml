@@ -83,11 +83,11 @@
         <revision>2.1.2.RELEASE</revision>
 
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.1.5.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-config.version>2.1.7.RELEASE</spring-cloud-config.version>
+        <spring-cloud-commons.version>2.1.6.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-config.version>2.1.9.RELEASE</spring-cloud-config.version>
         <spring-cloud-consul.version>2.1.5.RELEASE</spring-cloud-consul.version>
         <spring-cloud-gateway.version>2.1.5.RELEASE</spring-cloud-gateway.version>
-        <spring-cloud-netflix.version>2.1.5.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-netflix.version>2.1.6.RELEASE</spring-cloud-netflix.version>
         <spring-cloud-openfeign.version>2.1.5.RELEASE</spring-cloud-openfeign.version>
         <spring-cloud-bus.version>2.1.4.RELEASE</spring-cloud-bus.version>
         <spring-cloud-stream.version>Fishtown.SR4</spring-cloud-stream.version>
