@@ -93,10 +93,6 @@
         <spring-cloud-config.version>2.2.5.RELEASE</spring-cloud-config.version>
         <spring-cloud-zookeeper.version>2.2.3.RELEASE</spring-cloud-zookeeper.version>
 
-        <junit.version>4.12</junit.version>
-        <javax-servlet-api>3.0</javax-servlet-api>
-        <slf4j-api.version>1.7.25</slf4j-api.version>
-
         <!-- Apache Dubbo -->
         <dubbo.version>2.7.8</dubbo.version>
         <curator.version>4.0.1</curator.version>
