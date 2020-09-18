@@ -104,6 +104,7 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	public String getGroupId() {
 		return groupId;
 	}
