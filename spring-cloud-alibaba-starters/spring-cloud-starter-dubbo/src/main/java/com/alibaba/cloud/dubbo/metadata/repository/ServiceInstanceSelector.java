@@ -29,7 +29,7 @@ import org.springframework.cloud.client.ServiceInstance;
 public interface ServiceInstanceSelector {
 
 	/**
-	 * choose a service instance to get metadata.
+	 * Select a service instance to get metadata.
 	 * @param serviceInstances all service instance
 	 * @return the service instance to get metadata
 	 */

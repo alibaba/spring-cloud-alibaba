@@ -49,18 +49,7 @@ public class DubboServiceAutoConfiguration {
 		return new DubboGenericServiceFactory();
 	}
 
-	/**
-	 * Build a primary {@link PropertyResolver} bean to {@link Autowired @Autowired}.
-	 * @param environment {@link Environment}
-	 * @return alias bean for {@link Environment}
-	 */
-	@Bean
-	@Primary
-	public PropertyResolver primaryPropertyResolver(Environment environment) {
-		return environment;
-	}
-
-	@Configuration
+	@Configuration(proxyBeanMethods = false)
 	@Import({ DubboGenericServiceExecutionContextFactory.class,
 			RequestParamServiceParameterResolver.class,
 			RequestBodyServiceParameterResolver.class,
