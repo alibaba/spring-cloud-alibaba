@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.sidecar.nacos;
 
-import java.net.SocketException;
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.sidecar.SidecarProperties;
 import org.apache.commons.lang3.StringUtils;
