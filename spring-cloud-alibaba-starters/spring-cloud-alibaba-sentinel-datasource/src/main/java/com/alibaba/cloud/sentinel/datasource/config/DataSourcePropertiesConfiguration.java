@@ -47,7 +47,21 @@ public class DataSourcePropertiesConfiguration {
 
 	private RedisDataSourceProperties redis;
 
+	private ConsulDataSourceProperties consul;
+
 	public DataSourcePropertiesConfiguration() {
+	}
+
+	public DataSourcePropertiesConfiguration(ConsulDataSourceProperties consul) {
+		this.consul = consul;
+	}
+
+	public ConsulDataSourceProperties getConsul() {
+		return consul;
+	}
+
+	public void setConsul(ConsulDataSourceProperties consul) {
+		this.consul = consul;
 	}
 
 	public DataSourcePropertiesConfiguration(FileDataSourceProperties file) {
