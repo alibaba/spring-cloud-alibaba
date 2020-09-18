@@ -49,7 +49,7 @@ public class DubboServiceAutoConfiguration {
 		return new DubboGenericServiceFactory();
 	}
 
-	@Configuration(proxyBeanMethods = false)
+	@Configuration
 	@Import({ DubboGenericServiceExecutionContextFactory.class,
 			RequestParamServiceParameterResolver.class,
 			RequestBodyServiceParameterResolver.class,
