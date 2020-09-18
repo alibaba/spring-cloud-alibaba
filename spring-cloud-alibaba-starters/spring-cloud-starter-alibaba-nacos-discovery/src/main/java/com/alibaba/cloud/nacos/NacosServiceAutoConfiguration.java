@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.metadata.repository;
+package com.alibaba.cloud.nacos;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * metadata service instance selector.
- *
- * @author <a href="mailto:liuxx-u@outlook.com">liuxx</a>
+ * @author yuhuangbin
  */
-public interface ServiceInstanceSelector {
+@Configuration
+@ConditionalOnDiscoveryEnabled
+@ConditionalOnNacosDiscoveryEnabled
+public class NacosServiceAutoConfiguration {
 
-	/**
-	 * Select a service instance to get metadata.
-	 * @param serviceInstances all service instance
-	 * @return the service instance to get metadata
-	 */
-	Optional<ServiceInstance> select(List<ServiceInstance> serviceInstances);
+	@Bean
+	public NacosServiceManager nacosServiceManager() {
+		return new NacosServiceManager();
+	}
 
 }

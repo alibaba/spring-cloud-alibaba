@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
@@ -60,16 +61,19 @@ public class NacosServiceDiscoveryTest {
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
+		NacosServiceManager nacosServiceManager = mock(NacosServiceManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
-		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
+		when(nacosServiceManager
+				.getNamingService(nacosDiscoveryProperties.getNacosProperties()))
+						.thenReturn(namingService);
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
 		when(namingService.selectInstances(eq(serviceName), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances);
 
 		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(
-				nacosDiscoveryProperties);
+				nacosDiscoveryProperties, nacosServiceManager);
 
 		List<ServiceInstance> serviceInstances = serviceDiscovery
 				.getInstances(serviceName);
@@ -99,16 +103,19 @@ public class NacosServiceDiscoveryTest {
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
+		NacosServiceManager nacosServiceManager = mock(NacosServiceManager.class);
 
 		NamingService namingService = mock(NamingService.class);
 
-		when(nacosDiscoveryProperties.namingServiceInstance()).thenReturn(namingService);
+		when(nacosServiceManager
+				.getNamingService(nacosDiscoveryProperties.getNacosProperties()))
+						.thenReturn(namingService);
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
 		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE),
 				eq("DEFAULT"))).thenReturn(nacosServices);
 
 		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(
-				nacosDiscoveryProperties);
+				nacosDiscoveryProperties, nacosServiceManager);
 
 		List<String> services = serviceDiscovery.getServices();
 

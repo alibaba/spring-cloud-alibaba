@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.metadata.repository;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.cloud.client.ServiceInstance;
+package com.alibaba.cloud.nacos.registry;
 
 /**
- * metadata service instance selector.
- *
- * @author <a href="mailto:liuxx-u@outlook.com">liuxx</a>
+ * @author L.cm
  */
-public interface ServiceInstanceSelector {
+public interface NacosRegistrationCustomizer {
 
 	/**
-	 * Select a service instance to get metadata.
-	 * @param serviceInstances all service instance
-	 * @return the service instance to get metadata
+	 * customize NacosRegistration.
+	 * @param registration NacosRegistration
 	 */
-	Optional<ServiceInstance> select(List<ServiceInstance> serviceInstances);
+	void customize(NacosRegistration registration);
 
 }

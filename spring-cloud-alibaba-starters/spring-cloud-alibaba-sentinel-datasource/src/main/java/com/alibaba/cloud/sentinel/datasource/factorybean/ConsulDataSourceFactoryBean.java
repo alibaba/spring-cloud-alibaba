@@ -88,4 +88,5 @@ public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource
 	public void setConverter(Converter converter) {
 		this.converter = converter;
 	}
+
 }

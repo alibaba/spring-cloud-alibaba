@@ -94,4 +94,5 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 	public void setWaitTimeoutInSecond(int waitTimeoutInSecond) {
 		this.waitTimeoutInSecond = waitTimeoutInSecond;
 	}
+
 }

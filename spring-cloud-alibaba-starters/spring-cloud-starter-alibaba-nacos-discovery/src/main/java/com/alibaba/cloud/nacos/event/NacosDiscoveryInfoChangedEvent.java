@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.metadata.repository;
+package com.alibaba.cloud.nacos.event;
 
-import java.util.List;
-import java.util.Optional;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 
-import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.context.ApplicationEvent;
 
 /**
- * metadata service instance selector.
- *
- * @author <a href="mailto:liuxx-u@outlook.com">liuxx</a>
+ * @author yuhuangbin
  */
-public interface ServiceInstanceSelector {
+public class NacosDiscoveryInfoChangedEvent extends ApplicationEvent {
 
-	/**
-	 * Select a service instance to get metadata.
-	 * @param serviceInstances all service instance
-	 * @return the service instance to get metadata
-	 */
-	Optional<ServiceInstance> select(List<ServiceInstance> serviceInstances);
+	public NacosDiscoveryInfoChangedEvent(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		super(nacosDiscoveryProperties);
+	}
+
+	@Override
+	public NacosDiscoveryProperties getSource() {
+		return (NacosDiscoveryProperties) super.getSource();
+	}
 
 }
