@@ -74,7 +74,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 				"spring.cloud.sentinel.flow.coldFactor=3",
 				"spring.cloud.sentinel.eager=true",
 				"spring.cloud.sentinel.log.switchPid=true",
-				"spring.cloud.sentinel.transport.dashboard=http://localhost:8080",
+				"spring.cloud.sentinel.transport.dashboard=http://localhost:8080,http://localhost:8081",
 				"spring.cloud.sentinel.transport.port=9999",
 				"spring.cloud.sentinel.transport.clientIp=1.1.1.1",
 				"spring.cloud.sentinel.transport.heartbeatIntervalMs=20000" }, webEnvironment = RANDOM_PORT)

@@ -94,6 +94,7 @@ public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 	public SentinelWebMvcConfig sentinelWebMvcConfig() {
 		SentinelWebMvcConfig sentinelWebMvcConfig = new SentinelWebMvcConfig();
 		sentinelWebMvcConfig.setHttpMethodSpecify(properties.getHttpMethodSpecify());
+		sentinelWebMvcConfig.setWebContextUnify(properties.getWebContextUnify());
 
 		if (blockExceptionHandlerOptional.isPresent()) {
 			blockExceptionHandlerOptional
