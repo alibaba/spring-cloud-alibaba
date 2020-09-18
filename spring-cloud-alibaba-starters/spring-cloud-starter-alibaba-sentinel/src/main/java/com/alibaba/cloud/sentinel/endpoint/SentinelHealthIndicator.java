@@ -63,7 +63,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 	private SentinelProperties sentinelProperties;
 
 	public SentinelHealthIndicator(DefaultListableBeanFactory beanFactory,
-								   SentinelProperties sentinelProperties) {
+			SentinelProperties sentinelProperties) {
 		this.beanFactory = beanFactory;
 		this.sentinelProperties = sentinelProperties;
 	}
@@ -150,4 +150,5 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 			builder.unknown().withDetails(detailMap);
 		}
 	}
+
 }

@@ -34,7 +34,7 @@ public class SidecarNacosDiscoveryProperties extends NacosDiscoveryProperties {
 	}
 
 	@Override
-	public void init() throws SocketException {
+	public void init() throws Exception {
 		super.init();
 
 		String ip = sidecarProperties.getIp();

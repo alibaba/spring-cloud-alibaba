@@ -104,11 +104,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-circuitbreaker-sentinel</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-apache-dubbo-adapter</artifactId>
             <optional>true</optional>
