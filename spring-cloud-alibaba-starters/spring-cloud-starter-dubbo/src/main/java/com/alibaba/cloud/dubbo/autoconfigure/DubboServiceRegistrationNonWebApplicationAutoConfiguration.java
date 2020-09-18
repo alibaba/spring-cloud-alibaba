@@ -108,9 +108,9 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 					for (List<URL> urls : repository.getAllExportedUrls().values()) {
 						urls.stream().filter(
 								url -> REST_PROTOCOL.equalsIgnoreCase(url.getProtocol()))
-						.findFirst().ifPresent(url -> {
-							serverPort = url.getPort();
-						});
+								.findFirst().ifPresent(url -> {
+									serverPort = url.getPort();
+								});
 
 						// If REST protocol is not present, use any applied port.
 						if (serverPort == null) {

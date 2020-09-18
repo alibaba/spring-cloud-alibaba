@@ -55,4 +55,5 @@ public class SidecarNacosAutoConfiguration {
 		return new SidecarNacosDiscoveryClient(nacosServiceManager,
 				sidecarNacosDiscoveryProperties);
 	}
+
 }

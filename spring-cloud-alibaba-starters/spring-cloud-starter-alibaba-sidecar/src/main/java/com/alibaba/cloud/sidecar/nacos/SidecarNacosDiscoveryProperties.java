@@ -18,6 +18,7 @@ package com.alibaba.cloud.sidecar.nacos;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.sidecar.SidecarProperties;
+
 import org.springframework.util.StringUtils;
 
 /**

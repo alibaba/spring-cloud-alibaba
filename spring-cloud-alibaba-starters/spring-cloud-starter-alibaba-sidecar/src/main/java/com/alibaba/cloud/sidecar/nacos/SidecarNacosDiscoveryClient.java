@@ -66,4 +66,5 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 		return nacosServiceManager
 				.getNamingService(sidecarNacosDiscoveryProperties.getNacosProperties());
 	}
+
 }

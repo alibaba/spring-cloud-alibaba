@@ -67,7 +67,8 @@ public class SidecarHealthChecker {
 			instanceCache(applicationName, ip, port, status);
 			if (status.equals(Status.UP)) {
 				if (needRegister(applicationName, ip, port, status)) {
-					this.sidecarDiscoveryClient.registerInstance(applicationName, ip, port);
+					this.sidecarDiscoveryClient.registerInstance(applicationName, ip,
+							port);
 					log.info(
 							"Polyglot service changed and Health check success. register the new instance. applicationName = {}, ip = {}, port = {}, status = {}",
 							applicationName, ip, port, status);
