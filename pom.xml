@@ -80,7 +80,7 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.2.RELEASE</revision>
+        <revision>2.2.3-SNAPSHOT</revision>
 
         <!-- Dependency Versions -->
         <spring-cloud-commons.version>2.2.5.RELEASE</spring-cloud-commons.version>
@@ -92,10 +92,6 @@
         <spring-cloud-consul.version>2.2.4.RELEASE</spring-cloud-consul.version>
         <spring-cloud-config.version>2.2.5.RELEASE</spring-cloud-config.version>
         <spring-cloud-zookeeper.version>2.2.3.RELEASE</spring-cloud-zookeeper.version>
-
-        <junit.version>4.12</junit.version>
-        <javax-servlet-api>3.0</javax-servlet-api>
-        <slf4j-api.version>1.7.25</slf4j-api.version>
 
         <!-- Apache Dubbo -->
         <dubbo.version>2.7.8</dubbo.version>
