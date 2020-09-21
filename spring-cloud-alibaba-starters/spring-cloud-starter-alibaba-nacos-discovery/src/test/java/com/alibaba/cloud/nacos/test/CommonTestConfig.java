@@ -30,7 +30,7 @@ public class CommonTestConfig {
 
 	@Bean
 	@LoadBalanced
-	RestTemplate loadBalancedRestTemplate() {
+    RestTemplate loadBalancedRestTemplate() {
 		return new RestTemplate();
 	}
 

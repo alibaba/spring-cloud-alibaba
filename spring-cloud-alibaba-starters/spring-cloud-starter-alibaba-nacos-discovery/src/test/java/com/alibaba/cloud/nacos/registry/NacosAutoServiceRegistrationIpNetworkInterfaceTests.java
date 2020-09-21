@@ -56,11 +56,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosFactory.class })
-@SpringBootTest(
-		classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class,
-		properties = { "spring.application.name=myTestService1",
-				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" },
-		webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class, properties = {
+		"spring.application.name=myTestService1",
+		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 
 	@Autowired

@@ -122,7 +122,7 @@ public class MockNamingService implements NamingService {
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, String groupName,
-			boolean subscribe) throws NacosException {
+                                          boolean subscribe) throws NacosException {
 		return null;
 	}
 
@@ -134,19 +134,19 @@ public class MockNamingService implements NamingService {
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, String groupName,
-			List<String> clusters) throws NacosException {
+                                          List<String> clusters) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, List<String> clusters,
-			boolean subscribe) throws NacosException {
+                                          boolean subscribe) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, String groupName,
-			List<String> clusters, boolean subscribe) throws NacosException {
+                                          List<String> clusters, boolean subscribe) throws NacosException {
 		return null;
 	}
 
@@ -158,43 +158,43 @@ public class MockNamingService implements NamingService {
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, String groupName,
-			boolean healthy) throws NacosException {
+                                          boolean healthy) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, boolean healthy,
-			boolean subscribe) throws NacosException {
+                                          boolean subscribe) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, String groupName,
-			boolean healthy, boolean subscribe) throws NacosException {
+                                          boolean healthy, boolean subscribe) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, List<String> clusters,
-			boolean healthy) throws NacosException {
+                                          boolean healthy) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, String groupName,
-			List<String> clusters, boolean healthy) throws NacosException {
+                                          List<String> clusters, boolean healthy) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, List<String> clusters,
-			boolean healthy, boolean subscribe) throws NacosException {
+                                          boolean healthy, boolean subscribe) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, String groupName,
-			List<String> clusters, boolean healthy, boolean subscribe)
+                                          List<String> clusters, boolean healthy, boolean subscribe)
 			throws NacosException {
 		return null;
 	}
@@ -218,7 +218,7 @@ public class MockNamingService implements NamingService {
 
 	@Override
 	public Instance selectOneHealthyInstance(String serviceName, String groupName,
-			boolean subscribe) throws NacosException {
+                                             boolean subscribe) throws NacosException {
 		return null;
 	}
 
@@ -230,19 +230,19 @@ public class MockNamingService implements NamingService {
 
 	@Override
 	public Instance selectOneHealthyInstance(String serviceName, String groupName,
-			List<String> clusters) throws NacosException {
+                                             List<String> clusters) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public Instance selectOneHealthyInstance(String serviceName, List<String> clusters,
-			boolean subscribe) throws NacosException {
+                                             boolean subscribe) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public Instance selectOneHealthyInstance(String serviceName, String groupName,
-			List<String> clusters, boolean subscribe) throws NacosException {
+                                             List<String> clusters, boolean subscribe) throws NacosException {
 		return null;
 	}
 
@@ -302,19 +302,19 @@ public class MockNamingService implements NamingService {
 
 	@Override
 	public ListView<String> getServicesOfServer(int pageNo, int pageSize,
-			String groupName) throws NacosException {
+                                                String groupName) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public ListView<String> getServicesOfServer(int pageNo, int pageSize,
-			AbstractSelector selector) throws NacosException {
+                                                AbstractSelector selector) throws NacosException {
 		return null;
 	}
 
 	@Override
 	public ListView<String> getServicesOfServer(int pageNo, int pageSize,
-			String groupName, AbstractSelector selector) throws NacosException {
+                                                String groupName, AbstractSelector selector) throws NacosException {
 		return null;
 	}
 
@@ -326,6 +326,11 @@ public class MockNamingService implements NamingService {
 	@Override
 	public String getServerStatus() {
 		return null;
+	}
+
+	@Override
+	public void shutDown() throws NacosException {
+
 	}
 
 }
