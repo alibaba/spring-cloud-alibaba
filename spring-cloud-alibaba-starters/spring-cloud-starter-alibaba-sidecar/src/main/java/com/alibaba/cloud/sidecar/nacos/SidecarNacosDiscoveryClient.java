@@ -16,8 +16,10 @@
 
 package com.alibaba.cloud.sidecar.nacos;
 
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.sidecar.SidecarDiscoveryClient;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.api.naming.NamingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +30,10 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(SidecarNacosDiscoveryClient.class);
-
 	private final SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties;
+	private NacosServiceManager nacosServiceManager;
 
-	public SidecarNacosDiscoveryClient(
+	public SidecarNacosDiscoveryClient(NacosServiceManager nacosServiceManager,
 			SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties) {
 		this.sidecarNacosDiscoveryProperties = sidecarNacosDiscoveryProperties;
 	}
@@ -39,8 +41,8 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 	@Override
 	public void registerInstance(String applicationName, String ip, Integer port) {
 		try {
-			this.sidecarNacosDiscoveryProperties.namingServiceInstance()
-					.registerInstance(applicationName, ip, port);
+			this.namingService().registerInstance(applicationName,
+					sidecarNacosDiscoveryProperties.getGroup(), ip, port);
 		}
 		catch (NacosException e) {
 			log.warn("nacos exception happens", e);
@@ -50,12 +52,17 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 	@Override
 	public void deregisterInstance(String applicationName, String ip, Integer port) {
 		try {
-			this.sidecarNacosDiscoveryProperties.namingServiceInstance()
-					.deregisterInstance(applicationName, ip, port);
+			this.namingService().deregisterInstance(applicationName,
+					sidecarNacosDiscoveryProperties.getGroup(), ip, port);
 		}
 		catch (NacosException e) {
 			log.warn("nacos exception happens", e);
 		}
+	}
+
+	private NamingService namingService() {
+		return nacosServiceManager
+				.getNamingService(sidecarNacosDiscoveryProperties.getNacosProperties());
 	}
 
 }

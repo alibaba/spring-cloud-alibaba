@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.alibaba.cloud.nacos.endpoint.NacosDiscoveryEndpoint;
 import com.alibaba.nacos.api.NacosFactory;
@@ -55,39 +56,23 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosFactory.class })
-@SpringBootTest(classes = NacosAutoServiceRegistrationTests.TestConfig.class,
-		properties = { "spring.application.name=myTestService1",
-				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
-				"spring.cloud.nacos.discovery.endpoint=test-endpoint",
-				"spring.cloud.nacos.discovery.namespace=test-namespace",
-				"spring.cloud.nacos.discovery.log-name=test-logName",
-				"spring.cloud.nacos.discovery.weight=2",
-				"spring.cloud.nacos.discovery.clusterName=test-cluster",
-				"spring.cloud.nacos.discovery.namingLoadCacheAtStart=true",
-				"spring.cloud.nacos.discovery.secure=true",
-				"spring.cloud.nacos.discovery.accessKey=test-accessKey",
-				"spring.cloud.nacos.discovery.ip=8.8.8.8",
-				"spring.cloud.nacos.discovery.secretKey=test-secretKey",
-				"spring.cloud.nacos.discovery.heart-beat-interval=3",
-				"spring.cloud.nacos.discovery.heart-beat-timeout=6",
-				"spring.cloud.nacos.discovery.ip-delete-timeout=9" },
-		webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = NacosAutoServiceRegistrationTests.TestConfig.class, properties = {
+		"spring.application.name=myTestService1",
+		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+		"spring.cloud.nacos.discovery.endpoint=test-endpoint",
+		"spring.cloud.nacos.discovery.namespace=test-namespace",
+		"spring.cloud.nacos.discovery.log-name=test-logName",
+		"spring.cloud.nacos.discovery.weight=2",
+		"spring.cloud.nacos.discovery.clusterName=test-cluster",
+		"spring.cloud.nacos.discovery.namingLoadCacheAtStart=true",
+		"spring.cloud.nacos.discovery.secure=true",
+		"spring.cloud.nacos.discovery.accessKey=test-accessKey",
+		"spring.cloud.nacos.discovery.ip=8.8.8.8",
+		"spring.cloud.nacos.discovery.secretKey=test-secretKey",
+		"spring.cloud.nacos.discovery.heart-beat-interval=3",
+		"spring.cloud.nacos.discovery.heart-beat-timeout=6",
+		"spring.cloud.nacos.discovery.ip-delete-timeout=9" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationTests {
-
-	@Autowired
-	private NacosRegistration registration;
-
-	@Autowired
-	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
-
-	@LocalServerPort
-	private int port;
-
-	@Autowired
-	private NacosDiscoveryProperties properties;
-
-	@Autowired
-	private InetUtils inetUtils;
 
 	static {
 		try {
@@ -105,6 +90,19 @@ public class NacosAutoServiceRegistrationTests {
 			e.printStackTrace();
 		}
 	}
+
+	@Autowired
+	private NacosRegistration registration;
+	@Autowired
+	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
+	@LocalServerPort
+	private int port;
+	@Autowired
+	private NacosDiscoveryProperties properties;
+	@Autowired
+	private NacosServiceManager nacosServiceManager;
+	@Autowired
+	private InetUtils inetUtils;
 
 	@Test
 	public void contextLoads() throws Exception {
@@ -207,7 +205,7 @@ public class NacosAutoServiceRegistrationTests {
 
 	private void checkoutEndpoint() throws Exception {
 		NacosDiscoveryEndpoint nacosDiscoveryEndpoint = new NacosDiscoveryEndpoint(
-				properties);
+				nacosServiceManager, properties);
 		Map<String, Object> map = nacosDiscoveryEndpoint.nacosDiscovery();
 
 		assertThat(properties).isEqualTo(map.get("NacosDiscoveryProperties"));

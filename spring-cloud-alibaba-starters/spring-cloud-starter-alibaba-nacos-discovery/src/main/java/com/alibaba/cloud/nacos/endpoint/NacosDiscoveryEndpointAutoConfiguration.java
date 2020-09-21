@@ -16,8 +16,11 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
+import java.util.Properties;
+
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.discovery.actuate.health.NacosDiscoveryHealthIndicator;
 
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
@@ -44,16 +47,19 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 	@ConditionalOnMissingBean
 	@ConditionalOnEnabledEndpoint
 	public NacosDiscoveryEndpoint nacosDiscoveryEndpoint(
+			NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosDiscoveryEndpoint(nacosDiscoveryProperties);
+		return new NacosDiscoveryEndpoint(nacosServiceManager, nacosDiscoveryProperties);
 	}
 
 	@Bean
 	@ConditionalOnEnabledHealthIndicator("nacos-discovery")
 	public HealthIndicator nacosDiscoveryHealthIndicator(
+			NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		Properties nacosProperties = nacosDiscoveryProperties.getNacosProperties();
 		return new NacosDiscoveryHealthIndicator(
-				nacosDiscoveryProperties.namingServiceInstance());
+				nacosServiceManager.getNamingService(nacosProperties));
 	}
 
 }

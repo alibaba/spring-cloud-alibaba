@@ -42,9 +42,17 @@ public class NacosServiceInstance implements ServiceInstance {
 		return serviceId;
 	}
 
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
+	}
+
 	@Override
 	public String getHost() {
 		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 	@Override
@@ -52,9 +60,17 @@ public class NacosServiceInstance implements ServiceInstance {
 		return port;
 	}
 
+	public void setPort(int port) {
+		this.port = port;
+	}
+
 	@Override
 	public boolean isSecure() {
 		return secure;
+	}
+
+	public void setSecure(boolean secure) {
+		this.secure = secure;
 	}
 
 	@Override
@@ -65,22 +81,6 @@ public class NacosServiceInstance implements ServiceInstance {
 	@Override
 	public Map<String, String> getMetadata() {
 		return metadata;
-	}
-
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	public void setSecure(boolean secure) {
-		this.secure = secure;
 	}
 
 	public void setMetadata(Map<String, String> metadata) {

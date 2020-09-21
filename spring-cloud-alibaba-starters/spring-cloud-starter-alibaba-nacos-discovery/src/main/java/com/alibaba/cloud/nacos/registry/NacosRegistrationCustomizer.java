@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos;
+package com.alibaba.cloud.nacos.registry;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+/**
+ * @author L.cm
+ */
+public interface NacosRegistrationCustomizer {
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.enabled", matchIfMissing = true)
-public @interface ConditionalOnNacosDiscoveryEnabled {
+	/**
+	 * customize NacosRegistration.
+	 * @param registration NacosRegistration
+	 */
+	void customize(NacosRegistration registration);
 
 }

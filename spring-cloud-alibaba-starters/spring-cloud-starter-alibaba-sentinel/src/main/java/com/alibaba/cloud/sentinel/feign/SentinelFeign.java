@@ -33,6 +33,7 @@ import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * {@link Feign.Builder} like {@link HystrixFeign.Builder}.
@@ -86,7 +87,11 @@ public final class SentinelFeign {
 							"fallback");
 					Class fallbackFactory = (Class) getFieldValue(feignClientFactoryBean,
 							"fallbackFactory");
-					String beanName = (String) getFieldValue(feignClientFactoryBean, "name");
+					String beanName = (String) getFieldValue(feignClientFactoryBean,
+							"contextId");
+					if (!StringUtils.hasText(beanName)) {
+						beanName = (String) getFieldValue(feignClientFactoryBean, "name");
+					}
 
 					Object fallbackInstance;
 					FallbackFactory fallbackFactoryInstance;
@@ -132,12 +137,14 @@ public final class SentinelFeign {
 
 		private Object getFieldValue(Object instance, String fieldName) {
 			Field field = ReflectionUtils.findField(instance.getClass(), fieldName);
-			field.setAccessible(true);
-			try {
-				return field.get(instance);
-			}
-			catch (IllegalAccessException e) {
-				// ignore
+			if (field != null) {
+				field.setAccessible(true);
+				try {
+					return field.get(instance);
+				}
+				catch (IllegalAccessException e) {
+					// ignore
+				}
 			}
 			return null;
 		}

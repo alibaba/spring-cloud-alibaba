@@ -188,13 +188,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(
-				blockHandlerClass = SentinelRestTemplateTests.ExceptionUtil.class,
-				blockHandler = "handleException",
-				fallbackClass = SentinelRestTemplateTests.ExceptionUtil.class,
-				fallback = "fallbackException",
-				urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class,
-				urlCleaner = "clean")
+		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException", fallbackClass = ExceptionUtil.class, fallback = "fallbackException", urlCleanerClass = UrlCleanUtil.class, urlCleaner = "clean")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -211,9 +205,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(
-				blockHandlerClass = SentinelRestTemplateTests.ExceptionUtil.class,
-				blockHandler = "handleException1")
+		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException1")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -230,9 +222,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(
-				fallbackClass = SentinelRestTemplateTests.ExceptionUtil.class,
-				fallback = "fallbackException1")
+		@SentinelRestTemplate(fallbackClass = ExceptionUtil.class, fallback = "fallbackException1")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -249,9 +239,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(
-				blockHandlerClass = SentinelRestTemplateTests.ExceptionUtil.class,
-				blockHandler = "handleException2")
+		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException2")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -268,9 +256,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(
-				fallbackClass = SentinelRestTemplateTests.ExceptionUtil.class,
-				fallback = "fallbackException2")
+		@SentinelRestTemplate(fallbackClass = ExceptionUtil.class, fallback = "fallbackException2")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -344,9 +330,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(
-				urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class,
-				urlCleaner = "clean1")
+		@SentinelRestTemplate(urlCleanerClass = UrlCleanUtil.class, urlCleaner = "clean1")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -363,9 +347,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(
-				urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class,
-				urlCleaner = "clean2")
+		@SentinelRestTemplate(urlCleanerClass = UrlCleanUtil.class, urlCleaner = "clean2")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}

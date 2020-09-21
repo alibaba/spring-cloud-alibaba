@@ -65,13 +65,23 @@ public class SentinelInvocationHandler implements InvocationHandler {
 		this.dispatch = checkNotNull(dispatch, "dispatch");
 	}
 
+	static Map<Method, Method> toFallbackMethod(Map<Method, MethodHandler> dispatch) {
+		Map<Method, Method> result = new LinkedHashMap<>();
+		for (Method method : dispatch.keySet()) {
+			method.setAccessible(true);
+			result.put(method, method);
+		}
+		return result;
+	}
+
 	@Override
 	public Object invoke(final Object proxy, final Method method, final Object[] args)
 			throws Throwable {
 		if ("equals".equals(method.getName())) {
 			try {
 				Object otherHandler = args.length > 0 && args[0] != null
-						? Proxy.getInvocationHandler(args[0]) : null;
+						? Proxy.getInvocationHandler(args[0])
+						: null;
 				return equals(otherHandler);
 			}
 			catch (IllegalArgumentException e) {
@@ -164,15 +174,6 @@ public class SentinelInvocationHandler implements InvocationHandler {
 	@Override
 	public String toString() {
 		return target.toString();
-	}
-
-	static Map<Method, Method> toFallbackMethod(Map<Method, MethodHandler> dispatch) {
-		Map<Method, Method> result = new LinkedHashMap<>();
-		for (Method method : dispatch.keySet()) {
-			method.setAccessible(true);
-			result.put(method, method);
-		}
-		return result;
 	}
 
 }

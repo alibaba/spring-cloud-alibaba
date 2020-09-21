@@ -45,8 +45,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class },
-		properties = { "feign.sentinel.enabled=true" })
+@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class }, properties = {
+		"feign.sentinel.enabled=true" })
 public class SentinelFeignTests {
 
 	@Autowired
@@ -118,24 +118,6 @@ public class SentinelFeignTests {
 		assertThat(echoService.equals(fooService)).isEqualTo(Boolean.FALSE);
 	}
 
-	@Configuration
-	@EnableAutoConfiguration
-	@ImportAutoConfiguration({ SentinelFeignAutoConfiguration.class })
-	@EnableFeignClients
-	public static class TestConfig {
-
-		@Bean
-		public EchoServiceFallback echoServiceFallback() {
-			return new EchoServiceFallback();
-		}
-
-		@Bean
-		public CustomFallbackFactory customFallbackFactory() {
-			return new CustomFallbackFactory();
-		}
-
-	}
-
 	@FeignClient(value = "test-service", fallback = EchoServiceFallback.class)
 	public interface EchoService {
 
@@ -169,6 +151,24 @@ public class SentinelFeignTests {
 
 	@FeignClient("baz-service")
 	public interface BazClient extends BazService {
+
+	}
+
+	@Configuration
+	@EnableAutoConfiguration
+	@ImportAutoConfiguration({ SentinelFeignAutoConfiguration.class })
+	@EnableFeignClients
+	public static class TestConfig {
+
+		@Bean
+		public EchoServiceFallback echoServiceFallback() {
+			return new EchoServiceFallback();
+		}
+
+		@Bean
+		public CustomFallbackFactory customFallbackFactory() {
+			return new CustomFallbackFactory();
+		}
 
 	}
 

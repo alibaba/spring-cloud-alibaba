@@ -37,10 +37,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-		classes = NacosDiscoveryPropertiesServerAddressTopLevelTests.TestConfig.class,
-		properties = { "spring.cloud.nacos.server-addr=123.123.123.123:8848" },
-		webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = NacosDiscoveryPropertiesServerAddressTopLevelTests.TestConfig.class, properties = {
+		"spring.cloud.nacos.server-addr=123.123.123.123:8848" }, webEnvironment = RANDOM_PORT)
 
 public class NacosDiscoveryPropertiesServerAddressTopLevelTests {
 

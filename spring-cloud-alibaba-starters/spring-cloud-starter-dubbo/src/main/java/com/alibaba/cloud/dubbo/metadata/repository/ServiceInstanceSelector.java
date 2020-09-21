@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos;
+package com.alibaba.cloud.dubbo.metadata.repository;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.List;
+import java.util.Optional;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.client.ServiceInstance;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.enabled", matchIfMissing = true)
-public @interface ConditionalOnNacosDiscoveryEnabled {
+/**
+ * metadata service instance selector.
+ *
+ * @author <a href="mailto:liuxx-u@outlook.com">liuxx</a>
+ */
+public interface ServiceInstanceSelector {
+
+	/**
+	 * Select a service instance to get metadata.
+	 * @param serviceInstances all service instance
+	 * @return the service instance to get metadata
+	 */
+	Optional<ServiceInstance> select(List<ServiceInstance> serviceInstances);
 
 }

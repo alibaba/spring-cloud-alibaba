@@ -35,8 +35,8 @@ import static com.alibaba.cloud.dubbo.autoconfigure.DubboOpenFeignAutoConfigurat
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @ConditionalOnClass(name = { "feign.Feign", TARGETER_CLASS_NAME })
-@AutoConfigureAfter(
-		name = { "org.springframework.cloud.openfeign.FeignAutoConfiguration" })
+@AutoConfigureAfter(name = {
+		"org.springframework.cloud.openfeign.FeignAutoConfiguration" })
 @Configuration
 public class DubboOpenFeignAutoConfiguration {
 

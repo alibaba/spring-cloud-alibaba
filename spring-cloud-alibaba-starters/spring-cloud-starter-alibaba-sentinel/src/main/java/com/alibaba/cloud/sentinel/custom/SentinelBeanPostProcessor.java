@@ -56,12 +56,11 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			.getLogger(SentinelBeanPostProcessor.class);
 
 	private final ApplicationContext applicationContext;
+	private ConcurrentHashMap<String, SentinelRestTemplate> cache = new ConcurrentHashMap<>();
 
 	public SentinelBeanPostProcessor(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
-
-	private ConcurrentHashMap<String, SentinelRestTemplate> cache = new ConcurrentHashMap<>();
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition,

@@ -51,21 +51,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosFactory.class })
-@SpringBootTest(classes = NacosAutoServiceRegistrationPortTests.TestConfig.class,
-		properties = { "spring.application.name=myTestService1",
-				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
-				"spring.cloud.nacos.discovery.port=8888" },
-		webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = NacosAutoServiceRegistrationPortTests.TestConfig.class, properties = {
+		"spring.application.name=myTestService1",
+		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+		"spring.cloud.nacos.discovery.port=8888" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationPortTests {
-
-	@Autowired
-	private NacosRegistration registration;
-
-	@Autowired
-	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
-
-	@Autowired
-	private NacosDiscoveryProperties properties;
 
 	static {
 		try {
@@ -83,6 +73,13 @@ public class NacosAutoServiceRegistrationPortTests {
 			e.printStackTrace();
 		}
 	}
+
+	@Autowired
+	private NacosRegistration registration;
+	@Autowired
+	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
+	@Autowired
+	private NacosDiscoveryProperties properties;
 
 	@Test
 	public void contextLoads() throws Exception {

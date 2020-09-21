@@ -41,7 +41,7 @@ public class HttpRequestConsumersMatcher extends AbstractHttpRequestMatcher {
 	/**
 	 * Creates a new instance from 0 or more "consumes" expressions.
 	 * @param consumes consumes expressions if 0 expressions are provided, the condition
-	 * will match to every request
+	 *     will match to every request
 	 */
 	public HttpRequestConsumersMatcher(String... consumes) {
 		this(consumes, null);
