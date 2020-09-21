@@ -137,12 +137,14 @@ public final class SentinelFeign {
 
 		private Object getFieldValue(Object instance, String fieldName) {
 			Field field = ReflectionUtils.findField(instance.getClass(), fieldName);
-			field.setAccessible(true);
-			try {
-				return field.get(instance);
-			}
-			catch (IllegalAccessException e) {
-				// ignore
+			if (field != null) {
+				field.setAccessible(true);
+				try {
+					return field.get(instance);
+				}
+				catch (IllegalAccessException e) {
+					// ignore
+				}
 			}
 			return null;
 		}

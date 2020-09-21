@@ -147,7 +147,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 			withDetails(builder.up(), detailMap);
 		}
 		else {
-			withDetails(builder.down(), detailMap);
+			withDetails(builder.unknown(), detailMap);
 		}
 	}
 
