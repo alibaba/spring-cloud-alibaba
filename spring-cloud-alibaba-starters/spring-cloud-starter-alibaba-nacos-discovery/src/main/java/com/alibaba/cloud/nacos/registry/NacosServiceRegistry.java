@@ -17,13 +17,17 @@
 package com.alibaba.cloud.nacos.registry;
 
 import java.util.List;
+import java.util.Properties;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.StringUtils;
@@ -33,6 +37,7 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
 /**
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author <a href="mailto:78552423@qq.com">eshun</a>
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
@@ -40,11 +45,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private final NamingService namingService;
+	@Autowired
+	private NacosServiceManager nacosServiceManager;
 
 	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
-		this.namingService = nacosDiscoveryProperties.namingServiceInstance();
 	}
 
 	@Override
@@ -55,6 +60,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
+		NamingService namingService = namingService();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
@@ -84,7 +90,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			return;
 		}
 
-		NamingService namingService = nacosDiscoveryProperties.namingServiceInstance();
+		NamingService namingService = namingService();
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
@@ -102,7 +108,12 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	@Override
 	public void close() {
-
+		try {
+			nacosServiceManager.nacosServiceShutDown();
+		}
+		catch (NacosException e) {
+			log.error("Nacos namingService shutDown failed", e);
+		}
 	}
 
 	@Override
@@ -125,7 +136,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		try {
-			nacosDiscoveryProperties.namingMaintainServiceInstance()
+			Properties nacosProperties = nacosDiscoveryProperties.getNacosProperties();
+			nacosServiceManager.getNamingMaintainService(nacosProperties)
 					.updateInstance(serviceId, instance);
 		}
 		catch (Exception e) {
@@ -139,8 +151,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		String serviceName = registration.getServiceId();
 		try {
-			List<Instance> instances = nacosDiscoveryProperties.namingServiceInstance()
-					.getAllInstances(serviceName);
+			List<Instance> instances = namingService().getAllInstances(serviceName);
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
 						&& instance.getPort() == nacosDiscoveryProperties.getPort()) {
@@ -160,9 +171,15 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		instance.setPort(registration.getPort());
 		instance.setWeight(nacosDiscoveryProperties.getWeight());
 		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
+		instance.setEnabled(nacosDiscoveryProperties.isInstanceEnabled());
 		instance.setMetadata(registration.getMetadata());
-
+		instance.setEphemeral(nacosDiscoveryProperties.isEphemeral());
 		return instance;
+	}
+
+	private NamingService namingService() {
+		return nacosServiceManager
+				.getNamingService(nacosDiscoveryProperties.getNacosProperties());
 	}
 
 }

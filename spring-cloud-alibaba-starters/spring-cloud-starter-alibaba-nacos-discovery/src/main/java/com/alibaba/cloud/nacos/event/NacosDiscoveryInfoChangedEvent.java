@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos;
+package com.alibaba.cloud.nacos.event;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationEvent;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.enabled", matchIfMissing = true)
-public @interface ConditionalOnNacosDiscoveryEnabled {
+/**
+ * @author yuhuangbin
+ */
+public class NacosDiscoveryInfoChangedEvent extends ApplicationEvent {
+
+	public NacosDiscoveryInfoChangedEvent(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		super(nacosDiscoveryProperties);
+	}
+
+	@Override
+	public NacosDiscoveryProperties getSource() {
+		return (NacosDiscoveryProperties) super.getSource();
+	}
 
 }
