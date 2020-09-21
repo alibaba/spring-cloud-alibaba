@@ -397,7 +397,7 @@ public class DubboServiceMetadataRepository
 	}
 
 	public Integer getDubboProtocolPort(ServiceInstance serviceInstance,
-                                        String protocol) {
+			String protocol) {
 		return dubboMetadataUtils.getDubboProtocolPort(serviceInstance, protocol);
 	}
 

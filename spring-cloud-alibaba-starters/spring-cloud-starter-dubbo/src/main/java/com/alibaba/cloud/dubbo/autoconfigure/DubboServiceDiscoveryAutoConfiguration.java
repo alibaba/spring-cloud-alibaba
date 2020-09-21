@@ -350,7 +350,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		private final ThreadLocal<String> processedServiceNameThreadLocal;
 
 		ZookeeperConfiguration(ZookeeperDiscoveryProperties zookeeperDiscoveryProperties,
-                               ZookeeperServiceWatch zookeeperServiceWatch) {
+				ZookeeperServiceWatch zookeeperServiceWatch) {
 			this.zookeeperServiceWatch = zookeeperServiceWatch;
 			this.rootPath = zookeeperDiscoveryProperties.getRoot();
 			this.pathMatcher = new AntPathMatcher(NODE_PATH_SEPARATOR);

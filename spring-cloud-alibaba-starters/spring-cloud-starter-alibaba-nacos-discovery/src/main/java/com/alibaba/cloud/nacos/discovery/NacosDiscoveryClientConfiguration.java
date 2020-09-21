@@ -57,8 +57,8 @@ public class NacosDiscoveryClientConfiguration {
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.watch.enabled", matchIfMissing = true)
 	public NacosWatch nacosWatch(NacosServiceManager nacosServiceManager,
-                                 NacosDiscoveryProperties nacosDiscoveryProperties,
-                                 ObjectProvider<TaskScheduler> taskExecutorObjectProvider) {
+			NacosDiscoveryProperties nacosDiscoveryProperties,
+			ObjectProvider<TaskScheduler> taskExecutorObjectProvider) {
 		return new NacosWatch(nacosServiceManager, nacosDiscoveryProperties,
 				taskExecutorObjectProvider);
 	}

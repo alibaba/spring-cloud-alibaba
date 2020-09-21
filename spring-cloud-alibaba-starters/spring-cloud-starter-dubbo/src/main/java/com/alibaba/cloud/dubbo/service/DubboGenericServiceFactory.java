@@ -82,7 +82,7 @@ public class DubboGenericServiceFactory {
 	}
 
 	private ReferenceBean<GenericService> build(ServiceRestMetadata serviceRestMetadata,
-                                                Map<String, Object> dubboTranslatedAttributes) {
+			Map<String, Object> dubboTranslatedAttributes) {
 		String urlValue = serviceRestMetadata.getUrl();
 		URL url = URL.valueOf(urlValue);
 		String interfaceName = url.getServiceInterface();
@@ -127,8 +127,7 @@ public class DubboGenericServiceFactory {
 				new PropertyEditorSupport() {
 
 					@Override
-					public void setAsText(String text)
-							throws IllegalArgumentException {
+					public void setAsText(String text) throws IllegalArgumentException {
 						// Trim all whitespace
 						String content = StringUtils.trimAllWhitespace(text);
 						if (!StringUtils.hasText(content)) { // No content , ignore

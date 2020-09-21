@@ -55,7 +55,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
-                                        ClientHttpRequestExecution execution) throws IOException {
+			ClientHttpRequestExecution execution) throws IOException {
 		URI uri = request.getURI();
 		String hostResource = request.getMethod().toString() + ":" + uri.getScheme()
 				+ "://" + uri.getHost()
@@ -107,7 +107,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 	}
 
 	private ClientHttpResponse handleBlockException(HttpRequest request, byte[] body,
-                                                    ClientHttpRequestExecution execution, BlockException ex) {
+			ClientHttpRequestExecution execution, BlockException ex) {
 		Object[] args = new Object[] { request, body, execution, ex };
 		// handle degrade
 		if (isDegradeFailure(ex)) {

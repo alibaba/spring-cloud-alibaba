@@ -72,6 +72,16 @@ public class NacosRegistration implements Registration, ServiceInstance {
 		this.context = context;
 	}
 
+	private static void customize(
+			List<NacosRegistrationCustomizer> registrationCustomizers,
+			NacosRegistration registration) {
+		if (registrationCustomizers != null) {
+			for (NacosRegistrationCustomizer customizer : registrationCustomizers) {
+				customizer.customize(registration);
+			}
+		}
+	}
+
 	@PostConstruct
 	public void init() {
 
@@ -110,16 +120,6 @@ public class NacosRegistration implements Registration, ServiceInstance {
 					nacosDiscoveryProperties.getIpDeleteTimeout().toString());
 		}
 		customize(registrationCustomizers, this);
-	}
-
-	private static void customize(
-			List<NacosRegistrationCustomizer> registrationCustomizers,
-			NacosRegistration registration) {
-		if (registrationCustomizers != null) {
-			for (NacosRegistrationCustomizer customizer : registrationCustomizers) {
-				customizer.customize(registration);
-			}
-		}
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class HttpRequestConsumersMatcher extends AbstractHttpRequestMatcher {
 	/**
 	 * Creates a new instance from 0 or more "consumes" expressions.
 	 * @param consumes consumes expressions if 0 expressions are provided, the condition
-	 * will match to every request
+	 *     will match to every request
 	 */
 	public HttpRequestConsumersMatcher(String... consumes) {
 		this(consumes, null);
@@ -69,7 +69,7 @@ public class HttpRequestConsumersMatcher extends AbstractHttpRequestMatcher {
 	}
 
 	private static Set<ConsumeMediaTypeExpression> parseExpressions(String[] consumes,
-                                                                    String[] headers) {
+			String[] headers) {
 		Set<ConsumeMediaTypeExpression> result = new LinkedHashSet<>();
 		if (headers != null) {
 			for (String header : headers) {

@@ -232,7 +232,7 @@ public class SentinelAutoConfigurationTests {
 
 		@Bean
 		@SentinelRestTemplate
-        RestTemplate restTemplate() {
+		RestTemplate restTemplate() {
 			RestTemplate restTemplate = new RestTemplate();
 			restTemplate.getInterceptors().add(mock(ClientHttpRequestInterceptor.class));
 			return restTemplate;
@@ -240,18 +240,18 @@ public class SentinelAutoConfigurationTests {
 
 		@Bean
 		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException")
-        RestTemplate restTemplateWithBlockClass() {
+		RestTemplate restTemplateWithBlockClass() {
 			return new RestTemplate();
 		}
 
 		@Bean
 		@SentinelRestTemplate(fallbackClass = ExceptionUtil.class, fallback = "fallbackException")
-        RestTemplate restTemplateWithFallbackClass() {
+		RestTemplate restTemplateWithFallbackClass() {
 			return new RestTemplate();
 		}
 
 		@Bean
-        RestTemplate restTemplateWithoutBlockClass() {
+		RestTemplate restTemplateWithoutBlockClass() {
 			return new RestTemplate();
 		}
 
@@ -260,13 +260,13 @@ public class SentinelAutoConfigurationTests {
 	public static class ExceptionUtil {
 
 		public static SentinelClientHttpResponse handleException(HttpRequest request,
-                                                                 byte[] body, ClientHttpRequestExecution execution, BlockException ex) {
+				byte[] body, ClientHttpRequestExecution execution, BlockException ex) {
 			System.out.println("Oops: " + ex.getClass().getCanonicalName());
 			return new SentinelClientHttpResponse("Oops");
 		}
 
 		public static SentinelClientHttpResponse fallbackException(HttpRequest request,
-                                                                   byte[] body, ClientHttpRequestExecution execution, BlockException ex) {
+				byte[] body, ClientHttpRequestExecution execution, BlockException ex) {
 			System.out.println("Oops: " + ex.getClass().getCanonicalName());
 			return new SentinelClientHttpResponse("Oops fallback");
 		}

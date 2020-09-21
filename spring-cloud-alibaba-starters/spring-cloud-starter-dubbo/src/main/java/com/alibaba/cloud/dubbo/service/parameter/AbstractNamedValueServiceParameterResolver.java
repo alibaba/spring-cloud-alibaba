@@ -48,7 +48,7 @@ public abstract class AbstractNamedValueServiceParameterResolver
 
 	@Override
 	public Object resolve(RestMethodMetadata restMethodMetadata,
-                          MethodParameterMetadata methodParameterMetadata, HttpServerRequest request) {
+			MethodParameterMetadata methodParameterMetadata, HttpServerRequest request) {
 
 		Collection<String> names = getNames(restMethodMetadata, methodParameterMetadata);
 
@@ -87,8 +87,8 @@ public abstract class AbstractNamedValueServiceParameterResolver
 
 	@Override
 	public Object resolve(RestMethodMetadata restMethodMetadata,
-                          MethodParameterMetadata methodParameterMetadata,
-                          RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
+			MethodParameterMetadata methodParameterMetadata,
+			RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
 
 		Collection<String> names = getNames(restMethodMetadata, methodParameterMetadata);
 
@@ -116,7 +116,7 @@ public abstract class AbstractNamedValueServiceParameterResolver
 	}
 
 	protected Collection<String> getNames(RestMethodMetadata restMethodMetadata,
-                                          MethodParameterMetadata methodParameterMetadata) {
+			MethodParameterMetadata methodParameterMetadata) {
 
 		Map<Integer, Collection<String>> indexToName = restMethodMetadata
 				.getIndexToName();

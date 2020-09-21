@@ -74,24 +74,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.nacos.discovery.ip-delete-timeout=9" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationTests {
 
-	@Autowired
-	private NacosRegistration registration;
-
-	@Autowired
-	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
-
-	@LocalServerPort
-	private int port;
-
-	@Autowired
-	private NacosDiscoveryProperties properties;
-
-	@Autowired
-	private NacosServiceManager nacosServiceManager;
-
-	@Autowired
-	private InetUtils inetUtils;
-
 	static {
 		try {
 			Method method = PowerMockito.method(NacosFactory.class, "createNamingService",
@@ -108,6 +90,19 @@ public class NacosAutoServiceRegistrationTests {
 			e.printStackTrace();
 		}
 	}
+
+	@Autowired
+	private NacosRegistration registration;
+	@Autowired
+	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
+	@LocalServerPort
+	private int port;
+	@Autowired
+	private NacosDiscoveryProperties properties;
+	@Autowired
+	private NacosServiceManager nacosServiceManager;
+	@Autowired
+	private InetUtils inetUtils;
 
 	@Test
 	public void contextLoads() throws Exception {

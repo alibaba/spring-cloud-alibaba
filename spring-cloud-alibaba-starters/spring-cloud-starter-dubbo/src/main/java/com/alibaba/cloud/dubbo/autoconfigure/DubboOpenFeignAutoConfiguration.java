@@ -47,9 +47,9 @@ public class DubboOpenFeignAutoConfiguration {
 
 	@Bean
 	public TargeterBeanPostProcessor targeterBeanPostProcessor(Environment environment,
-                                                               DubboServiceMetadataRepository dubboServiceMetadataRepository,
-                                                               DubboGenericServiceFactory dubboGenericServiceFactory,
-                                                               DubboGenericServiceExecutionContextFactory contextFactory) {
+			DubboServiceMetadataRepository dubboServiceMetadataRepository,
+			DubboGenericServiceFactory dubboGenericServiceFactory,
+			DubboGenericServiceExecutionContextFactory contextFactory) {
 		return new TargeterBeanPostProcessor(environment, dubboServiceMetadataRepository,
 				dubboGenericServiceFactory, contextFactory);
 	}

@@ -30,10 +30,8 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(SidecarNacosDiscoveryClient.class);
-
-	private NacosServiceManager nacosServiceManager;
-
 	private final SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties;
+	private NacosServiceManager nacosServiceManager;
 
 	public SidecarNacosDiscoveryClient(NacosServiceManager nacosServiceManager,
 			SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties) {

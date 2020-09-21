@@ -61,14 +61,6 @@ public class ContextIdSentinelFeignTests {
 		assertThat(echoService.equals(fooService)).isEqualTo(Boolean.FALSE);
 	}
 
-	@Configuration
-	@EnableAutoConfiguration
-	@ImportAutoConfiguration({ SentinelFeignAutoConfiguration.class })
-	@EnableFeignClients
-	public static class TestConfig {
-
-	}
-
 	@FeignClient(contextId = "echoService", name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 	public interface EchoService {
 
@@ -82,6 +74,14 @@ public class ContextIdSentinelFeignTests {
 
 		@RequestMapping(path = "echo/{str}")
 		String echo(@RequestParam("str") String param);
+
+	}
+
+	@Configuration
+	@EnableAutoConfiguration
+	@ImportAutoConfiguration({ SentinelFeignAutoConfiguration.class })
+	@EnableFeignClients
+	public static class TestConfig {
 
 	}
 

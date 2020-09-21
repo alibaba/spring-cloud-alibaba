@@ -48,8 +48,8 @@ public class SidecarHealthChecker {
 	private final ConfigurableEnvironment environment;
 
 	public SidecarHealthChecker(SidecarDiscoveryClient sidecarDiscoveryClient,
-                                HealthIndicator healthIndicator, SidecarProperties sidecarProperties,
-                                ConfigurableEnvironment environment) {
+			HealthIndicator healthIndicator, SidecarProperties sidecarProperties,
+			ConfigurableEnvironment environment) {
 		this.sidecarDiscoveryClient = sidecarDiscoveryClient;
 		this.healthIndicator = healthIndicator;
 		this.sidecarProperties = sidecarProperties;

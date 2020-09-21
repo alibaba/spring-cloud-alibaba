@@ -108,7 +108,7 @@ public class DubboMetadataUtils {
 	}
 
 	public Integer getDubboProtocolPort(ServiceInstance serviceInstance,
-                                        String protocol) {
+			String protocol) {
 		String protocolProperty = getDubboProtocolPropertyName(protocol);
 		Map<String, String> metadata = serviceInstance.getMetadata();
 		String protocolPort = metadata.get(protocolProperty);

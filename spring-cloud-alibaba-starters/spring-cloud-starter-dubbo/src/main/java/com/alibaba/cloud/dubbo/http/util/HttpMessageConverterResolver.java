@@ -59,7 +59,7 @@ public class HttpMessageConverterResolver {
 	}
 
 	public HttpMessageConverterHolder resolve(HttpRequest request,
-                                              Class<?> parameterType) {
+			Class<?> parameterType) {
 
 		HttpMessageConverterHolder httpMessageConverterHolder = null;
 
@@ -100,7 +100,7 @@ public class HttpMessageConverterResolver {
 	 * @return instance of {@link HttpMessageConverterHolder}
 	 */
 	public HttpMessageConverterHolder resolve(RequestMetadata requestMetadata,
-                                              RestMethodMetadata restMethodMetadata) {
+			RestMethodMetadata restMethodMetadata) {
 
 		HttpMessageConverterHolder httpMessageConverterHolder = null;
 
@@ -190,7 +190,7 @@ public class HttpMessageConverterResolver {
 	 * @return non-null {@link List}
 	 */
 	private List<MediaType> getProducibleMediaTypes(RestMethodMetadata restMethodMetadata,
-                                                    Class<?> returnValueClass) {
+			Class<?> returnValueClass) {
 		RequestMetadata serverRequestMetadata = restMethodMetadata.getRequest();
 		List<MediaType> mediaTypes = serverRequestMetadata.getProduceMediaTypes();
 		if (!CollectionUtils.isEmpty(mediaTypes)) { // Empty
@@ -232,7 +232,7 @@ public class HttpMessageConverterResolver {
 	 * q-value of the former.
 	 */
 	private MediaType getMostSpecificMediaType(MediaType acceptType,
-                                               MediaType produceType) {
+			MediaType produceType) {
 		MediaType produceTypeToUse = produceType.copyQualityValue(acceptType);
 		return (MediaType.SPECIFICITY_COMPARATOR.compare(acceptType,
 				produceTypeToUse) <= 0 ? acceptType : produceTypeToUse);

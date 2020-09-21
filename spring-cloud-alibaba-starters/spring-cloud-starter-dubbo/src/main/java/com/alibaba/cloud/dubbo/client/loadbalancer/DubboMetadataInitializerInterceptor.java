@@ -43,7 +43,7 @@ public class DubboMetadataInitializerInterceptor implements ClientHttpRequestInt
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
-                                        ClientHttpRequestExecution execution) throws IOException {
+			ClientHttpRequestExecution execution) throws IOException {
 
 		URI originalUri = request.getURI();
 

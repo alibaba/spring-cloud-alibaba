@@ -61,7 +61,7 @@ public class NacosRibbonClientConfigurationTests {
 	static class NacosRibbonTestConfiguration {
 
 		@Bean
-        IClientConfig iClientConfig() {
+		IClientConfig iClientConfig() {
 			DefaultClientConfigImpl config = new DefaultClientConfigImpl();
 			config.setClientName("myapp");
 			return config;
@@ -69,7 +69,7 @@ public class NacosRibbonClientConfigurationTests {
 
 		@Bean
 		@LoadBalanced
-        RestTemplate restTemplate() {
+		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
 

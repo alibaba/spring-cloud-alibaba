@@ -33,9 +33,9 @@ import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 public class SeataLoadBalancerFeignClient extends LoadBalancerFeignClient {
 
 	SeataLoadBalancerFeignClient(Client delegate,
-                                 CachingSpringLoadBalancerFactory lbClientFactory,
-                                 SpringClientFactory clientFactory,
-                                 SeataFeignObjectWrapper seataFeignObjectWrapper) {
+			CachingSpringLoadBalancerFactory lbClientFactory,
+			SpringClientFactory clientFactory,
+			SeataFeignObjectWrapper seataFeignObjectWrapper) {
 		super((Client) seataFeignObjectWrapper.wrap(delegate), lbClientFactory,
 				clientFactory);
 	}

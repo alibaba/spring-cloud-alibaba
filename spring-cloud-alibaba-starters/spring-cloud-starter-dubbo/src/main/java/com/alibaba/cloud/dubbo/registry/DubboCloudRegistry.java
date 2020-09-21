@@ -109,10 +109,10 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	private final String currentApplicationName;
 
 	public DubboCloudRegistry(URL url, DiscoveryClient discoveryClient,
-                              DubboServiceMetadataRepository repository,
-                              DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
-                              JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
-                              ConfigurableApplicationContext applicationContext) {
+			DubboServiceMetadataRepository repository,
+			DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
+			JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
+			ConfigurableApplicationContext applicationContext) {
 
 		super(url);
 		this.servicesLookupInterval = url
@@ -415,7 +415,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	}
 
 	private List<URL> getExportedURLs(DubboMetadataService dubboMetadataService,
-                                      URL subscribedURL) {
+			URL subscribedURL) {
 		String serviceInterface = subscribedURL.getServiceInterface();
 		String group = subscribedURL.getParameter(GROUP_KEY);
 		String version = subscribedURL.getParameter(VERSION_KEY);

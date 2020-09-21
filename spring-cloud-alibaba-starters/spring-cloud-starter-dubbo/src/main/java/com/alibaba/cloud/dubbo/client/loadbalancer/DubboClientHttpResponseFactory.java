@@ -45,7 +45,7 @@ class DubboClientHttpResponseFactory {
 	}
 
 	public ClientHttpResponse build(Object result, GenericException exception,
-                                    RequestMetadata requestMetadata, RestMethodMetadata restMethodMetadata) {
+			RequestMetadata requestMetadata, RestMethodMetadata restMethodMetadata) {
 
 		DubboHttpOutputMessage httpOutputMessage = new DubboHttpOutputMessage();
 

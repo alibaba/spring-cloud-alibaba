@@ -61,18 +61,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 
-	@Autowired
-	private NacosRegistration registration;
-
-	@Autowired
-	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
-
-	@Autowired
-	private NacosDiscoveryProperties properties;
-
-	@Autowired
-	private InetUtils inetUtils;
-
 	static {
 		try {
 			Method method = PowerMockito.method(NacosFactory.class, "createNamingService",
@@ -89,6 +77,15 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 			e.printStackTrace();
 		}
 	}
+
+	@Autowired
+	private NacosRegistration registration;
+	@Autowired
+	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
+	@Autowired
+	private NacosDiscoveryProperties properties;
+	@Autowired
+	private InetUtils inetUtils;
 
 	@Test
 	public void contextLoads() throws Exception {

@@ -30,7 +30,7 @@ public class DubboRestServiceMetadata {
 	private final RestMethodMetadata restMethodMetadata;
 
 	public DubboRestServiceMetadata(ServiceRestMetadata serviceRestMetadata,
-                                    RestMethodMetadata restMethodMetadata) {
+			RestMethodMetadata restMethodMetadata) {
 		this.serviceRestMetadata = serviceRestMetadata;
 		this.restMethodMetadata = restMethodMetadata;
 	}

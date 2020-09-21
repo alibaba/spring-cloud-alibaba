@@ -76,7 +76,7 @@ public final class SentinelFeign {
 			super.invocationHandlerFactory(new InvocationHandlerFactory() {
 				@Override
 				public InvocationHandler create(Target target,
-                                                Map<Method, MethodHandler> dispatch) {
+						Map<Method, MethodHandler> dispatch) {
 					// using reflect get fallback and fallbackFactory properties from
 					// FeignClientFactoryBean because FeignClientFactoryBean is a package
 					// level class, we can not use it in our package

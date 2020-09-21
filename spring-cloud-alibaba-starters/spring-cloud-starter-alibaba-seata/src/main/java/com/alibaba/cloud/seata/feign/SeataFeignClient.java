@@ -36,11 +36,9 @@ import org.springframework.util.StringUtils;
  */
 public class SeataFeignClient implements Client {
 
-	private final Client delegate;
-
-	private final BeanFactory beanFactory;
-
 	private static final int MAP_SIZE = 16;
+	private final Client delegate;
+	private final BeanFactory beanFactory;
 
 	SeataFeignClient(BeanFactory beanFactory) {
 		this.beanFactory = beanFactory;

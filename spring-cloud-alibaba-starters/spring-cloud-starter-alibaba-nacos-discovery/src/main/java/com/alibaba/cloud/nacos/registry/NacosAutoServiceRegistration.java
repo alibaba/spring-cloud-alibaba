@@ -41,8 +41,8 @@ public class NacosAutoServiceRegistration
 	private NacosRegistration registration;
 
 	public NacosAutoServiceRegistration(ServiceRegistry<Registration> serviceRegistry,
-                                        AutoServiceRegistrationProperties autoServiceRegistrationProperties,
-                                        NacosRegistration registration) {
+			AutoServiceRegistrationProperties autoServiceRegistrationProperties,
+			NacosRegistration registration) {
 		super(serviceRegistry, autoServiceRegistrationProperties);
 		this.registration = registration;
 	}

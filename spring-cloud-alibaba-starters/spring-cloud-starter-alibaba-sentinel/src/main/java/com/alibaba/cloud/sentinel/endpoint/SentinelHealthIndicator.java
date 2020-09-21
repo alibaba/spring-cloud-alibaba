@@ -63,7 +63,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 	private SentinelProperties sentinelProperties;
 
 	public SentinelHealthIndicator(DefaultListableBeanFactory beanFactory,
-                                   SentinelProperties sentinelProperties) {
+			SentinelProperties sentinelProperties) {
 		this.beanFactory = beanFactory;
 		this.sentinelProperties = sentinelProperties;
 	}
@@ -76,7 +76,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 		// detail
 		if (!sentinelProperties.isEnabled()) {
 			detailMap.put("enabled", false);
-			builder.up().withDetails(detailMap);
+			withDetails(builder.up(), detailMap);
 			return;
 		}
 
@@ -144,11 +144,16 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 
 		// If Dashboard and DataSource are both OK, the health status is UP
 		if (dashboardUp && dataSourceUp) {
-			builder.up().withDetails(detailMap);
+			withDetails(builder.up(), detailMap);
 		}
 		else {
-			builder.unknown().withDetails(detailMap);
+			withDetails(builder.down(), detailMap);
 		}
 	}
 
+	private void withDetails(Health.Builder builder, Map<String, Object> detailMap) {
+		for (String key : detailMap.keySet()) {
+			builder.withDetail(key, detailMap.get(key));
+		}
+	}
 }

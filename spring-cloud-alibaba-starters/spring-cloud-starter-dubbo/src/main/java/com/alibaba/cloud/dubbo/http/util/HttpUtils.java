@@ -244,7 +244,7 @@ public abstract class HttpUtils {
 	}
 
 	private static void addParam(MultiValueMap<String, String> paramsMap, String name,
-                                 String value) {
+			String value) {
 		String paramValue = trimAllWhitespace(value);
 		if (!StringUtils.hasText(paramValue)) {
 			paramValue = EMPTY_VALUE;

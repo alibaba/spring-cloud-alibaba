@@ -52,23 +52,16 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(SentinelDataSourceHandler.class);
-
+	private final String DATA_TYPE_FIELD = "dataType";
+	private final String CUSTOM_DATA_TYPE = "custom";
+	private final String CONVERTER_CLASS_FIELD = "converterClass";
+	private final DefaultListableBeanFactory beanFactory;
+	private final SentinelProperties sentinelProperties;
+	private final Environment env;
 	private List<String> dataTypeList = Arrays.asList("json", "xml");
 
-	private final String DATA_TYPE_FIELD = "dataType";
-
-	private final String CUSTOM_DATA_TYPE = "custom";
-
-	private final String CONVERTER_CLASS_FIELD = "converterClass";
-
-	private final DefaultListableBeanFactory beanFactory;
-
-	private final SentinelProperties sentinelProperties;
-
-	private final Environment env;
-
 	public SentinelDataSourceHandler(DefaultListableBeanFactory beanFactory,
-                                     SentinelProperties sentinelProperties, Environment env) {
+			SentinelProperties sentinelProperties, Environment env) {
 		this.beanFactory = beanFactory;
 		this.sentinelProperties = sentinelProperties;
 		this.env = env;

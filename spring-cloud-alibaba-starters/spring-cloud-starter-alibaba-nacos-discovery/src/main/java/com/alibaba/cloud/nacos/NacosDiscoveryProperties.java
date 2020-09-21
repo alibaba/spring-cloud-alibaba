@@ -67,14 +67,12 @@ import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(NacosDiscoveryProperties.class);
-
 	/**
 	 * Prefix of {@link NacosDiscoveryProperties}.
 	 */
 	public static final String PREFIX = "spring.cloud.nacos.discovery";
-
+	private static final Logger log = LoggerFactory
+			.getLogger(NacosDiscoveryProperties.class);
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	/**

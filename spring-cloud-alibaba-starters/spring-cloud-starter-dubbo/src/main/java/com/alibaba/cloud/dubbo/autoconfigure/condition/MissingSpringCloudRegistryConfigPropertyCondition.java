@@ -43,7 +43,7 @@ public class MissingSpringCloudRegistryConfigPropertyCondition
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context,
-                                            AnnotatedTypeMetadata metadata) {
+			AnnotatedTypeMetadata metadata) {
 		ConfigurableEnvironment environment = (ConfigurableEnvironment) context
 				.getEnvironment();
 

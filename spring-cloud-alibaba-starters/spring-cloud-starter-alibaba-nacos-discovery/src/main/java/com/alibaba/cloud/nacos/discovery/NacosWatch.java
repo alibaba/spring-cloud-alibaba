@@ -51,26 +51,18 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycle {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosWatch.class);
-
-	private Map<String, EventListener> listenerMap = new ConcurrentHashMap<>(16);
-
 	private final AtomicBoolean running = new AtomicBoolean(false);
-
 	private final AtomicLong nacosWatchIndex = new AtomicLong(0);
-
+	private final NacosDiscoveryProperties properties;
+	private final TaskScheduler taskScheduler;
+	private Map<String, EventListener> listenerMap = new ConcurrentHashMap<>(16);
 	private ApplicationEventPublisher publisher;
-
 	private ScheduledFuture<?> watchFuture;
-
 	private NacosServiceManager nacosServiceManager;
 
-	private final NacosDiscoveryProperties properties;
-
-	private final TaskScheduler taskScheduler;
-
 	public NacosWatch(NacosServiceManager nacosServiceManager,
-                      NacosDiscoveryProperties properties,
-                      ObjectProvider<TaskScheduler> taskScheduler) {
+			NacosDiscoveryProperties properties,
+			ObjectProvider<TaskScheduler> taskScheduler) {
 		this.nacosServiceManager = nacosServiceManager;
 		this.properties = properties;
 		this.taskScheduler = taskScheduler.getIfAvailable(NacosWatch::getTaskScheduler);
