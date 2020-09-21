@@ -33,6 +33,7 @@ import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * {@link Feign.Builder} like {@link HystrixFeign.Builder}.
@@ -75,7 +76,7 @@ public final class SentinelFeign {
 			super.invocationHandlerFactory(new InvocationHandlerFactory() {
 				@Override
 				public InvocationHandler create(Target target,
-						Map<Method, MethodHandler> dispatch) {
+                                                Map<Method, MethodHandler> dispatch) {
 					// using reflect get fallback and fallbackFactory properties from
 					// FeignClientFactoryBean because FeignClientFactoryBean is a package
 					// level class, we can not use it in our package
@@ -86,7 +87,11 @@ public final class SentinelFeign {
 							"fallback");
 					Class fallbackFactory = (Class) getFieldValue(feignClientFactoryBean,
 							"fallbackFactory");
-					String beanName = (String) getFieldValue(feignClientFactoryBean, "name");
+					String beanName = (String) getFieldValue(feignClientFactoryBean,
+							"contextId");
+					if (!StringUtils.hasText(beanName)) {
+						beanName = (String) getFieldValue(feignClientFactoryBean, "name");
+					}
 
 					Object fallbackInstance;
 					FallbackFactory fallbackFactoryInstance;

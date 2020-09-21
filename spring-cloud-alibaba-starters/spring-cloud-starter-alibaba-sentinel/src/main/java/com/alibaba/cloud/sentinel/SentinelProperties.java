@@ -102,6 +102,20 @@ public class SentinelProperties {
 	 */
 	private Boolean httpMethodSpecify = false;
 
+	/**
+	 * Specify whether unify web context(i.e. use the default context name), and is true
+	 * by default.
+	 */
+	private Boolean webContextUnify = true;
+
+	public Boolean getWebContextUnify() {
+		return webContextUnify;
+	}
+
+	public void setWebContextUnify(Boolean webContextUnify) {
+		this.webContextUnify = webContextUnify;
+	}
+
 	public boolean isEager() {
 		return eager;
 	}
@@ -218,9 +232,8 @@ public class SentinelProperties {
 		private String blockPage;
 
 		@Deprecated
-		@DeprecatedConfigurationProperty(
-				reason = "replaced to SentinelProperties#blockPage.",
-				replacement = SentinelConstants.PROPERTY_PREFIX + ".block-page")
+		@DeprecatedConfigurationProperty(reason = "replaced to SentinelProperties#blockPage.", replacement = SentinelConstants.PROPERTY_PREFIX
+				+ ".block-page")
 		public String getBlockPage() {
 			return blockPage;
 		}

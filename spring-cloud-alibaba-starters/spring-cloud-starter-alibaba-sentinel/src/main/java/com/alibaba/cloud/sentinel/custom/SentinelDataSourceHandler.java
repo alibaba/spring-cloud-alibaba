@@ -68,7 +68,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 	private final Environment env;
 
 	public SentinelDataSourceHandler(DefaultListableBeanFactory beanFactory,
-			SentinelProperties sentinelProperties, Environment env) {
+                                     SentinelProperties sentinelProperties, Environment env) {
 		this.beanFactory = beanFactory;
 		this.sentinelProperties = sentinelProperties;
 		this.env = env;

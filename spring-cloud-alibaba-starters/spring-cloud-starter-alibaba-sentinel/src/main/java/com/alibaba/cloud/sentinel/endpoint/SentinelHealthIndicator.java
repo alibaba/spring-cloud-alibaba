@@ -17,6 +17,7 @@
 package com.alibaba.cloud.sentinel.endpoint;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.sentinel.SentinelProperties;
@@ -24,13 +25,14 @@ import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.heartbeat.HeartbeatSenderProvider;
 import com.alibaba.csp.sentinel.transport.HeartbeatSender;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import com.alibaba.csp.sentinel.util.function.Tuple2;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 /**
  * A {@link HealthIndicator} for Sentinel, which checks the status of Sentinel Dashboard
@@ -61,7 +63,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 	private SentinelProperties sentinelProperties;
 
 	public SentinelHealthIndicator(DefaultListableBeanFactory beanFactory,
-			SentinelProperties sentinelProperties) {
+                                   SentinelProperties sentinelProperties) {
 		this.beanFactory = beanFactory;
 		this.sentinelProperties = sentinelProperties;
 	}
@@ -74,7 +76,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 		// detail
 		if (!sentinelProperties.isEnabled()) {
 			detailMap.put("enabled", false);
-			withDetails(builder.up(), detailMap);
+			builder.up().withDetails(detailMap);
 			return;
 		}
 
@@ -82,8 +84,9 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 
 		// Check health of Dashboard
 		boolean dashboardUp = true;
-		String consoleServer = TransportConfig.getConsoleServer();
-		if (StringUtils.isEmpty(consoleServer)) {
+		List<Tuple2<String, Integer>> consoleServerList = TransportConfig
+				.getConsoleServerList();
+		if (CollectionUtils.isEmpty(consoleServerList)) {
 			// If Dashboard isn't configured, it's OK and mark the status of Dashboard
 			// with UNKNOWN.
 			detailMap.put("dashboard",
@@ -101,8 +104,10 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 			else {
 				// If failed to send heartbeat message, means that the Dashboard is DOWN
 				dashboardUp = false;
-				detailMap.put("dashboard", new Status(Status.DOWN.getCode(),
-						consoleServer + " can't be connected"));
+				detailMap.put("dashboard",
+						new Status(Status.UNKNOWN.getCode(), String.format(
+								"the dashboard servers [%s] one of them can't be connected",
+								consoleServerList)));
 			}
 		}
 
@@ -133,22 +138,17 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 				// DOWN
 				dataSourceUp = false;
 				dataSourceDetailMap.put(dataSourceBeanName,
-						new Status(Status.DOWN.getCode(), e.getMessage()));
+						new Status(Status.UNKNOWN.getCode(), e.getMessage()));
 			}
 		}
 
 		// If Dashboard and DataSource are both OK, the health status is UP
 		if (dashboardUp && dataSourceUp) {
-			withDetails(builder.up(), detailMap);
+			builder.up().withDetails(detailMap);
 		}
 		else {
-			withDetails(builder.down(), detailMap);
+			builder.unknown().withDetails(detailMap);
 		}
 	}
 
-	private void withDetails(Health.Builder builder, Map<String, Object> detailMap) {
-		for (String key : detailMap.keySet()) {
-			builder.withDetail(key, detailMap.get(key));
-		}
-	}
 }

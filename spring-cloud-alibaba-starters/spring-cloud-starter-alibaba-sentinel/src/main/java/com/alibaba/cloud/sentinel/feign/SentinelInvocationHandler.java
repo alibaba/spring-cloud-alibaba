@@ -53,7 +53,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 	private Map<Method, Method> fallbackMethodMap;
 
 	SentinelInvocationHandler(Target<?> target, Map<Method, MethodHandler> dispatch,
-			FallbackFactory fallbackFactory) {
+                              FallbackFactory fallbackFactory) {
 		this.target = checkNotNull(target, "target");
 		this.dispatch = checkNotNull(dispatch, "dispatch");
 		this.fallbackFactory = fallbackFactory;
@@ -99,7 +99,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 			}
 			else {
 				String resourceName = methodMetadata.template().method().toUpperCase()
-						+ ":" + hardCodedTarget.url() + methodMetadata.template().url();
+						+ ":" + hardCodedTarget.url() + methodMetadata.template().path();
 				Entry entry = null;
 				try {
 					ContextUtil.enter(resourceName);

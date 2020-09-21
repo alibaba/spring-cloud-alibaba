@@ -45,8 +45,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class },
-		properties = { "feign.sentinel.enabled=true" })
+@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class }, properties = {
+		"feign.sentinel.enabled=true" })
 public class SentinelFeignTests {
 
 	@Autowired

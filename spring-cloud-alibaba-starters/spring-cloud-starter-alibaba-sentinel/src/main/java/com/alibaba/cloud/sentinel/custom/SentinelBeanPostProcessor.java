@@ -65,7 +65,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition,
-			Class<?> beanType, String beanName) {
+                                                Class<?> beanType, String beanName) {
 		if (checkSentinelProtect(beanDefinition, beanType, beanName)) {
 			SentinelRestTemplate sentinelRestTemplate;
 			if (beanDefinition.getSource() instanceof StandardMethodMetadata) {
@@ -166,7 +166,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	}
 
 	private boolean checkSentinelProtect(RootBeanDefinition beanDefinition,
-			Class<?> beanType, String beanName) {
+                                         Class<?> beanType, String beanName) {
 		return beanName != null && beanType == RestTemplate.class
 				&& checkMethodMetadataReadingVisitor(beanDefinition);
 	}

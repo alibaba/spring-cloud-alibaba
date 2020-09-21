@@ -83,19 +83,18 @@ public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
-			matchIfMissing = true)
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled", matchIfMissing = true)
 	public SentinelWebInterceptor sentinelWebInterceptor(
 			SentinelWebMvcConfig sentinelWebMvcConfig) {
 		return new SentinelWebInterceptor(sentinelWebMvcConfig);
 	}
 
 	@Bean
-	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
-			matchIfMissing = true)
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled", matchIfMissing = true)
 	public SentinelWebMvcConfig sentinelWebMvcConfig() {
 		SentinelWebMvcConfig sentinelWebMvcConfig = new SentinelWebMvcConfig();
 		sentinelWebMvcConfig.setHttpMethodSpecify(properties.getHttpMethodSpecify());
+		sentinelWebMvcConfig.setWebContextUnify(properties.getWebContextUnify());
 
 		if (blockExceptionHandlerOptional.isPresent()) {
 			blockExceptionHandlerOptional
