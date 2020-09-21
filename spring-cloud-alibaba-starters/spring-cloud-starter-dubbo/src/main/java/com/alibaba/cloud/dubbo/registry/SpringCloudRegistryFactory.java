@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.dubbo.registry;
 
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
@@ -23,11 +24,12 @@ import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
+import org.apache.dubbo.registry.support.AbstractRegistryFactory;
 
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import static java.lang.System.getProperty;
+import static com.alibaba.cloud.dubbo.util.DubboCloudConstants.SPRING_CLOUD_REGISTRY_PROPERTY_VALUE;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose
@@ -37,7 +39,7 @@ import static java.lang.System.getProperty;
  * @see RegistryFactory
  * @see SpringCloudRegistry
  */
-public class SpringCloudRegistryFactory implements RegistryFactory {
+public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 
 	/**
 	 * Spring Cloud Protocol.
@@ -48,10 +50,6 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 	 * Spring Cloud Address.
 	 */
 	public static String ADDRESS = "localhost";
-
-	private static String SERVICES_LOOKUP_SCHEDULER_THREAD_NAME_PREFIX = getProperty(
-			"dubbo.services.lookup.scheduler.thread.name.prefix ",
-			"dubbo-services-lookup-");
 
 	private static ConfigurableApplicationContext applicationContext;
 
@@ -65,8 +63,6 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 
 	private DubboGenericServiceFactory dubboGenericServiceFactory;
 
-	private volatile boolean initialized = false;
-
 	public SpringCloudRegistryFactory() {
 	}
 
@@ -76,9 +72,6 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 	}
 
 	protected void init() {
-		if (initialized || applicationContext == null) {
-			return;
-		}
 		this.discoveryClient = applicationContext.getBean(DiscoveryClient.class);
 		this.dubboServiceMetadataRepository = applicationContext
 				.getBean(DubboServiceMetadataRepository.class);
@@ -90,11 +83,28 @@ public class SpringCloudRegistryFactory implements RegistryFactory {
 	}
 
 	@Override
-	public Registry getRegistry(URL url) {
+	public Registry createRegistry(URL url) {
 		init();
-		return new SpringCloudRegistry(url, discoveryClient,
-				dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
-				jsonUtils, dubboGenericServiceFactory, applicationContext);
+
+		DubboCloudProperties dubboCloudProperties = applicationContext
+				.getBean(DubboCloudProperties.class);
+
+		Registry registry = null;
+
+		switch (dubboCloudProperties.getRegistryType()) {
+		case SPRING_CLOUD_REGISTRY_PROPERTY_VALUE:
+			registry = new SpringCloudRegistry(url, discoveryClient,
+					dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
+					jsonUtils, dubboGenericServiceFactory, applicationContext);
+			break;
+		default:
+			registry = new DubboCloudRegistry(url, discoveryClient,
+					dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
+					jsonUtils, dubboGenericServiceFactory, applicationContext);
+			break;
+		}
+
+		return registry;
 	}
 
 }

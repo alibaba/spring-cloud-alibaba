@@ -49,7 +49,7 @@ public class DubboTransportedMethodMetadataResolver {
 	private final Contract contract;
 
 	public DubboTransportedMethodMetadataResolver(PropertyResolver propertyResolver,
-			Contract contract) {
+                                                  Contract contract) {
 		this.attributesResolver = new DubboTransportedAttributesResolver(
 				propertyResolver);
 		this.contract = contract;

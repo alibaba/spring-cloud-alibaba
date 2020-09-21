@@ -69,7 +69,7 @@ public class HttpRequestConsumersMatcher extends AbstractHttpRequestMatcher {
 	}
 
 	private static Set<ConsumeMediaTypeExpression> parseExpressions(String[] consumes,
-			String[] headers) {
+                                                                    String[] headers) {
 		Set<ConsumeMediaTypeExpression> result = new LinkedHashSet<>();
 		if (headers != null) {
 			for (String header : headers) {

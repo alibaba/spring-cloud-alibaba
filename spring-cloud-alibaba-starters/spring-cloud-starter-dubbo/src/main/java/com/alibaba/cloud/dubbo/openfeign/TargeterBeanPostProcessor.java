@@ -50,9 +50,9 @@ public class TargeterBeanPostProcessor
 	private ClassLoader classLoader;
 
 	public TargeterBeanPostProcessor(Environment environment,
-			DubboServiceMetadataRepository dubboServiceMetadataRepository,
-			DubboGenericServiceFactory dubboGenericServiceFactory,
-			DubboGenericServiceExecutionContextFactory contextFactory) {
+                                     DubboServiceMetadataRepository dubboServiceMetadataRepository,
+                                     DubboGenericServiceFactory dubboGenericServiceFactory,
+                                     DubboGenericServiceExecutionContextFactory contextFactory) {
 		this.environment = environment;
 		this.dubboServiceMetadataRepository = dubboServiceMetadataRepository;
 		this.dubboGenericServiceFactory = dubboGenericServiceFactory;

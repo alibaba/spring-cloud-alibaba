@@ -98,7 +98,7 @@ class TargeterInvocationHandler implements InvocationHandler {
 	}
 
 	private Object createDubboProxyIfRequired(FeignContext feignContext, Target target,
-			Object defaultProxy) {
+                                              Object defaultProxy) {
 
 		DubboInvocationHandler dubboInvocationHandler = createDubboInvocationHandler(
 				feignContext, target, defaultProxy);
@@ -112,7 +112,7 @@ class TargeterInvocationHandler implements InvocationHandler {
 	}
 
 	private DubboInvocationHandler createDubboInvocationHandler(FeignContext feignContext,
-			Target target, Object defaultFeignClientProxy) {
+                                                                Target target, Object defaultFeignClientProxy) {
 
 		// Service name equals @FeignClient.name()
 		String serviceName = target.name();
@@ -153,7 +153,7 @@ class TargeterInvocationHandler implements InvocationHandler {
 	}
 
 	private Map<Method, FeignMethodMetadata> getFeignMethodMetadataMap(String serviceName,
-			Map<DubboTransportedMethodMetadata, RestMethodMetadata> feignRestMethodMetadataMap) {
+                                                                       Map<DubboTransportedMethodMetadata, RestMethodMetadata> feignRestMethodMetadataMap) {
 		Map<Method, FeignMethodMetadata> feignMethodMetadataMap = new HashMap<>();
 
 		for (Map.Entry<DubboTransportedMethodMetadata, RestMethodMetadata> entry : feignRestMethodMetadataMap

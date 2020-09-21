@@ -65,7 +65,7 @@ import org.springframework.web.client.RestTemplate;
 @AutoConfigureAfter(name = {
 		"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration" })
 public class DubboLoadBalancedRestTemplateAutoConfiguration implements
-		BeanClassLoaderAware, ApplicationContextAware, SmartInitializingSingleton {
+        BeanClassLoaderAware, ApplicationContextAware, SmartInitializingSingleton {
 
 	private static final Class<DubboTransported> DUBBO_TRANSPORTED_CLASS = DubboTransported.class;
 
@@ -174,7 +174,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements
 	 * {@link DubboTransported @DubboTransported}
 	 */
 	private void adaptRestTemplate(RestTemplate restTemplate,
-			Map<String, Object> dubboTranslatedAttributes) {
+                                   Map<String, Object> dubboTranslatedAttributes) {
 
 		List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(
 				restTemplate.getInterceptors());

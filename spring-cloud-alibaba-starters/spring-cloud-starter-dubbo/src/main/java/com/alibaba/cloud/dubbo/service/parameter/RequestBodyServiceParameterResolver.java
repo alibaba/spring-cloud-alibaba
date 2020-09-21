@@ -69,7 +69,7 @@ public class RequestBodyServiceParameterResolver
 	}
 
 	private boolean supportParameter(RestMethodMetadata restMethodMetadata,
-			MethodParameterMetadata methodParameterMetadata) {
+                                     MethodParameterMetadata methodParameterMetadata) {
 
 		Integer index = methodParameterMetadata.getIndex();
 
@@ -88,7 +88,7 @@ public class RequestBodyServiceParameterResolver
 
 	@Override
 	public Object resolve(RestMethodMetadata restMethodMetadata,
-			MethodParameterMetadata methodParameterMetadata, HttpServerRequest request) {
+                          MethodParameterMetadata methodParameterMetadata, HttpServerRequest request) {
 
 		if (!supportParameter(restMethodMetadata, methodParameterMetadata)) {
 			return null;
@@ -117,8 +117,8 @@ public class RequestBodyServiceParameterResolver
 
 	@Override
 	public Object resolve(RestMethodMetadata restMethodMetadata,
-			MethodParameterMetadata methodParameterMetadata,
-			RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
+                          MethodParameterMetadata methodParameterMetadata,
+                          RestMethodMetadata clientRestMethodMetadata, Object[] arguments) {
 
 		if (!supportParameter(restMethodMetadata, methodParameterMetadata)) {
 			return null;

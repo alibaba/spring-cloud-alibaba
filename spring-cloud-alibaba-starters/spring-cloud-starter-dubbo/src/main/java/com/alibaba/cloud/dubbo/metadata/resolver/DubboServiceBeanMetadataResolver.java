@@ -138,7 +138,7 @@ public class DubboServiceBeanMetadataResolver
 	}
 
 	private List<MethodMetadata> parseAndValidateMetadata(Contract contract,
-			Class<?> targetType) {
+                                                          Class<?> targetType) {
 		List<MethodMetadata> methodMetadataList = Collections.emptyList();
 		try {
 			methodMetadataList = contract.parseAndValidatateMetadata(targetType);
@@ -171,7 +171,7 @@ public class DubboServiceBeanMetadataResolver
 	}
 
 	protected RestMethodMetadata resolveMethodRestMetadata(MethodMetadata methodMetadata,
-			Class<?> targetType, List<Method> feignContractMethods) {
+                                                           Class<?> targetType, List<Method> feignContractMethods) {
 		String configKey = methodMetadata.configKey();
 		Method feignContractMethod = getMatchedFeignContractMethod(targetType,
 				feignContractMethods, configKey);

@@ -31,16 +31,19 @@ import org.springframework.context.ConfigurableApplicationContext;
  * protocol is "spring-cloud".
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @deprecated It's a legacy and not recommended implementation, being replacing to be
+ * {@link DubboCloudRegistry}
  */
+@Deprecated
 public class SpringCloudRegistry extends AbstractSpringCloudRegistry {
 
 	private final DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
 	public SpringCloudRegistry(URL url, DiscoveryClient discoveryClient,
-			DubboServiceMetadataRepository dubboServiceMetadataRepository,
-			DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
-			JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
-			ConfigurableApplicationContext applicationContext) {
+                               DubboServiceMetadataRepository dubboServiceMetadataRepository,
+                               DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
+                               JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
+                               ConfigurableApplicationContext applicationContext) {
 		super(url, discoveryClient, dubboServiceMetadataRepository,
 				dubboMetadataConfigServiceProxy, jsonUtils, dubboGenericServiceFactory,
 				applicationContext);

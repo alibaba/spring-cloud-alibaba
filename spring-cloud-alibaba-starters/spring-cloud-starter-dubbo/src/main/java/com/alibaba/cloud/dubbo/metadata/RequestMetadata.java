@@ -111,7 +111,7 @@ public class RequestMetadata {
 	}
 
 	private static void mediaTypes(HttpHeaders httpHeaders, String headerName,
-			Collection<String> destination) {
+                                   Collection<String> destination) {
 		List<String> value = httpHeaders.get(headerName);
 		List<MediaType> mediaTypes = parseMediaTypes(value);
 		destination.addAll(toMediaTypeValues(mediaTypes));

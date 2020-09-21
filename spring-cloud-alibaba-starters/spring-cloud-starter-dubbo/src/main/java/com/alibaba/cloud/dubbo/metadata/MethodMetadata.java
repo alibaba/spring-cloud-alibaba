@@ -73,7 +73,7 @@ public class MethodMetadata {
 	}
 
 	private MethodParameterMetadata toMethodParameterMetadata(int index,
-			Parameter parameter) {
+                                                              Parameter parameter) {
 		MethodParameterMetadata metadata = new MethodParameterMetadata();
 		metadata.setIndex(index);
 		metadata.setName(parameter.getName());
