@@ -44,7 +44,7 @@ public class SeataFeignClient implements Client {
 
 	SeataFeignClient(BeanFactory beanFactory) {
 		this.beanFactory = beanFactory;
-		this.delegate = new Client.Default(null, null);
+		this.delegate = new Default(null, null);
 	}
 
 	SeataFeignClient(BeanFactory beanFactory, Client delegate) {

@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 public class SeataHystrixAutoConfiguration {
 
 	@Bean
-	SeataHystrixConcurrencyStrategy seataHystrixConcurrencyStrategy() {
+    SeataHystrixConcurrencyStrategy seataHystrixConcurrencyStrategy() {
 		return new SeataHystrixConcurrencyStrategy();
 	}
 

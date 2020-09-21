@@ -46,6 +46,7 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 
 	private final Logger logger = LoggerFactory
 			.getLogger(SeataHystrixConcurrencyStrategy.class);
+
 	private HystrixConcurrencyStrategy delegate;
 
 	public SeataHystrixConcurrencyStrategy() {

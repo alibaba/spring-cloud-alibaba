@@ -65,19 +65,19 @@ public class SeataFeignClientAutoConfiguration {
 	protected static class FeignBeanPostProcessorConfiguration {
 
 		@Bean
-		SeataBeanPostProcessor seataBeanPostProcessor(
+        SeataBeanPostProcessor seataBeanPostProcessor(
 				SeataFeignObjectWrapper seataFeignObjectWrapper) {
 			return new SeataBeanPostProcessor(seataFeignObjectWrapper);
 		}
 
 		@Bean
-		SeataContextBeanPostProcessor seataContextBeanPostProcessor(
+        SeataContextBeanPostProcessor seataContextBeanPostProcessor(
 				BeanFactory beanFactory) {
 			return new SeataContextBeanPostProcessor(beanFactory);
 		}
 
 		@Bean
-		SeataFeignObjectWrapper seataFeignObjectWrapper(BeanFactory beanFactory) {
+        SeataFeignObjectWrapper seataFeignObjectWrapper(BeanFactory beanFactory) {
 			return new SeataFeignObjectWrapper(beanFactory);
 		}
 
