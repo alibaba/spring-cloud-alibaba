@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -203,7 +202,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	 * {@link #defaultHeartbeatEventChangePredicate()} method providers the default
 	 * implementation to detect whether the {@link HeartbeatEvent#getValue() state} is
 	 * changed or not. If and only if changed, the
-	 * {@link #dispatchServiceInstancesChangedEvent(String, Collection)} will be executed.
+	 * {@link #dispatchServiceInstancesChangedEvent(String, List)} will be executed.
 	 * <p>
 	 * <b>Note : </b> Spring Cloud {@link HeartbeatEvent} has a critical flaw that can't
 	 * figure out which service was changed precisely, it's just used for a notification
@@ -362,7 +361,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 
 		/**
 		 * Zookeeper uses {@link TreeCacheEvent} to trigger
-		 * {@link #dispatchServiceInstancesChangedEvent(String, Collection)} , thus
+		 * {@link #dispatchServiceInstancesChangedEvent(String, List)} , thus
 		 * {@link HeartbeatEvent} handle is always ignored.
 		 * @return <code>false</code> forever
 		 */
@@ -430,7 +429,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		}
 
 		/**
-		 * Try to {@link #dispatchServiceInstancesChangedEvent(String, Collection)
+		 * Try to {@link #dispatchServiceInstancesChangedEvent(String, List)
 		 * dispatch} {@link ServiceInstancesChangedEvent} before
 		 * {@link ZookeeperServiceWatch#childEvent(CuratorFramework, TreeCacheEvent)}
 		 * execution if required.
@@ -528,7 +527,7 @@ public class DubboServiceDiscoveryAutoConfiguration {
 
 		/**
 		 * Nacos uses {@link EventListener} to trigger.
-		 * {@link #dispatchServiceInstancesChangedEvent(String, Collection)} , thus
+		 * {@link #dispatchServiceInstancesChangedEvent(String, List)} , thus
 		 * {@link HeartbeatEvent} handle is always ignored
 		 * @return <code>false</code> forever
 		 */
