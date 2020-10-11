@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>order-service</artifactId>
-    <name>Spring Cloud Starter Alibaba Seata Example - Business Service</name>
+    <name>Spring Cloud Starter Alibaba Seata Example - Order Service</name>
     <packaging>jar</packaging>
 
     <dependencies>
