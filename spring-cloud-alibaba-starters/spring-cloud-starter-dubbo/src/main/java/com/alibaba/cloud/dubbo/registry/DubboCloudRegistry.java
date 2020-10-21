@@ -403,7 +403,8 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	}
 
 	private String generateId(URL url) {
-		return url.getServiceKey();
+		// Johnson Yang fix the issues #1259 #1260 #753 #1253
+		return url.getServiceKey() + ":PROTOCOL_" + url.getParameter(PROTOCOL_KEY);
 	}
 
 	private URL emptyURL(URL url) {
