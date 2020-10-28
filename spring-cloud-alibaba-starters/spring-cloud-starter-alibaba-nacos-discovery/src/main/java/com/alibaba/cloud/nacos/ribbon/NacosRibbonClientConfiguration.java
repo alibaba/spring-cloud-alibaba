@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.ribbon;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.ServerList;
+import com.netflix.loadbalancer.ServerListUpdater;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,6 +32,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author xiaojing
  * @author liujunjie
+ * @author gaowei
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnRibbonNacos
@@ -51,6 +53,13 @@ public class NacosRibbonClientConfiguration {
 		NacosServerList serverList = new NacosServerList(nacosDiscoveryProperties);
 		serverList.initWithNiwsConfig(config);
 		return serverList;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public ServerListUpdater ribbonServerListUpdater(
+			NacosDiscoveryProperties nacosDiscoveryProperties, IClientConfig config) {
+		return new NacosNotificationServerListUpdater(nacosDiscoveryProperties, config);
 	}
 
 	@Bean
