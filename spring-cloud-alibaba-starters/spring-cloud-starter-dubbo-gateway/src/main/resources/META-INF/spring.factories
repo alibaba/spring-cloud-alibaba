@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.alibaba.cloud.dubbo.gateway.autoconfigure.DubboCloudGatewayAutoConfiguration,\
-com.alibaba.cloud.dubbo.gateway.standard.DubboSpringCloudGatewayAutoConfiguration

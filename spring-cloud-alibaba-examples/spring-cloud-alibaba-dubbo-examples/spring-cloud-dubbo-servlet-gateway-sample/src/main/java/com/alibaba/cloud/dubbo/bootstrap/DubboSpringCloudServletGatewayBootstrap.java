@@ -24,6 +24,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Dubbo Spring Cloud Servlet Gateway Bootstrap.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration

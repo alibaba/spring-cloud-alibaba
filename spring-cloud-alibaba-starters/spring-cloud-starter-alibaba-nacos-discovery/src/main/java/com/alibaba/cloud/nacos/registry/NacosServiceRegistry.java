@@ -17,13 +17,17 @@
 package com.alibaba.cloud.nacos.registry;
 
 import java.util.List;
+import java.util.Properties;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.StringUtils;
@@ -40,6 +44,9 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	private static final Logger log = LoggerFactory.getLogger(NacosServiceRegistry.class);
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
+
+	@Autowired
+	private NacosServiceManager nacosServiceManager;
 
 	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
@@ -101,7 +108,12 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	@Override
 	public void close() {
-
+		try {
+			nacosServiceManager.nacosServiceShutDown();
+		}
+		catch (NacosException e) {
+			log.error("Nacos namingService shutDown failed", e);
+		}
 	}
 
 	@Override
@@ -124,7 +136,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		try {
-			nacosDiscoveryProperties.namingMaintainServiceInstance()
+			Properties nacosProperties = nacosDiscoveryProperties.getNacosProperties();
+			nacosServiceManager.getNamingMaintainService(nacosProperties)
 					.updateInstance(serviceId, instance);
 		}
 		catch (Exception e) {
@@ -138,8 +151,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		String serviceName = registration.getServiceId();
 		try {
-			List<Instance> instances = nacosDiscoveryProperties.namingServiceInstance()
-					.getAllInstances(serviceName);
+			List<Instance> instances = namingService().getAllInstances(serviceName);
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
 						&& instance.getPort() == nacosDiscoveryProperties.getPort()) {
@@ -166,7 +178,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	}
 
 	private NamingService namingService() {
-		return nacosDiscoveryProperties.namingServiceInstance();
+		return nacosServiceManager
+				.getNamingService(nacosDiscoveryProperties.getNacosProperties());
 	}
 
 }

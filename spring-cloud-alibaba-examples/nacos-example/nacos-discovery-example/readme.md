@@ -207,6 +207,7 @@ Metadata|spring.cloud.nacos.discovery.metadata||Extended data, Configure using M
 log name|spring.cloud.nacos.discovery.log-name||
 endpoint|spring.cloud.nacos.discovery.endpoint||The domain name of a service, through which the server address can be dynamically obtained.
 Integration Ribbon|ribbon.nacos.enabled|true|
+enabled|spring.cloud.nacos.discovery.enabled|true|The switch to enable or disable nacos service discovery
 
 
 
