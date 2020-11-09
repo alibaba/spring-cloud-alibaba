@@ -129,8 +129,8 @@ public class DataSourcePropertiesConfiguration {
 	public List<String> getValidField() {
 		return Arrays.stream(this.getClass().getDeclaredFields()).map(field -> {
 			try {
-				if (!ObjectUtils.isEmpty(field.get(this))) {
-					return field.getName();
+				if (!ObjectUtils.isEmpty(field.get(this)) && !field.isSynthetic()) {
+				    return field.getName();
 				}
 				return null;
 			}
