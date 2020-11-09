@@ -108,7 +108,9 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 				.collect(HashMap::new, (m, v) -> {
 					try {
 						v.setAccessible(true);
-						m.put(v.getName(), v.get(dataSourceProperties));
+						if(!v.isSynthetic()){
+						    m.put(v.getName(), v.get(dataSourceProperties));
+						}
 					}
 					catch (IllegalAccessException e) {
 						log.error("[Sentinel Starter] DataSource " + dataSourceName
