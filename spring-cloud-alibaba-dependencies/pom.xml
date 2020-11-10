@@ -172,6 +172,12 @@
                 <version>${sentinel.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.alibaba.csp</groupId>
+                <artifactId>sentinel-grpc-adapter</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+
             <!--Alibaba Seata-->
             <dependency>
                 <groupId>io.seata</groupId>
