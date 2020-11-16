@@ -24,7 +24,6 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.listener.Listener;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +114,7 @@ class UserConfig {
 	@Override
 	public String toString() {
 		return "UserConfig{" + "age=" + age + ", name='" + name + '\'' + ", map=" + map
-				+ ", hr='" + hr + '\'' + ", users=" + JSON.toJSONString(users) + '}';
+				+ ", hr='" + hr + '\'' + ", users=" + users + '}';
 	}
 
 	public static class User {
