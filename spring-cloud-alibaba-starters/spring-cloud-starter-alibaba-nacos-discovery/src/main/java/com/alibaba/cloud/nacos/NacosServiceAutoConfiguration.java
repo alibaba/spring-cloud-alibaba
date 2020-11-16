@@ -14,37 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.discovery;
+package com.alibaba.cloud.nacos;
 
-import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosServiceManager;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author <a href="mailto:echooy.mxq@gmail.com">echooymxq</a>
- **/
+ * @author yuhuangbin
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnDiscoveryEnabled
 @ConditionalOnNacosDiscoveryEnabled
-public class NacosDiscoveryAutoConfiguration {
+public class NacosServiceAutoConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean
-	public NacosDiscoveryProperties nacosProperties() {
-		return new NacosDiscoveryProperties();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public NacosServiceDiscovery nacosServiceDiscovery(
-			NacosDiscoveryProperties discoveryProperties,
-			NacosServiceManager nacosServiceManager) {
-		return new NacosServiceDiscovery(discoveryProperties, nacosServiceManager);
+	public NacosServiceManager nacosServiceManager() {
+		return new NacosServiceManager();
 	}
 
 }

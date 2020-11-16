@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.2.3.RELEASE</version>
+        <version>2.3.1.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -80,25 +80,21 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.1.RELEASE</revision>
+        <revision>2.2.3-SNAPSHOT</revision>
 
         <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.2.2.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.2.2.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.2.2.RELEASE</spring-cloud-openfeign.version>
-        <spring-cloud-bus.version>2.2.1.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.2.2.RELEASE</spring-cloud-gateway.version>
+        <spring-cloud-commons.version>2.2.5.RELEASE</spring-cloud-commons.version>
+        <spring-cloud-netflix.version>2.2.5.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud-openfeign.version>2.2.5.RELEASE</spring-cloud-openfeign.version>
+        <spring-cloud-bus.version>2.2.3.RELEASE</spring-cloud-bus.version>
+        <spring-cloud-gateway.version>2.2.5.RELEASE</spring-cloud-gateway.version>
         <spring-cloud-stream.version>Horsham.SR3</spring-cloud-stream.version>
-        <spring-cloud-consul.version>2.2.2.RELEASE</spring-cloud-consul.version>
-        <spring-cloud-config.version>2.2.2.RELEASE</spring-cloud-config.version>
-        <spring-cloud-zookeeper.version>2.2.1.RELEASE</spring-cloud-zookeeper.version>
-
-        <junit.version>4.12</junit.version>
-        <javax-servlet-api>3.0</javax-servlet-api>
-        <slf4j-api.version>1.7.25</slf4j-api.version>
+        <spring-cloud-consul.version>2.2.4.RELEASE</spring-cloud-consul.version>
+        <spring-cloud-config.version>2.2.5.RELEASE</spring-cloud-config.version>
+        <spring-cloud-zookeeper.version>2.2.3.RELEASE</spring-cloud-zookeeper.version>
 
         <!-- Apache Dubbo -->
-        <dubbo.version>2.7.6</dubbo.version>
+        <dubbo.version>2.7.8</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->

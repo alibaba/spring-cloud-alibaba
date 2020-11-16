@@ -17,7 +17,7 @@
 package com.alibaba.cloud.dubbo.bootstrap;
 
 import com.alibaba.cloud.dubbo.service.EchoService;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -27,13 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Dubbo Spring Cloud Client Bootstrap.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration
 @RestController
 public class DubboSpringCloudClientBootstrap {
 
-	@Reference
+	@DubboReference
 	private EchoService echoService;
 
 	@GetMapping("/echo")

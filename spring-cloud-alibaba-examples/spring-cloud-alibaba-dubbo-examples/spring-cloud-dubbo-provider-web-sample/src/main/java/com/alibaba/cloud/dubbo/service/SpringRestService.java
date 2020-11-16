@@ -19,7 +19,7 @@ package com.alibaba.cloud.dubbo.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ import static com.alibaba.cloud.dubbo.util.LoggerUtils.log;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@Service(version = "1.0.0")
+@DubboService(version = "1.0.0")
 @RestController
 public class SpringRestService implements RestService {
 

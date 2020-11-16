@@ -36,6 +36,7 @@ import io.seata.core.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -156,11 +157,15 @@ public class SeataHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy 
 		public K call() throws Exception {
 			try {
 				RequestContextHolder.setRequestAttributes(requestAttributes);
-				RootContext.bind(xid);
+				if (!StringUtils.isEmpty(xid)) {
+					RootContext.bind(xid);
+				}
 				return actual.call();
 			}
 			finally {
-				RootContext.unbind();
+				if (!StringUtils.isEmpty(xid)) {
+					RootContext.unbind();
+				}
 				RequestContextHolder.resetRequestAttributes();
 			}
 		}

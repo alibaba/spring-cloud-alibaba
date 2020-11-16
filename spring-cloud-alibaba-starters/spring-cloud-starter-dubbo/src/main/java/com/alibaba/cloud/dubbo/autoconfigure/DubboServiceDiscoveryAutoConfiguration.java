@@ -33,6 +33,7 @@ import com.alibaba.cloud.dubbo.registry.AbstractSpringCloudRegistry;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
 import com.alibaba.cloud.dubbo.registry.event.SubscribedServicesChangedEvent;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.discovery.NacosWatch;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
@@ -56,6 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -135,6 +137,9 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	 */
 	private final ObjectProvider<Predicate<HeartbeatEvent>> heartbeatEventChangedPredicate;
 
+	@Value("${spring.application.name:${dubbo.application.name:application}}")
+	private String currentApplicationName;
+
 	public DubboServiceDiscoveryAutoConfiguration(
 			DubboServiceMetadataRepository dubboServiceMetadataRepository,
 			ApplicationEventPublisher applicationEventPublisher,
@@ -154,10 +159,12 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	 * NotifyListener)
 	 */
 	private void dispatchServiceInstancesChangedEvent(String serviceName,
-			Collection<ServiceInstance> serviceInstances) {
-		if (!hasText(serviceName) || serviceInstances == null) {
+			List<ServiceInstance> serviceInstances) {
+		if (!hasText(serviceName) || Objects.equals(currentApplicationName, serviceName)
+				|| serviceInstances == null) {
 			return;
 		}
+
 		ServiceInstancesChangedEvent event = new ServiceInstancesChangedEvent(serviceName,
 				serviceInstances);
 		if (logger.isInfoEnabled()) {
@@ -512,8 +519,10 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		 */
 		private final Set<String> listeningServices;
 
-		NacosConfiguration(NacosDiscoveryProperties nacosDiscoveryProperties) {
-			this.namingService = nacosDiscoveryProperties.namingServiceInstance();
+		NacosConfiguration(NacosServiceManager nacosServiceManager,
+				NacosDiscoveryProperties nacosDiscoveryProperties) {
+			this.namingService = nacosServiceManager
+					.getNamingService(nacosDiscoveryProperties.getNacosProperties());
 			this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 			this.listeningServices = new ConcurrentSkipListSet<>();
 		}
