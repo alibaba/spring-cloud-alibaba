@@ -63,6 +63,7 @@ import static org.springframework.util.StringUtils.hasText;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
+@Deprecated
 public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 
 	/**
@@ -370,12 +371,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	}
 
 	private void subscribeDubboMetadataServiceURLs(URL url, NotifyListener listener) {
-		String serviceInterface = url.getServiceInterface();
-		String group = url.getParameter(GROUP_KEY);
-		String version = url.getParameter(VERSION_KEY);
-		String protocol = url.getParameter(PROTOCOL_KEY);
-		List<URL> urls = repository.findSubscribedDubboMetadataServiceURLs(
-				serviceInterface, group, version, protocol);
+		List<URL> urls = repository.findSubscribedDubboMetadataServiceURLs(url);
 		listener.notify(urls);
 	}
 
