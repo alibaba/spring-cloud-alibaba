@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
-import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.Event;
 import com.alibaba.nacos.api.naming.listener.EventListener;
@@ -41,7 +40,6 @@ import org.springframework.cloud.client.discovery.event.HeartbeatEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.SmartLifecycle;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
@@ -66,14 +64,15 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 
 	private final NacosDiscoveryProperties properties;
 
-	private final TaskScheduler taskScheduler;
+	private final ThreadPoolTaskScheduler taskScheduler;
 
 	public NacosWatch(NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties properties,
-			ObjectProvider<TaskScheduler> taskScheduler) {
+			ObjectProvider<ThreadPoolTaskScheduler> taskScheduler) {
 		this.nacosServiceManager = nacosServiceManager;
 		this.properties = properties;
-		this.taskScheduler = taskScheduler.getIfAvailable(NacosWatch::getTaskScheduler);
+		this.taskScheduler = taskScheduler.stream().findAny()
+				.orElseGet(NacosWatch::getTaskScheduler);
 	}
 
 	private static ThreadPoolTaskScheduler getTaskScheduler() {
@@ -156,7 +155,7 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 			if (this.watchFuture != null) {
 				// shutdown current user-thread,
 				// then the other daemon-threads will terminate automatic.
-				((ThreadPoolTaskScheduler) this.taskScheduler).shutdown();
+				this.taskScheduler.shutdown();
 				this.watchFuture.cancel(true);
 			}
 
@@ -167,7 +166,7 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 				namingService.unsubscribe(properties.getService(), properties.getGroup(),
 						Arrays.asList(properties.getClusterName()), eventListener);
 			}
-			catch (NacosException e) {
+			catch (Exception e) {
 				log.error("namingService unsubscribe failed, properties:{}", properties,
 						e);
 			}
