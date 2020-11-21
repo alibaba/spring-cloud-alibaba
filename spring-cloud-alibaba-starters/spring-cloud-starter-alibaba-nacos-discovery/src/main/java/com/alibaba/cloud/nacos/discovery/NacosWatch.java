@@ -66,6 +66,8 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 
 	private final ThreadPoolTaskScheduler taskScheduler;
 
+	private final NamingService namingService;
+
 	public NacosWatch(NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties properties,
 			ObjectProvider<ThreadPoolTaskScheduler> taskScheduler) {
@@ -73,6 +75,8 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 		this.properties = properties;
 		this.taskScheduler = taskScheduler.stream().findAny()
 				.orElseGet(NacosWatch::getTaskScheduler);
+		this.namingService = nacosServiceManager
+				.getNamingService(properties.getNacosProperties());
 	}
 
 	private static ThreadPoolTaskScheduler getTaskScheduler() {
@@ -117,11 +121,10 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 						}
 					});
 
-			NamingService namingService = nacosServiceManager
-					.getNamingService(properties.getNacosProperties());
 			try {
-				namingService.subscribe(properties.getService(), properties.getGroup(),
-						Arrays.asList(properties.getClusterName()), eventListener);
+				this.namingService.subscribe(properties.getService(),
+						properties.getGroup(), Arrays.asList(properties.getClusterName()),
+						eventListener);
 			}
 			catch (Exception e) {
 				log.error("namingService subscribe failed, properties:{}", properties, e);
@@ -161,10 +164,9 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 
 			EventListener eventListener = listenerMap.get(buildKey());
 			try {
-				NamingService namingService = nacosServiceManager
-						.getNamingService(properties.getNacosProperties());
-				namingService.unsubscribe(properties.getService(), properties.getGroup(),
-						Arrays.asList(properties.getClusterName()), eventListener);
+				this.namingService.unsubscribe(properties.getService(),
+						properties.getGroup(), Arrays.asList(properties.getClusterName()),
+						eventListener);
 			}
 			catch (Exception e) {
 				log.error("namingService unsubscribe failed, properties:{}", properties,
