@@ -8,4 +8,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.alibaba.cloud.nacos.discovery.configclient.NacosConfigServerAutoConfiguration,\
   com.alibaba.cloud.nacos.NacosServiceAutoConfiguration
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+  com.alibaba.cloud.nacos.NacosServiceAutoConfiguration,\
   com.alibaba.cloud.nacos.discovery.configclient.NacosDiscoveryClientConfigServiceBootstrapConfiguration
