@@ -92,6 +92,11 @@ public class SentinelAutoConfiguration {
 			System.setProperty(TransportConfig.CONSOLE_SERVER,
 					properties.getTransport().getDashboard());
 		}
+		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_API_PATH))
+				&& StringUtils.hasText(properties.getTransport().getApiPath())) {
+			System.setProperty(TransportConfig.HEARTBEAT_API_PATH,
+					properties.getTransport().getApiPath());
+		}
 		if (StringUtils.isEmpty(System.getProperty(TransportConfig.HEARTBEAT_INTERVAL_MS))
 				&& StringUtils
 						.hasText(properties.getTransport().getHeartbeatIntervalMs())) {
