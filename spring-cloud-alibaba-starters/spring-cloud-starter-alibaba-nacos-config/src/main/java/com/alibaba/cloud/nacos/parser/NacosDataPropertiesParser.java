@@ -32,7 +32,7 @@ import org.springframework.util.StringUtils;
  */
 public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(NacosDataPropertiesParser.class);
 
 	public NacosDataPropertiesParser() {
@@ -52,7 +52,7 @@ public class NacosDataPropertiesParser extends AbstractNacosDataParser {
 				}
 				int index = dataLine.indexOf("=");
 				if (index == -1) {
-					log.warn("the config data is invalid {}", dataLine);
+					LOGGER.warn("the config data is invalid {}", dataLine);
 					continue;
 				}
 				String key = dataLine.substring(0, index);
