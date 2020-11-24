@@ -33,7 +33,7 @@ import org.springframework.util.CollectionUtils;
  */
 public class FallBackProviderHandler implements SmartInitializingSingleton {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FallBackProviderHandler.class);
 
 	private final DefaultListableBeanFactory beanFactory;
@@ -48,13 +48,13 @@ public class FallBackProviderHandler implements SmartInitializingSingleton {
 				.getBeansOfType(ZuulBlockFallbackProvider.class);
 		if (!CollectionUtils.isEmpty(providerMap)) {
 			providerMap.forEach((k, v) -> {
-				logger.info("[Sentinel Zuul] Register provider name:{}, instance: {}", k,
+				LOGGER.info("[Sentinel Zuul] Register provider name:{}, instance: {}", k,
 						v);
 				ZuulBlockFallbackManager.registerProvider(v);
 			});
 		}
 		else {
-			logger.info("[Sentinel Zuul] Register default fallback provider. ");
+			LOGGER.info("[Sentinel Zuul] Register default fallback provider. ");
 			ZuulBlockFallbackManager.registerProvider(new DefaultBlockFallbackProvider());
 		}
 	}
