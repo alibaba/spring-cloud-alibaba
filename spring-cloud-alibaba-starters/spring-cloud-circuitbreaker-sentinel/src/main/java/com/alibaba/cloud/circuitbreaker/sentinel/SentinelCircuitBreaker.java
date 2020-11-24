@@ -42,19 +42,19 @@ import org.springframework.util.Assert;
  */
 public class SentinelCircuitBreaker implements CircuitBreaker {
 
-	private final String RESOURCE_NAME;
+	private final String resourceName;
 
-	private final EntryType ENTRY_TYPE;
+	private final EntryType entryType;
 
-	private final List<DegradeRule> RULES;
+	private final List<DegradeRule> rules;
 
 	public SentinelCircuitBreaker(String resourceName, EntryType entryType,
 			List<DegradeRule> rules) {
 		Assert.hasText(resourceName, "resourceName cannot be blank");
 		Assert.notNull(rules, "rules should not be null");
-		this.RESOURCE_NAME = resourceName;
-		this.ENTRY_TYPE = entryType;
-		this.RULES = Collections.unmodifiableList(rules);
+		this.resourceName = resourceName;
+		this.entryType = entryType;
+		this.rules = Collections.unmodifiableList(rules);
 
 		applyToSentinelRuleManager();
 	}
@@ -68,15 +68,15 @@ public class SentinelCircuitBreaker implements CircuitBreaker {
 	}
 
 	private void applyToSentinelRuleManager() {
-		if (this.RULES == null || this.RULES.isEmpty()) {
+		if (this.rules == null || this.rules.isEmpty()) {
 			return;
 		}
 		Set<DegradeRule> ruleSet = new HashSet<>(DegradeRuleManager.getRules());
-		for (DegradeRule rule : this.RULES) {
+		for (DegradeRule rule : this.rules) {
 			if (rule == null) {
 				continue;
 			}
-			rule.setResource(RESOURCE_NAME);
+			rule.setResource(resourceName);
 			ruleSet.add(rule);
 		}
 		DegradeRuleManager.loadRules(new ArrayList<>(ruleSet));
@@ -86,7 +86,7 @@ public class SentinelCircuitBreaker implements CircuitBreaker {
 	public <T> T run(Supplier<T> toRun, Function<Throwable, T> fallback) {
 		Entry entry = null;
 		try {
-			entry = SphU.entry(RESOURCE_NAME, entryType);
+			entry = SphU.entry(resourceName, entryType);
 			// If the SphU.entry() does not throw `BlockException`, it means that the
 			// request can pass.
 			return toRun.get();

@@ -48,13 +48,13 @@ public class AbstractDataSourceProperties {
 	private String converterClass;
 
 	@JsonIgnore
-	private final String FACTORY_BEAN_NAME;
+	private final String factoryBeanName;
 
 	@JsonIgnore
 	private Environment env;
 
 	public AbstractDataSourceProperties(String factoryBeanName) {
-		this.FACTORY_BEAN_NAME = factoryBeanName;
+		this.factoryBeanName = factoryBeanName;
 	}
 
 	public String getDataType() {
@@ -82,7 +82,7 @@ public class AbstractDataSourceProperties {
 	}
 
 	public String getFactoryBeanName() {
-		return FACTORY_BEAN_NAME;
+		return factoryBeanName;
 	}
 
 	protected Environment getEnv() {

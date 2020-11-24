@@ -91,16 +91,16 @@ public class ConsumerSCLBApplication {
 
 		private ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
 
-		private final String SERVICE_ID;
+		private final String serviceId;
 
-		private final Random RANDOM;
+		private final Random random;
 
 		RandomLoadBalancer(
 				ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
 				String serviceId) {
 			this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
-			this.SERVICE_ID = serviceId;
-			this.RANDOM = new Random();
+			this.serviceId = serviceId;
+			this.random = new Random();
 		}
 
 		@Override
@@ -116,7 +116,7 @@ public class ConsumerSCLBApplication {
 			if (instances.isEmpty()) {
 				return new EmptyResponse();
 			}
-			ServiceInstance instance = instances.get(RANDOM.nextInt(instances.size()));
+			ServiceInstance instance = instances.get(random.nextInt(instances.size()));
 
 			return new DefaultResponse(instance);
 		}

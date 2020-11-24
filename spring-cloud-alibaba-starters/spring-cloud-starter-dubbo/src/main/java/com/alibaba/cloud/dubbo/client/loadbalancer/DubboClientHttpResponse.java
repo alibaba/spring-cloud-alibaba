@@ -33,37 +33,37 @@ import org.springframework.http.client.ClientHttpResponse;
  */
 class DubboClientHttpResponse implements ClientHttpResponse {
 
-	private final HttpStatus HTTP_STATUS;
+	private final HttpStatus httpStatus;
 
-	private final String STATUS_TEXT;
+	private final String statusText;
 
-	private final HttpHeaders HTTP_HEADERS = new HttpHeaders();
+	private final HttpHeaders httpHeaders = new HttpHeaders();
 
-	private final DubboHttpOutputMessage HTTP_OUTPUT_MESSAGE;
+	private final DubboHttpOutputMessage httpOutputMessage;
 
 	DubboClientHttpResponse(DubboHttpOutputMessage httpOutputMessage,
 			GenericException exception) {
-		this.HTTP_STATUS = exception != null ? HttpStatus.INTERNAL_SERVER_ERROR
+		this.httpStatus = exception != null ? HttpStatus.INTERNAL_SERVER_ERROR
 				: HttpStatus.OK;
-		this.STATUS_TEXT = exception != null ? exception.getExceptionMessage()
-				: HTTP_STATUS.getReasonPhrase();
-		this.HTTP_OUTPUT_MESSAGE = httpOutputMessage;
-		this.HTTP_HEADERS.putAll(httpOutputMessage.getHeaders());
+		this.statusText = exception != null ? exception.getExceptionMessage()
+				: httpStatus.getReasonPhrase();
+		this.httpOutputMessage = httpOutputMessage;
+		this.httpHeaders.putAll(httpOutputMessage.getHeaders());
 	}
 
 	@Override
 	public HttpStatus getStatusCode() throws IOException {
-		return HTTP_STATUS;
+		return httpStatus;
 	}
 
 	@Override
 	public int getRawStatusCode() throws IOException {
-		return HTTP_STATUS.value();
+		return httpStatus.value();
 	}
 
 	@Override
 	public String getStatusText() throws IOException {
-		return STATUS_TEXT;
+		return statusText;
 	}
 
 	@Override
@@ -72,12 +72,12 @@ class DubboClientHttpResponse implements ClientHttpResponse {
 
 	@Override
 	public InputStream getBody() throws IOException {
-		return HTTP_OUTPUT_MESSAGE.getBody().getInputStream();
+		return httpOutputMessage.getBody().getInputStream();
 	}
 
 	@Override
 	public HttpHeaders getHeaders() {
-		return HTTP_HEADERS;
+		return httpHeaders;
 	}
 
 }

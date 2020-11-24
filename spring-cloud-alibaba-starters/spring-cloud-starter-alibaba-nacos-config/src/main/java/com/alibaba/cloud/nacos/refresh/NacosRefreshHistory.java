@@ -33,7 +33,7 @@ import org.springframework.util.StringUtils;
 
 public class NacosRefreshHistory {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(NacosRefreshHistory.class);
+	private final static Logger log = LoggerFactory.getLogger(NacosRefreshHistory.class);
 
 	private static final int MAX_SIZE = 20;
 
@@ -49,7 +49,7 @@ public class NacosRefreshHistory {
 			md = MessageDigest.getInstance("MD5");
 		}
 		catch (NoSuchAlgorithmException e) {
-			LOGGER.error("failed to initialize MessageDigest : ", e);
+			log.error("failed to initialize MessageDigest : ", e);
 		}
 	}
 

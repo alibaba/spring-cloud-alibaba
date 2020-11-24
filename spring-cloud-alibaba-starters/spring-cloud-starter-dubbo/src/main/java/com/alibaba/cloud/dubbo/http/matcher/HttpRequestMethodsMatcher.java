@@ -33,10 +33,10 @@ import static org.springframework.http.HttpMethod.resolve;
  */
 public class HttpRequestMethodsMatcher extends AbstractHttpRequestMatcher {
 
-	private final Set<HttpMethod> METHODS;
+	private final Set<HttpMethod> methods;
 
 	public HttpRequestMethodsMatcher(String... methods) {
-		this.METHODS = resolveHttpMethods(methods);
+		this.methods = resolveHttpMethods(methods);
 	}
 
 	private Set<HttpMethod> resolveHttpMethods(String[] methods) {
@@ -52,7 +52,7 @@ public class HttpRequestMethodsMatcher extends AbstractHttpRequestMatcher {
 	}
 
 	public Set<HttpMethod> getMethods() {
-		return METHODS;
+		return methods;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class HttpRequestMethodsMatcher extends AbstractHttpRequestMatcher {
 
 	@Override
 	protected Collection<HttpMethod> getContent() {
-		return METHODS;
+		return methods;
 	}
 
 	@Override

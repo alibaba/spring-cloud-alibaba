@@ -37,7 +37,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  */
 public class SeataHandlerInterceptor implements HandlerInterceptor {
 
-	private static final Logger LOGGER = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(SeataHandlerInterceptor.class);
 
 	@Override
@@ -45,14 +45,14 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 			Object handler) {
 		String xid = RootContext.getXID();
 		String rpcXid = request.getHeader(RootContext.KEY_XID);
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("xid in RootContext {} xid in RpcContext {}", xid, rpcXid);
+		if (log.isDebugEnabled()) {
+			log.debug("xid in RootContext {} xid in RpcContext {}", xid, rpcXid);
 		}
 
 		if (StringUtils.isBlank(xid) && rpcXid != null) {
 			RootContext.bind(rpcXid);
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("bind {} to RootContext", rpcXid);
+			if (log.isDebugEnabled()) {
+				log.debug("bind {} to RootContext", rpcXid);
 			}
 		}
 
@@ -70,14 +70,14 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 			}
 
 			String unbindXid = RootContext.unbind();
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("unbind {} from RootContext", unbindXid);
+			if (log.isDebugEnabled()) {
+				log.debug("unbind {} from RootContext", unbindXid);
 			}
 			if (!rpcXid.equalsIgnoreCase(unbindXid)) {
-				LOGGER.warn("xid in change during RPC from {} to {}", rpcXid, unbindXid);
+				log.warn("xid in change during RPC from {} to {}", rpcXid, unbindXid);
 				if (unbindXid != null) {
 					RootContext.bind(unbindXid);
-					LOGGER.warn("bind {} back to RootContext", unbindXid);
+					log.warn("bind {} back to RootContext", unbindXid);
 				}
 			}
 		}

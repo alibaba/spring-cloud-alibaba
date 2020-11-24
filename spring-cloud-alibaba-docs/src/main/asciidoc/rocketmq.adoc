@@ -179,7 +179,7 @@ SCS RocketMQ Binder support `MessageSource`，which can receive messages by pull
 @EnableBinding(MQApplication.PolledProcessor.class)
 public class MQApplication {
 
-  private final Logger LOGGER =
+  private final Logger logger =
   	  LoggerFactory.getLogger(MQApplication.class);
 
   public static void main(String[] args) {
@@ -193,16 +193,16 @@ public class MQApplication {
       while (true) {
         boolean result = source.poll(m -> {
           String payload = (String) m.getPayload();
-          LOGGER.info("Received: " + payload);
+          logger.info("Received: " + payload);
           dest.send(MessageBuilder.withPayload(payload.toUpperCase())
               .copyHeaders(m.getHeaders())
               .build());
         }, new ParameterizedTypeReference<String>() { });
         if (result) {
-          LOGGER.info("Processed a message");
+          logger.info("Processed a message");
         }
         else {
-          LOGGER.info("Nothing to do");
+          logger.info("Nothing to do");
         }
         Thread.sleep(5_000);
       }

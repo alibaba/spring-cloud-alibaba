@@ -30,16 +30,16 @@ import org.springframework.boot.actuate.health.HealthIndicator;
  */
 public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 
-	private final ConfigService CONFIG_SERVICE;
+	private final ConfigService configService;
 
 	public NacosConfigHealthIndicator(ConfigService configService) {
-		this.CONFIG_SERVICE = configService;
+		this.configService = configService;
 	}
 
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
 		// Just return "UP" or "DOWN"
-		String status = CONFIG_SERVICE.getServerStatus();
+		String status = configService.getServerStatus();
 		// Set the status to Builder
 		builder.status(status);
 		switch (status) {

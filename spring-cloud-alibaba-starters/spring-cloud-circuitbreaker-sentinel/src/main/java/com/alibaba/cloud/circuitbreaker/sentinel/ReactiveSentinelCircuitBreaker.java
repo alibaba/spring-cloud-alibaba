@@ -41,19 +41,19 @@ import org.springframework.util.Assert;
  */
 public class ReactiveSentinelCircuitBreaker implements ReactiveCircuitBreaker {
 
-	private final String RESOURCE_NAME;
+	private final String resourceName;
 
-	private final EntryType ENTRY_TYPE;
+	private final EntryType entryType;
 
-	private final List<DegradeRule> RULES;
+	private final List<DegradeRule> rules;
 
 	public ReactiveSentinelCircuitBreaker(String resourceName, EntryType entryType,
 			List<DegradeRule> rules) {
 		Assert.hasText(resourceName, "resourceName cannot be blank");
 		Assert.notNull(rules, "rules should not be null");
-		this.RESOURCE_NAME = resourceName;
-		this.ENTRY_TYPE = entryType;
-		this.RULES = Collections.unmodifiableList(rules);
+		this.resourceName = resourceName;
+		this.entryType = entryType;
+		this.rules = Collections.unmodifiableList(rules);
 
 		applyToSentinelRuleManager();
 	}
@@ -67,15 +67,15 @@ public class ReactiveSentinelCircuitBreaker implements ReactiveCircuitBreaker {
 	}
 
 	private void applyToSentinelRuleManager() {
-		if (this.RULES == null || this.RULES.isEmpty()) {
+		if (this.rules == null || this.rules.isEmpty()) {
 			return;
 		}
 		Set<DegradeRule> ruleSet = new HashSet<>(DegradeRuleManager.getRules());
-		for (DegradeRule rule : this.RULES) {
+		for (DegradeRule rule : this.rules) {
 			if (rule == null) {
 				continue;
 			}
-			rule.setResource(RESOURCE_NAME);
+			rule.setResource(resourceName);
 			ruleSet.add(rule);
 		}
 		DegradeRuleManager.loadRules(new ArrayList<>(ruleSet));
@@ -84,7 +84,7 @@ public class ReactiveSentinelCircuitBreaker implements ReactiveCircuitBreaker {
 	@Override
 	public <T> Mono<T> run(Mono<T> toRun, Function<Throwable, Mono<T>> fallback) {
 		Mono<T> toReturn = toRun.transform(new SentinelReactorTransformer<>(
-				new EntryConfig(RESOURCE_NAME, ENTRY_TYPE)));
+				new EntryConfig(resourceName, entryType)));
 		if (fallback != null) {
 			toReturn = toReturn.onErrorResume(fallback);
 		}
@@ -94,7 +94,7 @@ public class ReactiveSentinelCircuitBreaker implements ReactiveCircuitBreaker {
 	@Override
 	public <T> Flux<T> run(Flux<T> toRun, Function<Throwable, Flux<T>> fallback) {
 		Flux<T> toReturn = toRun.transform(new SentinelReactorTransformer<>(
-				new EntryConfig(RESOURCE_NAME, ENTRY_TYPE)));
+				new EntryConfig(resourceName, entryType)));
 		if (fallback != null) {
 			toReturn = toReturn.onErrorResume(fallback);
 		}
