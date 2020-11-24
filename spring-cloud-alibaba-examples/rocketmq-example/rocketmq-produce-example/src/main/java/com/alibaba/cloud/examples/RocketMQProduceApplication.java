@@ -69,10 +69,10 @@ public class RocketMQProduceApplication {
 
 	public static class CustomRunner implements CommandLineRunner {
 
-		private final String bindingName;
+		private final String BINDING_NAME;
 
 		public CustomRunner(String bindingName) {
-			this.bindingName = bindingName;
+			this.BINDING_NAME = bindingName;
 		}
 
 		@Autowired
@@ -83,7 +83,7 @@ public class RocketMQProduceApplication {
 
 		@Override
 		public void run(String... args) throws Exception {
-			if (this.bindingName.equals("output1")) {
+			if (this.BINDING_NAME.equals("output1")) {
 				int count = 5;
 				for (int index = 1; index <= count; index++) {
 					String msgContent = "msg-" + index;
@@ -98,7 +98,7 @@ public class RocketMQProduceApplication {
 					}
 				}
 			}
-			else if (this.bindingName.equals("output3")) {
+			else if (this.BINDING_NAME.equals("output3")) {
 				int count = 20;
 				for (int index = 1; index <= count; index++) {
 					String msgContent = "pullMsg-" + index;

@@ -28,28 +28,28 @@ import org.springframework.cloud.openfeign.FeignContext;
  */
 public class SeataFeignContext extends FeignContext {
 
-	private final SeataFeignObjectWrapper seataFeignObjectWrapper;
+	private final SeataFeignObjectWrapper SEATA_FEIGN_OBJECT_WRAPPER;
 
-	private final FeignContext delegate;
+	private final FeignContext DELEGATE;
 
 	SeataFeignContext(SeataFeignObjectWrapper seataFeignObjectWrapper,
 			FeignContext delegate) {
-		this.seataFeignObjectWrapper = seataFeignObjectWrapper;
-		this.delegate = delegate;
+		this.SEATA_FEIGN_OBJECT_WRAPPER = seataFeignObjectWrapper;
+		this.DELEGATE = delegate;
 	}
 
 	@Override
 	public <T> T getInstance(String name, Class<T> type) {
-		T object = this.delegate.getInstance(name, type);
+		T object = this.DELEGATE.getInstance(name, type);
 		if (object instanceof Client) {
 			return object;
 		}
-		return (T) this.seataFeignObjectWrapper.wrap(object);
+		return (T) this.SEATA_FEIGN_OBJECT_WRAPPER.wrap(object);
 	}
 
 	@Override
 	public <T> Map<String, T> getInstances(String name, Class<T> type) {
-		Map<String, T> instances = this.delegate.getInstances(name, type);
+		Map<String, T> instances = this.DELEGATE.getInstances(name, type);
 		if (instances == null) {
 			return null;
 		}
@@ -60,7 +60,7 @@ public class SeataFeignContext extends FeignContext {
 			}
 			else {
 				convertedInstances.put(entry.getKey(),
-						(T) this.seataFeignObjectWrapper.wrap(entry.getValue()));
+						(T) this.SEATA_FEIGN_OBJECT_WRAPPER.wrap(entry.getValue()));
 			}
 		}
 		return convertedInstances;

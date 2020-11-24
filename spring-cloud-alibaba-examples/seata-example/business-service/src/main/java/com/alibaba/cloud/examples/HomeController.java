@@ -50,24 +50,24 @@ public class HomeController {
 
 	private static final int ORDER_COUNT = 2;
 
-	private final RestTemplate restTemplate;
+	private final RestTemplate REST_TEMPLATE;
 
-	private final OrderService orderService;
+	private final OrderService ORDER_SERVICE;
 
-	private final StorageService storageService;
+	private final StorageService STORAGE_SERVICE;
 
 	public HomeController(RestTemplate restTemplate, OrderService orderService,
 			StorageService storageService) {
-		this.restTemplate = restTemplate;
-		this.orderService = orderService;
-		this.storageService = storageService;
+		this.REST_TEMPLATE = restTemplate;
+		this.ORDER_SERVICE = orderService;
+		this.STORAGE_SERVICE = storageService;
 	}
 
 	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
 	@GetMapping(value = "/seata/rest", produces = "application/json")
 	public String rest() {
 
-		String result = restTemplate.getForObject(
+		String result = REST_TEMPLATE.getForObject(
 				"http://127.0.0.1:18082/storage/" + COMMODITY_CODE + "/" + ORDER_COUNT,
 				String.class);
 
@@ -89,7 +89,7 @@ public class HomeController {
 
 		ResponseEntity<String> response;
 		try {
-			response = restTemplate.postForEntity(url, request, String.class);
+			response = REST_TEMPLATE.postForEntity(url, request, String.class);
 		}
 		catch (Exception exx) {
 			throw new RuntimeException("mock error");
@@ -106,13 +106,13 @@ public class HomeController {
 	@GetMapping(value = "/seata/feign", produces = "application/json")
 	public String feign() {
 
-		String result = storageService.storage(COMMODITY_CODE, ORDER_COUNT);
+		String result = STORAGE_SERVICE.storage(COMMODITY_CODE, ORDER_COUNT);
 
 		if (!SUCCESS.equals(result)) {
 			throw new RuntimeException();
 		}
 
-		result = orderService.order(USER_ID, COMMODITY_CODE, ORDER_COUNT);
+		result = ORDER_SERVICE.order(USER_ID, COMMODITY_CODE, ORDER_COUNT);
 
 		if (!SUCCESS.equals(result)) {
 			throw new RuntimeException();

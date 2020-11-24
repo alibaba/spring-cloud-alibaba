@@ -94,7 +94,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 	 */
 	public static final String ZOOKEEPER_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME = "org.springframework.cloud.zookeeper.serviceregistry.ZookeeperAutoServiceRegistrationAutoConfiguration";
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(DubboServiceRegistrationAutoConfiguration.class);
 
 	@Autowired

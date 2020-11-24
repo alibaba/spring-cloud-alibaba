@@ -75,7 +75,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 
 	private static final String REST_PROTOCOL = "rest";
 
-	private final Logger logger = LoggerFactory
+	private final Logger LOGGER = LoggerFactory
 			.getLogger(DubboNonWebApplicationEnvironmentPostProcessor.class);
 
 	private static boolean isRestProtocol(String protocol) {
@@ -89,8 +89,8 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 
 		if (!WebApplicationType.NONE.equals(webApplicationType)) { // Just works in
 			// Non-Web Application
-			if (logger.isDebugEnabled()) {
-				logger.debug(
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(
 						"Current application is a Web Application, the process will be ignored.");
 			}
 			return;

@@ -51,7 +51,7 @@ import org.springframework.util.StringUtils;
 public abstract class SentinelConverter<T extends Object>
 		implements Converter<String, Collection<Object>> {
 
-	private static final Logger log = LoggerFactory.getLogger(SentinelConverter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SentinelConverter.class);
 
 	private final ObjectMapper objectMapper;
 
@@ -77,7 +77,7 @@ public abstract class SentinelConverter<T extends Object>
 		}
 
 		if (StringUtils.isEmpty(source)) {
-			log.warn("converter can not convert rules because source is empty");
+			LOGGER.warn("converter can not convert rules because source is empty");
 			return ruleCollection;
 		}
 		try {
@@ -93,7 +93,7 @@ public abstract class SentinelConverter<T extends Object>
 							.ifPresent(convertRule -> ruleCollection.add(convertRule));
 				}
 				catch (IOException e) {
-					log.error("sentinel rule convert error: " + e.getMessage(), e);
+					LOGGER.error("sentinel rule convert error: " + e.getMessage(), e);
 					throw new IllegalArgumentException(
 							"sentinel rule convert error: " + e.getMessage(), e);
 				}

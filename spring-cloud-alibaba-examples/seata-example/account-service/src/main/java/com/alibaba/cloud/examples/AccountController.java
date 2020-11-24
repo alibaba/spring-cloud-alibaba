@@ -38,12 +38,12 @@ public class AccountController {
 
 	private static final String FAIL = "FAIL";
 
-	private final JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate JDBC_TEMPLATE;
 
 	private Random random;
 
 	public AccountController(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+		this.JDBC_TEMPLATE = jdbcTemplate;
 		this.random = new Random();
 	}
 
@@ -55,7 +55,7 @@ public class AccountController {
 			throw new RuntimeException("this is a mock Exception");
 		}
 
-		int result = jdbcTemplate.update(
+		int result = JDBC_TEMPLATE.update(
 				"update account_tbl set money = money - ? where user_id = ?",
 				new Object[] { money, userId });
 		LOGGER.info("Account Service End ... ");

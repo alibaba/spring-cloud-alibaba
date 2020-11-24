@@ -71,7 +71,7 @@ public enum RuleType {
 	/**
 	 * alias for {@link AbstractRule}.
 	 */
-	private final String name;
+	private final String NAME;
 
 	/**
 	 * concrete {@link AbstractRule} class.
@@ -84,12 +84,12 @@ public enum RuleType {
 	private String clazzName;
 
 	RuleType(String name, Class clazz) {
-		this.name = name;
+		this.NAME = name;
 		this.clazz = clazz;
 	}
 
 	RuleType(String name, String clazzName) {
-		this.name = name;
+		this.NAME = name;
 		this.clazzName = clazzName;
 	}
 
