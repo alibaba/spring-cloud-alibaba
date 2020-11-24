@@ -41,7 +41,7 @@ import org.springframework.util.Assert;
  */
 public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(RocketMQInboundChannelAdapter.class);
 
 	private RetryTemplate retryTemplate;
@@ -89,7 +89,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 
 		}
 		catch (Exception e) {
-			log.error("rocketMQListenerContainer init error: " + e.getMessage(), e);
+			LOGGER.error("rocketMQListenerContainer init error: " + e.getMessage(), e);
 			throw new IllegalArgumentException(
 					"rocketMQListenerContainer init error: " + e.getMessage(), e);
 		}
@@ -117,7 +117,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport {
 					.getHealthInstrumentation(rocketMQListenerContainer.getTopic()
 							+ rocketMQListenerContainer.getConsumerGroup())
 					.markStartFailed(e);
-			log.error("RocketMQTemplate startup failed, Caused by " + e.getMessage());
+			LOGGER.error("RocketMQTemplate startup failed, Caused by " + e.getMessage());
 			throw new MessagingException(MessageBuilder.withPayload(
 					"RocketMQTemplate startup failed, Caused by " + e.getMessage())
 					.build(), e);

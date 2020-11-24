@@ -35,7 +35,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
  */
 public class SidecarHealthChecker {
 
-	private static final Logger log = LoggerFactory.getLogger(SidecarHealthChecker.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SidecarHealthChecker.class);
 
 	private final Map<String, SidecarInstanceCache> sidecarInstanceCacheMap = new ConcurrentHashMap<>();
 
@@ -69,13 +69,13 @@ public class SidecarHealthChecker {
 				if (needRegister(applicationName, ip, port, status)) {
 					this.sidecarDiscoveryClient.registerInstance(applicationName, ip,
 							port);
-					log.info(
+					LOGGER.info(
 							"Polyglot service changed and Health check success. register the new instance. applicationName = {}, ip = {}, port = {}, status = {}",
 							applicationName, ip, port, status);
 				}
 			}
 			else {
-				log.warn(
+				LOGGER.warn(
 						"Health check failed. unregister this instance. applicationName = {}, ip = {}, port = {}, status = {}",
 						applicationName, ip, port, status);
 				this.sidecarDiscoveryClient.deregisterInstance(applicationName, ip, port);

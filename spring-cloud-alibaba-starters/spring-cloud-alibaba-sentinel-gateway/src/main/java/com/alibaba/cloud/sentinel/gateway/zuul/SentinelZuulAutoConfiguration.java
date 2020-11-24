@@ -52,7 +52,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(SentinelZuulProperties.class)
 public class SentinelZuulAutoConfiguration {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SentinelZuulAutoConfiguration.class);
 
 	@Autowired
@@ -72,7 +72,7 @@ public class SentinelZuulAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SentinelZuulPreFilter sentinelZuulPreFilter() {
-		logger.info("[Sentinel Zuul] register SentinelZuulPreFilter {}",
+		LOGGER.info("[Sentinel Zuul] register SentinelZuulPreFilter {}",
 				zuulProperties.getOrder().getPre());
 		return new SentinelZuulPreFilter(zuulProperties.getOrder().getPre());
 	}
@@ -80,7 +80,7 @@ public class SentinelZuulAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SentinelZuulPostFilter sentinelZuulPostFilter() {
-		logger.info("[Sentinel Zuul] register SentinelZuulPostFilter {}",
+		LOGGER.info("[Sentinel Zuul] register SentinelZuulPostFilter {}",
 				zuulProperties.getOrder().getPost());
 		return new SentinelZuulPostFilter(zuulProperties.getOrder().getPost());
 	}
@@ -88,7 +88,7 @@ public class SentinelZuulAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SentinelZuulErrorFilter sentinelZuulErrorFilter() {
-		logger.info("[Sentinel Zuul] register SentinelZuulErrorFilter {}",
+		LOGGER.info("[Sentinel Zuul] register SentinelZuulErrorFilter {}",
 				zuulProperties.getOrder().getError());
 		return new SentinelZuulErrorFilter(zuulProperties.getOrder().getError());
 	}

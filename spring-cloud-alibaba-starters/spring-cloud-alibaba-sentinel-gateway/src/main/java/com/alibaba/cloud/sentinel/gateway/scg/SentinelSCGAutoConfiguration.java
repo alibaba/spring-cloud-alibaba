@@ -62,7 +62,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 @EnableConfigurationProperties(SentinelGatewayProperties.class)
 public class SentinelSCGAutoConfiguration {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SentinelSCGAutoConfiguration.class);
 
 	private final List<ViewResolver> viewResolvers;
@@ -108,7 +108,7 @@ public class SentinelSCGAutoConfiguration {
 						.contentType(
 								MediaType.valueOf(fallbackProperties.getContentType()))
 						.body(fromValue(fallbackProperties.getResponseBody())));
-				logger.info(
+				LOGGER.info(
 						"[Sentinel SpringCloudGateway] using AnonymousBlockRequestHandler, responseStatus: "
 								+ fallbackProperties.getResponseStatus()
 								+ ", responseBody: "
@@ -120,7 +120,7 @@ public class SentinelSCGAutoConfiguration {
 				&& StringUtil.isNotBlank(redirectUrl)) {
 			GatewayCallbackManager
 					.setBlockHandler(new RedirectBlockRequestHandler(redirectUrl));
-			logger.info(
+			LOGGER.info(
 					"[Sentinel SpringCloudGateway] using RedirectBlockRequestHandler, redirectUrl: "
 							+ redirectUrl);
 		}
@@ -131,7 +131,7 @@ public class SentinelSCGAutoConfiguration {
 	@ConditionalOnMissingBean
 	public SentinelGatewayBlockExceptionHandler sentinelGatewayBlockExceptionHandler() {
 		// Register the block exception handler for Spring Cloud Gateway.
-		logger.info(
+		LOGGER.info(
 				"[Sentinel SpringCloudGateway] register SentinelGatewayBlockExceptionHandler");
 		return new SentinelGatewayBlockExceptionHandler(viewResolvers,
 				serverCodecConfigurer);
@@ -141,7 +141,7 @@ public class SentinelSCGAutoConfiguration {
 	@Order(-1)
 	@ConditionalOnMissingBean
 	public SentinelGatewayFilter sentinelGatewayFilter() {
-		logger.info(
+		LOGGER.info(
 				"[Sentinel SpringCloudGateway] register SentinelGatewayFilter with order: {}",
 				gatewayProperties.getOrder());
 		return new SentinelGatewayFilter(gatewayProperties.getOrder());

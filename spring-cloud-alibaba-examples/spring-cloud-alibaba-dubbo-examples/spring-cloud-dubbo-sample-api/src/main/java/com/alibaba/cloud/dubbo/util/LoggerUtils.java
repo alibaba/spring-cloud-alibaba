@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class LoggerUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoggerUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoggerUtils.class);
 
 	public static void log(String url, Object result) {
 		String message = String
@@ -34,8 +34,8 @@ public abstract class LoggerUtils {
 						RpcContext.getContext().getUrl() == null ? "N/A"
 								: RpcContext.getContext().getUrl().getProtocol(),
 						url, result);
-		if (logger.isInfoEnabled()) {
-			logger.info(message);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info(message);
 		}
 	}
 

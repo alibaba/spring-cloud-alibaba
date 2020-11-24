@@ -50,7 +50,7 @@ import org.springframework.util.StringUtils;
  */
 public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SentinelDataSourceHandler.class);
 
 	private List<String> dataTypeList = Arrays.asList("json", "xml");
@@ -81,7 +81,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 					try {
 						List<String> validFields = dataSourceProperties.getValidField();
 						if (validFields.size() != 1) {
-							log.error("[Sentinel Starter] DataSource " + dataSourceName
+							LOGGER.error("[Sentinel Starter] DataSource " + dataSourceName
 									+ " multi datasource active and won't loaded: "
 									+ dataSourceProperties.getValidField());
 							return;
@@ -94,7 +94,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 								+ "-sentinel-" + validFields.get(0) + "-datasource");
 					}
 					catch (Exception e) {
-						log.error("[Sentinel Starter] DataSource " + dataSourceName
+						LOGGER.error("[Sentinel Starter] DataSource " + dataSourceName
 								+ " build error: " + e.getMessage(), e);
 					}
 				});
@@ -111,7 +111,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 						m.put(v.getName(), v.get(dataSourceProperties));
 					}
 					catch (IllegalAccessException e) {
-						log.error("[Sentinel Starter] DataSource " + dataSourceName
+						LOGGER.error("[Sentinel Starter] DataSource " + dataSourceName
 								+ " field: " + v.getName() + " invoke error");
 						throw new RuntimeException(
 								"[Sentinel Starter] DataSource " + dataSourceName
@@ -157,7 +157,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 						builder.addPropertyReference("converter", customConvertBeanName);
 					}
 					catch (ClassNotFoundException e) {
-						log.error("[Sentinel Starter] DataSource " + dataSourceName
+						LOGGER.error("[Sentinel Starter] DataSource " + dataSourceName
 								+ " handle "
 								+ dataSourceProperties.getClass().getSimpleName()
 								+ " error, class name: "

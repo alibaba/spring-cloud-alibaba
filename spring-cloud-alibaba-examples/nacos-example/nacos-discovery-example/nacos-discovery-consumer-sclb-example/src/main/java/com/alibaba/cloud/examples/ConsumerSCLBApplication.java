@@ -86,7 +86,7 @@ public class ConsumerSCLBApplication {
 
 	static class RandomLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
-		private static final Logger log = LoggerFactory
+		private static final Logger LOGGER = LoggerFactory
 				.getLogger(RandomLoadBalancer.class);
 
 		private ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
@@ -105,7 +105,7 @@ public class ConsumerSCLBApplication {
 
 		@Override
 		public Mono<Response<ServiceInstance>> choose(Request request) {
-			log.info("random spring cloud loadbalacer active -.-");
+			LOGGER.info("random spring cloud loadbalacer active -.-");
 			ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider
 					.getIfAvailable(NoopServiceInstanceListSupplier::new);
 			return supplier.get().next().map(this::getInstanceResponse);

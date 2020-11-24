@@ -50,7 +50,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SentinelWebAutoConfiguration.class);
 
 	@Autowired
@@ -77,7 +77,7 @@ public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(sentinelWebInterceptorOptional.get())
 				.order(filterConfig.getOrder())
 				.addPathPatterns(filterConfig.getUrlPatterns());
-		log.info(
+		LOGGER.info(
 				"[Sentinel Starter] register SentinelWebInterceptor with urlPatterns: {}.",
 				filterConfig.getUrlPatterns());
 	}
