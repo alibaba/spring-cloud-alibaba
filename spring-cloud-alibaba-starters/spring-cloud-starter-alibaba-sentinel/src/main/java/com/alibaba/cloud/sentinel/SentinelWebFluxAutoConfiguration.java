@@ -53,7 +53,7 @@ import org.springframework.web.reactive.result.view.ViewResolver;
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelWebFluxAutoConfiguration {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SentinelWebFluxAutoConfiguration.class);
 
 	private final List<ViewResolver> viewResolvers;
@@ -88,7 +88,7 @@ public class SentinelWebFluxAutoConfiguration {
 	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
 			matchIfMissing = true)
 	public SentinelWebFluxFilter sentinelWebFluxFilter() {
-		log.info("[Sentinel Starter] register Sentinel SentinelWebFluxFilter");
+		LOGGER.info("[Sentinel Starter] register Sentinel SentinelWebFluxFilter");
 		return new SentinelWebFluxFilter();
 	}
 
