@@ -77,9 +77,9 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	/**
 	 * Caches the IDs of {@link ApplicationListener}.
 	 */
-	private static final Set<String> registerListeners = new HashSet<>();
+	private static final Set<String> REGISTER_LISTENERS = new HashSet<>();
 
-	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * The interval in second of lookup service names(only for Dubbo-OPS).
@@ -120,8 +120,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		boolean should = PROVIDER_SIDE.equals(side); // Only register the Provider.
 
 		if (!should) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("The URL[{}] should not be registered.", url.toString());
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("The URL[{}] should not be registered.", url.toString());
 			}
 		}
 
@@ -193,7 +193,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	private void registerServiceInstancesChangedEventListener(URL url,
 			NotifyListener listener) {
 		String listenerId = generateId(url);
-		if (registerListeners.add(listenerId)) {
+		if (REGISTER_LISTENERS.add(listenerId)) {
 			applicationContext.addApplicationListener(
 					new ApplicationListener<ServiceInstancesChangedEvent>() {
 						@Override
@@ -221,8 +221,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 			String serviceName,
 			Function<String, Collection<ServiceInstance>> serviceInstancesFunction) {
 
-		if (logger.isInfoEnabled()) {
-			logger.info(
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info(
 					"The Dubbo Service URL[ID : {}] is being subscribed for service[name : {}]",
 					generateId(url), serviceName);
 		}
@@ -246,8 +246,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		// dubboGenericServiceFactory.destroy(serviceName);
 		// repository.initializeMetadata(serviceName);
 		if (CollectionUtils.isEmpty(serviceInstances)) {
-			if (logger.isWarnEnabled()) {
-				logger.warn(
+			if (LOGGER.isWarnEnabled()) {
+				LOGGER.warn(
 						"There is no instance from service[name : {}], and then Dubbo Service[key : {}] will not be "
 								+ "available , please make sure the further impact",
 						serviceName, url.getServiceKey());
@@ -261,15 +261,15 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 				String listenerId = generateId(url);
 				// The metaservice will restart the new listener. It needs to be optimized
 				// to see whether the original listener can be reused.
-				this.registerListeners.remove(listenerId);
+				this.REGISTER_LISTENERS.remove(listenerId);
 			}
 
 			/**
 			 * URLs with {@link RegistryConstants#EMPTY_PROTOCOL}
 			 */
 			allSubscribedURLs.addAll(emptyURLs(url));
-			if (logger.isDebugEnabled()) {
-				logger.debug("The subscribed URL[{}] will notify all URLs : {}", url,
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("The subscribed URL[{}] will notify all URLs : {}", url,
 						allSubscribedURLs);
 			}
 			listener.notify(allSubscribedURLs);
@@ -284,8 +284,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 		DubboMetadataService dubboMetadataService = dubboMetadataConfigServiceProxy
 				.getProxy(serviceName);
 		if (dubboMetadataService == null) { // It makes sure not-found, return immediately
-			if (logger.isWarnEnabled()) {
-				logger.warn(
+			if (LOGGER.isWarnEnabled()) {
+				LOGGER.warn(
 						"The metadata of Dubbo service[key : {}] still can't be found, it could effect the further "
 								+ "Dubbo service invocation",
 						url.getServiceKey());
@@ -301,8 +301,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 				Integer port = repository.getDubboProtocolPort(serviceInstance, protocol);
 				String host = serviceInstance.getHost();
 				if (port == null) {
-					if (logger.isWarnEnabled()) {
-						logger.warn(
+					if (LOGGER.isWarnEnabled()) {
+						LOGGER.warn(
 								"The protocol[{}] port of Dubbo  service instance[host : {}] "
 										+ "can't be resolved",
 								protocol, host);
@@ -318,8 +318,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 			allSubscribedURLs.addAll(subscribedURLs);
 		}
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("The subscribed URL[{}] will notify all URLs : {}", url,
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("The subscribed URL[{}] will notify all URLs : {}", url,
 					allSubscribedURLs);
 		}
 
@@ -348,8 +348,8 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 			serviceInstances = discoveryClient.getInstances(serviceName);
 		}
 		catch (Exception e) {
-			if (logger.isErrorEnabled()) {
-				logger.error(e.getMessage(), e);
+			if (LOGGER.isErrorEnabled()) {
+				LOGGER.error(e.getMessage(), e);
 			}
 		}
 		return serviceInstances;
