@@ -52,7 +52,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProcessor {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SentinelBeanPostProcessor.class);
 
 	private final ApplicationContext applicationContext;
@@ -102,14 +102,14 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			return;
 		}
 		if (blockClass != void.class && StringUtils.isEmpty(blockMethod)) {
-			log.error(
+			LOGGER.error(
 					"{} class attribute exists but {} method attribute is not exists in bean[{}]",
 					type, type, beanName);
 			throw new IllegalArgumentException(type + " class attribute exists but "
 					+ type + " method attribute is not exists in bean[" + beanName + "]");
 		}
 		else if (blockClass == void.class && !StringUtils.isEmpty(blockMethod)) {
-			log.error(
+			LOGGER.error(
 					"{} method attribute exists but {} class attribute is not exists in bean[{}]",
 					type, type, beanName);
 			throw new IllegalArgumentException(type + " method attribute exists but "
@@ -127,7 +127,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 				Arrays.stream(args).map(clazz -> clazz.getSimpleName()).toArray());
 		Method foundMethod = ClassUtils.getStaticMethod(blockClass, blockMethod, args);
 		if (foundMethod == null) {
-			log.error(
+			LOGGER.error(
 					"{} static method can not be found in bean[{}]. The right method signature is {}#{}{}, please check your class name, method name and arguments",
 					type, beanName, blockClass.getName(), blockMethod, argsStr);
 			throw new IllegalArgumentException(type
@@ -146,7 +146,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		}
 
 		if (!standardReturnType.isAssignableFrom(foundMethod.getReturnType())) {
-			log.error("{} method return value in bean[{}] is not {}: {}#{}{}", type,
+			LOGGER.error("{} method return value in bean[{}] is not {}: {}#{}{}", type,
 					beanName, standardReturnType.getName(), blockClass.getName(),
 					blockMethod, argsStr);
 			throw new IllegalArgumentException(type + " method return value in bean["
