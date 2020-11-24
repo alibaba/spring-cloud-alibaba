@@ -77,8 +77,6 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	private RocketMQMessageQueueChooser messageQueueChooser = new RocketMQMessageQueueChooser();
 
-	
-
 	public RocketMQMessageSource(
 			RocketMQBinderConfigurationProperties rocketMQBinderConfigurationProperties,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> rocketMQConsumerProperties,
