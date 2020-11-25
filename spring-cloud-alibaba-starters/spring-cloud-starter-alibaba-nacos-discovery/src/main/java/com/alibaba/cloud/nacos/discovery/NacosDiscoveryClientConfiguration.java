@@ -32,7 +32,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * @author xiaojing
@@ -59,7 +59,7 @@ public class NacosDiscoveryClientConfiguration {
 			matchIfMissing = true)
 	public NacosWatch nacosWatch(NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties,
-			ObjectProvider<TaskScheduler> taskExecutorObjectProvider) {
+			ObjectProvider<ThreadPoolTaskScheduler> taskExecutorObjectProvider) {
 		return new NacosWatch(nacosServiceManager, nacosDiscoveryProperties,
 				taskExecutorObjectProvider);
 	}
