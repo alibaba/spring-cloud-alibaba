@@ -54,7 +54,7 @@ import org.springframework.util.StringUtils;
 public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		implements DisposableBean, Lifecycle {
 
-	private final static Logger log = LoggerFactory
+	private final static Logger LOGGER = LoggerFactory
 			.getLogger(RocketMQMessageSource.class);
 
 	private final RocketMQCallbackFactory ackCallbackFactory;
@@ -127,7 +127,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 				@Override
 				public void messageQueueChanged(String topic, Set<MessageQueue> mqAll,
 						Set<MessageQueue> mqDivided) {
-					log.info(
+					LOGGER.info(
 							"messageQueueChanged, topic='{}', mqAll=`{}`, mqDivided=`{}`",
 							topic, mqAll, mqDivided);
 					switch (consumer.getMessageModel()) {
@@ -145,7 +145,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			consumer.start();
 		}
 		catch (MQClientException e) {
-			log.error("DefaultMQPullConsumer startup error: " + e.getMessage(), e);
+			LOGGER.error("DefaultMQPullConsumer startup error: " + e.getMessage(), e);
 		}
 		this.setRunning(true);
 	}
@@ -181,7 +181,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 				long offset = consumer.fetchConsumeOffset(messageQueue,
 						rocketMQConsumerProperties.getExtension().isFromStore());
 
-				log.debug("topic='{}', group='{}', messageQueue='{}', offset now='{}'",
+				LOGGER.debug("topic='{}', group='{}', messageQueue='{}', offset now='{}'",
 						this.topic, this.group, messageQueue, offset);
 
 				PullResult pullResult;
@@ -208,7 +208,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 					return messageResult;
 				}
 				else {
-					log.debug("messageQueue='{}' PullResult='{}' with topic `{}`",
+					LOGGER.debug("messageQueue='{}' PullResult='{}' with topic `{}`",
 							messageQueueChooser.getMessageQueues(),
 							pullResult.getPullStatus(), topic);
 				}
@@ -216,7 +216,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			}
 		}
 		catch (Exception e) {
-			log.error("Consumer pull error: " + e.getMessage(), e);
+			LOGGER.error("Consumer pull error: " + e.getMessage(), e);
 		}
 		return null;
 	}
@@ -231,7 +231,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 	}
 
 	public synchronized void resetMessageQueues(Set<MessageQueue> queueSet) {
-		log.info("resetMessageQueues, topic='{}', messageQueue=`{}`", topic, queueSet);
+		LOGGER.info("resetMessageQueues, topic='{}', messageQueue=`{}`", topic, queueSet);
 		synchronized (this.consumerMonitor) {
 			this.messageQueueChooser.reset(queueSet);
 		}
@@ -284,7 +284,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			if (this.acknowledged) {
 				throw new IllegalStateException("Already acknowledged");
 			}
-			log.debug("acknowledge(" + status.name() + ") for " + this);
+			LOGGER.debug("acknowledge(" + status.name() + ") for " + this);
 			synchronized (this.ackInfo.getConsumerMonitor()) {
 				try {
 					switch (status) {
@@ -293,7 +293,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 						ackInfo.getConsumer().updateConsumeOffset(
 								ackInfo.getMessageQueue(),
 								ackInfo.getPullResult().getNextBeginOffset());
-						log.debug("messageQueue='{}' offset update to `{}`",
+						LOGGER.debug("messageQueue='{}' offset update to `{}`",
 								ackInfo.getMessageQueue(), String.valueOf(
 										ackInfo.getPullResult().getNextBeginOffset()));
 						break;
@@ -302,7 +302,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 						int oldIndex = ackInfo.getMessageQueueChooser().requeue();
 						ackInfo.getConsumer().updateConsumeOffset(
 								ackInfo.getMessageQueue(), ackInfo.getOldOffset());
-						log.debug(
+						LOGGER.debug(
 								"messageQueue='{}' offset requeue to index:`{}`, oldOffset:'{}'",
 								ackInfo.getMessageQueue(), oldIndex,
 								ackInfo.getOldOffset());
@@ -312,7 +312,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 					}
 				}
 				catch (MQClientException e) {
-					log.error("acknowledge error: " + e.getErrorMessage(), e);
+					LOGGER.error("acknowledge error: " + e.getErrorMessage(), e);
 				}
 				finally {
 					this.acknowledged = true;

@@ -25,22 +25,22 @@ import java.util.Objects;
  */
 public class DubboRestServiceMetadata {
 
-	private final ServiceRestMetadata serviceRestMetadata;
+	private final ServiceRestMetadata SERVICE_REST_METADATA;
 
-	private final RestMethodMetadata restMethodMetadata;
+	private final RestMethodMetadata REST_METHOD_METADATA;
 
 	public DubboRestServiceMetadata(ServiceRestMetadata serviceRestMetadata,
 			RestMethodMetadata restMethodMetadata) {
-		this.serviceRestMetadata = serviceRestMetadata;
-		this.restMethodMetadata = restMethodMetadata;
+		this.SERVICE_REST_METADATA = serviceRestMetadata;
+		this.REST_METHOD_METADATA = restMethodMetadata;
 	}
 
 	public ServiceRestMetadata getServiceRestMetadata() {
-		return serviceRestMetadata;
+		return SERVICE_REST_METADATA;
 	}
 
 	public RestMethodMetadata getRestMethodMetadata() {
-		return restMethodMetadata;
+		return REST_METHOD_METADATA;
 	}
 
 	@Override
@@ -52,13 +52,13 @@ public class DubboRestServiceMetadata {
 			return false;
 		}
 		DubboRestServiceMetadata that = (DubboRestServiceMetadata) o;
-		return Objects.equals(serviceRestMetadata, that.serviceRestMetadata)
-				&& Objects.equals(restMethodMetadata, that.restMethodMetadata);
+		return Objects.equals(SERVICE_REST_METADATA, that.SERVICE_REST_METADATA)
+				&& Objects.equals(REST_METHOD_METADATA, that.REST_METHOD_METADATA);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(serviceRestMetadata, restMethodMetadata);
+		return Objects.hash(SERVICE_REST_METADATA, REST_METHOD_METADATA);
 	}
 
 }

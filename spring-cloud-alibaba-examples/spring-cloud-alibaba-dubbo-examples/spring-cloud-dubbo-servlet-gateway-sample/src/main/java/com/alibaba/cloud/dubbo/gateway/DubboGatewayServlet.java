@@ -59,11 +59,11 @@ import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 @WebServlet(urlPatterns = "/dsc/*")
 public class DubboGatewayServlet extends HttpServletBean {
 
-	private final DubboServiceMetadataRepository repository;
+	private final DubboServiceMetadataRepository REPOSITORY;
 
-	private final DubboGenericServiceFactory serviceFactory;
+	private final DubboGenericServiceFactory SERVICE_FACTORY;
 
-	private final DubboGenericServiceExecutionContextFactory contextFactory;
+	private final DubboGenericServiceExecutionContextFactory CONTEXT_FACTORY;
 
 	private final PathMatcher pathMatcher = new AntPathMatcher();
 
@@ -72,9 +72,9 @@ public class DubboGatewayServlet extends HttpServletBean {
 	public DubboGatewayServlet(DubboServiceMetadataRepository repository,
 			DubboGenericServiceFactory serviceFactory,
 			DubboGenericServiceExecutionContextFactory contextFactory) {
-		this.repository = repository;
-		this.serviceFactory = serviceFactory;
-		this.contextFactory = contextFactory;
+		this.REPOSITORY = repository;
+		this.SERVICE_FACTORY = serviceFactory;
+		this.CONTEXT_FACTORY = contextFactory;
 		dubboTranslatedAttributes.put("protocol", "dubbo");
 		dubboTranslatedAttributes.put("cluster", "failover");
 	}
@@ -102,11 +102,11 @@ public class DubboGatewayServlet extends HttpServletBean {
 		String restPath = substringAfter(request.getRequestURI(), serviceName);
 
 		// 初始化 serviceName 的 REST 请求元数据
-		repository.initializeMetadata(serviceName);
+		REPOSITORY.initializeMetadata(serviceName);
 		// 将 HttpServletRequest 转化为 RequestMetadata
 		RequestMetadata clientMetadata = buildRequestMetadata(request, restPath);
 
-		DubboRestServiceMetadata dubboRestServiceMetadata = repository.get(serviceName,
+		DubboRestServiceMetadata dubboRestServiceMetadata = REPOSITORY.get(serviceName,
 				clientMetadata);
 
 		if (dubboRestServiceMetadata == null) {
@@ -117,7 +117,7 @@ public class DubboGatewayServlet extends HttpServletBean {
 		RestMethodMetadata dubboRestMethodMetadata = dubboRestServiceMetadata
 				.getRestMethodMetadata();
 
-		GenericService genericService = serviceFactory.create(dubboRestServiceMetadata,
+		GenericService genericService = SERVICE_FACTORY.create(dubboRestServiceMetadata,
 				dubboTranslatedAttributes);
 
 		// TODO: Get the Request Body from HttpServletRequest
@@ -126,7 +126,7 @@ public class DubboGatewayServlet extends HttpServletBean {
 		MutableHttpServerRequest httpServerRequest = new MutableHttpServerRequest(
 				new HttpRequestAdapter(request), body);
 
-		DubboGenericServiceExecutionContext context = contextFactory
+		DubboGenericServiceExecutionContext context = CONTEXT_FACTORY
 				.create(dubboRestMethodMetadata, httpServerRequest);
 
 		Object result = null;

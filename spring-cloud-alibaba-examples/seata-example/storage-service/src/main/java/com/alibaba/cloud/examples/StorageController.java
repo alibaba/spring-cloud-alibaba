@@ -37,16 +37,16 @@ public class StorageController {
 
 	private static final String FAIL = "FAIL";
 
-	private final JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate JDBC_TEMPLATE;
 
 	public StorageController(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+		this.JDBC_TEMPLATE = jdbcTemplate;
 	}
 
 	@GetMapping(value = "/storage/{commodityCode}/{count}", produces = "application/json")
 	public String echo(@PathVariable String commodityCode, @PathVariable int count) {
 		LOGGER.info("Storage Service Begin ... xid: " + RootContext.getXID());
-		int result = jdbcTemplate.update(
+		int result = JDBC_TEMPLATE.update(
 				"update storage_tbl set count = count - ? where commodity_code = ?",
 				new Object[] { count, commodityCode });
 		LOGGER.info("Storage Service End ... ");
