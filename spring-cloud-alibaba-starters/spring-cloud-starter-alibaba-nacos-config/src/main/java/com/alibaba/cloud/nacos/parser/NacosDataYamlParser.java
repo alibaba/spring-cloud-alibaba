@@ -19,7 +19,7 @@ package com.alibaba.cloud.nacos.parser;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.config.YamlMapFactoryBean;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ByteArrayResource;
 
 /**
@@ -33,11 +33,11 @@ public class NacosDataYamlParser extends AbstractNacosDataParser {
 
 	@Override
 	protected Map<String, Object> doParse(String data) {
-		YamlMapFactoryBean yamlFactory = new YamlMapFactoryBean();
+		YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
 		yamlFactory.setResources(new ByteArrayResource(data.getBytes()));
 
-		Map<String, Object> result = new LinkedHashMap<>();
-		flattenedMap(result, yamlFactory.getObject(), EMPTY_STRING);
+		Map properties = yamlFactory.getObject();
+		Map<String, Object> result = new LinkedHashMap<>(properties);
 		return result;
 	}
 
