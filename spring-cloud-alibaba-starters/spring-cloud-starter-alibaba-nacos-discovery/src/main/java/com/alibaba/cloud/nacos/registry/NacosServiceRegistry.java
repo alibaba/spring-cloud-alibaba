@@ -119,7 +119,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	@Override
 	public void setStatus(Registration registration, String status) {
 
-		if (!status.equalsIgnoreCase("UP") && !status.equalsIgnoreCase("DOWN")) {
+		if (!"UP".equalsIgnoreCase(status) && !"DOWN".equalsIgnoreCase(status)) {
 			log.warn("can't support status {},please choose UP or DOWN", status);
 			return;
 		}
@@ -128,7 +128,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		Instance instance = getNacosInstanceFromRegistration(registration);
 
-		if (status.equalsIgnoreCase("DOWN")) {
+		if ("DOWN".equalsIgnoreCase(status)) {
 			instance.setEnabled(false);
 		}
 		else {

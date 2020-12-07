@@ -83,7 +83,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	/**
 	 * Caches the IDs of {@link ApplicationListener}.
 	 */
-	private static final Set<String> registerListeners = new HashSet<>();
+	private static final Set<String> REGISTER_LISTENERS = new HashSet<>();
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -215,7 +215,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	private void registerServiceInstancesChangedListener(URL url,
 			ApplicationListener<ServiceInstancesChangedEvent> listener) {
 		String listenerId = generateId(url);
-		if (registerListeners.add(listenerId)) {
+		if (REGISTER_LISTENERS.add(listenerId)) {
 			applicationContext.addApplicationListener(listener);
 		}
 	}
