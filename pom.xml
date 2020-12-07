@@ -93,10 +93,6 @@
         <spring-cloud-config.version>2.2.5.RELEASE</spring-cloud-config.version>
         <spring-cloud-zookeeper.version>2.2.3.RELEASE</spring-cloud-zookeeper.version>
 
-        <!-- Apache Dubbo -->
-        <dubbo.version>2.7.8</dubbo.version>
-        <curator.version>4.0.1</curator.version>
-
         <!-- Apache RocketMQ -->
         <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
 
@@ -217,45 +213,6 @@
                 <version>${spring-cloud-zookeeper.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <!-- Dubbo Dependencies -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-dependencies-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-framework-bom</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${dubbo.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-spring-boot-actuator</artifactId>
-                <version>${dubbo.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo</artifactId>
-                <version>${dubbo.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
