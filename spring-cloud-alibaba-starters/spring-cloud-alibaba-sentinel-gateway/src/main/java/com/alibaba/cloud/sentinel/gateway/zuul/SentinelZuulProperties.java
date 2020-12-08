@@ -28,7 +28,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@ConfigurationProperties(prefix = ConfigConstants.ZUUl_PREFIX)
+@ConfigurationProperties(prefix = ConfigConstants.ZUUL_PREFIX)
 public class SentinelZuulProperties {
 
 	@NestedConfigurationProperty
