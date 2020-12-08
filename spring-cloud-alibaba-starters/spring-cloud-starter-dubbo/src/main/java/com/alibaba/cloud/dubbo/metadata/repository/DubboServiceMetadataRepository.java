@@ -344,7 +344,7 @@ public class DubboServiceMetadataRepository
 	 * @return non-null read-only {@link Set}
 	 */
 	public Set<ServiceRestMetadata> getServiceRestMetadata() {
-		return unmodifiableSet(serviceRestMetadata);
+		return unmodifiableSet(new LinkedHashSet<>(serviceRestMetadata));
 	}
 
 	/**
