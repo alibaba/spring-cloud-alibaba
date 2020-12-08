@@ -237,9 +237,6 @@ public class DubboServiceMetadataRepository
 		dispatchEvent(new SubscribedServicesChangedEvent(this, oldSubscribedServices,
 				newSubscribedServices));
 
-		// clear old one, help GC
-		oldSubscribedServices.clear();
-
 		return newSubscribedServices.stream();
 	}
 
