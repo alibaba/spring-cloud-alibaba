@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.registry;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
@@ -99,15 +100,15 @@ public class NacosRegistration implements Registration, ServiceInstance {
 
 		if (null != nacosDiscoveryProperties.getHeartBeatInterval()) {
 			metadata.put(PreservedMetadataKeys.HEART_BEAT_INTERVAL,
-					nacosDiscoveryProperties.getHeartBeatInterval().toString());
+					String.valueOf(TimeUnit.SECONDS.toMillis(nacosDiscoveryProperties.getHeartBeatInterval())));
 		}
 		if (null != nacosDiscoveryProperties.getHeartBeatTimeout()) {
 			metadata.put(PreservedMetadataKeys.HEART_BEAT_TIMEOUT,
-					nacosDiscoveryProperties.getHeartBeatTimeout().toString());
+					String.valueOf(TimeUnit.SECONDS.toMillis(nacosDiscoveryProperties.getHeartBeatTimeout())));
 		}
 		if (null != nacosDiscoveryProperties.getIpDeleteTimeout()) {
 			metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
-					nacosDiscoveryProperties.getIpDeleteTimeout().toString());
+					String.valueOf(TimeUnit.SECONDS.toMillis(nacosDiscoveryProperties.getIpDeleteTimeout())));
 		}
 		customize(registrationCustomizers, this);
 	}
