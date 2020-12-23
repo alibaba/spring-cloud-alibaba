@@ -186,15 +186,15 @@ public class NacosAutoServiceRegistrationTests {
 	}
 
 	private void checkoutNacosDiscoveryHeartBeatInterval() {
-		assertThat(properties.getHeartBeatInterval()).isEqualTo(Integer.valueOf(3));
+		assertThat(properties.getHeartBeatInterval()).isEqualTo(Integer.valueOf(3000));
 	}
 
 	private void checkoutNacosDiscoveryHeartBeatTimeout() {
-		assertThat(properties.getHeartBeatTimeout()).isEqualTo(Integer.valueOf(6));
+		assertThat(properties.getHeartBeatTimeout()).isEqualTo(Integer.valueOf(6000));
 	}
 
 	private void checkoutNacosDiscoveryIpDeleteTimeout() {
-		assertThat(properties.getIpDeleteTimeout()).isEqualTo(Integer.valueOf(9));
+		assertThat(properties.getIpDeleteTimeout()).isEqualTo(Integer.valueOf(9000));
 	}
 
 	private void checkoutNacosDiscoveryServiceName() {
