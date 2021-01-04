@@ -77,7 +77,7 @@ public class NacosConfigManager {
 
 	@PreDestroy
 	public void destroy() throws NacosException {
-		if(service != null){
+		if (service != null) {
 			service.shutDown();
 			service = null;
 		}
