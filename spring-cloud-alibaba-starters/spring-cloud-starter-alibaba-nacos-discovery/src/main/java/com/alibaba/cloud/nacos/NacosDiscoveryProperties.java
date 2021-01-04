@@ -63,6 +63,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  * @author <a href="mailto:78552423@qq.com">eshun</a>
+ * @update <a href="mailto:zhefangwu@gmail.com">Zhefang.wu</a>
  */
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
@@ -239,8 +240,7 @@ public class NacosDiscoveryProperties {
 			// traversing network interfaces if didn't specify a interface
 			if (StringUtils.isEmpty(networkInterface)) {
 				ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-			}
-			else {
+			} else {
 				NetworkInterface netInterface = NetworkInterface
 						.getByName(networkInterface);
 				if (null == netInterface) {
