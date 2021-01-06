@@ -69,9 +69,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 				"spring.cloud.nacos.discovery.accessKey=test-accessKey",
 				"spring.cloud.nacos.discovery.ip=8.8.8.8",
 				"spring.cloud.nacos.discovery.secretKey=test-secretKey",
-				"spring.cloud.nacos.discovery.heart-beat-interval=3",
-				"spring.cloud.nacos.discovery.heart-beat-timeout=6",
-				"spring.cloud.nacos.discovery.ip-delete-timeout=9" },
+				"spring.cloud.nacos.discovery.heart-beat-interval=3000",
+				"spring.cloud.nacos.discovery.heart-beat-timeout=6000",
+				"spring.cloud.nacos.discovery.ip-delete-timeout=9000" },
 		webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationTests {
 
@@ -186,15 +186,15 @@ public class NacosAutoServiceRegistrationTests {
 	}
 
 	private void checkoutNacosDiscoveryHeartBeatInterval() {
-		assertThat(properties.getHeartBeatInterval()).isEqualTo(Integer.valueOf(3));
+		assertThat(properties.getHeartBeatInterval()).isEqualTo(Integer.valueOf(3000));
 	}
 
 	private void checkoutNacosDiscoveryHeartBeatTimeout() {
-		assertThat(properties.getHeartBeatTimeout()).isEqualTo(Integer.valueOf(6));
+		assertThat(properties.getHeartBeatTimeout()).isEqualTo(Integer.valueOf(6000));
 	}
 
 	private void checkoutNacosDiscoveryIpDeleteTimeout() {
-		assertThat(properties.getIpDeleteTimeout()).isEqualTo(Integer.valueOf(9));
+		assertThat(properties.getIpDeleteTimeout()).isEqualTo(Integer.valueOf(9000));
 	}
 
 	private void checkoutNacosDiscoveryServiceName() {
