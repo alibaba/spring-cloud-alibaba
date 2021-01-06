@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author lengleng
- * @date 2019-08-01
  */
 @Component
 public class EchoServiceFallbackFactory implements FallbackFactory<EchoServiceFallback> {
