@@ -45,4 +45,14 @@ public class RequestMetadataMatcher extends CompositeHttpRequestMatcher {
 						metadata.getProduces().toArray(new String[0])));
 	}
 
+
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

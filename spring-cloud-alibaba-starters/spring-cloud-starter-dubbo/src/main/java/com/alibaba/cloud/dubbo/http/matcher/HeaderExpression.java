@@ -59,4 +59,13 @@ class HeaderExpression extends AbstractNameValueExpression<String> {
 		return ObjectUtils.nullSafeEquals(this.value, headerValue);
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }
