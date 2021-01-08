@@ -16,22 +16,22 @@
 
 package com.alibaba.cloud.dubbo.registry.event;
 
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * The before-{@link ServiceRegistry#register(Registration) register} event for
- * {@link ServiceInstance}.
+ * The
+ * before-{@link org.springframework.cloud.client.serviceregistry.ServiceRegistry#register(org.springframework.cloud.client.serviceregistry.Registration)
+ * register} event for {@link org.springframework.cloud.client.ServiceInstance}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-public class ServiceInstancePreRegisteredEvent extends ApplicationEvent {
+public class ServiceInstancePreDeregisteredEvent extends ApplicationEvent {
 
 	private final ServiceRegistry<Registration> registry;
 
-	public ServiceInstancePreRegisteredEvent(ServiceRegistry<Registration> registry,
+	public ServiceInstancePreDeregisteredEvent(ServiceRegistry<Registration> registry,
 			Registration source) {
 		super(source);
 		this.registry = registry;
