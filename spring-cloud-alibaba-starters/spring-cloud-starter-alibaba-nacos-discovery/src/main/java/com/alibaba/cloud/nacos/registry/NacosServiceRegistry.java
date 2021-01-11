@@ -40,11 +40,11 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
  * @author <a href="mailto:78552423@qq.com">eshun</a>
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
-	
+
 	private static final String STATUS_UP = "UP";
-	
+
 	private static final String STATUS_DOWN = "DOWN";
-	
+
 	private static final Logger log = LoggerFactory.getLogger(NacosServiceRegistry.class);
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
@@ -123,7 +123,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	@Override
 	public void setStatus(Registration registration, String status) {
 
-		if (!STATUS_UP.equalsIgnoreCase(status) && !STATUS_DOWN.equalsIgnoreCase(status)) {
+		if (!STATUS_UP.equalsIgnoreCase(status)
+				&& !STATUS_DOWN.equalsIgnoreCase(status)) {
 			log.warn("can't support status {},please choose UP or DOWN", status);
 			return;
 		}
@@ -141,8 +142,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		try {
 			Properties nacosProperties = nacosDiscoveryProperties.getNacosProperties();
-			nacosServiceManager.getNamingMaintainService(nacosProperties)
-					.updateInstance(serviceId, nacosDiscoveryProperties.getGroup(), instance);
+			nacosServiceManager.getNamingMaintainService(nacosProperties).updateInstance(
+					serviceId, nacosDiscoveryProperties.getGroup(), instance);
 		}
 		catch (Exception e) {
 			throw new RuntimeException("update nacos instance status fail", e);
