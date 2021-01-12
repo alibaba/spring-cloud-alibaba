@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.metadata;
+package com.alibaba.cloud.dubbo.bootstrap;
 
-import com.alibaba.cloud.dubbo.metadata.event.DubboBootstrapStartedEvent;
-import org.apache.dubbo.config.bootstrap.DubboBootstrap;
+import com.alibaba.cloud.dubbo.bootstrap.event.DubboBootstrapStartedEvent;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,13 +24,13 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
 /**
- * @see com.alibaba.cloud.dubbo.metadata.event.DubboBootstrapPreStartEvent
- * @see com.alibaba.cloud.dubbo.metadata.event.DubboBootstrapStartedEvent
+ * publish Dubbo microsystem startup finish event.
+ *
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
 
 @Component
-public class DubboBootstrapCommandLineRunner
+public class DubboBootstrapStartCommandLineRunner
 		implements CommandLineRunner, ApplicationEventPublisherAware {
 
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -45,7 +44,7 @@ public class DubboBootstrapCommandLineRunner
 	@Override
 	public void run(String... args) {
 		applicationEventPublisher.publishEvent(
-				new DubboBootstrapStartedEvent(DubboBootstrap.getInstance()));
+				new DubboBootstrapStartedEvent(DubboBootstrapWrapper.getInstance()));
 	}
 
 }

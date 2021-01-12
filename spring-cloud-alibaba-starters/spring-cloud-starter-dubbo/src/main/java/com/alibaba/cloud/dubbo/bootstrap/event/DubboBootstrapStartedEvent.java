@@ -14,22 +14,31 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.metadata.event;
+package com.alibaba.cloud.dubbo.bootstrap.event;
+
+import com.alibaba.cloud.dubbo.bootstrap.DubboBootstrapWrapper;
 
 import org.springframework.context.ApplicationEvent;
 
 /**
+ * Dubbo microsytem start finish event, every thing is ready.
+ *
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
-public class DubboBootstrapPreStartEvent extends ApplicationEvent {
+public class DubboBootstrapStartedEvent extends ApplicationEvent {
 
 	/**
-	 * Create a new {@code ApplicationEvent}.
+	 * Create a new {@code DubboBootstrapStartedEvent}.
 	 * @param source the object on which the event initially occurred or with which the
 	 * event is associated (never {@code null})
 	 */
-	public DubboBootstrapPreStartEvent(Object source) {
+	public DubboBootstrapStartedEvent(DubboBootstrapWrapper source) {
 		super(source);
+	}
+
+	@Override
+	public DubboBootstrapWrapper getSource() {
+		return (DubboBootstrapWrapper) super.getSource();
 	}
 
 }
