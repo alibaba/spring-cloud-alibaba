@@ -14,29 +14,34 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.dubbo.metadata.event;
+package com.alibaba.cloud.dubbo.bootstrap;
 
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 
-import org.springframework.context.ApplicationEvent;
-
 /**
+ * Wrapper DubboBootstrap operation.
+ *
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
-public class DubboBootstrapStartedEvent extends ApplicationEvent {
+public final class DubboBootstrapWrapper {
 
-	/**
-	 * Create a new {@code ApplicationEvent}.
-	 * @param source the object on which the event initially occurred or with which the
-	 * event is associated (never {@code null})
-	 */
-	public DubboBootstrapStartedEvent(Object source) {
-		super(source);
+	private DubboBootstrapWrapper() {
 	}
 
-	@Override
-	public DubboBootstrap getSource() {
-		return (DubboBootstrap) super.getSource();
+	private static final DubboBootstrapWrapper INSTANCE = new DubboBootstrapWrapper();
+
+	public static DubboBootstrapWrapper getInstance() {
+		return INSTANCE;
+	}
+
+	public boolean isReady() {
+		return DubboBootstrap.getInstance().isStarted()
+				&& DubboBootstrap.getInstance().isReady()
+				&& DubboBootstrap.getInstance().isInitialized();
+	}
+
+	public DubboBootstrap getDubboBootstrap() {
+		return DubboBootstrap.getInstance();
 	}
 
 }

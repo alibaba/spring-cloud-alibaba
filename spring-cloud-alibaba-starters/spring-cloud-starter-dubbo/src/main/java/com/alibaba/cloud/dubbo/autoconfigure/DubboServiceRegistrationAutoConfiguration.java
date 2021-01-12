@@ -24,8 +24,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.cloud.dubbo.autoconfigure.condition.MissingSpringCloudRegistryConfigPropertyCondition;
-import com.alibaba.cloud.dubbo.metadata.DubboBootstrapCommandLineRunner;
-import com.alibaba.cloud.dubbo.metadata.event.DubboBootstrapStartedEvent;
+import com.alibaba.cloud.dubbo.bootstrap.DubboBootstrapStartCommandLineRunner;
+import com.alibaba.cloud.dubbo.bootstrap.DubboBootstrapWrapper;
+import com.alibaba.cloud.dubbo.bootstrap.event.DubboBootstrapStartedEvent;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.registry.DubboServiceRegistrationEventPublishingAspect;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreDeregisteredEvent;
@@ -60,7 +61,6 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.Order;
 
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
@@ -72,10 +72,11 @@ import static org.springframework.util.ObjectUtils.isEmpty;
  * Dubbo Service Registration Auto-{@link Configuration}.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
 @Configuration(proxyBeanMethods = false)
 @Import({ DubboServiceRegistrationEventPublishingAspect.class,
-		DubboBootstrapCommandLineRunner.class })
+		DubboBootstrapStartCommandLineRunner.class })
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
 		matchIfMissing = true)
 @AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
@@ -118,10 +119,9 @@ public class DubboServiceRegistrationAutoConfiguration {
 
 	private Map<ServiceRegistry<Registration>, Set<Registration>> registrations = new ConcurrentHashMap<>();
 
-	@Order
 	@EventListener(DubboBootstrapStartedEvent.class)
-	public void attachDubboMetadataAndRegistAgain(DubboBootstrapStartedEvent event) {
-		if (!event.getSource().isReady() || !event.getSource().isStarted()) {
+	public void onDubboBootstrapStarted(DubboBootstrapStartedEvent event) {
+		if (!event.getSource().isReady()) {
 			return;
 		}
 		registrations.forEach(
@@ -181,9 +181,9 @@ public class DubboServiceRegistrationAutoConfiguration {
 		private ObjectProvider<Collection<ServiceBean>> serviceBeans;
 
 		@EventListener(DubboBootstrapStartedEvent.class)
-		public void onServiceInstancePreRegistered(DubboBootstrapStartedEvent event) {
-			DubboBootstrap bootstrap = event.getSource();
-			if (!bootstrap.isReady() || !bootstrap.isStarted()) {
+		public void onDubboBootstrapStarted(DubboBootstrapStartedEvent event) {
+			DubboBootstrapWrapper wrapper = event.getSource();
+			if (!wrapper.isReady()) {
 				return;
 			}
 			registrations.forEach(
@@ -263,7 +263,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 		@EventListener(DubboBootstrapStartedEvent.class)
 		public void attachURLsIntoMetadataBeforeReRegist(
 				DubboBootstrapStartedEvent event) {
-			if (!event.getSource().isReady() || !event.getSource().isStarted()) {
+			if (!event.getSource().isReady()) {
 				return;
 			}
 			registrations.entrySet().removeIf(entry -> {
