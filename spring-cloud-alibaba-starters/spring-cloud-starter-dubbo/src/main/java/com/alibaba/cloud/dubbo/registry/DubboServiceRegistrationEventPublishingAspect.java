@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.dubbo.registry;
 
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreDeregisteredEvent;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstanceRegisteredEvent;
 import org.aspectj.lang.annotation.After;
@@ -33,6 +34,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see ServiceInstancePreRegisteredEvent
  * @see ServiceInstanceRegisteredEvent
+ * @see ServiceInstancePreDeregisteredEvent
  */
 @Aspect
 public class DubboServiceRegistrationEventPublishingAspect
@@ -41,18 +43,29 @@ public class DubboServiceRegistrationEventPublishingAspect
 	/**
 	 * The pointcut expression for {@link ServiceRegistry#register(Registration)}.
 	 */
-	public static final String REGISTER_POINTCUT_EXPRESSION = "execution(* org.springframework.cloud.client.serviceregistry.ServiceRegistry.register(*)) && args(registration)";
+	public static final String REGISTER_POINTCUT_EXPRESSION = "execution(* org.springframework.cloud.client.serviceregistry.ServiceRegistry.register(*)) && target(registry) && args(registration)";
+
+	/**
+	 * The pointcut expression for {@link ServiceRegistry#deregister(Registration)}.
+	 */
+	public static final String DEREGISTER_POINTCUT_EXPRESSION = "execution(* org.springframework.cloud.client.serviceregistry.ServiceRegistry.deregister(*)) && target(registry) && args(registration)";
 
 	private ApplicationEventPublisher applicationEventPublisher;
 
-	@Before(REGISTER_POINTCUT_EXPRESSION)
-	public void beforeRegister(Registration registration) {
-		applicationEventPublisher
-				.publishEvent(new ServiceInstancePreRegisteredEvent(registration));
+	@Before(value = REGISTER_POINTCUT_EXPRESSION, argNames = "registry, registration")
+	public void beforeRegister(ServiceRegistry registry, Registration registration) {
+		applicationEventPublisher.publishEvent(
+				new ServiceInstancePreRegisteredEvent(registry, registration));
 	}
 
-	@After(REGISTER_POINTCUT_EXPRESSION)
-	public void afterRegister(Registration registration) {
+	@Before(value = DEREGISTER_POINTCUT_EXPRESSION, argNames = "registry, registration")
+	public void beforeDeregister(ServiceRegistry registry, Registration registration) {
+		applicationEventPublisher.publishEvent(
+				new ServiceInstancePreDeregisteredEvent(registry, registration));
+	}
+
+	@After(value = REGISTER_POINTCUT_EXPRESSION, argNames = "registry, registration")
+	public void afterRegister(ServiceRegistry registry, Registration registration) {
 		applicationEventPublisher
 				.publishEvent(new ServiceInstanceRegisteredEvent(registration));
 	}
