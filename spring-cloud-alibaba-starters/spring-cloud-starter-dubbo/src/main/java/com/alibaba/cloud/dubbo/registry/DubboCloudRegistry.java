@@ -290,7 +290,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 					.map(templateURL -> templateURL.removeParameter(PID_KEY))
 					.map(templateURL -> {
 						String protocol = templateURL.getProtocol();
-						int port = repository.getDubboProtocolPort(serviceInstance,
+						Integer port = repository.getDubboProtocolPort(serviceInstance,
 								protocol);
 						if (Objects.equals(templateURL.getHost(), host)
 								&& Objects.equals(templateURL.getPort(), port)) { // use
@@ -300,15 +300,27 @@ public class DubboCloudRegistry extends FailbackRegistry {
 							return templateURL;
 						}
 
-						URLBuilder clonedURLBuilder = from(templateURL) // remove the
-								// parameters from
-								// the template
-								// URL
-								.setHost(host) // reset the host
-								.setPort(port); // reset the port
+						if (port == null) {
+							if (logger.isWarnEnabled()) {
+								logger.warn(
+										"The protocol[{}] port of Dubbo  service instance[host : {}] "
+												+ "can't be resolved",
+										protocol, host);
+							}
+							return null;
+						}
+						else {
+							URLBuilder clonedURLBuilder = from(templateURL) // remove the
+									// parameters from
+									// the template
+									// URL
+									.setHost(host) // reset the host
+									.setPort(port); // reset the port
 
-						return clonedURLBuilder.build();
-					}).forEach(clonedExportedURLs::add);
+							return clonedURLBuilder.build();
+						}
+
+					}).filter(Objects::nonNull).forEach(clonedExportedURLs::add);
 		});
 		return clonedExportedURLs;
 	}
