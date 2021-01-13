@@ -18,6 +18,8 @@ package com.alibaba.cloud.nacos;
 
 import java.util.Objects;
 
+import javax.annotation.PreDestroy;
+
 import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureException;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
@@ -71,6 +73,14 @@ public class NacosConfigManager {
 			createConfigService(this.nacosConfigProperties);
 		}
 		return service;
+	}
+
+	@PreDestroy
+	public void destroy() throws NacosException {
+		if (service != null) {
+			service.shutDown();
+			service = null;
+		}
 	}
 
 	public NacosConfigProperties getNacosConfigProperties() {
