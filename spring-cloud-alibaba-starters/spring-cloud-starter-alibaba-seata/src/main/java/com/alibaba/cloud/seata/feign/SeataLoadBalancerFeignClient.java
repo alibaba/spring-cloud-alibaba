@@ -30,7 +30,7 @@ import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
  * @author xiaojing
  * @author yuhuangbin
  */
-public class SeataLoadBalancerFeignClient extends LoadBalancerFeignClient {
+public final class SeataLoadBalancerFeignClient extends LoadBalancerFeignClient {
 
 	SeataLoadBalancerFeignClient(Client delegate,
 			CachingSpringLoadBalancerFactory lbClientFactory,
