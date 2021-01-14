@@ -28,7 +28,7 @@ import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalance
 /**
  * @author yuhuangbin
  */
-public class SeataFeignBlockingLoadBalancerClient
+public final class SeataFeignBlockingLoadBalancerClient
 		extends FeignBlockingLoadBalancerClient {
 
 	public SeataFeignBlockingLoadBalancerClient(Client delegate,
