@@ -30,7 +30,7 @@ import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 
 /**
  * @author xiaojing
- * @author tangtong
+ * @author alan-tang-tt
  */
 public class SeataFeignObjectWrapper {
 
