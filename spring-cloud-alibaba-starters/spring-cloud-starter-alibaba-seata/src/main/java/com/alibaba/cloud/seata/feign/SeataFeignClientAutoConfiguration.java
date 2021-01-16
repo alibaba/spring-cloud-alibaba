@@ -71,12 +71,6 @@ public class SeataFeignClientAutoConfiguration {
 		}
 
 		@Bean
-		SeataContextBeanPostProcessor seataContextBeanPostProcessor(
-				BeanFactory beanFactory) {
-			return new SeataContextBeanPostProcessor(beanFactory);
-		}
-
-		@Bean
 		SeataFeignObjectWrapper seataFeignObjectWrapper(BeanFactory beanFactory) {
 			return new SeataFeignObjectWrapper(beanFactory);
 		}
