@@ -43,7 +43,6 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 			Object handler) {
-
 		String xid = RootContext.getXID();
 		String rpcXid = request.getHeader(RootContext.KEY_XID);
 		if (log.isDebugEnabled()) {
@@ -56,6 +55,7 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 				log.debug("bind {} to RootContext", rpcXid);
 			}
 		}
+
 		return true;
 	}
 

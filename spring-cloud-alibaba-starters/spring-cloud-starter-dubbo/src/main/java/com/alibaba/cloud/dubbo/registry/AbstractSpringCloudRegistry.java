@@ -77,7 +77,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	/**
 	 * Caches the IDs of {@link ApplicationListener}.
 	 */
-	private static final Set<String> registerListeners = new HashSet<>();
+	private static final Set<String> REGISTER_LISTENERS = new HashSet<>();
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -193,7 +193,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 	private void registerServiceInstancesChangedEventListener(URL url,
 			NotifyListener listener) {
 		String listenerId = generateId(url);
-		if (registerListeners.add(listenerId)) {
+		if (REGISTER_LISTENERS.add(listenerId)) {
 			applicationContext.addApplicationListener(
 					new ApplicationListener<ServiceInstancesChangedEvent>() {
 						@Override
@@ -261,7 +261,7 @@ public abstract class AbstractSpringCloudRegistry extends FailbackRegistry {
 				String listenerId = generateId(url);
 				// The metaservice will restart the new listener. It needs to be optimized
 				// to see whether the original listener can be reused.
-				this.registerListeners.remove(listenerId);
+				REGISTER_LISTENERS.remove(listenerId);
 			}
 
 			/**

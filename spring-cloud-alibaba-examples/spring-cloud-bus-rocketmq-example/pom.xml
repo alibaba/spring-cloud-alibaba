@@ -13,8 +13,7 @@
     <artifactId>spring-cloud-bus-rocketmq-example</artifactId>
     <name>Spring Cloud Starter Bus Alibaba RocketMQ Example</name>
     <description>Example demonstrating how to use Spring Cloud Bus RocketMQ</description>
-      <packaging>jar</packaging>
-
+    <packaging>jar</packaging>
 
     <dependencies>
 

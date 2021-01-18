@@ -22,7 +22,6 @@ import com.alibaba.cloud.sidecar.SidecarProperties;
 import org.springframework.util.StringUtils;
 
 /**
- * @author itmuch.com
  * @author yuhuangbin
  */
 public class SidecarNacosDiscoveryProperties extends NacosDiscoveryProperties {

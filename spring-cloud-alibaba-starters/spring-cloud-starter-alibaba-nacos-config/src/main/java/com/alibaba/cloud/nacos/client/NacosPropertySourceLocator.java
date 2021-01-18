@@ -21,7 +21,6 @@ import java.util.List;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
-import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.nacos.api.config.ConfigService;
 import org.slf4j.Logger;
@@ -101,7 +100,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		loadSharedConfiguration(composite);
 		loadExtConfiguration(composite);
 		loadApplicationConfiguration(composite, dataIdPrefix, nacosConfigProperties, env);
-
 		return composite;
 	}
 
@@ -165,7 +163,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private void checkConfiguration(List<NacosConfigProperties.Config> configs,
 			String tips) {
-		String[] dataIds = new String[configs.size()];
 		for (int i = 0; i < configs.size(); i++) {
 			String dataId = configs.get(i).getDataId();
 			if (dataId == null || dataId.trim().length() == 0) {
@@ -173,10 +170,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 						"the [ spring.cloud.nacos.config.%s[%s] ] must give a dataId",
 						tips, i));
 			}
-			dataIds[i] = dataId;
 		}
-		// Just decide that the current dataId must have a suffix
-		NacosDataParserHandler.getInstance().checkDataId(dataIds);
 	}
 
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,

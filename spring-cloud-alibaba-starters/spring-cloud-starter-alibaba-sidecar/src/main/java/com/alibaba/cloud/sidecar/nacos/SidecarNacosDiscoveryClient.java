@@ -37,6 +37,7 @@ public class SidecarNacosDiscoveryClient implements SidecarDiscoveryClient {
 
 	public SidecarNacosDiscoveryClient(NacosServiceManager nacosServiceManager,
 			SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties) {
+		this.nacosServiceManager = nacosServiceManager;
 		this.sidecarNacosDiscoveryProperties = sidecarNacosDiscoveryProperties;
 	}
 

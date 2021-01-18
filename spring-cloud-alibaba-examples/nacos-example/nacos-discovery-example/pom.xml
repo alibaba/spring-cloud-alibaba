@@ -15,6 +15,7 @@
     <description>Example demonstrating how to use nacos discovery</description>
     <packaging>pom</packaging>
 
+
     <modules>
         <module>nacos-discovery-consumer-example</module>
         <module>nacos-discovery-provider-example</module>

@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.discovery.configclient;
 
+import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 
@@ -34,7 +35,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(value = "spring.cloud.config.discovery.enabled", matchIfMissing = false)
 @Configuration
 @ImportAutoConfiguration({ NacosDiscoveryAutoConfiguration.class,
-		NacosDiscoveryClientConfiguration.class })
+		NacosServiceAutoConfiguration.class, NacosDiscoveryClientConfiguration.class })
 public class NacosDiscoveryClientConfigServiceBootstrapConfiguration {
 
 }

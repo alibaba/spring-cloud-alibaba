@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * @author lengleng
- * @date 2019-08-01
  * <p>
  * example feign client
  */

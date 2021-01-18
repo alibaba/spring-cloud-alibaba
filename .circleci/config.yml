@@ -24,7 +24,7 @@ jobs:
             - ~/.m2
       - run:
           name: "Running build"
-          command: ./mvnw -Pdocs clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dgpg.skip
+          command: ./mvnw clean install -U -nsu --batch-mode -Dmaven.test.redirectTestOutputToFile=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dgpg.skip
       - run:
           name: "Aggregate test results"
           when: always

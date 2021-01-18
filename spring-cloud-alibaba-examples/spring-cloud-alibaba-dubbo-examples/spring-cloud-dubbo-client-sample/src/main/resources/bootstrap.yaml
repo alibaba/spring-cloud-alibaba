@@ -1,6 +1,9 @@
 dubbo:
   cloud:
     subscribed-services: spring-cloud-alibaba-dubbo-server
+  protocols:
+    dubbo:
+      port: -1
 
 spring:
   application:
