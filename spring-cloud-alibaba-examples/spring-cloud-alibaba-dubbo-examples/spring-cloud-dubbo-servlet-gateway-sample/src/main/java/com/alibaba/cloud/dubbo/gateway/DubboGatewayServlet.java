@@ -52,8 +52,8 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.servlet.HttpServletBean;
 import org.springframework.web.util.UriComponents;
 
-import static org.apache.commons.lang.StringUtils.substringAfter;
-import static org.apache.commons.lang.StringUtils.substringBetween;
+import static com.alibaba.cloud.commons.StringUtils.substringAfter;
+import static com.alibaba.cloud.commons.StringUtils.substringBetween;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
 @WebServlet(urlPatterns = "/dsc/*")
