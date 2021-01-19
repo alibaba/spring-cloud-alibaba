@@ -25,7 +25,7 @@ import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.apache.commons.io.FileUtils;
+import com.alibaba.cloud.commons.FileUtils;
 import org.junit.Test;
 
 import org.springframework.util.ResourceUtils;
