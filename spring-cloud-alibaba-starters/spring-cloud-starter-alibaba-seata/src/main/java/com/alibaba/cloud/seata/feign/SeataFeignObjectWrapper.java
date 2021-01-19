@@ -32,7 +32,8 @@ import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
  */
 public class SeataFeignObjectWrapper {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SeataFeignObjectWrapper.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(SeataFeignObjectWrapper.class);
 
 	private final BeanFactory beanFactory;
 

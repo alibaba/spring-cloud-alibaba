@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.commons.StringUtils;
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.nacos.api.naming.NamingService;

@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.sentinel.datasource.factorybean;
 
-import com.alibaba.cloud.commons.StringUtils;
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.zookeeper.ZookeeperDataSource;
 
