@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons;
+package com.alibaba.cloud.commons.lang;
 
 /**
  * StringUtils. copy from apache common-lang3.
