@@ -27,6 +27,9 @@ import java.nio.charset.Charset;
  */
 public final class FileUtils {
 
+	private FileUtils() {
+	}
+
 	/**
 	 * Reads the contents of a file into a String. The file is always closed.
 	 * @param file the file to read, must not be {@code null}
