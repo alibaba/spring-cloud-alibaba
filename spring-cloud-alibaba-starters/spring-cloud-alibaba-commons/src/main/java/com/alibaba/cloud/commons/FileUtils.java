@@ -22,13 +22,13 @@ import java.nio.charset.Charset;
 
 /**
  * FileUtils. copy from apache commons.io.
+ *
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
-public class FileUtils {
+public final class FileUtils {
 
 	/**
 	 * Reads the contents of a file into a String. The file is always closed.
-	 *
 	 * @param file the file to read, must not be {@code null}
 	 * @param encoding the encoding to use, {@code null} means platform default
 	 * @return the file contents, never {@code null}
@@ -46,7 +46,6 @@ public class FileUtils {
 	/**
 	 * Reads the contents of a file into a String using the default encoding for the VM.
 	 * The file is always closed.
-	 *
 	 * @param file the file to read, must not be {@code null}
 	 * @return the file contents, never {@code null}
 	 * @throws IOException in case of an I/O error
@@ -58,4 +57,5 @@ public class FileUtils {
 	public static String readFileToString(final File file) throws IOException {
 		return readFileToString(file, Charset.defaultCharset());
 	}
+
 }
