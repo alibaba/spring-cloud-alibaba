@@ -161,29 +161,16 @@ class UserConfig {
 @Component
 class SampleRunner implements ApplicationRunner {
 
-	@Value("${user.name:zz}")
-	String userName;
-
-	@Value("${user.age:25}")
-	int userAge;
-
 	@Autowired
 	private NacosConfigManager nacosConfigManager;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		System.out.println(
-				String.format("Initial username=%s, userAge=%d", userName, userAge));
-
 		nacosConfigManager.getConfigService().addListener(
-				"nacos-config-example.properties", "DEFAULT_GROUP", new Listener() {
+				"nacos-config-custom.properties", "DEFAULT_GROUP", new Listener() {
 
 					/**
 					 * Callback with latest config data.
-					 *
-					 * For example, config data in Nacos is:
-					 *
-					 * user.name=Nacos user.age=25
 					 * @param configInfo latest config data for specific dataId in Nacos
 					 * server
 					 */
