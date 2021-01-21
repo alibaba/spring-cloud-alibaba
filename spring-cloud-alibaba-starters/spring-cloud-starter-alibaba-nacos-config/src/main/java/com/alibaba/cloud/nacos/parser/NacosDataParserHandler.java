@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.alibaba.cloud.nacos.utils.NacosConfigUtils;
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.boot.env.PropertySourceLoader;
@@ -34,25 +35,17 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static com.alibaba.cloud.nacos.parser.AbstractPropertySourceLoader.DOT;
+
 /**
  * @author zkz
  */
 public final class NacosDataParserHandler {
 
 	/**
-	 * symbol: dot.
-	 */
-	public static final String DOT = ".";
-
-	/**
-	 * constant.
-	 */
-	public static final String VALUE = "value";
-
-	/**
 	 * default extension.
 	 */
-	public static final String DEFAULT_EXTENSION = "properties";
+	private static final String DEFAULT_EXTENSION = "properties";
 
 	private static List<PropertySourceLoader> propertySourceLoaders;
 
@@ -86,7 +79,8 @@ public final class NacosDataParserHandler {
 				// PropertiesPropertySourceLoader internal is to use the ISO_8859_1,
 				// the Chinese will be garbled, needs to transform into unicode.
 				nacosByteArrayResource = new NacosByteArrayResource(
-						selectiveConvertUnicode(configValue).getBytes(), configName);
+						NacosConfigUtils.selectiveConvertUnicode(configValue).getBytes(),
+						configName);
 			}
 			else {
 				nacosByteArrayResource = new NacosByteArrayResource(
@@ -160,35 +154,6 @@ public final class NacosDataParserHandler {
 			}
 		}
 		return name + DOT + extension;
-	}
-
-	/**
-	 * Convert Chinese characters to Unicode.
-	 * @param configValue
-	 * @return
-	 */
-	private String selectiveConvertUnicode(String configValue) {
-		StringBuilder sb = new StringBuilder();
-		char[] chars = configValue.toCharArray();
-		for (char aChar : chars) {
-			if (isChinese(aChar)) {
-				sb.append("\\u").append(Integer.toHexString(aChar));
-			}
-			else {
-				sb.append(aChar);
-			}
-		}
-		return sb.toString();
-	}
-
-	private boolean isChinese(char c) {
-		Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
-		return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-				|| ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-				|| ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-				|| ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
-				|| ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
-				|| ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS;
 	}
 
 	public static NacosDataParserHandler getInstance() {

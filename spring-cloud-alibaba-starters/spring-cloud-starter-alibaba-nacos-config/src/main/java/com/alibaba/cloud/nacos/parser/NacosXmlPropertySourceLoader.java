@@ -79,7 +79,7 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 	 * return a list containing a single source, or in the case of a multi-document format
 	 * such as yaml a source for each document in the resource.
 	 * @param name the root name of the property source. If multiple documents are loaded
-	 * an additional suffix should be added to the name for each source loaded.
+	 *     an additional suffix should be added to the name for each source loaded.
 	 * @param resource the resource to load
 	 * @return a list property sources
 	 * @throws IOException if the source cannot be loaded
@@ -127,8 +127,7 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 				continue;
 			}
 
-			String key = StringUtils.isEmpty(parentKey) ? name
-					: parentKey + NacosDataParserHandler.DOT + name;
+			String key = StringUtils.isEmpty(parentKey) ? name : parentKey + DOT + name;
 			NamedNodeMap nodeMap = node.getAttributes();
 			parseNodeAttr(nodeMap, map, key);
 			if (node.getNodeType() == Node.ELEMENT_NODE && node.hasChildNodes()) {
@@ -159,8 +158,8 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 				if (StringUtils.isEmpty(node.getNodeValue())) {
 					continue;
 				}
-				map.put(String.join(NacosDataParserHandler.DOT, parentKey,
-						node.getNodeName()), node.getNodeValue());
+				map.put(String.join(DOT, parentKey, node.getNodeName()),
+						node.getNodeValue());
 			}
 		}
 	}

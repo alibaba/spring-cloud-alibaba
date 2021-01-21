@@ -30,8 +30,6 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 
-import static com.alibaba.cloud.nacos.parser.NacosDataParserHandler.DOT;
-
 /**
  * Nacos-specific loader, If need to support other methods of parsing,you need to do the
  * following steps:
@@ -46,6 +44,11 @@ import static com.alibaba.cloud.nacos.parser.NacosDataParserHandler.DOT;
  * @author zkz
  */
 public abstract class AbstractPropertySourceLoader implements PropertySourceLoader {
+
+	/**
+	 * symbol: dot.
+	 */
+	static final String DOT = ".";
 
 	/**
 	 * Prevent interference with other loaders.Nacos-specific loader, unless the reload
