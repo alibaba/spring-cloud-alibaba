@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
+import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
@@ -80,8 +81,17 @@ public final class NacosDataParserHandler {
 			if (!canLoadFileExtension(propertySourceLoader, extension)) {
 				continue;
 			}
-			NacosByteArrayResource nacosByteArrayResource = new NacosByteArrayResource(
-					configValue.getBytes(), configName);
+			NacosByteArrayResource nacosByteArrayResource;
+			if (propertySourceLoader instanceof PropertiesPropertySourceLoader) {
+				// PropertiesPropertySourceLoader internal is to use the ISO_8859_1,
+				// the Chinese will be garbled, needs to transform into unicode.
+				nacosByteArrayResource = new NacosByteArrayResource(
+						selectiveConvertUnicode(configValue).getBytes(), configName);
+			}
+			else {
+				nacosByteArrayResource = new NacosByteArrayResource(
+						configValue.getBytes(), configName);
+			}
 			nacosByteArrayResource.setFilename(getFileName(configName, extension));
 			List<PropertySource<?>> propertySourceList = propertySourceLoader
 					.load(configName, nacosByteArrayResource);
@@ -150,6 +160,35 @@ public final class NacosDataParserHandler {
 			}
 		}
 		return name + DOT + extension;
+	}
+
+	/**
+	 * Convert Chinese characters to Unicode.
+	 * @param configValue
+	 * @return
+	 */
+	private String selectiveConvertUnicode(String configValue) {
+		StringBuilder sb = new StringBuilder();
+		char[] chars = configValue.toCharArray();
+		for (char aChar : chars) {
+			if (isChinese(aChar)) {
+				sb.append("\\u").append(Integer.toHexString(aChar));
+			}
+			else {
+				sb.append(aChar);
+			}
+		}
+		return sb.toString();
+	}
+
+	private boolean isChinese(char c) {
+		Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+		return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+				|| ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+				|| ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+				|| ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
+				|| ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+				|| ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS;
 	}
 
 	public static NacosDataParserHandler getInstance() {
