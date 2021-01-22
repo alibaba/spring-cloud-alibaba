@@ -21,10 +21,13 @@ package com.alibaba.cloud.nacos.utils;
  */
 public final class NacosConfigUtils {
 
+	private NacosConfigUtils(){
+	}
+
 	/**
 	 * Convert Chinese characters to Unicode.
-	 * @param configValue
-	 * @return
+	 * @param configValue value of config
+	 * @return new string
 	 */
 	public static String selectiveConvertUnicode(String configValue) {
 		StringBuilder sb = new StringBuilder();
@@ -42,8 +45,8 @@ public final class NacosConfigUtils {
 
 	/**
 	 * char is chinese?
-	 * @param c
-	 * @return
+	 * @param c a character
+	 * @return true or false
 	 */
 	public static boolean isChinese(char c) {
 		Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
