@@ -25,7 +25,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.alibaba.cloud.nacos.utils.NacosConfigUtils;
+
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
+import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
@@ -33,25 +36,17 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static com.alibaba.cloud.nacos.parser.AbstractPropertySourceLoader.DOT;
+
 /**
  * @author zkz
  */
 public final class NacosDataParserHandler {
 
 	/**
-	 * symbol: dot.
-	 */
-	public static final String DOT = ".";
-
-	/**
-	 * constant.
-	 */
-	public static final String VALUE = "value";
-
-	/**
 	 * default extension.
 	 */
-	public static final String DEFAULT_EXTENSION = "properties";
+	private static final String DEFAULT_EXTENSION = "properties";
 
 	private static List<PropertySourceLoader> propertySourceLoaders;
 
@@ -80,8 +75,18 @@ public final class NacosDataParserHandler {
 			if (!canLoadFileExtension(propertySourceLoader, extension)) {
 				continue;
 			}
-			NacosByteArrayResource nacosByteArrayResource = new NacosByteArrayResource(
-					configValue.getBytes(), configName);
+			NacosByteArrayResource nacosByteArrayResource;
+			if (propertySourceLoader instanceof PropertiesPropertySourceLoader) {
+				// PropertiesPropertySourceLoader internal is to use the ISO_8859_1,
+				// the Chinese will be garbled, needs to transform into unicode.
+				nacosByteArrayResource = new NacosByteArrayResource(
+						NacosConfigUtils.selectiveConvertUnicode(configValue).getBytes(),
+						configName);
+			}
+			else {
+				nacosByteArrayResource = new NacosByteArrayResource(
+						configValue.getBytes(), configName);
+			}
 			nacosByteArrayResource.setFilename(getFileName(configName, extension));
 			List<PropertySource<?>> propertySourceList = propertySourceLoader
 					.load(configName, nacosByteArrayResource);

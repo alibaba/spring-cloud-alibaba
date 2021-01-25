@@ -28,13 +28,15 @@ import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
 
-import static com.alibaba.cloud.nacos.parser.AbstractNacosDataParser.DOT;
-import static com.alibaba.cloud.nacos.parser.AbstractNacosDataParser.VALUE;
-
 /**
  * @author zkz
  */
 public class NacosJsonPropertySourceLoader extends AbstractPropertySourceLoader {
+
+	/**
+	 * constant.
+	 */
+	private static final String VALUE = "value";
 
 	/**
 	 * Returns the file extensions that the loader supports (excluding the '.').
