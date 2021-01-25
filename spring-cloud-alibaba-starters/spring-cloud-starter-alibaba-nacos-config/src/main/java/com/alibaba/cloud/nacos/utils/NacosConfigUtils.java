@@ -21,7 +21,7 @@ package com.alibaba.cloud.nacos.utils;
  */
 public final class NacosConfigUtils {
 
-	private NacosConfigUtils(){
+	private NacosConfigUtils() {
 	}
 
 	/**
@@ -33,14 +33,24 @@ public final class NacosConfigUtils {
 		StringBuilder sb = new StringBuilder();
 		char[] chars = configValue.toCharArray();
 		for (char aChar : chars) {
-			if (isChinese(aChar)) {
-				sb.append("\\u").append(Integer.toHexString(aChar));
+			if (isBaseLetter(aChar)) {
+				sb.append(aChar);
 			}
 			else {
-				sb.append(aChar);
+				sb.append(String.format("\\u%04x", (int) aChar));
 			}
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * char is base latin or whitespace?
+	 * @param ch a character
+	 * @return true or false
+	 */
+	public static boolean isBaseLetter(char ch) {
+		Character.UnicodeBlock ub = Character.UnicodeBlock.of(ch);
+		return ub == Character.UnicodeBlock.BASIC_LATIN || Character.isWhitespace(ch);
 	}
 
 	/**
