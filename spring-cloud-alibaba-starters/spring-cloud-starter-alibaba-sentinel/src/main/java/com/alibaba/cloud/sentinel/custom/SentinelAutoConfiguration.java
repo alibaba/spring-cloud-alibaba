@@ -31,7 +31,6 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
-import com.alibaba.csp.sentinel.util.AppNameUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -79,9 +78,9 @@ public class SentinelAutoConfiguration {
 			System.setProperty(LogBase.LOG_NAME_USE_PID,
 					String.valueOf(properties.getLog().isSwitchPid()));
 		}
-		if (StringUtils.isEmpty(System.getProperty(AppNameUtil.APP_NAME))
+		if (StringUtils.isEmpty(System.getProperty(SentinelConfig.APP_NAME_PROP_KEY))
 				&& StringUtils.hasText(projectName)) {
-			System.setProperty(AppNameUtil.APP_NAME, projectName);
+			System.setProperty(SentinelConfig.APP_NAME_PROP_KEY, projectName);
 		}
 		if (StringUtils.isEmpty(System.getProperty(TransportConfig.SERVER_PORT))
 				&& StringUtils.hasText(properties.getTransport().getPort())) {

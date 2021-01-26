@@ -47,7 +47,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ZuulServlet.class)
-@ConditionalOnProperty(prefix = ConfigConstants.ZUUl_PREFIX, name = "enabled",
+@ConditionalOnProperty(prefix = ConfigConstants.ZUUL_PREFIX, name = "enabled",
 		havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelZuulProperties.class)
 public class SentinelZuulAutoConfiguration {
@@ -65,7 +65,7 @@ public class SentinelZuulAutoConfiguration {
 	private void init() {
 		requestOriginParserOptional
 				.ifPresent(ZuulGatewayCallbackManager::setOriginParser);
-		System.setProperty(SentinelConfig.APP_TYPE,
+		System.setProperty(SentinelConfig.APP_TYPE_PROP_KEY,
 				String.valueOf(ConfigConstants.APP_TYPE_ZUUL_GATEWAY));
 	}
 

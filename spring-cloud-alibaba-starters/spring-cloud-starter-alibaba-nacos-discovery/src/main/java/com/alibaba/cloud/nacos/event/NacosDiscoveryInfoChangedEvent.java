@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.nacos.event;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+
+import org.springframework.context.ApplicationEvent;
 
 /**
- * @author xiaojing
+ * @author yuhuangbin
  */
-@SpringBootApplication
-public class OderApplication {
+public class NacosDiscoveryInfoChangedEvent extends ApplicationEvent {
 
-	public static void main(String[] args) {
-		SpringApplication.run(OderApplication.class, args);
+	public NacosDiscoveryInfoChangedEvent(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		super(nacosDiscoveryProperties);
 	}
 
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
+	@Override
+	public NacosDiscoveryProperties getSource() {
+		return (NacosDiscoveryProperties) super.getSource();
 	}
 
 }

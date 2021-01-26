@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.dubbo.registry;
 
+import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceFactory;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
@@ -28,7 +29,7 @@ import org.apache.dubbo.registry.support.AbstractRegistryFactory;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import static java.lang.System.getProperty;
+import static com.alibaba.cloud.dubbo.util.DubboCloudConstants.SPRING_CLOUD_REGISTRY_PROPERTY_VALUE;
 
 /**
  * Dubbo {@link RegistryFactory} uses Spring Cloud Service Registration abstraction, whose
@@ -49,10 +50,6 @@ public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 	 * Spring Cloud Address.
 	 */
 	public static String ADDRESS = "localhost";
-
-	private static String SERVICES_LOOKUP_SCHEDULER_THREAD_NAME_PREFIX = getProperty(
-			"dubbo.services.lookup.scheduler.thread.name.prefix ",
-			"dubbo-services-lookup-");
 
 	private static ConfigurableApplicationContext applicationContext;
 
@@ -88,9 +85,26 @@ public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 	@Override
 	public Registry createRegistry(URL url) {
 		init();
-		return new SpringCloudRegistry(url, discoveryClient,
-				dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
-				jsonUtils, dubboGenericServiceFactory, applicationContext);
+
+		DubboCloudProperties dubboCloudProperties = applicationContext
+				.getBean(DubboCloudProperties.class);
+
+		Registry registry = null;
+
+		switch (dubboCloudProperties.getRegistryType()) {
+		case SPRING_CLOUD_REGISTRY_PROPERTY_VALUE:
+			registry = new SpringCloudRegistry(url, discoveryClient,
+					dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
+					jsonUtils, dubboGenericServiceFactory, applicationContext);
+			break;
+		default:
+			registry = new DubboCloudRegistry(url, discoveryClient,
+					dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
+					jsonUtils, dubboGenericServiceFactory, applicationContext);
+			break;
+		}
+
+		return registry;
 	}
 
 }

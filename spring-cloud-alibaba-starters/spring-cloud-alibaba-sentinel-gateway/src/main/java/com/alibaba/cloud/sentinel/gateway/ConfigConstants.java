@@ -37,7 +37,7 @@ public final class ConfigConstants {
 	/**
 	 * ConfigurationProperties for {@link SentinelZuulProperties}.
 	 */
-	public static final String ZUUl_PREFIX = "spring.cloud.sentinel.zuul";
+	public static final String ZUUL_PREFIX = "spring.cloud.sentinel.zuul";
 
 	/**
 	 * ConfigurationProperties for {@link SentinelGatewayProperties}.

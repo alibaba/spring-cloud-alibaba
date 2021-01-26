@@ -4,8 +4,6 @@ dubbo:
   protocol:
     name: dubbo
     port: -1
-  registry:
-    address: spring-cloud://localhost
 
 spring:
   application:
