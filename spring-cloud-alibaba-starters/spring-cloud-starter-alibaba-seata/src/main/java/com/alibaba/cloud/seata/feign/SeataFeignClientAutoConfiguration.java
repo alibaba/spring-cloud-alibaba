@@ -17,7 +17,6 @@
 package com.alibaba.cloud.seata.feign;
 
 import feign.Client;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +28,19 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(Client.class)
 public class SeataFeignClientAutoConfiguration {
 
+	/**
+	 * The bean SeataFeignBuilderBeanPostProcessor
+	 */
 	@Bean
-	public SeataFeignRequestInterceptor seataFeignInterceptor() {
+	public SeataFeignBuilderBeanPostProcessor seataFeignBuilderBeanPostProcessor() {
+		return new SeataFeignBuilderBeanPostProcessor();
+	}
+
+	/**
+	 * The bean SeataFeignRequestInterceptor
+	 */
+	@Bean
+	public SeataFeignRequestInterceptor seataFeignRequestInterceptor() {
 		return new SeataFeignRequestInterceptor();
 	}
 }

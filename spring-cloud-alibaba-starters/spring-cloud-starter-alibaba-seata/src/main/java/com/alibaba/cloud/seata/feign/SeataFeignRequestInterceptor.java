@@ -30,15 +30,15 @@ import org.springframework.util.StringUtils;
  */
 public class SeataFeignRequestInterceptor implements RequestInterceptor {
 
-    @Override
-    public void apply(RequestTemplate template) {
-        String xid = RootContext.getXID();
-        if (StringUtils.isEmpty(xid)) {
-            return;
-        }
+	@Override
+	public void apply(RequestTemplate template) {
+		String xid = RootContext.getXID();
+		if (StringUtils.isEmpty(xid)) {
+			return;
+		}
 
-        List<String> seataXid = new ArrayList<>();
-        seataXid.add(xid);
-        template.header(RootContext.KEY_XID, xid);
-    }
+		List<String> seataXid = new ArrayList<>();
+		seataXid.add(xid);
+		template.header(RootContext.KEY_XID, xid);
+	}
 }
