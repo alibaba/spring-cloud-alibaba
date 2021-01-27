@@ -21,7 +21,7 @@ package com.alibaba.cloud.nacos.utils;
  */
 public final class NacosConfigUtils {
 
-	private NacosConfigUtils(){
+	private NacosConfigUtils() {
 	}
 
 	/**

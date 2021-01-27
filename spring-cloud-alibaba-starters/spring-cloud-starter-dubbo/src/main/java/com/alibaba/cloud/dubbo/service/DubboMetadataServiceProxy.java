@@ -84,8 +84,6 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	 */
 	public DubboMetadataService getProxy(List<ServiceInstance> serviceInstances) {
 
-		DubboMetadataService dubboMetadataService = null;
-
 		// attempt to get the proxy of DubboMetadataService in maximum times
 		int attempts = serviceInstances.size();
 
@@ -98,7 +96,8 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 						serviceInstance.get());
 
 				for (URL dubboMetadataServiceURL : dubboMetadataServiceURLs) {
-					dubboMetadataService = createProxyIfAbsent(dubboMetadataServiceURL);
+					DubboMetadataService dubboMetadataService = createProxyIfAbsent(
+							dubboMetadataServiceURL);
 					if (dubboMetadataService != null) {
 						return dubboMetadataService;
 					}
@@ -106,7 +105,7 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 			}
 		}
 
-		return dubboMetadataService;
+		return null;
 	}
 
 	/**
