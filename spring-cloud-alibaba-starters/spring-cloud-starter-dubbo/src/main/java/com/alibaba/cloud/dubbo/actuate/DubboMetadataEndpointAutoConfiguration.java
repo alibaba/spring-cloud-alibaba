@@ -17,6 +17,7 @@
 package com.alibaba.cloud.dubbo.actuate;
 
 import com.alibaba.cloud.dubbo.actuate.endpoint.DubboDiscoveryEndpoint;
+import com.alibaba.cloud.dubbo.actuate.endpoint.DubboExportedURLsEndpoint;
 import com.alibaba.cloud.dubbo.actuate.endpoint.DubboRestMetadataEndpoint;
 
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
@@ -31,8 +32,7 @@ import org.springframework.context.annotation.PropertySource;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@ConditionalOnClass(
-		name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
+@ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
 @PropertySource("classpath:/META-INF/dubbo/default/actuator-endpoints.properties")
 @Configuration(proxyBeanMethods = false)
 public class DubboMetadataEndpointAutoConfiguration {
@@ -48,7 +48,15 @@ public class DubboMetadataEndpointAutoConfiguration {
 	@ConditionalOnMissingBean
 	@ConditionalOnAvailableEndpoint
 	public DubboDiscoveryEndpoint dubboDiscoveryEndpoint() {
+
 		return new DubboDiscoveryEndpoint();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnAvailableEndpoint
+	public DubboExportedURLsEndpoint dubboServiceMetadataEndpoint() {
+		return new DubboExportedURLsEndpoint();
 	}
 
 }

@@ -74,8 +74,9 @@ public class RocketMQConsumerApplication {
 			while (true) {
 				mySink.input5().poll(m -> {
 					String payload = (String) m.getPayload();
-					if(payload.contains("0")){
-						throw new IllegalArgumentException("111111111111111111111111111111111111111111");
+					if (payload.contains("0")) {
+						throw new IllegalArgumentException(
+								"111111111111111111111111111111111111111111");
 					}
 					System.out.println("pull msg: " + payload);
 				}, new ParameterizedTypeReference<String>() {
