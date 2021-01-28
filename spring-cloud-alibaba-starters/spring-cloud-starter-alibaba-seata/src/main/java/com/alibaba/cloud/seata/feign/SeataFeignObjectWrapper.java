@@ -17,8 +17,8 @@
 package com.alibaba.cloud.seata.feign;
 
 import feign.Client;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.cloud.loadbalancer.blocking.client.BlockingLoadBalancerClient;
@@ -32,7 +32,8 @@ import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
  */
 public class SeataFeignObjectWrapper {
 
-	private static final Log LOG = LogFactory.getLog(SeataFeignObjectWrapper.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(SeataFeignObjectWrapper.class);
 
 	private final BeanFactory beanFactory;
 

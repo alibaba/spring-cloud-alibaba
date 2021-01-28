@@ -27,6 +27,7 @@
         <module>spring-cloud-starter-alibaba-sentinel</module>
         <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-sentinel-gateway</module>
+        <module>spring-cloud-alibaba-commons</module>
     </modules>
 
     <build>
