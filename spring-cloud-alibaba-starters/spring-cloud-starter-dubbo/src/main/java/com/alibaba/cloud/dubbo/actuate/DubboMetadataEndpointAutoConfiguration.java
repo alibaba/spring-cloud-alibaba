@@ -32,7 +32,8 @@ import org.springframework.context.annotation.PropertySource;
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
-@ConditionalOnClass(name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
+@ConditionalOnClass(
+		name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
 @PropertySource("classpath:/META-INF/dubbo/default/actuator-endpoints.properties")
 @Configuration(proxyBeanMethods = false)
 public class DubboMetadataEndpointAutoConfiguration {
