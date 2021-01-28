@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.dubbo.actuate.endpoint;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,10 @@ public class DubboDiscoveryEndpoint {
 		DubboCloudRegistry registry = (DubboCloudRegistry) SpringCloudRegistryFactory
 				.getRegistries().stream().filter(o -> o instanceof DubboCloudRegistry)
 				.findFirst().orElse(null);
+
+		if (registry == null) {
+			return Collections.emptyMap();
+		}
 
 		Map<URL, Set<NotifyListener>> map = registry.getSubscribed();
 
