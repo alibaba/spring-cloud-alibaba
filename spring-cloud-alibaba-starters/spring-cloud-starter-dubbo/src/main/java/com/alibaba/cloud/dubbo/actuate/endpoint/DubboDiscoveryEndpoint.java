@@ -40,9 +40,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 /**
  * Dubbo Rest Metadata {@link Endpoint}.
  *
- * @author <a href="mailto:chenxilzx1@gmail.com">Mercy</a>
+ * @author <a href="mailto:chenxilzx1@gmail.com">Theonefx</a>
  */
-@Endpoint(id = "dubbodiscovery")
+@Endpoint(id = "dubboRegistryDirectory")
 public class DubboDiscoveryEndpoint {
 
 	@ReadOperation(produces = APPLICATION_JSON_VALUE)
