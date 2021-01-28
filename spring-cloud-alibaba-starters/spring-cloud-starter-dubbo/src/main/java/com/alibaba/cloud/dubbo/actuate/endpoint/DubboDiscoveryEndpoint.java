@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.dubbo.actuate.endpoint;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
- * Dubbo Rest Metadata {@link Endpoint}.
+ * Dubbo Registry Directory Metadata {@link DubboCloudRegistry}.
  *
  * @author <a href="mailto:chenxilzx1@gmail.com">Theonefx</a>
  */
@@ -55,23 +56,36 @@ public class DubboDiscoveryEndpoint {
 			return Collections.emptyMap();
 		}
 
-		Map<URL, Set<NotifyListener>> map = registry.getSubscribed();
+		Map<URL, Set<NotifyListener>> subscribeMap = registry.getSubscribed();
 
-		Map<String, List<String>> result = new HashMap<>();
-		map.forEach((url, listeners) -> {
+		Map<String, List<Map<String, Object>>> result = new HashMap<>();
+		subscribeMap.forEach((url, listeners) -> {
 			String side = url.getParameter(SIDE_KEY);
 			if (!CONSUMER_SIDE.equals(side)) {
 				return;
 			}
 
-			List<String> list = listeners.stream()
-					.filter(l -> l instanceof RegistryDirectory)
-					.map(l -> (RegistryDirectory<?>) l)
-					.map(RegistryDirectory::getAllInvokers).flatMap(List::stream)
-					.map(Invoker::getUrl).map(URL::toServiceString).distinct().sorted()
-					.collect(Collectors.toList());
+			List<Map<String, Object>> pairs = result.computeIfAbsent(url.getServiceKey(),
+					o -> new ArrayList<>());
 
-			result.put(url.getServiceKey(), list);
+			Map<String, Object> pair = new HashMap<>();
+			List<String> invokerServices = new ArrayList<>();
+			for (NotifyListener listener : listeners) {
+				if (!(listener instanceof RegistryDirectory)) {
+					continue;
+				}
+				RegistryDirectory<?> directory = (RegistryDirectory<?>) listener;
+				List<? extends Invoker<?>> invokers = directory.getAllInvokers();
+				if (invokers == null) {
+					continue;
+				}
+				invokerServices.addAll(invokers.stream().map(Invoker::getUrl)
+						.map(URL::toServiceString).collect(Collectors.toList()));
+			}
+			pair.put("invokers", invokerServices);
+			pair.put("subscribeUrl", url.toMap());
+
+			pairs.add(pair);
 		});
 		return result;
 	}
