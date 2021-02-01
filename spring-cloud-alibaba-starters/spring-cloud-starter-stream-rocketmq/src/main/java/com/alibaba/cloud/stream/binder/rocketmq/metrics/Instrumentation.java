@@ -16,7 +16,10 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.metrics;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.springframework.context.Lifecycle;
 
 /**
  * @author Timur Valiev
@@ -25,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Instrumentation {
 
 	private final String name;
+	private Lifecycle actuator;
 
 	protected final AtomicBoolean started = new AtomicBoolean(false);
 
@@ -32,6 +36,19 @@ public class Instrumentation {
 
 	public Instrumentation(String name) {
 		this.name = name;
+	}
+
+	public Instrumentation(String name, Lifecycle actuator) {
+		this.name = name;
+		this.actuator = actuator;
+	}
+
+	public Lifecycle getActuator() {
+		return actuator;
+	}
+
+	public void setActuator(Lifecycle actuator) {
+		this.actuator = actuator;
 	}
 
 	public boolean isDown() {
@@ -67,4 +84,8 @@ public class Instrumentation {
 		return startException;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(getName(), getActuator());
+	}
 }

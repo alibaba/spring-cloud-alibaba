@@ -98,6 +98,7 @@
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
+        <rocketmq.version>4.6.1</rocketmq.version>
         <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
 
         <!-- Maven Plugin Versions -->
@@ -258,10 +259,20 @@
                 </exclusions>
             </dependency>
 
+<!--            <dependency>-->
+<!--                <groupId>org.apache.rocketmq</groupId>-->
+<!--                <artifactId>rocketmq-spring-boot-starter</artifactId>-->
+<!--                <version>${rocketmq.starter.version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-spring-boot-starter</artifactId>
-                <version>${rocketmq.starter.version}</version>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-acl</artifactId>
+                <version>${rocketmq.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
