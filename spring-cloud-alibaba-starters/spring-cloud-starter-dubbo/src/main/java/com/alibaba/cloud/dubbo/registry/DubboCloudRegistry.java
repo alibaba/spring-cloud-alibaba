@@ -44,6 +44,8 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.CollectionUtils;
 
 import static java.lang.String.format;
@@ -184,16 +186,30 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		subscribeURLs(url, getServices(url), listener);
 
 		// Async subscription
-		registerServiceInstancesChangedListener(url, event -> {
+		registerServiceInstancesChangedListener(url,
 
-			Set<String> serviceNames = getServices(url);
+				new ApplicationListener<ServiceInstancesChangedEvent>() {
 
-			String serviceName = event.getServiceName();
+					private final URL url2subscribe = url;
 
-			if (serviceNames.contains(serviceName)) {
-				subscribeURLs(url, serviceNames, listener);
-			}
-		});
+					@Override
+					@Order
+					public void onApplicationEvent(ServiceInstancesChangedEvent event) {
+						Set<String> serviceNames = getServices(url);
+
+						String serviceName = event.getServiceName();
+
+						if (serviceNames.contains(serviceName)) {
+							subscribeURLs(url, serviceNames, listener);
+						}
+					}
+
+					@Override
+					public String toString() {
+						return "ServiceInstancesChangedEventListener:"
+								+ url.getServiceKey();
+					}
+				});
 	}
 
 	private void subscribeURLs(URL url, Set<String> serviceNames,
@@ -375,12 +391,12 @@ public class DubboCloudRegistry extends FailbackRegistry {
 			// Add the EMPTY_PROTOCOL URL
 			subscribedURLs.add(emptyURL(url));
 
-			if (isDubboMetadataServiceURL(url)) {
-				// if meta service change, and serviceInstances is zero, will clean up
-				// information about this client
-				String serviceName = url.getParameter(GROUP_KEY);
-				repository.removeMetadataAndInitializedService(serviceName, url);
-			}
+			// if (isDubboMetadataServiceURL(url)) {
+			// if meta service change, and serviceInstances is zero, will clean up
+			// information about this client
+			// String serviceName = url.getParameter(GROUP_KEY);
+			// repository.removeMetadataAndInitializedService(serviceName, url);
+			// }
 		}
 
 		if (logger.isDebugEnabled()) {
@@ -415,7 +431,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	}
 
 	private String generateId(URL url) {
-		return url.getServiceKey();
+		return url.toString();
 	}
 
 	private URL emptyURL(URL url) {
@@ -450,16 +466,30 @@ public class DubboCloudRegistry extends FailbackRegistry {
 
 		// Sync subscription
 		if (containsProviderCategory(subscribedURL)) {
-			registerServiceInstancesChangedListener(subscribedURL, event -> {
+			registerServiceInstancesChangedListener(subscribedURL,
+					new ApplicationListener<ServiceInstancesChangedEvent>() {
 
-				String sourceServiceName = event.getServiceName();
-				String serviceName = getServiceName(subscribedURL);
+						private final URL url2subscribe = subscribedURL;
 
-				if (Objects.equals(sourceServiceName, serviceName)) {
-					subscribeDubboMetadataServiceURLs(subscribedURL, listener,
-							sourceServiceName);
-				}
-			});
+						@Override
+						@Order(Ordered.LOWEST_PRECEDENCE - 1)
+						public void onApplicationEvent(
+								ServiceInstancesChangedEvent event) {
+							String sourceServiceName = event.getServiceName();
+							String serviceName = getServiceName(subscribedURL);
+
+							if (Objects.equals(sourceServiceName, serviceName)) {
+								subscribeDubboMetadataServiceURLs(subscribedURL, listener,
+										sourceServiceName);
+							}
+						}
+
+						@Override
+						public String toString() {
+							return "ServiceInstancesChangedEventListener:"
+									+ subscribedURL.getServiceKey();
+						}
+					});
 		}
 	}
 
