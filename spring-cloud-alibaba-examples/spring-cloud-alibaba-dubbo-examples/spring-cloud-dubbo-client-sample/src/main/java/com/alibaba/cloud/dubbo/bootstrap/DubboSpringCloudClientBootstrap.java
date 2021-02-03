@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Dubbo Spring Cloud Client Bootstrap.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration

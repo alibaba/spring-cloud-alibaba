@@ -77,14 +77,16 @@ public class SentinelWebFluxAutoConfiguration {
 
 	@Bean
 	@Order(-2)
-	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled", matchIfMissing = true)
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
+			matchIfMissing = true)
 	public SentinelBlockExceptionHandler sentinelBlockExceptionHandler() {
 		return new SentinelBlockExceptionHandler(viewResolvers, serverCodecConfigurer);
 	}
 
 	@Bean
 	@Order(-1)
-	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled", matchIfMissing = true)
+	@ConditionalOnProperty(name = "spring.cloud.sentinel.filter.enabled",
+			matchIfMissing = true)
 	public SentinelWebFluxFilter sentinelWebFluxFilter() {
 		log.info("[Sentinel Starter] register Sentinel SentinelWebFluxFilter");
 		return new SentinelWebFluxFilter();

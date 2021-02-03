@@ -33,3 +33,11 @@ target
 .DS_Store
 .flattened-pom.xml
 
+# temp ignore
+*.cache
+*.diff
+*.patch
+*.tmp
+
+# Maven ignore
+.flattened-pom.xml

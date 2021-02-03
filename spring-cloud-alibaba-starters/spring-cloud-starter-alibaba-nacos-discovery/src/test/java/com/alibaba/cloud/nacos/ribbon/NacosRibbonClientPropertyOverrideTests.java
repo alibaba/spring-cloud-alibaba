@@ -39,14 +39,14 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author liujunjie
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = NacosRibbonClientPropertyOverrideTests.TestConfiguration.class, properties = {
-		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
-		"spring.cloud.nacos.discovery.port=18080",
-		"spring.cloud.nacos.discovery.service=remoteApp",
-		"localApp.ribbon.NIWSServerListClassName="
-				+ "com.netflix.loadbalancer.ConfigurationBasedServerList",
-		"localApp.ribbon.listOfServers=127.0.0.1:19090",
-		"localApp.ribbon.ServerListRefreshInterval=15000" })
+@SpringBootTest(classes = NacosRibbonClientPropertyOverrideTests.TestConfiguration.class,
+		properties = { "spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+				"spring.cloud.nacos.discovery.port=18080",
+				"spring.cloud.nacos.discovery.service=remoteApp",
+				"localApp.ribbon.NIWSServerListClassName="
+						+ "com.netflix.loadbalancer.ConfigurationBasedServerList",
+				"localApp.ribbon.listOfServers=127.0.0.1:19090",
+				"localApp.ribbon.ServerListRefreshInterval=15000" })
 public class NacosRibbonClientPropertyOverrideTests {
 
 	@Autowired

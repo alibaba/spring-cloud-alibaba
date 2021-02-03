@@ -80,8 +80,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 		if ("equals".equals(method.getName())) {
 			try {
 				Object otherHandler = args.length > 0 && args[0] != null
-						? Proxy.getInvocationHandler(args[0])
-						: null;
+						? Proxy.getInvocationHandler(args[0]) : null;
 				return equals(otherHandler);
 			}
 			catch (IllegalArgumentException e) {

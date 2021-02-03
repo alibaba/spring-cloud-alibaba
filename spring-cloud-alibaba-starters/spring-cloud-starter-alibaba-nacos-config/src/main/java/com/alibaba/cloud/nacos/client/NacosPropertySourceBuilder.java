@@ -95,7 +95,7 @@ public class NacosPropertySourceBuilder {
 						group, data));
 			}
 			Map<String, Object> dataMap = NacosDataParserHandler.getInstance()
-					.parseNacosData(data, fileExtension);
+					.parseNacosData( data, fileExtension);
 			return dataMap == null ? EMPTY_MAP : dataMap;
 		}
 		catch (NacosException e) {

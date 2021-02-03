@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2018 the original author or authors.
+ * Copyright (C) 2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.registry;
+package org.springframework.cloud.alibaba.nacos.registry;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -26,6 +26,10 @@ import java.util.Properties;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
+import com.alibaba.cloud.nacos.registry.MockNamingService;
+import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
+import com.alibaba.cloud.nacos.registry.NacosRegistration;
+import com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration;
 import com.alibaba.nacos.api.NacosFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,10 +60,24 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosFactory.class })
-@SpringBootTest(classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class, properties = {
-		"spring.application.name=myTestService1",
-		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" }, webEnvironment = RANDOM_PORT)
+@SpringBootTest(
+		classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class,
+		properties = { "spring.application.name=myTestService1",
+				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" },
+		webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
+
+	@Autowired
+	private NacosRegistration registration;
+
+	@Autowired
+	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
+
+	@Autowired
+	private NacosDiscoveryProperties properties;
+
+	@Autowired
+	private InetUtils inetUtils;
 
 	static {
 		try {
@@ -78,15 +96,6 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 		}
 	}
 
-	@Autowired
-	private NacosRegistration registration;
-	@Autowired
-	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
-	@Autowired
-	private NacosDiscoveryProperties properties;
-	@Autowired
-	private InetUtils inetUtils;
-
 	@Test
 	public void contextLoads() throws Exception {
 		assertThat(registration).isNotNull();
@@ -94,6 +103,7 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 		assertThat(nacosAutoServiceRegistration).isNotNull();
 
 		checkoutNacosDiscoveryServiceIP();
+
 	}
 
 	private void checkoutNacosDiscoveryServiceIP() {

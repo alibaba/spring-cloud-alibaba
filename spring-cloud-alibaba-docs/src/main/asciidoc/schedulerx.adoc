@@ -1,0 +1,114 @@
+== Spring Cloud Alibaba Cloud SchedulerX
+
+SchedulerX（Distributed job scheduling） is a component of EDAS, an Alibaba Cloud product. Spring Cloud Alibaba Cloud SchedulerX provides distributed job scheduling in conformity with the Spring Cloud specifications. SchedulerX provides timed job scheduling service with high accuracy with seconds, high stability and high availabiliy, and supports multiple job types, such as simple single-server jobs, simple multi-host jobs, script jobs, and grid jobs.
+
+=== How to Introduce Spring Cloud Alibaba Cloud SchedulerX
+
+If you want to use SchedulerX in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alicloud-schedulerX`.
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alicloud-schedulerX</artifactId>
+</dependency>
+----
+
+=== Start SchedulerX
+
+After Spring Cloud Alibaba Cloud SchedulerX Starter is introduced into the client, you only need to complete a few simple configurations and you will be able to initialize the SchedulerX service automatically.
+
+The following is a simple example.
+
+[source,java]
+----
+@SpringBootApplication
+public class ScxApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ScxApplication.class, args);
+    }
+
+}
+----
+
+Add the following configurations in the application.properties file.
+
+[source,properties]
+----
+server.port=18033
+# cn-test is the test region of SchedulerX
+spring.cloud.alicloud.scx.group-id=***
+spring.cloud.alicloud.edas.namespace=cn-test
+----
+
+Before getting the group-id, please https://account.aliyun.com/register/register.htm?spm=5176.8142029.388261.26.e9396d3eEIv28g&oauth_callback=https%3A%2F%2Fwww.aliyun.com%2F[Register an Alibaba Cloud account], and then https://common-buy.aliyun.com/?spm=5176.11451019.0.0.6f5965c0Uq5tue&commodityCode=edaspostpay#/buy[Sign up for EDAS] and https://edas.console.aliyun.com/#/edasTools[Sign up for SchedulerX] as well.
+
+To get the group-id, refer to the https://help.aliyun.com/document_detail/98784.html[SchedulerX Documentation].
+
+NOTE: When you create a group, please select the “test” region.
+
+=== Compile a simple job
+
+Simple job is the most commonly used job type. You only need to implement the ScxSimpleJobProcessor interface.
+
+The following is a sample of a simple single-server job.
+
+[source,java]
+----
+public class SimpleTask implements ScxSimpleJobProcessor {
+
+	@Override
+	public ProcessResult process(ScxSimpleJobContext context) {
+		System.out.println("-----------Hello world---------------");
+		ProcessResult processResult = new ProcessResult(true);
+		return processResult;
+	}
+
+}
+----
+
+=== Job Scheduling
+
+Go to the https://edas.console.aliyun.com/#/edasSchedulerXJob?regionNo=cn-test[SchedulerX Jobs] page, select the “Test” region, and click “Create Job” on the upper-right corner to create a job, as shown below.
+
+[source,text]
+----
+Job Group： Test——***-*-*-****
+Job process interface：SimpleTask
+Type： Simple Single-Server Job
+Quartz Cron Expression： Default Option——0 * * * * ?
+Job Description： Empty
+Custom Parameters： Empty
+----
+
+The job above is a “Simple Single-Server Job”, and speficied a Cron expression of "0 * * * * ?" . This means that the job will be executed once and once only in every minute.
+
+For more job types, refer to https://help.aliyun.com/document_detail/43136.html[SchedulerX Documentation].
+
+=== Usage in Production Environment
+
+The previous examples shows how to use SchedulerX in the “Test” region, which is mainly used for local testing.
+
+At the production level, you need to complete some other configurations in addition to the group-id and namespace as mentioned above. See examples below:
+
+[source,properties]
+----
+server.port=18033
+# cn-test is the test region of SchedulerX
+spring.cloud.alicloud.scx.group-id=***
+spring.cloud.alicloud.edas.namespace=***
+# If your application runs on EDAS, you do not need to configure the following.
+spring.cloud.alicloud.access-key=***
+spring.cloud.alicloud.secret-key=***
+# The following configurations are not mandatory. You can refer to the SchedulerX documentation for details.
+spring.cloud.alicloud.scx.domain-name=***
+----
+
+The way to get the group-id is the same as described in the previous examples, and you can get the namespace by clicking “Namespaces” in the left-side navigation pane of the EDAS console.
+
+NOTE: Group-id must be created within a namespace.
+
+Access-key and secret-key are the AK/SK of your Alibaba Cloud account. If you deploy you applications on EDAS, then you do not need to fill in this information. Otherwise please go to  https://usercenter.console.aliyun.com/#/manage/ak[Security Information] to get your AccessKeys.
+
+Domain-name is not mandatory. You can refer to  https://help.aliyun.com/document_detail/35359.html[SchedulerX Documentation] for details.

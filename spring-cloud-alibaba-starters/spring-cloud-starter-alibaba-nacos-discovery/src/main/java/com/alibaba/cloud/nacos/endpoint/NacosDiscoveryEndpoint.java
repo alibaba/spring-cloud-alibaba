@@ -36,7 +36,7 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
  *
  * @author xiaojing
  */
-@Endpoint(id = "nacos-discovery")
+@Endpoint(id = "nacosdiscovery")
 public class NacosDiscoveryEndpoint {
 
 	private static final Logger log = LoggerFactory

@@ -25,6 +25,8 @@ import org.apache.dubbo.config.annotation.Service;
 /**
  * In-Memory {@link UserService} implementation.
  */
+// @Path("/")
+// @Service(version = "1.0.0", protocol = "dubbo")
 @Service(protocol = "dubbo")
 public class InMemoryUserService implements UserService {
 

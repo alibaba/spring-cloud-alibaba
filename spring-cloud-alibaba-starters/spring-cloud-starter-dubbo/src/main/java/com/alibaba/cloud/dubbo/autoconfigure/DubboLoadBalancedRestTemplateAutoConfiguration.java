@@ -111,8 +111,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements
 	@Override
 	public void afterSingletonsInstantiated() {
 		loadBalancerInterceptorBean = retryLoadBalancerInterceptor != null
-				? retryLoadBalancerInterceptor
-				: loadBalancerInterceptor;
+				? retryLoadBalancerInterceptor : loadBalancerInterceptor;
 	}
 
 	/**
@@ -146,7 +145,7 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements
 	 * Gets the annotation attributes {@link RestTemplate} bean being annotated
 	 * {@link DubboTransported @DubboTransported}.
 	 * @param beanName the bean name of {@link LoadBalanced @LoadBalanced}
-	 *     {@link RestTemplate}
+	 * {@link RestTemplate}
 	 * @param attributesResolver {@link DubboTransportedAttributesResolver}
 	 * @return non-null {@link Map}
 	 */
@@ -171,8 +170,8 @@ public class DubboLoadBalancedRestTemplateAutoConfiguration implements
 	 * {@link LoadBalancerInterceptor} Bean.
 	 * @param restTemplate {@link LoadBalanced @LoadBalanced} {@link RestTemplate} Bean
 	 * @param dubboTranslatedAttributes the annotation dubboTranslatedAttributes
-	 *     {@link RestTemplate} bean being annotated
-	 *     {@link DubboTransported @DubboTransported}
+	 * {@link RestTemplate} bean being annotated
+	 * {@link DubboTransported @DubboTransported}
 	 */
 	private void adaptRestTemplate(RestTemplate restTemplate,
 			Map<String, Object> dubboTranslatedAttributes) {

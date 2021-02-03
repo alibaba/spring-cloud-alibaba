@@ -16,17 +16,16 @@
 
 package com.alibaba.cloud.nacos.client;
 
-import java.util.List;
-
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
-import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.nacos.api.config.ConfigService;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
@@ -101,7 +100,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		loadSharedConfiguration(composite);
 		loadExtConfiguration(composite);
 		loadApplicationConfiguration(composite, dataIdPrefix, nacosConfigProperties, env);
-
 		return composite;
 	}
 
@@ -157,15 +155,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			List<NacosConfigProperties.Config> configs) {
 		for (NacosConfigProperties.Config config : configs) {
 			String dataId = config.getDataId();
-			String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
-			loadNacosDataIfPresent(composite, dataId, config.getGroup(), fileExtension,
+			loadNacosDataIfPresent(composite, config.getDataId(), config.getGroup(),
+					dataId.substring(dataId.lastIndexOf(DOT) + 1),
 					config.isRefresh());
 		}
 	}
 
 	private void checkConfiguration(List<NacosConfigProperties.Config> configs,
 			String tips) {
-		String[] dataIds = new String[configs.size()];
 		for (int i = 0; i < configs.size(); i++) {
 			String dataId = configs.get(i).getDataId();
 			if (dataId == null || dataId.trim().length() == 0) {
@@ -173,10 +170,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 						"the [ spring.cloud.nacos.config.%s[%s] ] must give a dataId",
 						tips, i));
 			}
-			dataIds[i] = dataId;
 		}
-		// Just decide that the current dataId must have a suffix
-		NacosDataParserHandler.getInstance().checkDataId(dataIds);
 	}
 
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,

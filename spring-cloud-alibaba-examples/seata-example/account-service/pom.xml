@@ -9,6 +9,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+
     <artifactId>account-service</artifactId>
     <name>Spring Cloud Starter Alibaba Seata Example - Account Service</name>
     <packaging>jar</packaging>
@@ -43,7 +44,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.31</version>
+            <version>8.0.11</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

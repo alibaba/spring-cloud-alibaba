@@ -16,15 +16,16 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.integration;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.Instrumentation;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -35,7 +36,6 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.cloud.stream.binder.BinderHeaders;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.context.Lifecycle;

@@ -27,7 +27,9 @@ import com.alibaba.csp.sentinel.util.StringUtil;
  */
 final class BlockClassRegistry {
 
+
 	private static final Map<String, Method> FALLBACK_MAP = new ConcurrentHashMap<>();
+
 	private static final Map<String, Method> BLOCK_HANDLER_MAP = new ConcurrentHashMap<>();
 	private static final Map<String, Method> URL_CLEANER_MAP = new ConcurrentHashMap<>();
 

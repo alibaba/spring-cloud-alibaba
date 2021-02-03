@@ -20,6 +20,7 @@ import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor;
 import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+
 import org.junit.Test;
 
 import org.springframework.beans.factory.BeanCreationException;
@@ -188,7 +189,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException", fallbackClass = ExceptionUtil.class, fallback = "fallbackException", urlCleanerClass = UrlCleanUtil.class, urlCleaner = "clean")
+		@SentinelRestTemplate(blockHandlerClass = SentinelRestTemplateTests.ExceptionUtil.class, blockHandler = "handleException", fallbackClass = SentinelRestTemplateTests.ExceptionUtil.class, fallback = "fallbackException", urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class, urlCleaner = "clean")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -205,7 +206,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException1")
+		@SentinelRestTemplate(blockHandlerClass = SentinelRestTemplateTests.ExceptionUtil.class, blockHandler = "handleException1")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -239,7 +240,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException2")
+		@SentinelRestTemplate(blockHandlerClass = SentinelRestTemplateTests.ExceptionUtil.class, blockHandler = "handleException2")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -330,7 +331,7 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(urlCleanerClass = UrlCleanUtil.class, urlCleaner = "clean1")
+		@SentinelRestTemplate(urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class, urlCleaner = "clean1")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
@@ -347,11 +348,17 @@ public class SentinelRestTemplateTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(urlCleanerClass = UrlCleanUtil.class, urlCleaner = "clean2")
+		@SentinelRestTemplate(urlCleanerClass = SentinelRestTemplateTests.UrlCleanUtil.class, urlCleaner = "clean2")
 		RestTemplate restTemplate() {
 			return new RestTemplate();
 		}
 
+	}
+
+	@Bean
+	@SentinelRestTemplate
+	RestTemplate restTemplate2() {
+		return new RestTemplate();
 	}
 
 	public static class ExceptionUtil {
@@ -390,5 +397,4 @@ public class SentinelRestTemplateTests {
 		}
 
 	}
-
 }

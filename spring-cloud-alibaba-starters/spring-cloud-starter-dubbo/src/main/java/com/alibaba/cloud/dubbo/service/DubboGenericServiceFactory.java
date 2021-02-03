@@ -127,11 +127,12 @@ public class DubboGenericServiceFactory {
 				new PropertyEditorSupport() {
 
 					@Override
-					public void setAsText(String text) throws IllegalArgumentException {
+					public void setAsText(String text)
+							throws java.lang.IllegalArgumentException {
 						// Trim all whitespace
 						String content = StringUtils.trimAllWhitespace(text);
 						if (!StringUtils.hasText(content)) { // No content , ignore
-							// directly
+																// directly
 							return;
 						}
 						// replace "=" to ","

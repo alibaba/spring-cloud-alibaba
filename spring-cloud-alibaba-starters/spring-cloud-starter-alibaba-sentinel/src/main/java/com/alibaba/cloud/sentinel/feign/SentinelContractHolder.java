@@ -32,12 +32,13 @@ import feign.MethodMetadata;
  */
 public class SentinelContractHolder implements Contract {
 
+	private final Contract delegate;
+
 	/**
 	 * map key is constructed by ClassFullName + configKey. configKey is constructed by
 	 * {@link feign.Feign#configKey}
 	 */
 	public final static Map<String, MethodMetadata> METADATA_MAP = new HashMap<>();
-	private final Contract delegate;
 
 	public SentinelContractHolder(Contract delegate) {
 		this.delegate = delegate;

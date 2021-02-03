@@ -25,6 +25,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * Dubbo Spring Cloud Server Bootstrap.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration

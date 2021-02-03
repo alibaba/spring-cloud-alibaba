@@ -72,7 +72,7 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 		}
 		if (!StringUtils.isEmpty(this.password)) {
 			properties.setProperty(PropertyKeyConst.PASSWORD, this.password);
-		}		
+		}
 		return new NacosDataSource(properties, groupId, dataId, converter);
 	}
 
@@ -88,7 +88,7 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 	public void setServerAddr(String serverAddr) {
 		this.serverAddr = serverAddr;
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -104,7 +104,7 @@ public class NacosDataSourceFactoryBean implements FactoryBean<NacosDataSource> 
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public String getGroupId() {
 		return groupId;
 	}

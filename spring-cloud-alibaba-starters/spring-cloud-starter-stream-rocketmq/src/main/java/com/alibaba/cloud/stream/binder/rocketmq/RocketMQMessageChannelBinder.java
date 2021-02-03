@@ -16,12 +16,6 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import com.alibaba.cloud.stream.binder.rocketmq.consuming.RocketMQListenerBindingContainer;
 import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQInboundChannelAdapter;
 import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQMessageHandler;
@@ -36,6 +30,9 @@ import com.alibaba.cloud.stream.binder.rocketmq.provisioning.selector.PartitionM
 import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
 import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.*;
+
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -44,17 +41,16 @@ import org.apache.rocketmq.remoting.RPCHook;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQUtil;
-
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
-import org.springframework.integration.support.StaticMessageHeaderAccessor;
+import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.support.AcknowledgmentCallback;
 import org.springframework.integration.support.AcknowledgmentCallback.Status;
-import org.springframework.integration.core.MessageProducer;
+import org.springframework.integration.support.StaticMessageHeaderAccessor;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
@@ -96,7 +92,8 @@ public class RocketMQMessageChannelBinder extends
 			// if producerGroup is empty, using destination
 			String extendedProducerGroup = producerProperties.getExtension().getGroup();
 			String producerGroup = StringUtils.isEmpty(extendedProducerGroup)
-					? destination.getName() : extendedProducerGroup;
+					? destination.getName()
+					: extendedProducerGroup;
 
 			RocketMQBinderConfigurationProperties mergedProperties = RocketMQBinderUtils
 					.mergeProperties(rocketBinderConfigurationProperties,

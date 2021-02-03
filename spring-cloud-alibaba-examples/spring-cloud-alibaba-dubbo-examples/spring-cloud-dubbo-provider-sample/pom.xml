@@ -42,7 +42,6 @@
         </dependency>
 
         <!-- List all Spring Cloud starters for Service Discovery -->
-
         <!-- Spring Cloud Nacos Service Discovery -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

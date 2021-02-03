@@ -7,10 +7,12 @@ spring:
       password: nacos
       discovery:
         server-addr: localhost:8848
+        group: test
     gateway:
       discovery:
         locator:
           enabled: true
+
   application:
     name: node-service
 sidecar:
