@@ -17,13 +17,8 @@
 package com.alibaba.cloud.nacos.parser;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.PropertySource;
@@ -102,7 +97,7 @@ public abstract class AbstractPropertySourceLoader implements PropertySourceLoad
 		Set<Entry<String, Object>> entries = dataMap.entrySet();
 		for (Iterator<Entry<String, Object>> iterator = entries.iterator(); iterator
 				.hasNext();) {
-			Map.Entry<String, Object> entry = iterator.next();
+			Entry<String, Object> entry = iterator.next();
 			String key = entry.getKey();
 			Object value = entry.getValue();
 
