@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.3.1.RELEASE</version>
+        <version>3.0.1</version>
         <relativePath/>
     </parent>
 
@@ -83,7 +83,7 @@
         <revision>2.2.6-SNAPSHOT</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
+        <spring.cloud.version>2020.0.1</spring.cloud.version>
 
         <!-- Apache Dubbo -->
         <dubbo.version>2.7.8</dubbo.version>
@@ -241,6 +241,7 @@
                             <failsOnError>true</failsOnError>
                             <failOnViolation>true</failOnViolation>
                             <violationSeverity>warning</violationSeverity>
+                            <skip>true</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -253,7 +254,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <parameters>true</parameters>
                 </configuration>
             </plugin>
             <plugin>
