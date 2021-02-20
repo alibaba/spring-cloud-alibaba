@@ -241,7 +241,6 @@
                             <failsOnError>true</failsOnError>
                             <failOnViolation>true</failOnViolation>
                             <violationSeverity>warning</violationSeverity>
-                            <skip>true</skip>
                         </configuration>
                     </execution>
                 </executions>
