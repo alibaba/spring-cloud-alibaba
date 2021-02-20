@@ -29,7 +29,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		public class ProviderApplication {
 
 			public static void main(String[] args) {
-				SpringApplication.run(Application.class, args);
+				SpringApplication.run(ProviderApplication.class, args);
 			}
 
 			@RestController
@@ -207,6 +207,7 @@ Metadata|spring.cloud.nacos.discovery.metadata||Extended data, Configure using M
 log name|spring.cloud.nacos.discovery.log-name||
 endpoint|spring.cloud.nacos.discovery.endpoint||The domain name of a service, through which the server address can be dynamically obtained.
 Integration Ribbon|ribbon.nacos.enabled|true|
+enabled|spring.cloud.nacos.discovery.enabled|true|The switch to enable or disable nacos service discovery
 
 
 

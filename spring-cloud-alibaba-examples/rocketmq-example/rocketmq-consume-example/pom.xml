@@ -10,10 +10,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+
     <artifactId>rocketmq-consume-example</artifactId>
     <name>Spring Cloud Starter Stream Alibaba RocketMQ Consume Example</name>
     <description>Example demonstrating how to use rocketmq consume</description>
     <packaging>jar</packaging>
+
 
     <dependencies>
         <dependency>

@@ -79,6 +79,7 @@ public class SidecarHealthChecker {
 						"Health check failed. unregister this instance. applicationName = {}, ip = {}, port = {}, status = {}",
 						applicationName, ip, port, status);
 				this.sidecarDiscoveryClient.deregisterInstance(applicationName, ip, port);
+
 				sidecarInstanceCacheMap.put(applicationName,
 						buildCache(ip, port, status));
 			}

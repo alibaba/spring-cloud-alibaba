@@ -13,14 +13,13 @@
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-dubbo-client-sample</artifactId>
     <name>Spring Cloud Dubbo Client Sample</name>
-    <version>${revision}</version>
 
     <dependencies>
         <!-- Sample API -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-dubbo-sample-api</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Spring Boot dependencies -->

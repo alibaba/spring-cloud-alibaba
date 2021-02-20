@@ -34,6 +34,7 @@ import org.springframework.util.ObjectUtils;
  * @see ZookeeperDataSourceProperties
  * @see FileDataSourceProperties
  * @see RedisDataSourceProperties
+ * @see ConsulDataSourceProperties
  */
 public class DataSourcePropertiesConfiguration {
 

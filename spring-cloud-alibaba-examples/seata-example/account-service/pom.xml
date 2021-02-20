@@ -9,8 +9,8 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>account-service</artifactId>
 
+    <artifactId>account-service</artifactId>
     <name>Spring Cloud Starter Alibaba Seata Example - Account Service</name>
     <packaging>jar</packaging>
 

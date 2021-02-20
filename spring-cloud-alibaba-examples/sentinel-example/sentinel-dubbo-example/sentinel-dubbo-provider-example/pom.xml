@@ -10,10 +10,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+
     <artifactId>sentinel-dubbo-provider-example</artifactId>
     <name>Spring Cloud Starter Alibaba Sentinel x Dubbo - Provider Example</name>
     <description>Example demonstrating how to use sentinel with dubbo</description>
     <packaging>jar</packaging>
+
 
     <dependencies>
 
@@ -30,7 +32,7 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>sentinel-dubbo-api</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

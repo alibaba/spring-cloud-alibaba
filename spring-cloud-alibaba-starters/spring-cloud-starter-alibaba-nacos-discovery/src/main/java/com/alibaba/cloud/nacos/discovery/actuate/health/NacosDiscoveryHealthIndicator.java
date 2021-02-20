@@ -26,6 +26,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
  * The {@link HealthIndicator} for Nacos Discovery.
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @since 2.2.0
  * @see HealthIndicator
  */
 public class NacosDiscoveryHealthIndicator extends AbstractHealthIndicator {

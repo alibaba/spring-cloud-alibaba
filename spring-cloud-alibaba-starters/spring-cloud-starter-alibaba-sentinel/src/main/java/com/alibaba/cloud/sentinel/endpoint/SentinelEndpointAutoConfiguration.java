@@ -19,7 +19,6 @@ package com.alibaba.cloud.sentinel.endpoint;
 import com.alibaba.cloud.sentinel.SentinelProperties;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -36,7 +35,6 @@ public class SentinelEndpointAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnEnabledEndpoint
 	public SentinelEndpoint sentinelEndPoint(SentinelProperties sentinelProperties) {
 		return new SentinelEndpoint(sentinelProperties);
 	}

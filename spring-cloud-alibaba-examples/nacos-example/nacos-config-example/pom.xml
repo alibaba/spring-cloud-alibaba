@@ -15,6 +15,7 @@
     <description>Example demonstrating how to use nacos config</description>
     <packaging>jar</packaging>
 
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

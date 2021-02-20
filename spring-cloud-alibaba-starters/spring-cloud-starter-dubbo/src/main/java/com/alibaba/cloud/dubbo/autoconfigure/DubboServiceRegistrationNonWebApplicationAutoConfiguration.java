@@ -103,7 +103,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 	 */
 	private void setServerPort() {
 		if (serverPort == null) {
-			synchronized (this) {
+			synchronized (DubboServiceRegistrationNonWebApplicationAutoConfiguration.class) {
 				if (serverPort == null) {
 					for (List<URL> urls : repository.getAllExportedUrls().values()) {
 						urls.stream().filter(
