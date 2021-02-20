@@ -127,8 +127,7 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 				continue;
 			}
 
-			String key = StringUtils.isEmpty(parentKey) ? name
-					: parentKey + NacosDataParserHandler.DOT + name;
+			String key = StringUtils.isEmpty(parentKey) ? name : parentKey + DOT + name;
 			NamedNodeMap nodeMap = node.getAttributes();
 			parseNodeAttr(nodeMap, map, key);
 			if (node.getNodeType() == Node.ELEMENT_NODE && node.hasChildNodes()) {
@@ -159,8 +158,8 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 				if (StringUtils.isEmpty(node.getNodeValue())) {
 					continue;
 				}
-				map.put(String.join(NacosDataParserHandler.DOT, parentKey,
-						node.getNodeName()), node.getNodeValue());
+				map.put(String.join(DOT, parentKey, node.getNodeName()),
+						node.getNodeValue());
 			}
 		}
 	}

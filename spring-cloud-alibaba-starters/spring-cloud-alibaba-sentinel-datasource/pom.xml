@@ -15,6 +15,10 @@
     <name>Spring Cloud Alibaba Sentinel DataSource</name>
 
     <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-commons</artifactId>
+        </dependency>
 
         <!--spring boot -->
         <dependency>
