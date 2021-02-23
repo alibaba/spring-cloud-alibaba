@@ -32,11 +32,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.EmptyResponse;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.client.loadbalancer.reactive.DefaultResponse;
-import org.springframework.cloud.client.loadbalancer.reactive.EmptyResponse;
-import org.springframework.cloud.client.loadbalancer.reactive.Request;
-import org.springframework.cloud.client.loadbalancer.reactive.Response;
+import org.springframework.cloud.client.loadbalancer.Response;
+import org.springframework.cloud.client.loadbalancer.DefaultResponse;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer;
@@ -103,9 +102,17 @@ public class ConsumerSCLBApplication {
 			this.random = new Random();
 		}
 
+
 		@Override
-		public Mono<Response<ServiceInstance>> choose(Request request) {
-			log.info("random spring cloud loadbalacer active -.-");
+		public Mono<Response<ServiceInstance>> choose(org.springframework.cloud.client.loadbalancer.Request request) {
+			ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider
+					.getIfAvailable(NoopServiceInstanceListSupplier::new);
+
+			return supplier.get().next().map(this::getInstanceResponse);
+		}
+
+		@Override
+		public Mono<Response<ServiceInstance>> choose() {
 			ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider
 					.getIfAvailable(NoopServiceInstanceListSupplier::new);
 			return supplier.get().next().map(this::getInstanceResponse);
@@ -120,7 +127,6 @@ public class ConsumerSCLBApplication {
 
 			return new DefaultResponse(instance);
 		}
-
 	}
 
 	@FeignClient(name = "service-provider", fallback = EchoServiceFallback.class,

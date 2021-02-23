@@ -131,7 +131,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 				}
 			}
 			catch (MQClientException e) {
-				logger.error("fetch publish message queues fail", e);
+				logger.error(e, "fetch publish message queues fail");
 			}
 		}
 		running = true;

@@ -59,7 +59,7 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 			service.setAddress(sidecarProperties.getIp());
 		}
 		service.setName(normalizeForDns(appName));
-		service.setTags(createTags(properties));
+		service.setTags(properties.getTags());
 
 		// set health check, use alibaba sidecar self's port rather than polyglot app's
 		// port.

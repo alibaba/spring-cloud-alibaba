@@ -80,7 +80,7 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.6-SNAPSHOT</revision>
+        <revision>2021.1-SNAPSHOT</revision>
 
         <!-- Spring Cloud -->
         <spring.cloud.version>2020.0.1</spring.cloud.version>
@@ -195,6 +195,21 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.version}</version>
                 </plugin>
+
+                <!-- disable auto format from parent -->
+                <plugin>
+                    <groupId>io.spring.javaformat</groupId>
+                    <artifactId>spring-javaformat-maven-plugin</artifactId>
+                    <version>${spring-javaformat.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -220,10 +235,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>io.spring.javaformat</groupId>
-                <artifactId>spring-javaformat-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <executions>
@@ -241,6 +252,7 @@
                             <failsOnError>true</failsOnError>
                             <failOnViolation>true</failOnViolation>
                             <violationSeverity>warning</violationSeverity>
+                            <skip>true</skip>
                         </configuration>
                     </execution>
                 </executions>

@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.examples.service;
 
-import com.alibaba.cloud.examples.fallback.EchoServiceFallbackFactory;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * <p>
  * example feign client
  */
-@FeignClient(name = "service-provider",
-		fallbackFactory = EchoServiceFallbackFactory.class)
+@FeignClient(name = "service-provider")
 public interface EchoService {
 
 	/**
