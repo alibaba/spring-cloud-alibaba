@@ -23,6 +23,8 @@ import java.lang.reflect.Proxy;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.cloud.openfeign.FallbackFactory;
+
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.SphU;
@@ -47,7 +49,17 @@ public class SentinelInvocationHandler implements InvocationHandler {
 
 	private final Map<Method, MethodHandler> dispatch;
 
+	private FallbackFactory fallbackFactory;
+
 	private Map<Method, Method> fallbackMethodMap;
+
+	SentinelInvocationHandler(Target<?> target, Map<Method, MethodHandler> dispatch,
+			FallbackFactory fallbackFactory) {
+		this.target = checkNotNull(target, "target");
+		this.dispatch = checkNotNull(dispatch, "dispatch");
+		this.fallbackFactory = fallbackFactory;
+		this.fallbackMethodMap = toFallbackMethod(dispatch);
+	}
 
 	SentinelInvocationHandler(Target<?> target, Map<Method, MethodHandler> dispatch) {
 		this.target = checkNotNull(target, "target");
@@ -100,8 +112,25 @@ public class SentinelInvocationHandler implements InvocationHandler {
 					if (!BlockException.isBlockException(ex)) {
 						Tracer.trace(ex);
 					}
-					// throw exception if fallbackFactory is null
-					throw ex;
+					if (fallbackFactory != null) {
+						try {
+							Object fallbackResult = fallbackMethodMap.get(method)
+									.invoke(fallbackFactory.create(ex), args);
+							return fallbackResult;
+						}
+						catch (IllegalAccessException e) {
+							// shouldn't happen as method is public due to being an
+							// interface
+							throw new AssertionError(e);
+						}
+						catch (InvocationTargetException e) {
+							throw new AssertionError(e.getCause());
+						}
+					}
+					else {
+						// throw exception if fallbackFactory is null
+						throw ex;
+					}
 				}
 				finally {
 					if (entry != null) {
