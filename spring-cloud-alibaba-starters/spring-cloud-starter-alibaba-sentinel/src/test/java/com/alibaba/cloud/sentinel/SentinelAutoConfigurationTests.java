@@ -16,8 +16,11 @@
 
 package com.alibaba.cloud.sentinel;
 
-import java.util.Arrays;
-import java.util.Map;
+import static com.alibaba.cloud.sentinel.SentinelConstants.BLOCK_PAGE_URL_CONF_KEY;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
@@ -31,11 +34,13 @@ import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
-import com.alibaba.csp.sentinel.util.function.Tuple2;
+import com.alibaba.csp.sentinel.transport.endpoint.Endpoint;
+import com.alibaba.csp.sentinel.transport.endpoint.Protocol;
+import java.util.Arrays;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -51,12 +56,6 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import static com.alibaba.cloud.sentinel.SentinelConstants.BLOCK_PAGE_URL_CONF_KEY;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -134,8 +133,10 @@ public class SentinelAutoConfigurationTests {
 		Map<String, Object> map = sentinelEndpoint.invoke();
 
 		assertThat(map.get("logUsePid")).isEqualTo(Boolean.TRUE);
-		assertThat(map.get("consoleServer").toString()).isEqualTo(
-				Arrays.asList(Tuple2.of("localhost", 8080), Tuple2.of("localhost", 8081))
+		assertThat(map.get("consoleServer").toString())
+				.isEqualTo(Arrays
+						.asList(new Endpoint(Protocol.HTTP, "localhost", 8080),
+								new Endpoint(Protocol.HTTP, "localhost", 8081))
 						.toString());
 		assertThat(map.get("clientPort")).isEqualTo("9999");
 		assertThat(map.get("heartbeatIntervalMs")).isEqualTo(20000L);
@@ -185,8 +186,10 @@ public class SentinelAutoConfigurationTests {
 	@Test
 	public void testSentinelSystemProperties() {
 		assertThat(LogBase.isLogNameUsePid()).isEqualTo(true);
-		assertThat(TransportConfig.getConsoleServerList().toString()).isEqualTo(
-				Arrays.asList(Tuple2.of("localhost", 8080), Tuple2.of("localhost", 8081))
+		assertThat(TransportConfig.getConsoleServerList().toString())
+				.isEqualTo(Arrays
+						.asList(new Endpoint(Protocol.HTTP, "localhost", 8080),
+								new Endpoint(Protocol.HTTP, "localhost", 8081))
 						.toString());
 		assertThat(TransportConfig.getPort()).isEqualTo("9999");
 		assertThat(TransportConfig.getHeartbeatIntervalMs().longValue())
