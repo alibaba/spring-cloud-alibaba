@@ -45,6 +45,7 @@ public class RocketMQAutoConfigurationTests {
 					"spring.cloud.stream.bindings.input1.content-type=application/json",
 					"spring.cloud.stream.bindings.input1.group=test-group1",
 					"spring.cloud.stream.rocketmq.bindings.input1.consumer.orderly=true",
+					"spring.cloud.stream.rocketmq.bindings.input1.consumer.maxReconsumeTimes=16",
 					"spring.cloud.stream.bindings.input1.consumer.maxAttempts=1",
 					"spring.cloud.stream.bindings.input2.destination=TopicOrderTest",
 					"spring.cloud.stream.bindings.input2.content-type=application/json",
@@ -61,6 +62,10 @@ public class RocketMQAutoConfigurationTests {
 					.isEqualTo(Arrays.asList("127.0.0.1:9876", "127.0.0.1:9877"));
 			RocketMQExtendedBindingProperties bindingProperties = context
 					.getBean(RocketMQExtendedBindingProperties.class);
+			assertThat(
+					bindingProperties.getExtendedConsumerProperties("input1")
+							.getMaxReconsumeTimes() == 16)
+					.isTrue();
 			assertThat(
 					bindingProperties.getExtendedConsumerProperties("input2").getTags())
 							.isEqualTo("tag1");

@@ -117,6 +117,8 @@ public class RocketMQListenerBindingContainer
 
 	private MessageModel messageModel;
 
+	private int maxReconsumeTimes;
+
 	public RocketMQListenerBindingContainer(
 			ExtendedConsumerProperties<RocketMQConsumerProperties> rocketMQConsumerProperties,
 			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
@@ -237,6 +239,7 @@ public class RocketMQListenerBindingContainer
 		consumer.setNamesrvAddr(RocketMQBinderUtils.getNameServerStr(nameServer));
 		consumer.setConsumeThreadMax(rocketMQConsumerProperties.getConcurrency());
 		consumer.setConsumeThreadMin(rocketMQConsumerProperties.getConcurrency());
+		consumer.setMaxReconsumeTimes(rocketMQConsumerProperties.getExtension().getMaxReconsumeTimes());
 
 		switch (messageModel) {
 		case BROADCASTING:

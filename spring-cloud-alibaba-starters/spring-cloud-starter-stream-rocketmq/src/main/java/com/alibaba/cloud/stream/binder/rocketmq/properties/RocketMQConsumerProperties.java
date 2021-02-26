@@ -79,7 +79,18 @@ public class RocketMQConsumerProperties {
 
 	private boolean fromStore;
 
+	private int maxReconsumeTimes;
+
 	// ------------ For Pull Consumer ------------
+
+
+	public int getMaxReconsumeTimes() {
+		return maxReconsumeTimes;
+	}
+
+	public void setMaxReconsumeTimes(int maxReconsumeTimes) {
+		this.maxReconsumeTimes = maxReconsumeTimes;
+	}
 
 	public String getTags() {
 		return tags;
