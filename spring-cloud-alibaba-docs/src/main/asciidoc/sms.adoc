@@ -1,0 +1,210 @@
+== Spring Cloud Alibaba Cloud SMS
+
+SMS（Short Message Service）is a messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
+
+Spring Cloud Alibaba Cloud SMS provide an easier-to-use API for quick access to Alibaba Cloud's SMS service based on Spring Cloud Alibaba SMS.
+
+=== How to Introduce Spring Cloud Alibaba Cloud SMS
+
+If you want to use SMS in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alicloud-sms`.
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alicloud-sms</artifactId>
+</dependency>
+----
+
+=== How to use SMS API
+
+==== Configure SMS
+
+Before you start to use Spring Cloud Alibaba Cloud SMS, please add the following configurations in application.properties.
+
+[source,properties]
+----
+spring.cloud.alicloud.access-key=AK
+spring.cloud.alicloud.secret-key=SK
+----
+
+access-key and secret-key is the AK/SK of your Alibaba Cloud account. If you don’t have one, please register an account first, and log on to https://usercenter.console.aliyun.com/#/manage/ak[Alibaba Cloud AK/SK Management] to get your AccessKey ID and Access Key Secret . If you haven’t create the AccessKeys, click “Create AccessKey” to create one.
+
+==== Introduce SMS API
+
+The SMS API in Spring Cloud Alicloud SMS is based on Alibaba Cloud SMS SDK. It has a single SMS sending, multiple SMS bulk sending, SMS query, SMS message (SMS receipt message and Upstream SMS message) class operation API.
+
+The following is a simple example of how to use SMS api to send short message:
+
+[source,java]
+----
+@SpringBootApplication
+public class SmsApplication {
+
+    @Autowired
+    private ISmsService smsService;
+
+    @RequestMapping("/batch-sms-send.do")
+    public SendBatchSmsResponse batchsendCheckCode(
+            @RequestParam(name = "code") String code) {
+
+        SendSmsRequest request = new SendSmsRequest();
+        // Required:the mobile number
+        request.setPhoneNumbers("152******");
+        // Required:SMS-SignName-could be found in sms console
+        request.setSignName("******");
+        // Required:Template-could be found in sms console
+        request.setTemplateCode("******");
+        // Required:The param of sms template.For exmaple, if the template is "Hello,your verification code is ${code}". The param should be like following value
+        request.setTemplateParam("{\"code\":\"" + code + "\"}");
+        SendSmsResponse sendSmsResponse ;
+        try {
+            sendSmsResponse = smsService.sendSmsRequest(request);
+        }
+        catch (ClientException e) {
+            e.printStackTrace();
+            sendSmsResponse = new SendSmsResponse();
+        }
+        return sendSmsResponse ;
+    }
+
+    public static void main(String[] args) throws URISyntaxException {
+        SpringApplication.run(SmsApplication.class, args);
+    }
+
+}
+----
+
+Before you send your messages, please https://account.aliyun.com/register/register.htm?spm=5176.8142029.388261.26.e9396d3eaYK2sG&oauth_callback=https%3A%2F%2Fwww.aliyun.com%2F[Register an Alibaba Cloud Account]. If you already have one, please  https://dysms.console.aliyun.com/dysms.htm?spm=5176.8195934.1283918..18924183bHPct2&accounttraceid=c8cb4243-3080-4eb1-96b0-1f2316584269#/[Turn on SMS Service].
+
+For more information about SMS , please refer to the SMS official https://help.aliyun.com/document_detail/55284.html?spm=a2c4g.11186623.6.568.715e4f30ZiVkbI[SMS] (SendSms)---JAVA] docs .
+
+NOTE: Due to an issue with the earlier SMS sdk version, if the text message fails to be sent, please delete the line of code that contains the explicit MethodType as POST. If you still have problems, please contact us as soon as possible.
+
+=== The Advanced Features of SMS Api
+
+In order to reduce the cost of learning, the API interface of the Spring Cloud Alicloud SMS package is kept as consistent as the API and Example provided by the official website.
+
+* Batch SMS sending
+
+Refer to the following example to quickly develop a feature with bulk SMS sending. Add the following code in the Controller or create a new Controller:
+
+[source,java]
+----
+@RequestMapping("/batch-sms-send.do")
+public SendBatchSmsResponse batchsendCheckCode(
+        @RequestParam(name = "code") String code) {
+    SendBatchSmsRequest request = new SendBatchSmsRequest();
+    request.setMethod(MethodType.GET);
+    request.setPhoneNumberJson("[\"177********\",\"130********\"]");
+    request.setSignNameJson("[\"*******\",\"*******\"]");
+    request.setTemplateCode("******");
+    request.setTemplateParamJson(
+            "[{\"code\":\"" + code + "\"},{\"code\":\"" + code + "\"}]");
+    SendBatchSmsResponse sendSmsResponse ;
+    try {
+        sendSmsResponse = smsService
+                .sendSmsBatchRequest(request);
+        return sendSmsResponse;
+    }
+    catch (ClientException e) {
+        e.printStackTrace();
+        sendSmsResponse =  new SendBatchSmsResponse();
+    }
+    return sendSmsResponse ;
+}
+----
+
+NOTE: The MethodType of the request is set to GET, which is somewhat different from the example given by the official website. This is because the inconsistent version of the dependent Alibaba Cloud POP API version causes incompatibility issues, set to GET.
+
+More parameter descriptions can be https://help.aliyun.com/document_detail/66041.html?spm=a2c4g.11186623.6.571.631315e8AauJhP[reference here]
+
+* SMS Query
+
+Refer to the following example to quickly develop a history of sending SMS messages based on a specified number. Add the following code in the Controller or create a new Controller:
+
+[source,java]
+----
+@RequestMapping("/query.do")
+public QuerySendDetailsResponse querySendDetailsResponse(
+        @RequestParam(name = "tel") String telephone) {
+    QuerySendDetailsRequest request = new QuerySendDetailsRequest();
+    request.setPhoneNumber(telephone);
+    request.setSendDate("20190103");
+    request.setPageSize(10L);
+    request.setCurrentPage(1L);
+    try {
+        QuerySendDetailsResponse response = smsService.querySendDetails(request);
+        return response;
+    }
+    catch (ClientException e) {
+        e.printStackTrace();
+    }
+
+    return new QuerySendDetailsResponse();
+}
+
+----
+
+More parameter descriptions can be found at https://help.aliyun.com/document_detail/55289.html?spm=a2c4g.11186623.6.569.4f852c78mugEfx[reference here]
+
+* SMS receipt message
+
+By subscribing to the SmsReport SMS status report, you can know the status of each SMS message and whether it knows the status and related information of the terminal user. These efforts have been encapsulated internally by Spring Cloud AliCloud SMS. You only need to complete the following two steps.
+
+1、Configure the queue name for SmsReport in the `application.properties` configuration file (which can also be application.yaml).
+
+.application.properties
+----
+spring.cloud.alicloud.sms.report-queue-name=Alicom-Queue-********-SmsReport
+----
+
+2、Implement the SmsReportMessageListener interface and initialize a Spring Bean.
+
+[source,java]
+----
+@Component
+public class SmsReportMessageListener
+		implements SmsReportMessageListener {
+
+	@Override
+	public boolean dealMessage(Message message) {
+	    //do something
+		System.err.println(this.getClass().getName() + "; " + message.toString());
+		return true;
+	}
+}
+----
+
+More message body format for Message can be https://help.aliyun.com/document_detail/55496.html?spm=a2c4g.11186623.6.570.7f792c78rOiWXO[reference here].
+
+* Upstream SMS message
+
+By subscribing to the SmsUp upstream SMS message, you can know the content of the end user replying to the SMS. These efforts have also been packaged by Spring Cloud AliCloud SMS. You only need to complete the following two steps.
+
+1、Configure the queue name for SmsReport in the `application.properties` configuration file (which can also be application.yaml).
+
+.application.properties
+[source,properties]
+----
+spring.cloud.alicloud.sms.up-queue-name=Alicom-Queue-********-SmsUp
+----
+
+2、Implement the SmsUpMessageListener interface and initialize a Spring Bean.
+
+[source,java]
+----
+@Component
+public class SmsUpMessageListener
+		implements org.springframework.cloud.alicloud.sms.SmsUpMessageListener {
+
+	@Override
+	public boolean dealMessage(Message message) {
+    	//do something
+		System.err.println(this.getClass().getName() + "; " + message.toString());
+		return true;
+	}
+}
+----
+
+More message body format for Message can be https://help.aliyun.com/document_detail/55496.html?spm=a2c4g.11186623.6.570.7f792c78rOiWXO[reference here].

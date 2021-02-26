@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>sentinel-dubbo-api</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

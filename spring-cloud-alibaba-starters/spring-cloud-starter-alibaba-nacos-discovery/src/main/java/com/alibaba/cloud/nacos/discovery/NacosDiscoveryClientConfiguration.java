@@ -31,7 +31,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * @author xiaojing
@@ -39,7 +39,6 @@ import org.springframework.scheduling.TaskScheduler;
  */
 @Configuration
 @ConditionalOnDiscoveryEnabled
-// @ConditionalOnBlockingDiscoveryEnabled
 @ConditionalOnProperty(value = "spring.cloud.discovery.blocking.enabled", matchIfMissing = true)
 @ConditionalOnNacosDiscoveryEnabled
 @AutoConfigureBefore({ SimpleDiscoveryClientAutoConfiguration.class,
@@ -58,7 +57,7 @@ public class NacosDiscoveryClientConfiguration {
 	@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.watch.enabled", matchIfMissing = true)
 	public NacosWatch nacosWatch(NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties,
-			ObjectProvider<TaskScheduler> taskExecutorObjectProvider) {
+			ObjectProvider<ThreadPoolTaskScheduler> taskExecutorObjectProvider) {
 		return new NacosWatch(nacosServiceManager, nacosDiscoveryProperties,
 				taskExecutorObjectProvider);
 	}

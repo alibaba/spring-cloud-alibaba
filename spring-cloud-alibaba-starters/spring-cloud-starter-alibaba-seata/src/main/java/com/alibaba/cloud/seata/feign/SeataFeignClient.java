@@ -38,7 +38,9 @@ public class SeataFeignClient implements Client {
 
 	private static final int MAP_SIZE = 16;
 	private final Client delegate;
+
 	private final BeanFactory beanFactory;
+
 
 	SeataFeignClient(BeanFactory beanFactory) {
 		this.beanFactory = beanFactory;

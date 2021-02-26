@@ -37,11 +37,16 @@ import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_RETRIES;
  * Spring Cloud Service-to-Service call is transported by Dubbo under the hood, there are
  * two main scenarios:
  * <ol>
- * <li>{@link FeignClient @FeignClient} annotated classes: If
- * {@link DubboTransported @DubboTransported} annotated classes, the invocation of all
- * methods of {@link FeignClient @FeignClient} annotated classes. If
- * {@link DubboTransported @DubboTransported} annotated methods of
- * {@link FeignClient @FeignClient} annotated classes.</li>
+ * <li>{@link FeignClient @FeignClient} annotated classes:
+ * <ul>
+ * If {@link DubboTransported @DubboTransported} annotated classes, the invocation of all
+ * methods of {@link FeignClient @FeignClient} annotated classes.
+ * </ul>
+ * <ul>
+ * If {@link DubboTransported @DubboTransported} annotated methods of
+ * {@link FeignClient @FeignClient} annotated classes.
+ * </ul>
+ * </li>
  * <li>{@link LoadBalanced @LoadBalanced} {@link RestTemplate} annotated field, method and
  * parameters</li>
  * </ol>

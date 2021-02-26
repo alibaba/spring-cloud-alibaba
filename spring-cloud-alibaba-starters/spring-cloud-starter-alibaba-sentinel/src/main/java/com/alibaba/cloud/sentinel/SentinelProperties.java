@@ -232,8 +232,9 @@ public class SentinelProperties {
 		private String blockPage;
 
 		@Deprecated
-		@DeprecatedConfigurationProperty(reason = "replaced to SentinelProperties#blockPage.", replacement = SentinelConstants.PROPERTY_PREFIX
-				+ ".block-page")
+		@DeprecatedConfigurationProperty(
+				reason = "replaced to SentinelProperties#blockPage.",
+				replacement = SentinelConstants.PROPERTY_PREFIX + ".block-page")
 		public String getBlockPage() {
 			return blockPage;
 		}

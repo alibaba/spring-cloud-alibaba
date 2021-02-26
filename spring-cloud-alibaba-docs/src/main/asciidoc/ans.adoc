@@ -1,0 +1,96 @@
+== Spring Cloud Alibaba Cloud ANS
+
+ANS(Application Naming Service) is a component of EDAS.  Spring Cloud Alibaba Cloud ANS provides the commercial version of service registration and discovery in conformity with the Spring Cloud specifications, so that you can develop your applications locally and run them on the cloud.
+
+NOTE: EDAS currently supports direct deployment of Nacos Discovery applications
+
+=== How to Introduce Spring Cloud Alibaba Cloud ANS
+
+If you want to use ANS in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alicloud-ans`.
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alicloud-ans</artifactId>
+</dependency>
+----
+
+=== Use ANS to Register Service
+
+When Spring Cloud AliCloud ANS Starter is introduced on the client, the metadata of the service such as IP, port number and weright will be registered to the registration center automatically. The client will maintain heartbeat with the server to prove that it is capable of providing service properly.
+
+The following is a simple illustration.
+
+[source,java]
+----
+@SpringBootApplication
+@EnableDiscoveryClient
+@RestController
+public class ProviderApplication {
+
+    @RequestMapping("/")
+    public String home() {
+        return "Hello world";
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(ProviderApplication.class, args);
+    }
+
+}
+----
+
+As the service will registered to the registration center, we will need to configure the address of the registration center. We also need to add the following address in application.properties.
+
+[source,properties]
+----
+# The application name will be used as the service name, therefore it is mandatory.
+spring.application.name=ans-provider
+server.port=18081
+# The following is the IP and port number of the registration center.
+spring.cloud.alicloud.ans.server-list=127.0.0.1
+spring.cloud.alicloud.ans.server-port=8080
+----
+
+NOTE: By now the registration center is not started yet, so you will get an error message if your application is started. Therefore, start the registration center before you start your application.
+
+=== Start Registration Center
+
+ANS uses two types of registration centers. One is the free lightweight configuration center and the other is the registration center on cloud, which is provided through EDAS. Generally, you can use the lightweight version for application development and local testing, and use EDAS for canary deployment or production.
+
+==== Start Lightweight Configuration Center
+
+Refer to the https://help.aliyun.com/document_detail/44163.html[Configure Lightweight Configuration Center] for details about how to download and install lightweight configuration center.
+
+NOTE: You only need to perform step 1(Download lightweight configuration center) and step 2(Start lightweight configuration center). Step 3(Configure hosts) is not required if you use ANS at the same time.
+
+After you start the lightweight configuration center, start ProviderApplication directly, and you will be able to register your service to the configuration center. The default port of the lightweight configuration center is 8080, therefore you can open http://127.0.0.1:8080, click “Services” on the left and see the registered service.
+
+==== User Registration Center on the Cloud
+
+Using the registration center on the cloud saves you from the tedious work of server maintenance while at the same time provides a better stability. There is no difference at the code level between using the registration center on cloud and lightweight configuration center, but there are some differences in configurations.
+
+The following is a simple sample of using the registration center on the cloud.
+
+[source,properties]
+----
+# The application name will be used the service name, and is therefore mandatory.
+spring.application.name=ans-provider
+# Configure your own port number
+server.port=18081
+# The following is the IP and port number of the configuration center. The default value is 127.0.0.1 and 8080, so the following lines can be omitted.
+spring.cloud.alicloud.ans.server-mode=EDAS
+spring.cloud.alicloud.access-key=Your Alibaba Cloud AK
+spring.cloud.alicloud.secret-key=Your Alibaba Cloud SK
+spring.cloud.alicloud.edas.namespace=cn-xxxxx
+----
+
+The default value of server-mode is LOCAL. If you want to use the registration center on cloud, you need to change it to EDAS.
+
+Access-key and secret-key are the AK/SK of your Alibaba Cloud account. Register an Alibaba Cloud account first and log on to the Cloud Console https://usercenter.console.aliyun.com/#/manage/ak[Alibaba Cloud AK/SK]  to copy your AccessKey ID and Access Key Secret. If you haven’t created one, click the “Create AccessKey” button.
+
+Namespace is a concept in EDAS, which is used to isolate environments, such as testing environment and production environment. To find your namespace, click to https://common-buy.aliyun.com/?spm=5176.11451019.0.0.6f5965c0Uq5tue&commodityCode=edaspostpay#/buy[Sign up for EDAS] first. You will not be charged under the pay-as-you-go mode. Then log on to the https://edas.console.aliyun.com/#/namespaces?regionNo=cn-hangzhou[EDAS Console] and you will be able to see your namespace, for example cn-hangzhou.
+
+NOTE: EDAS provides application hosting service and will fill in all configurations automatically for the hosted applications.
+

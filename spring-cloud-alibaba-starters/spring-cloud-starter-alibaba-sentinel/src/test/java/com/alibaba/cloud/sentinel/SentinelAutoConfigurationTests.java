@@ -63,9 +63,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author jiashuai.xie
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {
-		SentinelAutoConfigurationTests.TestConfig.class }, properties = {
-				"spring.cloud.sentinel.filter.order=123",
+@SpringBootTest(classes = { SentinelAutoConfigurationTests.TestConfig.class },
+		properties = { "spring.cloud.sentinel.filter.order=123",
 				"spring.cloud.sentinel.filter.urlPatterns=/*,/test",
 				"spring.cloud.sentinel.metric.fileSingleSize=9999",
 				"spring.cloud.sentinel.metric.fileTotalCount=100",
@@ -76,7 +75,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 				"spring.cloud.sentinel.transport.dashboard=http://localhost:8080,http://localhost:8081",
 				"spring.cloud.sentinel.transport.port=9999",
 				"spring.cloud.sentinel.transport.clientIp=1.1.1.1",
-				"spring.cloud.sentinel.transport.heartbeatIntervalMs=20000" }, webEnvironment = RANDOM_PORT)
+				"spring.cloud.sentinel.transport.heartbeatIntervalMs=20000" },
+		webEnvironment = RANDOM_PORT)
 public class SentinelAutoConfigurationTests {
 
 	@Autowired
@@ -239,13 +239,15 @@ public class SentinelAutoConfigurationTests {
 		}
 
 		@Bean
-		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class, blockHandler = "handleException")
+		@SentinelRestTemplate(blockHandlerClass = ExceptionUtil.class,
+				blockHandler = "handleException")
 		RestTemplate restTemplateWithBlockClass() {
 			return new RestTemplate();
 		}
 
 		@Bean
-		@SentinelRestTemplate(fallbackClass = ExceptionUtil.class, fallback = "fallbackException")
+		@SentinelRestTemplate(fallbackClass = ExceptionUtil.class,
+				fallback = "fallbackException")
 		RestTemplate restTemplateWithFallbackClass() {
 			return new RestTemplate();
 		}

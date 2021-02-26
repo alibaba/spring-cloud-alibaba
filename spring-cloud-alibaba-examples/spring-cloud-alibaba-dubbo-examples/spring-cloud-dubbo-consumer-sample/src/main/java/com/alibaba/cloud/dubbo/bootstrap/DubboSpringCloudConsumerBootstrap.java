@@ -52,6 +52,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Dubbo Spring Cloud Consumer Bootstrap.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration
@@ -60,7 +62,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @EnableCaching
 public class DubboSpringCloudConsumerBootstrap {
 
-	@Reference
+
+	@Reference(protocol = "dubbo")
 	private UserService userService;
 
 	@Reference(version = "1.0.0", protocol = "dubbo")

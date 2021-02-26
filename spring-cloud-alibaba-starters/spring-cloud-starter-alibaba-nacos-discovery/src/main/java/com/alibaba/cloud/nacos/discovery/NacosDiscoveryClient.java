@@ -32,11 +32,13 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
+	private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryClient.class);
+
 	/**
 	 * Nacos Discovery Client Description.
 	 */
 	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
-	private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryClient.class);
+
 	private NacosServiceDiscovery serviceDiscovery;
 
 	public NacosDiscoveryClient(NacosServiceDiscovery nacosServiceDiscovery) {

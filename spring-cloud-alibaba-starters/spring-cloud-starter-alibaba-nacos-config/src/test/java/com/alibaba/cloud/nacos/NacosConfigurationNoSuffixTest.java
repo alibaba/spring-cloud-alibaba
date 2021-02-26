@@ -16,15 +16,19 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
 import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpoint;
 import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.nacos.client.config.NacosConfigService;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -33,7 +37,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -42,15 +45,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
-
 /**
  * @author zkz
  */
 
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({ "javax.management.*", "javax.xml.parsers.*",
+		"com.sun.org.apache.xerces.internal.jaxp.*", "org.w3c.dom.*" })
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
 @SpringBootTest(classes = NacosConfigurationNoSuffixTest.TestConfig.class, properties = {

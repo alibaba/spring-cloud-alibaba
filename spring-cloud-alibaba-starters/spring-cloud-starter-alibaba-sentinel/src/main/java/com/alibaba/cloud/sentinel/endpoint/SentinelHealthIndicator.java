@@ -76,7 +76,9 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 		// detail
 		if (!sentinelProperties.isEnabled()) {
 			detailMap.put("enabled", false);
-			withDetails(builder.up(), detailMap);
+			detailMap.forEach((key, value)->{
+				builder.up().withDetail(key, value);
+			});
 			return;
 		}
 
@@ -144,16 +146,15 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 
 		// If Dashboard and DataSource are both OK, the health status is UP
 		if (dashboardUp && dataSourceUp) {
-			withDetails(builder.up(), detailMap);
+			detailMap.forEach((key, value)->{
+				builder.up().withDetail(key, value);
+			});
 		}
 		else {
-			withDetails(builder.unknown(), detailMap);
+			detailMap.forEach((key, value)->{
+				builder.unknown().withDetail(key, value);
+			});
 		}
 	}
 
-	private void withDetails(Health.Builder builder, Map<String, Object> detailMap) {
-		for (String key : detailMap.keySet()) {
-			builder.withDetail(key, detailMap.get(key));
-		}
-	}
 }

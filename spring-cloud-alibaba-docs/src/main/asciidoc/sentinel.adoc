@@ -301,6 +301,8 @@ If you want to use Sentinel Starter with Spring Cloud Gateway, you need to add t
 </dependency>
 ```
 
+include::circuitbreaker-sentinel.adoc[]
+
 === Sentinel Endpoint
 
 Sentinel provides an Endpoint internally with a corresponding endpoint id of `sentinel`.

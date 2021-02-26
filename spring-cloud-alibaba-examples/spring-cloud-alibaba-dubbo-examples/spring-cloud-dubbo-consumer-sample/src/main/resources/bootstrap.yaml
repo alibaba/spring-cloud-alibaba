@@ -8,6 +8,8 @@ spring:
   # default disable all
   cloud:
     nacos:
+      username: nacos
+      password: nacos
       discovery:
         enabled: false
         register-enabled: false

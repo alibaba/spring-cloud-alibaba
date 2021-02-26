@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>order-service</artifactId>
-    <name>Spring Cloud Starter Alibaba Seata Example - Business Service</name>
+    <name>Spring Cloud Starter Alibaba Seata Example - Order Service</name>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.31</version>
+            <version>8.0.11</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -52,5 +52,5 @@
         </dependency>
     </dependencies>
 
-    
+
 </project>

@@ -141,8 +141,7 @@ public class DubboNonWebApplicationEnvironmentPostProcessor
 				DEFAULT_PROTOCOL);
 
 		return isRestProtocol(protocol)
-				? environment.getProperty(PROTOCOL_PORT_PROPERTY_NAME)
-				: null;
+				? environment.getProperty(PROTOCOL_PORT_PROPERTY_NAME) : null;
 	}
 
 	private String getRestPortFromProtocolsProperties(

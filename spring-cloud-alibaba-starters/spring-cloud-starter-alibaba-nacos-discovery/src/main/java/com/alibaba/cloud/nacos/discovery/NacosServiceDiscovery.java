@@ -46,6 +46,31 @@ public class NacosServiceDiscovery {
 		this.nacosServiceManager = nacosServiceManager;
 	}
 
+	/**
+	 * Return all instances for the given service.
+	 * @param serviceId id of service
+	 * @return list of instances
+	 * @throws NacosException nacosException
+	 */
+	public List<ServiceInstance> getInstances(String serviceId) throws NacosException {
+		String group = discoveryProperties.getGroup();
+		List<Instance> instances = namingService().selectInstances(serviceId, group,
+				true);
+		return hostToServiceInstanceList(instances, serviceId);
+	}
+
+	/**
+	 * Return the names of all services.
+	 * @return list of service names
+	 * @throws NacosException nacosException
+	 */
+	public List<String> getServices() throws NacosException {
+		String group = discoveryProperties.getGroup();
+		ListView<String> services = namingService().getServicesOfServer(1,
+				Integer.MAX_VALUE, group);
+		return services.getData();
+	}
+
 	public static List<ServiceInstance> hostToServiceInstanceList(
 			List<Instance> instances, String serviceId) {
 		List<ServiceInstance> result = new ArrayList<>(instances.size());
@@ -84,31 +109,6 @@ public class NacosServiceDiscovery {
 			nacosServiceInstance.setSecure(secure);
 		}
 		return nacosServiceInstance;
-	}
-
-	/**
-	 * Return all instances for the given service.
-	 * @param serviceId id of service
-	 * @return list of instances
-	 * @throws NacosException nacosException
-	 */
-	public List<ServiceInstance> getInstances(String serviceId) throws NacosException {
-		String group = discoveryProperties.getGroup();
-		List<Instance> instances = namingService().selectInstances(serviceId, group,
-				true);
-		return hostToServiceInstanceList(instances, serviceId);
-	}
-
-	/**
-	 * Return the names of all services.
-	 * @return list of service names
-	 * @throws NacosException nacosException
-	 */
-	public List<String> getServices() throws NacosException {
-		String group = discoveryProperties.getGroup();
-		ListView<String> services = namingService().getServicesOfServer(1,
-				Integer.MAX_VALUE, group);
-		return services.getData();
 	}
 
 	private NamingService namingService() {

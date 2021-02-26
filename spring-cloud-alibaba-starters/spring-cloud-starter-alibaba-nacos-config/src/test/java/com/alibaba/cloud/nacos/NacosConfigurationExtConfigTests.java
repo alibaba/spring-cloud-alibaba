@@ -50,8 +50,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
-@SpringBootTest(classes = NacosConfigurationExtConfigTests.TestConfig.class, properties = {
-		"spring.application.name=myTestService1", "spring.profiles.active=dev,test",
+@SpringBootTest(classes = NacosConfigurationExtConfigTests.TestConfig.class,
+		properties = { "spring.application.name=myTestService1",
+				"spring.profiles.active=dev,test",
 				"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
 				"spring.cloud.nacos.config.encode=utf-8",
 				"spring.cloud.nacos.config.timeout=1000",

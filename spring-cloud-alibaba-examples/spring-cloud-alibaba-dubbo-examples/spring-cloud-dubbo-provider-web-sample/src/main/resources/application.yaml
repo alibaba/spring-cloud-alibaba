@@ -3,7 +3,6 @@ dubbo:
     base-packages: com.alibaba.cloud.dubbo.service
   protocols:
     dubbo:
-      name: dubbo
       port: -1
   registries:
     new:

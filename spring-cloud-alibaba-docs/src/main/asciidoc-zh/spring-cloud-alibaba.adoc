@@ -23,4 +23,6 @@ include::rocketmq.adoc[]
 
 include::sidecar.adoc[]
 
+include::sidecar.adoc[]
+
 

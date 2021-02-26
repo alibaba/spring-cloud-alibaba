@@ -45,8 +45,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class }, properties = {
-		"feign.sentinel.enabled=true" })
+@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class },
+		properties = { "feign.sentinel.enabled=true" })
 public class SentinelFeignTests {
 
 	@Autowired
@@ -118,22 +118,6 @@ public class SentinelFeignTests {
 		assertThat(echoService.equals(fooService)).isEqualTo(Boolean.FALSE);
 	}
 
-	@FeignClient(value = "test-service", fallback = EchoServiceFallback.class)
-	public interface EchoService {
-
-		@RequestMapping(path = "echo/{str}")
-		String echo(@RequestParam("str") String param);
-
-	}
-
-	@FeignClient(value = "foo-service", fallbackFactory = CustomFallbackFactory.class)
-	public interface FooService {
-
-		@RequestMapping(path = "echo/{str}")
-		String echo(@RequestParam("str") String param);
-
-	}
-
 	@FeignClient("bar-service")
 	public interface BarService {
 
@@ -171,6 +155,23 @@ public class SentinelFeignTests {
 		}
 
 	}
+
+	@FeignClient(value = "test-service", fallback = EchoServiceFallback.class)
+	public interface EchoService {
+
+		@RequestMapping(path = "echo/{str}")
+		String echo(@RequestParam("str") String param);
+
+	}
+
+	@FeignClient(value = "foo-service", fallbackFactory = CustomFallbackFactory.class)
+	public interface FooService {
+
+		@RequestMapping(path = "echo/{str}")
+		String echo(@RequestParam("str") String param);
+
+	}
+
 
 	public static class EchoServiceFallback implements EchoService {
 

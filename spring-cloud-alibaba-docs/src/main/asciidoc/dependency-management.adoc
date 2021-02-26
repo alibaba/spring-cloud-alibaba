@@ -17,4 +17,3 @@ If you’re a Maven Central user, add our BOM to your pom.xml <dependencyManagem
 ```
 
 In the following sections, it will be assumed you are using the Spring Cloud Alibaba BOM and the dependency snippets will not contain versions.
-

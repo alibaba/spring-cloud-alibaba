@@ -36,7 +36,7 @@ import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
  *
  * @author xiaojing
  */
-@Endpoint(id = "nacos-config")
+@Endpoint(id = "nacosconfig")
 public class NacosConfigEndpoint {
 
 	private final NacosConfigProperties properties;

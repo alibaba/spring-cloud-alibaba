@@ -213,7 +213,7 @@ public class NacosConfigurationXmlJsonTest {
 
 		assertThat(
 				(Integer) environment.getProperty("test.metadata.intKey", Object.class))
-						.isEqualTo(123);
+				.isEqualTo(123);
 		assertThat((Boolean) environment.getProperty("test.metadata.booleanKey",
 				Object.class)).isEqualTo(true);
 	}

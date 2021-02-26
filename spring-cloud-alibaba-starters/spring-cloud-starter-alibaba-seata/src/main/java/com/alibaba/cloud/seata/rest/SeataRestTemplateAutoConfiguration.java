@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+
 package com.alibaba.cloud.seata.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +35,16 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class SeataRestTemplateAutoConfiguration {
 
-	@Autowired(required = false)
-	private Collection<RestTemplate> restTemplates;
-	@Autowired
-	private SeataRestTemplateInterceptor seataRestTemplateInterceptor;
-
 	@Bean
 	public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
 		return new SeataRestTemplateInterceptor();
 	}
+
+	@Autowired(required = false)
+	private Collection<RestTemplate> restTemplates;
+
+	@Autowired
+	private SeataRestTemplateInterceptor seataRestTemplateInterceptor;
 
 	@PostConstruct
 	public void init() {

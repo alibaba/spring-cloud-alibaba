@@ -27,7 +27,8 @@ import org.springframework.web.bind.annotation.PathVariable;
  * <p>
  * example feign client
  */
-@FeignClient(name = "service-provider", fallbackFactory = EchoServiceFallbackFactory.class)
+@FeignClient(name = "service-provider",
+		fallbackFactory = EchoServiceFallbackFactory.class)
 public interface EchoService {
 
 	/**
