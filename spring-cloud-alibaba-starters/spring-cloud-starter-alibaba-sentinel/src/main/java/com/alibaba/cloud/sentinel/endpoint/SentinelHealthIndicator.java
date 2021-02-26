@@ -16,17 +16,15 @@
 
 package com.alibaba.cloud.sentinel.endpoint;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.cloud.sentinel.SentinelProperties;
 import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.heartbeat.HeartbeatSenderProvider;
 import com.alibaba.csp.sentinel.transport.HeartbeatSender;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
-import com.alibaba.csp.sentinel.util.function.Tuple2;
-
+import com.alibaba.csp.sentinel.transport.endpoint.Endpoint;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
@@ -84,8 +82,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 
 		// Check health of Dashboard
 		boolean dashboardUp = true;
-		List<Tuple2<String, Integer>> consoleServerList = TransportConfig
-				.getConsoleServerList();
+		List<Endpoint> consoleServerList = TransportConfig.getConsoleServerList();
 		if (CollectionUtils.isEmpty(consoleServerList)) {
 			// If Dashboard isn't configured, it's OK and mark the status of Dashboard
 			// with UNKNOWN.
