@@ -17,12 +17,16 @@
 package com.alibaba.cloud.sidecar.nacos;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 import com.alibaba.cloud.sidecar.SidecarAutoConfiguration;
 import com.alibaba.cloud.sidecar.SidecarDiscoveryClient;
+import com.alibaba.cloud.sidecar.SidecarProperties;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,15 +34,26 @@ import org.springframework.context.annotation.Configuration;
  * @author www.itmuch.com
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore(SidecarAutoConfiguration.class)
-@ConditionalOnBean(NacosDiscoveryProperties.class)
+@AutoConfigureBefore({ NacosDiscoveryAutoConfiguration.class,
+		SidecarAutoConfiguration.class })
+@ConditionalOnClass(NacosDiscoveryProperties.class)
+@EnableConfigurationProperties(SidecarProperties.class)
 public class SidecarNacosAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
+	public SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties(
+			SidecarProperties sidecarProperties) {
+		return new SidecarNacosDiscoveryProperties(sidecarProperties);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
 	public SidecarDiscoveryClient sidecarDiscoveryClient(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new SidecarNacosDiscoveryClient(nacosDiscoveryProperties);
+			NacosServiceManager nacosServiceManager,
+			SidecarNacosDiscoveryProperties sidecarNacosDiscoveryProperties) {
+		return new SidecarNacosDiscoveryClient(nacosServiceManager,
+				sidecarNacosDiscoveryProperties);
 	}
 
 }

@@ -101,7 +101,6 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		loadSharedConfiguration(composite);
 		loadExtConfiguration(composite);
 		loadApplicationConfiguration(composite, dataIdPrefix, nacosConfigProperties, env);
-
 		return composite;
 	}
 
@@ -156,16 +155,15 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadNacosConfiguration(final CompositePropertySource composite,
 			List<NacosConfigProperties.Config> configs) {
 		for (NacosConfigProperties.Config config : configs) {
-			String dataId = config.getDataId();
-			String fileExtension = dataId.substring(dataId.lastIndexOf(DOT) + 1);
-			loadNacosDataIfPresent(composite, dataId, config.getGroup(), fileExtension,
+			loadNacosDataIfPresent(composite, config.getDataId(), config.getGroup(),
+					NacosDataParserHandler.getInstance()
+							.getFileExtension(config.getDataId()),
 					config.isRefresh());
 		}
 	}
 
 	private void checkConfiguration(List<NacosConfigProperties.Config> configs,
 			String tips) {
-		String[] dataIds = new String[configs.size()];
 		for (int i = 0; i < configs.size(); i++) {
 			String dataId = configs.get(i).getDataId();
 			if (dataId == null || dataId.trim().length() == 0) {
@@ -173,10 +171,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 						"the [ spring.cloud.nacos.config.%s[%s] ] must give a dataId",
 						tips, i));
 			}
-			dataIds[i] = dataId;
 		}
-		// Just decide that the current dataId must have a suffix
-		NacosDataParserHandler.getInstance().checkDataId(dataIds);
 	}
 
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,

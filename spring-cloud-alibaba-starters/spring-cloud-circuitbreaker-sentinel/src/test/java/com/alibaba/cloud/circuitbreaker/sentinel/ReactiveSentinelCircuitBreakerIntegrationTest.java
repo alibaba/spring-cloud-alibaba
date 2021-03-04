@@ -82,7 +82,7 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 			Thread.sleep(1000);
 		}
 
-		// Recovered.
+		// Half-open recovery (will re-open the circuit breaker).
 		StepVerifier.create(service.slow()).expectNext("slow").verifyComplete();
 
 		StepVerifier.create(service.normalFlux()).expectNext("normalflux")
@@ -99,7 +99,7 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 			Thread.sleep(1000);
 		}
 
-		// Recovered.
+		// Half-open recovery (will re-open the circuit breaker).
 		StepVerifier.create(service.slowFlux()).expectNext("slowflux").verifyComplete();
 	}
 
@@ -110,7 +110,7 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 
 		@GetMapping("/slow")
 		public Mono<String> slow() {
-			return Mono.just("slow").delayElement(Duration.ofMillis(500));
+			return Mono.just("slow").delayElement(Duration.ofMillis(80));
 		}
 
 		@GetMapping("/normal")
@@ -120,7 +120,7 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 
 		@GetMapping("/slow_flux")
 		public Flux<String> slowFlux() {
-			return Flux.just("slow", "flux").delayElements(Duration.ofMillis(500));
+			return Flux.just("slow", "flux").delayElements(Duration.ofMillis(80));
 		}
 
 		@GetMapping("normal_flux")
@@ -131,21 +131,23 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 		@Bean
 		public Customizer<ReactiveSentinelCircuitBreakerFactory> slowCustomizer() {
 			return factory -> {
-				factory.configure(builder -> builder
-						.rules(Collections.singletonList(new DegradeRule("slow_mono")
-								.setGrade(RuleConstant.DEGRADE_GRADE_RT).setCount(100)
-								.setTimeWindow(5))),
+				factory.configure(
+						builder -> builder.rules(Collections
+								.singletonList(new DegradeRule("slow_mono").setCount(50)
+										.setSlowRatioThreshold(0.7).setMinRequestAmount(5)
+										.setStatIntervalMs(30000).setTimeWindow(5))),
 						"slow_mono");
-				factory.configure(builder -> builder
-						.rules(Collections.singletonList(new DegradeRule("slow_flux")
-								.setGrade(RuleConstant.DEGRADE_GRADE_RT).setCount(100)
-								.setTimeWindow(5))),
+				factory.configure(
+						builder -> builder.rules(Collections
+								.singletonList(new DegradeRule("slow_mono").setCount(50)
+										.setSlowRatioThreshold(0.7).setMinRequestAmount(5)
+										.setStatIntervalMs(30000).setTimeWindow(5))),
 						"slow_flux");
 				factory.configureDefault(id -> new SentinelConfigBuilder()
 						.resourceName(id)
 						.rules(Collections.singletonList(new DegradeRule(id)
 								.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT)
-								.setCount(0.5).setTimeWindow(10)))
+								.setCount(5).setTimeWindow(10)))
 						.build());
 			};
 		}

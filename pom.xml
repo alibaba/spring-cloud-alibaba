@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>2.2.3.RELEASE</version>
+        <version>2.3.1.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -80,25 +80,13 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.1.RELEASE</revision>
+        <revision>2.2.6-SNAPSHOT</revision>
 
-        <!-- Dependency Versions -->
-        <spring-cloud-commons.version>2.2.2.RELEASE</spring-cloud-commons.version>
-        <spring-cloud-netflix.version>2.2.2.RELEASE</spring-cloud-netflix.version>
-        <spring-cloud-openfeign.version>2.2.2.RELEASE</spring-cloud-openfeign.version>
-        <spring-cloud-bus.version>2.2.1.RELEASE</spring-cloud-bus.version>
-        <spring-cloud-gateway.version>2.2.2.RELEASE</spring-cloud-gateway.version>
-        <spring-cloud-stream.version>Horsham.SR3</spring-cloud-stream.version>
-        <spring-cloud-consul.version>2.2.2.RELEASE</spring-cloud-consul.version>
-        <spring-cloud-config.version>2.2.2.RELEASE</spring-cloud-config.version>
-        <spring-cloud-zookeeper.version>2.2.1.RELEASE</spring-cloud-zookeeper.version>
-
-        <junit.version>4.12</junit.version>
-        <javax-servlet-api>3.0</javax-servlet-api>
-        <slf4j-api.version>1.7.25</slf4j-api.version>
+        <!-- Spring Cloud -->
+        <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
 
         <!-- Apache Dubbo -->
-        <dubbo.version>2.7.6</dubbo.version>
+        <dubbo.version>2.7.8</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
@@ -137,88 +125,17 @@
             </dependency>
 
             <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-commons-dependencies</artifactId>
-                <version>${spring-cloud-commons.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-test-support</artifactId>
-                <scope>test</scope>
-                <version>${spring-cloud-commons.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-netflix-dependencies</artifactId>
-                <version>${spring-cloud-netflix.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-openfeign-dependencies</artifactId>
-                <version>${spring-cloud-openfeign.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-config-dependencies</artifactId>
-                <version>${spring-cloud-config.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-bus-dependencies</artifactId>
-                <version>${spring-cloud-bus.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-gateway-dependencies</artifactId>
-                <version>${spring-cloud-gateway.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-stream-dependencies</artifactId>
-                <version>${spring-cloud-stream.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-consul-dependencies</artifactId>
-                <version>${spring-cloud-consul.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-zookeeper-dependencies</artifactId>
-                <version>${spring-cloud-zookeeper.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -28,71 +28,71 @@ import org.springframework.util.StringUtils;
  */
 public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 
-    public ConsulDataSourceProperties(){
-        super(ConsulDataSourceFactoryBean.class.getName());
-    }
+	public ConsulDataSourceProperties() {
+		super(ConsulDataSourceFactoryBean.class.getName());
+	}
 
-    /**
-     * consul server host.
-     */
-    private String host;
+	/**
+	 * consul server host.
+	 */
+	private String host;
 
-    /**
-     * consul server port.
-     */
-    private int port=8500;
+	/**
+	 * consul server port.
+	 */
+	private int port = 8500;
 
-    /**
-     * data key in Redis.
-     */
-    private String ruleKey;
+	/**
+	 * data key in Redis.
+	 */
+	private String ruleKey;
 
-    /**
-     * Request of query will hang until timeout (in second) or get updated value.
-     */
-    private int waitTimeoutInSecond = 1;
+	/**
+	 * Request of query will hang until timeout (in second) or get updated value.
+	 */
+	private int waitTimeoutInSecond = 1;
 
-    @Override
-    public void preCheck(String dataSourceName) {
-        if(StringUtils.isEmpty(host)){
-            throw new IllegalArgumentException(
-                    "ConsulDataSource server-host is empty");
-        }
-        if(StringUtils.isEmpty(ruleKey)){
-            throw new IllegalArgumentException(
-                    "ConsulDataSource ruleKey can not be empty");
-        }
-    }
+	@Override
+	public void preCheck(String dataSourceName) {
+		if (StringUtils.isEmpty(host)) {
+			throw new IllegalArgumentException("ConsulDataSource server-host is empty");
+		}
+		if (StringUtils.isEmpty(ruleKey)) {
+			throw new IllegalArgumentException(
+					"ConsulDataSource ruleKey can not be empty");
+		}
+	}
 
-    public String getHost() {
-        return host;
-    }
+	public String getHost() {
+		return host;
+	}
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+	public void setHost(String host) {
+		this.host = host;
+	}
 
-    public int getPort() {
-        return port;
-    }
+	public int getPort() {
+		return port;
+	}
 
-    public void setPort(int port) {
-        this.port = port;
-    }
+	public void setPort(int port) {
+		this.port = port;
+	}
 
-    public String getRuleKey() {
-        return ruleKey;
-    }
+	public String getRuleKey() {
+		return ruleKey;
+	}
 
-    public void setRuleKey(String ruleKey) {
-        this.ruleKey = ruleKey;
-    }
+	public void setRuleKey(String ruleKey) {
+		this.ruleKey = ruleKey;
+	}
 
-    public int getWaitTimeoutInSecond() {
-        return waitTimeoutInSecond;
-    }
+	public int getWaitTimeoutInSecond() {
+		return waitTimeoutInSecond;
+	}
 
-    public void setWaitTimeoutInSecond(int waitTimeoutInSecond) {
-        this.waitTimeoutInSecond = waitTimeoutInSecond;
-    }
+	public void setWaitTimeoutInSecond(int waitTimeoutInSecond) {
+		this.waitTimeoutInSecond = waitTimeoutInSecond;
+	}
+
 }

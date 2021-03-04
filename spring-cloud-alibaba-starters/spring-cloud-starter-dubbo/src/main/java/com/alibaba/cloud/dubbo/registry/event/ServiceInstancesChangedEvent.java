@@ -16,14 +16,14 @@
 
 package com.alibaba.cloud.dubbo.registry.event;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * An event raised after the {@link ServiceInstance instances} of one service has been
@@ -35,7 +35,7 @@ public class ServiceInstancesChangedEvent extends ApplicationEvent {
 
 	private final String serviceName;
 
-	private final Collection<ServiceInstance> serviceInstances;
+	private final List<ServiceInstance> serviceInstances;
 
 	/**
 	 * Current event has been processed or not. Typically, Spring Event was based on sync
@@ -51,10 +51,10 @@ public class ServiceInstancesChangedEvent extends ApplicationEvent {
 	 * @throws IllegalArgumentException if source is null.
 	 */
 	public ServiceInstancesChangedEvent(String serviceName,
-			Collection<ServiceInstance> serviceInstances) {
+			List<ServiceInstance> serviceInstances) {
 		super(serviceName);
 		this.serviceName = serviceName;
-		this.serviceInstances = unmodifiableCollection(serviceInstances);
+		this.serviceInstances = unmodifiableList(serviceInstances);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class ServiceInstancesChangedEvent extends ApplicationEvent {
 	/**
 	 * @return all {@link ServiceInstance service instances}.
 	 */
-	public Collection<ServiceInstance> getServiceInstances() {
+	public List<ServiceInstance> getServiceInstances() {
 		return serviceInstances;
 	}
 

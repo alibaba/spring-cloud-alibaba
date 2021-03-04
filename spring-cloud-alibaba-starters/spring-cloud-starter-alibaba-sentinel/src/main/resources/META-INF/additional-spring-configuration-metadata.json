@@ -19,6 +19,12 @@
       "description": "earlier initialize heart-beat when the spring container starts when the transport dependency is on classpath, the configuration is effective."
     },
     {
+      "name": "spring.cloud.sentinel.web-context-unify",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Specify whether unify web context(i.e. use the default context name), and is true by default."
+    },
+    {
       "name": "spring.cloud.sentinel.transport.port",
       "type": "java.lang.String",
       "defaultValue": "8719",

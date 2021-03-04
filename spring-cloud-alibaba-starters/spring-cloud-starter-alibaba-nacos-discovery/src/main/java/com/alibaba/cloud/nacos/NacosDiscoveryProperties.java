@@ -19,7 +19,6 @@ package com.alibaba.cloud.nacos;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,9 +29,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.naming.NamingMaintainFactory;
-import com.alibaba.nacos.api.naming.NamingMaintainService;
+import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
@@ -44,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
@@ -64,8 +62,8 @@ import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
+ * @author <a href="mailto:78552423@qq.com">eshun</a>
  */
-
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
 
@@ -185,19 +183,29 @@ public class NacosDiscoveryProperties {
 	private String secretKey;
 
 	/**
-	 * Heart beat interval. Time unit: second.
+	 * Heart beat interval. Time unit: millisecond.
 	 */
 	private Integer heartBeatInterval;
 
 	/**
-	 * Heart beat timeout. Time unit: second.
+	 * Heart beat timeout. Time unit: millisecond.
 	 */
 	private Integer heartBeatTimeout;
 
 	/**
-	 * Ip delete timeout. Time unit: second.
+	 * Ip delete timeout. Time unit: millisecond.
 	 */
 	private Integer ipDeleteTimeout;
+
+	/**
+	 * If instance is enabled to accept request. The default value is true.
+	 */
+	private boolean instanceEnabled = true;
+
+	/**
+	 * If instance is ephemeral.The default value is true.
+	 */
+	private boolean ephemeral = true;
 
 	@Autowired
 	private InetUtils inetUtils;
@@ -205,12 +213,14 @@ public class NacosDiscoveryProperties {
 	@Autowired
 	private Environment environment;
 
-	private static NamingService namingService;
+	@Autowired
+	private NacosServiceManager nacosServiceManager;
 
-	private static NamingMaintainService namingMaintainService;
+	@Autowired
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@PostConstruct
-	public void init() throws SocketException {
+	public void init() throws Exception {
 
 		metadata.put(PreservedMetadataKeys.REGISTER_SOURCE, "SPRING_CLOUD");
 		if (secure) {
@@ -257,6 +267,19 @@ public class NacosDiscoveryProperties {
 		}
 
 		this.overrideFromEnv(environment);
+		if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
+			applicationEventPublisher
+					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
+		}
+	}
+
+	/**
+	 * recommend to use {@link NacosServiceManager#getNamingService(Properties)}.
+	 * @return NamingService
+	 */
+	@Deprecated
+	public NamingService namingServiceInstance() {
+		return nacosServiceManager.getNamingService(this.getNacosProperties());
 	}
 
 	public String getEndpoint() {
@@ -447,6 +470,58 @@ public class NacosDiscoveryProperties {
 		this.password = password;
 	}
 
+	public boolean isInstanceEnabled() {
+		return instanceEnabled;
+	}
+
+	public void setInstanceEnabled(boolean instanceEnabled) {
+		this.instanceEnabled = instanceEnabled;
+	}
+
+	public boolean isEphemeral() {
+		return ephemeral;
+	}
+
+	public void setEphemeral(boolean ephemeral) {
+		this.ephemeral = ephemeral;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		NacosDiscoveryProperties that = (NacosDiscoveryProperties) o;
+		return Objects.equals(serverAddr, that.serverAddr)
+				&& Objects.equals(username, that.username)
+				&& Objects.equals(password, that.password)
+				&& Objects.equals(endpoint, that.endpoint)
+				&& Objects.equals(namespace, that.namespace)
+				&& Objects.equals(logName, that.logName)
+				&& Objects.equals(service, that.service)
+				&& Objects.equals(clusterName, that.clusterName)
+				&& Objects.equals(group, that.group) && Objects.equals(ip, that.ip)
+				&& Objects.equals(port, that.port)
+				&& Objects.equals(networkInterface, that.networkInterface)
+				&& Objects.equals(accessKey, that.accessKey)
+				&& Objects.equals(secretKey, that.secretKey)
+				&& Objects.equals(heartBeatInterval, that.heartBeatInterval)
+				&& Objects.equals(heartBeatTimeout, that.heartBeatTimeout)
+				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(serverAddr, username, password, endpoint, namespace,
+				watchDelay, logName, service, weight, clusterName, group,
+				namingLoadCacheAtStart, registerEnabled, ip, networkInterface, port,
+				secure, accessKey, secretKey, heartBeatInterval, heartBeatTimeout,
+				ipDeleteTimeout, instanceEnabled, ephemeral);
+	}
+
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
@@ -510,41 +585,7 @@ public class NacosDiscoveryProperties {
 		}
 	}
 
-	public NamingService namingServiceInstance() {
-
-		if (null != namingService) {
-			return namingService;
-		}
-
-		try {
-			namingService = NacosFactory.createNamingService(getNacosProperties());
-		}
-		catch (Exception e) {
-			log.error("create naming service error!properties={},e=,", this, e);
-			return null;
-		}
-		return namingService;
-	}
-
-	@Deprecated
-	public NamingMaintainService namingMaintainServiceInstance() {
-
-		if (null != namingMaintainService) {
-			return namingMaintainService;
-		}
-
-		try {
-			namingMaintainService = NamingMaintainFactory
-					.createMaintainService(getNacosProperties());
-		}
-		catch (Exception e) {
-			log.error("create naming service error!properties={},e=,", this, e);
-			return null;
-		}
-		return namingMaintainService;
-	}
-
-	private Properties getNacosProperties() {
+	public Properties getNacosProperties() {
 		Properties properties = new Properties();
 		properties.put(SERVER_ADDR, serverAddr);
 		properties.put(USERNAME, Objects.toString(username, ""));
