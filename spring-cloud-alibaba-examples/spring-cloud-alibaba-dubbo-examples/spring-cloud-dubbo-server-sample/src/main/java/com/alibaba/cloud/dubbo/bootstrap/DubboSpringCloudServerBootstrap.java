@@ -17,7 +17,7 @@
 package com.alibaba.cloud.dubbo.bootstrap;
 
 import com.alibaba.cloud.dubbo.service.EchoService;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -25,6 +25,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * Dubbo Spring Cloud Server Bootstrap.
+ *
+ * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @EnableDiscoveryClient
 @EnableAutoConfiguration
@@ -36,7 +38,7 @@ public class DubboSpringCloudServerBootstrap {
 
 }
 
-@Service
+@DubboService
 class EchoServiceImpl implements EchoService {
 
 	@Override

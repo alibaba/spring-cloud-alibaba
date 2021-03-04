@@ -16,10 +16,11 @@
 
 package com.alibaba.cloud.dubbo.actuate;
 
+import com.alibaba.cloud.dubbo.actuate.endpoint.DubboDiscoveryEndpoint;
+import com.alibaba.cloud.dubbo.actuate.endpoint.DubboExportedURLsEndpoint;
 import com.alibaba.cloud.dubbo.actuate.endpoint.DubboRestMetadataEndpoint;
 
-import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
-import org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration;
+import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -34,14 +35,29 @@ import org.springframework.context.annotation.PropertySource;
 @ConditionalOnClass(
 		name = "org.springframework.boot.actuate.endpoint.annotation.Endpoint")
 @PropertySource("classpath:/META-INF/dubbo/default/actuator-endpoints.properties")
-@ManagementContextConfiguration
+@Configuration(proxyBeanMethods = false)
 public class DubboMetadataEndpointAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnEnabledEndpoint
+	@ConditionalOnAvailableEndpoint
 	public DubboRestMetadataEndpoint dubboRestMetadataEndpoint() {
 		return new DubboRestMetadataEndpoint();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnAvailableEndpoint
+	public DubboDiscoveryEndpoint dubboDiscoveryEndpoint() {
+
+		return new DubboDiscoveryEndpoint();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnAvailableEndpoint
+	public DubboExportedURLsEndpoint dubboServiceMetadataEndpoint() {
+		return new DubboExportedURLsEndpoint();
 	}
 
 }

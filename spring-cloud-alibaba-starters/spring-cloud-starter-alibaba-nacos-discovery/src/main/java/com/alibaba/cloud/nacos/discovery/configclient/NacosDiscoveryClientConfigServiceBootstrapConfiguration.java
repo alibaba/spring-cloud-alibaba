@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.discovery.configclient;
 
+import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.alibaba.cloud.nacos.discovery.reactive.NacosReactiveDiscoveryClientConfiguration;
@@ -36,7 +37,7 @@ import org.springframework.context.annotation.Configuration;
 		matchIfMissing = false)
 @Configuration(proxyBeanMethods = false)
 @ImportAutoConfiguration({ NacosDiscoveryAutoConfiguration.class,
-		NacosDiscoveryClientConfiguration.class,
+		NacosServiceAutoConfiguration.class, NacosDiscoveryClientConfiguration.class,
 		NacosReactiveDiscoveryClientConfiguration.class })
 public class NacosDiscoveryClientConfigServiceBootstrapConfiguration {
 

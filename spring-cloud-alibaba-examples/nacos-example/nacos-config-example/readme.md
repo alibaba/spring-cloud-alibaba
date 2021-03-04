@@ -25,6 +25,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
         spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 		  
 3. After completing the above two steps, the application will get the externalized configuration from Nacos Server and put it in the Spring Environment's PropertySources.We use the @Value annotation to inject the corresponding configuration into the userName and age fields of the SampleController, and add @RefreshScope to turn on dynamic refresh .		
+
 		@RefreshScope
 		class SampleController {
 	

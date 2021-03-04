@@ -28,11 +28,10 @@ import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.log.LogBase;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import com.alibaba.csp.sentinel.util.function.Tuple2;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,7 +72,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 				"spring.cloud.sentinel.flow.coldFactor=3",
 				"spring.cloud.sentinel.eager=true",
 				"spring.cloud.sentinel.log.switchPid=true",
-				"spring.cloud.sentinel.transport.dashboard=http://localhost:8080",
+				"spring.cloud.sentinel.transport.dashboard=http://localhost:8080,http://localhost:8081",
 				"spring.cloud.sentinel.transport.port=9999",
 				"spring.cloud.sentinel.transport.clientIp=1.1.1.1",
 				"spring.cloud.sentinel.transport.heartbeatIntervalMs=20000" },
@@ -115,13 +114,6 @@ public class SentinelAutoConfigurationTests {
 		rule.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
 		rule.setStrategy(RuleConstant.STRATEGY_DIRECT);
 		FlowRuleManager.loadRules(Arrays.asList(rule));
-
-		DegradeRule degradeRule = new DegradeRule();
-		degradeRule.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT);
-		degradeRule.setResource("GET:" + degradeUrl);
-		degradeRule.setCount(0);
-		degradeRule.setTimeWindow(60);
-		DegradeRuleManager.loadRules(Arrays.asList(degradeRule));
 	}
 
 	@Test
@@ -142,7 +134,9 @@ public class SentinelAutoConfigurationTests {
 		Map<String, Object> map = sentinelEndpoint.invoke();
 
 		assertThat(map.get("logUsePid")).isEqualTo(Boolean.TRUE);
-		assertThat(map.get("consoleServer")).isEqualTo("http://localhost:8080");
+		assertThat(map.get("consoleServer").toString()).isEqualTo(
+				Arrays.asList(Tuple2.of("localhost", 8080), Tuple2.of("localhost", 8081))
+						.toString());
 		assertThat(map.get("clientPort")).isEqualTo("9999");
 		assertThat(map.get("heartbeatIntervalMs")).isEqualTo(20000L);
 		assertThat(map.get("clientIp")).isEqualTo("1.1.1.1");
@@ -174,7 +168,7 @@ public class SentinelAutoConfigurationTests {
 	private void checkSentinelTransport() {
 		assertThat(sentinelProperties.getTransport().getPort()).isEqualTo("9999");
 		assertThat(sentinelProperties.getTransport().getDashboard())
-				.isEqualTo("http://localhost:8080");
+				.isEqualTo("http://localhost:8080,http://localhost:8081");
 		assertThat(sentinelProperties.getTransport().getClientIp()).isEqualTo("1.1.1.1");
 		assertThat(sentinelProperties.getTransport().getHeartbeatIntervalMs())
 				.isEqualTo("20000");
@@ -191,7 +185,9 @@ public class SentinelAutoConfigurationTests {
 	@Test
 	public void testSentinelSystemProperties() {
 		assertThat(LogBase.isLogNameUsePid()).isEqualTo(true);
-		assertThat(TransportConfig.getConsoleServer()).isEqualTo("http://localhost:8080");
+		assertThat(TransportConfig.getConsoleServerList().toString()).isEqualTo(
+				Arrays.asList(Tuple2.of("localhost", 8080), Tuple2.of("localhost", 8081))
+						.toString());
 		assertThat(TransportConfig.getPort()).isEqualTo("9999");
 		assertThat(TransportConfig.getHeartbeatIntervalMs().longValue())
 				.isEqualTo(20000L);
@@ -203,7 +199,7 @@ public class SentinelAutoConfigurationTests {
 	}
 
 	@Test
-	public void testFlowRestTemplate() {
+	public void testRestTemplateBlockHandler() {
 
 		assertThat(restTemplate.getInterceptors().size()).isEqualTo(2);
 		assertThat(restTemplateWithBlockClass.getInterceptors().size()).isEqualTo(1);
@@ -229,15 +225,6 @@ public class SentinelAutoConfigurationTests {
 		assertThatThrownBy(() -> {
 			restTemplateWithoutBlockClass.getForEntity(flowUrl, String.class);
 		}).isInstanceOf(RestClientException.class);
-	}
-
-	@Test
-	public void testFallbackRestTemplate() {
-		ResponseEntity responseEntity = restTemplateWithFallbackClass
-				.getForEntity(degradeUrl, String.class);
-
-		assertThat(responseEntity.getBody()).isEqualTo("Oops fallback");
-		assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
 	@Configuration

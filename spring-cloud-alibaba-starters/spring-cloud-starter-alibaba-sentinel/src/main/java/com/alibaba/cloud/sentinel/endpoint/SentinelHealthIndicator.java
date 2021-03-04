@@ -17,6 +17,7 @@
 package com.alibaba.cloud.sentinel.endpoint;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.sentinel.SentinelProperties;
@@ -24,13 +25,14 @@ import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.heartbeat.HeartbeatSenderProvider;
 import com.alibaba.csp.sentinel.transport.HeartbeatSender;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
+import com.alibaba.csp.sentinel.util.function.Tuple2;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 /**
  * A {@link HealthIndicator} for Sentinel, which checks the status of Sentinel Dashboard
@@ -82,8 +84,9 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 
 		// Check health of Dashboard
 		boolean dashboardUp = true;
-		String consoleServer = TransportConfig.getConsoleServer();
-		if (StringUtils.isEmpty(consoleServer)) {
+		List<Tuple2<String, Integer>> consoleServerList = TransportConfig
+				.getConsoleServerList();
+		if (CollectionUtils.isEmpty(consoleServerList)) {
 			// If Dashboard isn't configured, it's OK and mark the status of Dashboard
 			// with UNKNOWN.
 			detailMap.put("dashboard",
@@ -101,8 +104,10 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 			else {
 				// If failed to send heartbeat message, means that the Dashboard is DOWN
 				dashboardUp = false;
-				detailMap.put("dashboard", new Status(Status.DOWN.getCode(),
-						consoleServer + " can't be connected"));
+				detailMap.put("dashboard",
+						new Status(Status.UNKNOWN.getCode(), String.format(
+								"the dashboard servers [%s] one of them can't be connected",
+								consoleServerList)));
 			}
 		}
 
@@ -133,7 +138,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 				// DOWN
 				dataSourceUp = false;
 				dataSourceDetailMap.put(dataSourceBeanName,
-						new Status(Status.DOWN.getCode(), e.getMessage()));
+						new Status(Status.UNKNOWN.getCode(), e.getMessage()));
 			}
 		}
 
@@ -142,7 +147,7 @@ public class SentinelHealthIndicator extends AbstractHealthIndicator {
 			builder.up().withDetails(detailMap);
 		}
 		else {
-			builder.down().withDetails(detailMap);
+			builder.unknown().withDetails(detailMap);
 		}
 	}
 

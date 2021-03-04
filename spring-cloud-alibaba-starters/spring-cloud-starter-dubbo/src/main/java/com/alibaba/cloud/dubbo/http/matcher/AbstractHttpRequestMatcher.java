@@ -40,6 +40,7 @@ public abstract class AbstractHttpRequestMatcher implements HttpRequestMatcher {
 	 * <p>
 	 * For example {@code " || "} for URL patterns or {@code " && "} for param
 	 * expressions.
+	 * @return str
 	 */
 	protected abstract String getToStringInfix();
 

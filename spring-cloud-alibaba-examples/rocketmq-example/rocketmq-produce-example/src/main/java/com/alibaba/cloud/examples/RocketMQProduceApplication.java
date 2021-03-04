@@ -83,7 +83,7 @@ public class RocketMQProduceApplication {
 
 		@Override
 		public void run(String... args) throws Exception {
-			if (this.bindingName.equals("output1")) {
+			if ("output1".equals(this.bindingName)) {
 				int count = 5;
 				for (int index = 1; index <= count; index++) {
 					String msgContent = "msg-" + index;
@@ -98,7 +98,7 @@ public class RocketMQProduceApplication {
 					}
 				}
 			}
-			else if (this.bindingName.equals("output3")) {
+			else if ("output3".equals(this.bindingName)) {
 				int count = 20;
 				for (int index = 1; index <= count; index++) {
 					String msgContent = "pullMsg-" + index;

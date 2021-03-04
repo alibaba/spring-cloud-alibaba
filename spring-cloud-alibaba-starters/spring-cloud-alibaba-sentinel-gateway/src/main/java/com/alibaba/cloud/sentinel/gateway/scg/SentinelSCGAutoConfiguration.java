@@ -91,7 +91,8 @@ public class SentinelSCGAutoConfiguration {
 	}
 
 	private void initAppType() {
-		System.setProperty(SentinelConfig.APP_TYPE, ConfigConstants.APP_TYPE_SCG_GATEWAY);
+		System.setProperty(SentinelConfig.APP_TYPE_PROP_KEY,
+				ConfigConstants.APP_TYPE_SCG_GATEWAY);
 	}
 
 	private void initFallback() {
