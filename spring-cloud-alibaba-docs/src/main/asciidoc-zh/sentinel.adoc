@@ -254,29 +254,6 @@ NOTE: 默认情况下，xml 格式是不支持的。需要添加 `jackson-datafo
 
 关于 Sentinel 动态数据源的实现原理，参考： https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95[动态规则扩展]
 
-=== Zuul 支持
-
-https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
-
-若想跟 Sentinel Starter 配合使用，需要加上 `spring-cloud-alibaba-sentinel-gateway` 依赖，同时需要添加 `spring-cloud-starter-netflix-zuul` 依赖来让 `spring-cloud-alibaba-sentinel-gateway` 模块里的 Zuul 自动化配置类生效：
-
-```xml
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-</dependency>
-```
-
 === Spring Cloud Gateway 支持
 
 https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[参考 Sentinel 网关限流]
@@ -438,9 +415,6 @@ Spring Cloud Alibaba Sentinel 提供了这些配置选项
 |`spring.cloud.sentinel.servlet.block-page`| 自定义的跳转 URL，当请求被限流时会自动跳转至设定好的 URL |
 |`spring.cloud.sentinel.flow.cold-factor`| https://github.com/alibaba/Sentinel/wiki/%E9%99%90%E6%B5%81---
 %E5%86%B7%E5%90%AF%E5%8A%A8[冷启动因子] |3
-|`spring.cloud.sentinel.zuul.order.pre`| SentinelZuulPreFilter 的 order | 10000
-|`spring.cloud.sentinel.zuul.order.post`| SentinelZuulPostFilter 的 order | 1000
-|`spring.cloud.sentinel.zuul.order.error`| SentinelZuulErrorFilter 的 order | -1
 |`spring.cloud.sentinel.scg.fallback.mode`| Spring Cloud Gateway 熔断后的响应模式(选择 `redirect` or `response`) |
 |`spring.cloud.sentinel.scg.fallback.redirect`| Spring Cloud Gateway 响应模式为 'redirect' 模式对应的重定向 URL |
 |`spring.cloud.sentinel.scg.fallback.response-body`| Spring Cloud Gateway 响应模式为 'response' 模式对应的响应内容 |

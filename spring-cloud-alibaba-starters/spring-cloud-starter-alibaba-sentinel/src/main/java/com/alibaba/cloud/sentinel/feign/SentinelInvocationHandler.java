@@ -23,8 +23,6 @@ import java.lang.reflect.Proxy;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.springframework.cloud.openfeign.FallbackFactory;
-
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.SphU;
@@ -35,6 +33,8 @@ import feign.Feign;
 import feign.InvocationHandlerFactory.MethodHandler;
 import feign.MethodMetadata;
 import feign.Target;
+
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 import static feign.Util.checkNotNull;
 
@@ -72,7 +72,8 @@ public class SentinelInvocationHandler implements InvocationHandler {
 		if ("equals".equals(method.getName())) {
 			try {
 				Object otherHandler = args.length > 0 && args[0] != null
-						? Proxy.getInvocationHandler(args[0]) : null;
+						? Proxy.getInvocationHandler(args[0])
+						: null;
 				return equals(otherHandler);
 			}
 			catch (IllegalArgumentException e) {

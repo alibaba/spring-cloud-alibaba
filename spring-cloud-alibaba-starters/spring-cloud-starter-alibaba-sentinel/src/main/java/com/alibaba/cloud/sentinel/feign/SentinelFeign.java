@@ -37,10 +37,8 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import static org.springframework.beans.factory.BeanFactory.FACTORY_BEAN_PREFIX;
-
 /**
- * {@link Feign.Builder} like {@link HystrixFeign.Builder}.
+ * {@link Feign.Builder}.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */

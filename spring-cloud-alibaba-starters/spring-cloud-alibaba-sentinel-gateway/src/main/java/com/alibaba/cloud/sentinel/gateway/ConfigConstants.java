@@ -17,7 +17,6 @@
 package com.alibaba.cloud.sentinel.gateway;
 
 import com.alibaba.cloud.sentinel.gateway.scg.SentinelGatewayProperties;
-import com.alibaba.cloud.sentinel.gateway.zuul.SentinelZuulProperties;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -25,19 +24,9 @@ import com.alibaba.cloud.sentinel.gateway.zuul.SentinelZuulProperties;
 public final class ConfigConstants {
 
 	/**
-	 * Netflix Zuul type.
-	 */
-	public static final String APP_TYPE_ZUUL_GATEWAY = "12";
-
-	/**
 	 * Spring Cloud Gateway type.
 	 */
 	public static final String APP_TYPE_SCG_GATEWAY = "11";
-
-	/**
-	 * ConfigurationProperties for {@link SentinelZuulProperties}.
-	 */
-	public static final String ZUUL_PREFIX = "spring.cloud.sentinel.zuul";
 
 	/**
 	 * ConfigurationProperties for {@link SentinelGatewayProperties}.

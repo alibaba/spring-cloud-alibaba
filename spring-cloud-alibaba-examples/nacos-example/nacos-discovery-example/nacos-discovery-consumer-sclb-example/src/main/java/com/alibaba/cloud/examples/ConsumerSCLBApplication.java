@@ -32,10 +32,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.DefaultResponse;
 import org.springframework.cloud.client.loadbalancer.EmptyResponse;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.Response;
-import org.springframework.cloud.client.loadbalancer.DefaultResponse;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer;
@@ -77,8 +77,7 @@ public class ConsumerSCLBApplication {
 	}
 
 	@Configuration
-	@LoadBalancerClient(value = "service-provider",
-			configuration = MyLoadBalancerConfiguration.class)
+	@LoadBalancerClient(value = "service-provider", configuration = MyLoadBalancerConfiguration.class)
 	class MySCLBConfiguration {
 
 	}
@@ -102,9 +101,9 @@ public class ConsumerSCLBApplication {
 			this.random = new Random();
 		}
 
-
 		@Override
-		public Mono<Response<ServiceInstance>> choose(org.springframework.cloud.client.loadbalancer.Request request) {
+		public Mono<Response<ServiceInstance>> choose(
+				org.springframework.cloud.client.loadbalancer.Request request) {
 			ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider
 					.getIfAvailable(NoopServiceInstanceListSupplier::new);
 
@@ -129,8 +128,7 @@ public class ConsumerSCLBApplication {
 		}
 	}
 
-	@FeignClient(name = "service-provider", fallback = EchoServiceFallback.class,
-			configuration = FeignConfiguration.class)
+	@FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 	public interface EchoService {
 
 		@GetMapping("/echo/{str}")
