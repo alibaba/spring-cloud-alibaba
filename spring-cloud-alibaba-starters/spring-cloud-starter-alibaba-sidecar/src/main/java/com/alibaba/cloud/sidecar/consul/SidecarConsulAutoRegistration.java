@@ -16,7 +16,10 @@
 
 package com.alibaba.cloud.sidecar.consul;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.cloud.sidecar.SidecarProperties;
 import com.ecwid.consul.v1.agent.model.NewService;
@@ -29,6 +32,8 @@ import org.springframework.cloud.consul.serviceregistry.ConsulManagementRegistra
 import org.springframework.cloud.consul.serviceregistry.ConsulRegistrationCustomizer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author www.itmuch.com
@@ -59,12 +64,13 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 			service.setAddress(sidecarProperties.getIp());
 		}
 		service.setName(normalizeForDns(appName));
-		service.setTags(properties.getTags());
+		service.setTags(new ArrayList<>(properties.getTags()));
+		service.setEnableTagOverride(properties.getEnableTagOverride());
+		service.setMeta(getMetadata(properties));
 
 		// set health check, use alibaba sidecar self's port rather than polyglot app's
 		// port.
-		service.setPort(
-				Integer.valueOf(context.getEnvironment().getProperty("server.port")));
+		service.setPort(Integer.valueOf(context.getEnvironment().getProperty("server.port")));
 		setCheck(service, autoServiceRegistrationProperties, properties, context,
 				heartbeatProperties);
 
@@ -75,6 +81,32 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 				heartbeatProperties, managementRegistrationCustomizers);
 		customize(registrationCustomizers, registration);
 		return registration;
+	}
+
+	/**
+	 * copyed from org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration#getMetadata
+	 */
+	private static Map<String, String> getMetadata(ConsulDiscoveryProperties properties) {
+		LinkedHashMap<String, String> metadata = new LinkedHashMap<>();
+		if (!CollectionUtils.isEmpty(properties.getMetadata())) {
+			metadata.putAll(properties.getMetadata());
+		}
+
+		// add metadata from other properties. See createTags above.
+		if (!StringUtils.isEmpty(properties.getInstanceZone())) {
+			metadata.put(properties.getDefaultZoneMetadataName(),
+					properties.getInstanceZone());
+		}
+		if (!StringUtils.isEmpty(properties.getInstanceGroup())) {
+			metadata.put("group", properties.getInstanceGroup());
+		}
+
+		// store the secure flag in the tags so that clients will be able to figure
+		// out whether to use http or https automatically
+		metadata.put("secure",
+				Boolean.toString(properties.getScheme().equalsIgnoreCase("https")));
+
+		return metadata;
 	}
 
 	public static String getInstanceId(SidecarProperties sidecarProperties,

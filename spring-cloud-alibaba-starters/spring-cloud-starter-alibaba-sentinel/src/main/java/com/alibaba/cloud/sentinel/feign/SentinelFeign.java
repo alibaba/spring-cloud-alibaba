@@ -84,12 +84,9 @@ public final class SentinelFeign {
 					BeanDefinition def = gctx.getBeanDefinition(target.type().getName());
 
 					/**
-					 * TODO
-					 * 由于初始化顺序发生变更，这里为了避免循环依赖，只能通过 BeanDefinition 的方式获得 FeignClientFactoryBean
-					 * 需要重点review
+					 * Due to the change of the initialization sequence, BeanFactory.getBean will cause a circular dependency.
+					 * So FeignClientFactoryBean can only be obtained from BeanDefinition
 					 */
-//					FeignClientFactoryBean feignClientFactoryBean = (FeignClientFactoryBean) Builder.this.applicationContext
-//							.getBean(FACTORY_BEAN_PREFIX + target.type().getName());
 					FeignClientFactoryBean feignClientFactoryBean = (FeignClientFactoryBean) def.getAttribute("feignClientsRegistrarFactoryBean");
 
 					Class fallback = feignClientFactoryBean.getFallback();
