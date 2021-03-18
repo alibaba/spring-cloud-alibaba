@@ -70,7 +70,8 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 
 		// set health check, use alibaba sidecar self's port rather than polyglot app's
 		// port.
-		service.setPort(Integer.valueOf(context.getEnvironment().getProperty("server.port")));
+		service.setPort(
+				Integer.valueOf(context.getEnvironment().getProperty("server.port")));
 		setCheck(service, autoServiceRegistrationProperties, properties, context,
 				heartbeatProperties);
 
@@ -84,7 +85,8 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 	}
 
 	/**
-	 * copyed from org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration#getMetadata
+	 * copyed from
+	 * org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration#getMetadata
 	 */
 	private static Map<String, String> getMetadata(ConsulDiscoveryProperties properties) {
 		LinkedHashMap<String, String> metadata = new LinkedHashMap<>();
