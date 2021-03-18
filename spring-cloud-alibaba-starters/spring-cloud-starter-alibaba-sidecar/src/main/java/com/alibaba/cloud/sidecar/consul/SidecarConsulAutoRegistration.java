@@ -86,7 +86,7 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 
 	/**
 	 * copyed from
-	 * org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration#getMetadata
+	 * org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration#getMetadata.
 	 */
 	private static Map<String, String> getMetadata(ConsulDiscoveryProperties properties) {
 		LinkedHashMap<String, String> metadata = new LinkedHashMap<>();
