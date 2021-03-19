@@ -68,14 +68,24 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 		service.setEnableTagOverride(properties.getEnableTagOverride());
 		service.setMeta(getMetadata(properties));
 
-		// set health check, use alibaba sidecar self's port rather than polyglot app's
-		// port.
-		service.setPort(
-				Integer.valueOf(context.getEnvironment().getProperty("server.port")));
-		setCheck(service, autoServiceRegistrationProperties, properties, context,
-				heartbeatProperties);
+		if (sidecarProperties.getPort() != null && sidecarProperties.getPort() > 0) {
+			service.setPort(properties.getPort());
+		}
+		else if (properties.getPort() != null && properties.getPort() > 0) {
+			service.setPort(properties.getPort());
+		}
+		else if (context.getEnvironment().getProperty("server.port") != null) {
+			// set health check, use alibaba sidecar self's port rather than polyglot
+			// app's port.
+			service.setPort(
+					Integer.valueOf(context.getEnvironment().getProperty("server.port")));
+		}
 
-		service.setPort(sidecarProperties.getPort());
+		if (service.getPort() != null) {
+			// we know the port and can set the check
+			setCheck(service, autoServiceRegistrationProperties, properties, context,
+					heartbeatProperties);
+		}
 
 		ConsulAutoRegistration registration = new ConsulAutoRegistration(service,
 				autoServiceRegistrationProperties, properties, context,
