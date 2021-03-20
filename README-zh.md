@@ -15,7 +15,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 ## 主要功能
 
-* **服务限流降级**：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
+* **服务限流降级**：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
 * **服务注册与发现**：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。
 * **分布式配置管理**：支持分布式系统中的外部化配置，配置更改时自动刷新。
 * **消息驱动能力**：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。

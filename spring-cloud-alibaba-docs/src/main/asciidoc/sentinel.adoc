@@ -255,29 +255,6 @@ NOTE: XML format is not supported by default. To make it effective, you need to 
 
 To learn more about how dynamic data sources work in Sentinel, refer to https://github.com/alibaba/Sentinel/wiki/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%99%E6%89%A9%E5%B1%95[Dynamic Rule Extension].
 
-=== Support Zuul
-
-Refer https://github.com/alibaba/Sentinel/wiki/API-Gateway-Flow-Control[API Gateway Flow Control]
-
-If you want to use Sentinel Starter with Zuul, you need to add the `spring-cloud-alibaba-sentinel-gateway` dependency, and you need to add the `spring-cloud-starter-netflix-zuul` dependency to let Zuul AutoConfiguration class in the gateway module takes effect:
-
-```xml
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-</dependency>
-```
-
 === Support Spring Cloud Gateway
 
 Refer https://github.com/alibaba/Sentinel/wiki/API-Gateway-Flow-Control[API Gateway Flow Control]
@@ -438,9 +415,6 @@ The following table shows all the configurations of Spring Cloud Alibaba Sentine
 |`spring.cloud.sentinel.log.switch-pid`|If PID is required for Sentinel log file names|false
 |`spring.cloud.sentinel.servlet.blockPage`| Customized redirection URL. When rate limited, the request will be redirected to the pre-defined URL |
 |`spring.cloud.sentinel.flow.coldFactor`| https://github.com/alibaba/Sentinel/wiki/%E9%99%90%E6%B5%81---%E5%86%B7%E5%90%AF%E5%8A%A8[ColdFactor] |3
-|`spring.cloud.sentinel.zuul.order.pre`| The order of SentinelZuulPreFilter | 10000
-|`spring.cloud.sentinel.zuul.order.post`| The order of SentinelZuulPostFilter | 1000
-|`spring.cloud.sentinel.zuul.order.error`| The order of SentinelZuulErrorFilter | -1
 |`spring.cloud.sentinel.scg.fallback.mode`| Response mode after Spring Cloud Gateway circuit break (select `redirect` or `response`) |
 |`spring.cloud.sentinel.scg.fallback.redirect`| Spring Cloud Gateway response mode is the redirect URL corresponding to 'redirect' mode |
 |`spring.cloud.sentinel.scg.fallback.response-body`| Spring Cloud Gateway response mode is response content corresponding to 'response' mode |

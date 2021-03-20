@@ -40,14 +40,6 @@ public class SeataFeignClientAutoConfiguration {
 
 	@Bean
 	@Scope("prototype")
-	@ConditionalOnClass(name = "com.netflix.hystrix.HystrixCommand")
-	@ConditionalOnProperty(name = "feign.hystrix.enabled", havingValue = "true")
-	Feign.Builder feignHystrixBuilder(BeanFactory beanFactory) {
-		return SeataHystrixFeignBuilder.builder(beanFactory);
-	}
-
-	@Bean
-	@Scope("prototype")
 	@ConditionalOnClass(name = "com.alibaba.csp.sentinel.SphU")
 	@ConditionalOnProperty(name = "feign.sentinel.enabled", havingValue = "true")
 	Feign.Builder feignSentinelBuilder(BeanFactory beanFactory) {

@@ -22,7 +22,9 @@ import feign.Client;
 import feign.Request;
 import feign.Response;
 
+import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
 import org.springframework.cloud.loadbalancer.blocking.client.BlockingLoadBalancerClient;
+import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
 
 /**
@@ -32,9 +34,11 @@ public class SeataFeignBlockingLoadBalancerClient
 		extends FeignBlockingLoadBalancerClient {
 
 	public SeataFeignBlockingLoadBalancerClient(Client delegate,
-			BlockingLoadBalancerClient loadBalancerClient,
-			SeataFeignObjectWrapper seataFeignObjectWrapper) {
-		super((Client) seataFeignObjectWrapper.wrap(delegate), loadBalancerClient);
+												BlockingLoadBalancerClient loadBalancerClient,
+												LoadBalancerProperties properties,
+												LoadBalancerClientFactory loadBalancerClientFactory,
+												SeataFeignObjectWrapper seataFeignObjectWrapper) {
+		super((Client) seataFeignObjectWrapper.wrap(delegate), loadBalancerClient, properties, loadBalancerClientFactory);
 	}
 
 	@Override

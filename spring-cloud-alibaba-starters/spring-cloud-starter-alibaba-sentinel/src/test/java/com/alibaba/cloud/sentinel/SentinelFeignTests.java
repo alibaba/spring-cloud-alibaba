@@ -31,6 +31,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -191,7 +192,7 @@ public class SentinelFeignTests {
 	}
 
 	public static class CustomFallbackFactory
-			implements feign.hystrix.FallbackFactory<FooService> {
+			implements FallbackFactory<FooService> {
 
 		private FooService fooService = new FooServiceFallback();
 

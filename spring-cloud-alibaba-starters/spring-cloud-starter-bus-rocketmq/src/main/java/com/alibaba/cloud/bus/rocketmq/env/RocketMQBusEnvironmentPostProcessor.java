@@ -28,7 +28,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 
-import static org.springframework.cloud.bus.SpringCloudBusClient.INPUT;
+import static org.springframework.cloud.bus.BusConstants.INPUT;
 
 /**
  * The lowest precedence {@link EnvironmentPostProcessor} configures default RocketMQ Bus

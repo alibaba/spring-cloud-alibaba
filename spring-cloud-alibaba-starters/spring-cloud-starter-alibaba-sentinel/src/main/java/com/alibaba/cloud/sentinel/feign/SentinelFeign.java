@@ -25,18 +25,20 @@ import feign.Contract;
 import feign.Feign;
 import feign.InvocationHandlerFactory;
 import feign.Target;
-import feign.hystrix.FallbackFactory;
-import feign.hystrix.HystrixFeign;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.cloud.openfeign.FeignClientFactoryBean;
 import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * {@link Feign.Builder} like {@link HystrixFeign.Builder}.
+ * {@link Feign.Builder}.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
@@ -77,20 +79,22 @@ public final class SentinelFeign {
 				@Override
 				public InvocationHandler create(Target target,
 						Map<Method, MethodHandler> dispatch) {
-					// using reflect get fallback and fallbackFactory properties from
-					// FeignClientFactoryBean because FeignClientFactoryBean is a package
-					// level class, we can not use it in our package
-					Object feignClientFactoryBean = Builder.this.applicationContext
-							.getBean("&" + target.type().getName());
 
-					Class fallback = (Class) getFieldValue(feignClientFactoryBean,
-							"fallback");
-					Class fallbackFactory = (Class) getFieldValue(feignClientFactoryBean,
-							"fallbackFactory");
-					String beanName = (String) getFieldValue(feignClientFactoryBean,
-							"contextId");
+					GenericApplicationContext gctx = (GenericApplicationContext) Builder.this.applicationContext;
+					BeanDefinition def = gctx.getBeanDefinition(target.type().getName());
+
+					/**
+					 * Due to the change of the initialization sequence, BeanFactory.getBean will cause a circular dependency.
+					 * So FeignClientFactoryBean can only be obtained from BeanDefinition
+					 */
+					FeignClientFactoryBean feignClientFactoryBean = (FeignClientFactoryBean) def.getAttribute("feignClientsRegistrarFactoryBean");
+
+					Class fallback = feignClientFactoryBean.getFallback();
+					Class fallbackFactory = feignClientFactoryBean.getFallbackFactory();
+					String beanName = feignClientFactoryBean.getContextId();
+
 					if (!StringUtils.hasText(beanName)) {
-						beanName = (String) getFieldValue(feignClientFactoryBean, "name");
+						beanName = feignClientFactoryBean.getName();
 					}
 
 					Object fallbackInstance;

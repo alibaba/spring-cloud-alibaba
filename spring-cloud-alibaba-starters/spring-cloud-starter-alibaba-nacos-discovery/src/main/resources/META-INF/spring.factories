@@ -1,6 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration,\
-  com.alibaba.cloud.nacos.ribbon.RibbonNacosAutoConfiguration,\
   com.alibaba.cloud.nacos.endpoint.NacosDiscoveryEndpointAutoConfiguration,\
   com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration,\
   com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration,\
