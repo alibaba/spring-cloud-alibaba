@@ -16,11 +16,11 @@
 
 package com.alibaba.cloud.examples;
 
-
 import org.apache.rocketmq.client.producer.LocalTransactionState;
 import org.apache.rocketmq.client.producer.TransactionListener;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,22 +30,18 @@ import org.springframework.stereotype.Component;
 public class TransactionListenerImpl implements TransactionListener {
 
 	@Override
-	public LocalTransactionState executeLocalTransaction(Message msg,
-														 Object arg) {
+	public LocalTransactionState executeLocalTransaction(Message msg, Object arg) {
 		Object num = msg.getProperty("test");
 
 		if ("1".equals(num)) {
-			System.out.println(
-					"executer: " + new String(msg.getBody()) + " unknown");
+			System.out.println("executer: " + new String(msg.getBody()) + " unknown");
 			return LocalTransactionState.UNKNOW;
 		}
 		else if ("2".equals(num)) {
-			System.out.println(
-					"executer: " + new String(msg.getBody()) + " rollback");
+			System.out.println("executer: " + new String(msg.getBody()) + " rollback");
 			return LocalTransactionState.ROLLBACK_MESSAGE;
 		}
-		System.out.println(
-				"executer: " + new String(msg.getBody()) + " commit");
+		System.out.println("executer: " + new String(msg.getBody()) + " commit");
 		return LocalTransactionState.COMMIT_MESSAGE;
 	}
 

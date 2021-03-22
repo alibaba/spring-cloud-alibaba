@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +26,7 @@ import org.apache.rocketmq.remoting.netty.TlsSystemConfig;
  * @author zkzlx
  */
 public class RocketMQCommonProperties implements Serializable {
+
 	private static final long serialVersionUID = -6724870154343284715L;
 
 	private boolean enabled = true;
@@ -41,38 +42,36 @@ public class RocketMQCommonProperties implements Serializable {
 	 * The property of "secret-key".
 	 */
 	private String secretKey;
+
 	/**
 	 * Consumers of the same role is required to have exactly same subscriptions and
 	 * consumerGroup to correctly achieve load balance. It's required and needs to be
-	 * globally unique.
-	 * </p>
-	 * Producer group conceptually aggregates all producer instances of exactly same role,
-	 * which is particularly important when transactional messages are involved.
-	 * </p>
-	 * <p>
-	 * For non-transactional messages, it does not matter as long as it's unique per
-	 * process.
-	 * </p>
-	 * <p>
-	 * See <a href="http://rocketmq.apache.org/docs/core-concept/">here</a> for further
-	 * discussion.
+	 * globally unique. Producer group conceptually aggregates all producer instances of
+	 * exactly same role, which is particularly important when transactional messages are
+	 * involved. For non-transactional messages, it does not matter as long as it's unique
+	 * per process. See <a href="http://rocketmq.apache.org/docs/core-concept/">here</a>
+	 * for further discussion.
 	 */
 	private String group;
 
 	private String namespace;
+
 	private String accessChannel = AccessChannel.LOCAL.name();
+
 	/**
 	 * Pulling topic information interval from the named server.
 	 * see{@link MQClientInstance#startScheduledTask()},eg:ScheduledTask
 	 * updateTopicRouteInfoFromNameServer.
 	 */
 	private int pollNameServerInterval = 1000 * 30;
+
 	/**
 	 * Heartbeat interval in microseconds with message broker.
 	 * see{@link MQClientInstance#startScheduledTask()},eg:ScheduledTask
 	 * sendHeartbeatToAllBroker .
 	 */
 	private int heartbeatBrokerInterval = 1000 * 30;
+
 	/**
 	 * Offset persistent interval for consumer.
 	 * see{@link MQClientInstance#startScheduledTask()},eg:ScheduledTask
@@ -85,6 +84,7 @@ public class RocketMQCommonProperties implements Serializable {
 	private boolean useTLS = TlsSystemConfig.tlsEnable;
 
 	private boolean enableMsgTrace = true;
+
 	private String customizedTraceTopic;
 
 	public boolean getEnabled() {
@@ -198,4 +198,5 @@ public class RocketMQCommonProperties implements Serializable {
 	public void setCustomizedTraceTopic(String customizedTraceTopic) {
 		this.customizedTraceTopic = customizedTraceTopic;
 	}
+
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,8 +37,6 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 
 	/**
 	 * Message model defines the way how messages are delivered to each consumer clients.
-	 * </p>
-	 *
 	 * This field defaults to clustering.
 	 */
 	private String messageModel = MessageModel.CLUSTERING.getModeCN();
@@ -60,13 +58,12 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 	private String subscription;
 
 	/**
-	 * Delay some time when exception occur
+	 * Delay some time when exception occur .
 	 */
 	private long pullTimeDelayMillsWhenException = 1000;
 
 	/**
 	 * Consuming point on consumer booting.
-	 * </p>
 	 *
 	 * There are three consuming points:
 	 * <ul>
@@ -90,6 +87,7 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 	 * </ul>
 	 */
 	private ConsumeFromWhere consumeFromWhere = ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET;
+
 	/**
 	 * Backtracking consumption time with second precision. Time format is
 	 * 20131223171201<br>
@@ -102,13 +100,14 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 	/**
 	 * Flow control threshold on queue level, each message queue will cache at most 1000
 	 * messages by default, Consider the {@link #pullBatchSize}, the instantaneous value
-	 * may exceed the limit
+	 * may exceed the limit .
 	 */
 	private int pullThresholdForQueue = 1000;
+
 	/**
 	 * Limit the cached message size on queue level, each message queue will cache at most
 	 * 100 MiB messages by default, Consider the {@link #pullBatchSize}, the instantaneous
-	 * value may exceed the limit
+	 * value may exceed the limit .
 	 *
 	 * <p>
 	 * The size of a message only measured by message body, so it's not accurate
@@ -126,6 +125,7 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 	private int consumeMaxSpan = 2000;
 
 	private Push push = new Push();
+
 	private Pull pull = new Pull();
 
 	public String getMessageModel() {
@@ -238,6 +238,7 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 	}
 
 	public static class Push implements Serializable {
+
 		private static final long serialVersionUID = -7398468554978817630L;
 
 		/**
@@ -245,6 +246,7 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 		 * false, using {@link MessageListenerConcurrently}.
 		 */
 		private boolean orderly = false;
+
 		/**
 		 * Suspending pulling time for cases requiring slow pulling like flow-control
 		 * scenario. see{@link ConsumeMessageOrderlyService#processConsumeResult}.
@@ -254,10 +256,9 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 
 		/**
 		 * https://github.com/alibaba/spring-cloud-alibaba/issues/1866 Max re-consume
-		 * times. -1 means 16 times.
-		 * </p>
-		 * If messages are re-consumed more than {@link #maxReconsumeTimes} before
-		 * success, it's be directed to a deletion queue waiting.
+		 * times. -1 means 16 times. If messages are re-consumed more than
+		 * {@link #maxReconsumeTimes} before success, it's be directed to a deletion queue
+		 * waiting.
 		 */
 		private int maxReconsumeTimes;
 
@@ -285,21 +286,21 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 		 * MiB(Unlimited)
 		 * <p>
 		 * The value of {@code pullThresholdSizeForQueue} will be overwrote and calculated
-		 * based on {@code pullThresholdSizeForTopic} if it is't unlimited
+		 * based on {@code pullThresholdSizeForTopic} if it is't unlimited .
 		 * <p>
 		 * For example, if the value of pullThresholdSizeForTopic is 1000 MiB and 10
 		 * message queues are assigned to this consumer, then pullThresholdSizeForQueue
-		 * will be set to 100 MiB
+		 * will be set to 100 MiB .
 		 */
 		private int pullThresholdSizeForTopic = -1;
 
 		/**
-		 * Message pull Interval
+		 * Message pull Interval.
 		 */
 		private long pullInterval = 0;
 
 		/**
-		 * Batch consumption size
+		 * Batch consumption size.
 		 */
 		private int consumeMessageBatchMaxSize = 1;
 
@@ -366,15 +367,18 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 		public void setConsumeMessageBatchMaxSize(int consumeMessageBatchMaxSize) {
 			this.consumeMessageBatchMaxSize = consumeMessageBatchMaxSize;
 		}
+
 	}
 
 	public static class Pull implements Serializable {
+
 		/**
-		 * The poll timeout in milliseconds
+		 * The poll timeout in milliseconds.
 		 */
 		private long pollTimeoutMillis = 1000 * 5;
+
 		/**
-		 * Pull thread number
+		 * Pull thread number.
 		 */
 		private int pullThreadNums = 20;
 
@@ -385,13 +389,13 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 
 		/**
 		 * Long polling mode, the Consumer connection timeout(must greater than
-		 * brokerSuspendMaxTimeMillis), it is not recommended to modify
+		 * brokerSuspendMaxTimeMillis), it is not recommended to modify.
 		 */
 		private long consumerTimeoutMillisWhenSuspend = 1000 * 30;
 
 		/**
 		 * Ack state handling, including receive, reject, and retry, when a consumption
-		 * exception occurs. see {@link }
+		 * exception occurs.
 		 */
 		private String errAcknowledge;
 
@@ -446,6 +450,7 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 		public void setPullThresholdForAll(long pullThresholdForAll) {
 			this.pullThresholdForAll = pullThresholdForAll;
 		}
+
 	}
 
 }

@@ -56,14 +56,18 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			.getLogger(RocketMQMessageSource.class);
 
 	private DefaultLitePullConsumer consumer;
+
 	private AssignedMessageQueue assignedMessageQueue;
+
 	private volatile boolean running;
 
 	private final String topic;
+
 	private final MessageSelector messageSelector;
+
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties;
 
-	private volatile Iterator<MessageExt> messageExtIterator=null;
+	private volatile Iterator<MessageExt> messageExtIterator = null;
 
 	public RocketMQMessageSource(String name,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
@@ -85,7 +89,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			this.consumer = RocketMQConsumerFactory
 					.initPullConsumer(extendedConsumerProperties);
 			// This parameter must be 1, otherwise doReceive cannot be handled singly.
-//			this.consumer.setPullBatchSize(1);
+			// this.consumer.setPullBatchSize(1);
 			this.consumer.subscribe(topic, messageSelector);
 			this.consumer.setAutoCommit(false);
 			this.assignedMessageQueue = acquireAssignedMessageQueue(this.consumer);
@@ -135,18 +139,18 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	@Override
 	protected synchronized Object doReceive() {
-		if(messageExtIterator == null){
+		if (messageExtIterator == null) {
 			List<MessageExt> messageExtList = consumer.poll();
 			if (CollectionUtils.isEmpty(messageExtList) || messageExtList.size() > 1) {
 				return null;
 			}
 			messageExtIterator = messageExtList.iterator();
 		}
-		MessageExt messageExt=messageExtIterator.next();
-		if(!messageExtIterator.hasNext()){
+		MessageExt messageExt = messageExtIterator.next();
+		if (!messageExtIterator.hasNext()) {
 			messageExtIterator = null;
 		}
-		if(null == messageExt){
+		if (null == messageExt) {
 			return null;
 		}
 		MessageQueue messageQueue = null;
@@ -156,8 +160,9 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 				break;
 			}
 		}
-		if(messageQueue == null){
-			throw new IllegalArgumentException("The message queue is not in assigned list");
+		if (messageQueue == null) {
+			throw new IllegalArgumentException(
+					"The message queue is not in assigned list");
 		}
 		Message message = RocketMQMessageConverterSupport
 				.convertMessage2Spring(messageExt);

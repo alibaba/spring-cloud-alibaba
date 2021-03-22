@@ -48,7 +48,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 /**
- * TODO Describe what it does
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class RocketMQInboundChannelAdapter extends MessageProducerSupport
@@ -58,10 +57,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 			.getLogger(RocketMQInboundChannelAdapter.class);
 
 	private RetryTemplate retryTemplate;
+
 	private RecoveryCallback<Object> recoveryCallback;
+
 	private DefaultMQPushConsumer pushConsumer;
 
 	private final String topic;
+
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties;
 
 	public RocketMQInboundChannelAdapter(String topic,
@@ -146,11 +148,11 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 	 * The actual execution of a user-defined input consumption service method.
 	 * @param messageExtList rocket mq message list
 	 * @param failSupplier {@link ConsumeConcurrentlyStatus} or
-	 *     {@link ConsumeOrderlyStatus}
+	 * {@link ConsumeOrderlyStatus}
 	 * @param sucSupplier {@link ConsumeConcurrentlyStatus} or
-	 *     {@link ConsumeOrderlyStatus}
-	 * @param <R>
-	 * @return
+	 * {@link ConsumeOrderlyStatus}
+	 * @param <R> object
+	 * @return R
 	 */
 	private <R> R consumeMessage(List<MessageExt> messageExtList,
 			Supplier<R> failSupplier, Supplier<R> sucSupplier) {

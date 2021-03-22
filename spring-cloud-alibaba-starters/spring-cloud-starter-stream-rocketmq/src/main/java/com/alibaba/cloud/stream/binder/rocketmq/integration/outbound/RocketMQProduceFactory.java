@@ -39,18 +39,23 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Extended function related to producer . eg:initial
+ * Extended function related to producer . eg:initial .
  *
  * @author zkzlx
  */
 public final class RocketMQProduceFactory {
+
+	private RocketMQProduceFactory() {
+	}
 
 	private final static Logger log = LoggerFactory
 			.getLogger(RocketMQProduceFactory.class);
 
 	/**
 	 * init for the producer,including convert producer params.
-	 * @return
+	 * @param topic topic
+	 * @param producerProperties producerProperties
+	 * @return DefaultMQProducer
 	 */
 	public static DefaultMQProducer initRocketMQProducer(String topic,
 			RocketMQProducerProperties producerProperties) {

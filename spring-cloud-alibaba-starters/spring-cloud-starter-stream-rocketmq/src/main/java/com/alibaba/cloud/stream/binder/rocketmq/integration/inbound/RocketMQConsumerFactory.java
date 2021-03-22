@@ -41,6 +41,9 @@ import org.springframework.util.StringUtils;
  */
 public final class RocketMQConsumerFactory {
 
+	private RocketMQConsumerFactory() {
+	}
+
 	private final static Logger log = LoggerFactory
 			.getLogger(RocketMQConsumerFactory.class);
 
@@ -91,7 +94,8 @@ public final class RocketMQConsumerFactory {
 
 	/**
 	 * todo Compatible with versions less than 4.6 ?
-	 * @return
+	 * @param extendedConsumerProperties extendedConsumerProperties
+	 * @return DefaultLitePullConsumer
 	 */
 	public static DefaultLitePullConsumer initPullConsumer(
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {

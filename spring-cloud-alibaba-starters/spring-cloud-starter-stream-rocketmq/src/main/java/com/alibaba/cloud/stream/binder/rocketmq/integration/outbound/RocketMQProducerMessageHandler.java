@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,16 +61,23 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 			.getLogger(RocketMQProducerMessageHandler.class);
 
 	private volatile boolean running = false;
+
 	private volatile boolean isTrans = false;
 
 	private ErrorMessageStrategy errorMessageStrategy;
+
 	private MessageChannel sendFailureChannel;
+
 	private MessageConverterConfigurer.PartitioningInterceptor partitioningInterceptor;
+
 	private DefaultMQProducer defaultMQProducer;
+
 	private MessageQueueSelector messageQueueSelector;
 
 	private final ProducerDestination destination;
+
 	private final ExtendedProducerProperties<RocketMQProducerProperties> extendedProducerProperties;
+
 	private final RocketMQProducerProperties mqProducerProperties;
 
 	public RocketMQProducerMessageHandler(ProducerDestination destination,
@@ -93,10 +100,8 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 		// Use the default if the partition is on and no customization is available.
 		this.messageQueueSelector = RocketMQBeanContainerCache.getBean(
 				mqProducerProperties.getMessageQueueSelector(),
-				MessageQueueSelector.class,
-				extendedProducerProperties.isPartitioned()
-						? new PartitionMessageQueueSelector()
-						: null);
+				MessageQueueSelector.class, extendedProducerProperties.isPartitioned()
+						? new PartitionMessageQueueSelector() : null);
 	}
 
 	@Override
@@ -226,9 +231,9 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 	}
 
 	/**
-	 * https://github.com/alibaba/spring-cloud-alibaba/issues/1408
-	 * @param message
-	 * @return
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/1408 .
+	 * @param message message
+	 * @return SendCallback
 	 */
 	private SendCallback getSendCallback(Message<?> message) {
 		SendCallback sendCallback = RocketMQBeanContainerCache
@@ -283,4 +288,5 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 		this.partitioningInterceptor = partitioningInterceptor;
 		return this;
 	}
+
 }

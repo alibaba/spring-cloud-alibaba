@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2018 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,7 +37,6 @@ public class RocketMQProducerProperties extends RocketMQCommonProperties {
 	/**
 	 * Maximum number of retry to perform internally before claiming sending failure in
 	 * synchronous mode.
-	 * </p>
 	 *
 	 * This may potentially cause message duplication which is up to application
 	 * developers to resolve.
@@ -47,7 +46,6 @@ public class RocketMQProducerProperties extends RocketMQCommonProperties {
 	/**
 	 * Maximum number of retry to perform internally before claiming sending failure in
 	 * asynchronous mode.
-	 * </p>
 	 *
 	 * This may potentially cause message duplication which is up to application
 	 * developers to resolve.
@@ -203,19 +201,41 @@ public class RocketMQProducerProperties extends RocketMQCommonProperties {
 	}
 
 	public enum ProducerType {
-		Normal, Trans;
+
+		/**
+		 * Is not a transaction.
+		 */
+		Normal,
+		/**
+		 * a transaction.
+		 */
+		Trans;
 
 		public boolean equalsName(String name) {
 			return this.name().equalsIgnoreCase(name);
 		}
+
 	}
 
 	public enum SendType {
-		OneWay, Async, Sync,;
+
+		/**
+		 * one way.
+		 */
+		OneWay,
+		/**
+		 * Asynchronization Model.
+		 */
+		Async,
+		/**
+		 * synchronization.
+		 */
+		Sync,;
 
 		public boolean equalsName(String name) {
 			return this.name().equalsIgnoreCase(name);
 		}
+
 	}
 
 }

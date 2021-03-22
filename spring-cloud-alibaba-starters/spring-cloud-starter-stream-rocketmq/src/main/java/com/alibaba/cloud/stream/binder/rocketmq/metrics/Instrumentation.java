@@ -28,6 +28,7 @@ import org.springframework.context.Lifecycle;
 public class Instrumentation {
 
 	private final String name;
+
 	private Lifecycle actuator;
 
 	protected final AtomicBoolean started = new AtomicBoolean(false);
@@ -88,4 +89,17 @@ public class Instrumentation {
 	public int hashCode() {
 		return Objects.hash(getName(), getActuator());
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Instrumentation that = (Instrumentation) o;
+		return name.equals(that.name) && actuator.equals(that.actuator);
+	}
+
 }

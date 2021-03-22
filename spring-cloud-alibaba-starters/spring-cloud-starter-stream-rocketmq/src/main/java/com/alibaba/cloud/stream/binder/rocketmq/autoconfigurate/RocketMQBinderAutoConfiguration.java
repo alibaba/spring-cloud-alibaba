@@ -34,7 +34,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.CompositeMessageConverter;
 
 /**
- * issue:https://github.com/alibaba/spring-cloud-alibaba/issues/1681
+ * issue:https://github.com/alibaba/spring-cloud-alibaba/issues/1681 .
+ *
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
@@ -45,6 +46,7 @@ public class RocketMQBinderAutoConfiguration {
 
 	@Autowired
 	private RocketMQExtendedBindingProperties extendedBindingProperties;
+
 	@Autowired
 	private RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 

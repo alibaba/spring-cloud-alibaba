@@ -26,6 +26,9 @@ import java.util.Map;
  */
 public final class InstrumentationManager {
 
+	private InstrumentationManager() {
+	}
+
 	private static final Map<Integer, Instrumentation> HEALTH_INSTRUMENTATIONS = new HashMap<>();
 
 	public static Collection<Instrumentation> getHealthInstrumentations() {
