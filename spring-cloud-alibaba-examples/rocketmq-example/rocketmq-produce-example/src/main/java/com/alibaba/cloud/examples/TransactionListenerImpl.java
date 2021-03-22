@@ -16,43 +16,43 @@
 
 package com.alibaba.cloud.examples;
 
-import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
-import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
-import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
 
-import org.springframework.messaging.Message;
+import org.apache.rocketmq.client.producer.LocalTransactionState;
+import org.apache.rocketmq.client.producer.TransactionListener;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageExt;
+import org.springframework.stereotype.Component;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-@RocketMQTransactionListener(txProducerGroup = "myTxProducerGroup", corePoolSize = 5,
-		maximumPoolSize = 10)
-public class TransactionListenerImpl implements RocketMQLocalTransactionListener {
+@Component("myTransactionListener")
+public class TransactionListenerImpl implements TransactionListener {
 
 	@Override
-	public RocketMQLocalTransactionState executeLocalTransaction(Message msg,
-			Object arg) {
-		Object num = msg.getHeaders().get("test");
+	public LocalTransactionState executeLocalTransaction(Message msg,
+														 Object arg) {
+		Object num = msg.getProperty("test");
 
 		if ("1".equals(num)) {
 			System.out.println(
-					"executer: " + new String((byte[]) msg.getPayload()) + " unknown");
-			return RocketMQLocalTransactionState.UNKNOWN;
+					"executer: " + new String(msg.getBody()) + " unknown");
+			return LocalTransactionState.UNKNOW;
 		}
 		else if ("2".equals(num)) {
 			System.out.println(
-					"executer: " + new String((byte[]) msg.getPayload()) + " rollback");
-			return RocketMQLocalTransactionState.ROLLBACK;
+					"executer: " + new String(msg.getBody()) + " rollback");
+			return LocalTransactionState.ROLLBACK_MESSAGE;
 		}
 		System.out.println(
-				"executer: " + new String((byte[]) msg.getPayload()) + " commit");
-		return RocketMQLocalTransactionState.COMMIT;
+				"executer: " + new String(msg.getBody()) + " commit");
+		return LocalTransactionState.COMMIT_MESSAGE;
 	}
 
 	@Override
-	public RocketMQLocalTransactionState checkLocalTransaction(Message msg) {
-		System.out.println("check: " + new String((byte[]) msg.getPayload()));
-		return RocketMQLocalTransactionState.COMMIT;
+	public LocalTransactionState checkLocalTransaction(MessageExt msg) {
+		System.out.println("check: " + new String(msg.getBody()));
+		return LocalTransactionState.COMMIT_MESSAGE;
 	}
 
 }

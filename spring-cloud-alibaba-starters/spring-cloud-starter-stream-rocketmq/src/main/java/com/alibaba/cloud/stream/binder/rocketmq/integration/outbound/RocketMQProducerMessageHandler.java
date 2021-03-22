@@ -160,7 +160,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 								TransactionListener.class);
 				if (transactionListener == null) {
 					throw new MessagingException(
-							"TransactionMQProducer must have a TransactionMQProducer !!! ");
+							"TransactionMQProducer must have a TransactionListener !!! ");
 				}
 				((TransactionMQProducer) defaultMQProducer)
 						.setTransactionListener(transactionListener);

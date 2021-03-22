@@ -17,6 +17,7 @@
 package com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.pull;
 
 import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.List;
 
 import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.RocketMQConsumerFactory;
@@ -62,6 +63,8 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 	private final MessageSelector messageSelector;
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties;
 
+	private volatile Iterator<MessageExt> messageExtIterator=null;
+
 	public RocketMQMessageSource(String name,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
 		this.topic = name;
@@ -82,7 +85,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			this.consumer = RocketMQConsumerFactory
 					.initPullConsumer(extendedConsumerProperties);
 			// This parameter must be 1, otherwise doReceive cannot be handled singly.
-			this.consumer.setPullBatchSize(1);
+//			this.consumer.setPullBatchSize(1);
 			this.consumer.subscribe(topic, messageSelector);
 			this.consumer.setAutoCommit(false);
 			this.assignedMessageQueue = acquireAssignedMessageQueue(this.consumer);
@@ -132,11 +135,20 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	@Override
 	protected synchronized Object doReceive() {
-		List<MessageExt> messageExtList = consumer.poll();
-		if (CollectionUtils.isEmpty(messageExtList) || messageExtList.size() > 1) {
+		if(messageExtIterator == null){
+			List<MessageExt> messageExtList = consumer.poll();
+			if (CollectionUtils.isEmpty(messageExtList) || messageExtList.size() > 1) {
+				return null;
+			}
+			messageExtIterator = messageExtList.iterator();
+		}
+		MessageExt messageExt=messageExtIterator.next();
+		if(!messageExtIterator.hasNext()){
+			messageExtIterator = null;
+		}
+		if(null == messageExt){
 			return null;
 		}
-		MessageExt messageExt = messageExtList.get(0);
 		MessageQueue messageQueue = null;
 		for (MessageQueue queue : assignedMessageQueue.getAssignedMessageQueues()) {
 			if (queue.getQueueId() == messageExt.getQueueId()) {
@@ -144,8 +156,11 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 				break;
 			}
 		}
+		if(messageQueue == null){
+			throw new IllegalArgumentException("The message queue is not in assigned list");
+		}
 		Message message = RocketMQMessageConverterSupport
-				.convertMessage2Spring(messageExtList.get(0));
+				.convertMessage2Spring(messageExt);
 		return MessageBuilder.fromMessage(message)
 				.setHeader(IntegrationMessageHeaderAccessor.ACKNOWLEDGMENT_CALLBACK,
 						new RocketMQAckCallback(this.consumer, assignedMessageQueue,

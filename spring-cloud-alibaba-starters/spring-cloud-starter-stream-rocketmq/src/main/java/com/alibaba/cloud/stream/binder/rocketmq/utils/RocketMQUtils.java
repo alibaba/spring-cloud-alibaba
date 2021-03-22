@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.utils;
 
+import com.alibaba.cloud.stream.binder.rocketmq.contants.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQCommonProperties;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
@@ -81,7 +82,7 @@ public class RocketMQUtils {
 
 	public static String getNameServerStr(String nameServer) {
 		if (StringUtils.isEmpty(nameServer)) {
-			return null;
+			return RocketMQConst.DEFAULT_NAME_SERVER;
 		}
 		return nameServer.replaceAll(",", ";");
 	}

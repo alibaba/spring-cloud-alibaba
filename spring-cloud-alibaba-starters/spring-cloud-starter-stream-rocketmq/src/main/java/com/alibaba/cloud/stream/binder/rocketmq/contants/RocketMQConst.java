@@ -18,17 +18,10 @@ package com.alibaba.cloud.stream.binder.rocketmq.contants;
 
 import org.apache.rocketmq.common.message.MessageConst;
 
-import static org.apache.rocketmq.spring.support.RocketMQHeaders.PREFIX;
-
 /**
  * @author zkzlx
  */
 public class RocketMQConst extends MessageConst {
-
-	/**
-	 * Header key for RocketMQ Transactional Args.
-	 */
-	public static final String ROCKET_TRANSACTIONAL_ARG = "TRANSACTIONAL_ARG";
 
 	/**
 	 * Default NameServer value.
@@ -38,12 +31,8 @@ public class RocketMQConst extends MessageConst {
 	/**
 	 * Default group for SCS RocketMQ Binder.
 	 */
-	public static final String DEFAULT_GROUP = PREFIX + "binder_default_group_name";
+	public static final String DEFAULT_GROUP =  "binder_default_group_name";
 
-	/**
-	 * RocketMQ re-consume times.
-	 */
-	public static final String ROCKETMQ_RECONSUME_TIMES = PREFIX + "RECONSUME_TIMES";
 
 	public static final String USER_TRANSACTIONAL_ARGS = "TRANSACTIONAL_ARGS";
 

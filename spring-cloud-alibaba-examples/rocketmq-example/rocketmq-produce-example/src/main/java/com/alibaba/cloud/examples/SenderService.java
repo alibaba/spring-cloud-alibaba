@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.alibaba.cloud.examples.RocketMQProduceApplication.MySource;
+import com.alibaba.cloud.stream.binder.rocketmq.contants.RocketMQConst;
 import org.apache.rocketmq.common.message.MessageConst;
-import org.apache.rocketmq.spring.support.RocketMQHeaders;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
@@ -62,7 +62,7 @@ public class SenderService {
 		MessageBuilder builder = MessageBuilder.withPayload(msg)
 				.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
 		builder.setHeader("test", String.valueOf(num));
-		builder.setHeader(RocketMQHeaders.TAGS, "binder");
+		builder.setHeader(RocketMQConst.USER_TRANSACTIONAL_ARGS, "binder");
 		Message message = builder.build();
 		source.output2().send(message);
 	}
