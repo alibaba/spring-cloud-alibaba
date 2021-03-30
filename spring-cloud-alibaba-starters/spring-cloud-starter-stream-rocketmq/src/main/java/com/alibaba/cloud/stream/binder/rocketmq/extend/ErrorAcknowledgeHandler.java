@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.stream.binder.rocketmq.properties;
+package com.alibaba.cloud.stream.binder.rocketmq.extend;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.integration.acks.AcknowledgmentCallback.Status;
+import org.springframework.messaging.Message;
 
 /**
- * binding rocketMq properties.
- *
- * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author zkzlx
  */
-@ConfigurationProperties(prefix = "spring.cloud.stream.rocketmq.binder")
-public class RocketMQBinderConfigurationProperties extends RocketMQCommonProperties {
+public interface ErrorAcknowledgeHandler {
+
+	/**
+	 * Ack state handling, including receive, reject, and retry, when a consumption
+	 * exception occurs.
+	 * @param message message
+	 * @return see {@link Status}
+	 */
+	Status handler(Message<?> message);
 
 }

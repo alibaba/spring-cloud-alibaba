@@ -36,7 +36,7 @@ public class PartitionMessageQueueSelector implements MessageQueueSelector {
 
 	@Override
 	public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
-		Integer partition = 0;
+		int partition = 0;
 		try {
 			partition = Math.abs(
 					Integer.parseInt(msg.getProperty(BinderHeaders.PARTITION_HEADER)));
