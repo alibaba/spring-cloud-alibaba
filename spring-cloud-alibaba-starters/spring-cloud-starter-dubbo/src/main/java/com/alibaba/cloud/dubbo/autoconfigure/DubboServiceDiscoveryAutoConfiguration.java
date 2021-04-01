@@ -16,15 +16,11 @@
 
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.alibaba.cloud.dubbo.env.DubboCloudProperties;
@@ -38,6 +34,7 @@ import com.alibaba.cloud.nacos.discovery.NacosWatch;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.discovery.CacheRefreshedEvent;
 import com.netflix.discovery.shared.Applications;
 import org.apache.curator.framework.CuratorFramework;
@@ -99,12 +96,11 @@ import static org.springframework.util.StringUtils.hasText;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.springframework.cloud.client.discovery.DiscoveryClient")
 @ConditionalOnProperty(name = "spring.cloud.discovery.enabled", matchIfMissing = true)
-@AutoConfigureAfter(
-		name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
-				ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
-				CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
-				NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME },
-		value = { DubboServiceRegistrationAutoConfiguration.class })
+@AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
+		ZOOKEEPER_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
+		CONSUL_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME,
+		NACOS_DISCOVERY_AUTO_CONFIGURATION_CLASS_NAME }, value = {
+				DubboServiceRegistrationAutoConfiguration.class })
 public class DubboServiceDiscoveryAutoConfiguration {
 
 	/**
@@ -131,6 +127,8 @@ public class DubboServiceDiscoveryAutoConfiguration {
 	private final DiscoveryClient discoveryClient;
 
 	private final AtomicReference<Object> heartbeatState = new AtomicReference<>();
+
+	private List<ServiceInstance> oldServiceInstances = new ArrayList<>();
 
 	/**
 	 * @see #defaultHeartbeatEventChangePredicate()
@@ -241,11 +239,24 @@ public class DubboServiceDiscoveryAutoConfiguration {
 			if (predicate.test(event)) {
 				// Dispatch ServiceInstancesChangedEvent for each service
 				subscribedServices.forEach(serviceName -> {
-					List<ServiceInstance> serviceInstances = getInstances(serviceName);
-					dispatchServiceInstancesChangedEvent(serviceName, serviceInstances);
+
+					List<ServiceInstance> newServiceInstances = getInstances(serviceName);
+					List<ServiceInstance> changedServiceInstances = newServiceInstances
+							.stream().filter(this::filter).collect(Collectors.toList());
+					oldServiceInstances = newServiceInstances;
+					dispatchServiceInstancesChangedEvent(serviceName, changedServiceInstances);
 				});
 			}
 		});
+	}
+
+	private boolean filter(ServiceInstance serviceInstance) {
+		for (ServiceInstance oldServiceInstance : oldServiceInstances) {
+			if(oldServiceInstance.equals(serviceInstance)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -350,6 +361,8 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		 */
 		private final ThreadLocal<String> processedServiceNameThreadLocal;
 
+		private List<ServiceInstance> oldServiceInstances = new ArrayList<>();
+
 		ZookeeperConfiguration(ZookeeperDiscoveryProperties zookeeperDiscoveryProperties,
 				ZookeeperServiceWatch zookeeperServiceWatch) {
 			this.zookeeperServiceWatch = zookeeperServiceWatch;
@@ -442,9 +455,13 @@ public class DubboServiceDiscoveryAutoConfiguration {
 		public void beforeChildEvent(CuratorFramework client, TreeCacheEvent event) {
 			if (supportsEventType(event)) {
 				String serviceName = resolveServiceName(event);
+				List<ServiceInstance> newServiceInstances = getInstances(serviceName);
+				List<ServiceInstance> changedServiceInstances = newServiceInstances
+						.stream().filter(this::filter).collect(Collectors.toList());
+				oldServiceInstances = newServiceInstances;
 				if (hasText(serviceName)) {
 					dispatchServiceInstancesChangedEvent(serviceName,
-							getInstances(serviceName));
+							changedServiceInstances);
 				}
 			}
 		}
@@ -490,6 +507,15 @@ public class DubboServiceDiscoveryAutoConfiguration {
 			return eventType.equals(TreeCacheEvent.Type.NODE_ADDED)
 					|| eventType.equals(TreeCacheEvent.Type.NODE_REMOVED)
 					|| eventType.equals(TreeCacheEvent.Type.NODE_UPDATED);
+		}
+
+		public boolean filter(ServiceInstance serviceInstance) {
+			for (ServiceInstance oldServiceInstance : oldServiceInstances) {
+				if (oldServiceInstance.equals(serviceInstance)) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 	}
@@ -545,15 +571,22 @@ public class DubboServiceDiscoveryAutoConfiguration {
 			event.getNewSubscribedServices().forEach(this::subscribeEventListener);
 		}
 
+		private List<Instance> oldInstances = new ArrayList<>();
+
 		private void subscribeEventListener(String serviceName) {
 			if (listeningServices.add(serviceName)) {
 				try {
 					String group = nacosDiscoveryProperties.getGroup();
 					namingService.subscribe(serviceName, group, event -> {
+						// why twice when instance register
 						if (event instanceof NamingEvent) {
 							NamingEvent namingEvent = (NamingEvent) event;
+							List<Instance> changedInstances = namingEvent.getInstances()
+									.stream().filter(this::filter)
+									.collect(Collectors.toList());
+							oldInstances = namingEvent.getInstances();
 							List<ServiceInstance> serviceInstances = hostToServiceInstanceList(
-									namingEvent.getInstances(), serviceName);
+									changedInstances, serviceName);
 							dispatchServiceInstancesChangedEvent(serviceName,
 									serviceInstances);
 						}
@@ -563,6 +596,15 @@ public class DubboServiceDiscoveryAutoConfiguration {
 					ReflectionUtils.rethrowRuntimeException(e);
 				}
 			}
+		}
+
+		public boolean filter(Instance instance) {
+			for (Instance oldInstance : oldInstances) {
+				if (oldInstance.equals(instance)) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 	}

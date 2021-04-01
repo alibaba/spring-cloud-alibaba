@@ -105,6 +105,30 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 				}
 			}
 		}
+		return dubboMetadataService;
+	}
+
+	/**
+	 * Get the proxy of {@link DubboMetadataService} if possible.
+	 * @return <code>null</code> if initialization can't be done
+	 */
+	public DubboMetadataService getProxy(ServiceInstance serviceInstance) {
+
+		DubboMetadataService dubboMetadataService = null;
+
+			if (serviceInstance!=null) {
+
+				List<URL> dubboMetadataServiceURLs = getDubboMetadataServiceURLs(
+						serviceInstance);
+
+				for (URL dubboMetadataServiceURL : dubboMetadataServiceURLs) {
+					//create a proxy for MetadataService as consumer's side.
+					dubboMetadataService = createProxyIfAbsent(dubboMetadataServiceURL);
+					if (dubboMetadataService != null) {
+						return dubboMetadataService;
+					}
+				}
+			}
 
 		return dubboMetadataService;
 	}

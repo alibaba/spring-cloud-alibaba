@@ -285,7 +285,8 @@ public class DubboCloudRegistry extends FailbackRegistry {
 
 			String host = serviceInstance.getHost();
 
-			getTemplateExportedURLs(subscribedURL, serviceInstances).stream()
+			//随机请求metadata的地方
+			getTemplateExportedURLs(subscribedURL, serviceInstance).stream()
 					.map(templateURL -> templateURL.removeParameter(TIMESTAMP_KEY))
 					.map(templateURL -> templateURL.removeParameter(PID_KEY))
 					.map(templateURL -> {
@@ -326,9 +327,9 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	}
 
 	private List<URL> getTemplateExportedURLs(URL subscribedURL,
-			List<ServiceInstance> serviceInstances) {
+											  ServiceInstance serviceInstance) {
 
-		DubboMetadataService dubboMetadataService = getProxy(serviceInstances);
+		DubboMetadataService dubboMetadataService = getProxy(serviceInstance);
 
 		List<URL> templateExportedURLs = emptyList();
 
@@ -348,8 +349,8 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		return templateExportedURLs;
 	}
 
-	private DubboMetadataService getProxy(List<ServiceInstance> serviceInstances) {
-		return dubboMetadataConfigServiceProxy.getProxy(serviceInstances);
+	private DubboMetadataService getProxy(ServiceInstance serviceInstance) {
+		return dubboMetadataConfigServiceProxy.getProxy(serviceInstance);
 	}
 
 	private List<ServiceInstance> filter(Collection<ServiceInstance> serviceInstances) {
