@@ -48,7 +48,7 @@ public class RocketMQBinderConfigurationProperties {
 	private String secretKey;
 
 	/**
-	 * Enum type for accessChannel, values: LOCAL, CLOUD
+	 * Enum type for accessChannel, values: LOCAL, CLOUD.
 	 */
 	private String accessChannel;
 
