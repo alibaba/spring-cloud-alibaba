@@ -26,6 +26,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerPrope
 import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
+import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -237,6 +238,10 @@ public class RocketMQListenerBindingContainer
 		consumer.setNamesrvAddr(RocketMQBinderUtils.getNameServerStr(nameServer));
 		consumer.setConsumeThreadMax(rocketMQConsumerProperties.getConcurrency());
 		consumer.setConsumeThreadMin(rocketMQConsumerProperties.getConcurrency());
+
+		if (!StringUtils.isEmpty(rocketBinderConfigurationProperties.getAccessChannel())) {
+			consumer.setAccessChannel(AccessChannel.valueOf(rocketBinderConfigurationProperties.getAccessChannel()));
+		}
 
 		switch (messageModel) {
 		case BROADCASTING:
