@@ -308,6 +308,16 @@ public class DubboCloudRegistry extends FailbackRegistry {
 						String protocol = templateURL.getProtocol();
 						Integer port = repository.getDubboProtocolPort(serviceInstance,
 								protocol);
+
+						// reserve tag
+						String tag = null;
+						List<URL> urls = jsonUtils.toURLs(serviceInstance.getMetadata()
+								.get("dubbo.metadata-service.urls"));
+						if (urls != null && urls.size() > 0) {
+							Map<String, String> parameters = urls.get(0).getParameters();
+							tag = parameters.get("dubbo.tag");
+						}
+
 						if (Objects.equals(templateURL.getHost(), host)
 								&& Objects.equals(templateURL.getPort(), port)) { // use
 							// templateURL
@@ -331,7 +341,8 @@ public class DubboCloudRegistry extends FailbackRegistry {
 									// the template
 									// URL
 									.setHost(host) // reset the host
-									.setPort(port); // reset the port
+									.setPort(port) // reset the port
+									.addParameter("dubbo.tag", tag); // reset the tag
 
 							return clonedURLBuilder.build();
 						}
