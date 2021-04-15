@@ -50,11 +50,6 @@ public class RocketMQBinderAutoConfiguration {
 	@Autowired
 	private RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
-	@Bean
-	public RocketMQConfigBeanPostProcessor rocketMQConfigBeanPostProcessor() {
-		return new RocketMQConfigBeanPostProcessor();
-	}
-
 	@Bean(RocketMQMessageConverter.DEFAULT_NAME)
 	@ConditionalOnMissingBean(name = { RocketMQMessageConverter.DEFAULT_NAME })
 	public CompositeMessageConverter rocketMQMessageConverter() {
