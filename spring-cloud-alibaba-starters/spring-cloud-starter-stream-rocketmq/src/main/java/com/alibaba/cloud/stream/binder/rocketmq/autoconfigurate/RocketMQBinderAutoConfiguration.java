@@ -19,7 +19,6 @@ package com.alibaba.cloud.stream.binder.rocketmq.autoconfigurate;
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
 import com.alibaba.cloud.stream.binder.rocketmq.actuator.RocketMQBinderHealthIndicator;
 import com.alibaba.cloud.stream.binder.rocketmq.convert.RocketMQMessageConverter;
-import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQConfigBeanPostProcessor;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
