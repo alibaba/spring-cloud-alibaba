@@ -42,10 +42,12 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.ResolvableType;
 import org.springframework.util.CollectionUtils;
 
 import static java.lang.String.format;
@@ -188,20 +190,33 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		// Async subscription
 		registerServiceInstancesChangedListener(url,
 
-				new ApplicationListener<ServiceInstancesChangedEvent>() {
+				new GenericApplicationListener() {
 
 					private final URL url2subscribe = url;
 
 					@Override
-					@Order
-					public void onApplicationEvent(ServiceInstancesChangedEvent event) {
+					public void onApplicationEvent(ApplicationEvent event) {
 						Set<String> serviceNames = getServices(url);
 
-						String serviceName = event.getServiceName();
+						String serviceName = ((ServiceInstancesChangedEvent) event).getServiceName();
 
 						if (serviceNames.contains(serviceName)) {
 							subscribeURLs(url, serviceNames, listener);
 						}
+					}
+
+					@Override
+					public boolean supportsEventType(ResolvableType resolvableType) {
+						Class<?> type = resolvableType.getRawClass();
+						if (type != null) {
+							return ServiceInstancesChangedEvent.class.isAssignableFrom(type);
+						}
+						return false;
+					}
+
+					@Override
+					public int getOrder() {
+						return Ordered.LOWEST_PRECEDENCE;
 					}
 
 					@Override
@@ -229,7 +244,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	}
 
 	private void registerServiceInstancesChangedListener(URL url,
-			ApplicationListener<ServiceInstancesChangedEvent> listener) {
+			ApplicationListener<ApplicationEvent> listener) {
 		String listenerId = generateId(url);
 		if (REGISTER_LISTENERS.add(listenerId)) {
 			applicationContext.addApplicationListener(listener);
@@ -467,21 +482,33 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		// Sync subscription
 		if (containsProviderCategory(subscribedURL)) {
 			registerServiceInstancesChangedListener(subscribedURL,
-					new ApplicationListener<ServiceInstancesChangedEvent>() {
+					new GenericApplicationListener() {
 
 						private final URL url2subscribe = subscribedURL;
 
 						@Override
-						@Order(Ordered.LOWEST_PRECEDENCE - 1)
-						public void onApplicationEvent(
-								ServiceInstancesChangedEvent event) {
-							String sourceServiceName = event.getServiceName();
+						public void onApplicationEvent(ApplicationEvent event) {
+							String sourceServiceName = ((ServiceInstancesChangedEvent) event).getServiceName();
 							String serviceName = getServiceName(subscribedURL);
 
 							if (Objects.equals(sourceServiceName, serviceName)) {
 								subscribeDubboMetadataServiceURLs(subscribedURL, listener,
 										sourceServiceName);
 							}
+						}
+
+						@Override
+						public boolean supportsEventType(ResolvableType resolvableType) {
+							Class<?> type = resolvableType.getRawClass();
+							if (type != null) {
+								return ServiceInstancesChangedEvent.class.isAssignableFrom(type);
+							}
+							return false;
+						}
+
+						@Override
+						public int getOrder() {
+							return Ordered.LOWEST_PRECEDENCE - 1;
 						}
 
 						@Override
