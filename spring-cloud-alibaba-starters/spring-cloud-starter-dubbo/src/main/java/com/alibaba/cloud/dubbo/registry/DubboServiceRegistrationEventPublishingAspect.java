@@ -58,6 +58,7 @@ public class DubboServiceRegistrationEventPublishingAspect
 				new ServiceInstancePreRegisteredEvent(registry, registration));
 	}
 
+
 	@Before(value = DEREGISTER_POINTCUT_EXPRESSION, argNames = "registry, registration")
 	public void beforeDeregister(ServiceRegistry registry, Registration registration) {
 		applicationEventPublisher.publishEvent(

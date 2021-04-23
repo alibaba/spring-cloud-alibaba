@@ -35,7 +35,6 @@ public class DubboServiceRegistrationApplicationContextInitializer
 	@Override
 	public void initialize(ConfigurableApplicationContext applicationContext) {
 		// Set ApplicationContext into SpringCloudRegistryFactory before Dubbo Service
-		// Register
 		SpringCloudRegistryFactory.setApplicationContext(applicationContext);
 	}
 

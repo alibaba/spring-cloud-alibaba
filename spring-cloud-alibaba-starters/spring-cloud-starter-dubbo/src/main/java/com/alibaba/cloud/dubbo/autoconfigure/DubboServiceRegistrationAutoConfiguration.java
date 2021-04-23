@@ -16,17 +16,11 @@
 
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.alibaba.cloud.dubbo.autoconfigure.condition.MissingSpringCloudRegistryConfigPropertyCondition;
-import com.alibaba.cloud.dubbo.bootstrap.DubboBootstrapStartCommandLineRunner;
-import com.alibaba.cloud.dubbo.bootstrap.DubboBootstrapWrapper;
-import com.alibaba.cloud.dubbo.bootstrap.event.DubboBootstrapStartedEvent;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.registry.DubboServiceRegistrationEventPublishingAspect;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreDeregisteredEvent;
@@ -36,6 +30,7 @@ import com.netflix.appinfo.InstanceInfo;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.config.spring.ServiceBean;
+import org.apache.dubbo.config.spring.context.event.DubboBootstrapStatedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,8 +70,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
 @Configuration(proxyBeanMethods = false)
-@Import({ DubboServiceRegistrationEventPublishingAspect.class,
-		DubboBootstrapStartCommandLineRunner.class })
+@Import({ DubboServiceRegistrationEventPublishingAspect.class})
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
 		matchIfMissing = true)
 @AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
@@ -108,20 +102,32 @@ public class DubboServiceRegistrationAutoConfiguration {
 	private static final Logger logger = LoggerFactory
 			.getLogger(DubboServiceRegistrationAutoConfiguration.class);
 
+	private final AtomicBoolean dubbboBootstrapStarted = new AtomicBoolean(false);
+
+	private final AtomicBoolean preRegistered = new AtomicBoolean(false);
+
 	@Autowired
 	private DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
 	@Bean
 	@Conditional({ MissingSpringCloudRegistryConfigPropertyCondition.class })
 	public RegistryConfig defaultSpringCloudRegistryConfig() {
-		return new RegistryConfig(ADDRESS, PROTOCOL);
+		RegistryConfig registryConfig = new RegistryConfig(ADDRESS, PROTOCOL);
+//		Map<String, String> parameters = new HashMap<>();
+//		parameters.put("registry-type","service");
+//		registryConfig.setParameters(parameters);
+		return registryConfig;
 	}
 
 	private Map<ServiceRegistry<Registration>, Set<Registration>> registrations = new ConcurrentHashMap<>();
 
-	@EventListener(DubboBootstrapStartedEvent.class)
-	public void onDubboBootstrapStarted(DubboBootstrapStartedEvent event) {
-		if (!event.getSource().isReady()) {
+	@EventListener(DubboBootstrapStatedEvent.class)
+	public void onDubboBootstrapStarted(DubboBootstrapStatedEvent event) {
+		dubbboBootstrapStarted.set(true);
+		if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+			return;
+		}
+		if (!event.getDubboBootstrap().isReady()) {
 			return;
 		}
 		registrations.forEach(
@@ -133,6 +139,10 @@ public class DubboServiceRegistrationAutoConfiguration {
 
 	@EventListener(ServiceInstancePreRegisteredEvent.class)
 	public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {
+		preRegistered.set(true);
+		if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+			return;
+		}
 		Registration registration = event.getSource();
 		if (!DubboBootstrap.getInstance().isReady()
 				|| !DubboBootstrap.getInstance().isStarted()) {
@@ -180,10 +190,14 @@ public class DubboServiceRegistrationAutoConfiguration {
 		@Autowired
 		private ObjectProvider<Collection<ServiceBean>> serviceBeans;
 
-		@EventListener(DubboBootstrapStartedEvent.class)
-		public void onDubboBootstrapStarted(DubboBootstrapStartedEvent event) {
-			DubboBootstrapWrapper wrapper = event.getSource();
-			if (!wrapper.isReady()) {
+		@EventListener(DubboBootstrapStatedEvent.class)
+		public void onDubboBootstrapStarted(DubboBootstrapStatedEvent event) {
+			dubbboBootstrapStarted.set(true);
+			if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+				return;
+			}
+			DubboBootstrap dubboBootstrap = event.getDubboBootstrap();
+			if (!(dubboBootstrap.isStarted()&&dubboBootstrap.isReady()&&dubboBootstrap.isInitialized())) {
 				return;
 			}
 			registrations.forEach(
@@ -211,6 +225,10 @@ public class DubboServiceRegistrationAutoConfiguration {
 		@EventListener(ServiceInstancePreRegisteredEvent.class)
 		public void onServiceInstancePreRegistered(
 				ServiceInstancePreRegisteredEvent event) {
+			preRegistered.set(true);
+			if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+				return;
+			}
 			Registration registration = event.getSource();
 			if (!(registration instanceof EurekaRegistration)) {
 				return;
@@ -260,10 +278,14 @@ public class DubboServiceRegistrationAutoConfiguration {
 	@AutoConfigureOrder
 	class ConsulConfiguration {
 
-		@EventListener(DubboBootstrapStartedEvent.class)
+		@EventListener(DubboBootstrapStatedEvent.class)
 		public void attachURLsIntoMetadataBeforeReRegist(
-				DubboBootstrapStartedEvent event) {
-			if (!event.getSource().isReady()) {
+				DubboBootstrapStatedEvent event) {
+			dubbboBootstrapStarted.set(true);
+			if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+				return;
+			}
+			if (!event.getDubboBootstrap().isReady()) {
 				return;
 			}
 			registrations.entrySet().removeIf(entry -> {
