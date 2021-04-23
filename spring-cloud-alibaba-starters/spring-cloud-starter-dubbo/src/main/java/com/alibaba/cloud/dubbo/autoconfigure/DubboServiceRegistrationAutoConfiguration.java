@@ -16,7 +16,11 @@
 
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -70,7 +74,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
 @Configuration(proxyBeanMethods = false)
-@Import({ DubboServiceRegistrationEventPublishingAspect.class})
+@Import({ DubboServiceRegistrationEventPublishingAspect.class })
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
 		matchIfMissing = true)
 @AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
@@ -113,9 +117,9 @@ public class DubboServiceRegistrationAutoConfiguration {
 	@Conditional({ MissingSpringCloudRegistryConfigPropertyCondition.class })
 	public RegistryConfig defaultSpringCloudRegistryConfig() {
 		RegistryConfig registryConfig = new RegistryConfig(ADDRESS, PROTOCOL);
-//		Map<String, String> parameters = new HashMap<>();
-//		parameters.put("registry-type","service");
-//		registryConfig.setParameters(parameters);
+		// Map<String, String> parameters = new HashMap<>();
+		// parameters.put("registry-type","service");
+		// registryConfig.setParameters(parameters);
 		return registryConfig;
 	}
 
@@ -124,7 +128,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 	@EventListener(DubboBootstrapStatedEvent.class)
 	public void onDubboBootstrapStarted(DubboBootstrapStatedEvent event) {
 		dubbboBootstrapStarted.set(true);
-		if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+		if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
 			return;
 		}
 		if (!event.getDubboBootstrap().isReady()) {
@@ -140,7 +144,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 	@EventListener(ServiceInstancePreRegisteredEvent.class)
 	public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {
 		preRegistered.set(true);
-		if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+		if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
 			return;
 		}
 		Registration registration = event.getSource();
@@ -193,11 +197,12 @@ public class DubboServiceRegistrationAutoConfiguration {
 		@EventListener(DubboBootstrapStatedEvent.class)
 		public void onDubboBootstrapStarted(DubboBootstrapStatedEvent event) {
 			dubbboBootstrapStarted.set(true);
-			if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+			if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
 				return;
 			}
 			DubboBootstrap dubboBootstrap = event.getDubboBootstrap();
-			if (!(dubboBootstrap.isStarted()&&dubboBootstrap.isReady()&&dubboBootstrap.isInitialized())) {
+			if (!(dubboBootstrap.isStarted() && dubboBootstrap.isReady()
+					&& dubboBootstrap.isInitialized())) {
 				return;
 			}
 			registrations.forEach(
@@ -226,7 +231,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 		public void onServiceInstancePreRegistered(
 				ServiceInstancePreRegisteredEvent event) {
 			preRegistered.set(true);
-			if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+			if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
 				return;
 			}
 			Registration registration = event.getSource();
@@ -282,7 +287,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 		public void attachURLsIntoMetadataBeforeReRegist(
 				DubboBootstrapStatedEvent event) {
 			dubbboBootstrapStarted.set(true);
-			if(!(dubbboBootstrapStarted.get()&&preRegistered.get())){
+			if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
 				return;
 			}
 			if (!event.getDubboBootstrap().isReady()) {

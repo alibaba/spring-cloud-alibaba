@@ -62,6 +62,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @EnableCaching
 public class DubboSpringCloudConsumerBootstrap {
 
+	@Bean
+	@LoadBalanced
+	@DubboTransported
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
+	public static void main(String[] args) {
+		new SpringApplicationBuilder(DubboSpringCloudConsumerBootstrap.class)
+				.properties("spring.profiles.active=zookeeper").run(args);
+	}
+
 	@DubboReference
 	private UserService userService;
 
@@ -200,18 +212,6 @@ public class DubboSpringCloudConsumerBootstrap {
 		System.out.println(restTemplate.postForObject(
 				"http://" + providerApplicationName + "/request/body/map?param=小马哥", data,
 				User.class));
-	}
-
-	@Bean
-	@LoadBalanced
-	@DubboTransported
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
-
-	public static void main(String[] args) {
-		new SpringApplicationBuilder(DubboSpringCloudConsumerBootstrap.class)
-				.properties("spring.profiles.active=nacos").run(args);
 	}
 
 	@FeignClient("${provider.application.name}")
