@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.alibaba.cloud.dubbo.autoconfigure.condition.MissingSpringCloudRegistryConfigPropertyCondition;
 import com.alibaba.cloud.dubbo.bootstrap.DubboBootstrapStartCommandLineRunner;
@@ -36,6 +37,7 @@ import com.netflix.appinfo.InstanceInfo;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.config.spring.ServiceBean;
+import org.apache.dubbo.config.spring.context.event.DubboBootstrapStatedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
@@ -66,6 +70,7 @@ import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAuto
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.ADDRESS;
 import static com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory.PROTOCOL;
+import static com.alibaba.cloud.dubbo.util.DubboCloudConstants.DUBBO_BOOTSTRAP_STATED_EVENT_CLASS_NAME;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
@@ -79,6 +84,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 		DubboBootstrapStartCommandLineRunner.class })
 @ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
 		matchIfMissing = true)
+
 @AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
 		CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME,
 		"org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration" },
@@ -108,6 +114,10 @@ public class DubboServiceRegistrationAutoConfiguration {
 	private static final Logger logger = LoggerFactory
 			.getLogger(DubboServiceRegistrationAutoConfiguration.class);
 
+	private final AtomicBoolean dubbboBootstrapStarted = new AtomicBoolean(false);
+
+	private final AtomicBoolean preRegistered = new AtomicBoolean(false);
+
 	@Autowired
 	private DubboServiceMetadataRepository dubboServiceMetadataRepository;
 
@@ -119,20 +129,12 @@ public class DubboServiceRegistrationAutoConfiguration {
 
 	private Map<ServiceRegistry<Registration>, Set<Registration>> registrations = new ConcurrentHashMap<>();
 
-	@EventListener(DubboBootstrapStartedEvent.class)
-	public void onDubboBootstrapStarted(DubboBootstrapStartedEvent event) {
-		if (!event.getSource().isReady()) {
-			return;
-		}
-		registrations.forEach(
-				(registry, registrations) -> registrations.forEach(registration -> {
-					attachDubboMetadataServiceMetadata(registration);
-					registry.register(registration);
-				}));
-	}
-
 	@EventListener(ServiceInstancePreRegisteredEvent.class)
 	public void onServiceInstancePreRegistered(ServiceInstancePreRegisteredEvent event) {
+		preRegistered.set(true);
+		if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
+			return;
+		}
 		Registration registration = event.getSource();
 		if (!DubboBootstrap.getInstance().isReady()
 				|| !DubboBootstrap.getInstance().isStarted()) {
@@ -145,7 +147,6 @@ public class DubboServiceRegistrationAutoConfiguration {
 		else {
 			attachDubboMetadataServiceMetadata(registration);
 		}
-
 	}
 
 	@EventListener(ServiceInstancePreDeregisteredEvent.class)
@@ -173,6 +174,58 @@ public class DubboServiceRegistrationAutoConfiguration {
 		}
 	}
 
+	private boolean isReady(DubboBootstrap dubboBootstrap) {
+		if (dubboBootstrap == null) {
+			return false;
+		}
+		return dubboBootstrap.isInitialized() && dubboBootstrap.isStarted()
+				&& dubboBootstrap.isReady();
+	}
+
+	private void register() {
+		registrations.forEach(
+				(registry, registrations) -> registrations.forEach(registration -> {
+					attachDubboMetadataServiceMetadata(registration);
+					registry.register(registration);
+				}));
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass(name = DUBBO_BOOTSTRAP_STATED_EVENT_CLASS_NAME)
+	class DubboBootstrapStatedEventListener {
+
+		@EventListener(DubboBootstrapStatedEvent.class)
+		public void onDubboBootstrapStarted(DubboBootstrapStatedEvent event) {
+			dubbboBootstrapStarted.set(true);
+			if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
+				return;
+			}
+			if (!(isReady(event.getDubboBootstrap()))) {
+				return;
+			}
+			register();
+		}
+
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnMissingClass(DUBBO_BOOTSTRAP_STATED_EVENT_CLASS_NAME)
+	class DubboBootstrapStartedEventListener {
+
+		@EventListener(DubboBootstrapStartedEvent.class)
+		public void onDubboBootstrapStarted(DubboBootstrapStartedEvent event) {
+			dubbboBootstrapStarted.set(true);
+			if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
+				return;
+			}
+			if (!event.getSource().isReady()) {
+				return;
+			}
+			register();
+		}
+
+	}
+
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnBean(name = EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME)
 	class EurekaConfiguration implements SmartInitializingSingleton {
@@ -180,37 +233,13 @@ public class DubboServiceRegistrationAutoConfiguration {
 		@Autowired
 		private ObjectProvider<Collection<ServiceBean>> serviceBeans;
 
-		@EventListener(DubboBootstrapStartedEvent.class)
-		public void onDubboBootstrapStarted(DubboBootstrapStartedEvent event) {
-			DubboBootstrapWrapper wrapper = event.getSource();
-			if (!wrapper.isReady()) {
-				return;
-			}
-			registrations.forEach(
-					(registry, registrations) -> registrations.removeIf(registration -> {
-						if (!(registration instanceof EurekaRegistration)) {
-							return false;
-						}
-						EurekaRegistration eurekaRegistration = (EurekaRegistration) registration;
-						InstanceInfo instanceInfo = eurekaRegistration
-								.getApplicationInfoManager().getInfo();
-
-						EurekaInstanceConfigBean config = (EurekaInstanceConfigBean) eurekaRegistration
-								.getInstanceConfig();
-						config.setInitialStatus(InstanceInfo.InstanceStatus.UP);
-
-						attachDubboMetadataServiceMetadata(instanceInfo.getMetadata());
-						eurekaRegistration.getApplicationInfoManager()
-								.registerAppMetadata(instanceInfo.getMetadata());
-						eurekaRegistration.getApplicationInfoManager()
-								.setInstanceStatus(InstanceInfo.InstanceStatus.UP);
-						return true;
-					}));
-		}
-
 		@EventListener(ServiceInstancePreRegisteredEvent.class)
 		public void onServiceInstancePreRegistered(
 				ServiceInstancePreRegisteredEvent event) {
+			preRegistered.set(true);
+			if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
+				return;
+			}
 			Registration registration = event.getSource();
 			if (!(registration instanceof EurekaRegistration)) {
 				return;
@@ -253,6 +282,66 @@ public class DubboServiceRegistrationAutoConfiguration {
 			}
 		}
 
+		private void register() {
+			registrations.forEach(
+					(registry, registrations) -> registrations.removeIf(registration -> {
+						if (!(registration instanceof EurekaRegistration)) {
+							return false;
+						}
+						EurekaRegistration eurekaRegistration = (EurekaRegistration) registration;
+						InstanceInfo instanceInfo = eurekaRegistration
+								.getApplicationInfoManager().getInfo();
+
+						EurekaInstanceConfigBean config = (EurekaInstanceConfigBean) eurekaRegistration
+								.getInstanceConfig();
+						config.setInitialStatus(InstanceInfo.InstanceStatus.UP);
+
+						attachDubboMetadataServiceMetadata(instanceInfo.getMetadata());
+						eurekaRegistration.getApplicationInfoManager()
+								.registerAppMetadata(instanceInfo.getMetadata());
+						eurekaRegistration.getApplicationInfoManager()
+								.setInstanceStatus(InstanceInfo.InstanceStatus.UP);
+						return true;
+					}));
+		}
+
+		@Configuration(proxyBeanMethods = false)
+		@ConditionalOnClass(name = DUBBO_BOOTSTRAP_STATED_EVENT_CLASS_NAME)
+		class DubboBootstrapStatedEventListener {
+
+			@EventListener(DubboBootstrapStatedEvent.class)
+			public void onDubboBootstrapStarted(DubboBootstrapStatedEvent event) {
+				dubbboBootstrapStarted.set(true);
+				if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
+					return;
+				}
+				if (!(isReady(event.getDubboBootstrap()))) {
+					return;
+				}
+				register();
+			}
+
+		}
+
+		@Configuration(proxyBeanMethods = false)
+		@ConditionalOnMissingClass(DUBBO_BOOTSTRAP_STATED_EVENT_CLASS_NAME)
+		class DubboBootstrapStartedEventListener {
+
+			@EventListener(DubboBootstrapStartedEvent.class)
+			public void onDubboBootstrapStarted(DubboBootstrapStartedEvent event) {
+				dubbboBootstrapStarted.set(true);
+				if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
+					return;
+				}
+				DubboBootstrapWrapper dubboBootstrap = event.getSource();
+				if (!dubboBootstrap.isReady()) {
+					return;
+				}
+				register();
+			}
+
+		}
+
 	}
 
 	@Configuration(proxyBeanMethods = false)
@@ -260,12 +349,19 @@ public class DubboServiceRegistrationAutoConfiguration {
 	@AutoConfigureOrder
 	class ConsulConfiguration {
 
-		@EventListener(DubboBootstrapStartedEvent.class)
-		public void attachURLsIntoMetadataBeforeReRegist(
-				DubboBootstrapStartedEvent event) {
-			if (!event.getSource().isReady()) {
-				return;
+		private void attachURLsIntoMetadata(ConsulRegistration consulRegistration) {
+			NewService newService = consulRegistration.getService();
+			Map<String, String> serviceMetadata = dubboServiceMetadataRepository
+					.getDubboMetadataServiceMetadata();
+			if (!isEmpty(serviceMetadata)) {
+				List<String> tags = newService.getTags();
+				for (Map.Entry<String, String> entry : serviceMetadata.entrySet()) {
+					tags.add(entry.getKey() + "=" + entry.getValue());
+				}
 			}
+		}
+
+		private void register() {
 			registrations.entrySet().removeIf(entry -> {
 				Set<Registration> registrations = entry.getValue();
 				registrations.removeIf(registration -> {
@@ -284,16 +380,42 @@ public class DubboServiceRegistrationAutoConfiguration {
 					}));
 		}
 
-		private void attachURLsIntoMetadata(ConsulRegistration consulRegistration) {
-			NewService newService = consulRegistration.getService();
-			Map<String, String> serviceMetadata = dubboServiceMetadataRepository
-					.getDubboMetadataServiceMetadata();
-			if (!isEmpty(serviceMetadata)) {
-				List<String> tags = newService.getTags();
-				for (Map.Entry<String, String> entry : serviceMetadata.entrySet()) {
-					tags.add(entry.getKey() + "=" + entry.getValue());
+		@Configuration(proxyBeanMethods = false)
+		@ConditionalOnClass(name = DUBBO_BOOTSTRAP_STATED_EVENT_CLASS_NAME)
+		class DubboBootstrapStatedEventListener {
+
+			@EventListener(DubboBootstrapStatedEvent.class)
+			public void attachURLsIntoMetadataBeforeReRegist(
+					DubboBootstrapStatedEvent event) {
+				dubbboBootstrapStarted.set(true);
+				if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
+					return;
 				}
+				if (!(isReady(event.getDubboBootstrap()))) {
+					return;
+				}
+				register();
 			}
+
+		}
+
+		@Configuration(proxyBeanMethods = false)
+		@ConditionalOnMissingClass(DUBBO_BOOTSTRAP_STATED_EVENT_CLASS_NAME)
+		class DubboBootstrapStartedEventListener {
+
+			@EventListener(DubboBootstrapStartedEvent.class)
+			public void attachURLsIntoMetadataBeforeReRegist(
+					DubboBootstrapStartedEvent event) {
+				dubbboBootstrapStarted.set(true);
+				if (!(dubbboBootstrapStarted.get() && preRegistered.get())) {
+					return;
+				}
+				if (!event.getSource().isReady()) {
+					return;
+				}
+				register();
+			}
+
 		}
 
 	}

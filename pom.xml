@@ -86,7 +86,7 @@
         <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
 
         <!-- Apache Dubbo -->
-        <dubbo.version>2.7.8</dubbo.version>
+        <dubbo.version>2.7.10</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->

@@ -44,6 +44,11 @@ public final class DubboCloudConstants {
 	 */
 	public static final String DUBBO_CLOUD_REGISTRY_PROPERTY_VALUE = "dubbo-cloud";
 
+	/**
+	 * The class appears from dubbo 2.7.9.
+	 */
+	public static final String DUBBO_BOOTSTRAP_STATED_EVENT_CLASS_NAME = "org.apache.dubbo.config.spring.context.event.DubboBootstrapStatedEvent";
+
 	private DubboCloudConstants() {
 		throw new AssertionError("Must not instantiate constant utility class");
 	}
