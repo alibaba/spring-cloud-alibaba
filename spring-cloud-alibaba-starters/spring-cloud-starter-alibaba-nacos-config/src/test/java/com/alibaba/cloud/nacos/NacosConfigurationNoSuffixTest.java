@@ -50,7 +50,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  */
 
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({ "javax.management.*", "javax.xml.parsers.*",
+		"com.sun.org.apache.xerces.internal.jaxp.*", "org.w3c.dom.*" })
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
 @SpringBootTest(classes = NacosConfigurationNoSuffixTest.TestConfig.class, properties = {

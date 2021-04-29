@@ -31,7 +31,8 @@ import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
-import com.alibaba.csp.sentinel.util.function.Tuple2;
+import com.alibaba.csp.sentinel.transport.endpoint.Endpoint;
+import com.alibaba.csp.sentinel.transport.endpoint.Protocol;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -134,8 +135,10 @@ public class SentinelAutoConfigurationTests {
 		Map<String, Object> map = sentinelEndpoint.invoke();
 
 		assertThat(map.get("logUsePid")).isEqualTo(Boolean.TRUE);
-		assertThat(map.get("consoleServer").toString()).isEqualTo(
-				Arrays.asList(Tuple2.of("localhost", 8080), Tuple2.of("localhost", 8081))
+		assertThat(map.get("consoleServer").toString())
+				.isEqualTo(Arrays
+						.asList(new Endpoint(Protocol.HTTP, "localhost", 8080),
+								new Endpoint(Protocol.HTTP, "localhost", 8081))
 						.toString());
 		assertThat(map.get("clientPort")).isEqualTo("9999");
 		assertThat(map.get("heartbeatIntervalMs")).isEqualTo(20000L);
@@ -185,8 +188,10 @@ public class SentinelAutoConfigurationTests {
 	@Test
 	public void testSentinelSystemProperties() {
 		assertThat(LogBase.isLogNameUsePid()).isEqualTo(true);
-		assertThat(TransportConfig.getConsoleServerList().toString()).isEqualTo(
-				Arrays.asList(Tuple2.of("localhost", 8080), Tuple2.of("localhost", 8081))
+		assertThat(TransportConfig.getConsoleServerList().toString())
+				.isEqualTo(Arrays
+						.asList(new Endpoint(Protocol.HTTP, "localhost", 8080),
+								new Endpoint(Protocol.HTTP, "localhost", 8081))
 						.toString());
 		assertThat(TransportConfig.getPort()).isEqualTo("9999");
 		assertThat(TransportConfig.getHeartbeatIntervalMs().longValue())

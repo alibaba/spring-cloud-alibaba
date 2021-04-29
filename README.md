@@ -27,6 +27,7 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 
 For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap.md).
 
+
 ## Components
 
 **[Sentinel](https://github.com/alibaba/Sentinel)**: Sentinel takes "traffic flow" as the breakthrough point, and provides solutions in areas such as flow control, concurrency, circuit breaking, and load protection to protect service stability.
@@ -71,7 +72,7 @@ These artifacts are available from Maven Central and Spring Release repository v
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>2.2.3.RELEASE</version>
+                <version>2.2.5.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
