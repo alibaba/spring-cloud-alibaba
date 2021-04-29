@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author lengleng
- * @date 2019-08-01
  */
 @RestController
 public class EchoController {

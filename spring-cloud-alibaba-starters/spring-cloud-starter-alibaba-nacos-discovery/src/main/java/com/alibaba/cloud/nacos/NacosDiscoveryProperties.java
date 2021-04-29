@@ -183,17 +183,17 @@ public class NacosDiscoveryProperties {
 	private String secretKey;
 
 	/**
-	 * Heart beat interval. Time unit: second.
+	 * Heart beat interval. Time unit: millisecond.
 	 */
 	private Integer heartBeatInterval;
 
 	/**
-	 * Heart beat timeout. Time unit: second.
+	 * Heart beat timeout. Time unit: millisecond.
 	 */
 	private Integer heartBeatTimeout;
 
 	/**
-	 * Ip delete timeout. Time unit: second.
+	 * Ip delete timeout. Time unit: millisecond.
 	 */
 	private Integer ipDeleteTimeout;
 

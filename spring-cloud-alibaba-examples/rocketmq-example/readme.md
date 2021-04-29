@@ -73,7 +73,7 @@ spring.cloud.stream.bindings.input.group=test-group
 
 You should startup Name Server and Broker before using RocketMQ Binder.
 
-1. Download [RocketMQ](https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip) and unzip it.
+1. Download [RocketMQ](https://archive.apache.org/dist/rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip) and unzip it.
 
 2. Startup Name Server
 
