@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.alibaba.cloud.stream.binder.rocketmq.convert.RocketMQMessageConverter;
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQConfigBeanPostProcessor;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.cloud.stream.config.BindingHandlerAdvise.MappingsProvider;
