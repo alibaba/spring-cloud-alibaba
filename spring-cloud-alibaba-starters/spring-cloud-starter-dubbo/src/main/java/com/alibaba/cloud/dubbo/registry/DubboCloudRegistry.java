@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -108,11 +111,23 @@ public class DubboCloudRegistry extends FailbackRegistry {
 
 	private final String currentApplicationName;
 
+	private final Map<URL, NotifyListener> urlNotifyListenerMap = new ConcurrentHashMap<>();
+
+	private final Map<String, ReSubscribeMetadataJob> reConnectJobMap = new ConcurrentHashMap<>();
+
+	private final ScheduledThreadPoolExecutor reConnectPool = new ScheduledThreadPoolExecutor(
+			2);
+
+	private final int maxReSubscribeMetadataTimes;
+
+	private final int reSubscribeMetadataIntervial;
+
 	public DubboCloudRegistry(URL url, DiscoveryClient discoveryClient,
 			DubboServiceMetadataRepository repository,
 			DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
 			JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
-			ConfigurableApplicationContext applicationContext) {
+			ConfigurableApplicationContext applicationContext,
+			int maxReSubscribeMetadataTimes, int reSubscribeMetadataIntervial) {
 
 		super(url);
 		this.servicesLookupInterval = url
@@ -125,6 +140,11 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		this.applicationContext = applicationContext;
 		this.dubboMetadataUtils = getBean(DubboMetadataUtils.class);
 		this.currentApplicationName = dubboMetadataUtils.getCurrentApplicationName();
+		this.maxReSubscribeMetadataTimes = maxReSubscribeMetadataTimes;
+		this.reSubscribeMetadataIntervial = reSubscribeMetadataIntervial;
+
+		reConnectPool.setKeepAliveTime(10, TimeUnit.MINUTES);
+		reConnectPool.allowCoreThreadTimeOut(true);
 	}
 
 	private <T> T getBean(Class<T> beanClass) {
@@ -175,6 +195,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		}
 		else { // for general Dubbo Services
 			subscribeURLs(url, listener);
+			urlNotifyListenerMap.put(url, listener);
 		}
 	}
 
@@ -204,7 +225,16 @@ public class DubboCloudRegistry extends FailbackRegistry {
 							logger.debug(
 									"handle serviceInstanceChange of general service, serviceName = {}, subscribeUrl={}",
 									event.getServiceName(), url.getServiceKey());
-							subscribeURLs(url, serviceNames, listener);
+							try {
+								subscribeURLs(url, serviceNames, listener);
+								reConnectJobMap.remove(serviceName);
+							}
+							catch (Exception e) {
+								logger.warn(String.format(
+										"subscribeURLs failed, serviceName = %s, try reSubscribe again",
+										serviceName), e);
+								addReSubscribeMetadataJob(serviceName, 0);
+							}
 						}
 					}
 
@@ -216,8 +246,19 @@ public class DubboCloudRegistry extends FailbackRegistry {
 				});
 	}
 
-	private void subscribeURLs(URL url, Set<String> serviceNames,
-			NotifyListener listener) {
+	void addReSubscribeMetadataJob(String serviceName, int count) {
+		if (count > maxReSubscribeMetadataTimes) {
+			logger.error(
+					"reSubscribe failed too many times, serviceName = {}, count = {}",
+					serviceName, count);
+			return;
+		}
+		ReSubscribeMetadataJob job = new ReSubscribeMetadataJob(serviceName, this, count);
+		reConnectJobMap.put(serviceName, job);
+		reConnectPool.schedule(job, reSubscribeMetadataIntervial, TimeUnit.SECONDS);
+	}
+
+	void subscribeURLs(URL url, Set<String> serviceNames, NotifyListener listener) {
 
 		List<URL> subscribedURLs = new LinkedList<>();
 
@@ -393,7 +434,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		return metadata.containsKey(METADATA_SERVICE_URLS_PROPERTY_NAME);
 	}
 
-	private Set<String> getServices(URL url) {
+	Set<String> getServices(URL url) {
 		Set<String> subscribedServices = repository.getSubscribedServices();
 		// TODO Add the filter feature
 		return subscribedServices;
@@ -470,11 +511,11 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	private void subscribeDubboMetadataServiceURLs(URL subscribedURL,
 			NotifyListener listener) {
 
+		subscribeDubboMetadataServiceURLs(subscribedURL, listener,
+				getServiceName(subscribedURL));
+
 		// Sync subscription
 		if (containsProviderCategory(subscribedURL)) {
-
-			subscribeDubboMetadataServiceURLs(subscribedURL, listener,
-					getServiceName(subscribedURL));
 
 			registerServiceInstancesChangedListener(subscribedURL,
 					new ServiceInstanceChangeListener() {
@@ -556,6 +597,14 @@ public class DubboCloudRegistry extends FailbackRegistry {
 
 	protected boolean isAdminURL(URL url) {
 		return ADMIN_PROTOCOL.equals(url.getProtocol());
+	}
+
+	public Map<URL, NotifyListener> getUrlNotifyListenerMap() {
+		return urlNotifyListenerMap;
+	}
+
+	public Map<String, ReSubscribeMetadataJob> getReConnectJobMap() {
+		return reConnectJobMap;
 	}
 
 	protected boolean isDubboMetadataServiceURL(URL url) {

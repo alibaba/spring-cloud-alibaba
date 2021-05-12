@@ -100,7 +100,9 @@ public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 		default:
 			registry = new DubboCloudRegistry(url, discoveryClient,
 					dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
-					jsonUtils, dubboGenericServiceFactory, applicationContext);
+					jsonUtils, dubboGenericServiceFactory, applicationContext,
+					dubboCloudProperties.getMaxReSubscribeMetadataTimes(),
+					dubboCloudProperties.getReSubscribeMetadataIntervial());
 			break;
 		}
 
