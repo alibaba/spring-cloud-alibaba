@@ -297,6 +297,10 @@ public class DubboCloudRegistry extends FailbackRegistry {
 						serviceName));
 			}
 		}
+		else {
+			logger.debug("subscribe from serviceName = {}, size = {}", serviceName,
+					serviceInstances.size());
+		}
 
 		List<URL> exportedURLs = getExportedURLs(subscribedURL, serviceName,
 				serviceInstances);

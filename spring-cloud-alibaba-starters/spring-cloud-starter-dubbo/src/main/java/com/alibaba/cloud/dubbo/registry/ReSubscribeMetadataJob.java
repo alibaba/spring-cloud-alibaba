@@ -57,6 +57,8 @@ public class ReSubscribeMetadataJob implements Runnable {
 			return;
 		}
 		try {
+			logger.info("reSubscribe, serviceName = {}, count = {}", serviceName,
+					errorCounts);
 			for (Map.Entry<URL, NotifyListener> entry : dubboCloudRegistry
 					.getUrlNotifyListenerMap().entrySet()) {
 				doRun(entry.getKey(), entry.getValue());
