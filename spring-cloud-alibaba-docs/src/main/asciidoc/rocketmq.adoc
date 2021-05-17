@@ -57,7 +57,7 @@ Send messages:
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
 ```
 
-Output when the message is successfuly sent: `SendResult [sendStatus=SEND_OK, msgId= ...`
+Output when the message is successfully sent: `SendResult [sendStatus=SEND_OK, msgId= ...`
 
 Receive messages:
 
