@@ -18,8 +18,6 @@ package com.alibaba.cloud.stream.binder.rocketmq.autoconfigurate;
 
 import com.alibaba.cloud.stream.binder.rocketmq.RocketMQMessageChannelBinder;
 import com.alibaba.cloud.stream.binder.rocketmq.actuator.RocketMQBinderHealthIndicator;
-import com.alibaba.cloud.stream.binder.rocketmq.convert.RocketMQMessageConverter;
-import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQConfigBeanPostProcessor;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
@@ -27,11 +25,9 @@ import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvis
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.CompositeMessageConverter;
 
 /**
  * issue:https://github.com/alibaba/spring-cloud-alibaba/issues/1681 .
@@ -49,17 +45,6 @@ public class RocketMQBinderAutoConfiguration {
 
 	@Autowired
 	private RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
-
-	@Bean
-	public RocketMQConfigBeanPostProcessor rocketMQConfigBeanPostProcessor() {
-		return new RocketMQConfigBeanPostProcessor();
-	}
-
-	@Bean(RocketMQMessageConverter.DEFAULT_NAME)
-	@ConditionalOnMissingBean(name = { RocketMQMessageConverter.DEFAULT_NAME })
-	public CompositeMessageConverter rocketMQMessageConverter() {
-		return new RocketMQMessageConverter().getMessageConverter();
-	}
 
 	@Bean
 	@ConditionalOnEnabledHealthIndicator("rocketmq")
