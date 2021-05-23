@@ -29,13 +29,21 @@ import org.springframework.context.ApplicationEvent;
  */
 public class ServiceInstancePreRegisteredEvent extends ApplicationEvent {
 
-	public ServiceInstancePreRegisteredEvent(Registration source) {
+	private final ServiceRegistry<Registration> registry;
+
+	public ServiceInstancePreRegisteredEvent(ServiceRegistry<Registration> registry,
+			Registration source) {
 		super(source);
+		this.registry = registry;
 	}
 
 	@Override
 	public Registration getSource() {
 		return (Registration) super.getSource();
+	}
+
+	public ServiceRegistry<Registration> getRegistry() {
+		return registry;
 	}
 
 }

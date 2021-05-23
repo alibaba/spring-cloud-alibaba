@@ -18,6 +18,7 @@ package com.alibaba.cloud.examples;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -34,7 +35,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -62,7 +65,11 @@ class UserConfig {
 
 	private String name;
 
+	private String hr;
+
 	private Map<String, Object> map;
+
+	private List<User> users;
 
 	public int getAge() {
 		return age;
@@ -88,10 +95,65 @@ class UserConfig {
 		this.map = map;
 	}
 
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
+	public String getHr() {
+		return hr;
+	}
+
+	public void setHr(String hr) {
+		this.hr = hr;
+	}
+
 	@Override
 	public String toString() {
 		return "UserConfig{" + "age=" + age + ", name='" + name + '\'' + ", map=" + map
-				+ '}';
+				+ ", hr='" + hr + '\'' + ", users=" + users + '}';
+	}
+
+	public static class User {
+
+		private String name;
+
+		private String hr;
+
+		private String avg;
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getHr() {
+			return hr;
+		}
+
+		public void setHr(String hr) {
+			this.hr = hr;
+		}
+
+		public String getAvg() {
+			return avg;
+		}
+
+		public void setAvg(String avg) {
+			this.avg = avg;
+		}
+
+		@Override
+		public String toString() {
+			return "User{" + "name='" + name + '\'' + ", hr=" + hr + ", avg=" + avg + '}';
+		}
+
 	}
 
 }
@@ -99,29 +161,16 @@ class UserConfig {
 @Component
 class SampleRunner implements ApplicationRunner {
 
-	@Value("${user.name}")
-	String userName;
-
-	@Value("${user.age:25}")
-	int userAge;
-
 	@Autowired
 	private NacosConfigManager nacosConfigManager;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		System.out.println(
-				String.format("Initial username=%s, userAge=%d", userName, userAge));
-
 		nacosConfigManager.getConfigService().addListener(
-				"nacos-config-example.properties", "DEFAULT_GROUP", new Listener() {
+				"nacos-config-custom.properties", "DEFAULT_GROUP", new Listener() {
 
 					/**
 					 * Callback with latest config data.
-					 *
-					 * For example, config data in Nacos is:
-					 *
-					 * user.name=Nacos user.age=25
 					 * @param configInfo latest config data for specific dataId in Nacos
 					 * server
 					 */
@@ -156,7 +205,10 @@ class SampleController {
 	@Autowired
 	private NacosConfigManager nacosConfigManager;
 
-	@Value("${user.name}")
+	@Autowired
+	private Environment environment;
+
+	@Value("${user.name:zz}")
 	String userName;
 
 	@Value("${user.age:25}")
@@ -166,6 +218,11 @@ class SampleController {
 	public String simple() {
 		return "Hello Nacos Config!" + "Hello " + userName + " " + age + " [UserConfig]: "
 				+ userConfig + "!" + nacosConfigManager.getConfigService();
+	}
+
+	@RequestMapping("/get/{name}")
+	public String getValue(@PathVariable String name) {
+		return String.valueOf(environment.getProperty(name));
 	}
 
 	@RequestMapping("/bool")

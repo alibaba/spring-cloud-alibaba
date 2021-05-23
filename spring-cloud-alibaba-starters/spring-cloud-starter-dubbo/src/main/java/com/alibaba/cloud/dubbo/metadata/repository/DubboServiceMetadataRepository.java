@@ -19,6 +19,7 @@ package com.alibaba.cloud.dubbo.metadata.repository;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,6 +42,7 @@ import com.alibaba.cloud.dubbo.util.JSONUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.constants.CommonConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -237,9 +239,6 @@ public class DubboServiceMetadataRepository
 		dispatchEvent(new SubscribedServicesChangedEvent(this, oldSubscribedServices,
 				newSubscribedServices));
 
-		// clear old one, help GC
-		oldSubscribedServices.clear();
-
 		return newSubscribedServices.stream();
 	}
 
@@ -407,8 +406,34 @@ public class DubboServiceMetadataRepository
 
 	public List<URL> getExportedURLs(String serviceInterface, String group,
 			String version) {
-		String serviceKey = URL.buildKey(serviceInterface, group, version);
-		return allExportedURLs.getOrDefault(serviceKey, Collections.emptyList());
+		if (group != null) {
+			List<URL> urls = new LinkedList<>();
+			if (CommonConstants.ANY_VALUE.equals(group)) {
+				String serviceKey = URL.buildKey(serviceInterface, group, version);
+				String expectKey = serviceKey.substring(2);
+				for (String key : allExportedURLs.keySet()) {
+					if (key.endsWith(expectKey)) {
+						urls.addAll(allExportedURLs.get(key));
+					}
+				}
+			}
+			else {
+				String[] groups = group.split(CommonConstants.COMMA_SEPARATOR);
+				for (String expectKey : groups) {
+					String serviceKey = URL.buildKey(serviceInterface, expectKey,
+							version);
+					List<URL> urlList = allExportedURLs.get(serviceKey);
+					if (urlList != null) {
+						urls.addAll(urlList);
+					}
+				}
+			}
+			return urls;
+		}
+		else {
+			String serviceKey = URL.buildKey(serviceInterface, null, version);
+			return allExportedURLs.getOrDefault(serviceKey, Collections.emptyList());
+		}
 	}
 
 	/**

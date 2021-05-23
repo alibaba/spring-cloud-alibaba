@@ -51,6 +51,10 @@ public class DubboCloudProperties {
 
 	private String registryType = DUBBO_CLOUD_REGISTRY_PROPERTY_VALUE;
 
+	private int maxReSubscribeMetadataTimes = 1000;
+
+	private int reSubscribeMetadataIntervial = 5;
+
 	public String getSubscribedServices() {
 		return subscribedServices;
 	}
@@ -89,6 +93,22 @@ public class DubboCloudProperties {
 
 	public void setRegistryType(String registryType) {
 		this.registryType = registryType;
+	}
+
+	public int getMaxReSubscribeMetadataTimes() {
+		return maxReSubscribeMetadataTimes;
+	}
+
+	public void setMaxReSubscribeMetadataTimes(int maxReSubscribeMetadataTimes) {
+		this.maxReSubscribeMetadataTimes = maxReSubscribeMetadataTimes;
+	}
+
+	public int getReSubscribeMetadataIntervial() {
+		return reSubscribeMetadataIntervial;
+	}
+
+	public void setReSubscribeMetadataIntervial(int reSubscribeMetadataIntervial) {
+		this.reSubscribeMetadataIntervial = reSubscribeMetadataIntervial;
 	}
 
 }

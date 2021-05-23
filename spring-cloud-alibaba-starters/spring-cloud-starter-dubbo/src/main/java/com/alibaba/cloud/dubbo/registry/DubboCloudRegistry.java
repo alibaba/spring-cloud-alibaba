@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -44,11 +47,11 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.Ordered;
 import org.springframework.util.CollectionUtils;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
-import static java.util.stream.StreamSupport.stream;
 import static org.apache.dubbo.common.URLBuilder.from;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.PID_KEY;
@@ -83,7 +86,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	/**
 	 * Caches the IDs of {@link ApplicationListener}.
 	 */
-	private static final Set<String> registerListeners = new HashSet<>();
+	private static final Set<String> REGISTER_LISTENERS = new HashSet<>();
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -108,11 +111,23 @@ public class DubboCloudRegistry extends FailbackRegistry {
 
 	private final String currentApplicationName;
 
+	private final Map<URL, NotifyListener> urlNotifyListenerMap = new ConcurrentHashMap<>();
+
+	private final Map<String, ReSubscribeMetadataJob> reConnectJobMap = new ConcurrentHashMap<>();
+
+	private final ScheduledThreadPoolExecutor reConnectPool = new ScheduledThreadPoolExecutor(
+			2);
+
+	private final int maxReSubscribeMetadataTimes;
+
+	private final int reSubscribeMetadataIntervial;
+
 	public DubboCloudRegistry(URL url, DiscoveryClient discoveryClient,
 			DubboServiceMetadataRepository repository,
 			DubboMetadataServiceProxy dubboMetadataConfigServiceProxy,
 			JSONUtils jsonUtils, DubboGenericServiceFactory dubboGenericServiceFactory,
-			ConfigurableApplicationContext applicationContext) {
+			ConfigurableApplicationContext applicationContext,
+			int maxReSubscribeMetadataTimes, int reSubscribeMetadataIntervial) {
 
 		super(url);
 		this.servicesLookupInterval = url
@@ -125,6 +140,11 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		this.applicationContext = applicationContext;
 		this.dubboMetadataUtils = getBean(DubboMetadataUtils.class);
 		this.currentApplicationName = dubboMetadataUtils.getCurrentApplicationName();
+		this.maxReSubscribeMetadataTimes = maxReSubscribeMetadataTimes;
+		this.reSubscribeMetadataIntervial = reSubscribeMetadataIntervial;
+
+		reConnectPool.setKeepAliveTime(10, TimeUnit.MINUTES);
+		reConnectPool.allowCoreThreadTimeOut(true);
 	}
 
 	private <T> T getBean(Class<T> beanClass) {
@@ -175,6 +195,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		}
 		else { // for general Dubbo Services
 			subscribeURLs(url, listener);
+			urlNotifyListenerMap.put(url, listener);
 		}
 	}
 
@@ -184,20 +205,60 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		subscribeURLs(url, getServices(url), listener);
 
 		// Async subscription
-		registerServiceInstancesChangedListener(url, event -> {
+		registerServiceInstancesChangedListener(url,
 
-			Set<String> serviceNames = getServices(url);
+				new ServiceInstanceChangeListener() {
 
-			String serviceName = event.getServiceName();
+					@Override
+					public int getOrder() {
+						return Ordered.LOWEST_PRECEDENCE;
+					}
 
-			if (serviceNames.contains(serviceName)) {
-				subscribeURLs(url, serviceNames, listener);
-			}
-		});
+					@Override
+					public void onApplicationEvent(ServiceInstancesChangedEvent event) {
+
+						Set<String> serviceNames = getServices(url);
+
+						String serviceName = event.getServiceName();
+
+						if (serviceNames.contains(serviceName)) {
+							logger.debug(
+									"handle serviceInstanceChange of general service, serviceName = {}, subscribeUrl={}",
+									event.getServiceName(), url.getServiceKey());
+							try {
+								subscribeURLs(url, serviceNames, listener);
+								reConnectJobMap.remove(serviceName);
+							}
+							catch (Exception e) {
+								logger.warn(String.format(
+										"subscribeURLs failed, serviceName = %s, try reSubscribe again",
+										serviceName), e);
+								addReSubscribeMetadataJob(serviceName, 0);
+							}
+						}
+					}
+
+					@Override
+					public String toString() {
+						return "ServiceInstancesChangedEventListener:"
+								+ url.getServiceKey();
+					}
+				});
 	}
 
-	private void subscribeURLs(URL url, Set<String> serviceNames,
-			NotifyListener listener) {
+	void addReSubscribeMetadataJob(String serviceName, int count) {
+		if (count > maxReSubscribeMetadataTimes) {
+			logger.error(
+					"reSubscribe failed too many times, serviceName = {}, count = {}",
+					serviceName, count);
+			return;
+		}
+		ReSubscribeMetadataJob job = new ReSubscribeMetadataJob(serviceName, this, count);
+		reConnectJobMap.put(serviceName, job);
+		reConnectPool.schedule(job, reSubscribeMetadataIntervial, TimeUnit.SECONDS);
+	}
+
+	void subscribeURLs(URL url, Set<String> serviceNames, NotifyListener listener) {
 
 		List<URL> subscribedURLs = new LinkedList<>();
 
@@ -215,7 +276,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	private void registerServiceInstancesChangedListener(URL url,
 			ApplicationListener<ServiceInstancesChangedEvent> listener) {
 		String listenerId = generateId(url);
-		if (registerListeners.add(listenerId)) {
+		if (REGISTER_LISTENERS.add(listenerId)) {
 			applicationContext.addApplicationListener(listener);
 		}
 	}
@@ -235,6 +296,10 @@ public class DubboCloudRegistry extends FailbackRegistry {
 				logger.warn(format("There is no instance in service[name : %s]",
 						serviceName));
 			}
+		}
+		else {
+			logger.debug("subscribe from serviceName = {}, size = {}", serviceName,
+					serviceInstances.size());
 		}
 
 		List<URL> exportedURLs = getExportedURLs(subscribedURL, serviceName,
@@ -290,8 +355,18 @@ public class DubboCloudRegistry extends FailbackRegistry {
 					.map(templateURL -> templateURL.removeParameter(PID_KEY))
 					.map(templateURL -> {
 						String protocol = templateURL.getProtocol();
-						int port = repository.getDubboProtocolPort(serviceInstance,
+						Integer port = repository.getDubboProtocolPort(serviceInstance,
 								protocol);
+
+						// reserve tag
+						String tag = null;
+						List<URL> urls = jsonUtils.toURLs(serviceInstance.getMetadata()
+								.get("dubbo.metadata-service.urls"));
+						if (urls != null && urls.size() > 0) {
+							Map<String, String> parameters = urls.get(0).getParameters();
+							tag = parameters.get("dubbo.tag");
+						}
+
 						if (Objects.equals(templateURL.getHost(), host)
 								&& Objects.equals(templateURL.getPort(), port)) { // use
 							// templateURL
@@ -300,15 +375,28 @@ public class DubboCloudRegistry extends FailbackRegistry {
 							return templateURL;
 						}
 
-						URLBuilder clonedURLBuilder = from(templateURL) // remove the
-								// parameters from
-								// the template
-								// URL
-								.setHost(host) // reset the host
-								.setPort(port); // reset the port
+						if (port == null) {
+							if (logger.isWarnEnabled()) {
+								logger.warn(
+										"The protocol[{}] port of Dubbo  service instance[host : {}] "
+												+ "can't be resolved",
+										protocol, host);
+							}
+							return null;
+						}
+						else {
+							URLBuilder clonedURLBuilder = from(templateURL) // remove the
+									// parameters from
+									// the template
+									// URL
+									.setHost(host) // reset the host
+									.setPort(port) // reset the port
+									.addParameter("dubbo.tag", tag); // reset the tag
 
-						return clonedURLBuilder.build();
-					}).forEach(clonedExportedURLs::add);
+							return clonedURLBuilder.build();
+						}
+
+					}).filter(Objects::nonNull).forEach(clonedExportedURLs::add);
 		});
 		return clonedExportedURLs;
 	}
@@ -350,7 +438,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		return metadata.containsKey(METADATA_SERVICE_URLS_PROPERTY_NAME);
 	}
 
-	private Set<String> getServices(URL url) {
+	Set<String> getServices(URL url) {
 		Set<String> subscribedServices = repository.getSubscribedServices();
 		// TODO Add the filter feature
 		return subscribedServices;
@@ -363,12 +451,12 @@ public class DubboCloudRegistry extends FailbackRegistry {
 			// Add the EMPTY_PROTOCOL URL
 			subscribedURLs.add(emptyURL(url));
 
-			if (isDubboMetadataServiceURL(url)) {
-				// if meta service change, and serviceInstances is zero, will clean up
-				// information about this client
-				String serviceName = url.getParameter(GROUP_KEY);
-				repository.removeMetadataAndInitializedService(serviceName, url);
-			}
+			// if (isDubboMetadataServiceURL(url)) {
+			// if meta service change, and serviceInstances is zero, will clean up
+			// information about this client
+			// String serviceName = url.getParameter(GROUP_KEY);
+			// repository.removeMetadataAndInitializedService(serviceName, url);
+			// }
 		}
 
 		if (logger.isDebugEnabled()) {
@@ -378,11 +466,6 @@ public class DubboCloudRegistry extends FailbackRegistry {
 
 		// Notify all
 		listener.notify(subscribedURLs);
-	}
-
-	private List<ServiceInstance> getServiceInstances(Iterable<String> serviceNames) {
-		return stream(serviceNames.spliterator(), false).map(this::getServiceInstances)
-				.flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	private List<ServiceInstance> getServiceInstances(String serviceName) {
@@ -403,7 +486,7 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	}
 
 	private String generateId(URL url) {
-		return url.getServiceKey();
+		return url.toString();
 	}
 
 	private URL emptyURL(URL url) {
@@ -432,22 +515,47 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	private void subscribeDubboMetadataServiceURLs(URL subscribedURL,
 			NotifyListener listener) {
 
-		// Sync subscription
 		subscribeDubboMetadataServiceURLs(subscribedURL, listener,
 				getServiceName(subscribedURL));
 
 		// Sync subscription
 		if (containsProviderCategory(subscribedURL)) {
-			registerServiceInstancesChangedListener(subscribedURL, event -> {
 
-				String sourceServiceName = event.getServiceName();
-				String serviceName = getServiceName(subscribedURL);
+			registerServiceInstancesChangedListener(subscribedURL,
+					new ServiceInstanceChangeListener() {
 
-				if (Objects.equals(sourceServiceName, serviceName)) {
-					subscribeDubboMetadataServiceURLs(subscribedURL, listener,
-							sourceServiceName);
-				}
-			});
+						@Override
+						public int getOrder() {
+							return Ordered.LOWEST_PRECEDENCE - 1;
+						}
+
+						@Override
+						public void onApplicationEvent(
+								ServiceInstancesChangedEvent event) {
+							String sourceServiceName = event.getServiceName();
+							List<ServiceInstance> serviceInstances = event
+									.getServiceInstances();
+							String serviceName = getServiceName(subscribedURL);
+
+							if (Objects.equals(sourceServiceName, serviceName)) {
+								logger.debug(
+										"handle serviceInstanceChange of metadata service, serviceName = {}, subscribeUrl={}",
+										event.getServiceName(),
+										subscribedURL.getServiceKey());
+
+								// only update serviceInstances of the specified
+								// serviceName
+								subscribeDubboMetadataServiceURLs(subscribedURL, listener,
+										sourceServiceName, serviceInstances);
+							}
+						}
+
+						@Override
+						public String toString() {
+							return "ServiceInstancesChangedEventListener:"
+									+ subscribedURL.getServiceKey();
+						}
+					});
 		}
 	}
 
@@ -456,13 +564,12 @@ public class DubboCloudRegistry extends FailbackRegistry {
 	}
 
 	private void subscribeDubboMetadataServiceURLs(URL subscribedURL,
-			NotifyListener listener, String serviceName) {
+			NotifyListener listener, String serviceName,
+			List<ServiceInstance> serviceInstances) {
 
 		String serviceInterface = subscribedURL.getServiceInterface();
 		String version = subscribedURL.getParameter(VERSION_KEY);
 		String protocol = subscribedURL.getParameter(PROTOCOL_KEY);
-
-		List<ServiceInstance> serviceInstances = getServiceInstances(serviceName);
 
 		List<URL> urls = dubboMetadataUtils.getDubboMetadataServiceURLs(serviceInstances,
 				serviceInterface, version, protocol);
@@ -470,20 +577,12 @@ public class DubboCloudRegistry extends FailbackRegistry {
 		notifyAllSubscribedURLs(subscribedURL, urls, listener);
 	}
 
-	// private void subscribeDubboMetadataServiceURLs(URL subscribedURL,
-	// NotifyListener listener, Set<String> serviceNames) {
-	//
-	// String serviceInterface = subscribedURL.getServiceInterface();
-	// String version = subscribedURL.getParameter(VERSION_KEY);
-	// String protocol = subscribedURL.getParameter(PROTOCOL_KEY);
-	//
-	// List<ServiceInstance> serviceInstances = getServiceInstances(serviceNames);
-	//
-	// List<URL> urls = dubboMetadataUtils.getDubboMetadataServiceURLs(serviceInstances,
-	// serviceInterface, version, protocol);
-	//
-	// notifyAllSubscribedURLs(subscribedURL, urls, listener);
-	// }
+	private void subscribeDubboMetadataServiceURLs(URL subscribedURL,
+			NotifyListener listener, String serviceName) {
+		List<ServiceInstance> serviceInstances = getServiceInstances(serviceName);
+		subscribeDubboMetadataServiceURLs(subscribedURL, listener, serviceName,
+				serviceInstances);
+	}
 
 	private boolean containsProviderCategory(URL subscribedURL) {
 		String category = subscribedURL.getParameter(CATEGORY_KEY);
@@ -502,6 +601,14 @@ public class DubboCloudRegistry extends FailbackRegistry {
 
 	protected boolean isAdminURL(URL url) {
 		return ADMIN_PROTOCOL.equals(url.getProtocol());
+	}
+
+	public Map<URL, NotifyListener> getUrlNotifyListenerMap() {
+		return urlNotifyListenerMap;
+	}
+
+	public Map<String, ReSubscribeMetadataJob> getReConnectJobMap() {
+		return reConnectJobMap;
 	}
 
 	protected boolean isDubboMetadataServiceURL(URL url) {

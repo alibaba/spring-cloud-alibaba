@@ -159,7 +159,7 @@ NOTE: Before you start the provider application, please start Nacos first. Refer
 ==== Start a Consumer Application
 
 It might not be as easy as starting a provider application, because the consumer needs to call the RESTful service of the provider. In this example, we will use the most primitive way, that is,
-combining the LoadBalanceClient and RestTemolate explicitly to access the RESTful service.
+combining the LoadBalanceClient and RestTemplate explicitly to access the RESTful service.
 You can refer to section 1.2 for pom.xml and application.properties configurations. The following is the sample code for starting a consumer application.
 
 NOTE: You can also access the service by using RestTemplate and FeignClient with load balancing.
