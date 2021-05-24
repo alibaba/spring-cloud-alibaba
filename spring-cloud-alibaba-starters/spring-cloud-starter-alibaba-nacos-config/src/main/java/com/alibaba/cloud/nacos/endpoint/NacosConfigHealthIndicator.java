@@ -32,6 +32,16 @@ public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 
 	private final ConfigService configService;
 
+	/**
+	 * status up .
+	 */
+	private final String STATUS_UP = "UP";
+
+	/**
+	 * status down .
+	 */
+	private final String STATUS_DOWN = "DOWN";
+
 	public NacosConfigHealthIndicator(ConfigService configService) {
 		this.configService = configService;
 	}
@@ -43,10 +53,10 @@ public class NacosConfigHealthIndicator extends AbstractHealthIndicator {
 		// Set the status to Builder
 		builder.status(status);
 		switch (status) {
-		case "UP":
+		case STATUS_UP:
 			builder.up();
 			break;
-		case "DOWN":
+		case STATUS_DOWN:
 			builder.down();
 			break;
 		default:
