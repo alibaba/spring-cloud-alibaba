@@ -58,6 +58,11 @@ public class RocketMQBinderConfigurationProperties {
 	 */
 	private String customizedTraceTopic = MixAll.RMQ_SYS_TRACE_TOPIC;
 
+	/**
+	 * The property of "unitName".
+	 */
+	private String unitName;
+
 	public List<String> getNameServer() {
 		return nameServer;
 	}
@@ -98,4 +103,11 @@ public class RocketMQBinderConfigurationProperties {
 		this.customizedTraceTopic = customizedTraceTopic;
 	}
 
+	public String getUnitName() {
+		return unitName;
+	}
+
+	public void setUnitName(String unitName) {
+		this.unitName = unitName;
+	}
 }

@@ -158,6 +158,7 @@ public class RocketMQMessageChannelBinder extends
 						producerProperties.getExtension().isRetryNextServer());
 				producer.setMaxMessageSize(
 						producerProperties.getExtension().getMaxMessageSize());
+				producer.setUnitName(rocketBinderConfigurationProperties.getUnitName());
 				rocketMQTemplate.setProducer(producer);
 				if (producerProperties.isPartitioned()) {
 					rocketMQTemplate

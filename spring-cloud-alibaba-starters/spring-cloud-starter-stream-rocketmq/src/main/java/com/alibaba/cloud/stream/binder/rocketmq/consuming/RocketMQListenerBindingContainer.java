@@ -237,6 +237,7 @@ public class RocketMQListenerBindingContainer
 		consumer.setNamesrvAddr(RocketMQBinderUtils.getNameServerStr(nameServer));
 		consumer.setConsumeThreadMax(rocketMQConsumerProperties.getConcurrency());
 		consumer.setConsumeThreadMin(rocketMQConsumerProperties.getConcurrency());
+		consumer.setUnitName(rocketBinderConfigurationProperties.getUnitName());
 
 		switch (messageModel) {
 		case BROADCASTING:
