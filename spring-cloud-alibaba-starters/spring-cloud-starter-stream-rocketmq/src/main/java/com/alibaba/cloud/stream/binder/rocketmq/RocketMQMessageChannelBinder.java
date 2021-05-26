@@ -146,6 +146,7 @@ public class RocketMQMessageChannelBinder extends
 				}
 				producer.setNamesrvAddr(RocketMQBinderUtils
 						.getNameServerStr(mergedProperties.getNameServer()));
+				producer.setUnitName(rocketBinderConfigurationProperties.getUnitName());
 				producer.setSendMsgTimeout(
 						producerProperties.getExtension().getSendMessageTimeout());
 				producer.setRetryTimesWhenSendFailed(
