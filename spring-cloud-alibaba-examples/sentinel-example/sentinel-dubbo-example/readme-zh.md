@@ -73,7 +73,7 @@ Provider端在application.properties文件中定义dubbo相关的配置，比如
 
 定义具体的服务：
 
-    @Service(
+    @DubboService(
             version = "${foo.service.version}",
             application = "${dubbo.application.id}",
             protocol = "${dubbo.protocol.id}",
@@ -111,7 +111,7 @@ Consumer端在服务调用之前，先定义限流规则。
 
 根据Provider端中发布的定义，使用Dubbo的@Reference注解注入服务对应的Bean：
 
-    @Reference(version = "${foo.service.version}", application = "${dubbo.application.id}",
+    @DubboReference(version = "${foo.service.version}", application = "${dubbo.application.id}",
             path = "dubbo://localhost:12345", timeout = 30000)
 	private FooService fooService;
 
