@@ -16,12 +16,12 @@
 
 package com.alibaba.cloud.examples;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 /**
  * @author fangjian
  */
-@Service(version = "${foo.service.version}", application = "${dubbo.application.id}",
+@DubboService(version = "${foo.service.version}", application = "${dubbo.application.id}",
 		protocol = "${dubbo.protocol.id}", registry = "${dubbo.registry.id}")
 public class FooServiceImpl implements FooService {
 
