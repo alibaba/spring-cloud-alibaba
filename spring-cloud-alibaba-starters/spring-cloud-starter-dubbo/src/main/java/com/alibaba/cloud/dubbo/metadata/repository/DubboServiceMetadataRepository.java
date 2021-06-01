@@ -245,6 +245,7 @@ public class DubboServiceMetadataRepository
 
 	@Override
 	public void afterSingletonsInstantiated() {
+		// inited by DubboCloudRegistry.preInit() @theonefx
 		// initializeMetadata();
 	}
 
