@@ -42,7 +42,6 @@ import org.apache.dubbo.registry.support.FailbackRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationListener;
@@ -154,6 +153,8 @@ public class DubboCloudRegistry extends FailbackRegistry
 			metadataSubscribeHandlerMap.forEach((url, handler) -> handler.init());
 			urlSubscribeHandlerMap.forEach((url, handler) -> handler.init());
 			repository.initializeMetadata();
+
+			// meke sure everything prepared, then can listening ServiceInstanceChangeEvent
 			applicationContext.addApplicationListener(this);
 
 			logger.info("DubboCloudRegistry preInit Done.");
@@ -235,8 +236,9 @@ public class DubboCloudRegistry extends FailbackRegistry
 
 		String appName = event.getServiceName();
 
-		List<ServiceInstance> instances = filter(event.getServiceInstances() != null
-				? event.getServiceInstances() : Collections.emptyList());
+		List<ServiceInstance> instances = filter(
+				event.getServiceInstances() != null ? event.getServiceInstances()
+						: Collections.emptyList());
 
 		Set<String> subscribedServiceNames = getServices(null);
 
