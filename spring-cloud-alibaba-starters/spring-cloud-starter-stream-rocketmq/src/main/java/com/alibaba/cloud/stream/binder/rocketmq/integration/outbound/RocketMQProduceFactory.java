@@ -118,6 +118,7 @@ public final class RocketMQProduceFactory {
 				producerProperties.getRetryAnotherBroker());
 		producer.setMaxMessageSize(producerProperties.getMaxMessageSize());
 		producer.setUseTLS(producerProperties.getUseTLS());
+		producer.setUnitName(producerProperties.getUnitName());
 		CheckForbiddenHook checkForbiddenHook = RocketMQBeanContainerCache.getBean(
 				producerProperties.getCheckForbiddenHook(), CheckForbiddenHook.class);
 		if (null != checkForbiddenHook) {

@@ -56,6 +56,11 @@ public class RocketMQCommonProperties implements Serializable {
 
 	private String namespace;
 
+	/**
+	 * The property of "unitName".
+	 */
+	private String unitName;
+
 	private String accessChannel = AccessChannel.LOCAL.name();
 
 	/**
@@ -199,4 +204,11 @@ public class RocketMQCommonProperties implements Serializable {
 		this.customizedTraceTopic = customizedTraceTopic;
 	}
 
+	public String getUnitName() {
+		return unitName;
+	}
+
+	public void setUnitName(String unitName) {
+		this.unitName = unitName;
+	}
 }
