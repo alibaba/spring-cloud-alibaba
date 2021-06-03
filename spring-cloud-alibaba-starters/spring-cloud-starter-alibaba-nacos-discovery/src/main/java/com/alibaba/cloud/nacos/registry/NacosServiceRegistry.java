@@ -76,11 +76,15 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 					instance.getIp(), instance.getPort());
 		}
 		catch (Exception e) {
-			log.error("nacos registry, {} register failed...{},", serviceId,
-					registration.toString(), e);
-			// rethrow a RuntimeException if the registration is failed.
-			// issue : https://github.com/alibaba/spring-cloud-alibaba/issues/1132
-			rethrowRuntimeException(e);
+			if (nacosDiscoveryProperties.isFailFast()) {
+				log.error("nacos registry, {} register failed...{},", serviceId,
+						registration.toString(), e);
+				rethrowRuntimeException(e);
+			}
+			else {
+				log.warn("Failfast is false. {} register failed...{},", serviceId,
+						registration.toString(), e);
+			}
 		}
 	}
 
