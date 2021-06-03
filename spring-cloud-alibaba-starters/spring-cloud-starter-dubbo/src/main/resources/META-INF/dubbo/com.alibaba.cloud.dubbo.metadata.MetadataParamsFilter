@@ -1,0 +1,1 @@
+default=com.alibaba.cloud.dubbo.metadata.DefaultMetadataParamsFilter
