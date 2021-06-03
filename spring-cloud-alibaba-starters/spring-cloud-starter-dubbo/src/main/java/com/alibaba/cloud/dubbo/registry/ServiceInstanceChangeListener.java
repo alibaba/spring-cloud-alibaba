@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.dubbo.registry;
 
-import org.apache.dubbo.config.annotation.DubboService;
+import com.alibaba.cloud.dubbo.registry.event.ServiceInstancesChangedEvent;
+
+import org.springframework.context.ApplicationListener;
+import org.springframework.core.Ordered;
 
 /**
- * @author fangjian
+ * The interface of ServiceInstanceChange event Listener.
+ *
+ * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
+ * @see ServiceInstancesChangedEvent
+ * @see Ordered
+ * @see ApplicationListener
  */
-@DubboService(version = "${foo.service.version}", application = "${dubbo.application.id}",
-		protocol = "${dubbo.protocol.id}", registry = "${dubbo.registry.id}")
-public class FooServiceImpl implements FooService {
-
-	@Override
-	public String hello(String name) {
-		return "hello, " + name;
-	}
+public interface ServiceInstanceChangeListener
+		extends ApplicationListener<ServiceInstancesChangedEvent>, Ordered {
 
 }

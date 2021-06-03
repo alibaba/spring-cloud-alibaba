@@ -48,15 +48,16 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 更多组件请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap-zh.md)。
 
 ## 如何构建
-
-* master 分支对应的是 Spring Cloud Greenwich，最低支持 JDK 1.8。
+* 2020.0 分支对应的是 Spring Cloud 2020，最低支持 JDK 1.8。
+* master 分支对应的是 Spring Cloud Hoxton，最低支持 JDK 1.8。
+* greenwich 分支对应的是 Spring Cloud Greenwich，最低支持 JDK 1.8。
 * finchley 分支对应的是 Spring Cloud Finchley，最低支持 JDK 1.8。
 * 1.x 分支对应的是 Spring Cloud Edgware，最低支持 JDK 1.7。
 
 Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone 到本地，然后执行以下命令：
-
+```bash
 	./mvnw install
-
+```
 执行完毕后，项目将被安装到本地 Maven 仓库。
 
 ## 如何使用
@@ -64,7 +65,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 ### 如何引入依赖
 
 如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
-
+```xml
 	<dependencyManagement>
         <dependencies>
             <dependency>
@@ -76,7 +77,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+```
 然后在 `dependencies` 中添加自己所需使用的依赖即可使用。
 
 ## 演示 Demo
@@ -111,7 +112,7 @@ Example 列表：
 * 2.0.x 版本适用于 Spring Boot 2.0.x
 * 2.1.x 版本适用于 Spring Boot 2.1.x
 * 2.2.x 版本适用于 Spring Boot 2.2.x
-
+* 2021.x 版本适用于 Spring Boot 2.4.x
 
 ## 社区交流
 
