@@ -125,9 +125,7 @@ public class SentinelFeignTests {
 
 	@Test
 	public void testFeignServiceInstanceResourceHandler() {
-		assertThatThrownBy(() -> {
-			echoService.echo("test");
-		}).isInstanceOf(Exception.class);
+		assertThat(echoService.echo("test")).isEqualTo("echo fallback");
 	}
 
 	@Configuration
