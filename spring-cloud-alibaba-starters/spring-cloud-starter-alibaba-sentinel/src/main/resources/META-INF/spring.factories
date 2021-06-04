@@ -3,7 +3,8 @@ com.alibaba.cloud.sentinel.SentinelWebAutoConfiguration,\
 com.alibaba.cloud.sentinel.SentinelWebFluxAutoConfiguration,\
 com.alibaba.cloud.sentinel.endpoint.SentinelEndpointAutoConfiguration,\
 com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration,\
-com.alibaba.cloud.sentinel.feign.SentinelFeignAutoConfiguration
+com.alibaba.cloud.sentinel.feign.SentinelFeignAutoConfiguration,\
+com.alibaba.cloud.sentinel.feign.handler.SentinelResourceHandlerAutoConfiguration
 
 org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker=\
 com.alibaba.cloud.sentinel.custom.SentinelCircuitBreakerConfiguration

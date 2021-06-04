@@ -19,6 +19,9 @@ package com.alibaba.cloud.sentinel;
 import java.util.Arrays;
 
 import com.alibaba.cloud.sentinel.feign.SentinelFeignAutoConfiguration;
+import com.alibaba.cloud.sentinel.feign.handler.ResourceHandler;
+import com.alibaba.cloud.sentinel.feign.handler.ResourceHandlerHolder;
+import com.alibaba.cloud.sentinel.feign.handler.SentinelResourceHandlerAutoConfiguration;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
@@ -45,7 +48,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class },
+@SpringBootTest(
+		classes = { SentinelFeignTests.TestConfig.class,
+				SentinelResourceHandlerAutoConfiguration.class },
 		properties = { "feign.sentinel.enabled=true" })
 public class SentinelFeignTests {
 
@@ -118,6 +123,13 @@ public class SentinelFeignTests {
 		assertThat(echoService.equals(fooService)).isEqualTo(Boolean.FALSE);
 	}
 
+	@Test
+	public void testFeignServiceInstanceResourceHandler() {
+		assertThatThrownBy(() -> {
+			echoService.echo("test");
+		}).isInstanceOf(Exception.class);
+	}
+
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ SentinelFeignAutoConfiguration.class })
@@ -136,6 +148,7 @@ public class SentinelFeignTests {
 
 	}
 
+	@ResourceHandler(ResourceHandlerHolder.SERVICE_INSTANCE)
 	@FeignClient(value = "test-service", fallback = EchoServiceFallback.class)
 	public interface EchoService {
 
