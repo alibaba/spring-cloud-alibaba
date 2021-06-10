@@ -154,7 +154,8 @@ public class DubboCloudRegistry extends FailbackRegistry
 			urlSubscribeHandlerMap.forEach((url, handler) -> handler.init());
 			repository.initializeMetadata();
 
-			// meke sure everything prepared, then can listening ServiceInstanceChangeEvent
+			// meke sure everything prepared, then can listening
+			// ServiceInstanceChangeEvent
 			applicationContext.addApplicationListener(this);
 
 			logger.info("DubboCloudRegistry preInit Done.");
@@ -236,9 +237,8 @@ public class DubboCloudRegistry extends FailbackRegistry
 
 		String appName = event.getServiceName();
 
-		List<ServiceInstance> instances = filter(
-				event.getServiceInstances() != null ? event.getServiceInstances()
-						: Collections.emptyList());
+		List<ServiceInstance> instances = filter(event.getServiceInstances() != null
+				? event.getServiceInstances() : Collections.emptyList());
 
 		Set<String> subscribedServiceNames = getServices(null);
 

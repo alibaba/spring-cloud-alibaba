@@ -141,13 +141,15 @@ public class SentinelAutoConfiguration {
 	}
 
 	@PreDestroy
-	private void destroy(){
+	private void destroy() {
 		CommandCenter commandCenter = CommandCenterProvider.getCommandCenter();
-		if(commandCenter != null){
+		if (commandCenter != null) {
 			try {
 				commandCenter.stop();
-			} catch (Exception ex) {
-				RecordLog.warn("[{}] WARN: Stop failed", commandCenter.getClass().getName(), ex);
+			}
+			catch (Exception ex) {
+				RecordLog.warn("[{}] WARN: Stop failed",
+						commandCenter.getClass().getName(), ex);
 				ex.printStackTrace();
 			}
 		}

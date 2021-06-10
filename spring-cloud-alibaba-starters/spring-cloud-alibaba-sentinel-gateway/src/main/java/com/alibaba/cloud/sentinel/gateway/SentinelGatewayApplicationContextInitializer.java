@@ -17,6 +17,7 @@
 package com.alibaba.cloud.sentinel.gateway;
 
 import com.alibaba.csp.sentinel.config.SentinelConfig;
+
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
@@ -24,20 +25,22 @@ import org.springframework.core.Ordered;
 /**
  * @author <a href="mailto:349339884@qq.com">oawang</a>
  */
-public class SentinelGatewayApplicationContextInitializer
-        implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
+public class SentinelGatewayApplicationContextInitializer implements
+		ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
-    @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
-        initAppType();
-    }
+	@Override
+	public void initialize(ConfigurableApplicationContext applicationContext) {
+		initAppType();
+	}
 
-    private void initAppType() {
-        System.setProperty(SentinelConfig.APP_TYPE_PROP_KEY, ConfigConstants.APP_TYPE_SCG_GATEWAY);
-    }
+	private void initAppType() {
+		System.setProperty(SentinelConfig.APP_TYPE_PROP_KEY,
+				ConfigConstants.APP_TYPE_SCG_GATEWAY);
+	}
 
-    @Override
-    public int getOrder() {
-        return 0;
-    }
+	@Override
+	public int getOrder() {
+		return 0;
+	}
+
 }
