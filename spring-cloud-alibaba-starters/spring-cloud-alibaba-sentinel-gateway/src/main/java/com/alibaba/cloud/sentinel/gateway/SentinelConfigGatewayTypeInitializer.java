@@ -22,7 +22,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 
 /**
- * @author oawang
+ * @author <a href="mailto:349339884@qq.com">oawang</a>
  */
 public class SentinelConfigGatewayTypeInitializer
         implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
