@@ -24,7 +24,7 @@ import org.springframework.core.Ordered;
 /**
  * @author <a href="mailto:349339884@qq.com">oawang</a>
  */
-public class SentinelConfigGatewayTypeInitializer
+public class SentinelGatewayApplicationContextInitializer
         implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
     @Override
