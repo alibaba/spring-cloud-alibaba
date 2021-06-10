@@ -22,7 +22,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 
 /**
- * @author qiujw
+ * @author oawang
  */
 public class SentinelConfigGatewayTypeInitializer
         implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
