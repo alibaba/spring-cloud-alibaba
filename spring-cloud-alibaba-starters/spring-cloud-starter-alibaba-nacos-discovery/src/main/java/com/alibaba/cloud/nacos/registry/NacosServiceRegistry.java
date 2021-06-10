@@ -159,8 +159,9 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	public Object getStatus(Registration registration) {
 
 		String serviceName = registration.getServiceId();
+		String group = nacosDiscoveryProperties.getGroup();
 		try {
-			List<Instance> instances = namingService().getAllInstances(serviceName);
+			List<Instance> instances = namingService().getAllInstances(serviceName, group);
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
 						&& instance.getPort() == nacosDiscoveryProperties.getPort()) {
