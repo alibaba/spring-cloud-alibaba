@@ -260,7 +260,7 @@ Nacos 内部有 https://nacos.io/zh-cn/docs/concepts.html[Namespace 的概念]:
 [quote]
 用于进行租户粒度的配置隔离。不同的命名空间下，可以存在相同的 Group 或 Data ID 的配置。Namespace 的常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等。
 
-在没有明确指定 `${spring.cloud.nacos.config.namespace}` 配置的情况下， 默认使用的是 Nacos 上 Public 这个namespae。如果需要使用自定义的命名空间，可以通过以下配置来实现：
+在没有明确指定 `${spring.cloud.nacos.config.namespace}` 配置的情况下， 默认使用的是 Nacos 上 Public 这个namespace。如果需要使用自定义的命名空间，可以通过以下配置来实现：
 [source,properties]
 ----
 spring.cloud.nacos.config.namespace=b3404bc0-d7dc-4855-b519-570ed34b62d7
@@ -348,7 +348,13 @@ Nacos Config 目前提供了三种配置能力从 Nacos 拉取相关的配置
 * B: 通过 `spring.cloud.nacos.config.ext-config[n].data-id` 的方式支持多个扩展 Data Id 的配置
 * C: 通过内部相关规则(应用名、应用名+ Profile )自动生成相关的 Data Id 配置
 
-当三种方式共同使用时，他们的一个优先级关系是:A < B < C
+当三种方式共同使用时，他们的一个优先级关系是:
+
+->A为优先级最高的
+
+->B的优先级低于A，
+
+->C的优先级是最低的
 
 === Nacos Config 对外暴露的 Endpoint
 

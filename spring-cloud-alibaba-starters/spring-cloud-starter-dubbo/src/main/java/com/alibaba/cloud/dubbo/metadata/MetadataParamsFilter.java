@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.dubbo.metadata;
 
-import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.common.extension.SPI;
 
 /**
- * @author fangjian
+ * Copy from org.apache.dubbo.metadata.MetadataParamsFilter.
+ *
+ * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
  */
-@DubboService(version = "${foo.service.version}", application = "${dubbo.application.id}",
-		protocol = "${dubbo.protocol.id}", registry = "${dubbo.registry.id}")
-public class FooServiceImpl implements FooService {
+@SPI
+public interface MetadataParamsFilter {
 
-	@Override
-	public String hello(String name) {
-		return "hello, " + name;
-	}
+	/**
+	 * params that need to be sent to metadata center.
+	 * @return arrays of keys
+	 */
+	String[] serviceParamsIncluded();
 
 }
