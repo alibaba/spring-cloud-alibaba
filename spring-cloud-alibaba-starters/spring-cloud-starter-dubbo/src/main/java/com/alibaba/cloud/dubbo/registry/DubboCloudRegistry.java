@@ -46,7 +46,6 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.event.ContextRefreshedEvent;
 
 import static com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository.EXPORTED_SERVICES_REVISION_PROPERTY_NAME;
 import static java.util.Collections.emptyList;
@@ -118,9 +117,6 @@ public class DubboCloudRegistry extends FailbackRegistry
 		this.applicationContext = applicationContext;
 		this.dubboMetadataUtils = getBean(DubboMetadataUtils.class);
 		this.reSubscribeManager = new ReSubscribeManager(this);
-
-		applicationContext.addApplicationListener(
-				(ApplicationListener<ContextRefreshedEvent>) event -> preInit());
 	}
 
 	private void preInit() {
@@ -154,7 +150,8 @@ public class DubboCloudRegistry extends FailbackRegistry
 			urlSubscribeHandlerMap.forEach((url, handler) -> handler.init());
 			repository.initializeMetadata();
 
-			// meke sure everything prepared, then can listening ServiceInstanceChangeEvent
+			// meke sure everything prepared, then can listening
+			// ServiceInstanceChangeEvent
 			applicationContext.addApplicationListener(this);
 
 			logger.info("DubboCloudRegistry preInit Done.");
@@ -165,39 +162,50 @@ public class DubboCloudRegistry extends FailbackRegistry
 		return this.applicationContext.getBean(beanClass);
 	}
 
-	protected boolean shouldRegister(URL url) {
+	protected boolean shouldNotRegister(URL url) {
 		String side = url.getParameter(SIDE_KEY);
 
 		boolean should = PROVIDER_SIDE.equals(side); // Only register the Provider.
 
-		if (!should) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("The URL[{}] should not be registered.", url.toString());
+		if (logger.isDebugEnabled()) {
+			if (!should) {
+				logger.debug("The URL should NOT!! be registered & unregistered [{}] .",
+						url);
+			}
+			else {
+				logger.debug("The URL should be registered & unregistered [{}] .", url);
 			}
 		}
 
-		return should;
+		return !should;
 	}
 
 	@Override
 	public final void doRegister(URL url) {
-		if (!shouldRegister(url)) {
-			return;
+		synchronized (this) {
+			preInit();
+			if (shouldNotRegister(url)) {
+				return;
+			}
+			repository.exportURL(url);
 		}
-		repository.exportURL(url);
 	}
 
 	@Override
 	public final void doUnregister(URL url) {
-		if (!shouldRegister(url)) {
-			return;
+		synchronized (this) {
+			preInit();
+			if (shouldNotRegister(url)) {
+				return;
+			}
+			repository.unexportURL(url);
 		}
-		repository.unexportURL(url);
 	}
 
 	@Override
 	public final void doSubscribe(URL url, NotifyListener listener) {
 		synchronized (this) {
+			preInit();
 			if (isAdminURL(url)) {
 				// TODO in future
 				if (logger.isWarnEnabled()) {
@@ -452,7 +460,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 		return metadata.containsKey(METADATA_SERVICE_URLS_PROPERTY_NAME);
 	}
 
-	Set<String> getServices(URL url) {
+	private Set<String> getServices(URL url) {
 		Set<String> subscribedServices = repository.getSubscribedServices();
 		if (subscribedServices.contains("*")) {
 			subscribedServices = new HashSet<>(discoveryClient.getServices());
