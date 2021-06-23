@@ -161,7 +161,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		String serviceName = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 		try {
-			List<Instance> instances = namingService().getAllInstances(serviceName, group);
+			List<Instance> instances = namingService().getAllInstances(serviceName,
+					group);
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
 						&& instance.getPort() == nacosDiscoveryProperties.getPort()) {
