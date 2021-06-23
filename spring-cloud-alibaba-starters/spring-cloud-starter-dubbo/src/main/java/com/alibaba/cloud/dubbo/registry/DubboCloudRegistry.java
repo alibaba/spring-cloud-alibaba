@@ -244,9 +244,8 @@ public class DubboCloudRegistry extends FailbackRegistry
 
 		String appName = event.getServiceName();
 
-		List<ServiceInstance> instances = filter(
-				event.getServiceInstances() != null ? event.getServiceInstances()
-						: Collections.emptyList());
+		List<ServiceInstance> instances = filter(event.getServiceInstances() != null
+				? event.getServiceInstances() : Collections.emptyList());
 
 		Set<String> subscribedServiceNames = getServices(null);
 
