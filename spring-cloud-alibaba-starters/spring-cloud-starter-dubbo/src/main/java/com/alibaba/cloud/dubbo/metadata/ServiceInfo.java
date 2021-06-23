@@ -34,18 +34,10 @@ import org.apache.dubbo.common.utils.StringUtils;
 
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_CHAR_SEPARATOR;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.HOST_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.METHODS_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PASSWORD_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.PID_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PORT_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.QUEUES_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.RETRIES_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.THREADS_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.TIMESTAMP_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.USERNAME_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 
 /**
@@ -86,14 +78,6 @@ public class ServiceInfo implements Serializable {
 		IGNORE_KEYS.add(PID_KEY);
 		IGNORE_KEYS.add(INTERFACE_KEY);
 		IGNORE_KEYS.add(METHODS_KEY);
-		IGNORE_KEYS.add(THREADS_KEY);
-		IGNORE_KEYS.add(QUEUES_KEY);
-		IGNORE_KEYS.add(TIMEOUT_KEY);
-		IGNORE_KEYS.add(USERNAME_KEY);
-		IGNORE_KEYS.add(PASSWORD_KEY);
-		IGNORE_KEYS.add(HOST_KEY);
-		IGNORE_KEYS.add(PORT_KEY);
-		IGNORE_KEYS.add(RETRIES_KEY);
 	}
 
 	public ServiceInfo(URL url) {
@@ -110,7 +94,6 @@ public class ServiceInfo implements Serializable {
 		});
 		this.params = params;
 	}
-
 
 	public ServiceInfo(String name, String group, String version, String protocol,
 			String path, Map<String, String> params) {
