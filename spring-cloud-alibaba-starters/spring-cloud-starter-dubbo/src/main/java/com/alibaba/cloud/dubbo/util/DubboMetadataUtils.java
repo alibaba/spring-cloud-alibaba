@@ -21,12 +21,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.alibaba.cloud.dubbo.metadata.RevisionResolver;
 import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 import org.apache.dubbo.common.URL;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.core.env.Environment;
 
+import static com.alibaba.cloud.dubbo.metadata.RevisionResolver.SCA_REVSION_KEY;
 import static java.lang.String.format;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 import static org.apache.dubbo.registry.client.metadata.ServiceInstanceMetadataUtils.METADATA_SERVICE_URLS_PROPERTY_NAME;
@@ -74,7 +76,11 @@ public class DubboMetadataUtils {
 	public List<URL> getDubboMetadataServiceURLs(ServiceInstance serviceInstance) {
 		Map<String, String> metadata = serviceInstance.getMetadata();
 		String dubboURLsJSON = metadata.get(METADATA_SERVICE_URLS_PROPERTY_NAME);
-		return jsonUtils.toURLs(dubboURLsJSON);
+		List<URL> urls = jsonUtils.toURLs(dubboURLsJSON);
+		String revision = RevisionResolver.getRevision(serviceInstance);
+		urls = urls.stream().map(url -> url.addParameter(SCA_REVSION_KEY, revision))
+				.collect(Collectors.toList());
+		return urls;
 	}
 
 	/**

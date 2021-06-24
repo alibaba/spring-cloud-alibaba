@@ -106,11 +106,6 @@ public class DubboServiceMetadataRepository
 	 */
 	public static String EXPORTED_SERVICES_REVISION_PROPERTY_NAME = "dubbo.metadata.revision";
 
-	/**
-	 * The {@link String#format(String, Object...) pattern} of dubbo protocols port.
-	 */
-	public static final String DUBBO_PROTOCOLS_PORT_PROPERTY_NAME_PATTERN = "dubbo.protocols.%s.port";
-
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
@@ -150,7 +145,7 @@ public class DubboServiceMetadataRepository
 	 * Key is application name Value is Map&lt;RequestMetadata,
 	 * DubboRestServiceMetadata&gt;.
 	 */
-	private Map<String, Map<RequestMetadataMatcher, DubboRestServiceMetadata>> dubboRestServiceMetadataRepository = newHashMap();
+	private final Map<String, Map<RequestMetadataMatcher, DubboRestServiceMetadata>> dubboRestServiceMetadataRepository = newHashMap();
 
 	// =============================================================== //
 
