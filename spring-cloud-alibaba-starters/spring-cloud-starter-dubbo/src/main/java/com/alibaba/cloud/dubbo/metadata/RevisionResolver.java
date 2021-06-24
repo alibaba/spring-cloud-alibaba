@@ -18,10 +18,14 @@ package com.alibaba.cloud.dubbo.metadata;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
+import org.springframework.cloud.client.ServiceInstance;
+
+import static com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository.EXPORTED_SERVICES_REVISION_PROPERTY_NAME;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -31,9 +35,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public final class RevisionResolver {
 
-	private static final Logger logger = LoggerFactory.getLogger(RevisionResolver.class);
+	/**
+	 * The param key in url.
+	 */
+	public static final String SCA_REVSION_KEY = "sca_revision";
 
 	private static final String EMPTY_REVISION = "0";
+
+	private static final Logger logger = LoggerFactory.getLogger(RevisionResolver.class);
 
 	private static final char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8',
 			'9', 'A', 'B', 'C', 'D', 'E', 'F' };
@@ -69,6 +78,16 @@ public final class RevisionResolver {
 			str[k++] = hexDigits[byte0 & 0xf];
 		}
 		return new String(str);
+	}
+
+	public static String getRevision(ServiceInstance instance) {
+		Map<String, String> metadata = instance.getMetadata();
+		String revision = metadata.get(EXPORTED_SERVICES_REVISION_PROPERTY_NAME);
+
+		if (revision == null) {
+			revision = RevisionResolver.getEmptyRevision();
+		}
+		return revision;
 	}
 
 }
