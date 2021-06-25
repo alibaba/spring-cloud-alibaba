@@ -73,12 +73,12 @@ public class MetadataServiceSubscribeHandler extends AbstractServiceSubscribeHan
 		List<URL> urls = dubboMetadataUtils.getDubboMetadataServiceURLs(serviceInstances,
 				serviceInterface, version, protocol);
 
-		if (urls.size() > 0) {
-			URLBuilder builder = new URLBuilder();
-			builder.setProtocol(ROUTE_PROTOCOL);
-			builder.addParameter(ROUTER_KEY, "revisionRouter");
-			urls.add(builder.build());
-		}
+//		if (urls.size() > 0) {
+//			URLBuilder builder = new URLBuilder();
+//			builder.setProtocol(ROUTE_PROTOCOL);
+//			builder.addParameter(ROUTER_KEY, "revisionRouter");
+//			urls.add(builder.build());
+//		}
 
 		notifyAllSubscribedURLs(subscribedURL, urls, listener);
 	}
