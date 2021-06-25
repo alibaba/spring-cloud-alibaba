@@ -28,6 +28,8 @@ import org.apache.dubbo.rpc.cluster.Router;
 import org.apache.dubbo.rpc.cluster.RouterFactory;
 import org.apache.dubbo.rpc.cluster.router.AbstractRouter;
 
+import org.springframework.util.CollectionUtils;
+
 import static com.alibaba.cloud.dubbo.metadata.RevisionResolver.SCA_REVSION_KEY;
 
 /**
@@ -41,6 +43,10 @@ public class MetadataServiceRevisionRouterFactory implements RouterFactory {
 			@Override
 			public <T> List<Invoker<T>> route(List<Invoker<T>> invokers, URL url,
 					Invocation invocation) throws RpcException {
+				if (CollectionUtils.isEmpty(invokers)) {
+					return invokers;
+				}
+
 				if (!DubboMetadataService.class.getName()
 						.equalsIgnoreCase(url.getServiceInterface())) {
 					return invokers;
