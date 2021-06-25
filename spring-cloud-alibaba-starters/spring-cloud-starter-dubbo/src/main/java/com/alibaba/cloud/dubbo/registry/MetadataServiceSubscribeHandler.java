@@ -20,15 +20,12 @@ import java.util.List;
 
 import com.alibaba.cloud.dubbo.util.DubboMetadataUtils;
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.URLBuilder;
 import org.apache.dubbo.registry.NotifyListener;
 
 import org.springframework.cloud.client.ServiceInstance;
 
 import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
-import static org.apache.dubbo.common.constants.RegistryConstants.ROUTE_PROTOCOL;
-import static org.apache.dubbo.rpc.cluster.Constants.ROUTER_KEY;
 
 /**
  * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
@@ -72,13 +69,6 @@ public class MetadataServiceSubscribeHandler extends AbstractServiceSubscribeHan
 
 		List<URL> urls = dubboMetadataUtils.getDubboMetadataServiceURLs(serviceInstances,
 				serviceInterface, version, protocol);
-
-//		if (urls.size() > 0) {
-//			URLBuilder builder = new URLBuilder();
-//			builder.setProtocol(ROUTE_PROTOCOL);
-//			builder.addParameter(ROUTER_KEY, "revisionRouter");
-//			urls.add(builder.build());
-//		}
 
 		notifyAllSubscribedURLs(subscribedURL, urls, listener);
 	}
