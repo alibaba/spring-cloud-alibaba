@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.alibaba.cloud.dubbo.metadata.RevisionResolver;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.service.DubboMetadataService;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
@@ -34,9 +35,11 @@ import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.URLBuilder;
 import org.apache.dubbo.registry.NotifyListener;
+import org.apache.dubbo.rpc.RpcContext;
 
 import org.springframework.cloud.client.ServiceInstance;
 
+import static com.alibaba.cloud.dubbo.metadata.RevisionResolver.SCA_REVSION_KEY;
 import static java.util.Collections.emptyList;
 import static org.apache.dubbo.common.URLBuilder.from;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
@@ -50,6 +53,9 @@ import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
  */
 public class GenearalServiceSubscribeHandler extends AbstractServiceSubscribeHandler {
 
+	/**
+	 * the provider which can provide service of the url. {appName, [revisions]}
+	 */
 	private final Map<String, Set<String>> providers = new HashMap<>();
 
 	private final Map<String, URL> urlTemplateMap = new HashMap<>();
@@ -117,7 +123,7 @@ public class GenearalServiceSubscribeHandler extends AbstractServiceSubscribeHan
 
 	public void init(String appName, String revision,
 			List<ServiceInstance> instanceList) {
-		List<URL> urls = getTemplateExportedURLs(url, instanceList);
+		List<URL> urls = getTemplateExportedURLs(url, revision, instanceList);
 		if (urls != null && urls.size() > 0) {
 			addAppNameWithRevision(appName, revision);
 			setUrlTemplate(appName, revision, urls);
@@ -170,7 +176,7 @@ public class GenearalServiceSubscribeHandler extends AbstractServiceSubscribeHan
 
 			String host = serviceInstance.getHost();
 			String appName = serviceInstance.getServiceId();
-			String revision = registry.getRevision(serviceInstance);
+			String revision = RevisionResolver.getRevision(serviceInstance);
 
 			URL template = urlTemplateMap.get(getAppRevisionKey(appName, revision));
 
@@ -225,7 +231,7 @@ public class GenearalServiceSubscribeHandler extends AbstractServiceSubscribeHan
 		return urlsCloneTo;
 	}
 
-	private List<URL> getTemplateExportedURLs(URL subscribedURL,
+	private List<URL> getTemplateExportedURLs(URL subscribedURL, String revision,
 			List<ServiceInstance> serviceInstances) {
 
 		DubboMetadataService dubboMetadataService = getProxy(serviceInstances);
@@ -233,7 +239,8 @@ public class GenearalServiceSubscribeHandler extends AbstractServiceSubscribeHan
 		List<URL> templateExportedURLs = emptyList();
 
 		if (dubboMetadataService != null) {
-			templateExportedURLs = getExportedURLs(dubboMetadataService, subscribedURL);
+			templateExportedURLs = getExportedURLs(dubboMetadataService, revision,
+					subscribedURL);
 		}
 		else {
 			if (logger.isWarnEnabled()) {
@@ -253,14 +260,17 @@ public class GenearalServiceSubscribeHandler extends AbstractServiceSubscribeHan
 	}
 
 	private List<URL> getExportedURLs(DubboMetadataService dubboMetadataService,
-			URL subscribedURL) {
+			String revision, URL subscribedURL) {
 		String serviceInterface = subscribedURL.getServiceInterface();
 		String group = subscribedURL.getParameter(GROUP_KEY);
 		String version = subscribedURL.getParameter(VERSION_KEY);
-		// The subscribed protocol may be null
-		String subscribedProtocol = subscribedURL.getParameter(PROTOCOL_KEY);
+
+		RpcContext.getContext().setAttachment(SCA_REVSION_KEY, revision);
 		String exportedURLsJSON = dubboMetadataService.getExportedURLs(serviceInterface,
 				group, version);
+
+		// The subscribed protocol may be null
+		String subscribedProtocol = subscribedURL.getParameter(PROTOCOL_KEY);
 		return jsonUtils.toURLs(exportedURLsJSON).stream()
 				.filter(exportedURL -> subscribedProtocol == null
 						|| subscribedProtocol.equalsIgnoreCase(exportedURL.getProtocol()))

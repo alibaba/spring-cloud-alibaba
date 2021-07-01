@@ -47,7 +47,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import static com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository.EXPORTED_SERVICES_REVISION_PROPERTY_NAME;
 import static java.util.Collections.emptyList;
 import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
@@ -130,7 +129,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 						.computeIfAbsent(appName, k -> new HashMap<>());
 
 				for (ServiceInstance instance : instances) {
-					String revision = getRevision(instance);
+					String revision = RevisionResolver.getRevision(instance);
 					List<ServiceInstance> list = map.computeIfAbsent(revision,
 							k -> new ArrayList<>());
 					list.add(instance);
@@ -244,9 +243,8 @@ public class DubboCloudRegistry extends FailbackRegistry
 
 		String appName = event.getServiceName();
 
-		List<ServiceInstance> instances = filter(
-				event.getServiceInstances() != null ? event.getServiceInstances()
-						: Collections.emptyList());
+		List<ServiceInstance> instances = filter(event.getServiceInstances() != null
+				? event.getServiceInstances() : Collections.emptyList());
 
 		Set<String> subscribedServiceNames = getServices(null);
 
@@ -263,7 +261,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 		}
 		// group by revision
 		Map<String, List<ServiceInstance>> newGroup = instances.stream()
-				.collect(Collectors.groupingBy(this::getRevision));
+				.collect(Collectors.groupingBy(RevisionResolver::getRevision));
 
 		synchronized (this) {
 
@@ -438,16 +436,6 @@ public class DubboCloudRegistry extends FailbackRegistry
 		}
 
 		return true;
-	}
-
-	String getRevision(ServiceInstance instance) {
-		Map<String, String> metadata = instance.getMetadata();
-		String revision = metadata.get(EXPORTED_SERVICES_REVISION_PROPERTY_NAME);
-
-		if (revision == null) {
-			revision = RevisionResolver.getEmptyRevision();
-		}
-		return revision;
 	}
 
 	private List<ServiceInstance> filter(Collection<ServiceInstance> serviceInstances) {

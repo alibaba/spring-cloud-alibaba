@@ -44,6 +44,7 @@ public class MetadataServiceSubscribeHandler extends AbstractServiceSubscribeHan
 		this.dubboMetadataUtils = dubboMetadataUtils;
 	}
 
+	@Override
 	public void doInit() {
 		logger.debug("Subscription app {} MetadataService handler init", appName);
 		List<ServiceInstance> serviceInstances = registry.getServiceInstances(appName);

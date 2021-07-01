@@ -20,23 +20,24 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.compiler.support.ClassUtils;
-import org.apache.dubbo.common.extension.ExtensionLoader;
-import org.apache.dubbo.common.utils.ArrayUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 
-import static org.apache.dubbo.common.constants.CommonConstants.DOT_SEPARATOR;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_CHAR_SEPARATOR;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.METHODS_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PID_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.TIMESTAMP_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 
 /**
@@ -47,9 +48,6 @@ import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 public class ServiceInfo implements Serializable {
 
 	private static final long serialVersionUID = -258557978718735302L;
-
-	private static ExtensionLoader<MetadataParamsFilter> loader = ExtensionLoader
-			.getExtensionLoader(MetadataParamsFilter.class);
 
 	private String name;
 
@@ -66,16 +64,6 @@ public class ServiceInfo implements Serializable {
 	// params configured on consumer side,
 	private transient Map<String, String> consumerParams;
 
-	// cached method params
-	private transient Map<String, Map<String, String>> methodParams;
-
-	private transient Map<String, Map<String, String>> consumerMethodParams;
-
-	// cached numbers
-	private transient Map<String, Number> numbers;
-
-	private transient Map<String, Map<String, Number>> methodNumbers;
-
 	// service + group + version
 	private transient String serviceKey;
 
@@ -84,7 +72,12 @@ public class ServiceInfo implements Serializable {
 
 	private transient URL url;
 
-	public ServiceInfo() {
+	private static final Set<String> IGNORE_KEYS = new HashSet<>();
+	static {
+		IGNORE_KEYS.add(TIMESTAMP_KEY);
+		IGNORE_KEYS.add(PID_KEY);
+		IGNORE_KEYS.add(INTERFACE_KEY);
+		IGNORE_KEYS.add(METHODS_KEY);
 	}
 
 	public ServiceInfo(URL url) {
@@ -92,39 +85,14 @@ public class ServiceInfo implements Serializable {
 				url.getParameter(VERSION_KEY), url.getProtocol(), url.getPath(), null);
 
 		this.url = url;
-		Map<String, String> params = new HashMap<>();
-		List<MetadataParamsFilter> filters = loader.getActivateExtension(url,
-				"params-filter");
-		for (MetadataParamsFilter filter : filters) {
-			String[] paramsIncluded = filter.serviceParamsIncluded();
-			if (ArrayUtils.isNotEmpty(paramsIncluded)) {
-				for (String p : paramsIncluded) {
-					String value = url.getParameter(p);
-					if (StringUtils.isNotEmpty(value) && params.get(p) == null) {
-						params.put(p, value);
-					}
-					String[] methods = url.getParameter(METHODS_KEY, (String[]) null);
-					if (methods != null) {
-						for (String method : methods) {
-							String mValue = getMethodParameterStrict(url, method, p);
-							if (StringUtils.isNotEmpty(mValue)) {
-								params.put(method + DOT_SEPARATOR + p, mValue);
-							}
-						}
-					}
-				}
+		Map<String, String> params = new TreeMap<>();
+		url.getParameters().forEach((k, v) -> {
+			if (IGNORE_KEYS.contains(k)) {
+				return;
 			}
-		}
+			params.put(k, v);
+		});
 		this.params = params;
-	}
-
-	public String getMethodParameterStrict(URL url, String method, String key) {
-		Map<String, String> keyMap = url.getMethodParameters().get(method);
-		String value = null;
-		if (keyMap != null) {
-			value = keyMap.get(key);
-		}
-		return value;
 	}
 
 	public ServiceInfo(String name, String group, String version, String protocol,
@@ -207,17 +175,6 @@ public class ServiceInfo implements Serializable {
 		this.params = params;
 	}
 
-	public Map<String, String> getAllParams() {
-		if (consumerParams != null) {
-			Map<String, String> allParams = new HashMap<>(
-					(int) ((params.size() + consumerParams.size()) / 0.75f + 1));
-			allParams.putAll(params);
-			allParams.putAll(consumerParams);
-			return allParams;
-		}
-		return params;
-	}
-
 	public String getParameter(String key) {
 		if (consumerParams != null) {
 			String value = consumerParams.get(key);
@@ -228,94 +185,18 @@ public class ServiceInfo implements Serializable {
 		return params.get(key);
 	}
 
-	public String getMethodParameter(String method, String key, String defaultValue) {
-		if (methodParams == null) {
-			methodParams = URL.toMethodParameters(params);
-			consumerMethodParams = URL.toMethodParameters(consumerParams);
-		}
-
-		String value = getMethodParameter(method, key, consumerMethodParams);
-		if (value != null) {
-			return value;
-		}
-		value = getMethodParameter(method, key, methodParams);
-		return value == null ? defaultValue : value;
-	}
-
-	private String getMethodParameter(String method, String key,
-			Map<String, Map<String, String>> map) {
-		Map<String, String> keyMap = map.get(method);
-		String value = null;
-		if (keyMap != null) {
-			value = keyMap.get(key);
-		}
-		if (StringUtils.isEmpty(value)) {
-			value = getParameter(key);
-		}
-		return value;
-	}
-
-	public boolean hasMethodParameter(String method, String key) {
-		String value = this.getMethodParameter(method, key, (String) null);
-		return StringUtils.isNotEmpty(value);
-	}
-
-	public boolean hasMethodParameter(String method) {
-		if (methodParams == null) {
-			methodParams = URL.toMethodParameters(params);
-			consumerMethodParams = URL.toMethodParameters(consumerParams);
-		}
-
-		return consumerMethodParams.containsKey(method)
-				|| methodParams.containsKey(method);
-	}
-
 	public String toDescString() {
 		return this.getMatchKey() + getMethodSignaturesString() + getParams();
 	}
 
 	private String getMethodSignaturesString() {
-		SortedSet<String> methodStrings = new TreeSet();
+		SortedSet<String> methodStrings = new TreeSet<>();
 
 		Method[] methods = ClassUtils.forName(name).getMethods();
 		for (Method method : methods) {
 			methodStrings.add(method.toString());
 		}
 		return methodStrings.toString();
-	}
-
-	public void addParameter(String key, String value) {
-		if (consumerParams != null) {
-			this.consumerParams.put(key, value);
-		}
-	}
-
-	public void addParameterIfAbsent(String key, String value) {
-		if (consumerParams != null) {
-			this.consumerParams.putIfAbsent(key, value);
-		}
-	}
-
-	public void addConsumerParams(Map<String, String> params) {
-		// copy once for one service subscription
-		if (consumerParams == null) {
-			consumerParams = new HashMap<>(params);
-		}
-	}
-
-	public Map<String, Number> getNumbers() {
-		// concurrent initialization is tolerant
-		if (numbers == null) {
-			numbers = new ConcurrentHashMap<>();
-		}
-		return numbers;
-	}
-
-	public Map<String, Map<String, Number>> getMethodNumbers() {
-		if (methodNumbers == null) { // concurrent initialization is tolerant
-			methodNumbers = new ConcurrentHashMap<>();
-		}
-		return methodNumbers;
 	}
 
 	public URL getUrl() {
