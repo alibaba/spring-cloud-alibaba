@@ -27,10 +27,8 @@ import com.alibaba.cloud.nacos.ribbon.ExtendBalancer;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.ObjectProvider;
