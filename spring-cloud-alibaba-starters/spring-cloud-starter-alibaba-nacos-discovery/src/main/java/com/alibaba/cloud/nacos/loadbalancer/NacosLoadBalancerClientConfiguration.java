@@ -43,4 +43,5 @@ public class NacosLoadBalancerClientConfiguration {
 						ServiceInstanceListSupplier.class),
 				name, nacosDiscoveryProperties, nacosServiceManager);
 	}
+
 }

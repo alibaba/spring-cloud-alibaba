@@ -16,6 +16,10 @@
 
 package com.alibaba.cloud.nacos.loadbalancer;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
@@ -26,6 +30,9 @@ import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import reactor.core.publisher.Mono;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.reactive.DefaultResponse;
@@ -38,14 +45,7 @@ import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBal
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceSupplier;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import reactor.core.publisher.Mono;
-
 /**
- *
  * @author XuDaojie
  * @since 2.2.6
  */
@@ -57,9 +57,11 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
 	@Deprecated
 	private ObjectProvider<ServiceInstanceSupplier> serviceInstanceSupplier;
+
 	private ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
+
 	private final NacosServiceManager nacosServiceManager;
 
 	public NacosLoadBalancer(
@@ -125,7 +127,8 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 			Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
 
 			return new DefaultResponse(serviceInstances.stream()
-					.filter(serviceInstance1 -> StringUtils.equals(instance.getIp(), serviceInstance1.getHost())
+					.filter(serviceInstance1 -> StringUtils.equals(instance.getIp(),
+							serviceInstance1.getHost())
 							&& instance.getPort() == serviceInstance1.getPort())
 					.findFirst().get());
 		}
@@ -135,4 +138,5 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 		}
 
 	}
+
 }
