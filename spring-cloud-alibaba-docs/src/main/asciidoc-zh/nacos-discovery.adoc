@@ -291,6 +291,47 @@ Endpoint 暴露的 json 中包含了两种属性:
 }
 ----
 
+=== 如何开启权重路由
+
+开启方式有2种，分别基于Ribbon和Spring Cloud Loadbalancer
+
+==== Ribbon
+
+.application.properties
+[source,properties]
+----
+[service_name].ribbon.NFLoadBalancerRuleClassName=com.alibaba.cloud.nacos.ribbon.NacosRule
+----
+
+==== Spring Cloud Loadbalancer
+.pom.xml
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-loadbalancer</artifactId>
+</dependency>
+----
+
+.application.properties
+[source,properties]
+----
+spring.cloud.loadbalancer.ribbon.enabled=false
+----
+.Application.java
+[source,java]
+----
+@LoadBalancerClients(defaultConfiguration = NacosLoadBalancerClientConfiguration.class)
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Gateway.class, args);
+    }
+}
+----
+
+
 === 关于 Nacos Discovery Starter 更多的配置项信息
 
 更多关于 Nacos Discovery Starter 的配置项如下所示:
