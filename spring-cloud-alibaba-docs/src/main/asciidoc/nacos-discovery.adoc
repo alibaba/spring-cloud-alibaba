@@ -310,11 +310,25 @@ There are 2 ways to open it, respectively based on the Ribbon and Spring Cloud L
 .pom.xml
 [source,xml]
 ----
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-loadbalancer</artifactId>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-loadbalancer</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        <exclusions>
+            <exclusion>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+</dependencies>
 ----
+You can also not exclude spring-cloud-starter-netflix-ribbon in pom.xml, and turn off Ribbon in the configuration file
 
 .application.properties
 [source,properties]
