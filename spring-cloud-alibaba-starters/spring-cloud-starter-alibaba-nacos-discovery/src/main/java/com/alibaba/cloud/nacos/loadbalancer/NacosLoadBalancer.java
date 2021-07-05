@@ -17,15 +17,11 @@
 package com.alibaba.cloud.nacos.loadbalancer;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosServiceManager;
-import com.alibaba.cloud.nacos.ribbon.ExtendBalancer;
-import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.cloud.nacos.balancer.NacosBalancer;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +40,9 @@ import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceSupplier;
 
 /**
+ * see original.
+ * {@link org.springframework.cloud.loadbalancer.core.RoundRobinLoadBalancer}
+ *
  * @author XuDaojie
  * @since 2.2.6
  */
@@ -60,16 +59,12 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private final NacosServiceManager nacosServiceManager;
-
 	public NacosLoadBalancer(
 			ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
-			String serviceId, NacosDiscoveryProperties nacosDiscoveryProperties,
-			NacosServiceManager nacosServiceManager) {
+			String serviceId, NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.serviceId = serviceId;
 		this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
-		this.nacosServiceManager = nacosServiceManager;
 	}
 
 	@Override
@@ -94,41 +89,29 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
 		try {
 			String clusterName = this.nacosDiscoveryProperties.getClusterName();
-			String group = this.nacosDiscoveryProperties.getGroup();
-			String serviceName = serviceId;
 
-			NamingService namingService = nacosServiceManager
-					.getNamingService(nacosDiscoveryProperties.getNacosProperties());
-			List<Instance> instances = namingService.selectInstances(serviceName, group,
-					true);
-			if (CollectionUtils.isEmpty(instances)) {
-				log.warn("no instance in service {}", serviceName);
-				return null;
-			}
-
-			List<Instance> instancesToChoose = instances;
+			List<ServiceInstance> instancesToChoose = serviceInstances;
 			if (StringUtils.isNotBlank(clusterName)) {
-				List<Instance> sameClusterInstances = instances.stream()
-						.filter(instance -> Objects.equals(clusterName,
-								instance.getClusterName()))
-						.collect(Collectors.toList());
+				List<ServiceInstance> sameClusterInstances = serviceInstances.stream()
+						.filter(serviceInstance -> {
+							String cluster = serviceInstance.getMetadata()
+									.get("nacos.cluster");
+							return StringUtils.equals(cluster, clusterName);
+						}).collect(Collectors.toList());
 				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
 					instancesToChoose = sameClusterInstances;
 				}
-				else {
-					log.warn(
-							"A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
-							serviceName, clusterName, instances);
-				}
+			}
+			else {
+				log.warn(
+						"A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
+						serviceId, clusterName, serviceInstances);
 			}
 
-			Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
+			ServiceInstance instance = NacosBalancer
+					.getHostByRandomWeight3(instancesToChoose);
 
-			return new DefaultResponse(serviceInstances.stream()
-					.filter(serviceInstance1 -> StringUtils.equals(instance.getIp(),
-							serviceInstance1.getHost())
-							&& instance.getPort() == serviceInstance1.getPort())
-					.findFirst().get());
+			return new DefaultResponse(instance);
 		}
 		catch (Exception e) {
 			log.warn("NacosLoadBalancer error", e);

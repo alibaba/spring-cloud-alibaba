@@ -16,23 +16,11 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
-import java.util.List;
-
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.client.naming.core.Balancer;
+import com.alibaba.cloud.nacos.balancer.NacosBalancer;
 
 /**
  * @author itmuch.com
  */
-public class ExtendBalancer extends Balancer {
-
-	/**
-	 * Choose instance by weight.
-	 * @param instances Instance List
-	 * @return the chosen instance
-	 */
-	public static Instance getHostByRandomWeight2(List<Instance> instances) {
-		return getHostByRandomWeight(instances);
-	}
+public class ExtendBalancer extends NacosBalancer {
 
 }

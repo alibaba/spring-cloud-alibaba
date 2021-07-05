@@ -17,7 +17,6 @@
 package com.alibaba.cloud.nacos.loadbalancer;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosServiceManager;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;
@@ -35,13 +34,12 @@ public class NacosLoadBalancerClientConfiguration {
 	@Bean
 	public ReactorLoadBalancer<ServiceInstance> nacosLoadBalancer(Environment environment,
 			LoadBalancerClientFactory loadBalancerClientFactory,
-			NacosDiscoveryProperties nacosDiscoveryProperties,
-			NacosServiceManager nacosServiceManager) {
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
 		return new NacosLoadBalancer(
 				loadBalancerClientFactory.getLazyProvider(name,
 						ServiceInstanceListSupplier.class),
-				name, nacosDiscoveryProperties, nacosServiceManager);
+				name, nacosDiscoveryProperties);
 	}
 
 }
