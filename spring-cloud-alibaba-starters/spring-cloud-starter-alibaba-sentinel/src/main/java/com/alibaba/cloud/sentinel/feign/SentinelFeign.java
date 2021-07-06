@@ -80,34 +80,37 @@ public final class SentinelFeign {
 					// using reflect get fallback and fallbackFactory properties from
 					// FeignClientFactoryBean because FeignClientFactoryBean is a package
 					// level class, we can not use it in our package
-					Object feignClientFactoryBean = Builder.this.applicationContext
-							.getBean("&" + target.type().getName());
+					Object feignClientFactoryBean = SentinelTargeterAspect
+							.getFeignClientFactoryBean();
 
-					Class fallback = (Class) getFieldValue(feignClientFactoryBean,
-							"fallback");
-					Class fallbackFactory = (Class) getFieldValue(feignClientFactoryBean,
-							"fallbackFactory");
-					String beanName = (String) getFieldValue(feignClientFactoryBean,
-							"contextId");
-					if (!StringUtils.hasText(beanName)) {
-						beanName = (String) getFieldValue(feignClientFactoryBean, "name");
-					}
+					if (feignClientFactoryBean != null) {
+						Class fallback = (Class) getFieldValue(feignClientFactoryBean,
+								"fallback");
+						Class fallbackFactory = (Class) getFieldValue(
+								feignClientFactoryBean, "fallbackFactory");
+						String beanName = (String) getFieldValue(feignClientFactoryBean,
+								"contextId");
+						if (!StringUtils.hasText(beanName)) {
+							beanName = (String) getFieldValue(feignClientFactoryBean,
+									"name");
+						}
 
-					Object fallbackInstance;
-					FallbackFactory fallbackFactoryInstance;
-					// check fallback and fallbackFactory properties
-					if (void.class != fallback) {
-						fallbackInstance = getFromContext(beanName, "fallback", fallback,
-								target.type());
-						return new SentinelInvocationHandler(target, dispatch,
-								new FallbackFactory.Default(fallbackInstance));
-					}
-					if (void.class != fallbackFactory) {
-						fallbackFactoryInstance = (FallbackFactory) getFromContext(
-								beanName, "fallbackFactory", fallbackFactory,
-								FallbackFactory.class);
-						return new SentinelInvocationHandler(target, dispatch,
-								fallbackFactoryInstance);
+						Object fallbackInstance;
+						FallbackFactory fallbackFactoryInstance;
+						// check fallback and fallbackFactory properties
+						if (void.class != fallback) {
+							fallbackInstance = getFromContext(beanName, "fallback",
+									fallback, target.type());
+							return new SentinelInvocationHandler(target, dispatch,
+									new FallbackFactory.Default(fallbackInstance));
+						}
+						if (void.class != fallbackFactory) {
+							fallbackFactoryInstance = (FallbackFactory) getFromContext(
+									beanName, "fallbackFactory", fallbackFactory,
+									FallbackFactory.class);
+							return new SentinelInvocationHandler(target, dispatch,
+									fallbackFactoryInstance);
+						}
 					}
 					return new SentinelInvocationHandler(target, dispatch);
 				}
