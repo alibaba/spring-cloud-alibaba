@@ -16,15 +16,15 @@
 
 package com.alibaba.cloud.nacos.balancer;
 
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.client.naming.core.Balancer;
-
-import org.springframework.cloud.client.ServiceInstance;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.client.naming.core.Balancer;
+
+import org.springframework.cloud.client.ServiceInstance;
 
 /**
  * @author itmuch.com XuDaojie
