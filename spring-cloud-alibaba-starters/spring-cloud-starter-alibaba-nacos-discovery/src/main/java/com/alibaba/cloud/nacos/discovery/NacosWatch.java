@@ -67,6 +67,14 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 	private final ThreadPoolTaskScheduler taskScheduler;
 
 	public NacosWatch(NacosServiceManager nacosServiceManager,
+			NacosDiscoveryProperties properties) {
+		this.nacosServiceManager = nacosServiceManager;
+		this.properties = properties;
+		this.taskScheduler = getTaskScheduler();
+	}
+
+	@Deprecated
+	public NacosWatch(NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties properties,
 			ObjectProvider<ThreadPoolTaskScheduler> taskScheduler) {
 		this.nacosServiceManager = nacosServiceManager;
