@@ -16,17 +16,14 @@
 
 package com.alibaba.cloud.examples;
 
-import java.util.List;
-import java.util.Random;
-
 import com.alibaba.cloud.examples.ConsumerSCLBApplication.EchoService;
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Mono;
-
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.ServiceInstance;
@@ -49,6 +46,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Random;
+
+import reactor.core.publisher.Mono;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -161,10 +163,19 @@ public class ConsumerSCLBApplication {
 		@Autowired
 		private DiscoveryClient discoveryClient;
 
+		@Value("${spring.cloud.loadbalancer.zone:null}")
+		private String zone;
+
 		@GetMapping("/echo-rest/{str}")
 		public String rest(@PathVariable String str) {
 			return restTemplate.getForObject("http://service-provider/echo/" + str,
 					String.class);
+		}
+
+		@GetMapping("/zone")
+		public String zone() {
+			return "consumer zone " + zone + "\n" + restTemplate
+					.getForObject("http://service-provider/zone", String.class);
 		}
 
 		@GetMapping("/echo-feign/{str}")
