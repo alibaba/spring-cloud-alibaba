@@ -93,7 +93,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 				return handleBlockException(request, body, execution, (BlockException) e);
 			}
 			else {
-				Tracer.trace(e);
+				Tracer.traceEntry(e, hostEntry);
 				if (e instanceof IOException) {
 					throw (IOException) e;
 				}
