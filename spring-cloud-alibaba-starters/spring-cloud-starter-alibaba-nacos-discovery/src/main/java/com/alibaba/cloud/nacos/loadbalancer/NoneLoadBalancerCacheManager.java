@@ -16,16 +16,30 @@
 
 package com.alibaba.cloud.nacos.loadbalancer;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Collection;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.Cache;
+import org.springframework.cloud.loadbalancer.cache.LoadBalancerCacheManager;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@ConditionalOnProperty(value = "loadbalancer.nacos.enabled", matchIfMissing = true)
-public @interface ConditionalOnLoadBalancerNacos {
+/**
+ * Don't cache.<br>
+ * <br>
+ * 1. LoadBalancerCache causes information such as the weight of the service instance to
+ * be changed without immediate effect.<br>
+ * 2. Nacos itself supports caching.
+ *
+ * @author XuDaojie
+ * @since 2021.1
+ */
+public class NoneLoadBalancerCacheManager implements LoadBalancerCacheManager {
 
+	@Override
+	public Cache getCache(String name) {
+		return null;
+	}
+
+	@Override
+	public Collection<String> getCacheNames() {
+		return null;
+	}
 }
