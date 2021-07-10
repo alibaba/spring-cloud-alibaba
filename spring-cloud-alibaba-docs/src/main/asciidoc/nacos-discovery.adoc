@@ -294,6 +294,16 @@ The followings shows how a service instance accesses the Endpoint:
 }
 ----
 
+=== Weight Route
+
+==== Ribbon
+
+.application.properties
+[source,properties]
+----
+[service_name].ribbon.NFLoadBalancerRuleClassName=com.alibaba.cloud.nacos.ribbon.NacosRule
+----
+
 === More Information about Nacos Discovery Starter Configurations
 
 The following shows the other configurations of the starter of Nacos Discovery:
