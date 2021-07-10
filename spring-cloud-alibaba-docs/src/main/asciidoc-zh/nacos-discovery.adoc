@@ -343,6 +343,7 @@ public class Application {
 |日志文件名|`spring.cloud.nacos.discovery.log-name`||
 |集群|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|Nacos集群名称
 |接入点|`spring.cloud.nacos.discovery.endpoint`||地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
+|是否集成LoadBalancer|`spring.cloud.loadbalancer.nacos.enabled`|`true`|一般都设置成true即可
 |是否启用NacosLoadBalancer为默认路由|`loadbalancer.nacos.default.enabled`|`false`|true: 默认路由为NacosLoadBalancer
 |是否开启Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|可以设置成false来关闭 watch
 |===

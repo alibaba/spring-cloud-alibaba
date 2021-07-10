@@ -68,5 +68,15 @@
       "name": "spring.cloud.nacos.password",
       "type": "java.lang.String",
       "description": "nacos password to authenticate."
+    },
+    {
+      "name": "spring.cloud.loadbalancer.nacos.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Integrate LoadBalancer or not."
+    },
+    {
+      "name": "loadbalancer.nacos.default.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable NacosLoadBalancer is default route."
     }
 ]}
