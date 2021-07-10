@@ -18,14 +18,8 @@ package com.alibaba.cloud.nacos.loadbalancer;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClients;
-import org.springframework.cloud.loadbalancer.cache.LoadBalancerCacheManager;
-import org.springframework.cloud.loadbalancer.config.LoadBalancerAutoConfiguration;
-import org.springframework.cloud.loadbalancer.config.LoadBalancerCacheAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -36,14 +30,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 @ConditionalOnLoadBalancerNacos
 @ConditionalOnNacosDiscoveryEnabled
-@AutoConfigureBefore({ LoadBalancerAutoConfiguration.class,
-		LoadBalancerCacheAutoConfiguration.class })
 @LoadBalancerClients(defaultConfiguration = NacosLoadBalancerClientConfiguration.class)
 public class LoadBalancerNacosAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public LoadBalancerCacheManager noneLoadBalancerCacheManager() {
-		return new NoneLoadBalancerCacheManager();
-	}
 }
