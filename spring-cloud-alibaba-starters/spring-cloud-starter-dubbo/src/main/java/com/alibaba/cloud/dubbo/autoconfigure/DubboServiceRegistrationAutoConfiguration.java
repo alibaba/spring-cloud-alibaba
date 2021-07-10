@@ -80,11 +80,12 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Configuration(proxyBeanMethods = false)
 @Import({ DubboServiceRegistrationEventPublishingAspect.class,
 		DubboBootstrapStartCommandLineRunner.class })
-@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "spring.cloud.service-registry.auto-registration.enabled",
+		matchIfMissing = true)
 @AutoConfigureAfter(name = { EUREKA_CLIENT_AUTO_CONFIGURATION_CLASS_NAME,
 		CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME,
-		"org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration" }, value = {
-				DubboMetadataAutoConfiguration.class })
+		"org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration" },
+		value = { DubboMetadataAutoConfiguration.class })
 public class DubboServiceRegistrationAutoConfiguration {
 
 	/**
@@ -324,6 +325,7 @@ public class DubboServiceRegistrationAutoConfiguration {
 			}
 			tags.add(key + "=" + value);
 		}
+
 	}
 
 }
