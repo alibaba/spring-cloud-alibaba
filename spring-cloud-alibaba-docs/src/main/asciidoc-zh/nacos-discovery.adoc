@@ -291,6 +291,17 @@ Endpoint 暴露的 json 中包含了两种属性:
 }
 ----
 
+=== 如何开启权重路由
+
+==== Ribbon
+
+.application.properties
+[source,properties]
+----
+[service_name].ribbon.NFLoadBalancerRuleClassName=com.alibaba.cloud.nacos.ribbon.NacosRule
+----
+
+
 === 关于 Nacos Discovery Starter 更多的配置项信息
 
 更多关于 Nacos Discovery Starter 的配置项如下所示:
