@@ -54,7 +54,6 @@ public class NacosLoadBalancerClientConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnLoadBalancerNacosDefault
 	public ReactorLoadBalancer<ServiceInstance> nacosLoadBalancer(Environment environment,
 			LoadBalancerClientFactory loadBalancerClientFactory,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
