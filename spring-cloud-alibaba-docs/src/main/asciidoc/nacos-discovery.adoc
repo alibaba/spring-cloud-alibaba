@@ -314,18 +314,6 @@ The followings shows how a service instance accesses the Endpoint:
 spring.cloud.loadbalancer.ribbon.enabled=false
 spring.cloud.loadbalancer.nacos.enabled=true
 ----
-.Application.java
-[source,java]
-----
-@LoadBalancerClients(defaultConfiguration = NacosLoadBalancerClientConfiguration.class)
-@SpringBootApplication
-public class Application {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-----
 
 === More Information about Nacos Discovery Starter Configurations
 
@@ -346,7 +334,7 @@ The following shows the other configurations of the starter of Nacos Discovery:
 |Log file name|`spring.cloud.nacos.discovery.log-name`||
 |Cluster Name|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|Cluster name of Nacos
 |Endpoint|`spring.cloud.nacos.discovery.endpoint`||The domain name of a certain service in a specific region. You can retrieve the server address dynamically with this domain name
-|Integrate LoadBalancer or not|`spring.cloud.loadbalancer.nacos.enabled`|`true`|Set to true in most cases
+|Integrate LoadBalancer or not|`spring.cloud.loadbalancer.nacos.enabled`|`false`|
 |Enable Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|set to false to close watch
 |===
 

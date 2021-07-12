@@ -311,19 +311,6 @@ Endpoint 暴露的 json 中包含了两种属性:
 spring.cloud.loadbalancer.ribbon.enabled=false
 spring.cloud.loadbalancer.nacos.enabled=true
 ----
-.Application.java
-[source,java]
-----
-@LoadBalancerClients(defaultConfiguration = NacosLoadBalancerClientConfiguration.class)
-@SpringBootApplication
-public class Application {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-----
-
 
 === 关于 Nacos Discovery Starter 更多的配置项信息
 
@@ -344,7 +331,7 @@ public class Application {
 |日志文件名|`spring.cloud.nacos.discovery.log-name`||
 |集群|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|Nacos集群名称
 |接入点|`spring.cloud.nacos.discovery.endpoint`||地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
-|是否集成LoadBalancer|`spring.cloud.loadbalancer.nacos.enabled`|`true`|一般都设置成true即可
+|是否集成LoadBalancer|`spring.cloud.loadbalancer.nacos.enabled`|`false`|
 |是否开启Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|可以设置成false来关闭 watch
 |===
 

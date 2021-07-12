@@ -72,7 +72,7 @@
     {
       "name": "spring.cloud.loadbalancer.nacos.enabled",
       "type": "java.lang.Boolean",
-      "defaultValue": true,
+      "defaultValue": false,
       "description": "Integrate LoadBalancer or not."
     }
 ]}
