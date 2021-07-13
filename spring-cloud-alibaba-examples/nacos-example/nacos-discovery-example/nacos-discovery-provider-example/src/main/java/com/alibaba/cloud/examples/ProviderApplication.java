@@ -16,6 +16,12 @@
 
 package com.alibaba.cloud.examples;
 
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -39,6 +45,9 @@ public class ProviderApplication {
 
 	@RestController
 	class EchoController {
+
+		@Resource
+		private NacosDiscoveryProperties nacosDiscoveryProperties;
 
 		@GetMapping("/")
 		public ResponseEntity index() {
@@ -69,6 +78,12 @@ public class ProviderApplication {
 		@GetMapping("/divide")
 		public String divide(@RequestParam Integer a, @RequestParam Integer b) {
 			return String.valueOf(a / b);
+		}
+
+		@GetMapping("/zone")
+		public String zone() {
+			Map<String, String> metadata = nacosDiscoveryProperties.getMetadata();
+			return "provider zone " + metadata.get("zone");
 		}
 
 	}
