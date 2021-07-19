@@ -52,7 +52,7 @@ public final class FileUtils {
 	 * @since 1.3
 	 */
 	public static FileInputStream openInputStream(final File file) throws IOException {
-		if (file.exists()) {
+		if (file != null && file.exists()) {
 			if (file.isDirectory()) {
 				throw new IOException("File '" + file + "' exists but is a directory");
 			}
@@ -109,5 +109,4 @@ public final class FileUtils {
 	public static String readFileToString(final File file) throws IOException {
 		return readFileToString(file, Charset.defaultCharset());
 	}
-
 }

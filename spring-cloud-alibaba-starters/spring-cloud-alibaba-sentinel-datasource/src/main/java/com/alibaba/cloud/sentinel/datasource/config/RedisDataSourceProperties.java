@@ -95,7 +95,7 @@ public class RedisDataSourceProperties extends AbstractDataSourceProperties {
 
 		if (StringUtils.isEmpty(masterId)) {
 			throw new IllegalArgumentException(
-					"RedisDataSource  sentinel model，masterId can not be empty");
+					"RedisDataSource  sentinel model, masterId can not be empty");
 		}
 	}
 

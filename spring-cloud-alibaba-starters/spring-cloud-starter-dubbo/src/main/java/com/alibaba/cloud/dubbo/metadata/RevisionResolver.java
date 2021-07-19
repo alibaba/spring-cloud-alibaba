@@ -44,7 +44,7 @@ public final class RevisionResolver {
 
 	private static final Logger logger = LoggerFactory.getLogger(RevisionResolver.class);
 
-	private static final char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8',
+	private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8',
 			'9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private static MessageDigest mdInst;
@@ -74,8 +74,8 @@ public final class RevisionResolver {
 		char[] str = new char[j * 2];
 		int k = 0;
 		for (byte byte0 : md5) {
-			str[k++] = hexDigits[byte0 >>> 4 & 0xf];
-			str[k++] = hexDigits[byte0 & 0xf];
+			str[k++] = HEX_DIGITS[byte0 >>> 4 & 0xf];
+			str[k++] = HEX_DIGITS[byte0 & 0xf];
 		}
 		return new String(str);
 	}

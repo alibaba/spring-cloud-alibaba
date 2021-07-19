@@ -182,6 +182,8 @@ class SampleRunner implements ApplicationRunner {
 						}
 						catch (IOException e) {
 							e.printStackTrace();
+							System.out.println("load config IOException : " + e.getMessage() + "  configInfo : " + configInfo);
+							return;
 						}
 						System.out.println("config changed: " + properties);
 					}

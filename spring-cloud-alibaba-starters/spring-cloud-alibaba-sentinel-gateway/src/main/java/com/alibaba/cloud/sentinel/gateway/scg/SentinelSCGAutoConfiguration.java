@@ -109,10 +109,9 @@ public class SentinelSCGAutoConfiguration {
 								MediaType.valueOf(fallbackProperties.getContentType()))
 						.body(fromValue(fallbackProperties.getResponseBody())));
 				logger.info(
-						"[Sentinel SpringCloudGateway] using AnonymousBlockRequestHandler, responseStatus: "
-								+ fallbackProperties.getResponseStatus()
-								+ ", responseBody: "
-								+ fallbackProperties.getResponseBody());
+						"[Sentinel SpringCloudGateway] using AnonymousBlockRequestHandler, responseStatus: {}, responseBody: {}"
+								, fallbackProperties.getResponseStatus()
+								, fallbackProperties.getResponseBody());
 			}
 		}
 		String redirectUrl = fallbackProperties.getRedirect();
@@ -121,8 +120,8 @@ public class SentinelSCGAutoConfiguration {
 			GatewayCallbackManager
 					.setBlockHandler(new RedirectBlockRequestHandler(redirectUrl));
 			logger.info(
-					"[Sentinel SpringCloudGateway] using RedirectBlockRequestHandler, redirectUrl: "
-							+ redirectUrl);
+					"[Sentinel SpringCloudGateway] using RedirectBlockRequestHandler, redirectUrl: {}"
+							, redirectUrl);
 		}
 	}
 
