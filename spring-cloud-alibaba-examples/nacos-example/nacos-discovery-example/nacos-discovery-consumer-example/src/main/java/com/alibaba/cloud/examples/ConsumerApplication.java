@@ -61,36 +61,16 @@ public class ConsumerApplication {
 			configuration = FeignConfiguration.class)
 	public interface EchoService {
 
-		/**
-		 * echo something
-		 * @param str
-		 * @return
-		 */
 		@GetMapping("/echo/{str}")
 		String echo(@PathVariable("str") String str);
 
-		/**
-		 * divide
-		 * @param a
-		 * @param b
-		 * @return
-		 */
 		@GetMapping("/divide")
 		String divide(@RequestParam("a") Integer a, @RequestParam("b") Integer b);
 
-		/**
-		 * divide default
-		 * @param a
-		 * @return
-		 */
 		default String divide(Integer a) {
 			return divide(a, 0);
 		}
 
-		/**
-		 * not found
-		 * @return
-		 */
 		@GetMapping("/notFound")
 		String notFound();
 
