@@ -273,10 +273,10 @@ public class NacosDiscoveryProperties {
 		}
 
 		this.overrideFromEnv(environment);
-		if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
-			applicationEventPublisher
-					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
-		}
+		// if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
+		// applicationEventPublisher
+		// .publishEvent(new NacosDiscoveryInfoChangedEvent(this));
+		// }
 	}
 
 	/**
@@ -525,7 +525,8 @@ public class NacosDiscoveryProperties {
 				&& Objects.equals(heartBeatInterval, that.heartBeatInterval)
 				&& Objects.equals(heartBeatTimeout, that.heartBeatTimeout)
 				&& Objects.equals(failFast, that.failFast)
-				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout);
+				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout)
+				&& Objects.equals(metadata, that.metadata);
 	}
 
 	@Override
