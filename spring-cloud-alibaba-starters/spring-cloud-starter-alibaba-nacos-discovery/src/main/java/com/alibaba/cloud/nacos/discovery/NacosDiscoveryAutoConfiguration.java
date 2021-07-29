@@ -22,6 +22,7 @@ import com.alibaba.cloud.nacos.NacosServiceManager;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,6 +35,7 @@ import org.springframework.context.annotation.Configuration;
 public class NacosDiscoveryAutoConfiguration {
 
 	@Bean
+	@RefreshScope
 	@ConditionalOnMissingBean
 	public NacosDiscoveryProperties nacosProperties() {
 		return new NacosDiscoveryProperties();

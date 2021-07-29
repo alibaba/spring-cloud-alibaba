@@ -25,9 +25,12 @@ import org.springframework.context.ApplicationEvent;
  */
 public class NacosDiscoveryInfoChangedEvent extends ApplicationEvent {
 
+	private boolean needReRegistry;
+
 	public NacosDiscoveryInfoChangedEvent(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
+			NacosDiscoveryProperties nacosDiscoveryProperties, boolean needReRegistry) {
 		super(nacosDiscoveryProperties);
+		this.needReRegistry = needReRegistry;
 	}
 
 	@Override
@@ -35,4 +38,7 @@ public class NacosDiscoveryInfoChangedEvent extends ApplicationEvent {
 		return (NacosDiscoveryProperties) super.getSource();
 	}
 
+	public boolean isNeedReRegistry() {
+		return needReRegistry;
+	}
 }
