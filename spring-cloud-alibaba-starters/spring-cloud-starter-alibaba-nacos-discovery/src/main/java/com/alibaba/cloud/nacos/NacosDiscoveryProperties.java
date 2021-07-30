@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
-import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
@@ -37,6 +36,7 @@ import com.alibaba.spring.util.PropertySourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -500,33 +500,61 @@ public class NacosDiscoveryProperties {
 		this.failFast = failFast;
 	}
 
+	public boolean coreEquals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != AopUtils.getTargetClass(o)) {
+			return false;
+		}
+		NacosDiscoveryProperties that = (NacosDiscoveryProperties) o;
+		return Objects.equals(serverAddr, that.getServerAddr())
+				&& Objects.equals(username, that.getUsername())
+				&& Objects.equals(password, that.getPassword())
+				&& Objects.equals(endpoint, that.getEndpoint())
+				&& Objects.equals(namespace, that.getNamespace())
+				&& Objects.equals(service, that.getService())
+				&& Objects.equals(clusterName, that.getClusterName())
+				&& Objects.equals(group, that.getGroup())
+				&& Objects.equals(ip, that.getIp())
+				&& Objects.equals(port, that.getPort())
+				&& Objects.equals(networkInterface, that.getNetworkInterface())
+				&& Objects.equals(accessKey, that.getAccessKey())
+				&& Objects.equals(secretKey, that.getSecretKey())
+				&& Objects.equals(heartBeatInterval, that.getHeartBeatInterval())
+				&& Objects.equals(heartBeatTimeout, that.getHeartBeatTimeout())
+				&& Objects.equals(failFast, that.isFailFast())
+				&& Objects.equals(ipDeleteTimeout, that.getIpDeleteTimeout());
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || getClass() != AopUtils.getTargetClass(o)) {
 			return false;
 		}
 		NacosDiscoveryProperties that = (NacosDiscoveryProperties) o;
-		return Objects.equals(serverAddr, that.serverAddr)
-				&& Objects.equals(username, that.username)
-				&& Objects.equals(password, that.password)
-				&& Objects.equals(endpoint, that.endpoint)
-				&& Objects.equals(namespace, that.namespace)
-				&& Objects.equals(logName, that.logName)
-				&& Objects.equals(service, that.service)
-				&& Objects.equals(clusterName, that.clusterName)
-				&& Objects.equals(group, that.group) && Objects.equals(ip, that.ip)
-				&& Objects.equals(port, that.port)
-				&& Objects.equals(networkInterface, that.networkInterface)
-				&& Objects.equals(accessKey, that.accessKey)
-				&& Objects.equals(secretKey, that.secretKey)
-				&& Objects.equals(heartBeatInterval, that.heartBeatInterval)
-				&& Objects.equals(heartBeatTimeout, that.heartBeatTimeout)
-				&& Objects.equals(failFast, that.failFast)
-				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout)
-				&& Objects.equals(metadata, that.metadata);
+		return Objects.equals(serverAddr, that.getServerAddr())
+				&& Objects.equals(username, that.getUsername())
+				&& Objects.equals(password, that.getPassword())
+				&& Objects.equals(endpoint, that.getEndpoint())
+				&& Objects.equals(namespace, that.getNamespace())
+				&& Objects.equals(logName, that.getLogName())
+				&& Objects.equals(service, that.getService())
+				&& Objects.equals(clusterName, that.getClusterName())
+				&& Objects.equals(group, that.getGroup())
+				&& Objects.equals(ip, that.getIp())
+				&& Objects.equals(port, that.getPort())
+				&& Objects.equals(networkInterface, that.getNetworkInterface())
+				&& Objects.equals(accessKey, that.getAccessKey())
+				&& Objects.equals(secretKey, that.getSecretKey())
+				&& Objects.equals(heartBeatInterval, that.getHeartBeatInterval())
+				&& Objects.equals(heartBeatTimeout, that.getHeartBeatTimeout())
+				&& Objects.equals(failFast, that.isFailFast())
+				&& Objects.equals(ipDeleteTimeout, that.getIpDeleteTimeout())
+				&& Objects.equals(metadata, that.getMetadata());
 	}
 
 	@Override

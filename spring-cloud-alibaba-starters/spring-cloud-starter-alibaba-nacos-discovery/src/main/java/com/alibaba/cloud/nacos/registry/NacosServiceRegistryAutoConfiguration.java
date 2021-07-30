@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -74,6 +75,12 @@ public class NacosServiceRegistryAutoConfiguration {
 			NacosRegistration registration) {
 		return new NacosAutoServiceRegistration(registry,
 				autoServiceRegistrationProperties, registration);
+	}
+
+	@Bean
+	@ConditionalOnBean({ NacosServiceManager.class, NacosRegistration.class })
+	public NacosDiscoveryReRegiterListener nacosPropertiesReRegiterListener() {
+		return new NacosDiscoveryReRegiterListener();
 	}
 
 }
