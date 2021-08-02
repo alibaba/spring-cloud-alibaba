@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.nacos.registry;
 
-import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
+import com.alibaba.cloud.nacos.event.NacosDiscoveryReRegisterEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class NacosAutoServiceRegistration
 	}
 
 	@Override
-	protected NacosRegistration getRegistration() {
+	public NacosRegistration getRegistration() {
 		if (this.registration.getPort() < 0 && this.getPort().get() > 0) {
 			this.registration.setPort(this.getPort().get());
 		}
@@ -105,10 +105,31 @@ public class NacosAutoServiceRegistration
 	}
 
 	@EventListener
-	public void onNacosDiscoveryInfoChangedEvent(NacosDiscoveryInfoChangedEvent event) {
-		restart();
+	public void listen(NacosDiscoveryReRegisterEvent event) {
+		if (event.isReRegister()) {
+			log.info("nacos discovery restart");
+			restart();
+		}
+		else if (event.isUpgrade()) {
+			log.info("nacos discovery upgrade");
+			upgrade();
+		}
+		else {
+			log.info("nacos discovery event with nohing");
+			// do nothing
+		}
 	}
 
+	/**
+	 * update registation info, e.g. metadata
+	 */
+	private void upgrade() {
+		register();
+	}
+
+	/**
+	 * offline and re online
+	 */
 	private void restart() {
 		this.stop();
 		this.start();

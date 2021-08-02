@@ -61,14 +61,25 @@ public class NacosServiceManager {
 		return namingMaintainService;
 	}
 
-	public boolean isNacosDiscoveryInfoChanged(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public boolean isAnyChanged(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		if (Objects.isNull(nacosDiscoveryPropertiesCache)
 				|| this.nacosDiscoveryPropertiesCache.equals(nacosDiscoveryProperties)) {
 			return false;
 		}
-		copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
 		return true;
+	}
+
+	public boolean isCoreChanged(NacosDiscoveryProperties nacosDiscoveryProperties) {
+		if (Objects.isNull(nacosDiscoveryPropertiesCache)
+				|| this.nacosDiscoveryPropertiesCache
+						.coreEquals(nacosDiscoveryProperties)) {
+			return false;
+		}
+		return true;
+	}
+
+	public void updatePropertiesCache(NacosDiscoveryProperties nacosDiscoveryProperties) {
+		copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
 	}
 
 	private NamingMaintainService buildNamingMaintainService(Properties properties) {
@@ -121,12 +132,12 @@ public class NacosServiceManager {
 	public void onInstancePreRegisteredEvent(
 			InstancePreRegisteredEvent instancePreRegisteredEvent) {
 		Registration registration = instancePreRegisteredEvent.getRegistration();
-		if (Objects.isNull(nacosDiscoveryPropertiesCache)
-				&& registration instanceof NacosRegistration) {
+		if (registration instanceof NacosRegistration) {
 			NacosDiscoveryProperties nacosDiscoveryProperties = ((NacosRegistration) registration)
 					.getNacosDiscoveryProperties();
-
-			nacosDiscoveryPropertiesCache = new NacosDiscoveryProperties();
+			if (Objects.isNull(nacosDiscoveryPropertiesCache)) {
+				nacosDiscoveryPropertiesCache = new NacosDiscoveryProperties();
+			}
 			copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
 		}
 	}

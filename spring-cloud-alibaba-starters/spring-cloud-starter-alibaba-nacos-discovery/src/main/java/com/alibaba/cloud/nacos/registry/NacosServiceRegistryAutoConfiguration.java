@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -30,6 +31,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +57,7 @@ public class NacosServiceRegistryAutoConfiguration {
 	}
 
 	@Bean
+	@RefreshScope
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
 	public NacosRegistration nacosRegistration(
 			ObjectProvider<List<NacosRegistrationCustomizer>> registrationCustomizers,
@@ -72,6 +75,12 @@ public class NacosServiceRegistryAutoConfiguration {
 			NacosRegistration registration) {
 		return new NacosAutoServiceRegistration(registry,
 				autoServiceRegistrationProperties, registration);
+	}
+
+	@Bean
+	@ConditionalOnBean({ NacosServiceManager.class, NacosRegistration.class })
+	public NacosDiscoveryReRegiterListener nacosPropertiesReRegiterListener() {
+		return new NacosDiscoveryReRegiterListener();
 	}
 
 }

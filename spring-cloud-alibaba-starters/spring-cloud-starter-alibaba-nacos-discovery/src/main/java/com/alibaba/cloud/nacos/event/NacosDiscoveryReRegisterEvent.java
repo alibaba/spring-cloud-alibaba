@@ -23,16 +23,31 @@ import org.springframework.context.ApplicationEvent;
 /**
  * @author yuhuangbin
  */
-public class NacosDiscoveryInfoChangedEvent extends ApplicationEvent {
+public class NacosDiscoveryReRegisterEvent extends ApplicationEvent {
 
-	public NacosDiscoveryInfoChangedEvent(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
+	private final boolean reRegister;
+
+	private final boolean upgrade;
+
+	public NacosDiscoveryReRegisterEvent(
+			NacosDiscoveryProperties nacosDiscoveryProperties, boolean reRegister,
+			boolean upgrade) {
 		super(nacosDiscoveryProperties);
+		this.reRegister = reRegister;
+		this.upgrade = upgrade;
 	}
 
 	@Override
 	public NacosDiscoveryProperties getSource() {
 		return (NacosDiscoveryProperties) super.getSource();
+	}
+
+	public boolean isReRegister() {
+		return reRegister;
+	}
+
+	public boolean isUpgrade() {
+		return upgrade;
 	}
 
 }
