@@ -27,8 +27,6 @@ import com.alibaba.nacos.api.config.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
@@ -37,8 +35,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import javax.sound.sampled.Port;
 
 /**
  * @author xiaojing
@@ -82,7 +78,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		// org.springframework.cloud.bootstrap.config.PropertySourceBootstrapConfiguration.initialize
 		// env must be the instance of ConfigurableEnvironment
 		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) env;
-		if (configurableEnvironment.getPropertySources().contains(NACOS_PROPERTY_SOURCE_NAME)) {
+		if (configurableEnvironment.getPropertySources()
+				.contains(NACOS_PROPERTY_SOURCE_NAME)) {
 			return null;
 		}
 
