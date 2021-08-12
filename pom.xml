@@ -80,7 +80,7 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.6-SNAPSHOT</revision>
+        <revision>2.2.7-SNAPSHOT</revision>
 
         <!-- Spring Cloud -->
         <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
