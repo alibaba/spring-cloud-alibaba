@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.utils;
 
-import com.alibaba.cloud.stream.binder.rocketmq.contants.RocketMQConst;
+import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQCommonProperties;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;

@@ -89,7 +89,7 @@ public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 		DubboCloudProperties dubboCloudProperties = applicationContext
 				.getBean(DubboCloudProperties.class);
 
-		Registry registry = null;
+		Registry registry;
 
 		switch (dubboCloudProperties.getRegistryType()) {
 		case SPRING_CLOUD_REGISTRY_PROPERTY_VALUE:
@@ -100,7 +100,7 @@ public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 		default:
 			registry = new DubboCloudRegistry(url, discoveryClient,
 					dubboServiceMetadataRepository, dubboMetadataConfigServiceProxy,
-					jsonUtils, dubboGenericServiceFactory, applicationContext);
+					jsonUtils, applicationContext);
 			break;
 		}
 
