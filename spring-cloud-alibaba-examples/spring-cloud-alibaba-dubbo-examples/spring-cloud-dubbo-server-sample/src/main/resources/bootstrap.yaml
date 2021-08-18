@@ -1,4 +1,6 @@
 dubbo:
+  cloud:
+    subscribed-services: ${spring.application.name}
   scan:
     base-packages: com.alibaba.cloud.dubbo.bootstrap
   protocol:

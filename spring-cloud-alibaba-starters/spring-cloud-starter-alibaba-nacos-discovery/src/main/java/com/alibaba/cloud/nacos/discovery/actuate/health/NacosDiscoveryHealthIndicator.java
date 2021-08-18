@@ -31,6 +31,16 @@ import org.springframework.boot.actuate.health.HealthIndicator;
  */
 public class NacosDiscoveryHealthIndicator extends AbstractHealthIndicator {
 
+	/**
+	 * status up.
+	 */
+	private static final String STATUS_UP = "UP";
+
+	/**
+	 * status down.
+	 */
+	private static final String STATUS_DOWN = "DOWN";
+
 	private final NamingService namingService;
 
 	public NacosDiscoveryHealthIndicator(NamingService namingService) {
@@ -44,10 +54,10 @@ public class NacosDiscoveryHealthIndicator extends AbstractHealthIndicator {
 		// Set the status to Builder
 		builder.status(status);
 		switch (status) {
-		case "UP":
+		case STATUS_UP:
 			builder.up();
 			break;
-		case "DOWN":
+		case STATUS_DOWN:
 			builder.down();
 			break;
 		default:
