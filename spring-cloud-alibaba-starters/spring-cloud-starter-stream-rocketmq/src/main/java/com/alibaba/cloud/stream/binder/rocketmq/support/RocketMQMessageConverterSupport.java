@@ -20,8 +20,8 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
-import com.alibaba.cloud.stream.binder.rocketmq.contants.RocketMQConst;
-import com.alibaba.cloud.stream.binder.rocketmq.contants.RocketMQConst.Headers;
+import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
+import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst.Headers;
 import com.alibaba.cloud.stream.binder.rocketmq.convert.RocketMQMessageConverter;
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import org.apache.rocketmq.common.message.MessageConst;

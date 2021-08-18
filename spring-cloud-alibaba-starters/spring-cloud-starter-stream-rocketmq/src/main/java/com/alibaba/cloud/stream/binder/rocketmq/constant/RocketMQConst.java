@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.stream.binder.rocketmq.contants;
+package com.alibaba.cloud.stream.binder.rocketmq.constant;
 
 import org.apache.rocketmq.common.message.MessageConst;
 

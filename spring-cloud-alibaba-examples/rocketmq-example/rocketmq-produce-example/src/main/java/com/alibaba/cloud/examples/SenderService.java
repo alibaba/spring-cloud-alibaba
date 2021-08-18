@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.alibaba.cloud.examples.RocketMQProduceApplication.MySource;
-import com.alibaba.cloud.stream.binder.rocketmq.contants.RocketMQConst;
+import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import org.apache.rocketmq.common.message.MessageConst;
 
 import org.springframework.beans.factory.annotation.Autowired;
