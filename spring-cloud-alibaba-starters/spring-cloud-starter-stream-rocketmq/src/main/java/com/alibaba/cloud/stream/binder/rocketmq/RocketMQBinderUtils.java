@@ -79,7 +79,7 @@ public final class RocketMQBinderUtils {
 		return result;
 	}
 
-	public static String getNameServerStr(List<String> nameServerList) {
+	public static final String getNameServerStr(List<String> nameServerList) {
 		if (CollectionUtils.isEmpty(nameServerList)) {
 			return null;
 		}
