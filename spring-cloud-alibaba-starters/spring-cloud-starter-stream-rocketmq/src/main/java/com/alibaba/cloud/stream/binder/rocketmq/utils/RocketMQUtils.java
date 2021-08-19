@@ -64,6 +64,9 @@ public final class RocketMQUtils {
 			mqProperties.setCustomizedTraceTopic(
 					binderConfigurationProperties.getCustomizedTraceTopic());
 		}
+		if (StringUtils.isEmpty(mqProperties.getUnitName())) {
+			mqProperties.setUnitName(binderConfigurationProperties.getUnitName());
+		}
 		mqProperties.setNameServer(getNameServerStr(mqProperties.getNameServer()));
 		return mqProperties;
 	}
