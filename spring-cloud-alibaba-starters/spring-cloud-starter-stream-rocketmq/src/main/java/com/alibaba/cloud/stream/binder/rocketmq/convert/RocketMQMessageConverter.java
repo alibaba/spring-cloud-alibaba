@@ -34,9 +34,9 @@ import org.springframework.util.ClassUtils;
 public class RocketMQMessageConverter {
 
 	/**
-	 * rocketMQMessageConverter.
+	 * if you want to customize a bean, please use the BeanName.
 	 */
-	public static final String DEFAULT_NAME = "rocketMQMessageConverter";
+	public static final String DEFAULT_NAME = "com.alibaba.cloud.stream.binder.rocketmq.convert.RocketMQMessageConverter";
 
 	private static final boolean JACKSON_PRESENT;
 
