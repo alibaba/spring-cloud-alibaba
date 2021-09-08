@@ -213,6 +213,16 @@ public class NacosDiscoveryProperties {
 	 */
 	private boolean failFast = true;
 
+	/**
+	 *The service version number.
+	 */
+	private String serviceVersion;
+
+	/**
+	 * The target service version number.
+	 */
+	private String targetVersion;
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -498,6 +508,20 @@ public class NacosDiscoveryProperties {
 
 	public void setFailFast(boolean failFast) {
 		this.failFast = failFast;
+	}
+
+	public void setServiceVersion(String serviceVersion) {
+		// Add the serviceVersion field to the provider service's Metadata
+		Map<String, String> temp = new HashMap<>();
+		temp.put("service-version", serviceVersion);
+		setMetadata(temp);
+	}
+
+	public void setTargetVersion(String targetVersion) {
+		// Add the targetVersion field to the consumer service's Metadata
+		Map<String, String> temp = new HashMap<>();
+		temp.put("target-version", targetVersion);
+		setMetadata(temp);
 	}
 
 	@Override
