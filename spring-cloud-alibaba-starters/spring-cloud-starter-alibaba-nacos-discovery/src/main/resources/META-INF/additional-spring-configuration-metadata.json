@@ -1,4 +1,5 @@
-{"properties": [
+{
+  "properties": [
     {
       "name": "spring.cloud.nacos.server-addr",
       "type": "java.lang.String",
@@ -60,6 +61,16 @@
       "description": "nacos discovery service's password to authenticate."
     },
     {
+      "name": "spring.cloud.nacos.discovery.service-version",
+      "type": "java.lang.String",
+      "description": "provider service's version."
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.target-version",
+      "type": "java.lang.String",
+      "description": "consumer target service's version."
+    },
+    {
       "name": "spring.cloud.nacos.username",
       "type": "java.lang.String",
       "description": "nacos userName to authenticate."
@@ -69,4 +80,5 @@
       "type": "java.lang.String",
       "description": "nacos password to authenticate."
     }
-]}
+  ]
+}
