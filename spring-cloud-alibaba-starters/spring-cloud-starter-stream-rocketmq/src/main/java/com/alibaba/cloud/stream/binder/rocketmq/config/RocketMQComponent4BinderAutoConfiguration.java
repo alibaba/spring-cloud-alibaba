@@ -20,6 +20,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.RocketMQBinderConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
+import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.apache.rocketmq.spring.config.RocketMQConfigUtils;
@@ -59,6 +60,8 @@ public class RocketMQComponent4BinderAutoConfiguration {
 				"${spring.cloud.stream.rocketmq.binder.access-key:${rocketmq.producer.access-key:}}");
 		String sk = environment.resolveRequiredPlaceholders(
 				"${spring.cloud.stream.rocketmq.binder.secret-key:${rocketmq.producer.secret-key:}}");
+		String accessChannel = environment.resolveRequiredPlaceholders(
+			"${spring.cloud.stream.rocketmq.binder.access-channel:${rocketmq.access-channel:}}");
 		if (!StringUtils.isEmpty(ak) && !StringUtils.isEmpty(sk)) {
 			producer = new DefaultMQProducer(RocketMQBinderConstants.DEFAULT_GROUP,
 					new AclClientRPCHook(new SessionCredentials(ak, sk)));
@@ -71,6 +74,9 @@ public class RocketMQComponent4BinderAutoConfiguration {
 			configNameServer = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
 		}
 		producer.setNamesrvAddr(configNameServer);
+		if (!StringUtils.isEmpty(configNameServer)) {
+			producer.setAccessChannel(AccessChannel.valueOf(accessChannel));
+		}
 		return producer;
 	}
 

@@ -38,6 +38,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
+import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.remoting.RPCHook;
@@ -158,6 +159,9 @@ public class RocketMQMessageChannelBinder extends
 						producerProperties.getExtension().isRetryNextServer());
 				producer.setMaxMessageSize(
 						producerProperties.getExtension().getMaxMessageSize());
+				if (!StringUtils.isEmpty(mergedProperties.getAccessChannel())) {
+					producer.setAccessChannel(AccessChannel.valueOf(mergedProperties.getAccessChannel()));
+				}
 				rocketMQTemplate.setProducer(producer);
 				if (producerProperties.isPartitioned()) {
 					rocketMQTemplate

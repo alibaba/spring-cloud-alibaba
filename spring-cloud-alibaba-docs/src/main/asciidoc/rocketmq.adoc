@@ -246,7 +246,11 @@ spring.cloud.stream.rocketmq.binder.customized-trace-topic::
 The trace topic for message trace.
 +
 Default: `RMQ_SYS_TRACE_TOPIC`.
-
++
+spring.cloud.stream.rocketmq.binder.access-channel::
+The commercial version of rocketmq message trajectory topic is adaptive,the value is CLOUD
++
+Default: null.
 
 ==== RocketMQ Consumer Properties
 
