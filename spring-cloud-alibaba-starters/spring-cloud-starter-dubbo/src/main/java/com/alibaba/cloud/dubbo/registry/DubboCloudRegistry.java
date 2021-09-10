@@ -147,7 +147,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 
 			metadataSubscribeHandlerMap.forEach((url, handler) -> handler.init());
 			urlSubscribeHandlerMap.forEach((url, handler) -> handler.init());
-			repository.initializeMetadata();
+			// repository.initializeMetadata();
 
 			// meke sure everything prepared, then can listening
 			// ServiceInstanceChangeEvent
@@ -274,6 +274,9 @@ public class DubboCloudRegistry extends FailbackRegistry
 			}
 
 			try {
+
+				// customer may not init serviceMetadata, so should init
+				repository.initializeMetadata(appName);
 
 				// ensure that the service metadata is correct
 				refreshServiceMetadataInfo(appName, instances);

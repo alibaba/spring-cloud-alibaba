@@ -147,7 +147,13 @@ class TargeterInvocationHandler implements InvocationHandler {
 
 		DubboInvocationHandler dubboInvocationHandler = new DubboInvocationHandler(
 				feignMethodMetadataMap, defaultFeignClientInvocationHandler, classLoader,
-				contextFactory);
+				contextFactory, (map) -> {
+					Map<Method, FeignMethodMetadata> mm = getFeignMethodMetadataMap(
+							serviceName, feignRestMethodMetadataMap);
+					mm.forEach((k, v) -> {
+						map.put(k, v);
+					});
+				});
 
 		return dubboInvocationHandler;
 	}

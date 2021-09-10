@@ -19,6 +19,7 @@ package com.alibaba.cloud.dubbo.openfeign;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.alibaba.cloud.dubbo.metadata.RestMethodMetadata;
 import com.alibaba.cloud.dubbo.service.DubboGenericServiceExecutionContext;
@@ -42,15 +43,19 @@ public class DubboInvocationHandler implements InvocationHandler {
 
 	private final DubboGenericServiceExecutionContextFactory contextFactory;
 
+	private final Consumer<Map<Method, FeignMethodMetadata>> consumer;
+
 	private final ClassLoader classLoader;
 
 	public DubboInvocationHandler(Map<Method, FeignMethodMetadata> feignMethodMetadataMap,
 			InvocationHandler defaultInvocationHandler, ClassLoader classLoader,
-			DubboGenericServiceExecutionContextFactory contextFactory) {
+			DubboGenericServiceExecutionContextFactory contextFactory,
+			Consumer<Map<Method, FeignMethodMetadata>> consumer) {
 		this.feignMethodMetadataMap = feignMethodMetadataMap;
 		this.defaultInvocationHandler = defaultInvocationHandler;
 		this.classLoader = classLoader;
 		this.contextFactory = contextFactory;
+		this.consumer = consumer;
 	}
 
 	@Override
@@ -60,7 +65,11 @@ public class DubboInvocationHandler implements InvocationHandler {
 		FeignMethodMetadata feignMethodMetadata = feignMethodMetadataMap.get(feignMethod);
 
 		if (feignMethodMetadata == null) {
-			return defaultInvocationHandler.invoke(proxy, feignMethod, args);
+			consumer.accept(feignMethodMetadataMap);
+			feignMethodMetadata = feignMethodMetadataMap.get(feignMethod);
+			if (feignMethodMetadata == null) {
+				return defaultInvocationHandler.invoke(proxy, feignMethod, args);
+			}
 		}
 
 		GenericService dubboGenericService = feignMethodMetadata.getDubboGenericService();
