@@ -74,7 +74,7 @@ public class RocketMQComponent4BinderAutoConfiguration {
 			configNameServer = RocketMQBinderConstants.DEFAULT_NAME_SERVER;
 		}
 		producer.setNamesrvAddr(configNameServer);
-		if (!StringUtils.isEmpty(configNameServer)) {
+		if (!StringUtils.isEmpty(accessChannel)) {
 			producer.setAccessChannel(AccessChannel.valueOf(accessChannel));
 		}
 		return producer;
