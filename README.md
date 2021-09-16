@@ -59,7 +59,7 @@ For more features please refer to [Roadmap](https://github.com/alibaba/spring-cl
 
 Spring Cloud uses Maven for most build-related activities, and you should be able to get off the ground quite quickly by cloning the project you are interested in and typing:
 ```bash
-	./mvnw install
+./mvnw install
 ```
 
 ## How to Use
@@ -68,17 +68,17 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 
 These artifacts are available from Maven Central and Spring Release repository via BOM:
 ```xml
-	<dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>2.2.5.RELEASE</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2.2.6.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
 ```
 add the module in  `dependencies`.
 
