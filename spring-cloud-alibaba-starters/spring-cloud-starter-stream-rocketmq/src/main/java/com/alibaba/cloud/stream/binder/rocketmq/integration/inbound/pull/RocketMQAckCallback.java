@@ -18,11 +18,8 @@ package com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.pull;
 
 import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.client.impl.consumer.AssignedMessageQueue;
-import org.apache.rocketmq.client.impl.consumer.ProcessQueue;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.message.MessageQueue;
-import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,18 +41,14 @@ public class RocketMQAckCallback implements AcknowledgmentCallback {
 
 	private MessageExt messageExt;
 
-	private AssignedMessageQueue assignedMessageQueue;
-
 	private DefaultLitePullConsumer consumer;
 
 	private final MessageQueue messageQueue;
 
 	public RocketMQAckCallback(DefaultLitePullConsumer consumer,
-			AssignedMessageQueue assignedMessageQueue, MessageQueue messageQueue,
-			MessageExt messageExt) {
+			 MessageQueue messageQueue,MessageExt messageExt) {
 		this.messageExt = messageExt;
 		this.consumer = consumer;
-		this.assignedMessageQueue = assignedMessageQueue;
 		this.messageQueue = messageQueue;
 	}
 
@@ -86,19 +79,7 @@ public class RocketMQAckCallback implements AcknowledgmentCallback {
 				switch (status) {
 				case REJECT:
 				case ACCEPT:
-					long consumerOffset = assignedMessageQueue
-							.getConsumerOffset(messageQueue);
-					if (consumerOffset != -1) {
-						ProcessQueue processQueue = assignedMessageQueue
-								.getProcessQueue(messageQueue);
-						if (processQueue != null && !processQueue.isDropped()) {
-							consumer.getOffsetStore().updateOffset(messageQueue,
-									consumerOffset, false);
-						}
-					}
-					if (consumer.getMessageModel() == MessageModel.BROADCASTING) {
-						consumer.getOffsetStore().persist(messageQueue);
-					}
+					consumer.committed(messageQueue);
 					break;
 				case REQUEUE:
 					consumer.seek(messageQueue, offset);

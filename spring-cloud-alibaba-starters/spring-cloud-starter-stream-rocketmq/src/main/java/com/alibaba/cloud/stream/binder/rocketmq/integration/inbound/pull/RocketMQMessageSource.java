@@ -16,9 +16,11 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.pull;
 
-import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.RocketMQConsumerFactory;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.Instrumentation;
@@ -29,8 +31,6 @@ import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
 import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.client.impl.consumer.AssignedMessageQueue;
-import org.apache.rocketmq.client.impl.consumer.DefaultLitePullConsumerImpl;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.slf4j.Logger;
@@ -44,7 +44,6 @@ import org.springframework.integration.endpoint.AbstractMessageSource;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -57,7 +56,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	private DefaultLitePullConsumer consumer;
 
-	private AssignedMessageQueue assignedMessageQueue;
+	private final Map<String, Collection<MessageQueue>> messageQueuesForTopic = new ConcurrentHashMap<>();
 
 	private volatile boolean running;
 
@@ -92,8 +91,11 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			// this.consumer.setPullBatchSize(1);
 			this.consumer.subscribe(topic, messageSelector);
 			this.consumer.setAutoCommit(false);
-			this.assignedMessageQueue = acquireAssignedMessageQueue(this.consumer);
+			//register TopicMessageQueueChangeListener for messageQueuesForTopic
+			consumer.registerTopicMessageQueueChangeListener(topic, messageQueuesForTopic::put);
 			this.consumer.start();
+			//Initialize messageQueuesForTopic immediately
+			messageQueuesForTopic.put(topic,consumer.fetchMessageQueues(topic));
 			instrumentation.markStartedSuccessfully();
 		}
 		catch (MQClientException e) {
@@ -106,21 +108,17 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		this.running = true;
 	}
 
-	private AssignedMessageQueue acquireAssignedMessageQueue(
-			DefaultLitePullConsumer consumer) {
-		Field field = ReflectionUtils.findField(DefaultLitePullConsumer.class,
-				"defaultLitePullConsumerImpl");
-		assert field != null;
-		field.setAccessible(true);
-		DefaultLitePullConsumerImpl defaultLitePullConsumerImpl = (DefaultLitePullConsumerImpl) ReflectionUtils
-				.getField(field, consumer);
-
-		field = ReflectionUtils.findField(DefaultLitePullConsumerImpl.class,
-				"assignedMessageQueue");
-		assert field != null;
-		field.setAccessible(true);
-		return (AssignedMessageQueue) ReflectionUtils.getField(field,
-				defaultLitePullConsumerImpl);
+	private MessageQueue acquireCurrentMessageQueue(String topic,int queueId) {
+		Collection<MessageQueue> messageQueueSet =  messageQueuesForTopic.get(topic);
+		if(CollectionUtils.isEmpty(messageQueueSet)){
+			return null;
+		}
+		for (MessageQueue messageQueue : messageQueueSet) {
+			if (messageQueue.getQueueId() == queueId) {
+				return messageQueue;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -153,13 +151,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		if (null == messageExt) {
 			return null;
 		}
-		MessageQueue messageQueue = null;
-		for (MessageQueue queue : assignedMessageQueue.getAssignedMessageQueues()) {
-			if (queue.getQueueId() == messageExt.getQueueId()) {
-				messageQueue = queue;
-				break;
-			}
-		}
+		MessageQueue messageQueue = this.acquireCurrentMessageQueue(messageExt.getTopic(),messageExt.getQueueId());
 		if (messageQueue == null) {
 			throw new IllegalArgumentException(
 					"The message queue is not in assigned list");
@@ -168,8 +160,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 				.convertMessage2Spring(messageExt);
 		return MessageBuilder.fromMessage(message)
 				.setHeader(IntegrationMessageHeaderAccessor.ACKNOWLEDGMENT_CALLBACK,
-						new RocketMQAckCallback(this.consumer, assignedMessageQueue,
-								messageQueue, messageExt))
+						new RocketMQAckCallback(this.consumer,messageQueue, messageExt))
 				.build();
 	}
 

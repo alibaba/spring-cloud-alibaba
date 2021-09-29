@@ -108,8 +108,7 @@ public final class RocketMQConsumerFactory {
 				"Property 'nameServer' is required");
 		AllocateMessageQueueStrategy allocateMessageQueueStrategy = RocketMQBeanContainerCache
 				.getBean(consumerProperties.getAllocateMessageQueueStrategy(),
-						AllocateMessageQueueStrategy.class,
-						new AllocateMessageQueueAveragely());
+						AllocateMessageQueueStrategy.class);
 
 		RPCHook rpcHook = null;
 		if (!StringUtils.isEmpty(consumerProperties.getAccessKey())
@@ -126,7 +125,9 @@ public final class RocketMQConsumerFactory {
 				null == rpcHook && consumerProperties.getVipChannelEnabled());
 		consumer.setInstanceName(
 				RocketMQUtils.getInstanceName(rpcHook, consumerProperties.getGroup()));
-		consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
+		if(null != allocateMessageQueueStrategy) {
+			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
+		}
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
 		consumer.setMessageModel(getMessageModel(consumerProperties.getMessageModel()));
 		consumer.setUseTLS(consumerProperties.getUseTLS());
