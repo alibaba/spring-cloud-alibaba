@@ -169,18 +169,23 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 				}
 				((TransactionMQProducer) defaultMQProducer)
 						.setTransactionListener(transactionListener);
-				log.info("send transaction message :" + mqMessage);
+				if(log.isDebugEnabled()){
+					log.debug("send transaction message ->{}" , mqMessage);
+				}
 				sendResult = defaultMQProducer.sendMessageInTransaction(mqMessage,
 						message.getHeaders().get(RocketMQConst.USER_TRANSACTIONAL_ARGS));
 			}
 			else {
-				log.info("send message :" + mqMessage);
+				if(log.isDebugEnabled()){
+					log.debug("send message ->{}" , mqMessage);
+				}
 				sendResult = this.send(mqMessage, this.messageQueueSelector,
 						message.getHeaders(), message);
 			}
+			log.info("the message has sent,message={},sendResult={}",mqMessage,sendResult);
 			if (sendResult == null
 					|| !SendStatus.SEND_OK.equals(sendResult.getSendStatus())) {
-				log.error("message send fail.SendStatus is not OK ");
+				log.error("message send fail.SendStatus is not OK.the message={}",mqMessage);
 				this.doFail(message, new MessagingException(
 						"message send fail.SendStatus is not OK."));
 			}

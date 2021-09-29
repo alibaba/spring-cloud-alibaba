@@ -139,7 +139,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 	protected synchronized Object doReceive() {
 		if (messageExtIterator == null) {
 			List<MessageExt> messageExtList = consumer.poll();
-			if (CollectionUtils.isEmpty(messageExtList) || messageExtList.size() > 1) {
+			if (CollectionUtils.isEmpty(messageExtList)) {
 				return null;
 			}
 			messageExtIterator = messageExtList.iterator();
