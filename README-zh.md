@@ -15,7 +15,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 ## 主要功能
 
-* **服务限流降级**：默认支持 WebServlet、WebFlux, OpenFeign、RestTemplate、Spring Cloud Gateway, Zuul, Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
+* **服务限流降级**：默认支持 WebServlet、WebFlux、OpenFeign、RestTemplate、Spring Cloud Gateway、Zuul、Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
 * **服务注册与发现**：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。
 * **分布式配置管理**：支持分布式系统中的外部化配置，配置更改时自动刷新。
 * **消息驱动能力**：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。
@@ -56,7 +56,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone 到本地，然后执行以下命令：
 ```bash
-	./mvnw install
+./mvnw install
 ```
 执行完毕后，项目将被安装到本地 Maven 仓库。
 
@@ -66,17 +66,17 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 
 如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
 ```xml
-	<dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>2.2.5.RELEASE</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2.2.6.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
 ```
 然后在 `dependencies` 中添加自己所需使用的依赖即可使用。
 
