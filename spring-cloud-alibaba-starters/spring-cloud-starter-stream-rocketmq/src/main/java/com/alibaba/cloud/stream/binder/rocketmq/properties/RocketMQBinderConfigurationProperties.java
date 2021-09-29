@@ -48,6 +48,11 @@ public class RocketMQBinderConfigurationProperties {
 	private String secretKey;
 
 	/**
+	 * Enum type for accessChannel, values: LOCAL, CLOUD.
+	 */
+	private String accessChannel;
+
+	/**
 	 * Switch flag instance for message trace.
 	 */
 	private boolean enableMsgTrace = true;
@@ -80,6 +85,14 @@ public class RocketMQBinderConfigurationProperties {
 
 	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
+	}
+
+	public String getAccessChannel() {
+		return accessChannel;
+	}
+
+	public void setAccessChannel(String accessChannel) {
+		this.accessChannel = accessChannel;
 	}
 
 	public boolean isEnableMsgTrace() {

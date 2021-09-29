@@ -80,17 +80,17 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.6-SNAPSHOT</revision>
+        <revision>2.2.7-SNAPSHOT</revision>
 
         <!-- Spring Cloud -->
         <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
 
         <!-- Apache Dubbo -->
-        <dubbo.version>2.7.8</dubbo.version>
+        <dubbo.version>2.7.13</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
-        <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
+        <rocketmq.starter.version>2.0.4</rocketmq.starter.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>

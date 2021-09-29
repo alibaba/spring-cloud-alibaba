@@ -50,7 +50,8 @@ public class RocketMQAutoConfigurationTests {
 					"spring.cloud.stream.bindings.input2.content-type=application/json",
 					"spring.cloud.stream.bindings.input2.group=test-group2",
 					"spring.cloud.stream.rocketmq.bindings.input2.consumer.orderly=false",
-					"spring.cloud.stream.rocketmq.bindings.input2.consumer.tags=tag1");
+					"spring.cloud.stream.rocketmq.bindings.input2.consumer.tags=tag1",
+					"spring.cloud.stream.rocketmq.binder.access-channel=CLOUD");
 
 	@Test
 	public void testProperties() {
@@ -68,6 +69,7 @@ public class RocketMQAutoConfigurationTests {
 					.getOrderly()).isFalse();
 			assertThat(bindingProperties.getExtendedConsumerProperties("input1")
 					.getOrderly()).isTrue();
+			assertThat(binderConfigurationProperties.getAccessChannel()).isEqualTo("CLOUD");
 		});
 	}
 
