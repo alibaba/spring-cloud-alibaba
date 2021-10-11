@@ -20,7 +20,7 @@ It has the following features:
 
 * Download RocketMQ
 
-Download https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.9.1/rocketmq-all-4.9.1-bin-release.zip[Latest Binary File of RocketMQ], and decompress it.
+Download https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.9.1/rocketmq-all-4.9.1-bin-release.zip[Lastest Binary File of RocketMQ], and decompress it.
 
 The decompressed directory is as follows:
 
