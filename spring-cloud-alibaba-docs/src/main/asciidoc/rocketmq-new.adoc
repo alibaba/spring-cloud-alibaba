@@ -1,0 +1,371 @@
+== Spring Cloud Alibaba RocketMQ Binder (NEW)
+
+=== Introduction of RocketMQ
+
+https://rocketmq.apache.org[RocketMQ] is an open-source distributed message system. It is based on highly available distributed cluster technologies and provides message publishing and subscription service with low latency and high stability. RocketMQ is widely used in a variety of industries, such as decoupling of asynchronous communication, enterprise solutions, financial settlements, telecommunication, e-commerce, logistics, marketing, social media, instant messaging, mobile applications, mobile games, videos, IoT, and Internet of Vehicles.
+
+It has the following features:
+
+* Strict order of message sending and consumption
+
+* Rich modes of message pulling
+
+* Horizontal scalability of consumers
+
+* Real-time message subscription
+
+* Billion-level message accumulation capability
+
+=== RocketMQ Usages
+
+* Download RocketMQ
+
+Download https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.9.1/rocketmq-all-4.9.1-bin-release.zip[Latest Binary File of RocketMQ], and decompress it.
+
+The decompressed directory is as follows:
+
+```
+apache-rocketmq
+├── LICENSE
+├── NOTICE
+├── README.md
+├── benchmark
+├── bin
+├── conf
+└── lib
+```
+
+* Start NameServer
+
+```bash
+nohup sh bin/mqnamesrv &
+tail -f ~/logs/rocketmqlogs/namesrv.log
+```
+
+* Start Broker
+
+```bash
+nohup sh bin/mqbroker -n localhost:9876 &
+tail -f ~/logs/rocketmqlogs/broker.log
+```
+
+* Send and Receive Messages
+
+Send messages:
+
+```bash
+sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
+```
+
+Output when the message is successfully sent: `SendResult [sendStatus=SEND_OK, msgId= ...`
+
+Receive messages:
+
+```bash
+sh bin/tools.sh org.apache.rocketmq.example.quickstart.Consumer
+```
+
+Output when the message is successfully received： `ConsumeMessageThread_%d Receive New Messages: [MessageExt...`
+
+* Shutdown Server
+
+```bash
+sh bin/mqshutdown broker
+sh bin/mqshutdown namesrv
+```
+
+=== Introduction of Spring Cloud Stream
+
+Spring Cloud Stream is a microservice framework used to build architectures based on messages. It helps you to create production-ready single-server Spring applications based on SpringBoot, and connects with Broker using `Spring Integration`.
+
+Spring Cloud Stream provides unified abstractions of message middleware configurations, and puts forward concepts such as publish-subscribe, consumer groups and partition.
+
+There are two concepts in Spring Cloud Stream: Binder and Binding
+
+* Binder: A component used to integrate with external message middleware, and is used to create binding. Different message middleware products have their own binder implementations.
+
+For example, `Kafka` uses `KafkaMessageChannelBinder`, `RabbitMQ` uses `RabbitMessageChannelBinder`, while `RocketMQ` uses `RocketMQMessageChannelBinder`.
+
+* Binding: Includes Input Binding and Output Binding.
+
+Binding serves as a bridge between message middleware and the provider and consumer of the applications. Developers only need to use the Provider or Consumer to produce or consume data, and do not need to worry about the interactions with the message middleware.
+
+.Spring Cloud Stream Application
+image::https://raw.githubusercontent.com/spring-cloud/spring-cloud-stream/master/docs/src/main/asciidoc/images/SCSt-with-binder.png[]
+
+Now let’s use Spring Cloud Stream to write a simple code for sending and receiving messages:
+
+```java
+MessageChannel messageChannel = new DirectChannel();
+
+// Message subscription
+((SubscribableChannel) messageChannel).subscribe(new MessageHandler() {
+    @Override
+    public void handleMessage(Message<? > message) throws MessagingException {
+        System.out.println("receive msg: " + message.getPayload());
+    }
+});
+
+// Message sending
+messageChannel.send(MessageBuilder.withPayload("simple msg").build());
+```
+
+All the message types in this code are provided by the `spring-messaging`module. It shields the lower-layer implementations of message middleware. If you would like to change the message middleware, you only need to configure the related message middleware information in the configuration file and modify the binder dependency.
+
+**The lower layer of Spring Cloud Stream also implements various code abstractions based on the previous code.**
+
+=== How to use Spring Cloud Alibaba RocketMQ Binder
+
+For using the Spring Cloud Alibaba RocketMQ Binder, you just need to add it to your Spring Cloud Stream application, using the following Maven coordinates:
+
+```xml
+<dependency>
+  <groupId>com.alibaba.cloud</groupId>
+  <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+</dependency>
+```
+
+Alternatively, you can also use the Spring Cloud Stream RocketMQ Starter:
+
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+</dependency>
+```
+
+=== How Spring Cloud Alibaba RocketMQ Binder Works
+
+This is the implementation architecture of Spring Cloud Stream RocketMQ Binder:
+
+.SCS RocketMQ Binder
+image::https://img.alicdn.com/tfs/TB1v8rcbUY1gK0jSZFCXXcwqXXa-1236-773.png[]
+
+The RocketMQ Binder refactoring optimization in addition to the dependence on the https://github.com/apache/rocketmq-spring[RocketMQ-Spring] framework.
+
+`RocketMQMessageChannelBinder` is a standard implementation of Binder, it will build https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-starters/spring-cloud-starter-stream-rocketmq/src/main/java/com/alibaba/cloud/stream/binder/rocketmq/integration/inbound/RocketMQInboundChannelAdapter.java[RocketMQInboundChannelAdapter] and https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-starters/spring-cloud-starter-stream-rocketmq/src/main/java/com/alibaba/cloud/stream/binder/rocketmq/integration/outbound/RocketMQProducerMessageHandler.java[RocketMQProducerMessageHandler] internally.
+
+`RocketMQProducerMessageHandler` builds `RocketMQ Producer` from https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-starters/spring-cloud-starter-stream-rocketmq/src/main/java/com/alibaba/cloud/stream/binder/rocketmq/integration/outbound/RocketMQProduceFactory.java[RocketMQProduceFactory] based on the Binding configuration, which converts the `org.springframework.messaging.Message` of `spring-messaging` module to the RocketMQ message class `org.apache.rocketmq.common .message.Message` internally, then send it out.
+
+`RocketMQInboundChannelAdapter` also builds `DefaultMQPushConsumer` from https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-starters/spring-cloud-starter-stream-rocketmq/src/main/java/com/alibaba/cloud/stream/binder/rocketmq/integration/inbound/RocketMQConsumerFactory.java[RocketMQConsumerFactory] based on the Binding configuration, which will start the RocketMQ `Consumer` to receive the messages internally.
+
+NOTE: Compatible with https://github.com/apache/rocketmq-spring/RocketMQ - Spring framework requires manual processing
+
+Binder currently supports RocketMQ Message features by setting keys in 'headers'.
+For example, 'TAGS', 'KEYS', 'TRANSACTIONAL_ARGS' and other properties see https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-starters/spring-cloud-starter-stream-rocketmq/src/main/java/com/alibaba/cloud/stream/binder/rocketmq/contants/RocketMQConst.java[com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst]
+
+```java
+MessageBuilder builder = MessageBuilder.withPayload(msg)
+    .setHeader(RocketMQHeaders.TAGS, "binder")
+    .setHeader(RocketMQHeaders.KEYS, "my-key")
+    .setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, "1");
+Message message = builder.build();
+output().send(message);
+```
+NOTE: For more examples, see https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-examples/rocketmq-example/rocketmq-produce-example/src/main/java/com/alibaba/cloud/examples/SenderService.java[com.alibaba.cloud.examples.SenderService]
+
+=== Support MessageSource
+
+SCS RocketMQ Binder support `MessageSource`，which can receive messages by pull mode：
+
+```java
+@SpringBootApplication
+@EnableBinding(MQApplication.PolledProcessor.class)
+public class MQApplication {
+
+  private final Logger logger =LoggerFactory.getLogger(MQApplication.class);
+
+  public static void main(String[] args) {
+    SpringApplication.run(MQApplication.class, args);
+  }
+
+  @Bean
+  public ApplicationRunner runner(PollableMessageSource source,
+  	    MessageChannel dest) {
+    return args -> {
+      while (true) {
+        boolean result = source.poll(m -> {
+          String payload = (String) m.getPayload();
+          logger.info("Received: " + payload);
+          dest.send(MessageBuilder.withPayload(payload.toUpperCase())
+              .copyHeaders(m.getHeaders())
+              .build());
+        }, new ParameterizedTypeReference<String>() { });
+        if (result) {
+          logger.info("Processed a message");
+        }
+        else {
+          logger.info("Nothing to do");
+        }
+        Thread.sleep(5_000);
+      }
+    };
+  }
+
+  public static interface PolledProcessor {
+    @Input
+    PollableMessageSource source();
+    @Output
+    MessageChannel dest();
+  }
+}
+```
+
+=== Configuration Options
+
+==== RocketMQ Binder Properties
+
+spring.cloud.stream.rocketmq.binder.name-server::
+The name server of RocketMQ Server(Older versions use the namesrv-addr configuration item).
++
+Default: `127.0.0.1:9876`.
+spring.cloud.stream.rocketmq.binder.access-key::
+The AccessKey of Alibaba Cloud Account.
++
+Default: null.
+spring.cloud.stream.rocketmq.binder.secret-key::
+The SecretKey of Alibaba Cloud Account.
++
+Default: null.
+spring.cloud.stream.rocketmq.binder.enable-msg-trace::
+Enable Message Trace feature for all producers and consumers.
++
+Default: `true`.
+spring.cloud.stream.rocketmq.binder.customized-trace-topic::
+The trace topic for message trace.
++
+Default: `RMQ_SYS_TRACE_TOPIC`.
++
+spring.cloud.stream.rocketmq.binder.access-channel::
+The commercial version of rocketmq message trajectory topic is adaptive,the value is LOCAL
++
+Default: null.
+
+==== RocketMQ Consumer Properties
+
+The following properties are available for RocketMQ producers only and must be prefixed with `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.`.
+See more https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-starters/spring-cloud-starter-stream-rocketmq/src/main/java/com/alibaba/cloud/stream/binder/rocketmq/properties/RocketMQConsumerProperties.java[com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties].
+
+enable::
+Enable Consumer Binding.
++
+Default: `true`.
+subscription::
+Consumer subscription tags expression, tags split by `||`.See more `com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties.subscription`
++
+Default: empty.
+messageModel::
+Consumer consumption pattern.If you want every subscriber to receive a message, you can use broadcast mode.See more `org.apache.rocketmq.common.protocol.heartbeat.MessageModel`
++
+Default: `CLUSTERING`.
+consumeFromWhere::
+Where does the Consumer start? See more `org.apache.rocketmq.common.Consumer.ConsumeFromWhere`
++
+Default: `CONSUME_FROM_LAST_OFFSET`.
+orderly::
+Receiving message concurrently or orderly.
++
+Default: `false`.
+delayLevelWhenNextConsume::
+Message consume retry strategy for concurrently consume:
+* -1,no retry,put into DLQ directly
+* 0,broker control retry frequency
+* >0,client control retry frequency
++
+Default: `0`.
+suspendCurrentQueueTimeMillis::
+Time interval of message consume retry for orderly consume.
++
+Default: `1000`.
+
+Others see more `com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties.Push`
+
+
+#The following configurations are related to the Consumer Pull pattern#
+`spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.pull.`
+
+pullThreadNums::
+The number of threads pulled while consuming
++
+Default: `20`.
+pollTimeoutMillis::
+The number of milliseconds timed out while pulling
++
+Default: `1000 * 5`.
+
+Others see more  `com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties.Pull`.
+
+NOTE: see more https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-starters/spring-cloud-starter-stream-rocketmq/src/main/java/com/alibaba/cloud/stream/binder/rocketmq/properties/RocketMQConsumerProperties.java[com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties]
+
+==== RocketMQ Provider Properties
+
+The following properties are available for RocketMQ producers only and must be prefixed with `spring.cloud.stream.rocketmq.bindings.<channelName>.producer.`.
+
+enable::
+Enable Producer Binding.
++
+Default: `true`.
+group::
+Producer group name.
++
+Default: empty.
+maxMessageSize::
+Maximum allowed message size in bytes.
++
+Default: `8249344`.
+producerType::
+Message producer type, common or transactional,more `com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties.ProducerType`.
++
+Default: `Normal`.
+transactionListener::
+Transaction message listener beanName, valid only if 'producerType=Trans';Must be implemented `org.apache.rocketmq.client.producer.TransactionListener` Spring Bean interface.
+sendType::
+Type of message sent (synchronous, asynchronous, one-way).more `com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties.SendType`.
++
+Default: `Sync`.
+sendCallBack::
+BeanName of the callback function after the message is sent, valid only when 'sendType=Async';Must be implemented `org.apache.rocketmq.client.producer.SendCallback` Spring Bean interface.
+vipChannelEnabled::
+Whether to enable the Vip Channel
++
+Default: `true`.
+sendMessageTimeout::
+Timeout for sending a message in milliseconds.
++
+Default: `3000`.
+compressMessageBodyThreshold::
+Message body compression threshold (the message body is compressed when it exceeds 4K).
++
+Default: `4096`.
+retryTimesWhenSendFailed::
+Number of retry times of message sending failures in synchronous message sending mode.
++
+Default: `2`.
+retryTimesWhenSendAsyncFailed::
+Number of retry times for sending failed messages in asynchronous sending mode.
++
+Default: `2`.
+retryAnotherBroker::
+Whether to retry other brokers if message sending fails.
++
+Default: `false`.
+
+NOTE: More parameters of producer,see ：
+https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-starters/spring-cloud-starter-stream-rocketmq/src/main/java/com/alibaba/cloud/stream/binder/rocketmq/properties/RocketMQProducerProperties.java[com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties]
+
+
+
+=== Alibaba Cloud MQ service
+
+To use alibaba Cloud MQ service, you need to configure AccessKey, SecretKey, and NameServer address on the cloud
+
+NOTE: 0.1.2 & 0.2.2 & 0.9.0 才支持该功能
+
+```properties
+spring.cloud.stream.rocketmq.binder.access-key=YourAccessKey
+spring.cloud.stream.rocketmq.binder.secret-key=YourSecretKey
+spring.cloud.stream.rocketmq.binder.name-server=NameServerInMQ
+```
+
+NOTE: Topic and group are prefixed with the instance ID %.For example, topic "test" needs to be set to "instance ID %test".
+Obtaining NameServer (remove http:// prefix from configuration)
