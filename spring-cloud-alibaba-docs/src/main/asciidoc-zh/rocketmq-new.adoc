@@ -20,7 +20,7 @@ https://rocketmq.apache.org[RocketMQ] 是一款开源的分布式消息系统，
 
 * 下载 RocketMQ
 
-下载 https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip[RocketMQ最新的二进制文件]，并解压
+下载 https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.9.1/rocketmq-all-4.9.1-bin-release.zip[RocketMQ最新的二进制文件]，并解压
 
 解压后的目录结构如下：
 
@@ -90,8 +90,8 @@ Spring Cloud Stream 内部有两个概念：Binder 和 Binding。
 
 Binding 在消息中间件与应用程序提供的 Provider 和 Consumer 之间提供了一个桥梁，实现了开发者只需使用应用程序的 Provider 或 Consumer 生产或消费数据即可，屏蔽了开发者与底层消息中间件的接触。
 
-.Spring Cloud Stream
-image::https://docs.spring.io/spring-cloud-stream/docs/current/reference/htmlsingle/images/SCSt-overview.png[]
+.Spring Cloud Stream Application
+image::https://raw.githubusercontent.com/spring-cloud/spring-cloud-stream/master/docs/src/main/asciidoc/images/SCSt-with-binder.png[]
 
 使用 Spring Cloud Stream 完成一段简单的消息发送和消息接收代码：
 
