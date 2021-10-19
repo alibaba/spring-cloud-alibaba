@@ -122,9 +122,11 @@ spring-cloud-alibaba@googlegroups.com，欢迎通过此邮件列表讨论与 spr
 
 ### 钉钉群
 
-![DingQR](https://img.alicdn.com/tfs/TB1jXikzAL0gK0jSZFtXXXQCXXa-1002-323.png)
-
-如图片有问题，访问 https://img.alicdn.com/tfs/TB1jXikzAL0gK0jSZFtXXXQCXXa-1002-323.png
+* Spring Cloud Alibaba 开源交流群（1群）：21914947
+* Spring Cloud Alibaba 开源交流群（2群，已满）：21992595
+* Spring Cloud Alibaba 开源交流群（3群）：35153903
+* Spring Cloud Alibaba 开源交流群（4群，已满）：30301472
+* Spring Cloud Alibaba 开源交流群（5群）：34930571
 
 ## 社区相关开源
 
