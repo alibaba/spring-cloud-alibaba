@@ -27,7 +27,7 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 
 For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap.md).
 
-In addition to the above-mentioned features, For the needs of enterprise users' special microservices governance scenarios, [Microservices Engine (MSE)](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar) of Spring Cloud Alibaba's enterprise version provides more powerful governance capabilities such as Grayscale Release, Service Warm-up, Lossless Online and Offline and Outlier Ejection.
+In addition to the above-mentioned features, for the needs of enterprise users' scenarios, [Microservices Engine (MSE)](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar) of Spring Cloud Alibaba's enterprise version provides an enterprise-level microservices governance center, which includes more powerful governance capabilities such as Grayscale Release, Service Warm-up, Lossless Online and Offline and Outlier Ejection. At the same time, it also provides a variety of products and solutions such as enterprise-level Nacos registration / configuration center, enterprise-level cloud native gateway.
 
 
 ## Components
