@@ -8,9 +8,6 @@ dubbo:
   consumer:
     check: false
 
-  consumer:
-    check: false
-
 server:
   port: 0
 
