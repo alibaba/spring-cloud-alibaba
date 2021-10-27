@@ -9,6 +9,8 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 
 依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
 
+此外，阿里云同时还提供了 Spring Cloud Alibaba 企业版 [微服务解决方案](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar)，包括无侵入服务治理(全链路灰度，无损上下线，离群实例摘除等)，企业级 Nacos 注册配置中心和企业级云原生网关等众多产品。
+
 参考文档 请查看 [WIKI](https://github.com/alibaba/spring-cloud-alibaba/wiki) 。
 
 为 Spring Cloud Alibaba 贡献代码请参考 [如何贡献](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E5%A6%82%E4%BD%95%E8%B4%A1%E7%8C%AE%E4%BB%A3%E7%A0%81) 。
