@@ -61,9 +61,9 @@
 		
 		内容如下
 		
-			user.id=1
-			user.name=james
-			user.age=17	
+   		user.id=1
+		user.name=james
+		user.age=17	
 
 ### 应用启动
 
@@ -117,7 +117,7 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 * `spring.profiles.active` 即为当前环境对应的 profile，详情可以参考 [Spring Boot文档](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
-	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${file-extension}`**
+	**注意，当 active profile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${file-extension}`**
 
 * `file-extension` 为配置内容的数据格式，可以通过配置项 `spring.cloud.nacos.config.file-extension`来配置。
 目前只支持 `properties` 类型。
@@ -153,7 +153,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Nacos Config Sta
 
 Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos_config 来查看 Nacos Endpoint 的信息。
 
-Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 来访问。
+Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacosconfig 来访问。
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 
