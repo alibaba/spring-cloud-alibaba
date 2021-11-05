@@ -47,7 +47,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ZuulServlet.class)
-@ConditionalOnProperty(prefix = ConfigConstants.ZUUl_PREFIX, name = "enabled",
+@ConditionalOnProperty(prefix = ConfigConstants.ZUUL_PREFIX, name = "enabled",
 		havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelZuulProperties.class)
 public class SentinelZuulAutoConfiguration {

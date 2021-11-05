@@ -16,12 +16,16 @@
 
 package com.alibaba.cloud.nacos.client;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author xiaojing
@@ -56,6 +60,32 @@ public class NacosPropertySource extends MapPropertySource {
 		this.dataId = dataId;
 		this.timestamp = timestamp;
 		this.isRefreshable = isRefreshable;
+	}
+
+	NacosPropertySource(List<PropertySource<?>> propertySources, String group,
+			String dataId, Date timestamp, boolean isRefreshable) {
+		this(group, dataId, getSourceMap(group, dataId, propertySources), timestamp,
+				isRefreshable);
+	}
+
+	private static Map<String, Object> getSourceMap(String group, String dataId,
+			List<PropertySource<?>> propertySources) {
+		if (CollectionUtils.isEmpty(propertySources)) {
+			return Collections.emptyMap();
+		}
+		// If only one, return the internal element, otherwise wrap it.
+		if (propertySources.size() == 1) {
+			PropertySource propertySource = propertySources.get(0);
+			if (propertySource != null && propertySource.getSource() instanceof Map) {
+				return (Map<String, Object>) propertySource.getSource();
+			}
+		}
+		// If it is multiple, it will be returned as it is, and the internal elements
+		// cannot be directly retrieved, so the user needs to implement the retrieval
+		// logic by himself
+		return Collections.singletonMap(
+				String.join(NacosConfigProperties.COMMAS, dataId, group),
+				propertySources);
 	}
 
 	public String getGroup() {

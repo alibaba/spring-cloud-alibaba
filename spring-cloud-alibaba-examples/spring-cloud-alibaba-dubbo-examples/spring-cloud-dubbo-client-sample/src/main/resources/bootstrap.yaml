@@ -12,7 +12,11 @@ spring:
     allow-bean-definition-overriding: true
   cloud:
     nacos:
-      username: nacos
-      password: nacos
       discovery:
+        username: nacos
+        password: nacos
         server-addr: 127.0.0.1:8848
+        namespace: public
+
+server:
+  port: 8080

@@ -76,6 +76,13 @@ public final class RocketMQBinderUtils {
 			result.setEnableMsgTrace(
 					rocketBinderConfigurationProperties.isEnableMsgTrace());
 		}
+		if (StringUtils.isEmpty(rocketMQProperties.getAccessChannel())) {
+			result.setAccessChannel(rocketBinderConfigurationProperties.getAccessChannel());
+		}
+		else {
+			result.setAccessChannel(
+				rocketMQProperties.getAccessChannel());
+		}
 		return result;
 	}
 

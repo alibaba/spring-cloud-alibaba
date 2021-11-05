@@ -16,9 +16,9 @@
 
 package com.alibaba.cloud.nacos.client;
 
+import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
@@ -27,6 +27,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.core.env.PropertySource;
 import org.springframework.util.StringUtils;
 
 /**
@@ -37,8 +38,6 @@ public class NacosPropertySourceBuilder {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceBuilder.class);
-
-	private static final Map<String, Object> EMPTY_MAP = new LinkedHashMap();
 
 	private ConfigService configService;
 
@@ -71,14 +70,15 @@ public class NacosPropertySourceBuilder {
 	 */
 	NacosPropertySource build(String dataId, String group, String fileExtension,
 			boolean isRefreshable) {
-		Map<String, Object> p = loadNacosData(dataId, group, fileExtension);
-		NacosPropertySource nacosPropertySource = new NacosPropertySource(group, dataId,
-				p, new Date(), isRefreshable);
+		List<PropertySource<?>> propertySources = loadNacosData(dataId, group,
+				fileExtension);
+		NacosPropertySource nacosPropertySource = new NacosPropertySource(propertySources,
+				group, dataId, new Date(), isRefreshable);
 		NacosPropertySourceRepository.collectNacosPropertySource(nacosPropertySource);
 		return nacosPropertySource;
 	}
 
-	private Map<String, Object> loadNacosData(String dataId, String group,
+	private List<PropertySource<?>> loadNacosData(String dataId, String group,
 			String fileExtension) {
 		String data = null;
 		try {
@@ -87,24 +87,23 @@ public class NacosPropertySourceBuilder {
 				log.warn(
 						"Ignore the empty nacos configuration and get it based on dataId[{}] & group[{}]",
 						dataId, group);
-				return EMPTY_MAP;
+				return Collections.emptyList();
 			}
 			if (log.isDebugEnabled()) {
 				log.debug(String.format(
 						"Loading nacos data, dataId: '%s', group: '%s', data: %s", dataId,
 						group, data));
 			}
-			Map<String, Object> dataMap = NacosDataParserHandler.getInstance()
-					.parseNacosData(data, fileExtension);
-			return dataMap == null ? EMPTY_MAP : dataMap;
+			return NacosDataParserHandler.getInstance().parseNacosData(dataId, data,
+					fileExtension);
 		}
 		catch (NacosException e) {
-			log.error("get data from Nacos error,dataId:{}, ", dataId, e);
+			log.error("get data from Nacos error,dataId:{} ", dataId, e);
 		}
 		catch (Exception e) {
-			log.error("parse data from Nacos error,dataId:{},data:{},", dataId, data, e);
+			log.error("parse data from Nacos error,dataId:{},data:{}", dataId, data, e);
 		}
-		return EMPTY_MAP;
+		return Collections.emptyList();
 	}
 
 }

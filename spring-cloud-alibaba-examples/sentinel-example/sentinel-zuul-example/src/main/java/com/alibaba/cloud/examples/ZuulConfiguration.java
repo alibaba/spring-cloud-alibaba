@@ -41,10 +41,10 @@ public class ZuulConfiguration {
 
 			@Override
 			public BlockResponse fallbackResponse(String route, Throwable cause) {
-				if (route.equals("my-service3")) {
+				if ("my-service3".equals(route)) {
 					return new BlockResponse(433, "Sentinel Block3", route);
 				}
-				else if (route.equals("my-service4")) {
+				else if ("my-service4".equals(route)) {
 					return new BlockResponse(444, "my-service4", route);
 				}
 				else {

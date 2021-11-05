@@ -17,63 +17,144 @@
 package com.alibaba.cloud.nacos.parser;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import com.alibaba.cloud.nacos.utils.NacosConfigUtils;
+
+import org.springframework.boot.env.OriginTrackedMapPropertySource;
+import org.springframework.boot.env.PropertiesPropertySourceLoader;
+import org.springframework.boot.env.PropertySourceLoader;
+import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.PropertySource;
+import org.springframework.core.io.support.SpringFactoriesLoader;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import static com.alibaba.cloud.nacos.parser.AbstractPropertySourceLoader.DOT;
 
 /**
  * @author zkz
  */
 public final class NacosDataParserHandler {
 
-	private AbstractNacosDataParser parser;
+	/**
+	 * default extension.
+	 */
+	private static final String DEFAULT_EXTENSION = "properties";
+
+	private static List<PropertySourceLoader> propertySourceLoaders;
 
 	private NacosDataParserHandler() {
-		parser = this.createParser();
+		propertySourceLoaders = SpringFactoriesLoader
+				.loadFactories(PropertySourceLoader.class, getClass().getClassLoader());
 	}
 
 	/**
 	 * Parsing nacos configuration content.
-	 * @param data config from Nacos
-	 * @param extension file extension. json or xml or yml or yaml or properties
-	 * @return result of LinkedHashMap
+	 * @param configName name of nacos-config
+	 * @param configValue value from nacos-config
+	 * @param extension identifies the type of configValue
+	 * @return result of Map
 	 * @throws IOException thrown if there is a problem parsing config.
 	 */
-	public Map<String, Object> parseNacosData(String data, String extension)
-			throws IOException {
-		if (null == parser) {
-			parser = this.createParser();
+	public List<PropertySource<?>> parseNacosData(String configName, String configValue,
+			String extension) throws IOException {
+		if (StringUtils.isEmpty(configValue)) {
+			return Collections.emptyList();
 		}
-		return parser.parseNacosData(data, extension);
+		if (StringUtils.isEmpty(extension)) {
+			extension = this.getFileExtension(configName);
+		}
+		for (PropertySourceLoader propertySourceLoader : propertySourceLoaders) {
+			if (!canLoadFileExtension(propertySourceLoader, extension)) {
+				continue;
+			}
+			NacosByteArrayResource nacosByteArrayResource;
+			if (propertySourceLoader instanceof PropertiesPropertySourceLoader) {
+				// PropertiesPropertySourceLoader internal is to use the ISO_8859_1,
+				// the Chinese will be garbled, needs to transform into unicode.
+				nacosByteArrayResource = new NacosByteArrayResource(
+						NacosConfigUtils.selectiveConvertUnicode(configValue).getBytes(),
+						configName);
+			}
+			else {
+				nacosByteArrayResource = new NacosByteArrayResource(
+						configValue.getBytes(), configName);
+			}
+			nacosByteArrayResource.setFilename(getFileName(configName, extension));
+			List<PropertySource<?>> propertySourceList = propertySourceLoader
+					.load(configName, nacosByteArrayResource);
+			if (CollectionUtils.isEmpty(propertySourceList)) {
+				return Collections.emptyList();
+			}
+			return propertySourceList.stream().filter(Objects::nonNull)
+					.map(propertySource -> {
+						if (propertySource instanceof EnumerablePropertySource) {
+							String[] propertyNames = ((EnumerablePropertySource) propertySource)
+									.getPropertyNames();
+							if (propertyNames != null && propertyNames.length > 0) {
+								Map<String, Object> map = new LinkedHashMap<>();
+								Arrays.stream(propertyNames).forEach(name -> {
+									map.put(name, propertySource.getProperty(name));
+								});
+								return new OriginTrackedMapPropertySource(
+										propertySource.getName(), map, true);
+							}
+						}
+						return propertySource;
+					}).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 	/**
-	 * check the validity of file extensions in dataid.
-	 * @param dataIdAry array of dataId
-	 * @return dataId handle success or not
+	 * check the current extension can be processed.
+	 * @param loader the propertySourceLoader
+	 * @param extension file extension
+	 * @return if can match extension
 	 */
-	public boolean checkDataId(String... dataIdAry) {
-		StringBuilder stringBuilder = new StringBuilder();
-		for (String dataId : dataIdAry) {
-			int idx = dataId.lastIndexOf(AbstractNacosDataParser.DOT);
-			if (idx > 0 && idx < dataId.length() - 1) {
-				String extension = dataId.substring(idx + 1);
-				if (parser.checkFileExtension(extension)) {
-					break;
-				}
-			}
-			// add tips
-			stringBuilder.append(dataId).append(",");
-		}
-		if (stringBuilder.length() > 0) {
-			String result = stringBuilder.substring(0, stringBuilder.length() - 1);
-			throw new IllegalStateException(AbstractNacosDataParser.getTips(result));
-		}
-		return true;
+	private boolean canLoadFileExtension(PropertySourceLoader loader, String extension) {
+		return Arrays.stream(loader.getFileExtensions())
+				.anyMatch((fileExtension) -> StringUtils.endsWithIgnoreCase(extension,
+						fileExtension));
 	}
 
-	private AbstractNacosDataParser createParser() {
-		return new NacosDataPropertiesParser().addNextParser(new NacosDataYamlParser())
-				.addNextParser(new NacosDataXmlParser())
-				.addNextParser(new NacosDataJsonParser());
+	/**
+	 * @param name filename
+	 * @return file extension, default {@code DEFAULT_EXTENSION} if don't get
+	 */
+	public String getFileExtension(String name) {
+		if (StringUtils.isEmpty(name)) {
+			return DEFAULT_EXTENSION;
+		}
+		int idx = name.lastIndexOf(DOT);
+		if (idx > 0 && idx < name.length() - 1) {
+			return name.substring(idx + 1);
+		}
+		return DEFAULT_EXTENSION;
+	}
+
+	private String getFileName(String name, String extension) {
+		if (StringUtils.isEmpty(extension)) {
+			return name;
+		}
+		if (StringUtils.isEmpty(name)) {
+			return extension;
+		}
+		int idx = name.lastIndexOf(DOT);
+		if (idx > 0 && idx < name.length() - 1) {
+			String ext = name.substring(idx + 1);
+			if (extension.equalsIgnoreCase(ext)) {
+				return name;
+			}
+		}
+		return name + DOT + extension;
 	}
 
 	public static NacosDataParserHandler getInstance() {

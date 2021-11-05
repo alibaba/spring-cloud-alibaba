@@ -40,7 +40,8 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = NacosRibbonClientPropertyOverrideTests.TestConfiguration.class,
-		properties = { "spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+		properties = { "spring.cloud.nacos.server-addr=127.0.0.1:8848",
+				"spring.cloud.nacos.username=nacos", "spring.cloud.nacos.password=nacos",
 				"spring.cloud.nacos.discovery.port=18080",
 				"spring.cloud.nacos.discovery.service=remoteApp",
 				"localApp.ribbon.NIWSServerListClassName="
