@@ -16,35 +16,18 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import com.alibaba.cloud.stream.binder.rocketmq.consuming.RocketMQListenerBindingContainer;
-import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQInboundChannelAdapter;
-import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQMessageHandler;
-import com.alibaba.cloud.stream.binder.rocketmq.integration.RocketMQMessageSource;
-import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
+import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
+import com.alibaba.cloud.stream.binder.rocketmq.extend.ErrorAcknowledgeHandler;
+import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.RocketMQInboundChannelAdapter;
+import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.pull.DefaultErrorAcknowledgeHandler;
+import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.pull.RocketMQMessageSource;
+import com.alibaba.cloud.stream.binder.rocketmq.integration.outbound.RocketMQProducerMessageHandler;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindingProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
-import com.alibaba.cloud.stream.binder.rocketmq.provisioning.selector.PartitionMessageQueueSelector;
-import com.alibaba.cloud.stream.binder.rocketmq.support.JacksonRocketMQHeaderMapper;
-import com.alibaba.cloud.stream.binder.rocketmq.support.RocketMQHeaderMapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.rocketmq.acl.common.AclClientRPCHook;
-import org.apache.rocketmq.acl.common.SessionCredentials;
-import org.apache.rocketmq.client.AccessChannel;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.common.UtilAll;
-import org.apache.rocketmq.remoting.RPCHook;
-import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.apache.rocketmq.spring.support.RocketMQUtil;
+import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
 
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
@@ -56,15 +39,19 @@ import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.StaticMessageHeaderAccessor;
 import org.springframework.integration.acks.AcknowledgmentCallback;
-import org.springframework.integration.acks.AcknowledgmentCallback.Status;
 import org.springframework.integration.channel.AbstractMessageChannel;
 import org.springframework.integration.core.MessageProducer;
+import org.springframework.integration.support.DefaultErrorMessageStrategy;
+import org.springframework.integration.support.ErrorMessageStrategy;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
 
 /**
+ * A {@link org.springframework.cloud.stream.binder.Binder} that uses RocketMQ as the
+ * underlying middleware.
+ *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 public class RocketMQMessageChannelBinder extends
@@ -72,123 +59,45 @@ public class RocketMQMessageChannelBinder extends
 		implements
 		ExtendedPropertiesBinder<MessageChannel, RocketMQConsumerProperties, RocketMQProducerProperties> {
 
-	private RocketMQExtendedBindingProperties extendedBindingProperties = new RocketMQExtendedBindingProperties();
+	private final RocketMQExtendedBindingProperties extendedBindingProperties;
 
-	private final RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
+	private final RocketMQBinderConfigurationProperties binderConfigurationProperties;
 
-	private final RocketMQProperties rocketMQProperties;
-
-	private final InstrumentationManager instrumentationManager;
-
-	private Map<String, String> topicInUse = new HashMap<>();
-
-	public RocketMQMessageChannelBinder(RocketMQTopicProvisioner provisioningProvider,
+	public RocketMQMessageChannelBinder(
+			RocketMQBinderConfigurationProperties binderConfigurationProperties,
 			RocketMQExtendedBindingProperties extendedBindingProperties,
-			RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties,
-			RocketMQProperties rocketMQProperties,
-			InstrumentationManager instrumentationManager) {
-		super(null, provisioningProvider);
+			RocketMQTopicProvisioner provisioningProvider) {
+		super(new String[0], provisioningProvider);
 		this.extendedBindingProperties = extendedBindingProperties;
-		this.rocketBinderConfigurationProperties = rocketBinderConfigurationProperties;
-		this.rocketMQProperties = rocketMQProperties;
-		this.instrumentationManager = instrumentationManager;
+		this.binderConfigurationProperties = binderConfigurationProperties;
 	}
 
 	@Override
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
-			ExtendedProducerProperties<RocketMQProducerProperties> producerProperties,
+			ExtendedProducerProperties<RocketMQProducerProperties> extendedProducerProperties,
 			MessageChannel channel, MessageChannel errorChannel) throws Exception {
-		if (producerProperties.getExtension().getEnabled()) {
-
-			// if producerGroup is empty, using destination
-			String extendedProducerGroup = producerProperties.getExtension().getGroup();
-			String producerGroup = StringUtils.isEmpty(extendedProducerGroup)
-					? destination.getName() : extendedProducerGroup;
-
-			RocketMQBinderConfigurationProperties mergedProperties = RocketMQBinderUtils
-					.mergeProperties(rocketBinderConfigurationProperties,
-							rocketMQProperties);
-
-			RocketMQTemplate rocketMQTemplate;
-			if (producerProperties.getExtension().getTransactional()) {
-				Map<String, RocketMQTemplate> rocketMQTemplates = getBeanFactory()
-						.getBeansOfType(RocketMQTemplate.class);
-				if (rocketMQTemplates.size() == 0) {
-					throw new IllegalStateException(
-							"there is no RocketMQTemplate in Spring BeanFactory");
-				}
-				else if (rocketMQTemplates.size() > 1) {
-					throw new IllegalStateException(
-							"there is more than 1 RocketMQTemplates in Spring BeanFactory");
-				}
-				rocketMQTemplate = rocketMQTemplates.values().iterator().next();
-			}
-			else {
-				rocketMQTemplate = new RocketMQTemplate();
-				rocketMQTemplate.setObjectMapper(this.getApplicationContext()
-						.getBeansOfType(ObjectMapper.class).values().iterator().next());
-				DefaultMQProducer producer;
-				String ak = mergedProperties.getAccessKey();
-				String sk = mergedProperties.getSecretKey();
-				if (!StringUtils.isEmpty(ak) && !StringUtils.isEmpty(sk)) {
-					RPCHook rpcHook = new AclClientRPCHook(
-							new SessionCredentials(ak, sk));
-					producer = new DefaultMQProducer(producerGroup, rpcHook,
-							mergedProperties.isEnableMsgTrace(),
-							mergedProperties.getCustomizedTraceTopic());
-					producer.setVipChannelEnabled(false);
-					producer.setInstanceName(RocketMQUtil.getInstanceName(rpcHook,
-							destination.getName() + "|" + UtilAll.getPid()));
-				}
-				else {
-					producer = new DefaultMQProducer(producerGroup);
-					producer.setVipChannelEnabled(
-							producerProperties.getExtension().getVipChannelEnabled());
-				}
-				producer.setNamesrvAddr(RocketMQBinderUtils
-						.getNameServerStr(mergedProperties.getNameServer()));
-				producer.setSendMsgTimeout(
-						producerProperties.getExtension().getSendMessageTimeout());
-				producer.setRetryTimesWhenSendFailed(
-						producerProperties.getExtension().getRetryTimesWhenSendFailed());
-				producer.setRetryTimesWhenSendAsyncFailed(producerProperties
-						.getExtension().getRetryTimesWhenSendAsyncFailed());
-				producer.setCompressMsgBodyOverHowmuch(producerProperties.getExtension()
-						.getCompressMessageBodyThreshold());
-				producer.setRetryAnotherBrokerWhenNotStoreOK(
-						producerProperties.getExtension().isRetryNextServer());
-				producer.setMaxMessageSize(
-						producerProperties.getExtension().getMaxMessageSize());
-				if (!StringUtils.isEmpty(mergedProperties.getAccessChannel())) {
-					producer.setAccessChannel(AccessChannel.valueOf(mergedProperties.getAccessChannel()));
-				}
-				rocketMQTemplate.setProducer(producer);
-				if (producerProperties.isPartitioned()) {
-					rocketMQTemplate
-							.setMessageQueueSelector(new PartitionMessageQueueSelector());
-				}
-			}
-
-			RocketMQMessageHandler messageHandler = new RocketMQMessageHandler(
-					rocketMQTemplate, destination.getName(), producerGroup,
-					producerProperties.getExtension().getTransactional(),
-					instrumentationManager, producerProperties,
-					((AbstractMessageChannel) channel).getInterceptors().stream().filter(
-							channelInterceptor -> channelInterceptor instanceof MessageConverterConfigurer.PartitioningInterceptor)
-							.map(channelInterceptor -> ((MessageConverterConfigurer.PartitioningInterceptor) channelInterceptor))
-							.findFirst().orElse(null));
-			messageHandler.setBeanFactory(this.getApplicationContext().getBeanFactory());
-			messageHandler.setSync(producerProperties.getExtension().getSync());
-			messageHandler.setHeaderMapper(createHeaderMapper(producerProperties));
-			if (errorChannel != null) {
-				messageHandler.setSendFailureChannel(errorChannel);
-			}
-			return messageHandler;
-		}
-		else {
+		if (!extendedProducerProperties.getExtension().getEnabled()) {
 			throw new RuntimeException("Binding for channel " + destination.getName()
 					+ " has been disabled, message can't be delivered");
 		}
+		RocketMQProducerProperties mqProducerProperties = RocketMQUtils
+				.mergeRocketMQProperties(binderConfigurationProperties,
+						extendedProducerProperties.getExtension());
+		RocketMQProducerMessageHandler messageHandler = new RocketMQProducerMessageHandler(
+				destination, extendedProducerProperties, mqProducerProperties);
+		messageHandler.setApplicationContext(this.getApplicationContext());
+		if (errorChannel != null) {
+			messageHandler.setSendFailureChannel(errorChannel);
+		}
+		MessageConverterConfigurer.PartitioningInterceptor partitioningInterceptor = ((AbstractMessageChannel) channel)
+				.getInterceptors().stream()
+				.filter(channelInterceptor -> channelInterceptor instanceof MessageConverterConfigurer.PartitioningInterceptor)
+				.map(channelInterceptor -> ((MessageConverterConfigurer.PartitioningInterceptor) channelInterceptor))
+				.findFirst().orElse(null);
+		messageHandler.setPartitioningInterceptor(partitioningInterceptor);
+		messageHandler.setBeanFactory(this.getApplicationContext().getBeanFactory());
+		messageHandler.setErrorMessageStrategy(this.getErrorMessageStrategy());
+		return messageHandler;
 	}
 
 	@Override
@@ -202,56 +111,43 @@ public class RocketMQMessageChannelBinder extends
 	@Override
 	protected MessageProducer createConsumerEndpoint(ConsumerDestination destination,
 			String group,
-			ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties)
+			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties)
 			throws Exception {
-		if (group == null || "".equals(group)) {
+		// todo support anymous consumer
+		if (StringUtils.isEmpty(group)) {
 			throw new RuntimeException(
 					"'group must be configured for channel " + destination.getName());
 		}
+		RocketMQUtils.mergeRocketMQProperties(binderConfigurationProperties,
+				extendedConsumerProperties.getExtension());
+		extendedConsumerProperties.getExtension().setGroup(group);
 
-		RocketMQListenerBindingContainer listenerContainer = new RocketMQListenerBindingContainer(
-				consumerProperties, rocketBinderConfigurationProperties, this);
-		listenerContainer.setConsumerGroup(group);
-		listenerContainer.setTopic(destination.getName());
-		listenerContainer.setConsumeThreadMax(consumerProperties.getConcurrency());
-		listenerContainer.setSuspendCurrentQueueTimeMillis(
-				consumerProperties.getExtension().getSuspendCurrentQueueTimeMillis());
-		listenerContainer.setDelayLevelWhenNextConsume(
-				consumerProperties.getExtension().getDelayLevelWhenNextConsume());
-		listenerContainer
-				.setNameServer(rocketBinderConfigurationProperties.getNameServer());
-		listenerContainer.setHeaderMapper(createHeaderMapper(consumerProperties));
-
-		RocketMQInboundChannelAdapter rocketInboundChannelAdapter = new RocketMQInboundChannelAdapter(
-				listenerContainer, consumerProperties, instrumentationManager);
-
-		topicInUse.put(destination.getName(), group);
-
+		RocketMQInboundChannelAdapter inboundChannelAdapter = new RocketMQInboundChannelAdapter(
+				destination.getName(), extendedConsumerProperties);
 		ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination,
-				group, consumerProperties);
-		if (consumerProperties.getMaxAttempts() > 1) {
-			rocketInboundChannelAdapter
-					.setRetryTemplate(buildRetryTemplate(consumerProperties));
-			rocketInboundChannelAdapter
-					.setRecoveryCallback(errorInfrastructure.getRecoverer());
+				group, extendedConsumerProperties);
+		if (extendedConsumerProperties.getMaxAttempts() > 1) {
+			inboundChannelAdapter
+					.setRetryTemplate(buildRetryTemplate(extendedConsumerProperties));
+			inboundChannelAdapter.setRecoveryCallback(errorInfrastructure.getRecoverer());
 		}
 		else {
-			rocketInboundChannelAdapter
-					.setErrorChannel(errorInfrastructure.getErrorChannel());
+			inboundChannelAdapter.setErrorChannel(errorInfrastructure.getErrorChannel());
 		}
-
-		return rocketInboundChannelAdapter;
+		return inboundChannelAdapter;
 	}
 
 	@Override
 	protected PolledConsumerResources createPolledConsumerResources(String name,
 			String group, ConsumerDestination destination,
-			ExtendedConsumerProperties<RocketMQConsumerProperties> consumerProperties) {
-		RocketMQMessageSource rocketMQMessageSource = new RocketMQMessageSource(
-				rocketBinderConfigurationProperties, consumerProperties, name, group);
-		return new PolledConsumerResources(rocketMQMessageSource,
-				registerErrorInfrastructure(destination, group, consumerProperties,
-						true));
+			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
+		RocketMQUtils.mergeRocketMQProperties(binderConfigurationProperties,
+				extendedConsumerProperties.getExtension());
+		extendedConsumerProperties.getExtension().setGroup(group);
+		RocketMQMessageSource messageSource = new RocketMQMessageSource(name,
+				extendedConsumerProperties);
+		return new PolledConsumerResources(messageSource, registerErrorInfrastructure(
+				destination, group, extendedConsumerProperties, true));
 	}
 
 	@Override
@@ -265,67 +161,47 @@ public class RocketMQMessageChannelBinder extends
 								((MessagingException) message.getPayload())
 										.getFailedMessage());
 				if (ack != null) {
-					if (properties.getExtension().shouldRequeue()) {
-						ack.acknowledge(Status.REQUEUE);
-					}
-					else {
-						ack.acknowledge(Status.REJECT);
-					}
+					ErrorAcknowledgeHandler handler = RocketMQBeanContainerCache.getBean(
+							properties.getExtension().getPull().getErrAcknowledge(),
+							ErrorAcknowledgeHandler.class,
+							new DefaultErrorAcknowledgeHandler());
+					ack.acknowledge(
+							handler.handler(((MessagingException) message.getPayload())
+									.getFailedMessage()));
 				}
 			}
 		};
 	}
 
+	/**
+	 * Binders can return an {@link ErrorMessageStrategy} for building error messages;
+	 * binder implementations typically might add extra headers to the error message.
+	 * @return the implementation - may be null.
+	 */
+	@Override
+	protected ErrorMessageStrategy getErrorMessageStrategy() {
+		// It can be extended to custom if necessary.
+		return new DefaultErrorMessageStrategy();
+	}
+
 	@Override
 	public RocketMQConsumerProperties getExtendedConsumerProperties(String channelName) {
-		return extendedBindingProperties.getExtendedConsumerProperties(channelName);
+		return this.extendedBindingProperties.getExtendedConsumerProperties(channelName);
 	}
 
 	@Override
 	public RocketMQProducerProperties getExtendedProducerProperties(String channelName) {
-		return extendedBindingProperties.getExtendedProducerProperties(channelName);
-	}
-
-	public Map<String, String> getTopicInUse() {
-		return topicInUse;
+		return this.extendedBindingProperties.getExtendedProducerProperties(channelName);
 	}
 
 	@Override
 	public String getDefaultsPrefix() {
-		return extendedBindingProperties.getDefaultsPrefix();
+		return this.extendedBindingProperties.getDefaultsPrefix();
 	}
 
 	@Override
 	public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
-		return extendedBindingProperties.getExtendedPropertiesEntryClass();
-	}
-
-	public void setExtendedBindingProperties(
-			RocketMQExtendedBindingProperties extendedBindingProperties) {
-		this.extendedBindingProperties = extendedBindingProperties;
-	}
-
-	private RocketMQHeaderMapper createHeaderMapper(
-			final ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
-		Set<String> trustedPackages = extendedConsumerProperties.getExtension()
-				.getTrustedPackages();
-		return createHeaderMapper(trustedPackages);
-	}
-
-	private RocketMQHeaderMapper createHeaderMapper(
-			final ExtendedProducerProperties<RocketMQProducerProperties> producerProperties) {
-		return createHeaderMapper(Collections.emptyList());
-	}
-
-	private RocketMQHeaderMapper createHeaderMapper(Collection<String> trustedPackages) {
-		ObjectMapper objectMapper = this.getApplicationContext()
-				.getBeansOfType(ObjectMapper.class).values().iterator().next();
-		JacksonRocketMQHeaderMapper headerMapper = new JacksonRocketMQHeaderMapper(
-				objectMapper);
-		if (!StringUtils.isEmpty(trustedPackages)) {
-			headerMapper.addTrustedPackages(trustedPackages);
-		}
-		return headerMapper;
+		return this.extendedBindingProperties.getExtendedPropertiesEntryClass();
 	}
 
 }
