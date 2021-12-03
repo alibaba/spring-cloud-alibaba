@@ -23,7 +23,7 @@
         <seata.version>1.3.0</seata.version>
         <nacos.client.version>2.0.3</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
-        <spring.context.support.version>1.0.10</spring.context.support.version>
+        <spring.context.support.version>1.0.11</spring.context.support.version>
 
         <!-- Maven Plugin Versions -->
         <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
