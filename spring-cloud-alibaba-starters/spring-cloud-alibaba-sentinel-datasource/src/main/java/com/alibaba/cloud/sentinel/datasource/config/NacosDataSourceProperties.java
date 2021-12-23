@@ -32,6 +32,8 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	private String serverAddr;
 
+	private String contextPath;
+
 	private String username;
 
 	private String password;
@@ -69,6 +71,14 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	public void setServerAddr(String serverAddr) {
 		this.serverAddr = serverAddr;
+	}
+
+	public String getContextPath() {
+		return contextPath;
+	}
+
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
 	}
 
 	public String getUsername() {
