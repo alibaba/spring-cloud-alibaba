@@ -19,7 +19,6 @@ package com.alibaba.cloud.circuitbreaker.sentinel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 
 import com.alibaba.csp.sentinel.SphU;
 
@@ -36,6 +35,7 @@ import org.springframework.context.annotation.Configuration;
  * Auto configuration for {@link SentinelCircuitBreaker}.
  *
  * @author Eric Zhao
+ * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ SphU.class })
@@ -43,26 +43,15 @@ import org.springframework.context.annotation.Configuration;
 		havingValue = "true", matchIfMissing = true)
 public class SentinelCircuitBreakerAutoConfiguration {
 
+	@Autowired(required = false)
+	private List<Customizer<SentinelCircuitBreakerFactory>> customizers = new ArrayList<>();
+
 	@Bean
 	@ConditionalOnMissingBean(CircuitBreakerFactory.class)
 	public CircuitBreakerFactory sentinelCircuitBreakerFactory() {
-		return new SentinelCircuitBreakerFactory();
-	}
-
-	@Configuration(proxyBeanMethods = false)
-	public static class SentinelCustomizerConfiguration {
-
-		@Autowired(required = false)
-		private List<Customizer<SentinelCircuitBreakerFactory>> customizers = new ArrayList<>();
-
-		@Autowired(required = false)
-		private SentinelCircuitBreakerFactory factory;
-
-		@PostConstruct
-		public void init() {
-			customizers.forEach(customizer -> customizer.customize(factory));
-		}
-
+		SentinelCircuitBreakerFactory factory = new SentinelCircuitBreakerFactory();
+		customizers.forEach(customizer -> customizer.customize(factory));
+		return factory;
 	}
 
 }
