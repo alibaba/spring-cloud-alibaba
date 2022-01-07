@@ -1,0 +1,68 @@
+# Sentinel Feign Circuit Breaker Example
+
+## 项目说明
+
+OpenFeign 整合 Sentinel 断路器实现
+
+## 示例
+
+1. 添加依赖
+
+```xml
+<!-- spring cloud alibaba 2021.0 暂时使用 spring cloud 2020.0.1 -->
+<!-- 如果需要支持 Feign client 的配置, 需要升级 spring-cloud-openfeign-core 到 3.0.4 -->
+<!-- 或者升级 spring cloud 到 2020.0.4 -->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-openfeign-core</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-openfeign-core</artifactId>
+    <version>3.0.4</version> <!-- version >= 3.0.4 -->
+</dependency>
+```
+2. 添加配置
+	
+```yaml
+feign:
+  circuitbreaker:
+    enabled: true # 开启 feign 断路器支持
+  sentinel:
+    default-rule: default # 默认规则名称
+    rules:
+      # 默认规则, 对所有 feign client 生效
+      default:
+        - grade: 2 # 根据异常数目降级
+          count: 1
+          timeWindow: 15 # 降级后到半开状态的时间
+          statIntervalMs: 1000
+          minRequestAmount: 1
+      # 只对 feign client user 生效
+      user:
+        - grade: 2
+          count: 1
+          timeWindow: 15
+          statIntervalMs: 1000
+          minRequestAmount: 1
+      # 只对 feign client user 的方法 feignMethod 生效
+      # 括号里是参数类型, 多个逗号分割, 比如 user#method(boolean,String,Map)
+      "[user#feignMethod(boolean)]":
+        - grade: 2
+          count: 1
+          timeWindow: 10
+          statIntervalMs: 1000
+          minRequestAmount: 1
+```
+
+## 验证配置生效
+启动项目  
+访问 http://localhost/test/feignMethod/false 2次  
+再访问 http://localhost/test/feignMethod/true 断路器处于打开状态
+
