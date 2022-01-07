@@ -17,6 +17,7 @@
 package com.alibaba.cloud.circuitbreaker.sentinel.feign;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,11 +28,14 @@ import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import feign.Feign;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.circuitbreaker.AbstractCircuitBreakerFactory;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
+import org.springframework.cloud.openfeign.CircuitBreakerNameResolver;
 import org.springframework.cloud.openfeign.FeignClientFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +51,25 @@ import org.springframework.context.annotation.Configuration;
 		havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelFeignClientProperties.class)
 public class SentinelFeignClientAutoConfiguration {
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass(CircuitBreakerNameResolver.class)
+	public static class CircuitBreakerNameResolverConfiguration {
+
+		@Bean
+		@ConditionalOnMissingBean(CircuitBreakerNameResolver.class)
+		public CircuitBreakerNameResolver feignClientCircuitNameResolver(
+				ObjectProvider<List<AbstractCircuitBreakerFactory>> provider) {
+			List<AbstractCircuitBreakerFactory> factories = provider
+					.getIfAvailable(Collections::emptyList);
+			if (factories.size() >= 1) {
+				return new FeignClientCircuitNameResolver(factories.get(0));
+			}
+			throw new IllegalArgumentException(
+					"need one CircuitBreakerFactory/ReactiveCircuitBreakerFactory, but 0 found.");
+		}
+
+	}
 
 	@Configuration(proxyBeanMethods = false)
 	public static class SentinelCustomizerConfiguration {
