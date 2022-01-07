@@ -13,39 +13,47 @@ import org.springframework.cloud.openfeign.CircuitBreakerNameResolver;
 /**
  * Feign client circuit breaker name resolver.
  *
- * <p> <strong>note:</strong> spring cloud openfeign version need greater than 3.0.4.
+ * <p>
+ * <strong>note:</strong> spring cloud openfeign version need greater than 3.0.4.
  *
  * @author freeman
  * @see CircuitBreakerNameResolver
  */
 public class FeignClientCircuitNameResolver implements CircuitBreakerNameResolver {
 
-    private Map configurations;
+	private final Map configurations;
 
-    public FeignClientCircuitNameResolver(AbstractCircuitBreakerFactory factory) {
-        configurations = getConfigurations(factory);
-    }
+	public FeignClientCircuitNameResolver(AbstractCircuitBreakerFactory factory) {
+		configurations = getConfigurations(factory);
+	}
 
-    @Override
-    public String resolveCircuitBreakerName(String feignClientName,
-                                            Target<?> target, Method method) {
-        String key = Feign.configKey(target.type(), method);
+	@Override
+	public String resolveCircuitBreakerName(String feignClientName, Target<?> target,
+			Method method) {
+		String key = getKey(feignClientName, target, method);
 
-        if (configurations != null && configurations.containsKey(key)) {
-            return key;
-        }
+		if (configurations != null && configurations.containsKey(key)) {
+			return key;
+		}
 
-        return feignClientName;
-    }
+		return feignClientName;
+	}
 
-    private Map getConfigurations(AbstractCircuitBreakerFactory factory) {
-        try {
-            Method getConfigurations = AbstractCircuitBreakerFactory.class.getDeclaredMethod("getConfigurations");
-            getConfigurations.setAccessible(true);
-            return (Map) getConfigurations.invoke(factory);
-        } catch (Exception ignored) {
-        }
-        return Collections.emptyMap();
-    }
+	private String getKey(String feignClientName, Target<?> target, Method method) {
+		String key = Feign.configKey(target.type(), method);
+		return feignClientName + key.substring(key.indexOf('#'));
+	}
+
+	private Map getConfigurations(AbstractCircuitBreakerFactory factory) {
+		try {
+			Method getConfigurations = AbstractCircuitBreakerFactory.class
+					.getDeclaredMethod("getConfigurations");
+			getConfigurations.setAccessible(true);
+			return (Map) getConfigurations.invoke(factory);
+		}
+		catch (Exception ignored) {
+		}
+		return Collections.emptyMap();
+	}
 
 }
