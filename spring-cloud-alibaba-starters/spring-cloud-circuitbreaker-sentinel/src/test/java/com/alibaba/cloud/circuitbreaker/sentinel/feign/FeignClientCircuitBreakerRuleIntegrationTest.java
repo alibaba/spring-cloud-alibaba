@@ -138,13 +138,13 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		assertThat(userClient.specificFeignMethod(false)).isEqualTo("fallback");
 
 		// 1 time exception, circuit breaker is closed(configuration is 1, but we need 2
-		// to make it closed)
+		// to make it open)
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
 
-		// occur the 2nd exception, circuit breaker closed
+		// occur the 2nd exception, circuit breaker open
 		assertThat(userClient.specificFeignMethod(false)).isEqualTo("fallback");
 
-		// test circuit breaker is closed
+		// test circuit breaker is open
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("fallback");
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("fallback");
 
