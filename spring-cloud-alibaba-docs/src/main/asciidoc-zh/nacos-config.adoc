@@ -281,7 +281,7 @@ NOTE: 该配置必须放在 bootstrap.properties 文件中。并且在添加配�
 
 === 支持自定义扩展的 Data Id 配置
 
-Nacos Config 从 0.2.1 版本后，可支持自定义 Data Id 的配置。关于这部分详细的设计可参考 https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/141[这里]。
+Nacos Config 从 0.2.1 版本后，可支持自定义 Data Id 的配置。关于这部分详细的设计可参考 https://github.com/alibaba/spring-cloud-alibaba/issues/141[这里]。
 一个完整的配置案例如下所示：
 
 [source,properties]
