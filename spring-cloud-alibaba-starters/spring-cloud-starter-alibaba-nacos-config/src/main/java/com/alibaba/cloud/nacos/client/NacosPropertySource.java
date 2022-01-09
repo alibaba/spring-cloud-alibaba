@@ -16,16 +16,17 @@
 
 package com.alibaba.cloud.nacos.client;
 
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.nacos.shaded.com.google.common.collect.Lists;
+import com.alibaba.nacos.shaded.com.google.common.collect.Maps;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
+import org.springframework.util.CollectionUtils;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.PropertySource;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author xiaojing
@@ -63,7 +64,7 @@ public class NacosPropertySource extends MapPropertySource {
 	}
 
 	NacosPropertySource(List<PropertySource<?>> propertySources, String group,
-			String dataId, Date timestamp, boolean isRefreshable) {
+                        String dataId, Date timestamp, boolean isRefreshable) {
 		this(group, dataId, getSourceMap(group, dataId, propertySources), timestamp,
 				isRefreshable);
 	}
@@ -80,12 +81,32 @@ public class NacosPropertySource extends MapPropertySource {
 				return (Map<String, Object>) propertySource.getSource();
 			}
 		}
-		// If it is multiple, it will be returned as it is, and the internal elements
-		// cannot be directly retrieved, so the user needs to implement the retrieval
-		// logic by himself
-		return Collections.singletonMap(
-				String.join(NacosConfigProperties.COMMAS, dataId, group),
-				propertySources);
+
+        Map<String, Object> sourceMap = Maps.newHashMap();
+        List<PropertySource<?>> otherTypePropertySources = Lists.newArrayList();
+        for (PropertySource<?> propertySource : propertySources) {
+            if (propertySource == null) {
+                continue;
+            }
+            if (propertySource instanceof MapPropertySource) {
+                // If the Nacos configuration file uses "---" to separate property name,
+                // propertySources will be multiple documents, and every document is a map.
+                // see org.springframework.boot.env.YamlPropertySourceLoader#load
+                MapPropertySource mapPropertySource = (MapPropertySource) propertySource;
+                Map<String, Object> source = mapPropertySource.getSource();
+                sourceMap.putAll(source);
+            } else {
+                otherTypePropertySources.add(propertySource);
+            }
+        }
+
+        // Other property sources which is not instanceof MapPropertySource will be put as it is,
+        // and the internal elements cannot be directly retrieved,
+        // so the user needs to implement the retrieval logic by himself
+        if (!otherTypePropertySources.isEmpty()) {
+            sourceMap.put(String.join(NacosConfigProperties.COMMAS, dataId, group), otherTypePropertySources);
+        }
+        return sourceMap;
 	}
 
 	public String getGroup() {
