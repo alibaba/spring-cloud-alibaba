@@ -21,6 +21,13 @@
             <artifactId>spring-cloud-commons</artifactId>
         </dependency>
 
+        <!-- Dynamic refresh from config center -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-core</artifactId>

@@ -28,7 +28,7 @@ OpenFeign 整合 Sentinel 断路器实现
     <version>3.0.4</version> <!-- version >= 3.0.4 -->
 </dependency>
 ```
-2. 添加配置
+2. 添加配置到配置中心
 	
 ```yaml
 feign:
@@ -63,6 +63,20 @@ feign:
 
 ## 验证配置生效
 启动项目  
-访问 http://localhost/test/feignMethod/false 2次  
+
+验证默认 feign client 生效  
+先访问 http://localhost/test/default/false 2 次  
+再访问 http://localhost/test/default/true 断路器处于打开状态
+
+验证指定 feign client 生效  
+先访问 http://localhost/test/feign/true 2 次  
+再访问 http://localhost/test/feign/false 断路器处于打开状态
+
+验证 feign client 指定方法生效  
+先访问 http://localhost/test/feignMethod/false 2次  
 再访问 http://localhost/test/feignMethod/true 断路器处于打开状态
+
+## 规则动态刷新
+修改配置中心的规则, 再访问上述接口
+
 

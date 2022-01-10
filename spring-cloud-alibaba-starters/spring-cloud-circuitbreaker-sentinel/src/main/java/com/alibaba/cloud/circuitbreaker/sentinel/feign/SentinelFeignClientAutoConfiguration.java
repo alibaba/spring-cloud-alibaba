@@ -16,16 +16,11 @@
 
 package com.alibaba.cloud.circuitbreaker.sentinel.feign;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import com.alibaba.cloud.circuitbreaker.sentinel.ReactiveSentinelCircuitBreakerFactory;
 import com.alibaba.cloud.circuitbreaker.sentinel.SentinelCircuitBreakerFactory;
-import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder;
-import com.alibaba.csp.sentinel.EntryType;
-import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import feign.Feign;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -37,8 +32,12 @@ import org.springframework.cloud.client.circuitbreaker.AbstractCircuitBreakerFac
 import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.cloud.openfeign.CircuitBreakerNameResolver;
 import org.springframework.cloud.openfeign.FeignClientFactoryBean;
+import org.springframework.cloud.util.ConditionalOnBootstrapEnabled;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRuleChangeListener.configureCustom;
+import static com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRuleChangeListener.configureDefault;
 
 /**
  * Auto configuration for feign client circuit breaker rules.
@@ -51,6 +50,19 @@ import org.springframework.context.annotation.Configuration;
 		havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelFeignClientProperties.class)
 public class SentinelFeignClientAutoConfiguration {
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnProperty(name = "feign.sentinel.refresh-rules",
+			havingValue = "true", matchIfMissing = true)
+	@ConditionalOnBootstrapEnabled
+	public static class CircuitBreakerListenerConfiguration {
+
+		@Bean
+		public CircuitBreakerRuleChangeListener circuitBreakerRuleChangeListener() {
+			return new CircuitBreakerRuleChangeListener();
+		}
+
+	}
 
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(CircuitBreakerNameResolver.class)
@@ -99,27 +111,6 @@ public class SentinelFeignClientAutoConfiguration {
 			};
 		}
 
-	}
-
-	private static void configureCustom(SentinelFeignClientProperties properties,
-			AbstractCircuitBreakerFactory factory) {
-		properties.getRules().forEach((resourceName, degradeRules) -> {
-			if (!Objects.equals(properties.getDefaultRule(), resourceName)) {
-				factory.configure(builder -> ((SentinelConfigBuilder) builder)
-						.rules(properties.getRules().getOrDefault(resourceName,
-								new ArrayList<>())),
-						resourceName);
-			}
-		});
-	}
-
-	private static void configureDefault(SentinelFeignClientProperties properties,
-			AbstractCircuitBreakerFactory factory) {
-		List<DegradeRule> defaultConfigurations = properties.getRules()
-				.getOrDefault(properties.getDefaultRule(), new ArrayList<>());
-		factory.configureDefault(
-				resourceName -> new SentinelConfigBuilder(resourceName.toString())
-						.entryType(EntryType.OUT).rules(defaultConfigurations).build());
 	}
 
 }

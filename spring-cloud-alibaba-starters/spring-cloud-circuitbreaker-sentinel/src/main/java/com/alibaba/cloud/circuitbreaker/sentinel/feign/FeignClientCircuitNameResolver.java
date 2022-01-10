@@ -1,7 +1,6 @@
 package com.alibaba.cloud.circuitbreaker.sentinel.feign;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Map;
 
 import feign.Feign;
@@ -9,6 +8,8 @@ import feign.Target;
 
 import org.springframework.cloud.client.circuitbreaker.AbstractCircuitBreakerFactory;
 import org.springframework.cloud.openfeign.CircuitBreakerNameResolver;
+
+import static com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRuleChangeListener.*;
 
 /**
  * Feign client circuit breaker name resolver.
@@ -42,18 +43,6 @@ public class FeignClientCircuitNameResolver implements CircuitBreakerNameResolve
 	private String getKey(String feignClientName, Target<?> target, Method method) {
 		String key = Feign.configKey(target.type(), method);
 		return feignClientName + key.substring(key.indexOf('#'));
-	}
-
-	private Map getConfigurations(AbstractCircuitBreakerFactory factory) {
-		try {
-			Method getConfigurations = AbstractCircuitBreakerFactory.class
-					.getDeclaredMethod("getConfigurations");
-			getConfigurations.setAccessible(true);
-			return (Map) getConfigurations.invoke(factory);
-		}
-		catch (Exception ignored) {
-		}
-		return Collections.emptyMap();
 	}
 
 }

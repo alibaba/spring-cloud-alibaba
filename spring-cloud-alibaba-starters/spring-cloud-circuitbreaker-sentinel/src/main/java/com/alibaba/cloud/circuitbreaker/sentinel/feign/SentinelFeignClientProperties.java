@@ -17,9 +17,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SentinelFeignClientProperties {
 
 	/**
-	 * default rule name
+	 * default rule name.
 	 */
 	private String defaultRule = "default";
+
+	/**
+	 * enable refresh circuit breaker rules from config center.
+	 */
+	private boolean refreshRules = true;
 
 	private Map<String, List<DegradeRule>> rules = new HashMap<>();
 
@@ -29,6 +34,14 @@ public class SentinelFeignClientProperties {
 
 	public void setDefaultRule(String defaultRule) {
 		this.defaultRule = defaultRule;
+	}
+
+	public boolean isRefreshRules() {
+		return refreshRules;
+	}
+
+	public void setRefreshRules(boolean refreshRules) {
+		this.refreshRules = refreshRules;
 	}
 
 	public Map<String, List<DegradeRule>> getRules() {
