@@ -16,17 +16,18 @@
 
 package com.alibaba.cloud.nacos.client;
 
-import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.nacos.shaded.com.google.common.collect.Lists;
-import com.alibaba.nacos.shaded.com.google.common.collect.Maps;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.PropertySource;
-import org.springframework.util.CollectionUtils;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.nacos.shaded.com.google.common.collect.Lists;
+import com.alibaba.nacos.shaded.com.google.common.collect.Maps;
+
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author xiaojing
