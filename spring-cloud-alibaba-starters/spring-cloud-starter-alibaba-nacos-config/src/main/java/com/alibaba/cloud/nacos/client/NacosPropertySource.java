@@ -16,14 +16,14 @@
 
 package com.alibaba.cloud.nacos.client;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.nacos.shaded.com.google.common.collect.Lists;
-import com.alibaba.nacos.shaded.com.google.common.collect.Maps;
 
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -83,8 +83,8 @@ public class NacosPropertySource extends MapPropertySource {
 			}
 		}
 
-        Map<String, Object> sourceMap = Maps.newHashMap();
-        List<PropertySource<?>> otherTypePropertySources = Lists.newArrayList();
+        Map<String, Object> sourceMap = new LinkedHashMap<>();
+        List<PropertySource<?>> otherTypePropertySources = new ArrayList<>();
         for (PropertySource<?> propertySource : propertySources) {
             if (propertySource == null) {
                 continue;
