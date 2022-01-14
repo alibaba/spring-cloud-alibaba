@@ -25,10 +25,10 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.common.utils.StringUtils;
 import org.apache.commons.logging.Log;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.BootstrapContextClosedEvent;
@@ -52,6 +52,8 @@ public class NacosConfigDataLocationResolver
 	 * Prefix for Config Server imports.
 	 */
 	public static final String PREFIX = "nacos:";
+
+	public static final String DEFAULT_NAMESPACE = StringUtils.EMPTY;
 
 	private final Log log;
 
@@ -141,7 +143,8 @@ public class NacosConfigDataLocationResolver
 		NacosConfigDataResource resource = new NacosConfigDataResource(properties,
 				location.isOptional(), profiles, log,
 				new NacosItemConfig()
-						.setNamespace(Objects.toString(properties.getNamespace(), ""))
+						.setNamespace(Objects.toString(properties.getNamespace(),
+								DEFAULT_NAMESPACE))
 						.setGroup(groupFor(uris, properties))
 						.setDataId(dataIdFor(uris, properties))
 						.setSuffix(suffixFor(uris, properties))
@@ -155,7 +158,7 @@ public class NacosConfigDataLocationResolver
 
 	private void registerOrUpdateIndexes(String uris, NacosConfigProperties properties,
 			ConfigurableBootstrapContext bootstrapContext) {
-		String namespace = Objects.toString(properties.getNamespace(), "");
+		String namespace = Objects.toString(properties.getNamespace(), DEFAULT_NAMESPACE);
 		if (bootstrapContext.isRegistered(ConfigServiceIndexes.class)) {
 			ConfigServiceIndexes indexes = bootstrapContext
 					.get(ConfigServiceIndexes.class);
@@ -207,30 +210,6 @@ public class NacosConfigDataLocationResolver
 							.genericBeanDefinition(NacosConfigProperties.class, () -> {
 								return nacosConfigProperties;
 							}).getBeanDefinition());
-		}
-	}
-
-	private void addNacosConfigProperties2BeanFactory2(String uris,
-			BootstrapContextClosedEvent event) {
-		ConfigurableListableBeanFactory factory = event.getApplicationContext()
-				.getBeanFactory();
-		NacosConfigProperties nacosConfigProperties = event.getBootstrapContext()
-				.get(NacosConfigProperties.class);
-
-		String serverAddr = serverAddrFor(uris);
-		// override serverAddr
-		nacosConfigProperties.setServerAddr(serverAddr);
-
-		String propertiesBeanDefinitionName = "configDataNacosConfigProperties";
-		BeanDefinitionRegistry definitionRegistry = (BeanDefinitionRegistry) factory;
-		if (!definitionRegistry.containsBeanDefinition(propertiesBeanDefinitionName)) {
-			AbstractBeanDefinition definition = BeanDefinitionBuilder
-					.genericBeanDefinition(NacosConfigProperties.class, () -> {
-						return nacosConfigProperties;
-					}).getBeanDefinition();
-
-			definitionRegistry.registerBeanDefinition(propertiesBeanDefinitionName,
-					definition);
 		}
 	}
 
