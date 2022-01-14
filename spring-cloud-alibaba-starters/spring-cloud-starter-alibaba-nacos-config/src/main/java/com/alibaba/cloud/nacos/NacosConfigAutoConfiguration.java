@@ -21,7 +21,9 @@ import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshProperties;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
 public class NacosConfigAutoConfiguration {
 
 	@Bean
+	@ConditionalOnMissingBean(value = NacosConfigProperties.class, search = SearchStrategy.CURRENT) // if no import nacos:xxx, use default
 	public NacosConfigProperties nacosConfigProperties(ApplicationContext context) {
 		if (context.getParent() != null
 				&& BeanFactoryUtils.beanNamesForTypeIncludingAncestors(

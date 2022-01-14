@@ -1,0 +1,17 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: nacos-config-import-example
+  cloud:
+    nacos:
+      config:
+        name: test.yml
+        file-extension: yml
+        group: DEFAULT_GROUP
+  config:
+    import:
+      - optional:nacos:localhost:8848
+      - optional:nacos:localhost:8848/group_02
+      - optional:nacos:localhost:8848/group_03/test.yml
+      - optional:nacos:localhost:8848/group_04/test.yml?refreshEnabled=false

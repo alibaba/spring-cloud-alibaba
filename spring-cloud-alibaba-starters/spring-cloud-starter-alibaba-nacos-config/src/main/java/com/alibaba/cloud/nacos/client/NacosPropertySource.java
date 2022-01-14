@@ -62,7 +62,7 @@ public class NacosPropertySource extends MapPropertySource {
 		this.isRefreshable = isRefreshable;
 	}
 
-	NacosPropertySource(List<PropertySource<?>> propertySources, String group,
+	public NacosPropertySource(List<PropertySource<?>> propertySources, String group,
 			String dataId, Date timestamp, boolean isRefreshable) {
 		this(group, dataId, getSourceMap(group, dataId, propertySources), timestamp,
 				isRefreshable);
