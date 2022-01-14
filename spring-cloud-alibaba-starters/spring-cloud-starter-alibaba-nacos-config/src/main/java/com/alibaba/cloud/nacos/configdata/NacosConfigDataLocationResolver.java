@@ -146,7 +146,7 @@ public class NacosConfigDataLocationResolver
 						.setNamespace(Objects.toString(properties.getNamespace(),
 								DEFAULT_NAMESPACE))
 						.setGroup(groupFor(uris, properties))
-						.setDataId(dataIdFor(uris, properties))
+						.setDataId(dataIdFor(resolverContext.getBinder(), uris, properties))
 						.setSuffix(suffixFor(uris, properties))
 						.setRefreshEnabled(refreshEnabledFor(uris, properties)));
 
@@ -159,13 +159,13 @@ public class NacosConfigDataLocationResolver
 	private void registerOrUpdateIndexes(String uris, NacosConfigProperties properties,
 			ConfigurableBootstrapContext bootstrapContext) {
 		String namespace = Objects.toString(properties.getNamespace(), DEFAULT_NAMESPACE);
+		Properties prop = new Properties();
+		prop.put(PropertyKeyConst.NAMESPACE, namespace);
+		prop.put(PropertyKeyConst.SERVER_ADDR, serverAddrFor(uris));
 		if (bootstrapContext.isRegistered(ConfigServiceIndexes.class)) {
 			ConfigServiceIndexes indexes = bootstrapContext
 					.get(ConfigServiceIndexes.class);
 			if (!indexes.getIndexes().containsKey(namespace)) {
-				Properties prop = new Properties();
-				prop.put(PropertyKeyConst.NAMESPACE, namespace);
-				prop.put(PropertyKeyConst.SERVER_ADDR, serverAddrFor(uris));
 				try {
 					indexes.getIndexes().put(namespace,
 							ConfigFactory.createConfigService(prop));
@@ -177,9 +177,6 @@ public class NacosConfigDataLocationResolver
 		}
 		bootstrapContext.register(ConfigServiceIndexes.class, (context) -> {
 			try {
-				Properties prop = new Properties();
-				prop.put(PropertyKeyConst.NAMESPACE, namespace);
-				prop.put(PropertyKeyConst.SERVER_ADDR, serverAddrFor(uris));
 				ConfigService configService = ConfigFactory.createConfigService(prop);
 
 				Map<String, ConfigService> indexes = new ConcurrentHashMap<>(4);
@@ -244,17 +241,36 @@ public class NacosConfigDataLocationResolver
 		return properties.getGroup();
 	}
 
-	private String dataIdFor(String uris, NacosConfigProperties properties) {
+	private String dataIdFor(Binder binder, String uris,
+			NacosConfigProperties properties) {
 		String[] part = split(uris);
 		if (part.length >= 2 && !part[1].isEmpty()) {
 			return part[1];
 		}
-		return properties.getName();
+		if (properties.getName() != null && !properties.getName().isEmpty()) {
+			return properties.getName();
+		}
+		// support {application}-{profile}.{suffix}
+		String application = binder.bind("spring.application.name", String.class)
+				.orElse("application");
+		String profile = binder.bind("spring.profiles.active", String.class).orElse("");
+		String suffix = suffixFor(uris, properties);
+		if (profile == null || profile.isEmpty()) {
+			return application + "." + suffix;
+		}
+		return application + "-" + profile + "." + suffix;
 	}
 
 	private String suffixFor(String uris, NacosConfigProperties properties) {
-		String dataId = dataIdFor(uris, properties);
-		if (dataId.contains(".")) {
+		String[] part = split(uris);
+		String dataId = null;
+		if (part.length >= 2 && !part[1].isEmpty()) {
+			dataId = part[1];
+		}
+		else if (properties.getName() != null && !properties.getName().isEmpty()) {
+			dataId = properties.getName();
+		}
+		if (dataId != null && dataId.contains(".")) {
 			return dataId.substring(dataId.lastIndexOf('.') + 1);
 		}
 		return properties.getFileExtension();
