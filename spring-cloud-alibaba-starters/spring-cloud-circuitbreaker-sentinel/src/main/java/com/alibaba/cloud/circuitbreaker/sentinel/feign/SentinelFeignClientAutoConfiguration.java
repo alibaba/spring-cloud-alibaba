@@ -54,7 +54,6 @@ public class SentinelFeignClientAutoConfiguration {
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnProperty(name = "feign.sentinel.refresh-rules",
 			havingValue = "true", matchIfMissing = true)
-	@ConditionalOnBootstrapEnabled
 	public static class CircuitBreakerListenerConfiguration {
 
 		@Bean
