@@ -1,5 +1,6 @@
 package com.alibaba.cloud.nacos.configdata;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class NacosConfigDataLocationResolverTest {
 	@BeforeEach
 	void setup() {
 		this.environment = new MockEnvironment();
+		this.environment.setProperty("spring.application.name", "app");
 		this.environmentBinder = Binder.get(this.environment);
 		this.resolver = new NacosConfigDataLocationResolver(new DeferredLog());
 		when(context.getBinder()).thenReturn(environmentBinder);
@@ -75,48 +77,69 @@ public class NacosConfigDataLocationResolverTest {
 	@Test
 	void whenNotSetProfile_thenDataIdIsShorter() {
 		environment.setProperty("spring.application.name", "nacos-test");
-		String locationUri = "nacos:localhost:8888";
-		NacosConfigDataResource resource = testUri(locationUri);
-		assertThat(resource.getConfig().getDataId()).isEqualTo("nacos-test.properties");
+		String locationUri = "nacos:";
+		List<NacosConfigDataResource> resources = testUri(locationUri);
+		assertThat(resources).hasSize(2);
+		assertThat(resources.get(0).getConfig().getDataId()).isEqualTo("nacos-test");
+		assertThat(resources.get(1).getConfig().getDataId()).isEqualTo("nacos-test.properties");
 	}
 
 	@Test
 	void whenCustomizeSuffix_thenOverrideDefault() {
 		environment.setProperty("spring.application.name", "nacos-test");
 		environment.setProperty("spring.cloud.nacos.config.file-extension", "yml");
-		String locationUri = "nacos:localhost:8888";
-		NacosConfigDataResource resource = testUri(locationUri);
-		assertThat(resource.getConfig().getDataId()).isEqualTo("nacos-test.yml");
+		String locationUri = "nacos:";
+		List<NacosConfigDataResource> resources = testUri(locationUri);
+		assertThat(resources).hasSize(2);
+		assertThat(resources.get(0).getConfig().getDataId()).isEqualTo("nacos-test");
+		assertThat(resources.get(1).getConfig().getDataId()).isEqualTo("nacos-test.yml");
 	}
 
 	@Test
 	void testUrisInLocationShouldOverridesProperty() {
 		environment.setProperty("spring.application.name", "nacos-test");
-		environment.setProperty("spring.profiles.active", "dev");
-		String locationUri = "nacos:localhost:8888/group01";
-		NacosConfigDataResource resource = testUri(locationUri);
+		String locationUri = "nacos:group01";
+		List<NacosConfigDataResource> resources = testUri(locationUri, "dev");
+		assertThat(resources).hasSize(3);
+		NacosConfigDataResource resource = resources.get(0);
 		assertThat(resource.getConfig().getGroup()).isEqualTo("group01");
 		assertThat(resource.getConfig().getSuffix()).isEqualTo("properties");
 		assertThat(resource.getConfig().getNamespace()).isEqualTo("");
 		assertThat(resource.getConfig().isRefreshEnabled()).isTrue();
-		assertThat(resource.getConfig().getDataId()).isEqualTo("nacos-test-dev.properties");
+		assertThat(resource.getConfig().getDataId()).isEqualTo("nacos-test");
+		assertThat(resources.get(1).getConfig().getDataId()).isEqualTo("nacos-test.properties");
+		assertThat(resources.get(2).getConfig().getDataId()).isEqualTo("nacos-test-dev.properties");
 
-		locationUri = "nacos:localhost:8888/group01/test.yml?refreshEnabled=false";
-		resource = testUri(locationUri);
+		locationUri = "nacos:group01/test.yml?refreshEnabled=false";
+		resources = testUri(locationUri);
+		assertThat(resources).hasSize(1);
+		resource = resources.get(0);
 		assertThat(resource.getConfig().getGroup()).isEqualTo("group01");
 		assertThat(resource.getConfig().getDataId()).isEqualTo("test.yml");
 		assertThat(resource.getConfig().getSuffix()).isEqualTo("yml");
 		assertThat(resource.getConfig().isRefreshEnabled()).isFalse();
 	}
 
-	private NacosConfigDataResource testUri(String locationUri) {
+	@Test
+	void test_compatibleWithOlderVersion() {
+		environment.setProperty("spring.application.name", "nacos-test");
+		environment.setProperty("spring.cloud.nacos.config.name", "test");
+		environment.setProperty("spring.cloud.nacos.config.file-extension", "yml");
+		String locationUri = "nacos:";
+		List<NacosConfigDataResource> resources = testUri(locationUri, "dev");
+		assertThat(resources).hasSize(3);
+		assertThat(resources.get(0).getConfig().getDataId()).isEqualTo("test");
+		assertThat(resources.get(1).getConfig().getDataId()).isEqualTo("test.yml");
+		assertThat(resources.get(2).getConfig().getDataId()).isEqualTo("test-dev.yml");
+	}
+
+	private List<NacosConfigDataResource> testUri(String locationUri, String... activeProfiles) {
 		when(context.getBootstrapContext())
 				.thenReturn(mock(ConfigurableBootstrapContext.class));
 		Profiles profiles = mock(Profiles.class);
-		List<NacosConfigDataResource> resources = this.resolver.resolveProfileSpecific(
-				context, ConfigDataLocation.of("nacos:" + locationUri), profiles);
-		assertThat(resources).hasSize(1);
-		return resources.get(0);
+		when(profiles.getActive()).thenReturn(Arrays.asList(activeProfiles));
+		return this.resolver.resolveProfileSpecific(
+				context, ConfigDataLocation.of(locationUri), profiles);
 	}
 
 	@Test
@@ -129,7 +152,7 @@ public class NacosConfigDataLocationResolverTest {
 		when(bootstrapContext.get(eq(NacosConfigProperties.class)))
 				.thenReturn(new NacosConfigProperties());
 		List<NacosConfigDataResource> resources = this.resolver.resolveProfileSpecific(
-				context, ConfigDataLocation.of("nacos:localhost:8888/group/test.yml"),
+				context, ConfigDataLocation.of("nacos:group/test.yml"),
 				mock(Profiles.class));
 		assertThat(resources).hasSize(1);
 		verify(bootstrapContext, times(0)).get(eq(NacosConfigProperties.class));
@@ -147,13 +170,15 @@ public class NacosConfigDataLocationResolverTest {
 				.thenReturn(mock(ConfigurableBootstrapContext.class));
 		Profiles profiles = mock(Profiles.class);
 		if (activeProfile != null) {
+			when(profiles.getActive())
+					.thenReturn(Collections.singletonList(activeProfile));
 			when(profiles.getAccepted())
 					.thenReturn(Collections.singletonList(activeProfile));
 		}
 
 		List<NacosConfigDataResource> resources = this.resolver.resolveProfileSpecific(
-				context, ConfigDataLocation.of("nacos:localhost:8848"), profiles);
-		assertThat(resources).hasSize(1);
+				context, ConfigDataLocation.of("nacos:"), profiles);
+		assertThat(resources).hasSize(3);
 		return resources.get(0);
 	}
 

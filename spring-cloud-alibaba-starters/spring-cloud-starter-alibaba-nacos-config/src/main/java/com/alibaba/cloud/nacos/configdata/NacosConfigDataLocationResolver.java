@@ -17,21 +17,17 @@
 package com.alibaba.cloud.nacos.configdata;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.common.utils.StringUtils;
 import org.apache.commons.logging.Log;
 
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.BootstrapContextClosedEvent;
 import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.context.config.*;
@@ -39,6 +35,7 @@ import org.springframework.boot.context.properties.bind.BindHandler;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.StandardEnvironment;
 
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
 
@@ -48,6 +45,9 @@ import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosIt
 public class NacosConfigDataLocationResolver
 		implements ConfigDataLocationResolver<NacosConfigDataResource>, Ordered {
 
+	private static final String HYPHEN = "-";
+
+	private static final String DOT = ".";
 	/**
 	 * Prefix for Config Server imports.
 	 */
@@ -81,6 +81,10 @@ public class NacosConfigDataLocationResolver
 					.bind(NacosConfigProperties.PREFIX,
 							Bindable.of(NacosConfigProperties.class), bindHandler)
 					.orElseGet(NacosConfigProperties::new);
+			// Avoid NPE when call `assembleConfigServiceProperties` method.
+			// Early stage of the main container, set environment directly.
+			nacosConfigProperties.setEnvironment(new StandardEnvironment());
+			nacosConfigProperties.init();
 		}
 
 		return nacosConfigProperties;
@@ -122,9 +126,6 @@ public class NacosConfigDataLocationResolver
 			ConfigDataLocationResolverContext resolverContext,
 			ConfigDataLocation location, Profiles profiles)
 			throws ConfigDataLocationNotFoundException {
-		String uris = location.getNonPrefixedValue(getPrefix());
-		// do not change serverAddr right now
-		// in this context, we may use for the default
 		NacosConfigProperties properties = loadProperties(resolverContext);
 
 		ConfigurableBootstrapContext bootstrapContext = resolverContext
@@ -133,102 +134,101 @@ public class NacosConfigDataLocationResolver
 		bootstrapContext.registerIfAbsent(NacosConfigProperties.class,
 				InstanceSupplier.of(properties));
 
-		// Bootstrap context close hook.
-		// add NacosConfigProperties to bean factory.
-		bootstrapContext.addCloseListener(
-				event -> addNacosConfigProperties2BeanFactory(uris, event));
+		registerOrUpdateIndexes(properties, bootstrapContext);
 
-		registerOrUpdateIndexes(uris, properties, bootstrapContext);
+		// Retain the processing logic of the old version.
+		// Make sure to upgrade smoothly.
+		return loadConfigDataResources(resolverContext, location, profiles, properties);
+	}
 
-		NacosConfigDataResource resource = new NacosConfigDataResource(properties,
-				location.isOptional(), profiles, log,
+	private List<NacosConfigDataResource> loadConfigDataResources(
+			ConfigDataLocationResolverContext resolverContext,
+			ConfigDataLocation location, Profiles profiles,
+			NacosConfigProperties properties) {
+		List<NacosConfigDataResource> result = new ArrayList<>();
+		String uris = getUri(location, properties);
+
+		if (StringUtils.isNotBlank(dataIdFor(uris))) {
+			// Can be considered as an extension-config.
+			NacosConfigDataResource resource = loadResource(properties,
+					location.isOptional(), profiles, uris, dataIdFor(uris));
+			result.add(resource);
+		}
+		else {
+			String prefix = dataIdPrefixFor(resolverContext.getBinder(), properties);
+			NacosConfigDataResource resource = loadResource(properties,
+					location.isOptional(), profiles, uris, prefix);
+			result.add(resource);
+
+			resource = loadResource(properties, location.isOptional(), profiles, uris,
+					prefix + DOT + properties.getFileExtension());
+			result.add(resource);
+
+			for (String profile : profiles.getActive()) {
+				String dataId = prefix + HYPHEN + profile + DOT
+						+ properties.getFileExtension();
+				resource = loadResource(properties, location.isOptional(), profiles, uris,
+						dataId);
+				result.add(resource);
+			}
+		}
+		return result;
+	}
+
+	private NacosConfigDataResource loadResource(NacosConfigProperties properties,
+			boolean optional, Profiles profiles, String uris, String dataId) {
+		return new NacosConfigDataResource(properties, optional, profiles,
+				log,
 				new NacosItemConfig()
 						.setNamespace(Objects.toString(properties.getNamespace(),
 								DEFAULT_NAMESPACE))
-						.setGroup(groupFor(uris, properties))
-						.setDataId(dataIdFor(resolverContext.getBinder(), uris, properties))
+						.setGroup(groupFor(uris, properties)).setDataId(dataId)
 						.setSuffix(suffixFor(uris, properties))
 						.setRefreshEnabled(refreshEnabledFor(uris, properties)));
-
-		List<NacosConfigDataResource> locations = new ArrayList<>();
-		locations.add(resource);
-
-		return locations;
 	}
 
-	private void registerOrUpdateIndexes(String uris, NacosConfigProperties properties,
-			ConfigurableBootstrapContext bootstrapContext) {
+	private String getUri(ConfigDataLocation location, NacosConfigProperties properties) {
+		String path = location.getNonPrefixedValue(getPrefix());
+		if (StringUtils.isBlank(path)) {
+			path = "/";
+		}
+		if (!path.startsWith("/")) {
+			path = "/" + path;
+		}
+		return properties.getServerAddr() + path;
+	}
+
+	private void registerOrUpdateIndexes(NacosConfigProperties properties,
+										 ConfigurableBootstrapContext bootstrapContext) {
 		String namespace = Objects.toString(properties.getNamespace(), DEFAULT_NAMESPACE);
-		Properties prop = new Properties();
-		prop.put(PropertyKeyConst.NAMESPACE, namespace);
-		prop.put(PropertyKeyConst.SERVER_ADDR, serverAddrFor(uris));
+		ConfigService configService;
+		try {
+			configService = ConfigFactory.createConfigService(properties.assembleConfigServiceProperties());
+		} catch (NacosException e) {
+			return;
+		}
 		if (bootstrapContext.isRegistered(ConfigServiceIndexes.class)) {
 			ConfigServiceIndexes indexes = bootstrapContext
 					.get(ConfigServiceIndexes.class);
-			if (!indexes.getIndexes().containsKey(namespace)) {
-				try {
-					indexes.getIndexes().put(namespace,
-							ConfigFactory.createConfigService(prop));
-				}
-				catch (NacosException ignored) {
-				}
-			}
-			return;
-		}
-		bootstrapContext.register(ConfigServiceIndexes.class, (context) -> {
-			try {
-				ConfigService configService = ConfigFactory.createConfigService(prop);
-
+			indexes.getIndexes().putIfAbsent(namespace, configService);
+		} else {
+			bootstrapContext.register(ConfigServiceIndexes.class, (context) -> {
 				Map<String, ConfigService> indexes = new ConcurrentHashMap<>(4);
 				indexes.put(namespace, configService);
 				return () -> indexes;
-			}
-			catch (NacosException e) {
-				return () -> new ConcurrentHashMap<>(4);
-			}
-		});
-	}
-
-	private void addNacosConfigProperties2BeanFactory(String uris,
-			BootstrapContextClosedEvent event) {
-		ConfigurableListableBeanFactory factory = event.getApplicationContext()
-				.getBeanFactory();
-		NacosConfigProperties nacosConfigProperties = event.getBootstrapContext()
-				.get(NacosConfigProperties.class);
-
-		String propertiesBeanDefinitionName = "configDataNacosConfigProperties";
-		BeanDefinitionRegistry definitionRegistry = (BeanDefinitionRegistry) factory;
-		if (!definitionRegistry.containsBeanDefinition(propertiesBeanDefinitionName)) {
-			String serverAddr = serverAddrFor(uris);
-			// override serverAddr
-			nacosConfigProperties.setServerAddr(serverAddr);
-			definitionRegistry.registerBeanDefinition(propertiesBeanDefinitionName,
-					BeanDefinitionBuilder
-							.genericBeanDefinition(NacosConfigProperties.class, () -> {
-								return nacosConfigProperties;
-							}).getBeanDefinition());
+			});
 		}
-	}
-
-	private String serverAddrFor(String uris) {
-		URI uri = getUri(uris);
-		StringBuilder serverAddr = new StringBuilder();
-		serverAddr.append(uri.getHost());
-		if (uri.getPort() != -1) {
-			serverAddr.append(':').append(uri.getPort());
-		}
-		return serverAddr.toString();
 	}
 
 	private URI getUri(String uris) {
 		if (!uris.startsWith("http://") && !uris.startsWith("https://")) {
 			uris = "http://" + uris;
 		}
-		URI uri = null;
+		URI uri;
 		try {
 			uri = new URI(uris);
-		}
-		catch (Exception ignored) {
+		} catch (URISyntaxException e) {
+			throw new IllegalArgumentException("illegal URI: " + uris);
 		}
 		return uri;
 	}
@@ -241,34 +241,31 @@ public class NacosConfigDataLocationResolver
 		return properties.getGroup();
 	}
 
-	private String dataIdFor(Binder binder, String uris,
-			NacosConfigProperties properties) {
+	private String dataIdPrefixFor(Binder binder, NacosConfigProperties properties) {
+		String dataIdPrefix = properties.getPrefix();
+		if (StringUtils.isEmpty(dataIdPrefix)) {
+			dataIdPrefix = properties.getName();
+		}
+		if (StringUtils.isEmpty(dataIdPrefix)) {
+			dataIdPrefix = binder.bind("spring.application.name", String.class).get();
+		}
+		return dataIdPrefix;
+	}
+
+	private String dataIdFor(String uris) {
 		String[] part = split(uris);
 		if (part.length >= 2 && !part[1].isEmpty()) {
 			return part[1];
 		}
-		if (properties.getName() != null && !properties.getName().isEmpty()) {
-			return properties.getName();
-		}
-		// support {application}-{profile}.{suffix}
-		String application = binder.bind("spring.application.name", String.class)
-				.orElse("application");
-		String profile = binder.bind("spring.profiles.active", String.class).orElse("");
-		String suffix = suffixFor(uris, properties);
-		if (profile == null || profile.isEmpty()) {
-			return application + "." + suffix;
-		}
-		return application + "-" + profile + "." + suffix;
+		return null;
 	}
+
 
 	private String suffixFor(String uris, NacosConfigProperties properties) {
 		String[] part = split(uris);
 		String dataId = null;
 		if (part.length >= 2 && !part[1].isEmpty()) {
 			dataId = part[1];
-		}
-		else if (properties.getName() != null && !properties.getName().isEmpty()) {
-			dataId = properties.getName();
 		}
 		if (dataId != null && dataId.contains(".")) {
 			return dataId.substring(dataId.lastIndexOf('.') + 1);

@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
 public class NacosConfigAutoConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean(value = NacosConfigProperties.class, search = SearchStrategy.CURRENT) // if no import nacos:xxx, use default
+	@ConditionalOnMissingBean(value = NacosConfigProperties.class, search = SearchStrategy.CURRENT)
 	public NacosConfigProperties nacosConfigProperties(ApplicationContext context) {
 		if (context.getParent() != null
 				&& BeanFactoryUtils.beanNamesForTypeIncludingAncestors(

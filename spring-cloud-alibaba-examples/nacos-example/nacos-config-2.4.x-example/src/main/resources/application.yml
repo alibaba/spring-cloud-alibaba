@@ -9,9 +9,10 @@ spring:
         name: test.yml
         file-extension: yml
         group: DEFAULT_GROUP
+        server-addr: localhost:8848
   config:
     import:
-      - optional:nacos:localhost:8848
-      - optional:nacos:localhost:8848/group_02
-      - optional:nacos:localhost:8848/group_03/test.yml
-      - optional:nacos:localhost:8848/group_04/test.yml?refreshEnabled=false
+      - optional:nacos:/
+      - optional:nacos:/group_02
+      - optional:nacos:group_03/test01.yml
+      - optional:nacos:group_04/test02.yml?refreshEnabled=false
