@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.configdata;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.alibaba.nacos.api.config.ConfigService;
 import org.springframework.boot.BootstrapContext;
 import org.springframework.boot.BootstrapRegistry;
 import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
@@ -35,7 +36,7 @@ import org.springframework.util.Assert;
  */
 public class NacosBootstrapper implements BootstrapRegistryInitializer {
 
-	private Function<BootstrapContext, ConfigServiceIndexes> configServiceFactory;
+	private Function<BootstrapContext, ConfigService> configServiceFactory;
 
 	private LoaderInterceptor loaderInterceptor;
 
@@ -44,8 +45,8 @@ public class NacosBootstrapper implements BootstrapRegistryInitializer {
 	}
 
 	public NacosBootstrapper withConfigServiceFactory(
-			Function<BootstrapContext, ConfigServiceIndexes> indexesFactory) {
-		this.configServiceFactory = indexesFactory;
+			Function<BootstrapContext, ConfigService> configServiceFactory) {
+		this.configServiceFactory = configServiceFactory;
 		return this;
 	}
 
@@ -57,7 +58,7 @@ public class NacosBootstrapper implements BootstrapRegistryInitializer {
 	@Override
 	public void initialize(BootstrapRegistry registry) {
 		if (configServiceFactory != null) {
-			registry.register(ConfigServiceIndexes.class, configServiceFactory::apply);
+			registry.register(ConfigService.class, configServiceFactory::apply);
 		}
 		if (loaderInterceptor != null) {
 			registry.register(LoaderInterceptor.class,

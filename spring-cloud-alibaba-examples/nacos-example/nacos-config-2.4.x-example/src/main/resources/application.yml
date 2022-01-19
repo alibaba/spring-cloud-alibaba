@@ -6,13 +6,10 @@ spring:
   cloud:
     nacos:
       config:
-        name: test.yml
-        file-extension: yml
         group: DEFAULT_GROUP
         server-addr: localhost:8848
   config:
     import:
-      - optional:nacos:/
-      - optional:nacos:/group_02
-      - optional:nacos:group_03/test01.yml
-      - optional:nacos:group_04/test02.yml?refreshEnabled=false
+      - optional:nacos:test.yml
+      - optional:nacos:test01.yml?group=group_02
+      - optional:nacos:test02.yml?group=group_03&refreshEnabled=false

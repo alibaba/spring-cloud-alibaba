@@ -83,7 +83,9 @@ public class NacosConfigDataResource extends ConfigDataResource {
 			return false;
 		}
 		NacosConfigDataResource that = (NacosConfigDataResource) o;
-		return optional == that.optional && Objects.equals(properties, that.properties) && Objects.equals(profiles, that.profiles) && Objects.equals(log, that.log) && Objects.equals(config, that.config);
+		return optional == that.optional && Objects.equals(properties, that.properties)
+				&& Objects.equals(profiles, that.profiles)
+				&& Objects.equals(log, that.log) && Objects.equals(config, that.config);
 	}
 
 	@Override
@@ -93,16 +95,11 @@ public class NacosConfigDataResource extends ConfigDataResource {
 
 	@Override
 	public String toString() {
-		return "NacosConfigDataResource{" +
-				"properties=" + properties +
-				", optional=" + optional +
-				", profiles=" + profiles +
-				", config=" + config +
-				'}';
+		return "NacosConfigDataResource{" + "properties=" + properties + ", optional="
+				+ optional + ", profiles=" + profiles + ", config=" + config + '}';
 	}
 
 	public static class NacosItemConfig {
-		private String namespace;
 		private String group;
 		private String dataId;
 		private String suffix;
@@ -111,18 +108,12 @@ public class NacosConfigDataResource extends ConfigDataResource {
 		public NacosItemConfig() {
 		}
 
-		public NacosItemConfig(String namespace, String group, String dataId,
-				String suffix, boolean refreshEnabled) {
-			this.namespace = namespace;
+		public NacosItemConfig(String group, String dataId, String suffix,
+				boolean refreshEnabled) {
 			this.group = group;
 			this.dataId = dataId;
 			this.suffix = suffix;
 			this.refreshEnabled = refreshEnabled;
-		}
-
-		public NacosItemConfig setNamespace(String namespace) {
-			this.namespace = namespace;
-			return this;
 		}
 
 		public NacosItemConfig setGroup(String group) {
@@ -143,10 +134,6 @@ public class NacosConfigDataResource extends ConfigDataResource {
 		public NacosItemConfig setRefreshEnabled(boolean refreshEnabled) {
 			this.refreshEnabled = refreshEnabled;
 			return this;
-		}
-
-		public String getNamespace() {
-			return namespace;
 		}
 
 		public String getGroup() {
@@ -174,23 +161,22 @@ public class NacosConfigDataResource extends ConfigDataResource {
 				return false;
 			}
 			NacosItemConfig that = (NacosItemConfig) o;
-			return refreshEnabled == that.refreshEnabled && Objects.equals(namespace, that.namespace) && Objects.equals(group, that.group) && Objects.equals(dataId, that.dataId) && Objects.equals(suffix, that.suffix);
+			return refreshEnabled == that.refreshEnabled
+					&& Objects.equals(group, that.group)
+					&& Objects.equals(dataId, that.dataId)
+					&& Objects.equals(suffix, that.suffix);
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(namespace, group, dataId, suffix, refreshEnabled);
+			return Objects.hash(group, dataId, suffix, refreshEnabled);
 		}
 
 		@Override
 		public String toString() {
-			return "NacosItemConfig{" +
-					"namespace='" + namespace + '\'' +
-					", group='" + group + '\'' +
-					", dataId='" + dataId + '\'' +
-					", suffix='" + suffix + '\'' +
-					", refreshEnabled=" + refreshEnabled +
-					'}';
+			return "NacosItemConfig{" + "group='" + group + '\'' + ", dataId='" + dataId
+					+ '\'' + ", suffix='" + suffix + '\'' + ", refreshEnabled="
+					+ refreshEnabled + '}';
 		}
 	}
 

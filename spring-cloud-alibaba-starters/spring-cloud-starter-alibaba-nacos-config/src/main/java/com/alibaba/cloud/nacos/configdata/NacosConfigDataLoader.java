@@ -26,6 +26,7 @@ import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
 import com.alibaba.cloud.nacos.parser.NacosDataParserHandler;
+import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.apache.commons.logging.Log;
 
@@ -41,8 +42,13 @@ import org.springframework.util.StringUtils;
 
 import static com.alibaba.cloud.nacos.configdata.NacosBootstrapper.LoadContext;
 import static com.alibaba.cloud.nacos.configdata.NacosBootstrapper.LoaderInterceptor;
+import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
 
 /**
+ * Implementation of {@link ConfigDataLoader}.
+ *
+ * <p> Load {@link ConfigData} via {@link NacosConfigDataResource}
+ *
  * @author freeman
  */
 public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataResource> {
@@ -73,23 +79,20 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	public ConfigData doLoad(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		try {
-			ConfigServiceIndexes configServiceIndexes = getBean(context,
-					ConfigServiceIndexes.class);
+			ConfigService configService = getBean(context, ConfigService.class);
 			NacosConfigProperties properties = getBean(context,
 					NacosConfigProperties.class);
 
+			NacosItemConfig config = resource.getConfig();
 			// pull config from nacos
-			List<PropertySource<?>> propertySources = pullConfig(configServiceIndexes,
-					resource.getConfig().getNamespace(), resource.getConfig().getGroup(),
-					resource.getConfig().getDataId(), resource.getConfig().getSuffix(),
+			List<PropertySource<?>> propertySources = pullConfig(configService,
+					config.getGroup(), config.getDataId(), config.getSuffix(),
 					properties.getTimeout());
 
 			NacosPropertySource propertySource = new NacosPropertySource(propertySources,
-					resource.getConfig().getGroup(), resource.getConfig().getDataId(), new Date(),
-					resource.getConfig().isRefreshEnabled());
+					config.getGroup(), config.getDataId(), new Date(),
+					config.isRefreshEnabled());
 
-			// TODO support different namespace ?
-			//  If Spring cloud version >= 2.0.3 add ConfigDataMissingEnvironmentPostProcessor
 			NacosPropertySourceRepository.collectNacosPropertySource(propertySource);
 
 			if (ALL_OPTIONS.size() == 1) {
@@ -125,11 +128,10 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		return null;
 	}
 
-	private List<PropertySource<?>> pullConfig(ConfigServiceIndexes indexes,
-			String namespace, String group, String dataId, String suffix, long timeout)
+	private List<PropertySource<?>> pullConfig(ConfigService configService,
+											   String group, String dataId, String suffix, long timeout)
 			throws NacosException, IOException {
-		String config = indexes.getIndexes().get(namespace).getConfig(dataId, group,
-				timeout);
+		String config = configService.getConfig(dataId, group, timeout);
 		return NacosDataParserHandler.getInstance().parseNacosData(dataId, config,
 				suffix);
 	}

@@ -19,7 +19,6 @@ package com.alibaba.cloud.nacos.configdata;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.nacos.api.config.ConfigFactory;
@@ -40,22 +39,24 @@ import org.springframework.core.env.StandardEnvironment;
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
 
 /**
+ * Implementation of {@link ConfigDataLocationResolver}, load Nacos {@link ConfigDataResource}.
+ *
  * @author freeman
  */
 public class NacosConfigDataLocationResolver
 		implements ConfigDataLocationResolver<NacosConfigDataResource>, Ordered {
-
-	private static final String HYPHEN = "-";
-
-	private static final String DOT = ".";
 	/**
 	 * Prefix for Config Server imports.
 	 */
 	public static final String PREFIX = "nacos:";
 
-	public static final String DEFAULT_NAMESPACE = StringUtils.EMPTY;
-
 	private final Log log;
+
+	// support params
+
+	public static final String GROUP = "group";
+
+	public static final String REFRESH_ENABLED = "refreshEnabled";
 
 	public NacosConfigDataLocationResolver(Log log) {
 		this.log = log;
@@ -134,57 +135,29 @@ public class NacosConfigDataLocationResolver
 		bootstrapContext.registerIfAbsent(NacosConfigProperties.class,
 				InstanceSupplier.of(properties));
 
-		registerOrUpdateIndexes(properties, bootstrapContext);
+		registerConfigService(properties, bootstrapContext);
 
-		// Retain the processing logic of the old version.
-		// Make sure to upgrade smoothly.
-		return loadConfigDataResources(resolverContext, location, profiles, properties);
+		return loadConfigDataResources(location, profiles, properties);
 	}
 
 	private List<NacosConfigDataResource> loadConfigDataResources(
-			ConfigDataLocationResolverContext resolverContext,
 			ConfigDataLocation location, Profiles profiles,
 			NacosConfigProperties properties) {
 		List<NacosConfigDataResource> result = new ArrayList<>();
 		String uris = getUri(location, properties);
 
-		if (StringUtils.isNotBlank(dataIdFor(uris))) {
-			// Can be considered as an extension-config.
-			NacosConfigDataResource resource = loadResource(properties,
-					location.isOptional(), profiles, uris, dataIdFor(uris));
-			result.add(resource);
+		if (StringUtils.isBlank(dataIdFor(uris))) {
+			throw new IllegalArgumentException("dataId must be specified");
 		}
-		else {
-			String prefix = dataIdPrefixFor(resolverContext.getBinder(), properties);
-			NacosConfigDataResource resource = loadResource(properties,
-					location.isOptional(), profiles, uris, prefix);
-			result.add(resource);
 
-			resource = loadResource(properties, location.isOptional(), profiles, uris,
-					prefix + DOT + properties.getFileExtension());
-			result.add(resource);
-
-			for (String profile : profiles.getActive()) {
-				String dataId = prefix + HYPHEN + profile + DOT
-						+ properties.getFileExtension();
-				resource = loadResource(properties, location.isOptional(), profiles, uris,
-						dataId);
-				result.add(resource);
-			}
-		}
-		return result;
-	}
-
-	private NacosConfigDataResource loadResource(NacosConfigProperties properties,
-			boolean optional, Profiles profiles, String uris, String dataId) {
-		return new NacosConfigDataResource(properties, optional, profiles,
-				log,
-				new NacosItemConfig()
-						.setNamespace(Objects.toString(properties.getNamespace(),
-								DEFAULT_NAMESPACE))
-						.setGroup(groupFor(uris, properties)).setDataId(dataId)
-						.setSuffix(suffixFor(uris, properties))
+		NacosConfigDataResource resource = new NacosConfigDataResource(properties,
+				location.isOptional(), profiles, log,
+				new NacosItemConfig().setGroup(groupFor(uris, properties))
+						.setDataId(dataIdFor(uris)).setSuffix(suffixFor(uris, properties))
 						.setRefreshEnabled(refreshEnabledFor(uris, properties)));
+		result.add(resource);
+
+		return result;
 	}
 
 	private String getUri(ConfigDataLocation location, NacosConfigProperties properties) {
@@ -198,25 +171,14 @@ public class NacosConfigDataLocationResolver
 		return properties.getServerAddr() + path;
 	}
 
-	private void registerOrUpdateIndexes(NacosConfigProperties properties,
-										 ConfigurableBootstrapContext bootstrapContext) {
-		String namespace = Objects.toString(properties.getNamespace(), DEFAULT_NAMESPACE);
-		ConfigService configService;
+	private void registerConfigService(NacosConfigProperties properties,
+									   ConfigurableBootstrapContext bootstrapContext) {
 		try {
-			configService = ConfigFactory.createConfigService(properties.assembleConfigServiceProperties());
-		} catch (NacosException e) {
-			return;
-		}
-		if (bootstrapContext.isRegistered(ConfigServiceIndexes.class)) {
-			ConfigServiceIndexes indexes = bootstrapContext
-					.get(ConfigServiceIndexes.class);
-			indexes.getIndexes().putIfAbsent(namespace, configService);
-		} else {
-			bootstrapContext.register(ConfigServiceIndexes.class, (context) -> {
-				Map<String, ConfigService> indexes = new ConcurrentHashMap<>(4);
-				indexes.put(namespace, configService);
-				return () -> indexes;
-			});
+			if (!bootstrapContext.isRegistered(ConfigService.class)) {
+				ConfigService configService = ConfigFactory.createConfigService(properties.assembleConfigServiceProperties());
+				bootstrapContext.register(ConfigService.class, InstanceSupplier.of(configService));
+			}
+		} catch (NacosException ignore) {
 		}
 	}
 
@@ -234,39 +196,29 @@ public class NacosConfigDataLocationResolver
 	}
 
 	private String groupFor(String uris, NacosConfigProperties properties) {
-		String[] part = split(uris);
-		if (part.length >= 1 && !part[0].isEmpty()) {
-			return part[0];
-		}
-		return properties.getGroup();
+		Map<String, String> queryMap = getQueryMap(uris);
+		return queryMap.containsKey(GROUP)
+				? queryMap.get(GROUP)
+				: properties.getGroup();
 	}
 
-	private String dataIdPrefixFor(Binder binder, NacosConfigProperties properties) {
-		String dataIdPrefix = properties.getPrefix();
-		if (StringUtils.isEmpty(dataIdPrefix)) {
-			dataIdPrefix = properties.getName();
+	private Map<String, String> getQueryMap(String uris) {
+		String query = getUri(uris).getQuery();
+		if (StringUtils.isBlank(query)) {
+			return Collections.emptyMap();
 		}
-		if (StringUtils.isEmpty(dataIdPrefix)) {
-			dataIdPrefix = binder.bind("spring.application.name", String.class).get();
+		Map<String, String> result = new HashMap<>(4);
+		for (String entry : query.split("&")) {
+			String[] kv = entry.split("=");
+			if (kv.length == 2) {
+				result.put(kv[0], kv[1]);
+			}
 		}
-		return dataIdPrefix;
+		return result;
 	}
-
-	private String dataIdFor(String uris) {
-		String[] part = split(uris);
-		if (part.length >= 2 && !part[1].isEmpty()) {
-			return part[1];
-		}
-		return null;
-	}
-
 
 	private String suffixFor(String uris, NacosConfigProperties properties) {
-		String[] part = split(uris);
-		String dataId = null;
-		if (part.length >= 2 && !part[1].isEmpty()) {
-			dataId = part[1];
-		}
+		String dataId = dataIdFor(uris);
 		if (dataId != null && dataId.contains(".")) {
 			return dataId.substring(dataId.lastIndexOf('.') + 1);
 		}
@@ -274,22 +226,24 @@ public class NacosConfigDataLocationResolver
 	}
 
 	private boolean refreshEnabledFor(String uris, NacosConfigProperties properties) {
-		URI uri = getUri(uris);
-		if (uri.getQuery() != null && uri.getQuery().contains("refreshEnabled=false")) {
-			return false;
-		}
-		return properties.isRefreshEnabled();
+		Map<String, String> queryMap = getQueryMap(uris);
+		return queryMap.containsKey(REFRESH_ENABLED)
+				? Boolean.parseBoolean(queryMap.get(REFRESH_ENABLED))
+				: properties.isRefreshEnabled();
 	}
 
-	private String[] split(String uris) {
+	private String dataIdFor(String uris) {
 		URI uri = getUri(uris);
 		String path = uri.getPath();
 		// notice '/'
 		if (path == null || path.length() <= 1) {
-			return new String[0];
+			return StringUtils.EMPTY;
 		}
-		path = path.substring(1);
-		return path.split("/");
+		String[] parts = path.substring(1).split("/");
+		if (parts.length != 1) {
+			throw new IllegalArgumentException("illegal dataId");
+		}
+		return parts[0];
 	}
 
 }
