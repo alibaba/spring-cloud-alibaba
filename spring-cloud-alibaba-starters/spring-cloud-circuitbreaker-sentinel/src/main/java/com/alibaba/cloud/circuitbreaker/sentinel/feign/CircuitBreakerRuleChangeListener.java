@@ -2,11 +2,9 @@ package com.alibaba.cloud.circuitbreaker.sentinel.feign;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder;
 import com.alibaba.csp.sentinel.EntryType;
-import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import org.slf4j.Logger;
@@ -16,16 +14,16 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.cloud.client.circuitbreaker.AbstractCircuitBreakerFactory;
 import org.springframework.cloud.context.scope.refresh.RefreshScopeRefreshedEvent;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.util.CollectionUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 
 /**
  * Sentinel circuit breaker config change listener.
  *
  * @author freeman
- * @date 2022/1/10 12:23
  */
 public class CircuitBreakerRuleChangeListener implements ApplicationContextAware,
 		ApplicationListener<RefreshScopeRefreshedEvent>, SmartInitializingSingleton {
@@ -51,7 +49,6 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 		clearRules();
 
 		// rebind
-		configureRulesInDataSource();
 		configureDefault();
 		configureCustom();
 
@@ -88,7 +85,7 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 
 	private void clearRules() {
 		clearCircuitBreakerFactory();
-		clearSentinelDegradeManager();
+		clearFeignClientRulesInDegradeManager();
 	}
 
 	private void configureDefault() {
@@ -100,52 +97,43 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 	}
 
 	private void clearCircuitBreakerFactory() {
-		Map configurations = getConfigurations(circuitBreakerFactory);
-		if (configurations != null) {
-			configurations.clear();
-		}
+		Optional.ofNullable(getConfigurations(circuitBreakerFactory))
+				.ifPresent(Map::clear);
 	}
 
-	private void clearSentinelDegradeManager() {
-		DegradeRuleManager.loadRules(new ArrayList<>());
+	private void clearFeignClientRulesInDegradeManager() {
+		// first, clear all manually configured feign clients and methods.
+		propertiesBackup.getRules().keySet().stream()
+				.filter(key -> !Objects.equals(key, propertiesBackup.getDefaultRule()))
+				.forEach(resource -> Optional.ofNullable(DegradeRuleManager.getRulesOfResource(resource)).ifPresent(Set::clear));
+
+		// Find all feign clients, clear the corresponding rules
+		// NOTE: feign client name cannot be the same as the general resource name !!!
+		Arrays.stream(applicationContext.getBeanNamesForAnnotation(FeignClient.class))
+				// A little trick, FeignClient bean name is full class name.
+				// Simple exclusions, such as its subclass.
+				.filter(beanName -> beanName.contains("."))
+				.map(beanName -> {
+					try {
+						return Class.forName(beanName);
+					} catch (ClassNotFoundException ignore) {
+						// definitely not a feign client, just ignore
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.forEach(clazz -> {
+					FeignClient anno = clazz.getAnnotation(FeignClient.class);
+					if (anno == null || AnnotationUtils.getValue(anno) == null) {
+						return;
+					}
+					String feignClientName = AnnotationUtils.getValue(anno).toString();
+					Optional.ofNullable(DegradeRuleManager.getRulesOfResource(feignClientName)).ifPresent(Set::clear);
+				});
 	}
 
 	private void updateBackup() {
 		this.propertiesBackup = this.properties.copy();
-	}
-
-	private void configureRulesInDataSource() {
-		// TODO allow feign client rules to be configured in the data source?
-		//  How to distinguish feign client rules from ordinary rules ?
-
-		// Temporarily does not support configuring feign client rules in the data source.
-		// But need to keep the normal degrade rules.
-		String[] dataSourceNames = applicationContext.getBeanNamesForType(AbstractDataSource.class);
-
-		List<DegradeRule> rules = Arrays.stream(dataSourceNames)
-				.map(this::getDegradeRules)
-				.flatMap(Collection::stream)
-				.distinct()
-				.collect(Collectors.toList());
-
-		DegradeRuleManager.loadRules(rules);
-	}
-
-	private List<DegradeRule> getDegradeRules(String dataSourceName) {
-		AbstractDataSource ds = applicationContext.getBean(dataSourceName, AbstractDataSource.class);
-		try {
-			@SuppressWarnings("unchecked")
-			List<DegradeRule> result = (List<DegradeRule>) ds.loadConfig();
-			// be careful with generic wipes
-			if (!CollectionUtils.isEmpty(result)
-					&& DegradeRule.class.isAssignableFrom(result.get(0).getClass())) {
-				return result;
-			}
-		}
-		catch (Exception ignored) {
-			// illegal config, ignore
-		}
-		return new ArrayList<>();
 	}
 
 	// static method
