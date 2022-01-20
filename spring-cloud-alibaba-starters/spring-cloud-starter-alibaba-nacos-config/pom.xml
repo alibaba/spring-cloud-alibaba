@@ -36,6 +36,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
