@@ -41,8 +41,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
-            <!-- make compatible -->
-            <version>2.4.5</version>
             <optional>true</optional>
         </dependency>
 

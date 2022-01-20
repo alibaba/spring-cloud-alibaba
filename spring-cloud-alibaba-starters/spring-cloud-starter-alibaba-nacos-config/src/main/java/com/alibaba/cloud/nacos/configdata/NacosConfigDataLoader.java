@@ -17,9 +17,7 @@
 package com.alibaba.cloud.nacos.configdata;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
@@ -31,16 +29,11 @@ import com.alibaba.nacos.api.exception.NacosException;
 import org.apache.commons.logging.Log;
 
 import org.springframework.boot.context.config.ConfigData;
-import org.springframework.boot.context.config.ConfigData.Option;
-import org.springframework.boot.context.config.ConfigData.Options;
 import org.springframework.boot.context.config.ConfigDataLoader;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.PropertySource;
 
-import static com.alibaba.cloud.nacos.configdata.NacosBootstrapper.LoadContext;
-import static com.alibaba.cloud.nacos.configdata.NacosBootstrapper.LoaderInterceptor;
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
 
 /**
@@ -52,8 +45,6 @@ import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosIt
  */
 public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataResource> {
 
-	private static final EnumSet<Option> ALL_OPTIONS = EnumSet.allOf(Option.class);
-
 	private final Log log;
 
 	public NacosConfigDataLoader(Log log) {
@@ -63,15 +54,6 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	@Override
 	public ConfigData load(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
-		if (context.getBootstrapContext().isRegistered(LoaderInterceptor.class)) {
-			LoaderInterceptor interceptor = context.getBootstrapContext()
-					.get(LoaderInterceptor.class);
-			if (interceptor != null) {
-				Binder binder = context.getBootstrapContext().get(Binder.class);
-				return interceptor
-						.apply(new LoadContext(context, resource, binder, this::doLoad));
-			}
-		}
 		return doLoad(context, resource);
 	}
 
@@ -94,29 +76,9 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 
 			NacosPropertySourceRepository.collectNacosPropertySource(propertySource);
 
-			if (ALL_OPTIONS.size() == 1) {
-				// boot 2.4.2 and prior
-				return new ConfigData(propertySources);
-			}
-			else if (ALL_OPTIONS.size() == 2) {
-				// boot 2.4.3 and 2.4.4
-				return new ConfigData(propertySources, Option.IGNORE_IMPORTS,
-						Option.IGNORE_PROFILES);
-			}
-			else if (ALL_OPTIONS.size() > 2) {
-				// boot 2.4.5+
-				return new ConfigData(propertySources, source -> {
-					List<Option> options = new ArrayList<>();
-					options.add(Option.IGNORE_IMPORTS);
-					options.add(Option.IGNORE_PROFILES);
-					for (String profile : resource.getAcceptedProfiles()) {
-						if (source.getName().contains("-" + profile + ".")) {
-							options.add(Option.PROFILE_SPECIFIC);
-						}
-					}
-					return Options.of(options.toArray(new Option[0]));
-				});
-			}
+			// TODO Currently based on 2.4.2,
+			//  compatibility needs to be done when upgrading to boot version 2.4.5
+			return new ConfigData(propertySources);
 		}
 		catch (Exception e) {
 			if (log.isDebugEnabled()) {
