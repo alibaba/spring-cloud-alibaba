@@ -40,7 +40,7 @@ public class NacosBootstrapper implements BootstrapRegistryInitializer {
 
 	private LoaderInterceptor loaderInterceptor;
 
-	static NacosBootstrapper create() {
+	public static NacosBootstrapper create() {
 		return new NacosBootstrapper();
 	}
 

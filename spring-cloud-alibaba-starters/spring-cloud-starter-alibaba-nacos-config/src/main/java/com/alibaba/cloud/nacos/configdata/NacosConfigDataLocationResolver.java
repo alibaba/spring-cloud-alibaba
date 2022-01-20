@@ -20,10 +20,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.nacos.api.config.ConfigFactory;
 import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.common.utils.StringUtils;
 import org.apache.commons.logging.Log;
 
@@ -173,12 +172,10 @@ public class NacosConfigDataLocationResolver
 
 	private void registerConfigService(NacosConfigProperties properties,
 									   ConfigurableBootstrapContext bootstrapContext) {
-		try {
-			if (!bootstrapContext.isRegistered(ConfigService.class)) {
-				ConfigService configService = ConfigFactory.createConfigService(properties.assembleConfigServiceProperties());
-				bootstrapContext.register(ConfigService.class, InstanceSupplier.of(configService));
-			}
-		} catch (NacosException ignore) {
+		if (!bootstrapContext.isRegistered(ConfigService.class)) {
+			Optional.ofNullable(new NacosConfigManager(properties).getConfigService())
+					.ifPresent(configService -> bootstrapContext.register(
+							ConfigService.class, InstanceSupplier.of(configService)));
 		}
 	}
 

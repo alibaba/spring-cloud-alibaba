@@ -38,7 +38,6 @@ import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.PropertySource;
-import org.springframework.util.StringUtils;
 
 import static com.alibaba.cloud.nacos.configdata.NacosBootstrapper.LoadContext;
 import static com.alibaba.cloud.nacos.configdata.NacosBootstrapper.LoaderInterceptor;
@@ -110,8 +109,10 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 					List<Option> options = new ArrayList<>();
 					options.add(Option.IGNORE_IMPORTS);
 					options.add(Option.IGNORE_PROFILES);
-					if (StringUtils.hasText(resource.getProfiles())) {
-						options.add(Option.PROFILE_SPECIFIC);
+					for (String profile : resource.getAcceptedProfiles()) {
+						if (source.getName().contains("-" + profile + ".")) {
+							options.add(Option.PROFILE_SPECIFIC);
+						}
 					}
 					return Options.of(options.toArray(new Option[0]));
 				});
