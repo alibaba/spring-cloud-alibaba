@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.alibaba.cloud.circuitbreaker.sentinel.SentinelCircuitBreakerAutoConfiguration,\
-com.alibaba.cloud.circuitbreaker.sentinel.ReactiveSentinelCircuitBreakerAutoConfiguration
+com.alibaba.cloud.circuitbreaker.sentinel.ReactiveSentinelCircuitBreakerAutoConfiguration,\
+com.alibaba.cloud.circuitbreaker.sentinel.feign.SentinelFeignClientAutoConfiguration

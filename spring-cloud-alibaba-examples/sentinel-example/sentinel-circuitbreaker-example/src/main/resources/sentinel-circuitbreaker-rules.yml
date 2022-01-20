@@ -1,0 +1,27 @@
+feign:
+  circuitbreaker:
+    enabled: true
+  sentinel:
+    default-rule: default
+    rules:
+      # global feign client
+      default:
+        - grade: 2
+          count: 1
+          timeWindow: 15
+          statIntervalMs: 1000
+          minRequestAmount: 1
+      # specific feign client
+      user:
+        - grade: 2
+          count: 1
+          timeWindow: 15
+          statIntervalMs: 1000
+          minRequestAmount: 1
+      # specific feign client single method
+      "[user#feignMethod(boolean)]":
+        - grade: 2
+          count: 1
+          timeWindow: 10
+          statIntervalMs: 1000
+          minRequestAmount: 1
