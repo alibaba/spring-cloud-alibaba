@@ -79,28 +79,19 @@ public class NacosConfigDataLocationResolver
 		}
 		else {
 			nacosConfigProperties = binder
-					.bind(NacosConfigProperties.PREFIX,
-							Bindable.of(NacosConfigProperties.class), bindHandler)
-					.orElseGet(NacosConfigProperties::new);
-			// this NacosConfigProperties will disappear after the configData is imported.
-			// won't appear in the main container.
-			nacosConfigProperties.setEnvironment(prepareEnvironment(binder));
-			nacosConfigProperties.init();
+					.bind("spring.cloud.nacos", Bindable.of(NacosConfigProperties.class),
+							bindHandler)
+					.map(properties -> binder
+							.bind(NacosConfigProperties.PREFIX,
+									Bindable.ofInstance(properties), bindHandler)
+							.orElse(properties))
+					.orElseGet(() -> binder
+							.bind(NacosConfigProperties.PREFIX,
+									Bindable.of(NacosConfigProperties.class), bindHandler)
+							.orElseGet(NacosConfigProperties::new));
 		}
 
 		return nacosConfigProperties;
-	}
-
-	private StandardEnvironment prepareEnvironment(Binder binder) {
-		// bind `spring.cloud.nacos.xxx` to Environment
-		StandardEnvironment environment = new StandardEnvironment();
-		Map<String, Object> kvMap = new HashMap<>();
-		binder.bind("spring.cloud.nacos", Map.class)
-				.orElse(Collections.emptyMap())
-				.forEach((k, v) -> kvMap.put("spring.cloud.nacos." + k, v));
-		MapPropertySource propertySource = new MapPropertySource("nacosCommonProperties", kvMap);
-		environment.getPropertySources().addLast(propertySource);
-		return environment;
 	}
 
 	private BindHandler getBindHandler(ConfigDataLocationResolverContext context) {

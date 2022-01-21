@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.nacos.api.config.ConfigService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,12 +37,16 @@ public class NacosConfigDataLocationResolverTest {
 
 	private Binder environmentBinder;
 
+	private ConfigurableBootstrapContext bootstrapContext = mock(ConfigurableBootstrapContext.class);
+
 	@BeforeEach
 	void setup() {
 		this.environment = new MockEnvironment();
 		this.environmentBinder = Binder.get(this.environment);
 		this.resolver = new NacosConfigDataLocationResolver(new DeferredLog());
+		when(bootstrapContext.isRegistered(eq(ConfigService.class))).thenReturn(true);
 		when(context.getBinder()).thenReturn(environmentBinder);
+		when(context.getBootstrapContext()).thenReturn(bootstrapContext);
 	}
 
 	@Test
@@ -168,8 +173,6 @@ public class NacosConfigDataLocationResolverTest {
 	}
 
 	private List<NacosConfigDataResource> testUri(String locationUri, String... activeProfiles) {
-		when(context.getBootstrapContext())
-				.thenReturn(mock(ConfigurableBootstrapContext.class));
 		Profiles profiles = mock(Profiles.class);
 		when(profiles.getActive()).thenReturn(Arrays.asList(activeProfiles));
 		return this.resolver.resolveProfileSpecific(
@@ -178,9 +181,6 @@ public class NacosConfigDataLocationResolverTest {
 
 	@Test
 	void whenNoneInBootstrapContext_thenCreateNewConfigClientProperties() {
-		ConfigurableBootstrapContext bootstrapContext = mock(
-				ConfigurableBootstrapContext.class);
-		when(context.getBootstrapContext()).thenReturn(bootstrapContext);
 		when(bootstrapContext.isRegistered(eq(NacosConfigProperties.class)))
 				.thenReturn(false);
 		when(bootstrapContext.get(eq(NacosConfigProperties.class)))
@@ -200,8 +200,6 @@ public class NacosConfigDataLocationResolverTest {
 	}
 
 	private NacosConfigDataResource testResolveProfileSpecific(String activeProfile) {
-		when(context.getBootstrapContext())
-				.thenReturn(mock(ConfigurableBootstrapContext.class));
 		Profiles profiles = mock(Profiles.class);
 		if (activeProfile != null) {
 			when(profiles.getActive())
