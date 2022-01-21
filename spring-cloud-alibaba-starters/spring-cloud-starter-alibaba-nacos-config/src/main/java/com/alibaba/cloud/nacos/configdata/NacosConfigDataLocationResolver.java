@@ -33,6 +33,7 @@ import org.springframework.boot.context.properties.bind.BindHandler;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
@@ -81,13 +82,25 @@ public class NacosConfigDataLocationResolver
 					.bind(NacosConfigProperties.PREFIX,
 							Bindable.of(NacosConfigProperties.class), bindHandler)
 					.orElseGet(NacosConfigProperties::new);
-			// Avoid NPE when call `assembleConfigServiceProperties` method.
-			// Early stage of the main container, set environment directly.
-			nacosConfigProperties.setEnvironment(new StandardEnvironment());
+			// this NacosConfigProperties will disappear after the configData is imported.
+			// won't appear in the main container.
+			nacosConfigProperties.setEnvironment(prepareEnvironment(binder));
 			nacosConfigProperties.init();
 		}
 
 		return nacosConfigProperties;
+	}
+
+	private StandardEnvironment prepareEnvironment(Binder binder) {
+		// bind `spring.cloud.nacos.xxx` to Environment
+		StandardEnvironment environment = new StandardEnvironment();
+		Map<String, Object> kvMap = new HashMap<>();
+		binder.bind("spring.cloud.nacos", Map.class)
+				.orElse(Collections.emptyMap())
+				.forEach((k, v) -> kvMap.put("spring.cloud.nacos." + k, v));
+		MapPropertySource propertySource = new MapPropertySource("nacosCommonProperties", kvMap);
+		environment.getPropertySources().addLast(propertySource);
+		return environment;
 	}
 
 	private BindHandler getBindHandler(ConfigDataLocationResolverContext context) {

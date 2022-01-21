@@ -135,6 +135,38 @@ public class NacosConfigDataLocationResolverTest {
 		assertThat(resource.getConfig().getDataId()).isEqualTo("test.yml");
 	}
 
+	@Test
+	void testSetCommonPropertiesIsOK() {
+		environment.setProperty("spring.cloud.nacos.username", "root");
+		environment.setProperty("spring.cloud.nacos.password", "root");
+		environment.setProperty("spring.cloud.nacos.server-addr", "localhost:8888");
+		String locationUri = "nacos:test.yml";
+		List<NacosConfigDataResource> resources = testUri(locationUri);
+
+		assertThat(resources).hasSize(1);
+		NacosConfigDataResource resource = resources.get(0);
+		assertThat(resource.getProperties().getUsername()).isEqualTo("root");
+		assertThat(resource.getProperties().getPassword()).isEqualTo("root");
+		assertThat(resource.getProperties().getServerAddr()).isEqualTo("localhost:8888");
+	}
+
+	@Test
+	void testCommonPropertiesHasLowerPriority() {
+		environment.setProperty("spring.cloud.nacos.username", "root");
+		environment.setProperty("spring.cloud.nacos.password", "root");
+		environment.setProperty("spring.cloud.nacos.config.password", "not_root");
+		environment.setProperty("spring.cloud.nacos.server-addr", "localhost:8888");
+		environment.setProperty("spring.cloud.nacos.config.server-addr", "localhost:9999");
+		String locationUri = "nacos:test.yml";
+		List<NacosConfigDataResource> resources = testUri(locationUri);
+
+		assertThat(resources).hasSize(1);
+		NacosConfigDataResource resource = resources.get(0);
+		assertThat(resource.getProperties().getUsername()).isEqualTo("root");
+		assertThat(resource.getProperties().getPassword()).isEqualTo("not_root");
+		assertThat(resource.getProperties().getServerAddr()).isEqualTo("localhost:9999");
+	}
+
 	private List<NacosConfigDataResource> testUri(String locationUri, String... activeProfiles) {
 		when(context.getBootstrapContext())
 				.thenReturn(mock(ConfigurableBootstrapContext.class));
