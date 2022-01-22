@@ -16,10 +16,13 @@
 
 package com.alibaba.cloud.nacos;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
 import com.alibaba.cloud.nacos.discovery.NacosServiceDiscovery;
+import com.alibaba.cloud.nacos.discovery.ServiceCache;
+import com.alibaba.nacos.api.exception.NacosException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,14 +30,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 /**
  * @author xiaojing
  * @author echooymxq
+ * @author freeman
  */
 @ExtendWith(MockitoExtension.class)
 public class NacosDiscoveryClientTests {
@@ -69,6 +76,58 @@ public class NacosDiscoveryClientTests {
 
 		assertThat(services).contains("service-1").size().isEqualTo(1);
 
+	}
+
+	@Test
+	public void testGetInstancesFailureToleranceEnabled() throws NacosException {
+		ServiceCache.setInstances("a", singletonList(serviceInstance));
+
+		when(serviceDiscovery.getInstances("a")).thenThrow(new NacosException());
+
+		List<ServiceInstance> instances = this.client.getInstances("a");
+
+		assertThat(instances).isEqualTo(singletonList(serviceInstance));
+	}
+
+	@Test
+	public void testGetInstancesFailureToleranceDisabled() throws NacosException {
+		ServiceCache.setInstances("a", singletonList(serviceInstance));
+
+		when(serviceDiscovery.getInstances("a")).thenThrow(new NacosException());
+		ReflectionTestUtils.setField(client, "failureToleranceEnabled", false);
+
+		assertThatThrownBy(() -> this.client.getInstances("a"));
+	}
+
+	@Test
+	public void testFailureToleranceEnabled() throws NacosException {
+		ServiceCache.set(Arrays.asList("a", "b"));
+
+		when(serviceDiscovery.getServices()).thenThrow(new NacosException());
+
+		List<String> services = this.client.getServices();
+
+		assertThat(services).isEqualTo(Arrays.asList("a", "b"));
+	}
+
+	@Test
+	public void testFailureToleranceDisabled() throws NacosException {
+		ServiceCache.set(Arrays.asList("a", "b"));
+
+		when(serviceDiscovery.getServices()).thenThrow(new NacosException());
+		ReflectionTestUtils.setField(client, "failureToleranceEnabled", false);
+
+		List<String> services = this.client.getServices();
+
+		assertThat(services).isEqualTo(emptyList());
+	}
+
+	@Test
+	public void testCacheIsOK() throws NacosException {
+		when(serviceDiscovery.getInstances("a"))
+				.thenReturn(singletonList(serviceInstance));
+		this.client.getInstances("a");
+		assertThat(ServiceCache.getInstances("a")).isEqualTo(singletonList(serviceInstance));
 	}
 
 }
