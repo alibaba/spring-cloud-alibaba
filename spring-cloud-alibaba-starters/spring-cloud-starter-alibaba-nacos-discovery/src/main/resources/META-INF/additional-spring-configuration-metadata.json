@@ -74,11 +74,5 @@
       "type": "java.lang.Boolean",
       "defaultValue": false,
       "description": "Integrate LoadBalancer or not."
-    },
-    {
-      "name": "spring.cloud.nacos.discovery.failure-tolerance-enabled",
-      "type": "java.lang.Boolean",
-      "defaultValue": true,
-      "description": "Whether to enable nacos failure tolerance. If enabled, nacos will return cached values when exceptions occur."
     }
 ]}
