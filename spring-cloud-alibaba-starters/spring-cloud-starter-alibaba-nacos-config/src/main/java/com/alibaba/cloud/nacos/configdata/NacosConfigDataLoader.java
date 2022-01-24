@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
 import com.alibaba.cloud.nacos.client.NacosPropertySource;
@@ -60,7 +61,8 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	public ConfigData doLoad(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
 		try {
-			ConfigService configService = getBean(context, ConfigService.class);
+			ConfigService configService = getBean(context, NacosConfigManager.class)
+					.getConfigService();
 			NacosConfigProperties properties = getBean(context,
 					NacosConfigProperties.class);
 

@@ -18,11 +18,14 @@ package com.alibaba.cloud.nacos.configdata;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.common.utils.StringUtils;
 import org.apache.commons.logging.Log;
 
@@ -33,8 +36,6 @@ import org.springframework.boot.context.properties.bind.BindHandler;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.StandardEnvironment;
 
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
 
@@ -138,7 +139,7 @@ public class NacosConfigDataLocationResolver
 		bootstrapContext.registerIfAbsent(NacosConfigProperties.class,
 				InstanceSupplier.of(properties));
 
-		registerConfigService(properties, bootstrapContext);
+		registerConfigManager(properties, bootstrapContext);
 
 		return loadConfigDataResources(location, profiles, properties);
 	}
@@ -147,23 +148,23 @@ public class NacosConfigDataLocationResolver
 			ConfigDataLocation location, Profiles profiles,
 			NacosConfigProperties properties) {
 		List<NacosConfigDataResource> result = new ArrayList<>();
-		String uris = getUri(location, properties);
+		URI uri = getUri(location, properties);
 
-		if (StringUtils.isBlank(dataIdFor(uris))) {
+		if (StringUtils.isBlank(dataIdFor(uri))) {
 			throw new IllegalArgumentException("dataId must be specified");
 		}
 
 		NacosConfigDataResource resource = new NacosConfigDataResource(properties,
 				location.isOptional(), profiles, log,
-				new NacosItemConfig().setGroup(groupFor(uris, properties))
-						.setDataId(dataIdFor(uris)).setSuffix(suffixFor(uris, properties))
-						.setRefreshEnabled(refreshEnabledFor(uris, properties)));
+				new NacosItemConfig().setGroup(groupFor(uri, properties))
+						.setDataId(dataIdFor(uri)).setSuffix(suffixFor(uri, properties))
+						.setRefreshEnabled(refreshEnabledFor(uri, properties)));
 		result.add(resource);
 
 		return result;
 	}
 
-	private String getUri(ConfigDataLocation location, NacosConfigProperties properties) {
+	private URI getUri(ConfigDataLocation location, NacosConfigProperties properties) {
 		String path = location.getNonPrefixedValue(getPrefix());
 		if (StringUtils.isBlank(path)) {
 			path = "/";
@@ -171,15 +172,15 @@ public class NacosConfigDataLocationResolver
 		if (!path.startsWith("/")) {
 			path = "/" + path;
 		}
-		return properties.getServerAddr() + path;
+		String uri = properties.getServerAddr() + path;
+		return getUri(uri);
 	}
 
-	private void registerConfigService(NacosConfigProperties properties,
+	private void registerConfigManager(NacosConfigProperties properties,
 									   ConfigurableBootstrapContext bootstrapContext) {
-		if (!bootstrapContext.isRegistered(ConfigService.class)) {
-			Optional.ofNullable(new NacosConfigManager(properties).getConfigService())
-					.ifPresent(configService -> bootstrapContext.register(
-							ConfigService.class, InstanceSupplier.of(configService)));
+		if (!bootstrapContext.isRegistered(NacosConfigManager.class)) {
+			bootstrapContext.register(NacosConfigManager.class,
+					InstanceSupplier.of(new NacosConfigManager(properties)));
 		}
 	}
 
@@ -196,15 +197,15 @@ public class NacosConfigDataLocationResolver
 		return uri;
 	}
 
-	private String groupFor(String uris, NacosConfigProperties properties) {
-		Map<String, String> queryMap = getQueryMap(uris);
+	private String groupFor(URI uri, NacosConfigProperties properties) {
+		Map<String, String> queryMap = getQueryMap(uri);
 		return queryMap.containsKey(GROUP)
 				? queryMap.get(GROUP)
 				: properties.getGroup();
 	}
 
-	private Map<String, String> getQueryMap(String uris) {
-		String query = getUri(uris).getQuery();
+	private Map<String, String> getQueryMap(URI uri) {
+		String query = uri.getQuery();
 		if (StringUtils.isBlank(query)) {
 			return Collections.emptyMap();
 		}
@@ -218,23 +219,22 @@ public class NacosConfigDataLocationResolver
 		return result;
 	}
 
-	private String suffixFor(String uris, NacosConfigProperties properties) {
-		String dataId = dataIdFor(uris);
+	private String suffixFor(URI uri, NacosConfigProperties properties) {
+		String dataId = dataIdFor(uri);
 		if (dataId != null && dataId.contains(".")) {
 			return dataId.substring(dataId.lastIndexOf('.') + 1);
 		}
 		return properties.getFileExtension();
 	}
 
-	private boolean refreshEnabledFor(String uris, NacosConfigProperties properties) {
-		Map<String, String> queryMap = getQueryMap(uris);
+	private boolean refreshEnabledFor(URI uri, NacosConfigProperties properties) {
+		Map<String, String> queryMap = getQueryMap(uri);
 		return queryMap.containsKey(REFRESH_ENABLED)
 				? Boolean.parseBoolean(queryMap.get(REFRESH_ENABLED))
 				: properties.isRefreshEnabled();
 	}
 
-	private String dataIdFor(String uris) {
-		URI uri = getUri(uris);
+	private String dataIdFor(URI uri) {
 		String path = uri.getPath();
 		// notice '/'
 		if (path == null || path.length() <= 1) {
