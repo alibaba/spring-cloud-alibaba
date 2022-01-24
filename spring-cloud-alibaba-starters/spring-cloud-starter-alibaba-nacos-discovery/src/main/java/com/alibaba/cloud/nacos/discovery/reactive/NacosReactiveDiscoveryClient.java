@@ -19,10 +19,12 @@ package com.alibaba.cloud.nacos.discovery.reactive;
 import java.util.function.Function;
 
 import com.alibaba.cloud.nacos.discovery.NacosServiceDiscovery;
+import com.alibaba.cloud.nacos.discovery.ServiceCache;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -32,6 +34,7 @@ import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
 
 /**
  * @author <a href="mailto:echooy.mxq@gmail.com">echooymxq</a>
+ * @author freeman
  **/
 public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 
@@ -39,6 +42,9 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 			.getLogger(NacosReactiveDiscoveryClient.class);
 
 	private NacosServiceDiscovery serviceDiscovery;
+
+	@Value("${spring.cloud.nacos.discovery.failure-tolerance-enabled:false}")
+	private boolean failureToleranceEnabled;
 
 	public NacosReactiveDiscoveryClient(NacosServiceDiscovery nacosServiceDiscovery) {
 		this.serviceDiscovery = nacosServiceDiscovery;
@@ -59,11 +65,17 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 	private Function<String, Publisher<ServiceInstance>> loadInstancesFromNacos() {
 		return serviceId -> {
 			try {
-				return Flux.fromIterable(serviceDiscovery.getInstances(serviceId));
+				return Mono.justOrEmpty(serviceDiscovery.getInstances(serviceId))
+						.flatMapMany(instances -> {
+							ServiceCache.setInstances(serviceId, instances);
+							return Flux.fromIterable(instances);
+						});
 			}
 			catch (NacosException e) {
 				log.error("get service instance[{}] from nacos error!", serviceId, e);
-				return Flux.empty();
+				return failureToleranceEnabled
+						? Flux.fromIterable(ServiceCache.getInstances(serviceId))
+						: Flux.empty();
 			}
 		};
 	}
@@ -72,11 +84,17 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 	public Flux<String> getServices() {
 		return Flux.defer(() -> {
 			try {
-				return Flux.fromIterable(serviceDiscovery.getServices());
+				return Mono.justOrEmpty(serviceDiscovery.getServices())
+						.flatMapMany(services -> {
+							ServiceCache.set(services);
+							return Flux.fromIterable(services);
+						});
 			}
 			catch (Exception e) {
 				log.error("get services from nacos server fail,", e);
-				return Flux.empty();
+				return failureToleranceEnabled
+						? Flux.fromIterable(ServiceCache.get())
+						: Flux.empty();
 			}
 		}).subscribeOn(Schedulers.boundedElastic());
 	}

@@ -18,10 +18,12 @@ package com.alibaba.cloud.nacos.discovery;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
@@ -29,6 +31,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
  * @author xiaojing
  * @author renhaojun
  * @author echooymxq
+ * @author freeman
  */
 public class NacosDiscoveryClient implements DiscoveryClient {
 
@@ -40,6 +43,9 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public static final String DESCRIPTION = "Spring Cloud Nacos Discovery Client";
 
 	private NacosServiceDiscovery serviceDiscovery;
+
+	@Value("${spring.cloud.nacos.discovery.failure-tolerance-enabled:false}")
+	private boolean failureToleranceEnabled;
 
 	public NacosDiscoveryClient(NacosServiceDiscovery nacosServiceDiscovery) {
 		this.serviceDiscovery = nacosServiceDiscovery;
@@ -53,9 +59,15 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	@Override
 	public List<ServiceInstance> getInstances(String serviceId) {
 		try {
-			return serviceDiscovery.getInstances(serviceId);
+			return Optional.of(serviceDiscovery.getInstances(serviceId)).map(instances -> {
+						ServiceCache.setInstances(serviceId, instances);
+						return instances;
+					}).get();
 		}
 		catch (Exception e) {
+			if (failureToleranceEnabled) {
+				return ServiceCache.getInstances(serviceId);
+			}
 			throw new RuntimeException(
 					"Can not get hosts from nacos server. serviceId: " + serviceId, e);
 		}
@@ -64,11 +76,14 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	@Override
 	public List<String> getServices() {
 		try {
-			return serviceDiscovery.getServices();
+			return Optional.of(serviceDiscovery.getServices()).map(services -> {
+						ServiceCache.set(services);
+						return services;
+					}).get();
 		}
 		catch (Exception e) {
 			log.error("get service name from nacos server fail,", e);
-			return Collections.emptyList();
+			return failureToleranceEnabled ? ServiceCache.get() : Collections.emptyList();
 		}
 	}
 
