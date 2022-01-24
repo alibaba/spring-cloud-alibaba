@@ -17,6 +17,7 @@
 package com.alibaba.cloud.imports.examples;
 
 import com.alibaba.cloud.imports.examples.model.UserConfig;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

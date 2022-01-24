@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.nacos.configdata;
 
 import java.util.Arrays;
@@ -20,24 +36,29 @@ import org.springframework.mock.env.MockEnvironment;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * NacosConfigDataLocationResolver Tester.
- * 
+ *
  * @author freeman
  */
 public class NacosConfigDataLocationResolverTest {
 
 	private NacosConfigDataLocationResolver resolver;
 
-	private ConfigDataLocationResolverContext context = mock(ConfigDataLocationResolverContext.class);
+	private ConfigDataLocationResolverContext context = mock(
+			ConfigDataLocationResolverContext.class);
 
 	private MockEnvironment environment;
 
 	private Binder environmentBinder;
 
-	private ConfigurableBootstrapContext bootstrapContext = mock(ConfigurableBootstrapContext.class);
+	private ConfigurableBootstrapContext bootstrapContext = mock(
+			ConfigurableBootstrapContext.class);
 
 	@BeforeEach
 	void setup() {
@@ -95,7 +116,8 @@ public class NacosConfigDataLocationResolverTest {
 	@Test
 	void testDataIdMustBeSpecified() {
 		String locationUri = "nacos:";
-		assertThatThrownBy(() -> testUri(locationUri)).hasMessage("dataId must be specified");
+		assertThatThrownBy(() -> testUri(locationUri))
+				.hasMessage("dataId must be specified");
 	}
 
 	@Test
@@ -161,7 +183,8 @@ public class NacosConfigDataLocationResolverTest {
 		environment.setProperty("spring.cloud.nacos.password", "root");
 		environment.setProperty("spring.cloud.nacos.config.password", "not_root");
 		environment.setProperty("spring.cloud.nacos.server-addr", "localhost:8888");
-		environment.setProperty("spring.cloud.nacos.config.server-addr", "localhost:9999");
+		environment.setProperty("spring.cloud.nacos.config.server-addr",
+				"localhost:9999");
 		String locationUri = "nacos:test.yml";
 		List<NacosConfigDataResource> resources = testUri(locationUri);
 
@@ -172,11 +195,12 @@ public class NacosConfigDataLocationResolverTest {
 		assertThat(resource.getProperties().getServerAddr()).isEqualTo("localhost:9999");
 	}
 
-	private List<NacosConfigDataResource> testUri(String locationUri, String... activeProfiles) {
+	private List<NacosConfigDataResource> testUri(String locationUri,
+			String... activeProfiles) {
 		Profiles profiles = mock(Profiles.class);
 		when(profiles.getActive()).thenReturn(Arrays.asList(activeProfiles));
-		return this.resolver.resolveProfileSpecific(
-				context, ConfigDataLocation.of(locationUri), profiles);
+		return this.resolver.resolveProfileSpecific(context,
+				ConfigDataLocation.of(locationUri), profiles);
 	}
 
 	@Test
@@ -186,8 +210,7 @@ public class NacosConfigDataLocationResolverTest {
 		when(bootstrapContext.get(eq(NacosConfigProperties.class)))
 				.thenReturn(new NacosConfigProperties());
 		List<NacosConfigDataResource> resources = this.resolver.resolveProfileSpecific(
-				context, ConfigDataLocation.of("nacos:test.yml"),
-				mock(Profiles.class));
+				context, ConfigDataLocation.of("nacos:test.yml"), mock(Profiles.class));
 		assertThat(resources).hasSize(1);
 		verify(bootstrapContext, times(0)).get(eq(NacosConfigProperties.class));
 		NacosConfigDataResource resource = resources.get(0);

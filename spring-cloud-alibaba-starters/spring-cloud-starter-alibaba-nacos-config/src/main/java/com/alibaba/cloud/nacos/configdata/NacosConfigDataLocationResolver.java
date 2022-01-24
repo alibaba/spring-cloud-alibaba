@@ -31,7 +31,13 @@ import org.apache.commons.logging.Log;
 
 import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
 import org.springframework.boot.ConfigurableBootstrapContext;
-import org.springframework.boot.context.config.*;
+import org.springframework.boot.context.config.ConfigDataLocation;
+import org.springframework.boot.context.config.ConfigDataLocationNotFoundException;
+import org.springframework.boot.context.config.ConfigDataLocationResolver;
+import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
+import org.springframework.boot.context.config.ConfigDataResource;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.boot.context.config.Profiles;
 import org.springframework.boot.context.properties.bind.BindHandler;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -40,7 +46,8 @@ import org.springframework.core.Ordered;
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
 
 /**
- * Implementation of {@link ConfigDataLocationResolver}, load Nacos {@link ConfigDataResource}.
+ * Implementation of {@link ConfigDataLocationResolver}, load Nacos
+ * {@link ConfigDataResource}.
  *
  * @author freeman
  */
@@ -55,9 +62,9 @@ public class NacosConfigDataLocationResolver
 
 	// support params
 
-	public static final String GROUP = "group";
+	private static final String GROUP = "group";
 
-	public static final String REFRESH_ENABLED = "refreshEnabled";
+	private static final String REFRESH_ENABLED = "refreshEnabled";
 
 	public NacosConfigDataLocationResolver(Log log) {
 		this.log = log;
@@ -177,7 +184,7 @@ public class NacosConfigDataLocationResolver
 	}
 
 	private void registerConfigManager(NacosConfigProperties properties,
-									   ConfigurableBootstrapContext bootstrapContext) {
+			ConfigurableBootstrapContext bootstrapContext) {
 		if (!bootstrapContext.isRegistered(NacosConfigManager.class)) {
 			bootstrapContext.register(NacosConfigManager.class,
 					InstanceSupplier.of(new NacosConfigManager(properties)));
@@ -191,7 +198,8 @@ public class NacosConfigDataLocationResolver
 		URI uri;
 		try {
 			uri = new URI(uris);
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			throw new IllegalArgumentException("illegal URI: " + uris);
 		}
 		return uri;
@@ -199,9 +207,7 @@ public class NacosConfigDataLocationResolver
 
 	private String groupFor(URI uri, NacosConfigProperties properties) {
 		Map<String, String> queryMap = getQueryMap(uri);
-		return queryMap.containsKey(GROUP)
-				? queryMap.get(GROUP)
-				: properties.getGroup();
+		return queryMap.containsKey(GROUP) ? queryMap.get(GROUP) : properties.getGroup();
 	}
 
 	private Map<String, String> getQueryMap(URI uri) {

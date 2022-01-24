@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.alibaba.cloud.circuitbreaker.sentinel.feign.FeignClientCircuitBreakerRuleIntegrationTest.*;
+import static com.alibaba.cloud.circuitbreaker.sentinel.feign.FeignClientCircuitBreakerRuleIntegrationTest.Application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 

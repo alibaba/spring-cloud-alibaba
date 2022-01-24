@@ -40,7 +40,8 @@ import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosIt
 /**
  * Implementation of {@link ConfigDataLoader}.
  *
- * <p> Load {@link ConfigData} via {@link NacosConfigDataResource}
+ * <p>
+ * Load {@link ConfigData} via {@link NacosConfigDataResource}
  *
  * @author freeman
  */
@@ -79,7 +80,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			NacosPropertySourceRepository.collectNacosPropertySource(propertySource);
 
 			// TODO Currently based on 2.4.2,
-			//  compatibility needs to be done when upgrading to boot version 2.4.5
+			// compatibility needs to be done when upgrading to boot version 2.4.5
 			return new ConfigData(propertySources);
 		}
 		catch (Exception e) {
@@ -93,8 +94,8 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		return null;
 	}
 
-	private List<PropertySource<?>> pullConfig(ConfigService configService,
-											   String group, String dataId, String suffix, long timeout)
+	private List<PropertySource<?>> pullConfig(ConfigService configService, String group,
+			String dataId, String suffix, long timeout)
 			throws NacosException, IOException {
 		String config = configService.getConfig(dataId, group, timeout);
 		return NacosDataParserHandler.getInstance().parseNacosData(dataId, config,
