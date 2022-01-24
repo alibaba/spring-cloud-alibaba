@@ -211,4 +211,5 @@ public class RocketMQCommonProperties implements Serializable {
 	public void setUnitName(String unitName) {
 		this.unitName = unitName;
 	}
+
 }

@@ -575,7 +575,8 @@ public class NacosConfigProperties {
 			int index = endpoint.indexOf(":");
 			properties.put(ENDPOINT, endpoint.substring(0, index));
 			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
-		} else {
+		}
+		else {
 			properties.put(ENDPOINT, endpoint);
 		}
 
@@ -611,11 +612,10 @@ public class NacosConfigProperties {
 				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig + ", endpoint='"
 				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
 				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
-				+ ", ramRoleName='" + ramRoleName + '\''
-				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
-				+ '\'' + ", name='" + name + '\'' + '\'' + ", shares=" + sharedConfigs
-				+ ", extensions=" + extensionConfigs + ", refreshEnabled="
-				+ refreshEnabled + '}';
+				+ ", ramRoleName='" + ramRoleName + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ '\'' + ", shares=" + sharedConfigs + ", extensions=" + extensionConfigs
+				+ ", refreshEnabled=" + refreshEnabled + '}';
 	}
 
 	public static class Config {
