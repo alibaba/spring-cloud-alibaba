@@ -43,8 +43,8 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 
 	private NacosServiceDiscovery serviceDiscovery;
 
-	@Value("${spring.cloud.nacos.discovery.failure-tolerance-enabled:true}")
-	private boolean failureToleranceEnabled = true;
+	@Value("${spring.cloud.nacos.discovery.failure-tolerance-enabled:false}")
+	private boolean failureToleranceEnabled;
 
 	public NacosReactiveDiscoveryClient(NacosServiceDiscovery nacosServiceDiscovery) {
 		this.serviceDiscovery = nacosServiceDiscovery;

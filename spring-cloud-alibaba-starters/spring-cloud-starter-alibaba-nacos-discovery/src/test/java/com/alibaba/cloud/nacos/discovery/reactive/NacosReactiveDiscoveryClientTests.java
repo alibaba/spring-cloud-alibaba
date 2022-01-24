@@ -79,6 +79,7 @@ class NacosReactiveDiscoveryClientTests {
 		ServiceCache.setInstances("a", singletonList(serviceInstance));
 
 		when(serviceDiscovery.getInstances("a")).thenThrow(new NacosException());
+		ReflectionTestUtils.setField(client, "failureToleranceEnabled", true);
 
 		Flux<ServiceInstance> instances = this.client.getInstances("a");
 
@@ -103,6 +104,8 @@ class NacosReactiveDiscoveryClientTests {
 		ServiceCache.set(Arrays.asList("a", "b"));
 
 		when(serviceDiscovery.getServices()).thenThrow(new NacosException());
+		ReflectionTestUtils.setField(client, "failureToleranceEnabled", true);
+
 
 		Flux<String> services = this.client.getServices();
 

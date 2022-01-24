@@ -19,7 +19,11 @@ package com.alibaba.cloud.nacos;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Properties;
+import java.util.Objects;
+import java.util.Enumeration;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -199,7 +203,7 @@ public class NacosDiscoveryProperties {
 	 * Whether to enable nacos failure tolerance. If enabled, nacos will return cached
 	 * values when exceptions occur.
 	 */
-	private boolean failureToleranceEnabled = true;
+	private boolean failureToleranceEnabled;
 
 	@Autowired
 	private InetUtils inetUtils;

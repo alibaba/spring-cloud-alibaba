@@ -83,6 +83,7 @@ public class NacosDiscoveryClientTests {
 		ServiceCache.setInstances("a", singletonList(serviceInstance));
 
 		when(serviceDiscovery.getInstances("a")).thenThrow(new NacosException());
+		ReflectionTestUtils.setField(client, "failureToleranceEnabled", true);
 
 		List<ServiceInstance> instances = this.client.getInstances("a");
 
@@ -104,6 +105,7 @@ public class NacosDiscoveryClientTests {
 		ServiceCache.set(Arrays.asList("a", "b"));
 
 		when(serviceDiscovery.getServices()).thenThrow(new NacosException());
+		ReflectionTestUtils.setField(client, "failureToleranceEnabled", true);
 
 		List<String> services = this.client.getServices();
 
