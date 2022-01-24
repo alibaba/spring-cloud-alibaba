@@ -98,6 +98,9 @@ public class NacosConfigProperties {
 	}
 
 	private void overrideFromEnv() {
+		if (environment == null) {
+			return;
+		}
 		if (StringUtils.isEmpty(this.getServerAddr())) {
 			String serverAddr = environment
 					.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}");
@@ -570,6 +573,9 @@ public class NacosConfigProperties {
 	}
 
 	private void enrichNacosConfigProperties(Properties nacosConfigProperties) {
+		if (environment == null) {
+			return;
+		}
 		Map<String, Object> properties = PropertySourcesUtils
 				.getSubProperties((ConfigurableEnvironment) environment, PREFIX);
 		properties.forEach((k, v) -> nacosConfigProperties.putIfAbsent(resolveKey(k),

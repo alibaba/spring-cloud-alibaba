@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2019 the original author or authors.
+ * Copyright 2013-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import org.springframework.cloud.client.circuitbreaker.AbstractCircuitBreakerFac
 import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.cloud.openfeign.CircuitBreakerNameResolver;
 import org.springframework.cloud.openfeign.FeignClientFactoryBean;
-import org.springframework.cloud.util.ConditionalOnBootstrapEnabled;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -46,14 +45,12 @@ import static com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRule
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Feign.class, FeignClientFactoryBean.class })
-@ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled",
-		havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.circuitbreaker.sentinel.enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SentinelFeignClientProperties.class)
 public class SentinelFeignClientAutoConfiguration {
 
 	@Configuration(proxyBeanMethods = false)
-	@ConditionalOnProperty(name = "feign.sentinel.refresh-rules",
-			havingValue = "true", matchIfMissing = true)
+	@ConditionalOnProperty(name = "feign.sentinel.refresh-rules", havingValue = "true", matchIfMissing = true)
 	public static class CircuitBreakerListenerConfiguration {
 
 		@Bean

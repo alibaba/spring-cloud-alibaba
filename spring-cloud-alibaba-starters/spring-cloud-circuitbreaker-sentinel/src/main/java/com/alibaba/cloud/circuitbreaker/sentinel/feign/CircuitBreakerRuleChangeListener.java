@@ -1,7 +1,30 @@
+/*
+ * Copyright 2013-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.circuitbreaker.sentinel.feign;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder;
 import com.alibaba.csp.sentinel.EntryType;
@@ -27,11 +50,13 @@ import org.springframework.core.annotation.AnnotationUtils;
  */
 public class CircuitBreakerRuleChangeListener implements ApplicationContextAware,
 		ApplicationListener<RefreshScopeRefreshedEvent>, SmartInitializingSingleton {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CircuitBreakerRuleChangeListener.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(CircuitBreakerRuleChangeListener.class);
 
 	private SentinelFeignClientProperties properties;
 	/**
-	 * properties backup, prevent rules from being updated every time the container is refreshed
+	 * properties backup, prevent rules from being updated every time the container is
+	 * refreshed.
 	 */
 	private SentinelFeignClientProperties propertiesBackup;
 	private AbstractCircuitBreakerFactory circuitBreakerFactory;
@@ -58,7 +83,8 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 	}
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
@@ -73,13 +99,16 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 		// as it will cause the bean to be initialized prematurely,
 		// and we don't want to change the initialization order of the beans
 		if (circuitBreakerFactory == null) {
-			String[] names = applicationContext.getBeanNamesForType(AbstractCircuitBreakerFactory.class);
+			String[] names = applicationContext
+					.getBeanNamesForType(AbstractCircuitBreakerFactory.class);
 			if (names.length >= 1) {
-				this.circuitBreakerFactory = applicationContext.getBean(names[0], AbstractCircuitBreakerFactory.class);
+				this.circuitBreakerFactory = applicationContext.getBean(names[0],
+						AbstractCircuitBreakerFactory.class);
 			}
 		}
 		if (properties == null) {
-			this.properties = applicationContext.getBean(SentinelFeignClientProperties.class);
+			this.properties = applicationContext
+					.getBean(SentinelFeignClientProperties.class);
 		}
 	}
 
@@ -105,7 +134,9 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 		// first, clear all manually configured feign clients and methods.
 		propertiesBackup.getRules().keySet().stream()
 				.filter(key -> !Objects.equals(key, propertiesBackup.getDefaultRule()))
-				.forEach(resource -> Optional.ofNullable(DegradeRuleManager.getRulesOfResource(resource)).ifPresent(Set::clear));
+				.forEach(resource -> Optional
+						.ofNullable(DegradeRuleManager.getRulesOfResource(resource))
+						.ifPresent(Set::clear));
 
 		// Find all feign clients, clear the corresponding rules
 		// NOTE: feign client name cannot be the same as the general resource name !!!
@@ -116,7 +147,8 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 				.map(beanName -> {
 					try {
 						return Class.forName(beanName);
-					} catch (ClassNotFoundException ignore) {
+					}
+					catch (ClassNotFoundException ignore) {
 						// definitely not a feign client, just ignore
 						return null;
 					}
@@ -128,7 +160,9 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 						return;
 					}
 					String feignClientName = AnnotationUtils.getValue(anno).toString();
-					Optional.ofNullable(DegradeRuleManager.getRulesOfResource(feignClientName)).ifPresent(Set::clear);
+					Optional.ofNullable(
+							DegradeRuleManager.getRulesOfResource(feignClientName))
+							.ifPresent(Set::clear);
 				});
 	}
 

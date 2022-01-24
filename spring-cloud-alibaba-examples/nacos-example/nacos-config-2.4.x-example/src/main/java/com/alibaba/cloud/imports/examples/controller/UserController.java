@@ -14,21 +14,30 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.feign;
+package com.alibaba.cloud.imports.examples.controller;
 
-import org.springframework.cloud.openfeign.FeignClient;
+import com.alibaba.cloud.imports.examples.model.UserConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  *
  * @author freeman
  */
-@FeignClient(value = "order", url = "http://localhost:${server.port}", fallback = OrderClientFallBack.class)
-public interface OrderClient {
+@RestController
+public class UserController {
 
-	@GetMapping("/default/{ok}")
-	String defaultConfig(@PathVariable boolean ok);
+	@Autowired
+	private UserConfig userConfig;
+
+	@GetMapping
+	public String get() throws JsonProcessingException {
+		return new ObjectMapper().writeValueAsString(userConfig);
+	}
 
 }
