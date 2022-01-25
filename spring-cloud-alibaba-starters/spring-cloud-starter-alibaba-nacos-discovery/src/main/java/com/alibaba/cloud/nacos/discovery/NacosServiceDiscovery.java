@@ -33,6 +33,7 @@ import org.springframework.cloud.client.ServiceInstance;
 
 /**
  * @author <a href="mailto:echooy.mxq@gmail.com">echooymxq</a>
+ * @author changjin wei(魏昌进)
  **/
 public class NacosServiceDiscovery {
 
@@ -92,6 +93,7 @@ public class NacosServiceDiscovery {
 		nacosServiceInstance.setHost(instance.getIp());
 		nacosServiceInstance.setPort(instance.getPort());
 		nacosServiceInstance.setServiceId(serviceId);
+		nacosServiceInstance.setInstanceId(instance.getInstanceId());
 
 		Map<String, String> metadata = new HashMap<>();
 		metadata.put("nacos.instanceId", instance.getInstanceId());
