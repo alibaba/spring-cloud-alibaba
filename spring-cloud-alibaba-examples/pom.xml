@@ -23,11 +23,13 @@
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
         <module>sentinel-example/sentinel-feign-example/sentinel-feign-consumer-example</module>
         <module>sentinel-example/sentinel-feign-example/sentinel-feign-provider-example</module>
+        <module>sentinel-example/sentinel-circuitbreaker-example</module>
         <module>sentinel-example/sentinel-webflux-example</module>
         <module>sentinel-example/sentinel-spring-cloud-gateway-example</module>
         <module>sentinel-example/sentinel-zuul-example</module>
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
+        <module>nacos-example/nacos-config-2.4.x-example</module>
         <module>nacos-example/nacos-gateway-example</module>
         <module>seata-example/business-service</module>
         <module>seata-example/order-service</module>
