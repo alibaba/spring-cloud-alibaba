@@ -24,7 +24,9 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -66,11 +68,13 @@ public class NacosConfigAutoConfiguration {
 	@Bean
 	public NacosContextRefresher nacosContextRefresher(
 			NacosConfigManager nacosConfigManager,
-			NacosRefreshHistory nacosRefreshHistory) {
+			NacosRefreshHistory nacosRefreshHistory,
+			ConfigurableApplicationContext context,
+			ConfigurationPropertiesRebinder rebinder) {
 		// Consider that it is not necessary to be compatible with the previous
 		// configuration
 		// and use the new configuration if necessary.
-		return new NacosContextRefresher(nacosConfigManager, nacosRefreshHistory);
+		return new NacosContextRefresher(nacosConfigManager, nacosRefreshHistory, context, rebinder);
 	}
 
 }
