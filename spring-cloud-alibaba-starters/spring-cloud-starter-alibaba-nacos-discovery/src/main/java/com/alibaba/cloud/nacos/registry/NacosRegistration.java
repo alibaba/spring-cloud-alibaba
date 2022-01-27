@@ -35,6 +35,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
+ * @author changjin wei(魏昌进)
  */
 public class NacosRegistration implements Registration, ServiceInstance {
 
@@ -109,15 +110,14 @@ public class NacosRegistration implements Registration, ServiceInstance {
 			metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
 					nacosDiscoveryProperties.getIpDeleteTimeout().toString());
 		}
-		customize(registrationCustomizers, this);
+		customize(registrationCustomizers);
 	}
 
-	private static void customize(
-			List<NacosRegistrationCustomizer> registrationCustomizers,
-			NacosRegistration registration) {
+	protected void customize(
+			List<NacosRegistrationCustomizer> registrationCustomizers) {
 		if (registrationCustomizers != null) {
 			for (NacosRegistrationCustomizer customizer : registrationCustomizers) {
-				customizer.customize(registration);
+				customizer.customize(this);
 			}
 		}
 	}
