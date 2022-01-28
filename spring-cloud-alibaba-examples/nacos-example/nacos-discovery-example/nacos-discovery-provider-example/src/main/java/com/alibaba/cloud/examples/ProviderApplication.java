@@ -68,7 +68,11 @@ public class ProviderApplication {
 
 		@GetMapping("/divide")
 		public String divide(@RequestParam Integer a, @RequestParam Integer b) {
-			return String.valueOf(a / b);
+			if(b == 0) {
+				return String.valueOf(0);
+			} else {
+				return String.valueOf(a / b);
+			}
 		}
 
 	}

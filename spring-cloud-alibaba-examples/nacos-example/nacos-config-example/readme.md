@@ -46,7 +46,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 2. Unzip the downloaded file and go to the nacos/bin folder(), And according to the actual situation of the operating system, execute the following command。[see reference for more detail](https://nacos.io/en-us/docs/quick-start.html)。
 	
 	1. Linux/Unix/Mac , execute `sh startup.sh -m standalone`
-	2. Windows , execute `cmd startup.cmd`
+	2. Windows , execute `cmd startup.cmd -m standalone`
 
 3. Execute the following command to add a configuration to Nacos Server.
 	
