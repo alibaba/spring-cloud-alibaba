@@ -114,10 +114,10 @@ The version number of the project is in the form of x.x.x, where x is a number, 
 
 As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been changed significantly in the Actuator module, and spring-cloud-commons is also changed quite a lot from 1.x.x to 2.0.0, we take the same version rule as SpringBoot version number.
 
-* 1.5.x for Spring Boot 1.5.x
-* 2.0.x for Spring Boot 2.0.x
-* 2.1.x for Spring Boot 2.1.x
-* 2.2.x for Spring Boot 2.2.x
+* 1.5.x for Spring Boot 1.5.x.
+* 2.0.x for Spring Boot 2.0.x.
+* 2.1.x for Spring Boot 2.1.x.
+* 2.2.x for Spring Boot 2.2.x.
 
 ## Code of Conduct
 This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
