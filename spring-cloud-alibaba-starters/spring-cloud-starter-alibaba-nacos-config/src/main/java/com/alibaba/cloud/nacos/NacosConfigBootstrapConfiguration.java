@@ -17,14 +17,19 @@
 package com.alibaba.cloud.nacos;
 
 import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
+import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.SearchStrategy;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xiaojing
+ * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
@@ -47,6 +52,17 @@ public class NacosConfigBootstrapConfiguration {
 	public NacosPropertySourceLocator nacosPropertySourceLocator(
 			NacosConfigManager nacosConfigManager) {
 		return new NacosPropertySourceLocator(nacosConfigManager);
+	}
+
+
+	/**
+	 * Compatible with spring boot < 2.4.0.
+	 */
+	@Bean
+	@ConditionalOnMissingBean(search = SearchStrategy.CURRENT)
+	public ConfigurationPropertiesRebinder smartConfigurationPropertiesRebinder(
+			ConfigurationPropertiesBeans beans) {
+		return new SmartConfigurationPropertiesRebinder(beans);
 	}
 
 }

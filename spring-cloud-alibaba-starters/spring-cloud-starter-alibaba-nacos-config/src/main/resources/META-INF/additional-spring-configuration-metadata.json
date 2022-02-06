@@ -88,6 +88,12 @@
       "name": "spring.cloud.nacos.password",
       "type": "java.lang.String",
       "description": "nacos password to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.config.refresh-behavior",
+      "type": "com.alibaba.cloud.nacos.refresh.RefreshBehavior",
+      "defaultValue": "ALL",
+      "description": "ConfigurationPropertiesBean refresh behavior."
     }
   ]
 }
