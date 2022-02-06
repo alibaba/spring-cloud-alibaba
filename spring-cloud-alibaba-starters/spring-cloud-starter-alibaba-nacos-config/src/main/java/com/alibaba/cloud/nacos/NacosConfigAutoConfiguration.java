@@ -19,17 +19,21 @@ package com.alibaba.cloud.nacos;
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshProperties;
+import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author juven.xuxb
+ * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
@@ -71,6 +75,13 @@ public class NacosConfigAutoConfiguration {
 		// configuration
 		// and use the new configuration if necessary.
 		return new NacosContextRefresher(nacosConfigManager, nacosRefreshHistory);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(search = SearchStrategy.CURRENT)
+	public ConfigurationPropertiesRebinder smartConfigurationPropertiesRebinder(
+			ConfigurationPropertiesBeans beans) {
+		return new SmartConfigurationPropertiesRebinder(beans);
 	}
 
 }
