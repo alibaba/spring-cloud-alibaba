@@ -9,23 +9,10 @@ OpenFeign 整合 Sentinel 断路器实现
 1. 添加依赖
 
 ```xml
-<!-- spring cloud alibaba 2021.0 暂时使用 spring cloud 2020.0.1 -->
-<!-- 如果需要支持 Feign client 的配置, 需要升级 spring-cloud-openfeign-core 到 3.0.4 -->
-<!-- 或者升级 spring cloud 到 2020.0.4 -->
+<!-- 需要 spring cloud 2020.0.4 及以上版本 -->
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-openfeign</artifactId>
-    <exclusions>
-        <exclusion>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-openfeign-core</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-openfeign-core</artifactId>
-    <version>3.0.4</version> <!-- version >= 3.0.4 -->
 </dependency>
 ```
 2. 添加配置到配置中心
