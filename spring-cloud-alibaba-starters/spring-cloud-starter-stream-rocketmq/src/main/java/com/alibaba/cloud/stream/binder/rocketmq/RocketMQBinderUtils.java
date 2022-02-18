@@ -20,10 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQProperties;
 
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>

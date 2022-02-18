@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -247,7 +246,7 @@ public class DubboSpringCloudConsumerBootstrap {
 		@PostMapping("/params")
 		String params(@RequestParam("b") String paramB, @RequestParam("a") int paramA);
 
-		@PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_UTF8_VALUE)
+		@PostMapping(value = "/request/body/map", produces = APPLICATION_JSON_VALUE)
 		User requestBody(@RequestParam("param") String param,
 				@RequestBody Map<String, Object> data);
 

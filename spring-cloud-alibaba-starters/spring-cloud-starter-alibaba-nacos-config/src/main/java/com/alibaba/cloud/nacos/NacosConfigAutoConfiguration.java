@@ -18,7 +18,6 @@ package com.alibaba.cloud.nacos;
 
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
-import com.alibaba.cloud.nacos.refresh.NacosRefreshProperties;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -45,11 +44,6 @@ public class NacosConfigAutoConfiguration {
 					NacosConfigProperties.class);
 		}
 		return new NacosConfigProperties();
-	}
-
-	@Bean
-	public NacosRefreshProperties nacosRefreshProperties() {
-		return new NacosRefreshProperties();
 	}
 
 	@Bean

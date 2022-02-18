@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,7 +34,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.lang.Nullable;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.ClassUtils;
 
@@ -110,7 +110,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 		final Map<String, String> jsonTypes = decodeJsonTypes(source);
 		source.forEach((key, value) -> {
 			if (matches(key) && !(key.equals(JSON_TYPES))) {
-				if (jsonTypes != null && jsonTypes.containsKey(key)) {
+				if (jsonTypes.containsKey(key)) {
 					Class<?> type = Object.class;
 					String requestedType = jsonTypes.get(key);
 					boolean trusted = trusted(requestedType);
@@ -205,7 +205,6 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 		return value;
 	}
 
-	@Nullable
 	private Map<String, String> decodeJsonTypes(Map<String, String> source) {
 		if (source.containsKey(JSON_TYPES)) {
 			String value = source.get(JSON_TYPES);
@@ -218,7 +217,7 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 				log.error("Could not decode json types: " + value, e);
 			}
 		}
-		return null;
+		return Collections.emptyMap();
 	}
 
 	protected boolean trusted(String requestedType) {

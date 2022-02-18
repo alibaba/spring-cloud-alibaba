@@ -109,7 +109,7 @@ public class SentinelGatewayAutoConfiguration {
 						ApiPredicateGroupItem.class);
 				SimpleModule module = new SimpleModule(
 						"PolymorphicApiPredicateItemDeserializerModule",
-						new Version(1, 0, 0, null));
+						new Version(1, 0, 0, null, null, null));
 				module.addDeserializer(ApiPredicateItem.class, deserializer);
 				objectMapper.registerModule(module);
 			}
@@ -142,7 +142,7 @@ public class SentinelGatewayAutoConfiguration {
 						ApiPredicateGroupItem.class);
 				SimpleModule module = new SimpleModule(
 						"PolymorphicGatewayDeserializerModule",
-						new Version(1, 0, 0, null));
+						new Version(1, 0, 0, null, null, null));
 				module.addDeserializer(ApiPredicateItem.class, deserializer);
 				xmlMapper.registerModule(module);
 			}

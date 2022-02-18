@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Dubbo Rest Metadata {@link Endpoint}.
@@ -35,7 +35,7 @@ public class DubboRestMetadataEndpoint {
 	@Autowired
 	private DubboMetadataService dubboMetadataService;
 
-	@ReadOperation(produces = APPLICATION_JSON_UTF8_VALUE)
+	@ReadOperation(produces = APPLICATION_JSON_VALUE)
 	public String get() {
 		return dubboMetadataService.getServiceRestMetadata();
 	}

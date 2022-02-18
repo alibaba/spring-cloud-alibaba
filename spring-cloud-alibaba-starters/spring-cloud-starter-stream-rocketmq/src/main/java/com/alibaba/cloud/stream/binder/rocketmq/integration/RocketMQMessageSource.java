@@ -113,13 +113,13 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			String tags = rocketMQConsumerProperties.getExtension().getTags();
 			String sql = rocketMQConsumerProperties.getExtension().getSql();
 
-			if (!StringUtils.isEmpty(tags) && !StringUtils.isEmpty(sql)) {
+			if (StringUtils.hasLength(tags) && StringUtils.hasLength(sql)) {
 				messageSelector = MessageSelector.byTag(tags);
 			}
-			else if (!StringUtils.isEmpty(tags)) {
+			else if (StringUtils.hasLength(tags)) {
 				messageSelector = MessageSelector.byTag(tags);
 			}
-			else if (!StringUtils.isEmpty(sql)) {
+			else if (StringUtils.hasLength(sql)) {
 				messageSelector = MessageSelector.bySql(sql);
 			}
 
