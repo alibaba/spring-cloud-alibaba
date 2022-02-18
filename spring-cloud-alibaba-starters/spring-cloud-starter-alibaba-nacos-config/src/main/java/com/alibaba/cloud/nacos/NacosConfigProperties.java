@@ -53,6 +53,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
 import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
 import static com.alibaba.nacos.api.PropertyKeyConst.PASSWORD;
+import static com.alibaba.nacos.api.PropertyKeyConst.RAM_ROLE_NAME;
 import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
@@ -206,6 +207,11 @@ public class NacosConfigProperties {
 	private String secretKey;
 
 	/**
+	 * access key for namespace.
+	 */
+	private String ramRoleName;
+
+	/**
 	 * context path for nacos config server.
 	 */
 	private String contextPath;
@@ -357,6 +363,14 @@ public class NacosConfigProperties {
 
 	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
+	}
+
+	public String getRamRoleName() {
+		return ramRoleName;
+	}
+
+	public void setRamRoleName(String ramRoleName) {
+		this.ramRoleName = ramRoleName;
 	}
 
 	public String getEncode() {
@@ -551,6 +565,7 @@ public class NacosConfigProperties {
 		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
 		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
+		properties.put(RAM_ROLE_NAME, Objects.toString(this.ramRoleName, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
 		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
 		properties.put(CONFIG_LONG_POLL_TIMEOUT,
@@ -563,8 +578,7 @@ public class NacosConfigProperties {
 			int index = endpoint.indexOf(":");
 			properties.put(ENDPOINT, endpoint.substring(0, index));
 			properties.put(ENDPOINT_PORT, endpoint.substring(index + 1));
-		}
-		else {
+		} else {
 			properties.put(ENDPOINT, endpoint);
 		}
 
@@ -603,6 +617,7 @@ public class NacosConfigProperties {
 				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig + ", endpoint='"
 				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
 				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
+				+ ", ramRoleName='" + ramRoleName + '\''
 				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
 				+ '\'' + ", name='" + name + '\'' + '\'' + ", shares=" + sharedConfigs
 				+ ", extensions=" + extensionConfigs + ", refreshEnabled="

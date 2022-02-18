@@ -39,6 +39,8 @@ public class NacosDataSourceFactoryBeanTests {
 
 	private String serverAddr = "localhost:8848";
 
+	private String contextPath = "/my-nacos";
+
 	private String accessKey = "ak";
 
 	private String secretKey = "sk";
@@ -56,6 +58,7 @@ public class NacosDataSourceFactoryBeanTests {
 		factoryBean.setDataId(dataId);
 		factoryBean.setGroupId(groupId);
 		factoryBean.setServerAddr(serverAddr);
+		factoryBean.setContextPath(contextPath);
 		factoryBean.setConverter(converter);
 
 		NacosDataSource nacosDataSource = mock(NacosDataSource.class);
@@ -69,6 +72,7 @@ public class NacosDataSourceFactoryBeanTests {
 		assertThat(factoryBean.getDataId()).isEqualTo(dataId);
 		assertThat(factoryBean.getGroupId()).isEqualTo(groupId);
 		assertThat(factoryBean.getServerAddr()).isEqualTo(serverAddr);
+		assertThat(factoryBean.getContextPath()).isEqualTo(contextPath);
 	}
 
 	@Test

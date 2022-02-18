@@ -114,6 +114,8 @@ public class EchoController {
 
 - 启动nacos 注册中心
 
+- 启动sentinel
+
 - 启动服务提供方：
 
 1. IDE直接启动：找到主类 `ProviderApplication`，执行 main 方法启动应用。
@@ -123,3 +125,5 @@ public class EchoController {
 
 1. IDE直接启动：找到主类 `ConsumerApplication`，执行 main 方法启动应用。
 2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar sentinel-feign-consumer-example.jar`启动应用。
+
+- 启动之后，Sentinel Dashboard可能看不见service-consumer服务的详细信息，多请求几次接口即可。

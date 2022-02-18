@@ -214,6 +214,12 @@ public class NacosDiscoveryProperties {
 	 */
 	private boolean failureToleranceEnabled;
 
+	/**
+	 * Throw exceptions during service registration if true, otherwise, log error
+	 * (defaults to true).
+	 */
+	private boolean failFast = true;
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -501,6 +507,14 @@ public class NacosDiscoveryProperties {
 		this.failureToleranceEnabled = failureToleranceEnabled;
 	}
 
+	public boolean isFailFast() {
+		return failFast;
+	}
+
+	public void setFailFast(boolean failFast) {
+		this.failFast = failFast;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -531,6 +545,7 @@ public class NacosDiscoveryProperties {
 				&& Objects.equals(secretKey, that.secretKey)
 				&& Objects.equals(heartBeatInterval, that.heartBeatInterval)
 				&& Objects.equals(heartBeatTimeout, that.heartBeatTimeout)
+				&& Objects.equals(failFast, that.failFast)
 				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout);
 	}
 
@@ -540,7 +555,7 @@ public class NacosDiscoveryProperties {
 				watchDelay, logName, service, weight, clusterName, group,
 				namingLoadCacheAtStart, metadata, registerEnabled, ip, networkInterface,
 				port, secure, accessKey, secretKey, heartBeatInterval, heartBeatTimeout,
-				ipDeleteTimeout, instanceEnabled, ephemeral, failureToleranceEnabled);
+				ipDeleteTimeout, instanceEnabled, ephemeral, failureToleranceEnabled, failFast);
 	}
 
 	@Override
@@ -560,6 +575,7 @@ public class NacosDiscoveryProperties {
 				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", instanceEnabled="
 				+ instanceEnabled + ", ephemeral=" + ephemeral
 				+ ", failureToleranceEnabled=" + failureToleranceEnabled + '}';
+				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", failFast=" + failFast + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {

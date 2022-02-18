@@ -19,27 +19,44 @@ package com.alibaba.cloud.stream.binder.rocketmq.properties;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 
 /**
- * @author Timur Valiev
+ * Container object for RocketMQ specific extended producer and consumer binding
+ * properties.
+ *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public class RocketMQBindingProperties implements BinderSpecificPropertiesProvider {
+public class RocketMQSpecificPropertiesProvider
+		implements BinderSpecificPropertiesProvider {
 
+	/**
+	 * Consumer specific binding properties. @see {@link RocketMQConsumerProperties}.
+	 */
 	private RocketMQConsumerProperties consumer = new RocketMQConsumerProperties();
 
+	/**
+	 * Producer specific binding properties. @see {@link RocketMQProducerProperties}.
+	 */
 	private RocketMQProducerProperties producer = new RocketMQProducerProperties();
 
+	/**
+	 * @return {@link RocketMQConsumerProperties} Consumer specific binding
+	 * properties. @see {@link RocketMQConsumerProperties}.
+	 */
 	@Override
 	public RocketMQConsumerProperties getConsumer() {
-		return consumer;
+		return this.consumer;
 	}
 
 	public void setConsumer(RocketMQConsumerProperties consumer) {
 		this.consumer = consumer;
 	}
 
+	/**
+	 * @return {@link RocketMQProducerProperties} Producer specific binding
+	 * properties. @see {@link RocketMQProducerProperties}.
+	 */
 	@Override
 	public RocketMQProducerProperties getProducer() {
-		return producer;
+		return this.producer;
 	}
 
 	public void setProducer(RocketMQProducerProperties producer) {

@@ -35,6 +35,7 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.client.discovery.event.HeartbeatEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -45,8 +46,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 /**
  * @author xiaojing
  * @author yuhuangbin
+ * @author pengfei.lu
  */
-public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycle {
+public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycle, DisposableBean {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosWatch.class);
 
@@ -66,6 +68,14 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 
 	private final ThreadPoolTaskScheduler taskScheduler;
 
+	public NacosWatch(NacosServiceManager nacosServiceManager,
+			NacosDiscoveryProperties properties) {
+		this.nacosServiceManager = nacosServiceManager;
+		this.properties = properties;
+		this.taskScheduler = getTaskScheduler();
+	}
+
+	@Deprecated
 	public NacosWatch(NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties properties,
 			ObjectProvider<ThreadPoolTaskScheduler> taskScheduler) {
@@ -191,4 +201,8 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 
 	}
 
+	@Override
+	public void destroy() {
+		this.stop();
+	}
 }

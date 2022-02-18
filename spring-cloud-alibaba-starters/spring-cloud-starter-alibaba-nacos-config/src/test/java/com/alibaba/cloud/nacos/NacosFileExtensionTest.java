@@ -67,7 +67,7 @@ public class NacosFileExtensionTest {
 						throws Throwable {
 					if ("test-name.yaml".equals(args[0])
 							&& "DEFAULT_GROUP".equals(args[1])) {
-						return "user:\n  name: hello\n  age: 12";
+						return "user:\n  name: hello\n  age: 12\n---\nuser:\n  gender: male";
 					}
 					return "";
 				}
@@ -88,6 +88,7 @@ public class NacosFileExtensionTest {
 
 		Assert.assertEquals(environment.getProperty("user.name"), "hello");
 		Assert.assertEquals(environment.getProperty("user.age"), "12");
+		Assert.assertEquals(environment.getProperty("user.gender"), "male");
 	}
 
 	@Configuration
