@@ -142,9 +142,9 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 	 * The actual execution of a user-defined input consumption service method.
 	 * @param messageExtList rocket mq message list
 	 * @param failSupplier {@link ConsumeConcurrentlyStatus} or
-	 * {@link ConsumeOrderlyStatus}
+	 *     {@link ConsumeOrderlyStatus}
 	 * @param sucSupplier {@link ConsumeConcurrentlyStatus} or
-	 * {@link ConsumeOrderlyStatus}
+	 *     {@link ConsumeOrderlyStatus}
 	 * @param <R> object
 	 * @return R
 	 */
@@ -195,7 +195,8 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 			throw new MessagingException(MessageBuilder.withPayload(
 					"DefaultMQPushConsumer init failed, Caused by " + e.getMessage())
 					.build(), e);
-		}finally {
+		}
+		finally {
 			InstrumentationManager.addHealthInstrumentation(instrumentation);
 		}
 	}

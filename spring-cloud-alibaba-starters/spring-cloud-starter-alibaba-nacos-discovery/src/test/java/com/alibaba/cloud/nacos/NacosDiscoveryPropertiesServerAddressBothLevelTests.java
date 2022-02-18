@@ -29,18 +29,17 @@ import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationC
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.alibaba.cloud.nacos.NacosDiscoveryPropertiesServerAddressBothLevelTests.TestConfig;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-		classes = NacosDiscoveryPropertiesServerAddressBothLevelTests.TestConfig.class,
-		properties = { "spring.cloud.nacos.discovery.server-addr=321.321.321.321:8848",
-				"spring.cloud.nacos.server-addr=123.123.123.123:8848" },
-		webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = TestConfig.class, properties = {
+		"spring.application.name=app",
+		"spring.cloud.nacos.discovery.server-addr=321.321.321.321:8848",
+		"spring.cloud.nacos.server-addr=123.123.123.123:8848" })
 public class NacosDiscoveryPropertiesServerAddressBothLevelTests {
 
 	@Autowired

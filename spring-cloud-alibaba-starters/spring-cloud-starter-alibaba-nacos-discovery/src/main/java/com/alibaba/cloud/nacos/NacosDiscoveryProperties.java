@@ -555,7 +555,8 @@ public class NacosDiscoveryProperties {
 				watchDelay, logName, service, weight, clusterName, group,
 				namingLoadCacheAtStart, metadata, registerEnabled, ip, networkInterface,
 				port, secure, accessKey, secretKey, heartBeatInterval, heartBeatTimeout,
-				ipDeleteTimeout, instanceEnabled, ephemeral, failureToleranceEnabled, failFast);
+				ipDeleteTimeout, instanceEnabled, ephemeral, failureToleranceEnabled,
+				failFast);
 	}
 
 	@Override
@@ -574,7 +575,7 @@ public class NacosDiscoveryProperties {
 				+ heartBeatInterval + ", heartBeatTimeout=" + heartBeatTimeout
 				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", instanceEnabled="
 				+ instanceEnabled + ", ephemeral=" + ephemeral
-				+ ", failureToleranceEnabled=" + failureToleranceEnabled + '}';
+				+ ", failureToleranceEnabled=" + failureToleranceEnabled + '}'
 				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", failFast=" + failFast + '}';
 	}
 
@@ -585,7 +586,7 @@ public class NacosDiscoveryProperties {
 					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
 				serverAddr = env.resolvePlaceholders(
-						"${spring.cloud.nacos.server-addr:localhost:8848}");
+						"${spring.cloud.nacos.server-addr:127.0.0.1:8848}");
 			}
 			this.setServerAddr(serverAddr);
 		}

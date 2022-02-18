@@ -37,7 +37,7 @@ public class NacosDataSourceFactoryBeanTests {
 
 	private String groupId = "DEFAULT_GROUP";
 
-	private String serverAddr = "localhost:8848";
+	private String serverAddr = "127.0.0.1:8848";
 
 	private String contextPath = "/my-nacos";
 

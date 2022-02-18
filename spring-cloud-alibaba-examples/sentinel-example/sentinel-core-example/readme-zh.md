@@ -206,7 +206,7 @@ Sentinel starter 整合了目前存在的几类 ReadableDataSource。只需要�
 spring.cloud.sentinel.datasource.ds1.file.file=classpath: degraderule.json
 spring.cloud.sentinel.datasource.ds1.file.data-type=json
 
-spring.cloud.sentinel.datasource.ds2.nacos.server-addr=localhost:8848
+spring.cloud.sentinel.datasource.ds2.nacos.server-addr=127.0.0.1:8848
 spring.cloud.sentinel.datasource.ds2.nacos.dataId=sentinel
 spring.cloud.sentinel.datasource.ds2.nacos.groupId=DEFAULT_GROUP
 spring.cloud.sentinel.datasource.ds2.nacos.data-type=json

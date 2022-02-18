@@ -167,7 +167,6 @@ public class GenearalServiceSubscribeHandler extends AbstractServiceSubscribeHan
 	 * Clone the subscribed URLs based on the template URLs.
 	 * @param serviceInstances the list of
 	 * {@link org.springframework.cloud.client.ServiceInstance service instances}
-	 * @return
 	 */
 	List<URL> cloneExportedURLs(List<ServiceInstance> serviceInstances) {
 
