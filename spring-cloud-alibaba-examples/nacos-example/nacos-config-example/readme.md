@@ -169,8 +169,8 @@ As shown in the figure above, Sources indicates which Nacos Config configuration
 
 Configuration item|key|default value|Description
 ----|----|-----|-----
-server address|spring.cloud.nacos.config.server-addr||
-DataId prefix|spring.cloud.nacos.config.prefix||spring.application.name
+server address|spring.cloud.nacos.config.server-addr||server id and port
+DataId prefix|spring.cloud.nacos.config.prefix||${spring.application.name}|
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
 dataID suffix|spring.cloud.nacos.config.file-extension|properties|the suffix of nacos config dataId, also the file extension of config content.
 encoding |spring.cloud.nacos.config.encode|UTF-8|Content encoding
@@ -179,8 +179,9 @@ namespace|spring.cloud.nacos.config.namespace||One of the common scenarios is th
 AccessKey|spring.cloud.nacos.config.access-key||
 SecretKey|spring.cloud.nacos.config.secret-key||
 context-path|spring.cloud.nacos.config.context-path||Relative path of the server API
-endpoint|spring.cloud.nacos.config.endpoint|UTF-8|The domain name of a service, through which the server address can be dynamically obtained.
+endpoint|spring.cloud.nacos.config.endpoint||The domain name of a service, through which the server address can be dynamically obtained.
 refresh|spring.cloud.nacos.config.refresh.enabled|true|enable auto refresh
+cluster name|spring.cloud.nacos.config.cluster-name||
 
 
 
