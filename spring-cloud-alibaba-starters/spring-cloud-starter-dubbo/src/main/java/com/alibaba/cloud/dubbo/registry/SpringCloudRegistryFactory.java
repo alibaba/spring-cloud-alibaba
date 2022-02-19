@@ -37,7 +37,7 @@ import static com.alibaba.cloud.dubbo.util.DubboCloudConstants.SPRING_CLOUD_REGI
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @see RegistryFactory
- * @see DubboCloudRegistry
+ * @see SpringCloudRegistry
  */
 public class SpringCloudRegistryFactory extends AbstractRegistryFactory {
 
