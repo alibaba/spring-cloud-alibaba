@@ -80,7 +80,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 		Environment env = context.getEnvironment();
 
 		String endpointBasePath = env.getProperty(MANAGEMENT_ENDPOINT_BASE_PATH);
-		if (!StringUtils.isEmpty(endpointBasePath)) {
+		if (StringUtils.hasLength(endpointBasePath)) {
 			metadata.put(MANAGEMENT_ENDPOINT_BASE_PATH, endpointBasePath);
 		}
 
@@ -90,10 +90,10 @@ public class NacosRegistration implements Registration, ServiceInstance {
 			String contextPath = env
 					.getProperty("management.server.servlet.context-path");
 			String address = env.getProperty("management.server.address");
-			if (!StringUtils.isEmpty(contextPath)) {
+			if (StringUtils.hasLength(contextPath)) {
 				metadata.put(MANAGEMENT_CONTEXT_PATH, contextPath);
 			}
-			if (!StringUtils.isEmpty(address)) {
+			if (StringUtils.hasLength(address)) {
 				metadata.put(MANAGEMENT_ADDRESS, address);
 			}
 		}

@@ -22,7 +22,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.rpc.ExporterListener;
 import org.apache.dubbo.rpc.Filter;
 
@@ -80,7 +79,7 @@ public @interface DubboTransported {
 	 * Whether to reconnect if connection is lost, if not specify, reconnect is enabled by
 	 * default, and the interval for retry connecting is 2000 ms.
 	 *
-	 * @see Reference#reconnect()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#reconnect()
 	 * @return reconnect time
 	 */
 	String reconnect() default "${dubbo.transport.reconnect:2000}";
@@ -89,7 +88,7 @@ public @interface DubboTransported {
 	 * Maximum connections service provider can accept, default value is 0 - connection is
 	 * shared.
 	 *
-	 * @see Reference#connections()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#connections()
 	 * @return maximum connections
 	 */
 	int connections() default 0;
@@ -97,7 +96,7 @@ public @interface DubboTransported {
 	/**
 	 * Service invocation retry times.
 	 *
-	 * @see Reference#retries()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#retries()
 	 * @return retry times
 	 */
 	int retries() default DEFAULT_RETRIES;
@@ -105,7 +104,7 @@ public @interface DubboTransported {
 	/**
 	 * Load balance strategy, legal values include: random, roundrobin, leastactive.
 	 *
-	 * @see Reference#loadbalance()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#loadbalance()
 	 * @return load balance strategy
 	 */
 	String loadbalance() default "${dubbo.transport.loadbalance:}";
@@ -113,7 +112,7 @@ public @interface DubboTransported {
 	/**
 	 * Maximum active requests allowed, default value is 0.
 	 *
-	 * @see Reference#actives()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#actives()
 	 * @return maximum active requests
 	 */
 	int actives() default 0;
@@ -121,7 +120,7 @@ public @interface DubboTransported {
 	/**
 	 * Timeout value for service invocation, default value is 0.
 	 *
-	 * @see Reference#timeout()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#timeout()
 	 * @return timeout for service invocation
 	 */
 	int timeout() default 0;
@@ -130,7 +129,7 @@ public @interface DubboTransported {
 	 * Specify cache implementation for service invocation, legal values include: lru,
 	 * threadlocal, jcache.
 	 *
-	 * @see Reference#cache()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#cache()
 	 * @return specify cache implementation for service invocation
 	 */
 	String cache() default "${dubbo.transport.cache:}";
@@ -139,7 +138,7 @@ public @interface DubboTransported {
 	 * Filters for service invocation.
 	 *
 	 * @see Filter
-	 * @see Reference#filter()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#filter()
 	 * @return filters for service invocation
 	 */
 	String[] filter() default {};
@@ -148,7 +147,7 @@ public @interface DubboTransported {
 	 * Listeners for service exporting and unexporting.
 	 *
 	 * @see ExporterListener
-	 * @see Reference#listener()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#listener()
 	 * @return listener
 	 */
 	String[] listener() default {};
@@ -156,7 +155,7 @@ public @interface DubboTransported {
 	/**
 	 * Customized parameter key-value pair, for example: {key1, value1, key2, value2}.
 	 *
-	 * @see Reference#parameters()
+	 * @see org.apache.dubbo.config.annotation.DubboReference#parameters()
 	 * @return parameters
 	 */
 	String[] parameters() default {};

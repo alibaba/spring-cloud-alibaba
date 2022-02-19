@@ -164,7 +164,7 @@ public class RocketMQMessageHandler extends AbstractMessageHandler implements Li
 			String tags = Optional
 					.ofNullable(message.getHeaders().get(RocketMQHeaders.TAGS)).orElse("")
 					.toString();
-			if (!StringUtils.isEmpty(tags)) {
+			if (StringUtils.hasLength(tags)) {
 				topicWithTags.append(":").append(tags);
 			}
 

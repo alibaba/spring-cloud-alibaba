@@ -99,7 +99,7 @@ public class DubboGenericServiceFactory {
 
 		return cache.computeIfAbsent(key, k -> {
 			ReferenceBean<GenericService> referenceBean = new ReferenceBean<>();
-			referenceBean.setGeneric(true);
+			referenceBean.setGeneric(Boolean.TRUE.toString());
 			referenceBean.setInterface(interfaceName);
 			referenceBean.setVersion(version);
 			referenceBean.setGroup(group);

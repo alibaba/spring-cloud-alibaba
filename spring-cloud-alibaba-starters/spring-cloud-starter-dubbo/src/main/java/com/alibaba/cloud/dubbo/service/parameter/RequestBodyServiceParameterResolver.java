@@ -108,7 +108,7 @@ public class RequestBodyServiceParameterResolver
 			}
 			catch (IOException e) {
 				throw new HttpMessageNotReadableException(
-						"I/O error while reading input message", e);
+						"I/O error while reading input message", e, null);
 			}
 		}
 

@@ -22,7 +22,6 @@ import java.util.Set;
 
 import com.alibaba.cloud.dubbo.metadata.ServiceRestMetadata;
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.config.annotation.Service;
 
 /**
  * Dubbo Metadata Service is a core interface for service subscribers, it must keep the
@@ -64,8 +63,8 @@ public interface DubboMetadataService {
 	 * Get the json content of an exported List of {@link URL URLs} by the
 	 * serviceInterface, group and version.
 	 * @param serviceInterface The class name of service interface
-	 * @param group {@link Service#group() the service group} (optional)
-	 * @param version {@link Service#version() the service version} (optional)~
+	 * @param group {@link org.apache.dubbo.config.annotation.DubboService#group() the service group} (optional)
+	 * @param version {@link org.apache.dubbo.config.annotation.DubboService#version() the service version} (optional)
 	 * @return non-null read-only {@link List}
 	 * @see URL
 	 */
