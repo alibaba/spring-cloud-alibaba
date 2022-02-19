@@ -216,7 +216,7 @@ NOTE: 在启动 Consumer 应用之前请先将 Nacos 服务启动好。具体启
 
 === Nacos Discovery 对外暴露的 Endpoint
 
-Nacos Discovery 内部提供了一个 Endpoint, 对应的 endpoint id 为 `nacos-discovery`。
+Nacos Discovery 内部提供了一个 Endpoint, 对应的 endpoint id 为 `nacosdiscovery`。
 
 Endpoint 暴露的 json 中包含了两种属性:
 
