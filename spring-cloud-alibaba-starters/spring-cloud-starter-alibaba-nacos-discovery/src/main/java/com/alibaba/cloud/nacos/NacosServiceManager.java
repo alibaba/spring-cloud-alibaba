@@ -112,9 +112,14 @@ public class NacosServiceManager {
 	}
 
 	public void nacosServiceShutDown() throws NacosException {
-		this.namingService.shutDown();
-		namingService = null;
-		namingMaintainService = null;
+		if (Objects.nonNull(this.namingService)) {
+			this.namingService.shutDown();
+			this.namingService = null;
+		}
+		if (Objects.nonNull(this.namingMaintainService)) {
+			this.namingMaintainService.shutDown();
+			this.namingMaintainService = null;
+		}
 	}
 
 	@EventListener

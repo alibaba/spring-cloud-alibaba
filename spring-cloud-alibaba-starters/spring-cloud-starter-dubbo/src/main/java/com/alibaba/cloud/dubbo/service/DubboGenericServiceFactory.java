@@ -78,6 +78,9 @@ public class DubboGenericServiceFactory {
 		String interfaceName = serviceClass.getName();
 		ReferenceBean<GenericService> referenceBean = build(interfaceName, version,
 				serviceName, emptyMap());
+		if (DubboMetadataService.class == serviceClass) {
+			referenceBean.setRouter("-default,revisionRouter");
+		}
 		return referenceBean.get();
 	}
 

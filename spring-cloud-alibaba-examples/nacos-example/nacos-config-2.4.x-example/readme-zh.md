@@ -46,7 +46,7 @@ spring:
   # 2.4.0 新增配置 spring.config.import
   config:
     import:
-      - optional:nacos:localhost:8848
+      - optional:nacos:127.0.0.1:8848
 ```
 
 3. 在 nacos 创建 test.yml 

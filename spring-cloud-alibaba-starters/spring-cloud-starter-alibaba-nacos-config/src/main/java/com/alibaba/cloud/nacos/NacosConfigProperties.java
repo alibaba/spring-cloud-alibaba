@@ -53,6 +53,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
 import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
 import static com.alibaba.nacos.api.PropertyKeyConst.PASSWORD;
+import static com.alibaba.nacos.api.PropertyKeyConst.RAM_ROLE_NAME;
 import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
@@ -106,7 +107,7 @@ public class NacosConfigProperties {
 					.resolvePlaceholders("${spring.cloud.nacos.config.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
 				serverAddr = environment.resolvePlaceholders(
-						"${spring.cloud.nacos.server-addr:localhost:8848}");
+						"${spring.cloud.nacos.server-addr:127.0.0.1:8848}");
 			}
 			this.setServerAddr(serverAddr);
 		}
@@ -204,6 +205,11 @@ public class NacosConfigProperties {
 	 * secret key for namespace.
 	 */
 	private String secretKey;
+
+	/**
+	 * access key for namespace.
+	 */
+	private String ramRoleName;
 
 	/**
 	 * context path for nacos config server.
@@ -359,6 +365,14 @@ public class NacosConfigProperties {
 		this.secretKey = secretKey;
 	}
 
+	public String getRamRoleName() {
+		return ramRoleName;
+	}
+
+	public void setRamRoleName(String ramRoleName) {
+		this.ramRoleName = ramRoleName;
+	}
+
 	public String getEncode() {
 		return encode;
 	}
@@ -428,19 +442,19 @@ public class NacosConfigProperties {
 	 * @return string
 	 */
 	@Deprecated
-	@DeprecatedConfigurationProperty(
-			reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.",
-			replacement = PREFIX + ".shared-configs[x]")
+	@DeprecatedConfigurationProperty(reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.", replacement = PREFIX
+			+ ".shared-configs[x]")
 	public String getSharedDataids() {
-		return null == getSharedConfigs() ? null : getSharedConfigs().stream()
-				.map(Config::getDataId).collect(Collectors.joining(COMMAS));
+		return null == getSharedConfigs() ? null
+				: getSharedConfigs().stream().map(Config::getDataId)
+						.collect(Collectors.joining(COMMAS));
 	}
 
 	/**
 	 * recommend to use {@link NacosConfigProperties#sharedConfigs} and not use it at the
 	 * same time .
 	 * @param sharedDataids the dataids for configurable multiple shared configurations ,
-	 * multiple separated by commas .
+	 *     multiple separated by commas .
 	 */
 	@Deprecated
 	public void setSharedDataids(String sharedDataids) {
@@ -458,9 +472,8 @@ public class NacosConfigProperties {
 	 * @return string
 	 */
 	@Deprecated
-	@DeprecatedConfigurationProperty(
-			reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.",
-			replacement = PREFIX + ".shared-configs[x].refresh")
+	@DeprecatedConfigurationProperty(reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.", replacement = PREFIX
+			+ ".shared-configs[x].refresh")
 	public String getRefreshableDataids() {
 		return null == getSharedConfigs() ? null
 				: getSharedConfigs().stream().filter(Config::isRefresh)
@@ -506,9 +519,8 @@ public class NacosConfigProperties {
 	 * @return extensionConfigs
 	 */
 	@Deprecated
-	@DeprecatedConfigurationProperty(
-			reason = "replaced to NacosConfigProperties#extensionConfigs and not use it at the same time .",
-			replacement = PREFIX + ".extension-configs[x]")
+	@DeprecatedConfigurationProperty(reason = "replaced to NacosConfigProperties#extensionConfigs and not use it at the same time .", replacement = PREFIX
+			+ ".extension-configs[x]")
 	public List<Config> getExtConfig() {
 		return this.getExtensionConfigs();
 	}
@@ -551,6 +563,7 @@ public class NacosConfigProperties {
 		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
 		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
+		properties.put(RAM_ROLE_NAME, Objects.toString(this.ramRoleName, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
 		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
 		properties.put(CONFIG_LONG_POLL_TIMEOUT,
@@ -603,10 +616,10 @@ public class NacosConfigProperties {
 				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig + ", endpoint='"
 				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
 				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
-				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
-				+ '\'' + ", name='" + name + '\'' + '\'' + ", shares=" + sharedConfigs
-				+ ", extensions=" + extensionConfigs + ", refreshEnabled="
-				+ refreshEnabled + '}';
+				+ ", ramRoleName='" + ramRoleName + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ '\'' + ", shares=" + sharedConfigs + ", extensions=" + extensionConfigs
+				+ ", refreshEnabled=" + refreshEnabled + '}';
 	}
 
 	public static class Config {

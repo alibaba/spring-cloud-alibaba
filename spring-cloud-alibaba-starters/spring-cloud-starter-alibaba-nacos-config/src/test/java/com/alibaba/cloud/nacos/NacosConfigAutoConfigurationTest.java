@@ -38,7 +38,7 @@ public class NacosConfigAutoConfigurationTest {
 		assertThat(BeanFactoryUtils.beanNamesForTypeIncludingAncestors(context,
 				NacosConfigProperties.class).length).isEqualTo(1);
 		assertThat(context.getBean(NacosConfigProperties.class).getServerAddr())
-				.isEqualTo("localhost:8848");
+				.isEqualTo("127.0.0.1:8848");
 		context.close();
 	}
 

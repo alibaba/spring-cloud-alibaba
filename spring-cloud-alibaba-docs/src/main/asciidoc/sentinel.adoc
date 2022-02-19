@@ -225,7 +225,7 @@ spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 #spring.cloud.sentinel.datasource.ds1.file.converter-class=JsonFlowRuleListConverter
 #spring.cloud.sentinel.datasource.ds1.file.rule-type=flow
 
-spring.cloud.sentinel.datasource.ds2.nacos.server-addr=localhost:8848
+spring.cloud.sentinel.datasource.ds2.nacos.server-addr=127.0.0.1:8848
 spring.cloud.sentinel.datasource.ds2.nacos.data-id=sentinel
 spring.cloud.sentinel.datasource.ds2.nacos.group-id=DEFAULT_GROUP
 spring.cloud.sentinel.datasource.ds2.nacos.data-type=json

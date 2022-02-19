@@ -23,7 +23,7 @@ import org.springframework.boot.actuate.health.Status;
 /**
  * @author yuhuangbin
  */
-public class SidecarInstanceCache {
+public class SidecarInstanceInfo {
 
 	private String ip;
 
@@ -63,7 +63,7 @@ public class SidecarInstanceCache {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		SidecarInstanceCache that = (SidecarInstanceCache) o;
+		SidecarInstanceInfo that = (SidecarInstanceInfo) o;
 		return Objects.equals(ip, that.ip) && Objects.equals(port, that.port)
 				&& Objects.equals(status, that.status);
 	}

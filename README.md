@@ -16,16 +16,18 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 
 ## Features
 
-* **Flow control and service degradation**：Flow control for HTTP services is supported by default. You can also customize flow control and service degradation rules using annotations. The rules can be changed dynamically.
-* **Service registration and discovery**：Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
-* **Distributed configuration**：support for externalized configuration in a distributed system, auto refresh when configuration changes.
-* **Event-driven**：support for building highly scalable event-driven microservices connected with shared messaging systems.
-* **Distributed Transaction**：support for distributed transaction solution with high performance and ease of use.
-* **Alibaba Cloud Object Storage**：massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
-* **Alibaba Cloud SchedulerX**：accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
-* **Alibaba Cloud SMS**： A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
+* **Flow control and service degradation**: Flow control for HTTP services is supported by default. You can also customize flow control and service degradation rules using annotations. The rules can be changed dynamically.
+* **Service registration and discovery**: Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
+* **Distributed configuration**: Support for externalized configuration in a distributed system, auto refresh when configuration changes.
+* **Event-driven**: Support for building highly scalable event-driven microservices connected with shared messaging systems.
+* **Distributed Transaction**: Support for distributed transaction solution with high performance and ease of use.
+* **Alibaba Cloud Object Storage**: Massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
+* **Alibaba Cloud SchedulerX**: Accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
+* **Alibaba Cloud SMS**: A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
 
 For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap.md).
+
+In addition to the above-mentioned features, for the needs of enterprise users' scenarios, [Microservices Engine (MSE)](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar) of Spring Cloud Alibaba's enterprise version provides an enterprise-level microservices governance center, which includes more powerful governance capabilities such as Grayscale Release, Service Warm-up, Lossless Online and Offline and Outlier Ejection. At the same time, it also provides a variety of products and solutions such as enterprise-level Nacos registration / configuration center, enterprise-level cloud native gateway.
 
 
 ## Components
@@ -34,51 +36,52 @@ For more features, please refer to [Roadmap](https://github.com/alibaba/spring-c
 
 **[Nacos](https://github.com/alibaba/Nacos)**: An easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 
-**[RocketMQ](https://rocketmq.apache.org/)**：A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
+**[RocketMQ](https://rocketmq.apache.org/)**: A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Dubbo](https://github.com/apache/dubbo)**：A high-performance, Java based open source RPC framework.
+**[Dubbo](https://github.com/apache/dubbo)**: A high-performance, Java based open source RPC framework.
 
-**[Seata](https://github.com/seata/seata)**：A distributed transaction solution with high performance and ease of use for microservices architecture.
+**[Seata](https://github.com/seata/seata)**: A distributed transaction solution with high performance and ease of use for microservices architecture.
 
-**[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**：An application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
+**[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**: An application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
 
 **[Alibaba Cloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
 
 **[Alibaba Cloud SMS](https://www.aliyun.com/product/sms)**: A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
 
-**[Alibaba Cloud SchedulerX](https://www.aliyun.com/aliware/schedulerx?spm=5176.10695662.784137.1.4b07363dej23L3)**:accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds..
+**[Alibaba Cloud SchedulerX](https://www.aliyun.com/aliware/schedulerx?spm=5176.10695662.784137.1.4b07363dej23L3)**: Accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds..
 
 For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap.md).
 
 ## How to build
-
-* **master branch**: Corresponds to Spring Cloud Greenwich & Spring Boot 2.x. JDK 1.8 or later versions are supported.
-* **finchley branch**: Corresponds to Spring Cloud Finchley & Spring Boot 2.x. JDK 1.8 or later versions are supported.
+* **2020.0 branch**: Corresponds to Spring Cloud 2020 & Spring Boot 2.4.x. JDK 1.8 or later versions are supported.
+* **master branch**: Corresponds to Spring Cloud Hoxton & Spring Boot 2.2.x. JDK 1.8 or later versions are supported.
+* **greenwich branch**: Corresponds to Spring Cloud Greenwich & Spring Boot 2.1.x. JDK 1.8 or later versions are supported.
+* **finchley branch**: Corresponds to Spring Cloud Finchley & Spring Boot 2.0.x. JDK 1.8 or later versions are supported.
 * **1.x branch**: Corresponds to Spring Cloud Edgware & Spring Boot 1.x, JDK 1.7 or later versions are supported.
 
 Spring Cloud uses Maven for most build-related activities, and you should be able to get off the ground quite quickly by cloning the project you are interested in and typing:
-
-	./mvnw install
-
+```bash
+./mvnw install
+```
 
 ## How to Use
 
 ### Add maven dependency 
 
 These artifacts are available from Maven Central and Spring Release repository via BOM:
-
-	<dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>2.2.5.RELEASE</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2.2.7.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
 add the module in  `dependencies`.
 
 
@@ -118,6 +121,7 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 * 2.0.x for Spring Boot 2.0.x
 * 2.1.x for Spring Boot 2.1.x
 * 2.2.x for Spring Boot 2.2.x
+* 2020.x for Spring Boot 2.4.x
 
 ## Code of Conduct
 This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
@@ -135,7 +139,7 @@ Add yourself as an @author to the .java files that you modify substantially (mor
 
 Add some Javadocs and, if you change the namespace, some XSD doc elements.
 
-A few unit tests would help a lot as well — someone has to do it.
+A few unit tests would help a lot as well —— someone has to do it.
 
 If no-one else is using your branch, please rebase it against the current master (or other target branch in the main project).
 
@@ -144,4 +148,4 @@ When writing a commit message please follow these conventions, if you are fixing
 ## Contact Us
 Mailing list is recommended for discussing almost anything related to spring-cloud-alibaba. 
 
-spring-cloud-alibaba@googlegroups.com:You can ask questions here if you encounter any problem when using or developing spring-cloud-alibaba.
+spring-cloud-alibaba@googlegroups.com: You can ask questions here if you encounter any problem when using or developing spring-cloud-alibaba.

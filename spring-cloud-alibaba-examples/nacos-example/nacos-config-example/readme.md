@@ -46,7 +46,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 2. Unzip the downloaded file and go to the nacos/bin folder(), And according to the actual situation of the operating system, execute the following command。[see reference for more detail](https://nacos.io/en-us/docs/quick-start.html)。
 	
 	1. Linux/Unix/Mac , execute `sh startup.sh -m standalone`
-	2. Windows , execute `cmd startup.cmd`
+	2. Windows , execute `cmd startup.cmd -m standalone`
 
 3. Execute the following command to add a configuration to Nacos Server.
 	
@@ -62,9 +62,9 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		
 		content is
 		
-			user.id=1
-			user.name=james
-			user.age=17	
+		user.id=1
+		user.name=james
+		user.age=17	
 
 ### Start Application
 
@@ -119,7 +119,7 @@ In Nacos Config Starter, the splicing format of dataId is as follows
 
 * `spring.profiles.active` is the profile corresponding to the current environment. For details, please refer to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
-	**Note: when the activeprofile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
+	**Note: when the active profile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
 
 * `file-extension` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.file-extension`.
 Currently only the `properties` type is supported.
@@ -139,7 +139,7 @@ By default, Nacos Config Starter adds a listening function to all Nacos configur
 		
 If you need to dynamically refresh a bean, please refer to the Spring and Spring Cloud specifications. It is recommended to add `@RefreshScope` or `@ConfigurationProperties ` annotations to the class.
 
-Please refer to[ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
+Please refer to [ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
 
 	
 
@@ -156,8 +156,8 @@ Spring Boot 1.x: Add configuration management.security.enabled=false
 Spring Boot 2.x: Add configuration management.endpoints.web.exposure.include=*
 To view the endpoint information, visit the following URLS:
 
-Spring Boot1.x: Nacos Config  Endpoint URL is http://127.0.0.1:18083/nacos_config.
-Spring Boot2.x: Nacos Config  Endpoint URL is http://127.0.0.1:18083/actuator/nacos-config.
+Spring Boot 1.x: Nacos Config  Endpoint URL is http://127.0.0.1:18084/nacos_config.
+Spring Boot 2.x: Nacos Config  Endpoint URL is http://127.0.0.1:18084/actuator/nacosconfig.
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 

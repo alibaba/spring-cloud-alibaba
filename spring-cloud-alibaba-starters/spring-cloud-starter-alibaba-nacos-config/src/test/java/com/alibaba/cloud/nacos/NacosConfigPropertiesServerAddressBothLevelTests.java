@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
@@ -36,9 +35,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @RunWith(SpringRunner.class)
 @SpringBootTest(
 		classes = NacosConfigPropertiesServerAddressBothLevelTests.TestConfig.class,
-		properties = { "spring.cloud.nacos.config.server-addr=321,321,321,321:8848",
-				"spring.cloud.nacos.server-addr=123.123.123.123:8848" },
-		webEnvironment = RANDOM_PORT)
+		properties = { "spring.cloud.nacos.config.server-addr=321.321.321.321:8848",
+				"spring.cloud.nacos.server-addr=123.123.123.123:8848" }
+)
 public class NacosConfigPropertiesServerAddressBothLevelTests {
 
 	@Autowired
@@ -46,7 +45,7 @@ public class NacosConfigPropertiesServerAddressBothLevelTests {
 
 	@Test
 	public void testGetServerAddr() {
-		assertThat(properties.getServerAddr()).isEqualTo("321,321,321,321:8848");
+		assertThat(properties.getServerAddr()).isEqualTo("321.321.321.321:8848");
 	}
 
 	@Configuration

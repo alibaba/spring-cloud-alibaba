@@ -79,22 +79,22 @@ public final class SentinelFeign {
 				@Override
 				public InvocationHandler create(Target target,
 						Map<Method, MethodHandler> dispatch) {
-
 					GenericApplicationContext gctx = (GenericApplicationContext) Builder.this.applicationContext;
 					BeanDefinition def = gctx.getBeanDefinition(target.type().getName());
 
-					/**
-					 * Due to the change of the initialization sequence, BeanFactory.getBean will cause a circular dependency.
-					 * So FeignClientFactoryBean can only be obtained from BeanDefinition
+					/*
+					 * Due to the change of the initialization sequence,
+					 * BeanFactory.getBean will cause a circular dependency. So
+					 * FeignClientFactoryBean can only be obtained from BeanDefinition
 					 */
-					FeignClientFactoryBean feignClientFactoryBean = (FeignClientFactoryBean) def.getAttribute("feignClientsRegistrarFactoryBean");
+					FeignClientFactoryBean feignClientFactoryBean = (FeignClientFactoryBean) def
+							.getAttribute("feignClientsRegistrarFactoryBean");
 
 					Class fallback = feignClientFactoryBean.getFallback();
 					Class fallbackFactory = feignClientFactoryBean.getFallbackFactory();
 					String beanName = feignClientFactoryBean.getContextId();
-
 					if (!StringUtils.hasText(beanName)) {
-						beanName = feignClientFactoryBean.getName();
+						beanName = (String) getFieldValue(feignClientFactoryBean, "name");
 					}
 
 					Object fallbackInstance;
@@ -113,6 +113,7 @@ public final class SentinelFeign {
 						return new SentinelInvocationHandler(target, dispatch,
 								fallbackFactoryInstance);
 					}
+
 					return new SentinelInvocationHandler(target, dispatch);
 				}
 

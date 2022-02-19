@@ -31,11 +31,13 @@ public class NacosDataSourcePropertiesTests {
 	public void testNacosWithAddr() {
 		NacosDataSourceProperties nacosDataSourceProperties = new NacosDataSourceProperties();
 		nacosDataSourceProperties.setServerAddr("127.0.0.1:8848");
+		nacosDataSourceProperties.setContextPath("/my-nacos");
 		nacosDataSourceProperties.setRuleType(RuleType.FLOW);
 		nacosDataSourceProperties.setDataId("sentinel");
 		nacosDataSourceProperties.setGroupId("custom-group");
 		nacosDataSourceProperties.setDataType("xml");
 
+		assertThat(nacosDataSourceProperties.getContextPath()).isEqualTo("/my-nacos");
 		assertThat(nacosDataSourceProperties.getGroupId()).isEqualTo("custom-group");
 		assertThat(nacosDataSourceProperties.getDataId()).isEqualTo("sentinel");
 		assertThat(nacosDataSourceProperties.getDataType()).isEqualTo("xml");
