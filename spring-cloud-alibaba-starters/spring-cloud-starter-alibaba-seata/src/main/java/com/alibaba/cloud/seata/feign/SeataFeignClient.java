@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import feign.Client;
 import feign.Request;
 import feign.Response;
 import io.seata.core.context.RootContext;
 
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
@@ -74,8 +74,8 @@ public class SeataFeignClient implements Client {
 		seataXid.add(xid);
 		headers.put(RootContext.KEY_XID, seataXid);
 
-		return Request.create(request.method(), request.url(), headers, request.body(),
-				request.charset());
+		return Request.create(request.httpMethod(), request.url(), headers, request.body(),
+				request.charset(), null);
 	}
 
 }

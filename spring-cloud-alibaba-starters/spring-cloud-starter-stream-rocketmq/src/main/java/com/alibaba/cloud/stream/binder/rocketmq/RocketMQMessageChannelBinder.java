@@ -61,6 +61,7 @@ import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -101,8 +102,8 @@ public class RocketMQMessageChannelBinder extends
 
 			// if producerGroup is empty, using destination
 			String extendedProducerGroup = producerProperties.getExtension().getGroup();
-			String producerGroup = StringUtils.isEmpty(extendedProducerGroup)
-					? destination.getName() : extendedProducerGroup;
+			String producerGroup = StringUtils.hasLength(extendedProducerGroup)
+					? extendedProducerGroup : destination.getName();
 
 			RocketMQBinderConfigurationProperties mergedProperties = RocketMQBinderUtils
 					.mergeProperties(rocketBinderConfigurationProperties,
@@ -129,7 +130,7 @@ public class RocketMQMessageChannelBinder extends
 				DefaultMQProducer producer;
 				String ak = mergedProperties.getAccessKey();
 				String sk = mergedProperties.getSecretKey();
-				if (!StringUtils.isEmpty(ak) && !StringUtils.isEmpty(sk)) {
+				if (StringUtils.hasLength(ak) && StringUtils.hasLength(sk)) {
 					RPCHook rpcHook = new AclClientRPCHook(
 							new SessionCredentials(ak, sk));
 					producer = new DefaultMQProducer(producerGroup, rpcHook,
@@ -318,7 +319,7 @@ public class RocketMQMessageChannelBinder extends
 				.getBeansOfType(ObjectMapper.class).values().iterator().next();
 		JacksonRocketMQHeaderMapper headerMapper = new JacksonRocketMQHeaderMapper(
 				objectMapper);
-		if (!StringUtils.isEmpty(trustedPackages)) {
+		if (!CollectionUtils.isEmpty(trustedPackages)) {
 			headerMapper.addTrustedPackages(trustedPackages);
 		}
 		return headerMapper;

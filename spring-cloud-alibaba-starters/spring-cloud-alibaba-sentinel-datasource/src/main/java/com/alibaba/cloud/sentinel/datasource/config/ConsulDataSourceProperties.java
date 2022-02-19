@@ -16,9 +16,9 @@
 
 package com.alibaba.cloud.sentinel.datasource.config;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.ConsulDataSourceFactoryBean;
 
-import org.springframework.util.StringUtils;
 
 /**
  * Consul Properties class Using by {@link DataSourcePropertiesConfiguration} and

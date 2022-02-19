@@ -98,17 +98,17 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 
 	private void checkBlock4RestTemplate(Class<?> blockClass, String blockMethod,
 			String beanName, String type) {
-		if (blockClass == void.class && StringUtils.isEmpty(blockMethod)) {
+		if (blockClass == void.class && !StringUtils.hasLength(blockMethod)) {
 			return;
 		}
-		if (blockClass != void.class && StringUtils.isEmpty(blockMethod)) {
+		if (blockClass != void.class && !StringUtils.hasLength(blockMethod)) {
 			log.error(
 					"{} class attribute exists but {} method attribute is not exists in bean[{}]",
 					type, type, beanName);
 			throw new IllegalArgumentException(type + " class attribute exists but "
 					+ type + " method attribute is not exists in bean[" + beanName + "]");
 		}
-		else if (blockClass == void.class && !StringUtils.isEmpty(blockMethod)) {
+		else if (blockClass == void.class && StringUtils.hasLength(blockMethod)) {
 			log.error(
 					"{} method attribute exists but {} class attribute is not exists in bean[{}]",
 					type, type, beanName);

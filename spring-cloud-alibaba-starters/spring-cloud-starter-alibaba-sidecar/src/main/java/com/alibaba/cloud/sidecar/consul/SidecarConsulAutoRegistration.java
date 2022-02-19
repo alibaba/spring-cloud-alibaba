@@ -105,11 +105,11 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 		}
 
 		// add metadata from other properties. See createTags above.
-		if (!StringUtils.isEmpty(properties.getInstanceZone())) {
+		if (StringUtils.hasLength(properties.getInstanceZone())) {
 			metadata.put(properties.getDefaultZoneMetadataName(),
 					properties.getInstanceZone());
 		}
-		if (!StringUtils.isEmpty(properties.getInstanceGroup())) {
+		if (StringUtils.hasLength(properties.getInstanceGroup())) {
 			metadata.put("group", properties.getInstanceGroup());
 		}
 
