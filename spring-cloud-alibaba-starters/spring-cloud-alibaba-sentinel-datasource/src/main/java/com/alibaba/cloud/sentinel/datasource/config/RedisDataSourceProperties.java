@@ -19,9 +19,9 @@ package com.alibaba.cloud.sentinel.datasource.config;
 import java.time.Duration;
 import java.util.List;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.RedisDataSourceFactoryBean;
 
-import org.springframework.util.StringUtils;
 
 /**
  * Redis Properties class Using by {@link DataSourcePropertiesConfiguration} and

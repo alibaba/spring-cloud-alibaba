@@ -19,6 +19,7 @@ package com.alibaba.cloud.sentinel.datasource;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.config.AbstractDataSourceProperties;
 import com.alibaba.csp.sentinel.slots.block.AbstractRule;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
@@ -26,8 +27,6 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
-
-import org.springframework.util.StringUtils;
 
 /**
  * Enum for {@link AbstractRule} class, using in

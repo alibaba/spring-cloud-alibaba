@@ -135,8 +135,8 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 				String dataType = StringUtils.trimAllWhitespace(propertyValue.toString());
 				if (CUSTOM_DATA_TYPE.equals(dataType)) {
 					try {
-						if (StringUtils
-								.isEmpty(dataSourceProperties.getConverterClass())) {
+						if (!StringUtils
+								.hasLength(dataSourceProperties.getConverterClass())) {
 							throw new RuntimeException("[Sentinel Starter] DataSource "
 									+ dataSourceName
 									+ "dataType is custom, please set converter-class "
