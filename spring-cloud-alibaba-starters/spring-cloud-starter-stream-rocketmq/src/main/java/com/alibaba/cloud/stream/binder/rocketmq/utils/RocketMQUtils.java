@@ -19,13 +19,13 @@ package com.alibaba.cloud.stream.binder.rocketmq.utils;
 import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQCommonProperties;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.remoting.RPCHook;
 
-import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -94,7 +94,7 @@ public final class RocketMQUtils {
 	private static final String SQL = "sql:";
 
 	public static MessageSelector getMessageSelector(String expression) {
-		if (StringUtils.hasText(expression) && expression.startsWith(SQL)) {
+		if (StringUtils.isNotBlank(expression) && expression.startsWith(SQL)) {
 			return MessageSelector.bySql(expression.replaceFirst(SQL, ""));
 		}
 		return MessageSelector.byTag(expression);

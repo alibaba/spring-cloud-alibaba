@@ -138,13 +138,13 @@ public final class RocketMQMessageConverterSupport {
 		if (Objects.nonNull(headers) && !headers.isEmpty()) {
 			Object tag = headers.getOrDefault(Headers.TAGS,
 					headers.get(toRocketHeaderKey(Headers.TAGS)));
-			if (!StringUtils.isEmpty(tag)) {
+			if (StringUtils.hasLength(tag.toString())) {
 				rocketMsg.setTags(String.valueOf(tag));
 			}
 
 			Object keys = headers.getOrDefault(Headers.KEYS,
 					headers.get(toRocketHeaderKey(Headers.KEYS)));
-			if (!StringUtils.isEmpty(keys)) {
+			if (StringUtils.hasLength(keys.toString())) {
 				rocketMsg.setKeys(keys.toString());
 			}
 			Object flagObj = headers.getOrDefault(Headers.FLAG,

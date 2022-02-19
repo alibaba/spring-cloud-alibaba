@@ -62,7 +62,7 @@ public final class RocketMQBeanContainerCache {
 	}
 
 	public static <T> T getBean(String beanName, Class<T> clazz, T defaultObj) {
-		if (StringUtils.isEmpty(beanName)) {
+		if (!StringUtils.hasLength(beanName)) {
 			return defaultObj;
 		}
 		Object obj = BEANS_CACHE.get(beanName);

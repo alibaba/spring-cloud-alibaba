@@ -65,8 +65,8 @@ public final class RocketMQProduceFactory {
 				"Property 'nameServer' is required");
 
 		RPCHook rpcHook = null;
-		if (!StringUtils.isEmpty(producerProperties.getAccessKey())
-				&& !StringUtils.isEmpty(producerProperties.getSecretKey())) {
+		if (StringUtils.hasLength(producerProperties.getAccessKey())
+				&& StringUtils.hasLength(producerProperties.getSecretKey())) {
 			rpcHook = new AclClientRPCHook(
 					new SessionCredentials(producerProperties.getAccessKey(),
 							producerProperties.getSecretKey()));

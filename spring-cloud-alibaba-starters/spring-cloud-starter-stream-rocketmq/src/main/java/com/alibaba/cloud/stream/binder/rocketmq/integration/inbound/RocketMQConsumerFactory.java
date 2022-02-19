@@ -60,8 +60,8 @@ public final class RocketMQConsumerFactory {
 						AllocateMessageQueueStrategy.class,
 						new AllocateMessageQueueAveragely());
 		RPCHook rpcHook = null;
-		if (!StringUtils.isEmpty(consumerProperties.getAccessKey())
-				&& !StringUtils.isEmpty(consumerProperties.getSecretKey())) {
+		if (StringUtils.hasLength(consumerProperties.getAccessKey())
+				&& StringUtils.hasLength(consumerProperties.getSecretKey())) {
 			rpcHook = new AclClientRPCHook(
 					new SessionCredentials(consumerProperties.getAccessKey(),
 							consumerProperties.getSecretKey()));
@@ -111,8 +111,8 @@ public final class RocketMQConsumerFactory {
 						AllocateMessageQueueStrategy.class);
 
 		RPCHook rpcHook = null;
-		if (!StringUtils.isEmpty(consumerProperties.getAccessKey())
-				&& !StringUtils.isEmpty(consumerProperties.getSecretKey())) {
+		if (StringUtils.hasLength(consumerProperties.getAccessKey())
+				&& StringUtils.hasLength(consumerProperties.getSecretKey())) {
 			rpcHook = new AclClientRPCHook(
 					new SessionCredentials(consumerProperties.getAccessKey(),
 							consumerProperties.getSecretKey()));
