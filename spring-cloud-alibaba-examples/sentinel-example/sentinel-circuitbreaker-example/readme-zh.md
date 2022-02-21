@@ -56,8 +56,8 @@ feign:
 再访问 http://localhost/test/default/true 断路器处于打开状态
 
 验证指定 feign client 生效  
-先访问 http://localhost/test/feign/true 2 次  
-再访问 http://localhost/test/feign/false 断路器处于打开状态
+先访问 http://localhost/test/feign/false 2 次  
+再访问 http://localhost/test/feign/true 断路器处于打开状态
 
 验证 feign client 指定方法生效  
 先访问 http://localhost/test/feignMethod/false 2次  
