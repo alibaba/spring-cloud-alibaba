@@ -7,5 +7,5 @@ spring:
     nacos:
       config:
         server-addr: 127.0.0.1:8848
-        name: sentinel-circuitbreaker-rules.yml
-        file-extension: yml
+  config:
+    import: optional:nacos:sentinel-circuitbreaker-rules.yml
