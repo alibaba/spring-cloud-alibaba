@@ -166,7 +166,7 @@ public class NacosConfigDataLocationResolverTest {
 	void testSetCommonPropertiesIsOK() {
 		environment.setProperty("spring.cloud.nacos.username", "root");
 		environment.setProperty("spring.cloud.nacos.password", "root");
-		environment.setProperty("spring.cloud.nacos.server-addr", "localhost:8888");
+		environment.setProperty("spring.cloud.nacos.server-addr", "127.0.0.1:8888");
 		String locationUri = "nacos:test.yml";
 		List<NacosConfigDataResource> resources = testUri(locationUri);
 
@@ -174,7 +174,7 @@ public class NacosConfigDataLocationResolverTest {
 		NacosConfigDataResource resource = resources.get(0);
 		assertThat(resource.getProperties().getUsername()).isEqualTo("root");
 		assertThat(resource.getProperties().getPassword()).isEqualTo("root");
-		assertThat(resource.getProperties().getServerAddr()).isEqualTo("localhost:8888");
+		assertThat(resource.getProperties().getServerAddr()).isEqualTo("127.0.0.1:8888");
 	}
 
 	@Test
@@ -182,9 +182,9 @@ public class NacosConfigDataLocationResolverTest {
 		environment.setProperty("spring.cloud.nacos.username", "root");
 		environment.setProperty("spring.cloud.nacos.password", "root");
 		environment.setProperty("spring.cloud.nacos.config.password", "not_root");
-		environment.setProperty("spring.cloud.nacos.server-addr", "localhost:8888");
+		environment.setProperty("spring.cloud.nacos.server-addr", "127.0.0.1:8888");
 		environment.setProperty("spring.cloud.nacos.config.server-addr",
-				"localhost:9999");
+				"127.0.0.1:9999");
 		String locationUri = "nacos:test.yml";
 		List<NacosConfigDataResource> resources = testUri(locationUri);
 
@@ -192,7 +192,7 @@ public class NacosConfigDataLocationResolverTest {
 		NacosConfigDataResource resource = resources.get(0);
 		assertThat(resource.getProperties().getUsername()).isEqualTo("root");
 		assertThat(resource.getProperties().getPassword()).isEqualTo("not_root");
-		assertThat(resource.getProperties().getServerAddr()).isEqualTo("localhost:9999");
+		assertThat(resource.getProperties().getServerAddr()).isEqualTo("127.0.0.1:9999");
 	}
 
 	private List<NacosConfigDataResource> testUri(String locationUri,

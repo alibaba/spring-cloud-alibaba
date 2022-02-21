@@ -16,6 +16,10 @@
     <name>Spring Cloud Alibaba Examples</name>
     <description>Example showing how to use features of Spring Cloud Alibaba</description>
 
+    <properties>
+        <testcontainer.version>1.16.3</testcontainer.version>
+    </properties>
+
     <modules>
         <module>sentinel-example/sentinel-core-example</module>
         <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-provider-example</module>
@@ -40,7 +44,25 @@
         <module>spring-cloud-alibaba-dubbo-examples</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example</module>
+        <module>spring-cloud-alibaba-test-support</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-test-support</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainer.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

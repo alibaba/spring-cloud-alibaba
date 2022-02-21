@@ -3,6 +3,7 @@
 ## 项目说明
 
 本项目演示如何使用 Nacos Config Starter 完成 Spring Cloud 应用的配置管理。
+注意: 适用于 spring boot 版本低于 2.4.0
 
 [Nacos](https://github.com/alibaba/Nacos) 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 
