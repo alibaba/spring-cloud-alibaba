@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.discovery.reactive;
 
+import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +35,7 @@ public class NacosReactiveDiscoveryClientConfigurationTests {
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(UtilAutoConfiguration.class,
 					NacosDiscoveryAutoConfiguration.class,
+					NacosServiceAutoConfiguration.class,
 					NacosReactiveDiscoveryClientConfiguration.class));
 
 	@Test

@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.discovery;
 
+import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -35,6 +36,7 @@ public class NacosDiscoveryClientConfigurationTest {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(UtilAutoConfiguration.class,
+					NacosServiceAutoConfiguration.class,
 					NacosDiscoveryAutoConfiguration.class,
 					NacosDiscoveryClientConfiguration.class, this.getClass()));
 
