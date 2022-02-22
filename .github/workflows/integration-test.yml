@@ -1,4 +1,4 @@
-name: freeman-microservice
+name: Integration Testing
 on:
   push:
     branches:
