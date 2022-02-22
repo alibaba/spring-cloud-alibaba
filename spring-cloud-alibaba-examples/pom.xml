@@ -40,6 +40,7 @@
         <module>seata-example/account-service</module>
         <module>rocketmq-example/rocketmq-consume-example</module>
         <module>rocketmq-example/rocketmq-produce-example</module>
+        <module>rocketmq-example/rocketmq-comprehensive-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>spring-cloud-alibaba-dubbo-examples</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example</module>

@@ -1,0 +1,36 @@
+server:
+  port: 28082
+spring:
+  application:
+    name: rocketmq-comprehensive-example
+  cloud:
+    stream:
+      function:
+        definition: producer;consumer;processor
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+        bindings:
+          # TODO producer must have a group, need optimization !!!
+          producer-out-0:
+            producer:
+              group: output_1
+          processor-out-0:
+            producer:
+              group: output_2
+
+      bindings:
+        producer-out-0:
+          destination: num
+        processor-out-0:
+          destination: square
+        processor-in-0:
+          destination: num
+          group: processor_group
+        consumer-in-0:
+          destination: square
+          group: consumer_group
+
+logging:
+  level:
+    org.springframework.context.support: debug
