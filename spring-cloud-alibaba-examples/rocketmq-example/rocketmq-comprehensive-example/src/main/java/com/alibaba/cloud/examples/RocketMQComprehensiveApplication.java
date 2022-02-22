@@ -61,6 +61,8 @@ public class RocketMQComprehensiveApplication {
 		return flux -> flux.map(user -> {
 			user.setId(String.valueOf(
 					Long.parseLong(user.getId()) * Long.parseLong(user.getId())));
+			user.setName("not freeman");
+			user.getMeta().put("hobbies", Arrays.asList("programming"));
 			return user;
 		});
 	}

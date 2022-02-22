@@ -24,6 +24,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvis
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -47,13 +48,6 @@ public class RocketMQBinderAutoConfiguration {
 	private RocketMQBinderConfigurationProperties rocketBinderConfigurationProperties;
 
 	@Bean
-	@ConditionalOnEnabledHealthIndicator("rocketmq")
-	@ConditionalOnClass(name = "org.springframework.boot.actuate.health.HealthIndicator")
-	public RocketMQBinderHealthIndicator rocketMQBinderHealthIndicator() {
-		return new RocketMQBinderHealthIndicator();
-	}
-
-	@Bean
 	public RocketMQTopicProvisioner rocketMQTopicProvisioner() {
 		return new RocketMQTopicProvisioner();
 	}
@@ -63,6 +57,18 @@ public class RocketMQBinderAutoConfiguration {
 			RocketMQTopicProvisioner provisioningProvider) {
 		return new RocketMQMessageChannelBinder(rocketBinderConfigurationProperties,
 				extendedBindingProperties, provisioningProvider);
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass(HealthIndicator.class)
+	@ConditionalOnEnabledHealthIndicator("rocketmq")
+	static class KafkaBinderHealthIndicatorConfiguration {
+
+		@Bean
+		public RocketMQBinderHealthIndicator rocketMQBinderHealthIndicator() {
+			return new RocketMQBinderHealthIndicator();
+		}
+
 	}
 
 }

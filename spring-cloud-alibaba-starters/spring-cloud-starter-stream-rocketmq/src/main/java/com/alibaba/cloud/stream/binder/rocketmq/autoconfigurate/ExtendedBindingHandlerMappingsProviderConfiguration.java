@@ -48,7 +48,7 @@ public class ExtendedBindingHandlerMappingsProviderConfiguration {
 	}
 
 	@Bean
-	public RocketMQConfigBeanPostProcessor rocketMQConfigBeanPostProcessor() {
+	public static RocketMQConfigBeanPostProcessor rocketMQConfigBeanPostProcessor() {
 		return new RocketMQConfigBeanPostProcessor();
 	}
 

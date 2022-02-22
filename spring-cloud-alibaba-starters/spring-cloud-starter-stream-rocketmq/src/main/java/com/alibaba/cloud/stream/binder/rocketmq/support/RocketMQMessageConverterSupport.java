@@ -33,7 +33,7 @@ import org.springframework.messaging.converter.CompositeMessageConverter;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * @author zkzlx
@@ -138,13 +138,13 @@ public final class RocketMQMessageConverterSupport {
 		if (Objects.nonNull(headers) && !headers.isEmpty()) {
 			Object tag = headers.getOrDefault(Headers.TAGS,
 					headers.get(toRocketHeaderKey(Headers.TAGS)));
-			if (StringUtils.hasLength(tag.toString())) {
+			if (!ObjectUtils.isEmpty(tag)) {
 				rocketMsg.setTags(String.valueOf(tag));
 			}
 
 			Object keys = headers.getOrDefault(Headers.KEYS,
 					headers.get(toRocketHeaderKey(Headers.KEYS)));
-			if (StringUtils.hasLength(keys.toString())) {
+			if (!ObjectUtils.isEmpty(keys)) {
 				rocketMsg.setKeys(keys.toString());
 			}
 			Object flagObj = headers.getOrDefault(Headers.FLAG,
