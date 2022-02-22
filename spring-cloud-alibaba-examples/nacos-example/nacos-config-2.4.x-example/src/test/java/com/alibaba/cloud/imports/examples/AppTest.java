@@ -23,9 +23,7 @@ import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.testsupport.HasDockerAndItEnabled;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.OS;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +31,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.condition.OS.MAC;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
- * The nacos image temporarily does not support the mac m1 chip (ARM).
- * <p>
- * If you test locally, you can use the image
- * <a href="https://hub.docker.com/r/zhusaidong/nacos-server-m1">zhusaidong/nacos-server-m1:2.0.3</a>
+ * <strong>NOTE:</strong> The official nacos image temporarily does not support the mac m1
+ * chip (ARM architecture).
  *
  * @author freeman
  */
@@ -54,29 +48,20 @@ public class AppTest {
 	@LocalServerPort
 	private int port;
 
-	@Container
-	private static final GenericContainer nacos;
+	private static final GenericContainer nacos = new GenericContainer("freemanlau/nacos:1.4.3")
+			.withExposedPorts(8848)
+			.withEnv("MODE", "standalone")
+			.withEnv("JVM_XMS", "256m")
+			.withEnv("JVM_XMX", "256m")
+			.withEnv("JVM_XMN", "128m");
 
 	private static final String serverAddr;
 
 	static {
-		String image = getCurrentOs() == MAC
-				? "zhusaidong/nacos-server-m1:2.0.3"
-				: "nacos/nacos-server:1.4.2";
-		nacos = new GenericContainer(image).withExposedPorts(8848)
-				.withEnv("MODE", "standalone")
-				.withEnv("JVM_XMS", "256m")
-				.withEnv("JVM_XMX", "256m")
-				.withEnv("JVM_XMN", "128m");
-
 		nacos.start();
 
 		serverAddr = "127.0.0.1:" + nacos.getMappedPort(8848);
 		System.setProperty("spring.cloud.nacos.config.server-addr", serverAddr);
-	}
-
-	private static OS getCurrentOs() {
-		return ReflectionTestUtils.invokeMethod(OS.class, "determineCurrentOs");
 	}
 
 	@Autowired
