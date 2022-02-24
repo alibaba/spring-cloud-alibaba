@@ -20,13 +20,6 @@ Spring Boot 2.4.0 版本开始默认不启动 bootstrap 容器
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-	<!-- 不再需要 bootstrap 容器 -->
-    <exclusions>
-        <exclusion>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </exclusion>
-    </exclusions>
 </dependency>
 ```
 
@@ -41,12 +34,13 @@ spring:
   cloud:
     nacos:
       config:
-        name: test.yml
-        file-extension: yml
-  # 2.4.0 新增配置 spring.config.import
+        group: DEFAULT_GROUP
+        server-addr: 127.0.0.1:8848
   config:
     import:
-      - optional:nacos:127.0.0.1:8848
+      - optional:nacos:test.yml
+      - optional:nacos:test01.yml?group=group_02
+      - optional:nacos:test02.yml?group=group_03&refreshEnabled=false
 ```
 
 3. 在 nacos 创建 test.yml 
