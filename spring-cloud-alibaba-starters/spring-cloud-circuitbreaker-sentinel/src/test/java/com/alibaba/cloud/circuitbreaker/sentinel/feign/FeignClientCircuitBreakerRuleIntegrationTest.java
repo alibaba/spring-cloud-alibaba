@@ -43,17 +43,17 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"feign.sentinel.rules.default[0].grade=2",
 		"feign.sentinel.rules.default[0].count=2",
 		"feign.sentinel.rules.default[0].timeWindow=2",
-		"feign.sentinel.rules.default[0].statIntervalMs=1000",
+		"feign.sentinel.rules.default[0].statIntervalMs=2000",
 		"feign.sentinel.rules.default[0].minRequestAmount=5",
 		"feign.sentinel.rules.user[0].grade=2",
 		"feign.sentinel.rules.user[0].count=2",
 		"feign.sentinel.rules.user[0].timeWindow=2",
-		"feign.sentinel.rules.user[0].statIntervalMs=1000",
+		"feign.sentinel.rules.user[0].statIntervalMs=2000",
 		"feign.sentinel.rules.user[0].minRequestAmount=5",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].grade=2",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].count=1",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].timeWindow=2",
-		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].statIntervalMs=1000",
+		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].statIntervalMs=2000",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].minRequestAmount=5"
 })
 public class FeignClientCircuitBreakerRuleIntegrationTest {
