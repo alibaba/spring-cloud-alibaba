@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import java.util.List;
-
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
 import com.alibaba.cloud.dubbo.registry.event.ServiceInstancePreRegisteredEvent;
 import com.ecwid.consul.v1.agent.model.NewService;
@@ -26,7 +24,6 @@ import org.apache.dubbo.config.spring.ServiceBean;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -41,7 +38,10 @@ import org.springframework.cloud.consul.serviceregistry.ConsulAutoRegistration;
 import org.springframework.cloud.consul.serviceregistry.ConsulRegistration;
 import org.springframework.cloud.zookeeper.serviceregistry.ServiceInstanceRegistration;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
+
+import java.util.List;
 
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.CONSUL_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
 import static com.alibaba.cloud.dubbo.autoconfigure.DubboServiceRegistrationAutoConfiguration.ZOOKEEPER_AUTO_SERVICE_AUTO_CONFIGURATION_CLASS_NAME;
@@ -62,7 +62,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 	private static final String REST_PROTOCOL = "rest";
 
 	@Autowired
-	private ServiceRegistry serviceRegistry;
+	private ServiceRegistry<Registration> serviceRegistry;
 
 	@Autowired
 	private Registration registration;
@@ -76,10 +76,10 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 
 	@Around("execution(* org.springframework.cloud.client.serviceregistry.Registration.getPort())")
 	public Object getPort(ProceedingJoinPoint pjp) throws Throwable {
-		/**
-		 * move setServerPort from onApplicationStarted() to here for this issue :
-		 * https://github.com/alibaba/spring-cloud-alibaba/issues/1383
-		 * @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
+		/*
+		  move setServerPort from onApplicationStarted() to here for this issue :
+		  https://github.com/alibaba/spring-cloud-alibaba/issues/1383
+		  @author <a href="mailto:chenxilzx1@gmail.com">theonefx</a>
 		 */
 		setServerPort();
 		return serverPort != null ? serverPort : pjp.proceed();
@@ -96,6 +96,19 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 		}
 		serviceRegistry.register(registration);
 		registered = true;
+	}
+
+	@EventListener(ContextClosedEvent.class)
+	public void onApplicationDeregister() {
+		deregister();
+	}
+
+	private void deregister() {
+		if (!registered) {
+			return;
+		}
+		serviceRegistry.deregister(registration);
+		registered = false;
 	}
 
 	/**
