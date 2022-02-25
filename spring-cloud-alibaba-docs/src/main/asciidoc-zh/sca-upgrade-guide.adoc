@@ -33,10 +33,7 @@
 </dependencyManagement>
 ```
 
-注意事项:
-
-1. `spring-cloud-starter-alibaba-nacos-config` 模块移除了 `spring-cloud-starter-bootstrap` 依赖, 如果你想以旧版的方式使用, 你需要手动加上该依赖, 现在推荐使用 `spring.config.import` 方式引入配置
-2. nacos serverAddr 不支持 `localhost:8848`, 请换成 `127.0.0.1:8848`
+*注意事项:* `spring-cloud-starter-alibaba-nacos-config` 模块移除了 `spring-cloud-starter-bootstrap` 依赖, 如果你想以旧版的方式使用, 你需要手动加上该依赖, 现在推荐使用 `spring.config.import` 方式引入配置
 
 完成以上步骤就能无缝切换到 `spring cloud alibaba 2021.0.1.1` 版本
 

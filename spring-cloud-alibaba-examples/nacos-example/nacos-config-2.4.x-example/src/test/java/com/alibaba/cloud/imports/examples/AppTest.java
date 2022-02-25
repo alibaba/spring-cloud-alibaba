@@ -48,7 +48,7 @@ public class AppTest {
 	@LocalServerPort
 	private int port;
 
-	private static final GenericContainer nacos = new GenericContainer("freemanlau/nacos:1.4.3")
+	private static final GenericContainer nacos = new GenericContainer("freemanlau/nacos:1.4.2")
 			.withExposedPorts(8848)
 			.withEnv("MODE", "standalone")
 			.withEnv("JVM_XMS", "256m")
