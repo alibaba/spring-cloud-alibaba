@@ -21,29 +21,36 @@ import java.io.IOException;
 import com.alibaba.cloud.imports.examples.model.UserConfig;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.testsupport.HasDockerAndItEnabled;
+import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 
+import static com.alibaba.cloud.imports.examples.ConfigRefreshTest.PushConfigConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
- * <strong>NOTE:</strong> The official nacos image temporarily does not support the mac m1
- * chip (ARM architecture).
+ * Nacos dynamic refresh config function test.
  *
  * @author freeman
  */
 @HasDockerAndItEnabled
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public class AppTest {
+@Import(PushConfigConfiguration.class)
+public class ConfigRefreshTest {
 
 	@LocalServerPort
 	private int port;
@@ -58,7 +65,13 @@ public class AppTest {
 	private static final String serverAddr;
 
 	static {
-		nacos.start();
+		try {
+			nacos.start();
+			// make sure nacos server is ready !
+			Thread.sleep(2000L);
+		}
+		catch (InterruptedException ignored) {
+		}
 
 		serverAddr = "127.0.0.1:" + nacos.getMappedPort(8848);
 		System.setProperty("spring.cloud.nacos.config.server-addr", serverAddr);
@@ -73,8 +86,6 @@ public class AppTest {
 
 	@Test
 	public void testRefreshConfig() throws IOException, NacosException, InterruptedException {
-		// make sure nacos server is ready !
-		Thread.sleep(1500L);
 
 		ResponseEntity<String> response = restTemplate.getForEntity("http://127.0.0.1:" + port, String.class);
 		UserConfig userConfig = objectMapper.readValue(response.getBody(), UserConfig.class);
@@ -121,6 +132,38 @@ public class AppTest {
 				"        age: 20\n" +
 				"      - name: mom\n" +
 				"        age: 18", "yaml");
+	}
+
+
+	static class PushConfigConfiguration {
+
+		@Autowired
+		private NacosConfigManager nacosConfigManager;
+
+		@EventListener(ApplicationReadyEvent.class)
+		@Order(Ordered.HIGHEST_PRECEDENCE)
+		public void applicationReadyEventApplicationListener() throws NacosException {
+			pushConfig2Nacos(nacosConfigManager.getConfigService());
+		}
+
+		private static void pushConfig2Nacos(ConfigService configService)
+				throws NacosException {
+			configService.publishConfig("test.yml", "DEFAULT_GROUP",
+					"configdata:\n" +
+							"  user:\n" +
+							"    age: 21\n" +
+							"    name: freeman\n" +
+							"    map:\n" +
+							"      hobbies:\n" +
+							"        - art\n" +
+							"        - programming\n" +
+							"      intro: Hello, I'm freeman\n" +
+							"    users:\n" +
+							"      - name: dad\n" +
+							"        age: 20\n" +
+							"      - name: mom\n" +
+							"        age: 18", "yaml");
+		}
 	}
 
 }
