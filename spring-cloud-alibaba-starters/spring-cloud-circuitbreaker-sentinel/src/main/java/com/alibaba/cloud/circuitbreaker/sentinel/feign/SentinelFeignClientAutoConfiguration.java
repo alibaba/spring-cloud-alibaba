@@ -42,6 +42,7 @@ import static com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRule
  * Auto configuration for feign client circuit breaker rules.
  *
  * @author freeman
+ * @since 2021.0.1.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Feign.class, FeignClientFactoryBean.class })
@@ -50,7 +51,7 @@ import static com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRule
 public class SentinelFeignClientAutoConfiguration {
 
 	@Configuration(proxyBeanMethods = false)
-	@ConditionalOnProperty(name = "feign.sentinel.refresh-rules", havingValue = "true", matchIfMissing = true)
+	@ConditionalOnProperty(name = "feign.sentinel.enable-refresh-rules", havingValue = "true", matchIfMissing = true)
 	public static class CircuitBreakerListenerConfiguration {
 
 		@Bean

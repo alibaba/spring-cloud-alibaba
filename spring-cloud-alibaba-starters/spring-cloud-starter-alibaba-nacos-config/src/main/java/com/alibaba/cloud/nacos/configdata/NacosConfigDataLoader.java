@@ -46,6 +46,7 @@ import static org.springframework.boot.context.config.ConfigData.Option.IGNORE_P
  * Load {@link ConfigData} via {@link NacosConfigDataResource}
  *
  * @author freeman
+ * @since 2021.0.1.0
  */
 public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataResource> {
 

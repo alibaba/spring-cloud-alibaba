@@ -31,6 +31,7 @@ import static com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRule
  * Feign client circuit breaker name resolver.
  *
  * @author freeman
+ * @since 2021.0.1.0
  * @see CircuitBreakerNameResolver
  */
 public class FeignClientCircuitNameResolver implements CircuitBreakerNameResolver {

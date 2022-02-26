@@ -23,9 +23,9 @@ import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.testsupport.HasDockerAndItEnabled;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -39,6 +39,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 
 import static com.alibaba.cloud.imports.examples.ConfigRefreshTest.PushConfigConfiguration;
+import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -65,13 +66,7 @@ public class ConfigRefreshTest {
 	private static final String serverAddr;
 
 	static {
-		try {
-			nacos.start();
-			// make sure nacos server is ready !
-			Thread.sleep(2000L);
-		}
-		catch (InterruptedException ignored) {
-		}
+		nacos.start();
 
 		serverAddr = "127.0.0.1:" + nacos.getMappedPort(8848);
 		System.setProperty("spring.cloud.nacos.config.server-addr", serverAddr);
@@ -82,10 +77,12 @@ public class ConfigRefreshTest {
 	@Autowired
 	private NacosConfigManager nacosConfigManager;
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper().enable(INDENT_OUTPUT);
 
 	@Test
 	public void testRefreshConfig() throws IOException, NacosException, InterruptedException {
+		// make sure nacos server is ready !
+		Thread.sleep(2000L);
 
 		ResponseEntity<String> response = restTemplate.getForEntity("http://127.0.0.1:" + port, String.class);
 		UserConfig userConfig = objectMapper.readValue(response.getBody(), UserConfig.class);

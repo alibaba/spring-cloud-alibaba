@@ -30,6 +30,9 @@ import com.alibaba.cloud.circuitbreaker.sentinel.SentinelConfigBuilder;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +50,7 @@ import org.springframework.core.annotation.AnnotationUtils;
  * Sentinel circuit breaker config change listener.
  *
  * @author freeman
+ * @since 2021.0.1.0
  */
 public class CircuitBreakerRuleChangeListener implements ApplicationContextAware,
 		ApplicationListener<RefreshScopeRefreshedEvent>, SmartInitializingSingleton {
@@ -79,7 +83,8 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 
 		updateBackup();
 
-		LOGGER.info("sentinel circuit beaker rules refreshed.");
+		LOGGER.info("Sentinel circuit beaker rules refreshed: \n"
+				+ prettyPrint(properties.getRules()));
 	}
 
 	@Override
@@ -168,6 +173,17 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 
 	private void updateBackup() {
 		this.propertiesBackup = this.properties.copy();
+	}
+
+	private String prettyPrint(Object o) {
+		try {
+			return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+					.writeValueAsString(o);
+		}
+		catch (JsonProcessingException e) {
+			LOGGER.error("JSON serialization err.", e);
+			return "__JSON format err__";
+		}
 	}
 
 	// static method

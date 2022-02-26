@@ -6,17 +6,9 @@ OpenFeign 整合 Sentinel 断路器实现
 
 ## 示例
 
-1. 添加依赖
+1. 添加配置到配置中心
 
-```xml
-<!-- 需要 spring cloud 2020.0.4 及以上版本 -->
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-openfeign</artifactId>
-</dependency>
-```
-2. 添加配置到配置中心
-	
+dataId 为 `sentinel-circuitbreaker-rules.yml`
 ```yaml
 feign:
   circuitbreaker:
@@ -47,6 +39,8 @@ feign:
           statIntervalMs: 1000
           minRequestAmount: 1
 ```
+
+2. 启动 FeignCircuitBreakerApplication
 
 ## 验证配置生效
 启动项目  

@@ -32,6 +32,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Sentinel feign client properties.
  *
  * @author freeman
+ * @since 2021.0.1.0
  */
 @ConfigurationProperties("feign.sentinel")
 public class SentinelFeignClientProperties {
@@ -44,7 +45,7 @@ public class SentinelFeignClientProperties {
 	/**
 	 * enable refresh circuit breaker rules from config center.
 	 */
-	private boolean refreshRules = true;
+	private boolean enableRefreshRules = true;
 
 	private Map<String, List<DegradeRule>> rules = new HashMap<>();
 
@@ -56,12 +57,12 @@ public class SentinelFeignClientProperties {
 		this.defaultRule = defaultRule;
 	}
 
-	public boolean isRefreshRules() {
-		return refreshRules;
+	public boolean isEnableRefreshRules() {
+		return enableRefreshRules;
 	}
 
-	public void setRefreshRules(boolean refreshRules) {
-		this.refreshRules = refreshRules;
+	public void setEnableRefreshRules(boolean enableRefreshRules) {
+		this.enableRefreshRules = enableRefreshRules;
 	}
 
 	public Map<String, List<DegradeRule>> getRules() {
@@ -81,14 +82,14 @@ public class SentinelFeignClientProperties {
 			return false;
 		}
 		SentinelFeignClientProperties that = (SentinelFeignClientProperties) o;
-		return refreshRules == that.refreshRules
+		return enableRefreshRules == that.enableRefreshRules
 				&& Objects.equals(defaultRule, that.defaultRule)
 				&& Objects.equals(rules, that.rules);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(defaultRule, refreshRules, rules);
+		return Objects.hash(defaultRule, enableRefreshRules, rules);
 	}
 
 	public SentinelFeignClientProperties copy() {

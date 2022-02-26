@@ -50,6 +50,7 @@ import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosIt
  * {@link ConfigDataResource}.
  *
  * @author freeman
+ * @since 2021.0.1.0
  */
 public class NacosConfigDataLocationResolver
 		implements ConfigDataLocationResolver<NacosConfigDataResource>, Ordered {

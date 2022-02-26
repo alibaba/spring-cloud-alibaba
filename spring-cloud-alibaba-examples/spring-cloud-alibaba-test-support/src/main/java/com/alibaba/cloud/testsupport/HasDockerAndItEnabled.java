@@ -37,7 +37,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * <strong>NOTE:</strong> it means integration test
  *
  * @author freeman
- * @since 2021.0.1.1
+ * @since 2021.0.1.0
  */
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
