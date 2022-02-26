@@ -61,7 +61,6 @@ public class SentinelFeignClientAutoConfiguration {
 	}
 
 	@Configuration(proxyBeanMethods = false)
-	@ConditionalOnClass(CircuitBreakerNameResolver.class)
 	public static class CircuitBreakerNameResolverConfiguration {
 
 		@Bean

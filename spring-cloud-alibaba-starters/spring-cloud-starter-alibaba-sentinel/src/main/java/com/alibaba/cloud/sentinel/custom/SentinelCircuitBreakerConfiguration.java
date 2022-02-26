@@ -19,11 +19,15 @@ package com.alibaba.cloud.sentinel.custom;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Support @EnableCircuitBreaker, Do nothing.
+ *
  * @author lengleng
- * <p>
- * support @EnableCircuitBreaker ,Do nothing
+ * @author freeman
+ * @deprecated since 2021.0.1.0, see
+ * {@link org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker}
  */
 @Configuration(proxyBeanMethods = false)
+@Deprecated
 public class SentinelCircuitBreakerConfiguration {
 
 }

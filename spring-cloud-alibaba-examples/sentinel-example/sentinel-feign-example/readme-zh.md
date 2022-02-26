@@ -16,19 +16,17 @@
 在启动示例进行演示之前，我们先了解一下 Feign 如何接入 Sentinel。
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
 
-1. 首先，修改 pom.xml 文件，引入 Sentinel starter 和 Dubbo starter。
+1. 首先，修改 pom.xml 文件，引入 Sentinel starter 和 Openfeign starter。
 
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-openfeign</artifactId>
 </dependency>
-
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
 </dependency>
-
 ```
 2. 其次, 使用nacos 注册中心
 	
