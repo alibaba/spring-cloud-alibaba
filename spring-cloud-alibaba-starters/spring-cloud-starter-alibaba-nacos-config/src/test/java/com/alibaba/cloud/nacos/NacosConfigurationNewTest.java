@@ -47,13 +47,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
+ * TODO refactor, remove powermock.
+ *
  * @author xiaojing
+ * @author freeman
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.management.*")
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
-@SpringBootTest(classes = NacosConfigurationNewTest.TestConfig.class, properties = {
+@SpringBootTest(classes = NacosConfigurationNewTest.TestConfig.class, webEnvironment = NONE, properties = {
 		"spring.application.name=myTestService1", "spring.profiles.active=dev,test",
 		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
 		"spring.cloud.nacos.config.namespace=test-namespace",
@@ -70,7 +73,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.nacos.config.shared-configs[0]=common1.properties",
 		"spring.cloud.nacos.config.shared-configs[1]=common2.properties",
 		"spring.cloud.nacos.config.accessKey=test-accessKey",
-		"spring.cloud.nacos.config.secretKey=test-secretKey" }, webEnvironment = NONE)
+		"spring.cloud.nacos.config.secretKey=test-secretKey",
+		"spring.cloud.bootstrap.enabled=true"
+})
 public class NacosConfigurationNewTest {
 
 	static {

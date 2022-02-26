@@ -74,6 +74,12 @@
       "description": "nacos config service's userName to authenticate."
     },
     {
+      "name": "spring.cloud.nacos.config.import-check.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable import-check."
+    },
+    {
       "name": "spring.cloud.nacos.config.password",
       "type": "java.lang.String",
       "defaultValue": "${spring.cloud.nacos.password}",

@@ -4,12 +4,15 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.alibaba.cloud.nacos.NacosConfigAutoConfiguration,\
 com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration
 org.springframework.boot.diagnostics.FailureAnalyzer=\
-com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer
+com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer,\
+com.alibaba.cloud.nacos.configdata.NacosConfigDataMissingEnvironmentPostProcessor.ImportExceptionFailureAnalyzer
 org.springframework.boot.env.PropertySourceLoader=\
 com.alibaba.cloud.nacos.parser.NacosJsonPropertySourceLoader,\
 com.alibaba.cloud.nacos.parser.NacosXmlPropertySourceLoader
 org.springframework.context.ApplicationListener=\
 com.alibaba.cloud.nacos.logging.NacosLoggingListener
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.alibaba.cloud.nacos.configdata.NacosConfigDataMissingEnvironmentPostProcessor
 
 # ConfigData Location Resolvers
 org.springframework.boot.context.config.ConfigDataLocationResolver=\

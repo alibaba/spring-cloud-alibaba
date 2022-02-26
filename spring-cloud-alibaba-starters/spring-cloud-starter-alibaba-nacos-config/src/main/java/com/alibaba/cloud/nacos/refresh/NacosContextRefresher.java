@@ -102,7 +102,6 @@ public class NacosContextRefresher
 				}
 				String dataId = propertySource.getDataId();
 				registerNacosListener(propertySource.getGroup(), dataId);
-				log.info("listening config: dataId={}, group={}", dataId, propertySource.getGroup());
 			}
 		}
 	}

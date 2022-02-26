@@ -17,27 +17,25 @@
 package com.alibaba.cloud.nacos;
 
 import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
+ * @author freeman
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(
-		classes = NacosConfigPropertiesServerAddressBothLevelTests.TestConfig.class,
-		properties = { "spring.cloud.nacos.config.server-addr=321.321.321.321:8848",
-				"spring.cloud.nacos.server-addr=123.123.123.123:8848" }
-)
+@SpringBootTest(classes = NacosConfigPropertiesServerAddressBothLevelTests.TestConfig.class, properties = {
+		"spring.cloud.nacos.config.server-addr=321.321.321.321:8848",
+		"spring.cloud.nacos.server-addr=123.123.123.123:8848",
+		"spring.cloud.bootstrap.enabled=true"
+})
 public class NacosConfigPropertiesServerAddressBothLevelTests {
 
 	@Autowired

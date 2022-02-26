@@ -36,6 +36,8 @@ import org.springframework.boot.context.config.ConfigDataResourceNotFoundExcepti
 import org.springframework.core.env.PropertySource;
 
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
+import static org.springframework.boot.context.config.ConfigData.Option.IGNORE_IMPORTS;
+import static org.springframework.boot.context.config.ConfigData.Option.IGNORE_PROFILES;
 
 /**
  * Implementation of {@link ConfigDataLoader}.
@@ -79,9 +81,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 
 			NacosPropertySourceRepository.collectNacosPropertySource(propertySource);
 
-			// TODO Currently based on 2.4.2,
-			// compatibility needs to be done when upgrading to boot version 2.4.5
-			return new ConfigData(propertySources);
+			return new ConfigData(propertySources, IGNORE_IMPORTS, IGNORE_PROFILES);
 		}
 		catch (Exception e) {
 			if (log.isDebugEnabled()) {
