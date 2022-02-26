@@ -55,6 +55,7 @@ import static com.alibaba.csp.sentinel.config.SentinelConfig.setConfig;
  * @author xiaojing
  * @author jiashuai.xie
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.sentinel.enabled", matchIfMissing = true)
@@ -147,7 +148,7 @@ public class SentinelAutoConfiguration {
 	@ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
 	@ConditionalOnProperty(name = "resttemplate.sentinel.enabled", havingValue = "true",
 			matchIfMissing = true)
-	public SentinelBeanPostProcessor sentinelBeanPostProcessor(
+	public static SentinelBeanPostProcessor sentinelBeanPostProcessor(
 			ApplicationContext applicationContext) {
 		return new SentinelBeanPostProcessor(applicationContext);
 	}
