@@ -18,7 +18,7 @@
     <description>Spring Cloud Alibaba Dependencies</description>
 
     <properties>
-        <revision>2022.0-SNAPSHOT</revision>
+        <revision>2021.0.1.0</revision>
         <sentinel.version>1.8.3</sentinel.version>
         <seata.version>1.4.2</seata.version>
         <nacos.client.version>1.4.2</nacos.client.version>
