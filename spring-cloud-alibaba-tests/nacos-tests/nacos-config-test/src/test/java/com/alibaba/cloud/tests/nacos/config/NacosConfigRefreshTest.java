@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.tests.nacos;
+package com.alibaba.cloud.tests.nacos.config;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.testsupport.ContainerStarter;
@@ -33,7 +33,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
-import static com.alibaba.cloud.tests.nacos.NacosConfigRefreshTest.PushConfigConfiguration;
+import static com.alibaba.cloud.tests.nacos.config.NacosConfigRefreshTest.PushConfigConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 

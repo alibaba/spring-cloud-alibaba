@@ -109,9 +109,4 @@ public class ContainerStarter {
 		}
 	}
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		loadHostIp2BrokerConf();
-		// startRocketmq("4.9.2").start();
-	}
-
 }

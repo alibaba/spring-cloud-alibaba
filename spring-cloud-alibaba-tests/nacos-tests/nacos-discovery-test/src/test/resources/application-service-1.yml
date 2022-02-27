@@ -1,0 +1,23 @@
+server:
+  port: 0
+  tomcat:
+    threads:
+      min-spare: 2
+      max: 10
+spring:
+  application:
+    name: service-1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+feign:
+  circuitbreaker:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+

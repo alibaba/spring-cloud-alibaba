@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.tests.nacos;
+package com.alibaba.cloud.tests.nacos.config;
 
 import java.util.List;
 import java.util.Map;
