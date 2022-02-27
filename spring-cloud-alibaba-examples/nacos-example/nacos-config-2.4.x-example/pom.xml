@@ -25,12 +25,6 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
-        <!-- Testing -->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-test-support</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>

@@ -111,6 +111,7 @@
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
+        <module>spring-cloud-alibaba-tests</module>
     </modules>
 
     <dependencyManagement>

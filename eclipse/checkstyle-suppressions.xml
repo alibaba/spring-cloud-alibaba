@@ -4,5 +4,6 @@
         "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
     <suppress files="[\\/]spring-cloud-alibaba-examples[\\/]" checks="HideUtilityClassConstructorCheck" />
+    <suppress files="[\\/]spring-cloud-alibaba-tests[\\/]" checks="HideUtilityClassConstructorCheck" />
     <suppress files=".*" checks="LineLength" />
 </suppressions>
