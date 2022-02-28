@@ -42,7 +42,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author freeman
  */
 @HasDockerAndItEnabled
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
+@SpringBootTest(classes = NacosConfigTestApplication.class, webEnvironment = RANDOM_PORT, properties = {
 		"spring.profiles.active=nacos-config-refresh"
 })
 @Import(PushConfigConfiguration.class)
