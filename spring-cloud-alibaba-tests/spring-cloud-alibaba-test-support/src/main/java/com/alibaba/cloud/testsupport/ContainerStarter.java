@@ -46,14 +46,24 @@ public class ContainerStarter {
 	private static final Map<String, GenericContainer> rocketmqMap = new ConcurrentHashMap<>(
 			4);
 
+	/**
+	 * Start Nacos container, using default version.
+	 */
 	public static GenericContainer startNacos() {
 		return startNacos(NACOS_VERSION);
 	}
 
+	/**
+	 * Start RocketMQ container, using default version.
+	 */
 	public static GenericContainer startRocketmq() {
 		return startRocketmq(ROCKETMQ_VERSION);
 	}
 
+	/**
+	 * Start Nacos container, using specific version.
+	 * @param version Nacos version
+	 */
 	public static GenericContainer startNacos(String version) {
 		if (!nacosMap.containsKey(version)) {
 			GenericContainer nacos = new GenericContainer("freemanlau/nacos:" + version)
@@ -66,6 +76,10 @@ public class ContainerStarter {
 		return nacosMap.get(version);
 	}
 
+	/**
+	 * Start RocketMQ container, using specific version.
+	 * @param version RocketMQ version
+	 */
 	public static GenericContainer startRocketmq(String version) {
 		if (!rocketmqMap.containsKey(version)) {
 			loadHostIp2BrokerConf();
