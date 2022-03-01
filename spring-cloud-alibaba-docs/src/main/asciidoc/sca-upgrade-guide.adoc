@@ -39,7 +39,7 @@ After completing the above steps, you can smoothly switch to the `Spring Cloud A
 
 === New Features and Usage
 
-==== Support `spring.config.impor`
+==== Support `spring.config.import`
 
 Suppose there is a configuration file (`bootstrap.yml`) here, how should it be configured to upgrade to a new version?
 
@@ -82,7 +82,7 @@ Note:
 
 - If you use `spring.config.import`, you can't use bootstrap.yml/properties.
 
-- If `spring-cloud-starter-alibaba-nacos-config` is using and the configuration is imported using the 'spring.config.import' way, the project will automatically detect whether the `nacos:` entry has been imported. If there is no import nacos entry, the following error will occur:
+- If `spring-cloud-starter-alibaba-nacos-config` is using and the configuration is imported using the `spring.config.import` way, the project will automatically detect whether the `nacos:` entry has been imported. If there is no import nacos entry, the following error will occur:
 
 ----
 The spring.config.import property is missing a nacos: entry
