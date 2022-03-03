@@ -23,6 +23,7 @@ import java.util.List;
 import com.alibaba.cloud.testsupport.ContainerStarter;
 import com.alibaba.cloud.testsupport.HasDockerAndItEnabled;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,14 +65,20 @@ public class NacosDiscoveryTest {
 		System.setProperty("spring.cloud.nacos.discovery.server-addr", serverAddr);
 	}
 
-	static volatile ConfigurableApplicationContext service1 = new SpringApplicationBuilder(
+	static ConfigurableApplicationContext service1 = new SpringApplicationBuilder(
 			NacosDiscoveryTestApp.class).profiles("service-1").run();
 
-	static volatile ConfigurableApplicationContext service2_0 = new SpringApplicationBuilder(
+	static ConfigurableApplicationContext service2_0 = new SpringApplicationBuilder(
 			NacosDiscoveryTestApp.class).profiles("service-2").run();
 
-	static volatile ConfigurableApplicationContext service2_1 = new SpringApplicationBuilder(
+	static ConfigurableApplicationContext service2_1 = new SpringApplicationBuilder(
 			NacosDiscoveryTestApp.class).profiles("service-2").run();
+
+	@BeforeAll
+	static void init() {
+		// give nacos a break
+		justDo(() -> Thread.sleep(1000L));
+	}
 
 	@AfterAll
 	static void stop() {
@@ -108,8 +115,11 @@ public class NacosDiscoveryTest {
 					list2.add(response.getBody());
 				}
 			}
+
 			assertThat(list1).hasSize(10);
+			assertThat(list1.stream().allMatch(isEqual(list1.get(0)))).isTrue();
 			assertThat(list2).hasSize(10);
+			assertThat(list2.stream().allMatch(isEqual(list2.get(0)))).isTrue();
 		});
 	}
 
@@ -130,8 +140,11 @@ public class NacosDiscoveryTest {
 					list2.add(result);
 				}
 			}
+
 			assertThat(list1).hasSize(10);
+			assertThat(list1.stream().allMatch(isEqual(list1.get(0)))).isTrue();
 			assertThat(list2).hasSize(10);
+			assertThat(list2.stream().allMatch(isEqual(list2.get(0)))).isTrue();
 		});
 	}
 
@@ -148,6 +161,7 @@ public class NacosDiscoveryTest {
 						passResult.add(service2Client.pass(true));
 						fallbackResult.add(service2Client.pass(false));
 					}
+
 					assertThat(passResult.stream().allMatch(isEqual("ok"))).isTrue();
 					assertThat(fallbackResult.stream().allMatch(isEqual("fallback")))
 							.isTrue();

@@ -2,10 +2,10 @@ name: Integration Testing
 on:
   push:
     branches:
-      - 2022.x
+      - 2021.x
   pull_request:
     branches:
-      - 2022.x
+      - 2021.x
 jobs:
   integration-testing:
     name: Integration Testing
