@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
-import com.alibaba.nacos.common.utils.StringUtils;
+import com.alibaba.cloud.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

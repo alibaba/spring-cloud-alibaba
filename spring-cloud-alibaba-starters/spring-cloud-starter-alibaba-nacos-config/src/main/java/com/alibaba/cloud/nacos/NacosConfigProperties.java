@@ -29,8 +29,8 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.spring.util.PropertySourcesUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;

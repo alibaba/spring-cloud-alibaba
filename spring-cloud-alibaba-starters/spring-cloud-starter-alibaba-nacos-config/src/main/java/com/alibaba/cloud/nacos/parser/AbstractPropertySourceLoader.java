@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.alibaba.nacos.common.utils.StringUtils;
+import com.alibaba.cloud.commons.lang.StringUtils;
 
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.PropertySource;
