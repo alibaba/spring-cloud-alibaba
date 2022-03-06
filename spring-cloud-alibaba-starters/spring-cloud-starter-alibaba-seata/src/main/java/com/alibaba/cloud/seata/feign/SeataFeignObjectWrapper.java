@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
 import org.springframework.cloud.loadbalancer.blocking.client.BlockingLoadBalancerClient;
 import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
@@ -47,7 +46,6 @@ public class SeataFeignObjectWrapper {
 				FeignBlockingLoadBalancerClient client = (FeignBlockingLoadBalancerClient) bean;
 				return new SeataFeignBlockingLoadBalancerClient(client.getDelegate(),
 						beanFactory.getBean(BlockingLoadBalancerClient.class),
-						beanFactory.getBean(LoadBalancerProperties.class),
 						beanFactory.getBean(LoadBalancerClientFactory.class),
 						this);
 			}

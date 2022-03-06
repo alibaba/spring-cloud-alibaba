@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.1</version>
         <relativePath/>
     </parent>
 
@@ -80,28 +80,29 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2022.0-SNAPSHOT</revision>
+        <revision>2021.0.1.0</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>2020.0.1</spring.cloud.version>
+        <spring.cloud.version>2021.0.1</spring.cloud.version>
 
         <!-- Apache Dubbo -->
         <dubbo.version>2.7.15</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
-        <rocketmq.starter.version>2.0.2</rocketmq.starter.version>
+        <rocketmq.version>4.9.2</rocketmq.version>
 
         <!-- Maven Plugin Versions -->
-        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-        <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
-        <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
+        <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        <flatten-maven-plugin.version>1.1.0</flatten-maven-plugin.version>
+        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+        <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
-        <jacoco.version>0.8.3</jacoco.version>
+        <jacoco.version>0.8.5</jacoco.version>
     </properties>
 
     <modules>
@@ -110,6 +111,7 @@
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
+        <module>spring-cloud-alibaba-tests</module>
     </modules>
 
     <dependencyManagement>
@@ -181,8 +183,13 @@
 
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-spring-boot-starter</artifactId>
-                <version>${rocketmq.starter.version}</version>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-acl</artifactId>
+                <version>${rocketmq.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

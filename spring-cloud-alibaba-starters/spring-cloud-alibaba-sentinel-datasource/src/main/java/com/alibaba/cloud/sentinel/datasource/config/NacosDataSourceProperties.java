@@ -18,9 +18,8 @@ package com.alibaba.cloud.sentinel.datasource.config;
 
 import javax.validation.constraints.NotEmpty;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.NacosDataSourceFactoryBean;
-
-import org.springframework.util.StringUtils;
 
 /**
  * Nacos Properties class Using by {@link DataSourcePropertiesConfiguration} and
@@ -31,6 +30,8 @@ import org.springframework.util.StringUtils;
 public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	private String serverAddr;
+
+	private String contextPath;
 
 	private String username;
 
@@ -59,7 +60,7 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 		if (StringUtils.isEmpty(serverAddr)) {
 			serverAddr = this.getEnv().getProperty(
 					"spring.cloud.sentinel.datasource.nacos.server-addr",
-					"localhost:8848");
+					"127.0.0.1:8848");
 		}
 	}
 
@@ -69,6 +70,14 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
 	public void setServerAddr(String serverAddr) {
 		this.serverAddr = serverAddr;
+	}
+
+	public String getContextPath() {
+		return contextPath;
+	}
+
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
 	}
 
 	public String getUsername() {

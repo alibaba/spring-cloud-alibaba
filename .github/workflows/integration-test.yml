@@ -1,0 +1,31 @@
+name: Integration Testing
+on:
+  push:
+    branches:
+      - 2021.x
+  pull_request:
+    branches:
+      - 2021.x
+jobs:
+  integration-testing:
+    name: Integration Testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Dependies Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Compile & Checkstyle
+        run: mvn clean compile
+      - name: Testing
+        run: mvn clean -Dit.enabled=true test
+

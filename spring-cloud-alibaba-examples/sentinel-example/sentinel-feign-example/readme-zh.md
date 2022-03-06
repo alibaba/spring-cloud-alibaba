@@ -16,19 +16,17 @@
 在启动示例进行演示之前，我们先了解一下 Feign 如何接入 Sentinel。
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
 
-1. 首先，修改 pom.xml 文件，引入 Sentinel starter 和 Dubbo starter。
+1. 首先，修改 pom.xml 文件，引入 Sentinel starter 和 Openfeign starter。
 
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-openfeign</artifactId>
 </dependency>
-
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
 </dependency>
-
 ```
 2. 其次, 使用nacos 注册中心
 	
@@ -114,6 +112,8 @@ public class EchoController {
 
 - 启动nacos 注册中心
 
+- 启动sentinel
+
 - 启动服务提供方：
 
 1. IDE直接启动：找到主类 `ProviderApplication`，执行 main 方法启动应用。
@@ -123,3 +123,5 @@ public class EchoController {
 
 1. IDE直接启动：找到主类 `ConsumerApplication`，执行 main 方法启动应用。
 2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar sentinel-feign-consumer-example.jar`启动应用。
+
+- 启动之后，Sentinel Dashboard可能看不见service-consumer服务的详细信息，多请求几次接口即可。

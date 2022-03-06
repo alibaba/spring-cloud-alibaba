@@ -25,10 +25,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
+
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
 
 /**
  * Nacos-specific loader, If need to support other methods of parsing,you need to do the

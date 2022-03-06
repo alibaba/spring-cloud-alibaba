@@ -17,6 +17,7 @@
 package com.alibaba.cloud.sentinel.datasource;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import com.alibaba.cloud.commons.io.FileUtils;
@@ -107,7 +108,7 @@ public class SentinelConverterTests {
 	private String readFileContent(String file) {
 		try {
 			return FileUtils.readFileToString(
-					ResourceUtils.getFile(StringUtils.trimAllWhitespace(file)));
+					ResourceUtils.getFile(StringUtils.trimAllWhitespace(file)), Charset.defaultCharset());
 		}
 		catch (IOException e) {
 			return "";

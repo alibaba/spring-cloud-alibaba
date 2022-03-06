@@ -3,6 +3,7 @@
 ## 项目说明
 
 本项目演示如何使用 Nacos Config Starter 完成 Spring Cloud 应用的配置管理。
+注意: 适用于 spring boot 版本低于 2.4.0
 
 [Nacos](https://github.com/alibaba/Nacos) 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 
@@ -61,9 +62,9 @@
 		
 		内容如下
 		
-			user.id=1
-			user.name=james
-			user.age=17	
+   		user.id=1
+		user.name=james
+		user.age=17	
 
 ### 应用启动
 
@@ -117,7 +118,7 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 * `spring.profiles.active` 即为当前环境对应的 profile，详情可以参考 [Spring Boot文档](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
-	**注意，当 activeprofile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${file-extension}`**
+	**注意，当 active profile 为空时，对应的连接符 `-` 也将不存在，dataId 的拼接格式变成 `${prefix}`.`${file-extension}`**
 
 * `file-extension` 为配置内容的数据格式，可以通过配置项 `spring.cloud.nacos.config.file-extension`来配置。
 目前只支持 `properties` 类型。
@@ -153,7 +154,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Nacos Config Sta
 
 Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos_config 来查看 Nacos Endpoint 的信息。
 
-Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 来访问。
+Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacosconfig 来访问。
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 
@@ -164,8 +165,8 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacos-config 
 #### 更多配置项
 配置项|key|默认值|说明
 ----|----|-----|-----
-服务端地址|spring.cloud.nacos.config.server-addr||
-DataId前缀|spring.cloud.nacos.config.prefix||spring.application.name
+服务端地址|spring.cloud.nacos.config.server-addr||服务器ip和端口
+DataId前缀|spring.cloud.nacos.config.prefix|${spring.application.name}|
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
 dataID后缀及内容文件格式|spring.cloud.nacos.config.file-extension|properties|dataId的后缀，同时也是配置内容的文件格式，目前只支持 properties
 配置内容的编码方式|spring.cloud.nacos.config.encode|UTF-8|配置的编码
@@ -174,8 +175,9 @@ dataID后缀及内容文件格式|spring.cloud.nacos.config.file-extension|prope
 AccessKey|spring.cloud.nacos.config.access-key||
 SecretKey|spring.cloud.nacos.config.secret-key||
 相对路径|spring.cloud.nacos.config.context-path||服务端 API 的相对路径
-接入点|spring.cloud.nacos.config.endpoint|UTF-8|地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
+接入点|spring.cloud.nacos.config.endpoint||地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 是否开启监听和自动刷新|spring.cloud.nacos.config.refresh-enabled|true|
+集群服务名|spring.cloud.nacos.config.cluster-name||
 
 
 

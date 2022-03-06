@@ -44,15 +44,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import static com.alibaba.cloud.circuitbreaker.sentinel.ReactiveSentinelCircuitBreakerIntegrationTest.Application;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author Ryan Baxter
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT,
-		classes = ReactiveSentinelCircuitBreakerIntegrationTest.Application.class,
-		properties = { "spring.cloud.discovery.client.health-indicator.enabled=false" })
+@SpringBootTest(webEnvironment = RANDOM_PORT, classes = Application.class, properties = {
+		"spring.cloud.discovery.client.health-indicator.enabled=false" })
 @DirtiesContext
 public class ReactiveSentinelCircuitBreakerIntegrationTest {
 
@@ -60,7 +60,7 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 	private int port = 0;
 
 	@Autowired
-	private ReactiveSentinelCircuitBreakerIntegrationTest.Application.DemoControllerService service;
+	private Application.DemoControllerService service;
 
 	@Before
 	public void setup() {

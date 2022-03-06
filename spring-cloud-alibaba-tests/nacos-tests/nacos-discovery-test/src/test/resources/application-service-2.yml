@@ -1,0 +1,13 @@
+server:
+  port: 0
+  tomcat:
+    threads:
+      min-spare: 4
+      max: 10
+spring:
+  application:
+    name: service-2
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848

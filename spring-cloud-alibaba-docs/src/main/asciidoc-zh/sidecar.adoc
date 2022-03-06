@@ -3,7 +3,7 @@
 `Spring Cloud Alibaba Sidecar` 是一个用来快速**完美整合** Spring Cloud
 与 *异构微服务* 的框架，灵感来自
 https://github.com/spring-cloud/spring-cloud-netflix/tree/master/spring-cloud-netflix-sidecar[Spring
-Cloud Netflix Sidecar] 。目前支持的服务发现组件：
+Cloud Netflix Sidecar]，目前支持的服务发现组件：
 
 * Nacos
 * Consul
@@ -14,7 +14,7 @@ Cloud Netflix Sidecar] 。目前支持的服务发现组件：
 
 非Spring Cloud应用，统称异构微服务。比如你的遗留项目，或者非JVM应用。
 
-==== ``完美整合''的三层含义
+==== "完美整合"的三层含义
 
 * 享受服务发现的优势
 * 有负载均衡
@@ -89,7 +89,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 127.0.0.1:8848
     gateway:
       discovery:
         locator:

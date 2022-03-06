@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
-import com.alibaba.nacos.common.utils.StringUtils;
 import org.apache.commons.logging.Log;
 
 import org.springframework.boot.BootstrapRegistry.InstanceSupplier;
@@ -50,6 +50,7 @@ import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosIt
  * {@link ConfigDataResource}.
  *
  * @author freeman
+ * @since 2021.0.1.0
  */
 public class NacosConfigDataLocationResolver
 		implements ConfigDataLocationResolver<NacosConfigDataResource>, Ordered {

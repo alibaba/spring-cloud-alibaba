@@ -30,7 +30,7 @@ import org.springframework.cloud.client.ServiceInstance;
  * Cache serviceIds and corresponding instances in Nacos.
  *
  * @author freeman
- * @since 2022.0
+ * @since 2021.0.1.0
  */
 public final class ServiceCache {
 

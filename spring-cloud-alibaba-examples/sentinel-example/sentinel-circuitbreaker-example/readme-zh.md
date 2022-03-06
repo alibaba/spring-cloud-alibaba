@@ -6,30 +6,9 @@ OpenFeign 整合 Sentinel 断路器实现
 
 ## 示例
 
-1. 添加依赖
+1. 添加配置到配置中心
 
-```xml
-<!-- spring cloud alibaba 2021.0 暂时使用 spring cloud 2020.0.1 -->
-<!-- 如果需要支持 Feign client 的配置, 需要升级 spring-cloud-openfeign-core 到 3.0.4 -->
-<!-- 或者升级 spring cloud 到 2020.0.4 -->
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-openfeign</artifactId>
-    <exclusions>
-        <exclusion>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-openfeign-core</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-openfeign-core</artifactId>
-    <version>3.0.4</version> <!-- version >= 3.0.4 -->
-</dependency>
-```
-2. 添加配置到配置中心
-	
+dataId 为 `sentinel-circuitbreaker-rules.yml`
 ```yaml
 feign:
   circuitbreaker:
@@ -61,6 +40,8 @@ feign:
           minRequestAmount: 1
 ```
 
+2. 启动 FeignCircuitBreakerApplication
+
 ## 验证配置生效
 启动项目  
 
@@ -69,8 +50,8 @@ feign:
 再访问 http://localhost/test/default/true 断路器处于打开状态
 
 验证指定 feign client 生效  
-先访问 http://localhost/test/feign/true 2 次  
-再访问 http://localhost/test/feign/false 断路器处于打开状态
+先访问 http://localhost/test/feign/false 2 次  
+再访问 http://localhost/test/feign/true 断路器处于打开状态
 
 验证 feign client 指定方法生效  
 先访问 http://localhost/test/feignMethod/false 2次  

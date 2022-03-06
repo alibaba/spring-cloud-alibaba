@@ -7,7 +7,7 @@ spring:
     nacos:
       config:
         group: DEFAULT_GROUP
-        server-addr: localhost:8848
+        server-addr: 127.0.0.1:8848
   config:
     import:
       - optional:nacos:test.yml

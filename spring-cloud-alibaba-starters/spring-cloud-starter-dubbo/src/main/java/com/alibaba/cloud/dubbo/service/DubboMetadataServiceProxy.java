@@ -125,6 +125,7 @@ public class DubboMetadataServiceProxy implements BeanClassLoaderAware, Disposab
 	private DubboMetadataService createProxyIfAbsent(URL dubboMetadataServiceURL) {
 		String serviceName = dubboMetadataServiceURL.getParameter(APPLICATION_KEY);
 		String version = dubboMetadataServiceURL.getParameter(VERSION_KEY);
+
 		// Initialize DubboMetadataService with right version
 		return createProxyIfAbsent(serviceName, version);
 	}

@@ -46,7 +46,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
+ * TODO refactor, remove powermock.
+ *
  * @author zkz
+ * @author freeman
  */
 
 @RunWith(PowerMockRunner.class)
@@ -54,7 +57,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"com.sun.org.apache.xerces.internal.jaxp.*", "org.w3c.dom.*" })
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PrepareForTest({ NacosConfigService.class })
-@SpringBootTest(classes = NacosConfigurationNoSuffixTest.TestConfig.class, properties = {
+@SpringBootTest(classes = NacosConfigurationNoSuffixTest.TestConfig.class, webEnvironment = NONE, properties = {
 		"spring.application.name=app-no-suffix", "spring.profiles.active=dev",
 		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
 		"spring.cloud.nacos.config.namespace=test-namespace",
@@ -69,7 +72,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.nacos.config.ext-config[1].group=GLOBAL_GROUP",
 		"spring.cloud.nacos.config.shared-dataids=shared-data1.properties,shared-data2.xml",
 		"spring.cloud.nacos.config.accessKey=test-accessKey",
-		"spring.cloud.nacos.config.secretKey=test-secretKey" }, webEnvironment = NONE)
+		"spring.cloud.nacos.config.secretKey=test-secretKey",
+		"spring.cloud.bootstrap.enabled=true"
+})
 public class NacosConfigurationNoSuffixTest {
 
 	static {

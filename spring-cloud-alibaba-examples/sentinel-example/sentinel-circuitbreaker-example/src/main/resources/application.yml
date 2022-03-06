@@ -1,0 +1,11 @@
+server:
+  port: 80
+spring:
+  application:
+    name: circuit-breaker-app
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+  config:
+    import: optional:nacos:sentinel-circuitbreaker-rules.yml

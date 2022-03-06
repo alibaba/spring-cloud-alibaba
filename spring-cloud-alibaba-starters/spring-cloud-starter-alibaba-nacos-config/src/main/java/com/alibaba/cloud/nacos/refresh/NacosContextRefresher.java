@@ -45,6 +45,7 @@ import org.springframework.context.ApplicationListener;
  *
  * @author juven.xuxb
  * @author pbting
+ * @author freeman
  */
 public class NacosContextRefresher
 		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
@@ -74,21 +75,6 @@ public class NacosContextRefresher
 		this.nacosRefreshHistory = refreshHistory;
 		this.configService = nacosConfigManager.getConfigService();
 		this.isRefreshEnabled = this.nacosConfigProperties.isRefreshEnabled();
-	}
-
-	/**
-	 * recommend to use
-	 * {@link NacosContextRefresher#NacosContextRefresher(NacosConfigManager, NacosRefreshHistory)}.
-	 * @param refreshProperties refreshProperties
-	 * @param refreshHistory refreshHistory
-	 * @param configService configService
-	 */
-	@Deprecated
-	public NacosContextRefresher(NacosRefreshProperties refreshProperties,
-			NacosRefreshHistory refreshHistory, ConfigService configService) {
-		this.isRefreshEnabled = refreshProperties.isEnabled();
-		this.nacosRefreshHistory = refreshHistory;
-		this.configService = configService;
 	}
 
 	@Override

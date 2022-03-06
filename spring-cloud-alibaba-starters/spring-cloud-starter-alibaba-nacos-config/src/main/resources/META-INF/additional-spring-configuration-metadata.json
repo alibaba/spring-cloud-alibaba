@@ -3,7 +3,7 @@
     {
       "name": "spring.cloud.nacos.server-addr",
       "type": "java.lang.String",
-      "defaultValue": "localhost:8848",
+      "defaultValue": "127.0.0.1:8848",
       "description": "nacos server address."
     },
     {
@@ -72,6 +72,12 @@
       "type": "java.lang.String",
       "defaultValue": "${spring.cloud.nacos.username}",
       "description": "nacos config service's userName to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.config.import-check.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to enable import-check."
     },
     {
       "name": "spring.cloud.nacos.config.password",
