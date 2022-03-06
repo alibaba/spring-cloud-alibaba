@@ -56,7 +56,7 @@ public class NacosConfigBootstrapConfiguration {
 
 
 	/**
-	 * Compatible with spring boot < 2.4.0.
+	 * Compatible with bootstrap way to start.
 	 */
 	@Bean
 	@ConditionalOnMissingBean(search = SearchStrategy.CURRENT)
