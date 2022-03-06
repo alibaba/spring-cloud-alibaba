@@ -42,17 +42,17 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"feign.sentinel.default-rule=default",
 		"feign.sentinel.rules.default[0].grade=2",
 		"feign.sentinel.rules.default[0].count=2",
-		"feign.sentinel.rules.default[0].timeWindow=2",
+		"feign.sentinel.rules.default[0].timeWindow=1",
 		"feign.sentinel.rules.default[0].statIntervalMs=30000",
 		"feign.sentinel.rules.default[0].minRequestAmount=5",
 		"feign.sentinel.rules.user[0].grade=2",
 		"feign.sentinel.rules.user[0].count=2",
-		"feign.sentinel.rules.user[0].timeWindow=2",
+		"feign.sentinel.rules.user[0].timeWindow=1",
 		"feign.sentinel.rules.user[0].statIntervalMs=30000",
 		"feign.sentinel.rules.user[0].minRequestAmount=5",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].grade=2",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].count=1",
-		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].timeWindow=2",
+		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].timeWindow=1",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].statIntervalMs=30000",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].minRequestAmount=5"
 })
@@ -71,14 +71,12 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
 		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
 		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
+		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
+		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
 
 		// occur exception
 		assertThat(orderClient.defaultConfig(false)).isEqualTo("fallback");
 		assertThat(orderClient.defaultConfig(false)).isEqualTo("fallback");
-
-		// test circuit breaker close
-		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
-
 		// the 3rd exception, circuit breaker open
 		assertThat(orderClient.defaultConfig(false)).isEqualTo("fallback");
 
@@ -87,7 +85,7 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		assertThat(orderClient.defaultConfig(true)).isEqualTo("fallback");
 
 		// longer than timeWindow, circuit breaker half open
-		Thread.sleep(2500L);
+		Thread.sleep(1200L);
 
 		// let circuit breaker close
 		assertThat(orderClient.defaultConfig(true)).isEqualTo("ok");
@@ -102,14 +100,12 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
 		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
 		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
+		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
+		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
 
 		// occur exception
 		assertThat(userClient.specificFeign(false)).isEqualTo("fallback");
 		assertThat(userClient.specificFeign(false)).isEqualTo("fallback");
-
-		// test circuit breaker close
-		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
-
 		// the 3rd exception, circuit breaker open
 		assertThat(userClient.specificFeign(false)).isEqualTo("fallback");
 
@@ -118,7 +114,7 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		assertThat(userClient.specificFeign(true)).isEqualTo("fallback");
 
 		// longer than timeWindow, circuit breaker half open
-		Thread.sleep(2500L);
+		Thread.sleep(1200L);
 
 		// let circuit breaker close
 		assertThat(userClient.specificFeign(true)).isEqualTo("ok");
@@ -134,14 +130,10 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
+		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
 
 		// occur exception
 		assertThat(userClient.specificFeignMethod(false)).isEqualTo("fallback");
-
-		// 1 time exception, circuit breaker is closed(configuration is 1, but we need 2
-		// to make it open)
-		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
-
 		// occur the 2nd exception, circuit breaker open
 		assertThat(userClient.specificFeignMethod(false)).isEqualTo("fallback");
 
@@ -150,7 +142,7 @@ public class FeignClientCircuitBreakerRuleIntegrationTest {
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("fallback");
 
 		// longer than timeWindow, circuit breaker half open
-		Thread.sleep(2500L);
+		Thread.sleep(1200L);
 
 		// let circuit breaker close
 		assertThat(userClient.specificFeignMethod(true)).isEqualTo("ok");
