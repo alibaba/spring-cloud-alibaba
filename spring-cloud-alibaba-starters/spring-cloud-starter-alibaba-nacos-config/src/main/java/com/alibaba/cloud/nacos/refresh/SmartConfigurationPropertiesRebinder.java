@@ -46,6 +46,7 @@ import org.springframework.util.ReflectionUtils;
  * as the default behavior. </strong>
  *
  * @author freeman
+ * @since 2021.0.1.1
  */
 public class SmartConfigurationPropertiesRebinder
 		extends ConfigurationPropertiesRebinder {

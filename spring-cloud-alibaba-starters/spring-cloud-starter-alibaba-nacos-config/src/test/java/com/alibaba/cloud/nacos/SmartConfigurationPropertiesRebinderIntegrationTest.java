@@ -33,10 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
- *
- *
  * @author freeman
- * @date 2022/2/6
  */
 @SpringBootTest(classes = TestConfig.class, webEnvironment = NONE, properties = {
 		"spring.cloud.nacos.config.refresh-behavior=specific_bean",
