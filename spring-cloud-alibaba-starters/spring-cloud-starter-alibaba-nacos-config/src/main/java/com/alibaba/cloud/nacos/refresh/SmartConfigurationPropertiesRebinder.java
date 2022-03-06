@@ -80,7 +80,7 @@ public class SmartConfigurationPropertiesRebinder
 		this.applicationContext = applicationContext;
 		this.refreshBehavior = this.applicationContext.getEnvironment().getProperty(
 				"spring.cloud.nacos.config.refresh-behavior", RefreshBehavior.class,
-				RefreshBehavior.ALL);
+				RefreshBehavior.ALL_BEANS);
 	}
 
 	@Override
@@ -89,21 +89,22 @@ public class SmartConfigurationPropertiesRebinder
 				// Backwards compatible
 				|| event.getKeys().equals(event.getSource())) {
 			switch (refreshBehavior) {
-			case SPECIFIC:
-				rebindSpecific(event);
+			case SPECIFIC_BEAN:
+				rebindSpecificBean(event);
 				break;
 			default:
 				rebind();
+				break;
 			}
 		}
 	}
 
-	private void rebindSpecific(EnvironmentChangeEvent event) {
+	private void rebindSpecificBean(EnvironmentChangeEvent event) {
 		Set<String> refreshedSet = new HashSet<>();
-		beanMap.forEach((name, bean) -> event.getKeys().forEach(key -> {
+		beanMap.forEach((name, bean) -> event.getKeys().forEach(changeKey -> {
 			String prefix = AnnotationUtils.getValue(bean.getAnnotation()).toString();
 			// prevent multiple refresh one ConfigurationPropertiesBean.
-			if (key.startsWith(prefix) && refreshedSet.add(name)) {
+			if (changeKey.startsWith(prefix) && refreshedSet.add(name)) {
 				rebind(name);
 			}
 		}));

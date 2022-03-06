@@ -20,7 +20,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +41,7 @@ public class NacosConfigAutoConfigurationTest {
 		// compatible with legacy tests
 		System.setProperty("spring.cloud.bootstrap.enabled", "true");
 		context = new AnnotationConfigApplicationContext(
-				NacosConfigAutoConfiguration.class);
+				NacosConfigAutoConfiguration.class, Config.class);
 	}
 
 	@Test
@@ -64,6 +67,16 @@ public class NacosConfigAutoConfigurationTest {
 		assertThat(context.getBean(NacosConfigProperties.class).getServerAddr())
 				.isEqualTo("localhost");
 		context.close();
+	}
+
+	@Configuration
+	static class Config {
+
+		@Bean
+		public ConfigurationPropertiesBeans beans() {
+			return new ConfigurationPropertiesBeans();
+		}
+
 	}
 
 }

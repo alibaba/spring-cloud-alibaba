@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.nacos.refresh;
 
+import org.springframework.boot.context.properties.ConfigurationPropertiesBean;
+
 /**
  * Refresh behavior.
  *
@@ -23,11 +25,11 @@ package com.alibaba.cloud.nacos.refresh;
  */
 public enum RefreshBehavior {
 	/**
-	 * Refresh all ConfigurationPropertiesBean.
+	 * Refresh all {@link ConfigurationPropertiesBean}s.
 	 */
-	ALL,
+	ALL_BEANS,
 	/**
-	 * Refresh specific ConfigurationPropertiesBean base on change key.
+	 * Refresh specific {@link ConfigurationPropertiesBean} base on change key.
 	 */
-	SPECIFIC
+	SPECIFIC_BEAN,
 }

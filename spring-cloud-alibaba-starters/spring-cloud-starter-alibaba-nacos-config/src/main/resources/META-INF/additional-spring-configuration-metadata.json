@@ -98,7 +98,7 @@
     {
       "name": "spring.cloud.nacos.config.refresh-behavior",
       "type": "com.alibaba.cloud.nacos.refresh.RefreshBehavior",
-      "defaultValue": "ALL",
+      "defaultValue": "all_beans",
       "description": "ConfigurationPropertiesBean refresh behavior."
     }
   ]

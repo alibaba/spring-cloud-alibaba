@@ -16,9 +16,6 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.alibaba.cloud.nacos.refresh.RefreshBehavior;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import org.junit.jupiter.api.Test;
@@ -27,15 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.alibaba.cloud.nacos.SmartConfigurationPropertiesRebinderIntegrationTest.TestConfig;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
  *
@@ -43,15 +38,15 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author freeman
  * @date 2022/2/6
  */
-@SpringBootTest(classes = TestConfig.class, properties = {
-		"spring.cloud.nacos.config.refresh-behavior=specific",
-		"spring.cloud.nacos.server-addr=123.123.123.123:8848" }, webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = TestConfig.class, webEnvironment = NONE, properties = {
+		"spring.cloud.nacos.config.refresh-behavior=specific_bean",
+		"spring.cloud.nacos.server-addr=123.123.123.123:8848",
+		"spring.cloud.nacos.config.import-check.enabled=false"
+})
 public class SmartConfigurationPropertiesRebinderIntegrationTest {
 
 	@Autowired
 	private ConfigurationPropertiesRebinder rebinder;
-	@Autowired
-	private ApplicationContext context;
 
 	@Test
 	public void testUsingSmartConfigurationPropertiesRebinder() {
@@ -60,17 +55,7 @@ public class SmartConfigurationPropertiesRebinderIntegrationTest {
 
 		RefreshBehavior refreshBehavior = (RefreshBehavior) ReflectionTestUtils
 				.getField(rebinder, "refreshBehavior");
-		assertThat(refreshBehavior).isEqualTo(RefreshBehavior.SPECIFIC);
-	}
-
-	@Test
-	public void testSpecificRefreshWork() {
-		Set<String> keys = new HashSet<>();
-		keys.add("spring.cloud.nacos.config.server-addr");
-		keys.add("spring.cloud.nacos.config.name");
-
-		// for debug
-		context.publishEvent(new EnvironmentChangeEvent(context, keys));
+		assertThat(refreshBehavior).isEqualTo(RefreshBehavior.SPECIFIC_BEAN);
 	}
 
 	@Configuration
