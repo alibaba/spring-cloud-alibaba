@@ -98,7 +98,7 @@ Add a spring.config.import=nacos: property to your configuration.
 
 - 假如想保留以前的使用方式 (bootstrap引入配置)，你只需要添加依赖 `spring-cloud-starter-bootstrap` 依赖，不需要修改一行代码
 
-你可以前往 https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-2.4.x-example[这里] 查看具体example
+你可以前往 https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-2.4.x-example[这里] 查看具体example
 
 ==== Nacos 容错能力
 
@@ -178,7 +178,7 @@ feign:
 
 *注意事项：* 如果你使用的是 `spring-cloud-starter-alibaba-sentinel`，请**不要**配置 `feign.sentinel.enable=true`，会使配置失效
 
-你可以前往 https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-circuitbreaker-example[这里] 查看具体 example
+你可以前往 https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-circuitbreaker-example[这里] 查看具体 example
 
 === 对升级的一点建议
 1. 在 spring boot 2.6 之后默认开启了禁止循环引入，建议大家不要关闭，这是一种不好的编码习惯，如果你的项目里出现了循环引用，请选择重构它
