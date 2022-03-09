@@ -77,7 +77,7 @@ public abstract class SentinelConverter<T extends Object>
 		}
 
 		if (StringUtils.isEmpty(source)) {
-			log.warn("converter can not convert rules because source is empty");
+			log.info("converter can not convert rules because source is empty");
 			return ruleCollection;
 		}
 		try {
