@@ -112,7 +112,7 @@ public abstract class AbstractNamedValueServiceParameterResolver
 			}
 		}
 
-		return index > -1 ? arguments[index] : null;
+		return index != null && index > -1 ? arguments[index] : null;
 	}
 
 	protected Collection<String> getNames(RestMethodMetadata restMethodMetadata,
