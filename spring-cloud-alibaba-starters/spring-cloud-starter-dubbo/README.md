@@ -1,6 +1,0 @@
-## Info
-
-
-
-## Features
-
