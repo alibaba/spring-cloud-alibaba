@@ -20,6 +20,7 @@
     <properties>
         <revision>2021.0.1.1-SNAPSHOT</revision>
         <sentinel.version>1.8.3</sentinel.version>
+        <opensergo.version>0.0.1-SNAPSHOT</opensergo.version>
         <seata.version>1.4.2</seata.version>
         <nacos.client.version>1.4.2</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
@@ -165,6 +166,12 @@
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-spring-webmvc-adapter</artifactId>
                 <version>${sentinel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.opensergo</groupId>
+                <artifactId>opensergo-java</artifactId>
+                <version>${opensergo.version}</version>
             </dependency>
 
             <!--Alibaba Seata-->

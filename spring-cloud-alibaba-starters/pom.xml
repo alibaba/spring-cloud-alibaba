@@ -18,6 +18,7 @@
         <module>spring-cloud-starter-alibaba-nacos-config</module>
         <module>spring-cloud-starter-alibaba-nacos-config-server</module>
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
+        <module>spring-cloud-starter-alibaba-opensergo</module>
         <module>spring-cloud-starter-alibaba-seata</module>
         <module>spring-cloud-starter-stream-rocketmq</module>
         <module>spring-cloud-starter-bus-rocketmq</module>
