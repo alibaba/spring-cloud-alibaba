@@ -36,7 +36,7 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 |fangjian0423@gmail.com
 |Alibaba
 
-|Jin Xiao
+|Jing Xiao
 |flystar32
 |Steering Committee Member
 |flystar32@163.com
@@ -98,7 +98,7 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 |zihaorao@126.com
 |Alibaba
 
-|Wenliang Liu
+|Liangwen Liu
 |DanielLiu1123
 |Committer
 |llw599502537@gmail.com
