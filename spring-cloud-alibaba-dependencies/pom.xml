@@ -122,18 +122,6 @@
 
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
-                <artifactId>sentinel-dubbo-adapter</artifactId>
-                <version>${sentinel.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.csp</groupId>
-                <artifactId>sentinel-apache-dubbo-adapter</artifactId>
-                <version>${sentinel.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-reactor-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
