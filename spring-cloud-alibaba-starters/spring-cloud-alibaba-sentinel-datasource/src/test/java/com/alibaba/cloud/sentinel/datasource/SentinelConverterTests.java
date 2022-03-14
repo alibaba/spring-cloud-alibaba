@@ -27,12 +27,13 @@ import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -67,16 +68,22 @@ public class SentinelConverterTests {
 		assertThat(flowRules.size()).isEqualTo(0);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testConverterErrorFormat() {
-		JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
-		jsonConverter.convert(readFileContent("classpath: flowrule-errorformat.json"));
+		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+			JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
+			jsonConverter
+					.convert(readFileContent("classpath: flowrule-errorformat.json"));
+		});
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testConverterErrorContent() {
-		JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
-		jsonConverter.convert(readFileContent("classpath: flowrule-errorcontent.json"));
+		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+			JsonConverter jsonConverter = new JsonConverter(objectMapper, FlowRule.class);
+			jsonConverter
+					.convert(readFileContent("classpath: flowrule-errorcontent.json"));
+		});
 	}
 
 	@Test
@@ -108,7 +115,8 @@ public class SentinelConverterTests {
 	private String readFileContent(String file) {
 		try {
 			return FileUtils.readFileToString(
-					ResourceUtils.getFile(StringUtils.trimAllWhitespace(file)), Charset.defaultCharset());
+					ResourceUtils.getFile(StringUtils.trimAllWhitespace(file)),
+					Charset.defaultCharset());
 		}
 		catch (IOException e) {
 			return "";

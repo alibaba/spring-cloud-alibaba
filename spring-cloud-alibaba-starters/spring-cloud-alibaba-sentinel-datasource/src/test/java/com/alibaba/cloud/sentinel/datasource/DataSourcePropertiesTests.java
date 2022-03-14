@@ -31,12 +31,13 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -117,11 +118,13 @@ public class DataSourcePropertiesTests {
 		assertThat(fileDataSourceProperties.getBufSize()).isEqualTo(1024);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testFileException() {
-		FileDataSourceProperties fileDataSourceProperties = new FileDataSourceProperties();
-		fileDataSourceProperties.setFile("classpath: 1.json");
-		fileDataSourceProperties.preCheck("test-ds");
+		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+			FileDataSourceProperties fileDataSourceProperties = new FileDataSourceProperties();
+			fileDataSourceProperties.setFile("classpath: 1.json");
+			fileDataSourceProperties.preCheck("test-ds");
+		});
 	}
 
 	@Test
