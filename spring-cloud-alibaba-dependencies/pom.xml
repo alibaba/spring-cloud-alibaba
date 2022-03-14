@@ -122,18 +122,6 @@
 
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
-                <artifactId>sentinel-dubbo-adapter</artifactId>
-                <version>${sentinel.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.csp</groupId>
-                <artifactId>sentinel-apache-dubbo-adapter</artifactId>
-                <version>${sentinel.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-reactor-adapter</artifactId>
                 <version>${sentinel.version}</version>
             </dependency>
@@ -243,13 +231,6 @@
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-commons</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- Dubbo -->
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-starter-dubbo</artifactId>
                 <version>${revision}</version>
             </dependency>
 

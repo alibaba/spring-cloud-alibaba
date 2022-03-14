@@ -17,8 +17,6 @@ include::nacos-config.adoc[]
 
 include::sentinel.adoc[]
 
-include::dubbo.adoc[]
-
 include::rocketmq-new.adoc[]
 
 include::rocketmq.adoc[]

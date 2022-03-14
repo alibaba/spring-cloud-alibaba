@@ -18,9 +18,6 @@
 
     <modules>
         <module>sentinel-example/sentinel-core-example</module>
-        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-provider-example</module>
-        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-consumer-example</module>
-        <module>sentinel-example/sentinel-dubbo-example/sentinel-dubbo-api</module>
         <module>sentinel-example/sentinel-feign-example/sentinel-feign-consumer-example</module>
         <module>sentinel-example/sentinel-feign-example/sentinel-feign-provider-example</module>
         <module>sentinel-example/sentinel-circuitbreaker-example</module>
@@ -38,7 +35,6 @@
         <module>rocketmq-example/rocketmq-produce-example</module>
         <module>rocketmq-example/rocketmq-comprehensive-example</module>
         <module>spring-cloud-bus-rocketmq-example</module>
-        <module>spring-cloud-alibaba-dubbo-examples</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example</module>
     </modules>
