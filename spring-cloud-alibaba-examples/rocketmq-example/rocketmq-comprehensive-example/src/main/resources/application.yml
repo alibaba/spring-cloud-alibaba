@@ -18,7 +18,6 @@ spring:
           processor-out-0:
             producer:
               group: output_2
-
       bindings:
         producer-out-0:
           destination: num
@@ -26,10 +25,8 @@ spring:
           destination: square
         processor-in-0:
           destination: num
-          group: processor_group
         consumer-in-0:
           destination: square
-          group: consumer_group
 
 logging:
   level:
