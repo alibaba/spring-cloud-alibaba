@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.configdata;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,11 +34,16 @@ import org.springframework.boot.context.config.ConfigData;
 import org.springframework.boot.context.config.ConfigDataLoader;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.PropertySource;
 
+import static com.alibaba.cloud.nacos.configdata.ConfigPreference.LOCAL;
+import static com.alibaba.cloud.nacos.configdata.ConfigPreference.REMOTE;
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
+import static org.springframework.boot.context.config.ConfigData.Option;
 import static org.springframework.boot.context.config.ConfigData.Option.IGNORE_IMPORTS;
 import static org.springframework.boot.context.config.ConfigData.Option.IGNORE_PROFILES;
+import static org.springframework.boot.context.config.ConfigData.Option.PROFILE_SPECIFIC;
 
 /**
  * Implementation of {@link ConfigDataLoader}.
@@ -82,7 +88,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 
 			NacosPropertySourceRepository.collectNacosPropertySource(propertySource);
 
-			return new ConfigData(propertySources, IGNORE_IMPORTS, IGNORE_PROFILES);
+			return new ConfigData(propertySources, getOptions(context));
 		}
 		catch (Exception e) {
 			if (log.isDebugEnabled()) {
@@ -93,6 +99,23 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			}
 		}
 		return null;
+	}
+
+	private Option[] getOptions(ConfigDataLoaderContext context) {
+		Binder binder = context.getBootstrapContext().get(Binder.class);
+		ConfigPreference preference = binder
+				.bind("spring.cloud.nacos.config.preference", ConfigPreference.class)
+				.orElse(LOCAL);
+		List<Option> options = new ArrayList<>();
+		options.add(IGNORE_IMPORTS);
+		options.add(IGNORE_PROFILES);
+		if (preference == REMOTE) {
+			// mark it as 'PROFILE_SPECIFIC' config, it has higher priority,
+			// will override the none profile specific config.
+			// fixed https://github.com/alibaba/spring-cloud-alibaba/issues/2455
+			options.add(PROFILE_SPECIFIC);
+		}
+		return options.toArray(new Option[0]);
 	}
 
 	private List<PropertySource<?>> pullConfig(ConfigService configService, String group,

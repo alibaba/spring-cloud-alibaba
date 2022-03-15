@@ -94,6 +94,12 @@
       "name": "spring.cloud.nacos.password",
       "type": "java.lang.String",
       "description": "nacos password to authenticate."
+    },
+    {
+      "name": "spring.cloud.nacos.config.preference",
+      "type": "com.alibaba.cloud.nacos.configdata.ConfigPreference",
+      "defaultValue": "local",
+      "description": "Config preference."
     }
   ]
 }
