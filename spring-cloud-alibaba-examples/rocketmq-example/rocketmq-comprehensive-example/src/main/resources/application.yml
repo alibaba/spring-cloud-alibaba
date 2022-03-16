@@ -25,6 +25,7 @@ spring:
           destination: square
         processor-in-0:
           destination: num
+          group: processor_group
         consumer-in-0:
           destination: square
 

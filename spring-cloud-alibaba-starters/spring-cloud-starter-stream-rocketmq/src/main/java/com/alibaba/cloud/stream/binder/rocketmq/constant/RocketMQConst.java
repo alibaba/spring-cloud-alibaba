@@ -31,7 +31,7 @@ public class RocketMQConst extends MessageConst {
 	/**
 	 * Default group for SCS RocketMQ Binder.
 	 */
-	public static final String DEFAULT_GROUP = "binder_default_group_name";
+	public static final String DEFAULT_GROUP = "anonymous";
 
 	/**
 	 * user args for SCS RocketMQ Binder.
