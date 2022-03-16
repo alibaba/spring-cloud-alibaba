@@ -1,0 +1,25 @@
+server:
+  port: 80
+spring:
+  application:
+    name: nacos-config-import-example
+  cloud:
+    nacos:
+      config:
+        group: DEFAULT_GROUP
+        server-addr: 127.0.0.1:8848
+        preference: remote
+  config:
+    import:
+      - optional:nacos:test.yml
+  profiles:
+    active: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+configdata:
+  user:
+    name: bb
