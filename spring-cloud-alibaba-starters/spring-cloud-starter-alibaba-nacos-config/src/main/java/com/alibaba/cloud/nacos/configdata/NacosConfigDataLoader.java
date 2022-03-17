@@ -100,7 +100,8 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			throws NacosException, IOException {
 		String config = configService.getConfig(dataId, group, timeout);
 		if (log.isDebugEnabled()) {
-			log.debug("[NacosConfigDataLoader][pullConfig] get nacos config is: " + config);
+			log.debug(String.format("[NacosConfigDataLoader][pullConfig] get nacos config, dataId: %s,group: %s," +
+					"content: %s", dataId, group, config));
 		}
 		return NacosDataParserHandler.getInstance().parseNacosData(dataId, config,
 				suffix);
