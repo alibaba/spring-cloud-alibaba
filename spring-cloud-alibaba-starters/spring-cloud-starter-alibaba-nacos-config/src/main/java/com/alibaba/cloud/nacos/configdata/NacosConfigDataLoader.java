@@ -99,6 +99,10 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			String dataId, String suffix, long timeout)
 			throws NacosException, IOException {
 		String config = configService.getConfig(dataId, group, timeout);
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("[NacosConfigDataLoader][pullConfig] get nacos config, dataId: %s,group: %s," +
+					"content: %s", dataId, group, config));
+		}
 		return NacosDataParserHandler.getInstance().parseNacosData(dataId, config,
 				suffix);
 	}
