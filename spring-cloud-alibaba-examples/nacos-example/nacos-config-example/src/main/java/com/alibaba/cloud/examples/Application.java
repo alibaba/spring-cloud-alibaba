@@ -63,7 +63,7 @@ class UserConfig {
 
 	private int age;
 
-	private String name;
+	private String nickname;
 
 	private String hr;
 
@@ -79,12 +79,12 @@ class UserConfig {
 		this.age = age;
 	}
 
-	public String getName() {
-		return name;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	public Map<String, Object> getMap() {
@@ -113,7 +113,7 @@ class UserConfig {
 
 	@Override
 	public String toString() {
-		return "UserConfig{" + "age=" + age + ", name='" + name + '\'' + ", map=" + map
+		return "UserConfig{" + "age=" + age + ", nickname='" + nickname + '\'' + ", map=" + map
 				+ ", hr='" + hr + '\'' + ", users=" + users + '}';
 	}
 
@@ -208,21 +208,21 @@ class SampleController {
 	@Autowired
 	private Environment environment;
 
-	@Value("${user.name:zz}")
-	String userName;
+	@Value("${user.nickname:zz}")
+	String nickname;
 
 	@Value("${user.age:25}")
 	Integer age;
 
 	@RequestMapping("/user")
 	public String simple() {
-		return "Hello Nacos Config!" + "Hello " + userName + " " + age + " [UserConfig]: "
+		return "Hello Nacos Config!" + "Hello " + nickname + " " + age + " [UserConfig]: "
 				+ userConfig + "!" + nacosConfigManager.getConfigService();
 	}
 
-	@RequestMapping("/get/{name}")
-	public String getValue(@PathVariable String name) {
-		return String.valueOf(environment.getProperty(name));
+	@RequestMapping("/get/{nickname}")
+	public String getValue(@PathVariable String nickname) {
+		return String.valueOf(environment.getProperty(nickname));
 	}
 
 	@RequestMapping("/bool")
