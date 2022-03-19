@@ -57,10 +57,6 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		this.log = logFactory.getLog(getClass());
 	}
 
-	public NacosConfigDataLoader(Log log) {
-		this.log = log;
-	}
-
 	@Override
 	public ConfigData load(ConfigDataLoaderContext context,
 			NacosConfigDataResource resource) {
