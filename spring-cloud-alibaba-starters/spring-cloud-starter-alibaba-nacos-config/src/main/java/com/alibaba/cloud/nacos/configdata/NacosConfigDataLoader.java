@@ -153,6 +153,9 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			log.warn(String.format("[Nacos Config] config[dataId=%s, group=%s] is empty",
 					dataId, group));
 		}
+		log.debug(
+				String.format("[Nacos Config] config[dataId=%s, group=%s] content: \n%s",
+						dataId, group, config));
 	}
 
 	protected <T> T getBean(ConfigDataLoaderContext context, Class<T> type) {

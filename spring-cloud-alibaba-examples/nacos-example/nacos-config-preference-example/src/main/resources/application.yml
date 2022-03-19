@@ -15,7 +15,10 @@ spring:
       - optional:nacos:test2.yml?preference=local
   profiles:
     active: dev
-
+logging:
+  level:
+    # print content
+    org.springframework.boot.context.config: debug
 ---
 spring:
   config:
