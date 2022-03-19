@@ -27,5 +27,6 @@ jobs:
       - name: Compile & Checkstyle
         run: mvn clean compile
       - name: Testing
-        run: mvn clean -Dit.enabled=true test
+        run: mvn clean test
+#        run: mvn clean -Dit.enabled=true test
 
