@@ -18,7 +18,7 @@ spring:
 logging:
   level:
     # print content
-    org.springframework.boot.context.config: debug
+    com.alibaba.cloud.nacos.configdata: debug
 ---
 spring:
   config:
