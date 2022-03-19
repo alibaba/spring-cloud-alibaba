@@ -12,6 +12,7 @@ spring:
   config:
     import:
       - optional:nacos:test.yml
+      - optional:nacos:test2.yml?preference=local
   profiles:
     active: dev
 
@@ -23,3 +24,5 @@ spring:
 configdata:
   user:
     name: bb
+dev:
+  age: 20
