@@ -33,6 +33,7 @@ import org.springframework.boot.context.config.ConfigData;
 import org.springframework.boot.context.config.ConfigDataLoader;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.PropertySource;
 
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
@@ -52,8 +53,8 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 
 	private final Log log;
 
-	public NacosConfigDataLoader(Log log) {
-		this.log = log;
+	public NacosConfigDataLoader(DeferredLogFactory logFactory) {
+		this.log = logFactory.getLog(getClass());
 	}
 
 	@Override
