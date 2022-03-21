@@ -23,9 +23,8 @@ import java.util.List;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -36,8 +35,6 @@ import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,11 +45,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 /**
  * @author Eric Zhao
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT,
 		classes = SentinelCircuitBreakerIntegrationTest.Application.class,
 		properties = { "spring.cloud.discovery.client.health-indicator.enabled=false" })
-@DirtiesContext
 public class SentinelCircuitBreakerIntegrationTest {
 
 	@Autowired
@@ -85,12 +80,12 @@ public class SentinelCircuitBreakerIntegrationTest {
 		assertThat(service.normal()).isEqualTo("normal");
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		DegradeRuleManager.loadRules(new ArrayList<>());
 	}
 
-	@Before
+	@BeforeEach
 	public void tearDown() {
 		DegradeRuleManager.loadRules(new ArrayList<>());
 	}

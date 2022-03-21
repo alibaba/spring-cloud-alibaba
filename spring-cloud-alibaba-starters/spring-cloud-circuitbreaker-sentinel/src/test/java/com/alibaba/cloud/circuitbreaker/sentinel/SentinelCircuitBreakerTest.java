@@ -21,8 +21,8 @@ import java.util.Collections;
 
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SentinelCircuitBreakerTest {
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		// Clear the rules.
 		DegradeRuleManager.loadRules(new ArrayList<>());

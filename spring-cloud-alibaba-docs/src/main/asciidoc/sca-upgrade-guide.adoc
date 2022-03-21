@@ -98,7 +98,7 @@ You can manually turn it off by setting `spring.cloud.nacos.config.import-check.
 
 - If you want to keep the previous usage (bootstrap way), you only need to add the dependency `spring-cloud-starter-bootstrap` dependency and don't need modifying a line of code.
 
-you can go https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-2.4.x-example[here] to see the complete example.
+you can go https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-2.4.x-example[here] to see the complete example.
 
 ==== Nacos Failure Tolerance
 
@@ -177,7 +177,7 @@ This feature also supports dynamic refresh from the configuration center. You ca
 
 *Note:* If you are using `spring-cloud-starter-alibaba-sentinel`, please *DO NOT* configure `feign.sentinel.enable=true`, it will invalidate the configuration.
 
-You can go https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-circuitbreaker-example[here] to see the complete example.
+You can go https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-circuitbreaker-example[here] to see the complete example.
 
 === Little Advice For Upgrading
 1. After Spring Boot 2.6, the prohibition of circular reference is enabled by default. It is recommended that you do not change it. This is a bad coding practice. If there is a circular reference in your project, please choose to refactor it.

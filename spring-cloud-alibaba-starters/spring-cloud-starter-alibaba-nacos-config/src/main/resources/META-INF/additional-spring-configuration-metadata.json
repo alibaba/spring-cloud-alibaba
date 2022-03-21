@@ -100,6 +100,12 @@
       "type": "com.alibaba.cloud.nacos.refresh.RefreshBehavior",
       "defaultValue": "all_beans",
       "description": "ConfigurationPropertiesBean refresh behavior."
+    },
+    {
+      "name": "spring.cloud.nacos.config.preference",
+      "type": "com.alibaba.cloud.nacos.configdata.ConfigPreference",
+      "defaultValue": "local",
+      "description": "Config preference."
     }
   ]
 }

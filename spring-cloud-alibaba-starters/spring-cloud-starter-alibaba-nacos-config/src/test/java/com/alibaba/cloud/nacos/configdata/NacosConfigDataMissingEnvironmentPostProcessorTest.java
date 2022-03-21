@@ -17,11 +17,9 @@
 package com.alibaba.cloud.nacos.configdata;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.mock.env.MockEnvironment;
-import org.springframework.util.ClassUtils;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,13 +30,7 @@ import static org.mockito.Mockito.mock;
  * @author Ryan Baxter
  * @author freeman
  */
-@DisabledIf("existBootstrapMarker")
 class NacosConfigDataMissingEnvironmentPostProcessorTest {
-
-	static boolean existBootstrapMarker() {
-		return ClassUtils.isPresent("org.springframework.cloud.bootstrap.marker.Marker",
-				null);
-	}
 
 	@Test
 	void noSpringConfigImport() {

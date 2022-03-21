@@ -16,20 +16,13 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
 import com.alibaba.nacos.client.config.NacosConfigService;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.api.support.MethodProxy;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -37,45 +30,48 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
- * TODO refactor, remove powermock.
  *
  * @author xiaojing
  * @author freeman
  */
-
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore("javax.management.*")
-@PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({ NacosConfigService.class })
 @SpringBootTest(classes = NacosFileExtensionTest.TestConfig.class, webEnvironment = NONE, properties = {
 		"spring.application.name=test-name",
 		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
 		"spring.cloud.nacos.config.file-extension=yaml",
-		"spring.cloud.bootstrap.enabled=true"
-})
+		"spring.cloud.bootstrap.enabled=true" })
 public class NacosFileExtensionTest {
 
 	static {
 
 		try {
-			Method method = PowerMockito.method(NacosConfigService.class, "getConfig",
-					String.class, String.class, long.class);
-			MethodProxy.proxy(method, new InvocationHandler() {
-				@Override
-				public Object invoke(Object proxy, Method method, Object[] args)
-						throws Throwable {
-					if ("test-name.yaml".equals(args[0])
-							&& "DEFAULT_GROUP".equals(args[1])) {
-						return "user:\n  name: hello\n  age: 12\n---\nuser:\n  gender: male";
-					}
-					return "";
-				}
-			});
+			NacosConfigService mockedNacosConfigService = Mockito
+					.mock(NacosConfigService.class);
+			when(mockedNacosConfigService.getConfig(any(), any(), anyLong()))
+					.thenAnswer(new Answer<String>() {
+						@Override
+						public String answer(InvocationOnMock invocationOnMock)
+								throws Throwable {
+							String dataId = invocationOnMock.getArgument(0, String.class);
+							String group = invocationOnMock.getArgument(1, String.class);
+							if ("test-name.yaml".equals(dataId)
+									&& "DEFAULT_GROUP".equals(group)) {
+								return "user:\n  name: hello\n  age: 12\n---\nuser:\n  gender: male";
+							}
+							return "";
+						}
+
+					});
+
+			ReflectionTestUtils.setField(NacosConfigManager.class, "service",
+					mockedNacosConfigService);
 
 		}
 		catch (Exception ignore) {
@@ -90,9 +86,9 @@ public class NacosFileExtensionTest {
 	@Test
 	public void contextLoads() throws Exception {
 
-		Assert.assertEquals(environment.getProperty("user.name"), "hello");
-		Assert.assertEquals(environment.getProperty("user.age"), "12");
-		Assert.assertEquals(environment.getProperty("user.gender"), "male");
+		Assertions.assertEquals(environment.getProperty("user.name"), "hello");
+		Assertions.assertEquals(environment.getProperty("user.age"), "12");
+		Assertions.assertEquals(environment.getProperty("user.gender"), "male");
 	}
 
 	@Configuration

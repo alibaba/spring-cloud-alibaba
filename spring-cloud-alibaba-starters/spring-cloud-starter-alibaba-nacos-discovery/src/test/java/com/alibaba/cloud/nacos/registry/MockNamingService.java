@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.registry;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.alibaba.nacos.api.exception.NacosException;
@@ -105,98 +106,98 @@ public class MockNamingService implements NamingService {
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, String groupName)
 			throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, boolean subscribe)
 			throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, String groupName,
 			boolean subscribe) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, List<String> clusters)
 			throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, String groupName,
 			List<String> clusters) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, List<String> clusters,
 			boolean subscribe) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> getAllInstances(String serviceName, String groupName,
 			List<String> clusters, boolean subscribe) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, boolean healthy)
 			throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, String groupName,
 			boolean healthy) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, boolean healthy,
 			boolean subscribe) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, String groupName,
 			boolean healthy, boolean subscribe) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, List<String> clusters,
 			boolean healthy) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, String groupName,
 			List<String> clusters, boolean healthy) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, List<String> clusters,
 			boolean healthy, boolean subscribe) throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Instance> selectInstances(String serviceName, String groupName,
 			List<String> clusters, boolean healthy, boolean subscribe)
 			throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -297,30 +298,30 @@ public class MockNamingService implements NamingService {
 	@Override
 	public ListView<String> getServicesOfServer(int pageNo, int pageSize)
 			throws NacosException {
-		return null;
+		return this.emptyListView();
 	}
 
 	@Override
 	public ListView<String> getServicesOfServer(int pageNo, int pageSize,
 			String groupName) throws NacosException {
-		return null;
+		return this.emptyListView();
 	}
 
 	@Override
 	public ListView<String> getServicesOfServer(int pageNo, int pageSize,
 			AbstractSelector selector) throws NacosException {
-		return null;
+		return this.emptyListView();
 	}
 
 	@Override
 	public ListView<String> getServicesOfServer(int pageNo, int pageSize,
 			String groupName, AbstractSelector selector) throws NacosException {
-		return null;
+		return this.emptyListView();
 	}
 
 	@Override
 	public List<ServiceInfo> getSubscribeServices() throws NacosException {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -332,5 +333,10 @@ public class MockNamingService implements NamingService {
 	public void shutDown() throws NacosException {
 
 	}
-
+	private ListView<String> emptyListView() {
+		ListView<String> emptyListView = new ListView<>();
+		emptyListView.setCount(0);
+		emptyListView.setData(Collections.emptyList());
+		return emptyListView;
+	}
 }

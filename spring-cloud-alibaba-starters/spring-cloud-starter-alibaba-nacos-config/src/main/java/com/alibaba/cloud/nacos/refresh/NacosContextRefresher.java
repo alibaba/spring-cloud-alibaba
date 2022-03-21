@@ -126,6 +126,8 @@ public class NacosContextRefresher
 				});
 		try {
 			configService.addListener(dataKey, groupKey, listener);
+			log.info("[Nacos Config] Listening config: dataId={}, group={}", dataKey,
+					groupKey);
 		}
 		catch (NacosException e) {
 			log.warn(String.format(

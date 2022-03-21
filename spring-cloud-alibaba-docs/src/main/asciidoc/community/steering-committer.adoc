@@ -1,0 +1,119 @@
+=== Development Role
+The Spring Cloud Alibaba project developer includes three roles: Steering Committee Member, Committer, and Contributor. The standard definitions of each role are as follows.
+
+==== Steering Committee Member
+Steering Committee, as the technical development steering committee of the Spring Cloud Alibaba project, its members are individuals who have made significant contributions to the evolution and development of the Spring Cloud Alibaba project. Specifically include the following standards:：
+
+* Complete the design and development of multiple key modules or projects, and be the core developer of the project;
+* Continuous investment and passion, able to actively participate in the maintenance of community, official website, issue, PR and other project related matters;
+* Has a visible influence in the community and can represent Spring Cloud Alibaba to participate in important community conferences and activities;
+* Have the awareness and ability to cultivate Committer and Contributor;
+
+==== Committer
+A committer is an individual with write permissions to the repository, and includes the following criteria:
+
+* Individuals who can make continuous contributions to issues and PRs for a long time;
+* Participate in the maintenance of the issue list and the discussion of important features;
+* Participate in code review;
+
+==== Contributor
+Contributors are individuals who contribute to the project, the standard is
+
+* Submitted PR and merged;
+
+=== Development Team
+
+This page shows the development team members of Spring Cloud Alibaba. We are constantly expanding. Welcome to join the community :)
+
+==== Steering Committee Member：
+
+|===
+|Name |Github ID |Role |Email |Company
+
+|Jian Fang
+|fangjian0423
+|Steering Committee Member
+|fangjian0423@gmail.com
+|Alibaba
+
+|Jing Xiao
+|flystar32
+|Steering Committee Member
+|flystar32@163.com
+|Alibaba
+
+|Xinxi Ma
+|mercyblitz
+|Steering Committee Member
+|mercyblitz@gmail.com
+|Freelance
+
+|Haojun Ren
+|HaojunRen
+|Steering Committee Member
+|1394997@qq.com
+|Nepxion Community
+
+|Xi Chen
+|theonefx
+|Steering Committee Member
+|chenxilzx1@gmail.com
+|Alibaba
+
+|===
+
+
+==== Committer：
+
+|===
+|Name |Github账号 |Role |Email |Company
+
+|Chuntao Niao
+|chuntaojun
+|Committer
+|liaochuntao@live.com
+|Tencent
+
+|Huangbin Yu
+|yuhuangbin
+|Committer
+|danielyu96@163.com
+|~
+
+|Yihao Zhao
+|sczyh30
+|Committer
+|sczyh16@gmail.com
+|Alibaba
+
+|Kaizhao Zhang
+|zkzlx
+|Committer
+|kiss_maple@163.com
+|Poizon
+
+|Zihao Rao
+|steverao
+|Committer
+|zihaorao@126.com
+|Alibaba
+
+|Liangwen Liu
+|DanielLiu1123
+|Committer
+|llw599502537@gmail.com
+|Student
+
+|Lengleng
+|lltx
+|Committer
+|wangiegie@gmail.com
+|~
+
+|echooymxq
+|echooymxq
+|Committer
+|echooy.mxq@gmail.com
+|~
+
+|===

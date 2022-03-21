@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.nacos.registry;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Properties;
 
@@ -26,14 +24,10 @@ import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import com.alibaba.cloud.nacos.endpoint.NacosDiscoveryEndpoint;
 import com.alibaba.nacos.api.NacosFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.api.support.MethodProxy;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -43,19 +37,15 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author xiaojing
  */
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore("javax.management.*")
-@PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({ NacosFactory.class })
 @SpringBootTest(classes = NacosAutoServiceRegistrationTests.TestConfig.class,
 		properties = { "spring.application.name=myTestService1",
 				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
@@ -93,20 +83,16 @@ public class NacosAutoServiceRegistrationTests {
 	@Autowired
 	private InetUtils inetUtils;
 
+	private static MockedStatic<NacosFactory> nacosFactoryMockedStatic;
 	static {
-		try {
-			Method method = PowerMockito.method(NacosFactory.class, "createNamingService",
-					Properties.class);
-			MethodProxy.proxy(method, new InvocationHandler() {
-				@Override
-				public Object invoke(Object proxy, Method method, Object[] args)
-						throws Throwable {
-					return new MockNamingService();
-				}
-			});
-		}
-		catch (Exception e) {
-			e.printStackTrace();
+		nacosFactoryMockedStatic = Mockito.mockStatic(NacosFactory.class);
+		nacosFactoryMockedStatic.when(() -> NacosFactory.createNamingService((Properties) any()))
+				.thenReturn(new MockNamingService());
+	}
+	@AfterAll
+	public static void finished() {
+		if (nacosFactoryMockedStatic != null) {
+			nacosFactoryMockedStatic.close();
 		}
 	}
 
