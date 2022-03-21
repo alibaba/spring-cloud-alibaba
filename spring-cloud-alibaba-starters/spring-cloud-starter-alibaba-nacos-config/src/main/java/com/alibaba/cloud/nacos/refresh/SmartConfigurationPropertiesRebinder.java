@@ -33,13 +33,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
+import static com.alibaba.cloud.nacos.refresh.RefreshBehavior.ALL_BEANS;
+
 /**
  * Extend {@link ConfigurationPropertiesRebinder}.
  * <p>
  * Spring team doesn't seem to support single {@link ConfigurationPropertiesBean} refresh.
  * <p>
  * SmartConfigurationPropertiesRebinder can refresh specific
- * {@link ConfigurationPropertiesBean} base on change keys.
+ * {@link ConfigurationPropertiesBean} base on the change keys.
  * <p>
  * <strong> NOTE: We still use Spring's default behavior (full refresh) as default
  * behavior, This feature can be considered an advanced feature, it may not be as stable
@@ -81,7 +83,7 @@ public class SmartConfigurationPropertiesRebinder
 		this.applicationContext = applicationContext;
 		this.refreshBehavior = this.applicationContext.getEnvironment().getProperty(
 				"spring.cloud.nacos.config.refresh-behavior", RefreshBehavior.class,
-				RefreshBehavior.ALL_BEANS);
+				ALL_BEANS);
 	}
 
 	@Override

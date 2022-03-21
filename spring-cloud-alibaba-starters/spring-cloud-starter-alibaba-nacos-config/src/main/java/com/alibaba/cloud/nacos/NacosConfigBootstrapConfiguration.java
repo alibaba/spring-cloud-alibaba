@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2018 the original author or authors.
+ * Copyright 2013-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos;
 
 import com.alibaba.cloud.nacos.client.NacosPropertySourceLocator;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
+import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -54,14 +55,16 @@ public class NacosConfigBootstrapConfiguration {
 		return new NacosPropertySourceLocator(nacosConfigManager);
 	}
 
-
 	/**
 	 * Compatible with bootstrap way to start.
 	 */
 	@Bean
 	@ConditionalOnMissingBean(search = SearchStrategy.CURRENT)
+	@ConditionalOnNonDefaultBehavior
 	public ConfigurationPropertiesRebinder smartConfigurationPropertiesRebinder(
 			ConfigurationPropertiesBeans beans) {
+		// If using default behavior, not use SmartConfigurationPropertiesRebinder.
+		// Minimize te possibility of making mistakes.
 		return new SmartConfigurationPropertiesRebinder(beans);
 	}
 
