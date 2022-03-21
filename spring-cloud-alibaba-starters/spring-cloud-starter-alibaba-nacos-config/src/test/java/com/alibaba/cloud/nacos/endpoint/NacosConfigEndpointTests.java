@@ -20,9 +20,12 @@ import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
+import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
+import com.alibaba.nacos.client.config.NacosConfigService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health.Builder;
@@ -30,6 +33,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
@@ -52,6 +56,19 @@ public class NacosConfigEndpointTests {
 	@Autowired
 	private NacosRefreshHistory refreshHistory;
 
+	static {
+
+		try {
+			NacosConfigService mockedNacosConfigService = Mockito
+					.mock(NacosConfigService.class);
+			Mockito.when(mockedNacosConfigService.getServerStatus()).thenReturn("UP");
+			ReflectionTestUtils.setField(NacosConfigManager.class, "service",
+					mockedNacosConfigService);
+		}
+		catch (Exception ignore) {
+			ignore.printStackTrace();
+		}
+	}
 	@Test
 	public void contextLoads() throws Exception {
 
