@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2018 the original author or authors.
+ * Copyright 2013-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,22 @@ package com.alibaba.cloud.nacos;
 
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
+import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
+import com.alibaba.cloud.nacos.refresh.condition.ConditionalOnNonDefaultBehavior;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesBeans;
+import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author juven.xuxb
+ * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)
@@ -65,6 +70,16 @@ public class NacosConfigAutoConfiguration {
 		// configuration
 		// and use the new configuration if necessary.
 		return new NacosContextRefresher(nacosConfigManager, nacosRefreshHistory);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(search = SearchStrategy.CURRENT)
+	@ConditionalOnNonDefaultBehavior
+	public ConfigurationPropertiesRebinder smartConfigurationPropertiesRebinder(
+			ConfigurationPropertiesBeans beans) {
+		// If using default behavior, not use SmartConfigurationPropertiesRebinder.
+		// Minimize te possibility of making mistakes.
+		return new SmartConfigurationPropertiesRebinder(beans);
 	}
 
 }
