@@ -1,0 +1,31 @@
+server:
+  port: 80
+spring:
+  application:
+    name: nacos-config-import-example
+  cloud:
+    nacos:
+      config:
+        group: DEFAULT_GROUP
+        server-addr: 127.0.0.1:8848
+        preference: remote
+  config:
+    import:
+      - optional:nacos:test.yml
+      - optional:nacos:test2.yml?preference=local
+  profiles:
+    active: dev
+logging:
+  level:
+    # print content
+    com.alibaba.cloud.nacos.configdata: debug
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+configdata:
+  user:
+    name: bb
+dev:
+  age: 20

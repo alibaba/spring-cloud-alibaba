@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos.configdata;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,12 +34,17 @@ import org.springframework.boot.context.config.ConfigData;
 import org.springframework.boot.context.config.ConfigDataLoader;
 import org.springframework.boot.context.config.ConfigDataLoaderContext;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.env.PropertySource;
 
+import static com.alibaba.cloud.nacos.configdata.ConfigPreference.LOCAL;
+import static com.alibaba.cloud.nacos.configdata.ConfigPreference.REMOTE;
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
+import static org.springframework.boot.context.config.ConfigData.Option;
 import static org.springframework.boot.context.config.ConfigData.Option.IGNORE_IMPORTS;
 import static org.springframework.boot.context.config.ConfigData.Option.IGNORE_PROFILES;
+import static org.springframework.boot.context.config.ConfigData.Option.PROFILE_SPECIFIC;
 
 /**
  * Implementation of {@link ConfigDataLoader}.
@@ -83,12 +89,10 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 
 			NacosPropertySourceRepository.collectNacosPropertySource(propertySource);
 
-			return new ConfigData(propertySources, IGNORE_IMPORTS, IGNORE_PROFILES);
+			return new ConfigData(propertySources, getOptions(context, resource));
 		}
 		catch (Exception e) {
-			if (log.isDebugEnabled()) {
-				log.debug("Error getting properties from nacos: " + resource, e);
-			}
+			log.warn("Error getting properties from nacos: " + resource, e);
 			if (!resource.isOptional()) {
 				throw new ConfigDataResourceNotFoundException(resource, e);
 			}
@@ -96,16 +100,63 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		return null;
 	}
 
+	private Option[] getOptions(ConfigDataLoaderContext context,
+			NacosConfigDataResource resource) {
+		List<Option> options = new ArrayList<>();
+		options.add(IGNORE_IMPORTS);
+		options.add(IGNORE_PROFILES);
+		if (getPreference(context, resource) == REMOTE) {
+			// mark it as 'PROFILE_SPECIFIC' config, it has higher priority,
+			// will override the none profile specific config.
+			// fixed https://github.com/alibaba/spring-cloud-alibaba/issues/2455
+			options.add(PROFILE_SPECIFIC);
+		}
+		return options.toArray(new Option[0]);
+	}
+
+	private ConfigPreference getPreference(ConfigDataLoaderContext context,
+			NacosConfigDataResource resource) {
+		Binder binder = context.getBootstrapContext().get(Binder.class);
+		ConfigPreference preference = binder
+				.bind("spring.cloud.nacos.config.preference", ConfigPreference.class)
+				.orElse(LOCAL);
+		String specificPreference = resource.getConfig().getPreference();
+		if (specificPreference != null) {
+			try {
+				preference = ConfigPreference.valueOf(specificPreference.toUpperCase());
+			}
+			catch (IllegalArgumentException ignore) {
+				// illegal preference value, just ignore.
+				log.warn(String.format(
+						"illegal preference value: %s, using default preference: %s",
+						specificPreference, preference));
+			}
+		}
+		return preference;
+	}
+
 	private List<PropertySource<?>> pullConfig(ConfigService configService, String group,
 			String dataId, String suffix, long timeout)
 			throws NacosException, IOException {
 		String config = configService.getConfig(dataId, group, timeout);
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("[NacosConfigDataLoader][pullConfig] get nacos config, dataId: %s,group: %s," +
-					"content: %s", dataId, group, config));
-		}
+		logLoadInfo(group, dataId, config);
 		return NacosDataParserHandler.getInstance().parseNacosData(dataId, config,
 				suffix);
+	}
+
+	private void logLoadInfo(String group, String dataId, String config) {
+		if (config != null) {
+			log.info(String.format(
+					"[Nacos Config] Load config[dataId=%s, group=%s] success", dataId,
+					group));
+		}
+		else {
+			log.warn(String.format("[Nacos Config] config[dataId=%s, group=%s] is empty",
+					dataId, group));
+		}
+		log.debug(
+				String.format("[Nacos Config] config[dataId=%s, group=%s] content: \n%s",
+						dataId, group, config));
 	}
 
 	protected <T> T getBean(ConfigDataLoaderContext context, Class<T> type) {

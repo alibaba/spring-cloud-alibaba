@@ -67,6 +67,8 @@ public class NacosConfigDataLocationResolver
 
 	private static final String REFRESH_ENABLED = "refreshEnabled";
 
+	private static final String PREFERENCE = "preference";
+
 	public NacosConfigDataLocationResolver(Log log) {
 		this.log = log;
 	}
@@ -166,10 +168,15 @@ public class NacosConfigDataLocationResolver
 				location.isOptional(), profiles, log,
 				new NacosItemConfig().setGroup(groupFor(uri, properties))
 						.setDataId(dataIdFor(uri)).setSuffix(suffixFor(uri, properties))
-						.setRefreshEnabled(refreshEnabledFor(uri, properties)));
+						.setRefreshEnabled(refreshEnabledFor(uri, properties))
+						.setPreference(preferenceFor(uri)));
 		result.add(resource);
 
 		return result;
+	}
+
+	private String preferenceFor(URI uri) {
+		return getQueryMap(uri).get(PREFERENCE);
 	}
 
 	private URI getUri(ConfigDataLocation location, NacosConfigProperties properties) {
