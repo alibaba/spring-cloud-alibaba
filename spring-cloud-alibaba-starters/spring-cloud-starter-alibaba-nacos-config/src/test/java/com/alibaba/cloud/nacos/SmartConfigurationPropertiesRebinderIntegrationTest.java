@@ -20,33 +20,37 @@ import com.alibaba.cloud.nacos.refresh.RefreshBehavior;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.alibaba.cloud.nacos.SmartConfigurationPropertiesRebinderIntegrationTest.TestConfig;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
+ * {@link SmartConfigurationPropertiesRebinder} tester.
+ *
  * @author freeman
  */
-@SpringBootTest(classes = TestConfig.class, webEnvironment = NONE, properties = {
-		"spring.cloud.nacos.config.refresh-behavior=specific_bean",
-		"spring.cloud.nacos.server-addr=123.123.123.123:8848",
-		"spring.cloud.nacos.config.import-check.enabled=false"
-})
 public class SmartConfigurationPropertiesRebinderIntegrationTest {
 
-	@Autowired
-	private ConfigurationPropertiesRebinder rebinder;
+	ConfigurableApplicationContext context;
 
 	@Test
-	public void testUsingSmartConfigurationPropertiesRebinder() {
+	public void testUsingSmartConfigurationPropertiesRebinder_whenBehaviorIsNotDefault() {
+		context = new SpringApplicationBuilder(RebinderConfiguration.class)
+				.web(WebApplicationType.NONE)
+				.properties("spring.cloud.nacos.config.refresh-behavior=specific_bean")
+				.properties("spring.cloud.nacos.server-addr=123.123.123.123:8848")
+				.properties("spring.cloud.nacos.config.import-check.enabled=false").run();
+
+		ConfigurationPropertiesRebinder rebinder = context
+				.getBean(ConfigurationPropertiesRebinder.class);
+
 		assertThat(rebinder.getClass())
 				.isEqualTo(SmartConfigurationPropertiesRebinder.class);
 
@@ -55,10 +59,23 @@ public class SmartConfigurationPropertiesRebinderIntegrationTest {
 		assertThat(refreshBehavior).isEqualTo(RefreshBehavior.SPECIFIC_BEAN);
 	}
 
+	@Test
+	public void testUsingConfigurationPropertiesRebinder_whenBehaviorIsDefault() {
+		context = new SpringApplicationBuilder(RebinderConfiguration.class)
+				.web(WebApplicationType.NONE)
+				.properties("spring.cloud.nacos.server-addr=123.123.123.123:8848")
+				.properties("spring.cloud.nacos.config.import-check.enabled=false").run();
+
+		ConfigurationPropertiesRebinder rebinder = context
+				.getBean(ConfigurationPropertiesRebinder.class);
+
+		assertThat(rebinder.getClass()).isEqualTo(ConfigurationPropertiesRebinder.class);
+	}
+
 	@Configuration
 	@ImportAutoConfiguration({ NacosConfigAutoConfiguration.class })
 	@EnableAutoConfiguration
-	public static class TestConfig {
+	public static class RebinderConfiguration {
 
 	}
 
