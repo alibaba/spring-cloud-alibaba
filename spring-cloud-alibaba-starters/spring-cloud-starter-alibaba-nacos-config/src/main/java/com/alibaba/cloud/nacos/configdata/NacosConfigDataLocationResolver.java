@@ -41,6 +41,7 @@ import org.springframework.boot.context.config.Profiles;
 import org.springframework.boot.context.properties.bind.BindHandler;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.logging.DeferredLogFactory;
 import org.springframework.core.Ordered;
 
 import static com.alibaba.cloud.nacos.configdata.NacosConfigDataResource.NacosItemConfig;
@@ -69,8 +70,8 @@ public class NacosConfigDataLocationResolver
 
 	private static final String PREFERENCE = "preference";
 
-	public NacosConfigDataLocationResolver(Log log) {
-		this.log = log;
+	public NacosConfigDataLocationResolver(DeferredLogFactory logFactory) {
+		this.log = logFactory.getLog(getClass());
 	}
 
 	@Override

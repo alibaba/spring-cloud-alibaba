@@ -30,7 +30,7 @@ import org.springframework.boot.context.config.ConfigDataLocation;
 import org.springframework.boot.context.config.ConfigDataLocationResolverContext;
 import org.springframework.boot.context.config.Profiles;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.logging.DeferredLog;
+import org.springframework.boot.logging.DeferredLogs;
 import org.springframework.mock.env.MockEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,7 +64,7 @@ public class NacosConfigDataLocationResolverTest {
 	void setup() {
 		this.environment = new MockEnvironment();
 		this.environmentBinder = Binder.get(this.environment);
-		this.resolver = new NacosConfigDataLocationResolver(new DeferredLog());
+		this.resolver = new NacosConfigDataLocationResolver(new DeferredLogs());
 		when(bootstrapContext.isRegistered(eq(ConfigService.class))).thenReturn(true);
 		when(context.getBinder()).thenReturn(environmentBinder);
 		when(context.getBootstrapContext()).thenReturn(bootstrapContext);

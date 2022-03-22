@@ -23,7 +23,7 @@ package com.alibaba.cloud.nacos.configdata;
  * because the local config is <strong>profile specific</strong>, it has higher priority.
  * <p>
  * So give remote config a chance to "win", we treat remote config as profile specific, it
- * should be included after profile specific sibling imports. Finally, it will override
+ * should be included after profile specific sibling imports. Eventually, it will override
  * the local profile specific config.
  *
  * @author freeman
