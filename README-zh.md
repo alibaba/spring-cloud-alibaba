@@ -130,9 +130,10 @@ spring-cloud-alibaba@googlegroups.com，欢迎通过此邮件列表讨论与 spr
 
 * Spring Cloud Alibaba 开源交流群（1群）：21914947
 * Spring Cloud Alibaba 开源交流群（2群，已满）：21992595
-* Spring Cloud Alibaba 开源交流群（3群）：35153903
+* Spring Cloud Alibaba 开源交流群（3群，已满）：35153903
 * Spring Cloud Alibaba 开源交流群（4群，已满）：30301472
-* Spring Cloud Alibaba 开源交流群（5群）：34930571
+* Spring Cloud Alibaba 开源交流群（5群，已满）：34930571
+* Spring Cloud Alibaba 开源交流群（6群）：34351718
 
 ## 社区相关开源
 
