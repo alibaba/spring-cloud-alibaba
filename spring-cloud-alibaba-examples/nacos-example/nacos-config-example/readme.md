@@ -30,10 +30,10 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		@RefreshScope
 		class SampleController {
 	
-    		@Value("${user.name}")
+    		@Value("${user.nickname:zz}")
     		String userName;
 	
-    		@Value("${user.age}")
+    		@Value("${user.age:18}")
     		int age;
 		}
 
@@ -51,7 +51,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 3. Execute the following command to add a configuration to Nacos Server.
 	
-		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=17"
+		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.nickname=james%0Auser.age=17"
 		
 	**Note: You can also add it in other ways. If you are using the Nacos version with its own console, it is recommended to configure it directly using the console.**
 	
@@ -64,7 +64,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		content is
 		
 		user.id=1
-		user.name=james
+		user.nickname=james
 		user.age=17	
 
 ### Start Application
@@ -90,7 +90,7 @@ Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to, 
 #### Dynamic Refresh
 1. Run the following command to modify the configuration data on the Nacos Server side.
 
-		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=18"
+		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.nickname=james%0Auser.age=18"
 
 2. Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to,
 We can see that the app got the latest data from Nacos Server and the age becomes 18.

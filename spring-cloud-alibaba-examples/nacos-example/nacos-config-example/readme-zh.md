@@ -30,10 +30,10 @@
 		@RefreshScope
 		class SampleController {
 	
-    		@Value("${user.name}")
+    		@Value("${user.nickname:zz}")
     		String userName;
 	
-    		@Value("${user.age}")
+    		@Value("${user.age:18}")
     		int age;
 		}
 
@@ -51,7 +51,7 @@
 
 3. 在命令行执行如下命令，向 Nacos Server 中添加一条配置。
 	
-		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=17"
+		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.nickname=james%0Auser.age=17"
 		
 	**注：你也可以使用其他方式添加，遵循 HTTP API 规范即可，若您使用的 Nacos 版本自带控制台，建议直接使用控制台进行配置**
 	
@@ -63,7 +63,7 @@
 		内容如下
 		
    		user.id=1
-		user.name=james
+		user.nickname=james
 		user.age=17	
 
 ### 应用启动
@@ -89,7 +89,7 @@
 #### 验证动态刷新
 1. 执行如下命令，修改 Nacos Server 端的配置数据
 
-		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.name=james%0Auser.age=18"
+		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.nickname=james%0Auser.age=18"
 
 2. 在浏览器地址栏输入 `http://127.0.0.1:18084/user`，并点击调转，可以看到应用从 Nacos Server 中获取了最新的数据，age 变成了 18。
 
