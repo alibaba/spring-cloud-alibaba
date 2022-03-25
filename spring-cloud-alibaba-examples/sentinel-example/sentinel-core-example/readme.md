@@ -55,7 +55,7 @@ Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud 
 1. Install Sentinel dashboard by downloading a fatjar or build from source code.
 
 	1. Download: [Download Sentinel Dashboard](http://edas-public.oss-cn-hangzhou.aliyuncs.com/install_package/demo/sentinel-dashboard.jar) 
-	2. Build from source code: Get source code by `git clone git@github.com:alibaba/Sentinel.git` from [Github Sentinel](https://github.com/alibaba/Sentinel) and build your code. See [build reference](https://github.com/alibaba/Sentinel/tree/master/sentinel-dashboard) for details.
+	2. Build from source code: Get source code by `git clone git@github.com:alibaba/Sentinel.git` from [Github Sentinel](https://github.com/alibaba/Sentinel) and build your code. See [build reference](https://github.com/alibaba/Sentinel/tree/2021.x/sentinel-dashboard) for details.
 
 2. Start the dashboard by running the `java -jar sentinel-dashboard.jar` command.
 	The default port of Sentinel dashboard is 8080. Sentinel dashboard is a Spring Boot project. If you want to use another port, see [Spring Boot Reference](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-customizing-embedded-containers).
@@ -171,7 +171,7 @@ To see the metrics, click **实时监控(Real-time Monitoring)** in the left-sid
 
 ## ReadableDataSource
 
-Sentinel provide [ReadableDataSource](https://github.com/alibaba/Sentinel/blob/master/sentinel-extension/sentinel-datasource-extension/src/main/java/com/alibaba/csp/sentinel/datasource/ReadableDataSource.java) to manage dynamic rules.
+Sentinel provide [ReadableDataSource](https://github.com/alibaba/Sentinel/blob/2021.x/sentinel-extension/sentinel-datasource-extension/src/main/java/com/alibaba/csp/sentinel/datasource/ReadableDataSource.java) to manage dynamic rules.
 
 Sentinel starter integrated 4 DataSources provided by Sentinel. It will be register into Spring Context if you write some configs in `application.properties`.
 

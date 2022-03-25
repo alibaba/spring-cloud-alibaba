@@ -8,7 +8,7 @@ This project demonstrates how to use Sentinel starter to complete the Spring Clo
 
 [OpenFeign](https://github.com/spring-cloud/spring-cloud-openfeign) is a declarative, templated HTTP client, Feign can help us faster and gracefully HTTP API calls.
 
-By focusing on this project, the integration of Sentinel and Feign more characteristics about Sentinel can view [Sentinel - core - example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example).
+By focusing on this project, the integration of Sentinel and Feign more characteristics about Sentinel can view [Sentinel - core - example](https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example).
 
 ## sample
 

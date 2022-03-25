@@ -8,7 +8,7 @@
 
 [OpenFeign](https://github.com/spring-cloud/spring-cloud-openfeign)是一款声明式、模板化的HTTP客户端， Feign可以帮助我们更快捷、优雅地调用HTTP API。
 
-本项目专注于Sentinel与Feign的整合，关于Sentinel的更多特性可以查看[sentinel-core-example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example)。
+本项目专注于Sentinel与Feign的整合，关于Sentinel的更多特性可以查看[sentinel-core-example](https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example)。
 
 ## 示例
 

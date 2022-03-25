@@ -1,8 +1,8 @@
 # Spring Cloud Alibaba
 
-[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/master.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/master)
+[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2021.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2021.x)
 [![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
-[![Codecov](https://codecov.io/gh/alibaba/spring-cloud-alibaba/branch/master/graph/badge.svg)](https://codecov.io/gh/alibaba/spring-cloud-alibaba)
+[![Codecov](https://codecov.io/gh/alibaba/spring-cloud-alibaba/branch/2021.x/graph/badge.svg)](https://codecov.io/gh/alibaba/spring-cloud-alibaba)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
@@ -91,19 +91,19 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 
 Example 列表：
 
-[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md)
+[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md)
 
-[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md)
+[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md)
 
-[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md)
+[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md)
 
-[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/rocketmq-example/readme-zh.md)
+[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/rocketmq-example/readme-zh.md)
 
-[Seata Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/seata-example/readme-zh.md)
+[Seata Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/seata-example/readme-zh.md)
 
-[Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
+[Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/2021.x/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
 
-[Alibaba Cloud SMS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-sms-spring-boot-sample)
+[Alibaba Cloud SMS Example](https://github.com/alibaba/aliyun-spring-boot/tree/2021.x/aliyun-spring-boot-samples/aliyun-sms-spring-boot-sample)
 
 [Alibaba Cloud SchedulerX Example](https://github.com/alibaba/aliyun-spring-boot)
 

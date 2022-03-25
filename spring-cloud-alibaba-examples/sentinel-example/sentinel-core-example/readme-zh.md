@@ -66,7 +66,7 @@
 1. 首先需要获取 Sentinel 控制台，支持直接下载和源码构建两种方式。
 
 	1. 直接下载：[下载 Sentinel 控制台](https://edas-public.oss-cn-hangzhou.aliyuncs.com/install_package/demo/sentinel-dashboard.jar) 
-	2. 源码构建：进入 Sentinel [Github 项目页面](https://github.com/alibaba/Sentinel)，将代码 git clone 到本地自行编译打包，[参考此文档](https://github.com/alibaba/Sentinel/tree/master/sentinel-dashboard)。
+	2. 源码构建：进入 Sentinel [Github 项目页面](https://github.com/alibaba/Sentinel)，将代码 git clone 到本地自行编译打包，[参考此文档](https://github.com/alibaba/Sentinel/tree/2021.x/sentinel-dashboard)。
 
 2. 启动控制台，执行 Java 命令 `java -jar sentinel-dashboard.jar`完成 Sentinel 控制台的启动。
 	控制台默认的监听端口为 8080。Sentinel 控制台使用 Spring Boot 编程模型开发，如果需要指定其他端口，请使用 Spring Boot 容器配置的标准方式，详情请参考 [Spring Boot 文档](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-customizing-embedded-containers)。
@@ -174,7 +174,7 @@ public final class ExceptionUtil {
 }
 ```
 
-一个简单的 `@SentinelResource` 示例可以见 [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/master/sentinel-demo/sentinel-demo-annotation-spring-aop)。
+一个简单的 `@SentinelResource` 示例可以见 [sentinel-demo-annotation-spring-aop](https://github.com/alibaba/Sentinel/tree/2021.x/sentinel-demo/sentinel-demo-annotation-spring-aop)。
 
 ## Endpoint 信息查看
 
