@@ -2,7 +2,7 @@
 
 ## 项目说明
 
-[SchedulerX] (https://www.aliyun.com/aliware/schedulerx) 是阿里巴巴自研的基于Akka架构的分布式任务调度平台（兼容开源XXL-JOB/ElasticJob），支持Cron定时、一次性任务、任务编排、分布式，具有高可用、可视化、低延时等能力。
+[SchedulerX](https://www.aliyun.com/aliware/schedulerx) 是阿里巴巴自研的基于Akka架构的分布式任务调度平台（兼容开源XXL-JOB/ElasticJob），支持Cron定时、一次性任务、任务编排、分布式，具有高可用、可视化、低延时等能力。
 
 
 ## 示例
