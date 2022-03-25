@@ -101,9 +101,9 @@ Example 列表：
 
 [Seata Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/seata-example/readme-zh.md)
 
-[Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/2021.x/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
+[Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
 
-[Alibaba Cloud SMS Example](https://github.com/alibaba/aliyun-spring-boot/tree/2021.x/aliyun-spring-boot-samples/aliyun-sms-spring-boot-sample)
+[Alibaba Cloud SMS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-sms-spring-boot-sample)
 
 [Alibaba Cloud SchedulerX Example](https://github.com/alibaba/aliyun-spring-boot)
 
