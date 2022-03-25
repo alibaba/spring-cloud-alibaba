@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="off">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n" />
+		</Console>
+		<SchedulerxLog4j2Appender name="schedulerxLog"
+            timeFormat="yyyy-MM-dd'T'HH:mmZ"
+            timeZone="UTC"
+            ignoreExceptions="true">
+        <PatternLayout pattern="%d %-5level [%thread] %logger{0}: %msg"/>
+    </SchedulerxLog4j2Appender>
+	</Appenders>
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="Console" />
+		</Root>
+		<Logger name="schedulerx" level="info" additivity="false">
+			<AppenderRef ref="schedulerxLog" />
+		</Logger>
+	</Loggers>
+</Configuration>
