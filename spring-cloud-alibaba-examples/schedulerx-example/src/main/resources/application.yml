@@ -1,0 +1,43 @@
+spring:
+   schedulerx2:
+      endpoint: acm.aliyun.com   #请填写不同region的endpoint
+      namespace: 433d8b23-xxx-xxx-xxx-90d4d1b9a4af #region内全局唯一，建议使用UUID生成
+      namespaceName: 测试环境
+      appName: myTest            #应用名称
+      groupId: myTest.group      #应用的id标识，一个命名空间下需要唯一
+      appKey: myTest123@alibaba  #应用的key，不要太简单，注意保管好
+      regionId: public           #请填写不同的regionId
+      aliyunAccessKey: xxxxxxxxx
+      aliyunSecretKey: xxxxxxxxx
+      alarmChannel: sms,ding     #报警通道：短信和钉钉
+      jobs: 
+         simpleJob: 
+            jobModel: standalone
+            className: com.alibaba.cloud.examples.schedulerx.processor.SimpleJob
+            cron: 0/30 * * * * ?   # cron表达式
+            jobParameter: hello
+            overwrite: true 
+         shardingJob: 
+            jobModel: sharding
+            className: com.alibaba.cloud.examples.schedulerx.processor.ShardingJob
+            oneTime: 2022-06-02 12:00:00   # 一次性任务表达式
+            jobParameter: 0=Beijing,1=Shanghai,2=Guangzhou
+            overwrite: true
+         broadcastJob:   # 不填写cron和oneTime，表示api任务
+            jobModel: broadcast
+            className: com.alibaba.cloud.examples.schedulerx.processor.BroadcastJob
+            jobParameter: hello
+            overwrite: true
+         mapReduceJob: 
+            jobModel: mapreduce
+            className: com.alibaba.cloud.examples.schedulerx.processor.MapReduceJob
+            cron: 0 * * * * ?
+            jobParameter: 100
+            overwrite: true
+      alarmUsers:
+         user1:
+            userName: 张三
+            userPhone: 12345678900
+         user2:
+            userName: 李四
+            ding: https://oapi.dingtalk.com/robot/send?access_token=xxxxx

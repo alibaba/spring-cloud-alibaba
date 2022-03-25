@@ -22,7 +22,7 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 * **Event-driven**: Support for building highly scalable event-driven microservices connected with shared messaging systems.
 * **Distributed Transaction**: Support for distributed transaction solution with high performance and ease of use.
 * **Alibaba Cloud Object Storage**: Massive, secure, low-cost, and highly reliable cloud storage services. Support for storing and accessing any type of data in any application, anytime, anywhere.
-* **Alibaba Cloud SchedulerX**: Accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
+* **Alibaba Cloud SchedulerX**: Accurate, highly available job scheduling services with cron, one time, job dependency and batch compute.
 * **Alibaba Cloud SMS**: A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
 
 For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap.md).
@@ -48,7 +48,7 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 
 **[Alibaba Cloud SMS](https://www.aliyun.com/product/sms)**: A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
 
-**[Alibaba Cloud SchedulerX](https://www.aliyun.com/aliware/schedulerx?spm=5176.10695662.784137.1.4b07363dej23L3)**: Accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds..
+**[Alibaba Cloud SchedulerX](https://www.aliyun.com/aliware/schedulerx)**: Accurate, highly available job scheduling services(cron, one time, job dependency and batch compute) with log services, monitor dashboard and alarm services.
 
 For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/master/Roadmap.md).
 
@@ -112,6 +112,8 @@ Examples：
 [Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
 
 [Dubbo Spring Cloud Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/spring-cloud-alibaba-dubbo-examples/README_CN.md)
+
+[SchedulerX Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/schedulerx-examples/README_CN.md)
 
 ## Version control guidelines
 The version number of the project is in the form of x.x.x, where x is a number, starting from 0, and is not limited to the range 0~9. When the project is in the incubator phase, the version number is 0.x.x.
