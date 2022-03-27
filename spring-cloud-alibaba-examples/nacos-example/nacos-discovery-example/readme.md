@@ -195,7 +195,7 @@ As shown in the figure above, NacosDiscoveryProperties is the configuration of N
 Configuration item|key|default value|Description
 ----|----|-----|-----
 server address|spring.cloud.nacos.discovery.server-addr||
-service|spring.cloud.nacos.discovery.service|spring.application.name|service id to registry
+service|spring.cloud.nacos.discovery.service|${spring.application.name}|service id to registry
 weight|spring.cloud.nacos.discovery.weight|1|value from 1 to 100, The larger the value, the larger the weight
 ip|spring.cloud.nacos.discovery.ip||ip address to registry, Highest priority
 network interface|spring.cloud.nacos.discovery.network-interface||When the IP is not configured, the registered IP address is the IP address corresponding to the network-interface. If this item is not configured, the address of the first network-interface is taken by default.

@@ -166,9 +166,9 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacosconfig �
 配置项|key|默认值|说明
 ----|----|-----|-----
 服务端地址|spring.cloud.nacos.config.server-addr||服务器ip和端口
-DataId前缀|spring.cloud.nacos.config.prefix|${spring.application.name}|
+DataId前缀|spring.cloud.nacos.config.prefix|${spring.application.name}|DataId的前缀，默认值为应用名称
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
-dataID后缀及内容文件格式|spring.cloud.nacos.config.file-extension|properties|dataId的后缀，同时也是配置内容的文件格式，目前只支持 properties
+DataId后缀及内容文件格式|spring.cloud.nacos.config.file-extension|properties|DataId的后缀，同时也是配置内容的文件格式，目前只支持 properties
 配置内容的编码方式|spring.cloud.nacos.config.encode|UTF-8|配置的编码
 获取配置的超时时间|spring.cloud.nacos.config.timeout|3000|单位为 ms
 配置的命名空间|spring.cloud.nacos.config.namespace||常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源隔离等。
