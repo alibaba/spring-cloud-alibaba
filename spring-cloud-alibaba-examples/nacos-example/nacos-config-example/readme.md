@@ -171,9 +171,9 @@ As shown in the figure above, Sources indicates which Nacos Config configuration
 Configuration item|key|default value|Description
 ----|----|-----|-----
 server address|spring.cloud.nacos.config.server-addr||server id and port
-DataId prefix|spring.cloud.nacos.config.prefix||${spring.application.name}|
+DataId prefix|spring.cloud.nacos.config.prefix|${spring.application.name}|the prefix of nacos config DataId
 Group|spring.cloud.nacos.config.group|DEFAULT_GROUP|
-dataID suffix|spring.cloud.nacos.config.file-extension|properties|the suffix of nacos config dataId, also the file extension of config content.
+DataID suffix|spring.cloud.nacos.config.file-extension|properties|the suffix of nacos config DataId, also the file extension of config content.
 encoding |spring.cloud.nacos.config.encode|UTF-8|Content encoding
 timeout|spring.cloud.nacos.config.timeout|3000|Get the configuration timeout period,unit is ms
 namespace|spring.cloud.nacos.config.namespace||One of the common scenarios is the separation of the configuration of different environments, such as the development of the test environment and the resource isolation of the production environment.

@@ -187,7 +187,7 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos-discove
 配置项|key|默认值|说明
 ----|----|-----|-----
 服务端地址|spring.cloud.nacos.discovery.server-addr||
-服务名|spring.cloud.nacos.discovery.service|spring.application.name|
+服务名|spring.cloud.nacos.discovery.service|${spring.application.name}|注册到Nacos上的服务名称，默认值为应用名称
 权重|spring.cloud.nacos.discovery.weight|1|取值范围 1 到 100，数值越大，权重越大
 网卡名|spring.cloud.nacos.discovery.network-interface||当IP未配置时，注册的IP为此网卡所对应的IP地址，如果此项也未配置，则默认取第一块网卡的地址
 注册的IP地址|spring.cloud.nacos.discovery.ip||优先级最高
