@@ -28,6 +28,7 @@ import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import org.springframework.core.io.ClassPathResource;
 
 /**
+ * Util class for starting the related container.
  *
  * @author freeman
  * @since 2021.0.1.0

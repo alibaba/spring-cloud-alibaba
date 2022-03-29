@@ -39,6 +39,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 /**
  *
+ * Test function: Nacos config refresh.
+ *
  * @author freeman
  */
 @HasDockerAndItEnabled
