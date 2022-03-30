@@ -132,11 +132,6 @@ public class NacosDiscoveryProperties {
 	private String clusterName = "DEFAULT";
 
 	/**
-	 * cluster name for nacos discovery client.
-	 */
-	private List<String> referClusterName;
-
-	/**
 	 * group name for nacos.
 	 */
 	private String group = "DEFAULT_GROUP";
@@ -353,14 +348,6 @@ public class NacosDiscoveryProperties {
 
 	public void setClusterName(String clusterName) {
 		this.clusterName = clusterName;
-	}
-
-	public List<String> getReferClusterName() {
-		return referClusterName;
-	}
-
-	public void setReferClusterName(List<String> referClusterName) {
-		this.referClusterName = referClusterName;
 	}
 
 	public String getService() {
