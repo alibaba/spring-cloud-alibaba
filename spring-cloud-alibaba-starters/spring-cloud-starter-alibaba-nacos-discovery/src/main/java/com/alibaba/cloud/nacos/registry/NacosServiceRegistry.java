@@ -25,6 +25,7 @@ import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.alibaba.nacos.common.utils.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +72,15 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		Instance instance = getNacosInstanceFromRegistration(registration);
 
 		try {
+			List<String> sharedGroups = nacosDiscoveryProperties.getSharedGroups();
+			if (CollectionUtils.isNotEmpty(sharedGroups)) {
+				sharedGroups.remove(group);
+				for (String sharedGroup : sharedGroups) {
+					namingService.registerInstance(serviceId, sharedGroup, instance);
+					log.info("nacos registry, {} {} {}:{} register finished", sharedGroup,
+							serviceId, instance.getIp(), instance.getPort());
+				}
+			}
 			namingService.registerInstance(serviceId, group, instance);
 			log.info("nacos registry, {} {} {}:{} register finished", group, serviceId,
 					instance.getIp(), instance.getPort());

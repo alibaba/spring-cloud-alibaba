@@ -28,6 +28,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
+import com.alibaba.nacos.common.utils.CollectionUtils;
 
 import org.springframework.cloud.client.ServiceInstance;
 
@@ -57,6 +58,15 @@ public class NacosServiceDiscovery {
 		String group = discoveryProperties.getGroup();
 		List<Instance> instances = namingService().selectInstances(serviceId, group,
 				true);
+		List<String> referGroups = discoveryProperties.getReferGroups();
+		if (CollectionUtils.isNotEmpty(referGroups)) {
+			referGroups.remove(group);
+			for (String referGroup : referGroups) {
+				List<Instance> referInstances = namingService().selectInstances(serviceId,
+						referGroup, true);
+				instances.addAll(referInstances);
+			}
+		}
 		return hostToServiceInstanceList(instances, serviceId);
 	}
 
@@ -69,7 +79,17 @@ public class NacosServiceDiscovery {
 		String group = discoveryProperties.getGroup();
 		ListView<String> services = namingService().getServicesOfServer(1,
 				Integer.MAX_VALUE, group);
-		return services.getData();
+		List<String> data = services.getData();
+		List<String> referGroups = discoveryProperties.getReferGroups();
+		if (CollectionUtils.isNotEmpty(referGroups)) {
+			referGroups.remove(group);
+			for (String referGroup : referGroups) {
+				ListView<String> referServices = namingService().getServicesOfServer(1,
+						Integer.MAX_VALUE, referGroup);
+				data.addAll(referServices.getData());
+			}
+		}
+		return data;
 	}
 
 	public static List<ServiceInstance> hostToServiceInstanceList(

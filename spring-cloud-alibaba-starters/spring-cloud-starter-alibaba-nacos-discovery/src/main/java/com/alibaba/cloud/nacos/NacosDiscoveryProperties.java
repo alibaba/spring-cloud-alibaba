@@ -21,6 +21,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -131,9 +132,24 @@ public class NacosDiscoveryProperties {
 	private String clusterName = "DEFAULT";
 
 	/**
+	 * cluster name for nacos discovery client.
+	 */
+	private List<String> referClusterName;
+
+	/**
 	 * group name for nacos.
 	 */
 	private String group = "DEFAULT_GROUP";
+
+	/**
+	 * the shared group name for nacos registry.
+	 */
+	private List<String> sharedGroups;
+
+	/**
+	 * the reference group name for nacos discovery client.
+	 */
+	private List<String> referGroups;
 
 	/**
 	 * naming load from local cache at application start. true is load.
@@ -339,6 +355,14 @@ public class NacosDiscoveryProperties {
 		this.clusterName = clusterName;
 	}
 
+	public List<String> getReferClusterName() {
+		return referClusterName;
+	}
+
+	public void setReferClusterName(List<String> referClusterName) {
+		this.referClusterName = referClusterName;
+	}
+
 	public String getService() {
 		return service;
 	}
@@ -465,6 +489,22 @@ public class NacosDiscoveryProperties {
 
 	public void setGroup(String group) {
 		this.group = group;
+	}
+
+	public List<String> getSharedGroups() {
+		return sharedGroups;
+	}
+
+	public void setSharedGroups(List<String> sharedGroups) {
+		this.sharedGroups = sharedGroups;
+	}
+
+	public List<String> getReferGroups() {
+		return referGroups;
+	}
+
+	public void setReferGroups(List<String> referGroups) {
+		this.referGroups = referGroups;
 	}
 
 	public String getUsername() {
