@@ -25,10 +25,17 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
+ * Test cases for {@link DataSourcePropertiesConfiguration}.
+ *
  * @author <a href="mailto:i@5icodes.com">hnyyghk</a>
  */
 public class DataSourcePropertiesConfigurationTests {
 
+	/**
+	 * Test cases for {@link DataSourcePropertiesConfiguration#getValidField()}.
+	 *
+	 * @see com.alibaba.cloud.sentinel.custom.SentinelDataSourceHandler#afterSingletonsInstantiated()
+	 */
 	@Test
 	public void testGetValidField() {
 		DataSourcePropertiesConfiguration configuration = new DataSourcePropertiesConfiguration();
@@ -40,8 +47,10 @@ public class DataSourcePropertiesConfigurationTests {
 		apollo.setRuleType(RuleType.FLOW);
 		configuration.setApollo(apollo);
 
+		//indicate which datasource active
 		List<String> validField = configuration.getValidField();
 
+		//not allowed multi datasource active, $jacocoData should not be included
 		assertThat(validField.size()).isEqualTo(1);
 		assertThat(validField).doesNotContain("$jacocoData");
 		assertThat(validField).contains("apollo");
