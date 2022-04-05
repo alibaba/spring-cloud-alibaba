@@ -22,6 +22,7 @@ import com.alibaba.cloud.sentinel.datasource.config.AbstractDataSourceProperties
 import com.alibaba.cloud.sentinel.datasource.config.ApolloDataSourceProperties;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;

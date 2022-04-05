@@ -101,7 +101,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 	}
 
 	protected BeanDefinitionBuilder parseBeanDefinition(final AbstractDataSourceProperties dataSourceProperties,
-									 String dataSourceName) {
+														String dataSourceName) {
 		Map<String, Object> propertyMap = Arrays
 				.stream(dataSourceProperties.getClass().getDeclaredFields())
 				.filter(field -> !field.isSynthetic())
