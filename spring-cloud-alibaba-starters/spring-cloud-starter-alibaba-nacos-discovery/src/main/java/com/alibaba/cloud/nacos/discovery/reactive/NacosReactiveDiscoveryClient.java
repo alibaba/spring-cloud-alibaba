@@ -86,14 +86,14 @@ public class NacosReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 			try {
 				return Mono.justOrEmpty(serviceDiscovery.getServices())
 						.flatMapMany(services -> {
-							ServiceCache.set(services);
+							ServiceCache.setServiceIds(services);
 							return Flux.fromIterable(services);
 						});
 			}
 			catch (Exception e) {
 				log.error("get services from nacos server fail,", e);
 				return failureToleranceEnabled
-						? Flux.fromIterable(ServiceCache.get())
+						? Flux.fromIterable(ServiceCache.getServiceIds())
 						: Flux.empty();
 			}
 		}).subscribeOn(Schedulers.boundedElastic());

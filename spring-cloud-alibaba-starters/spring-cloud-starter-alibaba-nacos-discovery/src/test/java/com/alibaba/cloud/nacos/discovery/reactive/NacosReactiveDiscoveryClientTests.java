@@ -101,7 +101,7 @@ class NacosReactiveDiscoveryClientTests {
 
 	@Test
 	public void testFailureToleranceEnabled() throws NacosException {
-		ServiceCache.set(Arrays.asList("a", "b"));
+		ServiceCache.setServiceIds(Arrays.asList("a", "b"));
 
 		when(serviceDiscovery.getServices()).thenThrow(new NacosException());
 		ReflectionTestUtils.setField(client, "failureToleranceEnabled", true);
@@ -115,7 +115,7 @@ class NacosReactiveDiscoveryClientTests {
 
 	@Test
 	public void testFailureToleranceDisabled() throws NacosException {
-		ServiceCache.set(Arrays.asList("a", "b"));
+		ServiceCache.setServiceIds(Arrays.asList("a", "b"));
 
 		when(serviceDiscovery.getServices()).thenThrow(new NacosException());
 		ReflectionTestUtils.setField(client, "failureToleranceEnabled", false);

@@ -77,13 +77,13 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public List<String> getServices() {
 		try {
 			return Optional.of(serviceDiscovery.getServices()).map(services -> {
-						ServiceCache.set(services);
+						ServiceCache.setServiceIds(services);
 						return services;
 					}).get();
 		}
 		catch (Exception e) {
 			log.error("get service name from nacos server fail,", e);
-			return failureToleranceEnabled ? ServiceCache.get() : Collections.emptyList();
+			return failureToleranceEnabled ? ServiceCache.getServiceIds() : Collections.emptyList();
 		}
 	}
 

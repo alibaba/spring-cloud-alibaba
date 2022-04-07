@@ -41,19 +41,60 @@ public final class ServiceCache {
 
 	private static Map<String, List<ServiceInstance>> instancesMap = new ConcurrentHashMap<>();
 
+	/**
+	 * Set instances for specific service.
+	 * @param serviceId service id
+	 * @param instances service instances
+	 */
 	public static void setInstances(String serviceId, List<ServiceInstance> instances) {
 		instancesMap.put(serviceId, Collections.unmodifiableList(instances));
 	}
 
+	/**
+	 * Get instances for specific service.
+	 * @param serviceId service id
+	 * @return service instances
+	 */
 	public static List<ServiceInstance> getInstances(String serviceId) {
-		return Optional.ofNullable(instancesMap.get(serviceId)).orElse(Collections.emptyList());
+		return Optional.ofNullable(instancesMap.get(serviceId))
+				.orElse(Collections.emptyList());
 	}
 
-	public static void set(List<String> newServices) {
-		services = Collections.unmodifiableList(newServices);
+	/**
+	 * Set all services.
+	 * @param serviceIds all services
+	 * @deprecated since 2021.0.1.1, use {@link #setServiceIds(List)} instead.
+	 */
+	@Deprecated
+	public static void set(List<String> serviceIds) {
+		services = Collections.unmodifiableList(serviceIds);
 	}
 
+	/**
+	 * Set all services.
+	 * @param serviceIds all services
+	 * @since 2021.0.1.1
+	 */
+	public static void setServiceIds(List<String> serviceIds) {
+		services = Collections.unmodifiableList(serviceIds);
+	}
+
+	/**
+	 * Get all services.
+	 * @deprecated since 2021.0.1.1, use {@link #getServiceIds()} instead.
+	 * @return all services
+	 */
+	@Deprecated
 	public static List<String> get() {
+		return services;
+	}
+
+	/**
+	 * Get all services.
+	 * @return all services
+	 * @since 2021.0.1.1
+	 */
+	public static List<String> getServiceIds() {
 		return services;
 	}
 
