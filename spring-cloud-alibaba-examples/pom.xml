@@ -35,6 +35,13 @@
         <module>rocketmq-example/rocketmq-consume-example</module>
         <module>rocketmq-example/rocketmq-produce-example</module>
         <module>rocketmq-example/rocketmq-comprehensive-example</module>
+        <module>rocketmq-example/rocketmq-orderly-consume-example</module>
+        <module>rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-producer-example</module>
+        <module>rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-consumer1-example</module>
+        <module>rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-consumer2-example</module>
+        <module>rocketmq-example/rocketmq-delay-consume-example</module>
+        <module>rocketmq-example/rocketmq-sql-consume-example</module>
+
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example</module>
