@@ -1,0 +1,22 @@
+server:
+  port: 28085
+spring:
+  application:
+    name: rocketmq-broadcast-producer-example
+  cloud:
+    stream:
+      function:
+        definition: producer;
+      rocketmq:
+        binder:
+          name-server: 192.168.0.200:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+      bindings:
+        producer-out-0:
+          destination: broadcast
+logging:
+  level:
+    org.springframework.context.support: debug
