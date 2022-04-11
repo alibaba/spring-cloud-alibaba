@@ -6,7 +6,7 @@ spring:
   cloud:
     stream:
       function:
-        definition: producer;consumer;
+        definition: consumer;
       rocketmq:
         binder:
           name-server: localhost:9876

@@ -19,15 +19,17 @@ package com.alibaba.cloud.examples.broadcast;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
+import com.alibaba.cloud.examples.common.SimpleMsg;
 import org.apache.rocketmq.common.message.MessageConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Flux;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
@@ -38,7 +40,8 @@ import org.springframework.messaging.support.GenericMessage;
 public class RocketMQSqlConsumeApplication {
 	private static final Logger log = LoggerFactory
 			.getLogger(RocketMQSqlConsumeApplication.class);
-
+	@Autowired
+	private StreamBridge streamBridge;
 	public static void main(String[] args) {
 		SpringApplication.run(RocketMQSqlConsumeApplication.class, args);
 	}
@@ -54,27 +57,27 @@ public class RocketMQSqlConsumeApplication {
 	public static final Integer[] price = new Integer[] {1, 2, 3, 4, 5};
 
 	@Bean
-	public Supplier<Flux<Message<String>>> producer() {
-		return () -> {
-			return Flux.range(0, 100).map(i -> {
+	public ApplicationRunner producer() {
+		return args -> {
+			for (int i = 0; i < 100; i++) {
 				String key = "KEY" + i;
 				Map<String, Object> headers = new HashMap<>();
 				headers.put(MessageConst.PROPERTY_KEYS, key);
 				headers.put("color", color[i % color.length]);
 				headers.put("price", price[i % price.length]);
 				headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
-				Message<String> msg = new GenericMessage("Hello RocketMQ " + i, headers);
-				return msg;
-			}).log();
+				Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Hello RocketMQ " + i), headers);
+				streamBridge.send("producer-out-0", msg);
+			}
 		};
 	}
 
 	@Bean
-	public Consumer<Message<String>> consumer() {
+	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
 			String colorHeaderKey = "color";
 			String priceHeaderKey = "price";
-			log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload() + " COLOR:" +
+			log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload().getMsg() + " COLOR:" +
 					msg.getHeaders().get(colorHeaderKey).toString() + " " +
 					"PRICE: " + msg.getHeaders().get(priceHeaderKey).toString());
 		};

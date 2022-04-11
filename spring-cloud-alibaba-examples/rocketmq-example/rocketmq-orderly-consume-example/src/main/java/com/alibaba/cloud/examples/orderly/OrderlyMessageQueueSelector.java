@@ -22,6 +22,8 @@ import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageConst;
 import org.apache.rocketmq.common.message.MessageQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
@@ -32,10 +34,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OrderlyMessageQueueSelector implements MessageQueueSelector {
+	private static final Logger log = LoggerFactory
+			.getLogger(OrderlyMessageQueueSelector.class);
 	@Override
 	public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
 		Integer id = (Integer) ((MessageHeaders) arg).get(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID);
-		int index = id % Math.min(mqs.size(), RocketMQOrderlyConsumeApplication.tags.length);
+		String tag = (String) ((MessageHeaders) arg).get(MessageConst.PROPERTY_TAGS);
+		int index = id % RocketMQOrderlyConsumeApplication.tags.length % mqs.size();
 		return mqs.get(index);
 	}
 }

@@ -5,8 +5,6 @@ spring:
     name: rocketmq-broadcast-producer-example
   cloud:
     stream:
-      function:
-        definition: producer;
       rocketmq:
         binder:
           name-server: localhost:9876
