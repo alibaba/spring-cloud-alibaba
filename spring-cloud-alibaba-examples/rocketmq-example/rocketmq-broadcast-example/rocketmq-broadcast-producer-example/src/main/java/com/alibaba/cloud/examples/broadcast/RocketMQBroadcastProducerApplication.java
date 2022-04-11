@@ -36,12 +36,12 @@ import org.springframework.messaging.support.GenericMessage;
  * @author sorie
  */
 @SpringBootApplication
-public class RocketMQBroadcastConsumeApplication {
+public class RocketMQBroadcastProducerApplication {
 	private static final Logger log = LoggerFactory
-			.getLogger(RocketMQBroadcastConsumeApplication.class);
+			.getLogger(RocketMQBroadcastProducerApplication.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(RocketMQBroadcastConsumeApplication.class, args);
+		SpringApplication.run(RocketMQBroadcastProducerApplication.class, args);
 	}
 
 	@Bean
