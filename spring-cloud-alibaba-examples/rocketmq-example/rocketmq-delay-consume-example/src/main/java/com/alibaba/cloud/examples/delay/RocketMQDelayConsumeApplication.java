@@ -19,15 +19,17 @@ package com.alibaba.cloud.examples.broadcast;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
+import com.alibaba.cloud.examples.common.SimpleMsg;
 import org.apache.rocketmq.common.message.MessageConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Flux;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
@@ -38,30 +40,49 @@ import org.springframework.messaging.support.GenericMessage;
 public class RocketMQDelayConsumeApplication {
 	private static final Logger log = LoggerFactory
 			.getLogger(RocketMQDelayConsumeApplication.class);
+	@Autowired
+	private StreamBridge streamBridge;
 
 	public static void main(String[] args) {
 		SpringApplication.run(RocketMQDelayConsumeApplication.class, args);
 	}
 
 	@Bean
-	public Supplier<Flux<Message<String>>> producer() {
-		return () -> {
-			return Flux.range(0, 100).map(i -> {
+	public ApplicationRunner producerDelay() {
+		return args -> {
+			for (int i = 0; i < 100; i++) {
 				String key = "KEY" + i;
 				Map<String, Object> headers = new HashMap<>();
 				headers.put(MessageConst.PROPERTY_KEYS, key);
 				headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
 				headers.put("DELAY", 2);
-				Message<String> msg = new GenericMessage("Hello RocketMQ " + i, headers);
-				return msg;
-			}).log();
+				Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Delay RocketMQ " + i), headers);
+				streamBridge.send("producer-out-0", msg);
+			}
 		};
 	}
 
 	@Bean
-	public Consumer<Message<String>> consumer() {
+	public ApplicationRunner producerSchedule() {
+		return args -> {
+			for (int i = 0; i < 100; i++) {
+				String key = "KEY" + i;
+				Map<String, Object> headers = new HashMap<>();
+				headers.put(MessageConst.PROPERTY_KEYS, key);
+				headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
+				// send message after 3000ms
+				long delayTime = System.currentTimeMillis() + 3000;
+				headers.put(MessageConst.PROPERTY_CONSUME_START_TIMESTAMP, delayTime);
+				Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Schedule RocketMQ " + i), headers);
+				streamBridge.send("producer-out-0", msg);
+			}
+		};
+	}
+
+	@Bean
+	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
-			log.info(Thread.currentThread().getName() + " Consumer Receive New Messages: " + msg.getPayload());
+			log.info(Thread.currentThread().getName() + " Consumer Receive New Messages: " + msg.getPayload().getMsg());
 		};
 	}
 }

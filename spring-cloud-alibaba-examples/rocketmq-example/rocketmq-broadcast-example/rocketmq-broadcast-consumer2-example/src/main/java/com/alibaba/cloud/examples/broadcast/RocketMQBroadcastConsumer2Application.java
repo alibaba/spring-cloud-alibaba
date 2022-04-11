@@ -18,6 +18,7 @@ package com.alibaba.cloud.examples.broadcast;
 
 import java.util.function.Consumer;
 
+import com.alibaba.cloud.examples.common.SimpleMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +38,11 @@ public class RocketMQBroadcastConsumer2Application {
 	public static void main(String[] args) {
 		SpringApplication.run(RocketMQBroadcastConsumer2Application.class, args);
 	}
+
 	@Bean
-	public Consumer<Message<String>> consumer() {
+	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
-			log.info(Thread.currentThread().getName() + " Consumer1 Receive New Messages: " + msg.getPayload());
+			log.info(Thread.currentThread().getName() + " Consumer2 Receive New Messages: " + msg.getPayload().getMsg());
 		};
 	}
 }
