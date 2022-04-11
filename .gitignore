@@ -43,3 +43,4 @@ target
 
 # AsciiDoc
 spring-cloud-alibaba-docs/**/*.html
+**/eclipse/*
