@@ -236,6 +236,7 @@ public class NacosDiscoveryProperties {
 	public void init() throws Exception {
 
 		metadata.put(PreservedMetadataKeys.REGISTER_SOURCE, "SPRING_CLOUD");
+		metadata.put("preserved.register.timestamp", String.valueOf(System.currentTimeMillis()));
 		if (secure) {
 			metadata.put("secure", "true");
 		}
