@@ -5,6 +5,8 @@
 This example illustrates how to use Nacos Config Starter implement externalized configuration for Spring Cloud applications.
 Note: Applicable to spring boot version lower than 2.4.0
 
+***<font color=red>Note: Applicable to spring boot versions lower than 2.4.0, if the version is higher than 2.4.0, consider using import to import the configuration.</font>***
+
 [Nacos](https://github.com/alibaba/Nacos) an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
 
 ## Demo

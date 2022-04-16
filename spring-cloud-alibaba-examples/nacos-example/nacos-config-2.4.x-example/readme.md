@@ -1,17 +1,17 @@
 # Nacos Config 2.4.x Example
 
-## 项目说明
+## Project Instruction
 
-Spring Boot 2.4.0 版本开始默认不启动 bootstrap 容器
-本项目演示如何在 Spring boot >= 2.4.0 版本不启用 bootstrap 容器情况下如何使用 nacos
+Spring Boot version 2.4.0 does not start the bootstrap container by default. 
+This project demonstrates how to use nacos when Spring boot >= 2.4.0 version does not enable the bootstrap container.
 
-***<font color=red>适用于 Spring boot >= 2.4.0 并且使用 import 方式导入配置，将不会再默认拉取配置，需要手动配置 dataId。</font>***
+***<font color=red>Applicable to Spring boot >= 2.4.0 and import the configuration using the import method, the configuration will no longer be pulled by default, and the dataId needs to be configured manually.</font>***
 
-## 示例
+## Demo
 
-### 如何接入
+### How to use
 
-1. 首先，修改 pom.xml 文件，引入 Nacos Config Starter
+1. First, modify the pom.xml file and introduce Nacos Config Starter
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -24,7 +24,7 @@ Spring Boot 2.4.0 版本开始默认不启动 bootstrap 容器
 ```
 
 	
-2. 在应用的 /src/main/resources/***application.yml*** 配置文件中配置 Nacos Config 元数据
+2. Configure Nacos Config metadata in the application's src/main/resources/***application.yml*** configuration file
 ```yaml
 server:
   port: 8888
@@ -43,7 +43,7 @@ spring:
       - optional:nacos:test02.yml?group=group_03&refreshEnabled=false
 ```
 
-3. 在 nacos 创建 test.yml 
+3. Create test.yml in nacos
 ```yaml
 configdata:
   user:
@@ -61,7 +61,7 @@ configdata:
         age: 18
 ```
 		  
-4. 完成上述操作后，应用会从 Nacos Config 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中
+4. After completing the above operations, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment
 ```java
 // controller
 @RestController
@@ -94,6 +94,6 @@ public class UserConfig {
 }
 ```
 
-验证动态刷新  
-访问 http://localhost:8888  
-再从 nacos 修改配置, 再次访问即可验证动态配置生效
+Verify dynamic refresh 
+access http://localhost:8888  
+Then modify the configuration from nacos, and visit again to verify that the dynamic configuration takes effect.
