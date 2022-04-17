@@ -24,15 +24,29 @@ This is a overview of Spring Cloud Stream.
 
 ![](https://docs.spring.io/spring-cloud-stream/docs/current/reference/htmlsingle/images/SCSt-overview.png)
 
-## Demo
+## Preparation
 
-### Integration with RocketMQ Binder
+### Download and Startup RocketMQ
 
-Before we start the demo, let's learn how to Integration with RocketMQ Binder to a Spring Cloud application.
+You should startup Name Server and Broker before using RocketMQ Binder.
 
-**Note: This section is to show you how to connect to Sentinel. The configurations have been completed in the following example, so you don't need modify the code any more.**
+1. Download [RocketMQ](https://archive.apache.org/dist/rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip) and unzip it.
 
-1. Add dependency spring-cloud-starter-stream-rocketmq in the pom.xml file in your Spring Cloud project.
+2. Startup Name Server
+
+```bash
+sh bin/mqnamesrv
+```
+
+3. Startup Broker
+
+```bash
+sh bin/mqbroker -n localhost:9876
+```
+
+### Declare dependency
+
+Add dependency spring-cloud-starter-stream-rocketmq to the `pom.xml` file in your Spring Cloud project.
 
 ```xml
 <dependency>
@@ -41,7 +55,17 @@ Before we start the demo, let's learn how to Integration with RocketMQ Binder to
 </dependency>
 ```
 
-2. Configure Input and Output Binding and cooperate with `@EnableBinding` annotation
+## Simple example
+
+### Create topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t test-topic
+```
+
+### Integration with RocketMQ Binder
+
+Configure Input and Output Binding and cooperate with `@EnableBinding` annotation
 
 ```java
 @SpringBootApplication
@@ -66,32 +90,6 @@ spring.cloud.stream.bindings.input.content-type=application/json
 spring.cloud.stream.bindings.input.group=test-group
 
 ```
-	
-3. pub/sub messages
-
-### Download and Startup RocketMQ
-
-You should startup Name Server and Broker before using RocketMQ Binder.
-
-1. Download [RocketMQ](https://archive.apache.org/dist/rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip) and unzip it.
-
-2. Startup Name Server
-
-```bash
-sh bin/mqnamesrv
-```
-
-3. Startup Broker
-
-```bash
-sh bin/mqbroker -n localhost:9876
-```
-
-4. Create topic: test-topic
-
-```bash
-sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t test-topic
-```
 
 ### Start Application
 
@@ -101,7 +99,7 @@ sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t test-topic
 spring.application.name=rocketmq-example
 server.port=28081
 ```
-	
+
 2. Start the application in IDE or by building a fatjar.
 
 	1. Start in IDE: Find main class  `RocketMQApplication`, and execute the main method.
@@ -189,6 +187,508 @@ public class ReceiveService {
 		System.out.println("input2 receive: " + receiveMsg);
 	}
 
+}
+```
+
+## Broadcasting exmaple
+
+### Create topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t broadcast
+```
+
+### Producer
+
+**application.yml**
+
+```yaml
+server:
+  port: 28085
+spring:
+  application:
+    name: rocketmq-broadcast-producer-example
+  cloud:
+    stream:
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+      bindings:
+        producer-out-0:
+          destination: broadcast
+logging:
+  level:
+    org.springframework.context.support: debug
+```
+
+**code**
+
+Use `ApplicationRunner` and `StreamBridge` to send messages.
+
+```java
+@SpringBootApplication
+public class RocketMQBroadcastProducerApplication {
+   private static final Logger log = LoggerFactory
+         .getLogger(RocketMQBroadcastProducerApplication.class);
+   @Autowired
+   private StreamBridge streamBridge;
+   public static void main(String[] args) {
+      SpringApplication.run(RocketMQBroadcastProducerApplication.class, args);
+   }
+
+   @Bean
+   public ApplicationRunner producer() {
+      return args -> {
+         for (int i = 0; i < 100; i++) {
+            String key = "KEY" + i;
+            Map<String, Object> headers = new HashMap<>();
+            headers.put(MessageConst.PROPERTY_KEYS, key);
+            headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
+            Message<SimpleMsg> msg = new GenericMessage<SimpleMsg>(new SimpleMsg("Hello RocketMQ " + i), headers);
+            streamBridge.send("producer-out-0", msg);
+         }
+      };
+   }
+}
+```
+
+### Consumer
+
+Startup two consumers.
+
+#### Consumer1
+
+**application.yml**
+
+```yaml
+server:
+  port: 28084
+spring:
+  application:
+    name: rocketmq-broadcast-consumer1-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          consumer-in-0:
+            consumer:
+              messageModel: BROADCASTING
+      bindings:
+        consumer-in-0:
+          destination: broadcast
+          group: broadcast-consumer
+logging:
+  level:
+    org.springframework.context.support: debug
+```
+
+**code**
+
+```java
+@SpringBootApplication
+public class RocketMQBroadcastConsumer1Application {
+   private static final Logger log = LoggerFactory
+         .getLogger(RocketMQBroadcastConsumer1Application.class);
+
+   public static void main(String[] args) {
+      SpringApplication.run(RocketMQBroadcastConsumer1Application.class, args);
+   }
+
+   @Bean
+   public Consumer<Message<SimpleMsg>> consumer() {
+      return msg -> {
+         log.info(Thread.currentThread().getName() + " Consumer1 Receive New Messages: " + msg.getPayload().getMsg());
+      };
+   }
+}
+```
+
+#### Consumer2
+
+**application.yml**
+
+```yaml
+server:
+  port: 28083
+spring:
+  application:
+    name: rocketmq-broadcast-consumer2-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          consumer-in-0:
+            consumer:
+              messageModel: BROADCASTING
+      bindings:
+        consumer-in-0:
+          destination: broadcast
+          group: broadcast-consumer
+logging:
+  level:
+    org.springframework.context.support: debug
+```
+
+**code**
+
+```java
+@SpringBootApplication
+public class RocketMQBroadcastConsumer2Application {
+   private static final Logger log = LoggerFactory
+         .getLogger(RocketMQBroadcastConsumer2Application.class);
+
+   public static void main(String[] args) {
+      SpringApplication.run(RocketMQBroadcastConsumer2Application.class, args);
+   }
+
+   @Bean
+   public Consumer<Message<SimpleMsg>> consumer() {
+      return msg -> {
+         log.info(Thread.currentThread().getName() + " Consumer2 Receive New Messages: " + msg.getPayload().getMsg());
+      };
+   }
+}
+```
+
+## Order example
+
+​	RocketMQ provides ordered messages using FIFO order.
+
+​	There are two types of ordered messages.
+
+* Global: For a specified topic, all messages are published and consumed in strict FIFO (First In First Out) order.
+* Partition: For a specified topic, all messages are partitioned according to the `Sharding Key`. Messages within the same partition are published and consumed in strict FIFO order. `Sharding Key` is a key field used to distinguish different partitions in sequential messages, and it is a completely different concept from the Key of ordinary messages.
+
+### Create Topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t orderly
+```
+
+### Example code
+
+**application.yml**
+
+```yaml
+server:
+  port: 28082
+spring:
+  application:
+    name: rocketmq-orderly-consume-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+              # 定义messageSelector
+              messageQueueSelector: orderlyMessageQueueSelector
+          consumer-in-0:
+            consumer:
+              # tag: {@code tag1||tag2||tag3 }; sql: {@code 'color'='blue' AND 'price'>100 } .
+              subscription: 'TagA || TagC || TagD'
+              push:
+                orderly: true
+      bindings:
+        producer-out-0:
+          destination: orderly
+        consumer-in-0:
+          destination: orderly
+          group: orderly-consumer
+
+logging:
+  level:
+    org.springframework.context.support: debug
+```
+
+**MessageQueueSelector**
+
+Choose a partition selection algorithm for you, and ensure that the same parameters get the same results.
+
+```java
+@Component
+public class OrderlyMessageQueueSelector implements MessageQueueSelector {
+   private static final Logger log = LoggerFactory
+         .getLogger(OrderlyMessageQueueSelector.class);
+   @Override
+   public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
+      Integer id = (Integer) ((MessageHeaders) arg).get(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID);
+      String tag = (String) ((MessageHeaders) arg).get(MessageConst.PROPERTY_TAGS);
+      int index = id % RocketMQOrderlyConsumeApplication.tags.length % mqs.size();
+      return mqs.get(index);
+   }
+}
+```
+
+**Producer&Consumer**
+
+```java
+@SpringBootApplication
+public class RocketMQOrderlyConsumeApplication {
+   private static final Logger log = LoggerFactory
+         .getLogger(RocketMQOrderlyConsumeApplication.class);
+
+   @Autowired
+   private StreamBridge streamBridge;
+
+   /***
+    * tag array.
+    */
+   public static final String[] tags = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
+
+   public static void main(String[] args) {
+      SpringApplication.run(RocketMQOrderlyConsumeApplication.class, args);
+   }
+
+   @Bean
+   public ApplicationRunner producer() {
+      return args -> {
+         for (int i = 0; i < 100; i++) {
+            String key = "KEY" + i;
+            Map<String, Object> headers = new HashMap<>();
+            headers.put(MessageConst.PROPERTY_KEYS, key);
+            headers.put(MessageConst.PROPERTY_TAGS, tags[i % tags.length]);
+            headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
+            Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Hello RocketMQ " + i), headers);
+            streamBridge.send("producer-out-0", msg);
+         }
+      };
+   }
+
+   @Bean
+   public Consumer<Message<SimpleMsg>> consumer() {
+      return msg -> {
+         String tagHeaderKey = RocketMQMessageConverterSupport.toRocketHeaderKey(
+               MessageConst.PROPERTY_TAGS).toString();
+         log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload().getMsg() + " TAG:" +
+               msg.getHeaders().get(tagHeaderKey).toString());
+         try {
+            Thread.sleep(100);
+         }
+         catch (InterruptedException ignored) {
+         }
+      };
+   }
+
+}
+```
+
+## Schedule example
+
+Scheduled messages differ from normal messages in that they won’t be delivered until a provided time later.
+
+### Create topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t delay
+```
+
+### Example code
+
+**application.yml**
+
+```yaml
+server:
+  port: 28086
+spring:
+  application:
+    name: rocketmq-delay-consume-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+      bindings:
+        producer-out-0:
+          destination: delay
+        consumer-in-0:
+          destination: delay
+          group: delay-group
+logging:
+  level:
+    org.springframework.context.support: debug
+```
+
+**code**
+
+```java
+@SpringBootApplication
+public class RocketMQDelayConsumeApplication {
+   private static final Logger log = LoggerFactory
+         .getLogger(RocketMQDelayConsumeApplication.class);
+   @Autowired
+   private StreamBridge streamBridge;
+
+   public static void main(String[] args) {
+      SpringApplication.run(RocketMQDelayConsumeApplication.class, args);
+   }
+
+   @Bean
+   public ApplicationRunner producerDelay() {
+      return args -> {
+         for (int i = 0; i < 100; i++) {
+            String key = "KEY" + i;
+            Map<String, Object> headers = new HashMap<>();
+            headers.put(MessageConst.PROPERTY_KEYS, key);
+            headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
+   			// Set the delay level 1~10
+            headers.put("DELAY", 2);
+            Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Delay RocketMQ " + i), headers);
+            streamBridge.send("producer-out-0", msg);
+         }
+      };
+   }
+
+   @Bean
+   public ApplicationRunner producerSchedule() {
+      return args -> {
+         for (int i = 0; i < 100; i++) {
+            String key = "KEY" + i;
+            Map<String, Object> headers = new HashMap<>();
+            headers.put(MessageConst.PROPERTY_KEYS, key);
+            headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
+            // Sending scheduled message, you need to set the delay time in milliseconds (ms). The message will be delivered after the specified delay time, for example, the message will be delivered after 3 seconds.
+            long delayTime = System.currentTimeMillis() + 3000;
+            headers.put(MessageConst.PROPERTY_CONSUME_START_TIMESTAMP, delayTime);
+            Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Schedule RocketMQ " + i), headers);
+            streamBridge.send("producer-out-0", msg);
+         }
+      };
+   }
+
+   @Bean
+   public Consumer<Message<SimpleMsg>> consumer() {
+      return msg -> {
+         log.info(Thread.currentThread().getName() + " Consumer Receive New Messages: " + msg.getPayload().getMsg());
+      };
+   }
+}
+```
+
+## Filter example
+
+### Create topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t sql
+```
+
+### Example code
+
+**application.yml**
+
+RocketMQ stream binder supports filter by tag or sql, just setting `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.subscription`.
+
+Tag example: `tag:red || blue`
+
+Sql example: `sql:(color in ('red1', 'red2', 'red4') and price>3)`
+
+More: [Filter](https://rocketmq.apache.org/docs/filter-by-sql92-example/)
+
+```yaml
+server:
+  port: 28087
+spring:
+  application:
+    name: rocketmq-sql-consume-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+          consumer-in-0:
+            consumer:
+              # tag: {@code tag1||tag2||tag3 }; sql: {@code 'color'='blue' AND 'price'>100 } .
+              subscription: sql:(color in ('red1', 'red2', 'red4') and price>3)
+      bindings:
+        producer-out-0:
+          destination: sql
+        consumer-in-0:
+          destination: sql
+          group: sql-group
+logging:
+  level:
+    org.springframework.context.support: debug
+```
+
+**code**
+
+```java
+@SpringBootApplication
+public class RocketMQSqlConsumeApplication {
+   private static final Logger log = LoggerFactory
+         .getLogger(RocketMQSqlConsumeApplication.class);
+   @Autowired
+   private StreamBridge streamBridge;
+   public static void main(String[] args) {
+      SpringApplication.run(RocketMQSqlConsumeApplication.class, args);
+   }
+
+   /**
+    * color array.
+    */
+   public static final String[] color = new String[] {"red1", "red2", "red3", "red4", "red5"};
+
+   /**
+    * price array.
+    */
+   public static final Integer[] price = new Integer[] {1, 2, 3, 4, 5};
+
+   @Bean
+   public ApplicationRunner producer() {
+      return args -> {
+         for (int i = 0; i < 100; i++) {
+            String key = "KEY" + i;
+            Map<String, Object> headers = new HashMap<>();
+            headers.put(MessageConst.PROPERTY_KEYS, key);
+            headers.put("color", color[i % color.length]);
+            headers.put("price", price[i % price.length]);
+            headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
+            Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Hello RocketMQ " + i), headers);
+            streamBridge.send("producer-out-0", msg);
+         }
+      };
+   }
+
+   @Bean
+   public Consumer<Message<SimpleMsg>> consumer() {
+      return msg -> {
+         String colorHeaderKey = "color";
+         String priceHeaderKey = "price";
+         log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload().getMsg() + " COLOR:" +
+               msg.getHeaders().get(colorHeaderKey).toString() + " " +
+               "PRICE: " + msg.getHeaders().get(priceHeaderKey).toString());
+      };
+   }
 }
 ```
 
