@@ -73,7 +73,7 @@ public class RocketMQMessageChannelBinderTest {
 		MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, null,
 				extendedConsumerProperties);
 		Assertions.assertThat(consumerEndpoint).isNotNull();
-		Assertions.assertThat( extendedConsumerProperties.getExtension().getGroup())
+		Assertions.assertThat(extendedConsumerProperties.getExtension().getGroup())
 				.isEqualTo(RocketMQConst.DEFAULT_GROUP + "_test");
 	}
 
