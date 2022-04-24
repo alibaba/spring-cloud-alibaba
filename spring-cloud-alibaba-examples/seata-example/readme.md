@@ -157,6 +157,4 @@ If the distributed transaction is in effect, then the following equation should 
 
 - Supports automatic passing of `Seata` context when called by a service caller via FeignClient.
 
-- Supports scenarios where `SeataClient` and `Hystrix` are used together.
-
 - Supports scenarios where `SeataClient` and `Sentinel` are used together.
