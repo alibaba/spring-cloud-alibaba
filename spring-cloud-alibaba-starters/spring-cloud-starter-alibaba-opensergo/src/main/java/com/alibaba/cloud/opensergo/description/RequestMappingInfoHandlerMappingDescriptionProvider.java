@@ -47,14 +47,21 @@ public final class RequestMappingInfoHandlerMappingDescriptionProvider
 
 			MethodDescriptor.Builder builder = MethodDescriptor.newBuilder();
 
+			StringBuilder methodName = new StringBuilder();
+			for (RequestMethod method : k.getMethodsCondition().getMethods()) {
+				builder.addHttpMethods(method.name());
+				methodName.append(methodName).append(",");
+			}
+			methodName.deleteCharAt(methodName.length() - 1);
+			methodName.append(" ");
 			if (k.getPathPatternsCondition() != null) {
 				for (PathPattern pattern : k.getPathPatternsCondition().getPatterns()) {
+					methodName.append(pattern.getPatternString()).append(",");
 					builder.addHttpPaths(pattern.getPatternString());
 				}
 			}
-			for (RequestMethod method : k.getMethodsCondition().getMethods()) {
-				builder.addHttpMethods(method.name());
-			}
+			methodName.deleteCharAt(methodName.length() - 1);
+			builder.setName(methodName.toString());
 			serviceBuilder.addMethods(builder.build());
 		}
 	}
