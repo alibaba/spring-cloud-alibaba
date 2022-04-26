@@ -27,7 +27,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 * **阿里云短信服务**：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道。
 
 
-更多功能请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/Roadmap-zh.md)
+更多功能请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/Roadmap-zh.md)
 
 除了上述所具有的功能外，针对企业级用户的场景，Spring Cloud Alibaba 配套的企业版微服务治理方案 [微服务引擎MSE](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar) 还提供了企业级微服务治理中心，包括全链路灰度、服务预热、无损上下线和离群实例摘除等更多更强大的治理能力，同时还提供了企业级 Nacos 注册配置中心，企业级云原生网关等多种产品及解决方案。
 
@@ -52,7 +52,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 更多组件请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.0/Roadmap-zh.md)。
 
 ## 如何构建
-* 2022.x 分支对应的是 Spring Cloud 2022 与 Spring Boot 2.6.x，最低支持 JDK 1.8。
+* 2021.x 分支对应的是 Spring Cloud 2022 与 Spring Boot 2.6.x，最低支持 JDK 1.8。
 * 2020.0 分支对应的是 Spring Cloud 2020 与 Spring Boot 2.4.x，最低支持 JDK 1.8。
 * 2.2.x 分支对应的是 Spring Cloud Hoxton 与 Spring Boot 2.2.x，最低支持 JDK 1.8。
 * greenwich 分支对应的是 Spring Cloud Greenwich 与 Spring Boot 2.1.x，最低支持 JDK 1.8。
@@ -118,7 +118,7 @@ Example 列表：
 * 2.1.x 版本适用于 Spring Boot 2.1.x
 * 2.2.x 版本适用于 Spring Boot 2.2.x
 * 2020.x 版本适用于 Spring Boot 2.4.x
-* 2022.x 版本适用于 Spring Boot 2.6.x
+* 2021.x 版本适用于 Spring Boot 2.6.x
 
 ## 社区交流
 

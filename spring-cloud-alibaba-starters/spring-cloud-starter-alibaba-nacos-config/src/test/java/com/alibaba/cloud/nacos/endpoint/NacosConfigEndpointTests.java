@@ -16,22 +16,13 @@
 
 package com.alibaba.cloud.nacos.endpoint;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
-import com.alibaba.nacos.client.config.NacosConfigService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.api.support.MethodProxy;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health.Builder;
@@ -39,43 +30,21 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 /**
- * TODO refactor, remove powermock.
  *
  * @author xiaojing
  * @author freeman
  */
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore("javax.management.*")
-@PowerMockRunnerDelegate(SpringRunner.class)
-@PrepareForTest({ NacosConfigService.class })
 @SpringBootTest(classes = NacosConfigEndpointTests.TestConfig.class, webEnvironment = NONE, properties = {
 		"spring.application.name=test-name",
 		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
 		"spring.cloud.nacos.config.file-extension=properties",
-		"spring.cloud.bootstrap.enabled=true"
-})
+		"spring.cloud.bootstrap.enabled=true" })
 public class NacosConfigEndpointTests {
-
-	static {
-
-		try {
-
-			Method method = PowerMockito.method(NacosConfigService.class,
-					"getServerStatus");
-			MethodProxy.proxy(method, (proxy, method1, args) -> "UP");
-
-		}
-		catch (Exception ignore) {
-			ignore.printStackTrace();
-
-		}
-	}
 
 	@Autowired
 	private NacosConfigProperties properties;

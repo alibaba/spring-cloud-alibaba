@@ -1,0 +1,119 @@
+=== 开发角色
+Spring Cloud Alibaba项目开发者包含Steering Committee Member、Committer、Contributor三种角色，每种角色的标准定义如下。
+
+==== Steering Committee Member
+Steering Committee 作为Spring Cloud Alibaba项目的技术发展指导委员会，其成员是对Spring Cloud Alibaba项目的演进和发展做出显著贡献的个人。具体包含以下的标准：
+
+* 完成多个关键模块或者工程的设计与开发，是项目的核心开发人员；
+* 持续的投入和激情，能够积极参与社区、官网、issue、PR等项目相关事项的维护；
+* 在社区中具有有目共睹的影响力，能够代表Spring Cloud Alibaba参加重要的社区会议和活动；
+* 具有培养Committer和Contributor的意识和能力；
+
+==== Committer
+Committer是具有仓库写权限的个人，包含以下的标准：
+
+* 能够在长时间内做持续贡献issue、PR的个人；
+* 参与issue列表的维护及重要feature的讨论；
+* 参与code review；
+
+==== Contributor
+Contributor是对项目有贡献的个人，标准为：
+
+* 提交过PR并被合并；
+
+=== 开发团队
+
+本页面展示了Spring Cloud Alibaba 的开发团队成员，我们一直都在持续扩充中，欢迎加入社区：）
+
+==== Steering Committee Member成员：
+
+|===
+|姓名 |Github账号 |角色 |联系方式 |组织
+
+|方剑
+|fangjian0423
+|Steering Committee Member
+|fangjian0423@gmail.com
+|阿里巴巴
+
+|肖京
+|flystar32
+|Steering Committee Member
+|flystar32@163.com
+|阿里巴巴
+
+|马昕曦
+|mercyblitz
+|Steering Committee Member
+|mercyblitz@gmail.com
+|自由职业
+
+|任浩军
+|HaojunRen
+|Steering Committee Member
+|1394997@qq.com
+|Nepxion社区
+
+|陈曦
+|theonefx
+|Steering Committee Member
+|chenxilzx1@gmail.com
+|阿里巴巴
+
+|===
+
+
+==== Committer成员：
+
+|===
+|姓名 |Github账号 |角色 |联系方式 |组织
+
+|廖春涛
+|chuntaojun
+|Committer
+|liaochuntao@live.com
+|腾讯
+
+|余黄彬
+|yuhuangbin
+|Committer
+|danielyu96@163.com
+|~
+
+|赵奕豪
+|sczyh30
+|Committer
+|sczyh16@gmail.com
+|阿里巴巴
+
+|张开兆
+|zkzlx
+|Committer
+|kiss_maple@163.com
+|得物
+
+|饶子昊
+|steverao
+|Committer
+|zihaorao@126.com
+|阿里巴巴
+
+|刘梁文
+|DanielLiu1123
+|Committer
+|llw599502537@gmail.com
+|在校学生
+
+|冷冷
+|lltx
+|Committer
+|wangiegie@gmail.com
+|~
+
+|echooymxq
+|echooymxq
+|Committer
+|echooy.mxq@gmail.com
+|~
+
+|===
