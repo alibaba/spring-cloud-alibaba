@@ -38,8 +38,6 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 
 **[RocketMQ](https://rocketmq.apache.org/)**: A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Dubbo](https://github.com/apache/dubbo)**: A high-performance, Java based open source RPC framework.
-
 **[Seata](https://github.com/seata/seata)**: A distributed transaction solution with high performance and ease of use for microservices architecture.
 
 **[Alibaba Cloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
