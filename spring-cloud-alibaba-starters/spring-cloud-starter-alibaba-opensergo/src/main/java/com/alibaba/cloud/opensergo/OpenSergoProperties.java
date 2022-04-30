@@ -27,17 +27,17 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class OpenSergoProperties {
 
-    /**
-     * Earlier initialize heart-beat when the spring container starts when the transport
-     * dependency is on classpath, the configuration is effective.
-     */
-    private String endpoint = "";
+	/**
+	 * Earlier initialize heart-beat when the spring container starts when the transport
+	 * dependency is on classpath, the configuration is effective.
+	 */
+	private String endpoint = "";
 
-    public String getEndpoint() {
-        return endpoint;
-    }
+	public String getEndpoint() {
+		return endpoint;
+	}
 
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
 }

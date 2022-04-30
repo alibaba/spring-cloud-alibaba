@@ -32,8 +32,8 @@ import io.grpc.ManagedChannelBuilder;
 import io.opensergo.proto.service_contract.v1.MetadataServiceGrpc;
 import io.opensergo.proto.service_contract.v1.ReportMetadataRequest;
 import io.opensergo.proto.service_contract.v1.ServiceContract;
-import io.opensergo.proto.service_contract.v1.ServiceDescriptor;
 import io.opensergo.proto.service_contract.v1.ServiceMetadata;
+import io.opensergo.proto.service_contract.v1.ServiceDescriptor;
 import org.apache.catalina.Container;
 import org.apache.catalina.Context;
 import org.apache.catalina.core.StandardWrapper;
@@ -50,128 +50,128 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
 
 public class ServiceContractReporter {
-    private MetadataServiceGrpc.MetadataServiceBlockingStub blockingStub;
-    private ApplicationContext applicationContext;
+	private MetadataServiceGrpc.MetadataServiceBlockingStub blockingStub;
+	private ApplicationContext applicationContext;
 
-    public ServiceContractReporter(String endpoint) {
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(endpoint).usePlaintext()
-                .build();
-        blockingStub = MetadataServiceGrpc.newBlockingStub(channel);
-    }
+	public ServiceContractReporter(String endpoint) {
+		ManagedChannel channel = ManagedChannelBuilder.forTarget(endpoint).usePlaintext()
+				.build();
+		blockingStub = MetadataServiceGrpc.newBlockingStub(channel);
+	}
 
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
 
-        String appName = applicationContext.getId();
-        if (appName == null || appName.isEmpty()) {
-            appName = "unknown_app";
-        }
-        ReportMetadataRequest.Builder reportBuilder = ReportMetadataRequest.newBuilder()
-                .setAppName(appName);
+		String appName = applicationContext.getId();
+		if (appName == null || appName.isEmpty()) {
+			appName = "unknown_app";
+		}
+		ReportMetadataRequest.Builder reportBuilder = ReportMetadataRequest.newBuilder()
+				.setAppName(appName);
 
-        ServiceContract.Builder contractBuilder = ServiceContract.newBuilder();
-        ServiceDescriptor.Builder descBuilder = ServiceDescriptor.newBuilder()
-                .setName(appName);
+		ServiceContract.Builder contractBuilder = ServiceContract.newBuilder();
+		ServiceDescriptor.Builder descBuilder = ServiceDescriptor.newBuilder()
+				.setName(appName);
 
-        if (applicationContext instanceof WebApplicationContext) {
-            determineDispatcherServlets((WebApplicationContext) applicationContext)
-                    .forEach((name, dispatcherServlet) -> {
-                        processHandlerMappings(dispatcherServlet, name, descBuilder);
-                    });
-        }
-        contractBuilder.addServices(descBuilder.build());
-        ServiceMetadata.Builder metadataBuilder = ServiceMetadata.newBuilder();
-        metadataBuilder.setServiceContract(contractBuilder.build()).addProtocols("http");
-        reportBuilder.addServiceMetadata(metadataBuilder.build());
+		if (applicationContext instanceof WebApplicationContext) {
+			determineDispatcherServlets((WebApplicationContext) applicationContext)
+					.forEach((name, dispatcherServlet) -> {
+						processHandlerMappings(dispatcherServlet, name, descBuilder);
+					});
+		}
+		contractBuilder.addServices(descBuilder.build());
+		ServiceMetadata.Builder metadataBuilder = ServiceMetadata.newBuilder();
+		metadataBuilder.setServiceContract(contractBuilder.build()).addProtocols("http");
+		reportBuilder.addServiceMetadata(metadataBuilder.build());
 
-        blockingStub.reportMetadata(reportBuilder.build());
-    }
+		blockingStub.reportMetadata(reportBuilder.build());
+	}
 
-    private Map<String, DispatcherServlet> determineDispatcherServlets(
-            WebApplicationContext context) {
-        Map<String, DispatcherServlet> dispatcherServlets = new LinkedHashMap<>();
-        context.getBeansOfType(ServletRegistrationBean.class).values()
-                .forEach((registration) -> {
-                    Servlet servlet = registration.getServlet();
-                    if (servlet instanceof DispatcherServlet
-                            && !dispatcherServlets.containsValue(servlet)) {
-                        dispatcherServlets.put(registration.getServletName(),
-                                (DispatcherServlet) servlet);
-                    }
-                });
-        context.getBeansOfType(DispatcherServlet.class)
-                .forEach((name, dispatcherServlet) -> {
-                    if (!dispatcherServlets.containsValue(dispatcherServlet)) {
-                        dispatcherServlets.put(name, dispatcherServlet);
-                    }
-                });
-        return dispatcherServlets;
-    }
+	private Map<String, DispatcherServlet> determineDispatcherServlets(
+			WebApplicationContext context) {
+		Map<String, DispatcherServlet> dispatcherServlets = new LinkedHashMap<>();
+		context.getBeansOfType(ServletRegistrationBean.class).values()
+				.forEach((registration) -> {
+					Servlet servlet = registration.getServlet();
+					if (servlet instanceof DispatcherServlet
+							&& !dispatcherServlets.containsValue(servlet)) {
+						dispatcherServlets.put(registration.getServletName(),
+								(DispatcherServlet) servlet);
+					}
+				});
+		context.getBeansOfType(DispatcherServlet.class)
+				.forEach((name, dispatcherServlet) -> {
+					if (!dispatcherServlets.containsValue(dispatcherServlet)) {
+						dispatcherServlets.put(name, dispatcherServlet);
+					}
+				});
+		return dispatcherServlets;
+	}
 
-    void processHandlerMappings(DispatcherServlet dispatcherServlet, String name,
-                                ServiceDescriptor.Builder descBuilder) {
-        List<HandlerMapping> handlerMappings = dispatcherServlet.getHandlerMappings();
-        HandlerMappingDescriptionProvider<RequestMappingInfoHandlerMapping> descriptionProvider = new RequestMappingInfoHandlerMappingDescriptionProvider();
+	void processHandlerMappings(DispatcherServlet dispatcherServlet, String name,
+								ServiceDescriptor.Builder descBuilder) {
+		List<HandlerMapping> handlerMappings = dispatcherServlet.getHandlerMappings();
+		HandlerMappingDescriptionProvider<RequestMappingInfoHandlerMapping> descriptionProvider = new RequestMappingInfoHandlerMappingDescriptionProvider();
 
-        if (handlerMappings == null) {
-            initializeDispatcherServletIfPossible(name);
-            handlerMappings = dispatcherServlet.getHandlerMappings();
-            for (HandlerMapping handlerMapping : handlerMappings) {
-                if (descriptionProvider.getMappingClass().isInstance(handlerMapping)) {
-                    descriptionProvider.process(
-                            (RequestMappingInfoHandlerMapping) handlerMapping,
-                            descBuilder);
-                }
-            }
-        }
-    }
+		if (handlerMappings == null) {
+			initializeDispatcherServletIfPossible(name);
+			handlerMappings = dispatcherServlet.getHandlerMappings();
+			for (HandlerMapping handlerMapping : handlerMappings) {
+				if (descriptionProvider.getMappingClass().isInstance(handlerMapping)) {
+					descriptionProvider.process(
+							(RequestMappingInfoHandlerMapping) handlerMapping,
+							descBuilder);
+				}
+			}
+		}
+	}
 
-    private void initializeDispatcherServletIfPossible(String name) {
-        if (!(this.applicationContext instanceof ServletWebServerApplicationContext)) {
-            return;
-        }
-        WebServer webServer = ((ServletWebServerApplicationContext) this.applicationContext)
-                .getWebServer();
-        if (webServer instanceof UndertowServletWebServer) {
-            // UndertowServletInitializer is not supported yet.
-            // new UndertowServletInitializer((UndertowServletWebServer)
-            // webServer).initializeServlet(this.name);
-        }
-        else if (webServer instanceof TomcatWebServer) {
-            new TomcatServletInitializer((TomcatWebServer) webServer)
-                    .initializeServlet(name);
-        }
-    }
+	private void initializeDispatcherServletIfPossible(String name) {
+		if (!(this.applicationContext instanceof ServletWebServerApplicationContext)) {
+			return;
+		}
+		WebServer webServer = ((ServletWebServerApplicationContext) this.applicationContext)
+				.getWebServer();
+		if (webServer instanceof UndertowServletWebServer) {
+			// UndertowServletInitializer is not supported yet.
+			// new UndertowServletInitializer((UndertowServletWebServer)
+			// webServer).initializeServlet(this.name);
+		}
+		else if (webServer instanceof TomcatWebServer) {
+			new TomcatServletInitializer((TomcatWebServer) webServer)
+					.initializeServlet(name);
+		}
+	}
 
-    private static final class TomcatServletInitializer {
+	private static final class TomcatServletInitializer {
 
-        private final TomcatWebServer webServer;
+		private final TomcatWebServer webServer;
 
-        private TomcatServletInitializer(TomcatWebServer webServer) {
-            this.webServer = webServer;
-        }
+		private TomcatServletInitializer(TomcatWebServer webServer) {
+			this.webServer = webServer;
+		}
 
-        void initializeServlet(String name) {
-            findContext().ifPresent((context) -> initializeServlet(context, name));
-        }
+		void initializeServlet(String name) {
+			findContext().ifPresent((context) -> initializeServlet(context, name));
+		}
 
-        private Optional<Context> findContext() {
-            return Stream.of(this.webServer.getTomcat().getHost().findChildren())
-                    .filter(Context.class::isInstance).map(Context.class::cast)
-                    .findFirst();
-        }
+		private Optional<Context> findContext() {
+			return Stream.of(this.webServer.getTomcat().getHost().findChildren())
+					.filter(Context.class::isInstance).map(Context.class::cast)
+					.findFirst();
+		}
 
-        private void initializeServlet(Context context, String name) {
-            Container child = context.findChild(name);
-            if (child instanceof StandardWrapper) {
-                try {
-                    StandardWrapper wrapper = (StandardWrapper) child;
-                    wrapper.deallocate(wrapper.allocate());
-                }
-                catch (ServletException ex) {
-                    // Continue
-                }
-            }
-        }
-    }
+		private void initializeServlet(Context context, String name) {
+			Container child = context.findChild(name);
+			if (child instanceof StandardWrapper) {
+				try {
+					StandardWrapper wrapper = (StandardWrapper) child;
+					wrapper.deallocate(wrapper.allocate());
+				}
+				catch (ServletException ex) {
+					// Continue
+				}
+			}
+		}
+	}
 }

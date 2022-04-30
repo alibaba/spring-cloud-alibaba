@@ -28,34 +28,34 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMappi
 import org.springframework.web.util.pattern.PathPattern;
 
 public final class RequestMappingInfoHandlerMappingDescriptionProvider
-        implements HandlerMappingDescriptionProvider<RequestMappingInfoHandlerMapping> {
+		implements HandlerMappingDescriptionProvider<RequestMappingInfoHandlerMapping> {
 
-    @Override
-    public Class<RequestMappingInfoHandlerMapping> getMappingClass() {
-        return RequestMappingInfoHandlerMapping.class;
-    }
+	@Override
+	public Class<RequestMappingInfoHandlerMapping> getMappingClass() {
+		return RequestMappingInfoHandlerMapping.class;
+	}
 
-    @Override
-    public void process(RequestMappingInfoHandlerMapping handlerMapping,
-                        ServiceDescriptor.Builder serviceBuilder) {
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping
-                .getHandlerMethods();
-        for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods
-                .entrySet()) {
-            RequestMappingInfo k = entry.getKey();
-            HandlerMethod v = entry.getValue();
+	@Override
+	public void process(RequestMappingInfoHandlerMapping handlerMapping,
+			ServiceDescriptor.Builder serviceBuilder) {
+		Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping
+				.getHandlerMethods();
+		for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods
+				.entrySet()) {
+			RequestMappingInfo k = entry.getKey();
+			HandlerMethod v = entry.getValue();
 
-            MethodDescriptor.Builder builder = MethodDescriptor.newBuilder();
+			MethodDescriptor.Builder builder = MethodDescriptor.newBuilder();
 
-            if (k.getPathPatternsCondition() != null) {
-                for (PathPattern pattern : k.getPathPatternsCondition().getPatterns()) {
-                    builder.addHttpPaths(pattern.getPatternString());
-                }
-            }
-            for (RequestMethod method : k.getMethodsCondition().getMethods()) {
-                builder.addHttpMethods(method.name());
-            }
-            serviceBuilder.addMethods(builder.build());
-        }
-    }
+			if (k.getPathPatternsCondition() != null) {
+				for (PathPattern pattern : k.getPathPatternsCondition().getPatterns()) {
+					builder.addHttpPaths(pattern.getPatternString());
+				}
+			}
+			for (RequestMethod method : k.getMethodsCondition().getMethods()) {
+				builder.addHttpMethods(method.name());
+			}
+			serviceBuilder.addMethods(builder.build());
+		}
+	}
 }

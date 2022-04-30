@@ -20,7 +20,7 @@ import io.opensergo.proto.service_contract.v1.ServiceDescriptor;
 
 public interface HandlerMappingDescriptionProvider<T> {
 
-    Class<T> getMappingClass();
+	Class<T> getMappingClass();
 
-    void process(T handlerMapping, ServiceDescriptor.Builder serviceBuilder);
+	void process(T handlerMapping, ServiceDescriptor.Builder serviceBuilder);
 }

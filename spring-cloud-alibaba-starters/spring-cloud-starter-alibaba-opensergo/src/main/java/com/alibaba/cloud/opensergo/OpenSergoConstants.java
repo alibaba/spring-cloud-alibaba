@@ -21,18 +21,18 @@ package com.alibaba.cloud.opensergo;
  */
 public final class OpenSergoConstants {
 
-    /**
-     * Prefix of {@link OpenSergoProperties}.
-     */
-    public static final String OPENSERGO_BOOTSTRAP = "OPENSERGO_BOOTSTRAP";
+	/**
+	 * Prefix of {@link OpenSergoProperties}.
+	 */
+	public static final String OPENSERGO_BOOTSTRAP = "OPENSERGO_BOOTSTRAP";
 
-    /**
-     * Prefix of {@link OpenSergoProperties}.
-     */
-    public static final String OPENSERGO_BOOTSTRAP_CONFIG = "OPENSERGO_BOOTSTRAP_CONFIG";
+	/**
+	 * Prefix of {@link OpenSergoProperties}.
+	 */
+	public static final String OPENSERGO_BOOTSTRAP_CONFIG = "OPENSERGO_BOOTSTRAP_CONFIG";
 
-    private OpenSergoConstants() {
-        throw new AssertionError("Must not instantiate constant utility class");
-    }
+	private OpenSergoConstants() {
+		throw new AssertionError("Must not instantiate constant utility class");
+	}
 
 }

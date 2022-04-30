@@ -23,7 +23,6 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.util.StringUtils;
 
-
 /**
  * A condition that checks if OpenSergo is configured.
  *
@@ -31,12 +30,12 @@ import org.springframework.util.StringUtils;
  */
 public class OnEnvCondition implements Condition {
 
-    @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        String bootstrap = context.getEnvironment()
-                .getProperty(OpenSergoConstants.OPENSERGO_BOOTSTRAP);
-        String bootstrapConfig = context.getEnvironment()
-                .getProperty(OpenSergoConstants.OPENSERGO_BOOTSTRAP_CONFIG);
-        return StringUtils.hasLength(bootstrap) || StringUtils.hasLength(bootstrapConfig);
-    }
+	@Override
+	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		String bootstrap = context.getEnvironment()
+				.getProperty(OpenSergoConstants.OPENSERGO_BOOTSTRAP);
+		String bootstrapConfig = context.getEnvironment()
+				.getProperty(OpenSergoConstants.OPENSERGO_BOOTSTRAP_CONFIG);
+		return StringUtils.hasLength(bootstrap) || StringUtils.hasLength(bootstrapConfig);
+	}
 }
