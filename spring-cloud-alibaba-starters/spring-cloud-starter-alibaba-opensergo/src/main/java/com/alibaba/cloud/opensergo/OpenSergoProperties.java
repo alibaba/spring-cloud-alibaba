@@ -22,7 +22,7 @@ import org.springframework.validation.annotation.Validated;
 /**
  * {@link ConfigurationProperties} for OpenSergo.
  *
- * @author luyanbo
+ * @author complone
  */
 @Validated
 public class OpenSergoProperties {

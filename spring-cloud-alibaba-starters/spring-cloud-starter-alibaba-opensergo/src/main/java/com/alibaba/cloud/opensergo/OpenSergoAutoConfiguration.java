@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
 /**
- * @author luyanbo
+ * @author complone
  */
 @Configuration(proxyBeanMethods = false)
 @Conditional(OnEnvCondition.class)

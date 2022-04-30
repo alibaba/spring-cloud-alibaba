@@ -27,7 +27,7 @@ import org.springframework.util.StringUtils;
 /**
  * A condition that checks if OpenSergo is configured.
  *
- * @author luyanbo
+ * @author complone
  */
 public class OnEnvCondition implements Condition {
 

@@ -17,7 +17,7 @@
 package com.alibaba.cloud.opensergo;
 
 /**
- * @author luyanbo
+ * @author complone
  */
 public final class OpenSergoConstants {
 
