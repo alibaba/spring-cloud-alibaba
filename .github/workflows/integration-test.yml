@@ -29,4 +29,10 @@ jobs:
       - name: Testing
         run: mvn clean test
 #        run: mvn clean -Dit.enabled=true test
+      - name: "run install by skip tests"
+        if: ${{ steps.check_changes.outputs.docs_only != 'true' }}
+        run: mvn -q -B -ntp clean install -DskipTests
+      - name: run integration tests
+        if: ${{ steps.check_changes.outputs.docs_only != 'true' }}
+        run: ./build/run_integration_group.sh CLI
 
