@@ -46,7 +46,7 @@ public class NacosConfigManager {
 	/**
 	 * Compatible with old design,It will be perfected in the future.
 	 */
-	static ConfigService createConfigService(
+	public static ConfigService createConfigService(
 			NacosConfigProperties nacosConfigProperties) {
 		if (Objects.isNull(service)) {
 			synchronized (NacosConfigManager.class) {
