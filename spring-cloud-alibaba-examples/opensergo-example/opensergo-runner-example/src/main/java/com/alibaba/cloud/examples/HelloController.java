@@ -1,4 +1,4 @@
-package com.example.springboot;
+package com.alibaba.cloud.examples;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

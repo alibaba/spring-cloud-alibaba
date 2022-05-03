@@ -1,4 +1,4 @@
-package com.example.springboot;
+package com.alibaba.cloud.examples;
 
 
 import org.slf4j.Logger;
