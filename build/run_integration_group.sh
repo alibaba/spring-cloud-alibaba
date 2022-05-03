@@ -33,14 +33,3 @@ mvn_run_integration_test() {
   $RETRY mvn -B -ntp -DredirectTestOutputToFile=false -f tests/pom.xml test "$@"
   )
 }
-
-
-
-echo "Test Group : $TEST_GROUP"
-test_group_function_name="test_group_$(echo "$TEST_GROUP" | tr '[:upper:]' '[:lower:]')"
-if [[ "$(LC_ALL=C type -t $test_group_function_name)" == "function" ]]; then
-  eval "$test_group_function_name" "$@"
-else
-  echo "INVALID TEST GROUP"
-  exit 1
-fi
