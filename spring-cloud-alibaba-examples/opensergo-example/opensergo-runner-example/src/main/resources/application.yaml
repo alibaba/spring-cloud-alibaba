@@ -1,0 +1,20 @@
+server:
+  port: 9991
+
+
+spring:
+  application:
+    name: "example-spring-cloud"
+    datasource:
+      url: jdbc:mysql://localhost:3306/test?characterEncoding=utf8&useSSL=true
+      username: root
+      password: root
+      driver-class-name:
+
+management:
+  endpoint:
+    info:
+      enabled: true
+    web:
+      exposure:
+        include: "*"
