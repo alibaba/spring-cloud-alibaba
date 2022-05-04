@@ -42,19 +42,30 @@ public final class RequestMappingInfoHandlerMappingDescriptionProvider
 				.getHandlerMethods();
 		for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods
 				.entrySet()) {
-			RequestMappingInfo k = entry.getKey();
-			HandlerMethod v = entry.getValue();
+			RequestMappingInfo handlerMethod = entry.getKey();
 
 			MethodDescriptor.Builder builder = MethodDescriptor.newBuilder();
-
-			if (k.getPathPatternsCondition() != null) {
-				for (PathPattern pattern : k.getPathPatternsCondition().getPatterns()) {
-					builder.addHttpPaths(pattern.getPatternString());
+			StringBuilder methodName = new StringBuilder();
+			if (handlerMethod.getMethodsCondition().getMethods().size() > 0) {
+				for (RequestMethod method : handlerMethod.getMethodsCondition().getMethods()) {
+					builder.addHttpMethods(method.name());
+					methodName.append(methodName).append(",");
 				}
 			}
-			for (RequestMethod method : k.getMethodsCondition().getMethods()) {
-				builder.addHttpMethods(method.name());
+			else {
+				builder.addHttpMethods("ALL");
+				methodName.append("ALL").append(",");
 			}
+			methodName.deleteCharAt(methodName.length() - 1);
+			methodName.append(" ");
+			if (handlerMethod.getPathPatternsCondition() != null) {
+				for (PathPattern pattern : handlerMethod.getPathPatternsCondition().getPatterns()) {
+					methodName.append(pattern.getPatternString()).append(",");
+					builder.addHttpPaths(pattern.getPatternString());
+				}
+				methodName.deleteCharAt(methodName.length() - 1);
+			}
+			builder.setName(methodName.toString());
 			serviceBuilder.addMethods(builder.build());
 		}
 	}

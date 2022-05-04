@@ -27,6 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -41,6 +43,9 @@ import org.springframework.util.StringUtils;
 public class OpenSergoAutoConfiguration {
 	private static final Logger log = LoggerFactory
 			.getLogger(OpenSergoAutoConfiguration.class);
+
+	@Autowired(required = false)
+	private ServiceInstance serviceInstance;
 
 	@Bean
 	public ServiceContractReporter serviceContractReporter(ApplicationContext context)
@@ -59,9 +64,9 @@ public class OpenSergoAutoConfiguration {
 		OpenSergoProperties properties = objectMapper.readValue(bootstrapConfig,
 				OpenSergoProperties.class);
 
-		ServiceContractReporter reporter = new ServiceContractReporter(
-				properties.getEndpoint());
-		reporter.setApplicationContext(context);
+		ServiceContractReporter reporter = new ServiceContractReporter(context,
+				serviceInstance, properties.getEndpoint());
+		reporter.reportMetadata();
 		return reporter;
 	}
 }

@@ -34,6 +34,7 @@ import io.opensergo.proto.service_contract.v1.ReportMetadataRequest;
 import io.opensergo.proto.service_contract.v1.ServiceContract;
 import io.opensergo.proto.service_contract.v1.ServiceDescriptor;
 import io.opensergo.proto.service_contract.v1.ServiceMetadata;
+import io.opensergo.proto.service_contract.v1.SocketAddress;
 import org.apache.catalina.Container;
 import org.apache.catalina.Context;
 import org.apache.catalina.core.StandardWrapper;
@@ -43,6 +44,7 @@ import org.springframework.boot.web.embedded.undertow.UndertowServletWebServer;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -52,16 +54,18 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMappi
 public class ServiceContractReporter {
 	private MetadataServiceGrpc.MetadataServiceBlockingStub blockingStub;
 	private ApplicationContext applicationContext;
+	private ServiceInstance serviceInstance;
 
-	public ServiceContractReporter(String endpoint) {
+	public ServiceContractReporter(ApplicationContext context,
+			ServiceInstance serviceInstance, String endpoint) {
+		this.applicationContext = context;
+		this.serviceInstance = serviceInstance;
 		ManagedChannel channel = ManagedChannelBuilder.forTarget(endpoint).usePlaintext()
 				.build();
 		blockingStub = MetadataServiceGrpc.newBlockingStub(channel);
 	}
 
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-
+	public void reportMetadata() {
 		String appName = applicationContext.getId();
 		if (appName == null || appName.isEmpty()) {
 			appName = "unknown_app";
@@ -81,6 +85,11 @@ public class ServiceContractReporter {
 		}
 		contractBuilder.addServices(descBuilder.build());
 		ServiceMetadata.Builder metadataBuilder = ServiceMetadata.newBuilder();
+		if (this.serviceInstance != null) {
+			metadataBuilder.addListeningAddresses(
+					SocketAddress.newBuilder().setAddress(this.serviceInstance.getHost())
+							.setPortValue(this.serviceInstance.getPort()));
+		}
 		metadataBuilder.setServiceContract(contractBuilder.build()).addProtocols("http");
 		reportBuilder.addServiceMetadata(metadataBuilder.build());
 
