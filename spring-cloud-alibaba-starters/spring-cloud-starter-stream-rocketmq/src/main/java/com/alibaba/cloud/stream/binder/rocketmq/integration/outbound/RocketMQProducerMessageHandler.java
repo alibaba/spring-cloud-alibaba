@@ -183,6 +183,10 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 						message.getHeaders(), message);
 			}
 			log.info("the message has sent,message={},sendResult={}",mqMessage,sendResult);
+			if(log.isDebugEnabled()) {
+				log.debug("the message has sent,message={},sendResult={}", mqMessage,
+						sendResult);
+			}
 			if (sendResult == null
 					|| !SendStatus.SEND_OK.equals(sendResult.getSendStatus())) {
 				log.error("message send fail.SendStatus is not OK.the message={}",mqMessage);
