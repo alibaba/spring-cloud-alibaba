@@ -38,6 +38,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @author changjin wei(魏昌进)
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
@@ -52,8 +53,10 @@ public class NacosServiceRegistryAutoConfiguration {
 	@Bean
 	public NacosServiceRegistry nacosServiceRegistry(
 			NacosServiceManager nacosServiceManager,
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosServiceRegistry(nacosServiceManager, nacosDiscoveryProperties);
+			NacosDiscoveryProperties nacosDiscoveryProperties,
+			ObjectProvider<List<NacosServiceRegistryCallback>> nacosServiceRegistryCallbacks) {
+		return new NacosServiceRegistry(nacosServiceManager, nacosDiscoveryProperties,
+										nacosServiceRegistryCallbacks.getIfAvailable());
 	}
 
 	@Bean

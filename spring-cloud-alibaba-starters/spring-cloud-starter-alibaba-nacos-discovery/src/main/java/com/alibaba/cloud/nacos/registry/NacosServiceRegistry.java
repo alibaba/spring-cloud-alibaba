@@ -37,6 +37,7 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:78552423@qq.com">eshun</a>
+ * @author changjin wei(魏昌进)
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
@@ -50,10 +51,14 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private final NacosServiceManager nacosServiceManager;
 
+	private final List<NacosServiceRegistryCallback> nacosServiceRegistryCallbacks;
+
 	public NacosServiceRegistry(NacosServiceManager nacosServiceManager,
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
+								NacosDiscoveryProperties nacosDiscoveryProperties,
+								List<NacosServiceRegistryCallback> nacosServiceRegistryCallbacks) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 		this.nacosServiceManager = nacosServiceManager;
+		this.nacosServiceRegistryCallbacks = nacosServiceRegistryCallbacks;
 	}
 
 	@Override
@@ -72,10 +77,12 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		try {
 			namingService.registerInstance(serviceId, group, instance);
+			nacosServiceRegistryCallbacks.forEach(NacosServiceRegistryCallback::success);
 			log.info("nacos registry, {} {} {}:{} register finished", group, serviceId,
 					instance.getIp(), instance.getPort());
 		}
 		catch (Exception e) {
+			nacosServiceRegistryCallbacks.forEach(NacosServiceRegistryCallback::fail);
 			if (nacosDiscoveryProperties.isFailFast()) {
 				log.error("nacos registry, {} register failed...{},", serviceId,
 						registration.toString(), e);
