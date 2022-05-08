@@ -184,7 +184,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 				sendResult = this.send(mqMessage, this.messageQueueSelector,
 						message.getHeaders(), message);
 			}
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug("the message has sent,message={},sendResult={}", mqMessage,
 						sendResult);
 			}
