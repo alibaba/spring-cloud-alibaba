@@ -38,11 +38,11 @@ public class OrderlyMessageQueueSelector implements MessageQueueSelector {
 			.getLogger(OrderlyMessageQueueSelector.class);
 
 	/**
-	 * to select a fixed queue by id
-	 * @param mqs
-	 * @param msg
-	 * @param arg
-	 * @return
+	 * to select a fixed queue by id.
+	 * @param mqs all message queues of this topic.
+	 * @param msg mq message.
+	 * @param arg mq arguments.
+	 * @return message queue selected.
 	 */
 	@Override
 	public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
