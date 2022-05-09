@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.broadcast;
+package com.alibaba.cloud.examples.delay;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +47,10 @@ public class RocketMQDelayConsumeApplication {
 		SpringApplication.run(RocketMQDelayConsumeApplication.class, args);
 	}
 
+	/**
+	 * Produce delay messages
+	 * @return
+	 */
 	@Bean
 	public ApplicationRunner producerDelay() {
 		return args -> {

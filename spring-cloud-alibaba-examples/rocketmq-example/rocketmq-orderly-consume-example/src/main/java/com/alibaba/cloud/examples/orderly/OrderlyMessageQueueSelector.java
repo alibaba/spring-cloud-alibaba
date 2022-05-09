@@ -36,10 +36,17 @@ import org.springframework.stereotype.Component;
 public class OrderlyMessageQueueSelector implements MessageQueueSelector {
 	private static final Logger log = LoggerFactory
 			.getLogger(OrderlyMessageQueueSelector.class);
+
+	/**
+	 * to select a fixed queue by id
+	 * @param mqs
+	 * @param msg
+	 * @param arg
+	 * @return
+	 */
 	@Override
 	public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
 		Integer id = (Integer) ((MessageHeaders) arg).get(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID);
-		String tag = (String) ((MessageHeaders) arg).get(MessageConst.PROPERTY_TAGS);
 		int index = id % RocketMQOrderlyConsumeApplication.tags.length % mqs.size();
 		return mqs.get(index);
 	}

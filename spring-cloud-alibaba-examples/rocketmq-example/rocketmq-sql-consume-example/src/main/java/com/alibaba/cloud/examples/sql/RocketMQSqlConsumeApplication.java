@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.broadcast;
+package com.alibaba.cloud.examples.sql;
 
 import java.util.HashMap;
 import java.util.Map;
