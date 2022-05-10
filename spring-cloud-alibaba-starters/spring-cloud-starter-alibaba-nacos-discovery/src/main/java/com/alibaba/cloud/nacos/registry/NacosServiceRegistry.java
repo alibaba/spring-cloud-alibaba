@@ -102,9 +102,10 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		String serviceId = registration.getServiceId();
 		String group = nacosDiscoveryProperties.getGroup();
 
+		Instance instance = getNacosInstanceFromRegistration(registration);
+
 		try {
-			namingService.deregisterInstance(serviceId, group, registration.getHost(),
-					registration.getPort(), nacosDiscoveryProperties.getClusterName());
+			namingService.deregisterInstance(serviceId, group, instance);
 		}
 		catch (Exception e) {
 			log.error("ERR_NACOS_DEREGISTER, de-register failed...{},",
