@@ -67,6 +67,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.nacos.config.extension-configs[0].data-id=ext-config-common01.properties",
 		"spring.cloud.nacos.config.extension-configs[1].data-id=ext-config-common02.properties",
 		"spring.cloud.nacos.config.extension-configs[1].group=GLOBAL_GROUP",
+		"spring.cloud.nacos.config.extension-configs[2].data-id=ext-config-common03",
+		"spring.cloud.nacos.config.extension-configs[2].file-extension=json",
+		"spring.cloud.nacos.config.extension-configs[2].group=common03",
 		"spring.cloud.nacos.config.shared-configs[0]=common1.properties",
 		"spring.cloud.nacos.config.shared-configs[1]=common2.properties",
 		"spring.cloud.nacos.config.accessKey=test-accessKey",
@@ -111,6 +114,11 @@ public class NacosConfigurationNewTest {
 					if ("common2.properties".equals(args[0])
 							&& "DEFAULT_GROUP".equals(args[1])) {
 						return "test-common2=common2";
+					}
+					
+					if ("ext-config-common03".equals(args[0])
+							&& "common03".equals(args[1])) {
+						return "{\"nacosExtConfig3\":{\"data-id\":\"ext-config-common03\",\"file-extension\":\"json\",\"group\":\"common03\"}}";
 					}
 
 					return "";
@@ -208,6 +216,9 @@ public class NacosConfigurationNewTest {
 	private void checkoutDataLoad() {
 		assertThat(environment.getProperty("user.name")).isEqualTo("dev");
 		assertThat(environment.getProperty("user.age")).isEqualTo("12");
+		assertThat(environment.getProperty("nacosExtConfig3.data-id")).isEqualTo("ext-config-common03");
+		assertThat(environment.getProperty("nacosExtConfig3.file-extension")).isEqualTo("json");
+		assertThat(environment.getProperty("nacosExtConfig3.group")).isEqualTo("common03");
 	}
 
 	private void checkoutEndpoint() throws Exception {
@@ -228,7 +239,8 @@ public class NacosConfigurationNewTest {
 		assertThat(properties.getExtensionConfigs() != null);
 		assertThat(properties.getExtensionConfigs()).contains(
 				new Config("ext-config-common01.properties"),
-				new Config("ext-config-common02.properties", "GLOBAL_GROUP"));
+				new Config("ext-config-common02.properties", "GLOBAL_GROUP"),
+				new Config("ext-config-common03", "common03", false, "json"));
 	}
 
 	@Configuration

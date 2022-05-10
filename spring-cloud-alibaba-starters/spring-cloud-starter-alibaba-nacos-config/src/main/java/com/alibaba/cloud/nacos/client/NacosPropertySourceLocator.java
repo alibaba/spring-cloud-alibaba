@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.nacos.client;
 
-import java.util.List;
-
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
@@ -26,7 +24,6 @@ import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.nacos.api.config.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
@@ -34,6 +31,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * @author xiaojing
@@ -155,10 +154,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadNacosConfiguration(final CompositePropertySource composite,
 			List<NacosConfigProperties.Config> configs) {
 		for (NacosConfigProperties.Config config : configs) {
-			loadNacosDataIfPresent(composite, config.getDataId(), config.getGroup(),
-					NacosDataParserHandler.getInstance()
-							.getFileExtension(config.getDataId()),
-					config.isRefresh());
+			String fileExtension = config.getFileExtension();
+			if (StringUtils.isEmpty(fileExtension)) {
+				fileExtension = NacosDataParserHandler.getInstance().getFileExtension(config.getDataId());
+			}
+			loadNacosDataIfPresent(composite, config.getDataId(), config.getGroup(), fileExtension, config.isRefresh());
 		}
 	}
 
