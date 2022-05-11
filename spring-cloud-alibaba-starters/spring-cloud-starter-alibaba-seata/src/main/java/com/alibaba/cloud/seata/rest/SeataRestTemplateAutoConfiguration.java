@@ -35,11 +35,6 @@ import org.springframework.web.client.RestTemplate;
 @Configuration(proxyBeanMethods = false)
 public class SeataRestTemplateAutoConfiguration {
 
-	@Bean
-	public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
-		return new SeataRestTemplateInterceptor();
-	}
-
 	@Autowired(required = false)
 	private Collection<RestTemplate> restTemplates;
 
@@ -56,6 +51,16 @@ public class SeataRestTemplateAutoConfiguration {
 				restTemplate.setInterceptors(interceptors);
 			}
 		}
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	static class SeataRestTemplateInterceptorConfiguration {
+
+		@Bean
+		public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
+			return new SeataRestTemplateInterceptor();
+		}
+
 	}
 
 }
