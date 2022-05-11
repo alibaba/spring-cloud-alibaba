@@ -561,25 +561,8 @@ public class RocketMQDelayConsumeApplication {
             headers.put(MessageConst.PROPERTY_KEYS, key);
             headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
    			// 设置延时等级1~10
-            headers.put("DELAY", 2);
+            headers.put(MessageConst.PROPERTY_DELAY_TIME_LEVEL, 2);
             Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Delay RocketMQ " + i), headers);
-            streamBridge.send("producer-out-0", msg);
-         }
-      };
-   }
-
-   @Bean
-   public ApplicationRunner producerSchedule() {
-      return args -> {
-         for (int i = 0; i < 100; i++) {
-            String key = "KEY" + i;
-            Map<String, Object> headers = new HashMap<>();
-            headers.put(MessageConst.PROPERTY_KEYS, key);
-            headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
-            // 发送延时消息，需要设置延时时间，单位毫秒（ms），消息将在指定延时时间后投递，例如消息将在3秒后投递。
-            long delayTime = System.currentTimeMillis() + 3000;
-            headers.put(MessageConst.PROPERTY_CONSUME_START_TIMESTAMP, delayTime);
-            Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Schedule RocketMQ " + i), headers);
             streamBridge.send("producer-out-0", msg);
          }
       };
