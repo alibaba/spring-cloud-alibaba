@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author freeman
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ RocketMQExtendedBindingProperties.class,
@@ -62,7 +63,7 @@ public class RocketMQBinderAutoConfiguration {
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(HealthIndicator.class)
 	@ConditionalOnEnabledHealthIndicator("rocketmq")
-	static class KafkaBinderHealthIndicatorConfiguration {
+	static class RocketMQBinderHealthIndicatorConfiguration {
 
 		@Bean
 		public RocketMQBinderHealthIndicator rocketMQBinderHealthIndicator() {
