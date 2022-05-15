@@ -26,13 +26,6 @@ public abstract class RocketmqContainer<SelfT extends RocketmqContainer<SelfT>> 
 	public static final String DEFAULT_IMAGE_NAME = System.getenv().getOrDefault("TEST_IMAGE_NAME",
 			"");
 
-	/**
-	 * For debugging purposes, it is useful to have the ability to leave containers running.
-	 * This mode can be activated by setting environment variables
-	 * CONTAINERS_LEAVE_RUNNING=true and TESTCONTAINERS_REUSE_ENABLE=true
-	 * After debugging, one can use this command to kill all containers that were left running:
-	 * docker kill $(docker ps -q --filter "label=markcontainer=true")
-	 */
 	public static final boolean CONTAINERS_LEAVE_RUNNING =
 			Boolean.parseBoolean(System.getenv("CONTAINERS_LEAVE_RUNNING"));
 
