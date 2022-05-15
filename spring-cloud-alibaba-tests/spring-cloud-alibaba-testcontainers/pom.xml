@@ -11,8 +11,9 @@
     <artifactId>spring-cloud-alibaba-testcontainers</artifactId>
     <name>spring-cloud-alibaba-testcontainers</name>
     <description>spring-cloud-alibaba-testcontainers</description>
+    <packaging>pom</packaging>
+
     <properties>
-        <java.version>11</java.version>
         <slf4j.version>1.7.25</slf4j.version>
         <testcontainers.version>1.16.3</testcontainers.version>
     </properties>
@@ -81,7 +82,53 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- only run tests when -DintegrationTests is specified //-->
+                    <skipTests>true</skipTests>
+                    <systemPropertyVariables>
+                        <currentVersion>${project.version}</currentVersion>
+                        <maven.buildDirectory>${project.build.directory}</maven.buildDirectory>
+                    </systemPropertyVariables>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>skipIntegrationTests</id>
+            <activation>
+                <property>
+                    <name>skipIntegrationTests</name>
+                </property>
+            </activation>
+            <modules />
+        </profile>
+        <profile>
+            <id>main</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>../intergration/nacos-docker-tests</module>
+                <module>../intergration/rocketmq-docker-tests</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

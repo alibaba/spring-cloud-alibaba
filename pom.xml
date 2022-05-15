@@ -110,6 +110,11 @@
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
         <module>spring-cloud-alibaba-tests</module>
+        <module>nacos-test</module>
+        <module>intergration</module>
+        <module>nacos-docker-tests</module>
+        <module>spring-cloud-alibaba-tests/intergration</module>
+        <module>rocketmq-docker-tests</module>
     </modules>
 
     <dependencyManagement>
