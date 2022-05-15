@@ -36,93 +36,96 @@ import java.util.concurrent.Executor;
 @RestController
 @RequestMapping("nacos")
 public class DockingInterfaceExample {
-    
-    public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
-    
-    @Autowired
-    private NacosConfigManager nacosConfigManager;
-    
-    /**
-     * Get configuration information
-     *
-     * @param dataId
-     * @param group
-     * @return
-     * @throws NacosException
-     */
-    @RequestMapping("getConfig")
-    public String getConfig(@RequestParam("dataId") String dataId,
-            @RequestParam(value = "group", required = false) String group) throws NacosException {
-        if (StringUtils.isEmpty(group)) {
-            group = DEFAULT_GROUP;
-        }
-        ConfigService configService = nacosConfigManager.getConfigService();
-        return configService.getConfig(dataId, group, 2000);
-    }
-    
-    /**
-     * Publish configuration
-     *
-     * @param dataId
-     * @param group
-     * @param content
-     * @return
-     * @throws NacosException
-     */
-    @RequestMapping("publishConfig")
-    public boolean publishConfig(@RequestParam("dataId") String dataId,
-            @RequestParam(value = "group", required = false) String group, @RequestParam("content") String content)
-            throws NacosException {
-        if (StringUtils.isEmpty(group)) {
-            group = DEFAULT_GROUP;
-        }
-        ConfigService configService = nacosConfigManager.getConfigService();
-        return configService.publishConfig(dataId, group, content);
-    }
-    
-    /**
-     * Delete configuration
-     *
-     * @param dataId
-     * @param group
-     * @return
-     * @throws NacosException
-     */
-    @RequestMapping("remoteConfig")
-    public boolean remoteConfig(@RequestParam("dataId") String dataId,
-            @RequestParam(value = "group", required = false) String group) throws NacosException {
-        if (StringUtils.isEmpty(group)) {
-            group = DEFAULT_GROUP;
-        }
-        ConfigService configService = nacosConfigManager.getConfigService();
-        return configService.removeConfig(dataId, group);
-    }
-    
-    /**
-     * Add listener configuration information
-     *
-     * @param dataId
-     * @param group
-     * @throws NacosException
-     */
-    @RequestMapping("listener")
-    public String listenerConfig(@RequestParam("dataId") String dataId,
-            @RequestParam(value = "group", required = false) String group) throws NacosException {
-        if (StringUtils.isEmpty(group)) {
-            group = DEFAULT_GROUP;
-        }
-        ConfigService configService = nacosConfigManager.getConfigService();
-        configService.addListener(dataId, group, new Listener() {
-            @Override
-            public Executor getExecutor() {
-                return null;
-            }
-            
-            @Override
-            public void receiveConfigInfo(String configInfo) {
-                System.out.println("[Listen for configuration changes]:" + configInfo);
-            }
-        });
-        return "Add Lister successfully!";
-    }
+
+	public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
+
+	@Autowired
+	private NacosConfigManager nacosConfigManager;
+
+	/**
+	 * Get configuration information
+	 *
+	 * @param dataId
+	 * @param group
+	 * @return
+	 * @throws NacosException
+	 */
+	@RequestMapping("getConfig")
+	public String getConfig(@RequestParam("dataId") String dataId,
+			@RequestParam(value = "group", required = false) String group)
+			throws NacosException {
+		if (StringUtils.isEmpty(group)) {
+			group = DEFAULT_GROUP;
+		}
+		ConfigService configService = nacosConfigManager.getConfigService();
+		return configService.getConfig(dataId, group, 2000);
+	}
+
+	/**
+	 * Publish configuration
+	 *
+	 * @param dataId
+	 * @param group
+	 * @param content
+	 * @return
+	 * @throws NacosException
+	 */
+	@RequestMapping("publishConfig")
+	public boolean publishConfig(@RequestParam("dataId") String dataId,
+			@RequestParam(value = "group", required = false) String group,
+			@RequestParam("content") String content) throws NacosException {
+		if (StringUtils.isEmpty(group)) {
+			group = DEFAULT_GROUP;
+		}
+		ConfigService configService = nacosConfigManager.getConfigService();
+		return configService.publishConfig(dataId, group, content);
+	}
+
+	/**
+	 * Delete configuration
+	 *
+	 * @param dataId
+	 * @param group
+	 * @return
+	 * @throws NacosException
+	 */
+	@RequestMapping("remoteConfig")
+	public boolean remoteConfig(@RequestParam("dataId") String dataId,
+			@RequestParam(value = "group", required = false) String group)
+			throws NacosException {
+		if (StringUtils.isEmpty(group)) {
+			group = DEFAULT_GROUP;
+		}
+		ConfigService configService = nacosConfigManager.getConfigService();
+		return configService.removeConfig(dataId, group);
+	}
+
+	/**
+	 * Add listener configuration information
+	 *
+	 * @param dataId
+	 * @param group
+	 * @throws NacosException
+	 */
+	@RequestMapping("listener")
+	public String listenerConfig(@RequestParam("dataId") String dataId,
+			@RequestParam(value = "group", required = false) String group)
+			throws NacosException {
+		if (StringUtils.isEmpty(group)) {
+			group = DEFAULT_GROUP;
+		}
+		ConfigService configService = nacosConfigManager.getConfigService();
+		configService.addListener(dataId, group, new Listener() {
+			@Override
+			public Executor getExecutor() {
+				return null;
+			}
+
+			@Override
+			public void receiveConfigInfo(String configInfo) {
+				System.out.println("[Listen for configuration changes]:" + configInfo);
+			}
+		});
+		return "Add Lister successfully!";
+	}
 }

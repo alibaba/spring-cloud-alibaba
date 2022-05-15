@@ -34,26 +34,26 @@ import java.util.Map;
 @RequestMapping("/nacos/annotation")
 @RefreshScope
 public class ValueAnnotationExample {
-    
-    @Value("${spring.cloud.nacos.config.serveraddr:}")
-    private String serveraddr;
-    
-    @Value("${spring.cloud.nacos.config.prefix:}")
-    private String prefix;
-    
-    @Value("${spring.cloud.nacos.config.group:}")
-    private String group;
-    
-    @Value("${spring.cloud.nacos.config.namespace:}")
-    private String namespace;
-    
-    @GetMapping
-    public Map<String, String> getConfigInfo() {
-        Map<String, String> result = new HashMap<>();
-        result.put("serveraddr", serveraddr);
-        result.put("prefix", prefix);
-        result.put("group", group);
-        result.put("namespace", namespace);
-        return result;
-    }
+
+	@Value("${spring.cloud.nacos.config.serveraddr:}")
+	private String serveraddr;
+
+	@Value("${spring.cloud.nacos.config.prefix:}")
+	private String prefix;
+
+	@Value("${spring.cloud.nacos.config.group:}")
+	private String group;
+
+	@Value("${spring.cloud.nacos.config.namespace:}")
+	private String namespace;
+
+	@GetMapping
+	public Map<String, String> getConfigInfo() {
+		Map<String, String> result = new HashMap<>();
+		result.put("serveraddr", serveraddr);
+		result.put("prefix", prefix);
+		result.put("group", group);
+		result.put("namespace", namespace);
+		return result;
+	}
 }

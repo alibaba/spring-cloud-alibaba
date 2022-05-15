@@ -22,57 +22,56 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 @ConfigurationProperties(prefix = "spring.cloud.nacos.config")
 @RefreshScope
 public class NacosConfigInfo {
-    
-    /**
-     * Nacos server address
-     */
-    private String serveraddr;
-    
-    /**
-     * Data Id prefix
-     */
-    private String prefix;
-    
-    /**
-     * Nacos group
-     */
-    private String group;
-    
-    /**
-     * Nacos namespace
-     */
-    private String namespace;
-    
-    public String getServeraddr() {
-        return serveraddr;
-    }
-    
-    public void setServeraddr(String serveraddr) {
-        this.serveraddr = serveraddr;
-    }
-    
-    public String getPrefix() {
-        return prefix;
-    }
-    
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-    
-    public String getGroup() {
-        return group;
-    }
-    
-    public void setGroup(String group) {
-        this.group = group;
-    }
-    
-    public String getNamespace() {
-        return namespace;
-    }
-    
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
-}
 
+	/**
+	 * Nacos server address
+	 */
+	private String serveraddr;
+
+	/**
+	 * Data Id prefix
+	 */
+	private String prefix;
+
+	/**
+	 * Nacos group
+	 */
+	private String group;
+
+	/**
+	 * Nacos namespace
+	 */
+	private String namespace;
+
+	public String getServeraddr() {
+		return serveraddr;
+	}
+
+	public void setServeraddr(String serveraddr) {
+		this.serveraddr = serveraddr;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+}

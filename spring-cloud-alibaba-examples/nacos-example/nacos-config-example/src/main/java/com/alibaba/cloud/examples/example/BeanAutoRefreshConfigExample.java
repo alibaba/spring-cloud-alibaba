@@ -33,17 +33,17 @@ import java.util.Map;
 @RestController
 @RequestMapping("/nacos/bean")
 public class BeanAutoRefreshConfigExample {
-    
-    @Autowired
-    private NacosConfigInfo nacosConfigInfo;
-    
-    @GetMapping
-    public Map<String, String> getConfigInfo() {
-        Map<String, String> result = new HashMap<>();
-        result.put("serveraddr", nacosConfigInfo.getServeraddr());
-        result.put("prefix", nacosConfigInfo.getPrefix());
-        result.put("group", nacosConfigInfo.getGroup());
-        result.put("namespace", nacosConfigInfo.getNamespace());
-        return result;
-    }
+
+	@Autowired
+	private NacosConfigInfo nacosConfigInfo;
+
+	@GetMapping
+	public Map<String, String> getConfigInfo() {
+		Map<String, String> result = new HashMap<>();
+		result.put("serveraddr", nacosConfigInfo.getServeraddr());
+		result.put("prefix", nacosConfigInfo.getPrefix());
+		result.put("group", nacosConfigInfo.getGroup());
+		result.put("namespace", nacosConfigInfo.getNamespace());
+		return result;
+	}
 }
