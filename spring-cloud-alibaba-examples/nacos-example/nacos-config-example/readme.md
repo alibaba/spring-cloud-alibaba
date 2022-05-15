@@ -26,18 +26,12 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 	
         spring.application.name=nacos-config-example
         spring.cloud.nacos.config.server-addr=127.0.0.1:8848
-		  
-3. After completing the above two steps, the application will get the externalized configuration from Nacos Server and put it in the Spring Environment's PropertySources.We use the @Value annotation to inject the corresponding configuration into the userName and age fields of the SampleController, and add @RefreshScope to turn on dynamic refresh .		
 
-		@RefreshScope
-		class SampleController {
-	
-    		@Value("${user.nickname:zz}")
-    		String userName;
-	
-    		@Value("${user.age:18}")
-    		int age;
-		}
+3. After completing the above two steps, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment. Suppose we save part of the configuration of Nacos through the Nacos configuration center, there are the following four examples:
+- BeanAutoRefreshConfigExample: An example that supports automatic refresh of configuration changes by configuring configuration information as beans
+- ConfigListenerExample: Example of listening configuration information
+- DockingInterfaceExample: An example of docking the nacos interface and completing the addition, deletion, modification and checking of configuration information through the interface
+- ValueAnnotationExample: An example of obtaining configuration information through @Value annotation
 
 ### Start Nacos Server 
 
@@ -52,8 +46,8 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 	2. Windows , execute `cmd startup.cmd -m standalone`
 
 3. Execute the following command to add a configuration to Nacos Server.
-	
-		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.nickname=james%0Auser.age=17"
+
+   	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
 		
 	**Note: You can also add it in other ways. If you are using the Nacos version with its own console, it is recommended to configure it directly using the console.**
 	
@@ -63,11 +57,12 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		dataId is nacos-config-example.properties
 		group is DEFAULT_GROUP
 		
-		content is
+		content is:
 		
-		user.id=1
-		user.nickname=james
-		user.age=17	
+   		spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
+	    spring.cloud.nacos.config.prefix=PREFIX
+        spring.cloud.nacos.config.group=GROUP
+        spring.cloud.nacos.config.namespace=NAMESPACE
 
 ### Start Application
 
@@ -85,19 +80,18 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 ### Verification
 
 #### Automatic Injection
-Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to, we can see the data successfully obtained from Nacos Config Server.
+Enter `http://127.0.0.1:18084/nacos/bean` in the browser address bar and click Go to, we can see the data successfully obtained from Nacos Config Server.
 
-![get](https://cdn.nlark.com/lark/0/2018/png/54319/1536986328663-5e3503c2-7e14-4c56-b5f9-72fecc6898d2.png)
+![](https://tva1.sinaimg.cn/large/e6c9d24ely1h29htdsg18j20jc0aigma.jpg)
 
 #### Dynamic Refresh
 1. Run the following command to modify the configuration data on the Nacos Server side.
 
-		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=user.id=1%0Auser.nickname=james%0Auser.age=18"
+   	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=DEFAULT_GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
 
-2. Enter `http://127.0.0.1:18084/user` in the browser address bar and click Go to,
-We can see that the app got the latest data from Nacos Server and the age becomes 18.
+2. Enter `http://127.0.0.1:18084/nacos/bean` in the address bar of the browser, and click Flip, you can see that the application has obtained the latest data from Nacos Server, and the group has become DEFAULT_GROUP.
 
-![refresh](https://cdn.nlark.com/lark/0/2018/png/54319/1536986336535-c0efdf6d-a5d3-4f33-8d26-fe3a36cdacf6.png)
+![](https://tva1.sinaimg.cn/large/e6c9d24ely1h29hzf0ic4j20ks0b4mxy.jpg)
 
 
 ## Principle
