@@ -16,20 +16,21 @@
 
 package com.alibaba.cloud.examples.example;
 
+import java.util.concurrent.Executor;
+
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.Executor;
-
 /**
- * Example of docking with Nacos interface
+ * Example of docking with Nacos interface.
  *
  * @author lixiaoshuang
  */
@@ -37,18 +38,20 @@ import java.util.concurrent.Executor;
 @RequestMapping("nacos")
 public class DockingInterfaceExample {
 
+	/**
+	 * Nacos group.
+	 */
 	public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
 
 	@Autowired
 	private NacosConfigManager nacosConfigManager;
 
 	/**
-	 * Get configuration information
+	 * Get configuration information.
 	 *
-	 * @param dataId
-	 * @param group
-	 * @return
-	 * @throws NacosException
+	 * @param dataId dataId
+	 * @param group group
+	 * @return config
 	 */
 	@RequestMapping("getConfig")
 	public String getConfig(@RequestParam("dataId") String dataId,
@@ -62,13 +65,12 @@ public class DockingInterfaceExample {
 	}
 
 	/**
-	 * Publish configuration
+	 * Publish configuration.
 	 *
-	 * @param dataId
-	 * @param group
-	 * @param content
-	 * @return
-	 * @throws NacosException
+	 * @param dataId dataId
+	 * @param group group
+	 * @param content content
+	 * @return boolean
 	 */
 	@RequestMapping("publishConfig")
 	public boolean publishConfig(@RequestParam("dataId") String dataId,
@@ -82,12 +84,11 @@ public class DockingInterfaceExample {
 	}
 
 	/**
-	 * Delete configuration
+	 * Delete configuration.
 	 *
-	 * @param dataId
-	 * @param group
-	 * @return
-	 * @throws NacosException
+	 * @param dataId dataId
+	 * @param group group
+	 * @return boolean
 	 */
 	@RequestMapping("remoteConfig")
 	public boolean remoteConfig(@RequestParam("dataId") String dataId,
@@ -101,11 +102,10 @@ public class DockingInterfaceExample {
 	}
 
 	/**
-	 * Add listener configuration information
+	 * Add listener configuration information.
 	 *
-	 * @param dataId
-	 * @param group
-	 * @throws NacosException
+	 * @param dataId dataId
+	 * @param group group
 	 */
 	@RequestMapping("listener")
 	public String listenerConfig(@RequestParam("dataId") String dataId,
