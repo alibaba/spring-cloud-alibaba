@@ -17,11 +17,12 @@
 package com.alibaba.cloud.examples.configuration;
 
 import com.alibaba.cloud.examples.model.NacosConfigInfo;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Bean definition
+ * Bean definition.
  *
  * @author lixiaoshuang
  */

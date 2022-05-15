@@ -16,17 +16,18 @@
 
 package com.alibaba.cloud.examples.example;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alibaba.cloud.examples.model.NacosConfigInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Dynamic bean refresh example
+ * Dynamic bean refresh example.
  *
  * @author lixiaoshuang
  */

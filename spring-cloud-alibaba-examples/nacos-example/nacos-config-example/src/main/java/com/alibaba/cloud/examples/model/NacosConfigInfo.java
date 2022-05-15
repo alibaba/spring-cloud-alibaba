@@ -24,22 +24,22 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 public class NacosConfigInfo {
 
 	/**
-	 * Nacos server address
+	 * Nacos server address.
 	 */
 	private String serveraddr;
 
 	/**
-	 * Data Id prefix
+	 * Data Id prefix.
 	 */
 	private String prefix;
 
 	/**
-	 * Nacos group
+	 * Nacos group.
 	 */
 	private String group;
 
 	/**
-	 * Nacos namespace
+	 * Nacos namespace.
 	 */
 	private String namespace;
 
