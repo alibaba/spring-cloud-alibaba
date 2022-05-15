@@ -17,6 +17,7 @@
 package com.alibaba.cloud.examples.example;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
@@ -118,7 +119,7 @@ public class DockingInterfaceExample {
 		configService.addListener(dataId, group, new Listener() {
 			@Override
 			public Executor getExecutor() {
-				return null;
+				return Executors.newSingleThreadExecutor();
 			}
 
 			@Override
