@@ -26,6 +26,8 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +38,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ConfigListenerExample {
+
+	Logger logger = LoggerFactory.getLogger(ConfigListenerExample.class);
 
 	/**
 	 * Nacos dataId.
@@ -62,7 +66,7 @@ public class ConfigListenerExample {
 
 			@Override
 			public void receiveConfigInfo(String configInfo) {
-				System.out.println("[dataId]:[" + DATA_ID + "],Configuration changed to:"
+				logger.info("[dataId]:[" + DATA_ID + "],Configuration changed to:"
 						+ configInfo);
 			}
 		});
