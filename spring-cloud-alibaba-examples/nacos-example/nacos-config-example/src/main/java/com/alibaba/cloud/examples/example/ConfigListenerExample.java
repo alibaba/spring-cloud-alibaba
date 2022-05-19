@@ -25,7 +25,6 @@ import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
