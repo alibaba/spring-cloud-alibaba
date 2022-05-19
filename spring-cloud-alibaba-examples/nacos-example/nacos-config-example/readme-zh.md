@@ -80,7 +80,7 @@
 #### 验证自动注入
 在浏览器地址栏输入 `http://127.0.0.1:18084/nacos/bean`，并点击调转，可以看到成功从 Nacos Config Server 中获取了数据。
 
-![](https://tva1.sinaimg.cn/large/e6c9d24ely1h29htdsg18j20jc0aigma.jpg)
+![get](https://tva1.sinaimg.cn/large/e6c9d24ely1h29htdsg18j20jc0aigma.jpg)
 
 #### 验证动态刷新
 1. 执行如下命令，修改 Nacos Server 端的配置数据
@@ -89,7 +89,7 @@
 
 2. 在浏览器地址栏输入 `http://127.0.0.1:18084/nacos/bean`，并点击调转，可以看到应用从 Nacos Server 中获取了最新的数据，group 变成了 DEFAULT_GROUP。
 
-![](https://tva1.sinaimg.cn/large/e6c9d24ely1h29hzf0ic4j20ks0b4mxy.jpg)
+![refresh](https://tva1.sinaimg.cn/large/e6c9d24ely1h29hzf0ic4j20ks0b4mxy.jpg)
 
 
 ## 原理
