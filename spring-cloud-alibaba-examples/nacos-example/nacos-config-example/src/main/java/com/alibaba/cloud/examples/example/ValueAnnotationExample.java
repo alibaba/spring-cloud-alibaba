@@ -35,8 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RefreshScope
 public class ValueAnnotationExample {
 
-	@Value("${spring.cloud.nacos.config.serveraddr:}")
-	private String serveraddr;
+	@Value("${spring.cloud.nacos.config.serverAddr:}")
+	private String serverAddr;
 
 	@Value("${spring.cloud.nacos.config.prefix:}")
 	private String prefix;
@@ -49,8 +49,8 @@ public class ValueAnnotationExample {
 
 	@GetMapping
 	public Map<String, String> getConfigInfo() {
-		Map<String, String> result = new HashMap<>();
-		result.put("serveraddr", serveraddr);
+		Map<String, String> result = new HashMap<>(4);
+		result.put("serverAddr", serverAddr);
 		result.put("prefix", prefix);
 		result.put("group", group);
 		result.put("namespace", namespace);

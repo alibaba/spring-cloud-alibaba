@@ -41,7 +41,7 @@ public class BeanAutoRefreshConfigExample {
 	@GetMapping
 	public Map<String, String> getConfigInfo() {
 		Map<String, String> result = new HashMap<>();
-		result.put("serveraddr", nacosConfigInfo.getServeraddr());
+		result.put("serverAddr", nacosConfigInfo.getServerAddr());
 		result.put("prefix", nacosConfigInfo.getPrefix());
 		result.put("group", nacosConfigInfo.getGroup());
 		result.put("namespace", nacosConfigInfo.getNamespace());

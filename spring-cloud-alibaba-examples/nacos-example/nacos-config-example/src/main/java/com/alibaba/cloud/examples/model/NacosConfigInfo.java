@@ -26,7 +26,7 @@ public class NacosConfigInfo {
 	/**
 	 * Nacos server address.
 	 */
-	private String serveraddr;
+	private String serverAddr;
 
 	/**
 	 * Data Id prefix.
@@ -43,12 +43,12 @@ public class NacosConfigInfo {
 	 */
 	private String namespace;
 
-	public String getServeraddr() {
-		return serveraddr;
+	public String getServerAddr() {
+		return serverAddr;
 	}
 
-	public void setServeraddr(String serveraddr) {
-		this.serveraddr = serveraddr;
+	public void setServerAddr(String serverAddr) {
+		this.serverAddr = serverAddr;
 	}
 
 	public String getPrefix() {

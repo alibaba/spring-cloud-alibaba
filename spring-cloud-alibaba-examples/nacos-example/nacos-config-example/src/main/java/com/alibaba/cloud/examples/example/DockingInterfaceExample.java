@@ -25,6 +25,8 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,8 +38,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lixiaoshuang
  */
 @RestController
-@RequestMapping("nacos")
+@RequestMapping("/nacos")
 public class DockingInterfaceExample {
+
+	Logger logger = LoggerFactory.getLogger(DockingInterfaceExample.class);
 
 	/**
 	 * Nacos group.
@@ -54,7 +58,7 @@ public class DockingInterfaceExample {
 	 * @param group group
 	 * @return config
 	 */
-	@RequestMapping("getConfig")
+	@RequestMapping("/getConfig")
 	public String getConfig(@RequestParam("dataId") String dataId,
 			@RequestParam(value = "group", required = false) String group)
 			throws NacosException {
@@ -73,7 +77,7 @@ public class DockingInterfaceExample {
 	 * @param content content
 	 * @return boolean
 	 */
-	@RequestMapping("publishConfig")
+	@RequestMapping("/publishConfig")
 	public boolean publishConfig(@RequestParam("dataId") String dataId,
 			@RequestParam(value = "group", required = false) String group,
 			@RequestParam("content") String content) throws NacosException {
@@ -91,7 +95,7 @@ public class DockingInterfaceExample {
 	 * @param group group
 	 * @return boolean
 	 */
-	@RequestMapping("remoteConfig")
+	@RequestMapping("/remoteConfig")
 	public boolean remoteConfig(@RequestParam("dataId") String dataId,
 			@RequestParam(value = "group", required = false) String group)
 			throws NacosException {
@@ -108,7 +112,7 @@ public class DockingInterfaceExample {
 	 * @param dataId dataId
 	 * @param group group
 	 */
-	@RequestMapping("listener")
+	@RequestMapping("/listener")
 	public String listenerConfig(@RequestParam("dataId") String dataId,
 			@RequestParam(value = "group", required = false) String group)
 			throws NacosException {
@@ -124,7 +128,7 @@ public class DockingInterfaceExample {
 
 			@Override
 			public void receiveConfigInfo(String configInfo) {
-				System.out.println("[Listen for configuration changes]:" + configInfo);
+				logger.info("[Listen for configuration changes]:{}", configInfo);
 			}
 		});
 		return "Add Lister successfully!";
