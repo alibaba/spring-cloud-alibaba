@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2018 the original author or authors.
+ * Copyright 2013-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.configuration;
 
+import com.alibaba.cloud.examples.model.NacosConfigInfo;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author xiaojing, Jianwei Mao
+ * Bean definition.
+ *
+ * @author lixiaoshuang
  */
-@SpringBootApplication
-public class Application {
+@Configuration
+public class BeanConfiguration {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+	@Bean
+	public NacosConfigInfo nacosConfigInfo() {
+		return new NacosConfigInfo();
 	}
-
 }
