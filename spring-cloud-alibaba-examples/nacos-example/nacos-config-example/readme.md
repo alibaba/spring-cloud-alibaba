@@ -82,7 +82,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 #### Automatic Injection
 Enter `http://127.0.0.1:18084/nacos/bean` in the browser address bar and click Go to, we can see the data successfully obtained from Nacos Config Server.
 
-![get](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gamqt6y4j20nu0e475b.jpg)
+![get](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gbowleyrj20o40bo753.jpg)
 
 #### Dynamic Refresh
 1. Run the following command to modify the configuration data on the Nacos Server side.
@@ -91,7 +91,7 @@ Enter `http://127.0.0.1:18084/nacos/bean` in the browser address bar and click G
 
 2. Enter `http://127.0.0.1:18084/nacos/bean` in the address bar of the browser, and click Flip, you can see that the application has obtained the latest data from Nacos Server, and the group has become DEFAULT_GROUP.
 
-![refresh](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gaoc1w57j20ry0ei75f.jpg)
+![refresh](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gbpram9rj20nq0ccmxz.jpg)
 
 
 ## Principle
