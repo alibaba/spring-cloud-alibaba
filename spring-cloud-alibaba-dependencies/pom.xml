@@ -19,7 +19,7 @@
 
     <properties>
         <revision>2.2.8-SNAPSHOT</revision>
-        <sentinel.version>1.8.1</sentinel.version>
+        <sentinel.version>1.8.4</sentinel.version>
         <seata.version>1.4.2</seata.version>
         <nacos.client.version>2.0.3</nacos.client.version>
         <nacos.config.version>0.8.0</nacos.config.version>
