@@ -31,6 +31,8 @@
 - ConfigListenerExample:         监听配置信息的例子
 - DockingInterfaceExample:       对接 nacos 接口，通过接口完成对配置信息增删改查的例子
 - ValueAnnotationExample:        通过 @Value 注解进行配置信息获取的例子
+- SharedConfigExample:           共享配置的例子
+- ExtensionConfigExample:        扩展配置的例子
 
 ### 启动 Nacos Server 并添加配置
 

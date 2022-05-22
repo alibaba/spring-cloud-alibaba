@@ -32,6 +32,8 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 - ConfigListenerExample: Example of listening configuration information
 - DockingInterfaceExample: An example of docking the nacos interface and completing the addition, deletion, modification and checking of configuration information through the interface
 - ValueAnnotationExample: An example of obtaining configuration information through @Value annotation
+- SharedConfigExample:           Example of shared configuration
+- ExtensionConfigExample:        Example of extended configuration
 
 ### Start Nacos Server 
 
