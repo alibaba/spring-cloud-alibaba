@@ -175,8 +175,11 @@ public final class RocketMQMessageConverterSupport {
 					.filter(entry -> !Objects.equals(entry.getKey(), Headers.FLAG))
 					.forEach(entry -> {
 						if (!MessageConst.STRING_HASH_SET.contains(entry.getKey())) {
-							rocketMsg.putUserProperty(entry.getKey(),
-									String.valueOf(entry.getValue()));
+							String val = String.valueOf(entry.getValue());
+							// Remove All blank header(rocketmq not support).
+							if (org.apache.commons.lang3.StringUtils.isNotBlank(val)) {
+								rocketMsg.putUserProperty(entry.getKey(), val);
+							}
 						}
 					});
 
