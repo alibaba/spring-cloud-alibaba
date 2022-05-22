@@ -44,6 +44,7 @@ import org.springframework.integration.endpoint.AbstractMessageSource;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -109,13 +110,14 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		this.running = true;
 	}
 
-	private MessageQueue acquireCurrentMessageQueue(String topic, int queueId) {
-		Collection<MessageQueue> messageQueueSet = messageQueuesForTopic.get(topic);
-		if (CollectionUtils.isEmpty(messageQueueSet)) {
+	private MessageQueue acquireCurrentMessageQueue(String topic,int queueId, String brokerName) {
+		Collection<MessageQueue> messageQueueSet =  messageQueuesForTopic.get(topic);
+		if(CollectionUtils.isEmpty(messageQueueSet)){
 			return null;
 		}
 		for (MessageQueue messageQueue : messageQueueSet) {
-			if (messageQueue.getQueueId() == queueId) {
+			if (messageQueue.getQueueId() == queueId &&
+					ObjectUtils.nullSafeEquals(brokerName, messageQueue.getBrokerName())) {
 				return messageQueue;
 			}
 		}
@@ -152,8 +154,8 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		if (null == messageExt) {
 			return null;
 		}
-		MessageQueue messageQueue = this.acquireCurrentMessageQueue(messageExt.getTopic(),
-				messageExt.getQueueId());
+		MessageQueue messageQueue = this.acquireCurrentMessageQueue(messageExt.getTopic(), messageExt.getQueueId(),
+				messageExt.getBrokerName());
 		if (messageQueue == null) {
 			throw new IllegalArgumentException(
 					"The message queue is not in assigned list");
