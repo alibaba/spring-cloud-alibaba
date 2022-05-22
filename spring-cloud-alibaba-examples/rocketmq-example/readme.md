@@ -675,6 +675,138 @@ public class RocketMQSqlConsumeApplication {
 }
 ```
 
+## Transaction example
+
+### What is transactional message?
+
+Refer to [Transaction Example](https://rocketmq.apache.org/docs/transaction-example/).
+
+> It can be thought of as a two-phase commit message implementation to ensure eventual consistency in distributed system. Transactional message ensures that the execution of local transaction and the sending of message can be performed atomically.
+
+### Application
+
+Refer to https://rocketmq.apache.org/
+
+> 1、 Transactional status
+>
+> There are three states for transactional message:
+> (1) TransactionStatus.CommitTransaction: commit transaction，it means that allow consumers to consume this message.
+> (2) TransactionStatus.RollbackTransaction: rollback transaction，it means that the message will be deleted and not allowed to consume.
+> (3) TransactionStatus.Unknown: intermediate state，it means that MQ is needed to check back to determine the status.
+
+### Create topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t tx
+```
+
+### Example code
+
+**application.yml**
+
+```yaml
+server:
+  port: 28088
+spring:
+  application:
+    name: rocketmq-tx-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+              transactionListener: myTransactionListener
+              producerType: Trans
+      bindings:
+        producer-out-0:
+          destination: tx
+        consumer-in-0:
+          destination: tx
+          group: tx-group
+logging:
+  level:
+    org.springframework.context.support: debug
+```
+
+**TransactionListenerImpl**
+
+To execute local transaction.
+
+```java
+@Component("myTransactionListener")
+public class TransactionListenerImpl implements TransactionListener {
+
+	@Override
+	public LocalTransactionState executeLocalTransaction(Message msg, Object arg) {
+		Object num = msg.getProperty("test");
+
+		if ("1".equals(num)) {
+			System.out.println("executer: " + new String(msg.getBody()) + " unknown");
+			return LocalTransactionState.UNKNOW;
+		}
+		else if ("2".equals(num)) {
+			System.out.println("executer: " + new String(msg.getBody()) + " rollback");
+			return LocalTransactionState.ROLLBACK_MESSAGE;
+		}
+		System.out.println("executer: " + new String(msg.getBody()) + " commit");
+		return LocalTransactionState.COMMIT_MESSAGE;
+	}
+
+	@Override
+	public LocalTransactionState checkLocalTransaction(MessageExt msg) {
+		System.out.println("check: " + new String(msg.getBody()));
+		return LocalTransactionState.COMMIT_MESSAGE;
+	}
+
+}
+```
+
+**producer and consumer**
+
+```java
+@SpringBootApplication
+public class RocketMQTxApplication {
+	private static final Logger log = LoggerFactory
+			.getLogger(RocketMQTxApplication.class);
+	@Autowired
+	private StreamBridge streamBridge;
+	public static void main(String[] args) {
+		SpringApplication.run(RocketMQTxApplication.class, args);
+	}
+
+
+	@Bean
+	public ApplicationRunner producer() {
+		return args -> {
+			for (int i = 1; i <= 4; i++) {
+				MessageBuilder builder = MessageBuilder.withPayload(new SimpleMsg("Hello Tx msg " + i));
+				builder.setHeader("test", String.valueOf(i))
+						.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+				builder.setHeader(RocketMQConst.USER_TRANSACTIONAL_ARGS, "binder");
+				Message<SimpleMsg> msg = builder.build();
+				streamBridge.send("producer-out-0", msg);
+				System.out.println("send Msg:" + msg.toString());
+			}
+		};
+	}
+
+	@Bean
+	public Consumer<Message<SimpleMsg>> consumer() {
+		return msg -> {
+			Object arg = msg.getHeaders();
+			log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload().getMsg() + " ARG:"
+				+ arg.toString());
+		};
+	}
+}
+```
+
 ## Endpoint
 
 Add dependency `spring-cloud-starter-stream-rocketmq` to your pom.xml file, and configure your endpoint security strategy.
