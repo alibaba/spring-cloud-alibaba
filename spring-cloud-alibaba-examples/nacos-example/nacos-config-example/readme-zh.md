@@ -31,6 +31,8 @@
 - ConfigListenerExample:         监听配置信息的例子
 - DockingInterfaceExample:       对接 nacos 接口，通过接口完成对配置信息增删改查的例子
 - ValueAnnotationExample:        通过 @Value 注解进行配置信息获取的例子
+- SharedConfigExample:           共享配置的例子
+- ExtensionConfigExample:        扩展配置的例子
 
 ### 启动 Nacos Server 并添加配置
 
@@ -61,6 +63,37 @@
 	    spring.cloud.nacos.config.prefix=PREFIX
         spring.cloud.nacos.config.group=GROUP
         spring.cloud.nacos.config.namespace=NAMESPACE
+
+4. 添加共享配置和扩展配置
+
+   共享配置:
+   ```
+      dataId为: data-source.yaml
+      group 为： DEFAULT_GROUP
+		
+      内容如下:
+		
+      spring:
+       datasource:
+        name: datasource
+        url: jdbc:mysql://127.0.0.1:3306/nacos?characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useDynamicCharsetInfo=false&useSSL=false
+        username: root
+        password: root
+        driverClassName: com.mysql.jdbc.Driver
+   ```
+   扩展配置:
+   > 可以使用扩展配置覆盖共享配置中的配置
+   ```
+      dataId为: ext-data-source.yaml
+      group 为： DEFAULT_GROUP
+		
+      内容如下:
+		
+      spring:
+       datasource:
+        username: ext-root
+        password: ext-root
+   ```
 
 ### 应用启动
 

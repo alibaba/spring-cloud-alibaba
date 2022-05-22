@@ -32,6 +32,8 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 - ConfigListenerExample: Example of listening configuration information
 - DockingInterfaceExample: An example of docking the nacos interface and completing the addition, deletion, modification and checking of configuration information through the interface
 - ValueAnnotationExample: An example of obtaining configuration information through @Value annotation
+- SharedConfigExample:           Example of shared configuration
+- ExtensionConfigExample:        Example of extended configuration
 
 ### Start Nacos Server 
 
@@ -63,6 +65,38 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 	    spring.cloud.nacos.config.prefix=PREFIX
         spring.cloud.nacos.config.group=GROUP
         spring.cloud.nacos.config.namespace=NAMESPACE
+
+4. Add shared configuration and extended configuration
+
+   Shared configuration:
+   ```
+      dataId is: data-source.yaml
+      group is： DEFAULT_GROUP
+		
+      content is:
+		
+      spring:
+       datasource:
+        name: datasource
+        url: jdbc:mysql://127.0.0.1:3306/nacos?characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useDynamicCharsetInfo=false&useSSL=false
+        username: root
+        password: root
+        driverClassName: com.mysql.jdbc.Driver
+   ```
+   Extended configuration:
+   > Configuration in shared configuration can be overridden with extended configuration
+   ```
+      dataId is: ext-data-source.yaml
+      group is： DEFAULT_GROUP
+		
+      content is:
+		
+      spring:
+       datasource:
+        username: ext-root
+        password: ext-root
+   ```
+
 
 ### Start Application
 
