@@ -66,6 +66,38 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
         spring.cloud.nacos.config.group=GROUP
         spring.cloud.nacos.config.namespace=NAMESPACE
 
+4. Add shared configuration and extended configuration
+
+   Shared configuration:
+   ```
+      dataId is: data-source.yaml
+      group is： DEFAULT_GROUP
+		
+      content is:
+		
+      spring:
+       datasource:
+        name: datasource
+        url: jdbc:mysql://127.0.0.1:3306/nacos?characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useDynamicCharsetInfo=false&useSSL=false
+        username: root
+        password: root
+        driverClassName: com.mysql.jdbc.Driver
+   ```
+   Extended configuration:
+   > Configuration in shared configuration can be overridden with extended configuration
+   ```
+      dataId is: ext-data-source.yaml
+      group is： DEFAULT_GROUP
+		
+      content is:
+		
+      spring:
+       datasource:
+        username: ext-root
+        password: ext-root
+   ```
+
+
 ### Start Application
 
 1. Add necessary configurations to file /src/main/resources/application.properties
