@@ -42,6 +42,7 @@
         <module>rocketmq-example/rocketmq-delay-consume-example</module>
         <module>rocketmq-example/rocketmq-sql-consume-example</module>
         <module>rocketmq-example/rocketmq-example-common</module>
+        <module>rocketmq-example/rocketmq-tx-example</module>
 
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example</module>

@@ -681,6 +681,136 @@ public class RocketMQSqlConsumeApplication {
 }
 ```
 
+## 事务消息示例
+
+### 什么是事务消息?
+
+参考[Transaction Example](https://rocketmq.apache.org/docs/transaction-example/).
+
+> 可以被认为是一个两阶段的提交消息实现，以确保分布式系统的最终一致性。 事务性消息确保本地事务的执行和消息的发送可以原子地执行。
+
+### Application
+
+> 1、 事务装填
+>
+> 事务消息有三个状态:
+> (1) TransactionStatus.CommitTransaction: 提交事务，意味着消费者可以消费事务
+> (2) TransactionStatus.RollbackTransaction: 回滚事务，消息将被删除，并且不允许被消费。
+> (3) TransactionStatus.Unknown: 中间状态，意味着MQ需要回查最终状态。
+
+### 创建Topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t tx
+```
+
+### 示例代码
+
+**application.yml**
+
+```yaml
+server:
+  port: 28088
+spring:
+  application:
+    name: rocketmq-tx-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+              transactionListener: myTransactionListener
+              producerType: Trans
+      bindings:
+        producer-out-0:
+          destination: tx
+        consumer-in-0:
+          destination: tx
+          group: tx-group
+logging:
+  level:
+    org.springframework.context.support: debug
+```
+
+**TransactionListenerImpl**
+
+执行本地事务。
+
+```java
+@Component("myTransactionListener")
+public class TransactionListenerImpl implements TransactionListener {
+
+	@Override
+	public LocalTransactionState executeLocalTransaction(Message msg, Object arg) {
+		Object num = msg.getProperty("test");
+
+		if ("1".equals(num)) {
+			System.out.println("executer: " + new String(msg.getBody()) + " unknown");
+			return LocalTransactionState.UNKNOW;
+		}
+		else if ("2".equals(num)) {
+			System.out.println("executer: " + new String(msg.getBody()) + " rollback");
+			return LocalTransactionState.ROLLBACK_MESSAGE;
+		}
+		System.out.println("executer: " + new String(msg.getBody()) + " commit");
+		return LocalTransactionState.COMMIT_MESSAGE;
+	}
+
+	@Override
+	public LocalTransactionState checkLocalTransaction(MessageExt msg) {
+		System.out.println("check: " + new String(msg.getBody()));
+		return LocalTransactionState.COMMIT_MESSAGE;
+	}
+
+}
+```
+
+**producer and consumer**
+
+```java
+@SpringBootApplication
+public class RocketMQTxApplication {
+	private static final Logger log = LoggerFactory
+			.getLogger(RocketMQTxApplication.class);
+	@Autowired
+	private StreamBridge streamBridge;
+	public static void main(String[] args) {
+		SpringApplication.run(RocketMQTxApplication.class, args);
+	}
+
+
+	@Bean
+	public ApplicationRunner producer() {
+		return args -> {
+			for (int i = 1; i <= 4; i++) {
+				MessageBuilder builder = MessageBuilder.withPayload(new SimpleMsg("Hello Tx msg " + i));
+				builder.setHeader("test", String.valueOf(i))
+						.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+				builder.setHeader(RocketMQConst.USER_TRANSACTIONAL_ARGS, "binder");
+				Message<SimpleMsg> msg = builder.build();
+				streamBridge.send("producer-out-0", msg);
+				System.out.println("send Msg:" + msg.toString());
+			}
+		};
+	}
+
+	@Bean
+	public Consumer<Message<SimpleMsg>> consumer() {
+		return msg -> {
+			Object arg = msg.getHeaders();
+			log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload().getMsg() + " ARG:"
+				+ arg.toString());
+		};
+	}
+}
+```
+
 ## Endpoint 信息查看
 
 Spring Boot 应用支持通过 Endpoint 来暴露相关信息，RocketMQ Stream Starter 也支持这一点。
