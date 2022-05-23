@@ -685,8 +685,6 @@ Refer to [Transaction Example](https://rocketmq.apache.org/docs/transaction-exam
 
 ### Application
 
-Refer to https://rocketmq.apache.org/
-
 > 1、 Transactional status
 >
 > There are three states for transactional message:
