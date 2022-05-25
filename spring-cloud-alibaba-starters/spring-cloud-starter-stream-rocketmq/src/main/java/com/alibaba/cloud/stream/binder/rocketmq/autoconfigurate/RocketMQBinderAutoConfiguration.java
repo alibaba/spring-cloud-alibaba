@@ -62,7 +62,7 @@ public class RocketMQBinderAutoConfiguration {
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(HealthIndicator.class)
 	@ConditionalOnEnabledHealthIndicator("rocketmq")
-	static class KafkaBinderHealthIndicatorConfiguration {
+	static class RocketMQBinderHealthIndicatorConfiguration {
 
 		@Bean
 		public RocketMQBinderHealthIndicator rocketMQBinderHealthIndicator() {
