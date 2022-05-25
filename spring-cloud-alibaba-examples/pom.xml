@@ -26,14 +26,11 @@
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
         <module>nacos-example/nacos-config-2.4.x-example</module>
-        <module>nacos-example/nacos-config-preference-example</module>
         <module>nacos-example/nacos-gateway-example</module>
         <module>seata-example/business-service</module>
         <module>seata-example/order-service</module>
         <module>seata-example/storage-service</module>
         <module>seata-example/account-service</module>
-        <module>rocketmq-example/rocketmq-consume-example</module>
-        <module>rocketmq-example/rocketmq-produce-example</module>
         <module>rocketmq-example/rocketmq-comprehensive-example</module>
         <module>rocketmq-example/rocketmq-orderly-consume-example</module>
         <module>rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-producer-example</module>
