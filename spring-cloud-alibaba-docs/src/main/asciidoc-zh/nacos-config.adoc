@@ -73,6 +73,20 @@ public class NacosConfigApplication {
 }
 ----
 
+NOTE: 注意当您```spring-cloud-alibaba```的版本为 ````2021.1```时,由于```nacos```获取配置时```bootstrap.yml ```文件将先于```application.yml```文件加载.
+根据spring的官方文档中提及 [bootstrap](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#config-first-bootstrap)
+为解决此问题 我们建议您在项目根```pom.xml```文件中加上如下依赖
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bootstrap</artifactId>
+    <version>3.1.1</version>
+</dependency>
+----
+
+
 在运行此 NacosConfigApplication 之前， 必须使用 `bootstrap.properties` 配置文件来配置 Nacos Server 地址，例如：
 
 .bootstrap.properties
