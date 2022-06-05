@@ -10,6 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.alibaba.cloud.integration.common.nacos.Const.DEFAULT_IMAGE_NAME;
+
 @Slf4j
 public class NacosContainerTest extends NacosBootTester {
 
@@ -55,7 +57,7 @@ public class NacosContainerTest extends NacosBootTester {
 
 	@Before
 	public  void setUp() throws Exception{
-		nacosContainer = new NacosContainer("nacos12133131",image);
+		nacosContainer = new NacosContainer(DEFAULT_IMAGE_NAME,image);
 		nacosContainer.start();
 	}
 
