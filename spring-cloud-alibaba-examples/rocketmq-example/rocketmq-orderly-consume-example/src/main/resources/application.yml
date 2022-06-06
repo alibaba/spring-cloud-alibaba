@@ -1,0 +1,33 @@
+server:
+  port: 28082
+spring:
+  application:
+    name: rocketmq-orderly-consume-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+              messageQueueSelector: orderlyMessageQueueSelector
+          consumer-in-0:
+            consumer:
+              # tag: {@code tag1||tag2||tag3 }; sql: {@code 'color'='blue' AND 'price'>100 } .
+              subscription: 'TagA || TagC || TagD'
+              push:
+                orderly: true
+      bindings:
+        producer-out-0:
+          destination: orderly
+        consumer-in-0:
+          destination: orderly
+          group: orderly-consumer
+
+logging:
+  level:
+    org.springframework.context.support: debug

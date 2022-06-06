@@ -1,0 +1,28 @@
+server:
+  port: 28082
+spring:
+  application:
+    name: rocketmq-comprehensive-example
+  cloud:
+    stream:
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+      function:
+        definition: producer;processor;consumer
+      bindings:
+        producer-out-0:
+          destination: num
+          group: producer_group
+        processor-in-0:
+          destination: num
+          group: processor_group
+        processor-out-0:
+          destination: square
+          group: processor_group
+        consumer-in-0:
+          destination: square
+          group: consumer_group
+logging:
+  level:
+    org.apache.rocketmq: debug
