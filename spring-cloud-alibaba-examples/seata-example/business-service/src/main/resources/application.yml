@@ -1,0 +1,58 @@
+server:
+  port: 18081
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    loadbalancer:
+      ribbon:
+        enabled:true
+  application:
+    name: business-service
+
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+
+  tx-service-group: ${spring.application.name}-tx-group
+  config:
+    type: nacos
+    nacos:
+      namespace: a3f588d3-7be9-43d3-af7c-1e7919cf8af6
+      serverAddr: 127.0.0.1:8848
+      group: SEATA_GROUP
+      dataId: "seata.properties"
+      username: "nacos"
+      password: "nacos"
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 127.0.0.1:8848
+      group: SEATA_GROUP
+      namespace: a3f588d3-7be9-43d3-af7c-1e7919cf8af6
+      username: "nacos"
+      password: "nacos"
+dubbo:
+  registry:
+    address: spring-cloud://localhost
+  protocol:
+    name: dubbo
+    port: -1
+  provider:
+    telnet: ls,ps,cd,pwd,trace,count,invoke,select,status,log,help,clear,exit,shutdown
+  cloud:
+    subscribed-services: storage-service
+feign:
+  client:
+    config:
+      default:
+        connectTimeout:10000
+        readTimeout:10000
+logging:
+  level:
+    io:
+      seata: debug
+
