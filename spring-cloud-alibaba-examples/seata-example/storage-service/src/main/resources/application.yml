@@ -1,0 +1,57 @@
+base:
+  config:
+    mdb:
+      hostname: 127.0.0.1
+      dbname: seata
+      port: 3306
+      username: root
+      password: 123456
+
+server:
+  port: 18082
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: storage-service
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    name: storageDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${base.config.mdb.hostname}:${base.config.mdb.port}/${base.config.mdb.dbname}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
+    username: ${base.config.mdb.username}
+    password: ${base.config.mdb.password}
+    druid:
+      max-active: 20
+      min-idle: 2
+      initial-size: 2
+
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: ${spring.application.name}-tx-group
+  config:
+    type: nacos
+    nacos:
+      namespace: a3f588d3-7be9-43d3-af7c-1e7919cf8af6
+      serverAddr: 127.0.0.1:8848
+
+      group: SEATA_GROUP
+      dataId: "seata.properties"
+      username: "nacos"
+      password: "nacos"
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 127.0.0.1:8848
+      group: SEATA_GROUP
+      namespace: a3f588d3-7be9-43d3-af7c-1e7919cf8af6
+      username: "nacos"
+      password: "nacos"
+
