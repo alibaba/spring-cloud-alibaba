@@ -202,14 +202,13 @@ sh seata-server.sh -p 8091 -m file
 
 分别运行 `account-server`、`order-service`、`storage-service` 和 `business-service` 这三个应用的 Main 函数，启动示例。
 
-启动示例后，通过 HTTP 的 GET 方法访问如下 URL，可以分别验证在 `business-service` 中 通过 RestTemplate 和 FeignClient 及Dubbo调用其他服务的场景。
+启动示例后，通过 HTTP 的 GET 方法访问如下 URL，可以分别验证在 `business-service` 中 通过 RestTemplate 和 FeignClient 调用其他服务的场景。
 
 ```$xslt
 http://127.0.0.1:18081/seata/feign
 
 http://127.0.0.1:18081/seata/rest
 
-http://127.0.0.1:18081/seata/dubbo
 ```
 
 ## 如何验证分布式事务成功？

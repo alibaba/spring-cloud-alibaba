@@ -33,7 +33,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @EnableFeignClients
-@EnableDiscoveryClient(autoRegister = true)
+@EnableDiscoveryClient(autoRegister = false)
 public class BusinessApplication {
 
 	public static void main(String[] args) {

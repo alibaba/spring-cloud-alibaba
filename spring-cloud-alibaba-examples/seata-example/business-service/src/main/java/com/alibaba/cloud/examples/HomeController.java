@@ -18,9 +18,7 @@ package com.alibaba.cloud.examples;
 
 import com.alibaba.cloud.examples.BusinessApplication.OrderService;
 import com.alibaba.cloud.examples.BusinessApplication.StorageService;
-import com.alibaba.cloud.examples.api.StorageDubboService;
 import io.seata.spring.annotation.GlobalTransactional;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +55,6 @@ public class HomeController {
 	private final OrderService orderService;
 
 	private final StorageService storageService;
-
-	@DubboReference
-	private StorageDubboService storageDubboService;
 
 	public HomeController(RestTemplate restTemplate, OrderService orderService,
 			StorageService storageService) {
@@ -112,26 +107,6 @@ public class HomeController {
 	public String feign() {
 
 		String result = storageService.storage(COMMODITY_CODE, ORDER_COUNT);
-
-		if (!SUCCESS.equals(result)) {
-			throw new RuntimeException();
-		}
-
-		result = orderService.order(USER_ID, COMMODITY_CODE, ORDER_COUNT);
-
-		if (!SUCCESS.equals(result)) {
-			throw new RuntimeException();
-		}
-
-		return SUCCESS;
-
-	}
-
-	@GlobalTransactional(timeoutMills = 300000, name = "spring-cloud-demo-tx")
-	@GetMapping(value = "/seata/dubbo", produces = "application/json")
-	public String dubbo() {
-
-		String result = storageDubboService.updateStorage(COMMODITY_CODE, ORDER_COUNT);
 
 		if (!SUCCESS.equals(result)) {
 			throw new RuntimeException();

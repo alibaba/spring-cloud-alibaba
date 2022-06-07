@@ -56,8 +56,3 @@ seata:
       namespace: a3f588d3-7be9-43d3-af7c-1e7919cf8af6
       username: "nacos"
       password: "nacos"
-dubbo:
-  registry:
-    address: spring-cloud://localhost
-  cloud:
-    subscribed-services:
