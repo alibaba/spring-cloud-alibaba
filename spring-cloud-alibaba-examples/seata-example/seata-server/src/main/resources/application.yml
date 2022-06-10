@@ -1,3 +1,12 @@
+base:
+  config:
+    mdb:
+      hostname: 127.0.0.1
+      dbname: seata
+      port: 3306
+      username: root
+      password: 123456
+
 server:
   port: 7091
 
@@ -27,8 +36,6 @@ seata:
     type: nacos
     nacos:
       server-addr: 127.0.0.1:8848
-      namespace: a3f588d3-7be9-43d3-af7c-1e7919cf8af6
-      group: SEATA_GROUP
       username: nacos
       password: nacos
       ##if use MSE Nacos with auth, mutex with username/password attribute
@@ -42,8 +49,6 @@ seata:
     nacos:
       application: seata-server
       server-addr: 127.0.0.1:8848
-      group: SEATA_GROUP
-      namespace: a3f588d3-7be9-43d3-af7c-1e7919cf8af6
       cluster: default
       username: nacos
       password: nacos
@@ -65,9 +70,9 @@ seata:
       datasource: druid
       db-type: mysql
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1:3306/seata?rewriteBatchedStatements=true
-      user: root
-      password: 123456
+      url: jdbc:mysql://${base.config.mdb.hostname}:${base.config.mdb.port}/${base.config.mdb.dbname}?rewriteBatchedStatements=true
+      user: ${base.config.mdb.username}
+      password: ${base.config.mdb.password}
       min-conn: 5
       max-conn: 100
       global-table: global_table

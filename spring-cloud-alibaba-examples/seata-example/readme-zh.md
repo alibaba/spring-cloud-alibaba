@@ -63,7 +63,8 @@ CREATE TABLE `undo_log` (
   UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
-### 创建 seata-server 所需要的数据库表
+### 导入 seata-server db模式所需要的数据库表
+在数据库中初始化[global_table、branch_table、lock_table、distributed_lock]
 点击查看:https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql
 ```$sql
 -- -------------------------------- The script used when storeMode is 'db' --------------------------------
@@ -173,7 +174,7 @@ CREATE TABLE `account_tbl` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-### 启动 Seata Server
+### 启动 Seata Server 这里介绍SpringBoot 和下载server两种方式
 
 1.运行 seata-server 启动Seata server
 示例中采用nacos 作为配置，注册中心 存储模式为：db 采用mysql 
@@ -186,7 +187,7 @@ sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db) -h $HOST -e $ENV
 ```
 -p seata-server 监听服务端口号   
 -m 存储模式，可选值：file、db。file 用于单点模式，db用于ha模式，当使用db存储模式，需要修改配置中store配置节点的数据库配置，同时在数据库中初始化[global_table、branch_table和 
-lock_table](https://github.com/seata/seata/blob/develop/server/src/main/resources/db_store.sql)   
+lock_table](https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)   
 -h 用于解决seata-server和业务侧跨网络问题，其配置的host值直接显示到注册中心的服务可用地址host，当跨网络时这里需要配置为公网IP或NATIP，若都在同一局域网则无需配置   
 -e 用于解决多环境配置中心隔离问题   
 采用如下命令来启动 Seata Server
