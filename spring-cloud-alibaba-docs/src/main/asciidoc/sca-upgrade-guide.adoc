@@ -116,7 +116,7 @@ Add dependency.
 </dependency>
 ```
 
-And here are two FeignClint
+And here are two FeignClient
 ```java
 @FeignClient(value = "user", fallback = UserFallback.class)
 public interface UserClient {
