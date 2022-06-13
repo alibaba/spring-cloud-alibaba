@@ -117,7 +117,7 @@ Add a spring.config.import=nacos: property to your configuration.
 </dependency>
 ```
 
-这里有两个 FeignClint
+这里有两个 FeignClient
 ```java
 @FeignClient(value = "user", fallback = UserFallback.class)
 public interface UserClient {
