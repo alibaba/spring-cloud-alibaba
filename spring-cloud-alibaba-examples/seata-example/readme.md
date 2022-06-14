@@ -19,11 +19,12 @@ Before running this example, you need to complete the following steps:
 
 1. Create the database tables needed by the business in the example
 
-1. Import Nacos Configuration
-[https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt]
+1.Create the Nacos configuration in the example, data id: seata properties , Group:SEATA_ Group (Seata 1.5.1 default group) configuration import [nacos configuration]（ https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt )
+  At seata Add the following [transaction group configuration] required in the example to properties（ https://seata.io/zh-cn/docs/user/configurations.html )
 
 1. Start Seata Server
-
+   Seata 1.5.1 supports Seata console local access console address: http://127.0.0.1:7091
+   Through the Seata console, you can observe the executing transaction information and global lock information, and delete the relevant information when the transaction is completed.
 
 ###Configuration database
 
@@ -34,18 +35,20 @@ First, you need a MySQL database that supports the InnoDB engine.
 Will `application'in the resources directory of the `account-server', `order-service', `storage-service` three applications. The following configuration in the yml`file is modified to the actual configuration in your running environment.
 
 ```
-mysql.server.ip=your mysql server ip address
-mysql.server.port=your mysql server listening port
-mysql.db.name=your database name for test
-
-mysql.user.name=your mysql server username
-mysql.user.password=your mysql server password
+base:
+  config:
+    mdb:
+      hostname: your mysql server ip address
+      dbname: your database name for test
+      port: your mysql server listening port
+      username: your mysql server username
+      password: your mysql server password
 
 ```
 
 ###Create undo_ Log table
 
-[Seata AT Mode]() Need to use undo_ Log table.
+Seata AT Mode Need to use undo_ Log table.
 
 ``` $sql
 -- Notice here that 0.3.0+ increases the unique index ux_ Undo_ Log
@@ -65,7 +68,7 @@ CREATE TABLE `undo_log` (
 ```
 ### Database tables needed to import seata-server DB schema
 Initialize in database[global_table、branch_table、lock_table、distributed_lock]
-Click to view :https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql
+(https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)
 ```$sql
 -- -------------------------------- The script used when storeMode is 'db' --------------------------------
 -- the table to store GlobalSession data
@@ -179,7 +182,7 @@ CREATE TABLE `account_tbl` (
 1.Run seata-server to start Seata server
 The example uses Nacos as the configuration and the registry storage mode is: DB uses MySQL
 
-2. Or click on this page [ https://github.com/seata/seata/releases ] ( https://github.com/seata/seata/releases ), download the latest version of Sata Server.
+2. Or click on this page [ GitHub, the official website of Seata ] ( https://github.com/seata/seata/releases ), download the latest version of Sata Server.
 Enter the bin directory after unzipping and execute the following command to start with all the startup parameters optional.
 
 ```$shell

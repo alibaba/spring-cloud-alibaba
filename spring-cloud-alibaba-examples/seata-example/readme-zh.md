@@ -19,12 +19,17 @@
 
 1. 创建 示例中 业务所需要的数据库表
 
-1. 导入 Nacos 配置
-[https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt]
-
+1. 创建示例中Nacos data-id: seata.properties , Group:SEATA_GROUP(seata 1.5.1 默认分组) ,导入 [Nacos 配置](https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt)
+    在seata.properties中增加示例中需要的如下[事务群组配置](https://seata.io/zh-cn/docs/user/configurations.html)
+```
+   service.vgroupMapping.order-service-tx-group=default
+   service.vgroupMapping.account-service-tx-group=default
+   service.vgroupMapping.business-service-tx-group=default
+   service.vgroupMapping.storage-service-tx-group=default
+```   
 1. 启动 Seata Server
-
-
+  Seata 1.5.1 支持seata控制台 本地访问控制台地址：http://127.0.0.1:7091
+  通过seata控制台可以观察正在执行的事务信息和全局锁信息,事务执行结束即删除相关信息。
 ### 配置数据库
 
 首先，你需要有一个支持 InnoDB 引擎的 MySQL 数据库。
@@ -34,18 +39,19 @@
 将 `account-server`、`order-service`、`storage-service` 这三个应用中的 resources 目录下的 `application.yml` 文件中的如下配置修改成你运行环境中的实际配置。
 
 ```
-mysql.server.ip=your mysql server ip address
-mysql.server.port=your mysql server listening port
-mysql.db.name=your database name for test
-
-mysql.user.name=your mysql server username
-mysql.user.password=your mysql server password
-
+base:
+  config:
+    mdb:
+      hostname: your mysql server ip address
+      dbname: your database name for test
+      port: your mysql server listening port
+      username: your mysql server username
+      password: your mysql server password
 ```
 
 ### 创建 undo_log 表
 
-[Seata AT 模式]() 需要使用到 undo_log 表。
+Seata AT 模式 需要使用到 undo_log 表。
 
 ``` $sql
 -- 注意此处0.3.0+ 增加唯一索引 ux_undo_log
@@ -65,7 +71,7 @@ CREATE TABLE `undo_log` (
 ```
 ### 导入 seata-server db模式所需要的数据库表
 在数据库中初始化[global_table、branch_table、lock_table、distributed_lock]
-点击查看:https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql
+(https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)
 ```$sql
 -- -------------------------------- The script used when storeMode is 'db' --------------------------------
 -- the table to store GlobalSession data
@@ -179,7 +185,7 @@ CREATE TABLE `account_tbl` (
 1.运行 seata-server 启动Seata server
 示例中采用nacos 作为配置，注册中心 存储模式为：db 采用mysql 
 
-2.或点击这个页面 [https://github.com/seata/seata/releases](https://github.com/seata/seata/releases)，下载最新版本的 Seata Server 端.
+2.或点击这个页面 [Seata 官网Github](https://github.com/seata/seata/releases)，下载最新版本的 Seata Server 端.
 进入解压之后的 bin 目录，执行如下命令来启动, 所有启动参数为可选项。
 
 ```$shell
