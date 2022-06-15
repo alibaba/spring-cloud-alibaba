@@ -15,24 +15,24 @@ Before running this example, you need to complete the following steps:
 
 1. Configure the database
 
-1. Create UNDO_ LOG table
+2. Create UNDO_ LOG table
 
-1. Create the database tables needed by the business in the example
+3. Create the database tables needed by the business in the example
 
-1.Create the Nacos configuration in the example, data id: seata properties , Group:SEATA_ Group (Seata 1.5.1 default group) configuration import [nacos configuration]（ https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt )
-  At seata Add the following [transaction group configuration] required in the example to properties（ https://seata.io/zh-cn/docs/user/configurations.html )
+4. Create the Nacos configuration in the example, data id: `seata.properties` , Group: `SEATA_ Group` (Seata 1.5.1 default group) configuration import [nacos configuration](https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt)
+  At seata Add the following [transaction group configuration](https://seata.io/zh-cn/docs/user/configurations.html) required in the example to properties
 
-1. Start Seata Server
+5. Start Seata Server
    Seata 1.5.1 supports Seata console local access console address: http://127.0.0.1:7091
    Through the Seata console, you can observe the executing transaction information and global lock information, and delete the relevant information when the transaction is completed.
 
-###Configuration database
+### Configuration database
 
 First, you need a MySQL database that supports the InnoDB engine.
 
 **NOTE**: In fact, Seata supports different applications that use totally unrelated databases, but here we chose to use only one database for a simple demonstration of one principle.
 
-Will application in the resources directory of the `account-server', `order-service', `storage-service` three applications. The following configuration in the yml file is modified to the actual configuration in your running environment.
+Will application in the resources directory of the `account-server`, `order-service`, `storage-service` three applications. The following configuration in the yml file is modified to the actual configuration in your running environment.
 
 ```
 base:
@@ -46,7 +46,7 @@ base:
 
 ```
 
-###Create undo_ Log table
+### Create undo_ Log table
 
 Seata AT Mode Need to use undo_ Log table.
 
@@ -67,8 +67,7 @@ CREATE TABLE `undo_log` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
 ### Database tables needed to import seata-server DB schema
-Initialize in database[global_table、branch_table、lock_table、distributed_lock]
-(https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)
+Initialize in database [global_table、branch_table、lock_table、distributed_lock](https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)
 ```$sql
 -- -------------------------------- The script used when storeMode is 'db' --------------------------------
 -- the table to store GlobalSession data
@@ -182,7 +181,7 @@ CREATE TABLE `account_tbl` (
 1.Run seata-server to start Seata server
 The example uses Nacos as the configuration and the registry storage mode is: DB uses MySQL
 
-2. Or click on this page [ GitHub, the official website of Seata ] ( https://github.com/seata/seata/releases ), download the latest version of Sata Server.
+2. Or click on this page GitHub, the official website of [Seata](https://github.com/seata/seata/releases ), download the latest version of Sata Server.
 Enter the bin directory after unzipping and execute the following command to start with all the startup parameters optional.
 
 ```$shell
@@ -190,7 +189,7 @@ sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db) -h $HOST -e $ENV
 ```
 -p seata-server listening service port number
 -m storage mode, optional values: file, db. File is for single-point mode and DB is for HA mode. When using DB storage mode, you need to modify the database configuration of the store configuration node in the configuration and initialize [global_table, branch_table, and
-Lock_ Table] ( https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql )
+Lock_ Table](https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql )
 -h is used to solve seata-server and business side cross-network problems. The configured host value is displayed directly to the registry service available address host, which needs to be configured as public network IP or NATIP when cross-network. If both are in the same local area network, no configuration is required 
 -e for multi-environment configuration center isolation   
 Start Seata Server with the following command
@@ -203,9 +202,9 @@ sh seata-server.sh -p 8091 -m file
 
 ## Run Example
 
-Run the Main functions of the three applications `account-server', `order-service', `storage-service', and `business-service', respectively, to start the example.
+Run the Main functions of the three applications `account-server`, `order-service`, `storage-service` and `business-service`, respectively, to start the example.
 
-After launching the example, the following URLs are accessed through the GET method of HTTP to validate scenarios where other services are invoked through RestTemplate and FeignClient in `business-service', respectively.
+After launching the example, the following URLs are accessed through the GET method of HTTP to validate scenarios where other services are invoked through RestTemplate and FeignClient in `business-service` respectively.
 
 ```$xslt
 http://127.0.0.1:18081/seata/feign
@@ -218,7 +217,7 @@ http://127.0.0.1:18081/seata/rest
 
 ### Whether Xid information was successfully transmitted
 
-In the Controller of the three services `account-server', `order-service', and `storage-service', the first logic executed is to output the Xid information in the RootContext. If you see that the correct Xid information is output, it changes every time and the Xid of all services in the same call is consistent. This indicates that the transfer and restore of Seata's Xid are normal.
+In the Controller of the three services `account-server`, `order-service` and `storage-service`, the first logic executed is to output the Xid information in the RootContext. If you see that the correct Xid information is output, it changes every time and the Xid of all services in the same call is consistent. This indicates that the transfer and restore of Seata's Xid are normal.
 ### Consistency of data in database
 
 In this example, we simulate a scenario where a user purchases goods, StorageService is responsible for deducting the inventory quantity, OrderService is responsible for saving the order, and AccountService is responsible for deducting the user account balance.

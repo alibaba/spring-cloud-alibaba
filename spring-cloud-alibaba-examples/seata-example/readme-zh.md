@@ -15,11 +15,11 @@
 
 1. 配置数据库
 
-1. 创建 UNDO_LOG 表
+2. 创建 UNDO_LOG 表
 
-1. 创建 示例中 业务所需要的数据库表
+3. 创建 示例中 业务所需要的数据库表
 
-1. 创建示例中Nacos data-id: seata.properties , Group:SEATA_GROUP(seata 1.5.1 默认分组) ,导入 [Nacos 配置](https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt)
+4. 创建示例中Nacos data-id: `seata.properties` , Group: `SEATA_GROUP`(seata 1.5.1 默认分组) ,导入 [Nacos 配置](https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt)
     在seata.properties中增加示例中需要的如下[事务群组配置](https://seata.io/zh-cn/docs/user/configurations.html)
 ```
    service.vgroupMapping.order-service-tx-group=default
@@ -27,7 +27,7 @@
    service.vgroupMapping.business-service-tx-group=default
    service.vgroupMapping.storage-service-tx-group=default
 ```   
-1. 启动 Seata Server
+5. 启动 Seata Server
   Seata 1.5.1 支持seata控制台 本地访问控制台地址：http://127.0.0.1:7091
   通过seata控制台可以观察正在执行的事务信息和全局锁信息,事务执行结束即删除相关信息。
 ### 配置数据库
@@ -70,8 +70,7 @@ CREATE TABLE `undo_log` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
 ### 导入 seata-server db模式所需要的数据库表
-在数据库中初始化[global_table、branch_table、lock_table、distributed_lock]
-(https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)
+在数据库中初始化[global_table、branch_table、lock_table、distributed_lock](https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)
 ```$sql
 -- -------------------------------- The script used when storeMode is 'db' --------------------------------
 -- the table to store GlobalSession data
