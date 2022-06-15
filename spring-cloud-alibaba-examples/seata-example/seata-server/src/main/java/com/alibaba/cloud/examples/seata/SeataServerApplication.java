@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.seata;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @author xiaojing
+ * @author <a href="mailto:zhangqian9158@gmail.com">ZHANGQIAN</a>
  */
-@SpringBootApplication
-public class StorageApplication {
+@SpringBootApplication(scanBasePackages = { "io.seata" })
+public class SeataServerApplication {
 
 	public static void main(String[] args) {
-
-		SpringApplication.run(StorageApplication.class, args);
+		SpringApplication.run(io.seata.server.ServerApplication.class, args);
 	}
 
 }
