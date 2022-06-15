@@ -32,7 +32,7 @@ First, you need a MySQL database that supports the InnoDB engine.
 
 **NOTE**: In fact, Seata supports different applications that use totally unrelated databases, but here we chose to use only one database for a simple demonstration of one principle.
 
-Will `application'in the resources directory of the `account-server', `order-service', `storage-service` three applications. The following configuration in the yml`file is modified to the actual configuration in your running environment.
+Will application in the resources directory of the `account-server', `order-service', `storage-service` three applications. The following configuration in the yml file is modified to the actual configuration in your running environment.
 
 ```
 base:
@@ -191,7 +191,7 @@ sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db) -h $HOST -e $ENV
 -p seata-server listening service port number
 -m storage mode, optional values: file, db. File is for single-point mode and DB is for HA mode. When using DB storage mode, you need to modify the database configuration of the store configuration node in the configuration and initialize [global_table, branch_table, and
 Lock_ Table] ( https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql )
--h is used to solve seata-server and business side cross-network problems. The configured host value is displayed directly to the registry's service available address host, which needs to be configured as public network IP or NATIP when cross-network. If both are in the same local area network, no configuration is required 
+-h is used to solve seata-server and business side cross-network problems. The configured host value is displayed directly to the registry service available address host, which needs to be configured as public network IP or NATIP when cross-network. If both are in the same local area network, no configuration is required 
 -e for multi-environment configuration center isolation   
 Start Seata Server with the following command
 
@@ -199,7 +199,7 @@ Start Seata Server with the following command
 sh seata-server.sh -p 8091 -m file
 ```
 
-**Note** If you modified the endpoint and the registry uses the default file type, remember the `file'you need in each of the sample projects. In the conf`file, modify the value of grouplist (when registry.type or config.type in registry.conf is file, the file name in the internal file node is read; if type is not file, the data is read directly from the registry configuration center for the corresponding metadata of the configuration type), Nacos is recommended as the configuration registry.
+**Note** If you modified the endpoint and the registry uses the default file type, remember the file you need in each of the sample projects. In the conf`file, modify the value of grouplist (when registry.type or config.type in registry.conf is file, the file name in the internal file node is read; if type is not file, the data is read directly from the registry configuration center for the corresponding metadata of the configuration type), Nacos is recommended as the configuration registry.
 
 ## Run Example
 
