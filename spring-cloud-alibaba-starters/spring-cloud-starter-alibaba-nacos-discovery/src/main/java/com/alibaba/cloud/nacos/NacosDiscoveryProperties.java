@@ -16,19 +16,6 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.PostConstruct;
-
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
@@ -36,7 +23,6 @@ import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import com.alibaba.spring.util.PropertySourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -45,6 +31,23 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
+
+import javax.annotation.PostConstruct;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.alibaba.nacos.api.PropertyKeyConst.ACCESS_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.CLUSTER_NAME;
@@ -160,6 +163,11 @@ public class NacosDiscoveryProperties {
 	 * which network interface's ip you want to register.
 	 */
 	private String networkInterface = "";
+    
+    /**
+     * The preferred ip version you want to register for your service instance, v4, v6 or both.
+     */
+    private String preferredIPversion = "v4";
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
@@ -240,43 +248,95 @@ public class NacosDiscoveryProperties {
 		endpoint = Objects.toString(endpoint, "");
 		namespace = Objects.toString(namespace, "");
 		logName = Objects.toString(logName, "");
-
-		if (StringUtils.isEmpty(ip)) {
-			// traversing network interfaces if didn't specify a interface
-			if (StringUtils.isEmpty(networkInterface)) {
-				ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-			}
-			else {
-				NetworkInterface netInterface = NetworkInterface
-						.getByName(networkInterface);
-				if (null == netInterface) {
-					throw new IllegalArgumentException(
-							"no such interface " + networkInterface);
-				}
-
-				Enumeration<InetAddress> inetAddress = netInterface.getInetAddresses();
-				while (inetAddress.hasMoreElements()) {
-					InetAddress currentAddress = inetAddress.nextElement();
-					if (currentAddress instanceof Inet4Address
-							&& !currentAddress.isLoopbackAddress()) {
-						ip = currentAddress.getHostAddress();
-						break;
-					}
-				}
-
-				if (StringUtils.isEmpty(ip)) {
-					throw new RuntimeException("cannot find available ip from"
-							+ " network interface " + networkInterface);
-				}
-
-			}
-		}
-
+		
+		checkAndSetIp();
+		
 		this.overrideFromEnv(environment);
 		if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
 			applicationEventPublisher
 					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
 		}
+	}
+	
+	private void checkAndSetIp() throws SocketException {
+		if (StringUtils.isEmpty(ip)) {
+			if ("v4".equalsIgnoreCase(preferredIPversion)) {
+				ip = getFirstNotReservedIpV4Address(networkInterface);
+			}
+			if ("v6".equalsIgnoreCase(preferredIPversion)) {
+				ip = getFirstNotReservedIpV6Address(networkInterface).get();
+			}
+			if ("both".equalsIgnoreCase(preferredIPversion)) {
+				ip = getFirstNotReservedBothAddress(networkInterface);
+			}
+		}
+	}
+	
+	private static String getFirstNotReservedBothAddress(final String name) throws SocketException {
+		String ipv4 = getFirstNotReservedIpV4Address(name);
+		Optional<String> ipv6 = getFirstNotReservedIpV6Address(name);
+		return ipv6.isPresent() ? ipv4 + "," + ipv6 : ipv4;
+	}
+	
+	private static Optional<String> getFirstNotReservedIpV6Address(final String name) throws SocketException {
+		for(NetworkInterface ifc : getNetworkInterfaces(name)) {
+			if (!ifc.isUp()) {
+				continue;
+			}
+			Optional<InetAddress> inetAddress = getInetAddress(ifc).filter(each -> each instanceof Inet6Address);
+			if (inetAddress.isPresent()) {
+				String ip = inetAddress.get().getHostAddress();
+				int index = ip.indexOf('%');
+				return Optional.of(index > 0 ? ip.substring(0, index) : ip);
+			}
+		}
+		return Optional.empty();
+	}
+	
+	private static Collection<NetworkInterface> getNetworkInterfaces(final String name) throws SocketException {
+		if (null == name) {
+			return Collections.list(NetworkInterface.getNetworkInterfaces());
+		}
+		NetworkInterface nic = NetworkInterface.getByName(name);
+		if (null == nic) {
+			throw new IllegalArgumentException("no such interface " + name);
+		}
+		return Collections.singletonList(nic);
+	}
+	
+	private static Optional<InetAddress> getInetAddress(final NetworkInterface ifc) {
+		for (Enumeration<InetAddress> inetAddresses = ifc.getInetAddresses(); inetAddresses.hasMoreElements();) {
+			InetAddress inetAddress = inetAddresses.nextElement();
+			if (isReservedAddress(inetAddress)) {
+				continue;
+			}
+			return Optional.ofNullable(inetAddress);
+		}
+		return Optional.empty();
+	}
+	
+	public static String getFirstNotReservedIpV4Address(final String name) throws SocketException {
+		for(NetworkInterface ifc : getNetworkInterfaces(name)) {
+			if (!ifc.isUp()) {
+				continue;
+			}
+			Optional<InetAddress> inetAddress = getInetAddress(ifc).filter(each -> each instanceof Inet4Address);
+			if (inetAddress.isPresent()) {
+				String ip = inetAddress.get().getHostAddress();
+				if (!StringUtils.isEmpty(name) && StringUtils.isEmpty(ip)) {
+					throw new RuntimeException("cannot find available ip from network interface " + name);
+				}
+				return ip;
+			}
+		}
+		throw new RuntimeException("cannot find any network interface is up and running");
+	}
+	
+	private static boolean isReservedAddress(InetAddress inetAddress) {
+		if(inetAddress.isAnyLocalAddress() || inetAddress.isLinkLocalAddress() || inetAddress.isLoopbackAddress()) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
