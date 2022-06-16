@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -222,9 +221,6 @@ public class NacosDiscoveryProperties {
 	private boolean failFast = true;
 
 	@Autowired
-	private InetUtils inetUtils;
-
-	@Autowired
 	private Environment environment;
 
 	@Autowired
@@ -370,10 +366,6 @@ public class NacosDiscoveryProperties {
 
 	public void setLogName(String logName) {
 		this.logName = logName;
-	}
-
-	public void setInetUtils(InetUtils inetUtils) {
-		this.inetUtils = inetUtils;
 	}
 
 	public float getWeight() {
