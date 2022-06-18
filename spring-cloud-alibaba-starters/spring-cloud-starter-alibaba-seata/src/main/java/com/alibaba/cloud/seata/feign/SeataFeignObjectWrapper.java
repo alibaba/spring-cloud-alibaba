@@ -16,12 +16,13 @@
 
 package com.alibaba.cloud.seata.feign;
 
+import java.lang.reflect.Field;
+
 import feign.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.cloud.loadbalancer.blocking.client.BlockingLoadBalancerClient;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
 import org.springframework.cloud.openfeign.ribbon.CachingSpringLoadBalancerFactory;
@@ -29,11 +30,16 @@ import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 
 /**
  * @author xiaojing
+ * @author alan-tang-tt
  */
 public class SeataFeignObjectWrapper {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(SeataFeignObjectWrapper.class);
+
+	private static final String EXCEPTION_WARNING = "Exception occurred while trying to access the delegate's field. Will fallback to default instrumentation mechanism, which means that the delegate might not be instrumented";
+
+	private static final String DELEGATE = "delegate";
 
 	private final BeanFactory beanFactory;
 
@@ -48,16 +54,26 @@ public class SeataFeignObjectWrapper {
 	Object wrap(Object bean) {
 		if (bean instanceof Client && !(bean instanceof SeataFeignClient)) {
 			if (bean instanceof LoadBalancerFeignClient) {
-				LoadBalancerFeignClient client = ((LoadBalancerFeignClient) bean);
-				return new SeataLoadBalancerFeignClient(client.getDelegate(), factory(),
-						clientFactory(), this);
+				return instrumentedLoadBalancerClient(bean);
 			}
 			if (bean instanceof FeignBlockingLoadBalancerClient) {
-				FeignBlockingLoadBalancerClient client = (FeignBlockingLoadBalancerClient) bean;
-				return new SeataFeignBlockingLoadBalancerClient(client.getDelegate(),
-						beanFactory.getBean(BlockingLoadBalancerClient.class), this);
+				return instrumentedLoadBalancerClient(bean);
 			}
 			return new SeataFeignClient(this.beanFactory, (Client) bean);
+		}
+		return bean;
+	}
+
+	private Object instrumentedLoadBalancerClient(Object bean) {
+		try {
+			Field delegate = bean.getClass().getDeclaredField(DELEGATE);
+			delegate.setAccessible(true);
+			delegate.set(bean, new SeataFeignObjectWrapper(this.beanFactory)
+					.wrap(delegate.get(bean)));
+		}
+		catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException
+				| SecurityException e) {
+			LOG.warn(EXCEPTION_WARNING, e);
 		}
 		return bean;
 	}
