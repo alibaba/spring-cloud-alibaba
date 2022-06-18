@@ -17,19 +17,23 @@
 package com.alibaba.cloud.sentinel.custom;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import com.alibaba.cloud.sentinel.SentinelProperties;
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
+import com.alibaba.csp.sentinel.command.CommandCenterProvider;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
 import com.alibaba.csp.sentinel.log.LogBase;
+import com.alibaba.csp.sentinel.log.RecordLog;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRule;
+import com.alibaba.csp.sentinel.transport.CommandCenter;
 import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -134,6 +138,21 @@ public class SentinelAutoConfiguration {
 			InitExecutor.doInit();
 		}
 
+	}
+
+	@PreDestroy
+	private void destroy() {
+		CommandCenter commandCenter = CommandCenterProvider.getCommandCenter();
+		if (commandCenter != null) {
+			try {
+				commandCenter.stop();
+			}
+			catch (Exception ex) {
+				RecordLog.warn("[{}] WARN: Stop failed",
+						commandCenter.getClass().getName(), ex);
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	@Bean
