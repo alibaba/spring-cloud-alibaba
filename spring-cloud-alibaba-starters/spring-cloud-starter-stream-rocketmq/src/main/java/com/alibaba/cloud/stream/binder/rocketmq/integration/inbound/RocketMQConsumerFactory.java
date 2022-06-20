@@ -125,7 +125,7 @@ public final class RocketMQConsumerFactory {
 				null == rpcHook && consumerProperties.getVipChannelEnabled());
 		consumer.setInstanceName(
 				RocketMQUtils.getInstanceName(rpcHook, consumerProperties.getGroup()));
-		if(null != allocateMessageQueueStrategy) {
+		if (null != allocateMessageQueueStrategy) {
 			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 		}
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
