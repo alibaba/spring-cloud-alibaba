@@ -195,7 +195,8 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 			throw new MessagingException(MessageBuilder.withPayload(
 					"DefaultMQPushConsumer init failed, Caused by " + e.getMessage())
 					.build(), e);
-		}finally {
+		}
+		finally {
 			InstrumentationManager.addHealthInstrumentation(instrumentation);
 		}
 	}

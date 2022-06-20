@@ -96,7 +96,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			consumer.registerTopicMessageQueueChangeListener(topic, messageQueuesForTopic::put);
 			this.consumer.start();
 			//Initialize messageQueuesForTopic immediately
-			messageQueuesForTopic.put(topic,consumer.fetchMessageQueues(topic));
+			messageQueuesForTopic.put(topic, consumer.fetchMessageQueues(topic));
 			instrumentation.markStartedSuccessfully();
 		}
 		catch (MQClientException e) {
@@ -164,7 +164,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 				.convertMessage2Spring(messageExt);
 		return MessageBuilder.fromMessage(message)
 				.setHeader(IntegrationMessageHeaderAccessor.ACKNOWLEDGMENT_CALLBACK,
-						new RocketMQAckCallback(this.consumer,messageQueue, messageExt))
+						new RocketMQAckCallback(this.consumer, messageQueue, messageExt))
 				.build();
 	}
 
