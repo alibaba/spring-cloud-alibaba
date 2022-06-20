@@ -1,11 +1,11 @@
 base:
   config:
     mdb:
-      hostname: your mysql server ip address
-      dbname: your database name for test
-      port: your mysql server listening port
-      username: your mysql server username
-      password: your mysql server password
+      hostname: #your mysql server ip address
+      dbname: #your database name for test
+      port: #your mysql server listening port
+      username: #your mysql server username
+      password: #your mysql server password
 
 server:
   port: 18082
