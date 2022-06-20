@@ -504,7 +504,7 @@ public class NacosConfigProperties {
 				.forEach((key, list) -> {
 					list.stream()
 							.reduce((a, b) -> new Config(a.getDataId(), a.getGroup(),
-									a.isRefresh() || (b != null && b.isRefresh())))
+									a.isRefresh() || (b != null && b.isRefresh()), a.getFileExtension()))
 							.ifPresent(result::add);
 				});
 		this.setSharedConfigs(result);
@@ -629,6 +629,11 @@ public class NacosConfigProperties {
 		 * the group of extended configuration, the default value is DEFAULT_GROUP.
 		 */
 		private String group = "DEFAULT_GROUP";
+		
+		/**
+		 * the suffix of nacos config dataId, also the file extension of config content.
+		 */
+		private String fileExtension;
 
 		/**
 		 * whether to support dynamic refresh, the default does not support .
@@ -655,6 +660,11 @@ public class NacosConfigProperties {
 		public Config(String dataId, String group, boolean refresh) {
 			this(dataId, group);
 			this.refresh = refresh;
+		}
+		
+		public Config(String dataId, String group, boolean refresh, String fileExtension) {
+			this(dataId, group, refresh);
+			this.fileExtension = fileExtension;
 		}
 
 		public String getDataId() {
@@ -683,13 +693,21 @@ public class NacosConfigProperties {
 			this.refresh = refresh;
 			return this;
 		}
-
+		
+		public String getFileExtension() {
+			return fileExtension;
+		}
+		
+		public void setFileExtension(String fileExtension) {
+			this.fileExtension = fileExtension;
+		}
+		
 		@Override
 		public String toString() {
-			return "Config{" + "dataId='" + dataId + '\'' + ", group='" + group + '\''
-					+ ", refresh=" + refresh + '}';
+			return "Config{" + "dataId='" + dataId + '\'' + ", group='" + group + '\'' + ", fileExtension='"
+					+ fileExtension + '\'' + ", refresh=" + refresh + '}';
 		}
-
+		
 		@Override
 		public boolean equals(Object o) {
 			if (this == o) {
@@ -700,12 +718,12 @@ public class NacosConfigProperties {
 			}
 			Config config = (Config) o;
 			return refresh == config.refresh && Objects.equals(dataId, config.dataId)
-					&& Objects.equals(group, config.group);
+					&& Objects.equals(group, config.group) && Objects.equals(fileExtension, config.fileExtension);
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(dataId, group, refresh);
+			return Objects.hash(dataId, group, refresh, fileExtension);
 		}
 
 	}
