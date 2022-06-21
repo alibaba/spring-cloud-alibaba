@@ -22,7 +22,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBean;
  * Refresh behavior.
  *
  * @author freeman
- * @since 2021.0.1.1
+ * @since 2.2.8
  */
 public enum RefreshBehavior {
 	/**

@@ -48,7 +48,7 @@ import static com.alibaba.cloud.nacos.refresh.RefreshBehavior.ALL_BEANS;
  * as the default behavior. </strong>
  *
  * @author freeman
- * @since 2021.0.1.1
+ * @since 2.2.8
  */
 public class SmartConfigurationPropertiesRebinder
 		extends ConfigurationPropertiesRebinder {
