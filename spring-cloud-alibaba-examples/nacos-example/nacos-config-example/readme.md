@@ -58,7 +58,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		
 		content is:
 		
-   		spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
+   		spring.cloud.nacos.config.serverAddr=127.0.0.1:8848
 	    spring.cloud.nacos.config.prefix=PREFIX
         spring.cloud.nacos.config.group=GROUP
         spring.cloud.nacos.config.namespace=NAMESPACE
