@@ -21,7 +21,12 @@ Before running this example, you need to complete the following steps:
 
 1.Create the Nacos configuration in the example, data id: seata properties , Group:SEATA_ Group (Seata 1.5.1 default group) configuration import [nacos configuration]（ https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt )
   At seata Add the following [transaction group configuration] required in the example to properties（ https://seata.io/zh-cn/docs/user/configurations.html )
-
+```
+   service.vgroupMapping.order-service-tx-group=default
+   service.vgroupMapping.account-service-tx-group=default
+   service.vgroupMapping.business-service-tx-group=default
+   service.vgroupMapping.storage-service-tx-group=default
+```  
 1. Start Seata Server
    Seata 1.5.1 supports Seata console local access console address: http://127.0.0.1:7091
    Through the Seata console, you can observe the executing transaction information and global lock information, and delete the relevant information when the transaction is completed.
