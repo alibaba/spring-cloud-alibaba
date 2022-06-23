@@ -30,6 +30,6 @@ mvn_run_integration_test() {
   set -x
 
   # run the integration tests
-  $RETRY mvn -B -ntp -DredirectTestOutputToFile=true -f spring-cloud-alibaba-tests/spring-cloud-alibaba-testcontainers/pom.xml -Pmain test "$@"
+  $RETRY ./mvnw -nsu -B install -f spring-cloud-alibaba-tests/spring-cloud-alibaba-testcontainers/pom.xml -Pit.env.docker test "$@"
   )
 }

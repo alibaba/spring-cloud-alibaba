@@ -68,6 +68,13 @@ jobs:
       - name: Testing
         run: mvn clean test
 #        run: mvn clean -Dit.enabled=true test
+      - name: Download IT image
+        uses: actions/download-artifact@v3
+        with:
+          name: it-image
+          path: /tmp/
+      - name: Load IT image
+        run: docker load -i /tmp/spring-cloud-alibaba-testcontainers.tar
       - name: "run install by skip tests"
         if: ${{ steps.check_changes.outputs.docs_only != 'true' }}
         run: mvn -q -B -ntp clean install -DskipTests
