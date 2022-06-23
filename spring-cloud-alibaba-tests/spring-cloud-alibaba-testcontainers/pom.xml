@@ -111,6 +111,54 @@
 
     <profiles>
         <profile>
+            <id>it.env.docker</id>
+            <properties>
+                <it.cluster.env.type>DOCKER</it.cluster.env.type>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/test/assembly/docker-spring-cloud-assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>assembly</id>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>dockerfile-maven-plugin</artifactId>
+                        <configuration>
+                            <repository>apache/spring-cloud-alibaba-testcontainers</repository>
+                            <tag>${project.version}</tag>
+                            <tag>latest</tag>
+                            <buildArgs>
+                                <APP_NAME>${project.build.finalName}</APP_NAME>
+                            </buildArgs>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>spring-cloud-alibaba-testcontainers-bin</id>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>skipIntegrationTests</id>
             <activation>
                 <property>
