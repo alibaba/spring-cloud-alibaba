@@ -190,7 +190,7 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 
 	@Override
 	public int getPhase() {
-		return Integer.MAX_VALUE;
+		return Integer.MAX_VALUE - 1;
 	}
 
 	public void nacosServicesWatch() {
