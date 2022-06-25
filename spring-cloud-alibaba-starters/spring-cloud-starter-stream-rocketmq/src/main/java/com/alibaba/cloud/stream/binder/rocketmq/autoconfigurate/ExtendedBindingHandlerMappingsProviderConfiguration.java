@@ -52,9 +52,9 @@ public class ExtendedBindingHandlerMappingsProviderConfiguration {
 		return new RocketMQConfigBeanPostProcessor();
 	}
 
-
 	/**
-	 * if you want to customize a bean, please use this BeanName {@code RocketMQMessageConverter.DEFAULT_NAME}.
+	 * if you want to customize a bean, please use this BeanName
+	 * {@code RocketMQMessageConverter.DEFAULT_NAME}.
 	 * @return CompositeMessageConverter Bean.
 	 */
 	@Bean(RocketMQMessageConverter.DEFAULT_NAME)

@@ -44,7 +44,6 @@ public class TestController {
 	@Autowired
 	private DiscoveryClient discoveryClient;
 
-
 	@GetMapping("/echo-rest/{str}")
 	public String rest(@PathVariable String str) {
 		return restTemplate.getForObject("http://service-provider/echo/" + str,

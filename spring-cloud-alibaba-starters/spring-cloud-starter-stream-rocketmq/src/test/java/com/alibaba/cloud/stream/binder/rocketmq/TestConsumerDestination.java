@@ -19,6 +19,7 @@ package com.alibaba.cloud.stream.binder.rocketmq;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 
 public class TestConsumerDestination implements ConsumerDestination {
+
 	private String name;
 
 	public TestConsumerDestination(String name) {
@@ -29,4 +30,5 @@ public class TestConsumerDestination implements ConsumerDestination {
 	public String getName() {
 		return name;
 	}
+
 }

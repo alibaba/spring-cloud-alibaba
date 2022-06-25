@@ -50,7 +50,6 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
 
-
 /**
  * A {@link org.springframework.cloud.stream.binder.Binder} that uses RocketMQ as the
  * underlying middleware.
@@ -118,8 +117,9 @@ public class RocketMQMessageChannelBinder extends
 			throws Exception {
 		boolean anonymous = !StringUtils.hasLength(group);
 		/***
-		 * 	When using DLQ, at least the group property must be provided for proper naming of the DLQ destination
-		 *  According to https://docs.spring.io/spring-cloud-stream/docs/3.2.1/reference/html/spring-cloud-stream.html#spring-cloud-stream-reference
+		 * When using DLQ, at least the group property must be provided for proper naming
+		 * of the DLQ destination According to
+		 * https://docs.spring.io/spring-cloud-stream/docs/3.2.1/reference/html/spring-cloud-stream.html#spring-cloud-stream-reference
 		 */
 		if (anonymous && NamespaceUtil.isDLQTopic(destination.getName())) {
 			throw new RuntimeException(
@@ -221,4 +221,5 @@ public class RocketMQMessageChannelBinder extends
 	public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
 		return this.extendedBindingProperties.getExtendedPropertiesEntryClass();
 	}
+
 }

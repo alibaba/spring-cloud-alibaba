@@ -30,12 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
  * does not meet the requirements, the extended configuration can be used to override the
  * shared configuration. Priority: Main Configuration > Extended Configuration > Shared
  * Configuration.
+ *
  * @author lixiaoshuang
  */
 @RestController
 @RequestMapping("/nacos/extension/config")
 @RefreshScope
 public class ExtensionConfigExample {
+
 	@Value("${spring.datasource.name:}")
 	private String name;
 
@@ -61,4 +63,5 @@ public class ExtensionConfigExample {
 		result.put("driverClassName", driverClassName);
 		return result;
 	}
+
 }
