@@ -62,7 +62,7 @@ public class NacosContainerTest extends NacosBootTester {
 
 	@Before
 	public  void setUp() throws Exception{
-		nacosContainer = new NacosContainer("nacos12133131",image);
+		nacosContainer = new NacosContainer("nacos-example",image);
 		nacosContainer.start();
 	}
 

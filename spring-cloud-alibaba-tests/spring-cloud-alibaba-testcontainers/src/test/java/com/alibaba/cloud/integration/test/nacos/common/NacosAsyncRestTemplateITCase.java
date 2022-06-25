@@ -30,8 +30,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.alibaba.cloud.integration.common.nacos.Const.NACOS_SERVER_URL;
 
@@ -46,7 +50,7 @@ public class NacosAsyncRestTemplateITCase {
     
     @Before
     public void setUp() throws NacosException {
-        nacosContainer = new NacosContainer("nacos12133131",image);
+        nacosContainer = new NacosContainer("nacos-example",image);
         nacosContainer.start();
     }
     
@@ -82,11 +86,12 @@ public class NacosAsyncRestTemplateITCase {
     
     @Test
     public void test_url_post_form() throws Exception {
+    
         String url =  NACOS_SERVER_URL + "/instance";
         Map<String, String> param = new HashMap<>();
         param.put("serviceName", "app-test");
         param.put("port", "8080");
-        param.put("ip", "11.11.11.11");
+        param.put("ip", "127.0.0.1");
         CallbackMap<String> callbackMap = new CallbackMap<>();
         nacosRestTemplate.postForm(url, Header.newInstance(), Query.newInstance(), param, String.class, callbackMap);
         Thread.sleep(2000);

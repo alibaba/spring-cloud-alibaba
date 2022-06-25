@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 import static com.alibaba.cloud.integration.common.nacos.Const.NACOS_SERVER_PORT;
+import static java.lang.String.format;
 
 
 public class NacosContainer<SelfT extends NacosContainer<SelfT>> extends ChaosContainer<SelfT> {
@@ -33,12 +34,12 @@ public class NacosContainer<SelfT extends NacosContainer<SelfT>> extends ChaosCo
 
 	public NacosContainer(String clusterName, String image) {
 		super(clusterName, image);
-		withExposedPorts(NACOS_SERVER_PORT)
-//				.withCommand("./startup.sh -m standalone")
-				.withCreateContainerCmdModifier(
-					cmd -> cmd.withHostConfig(
-						new HostConfig()
-							.withPortBindings(new PortBinding(Ports.Binding.bindPort(8849), new ExposedPort(NACOS_SERVER_PORT)))));;
+			withExposedPorts(NACOS_SERVER_PORT)
+			.withCommand(format("/bin/bash -c '</dev/tcp/localhost/%d'", NACOS_SERVER_PORT));
+//				.withCreateContainerCmdModifier(
+//					cmd -> cmd.withHostConfig(
+//						new HostConfig()
+//							.withPortBindings(new PortBinding(Ports.Binding.bindPort(8849), new ExposedPort(NACOS_SERVER_PORT)))));;
 
 	}
 

@@ -167,16 +167,6 @@
             </activation>
             <modules />
         </profile>
-        <profile>
-            <id>main</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>../intergration/nacos-docker-tests</module>
-                <module>../intergration/rocketmq-docker-tests</module>
-            </modules>
-        </profile>
     </profiles>
 
 </project>
