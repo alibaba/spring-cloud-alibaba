@@ -49,6 +49,7 @@ public class RocketMQDelayConsumeApplication {
 
 	/**
 	 * Produce delay messages.
+	 * @return applicationrunner
 	 */
 	@Bean
 	public ApplicationRunner producerDelay() {

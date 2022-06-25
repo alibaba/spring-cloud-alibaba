@@ -53,10 +53,10 @@ public class DockingInterfaceExample {
 
 	/**
 	 * Get configuration information.
-	 *
 	 * @param dataId dataId
 	 * @param group group
 	 * @return config
+	 * @throws NacosException query config from nacos server failed
 	 */
 	@RequestMapping("/getConfig")
 	public String getConfig(@RequestParam("dataId") String dataId,
@@ -71,11 +71,11 @@ public class DockingInterfaceExample {
 
 	/**
 	 * Publish configuration.
-	 *
 	 * @param dataId dataId
 	 * @param group group
 	 * @param content content
 	 * @return boolean
+	 * @throws NacosException publish config from nacos server failed
 	 */
 	@RequestMapping("/publishConfig")
 	public boolean publishConfig(@RequestParam("dataId") String dataId,
@@ -90,10 +90,10 @@ public class DockingInterfaceExample {
 
 	/**
 	 * Delete configuration.
-	 *
 	 * @param dataId dataId
 	 * @param group group
 	 * @return boolean
+	 * @throws NacosException remove config from nacos server failed
 	 */
 	@RequestMapping("/remoteConfig")
 	public boolean remoteConfig(@RequestParam("dataId") String dataId,
@@ -108,9 +108,10 @@ public class DockingInterfaceExample {
 
 	/**
 	 * Add listener configuration information.
-	 *
 	 * @param dataId dataId
 	 * @param group group
+	 * @return config
+	 * @throws NacosException add listener to nacos server failed
 	 */
 	@RequestMapping("/listener")
 	public String listenerConfig(@RequestParam("dataId") String dataId,
