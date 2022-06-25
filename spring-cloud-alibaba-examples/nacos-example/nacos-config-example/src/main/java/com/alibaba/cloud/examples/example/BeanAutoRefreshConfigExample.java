@@ -47,4 +47,5 @@ public class BeanAutoRefreshConfigExample {
 		result.put("namespace", nacosConfigInfo.getNamespace());
 		return result;
 	}
+
 }

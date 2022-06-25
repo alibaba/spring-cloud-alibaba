@@ -92,10 +92,11 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 			// this.consumer.setPullBatchSize(1);
 			this.consumer.subscribe(topic, messageSelector);
 			this.consumer.setAutoCommit(false);
-			//register TopicMessageQueueChangeListener for messageQueuesForTopic
-			consumer.registerTopicMessageQueueChangeListener(topic, messageQueuesForTopic::put);
+			// register TopicMessageQueueChangeListener for messageQueuesForTopic
+			consumer.registerTopicMessageQueueChangeListener(topic,
+					messageQueuesForTopic::put);
 			this.consumer.start();
-			//Initialize messageQueuesForTopic immediately
+			// Initialize messageQueuesForTopic immediately
 			messageQueuesForTopic.put(topic, consumer.fetchMessageQueues(topic));
 			instrumentation.markStartedSuccessfully();
 		}
@@ -110,7 +111,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 	}
 
 	private MessageQueue acquireCurrentMessageQueue(String topic, int queueId,
-													String brokerName) {
+			String brokerName) {
 		Collection<MessageQueue> messageQueueSet = messageQueuesForTopic.get(topic);
 		if (CollectionUtils.isEmpty(messageQueueSet)) {
 			return null;
@@ -154,8 +155,8 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		if (null == messageExt) {
 			return null;
 		}
-		MessageQueue messageQueue = this.acquireCurrentMessageQueue(messageExt.getTopic(), messageExt.getQueueId(),
-				messageExt.getBrokerName());
+		MessageQueue messageQueue = this.acquireCurrentMessageQueue(messageExt.getTopic(),
+				messageExt.getQueueId(), messageExt.getBrokerName());
 		if (messageQueue == null) {
 			throw new IllegalArgumentException(
 					"The message queue is not in assigned list");

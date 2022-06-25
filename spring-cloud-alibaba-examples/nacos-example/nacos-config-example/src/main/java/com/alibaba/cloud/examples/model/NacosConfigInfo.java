@@ -74,4 +74,5 @@ public class NacosConfigInfo {
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
+
 }

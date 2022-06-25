@@ -32,6 +32,7 @@ import org.springframework.messaging.Message;
  */
 @SpringBootApplication
 public class RocketMQBroadcastConsumer1Application {
+
 	private static final Logger log = LoggerFactory
 			.getLogger(RocketMQBroadcastConsumer1Application.class);
 
@@ -42,7 +43,9 @@ public class RocketMQBroadcastConsumer1Application {
 	@Bean
 	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
-			log.info(Thread.currentThread().getName() + " Consumer1 Receive New Messages: " + msg.getPayload().getMsg());
+			log.info(Thread.currentThread().getName()
+					+ " Consumer1 Receive New Messages: " + msg.getPayload().getMsg());
 		};
 	}
+
 }

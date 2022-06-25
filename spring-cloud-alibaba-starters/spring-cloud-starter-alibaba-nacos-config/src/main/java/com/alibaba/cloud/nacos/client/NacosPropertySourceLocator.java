@@ -157,9 +157,11 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		for (NacosConfigProperties.Config config : configs) {
 			String fileExtension = config.getFileExtension();
 			if (StringUtils.isEmpty(fileExtension)) {
-				fileExtension = NacosDataParserHandler.getInstance().getFileExtension(config.getDataId());
+				fileExtension = NacosDataParserHandler.getInstance()
+						.getFileExtension(config.getDataId());
 			}
-			loadNacosDataIfPresent(composite, config.getDataId(), config.getGroup(), fileExtension, config.isRefresh());
+			loadNacosDataIfPresent(composite, config.getDataId(), config.getGroup(),
+					fileExtension, config.isRefresh());
 		}
 	}
 

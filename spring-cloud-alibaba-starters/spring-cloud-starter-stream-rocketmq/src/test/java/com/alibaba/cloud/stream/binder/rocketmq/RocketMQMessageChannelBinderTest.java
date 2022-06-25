@@ -34,44 +34,44 @@ import org.springframework.integration.core.MessageProducer;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-
 @SpringBootTest(classes = RocketMQMessageChannelBinderTest.TestConfig.class,
-	webEnvironment = NONE,
-	properties = {
-			"spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876",
-			"spring.cloud.stream.bindings.output.destination=TopicOrderTest",
-			"spring.cloud.stream.bindings.output.content-type=application/json",
+		webEnvironment = NONE,
+		properties = { "spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876",
+				"spring.cloud.stream.bindings.output.destination=TopicOrderTest",
+				"spring.cloud.stream.bindings.output.content-type=application/json",
 
-			"spring.cloud.stream.bindings.input1.destination=TopicOrderTest",
-			"spring.cloud.stream.bindings.input1.content-type=application/json",
-			"spring.cloud.stream.bindings.input1.group=test-group1",
-			"spring.cloud.stream.rocketmq.bindings.input1.consumer.push.orderly=true",
-			"spring.cloud.stream.bindings.input1.consumer.maxAttempts=1",
-			"spring.cloud.stream.bindings.input2.destination=TopicOrderTest",
-			"spring.cloud.stream.bindings.input2.content-type=application/json",
-			"spring.cloud.stream.bindings.input2.group=test-group2",
-			"spring.cloud.stream.rocketmq.bindings.input2.consumer.push.orderly=false",
-			"spring.cloud.stream.rocketmq.bindings.input2.consumer.subscription=tag1"
-	})
+				"spring.cloud.stream.bindings.input1.destination=TopicOrderTest",
+				"spring.cloud.stream.bindings.input1.content-type=application/json",
+				"spring.cloud.stream.bindings.input1.group=test-group1",
+				"spring.cloud.stream.rocketmq.bindings.input1.consumer.push.orderly=true",
+				"spring.cloud.stream.bindings.input1.consumer.maxAttempts=1",
+				"spring.cloud.stream.bindings.input2.destination=TopicOrderTest",
+				"spring.cloud.stream.bindings.input2.content-type=application/json",
+				"spring.cloud.stream.bindings.input2.group=test-group2",
+				"spring.cloud.stream.rocketmq.bindings.input2.consumer.push.orderly=false",
+				"spring.cloud.stream.rocketmq.bindings.input2.consumer.subscription=tag1" })
 public class RocketMQMessageChannelBinderTest {
+
 	@Resource
 	RocketMQMessageChannelBinder binder;
+
 	@Test
 	public void createConsumerEndpoint() throws Exception {
 		TestConsumerDestination destination = new TestConsumerDestination("test");
-		MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, "test",
+		MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination,
+				"test",
 				new ExtendedConsumerProperties<>(new RocketMQConsumerProperties()));
 		Assertions.assertThat(consumerEndpoint).isNotNull();
 	}
 
 	@Test
 	public void createAnymousConsumerEndpoint() throws Exception {
-		ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties
-				= new ExtendedConsumerProperties<>(new RocketMQConsumerProperties());
+		ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties = new ExtendedConsumerProperties<>(
+				new RocketMQConsumerProperties());
 
 		TestConsumerDestination destination = new TestConsumerDestination("test");
-		MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, null,
-				extendedConsumerProperties);
+		MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination,
+				null, extendedConsumerProperties);
 		Assertions.assertThat(consumerEndpoint).isNotNull();
 		Assertions.assertThat(extendedConsumerProperties.getExtension().getGroup())
 				.isEqualTo(RocketMQConst.DEFAULT_GROUP + "_test");
@@ -81,7 +81,8 @@ public class RocketMQMessageChannelBinderTest {
 	public void createDLQAnymousConsumerEndpoint() throws Exception {
 		TestConsumerDestination destination = new TestConsumerDestination("%DLQ%test");
 		Assertions.assertThatThrownBy(() -> {
-			MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, null,
+			MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination,
+					null,
 					new ExtendedConsumerProperties<>(new RocketMQConsumerProperties()));
 		});
 	}
@@ -89,8 +90,9 @@ public class RocketMQMessageChannelBinderTest {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ ExtendedBindingHandlerMappingsProviderConfiguration.class,
-			RocketMQBinderAutoConfiguration.class})
+			RocketMQBinderAutoConfiguration.class })
 	public static class TestConfig {
 
 	}
+
 }

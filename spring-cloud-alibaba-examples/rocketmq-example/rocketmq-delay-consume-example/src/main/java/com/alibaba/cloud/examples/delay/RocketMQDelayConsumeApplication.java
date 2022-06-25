@@ -33,13 +33,16 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
+
 /**
  * @author sorie
  */
 @SpringBootApplication
 public class RocketMQDelayConsumeApplication {
+
 	private static final Logger log = LoggerFactory
 			.getLogger(RocketMQDelayConsumeApplication.class);
+
 	@Autowired
 	private StreamBridge streamBridge;
 
@@ -60,7 +63,8 @@ public class RocketMQDelayConsumeApplication {
 				headers.put(MessageConst.PROPERTY_KEYS, key);
 				headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
 				headers.put(MessageConst.PROPERTY_DELAY_TIME_LEVEL, 2);
-				Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Delay RocketMQ " + i), headers);
+				Message<SimpleMsg> msg = new GenericMessage(
+						new SimpleMsg("Delay RocketMQ " + i), headers);
 				streamBridge.send("producer-out-0", msg);
 			}
 		};
@@ -69,7 +73,9 @@ public class RocketMQDelayConsumeApplication {
 	@Bean
 	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
-			log.info(Thread.currentThread().getName() + " Consumer Receive New Messages: " + msg.getPayload().getMsg());
+			log.info(Thread.currentThread().getName() + " Consumer Receive New Messages: "
+					+ msg.getPayload().getMsg());
 		};
 	}
+
 }

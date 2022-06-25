@@ -33,15 +33,19 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
+
 /**
  * @author sorie
  */
 @SpringBootApplication
 public class RocketMQSqlConsumeApplication {
+
 	private static final Logger log = LoggerFactory
 			.getLogger(RocketMQSqlConsumeApplication.class);
+
 	@Autowired
 	private StreamBridge streamBridge;
+
 	public static void main(String[] args) {
 		SpringApplication.run(RocketMQSqlConsumeApplication.class, args);
 	}
@@ -49,12 +53,13 @@ public class RocketMQSqlConsumeApplication {
 	/**
 	 * color array.
 	 */
-	public static final String[] color = new String[] {"red1", "red2", "red3", "red4", "red5"};
+	public static final String[] color = new String[] { "red1", "red2", "red3", "red4",
+			"red5" };
 
 	/**
 	 * price array.
 	 */
-	public static final Integer[] price = new Integer[] {1, 2, 3, 4, 5};
+	public static final Integer[] price = new Integer[] { 1, 2, 3, 4, 5 };
 
 	@Bean
 	public ApplicationRunner producer() {
@@ -66,7 +71,8 @@ public class RocketMQSqlConsumeApplication {
 				headers.put("color", color[i % color.length]);
 				headers.put("price", price[i % price.length]);
 				headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
-				Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Hello RocketMQ " + i), headers);
+				Message<SimpleMsg> msg = new GenericMessage(
+						new SimpleMsg("Hello RocketMQ " + i), headers);
 				streamBridge.send("producer-out-0", msg);
 			}
 		};
@@ -77,9 +83,11 @@ public class RocketMQSqlConsumeApplication {
 		return msg -> {
 			String colorHeaderKey = "color";
 			String priceHeaderKey = "price";
-			log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload().getMsg() + " COLOR:" +
-					msg.getHeaders().get(colorHeaderKey).toString() + " " +
-					"PRICE: " + msg.getHeaders().get(priceHeaderKey).toString());
+			log.info(Thread.currentThread().getName() + " Receive New Messages: "
+					+ msg.getPayload().getMsg() + " COLOR:"
+					+ msg.getHeaders().get(colorHeaderKey).toString() + " " + "PRICE: "
+					+ msg.getHeaders().get(priceHeaderKey).toString());
 		};
 	}
+
 }

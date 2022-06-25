@@ -56,4 +56,5 @@ public class ValueAnnotationExample {
 		result.put("namespace", namespace);
 		return result;
 	}
+
 }

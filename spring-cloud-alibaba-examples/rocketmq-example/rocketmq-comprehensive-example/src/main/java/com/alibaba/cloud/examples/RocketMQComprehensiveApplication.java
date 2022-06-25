@@ -36,6 +36,7 @@ import org.springframework.integration.support.StringObjectMapBuilder;
  */
 @SpringBootApplication
 public class RocketMQComprehensiveApplication {
+
 	private static final Logger log = LoggerFactory
 			.getLogger(RocketMQComprehensiveApplication.class);
 
