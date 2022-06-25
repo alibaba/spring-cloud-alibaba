@@ -14,6 +14,7 @@
 
     <modules>
         <module>spring-cloud-alibaba-test-support</module>
+        <module>spring-cloud-alibaba-testcontainers</module>
     </modules>
 
     <properties>

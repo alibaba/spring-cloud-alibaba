@@ -139,7 +139,7 @@
                         <groupId>com.spotify</groupId>
                         <artifactId>dockerfile-maven-plugin</artifactId>
                         <configuration>
-                            <repository>apache/spring-cloud-alibaba-testcontainers</repository>
+                            <repository>alibaba/spring-cloud-alibaba-testcontainers</repository>
                             <tag>${project.version}</tag>
                             <tag>latest</tag>
                             <buildArgs>

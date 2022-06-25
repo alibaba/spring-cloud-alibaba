@@ -1,6 +1,18 @@
 name: Deploy Docker Image
 
 on:
+  push:
+    branches:
+      - 2021.x
+      paths:
+        - '**/pom.xml'
+        - '**/src/main/**'
+      pull_request:
+        branches:
+          - 2021.x
+        paths:
+          - '**/pom.xml'
+          - '**/src/main/**'
   release:
     types:
       - published
@@ -48,7 +60,7 @@ jobs:
       - name: Build Project
         run: |
           ./mvnw -B -Prelease,docker -DskipTests clean install
-          docker image ls --format "{{.ID}} {{.Repository}} {{.Tag}}" | grep apache| sed  's/apache\//${{ secrets.DOCKERHUB_USERNAME }}\//' |tr A-Z a-z |awk '{system("docker tag "$1" "$2":latest;docker tag "$1" "$2":"$3";")}'
+          docker image ls --format "{{.ID}} {{.Repository}} {{.Tag}}" | grep alibaba| sed  's/apache\//${{ secrets.DOCKERHUB_USERNAME }}\//' |tr A-Z a-z |awk '{system("docker tag "$1" "$2":latest;docker tag "$1" "$2":"$3";")}'
 
       - name: Push Docker Image
         run: |
