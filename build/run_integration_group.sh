@@ -29,6 +29,7 @@ mvn_run_integration_test() {
   fi
   set -x
 
+
   # run the integration tests
   $RETRY ./mvnw -nsu -B install -f spring-cloud-alibaba-tests/spring-cloud-alibaba-testcontainers/pom.xml -Pit.env.docker test "$@"
   )

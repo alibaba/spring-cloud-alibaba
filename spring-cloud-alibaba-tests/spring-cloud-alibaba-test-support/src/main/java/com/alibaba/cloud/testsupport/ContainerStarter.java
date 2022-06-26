@@ -49,6 +49,7 @@ public class ContainerStarter {
 
 	/**
 	 * Start Nacos container, using default version.
+	 * @return a generic container
 	 */
 	public static GenericContainer startNacos() {
 		return startNacos(NACOS_VERSION);
@@ -56,6 +57,7 @@ public class ContainerStarter {
 
 	/**
 	 * Start RocketMQ container, using default version.
+	 * @return a generic container
 	 */
 	public static GenericContainer startRocketmq() {
 		return startRocketmq(ROCKETMQ_VERSION);
@@ -64,6 +66,7 @@ public class ContainerStarter {
 	/**
 	 * Start Nacos container, using specific version.
 	 * @param version Nacos version
+	 * @return a generic container
 	 */
 	public static GenericContainer startNacos(String version) {
 		if (!nacosMap.containsKey(version)) {
@@ -80,6 +83,7 @@ public class ContainerStarter {
 	/**
 	 * Start RocketMQ container, using specific version.
 	 * @param version RocketMQ version
+	 * @return a generic container
 	 */
 	public static GenericContainer startRocketmq(String version) {
 		if (!rocketmqMap.containsKey(version)) {
