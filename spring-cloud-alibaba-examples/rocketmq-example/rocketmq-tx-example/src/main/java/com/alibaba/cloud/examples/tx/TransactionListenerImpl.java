@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 public class TransactionListenerImpl implements TransactionListener {
 
 	/**
-	 * Excute local transaction.
+	 * Execute local transaction.
 	 * @param msg messages
 	 * @param arg message args
 	 * @return Transaction state
