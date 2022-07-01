@@ -168,7 +168,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * choose IPV4 or IPV6,if you don't set it will choose IPV4
 	 */
-	private String ipType = "IPV6" ;
+	private String ipType = "IPV4" ;
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
