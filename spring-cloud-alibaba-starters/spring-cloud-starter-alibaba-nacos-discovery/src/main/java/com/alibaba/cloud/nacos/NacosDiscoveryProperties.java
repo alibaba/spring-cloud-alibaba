@@ -16,14 +16,15 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +35,8 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
 import com.alibaba.spring.util.PropertySourcesUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.cloud.commons.util.InetUtilsProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -162,6 +166,11 @@ public class NacosDiscoveryProperties {
 	private String networkInterface = "";
 
 	/**
+	 * choose IPV4 or IPV6,if you don't set it will choose IPV4
+	 */
+	private String ipType = "IPV6" ;
+
+	/**
 	 * The port your want to register for your service instance, needn't to set it if the
 	 * auto detect port works well.
 	 */
@@ -213,6 +222,8 @@ public class NacosDiscoveryProperties {
 	 */
 	private boolean failFast = true;
 
+	private InetUtilsIPV6 inetUtilsIPV6 = new InetUtilsIPV6();
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -244,7 +255,17 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(ip)) {
 			// traversing network interfaces if didn't specify a interface
 			if (StringUtils.isEmpty(networkInterface)) {
-				ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+				if (ipType.equalsIgnoreCase("IPV4")){
+					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+				}else if (ipType.equalsIgnoreCase("IPV6")){
+					ip = inetUtilsIPV6.findFirstNonLoopbackHostInfo().getIpAddress();
+					int index = ip.indexOf('%');
+					ip = index > 0 ? ip.substring(0, index) : ip;
+					ip = "["+ip+"]";
+				}else {
+					throw new IllegalArgumentException(
+							"please checking the type of IP " + ipType);
+				}
 			}
 			else {
 				NetworkInterface netInterface = NetworkInterface
@@ -258,6 +279,7 @@ public class NacosDiscoveryProperties {
 				while (inetAddress.hasMoreElements()) {
 					InetAddress currentAddress = inetAddress.nextElement();
 					if (currentAddress instanceof Inet4Address
+							|| currentAddress instanceof Inet6Address
 							&& !currentAddress.isLoopbackAddress()) {
 						ip = currentAddress.getHostAddress();
 						break;
@@ -277,6 +299,205 @@ public class NacosDiscoveryProperties {
 			applicationEventPublisher
 					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
 		}
+	}
+
+	 class InetUtilsIPV6 implements Closeable {
+		private final ExecutorService executorService;
+
+		private final Log log = LogFactory.getLog(com.alibaba.cloud.nacos.NacosDiscoveryProperties.InetUtilsIPV6.class);
+
+		@Value("${spring.cloud.inetutils.default-hostname}")
+		private String defaultHostname = "localhost";
+
+		@Value("${spring.cloud.inetutils.default-ip-address}")
+		private String defaultIpAddress = "0:0:0:0:0:0:0:1";
+
+		@Value("${spring.cloud.inetutils.ignored-interfaces}")
+		private List<String> ignoredInterfaces = new ArrayList();
+
+		@Value("${spring.util.timeout.sec:${SPRING_UTIL_TIMEOUT_SEC:1}}")
+		private int timeoutSeconds = 1;
+
+		@Value("${spring.cloud.inetutils.use-only-site-local-interfaces}")
+		private boolean useOnlySiteLocalInterfaces = false;
+
+		@Value("${spring.cloud.inetutils.preferred-networks}")
+		private List<String> preferredNetworks = new ArrayList();
+
+		public InetUtilsIPV6() {
+			this.executorService = Executors.newSingleThreadExecutor((r) -> {
+				Thread thread = new Thread(r);
+				thread.setName("spring.cloud.alibaba.inetutilsIPV6");
+				thread.setDaemon(true);
+				return thread;
+			});
+		}
+
+		public void close() {
+			this.executorService.shutdown();
+		}
+
+		public InetUtils.HostInfo findFirstNonLoopbackHostInfo() {
+			InetAddress address = this.findFirstNonLoopbackAddress();
+			if (address != null) {
+				return this.convertAddress(address);
+			} else {
+				InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
+				hostInfo.setHostname(defaultHostname);
+				hostInfo.setIpAddress(defaultIpAddress);
+				return hostInfo;
+			}
+		}
+
+		public InetAddress findFirstNonLoopbackAddress() {
+			InetAddress result = null;
+
+			try {
+				int lowest = 2147483647;
+				Enumeration nics = NetworkInterface.getNetworkInterfaces();
+
+				label61:
+				while(true) {
+					NetworkInterface ifc;
+					do {
+						while(true) {
+							do {
+								if (!nics.hasMoreElements()) {
+									break label61;
+								}
+
+								ifc = (NetworkInterface)nics.nextElement();
+							} while(!ifc.isUp());
+
+							this.log.trace("Testing interface: " + ifc.getDisplayName());
+							if (ifc.getIndex() >= lowest && result != null) {
+								if (result != null) {
+									continue;
+								}
+								break;
+							}
+
+							lowest = ifc.getIndex();
+							break;
+						}
+					} while(this.ignoreInterface(ifc.getDisplayName()));
+
+					Enumeration addrs = ifc.getInetAddresses();
+
+					while(addrs.hasMoreElements()) {
+						InetAddress address = (InetAddress)addrs.nextElement();
+						if (address instanceof Inet6Address && !address.isLoopbackAddress() && this.isPreferredAddress(address)) {
+							this.log.trace("Found non-loopback interface: " + ifc.getDisplayName());
+							result = address;
+						}
+					}
+				}
+			} catch (IOException var8) {
+				this.log.error("Cannot get first non-loopback address", var8);
+			}
+
+			if (result != null) {
+				return result;
+			} else {
+				try {
+					return InetAddress.getLocalHost();
+				} catch (UnknownHostException var7) {
+					this.log.warn("Unable to retrieve localhost");
+					return null;
+				}
+			}
+		}
+
+		 boolean isPreferredAddress(InetAddress address) {
+			 if (this.isUseOnlySiteLocalInterfaces()) {
+				 boolean siteLocalAddress = address.isSiteLocalAddress();
+				 if (!siteLocalAddress) {
+					 this.log.trace("Ignoring address: " + address.getHostAddress());
+				 }
+
+				 return siteLocalAddress;
+			 } else {
+				 List<String> preferredNetworks = this.getPreferredNetworks();
+				 if (preferredNetworks.isEmpty()) {
+					 return true;
+				 } else {
+					 Iterator var3 = preferredNetworks.iterator();
+
+					 String regex;
+					 String hostAddress;
+					 do {
+						 if (!var3.hasNext()) {
+							 this.log.trace("Ignoring address: " + address.getHostAddress());
+							 return false;
+						 }
+
+						 regex = (String)var3.next();
+						 hostAddress = address.getHostAddress();
+					 } while(!hostAddress.matches(regex) && !hostAddress.startsWith(regex));
+
+					 return true;
+				 }
+			 }
+		 }
+
+		 boolean ignoreInterface(String interfaceName) {
+			 Iterator var2 = this.getIgnoredInterfaces().iterator();
+
+			 String regex;
+			 do {
+				 if (!var2.hasNext()) {
+					 return false;
+				 }
+
+				 regex = (String)var2.next();
+			 } while(!interfaceName.matches(regex));
+
+			 this.log.trace("Ignoring interface: " + interfaceName);
+			 return true;
+		 }
+
+		 public InetUtils.HostInfo convertAddress(final InetAddress address) {
+			 InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
+			 ExecutorService var10000 = this.executorService;
+			 address.getClass();
+			 Future result = var10000.submit(address::getHostName);
+
+			 String hostname;
+			 try {
+				 hostname = (String)result.get((long)this.getTimeoutSeconds(), TimeUnit.SECONDS);
+			 } catch (Exception var6) {
+				 this.log.info("Cannot determine local hostname");
+				 hostname = "localhost";
+			 }
+
+			 hostInfo.setHostname(hostname);
+			 hostInfo.setIpAddress(address.getHostAddress());
+			 return hostInfo;
+		 }
+
+		 public String getDefaultHostname() {
+			 return this.defaultHostname;
+		 }
+
+		 public String getDefaultIpAddress() {
+			 return this.defaultIpAddress;
+		 }
+
+		 public int getTimeoutSeconds() {
+			 return this.timeoutSeconds;
+		 }
+
+		 public List<String> getIgnoredInterfaces() {
+			 return this.ignoredInterfaces;
+		 }
+
+		 public boolean isUseOnlySiteLocalInterfaces() {
+			 return this.useOnlySiteLocalInterfaces;
+		 }
+
+		 public List<String> getPreferredNetworks() {
+			 return this.preferredNetworks;
+		 }
 	}
 
 	/**
@@ -370,6 +591,14 @@ public class NacosDiscoveryProperties {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public String getIpType() {
+		return ipType;
+	}
+
+	public void setIpType(String ipType) {
+		this.ipType = ipType;
 	}
 
 	public boolean isSecure() {
