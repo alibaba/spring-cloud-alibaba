@@ -92,7 +92,7 @@
     {
       "name": "spring.cloud.sentinel.servlet.block-page",
       "type": "java.lang.String",
-      "description": "recommoned use spring.cloud.sentinel.block-page."
+      "description": "recommend use spring.cloud.sentinel.block-page."
     },
     {
       "name": "spring.cloud.sentinel.flow.coldFactor",

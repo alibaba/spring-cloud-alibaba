@@ -105,7 +105,7 @@ public class ConsumerSCLBApplication {
 
 		@Override
 		public Mono<Response<ServiceInstance>> choose(Request request) {
-			log.info("random spring cloud loadbalacer active -.-");
+			log.info("random spring cloud loadbalancer active -.-");
 			ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider
 					.getIfAvailable(NoopServiceInstanceListSupplier::new);
 			return supplier.get().next().map(this::getInstanceResponse);
