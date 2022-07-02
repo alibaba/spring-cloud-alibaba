@@ -70,7 +70,7 @@ public class InetIPUtils implements Closeable {
                             if (inetAddress instanceof Inet6Address
                                     && !inetAddress.isLoopbackAddress()
                                     && isPreferredAddress(inetAddress)) {
-                                this.log.trace("Found non-loopback interface: "
+                                log.trace("Found non-loopback interface: "
                                         + ifc.getDisplayName());
                                 address = inetAddress;
                             }

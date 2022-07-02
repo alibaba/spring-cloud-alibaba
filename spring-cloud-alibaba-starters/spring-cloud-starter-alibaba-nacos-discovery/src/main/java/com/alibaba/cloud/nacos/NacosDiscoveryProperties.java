@@ -247,9 +247,9 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(ip)) {
 			// traversing network interfaces if didn't specify a interface
 			if (StringUtils.isEmpty(networkInterface)) {
-				if (ipType.equalsIgnoreCase("IPV4")){
+				if (ipType.equalsIgnoreCase("IPv4")){
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-				}else if (ipType.equalsIgnoreCase("IPV6")){
+				}else if (ipType.equalsIgnoreCase("IPv6")){
 					ip = inetIPUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 					int index = ip.indexOf('%');
 					ip = index > 0 ? ip.substring(0, index) : ip;
