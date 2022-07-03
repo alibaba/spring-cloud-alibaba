@@ -169,58 +169,18 @@ MessageBuilder builder = MessageBuilder.withPayload(msg)
 Message message = builder.build();
 output().send(message);
 ```
-
-=== Support MessageSource
-
-SCS RocketMQ Binder support `MessageSource`，which can receive messages by pull mode：
-
+Or use StreamBridge
 ```java
-@SpringBootApplication
-@EnableBinding(MQApplication.PolledProcessor.class)
-public class MQApplication {
-
-  private final Logger logger =
-  	  LoggerFactory.getLogger(MQApplication.class);
-
-  public static void main(String[] args) {
-    SpringApplication.run(MQApplication.class, args);
-  }
-
-  @Bean
-  public ApplicationRunner runner(PollableMessageSource source,
-  	    MessageChannel dest) {
-    return args -> {
-      while (true) {
-        boolean result = source.poll(m -> {
-          String payload = (String) m.getPayload();
-          logger.info("Received: " + payload);
-          dest.send(MessageBuilder.withPayload(payload.toUpperCase())
-              .copyHeaders(m.getHeaders())
-              .build());
-        }, new ParameterizedTypeReference<String>() { });
-        if (result) {
-          logger.info("Processed a message");
-        }
-        else {
-          logger.info("Nothing to do");
-        }
-        Thread.sleep(5_000);
-      }
-    };
-  }
-
-  public static interface PolledProcessor {
-
-    @Input
-    PollableMessageSource source();
-
-    @Output
-    MessageChannel dest();
-
-  }
-
-}
+MessageBuilder builder = MessageBuilder.withPayload(msg)
+    .setHeader(RocketMQHeaders.TAGS, "binder")
+    .setHeader(RocketMQHeaders.KEYS, "my-key")
+    .setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, "1");
+Message message = builder.build();
+streamBridge.send("producer-out-0", message);
 ```
+
+NOTE: More Examples: https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/rocketmq-example[RocketMQ Example]
+
 
 === Configuration Options
 
