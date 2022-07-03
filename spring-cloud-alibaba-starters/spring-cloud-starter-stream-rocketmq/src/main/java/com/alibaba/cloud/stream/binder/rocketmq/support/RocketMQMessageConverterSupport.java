@@ -33,7 +33,7 @@ import org.springframework.messaging.converter.CompositeMessageConverter;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * @author zkzlx
@@ -138,13 +138,13 @@ public final class RocketMQMessageConverterSupport {
 		if (Objects.nonNull(headers) && !headers.isEmpty()) {
 			Object tag = headers.getOrDefault(Headers.TAGS,
 					headers.get(toRocketHeaderKey(Headers.TAGS)));
-			if (!StringUtils.isEmpty(tag)) {
+			if (!ObjectUtils.isEmpty(tag)) {
 				rocketMsg.setTags(String.valueOf(tag));
 			}
 
 			Object keys = headers.getOrDefault(Headers.KEYS,
 					headers.get(toRocketHeaderKey(Headers.KEYS)));
-			if (!StringUtils.isEmpty(keys)) {
+			if (!ObjectUtils.isEmpty(keys)) {
 				rocketMsg.setKeys(keys.toString());
 			}
 			Object flagObj = headers.getOrDefault(Headers.FLAG,
@@ -175,8 +175,11 @@ public final class RocketMQMessageConverterSupport {
 					.filter(entry -> !Objects.equals(entry.getKey(), Headers.FLAG))
 					.forEach(entry -> {
 						if (!MessageConst.STRING_HASH_SET.contains(entry.getKey())) {
-							rocketMsg.putUserProperty(entry.getKey(),
-									String.valueOf(entry.getValue()));
+							String val = String.valueOf(entry.getValue());
+							// Remove All blank header(rocketmq not support).
+							if (org.apache.commons.lang3.StringUtils.isNotBlank(val)) {
+								rocketMsg.putUserProperty(entry.getKey(), val);
+							}
 						}
 					});
 

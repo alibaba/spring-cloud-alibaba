@@ -16,7 +16,7 @@ Service consumer
 Before launching the example, let's see how Feign can access Sentinel.
 ** note that this section is for your convenience only. The access has been completed in this sample code and you do not need to modify it. * *
 
-First, modify the pom.xml file to introduce Sentinel starter and Dubbo starter.
+First, modify the pom.xml file to introduce Sentinel starter and Openfeign starter.
 
 ```xml
 <dependency>

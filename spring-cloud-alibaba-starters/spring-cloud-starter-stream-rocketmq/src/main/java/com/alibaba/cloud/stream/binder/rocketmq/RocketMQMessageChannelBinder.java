@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
+import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.extend.ErrorAcknowledgeHandler;
 import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.RocketMQInboundChannelAdapter;
@@ -28,6 +29,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQExtendedBindi
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.provisioning.RocketMQTopicProvisioner;
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
+import org.apache.rocketmq.common.protocol.NamespaceUtil;
 
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
@@ -113,11 +115,18 @@ public class RocketMQMessageChannelBinder extends
 			String group,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties)
 			throws Exception {
-		// todo support anymous consumer
-		if (StringUtils.isEmpty(group)) {
+		boolean anonymous = !StringUtils.hasLength(group);
+		/***
+		 * When using DLQ, at least the group property must be provided for proper naming
+		 * of the DLQ destination According to
+		 * https://docs.spring.io/spring-cloud-stream/docs/3.2.1/reference/html/spring-cloud-stream.html#spring-cloud-stream-reference
+		 */
+		if (anonymous && NamespaceUtil.isDLQTopic(destination.getName())) {
 			throw new RuntimeException(
-					"'group must be configured for channel " + destination.getName());
+					"group must be configured for DLQ" + destination.getName());
 		}
+		group = anonymous ? anonymousGroup(destination.getName()) : group;
+
 		RocketMQUtils.mergeRocketMQProperties(binderConfigurationProperties,
 				extendedConsumerProperties.getExtension());
 		extendedConsumerProperties.getExtension().setGroup(group);
@@ -171,6 +180,15 @@ public class RocketMQMessageChannelBinder extends
 				}
 			}
 		};
+	}
+
+	/**
+	 * generate anonymous group.
+	 * @param destination not null
+	 * @return anonymous group name.
+	 */
+	private static String anonymousGroup(final String destination) {
+		return RocketMQConst.DEFAULT_GROUP + "_" + destination;
 	}
 
 	/**

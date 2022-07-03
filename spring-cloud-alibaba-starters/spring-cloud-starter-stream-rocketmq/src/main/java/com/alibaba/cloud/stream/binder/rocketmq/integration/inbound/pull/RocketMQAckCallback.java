@@ -46,7 +46,7 @@ public class RocketMQAckCallback implements AcknowledgmentCallback {
 	private final MessageQueue messageQueue;
 
 	public RocketMQAckCallback(DefaultLitePullConsumer consumer,
-			 MessageQueue messageQueue,MessageExt messageExt) {
+			MessageQueue messageQueue, MessageExt messageExt) {
 		this.messageExt = messageExt;
 		this.consumer = consumer;
 		this.messageQueue = messageQueue;

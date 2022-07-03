@@ -43,9 +43,9 @@ public class NacosServiceManager {
 
 	private NacosDiscoveryProperties nacosDiscoveryPropertiesCache;
 
-	private NamingService namingService;
+	private volatile NamingService namingService;
 
-	private NamingMaintainService namingMaintainService;
+	private volatile NamingMaintainService namingMaintainService;
 
 	public NamingService getNamingService(Properties properties) {
 		if (Objects.isNull(this.namingService)) {

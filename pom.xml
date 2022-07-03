@@ -80,7 +80,7 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2.2.8-SNAPSHOT</revision>
+        <revision>2.2.8.RELEASE</revision>
 
         <!-- Spring Cloud -->
         <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
@@ -91,7 +91,7 @@
 
         <!-- Apache RocketMQ -->
         <rocketmq.starter.version>2.0.4</rocketmq.starter.version>
-        <rocketmq.version>4.6.1</rocketmq.version>
+        <rocketmq.version>4.9.3</rocketmq.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -180,11 +180,11 @@
                 </exclusions>
             </dependency>
 
-<!--            <dependency>-->
-<!--                <groupId>org.apache.rocketmq</groupId>-->
-<!--                <artifactId>rocketmq-spring-boot-starter</artifactId>-->
-<!--                <version>${rocketmq.starter.version}</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.apache.rocketmq</groupId>-->
+            <!--                <artifactId>rocketmq-spring-boot-starter</artifactId>-->
+            <!--                <version>${rocketmq.starter.version}</version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-client</artifactId>
@@ -246,7 +246,9 @@
                         </goals>
                         <configuration>
                             <!-- Checkstyle rules inherited from spring-cloud-build -->
-                            <suppressionsLocation>${session.executionRootDirectory}/eclipse/checkstyle-suppressions.xml</suppressionsLocation>
+                            <suppressionsLocation>
+                                ${session.executionRootDirectory}/eclipse/checkstyle-suppressions.xml
+                            </suppressionsLocation>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>

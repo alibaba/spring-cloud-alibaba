@@ -38,11 +38,7 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 
 **[RocketMQ](https://rocketmq.apache.org/)**: A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Dubbo](https://github.com/apache/dubbo)**: A high-performance, Java based open source RPC framework.
-
 **[Seata](https://github.com/seata/seata)**: A distributed transaction solution with high performance and ease of use for microservices architecture.
-
-**[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**: An application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
 
 **[Alibaba Cloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
 
@@ -75,7 +71,7 @@ These artifacts are available from Maven Central and Spring Release repository v
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>2.2.7.RELEASE</version>
+            <version>2.2.8.RELEASE</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -110,7 +106,6 @@ Examples：
 
 [Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
 
-[Dubbo Spring Cloud Example](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/spring-cloud-alibaba-dubbo-examples/README_CN.md)
 
 ## Version control guidelines
 The version number of the project is in the form of x.x.x, where x is a number, starting from 0, and is not limited to the range 0~9. When the project is in the incubator phase, the version number is 0.x.x.
