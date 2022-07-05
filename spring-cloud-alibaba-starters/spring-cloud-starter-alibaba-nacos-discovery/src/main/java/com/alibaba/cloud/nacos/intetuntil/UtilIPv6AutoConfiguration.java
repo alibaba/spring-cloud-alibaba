@@ -6,14 +6,14 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 import org.springframework.context.annotation.Bean;
 
 @EnableAutoConfiguration
-public class UtilIPAutoConfiguration{
-    public UtilIPAutoConfiguration() {
+public class UtilIPv6AutoConfiguration {
+    public UtilIPv6AutoConfiguration() {
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public InetIPUtils inetUtils(InetUtilsProperties properties) {
-        return new InetIPUtils(properties);
+    public InetIPv6Utils inetUtils(InetUtilsProperties properties) {
+        return new InetIPv6Utils(properties);
     }
 }
 

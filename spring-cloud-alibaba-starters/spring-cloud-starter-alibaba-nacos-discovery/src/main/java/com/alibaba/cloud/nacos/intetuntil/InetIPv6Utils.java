@@ -7,19 +7,27 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.*;
+
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-public class InetIPUtils implements Closeable {
+
+public class InetIPv6Utils implements Closeable {
     private final ExecutorService executorService;
 
-    private final Log log = LogFactory.getLog(InetIPUtils.class);
+    private final Log log = LogFactory.getLog(InetIPv6Utils.class);
 
     private final InetUtilsProperties properties;
 
-    public InetIPUtils(final InetUtilsProperties properties) {
+    public InetIPv6Utils(final InetUtilsProperties properties) {
         this.properties = properties;
         this.executorService = Executors.newSingleThreadExecutor((r) -> {
             Thread thread = new Thread(r);
@@ -34,7 +42,7 @@ public class InetIPUtils implements Closeable {
     }
 
     public InetUtils.HostInfo findFirstNonLoopbackHostInfo() {
-        InetAddress address = this.findFirstNonLoopbackAddress();
+        InetAddress address = this.findFirstNonLoopbackIPv6Address();
         if (address != null) {
             return this.convertAddress(address);
         } else {
@@ -46,7 +54,7 @@ public class InetIPUtils implements Closeable {
         }
     }
 
-    public InetAddress findFirstNonLoopbackAddress() {
+    public InetAddress findFirstNonLoopbackIPv6Address() {
         InetAddress address = null;
 
         try {
