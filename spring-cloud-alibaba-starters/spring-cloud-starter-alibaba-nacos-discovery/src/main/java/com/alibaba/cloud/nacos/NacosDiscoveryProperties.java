@@ -16,8 +16,16 @@
 
 package com.alibaba.cloud.nacos;
 
-import java.net.*;
-import java.util.*;
+import java.net.Inet4Address;
+
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
