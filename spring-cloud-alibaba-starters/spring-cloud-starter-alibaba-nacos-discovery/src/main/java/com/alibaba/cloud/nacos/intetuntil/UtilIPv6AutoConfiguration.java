@@ -8,6 +8,10 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+/**
+ * @author HH
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnDiscoveryEnabled
 @ConditionalOnNacosDiscoveryEnabled

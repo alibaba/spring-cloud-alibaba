@@ -19,7 +19,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-
+/**
+ * @author HH
+ */
 public class InetIPv6Utils implements Closeable {
     private final ExecutorService executorService;
 
