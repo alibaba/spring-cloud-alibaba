@@ -66,8 +66,9 @@ public class ExtendedBindingHandlerMappingsProviderConfiguration {
 	/**
 	 * Register message converter to adapte Spring Cloud Stream.
 	 * Refer to https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#spring-cloud-stream-overview-user-defined-message-converters .
-	 * @return
+	 * @return message converter.
 	 */
+	@Bean
 	public MessageConverter rocketMQCustomMessageConverter() {
 		return new RocketMQMessageConverter();
 	}
