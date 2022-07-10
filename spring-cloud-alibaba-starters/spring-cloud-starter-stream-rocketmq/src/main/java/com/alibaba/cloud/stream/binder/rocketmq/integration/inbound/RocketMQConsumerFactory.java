@@ -96,7 +96,7 @@ public final class RocketMQConsumerFactory {
 
 	/**
 	 * todo Compatible with versions less than 4.6 ?
-	 * @param topic
+	 * @param topic consumer topic.
 	 * @param extendedConsumerProperties extendedConsumerProperties
 	 * @return DefaultLitePullConsumer
 	 */

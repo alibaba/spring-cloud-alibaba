@@ -20,7 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.messaging.Message;
-import org.springframework.messaging.converter.*;
+import org.springframework.messaging.converter.AbstractMessageConverter;
+import org.springframework.messaging.converter.ByteArrayMessageConverter;
+import org.springframework.messaging.converter.CompositeMessageConverter;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -110,7 +115,8 @@ public class RocketMQMessageConverter extends AbstractMessageConverter {
 		for (MessageConverter converter : getMessageConverter().getConverters()) {
 			try {
 				payload = converter.fromMessage(message, targetClass);
-			} catch (Exception ignore) {
+			}
+			catch (Exception ignore) {
 			}
 			if (payload != null) {
 				return payload;
