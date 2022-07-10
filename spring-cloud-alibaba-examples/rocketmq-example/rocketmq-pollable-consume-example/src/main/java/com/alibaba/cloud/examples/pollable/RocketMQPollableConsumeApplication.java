@@ -54,13 +54,6 @@ public class RocketMQPollableConsumeApplication {
 		SpringApplication.run(RocketMQPollableConsumeApplication.class, args);
 	}
 
-	public interface PolledConsumer {
-
-		@Input("pollable-in-0")
-		PollableMessageSource pollable();
-
-	}
-
 	@Bean
 	public ApplicationRunner producer() {
 		return args -> {
@@ -93,6 +86,13 @@ public class RocketMQPollableConsumeApplication {
 				}
 			}
 		};
+	}
+
+	public interface PolledConsumer {
+
+		@Input("pollable-in-0")
+		PollableMessageSource pollable();
+
 	}
 
 }
