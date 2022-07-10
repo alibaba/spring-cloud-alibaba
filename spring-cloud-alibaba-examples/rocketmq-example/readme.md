@@ -807,6 +807,92 @@ public class RocketMQTxApplication {
 }
 ```
 
+## Maximum Retry Consumption Example
+
+- Retry consumption message: According to the configured number of re-consumption, the server will re-push the message according to whether the client's consumption is successful or not.
+
+### Create topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t retrieable
+```
+
+### Example code
+
+**application.yml**
+
+```yaml
+server:
+  port: 28089
+spring:
+  application:
+    name: rocketmq-retrieable-consume-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+          consumer-in-0:
+            consumer:
+              ## According to the configured number of `max-reconsume-times`,
+              ## the server will re-push the message according to whether the client's consumption is successful or not
+              push:
+                max-reconsume-times: 3
+      bindings:
+        producer-out-0:
+          destination: retrieable
+        consumer-in-0:
+          destination: retrieable
+          group: retrieable-consumer
+
+logging:
+  level:
+    org.springframework.context.support: debug
+
+```
+
+**code**
+
+```java
+@SpringBootApplication
+public class RocketMQRetrieableConsumeApplication {
+
+    private static final Logger log = LoggerFactory
+        .getLogger(RocketMQRetrieableConsumeApplication.class);
+
+    @Autowired
+    private StreamBridge streamBridge;
+
+    public static void main(String[] args) {
+        SpringApplication.run(RocketMQRetrieableConsumeApplication.class, args);
+    }
+
+    @Bean
+    public ApplicationRunner producer() {
+        return args -> {
+            Map<String, Object> headers = new HashMap<>();
+            Message<SimpleMsg> msg = new GenericMessage(
+                new SimpleMsg("Hello RocketMQ For Retrieable ."), headers);
+            streamBridge.send("producer-out-0", msg);
+        };
+    }
+
+    @Bean
+    public Consumer<Message<SimpleMsg>> consumer() {
+        return msg -> {
+            // Mock Exception in consumer function.
+            throw new RuntimeException("mock exception.");
+        };
+    }
+}
+```
+
 ## Endpoint
 
 Add dependency `spring-cloud-starter-stream-rocketmq` to your pom.xml file, and configure your endpoint security strategy.
