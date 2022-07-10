@@ -5,7 +5,6 @@ spring:
     name: rocketmq-delay-consume-example
   cloud:
     stream:
-      pollable-source: pollable
       rocketmq:
         binder:
           name-server: localhost:9876

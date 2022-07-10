@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.binder.PollableMessageSource;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +41,7 @@ import org.springframework.messaging.support.GenericMessage;
  * @author sorie
  */
 @SpringBootApplication
+@EnableBinding(RocketMQPollableConsumeApplication.PolledConsumer.class)
 public class RocketMQPollableConsumeApplication {
 
 	private static final Logger log = LoggerFactory
@@ -51,6 +54,10 @@ public class RocketMQPollableConsumeApplication {
 		SpringApplication.run(RocketMQPollableConsumeApplication.class, args);
 	}
 
+	public interface PolledConsumer {
+		@Input("pollable-in-0")
+		PollableMessageSource pollable();
+	}
 	@Bean
 	public ApplicationRunner producer() {
 		return args -> {
@@ -66,13 +73,13 @@ public class RocketMQPollableConsumeApplication {
 	}
 
 	@Bean
-	public ApplicationRunner pollable(PollableMessageSource destIn) {
+	public ApplicationRunner consumer(PollableMessageSource destIn) {
 		return args -> {
 			while (true) {
 				try {
 					if (!destIn.poll((m) -> {
 						SimpleMsg newPayload = (SimpleMsg)m.getPayload();
-						System.out.println(newPayload.toString());
+						System.out.println(newPayload.getMsg());
 					}, new ParameterizedTypeReference<SimpleMsg>() {})) {
 						Thread.sleep(1000);
 					}
