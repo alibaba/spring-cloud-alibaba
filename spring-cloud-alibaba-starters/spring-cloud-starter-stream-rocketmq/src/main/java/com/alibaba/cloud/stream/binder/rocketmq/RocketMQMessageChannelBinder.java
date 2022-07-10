@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
-import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.extend.ErrorAcknowledgeHandler;
 import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.RocketMQInboundChannelAdapter;
