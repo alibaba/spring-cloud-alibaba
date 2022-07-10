@@ -44,6 +44,7 @@
         <module>rocketmq-example/rocketmq-sql-consume-example</module>
         <module>rocketmq-example/rocketmq-example-common</module>
         <module>rocketmq-example/rocketmq-tx-example</module>
+        <module>rocketmq-example/rocketmq-pollable-consume-example</module>
         <module>rocketmq-example/rocketmq-retrieable-consume-example</module>
 
         <module>spring-cloud-bus-rocketmq-example</module>
