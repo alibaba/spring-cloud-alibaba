@@ -22,7 +22,7 @@ Binding is Bridge between the external messaging systems and application provide
 
 This is a overview of Spring Cloud Stream.
 
-![](https://docs.spring.io/spring-cloud-stream/docs/current/reference/htmlsingle/images/SCSt-overview.png)
+![](https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/images/SCSt-with-binder.png)
 
 ## Preparation
 
