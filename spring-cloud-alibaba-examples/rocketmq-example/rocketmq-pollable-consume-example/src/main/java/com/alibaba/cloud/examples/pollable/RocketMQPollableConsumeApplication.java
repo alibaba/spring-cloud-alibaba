@@ -55,9 +55,12 @@ public class RocketMQPollableConsumeApplication {
 	}
 
 	public interface PolledConsumer {
+
 		@Input("pollable-in-0")
 		PollableMessageSource pollable();
+
 	}
+
 	@Bean
 	public ApplicationRunner producer() {
 		return args -> {
@@ -78,15 +81,18 @@ public class RocketMQPollableConsumeApplication {
 			while (true) {
 				try {
 					if (!destIn.poll((m) -> {
-						SimpleMsg newPayload = (SimpleMsg)m.getPayload();
+						SimpleMsg newPayload = (SimpleMsg) m.getPayload();
 						System.out.println(newPayload.getMsg());
-					}, new ParameterizedTypeReference<SimpleMsg>() {})) {
+					}, new ParameterizedTypeReference<SimpleMsg>() {
+					})) {
 						Thread.sleep(1000);
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					// handle failure
 				}
 			}
 		};
 	}
+
 }
