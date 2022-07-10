@@ -100,4 +100,12 @@ public final class RocketMQUtils {
 		return MessageSelector.byTag(expression);
 	}
 
+	/**
+	 * generate anonymous group.
+	 * @param destination not null
+	 * @return anonymous group name.
+	 */
+	public static String anonymousGroup(final String destination) {
+		return RocketMQConst.DEFAULT_GROUP + "_" + destination;
+	}
 }
