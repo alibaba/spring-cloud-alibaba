@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 import com.alibaba.cloud.stream.binder.rocketmq.fixture.RocketmqBinderProcessor;
-import com.alibaba.cloud.stream.binder.rocketmq.support.MessageCollector;
 import com.alibaba.cloud.testsupport.SpringCloudAlibaba;
 import com.alibaba.cloud.testsupport.TestExtend;
+import com.alibaba.fastjson.JSON;
 import org.apache.rocketmq.common.message.MessageConst;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.GenericMessage;
@@ -29,19 +30,19 @@ import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
+import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.receivesPayloadThat;
 
 @SpringCloudAlibaba(composeFiles = "docker/rocket-compose-test.yml", serviceName = "rocketmq-standalone")
 @TestExtend(time = 6 * TIME_OUT)
 @DirtiesContext
-@ImportAutoConfiguration(value = {}, exclude = {
-			DataSourceAutoConfiguration.class,
-			TransactionAutoConfiguration.class,
-			DataSourceTransactionManagerAutoConfiguration.class})
+@ImportAutoConfiguration(value = {}, exclude = { DataSourceAutoConfiguration.class,
+		TransactionAutoConfiguration.class,
+		DataSourceTransactionManagerAutoConfiguration.class })
 @SpringBootTest(classes = RocketmqBinderProcessor.class, webEnvironment = NONE, properties = {
 		"spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876,127.0.0.1:9877",
 		"spring.cloud.stream.rocketmq.binder.group=flaky-group",
-//		"spring.cloud.stream.rocketmq.binder.consumer-group=flaky-group",
-//		"spring.cloud.stream.pollable-source=pollable",
+		// "spring.cloud.stream.rocketmq.binder.consumer-group=flaky-group",
+		// "spring.cloud.stream.pollable-source=pollable",
 		"spring.cloud.stream.bindings.uppercaseFunction-out-0.destination=TopicOrderTest",
 		"spring.cloud.stream.bindings.uppercaseFunction-out-0.content-type=application/json",
 		"spring.cloud.stream.bindings.uppercaseFunction-out-0.group=test-group1",
@@ -49,11 +50,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.stream.bindings.uppercaseFunction-in-0.content-type=application/json",
 		"spring.cloud.stream.bindings.uppercaseFunction-in-0.group=test-group1",
 		"spring.cloud.stream.bindings.uppercaseFunction-in-0.consumer.push.orderly=true",
-		"spring.cloud.stream.bindings.uppercaseFunction-in-0.consumer.maxAttempts=1",})
+		"spring.cloud.stream.bindings.uppercaseFunction-in-0.consumer.maxAttempts=1", })
 public class RocketmqProduceAndConsumerTests {
 
-
-	private final MessageCollector collector = getInstance();
+	@Autowired
+	private MessageCollector collector;
 
 	@Autowired
 	@Qualifier("uppercaseFunction-in-0")
@@ -64,19 +65,24 @@ public class RocketmqProduceAndConsumerTests {
 	private MessageChannel output;
 
 	@BeforeAll
-	public static void prepare(){
+	public static void prepare() {
 
 	}
 
+	public static RocketMQMessageChannelBinder.MessageCollectorImpl getInstance() {
+		return new RocketMQMessageChannelBinder.MessageCollectorImpl();
+	}
+
 	@BeforeEach
-	public void setup(){
+	public void setup() {
 		String key = "KEY";
 		String messageId = "1";
 		Map<String, Object> headers = new HashMap<>();
 		headers.put(MessageConst.PROPERTY_KEYS, key);
 		headers.put(MessageConst.PROPERTY_TAGS, "TagA");
 		headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, messageId);
-		Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Hello RocketMQ"), headers);
+		Message<String> msg = new GenericMessage(JSON.toJSONString("Hello RocketMQ"),
+				headers);
 		input1.send(msg);
 	}
 
@@ -84,28 +90,7 @@ public class RocketmqProduceAndConsumerTests {
 	public void testConsumeAndProduce() throws Exception {
 		BlockingQueue<Message<?>> messages = this.collector.forChannel(this.output);
 
-		assertThat(messages, is("Hello RocketMQ"));
-	}
-
-	public static RocketMQMessageChannelBinder.MessageCollectorImpl getInstance(){
-		return new RocketMQMessageChannelBinder.MessageCollectorImpl();
-	}
-
-	public class SimpleMsg {
-
-		private String msg;
-
-		public SimpleMsg(String msg) {
-			this.msg = msg;
-		}
-
-		public String getMsg() {
-			return msg;
-		}
-
-		public void setMsg(String msg) {
-			this.msg = msg;
-		}
+		assertThat(messages, receivesPayloadThat(is("\"HELLO ROCKETMQ\"")));
 	}
 
 }

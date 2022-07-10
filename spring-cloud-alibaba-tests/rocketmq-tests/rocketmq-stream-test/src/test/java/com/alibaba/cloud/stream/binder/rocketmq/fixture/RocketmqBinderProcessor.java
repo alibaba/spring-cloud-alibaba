@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class RocketmqBinderProcessor {
 
+	public static void main(String[] args) {
+		SpringApplication.run(RocketmqBinderProcessor.class, args);
+	}
+
 	@Bean
 	public Function<String, String> uppercaseFunction() {
 		return String::toUpperCase;
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(RocketmqBinderProcessor.class, args);
 	}
 }
