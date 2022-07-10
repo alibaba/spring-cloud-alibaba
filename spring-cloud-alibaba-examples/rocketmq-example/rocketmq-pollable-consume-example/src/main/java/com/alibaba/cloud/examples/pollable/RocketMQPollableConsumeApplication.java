@@ -66,13 +66,13 @@ public class RocketMQPollableConsumeApplication {
 	}
 
 	@Bean
-	public ApplicationRunner pollable(PollableMessageSource destIn) {
+	public ApplicationRunner pollableRunner(PollableMessageSource destIn) {
 		return args -> {
 			while (true) {
 				try {
 					if (!destIn.poll((m) -> {
 						SimpleMsg newPayload = (SimpleMsg)m.getPayload();
-						System.out.println(newPayload.toString());
+						System.out.println(newPayload.getMsg());
 					}, new ParameterizedTypeReference<SimpleMsg>() {})) {
 						Thread.sleep(1000);
 					}

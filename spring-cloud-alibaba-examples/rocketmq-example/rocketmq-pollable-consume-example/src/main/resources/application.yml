@@ -2,7 +2,7 @@ server:
   port: 28089
 spring:
   application:
-    name: rocketmq-delay-consume-example
+    name: rocketmq-pollable-consume-example
   cloud:
     stream:
       pollable-source: pollable
