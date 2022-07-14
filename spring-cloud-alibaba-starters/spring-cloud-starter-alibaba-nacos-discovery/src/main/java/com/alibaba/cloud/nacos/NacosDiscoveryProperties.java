@@ -17,7 +17,6 @@
 package com.alibaba.cloud.nacos;
 
 import java.net.Inet4Address;
-
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -166,9 +165,9 @@ public class NacosDiscoveryProperties {
 	private String networkInterface = "";
 
 	/**
-	 * choose IPV4 or IPV6,if you don't set it will choose IPV4
+	 * choose IPV4 or IPV6,if you don't set it will choose IPV4.
 	 */
-	private String ipType = "IPv4" ;
+	private String ipType = "IPv4";
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
@@ -256,14 +255,16 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(ip)) {
 			// traversing network interfaces if didn't specify a interface
 			if (StringUtils.isEmpty(networkInterface)) {
-				if (ipType.equalsIgnoreCase("IPv4")){
+				if (ipType.equalsIgnoreCase("IPv4")) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-				}else if (ipType.equalsIgnoreCase("IPv6")){
+				}
+				else if (ipType.equalsIgnoreCase("IPv6")) {
 					ip = inetIPUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 					int index = ip.indexOf('%');
 					ip = index > 0 ? ip.substring(0, index) : ip;
-					ip = "["+ip+"]";
-				}else {
+					ip = "[" + ip + "]";
+				}
+				else {
 					throw new IllegalArgumentException(
 							"please checking the type of IP " + ipType);
 				}
@@ -281,7 +282,7 @@ public class NacosDiscoveryProperties {
 					InetAddress currentAddress = inetAddress.nextElement();
 					if (currentAddress instanceof Inet4Address
 							|| currentAddress instanceof Inet6Address
-							&& !currentAddress.isLoopbackAddress()) {
+									&& !currentAddress.isLoopbackAddress()) {
 						ip = currentAddress.getHostAddress();
 						break;
 					}
@@ -335,7 +336,7 @@ public class NacosDiscoveryProperties {
 		this.logName = logName;
 	}
 
-	public void setInetIPUtils(InetIPv6Utils inetIPUtils){
+	public void setInetIPUtils(InetIPv6Utils inetIPUtils) {
 		this.inetIPUtils = inetIPUtils;
 	}
 
