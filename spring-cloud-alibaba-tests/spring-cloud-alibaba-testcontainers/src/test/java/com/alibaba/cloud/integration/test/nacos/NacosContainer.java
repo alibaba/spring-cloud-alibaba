@@ -7,31 +7,24 @@ import static java.lang.String.format;
 
 public class NacosContainer<SelfT extends NacosContainer<SelfT>>
 		extends ChaosContainer<SelfT> {
-		
-		public static final String DEFAULT_IMAGE_NAME = System.getenv()
-				.getOrDefault("TEST_IMAGE_NAME", "nacos");
-		
-		public NacosContainer(String clusterName, String image) {
-				super(clusterName, image);
-				withExposedPorts(NACOS_SERVER_PORT).withCommand(
-						format("/bin/bash -c '</dev/tcp/localhost/%d'",
-								NACOS_SERVER_PORT));
-				//				.withCreateContainerCmdModifier(
-				//					cmd -> cmd.withHostConfig(
-				//						new HostConfig()
-				//							.withPortBindings(new PortBinding(Ports.Binding.bindPort(8849), new ExposedPort(NACOS_SERVER_PORT)))));;
-				
-		}
-		
-		@Override protected void configure() {
-				super.configure();
-				this.withNetworkAliases(DEFAULT_IMAGE_NAME)
-						.withExposedPorts(NACOS_SERVER_PORT)
-						.withCreateContainerCmdModifier(createContainerCmd -> {
-								createContainerCmd.withHostName(DEFAULT_IMAGE_NAME);
-								createContainerCmd.withName(
-										clusterName + "-" + DEFAULT_IMAGE_NAME);
-						});
-		}
-		
+
+	public static final String DEFAULT_IMAGE_NAME = System.getenv()
+			.getOrDefault("TEST_IMAGE_NAME", "nacos");
+
+	public NacosContainer(String clusterName, String image) {
+		super(clusterName, image);
+		withExposedPorts(NACOS_SERVER_PORT).withCommand(
+				format("/bin/bash -c '</dev/tcp/localhost/%d'", NACOS_SERVER_PORT));
+	}
+
+	@Override
+	protected void configure() {
+		super.configure();
+		this.withNetworkAliases(DEFAULT_IMAGE_NAME).withExposedPorts(NACOS_SERVER_PORT)
+				.withCreateContainerCmdModifier(createContainerCmd -> {
+					createContainerCmd.withHostName(DEFAULT_IMAGE_NAME);
+					createContainerCmd.withName(clusterName + "-" + DEFAULT_IMAGE_NAME);
+				});
+	}
+
 }

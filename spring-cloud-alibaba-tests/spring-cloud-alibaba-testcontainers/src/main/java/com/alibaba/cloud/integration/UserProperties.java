@@ -16,23 +16,25 @@
 
 package com.alibaba.cloud.integration;
 
-import lombok.Data;
-
 import java.util.List;
 import java.util.Map;
+
+import lombok.Data;
 
 /**
  * @author freeman
  */
-@Data public class UserProperties {
+@Data
+public class UserProperties {
+	private String name;
+	private Integer age;
+	private Map<String, Object> map;
+	private List<User> users;
+
+	@Data
+	public static class User {
 		private String name;
 		private Integer age;
-		private Map<String, Object> map;
-		private List<User> users;
-		
-		@Data public static class User {
-				private String name;
-				private Integer age;
-		}
-		
+	}
+
 }

@@ -19,16 +19,16 @@
 package com.alibaba.cloud.integration.docker;
 
 public class ContainerExecException extends Exception {
-		private final ContainerExecResult result;
-		
-		public ContainerExecException(String cmd, String containerId,
-				ContainerExecResult result) {
-				super(String.format("%s failed on %s with error code %d", cmd,
-						containerId, result.getExitCode()));
-				this.result = result;
-		}
-		
-		public ContainerExecResult getResult() {
-				return result;
-		}
+    /**
+     *
+     * @param cmd command
+     * @param containerId container id
+     * @param result exec result
+     */
+    public ContainerExecException(final String cmd,
+            final String containerId, final ContainerExecResult result) {
+        super(String.format("%s failed on %s with error code %d",
+                cmd, containerId,
+                result.getExitCode()));
+    }
 }
