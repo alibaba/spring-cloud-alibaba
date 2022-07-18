@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
-import com.alibaba.cloud.nacos.intetutil.InetIPv6Util;
+import com.alibaba.cloud.nacos.inetutil.InetIPv6Util;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
@@ -167,7 +167,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * choose IPv4 or IPv6,if you don't set it will choose IPv4
 	 */
-	private String ipType = "IPv4" ;
+	private String ipType = "IPv4";
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
@@ -255,14 +255,16 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(ip)) {
 			// traversing network interfaces if didn't specify a interface
 			if (StringUtils.isEmpty(networkInterface)) {
-				if ("IPv4".equalsIgnoreCase(ipType)){
+				if ("IPv4".equalsIgnoreCase(ipType)) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-				}else if ("IPv6".equalsIgnoreCase(ipType)){
+				}
+				else if ("IPv6".equalsIgnoreCase(ipType)) {
 					ip = inetipv6Util.findFirstNonLoopbackHostInfo().getIpAddress();
 					int index = ip.indexOf('%');
 					ip = index > 0 ? ip.substring(0, index) : ip;
-					ip = "["+ip+"]";
-				}else {
+					ip = "[" + ip + "]";
+				}
+				else {
 					throw new IllegalArgumentException(
 							"please checking the type of IP " + ipType);
 				}
