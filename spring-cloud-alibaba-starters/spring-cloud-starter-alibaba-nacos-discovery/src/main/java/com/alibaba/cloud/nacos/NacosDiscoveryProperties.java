@@ -66,6 +66,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  * @author <a href="mailto:78552423@qq.com">eshun</a>
+ * @author freeman
  */
 @ConfigurationProperties("spring.cloud.nacos.discovery")
 public class NacosDiscoveryProperties {
@@ -214,6 +215,12 @@ public class NacosDiscoveryProperties {
 	 * If instance is ephemeral.The default value is true.
 	 */
 	private boolean ephemeral = true;
+
+	/**
+	 * Whether to enable nacos failure tolerance. If enabled, nacos will return cached
+	 * values when exceptions occur.
+	 */
+	private boolean failureToleranceEnabled;
 
 	/**
 	 * Throw exceptions during service registration if true, otherwise, log error
@@ -528,6 +535,14 @@ public class NacosDiscoveryProperties {
 		this.ephemeral = ephemeral;
 	}
 
+	public boolean isFailureToleranceEnabled() {
+		return failureToleranceEnabled;
+	}
+
+	public void setFailureToleranceEnabled(boolean failureToleranceEnabled) {
+		this.failureToleranceEnabled = failureToleranceEnabled;
+	}
+
 	public boolean isFailFast() {
 		return failFast;
 	}
@@ -545,7 +560,12 @@ public class NacosDiscoveryProperties {
 			return false;
 		}
 		NacosDiscoveryProperties that = (NacosDiscoveryProperties) o;
-		return Objects.equals(serverAddr, that.serverAddr)
+		return watchDelay == that.watchDelay && Float.compare(that.weight, weight) == 0
+				&& registerEnabled == that.registerEnabled && port == that.port
+				&& secure == that.secure && instanceEnabled == that.instanceEnabled
+				&& ephemeral == that.ephemeral
+				&& failureToleranceEnabled == that.failureToleranceEnabled
+				&& Objects.equals(serverAddr, that.serverAddr)
 				&& Objects.equals(username, that.username)
 				&& Objects.equals(password, that.password)
 				&& Objects.equals(endpoint, that.endpoint)
@@ -553,8 +573,9 @@ public class NacosDiscoveryProperties {
 				&& Objects.equals(logName, that.logName)
 				&& Objects.equals(service, that.service)
 				&& Objects.equals(clusterName, that.clusterName)
-				&& Objects.equals(group, that.group) && Objects.equals(ip, that.ip)
-				&& Objects.equals(port, that.port)
+				&& Objects.equals(group, that.group)
+				&& Objects.equals(namingLoadCacheAtStart, that.namingLoadCacheAtStart)
+				&& Objects.equals(metadata, that.metadata) && Objects.equals(ip, that.ip)
 				&& Objects.equals(networkInterface, that.networkInterface)
 				&& Objects.equals(accessKey, that.accessKey)
 				&& Objects.equals(secretKey, that.secretKey)
@@ -568,14 +589,16 @@ public class NacosDiscoveryProperties {
 	public int hashCode() {
 		return Objects.hash(serverAddr, username, password, endpoint, namespace,
 				watchDelay, logName, service, weight, clusterName, group,
-				namingLoadCacheAtStart, registerEnabled, ip, networkInterface, port,
-				secure, accessKey, secretKey, heartBeatInterval, heartBeatTimeout,
-				ipDeleteTimeout, instanceEnabled, ephemeral, failFast);
+				namingLoadCacheAtStart, metadata, registerEnabled, ip, networkInterface,
+				port, secure, accessKey, secretKey, heartBeatInterval, heartBeatTimeout,
+				ipDeleteTimeout, instanceEnabled, ephemeral, failureToleranceEnabled,
+				failFast);
 	}
 
 	@Override
 	public String toString() {
 		return "NacosDiscoveryProperties{" + "serverAddr='" + serverAddr + '\''
+				+ ", username='" + username + '\'' + ", password='" + password + '\''
 				+ ", endpoint='" + endpoint + '\'' + ", namespace='" + namespace + '\''
 				+ ", watchDelay=" + watchDelay + ", logName='" + logName + '\''
 				+ ", service='" + service + '\'' + ", weight=" + weight
@@ -586,6 +609,9 @@ public class NacosDiscoveryProperties {
 				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
 				+ '\'' + ", secretKey='" + secretKey + '\'' + ", heartBeatInterval="
 				+ heartBeatInterval + ", heartBeatTimeout=" + heartBeatTimeout
+				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", instanceEnabled="
+				+ instanceEnabled + ", ephemeral=" + ephemeral
+				+ ", failureToleranceEnabled=" + failureToleranceEnabled + '}'
 				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", failFast=" + failFast + '}';
 	}
 
@@ -596,7 +622,7 @@ public class NacosDiscoveryProperties {
 					.resolvePlaceholders("${spring.cloud.nacos.discovery.server-addr:}");
 			if (StringUtils.isEmpty(serverAddr)) {
 				serverAddr = env.resolvePlaceholders(
-						"${spring.cloud.nacos.server-addr:localhost:8848}");
+						"${spring.cloud.nacos.server-addr:127.0.0.1:8848}");
 			}
 			this.setServerAddr(serverAddr);
 		}
