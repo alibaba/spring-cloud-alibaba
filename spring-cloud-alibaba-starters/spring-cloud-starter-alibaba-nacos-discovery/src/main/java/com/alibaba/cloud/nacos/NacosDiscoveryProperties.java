@@ -165,7 +165,7 @@ public class NacosDiscoveryProperties {
 	private String networkInterface = "";
 
 	/**
-	 * choose IPv4 or IPv6,if you don't set it will choose IPv4
+	 * choose IPv4 or IPv6,if you don't set it will choose IPv4.
 	 */
 	private String ipType = "IPv4";
 
@@ -336,7 +336,7 @@ public class NacosDiscoveryProperties {
 		this.logName = logName;
 	}
 
-	public void setInetipv6Util(InetIPv6Util inetipv6Util){
+	public void setInetipv6Util(InetIPv6Util inetipv6Util) {
 		this.inetipv6Util = inetipv6Util;
 	}
 
