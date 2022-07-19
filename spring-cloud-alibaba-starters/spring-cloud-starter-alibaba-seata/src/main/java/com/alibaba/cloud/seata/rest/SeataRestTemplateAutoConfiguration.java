@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaojing
  */
-
 @Configuration(proxyBeanMethods = false)
 public class SeataRestTemplateAutoConfiguration {
 
