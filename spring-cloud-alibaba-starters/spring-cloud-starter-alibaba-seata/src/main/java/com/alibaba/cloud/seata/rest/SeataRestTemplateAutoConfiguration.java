@@ -16,51 +16,23 @@
 
 package com.alibaba.cloud.seata.rest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author xiaojing
  */
-
 @Configuration(proxyBeanMethods = false)
 public class SeataRestTemplateAutoConfiguration {
 
-	@Autowired(required = false)
-	private Collection<RestTemplate> restTemplates;
-
-	@Autowired
-	private SeataRestTemplateInterceptor seataRestTemplateInterceptor;
-
-	@PostConstruct
-	public void init() {
-		if (this.restTemplates != null) {
-			for (RestTemplate restTemplate : restTemplates) {
-				List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>(
-						restTemplate.getInterceptors());
-				interceptors.add(this.seataRestTemplateInterceptor);
-				restTemplate.setInterceptors(interceptors);
-			}
-		}
+	@Bean
+	public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
+		return new SeataRestTemplateInterceptor();
 	}
 
-	@Configuration(proxyBeanMethods = false)
-	static class SeataRestTemplateInterceptorConfiguration {
-
-		@Bean
-		public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
-			return new SeataRestTemplateInterceptor();
-		}
-
+	@Bean
+	public SeataRestTemplateInterceptorAfterPropertiesSet seataRestTemplateInterceptorConfiguration() {
+		return new SeataRestTemplateInterceptorAfterPropertiesSet();
 	}
 
 }
