@@ -77,7 +77,7 @@ public final class RocketMQConsumerFactory {
 				RocketMQUtils.getInstanceName(rpcHook, consumerProperties.getGroup()));
 		consumer.setNamespace(consumerProperties.getNamespace());
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
-		consumer.setAccessChannel("LOCAL".equals(consumerProperties.getAccessChannel())? AccessChannel.LOCAL : AccessChannel.CLOUD);
+		consumer.setAccessChannel("LOCAL".equals(consumerProperties.getAccessChannel()) ? AccessChannel.LOCAL : AccessChannel.CLOUD);
 		consumer.setMessageModel(getMessageModel(consumerProperties.getMessageModel()));
 		consumer.setUseTLS(consumerProperties.getUseTLS());
 		consumer.setPullTimeDelayMillsWhenException(
