@@ -21,6 +21,7 @@ import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerPrope
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
+import org.apache.rocketmq.client.AccessChannel;
 import org.apache.rocketmq.client.consumer.AllocateMessageQueueStrategy;
 import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -76,6 +77,7 @@ public final class RocketMQConsumerFactory {
 				RocketMQUtils.getInstanceName(rpcHook, consumerProperties.getGroup()));
 		consumer.setNamespace(consumerProperties.getNamespace());
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
+		consumer.setAccessChannel("LOCAL".equals(consumerProperties.getAccessChannel()) ? AccessChannel.LOCAL : AccessChannel.CLOUD);
 		consumer.setMessageModel(getMessageModel(consumerProperties.getMessageModel()));
 		consumer.setUseTLS(consumerProperties.getUseTLS());
 		consumer.setPullTimeDelayMillsWhenException(
@@ -129,6 +131,7 @@ public final class RocketMQConsumerFactory {
 			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 		}
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
+		consumer.setAccessChannel("LOCAL".equals(consumerProperties.getAccessChannel()) ? AccessChannel.LOCAL : AccessChannel.CLOUD);
 		consumer.setMessageModel(getMessageModel(consumerProperties.getMessageModel()));
 		consumer.setUseTLS(consumerProperties.getUseTLS());
 		consumer.setPullTimeDelayMillsWhenException(

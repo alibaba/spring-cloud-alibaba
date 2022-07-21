@@ -41,30 +41,30 @@ public final class RocketMQUtils {
 		if (null == binderConfigurationProperties || mqProperties == null) {
 			return mqProperties;
 		}
-		if (StringUtils.isEmpty(mqProperties.getNameServer())) {
+		if (!StringUtils.isEmpty(binderConfigurationProperties.getNameServer())) {
 			mqProperties.setNameServer(binderConfigurationProperties.getNameServer());
 		}
-		if (StringUtils.isEmpty(mqProperties.getSecretKey())) {
+		if (!StringUtils.isEmpty(binderConfigurationProperties.getSecretKey())) {
 			mqProperties.setSecretKey(binderConfigurationProperties.getSecretKey());
 		}
-		if (StringUtils.isEmpty(mqProperties.getAccessKey())) {
+		if (!StringUtils.isEmpty(binderConfigurationProperties.getAccessKey())) {
 			mqProperties.setAccessKey(binderConfigurationProperties.getAccessKey());
 		}
-		if (StringUtils.isEmpty(mqProperties.getAccessChannel())) {
+		if (!StringUtils.isEmpty(binderConfigurationProperties.getAccessChannel())) {
 			mqProperties
 					.setAccessChannel(binderConfigurationProperties.getAccessChannel());
 		}
-		if (StringUtils.isEmpty(mqProperties.getNamespace())) {
+		if (!StringUtils.isEmpty(binderConfigurationProperties.getNamespace())) {
 			mqProperties.setNamespace(binderConfigurationProperties.getNamespace());
 		}
-		if (StringUtils.isEmpty(mqProperties.getGroup())) {
+		if (!StringUtils.isEmpty(binderConfigurationProperties.getGroup())) {
 			mqProperties.setGroup(binderConfigurationProperties.getGroup());
 		}
-		if (StringUtils.isEmpty(mqProperties.getCustomizedTraceTopic())) {
+		if (!StringUtils.isEmpty(binderConfigurationProperties.getCustomizedTraceTopic())) {
 			mqProperties.setCustomizedTraceTopic(
 					binderConfigurationProperties.getCustomizedTraceTopic());
 		}
-		if (StringUtils.isEmpty(mqProperties.getUnitName())) {
+		if (!StringUtils.isEmpty(binderConfigurationProperties.getUnitName())) {
 			mqProperties.setUnitName(binderConfigurationProperties.getUnitName());
 		}
 		mqProperties.setNameServer(getNameServerStr(mqProperties.getNameServer()));

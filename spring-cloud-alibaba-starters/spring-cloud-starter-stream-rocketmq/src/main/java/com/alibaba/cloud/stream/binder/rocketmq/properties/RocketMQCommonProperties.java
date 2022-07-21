@@ -61,7 +61,7 @@ public class RocketMQCommonProperties implements Serializable {
 	 */
 	private String unitName;
 
-	private String accessChannel;
+	private String accessChannel = AccessChannel.LOCAL.name();
 
 	/**
 	 * Pulling topic information interval from the named server.
