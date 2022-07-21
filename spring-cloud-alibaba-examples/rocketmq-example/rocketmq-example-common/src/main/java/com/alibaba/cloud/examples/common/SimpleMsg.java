@@ -34,4 +34,5 @@ public class SimpleMsg {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
 }

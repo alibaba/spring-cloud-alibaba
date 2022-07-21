@@ -17,7 +17,6 @@
 package com.alibaba.cloud.examples.model;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "spring.cloud.nacos.config")
@@ -75,4 +74,5 @@ public class NacosConfigInfo {
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
+
 }

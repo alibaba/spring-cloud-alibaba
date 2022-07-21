@@ -115,7 +115,7 @@ public class NacosConfigurationNewTest {
 							&& "DEFAULT_GROUP".equals(args[1])) {
 						return "test-common2=common2";
 					}
-					
+
 					if ("ext-config-common03".equals(args[0])
 							&& "common03".equals(args[1])) {
 						return "{\"nacosExtConfig3\":{\"data-id\":\"ext-config-common03\",\"file-extension\":\"json\",\"group\":\"common03\"}}";
@@ -216,9 +216,12 @@ public class NacosConfigurationNewTest {
 	private void checkoutDataLoad() {
 		assertThat(environment.getProperty("user.name")).isEqualTo("dev");
 		assertThat(environment.getProperty("user.age")).isEqualTo("12");
-		assertThat(environment.getProperty("nacosExtConfig3.data-id")).isEqualTo("ext-config-common03");
-		assertThat(environment.getProperty("nacosExtConfig3.file-extension")).isEqualTo("json");
-		assertThat(environment.getProperty("nacosExtConfig3.group")).isEqualTo("common03");
+		assertThat(environment.getProperty("nacosExtConfig3.data-id"))
+				.isEqualTo("ext-config-common03");
+		assertThat(environment.getProperty("nacosExtConfig3.file-extension"))
+				.isEqualTo("json");
+		assertThat(environment.getProperty("nacosExtConfig3.group"))
+				.isEqualTo("common03");
 	}
 
 	private void checkoutEndpoint() throws Exception {

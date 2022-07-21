@@ -22,8 +22,11 @@ import java.util.Map;
  * @author freeman
  */
 public class User {
+
 	private String id;
+
 	private String name;
+
 	private Map<String, Object> meta;
 
 	public String getId() {
@@ -55,4 +58,5 @@ public class User {
 		return "User{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", meta=" + meta
 				+ '}';
 	}
+
 }

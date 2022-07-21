@@ -26,7 +26,7 @@ Binding 在消息中间件与应用程序提供的 Provider 和 Consumer 之间�
 
 下图是 Spring Cloud Stream 的架构设计。
 
-![](https://docs.spring.io/spring-cloud-stream/docs/current/reference/htmlsingle/images/SCSt-overview.png)
+![](https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/images/SCSt-with-binder.png)
 
 
 
@@ -808,6 +808,92 @@ public class RocketMQTxApplication {
 				+ arg.toString());
 		};
 	}
+}
+```
+
+## 最大重试消费示例
+
+- 重试消费消息：根据配置的重新消费的次数，服务端会根据客户端消费是否成功，进行重新推送消息。
+
+### 创建Topic
+
+```sh
+sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t retrieable
+```
+
+### 示例代码
+
+**application.yml**
+
+```yaml
+server:
+  port: 28089
+spring:
+  application:
+    name: rocketmq-retrieable-consume-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+          consumer-in-0:
+            consumer:
+              ## According to the configured number of `max-reconsume-times`,
+              ## the server will re-push the message according to whether the client's consumption is successful or not
+              push:
+                max-reconsume-times: 3
+      bindings:
+        producer-out-0:
+          destination: retrieable
+        consumer-in-0:
+          destination: retrieable
+          group: retrieable-consumer
+
+logging:
+  level:
+    org.springframework.context.support: debug
+
+```
+
+**code**
+
+```java
+@SpringBootApplication
+public class RocketMQRetrieableConsumeApplication {
+
+    private static final Logger log = LoggerFactory
+        .getLogger(RocketMQRetrieableConsumeApplication.class);
+
+    @Autowired
+    private StreamBridge streamBridge;
+
+    public static void main(String[] args) {
+        SpringApplication.run(RocketMQRetrieableConsumeApplication.class, args);
+    }
+
+    @Bean
+    public ApplicationRunner producer() {
+        return args -> {
+            Map<String, Object> headers = new HashMap<>();
+            Message<SimpleMsg> msg = new GenericMessage(
+                new SimpleMsg("Hello RocketMQ For Retrieable ."), headers);
+            streamBridge.send("producer-out-0", msg);
+        };
+    }
+
+    @Bean
+    public Consumer<Message<SimpleMsg>> consumer() {
+        return msg -> {
+            // Mock Exception in consumer function.
+            throw new RuntimeException("mock exception.");
+        };
+    }
 }
 ```
 

@@ -1,0 +1,32 @@
+server:
+  port: 28089
+spring:
+  application:
+    name: rocketmq-retrieable-consume-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+          consumer-in-0:
+            consumer:
+              ## According to the configured number of `max-reconsume-times`,
+              ## the server will re-push the message according to whether the client's consumption is successful or not
+              push:
+                max-reconsume-times: 3
+      bindings:
+        producer-out-0:
+          destination: retrieable
+        consumer-in-0:
+          destination: retrieable
+          group: retrieable-consumer
+
+logging:
+  level:
+    org.springframework.context.support: debug

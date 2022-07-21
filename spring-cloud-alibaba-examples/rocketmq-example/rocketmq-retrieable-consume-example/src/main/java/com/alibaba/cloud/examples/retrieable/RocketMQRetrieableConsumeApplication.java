@@ -14,37 +14,57 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.broadcast;
+package com.alibaba.cloud.examples.retrieable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.alibaba.cloud.examples.common.SimpleMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
 
 /**
- * @author sorie
+ * RocketMQ Retrieable Consume Example .
+ *
+ * @author Palmer.Xu
  */
 @SpringBootApplication
-public class RocketMQBroadcastConsumer2Application {
+public class RocketMQRetrieableConsumeApplication {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(RocketMQBroadcastConsumer2Application.class);
+			.getLogger(RocketMQRetrieableConsumeApplication.class);
+
+	@Autowired
+	private StreamBridge streamBridge;
 
 	public static void main(String[] args) {
-		SpringApplication.run(RocketMQBroadcastConsumer2Application.class, args);
+		SpringApplication.run(RocketMQRetrieableConsumeApplication.class, args);
+	}
+
+	@Bean
+	public ApplicationRunner producer() {
+		return args -> {
+			Map<String, Object> headers = new HashMap<>();
+			Message<SimpleMsg> msg = new GenericMessage(
+					new SimpleMsg("Hello RocketMQ For Retrieable ."), headers);
+			streamBridge.send("producer-out-0", msg);
+		};
 	}
 
 	@Bean
 	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
-			log.info(Thread.currentThread().getName()
-					+ " Consumer2 Receive New Messages: " + msg.getPayload().getMsg());
+			throw new RuntimeException("mock exception.");
 		};
 	}
 

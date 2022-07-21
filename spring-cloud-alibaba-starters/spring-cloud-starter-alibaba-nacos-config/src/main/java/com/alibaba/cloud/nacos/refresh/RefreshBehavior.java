@@ -25,6 +25,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBean;
  * @since 2.2.8
  */
 public enum RefreshBehavior {
+
 	/**
 	 * Refresh all {@link ConfigurationPropertiesBean}s.
 	 */
@@ -33,4 +34,5 @@ public enum RefreshBehavior {
 	 * Refresh specific {@link ConfigurationPropertiesBean} base on change key.
 	 */
 	SPECIFIC_BEAN,
+
 }

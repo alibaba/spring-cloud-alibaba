@@ -57,6 +57,8 @@ public class NacosConfigBootstrapConfiguration {
 
 	/**
 	 * Compatible with bootstrap way to start.
+	 * @param beans configurationPropertiesBeans
+	 * @return configurationPropertiesRebinder
 	 */
 	@Bean
 	@ConditionalOnMissingBean(search = SearchStrategy.CURRENT)

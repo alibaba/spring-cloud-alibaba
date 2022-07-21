@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Shared configuration example, Used to resolve multiple projects using the same
  * configuration.
+ *
  * @author lixiaoshuang
  */
 @RestController
@@ -60,4 +61,5 @@ public class SharedConfigExample {
 		result.put("driverClassName", driverClassName);
 		return result;
 	}
+
 }
