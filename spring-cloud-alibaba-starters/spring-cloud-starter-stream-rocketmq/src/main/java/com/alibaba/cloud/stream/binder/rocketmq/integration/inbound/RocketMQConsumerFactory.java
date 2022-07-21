@@ -131,6 +131,7 @@ public final class RocketMQConsumerFactory {
 			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 		}
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());
+		consumer.setAccessChannel("LOCAL".equals(consumerProperties.getAccessChannel()) ? AccessChannel.LOCAL : AccessChannel.CLOUD);
 		consumer.setMessageModel(getMessageModel(consumerProperties.getMessageModel()));
 		consumer.setUseTLS(consumerProperties.getUseTLS());
 		consumer.setPullTimeDelayMillsWhenException(
