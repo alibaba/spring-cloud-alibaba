@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.discovery;
 
+import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
 import com.alibaba.cloud.nacos.inetutil.UtilIPv6AutoConfiguration;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +38,7 @@ public class NacosDiscoveryClientConfigurationTest {
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(UtilAutoConfiguration.class,
 					UtilIPv6AutoConfiguration.class,
+					NacosServiceAutoConfiguration.class,
 					NacosDiscoveryAutoConfiguration.class,
 					NacosDiscoveryClientConfiguration.class, this.getClass()));
 
