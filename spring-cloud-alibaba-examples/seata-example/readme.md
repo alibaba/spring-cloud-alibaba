@@ -3,49 +3,60 @@
 ## Project Instruction
 
 
-This project demonstrates how to use Seata Starter to complete distributed transaction access for Spring Cloud applications.
+This project demonstrates how to use Seata starter to complete the distributed transaction access of spring cloud applications.
 
-[Seata](https://github.com/seata/seata) is Alibaba's open source distributed transaction middleware that solves distributed transaction problems in microservice scenarios in an efficient and 0-intrusive way.
+[Seata](https://github.com/seata/seata) It is Alibaba open source distributed transaction middleware, which solves the distributed transaction problem in the microservice scenario in an efficient and non-invasive way.
 
 
 
-## Preparation
+## Preparations
 
-Before running this example, you need to complete the following preparation steps.
+Before running this example, you need to complete the following steps:
 
 1. Configure the database
 
-2. Create the `UNDO_LOG` table
+2. Create UNDO_ LOG table
 
-3. Create the database tables required by the business in the example
+3. Create the database tables needed by the business in the example
 
-4. Start Seata Server
+4. Create the Nacos configuration in the example, data id: `seata.properties` , Group: `SEATA_ Group` (Seata 1.5.1 default group) configuration import [nacos configuration](https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt)
+  At seata Add the following [transaction group configuration](https://seata.io/zh-cn/docs/user/configurations.html) required in the example to properties
+```
+   service.vgroupMapping.order-service-tx-group=default
+   service.vgroupMapping.account-service-tx-group=default
+   service.vgroupMapping.business-service-tx-group=default
+   service.vgroupMapping.storage-service-tx-group=default
+``` 
+5. Start Seata Server
+   Seata 1.5.1 supports Seata console local access console address: http://127.0.0.1:7091
+   Through the Seata console, you can observe the executing transaction information and global lock information, and delete the relevant information when the transaction is completed.
 
+### Configuration database
 
-### Configure the database
+First, you need a MySQL database that supports the InnoDB engine.
 
-First, you need to have a MySQL database that supports the `InnoDB` engine.
+**NOTE**: In fact, Seata supports different applications that use totally unrelated databases, but here we chose to use only one database for a simple demonstration of one principle.
 
-**Note**: Seata actually supports different applications using completely unrelated databases, but here we have chosen to use only one database in order to simply demonstrate a principle.
-
-Change the following configuration in the `application.properties` file in the `resources` directory of the `account-server`, `order-service`, and `storage-service` applications to the actual configuration in your runtime environment.
+Will application in the resources directory of the `account-server`, `order-service`, `storage-service` three applications. The following configuration in the yml file is modified to the actual configuration in your running environment.
 
 ```
-mysql.server.ip=your mysql server ip address
-mysql.server.port=your mysql server listening port
-mysql.db.name=your database name for test
-
-mysql.user.name=your mysql server username
-mysql.user.password=your mysql server password
+base:
+  config:
+    mdb:
+      hostname: your mysql server ip address
+      dbname: your database name for test
+      port: your mysql server listening port
+      username: your mysql server username
+      password: your mysql server password
 
 ```
 
-### Create `undo_log` table
+### Create undo_ Log table
 
-The [Seata AT schema]() needs to use the undo_log table.
+Seata AT Mode Need to use undo_ Log table.
 
 ``` $sql
--- Note that here 0.3.0+ adds unique index `ux_undo_log`
+-- Notice here that 0.3.0+ increases the unique index ux_ Undo_ Log
 CREATE TABLE `undo_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `branch_id` bigint(20) NOT NULL,
@@ -60,8 +71,84 @@ CREATE TABLE `undo_log` (
   UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
+### Database tables needed to import seata-server DB schema
+Initialize in database [global_table、branch_table、lock_table、distributed_lock](https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)
+```$sql
+-- -------------------------------- The script used when storeMode is 'db' --------------------------------
+-- the table to store GlobalSession data
+CREATE TABLE IF NOT EXISTS `global_table`
+(
+    `xid`                       VARCHAR(128) NOT NULL,
+    `transaction_id`            BIGINT,
+    `status`                    TINYINT      NOT NULL,
+    `application_id`            VARCHAR(32),
+    `transaction_service_group` VARCHAR(32),
+    `transaction_name`          VARCHAR(128),
+    `timeout`                   INT,
+    `begin_time`                BIGINT,
+    `application_data`          VARCHAR(2000),
+    `gmt_create`                DATETIME,
+    `gmt_modified`              DATETIME,
+    PRIMARY KEY (`xid`),
+    KEY `idx_status_gmt_modified` (`status` , `gmt_modified`),
+    KEY `idx_transaction_id` (`transaction_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
-### Create the database tables required by the business in the example
+-- the table to store BranchSession data
+CREATE TABLE IF NOT EXISTS `branch_table`
+(
+    `branch_id`         BIGINT       NOT NULL,
+    `xid`               VARCHAR(128) NOT NULL,
+    `transaction_id`    BIGINT,
+    `resource_group_id` VARCHAR(32),
+    `resource_id`       VARCHAR(256),
+    `branch_type`       VARCHAR(8),
+    `status`            TINYINT,
+    `client_id`         VARCHAR(64),
+    `application_data`  VARCHAR(2000),
+    `gmt_create`        DATETIME(6),
+    `gmt_modified`      DATETIME(6),
+    PRIMARY KEY (`branch_id`),
+    KEY `idx_xid` (`xid`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- the table to store lock data
+CREATE TABLE IF NOT EXISTS `lock_table`
+(
+    `row_key`        VARCHAR(128) NOT NULL,
+    `xid`            VARCHAR(128),
+    `transaction_id` BIGINT,
+    `branch_id`      BIGINT       NOT NULL,
+    `resource_id`    VARCHAR(256),
+    `table_name`     VARCHAR(32),
+    `pk`             VARCHAR(36),
+    `status`         TINYINT      NOT NULL DEFAULT '0' COMMENT '0:locked ,1:rollbacking',
+    `gmt_create`     DATETIME,
+    `gmt_modified`   DATETIME,
+    PRIMARY KEY (`row_key`),
+    KEY `idx_status` (`status`),
+    KEY `idx_branch_id` (`branch_id`),
+    KEY `idx_xid_and_branch_id` (`xid` , `branch_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `distributed_lock`
+(
+    `lock_key`       CHAR(20) NOT NULL,
+    `lock_value`     VARCHAR(20) NOT NULL,
+    `expire`         BIGINT,
+    primary key (`lock_key`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('AsyncCommitting', ' ', 0);
+INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('RetryCommitting', ' ', 0);
+INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('RetryRollbacking', ' ', 0);
+INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('TxTimeoutCheck', ' ', 0);
+```
+### Create the database tables needed by the business in the example
 
 ```$sql
 DROP TABLE IF EXISTS `storage_tbl`;
@@ -94,67 +181,69 @@ CREATE TABLE `account_tbl` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-### Start Seata Server
+### Start Seata Server This describes SpringBoot and download server in two ways
 
-Click on this page [https://github.com/seata/seata/releases](https://github.com/seata/seata/releases) to download the latest version of Seata Server.
+1.Run seata-server to start Seata server
+The example uses Nacos as the configuration and the registry storage mode is: DB uses MySQL
 
-
-Go to the bin directory after unpacking and execute the following command to start it, all startup parameters are optional.
+2. Or click on this page GitHub, the official website of [Seata](https://github.com/seata/seata/releases ), download the latest version of Sata Server.
+Enter the bin directory after unzipping and execute the following command to start with all the startup parameters optional.
 
 ```$shell
 sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db) -h $HOST -e $ENV
 ```
-`-p` seata-server listen to the service port number   
-`-m` storage mode, optional values: file, db. file is used for single point mode, db is used for ha mode, when using db storage mode, you need to modify the database configuration of the store configuration node in the configuration, and also initialize [global_table, branch_table and
-lock_table](https://github.com/seata/seata/blob/develop/server/src/main/resources/db_store.sql)   
-`-h` is used to solve the `seata-server` and business side of the cross-network problem, its configuration of the host value directly to the service available in the registration center host, when the cross-network here need to be configured as a public IP or NATIP, if all in the same LAN is not required to configure   
-`-e` is used to solve the multi-environment configuration center isolation problem   
-
-In this example, the following command is used to start Seata Server
+-p seata-server listening service port number
+-m storage mode, optional values: file, db. File is for single-point mode and DB is for HA mode. When using DB storage mode, you need to modify the database configuration of the store configuration node in the configuration and initialize [global_table, branch_table, and
+Lock_ Table](https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql )
+-h is used to solve seata-server and business side cross-network problems. The configured host value is displayed directly to the registry service available address host, which needs to be configured as public network IP or NATIP when cross-network. If both are in the same local area network, no configuration is required 
+-e for multi-environment configuration center isolation   
+Start Seata Server with the following command
 
 ```$shell
 sh seata-server.sh -p 8091 -m file
 ```
 
-**Note** If you have modified the endpoint and the registry uses the default file type, remember to change the value of grouplist in the `file.conf` file in each example project (the registry.type or config.type in registry.conf will be read when it is file). If the type is not file, the data will be read directly from the registration configuration center of the corresponding metadata of the configuration type), it is recommended to use nacos as the configuration registration center.
+**Note** If you modified the endpoint and the registry uses the default file type, remember the file you need in each of the sample projects. In the conf`file, modify the value of grouplist (when registry.type or config.type in registry.conf is file, the file name in the internal file node is read; if type is not file, the data is read directly from the registry configuration center for the corresponding metadata of the configuration type), Nacos is recommended as the configuration registry.
 
+## Run Example
 
-## Run example
+Run the Main functions of the three applications `account-server`, `order-service`, `storage-service` and `business-service`, respectively, to start the example.
 
-Run the Main function of `account-server`, `order-service`, `storage-service` and `business-service` respectively to start the example.
-
-After starting the example, access the following two URLs via the `GET` method of HTTP to verify the scenario of calling other services in `business-service` via RestTemplate and FeignClient, respectively.
+After launching the example, the following URLs are accessed through the GET method of HTTP to validate scenarios where other services are invoked through RestTemplate and FeignClient in `business-service` respectively.
 
 ```$xslt
 http://127.0.0.1:18081/seata/feign
 
 http://127.0.0.1:18081/seata/rest
+
 ```
 
-## How to verify the success of a distributed transaction?
+## How do I verify the success of a distributed transaction?
 
-### Check if the Xid information was passed successfully
+### Whether Xid information was successfully transmitted
 
-In the Controller of `account-server`, `order-service` and `storage-service` services, the first logic executed is to output the Xid information in the RootContext, and if we see that the correct Xid information is output, i.e., it changes every time and the Xid of all services in the same. If you see that the correct Xid information is output, i.e., it changes every time and the Xid of all services in the same call is the same. If you see that the Xid information in the RootContext is correct, i.e., it changes every time, and the Xid of all the services in the same call is the same, then the Xid of Seata is passed and restored properly.
+In the Controller of the three services `account-server`, `order-service` and `storage-service`, the first logic executed is to output the Xid information in the RootContext. If you see that the correct Xid information is output, it changes every time and the Xid of all services in the same call is consistent. This indicates that the transfer and restore of Seata's Xid are normal.
+### Consistency of data in database
 
-### Check if the data in the database is consistent
+In this example, we simulate a scenario where a user purchases goods, StorageService is responsible for deducting the inventory quantity, OrderService is responsible for saving the order, and AccountService is responsible for deducting the user account balance.
 
-In this example, we simulate a scenario where a user purchases goods, the StorageService is responsible for deducting the inventory quantity, the OrderService is responsible for saving the order, and the AccountService is responsible for deducting the user's account balance.
+To demonstrate the sample, we used Random in OrderService and AcountService. NextBoolean () randomly throws exceptions, simulating a scenario in which exceptions occur randomly when a service is invoked.
 
-To demonstrate the sample, we use Random.nextBoolean() in OrderService and AccountService to throw a random exception, simulating a random exception occurring during a service call.
+If the distributed transaction is valid, then the following equation should be true
 
-If the distributed transaction is in effect, then the following equation should hold
 
-- `Original amount of the user (1000)` = `existing amount of the user` + `unit price of the goods (2)` * `number of orders` * `number of goods per order (2)`
+- User Original Amount (1000) = User Existing Amount + Goods Unit Price (2) * Order Quantity * Goods Quantity per Order (2)
 
-- `Initial quantity of goods (100)` = `existing quantity of goods` + `number of orders` * `number of goods per order (2)`
+- Initial Quantity of Goods (100) = Existing Quantity of Goods + Order Quantity * Quantity of Goods per Order (2)
 
-## Compatible with the Spring Cloud ecosystem
+## Support points for Spring Cloud
 
-- Service providers that provide services through `Spring MVC` can automatically restore `Seata` context when they receive an HTTP request with `Seata` information in the header.
+- Service providers that provide services through Spring MVC can automatically restore the Seata context when they receive HTTP requests with Seata information in the header.
 
-- Support for service callers to automatically pass `Seata` contexts when called via RestTemplate.
+- Support for automatic delivery of Seata context when service callers invoke through RestTemplate.
 
-- Supports automatic passing of `Seata` context when called by a service caller via FeignClient.
+- Supports automatic delivery of the Seata context when a service caller invokes through a FeignClient.
 
-- Supports scenarios where `SeataClient` and `Sentinel` are used together.
+- Supports scenarios where both SeataClient and Hystrix are used.
+
+- Supports scenarios used by both SeataClient and entinel.

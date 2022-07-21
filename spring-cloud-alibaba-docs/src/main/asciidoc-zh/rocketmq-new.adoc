@@ -162,60 +162,16 @@ MessageBuilder builder = MessageBuilder.withPayload(msg)
 Message message = builder.build();
 output().send(message);
 ```
-NOTE: 更多使用请参考样例: https://github.com/alibaba/spring-cloud-alibaba/blob/rocketmq/spring-cloud-alibaba-examples/rocketmq-example/rocketmq-produce-example/src/main/java/com/alibaba/cloud/examples/SenderService.java[com.alibaba.cloud.examples.SenderService]
-
-=== MessageSource 支持
-
-SCS RocketMQ Binder 支持 `MessageSource`，可以进行消息的拉取，例子如下：
-
+或者使用StreamBridge
 ```java
-@SpringBootApplication
-@EnableBinding(MQApplication.PolledProcessor.class)
-public class MQApplication {
-
-  private final Logger logger =
-  	  LoggerFactory.getLogger(MQApplication.class);
-
-  public static void main(String[] args) {
-    SpringApplication.run(MQApplication.class, args);
-  }
-
-  @Bean
-  public ApplicationRunner runner(PollableMessageSource source,
-  	    MessageChannel dest) {
-    return args -> {
-      while (true) {
-        boolean result = source.poll(m -> {
-          String payload = (String) m.getPayload();
-          logger.info("Received: " + payload);
-          dest.send(MessageBuilder.withPayload(payload.toUpperCase())
-              .copyHeaders(m.getHeaders())
-              .build());
-        }, new ParameterizedTypeReference<String>() { });
-        if (result) {
-          logger.info("Processed a message");
-        }
-        else {
-          logger.info("Nothing to do");
-        }
-        Thread.sleep(5_000);
-      }
-    };
-  }
-
-  public static interface PolledProcessor {
-
-    @Input
-    PollableMessageSource source();
-
-    @Output
-    MessageChannel dest();
-
-  }
-
-}
+MessageBuilder builder = MessageBuilder.withPayload(msg)
+    .setHeader(RocketMQHeaders.TAGS, "binder")
+    .setHeader(RocketMQHeaders.KEYS, "my-key");
+Message message = builder.build();
+streamBridge.send("producer-out-0", message);
 ```
 
+NOTE: 更多使用请参考样例: https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/rocketmq-example[RocketMQ Example]
 
 
 === 配置选项
@@ -373,6 +329,5 @@ spring.cloud.stream.rocketmq.binder.name-server=NameServerInMQ
 ```
 
 NOTE: topic 和 group 请以 实例id% 为前缀进行配置。比如 topic 为 "test"，需要配置成 "实例id%test"
-
 .NameServer 的获取(配置中请去掉 http:// 前缀)
-image::https://spring-cloud-alibaba.oss-cn-beijing.aliyuncs.com/MQ.png[]
+

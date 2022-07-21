@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.seata.rest;
+package com.alibaba.cloud.examples.seata;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @author xiaojing
+ * @author <a href="mailto:zhangqian9158@gmail.com">ZHANGQIAN</a>
  */
-@Configuration(proxyBeanMethods = false)
-public class SeataRestTemplateAutoConfiguration {
+@SpringBootApplication(scanBasePackages = { "io.seata" })
+public class SeataServerApplication {
 
-	@Bean
-	public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
-		return new SeataRestTemplateInterceptor();
-	}
-
-	@Bean
-	public SeataRestTemplateInterceptorAfterPropertiesSet seataRestTemplateInterceptorConfiguration() {
-		return new SeataRestTemplateInterceptorAfterPropertiesSet();
+	public static void main(String[] args) {
+		SpringApplication.run(io.seata.server.ServerApplication.class, args);
 	}
 
 }
