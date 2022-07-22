@@ -284,15 +284,16 @@ public class NacosDiscoveryProperties {
 			applicationEventPublisher
 					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
 		}
+		nacosServiceManager.setNacosDiscoveryProperties(this);
 	}
 
 	/**
-	 * recommend to use {@link NacosServiceManager#getNamingService(Properties)}.
+	 * recommend to use {@link NacosServiceManager#getNamingService()}.
 	 * @return NamingService
 	 */
 	@Deprecated
 	public NamingService namingServiceInstance() {
-		return nacosServiceManager.getNamingService(this.getNacosProperties());
+		return nacosServiceManager.getNamingService();
 	}
 
 	public String getEndpoint() {
