@@ -114,8 +114,7 @@ public class NacosServiceDiscovery {
 	}
 
 	private NamingService namingService() {
-		return nacosServiceManager
-				.getNamingService(discoveryProperties.getNacosProperties());
+		return nacosServiceManager.getNamingService();
 	}
 
 }
