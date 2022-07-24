@@ -56,6 +56,7 @@ public class InetIPv6Utils implements Closeable {
 		});
 	}
 
+	@Override
 	public void close() {
 		this.executorService.shutdown();
 	}

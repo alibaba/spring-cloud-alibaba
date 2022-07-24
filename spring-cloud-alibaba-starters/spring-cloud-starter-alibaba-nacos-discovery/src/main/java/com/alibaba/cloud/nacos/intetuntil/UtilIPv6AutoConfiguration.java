@@ -37,7 +37,7 @@ public class UtilIPv6AutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public InetIPv6Utils inetUtils(InetUtilsProperties properties) {
+	public InetIPv6Utils inetIPv6Utils(InetUtilsProperties properties) {
 		return new InetIPv6Utils(properties);
 	}
 
