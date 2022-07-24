@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.inetutil;
+package com.alibaba.cloud.nacos.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

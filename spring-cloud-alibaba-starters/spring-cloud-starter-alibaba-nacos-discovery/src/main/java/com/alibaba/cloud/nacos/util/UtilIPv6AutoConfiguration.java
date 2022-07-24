@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.inetutil;
+package com.alibaba.cloud.nacos.util;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 
@@ -37,7 +37,7 @@ public class UtilIPv6AutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public InetIPv6Utils inet6Util(InetUtilsProperties properties) {
+    public InetIPv6Utils inetIPv6Utils(InetUtilsProperties properties) {
         return new InetIPv6Utils(properties);
     }
 }

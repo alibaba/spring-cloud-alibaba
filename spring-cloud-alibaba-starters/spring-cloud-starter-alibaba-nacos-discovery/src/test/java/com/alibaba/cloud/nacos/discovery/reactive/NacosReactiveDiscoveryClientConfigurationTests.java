@@ -17,7 +17,7 @@
 package com.alibaba.cloud.nacos.discovery.reactive;
 
 import com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration;
-import com.alibaba.cloud.nacos.inetutil.UtilIPv6AutoConfiguration;
+import com.alibaba.cloud.nacos.util.UtilIPv6AutoConfiguration;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
