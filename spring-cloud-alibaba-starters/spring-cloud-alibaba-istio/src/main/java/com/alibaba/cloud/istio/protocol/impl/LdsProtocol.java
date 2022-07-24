@@ -11,12 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 
-    public LdsProtocol(XdsChannel xdsChannel, Node node, XdsConfigProperties xdsConfigProperties) {
-        super(xdsChannel, node, xdsConfigProperties);
+    public LdsProtocol(XdsChannel xdsChannel, XdsConfigProperties xdsConfigProperties) {
+        super(xdsChannel, xdsConfigProperties);
     }
 
     @Override

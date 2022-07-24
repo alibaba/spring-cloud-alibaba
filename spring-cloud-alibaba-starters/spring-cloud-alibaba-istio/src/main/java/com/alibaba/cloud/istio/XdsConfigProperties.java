@@ -3,7 +3,6 @@ package com.alibaba.cloud.istio;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Component
 @ConfigurationProperties(XdsConfigProperties.PREFIX)
 public class XdsConfigProperties {
     public static final String PREFIX = "spring.cloud.istio.config";
@@ -11,13 +10,6 @@ public class XdsConfigProperties {
     private int port;
     private int pollingPoolSize;
     private int pollingTimeout;
-
-    public XdsConfigProperties(String host, int port, int pollingPoolSize, int pollingTimeout) {
-        this.host = host;
-        this.port = port;
-        this.pollingPoolSize = pollingPoolSize;
-        this.pollingTimeout = pollingTimeout;
-    }
 
     public String getHost() {
         return host;

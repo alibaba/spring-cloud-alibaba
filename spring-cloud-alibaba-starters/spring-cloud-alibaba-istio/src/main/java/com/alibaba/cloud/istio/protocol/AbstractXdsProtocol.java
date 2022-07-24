@@ -2,13 +2,16 @@ package com.alibaba.cloud.istio.protocol;
 
 import com.alibaba.cloud.istio.XdsChannel;
 import com.alibaba.cloud.istio.XdsConfigProperties;
-import com.google.rpc.Code;
+import com.alibaba.cloud.istio.util.NodeBuilder;
 import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 import io.grpc.stub.StreamObserver;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -56,10 +59,10 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
         }
     }
 
-    public AbstractXdsProtocol(XdsChannel xdsChannel, Node node, XdsConfigProperties xdsConfigProperties) {
+    public AbstractXdsProtocol(XdsChannel xdsChannel, XdsConfigProperties xdsConfigProperties) {
         this.xdsChannel = xdsChannel;
-        this.node = node;
         this.xdsConfigProperties = xdsConfigProperties;
+        this.node = NodeBuilder.getNode();
         this.pollingExecutor = new ScheduledThreadPoolExecutor(xdsConfigProperties.getPollingPoolSize());
     }
 
@@ -88,7 +91,11 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
     }
 
     private List<T> doGetSource(long id, Set<String> resourceNames) {
-        Future<List<T>> future = new CompletableFuture<>();
+        if (resourceNames == null) {
+            resourceNames = new HashSet<>();
+        }
+        CompletableFuture<List<T>> future = new CompletableFuture<>();
+        futureMap.put(id, future);
         StreamObserver<DiscoveryRequest> requestObserver = xdsChannel.createDiscoveryRequest(new XdsObserver(id));
         sendXdsRequest(requestObserver, resourceNames);
         try {

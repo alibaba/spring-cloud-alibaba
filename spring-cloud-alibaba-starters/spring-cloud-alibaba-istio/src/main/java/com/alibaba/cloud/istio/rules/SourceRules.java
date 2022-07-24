@@ -32,6 +32,12 @@ public class SourceRules {
 
     private final String NAME;
 
+    private boolean isAny;
+
+    public boolean isAny() {
+        return isAny;
+    }
+
     public String getNAME() {
         return NAME;
     }
@@ -53,11 +59,15 @@ public class SourceRules {
 
     public SourceRules(String name, Principal principal, boolean isAllowed) {
         this.NAME = name;
-        if (isAllowed) {
+        if (!isAllowed) {
             principal = principal.getNotId();
         }
         Principal.Set andIds = principal.getAndIds();
         for (Principal andId : andIds.getIdsList()) {
+            if (andId.getAny()) {
+                isAny = true;
+                return;
+            }
             Principal.Set orIds = andId.getOrIds();
             List<StringMatcher> principals = new ArrayList<>();
             List<RegexMatcher> namespaces = new ArrayList<>();
@@ -111,29 +121,43 @@ public class SourceRules {
                             break;
                         default:
                     }
-                    if (orId.hasHeader()) {
-                        List<HeaderMatcher> headerMatchers = headers.getOrDefault(orId.getHeader().getName(), new ArrayList<>());
-                        headerMatchers.add(orId.getHeader());
-                        headers.put(orId.getHeader().getName(), headerMatchers);
-                    }
                 }
+                if (orId.hasHeader()) {
+                    List<HeaderMatcher> headerMatchers = headers.getOrDefault(orId.getHeader().getName(), new ArrayList<>());
+                    headerMatchers.add(orId.getHeader());
+                    headers.put(orId.getHeader().getName(), headerMatchers);
+                }
+            }
+            if (!principals.isEmpty()) {
                 PRINCIPALS.add(principals);
+            }
+            if (!requestPrincipals.isEmpty()) {
                 REQUEST_PRINCIPALS.add(requestPrincipals);
+            }
+            if (!authAudiences.isEmpty()) {
                 AUTH_AUDIENCE.add(authAudiences);
+            }
+            if (!authPresenters.isEmpty()) {
                 AUTH_PRESENTER.add(authPresenters);
+            }
+            if (!namespaces.isEmpty()) {
                 NAMESPACES.add(namespaces);
+            }
+            if (!ipBlocks.isEmpty()) {
                 IP_BLOCKS.add(ipBlocks);
+            }
+            if (!remoteIpBlocks.isEmpty()) {
                 REMOTE_IP_BLOCKS.add(remoteIpBlocks);
-                for (Map.Entry<String, List<ListMatcher>> entry : authClaims.entrySet()) {
-                    List<List<ListMatcher>> authClaimEntries = AUTH_CLAIMS.getOrDefault(entry.getKey(), new ArrayList<>());
-                    authClaimEntries.add(entry.getValue());
-                    AUTH_CLAIMS.put(entry.getKey(), authClaimEntries);
-                }
-                for (Map.Entry<String, List<HeaderMatcher>> entry : headers.entrySet()) {
-                    List<List<HeaderMatcher>> headerEntries = HEADERS.getOrDefault(entry.getKey(), new ArrayList<>());
-                    headerEntries.add(entry.getValue());
-                    HEADERS.put(entry.getKey(), headerEntries);
-                }
+            }
+            for (Map.Entry<String, List<ListMatcher>> entry : authClaims.entrySet()) {
+                List<List<ListMatcher>> authClaimEntries = AUTH_CLAIMS.getOrDefault(entry.getKey(), new ArrayList<>());
+                authClaimEntries.add(entry.getValue());
+                AUTH_CLAIMS.put(entry.getKey(), authClaimEntries);
+            }
+            for (Map.Entry<String, List<HeaderMatcher>> entry : headers.entrySet()) {
+                List<List<HeaderMatcher>> headerEntries = HEADERS.getOrDefault(entry.getKey(), new ArrayList<>());
+                headerEntries.add(entry.getValue());
+                HEADERS.put(entry.getKey(), headerEntries);
             }
         }
     }

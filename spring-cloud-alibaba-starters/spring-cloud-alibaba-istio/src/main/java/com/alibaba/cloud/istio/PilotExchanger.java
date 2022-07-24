@@ -20,15 +20,13 @@ import java.util.Map;
  * @author musi
  * 实现对pilot的监听，定时拉取配置
  */
-@Component
 public class PilotExchanger {
-    @Autowired
     private LdsProtocol ldsProtocol;
 
-    List<TargetRules> targetRulesAllowed = new ArrayList<>();
-    List<TargetRules> targetRulesDenied = new ArrayList<>();
-    List<SourceRules> sourceRulesAllowed = new ArrayList<>();
-    List<SourceRules> sourceRulesDenied = new ArrayList<>();
+    private List<TargetRules> targetRulesAllowed = new ArrayList<>();
+    private List<TargetRules> targetRulesDenied = new ArrayList<>();
+    private List<SourceRules> sourceRulesAllowed = new ArrayList<>();
+    private List<SourceRules> sourceRulesDenied = new ArrayList<>();
 
     private void observeListeners(List<Listener> listeners) {
         List<RBAC> rbacList = ListenerResolver.resolveRbac(listeners);
@@ -36,26 +34,42 @@ public class PilotExchanger {
             for (Map.Entry<String, Policy> entry : rbac.getPoliciesMap().entrySet()) {
                 // permission
                 List<Permission> permissions = entry.getValue().getPermissionsList();
+                TargetRules targetRules;
                 for (Permission permission : permissions) {
                     switch (rbac.getAction()) {
                         case ALLOW:
-                            this.targetRulesAllowed.add(new TargetRules(entry.getKey(), permission, true));
+                        case UNRECOGNIZED:
+                            targetRules = new TargetRules(entry.getKey(), permission, true);
+                            if (!targetRules.isAny()) {
+                                this.targetRulesAllowed.add(targetRules);
+                            }
                             break;
                         case DENY:
-                            this.targetRulesDenied.add(new TargetRules(entry.getKey(), permission, false));
+                            targetRules = new TargetRules(entry.getKey(), permission, false);
+                            if (!targetRules.isAny()) {
+                                this.targetRulesDenied.add(targetRules);
+                            }
                             break;
                         default:
                             break;
                     }
                 }
                 List<Principal> principals = entry.getValue().getPrincipalsList();
+                SourceRules rules;
                 for (Principal principal : principals) {
                     switch (rbac.getAction()) {
                         case ALLOW:
-                            this.sourceRulesAllowed.add(new SourceRules(entry.getKey(), principal, true));
+                        case UNRECOGNIZED:
+                            rules = new SourceRules(entry.getKey(), principal, true);
+                            if (!rules.isAny()) {
+                                this.sourceRulesAllowed.add(rules);
+                            }
                             break;
                         case DENY:
-                            this.sourceRulesDenied.add(new SourceRules(entry.getKey(), principal, false));
+                            rules = new SourceRules(entry.getKey(), principal, false);
+                            if (!rules.isAny()) {
+                                this.sourceRulesDenied.add(rules);
+                            }
                             break;
                         default:
                             break;
@@ -65,7 +79,7 @@ public class PilotExchanger {
         }
     }
 
-    public PilotExchanger() {
+    public PilotExchanger(LdsProtocol ldsProtocol) {
         ldsProtocol.observeResource(null, this::observeListeners);
     }
 }
