@@ -90,6 +90,8 @@ public final class RocketMQConsumerFactory {
 		consumer.setConsumeThreadMin(extendedConsumerProperties.getConcurrency());
 		consumer.setConsumeThreadMax(extendedConsumerProperties.getConcurrency());
 		consumer.setUnitName(consumerProperties.getUnitName());
+		consumer.setMaxReconsumeTimes(
+				consumerProperties.getPush().getMaxReconsumeTimes());
 		return consumer;
 	}
 
