@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
-import com.alibaba.cloud.nacos.inetutil.InetIPv6Util;
+import com.alibaba.cloud.nacos.util.InetIPv6Util;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.inetutil;
+package com.alibaba.cloud.nacos.util;
 
 import java.io.Closeable;
 import java.io.IOException;
