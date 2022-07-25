@@ -99,7 +99,6 @@ public class NacosServiceInstance implements ServiceInstance {
 		NacosServiceInstance that = (NacosServiceInstance) o;
 
 		return Objects.equals(this.serviceId, that.serviceId)
-				&& Objects.equals(this.instanceId, that.instanceId)
 				&& Objects.equals(this.host, that.host)
 				&& this.port == that.port
 				&& this.secure == that.secure
@@ -108,7 +107,7 @@ public class NacosServiceInstance implements ServiceInstance {
 
 	@Override
 	public int hashCode() {
-		return (instanceId == null) ? 31 : (instanceId.hashCode() + 31);
+		return (serviceId == null) ? 31 : (serviceId.hashCode() + 31);
 	}
 
 }
