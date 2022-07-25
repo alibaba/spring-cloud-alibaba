@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
-import com.alibaba.cloud.nacos.intetuntil.InetIPv6Utils;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
@@ -165,7 +165,7 @@ public class NacosDiscoveryProperties {
 	private String networkInterface = "";
 
 	/**
-	 * choose IPV4 or IPV6,if you don't set it will choose IPV4.
+	 * choose IPv4 or IPv6,if you don't set it will choose IPv4.
 	 */
 	private String ipType = "IPv4";
 
@@ -255,10 +255,10 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(ip)) {
 			// traversing network interfaces if didn't specify a interface
 			if (StringUtils.isEmpty(networkInterface)) {
-				if (ipType.equalsIgnoreCase("IPv4")) {
+				if ("IPv4".equalsIgnoreCase(ipType)) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 				}
-				else if (ipType.equalsIgnoreCase("IPv6")) {
+				else if ("IPv6".equalsIgnoreCase(ipType)) {
 					ip = inetIPUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 					int index = ip.indexOf('%');
 					ip = index > 0 ? ip.substring(0, index) : ip;
