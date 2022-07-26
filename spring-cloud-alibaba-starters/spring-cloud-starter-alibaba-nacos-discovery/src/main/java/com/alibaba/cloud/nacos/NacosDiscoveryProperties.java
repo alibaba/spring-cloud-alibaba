@@ -17,7 +17,6 @@
 package com.alibaba.cloud.nacos;
 
 import java.net.Inet4Address;
-
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -168,7 +167,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * choose IPv4 or IPv6,if you don't set it will choose IPv4.
 	 */
-	private String ipType = "IPv4" ;
+	private String ipType = "IPv4";
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
