@@ -8,10 +8,7 @@ import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SourceRules {
     private final List<List<StringMatcher>> PRINCIPALS = new ArrayList<>();
@@ -162,4 +159,20 @@ public class SourceRules {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SourceRules)) {
+            return false;
+        }
+        SourceRules that = (SourceRules) o;
+        return getNAME().equals(that.getNAME());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNAME());
+    }
 }

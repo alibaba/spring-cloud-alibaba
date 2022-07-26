@@ -9,12 +9,8 @@ import io.envoyproxy.envoy.config.rbac.v3.Permission;
 import io.envoyproxy.envoy.config.rbac.v3.Policy;
 import io.envoyproxy.envoy.config.rbac.v3.Principal;
 import io.envoyproxy.envoy.config.rbac.v3.RBAC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author musi
@@ -23,10 +19,10 @@ import java.util.Map;
 public class PilotExchanger {
     private LdsProtocol ldsProtocol;
 
-    private List<TargetRules> targetRulesAllowed = new ArrayList<>();
-    private List<TargetRules> targetRulesDenied = new ArrayList<>();
-    private List<SourceRules> sourceRulesAllowed = new ArrayList<>();
-    private List<SourceRules> sourceRulesDenied = new ArrayList<>();
+    private Set<TargetRules> targetRulesAllowed = new HashSet<>();
+    private Set<TargetRules> targetRulesDenied = new HashSet<>();
+    private Set<SourceRules> sourceRulesAllowed = new HashSet<>();
+    private Set<SourceRules> sourceRulesDenied = new HashSet<>();
 
     private void observeListeners(List<Listener> listeners) {
         List<RBAC> rbacList = ListenerResolver.resolveRbac(listeners);
@@ -77,6 +73,7 @@ public class PilotExchanger {
                 }
             }
         }
+        System.out.println();
     }
 
     public PilotExchanger(LdsProtocol ldsProtocol) {

@@ -6,6 +6,7 @@ import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * operation for istio
@@ -91,5 +92,22 @@ public class TargetRules {
                 PATHS.add(paths);
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TargetRules)) {
+            return false;
+        }
+        TargetRules that = (TargetRules) o;
+        return getNAME().equals(that.getNAME());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNAME());
     }
 }
