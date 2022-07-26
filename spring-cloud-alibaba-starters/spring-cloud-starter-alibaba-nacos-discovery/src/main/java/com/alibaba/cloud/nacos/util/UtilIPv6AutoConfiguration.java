@@ -14,26 +14,31 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.seata.rest;
+package com.alibaba.cloud.nacos.util;
 
+import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
+import org.springframework.cloud.commons.util.InetUtilsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 /**
- * @author xiaojing
+ * @author HH
  */
-
 @Configuration(proxyBeanMethods = false)
-public class SeataRestTemplateAutoConfiguration {
+@ConditionalOnDiscoveryEnabled
+@ConditionalOnNacosDiscoveryEnabled
+public class UtilIPv6AutoConfiguration {
+    public UtilIPv6AutoConfiguration() {
+    }
 
-	@Bean
-	public SeataRestTemplateInterceptor seataRestTemplateInterceptor() {
-		return new SeataRestTemplateInterceptor();
-	}
-
-	@Bean
-	public SeataRestTemplateInterceptorAfterPropertiesSet seataRestTemplateInterceptorConfiguration() {
-		return new SeataRestTemplateInterceptorAfterPropertiesSet();
-	}
-
+    @Bean
+    @ConditionalOnMissingBean
+    public InetIPv6Utils inetIPv6Utils(InetUtilsProperties properties) {
+        return new InetIPv6Utils(properties);
+    }
 }
+
