@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.intetuntil;
+package com.alibaba.cloud.nacos.util;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -46,6 +46,11 @@ public class InetIPv6Utils implements Closeable {
 
 	private final InetUtilsProperties properties;
 
+    @Override
+    public void close() {
+        this.executorService.shutdown();
+    }
+
 	public InetIPv6Utils(final InetUtilsProperties properties) {
 		this.properties = properties;
 		this.executorService = Executors.newSingleThreadExecutor((r) -> {
@@ -54,11 +59,6 @@ public class InetIPv6Utils implements Closeable {
 			thread.setDaemon(true);
 			return thread;
 		});
-	}
-
-	@Override
-	public void close() {
-		this.executorService.shutdown();
 	}
 
 	public InetUtils.HostInfo findFirstNonLoopbackHostInfo() {

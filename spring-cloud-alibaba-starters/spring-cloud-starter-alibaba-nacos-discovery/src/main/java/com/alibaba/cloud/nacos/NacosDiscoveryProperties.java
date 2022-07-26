@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
-import com.alibaba.cloud.nacos.intetuntil.InetIPv6Utils;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
@@ -165,7 +165,7 @@ public class NacosDiscoveryProperties {
 	private String networkInterface = "";
 
 	/**
-	 * choose IPV4 or IPV6,if you don't set it will choose IPV4.
+	 * choose IPv4 or IPv6,if you don't set it will choose IPv4.
 	 */
 	private String ipType = "IPv4";
 
@@ -222,7 +222,7 @@ public class NacosDiscoveryProperties {
 	private boolean failFast = true;
 
 	@Autowired
-	private InetIPv6Utils inetIPUtils;
+	private InetIPv6Utils inetIPv6Utils;
 
 	@Autowired
 	private InetUtils inetUtils;
@@ -255,11 +255,11 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(ip)) {
 			// traversing network interfaces if didn't specify a interface
 			if (StringUtils.isEmpty(networkInterface)) {
-				if (ipType.equalsIgnoreCase("IPv4")) {
+				if ("IPv4".equalsIgnoreCase(ipType)) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 				}
-				else if (ipType.equalsIgnoreCase("IPv6")) {
-					ip = inetIPUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+				else if ("IPv6".equalsIgnoreCase(ipType)) {
+					ip = inetIPv6Utils.findFirstNonLoopbackHostInfo().getIpAddress();
 					int index = ip.indexOf('%');
 					ip = index > 0 ? ip.substring(0, index) : ip;
 					ip = "[" + ip + "]";
@@ -282,7 +282,7 @@ public class NacosDiscoveryProperties {
 					InetAddress currentAddress = inetAddress.nextElement();
 					if (currentAddress instanceof Inet4Address
 							|| currentAddress instanceof Inet6Address
-									&& !currentAddress.isLoopbackAddress()) {
+							&& !currentAddress.isLoopbackAddress()) {
 						ip = currentAddress.getHostAddress();
 						break;
 					}
@@ -336,8 +336,8 @@ public class NacosDiscoveryProperties {
 		this.logName = logName;
 	}
 
-	public void setInetIPUtils(InetIPv6Utils inetIPUtils) {
-		this.inetIPUtils = inetIPUtils;
+	public void setInetIPv6Utils(InetIPv6Utils inetIPv6Utils){
+		this.inetIPv6Utils = inetIPv6Utils;
 	}
 
 	public void setInetUtils(InetUtils inetUtils) {
