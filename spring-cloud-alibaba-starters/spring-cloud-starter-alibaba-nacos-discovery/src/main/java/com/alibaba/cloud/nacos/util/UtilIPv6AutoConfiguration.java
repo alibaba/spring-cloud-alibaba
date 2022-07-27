@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.intetuntil;
+package com.alibaba.cloud.nacos.util;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 
@@ -24,6 +24,7 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 /**
  * @author HH
  */
@@ -31,14 +32,13 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnDiscoveryEnabled
 @ConditionalOnNacosDiscoveryEnabled
 public class UtilIPv6AutoConfiguration {
+    public UtilIPv6AutoConfiguration() {
+    }
 
-	public UtilIPv6AutoConfiguration() {
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public InetIPv6Utils inetUtils(InetUtilsProperties properties) {
-		return new InetIPv6Utils(properties);
-	}
-
+    @Bean
+    @ConditionalOnMissingBean
+    public InetIPv6Utils inetIPv6Utils(InetUtilsProperties properties) {
+        return new InetIPv6Utils(properties);
+    }
 }
+
