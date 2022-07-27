@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.intetuntil;
+package com.alibaba.cloud.nacos.util;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -50,7 +50,7 @@ public class InetIPv6Utils implements Closeable {
         this.properties = properties;
         this.executorService = Executors.newSingleThreadExecutor((r) -> {
             Thread thread = new Thread(r);
-            thread.setName("spring.cloud.alibaba.inetutilsIPV6");
+            thread.setName("spring.cloud.alibaba.inetutilsIPv6");
             thread.setDaemon(true);
             return thread;
         });
