@@ -46,19 +46,19 @@ public class InetIPv6Utils implements Closeable {
 
     private final InetUtilsProperties properties;
 
-    @Override
-    public void close() {
-        this.executorService.shutdown();
-    }
-
     public InetIPv6Utils(final InetUtilsProperties properties) {
         this.properties = properties;
         this.executorService = Executors.newSingleThreadExecutor((r) -> {
             Thread thread = new Thread(r);
-            thread.setName("spring.cloud.alibaba.inetutilsIPV6");
+            thread.setName("spring.cloud.alibaba.inetutilsIPv6");
             thread.setDaemon(true);
             return thread;
         });
+    }
+
+    @Override
+    public void close() {
+        this.executorService.shutdown();
     }
 
     public InetUtils.HostInfo findFirstNonLoopbackHostInfo() {
