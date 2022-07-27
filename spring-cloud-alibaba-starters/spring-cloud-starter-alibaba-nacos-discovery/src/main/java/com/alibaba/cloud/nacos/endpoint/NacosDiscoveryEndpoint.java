@@ -61,8 +61,7 @@ public class NacosDiscoveryEndpoint {
 		Map<String, Object> result = new HashMap<>();
 		result.put("NacosDiscoveryProperties", nacosDiscoveryProperties);
 
-		NamingService namingService = nacosServiceManager
-				.getNamingService(nacosDiscoveryProperties.getNacosProperties());
+		NamingService namingService = nacosServiceManager.getNamingService();
 		List<ServiceInfo> subscribe = Collections.emptyList();
 
 		try {
