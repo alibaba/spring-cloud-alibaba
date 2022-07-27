@@ -189,8 +189,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	}
 
 	private NamingService namingService() {
-		return nacosServiceManager
-				.getNamingService(nacosDiscoveryProperties.getNacosProperties());
+		return nacosServiceManager.getNamingService();
 	}
 
 }
