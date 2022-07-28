@@ -99,8 +99,7 @@ public class NacosServiceInstance implements ServiceInstance {
 		NacosServiceInstance that = (NacosServiceInstance) o;
 
 		return Objects.equals(this.serviceId, that.serviceId)
-				&& Objects.equals(this.host, that.host)
-				&& this.port == that.port
+				&& Objects.equals(this.host, that.host) && this.port == that.port
 				&& this.secure == that.secure
 				&& Objects.equals(this.metadata, that.metadata);
 	}

@@ -24,7 +24,6 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 /**
  * @author HH
  */
@@ -32,13 +31,14 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnDiscoveryEnabled
 @ConditionalOnNacosDiscoveryEnabled
 public class UtilIPv6AutoConfiguration {
-    public UtilIPv6AutoConfiguration() {
-    }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public InetIPv6Utils inetIPv6Utils(InetUtilsProperties properties) {
-        return new InetIPv6Utils(properties);
-    }
+	public UtilIPv6AutoConfiguration() {
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public InetIPv6Utils inetIPv6Utils(InetUtilsProperties properties) {
+		return new InetIPv6Utils(properties);
+	}
+
 }
-
