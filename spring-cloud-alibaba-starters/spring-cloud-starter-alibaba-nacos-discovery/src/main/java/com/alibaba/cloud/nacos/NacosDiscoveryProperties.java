@@ -282,7 +282,7 @@ public class NacosDiscoveryProperties {
 					InetAddress currentAddress = inetAddress.nextElement();
 					if (currentAddress instanceof Inet4Address
 							|| currentAddress instanceof Inet6Address
-							&& !currentAddress.isLoopbackAddress()) {
+									&& !currentAddress.isLoopbackAddress()) {
 						ip = currentAddress.getHostAddress();
 						break;
 					}
@@ -301,15 +301,16 @@ public class NacosDiscoveryProperties {
 			applicationEventPublisher
 					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
 		}
+		nacosServiceManager.setNacosDiscoveryProperties(this);
 	}
 
 	/**
-	 * recommend to use {@link NacosServiceManager#getNamingService(Properties)}.
+	 * recommend to use {@link NacosServiceManager#getNamingService()}.
 	 * @return NamingService
 	 */
 	@Deprecated
 	public NamingService namingServiceInstance() {
-		return nacosServiceManager.getNamingService(this.getNacosProperties());
+		return nacosServiceManager.getNamingService();
 	}
 
 	public String getEndpoint() {
@@ -336,7 +337,7 @@ public class NacosDiscoveryProperties {
 		this.logName = logName;
 	}
 
-	public void setInetIPv6Utils(InetIPv6Utils inetIPv6Utils){
+	public void setInetIPv6Utils(InetIPv6Utils inetIPv6Utils) {
 		this.inetIPv6Utils = inetIPv6Utils;
 	}
 

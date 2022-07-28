@@ -128,8 +128,7 @@ public class NacosWatch
 						}
 					});
 
-			NamingService namingService = nacosServiceManager
-					.getNamingService(properties.getNacosProperties());
+			NamingService namingService = nacosServiceManager.getNamingService();
 			try {
 				namingService.subscribe(properties.getService(), properties.getGroup(),
 						Arrays.asList(properties.getClusterName()), eventListener);
@@ -172,8 +171,7 @@ public class NacosWatch
 
 			EventListener eventListener = listenerMap.get(buildKey());
 			try {
-				NamingService namingService = nacosServiceManager
-						.getNamingService(properties.getNacosProperties());
+				NamingService namingService = nacosServiceManager.getNamingService();
 				namingService.unsubscribe(properties.getService(), properties.getGroup(),
 						Arrays.asList(properties.getClusterName()), eventListener);
 			}

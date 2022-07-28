@@ -59,8 +59,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
 			String name = loadBalancer.getName();
 
-			NamingService namingService = nacosServiceManager
-					.getNamingService(nacosDiscoveryProperties.getNacosProperties());
+			NamingService namingService = nacosServiceManager.getNamingService();
 			List<Instance> instances = namingService.selectInstances(name, group, true);
 			if (CollectionUtils.isEmpty(instances)) {
 				LOGGER.warn("no instance in service {}", name);
