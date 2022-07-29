@@ -115,7 +115,7 @@ messageChannel.send(MessageBuilder.withPayload("simple msg").build());
 **Spring Cloud Stream 底层基于这段代码去做了各种抽象。**
 
 
-=== 如何使用 Spring Cloud Alibaba RocketMQ Binder ###
+=== 如何使用 Spring Cloud Alibaba RocketMQ Binder
 
 如果要在您的项目中引入 RocketMQ Binder，需要引入如下 maven 依赖：
 
