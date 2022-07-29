@@ -37,7 +37,7 @@ import static com.alibaba.cloud.integration.common.nacos.Const.NACOS_SERVER_URL;
 
 public class NacosAsyncRestTemplateITCase {
 
-	private static final String image = "nacos/nacos-server:latest";
+	private static final String image = "nacos/nacos-server:2.0.2";
 	private final NacosAsyncRestTemplate nacosRestTemplate = HttpClientBeanHolder
 			.getNacosAsyncRestTemplate(
 					LoggerFactory.getLogger(NacosAsyncRestTemplateITCase.class));

@@ -15,7 +15,7 @@
 
     <properties>
         <slf4j.version>1.7.25</slf4j.version>
-        <testcontainers.version>1.16.3</testcontainers.version>
+        <testcontainers.version>1.17.3</testcontainers.version>
     </properties>
     <dependencies>
         <dependency>

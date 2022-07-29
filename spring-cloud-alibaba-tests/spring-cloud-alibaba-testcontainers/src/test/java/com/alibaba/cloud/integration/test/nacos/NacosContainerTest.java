@@ -57,6 +57,7 @@ public class NacosContainerTest extends NacosBootTester {
 	public void testNacosStartUp() throws Exception {
 		NacosConfigProperties nacosConfigProperties = new NacosConfigProperties();
 		UserProperties userProperties = new UserProperties();
+		
 		NacosConfig nacosConfig = NacosConfig.builder().build();
 		vaildateUpdateState(nacosConfig, nacosConfigProperties, userProperties);
 	}
