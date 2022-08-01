@@ -46,10 +46,10 @@ public class InetIPv6Utils implements Closeable {
 
 	private final InetUtilsProperties properties;
 
-    @Override
-    public void close() {
-        this.executorService.shutdown();
-    }
+	@Override
+	public void close() {
+		this.executorService.shutdown();
+	}
 
 	public InetIPv6Utils(final InetUtilsProperties properties) {
 		this.properties = properties;
