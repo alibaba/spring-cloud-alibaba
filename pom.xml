@@ -179,12 +179,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
-            <!--            <dependency>-->
-            <!--                <groupId>org.apache.rocketmq</groupId>-->
-            <!--                <artifactId>rocketmq-spring-boot-starter</artifactId>-->
-            <!--                <version>${rocketmq.starter.version}</version>-->
-            <!--            </dependency>-->
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-client</artifactId>
