@@ -50,7 +50,7 @@ public class InetIPv6Utils implements Closeable {
         this.properties = properties;
         this.executorService = Executors.newSingleThreadExecutor((r) -> {
             Thread thread = new Thread(r);
-            thread.setName("spring.cloud.alibaba.inetutilsIPv6");
+            thread.setName("spring.cloud.alibaba.inetIPv6Utils");
             thread.setDaemon(true);
             return thread;
         });
