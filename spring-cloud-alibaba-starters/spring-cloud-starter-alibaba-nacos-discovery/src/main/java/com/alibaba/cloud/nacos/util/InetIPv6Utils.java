@@ -65,7 +65,8 @@ public class InetIPv6Utils implements Closeable {
         InetAddress address = this.findFirstNonLoopbackIPv6Address();
         if (address != null) {
             return this.convertAddress(address);
-        } else {
+        }
+        else {
             InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
             this.properties.setDefaultIpAddress("0:0:0:0:0:0:0:1");
             hostInfo.setHostname(this.properties.getDefaultHostname());
@@ -80,19 +81,20 @@ public class InetIPv6Utils implements Closeable {
         try {
             int lowest = Integer.MAX_VALUE;
             for (Enumeration<NetworkInterface> nics = NetworkInterface
-                    .getNetworkInterfaces(); nics.hasMoreElements(); ) {
+                    .getNetworkInterfaces(); nics.hasMoreElements();) {
                 NetworkInterface ifc = nics.nextElement();
                 if (ifc.isUp()) {
                     log.trace("Testing interface:" + ifc.getDisplayName());
                     if (ifc.getIndex() < lowest || address == null) {
                         lowest = ifc.getIndex();
-                    } else if (address != null) {
+                    }
+                    else if (address != null) {
                         continue;
                     }
 
                     if (!ignoreInterface(ifc.getDisplayName())) {
                         for (Enumeration<InetAddress> addrs = ifc
-                                .getInetAddresses(); addrs.hasMoreElements(); ) {
+                                .getInetAddresses(); addrs.hasMoreElements();) {
                             InetAddress inetAddress = addrs.nextElement();
                             if (inetAddress instanceof Inet6Address
                                     && !inetAddress.isLoopbackAddress()
@@ -105,7 +107,8 @@ public class InetIPv6Utils implements Closeable {
                     }
                 }
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             log.error("Cannot get first non-loopback address", e);
         }
 
@@ -115,7 +118,8 @@ public class InetIPv6Utils implements Closeable {
 
         try {
             return InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
+        }
+        catch (UnknownHostException e) {
             log.warn("Unable to retrieve localhost");
         }
 
@@ -161,7 +165,8 @@ public class InetIPv6Utils implements Closeable {
         String hostname;
         try {
             hostname = result.get(this.properties.getTimeoutSeconds(), TimeUnit.SECONDS);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.info("Cannot determine local hostname");
             hostname = "localhost";
         }
