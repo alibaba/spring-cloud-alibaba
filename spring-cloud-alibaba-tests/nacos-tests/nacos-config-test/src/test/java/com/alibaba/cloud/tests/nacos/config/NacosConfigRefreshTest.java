@@ -16,26 +16,29 @@
 
 package com.alibaba.cloud.tests.nacos.config;
 
-import com.alibaba.cloud.nacos.NacosConfigManager;
-import com.alibaba.cloud.testsupport.ContainerStarter;
-import com.alibaba.cloud.testsupport.HasDockerAndItEnabled;
-import com.alibaba.cloud.testsupport.Tester;
+import com.alibaba.cloud.testsupport.*;
+import com.alibaba.nacos.api.PropertyKeyConst;
+import com.alibaba.nacos.api.config.ConfigFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.GenericContainer;
-
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.shaded.com.google.common.collect.ImmutableMap;
 
-import static com.alibaba.cloud.tests.nacos.config.NacosConfigRefreshTest.PushConfigConfiguration;
+import java.io.*;
+import java.util.*;
+
+import static com.alibaba.cloud.testsupport.Constant.REFRESH_CONFIG;
+import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -43,55 +46,61 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  *
  * @author freeman
  */
-@HasDockerAndItEnabled
-@SpringBootTest(classes = NacosConfigTestApplication.class, webEnvironment = RANDOM_PORT, properties = {
-		"spring.profiles.active=nacos-config-refresh"
-})
-@Import(PushConfigConfiguration.class)
+//@HasDockerAndItEnabled
+@SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
+@TestExtend(time = 3* TIME_OUT)
 public class NacosConfigRefreshTest {
-
-	static GenericContainer nacos = ContainerStarter.startNacos();
-
-	private static final String serverAddr;
-
-	static {
-		serverAddr = "localhost:" + nacos.getMappedPort(8848);
-		System.setProperty("spring.cloud.nacos.config.server-addr", serverAddr);
+	
+	@Mock
+	protected ConfigService service1;
+	
+	
+	@BeforeAll
+	public static void setUp(){
+	
 	}
-
-	@Autowired
-	private NacosConfigManager nacosConfigManager;
-	@Autowired
-	private UserProperties userProperties;
+	
+	@BeforeEach
+	public void prepare()  throws NacosException {
+		Properties nacosSettings = new Properties();
+		String serverIp8 = "127.0.0.1:8848";
+		nacosSettings.put(PropertyKeyConst.SERVER_ADDR, serverIp8);
+		nacosSettings.put(PropertyKeyConst.USERNAME, "nacos");
+		nacosSettings.put(PropertyKeyConst.PASSWORD, "nacos");
+		
+		service1 = ConfigFactory.createConfigService(nacosSettings);
+		
+	}
 
 	@Test
 	public void testRefreshConfig() throws InterruptedException {
 		// make sure everything is ready !
 		Thread.sleep(2000L);
 
-		Tester.testFunction("Pull config from Nacos", () -> {
-			assertThat(userProperties.getAge()).isEqualTo(21);
-			assertThat(userProperties.getName()).isEqualTo("freeman");
-			assertThat(userProperties.getMap().size()).isEqualTo(2);
-			assertThat(userProperties.getUsers().size()).isEqualTo(2);
-		});
-
 		Tester.testFunction("Dynamic refresh config", () -> {
 			// update config
 			updateConfig();
-
+			
 			// wait config refresh
 			Thread.sleep(2000L);
-
-			assertThat(userProperties.getAge()).isEqualTo(22);
-			assertThat(userProperties.getName()).isEqualTo("freeman1123");
-			assertThat(userProperties.getMap().size()).isEqualTo(3);
-			assertThat(userProperties.getUsers().size()).isEqualTo(2);
+			String content = service1.getConfig("nacos-config-refresh.yml", "DEFAULT_GROUP", TIME_OUT);
+			
+			ClassPathResource classPathResource = new ClassPathResource(REFRESH_CONFIG);
+			File file = classPathResource.getFile();
+			
+			final BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			while ((line = bufferedReader.readLine()) != null) {
+				sb.append(line).append("\n");
+			}
+			sb.deleteCharAt(sb.length()-1);
+			assertThat(content).isEqualTo(sb.toString());
 		});
 	}
 
 	private void updateConfig() throws NacosException {
-		nacosConfigManager.getConfigService().publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
+		service1.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
 				"configdata:\n" +
 					"  user:\n" +
 					"    age: 22\n" +
@@ -110,38 +119,4 @@ public class NacosConfigRefreshTest {
 					"        age: 18",
 				"yaml");
 	}
-
-	static class PushConfigConfiguration {
-
-		@Autowired
-		private NacosConfigManager nacosConfigManager;
-
-		@EventListener(ApplicationReadyEvent.class)
-		@Order(Ordered.HIGHEST_PRECEDENCE)
-		public void applicationReadyEventApplicationListener() throws NacosException {
-			// push the config before listening the config
-			pushConfig2Nacos(nacosConfigManager.getConfigService());
-		}
-
-		private static void pushConfig2Nacos(ConfigService configService)
-				throws NacosException {
-			configService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
-					"configdata:\n" +
-						"  user:\n" +
-						"    age: 21\n" +
-						"    name: freeman\n" +
-						"    map:\n" +
-						"      hobbies:\n" +
-						"        - art\n" +
-						"        - programming\n" +
-						"      intro: Hello, I'm freeman\n" +
-						"    users:\n" +
-						"      - name: dad\n" +
-						"        age: 20\n" +
-						"      - name: mom\n" +
-						"        age: 18",
-					"yaml");
-		}
-	}
-
 }

@@ -1,0 +1,16 @@
+configdata:
+  user:
+    age: 22
+    name: freeman1123
+    map:
+      hobbies:
+        - art
+        - programming
+        - movie
+      intro: Hello, I'm freeman
+      extra: yo~
+    users:
+      - name: dad
+        age: 20
+      - name: mom
+        age: 18

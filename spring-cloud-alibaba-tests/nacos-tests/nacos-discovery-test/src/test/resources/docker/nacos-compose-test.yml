@@ -1,0 +1,37 @@
+services:
+#  zookeeper:
+#    image: zookeeper
+#    ports:
+#      - "2181:2181"
+#    restart: on-failure
+
+  nacos:
+    image: nacos/nacos-server:2.0.1
+    container_name: nacos-standalone
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+    ports:
+      - "8848:8848"
+    healthcheck:
+      test: "curl --fail http://127.0.0.1:8848/nacos/v1/console/health/liveness || exit 1"
+      interval: 5s
+
+#  etcd:
+#    image: "quay.io/coreos/etcd:latest"
+#    container_name: etcd
+#    environment:
+#      - ETCDCTL_API=3
+#    command: [
+#        "etcd",
+#        "--name=etcd0",
+#        "--advertise-client-urls=http://127.0.0.1:2379",
+#        "--listen-client-urls=http://0.0.0.0:2379",
+#        "--initial-advertise-peer-urls=http://127.0.0.1:2380",
+#        "--listen-peer-urls=http://0.0.0.0:2380",
+#        "--initial-cluster=etcd0=http://127.0.0.1:2380",
+#    ]
+#    ports:
+#      - "2379:2379"
+#      - "2380:2380"
+#    restart: always
