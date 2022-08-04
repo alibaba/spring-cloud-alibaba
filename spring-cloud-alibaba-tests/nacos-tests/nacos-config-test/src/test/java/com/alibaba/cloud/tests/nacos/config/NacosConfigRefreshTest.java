@@ -16,7 +16,11 @@
 
 package com.alibaba.cloud.tests.nacos.config;
 
-import com.alibaba.cloud.testsupport.*;
+import java.util.Properties;
+
+import com.alibaba.cloud.testsupport.SpringCloudAlibaba;
+import com.alibaba.cloud.testsupport.TestExtend;
+import com.alibaba.cloud.testsupport.Tester;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigFactory;
 import com.alibaba.nacos.api.config.ConfigService;
@@ -24,21 +28,10 @@ import com.alibaba.nacos.api.exception.NacosException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.shaded.com.google.common.collect.ImmutableMap;
 
-import java.io.*;
-import java.util.*;
-
-import static com.alibaba.cloud.testsupport.Constant.REFRESH_CONFIG;
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 /**
  *
@@ -46,30 +39,39 @@ import static org.mockito.Mockito.when;
  *
  * @author freeman
  */
-//@HasDockerAndItEnabled
+// @HasDockerAndItEnabled
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
-@TestExtend(time = 3* TIME_OUT)
+@TestExtend(time = 3 * TIME_OUT)
 public class NacosConfigRefreshTest {
-	
+
+	/**
+	 * nacos upload conf file.
+	 */
+	public static final String YAML_CONTENT = "configdata:\n" + "  user:\n"
+			+ "    age: 22\n" + "    name: freeman1123\n" + "    map:\n"
+			+ "      hobbies:\n" + "        - art\n" + "        - programming\n"
+			+ "        - movie\n" + "      intro: Hello, I'm freeman\n"
+			+ "      extra: yo~\n" + "    users:\n" + "      - name: dad\n"
+			+ "        age: 20\n" + "      - name: mom\n" + "        age: 18";
+
 	@Mock
 	protected ConfigService service1;
-	
-	
+
 	@BeforeAll
-	public static void setUp(){
-	
+	public static void setUp() {
+
 	}
-	
+
 	@BeforeEach
-	public void prepare()  throws NacosException {
+	public void prepare() throws NacosException {
 		Properties nacosSettings = new Properties();
 		String serverIp8 = "127.0.0.1:8848";
 		nacosSettings.put(PropertyKeyConst.SERVER_ADDR, serverIp8);
 		nacosSettings.put(PropertyKeyConst.USERNAME, "nacos");
 		nacosSettings.put(PropertyKeyConst.PASSWORD, "nacos");
-		
+
 		service1 = ConfigFactory.createConfigService(nacosSettings);
-		
+
 	}
 
 	@Test
@@ -80,43 +82,18 @@ public class NacosConfigRefreshTest {
 		Tester.testFunction("Dynamic refresh config", () -> {
 			// update config
 			updateConfig();
-			
+
 			// wait config refresh
 			Thread.sleep(2000L);
-			String content = service1.getConfig("nacos-config-refresh.yml", "DEFAULT_GROUP", TIME_OUT);
-			
-			ClassPathResource classPathResource = new ClassPathResource(REFRESH_CONFIG);
-			File file = classPathResource.getFile();
-			
-			final BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-			String line = null;
-			StringBuilder sb = new StringBuilder();
-			while ((line = bufferedReader.readLine()) != null) {
-				sb.append(line).append("\n");
-			}
-			sb.deleteCharAt(sb.length()-1);
-			assertThat(content).isEqualTo(sb.toString());
+			String content = service1.getConfig("nacos-config-refresh.yml",
+					"DEFAULT_GROUP", TIME_OUT);
+
+			assertThat(content).isEqualTo(YAML_CONTENT);
 		});
 	}
 
 	private void updateConfig() throws NacosException {
-		service1.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
-				"configdata:\n" +
-					"  user:\n" +
-					"    age: 22\n" +
-					"    name: freeman1123\n" +
-					"    map:\n" +
-					"      hobbies:\n" +
-					"        - art\n" +
-					"        - programming\n" +
-					"        - movie\n" +
-					"      intro: Hello, I'm freeman\n" +
-					"      extra: yo~\n" +
-					"    users:\n" +
-					"      - name: dad\n" +
-					"        age: 20\n" +
-					"      - name: mom\n" +
-					"        age: 18",
+		service1.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP", YAML_CONTENT,
 				"yaml");
 	}
 }

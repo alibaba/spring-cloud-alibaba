@@ -37,10 +37,10 @@ public class ContainerStarter {
 
 	private static final String ROCKETMQ_BROKER_CONFIG_PATH = "rocketmq/conf/broker.conf";
 
-	private static final String NACOS_VERSION    = "1.4.2";
+	private static final String NACOS_VERSION = "1.4.2";
 	private static final String SENTINEL_VERSION = "1.8.3";
 	private static final String ROCKETMQ_VERSION = "4.9.2";
-	private static final String SEATA_VERSION    = "1.4.2";
+	private static final String SEATA_VERSION = "1.4.2";
 
 	private static final Map<String, GenericContainer> nacosMap = new ConcurrentHashMap<>(
 			4);
@@ -87,8 +87,7 @@ public class ContainerStarter {
 			// this image exposes 4 ports, include namesrv and broker
 			// we need use FixedHostPortGenericContainer !
 			GenericContainer rocketmq = new FixedHostPortGenericContainer(
-					"freemanlau/rocketmq:" + version)
-							.withFixedExposedPort(9876, 9876)
+					"freemanlau/rocketmq:" + version).withFixedExposedPort(9876, 9876)
 							.withFixedExposedPort(10909, 10909)
 							.withFixedExposedPort(10911, 10911)
 							.withFixedExposedPort(10912, 10912);
