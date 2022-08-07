@@ -1,13 +1,8 @@
 package com.alibaba.cloud.istio;
 
-import com.alibaba.cloud.istio.rules.SourceRules;
-import com.alibaba.cloud.istio.rules.TargetRules;
 import com.alibaba.cloud.istio.protocol.impl.LdsProtocol;
-import com.alibaba.cloud.istio.util.ListenerResolver;
+import com.alibaba.cloud.istio.util.XdsParseUtil;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
-import io.envoyproxy.envoy.config.rbac.v3.Permission;
-import io.envoyproxy.envoy.config.rbac.v3.Policy;
-import io.envoyproxy.envoy.config.rbac.v3.Principal;
 import io.envoyproxy.envoy.config.rbac.v3.RBAC;
 
 import java.util.*;
@@ -19,61 +14,9 @@ import java.util.*;
 public class PilotExchanger {
     private LdsProtocol ldsProtocol;
 
-    private Set<TargetRules> targetRulesAllowed = new HashSet<>();
-    private Set<TargetRules> targetRulesDenied = new HashSet<>();
-    private Set<SourceRules> sourceRulesAllowed = new HashSet<>();
-    private Set<SourceRules> sourceRulesDenied = new HashSet<>();
-
     private void observeListeners(List<Listener> listeners) {
-        List<RBAC> rbacList = ListenerResolver.resolveRbac(listeners);
-        for (RBAC rbac : rbacList) {
-            for (Map.Entry<String, Policy> entry : rbac.getPoliciesMap().entrySet()) {
-                // permission
-                List<Permission> permissions = entry.getValue().getPermissionsList();
-                TargetRules targetRules;
-                for (Permission permission : permissions) {
-                    switch (rbac.getAction()) {
-                        case ALLOW:
-                        case UNRECOGNIZED:
-                            targetRules = new TargetRules(entry.getKey(), permission, true);
-                            if (!targetRules.isAny()) {
-                                this.targetRulesAllowed.add(targetRules);
-                            }
-                            break;
-                        case DENY:
-                            targetRules = new TargetRules(entry.getKey(), permission, false);
-                            if (!targetRules.isAny()) {
-                                this.targetRulesDenied.add(targetRules);
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                List<Principal> principals = entry.getValue().getPrincipalsList();
-                SourceRules rules;
-                for (Principal principal : principals) {
-                    switch (rbac.getAction()) {
-                        case ALLOW:
-                        case UNRECOGNIZED:
-                            rules = new SourceRules(entry.getKey(), principal, true);
-                            if (!rules.isAny()) {
-                                this.sourceRulesAllowed.add(rules);
-                            }
-                            break;
-                        case DENY:
-                            rules = new SourceRules(entry.getKey(), principal, false);
-                            if (!rules.isAny()) {
-                                this.sourceRulesDenied.add(rules);
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-        System.out.println();
+        XdsParseUtil.clearLdsCache();
+        XdsParseUtil.resolveAuthRules(listeners);
     }
 
     public PilotExchanger(LdsProtocol ldsProtocol) {
