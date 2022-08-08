@@ -17,12 +17,16 @@
 package com.alibaba.cloud.stream.binder.rocketmq.integration.outbound;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
 import org.apache.rocketmq.acl.common.AclClientRPCHook;
 import org.apache.rocketmq.acl.common.SessionCredentials;
+import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.hook.CheckForbiddenHook;
 import org.apache.rocketmq.client.hook.SendMessageHook;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -45,11 +49,12 @@ import org.springframework.util.StringUtils;
  */
 public final class RocketMQProduceFactory {
 
+	private final static Logger log = LoggerFactory.getLogger(RocketMQProduceFactory.class);
+
+	private static Map<String, DefaultMQProducer> producers = new HashMap<>();
+
 	private RocketMQProduceFactory() {
 	}
-
-	private final static Logger log = LoggerFactory
-			.getLogger(RocketMQProduceFactory.class);
 
 	/**
 	 * init for the producer,including convert producer params.
@@ -63,7 +68,10 @@ public final class RocketMQProduceFactory {
 				"Property 'group' is required - producerGroup");
 		Assert.notNull(producerProperties.getNameServer(),
 				"Property 'nameServer' is required");
-
+		String key = getKey(producerProperties);
+		if (producers.containsKey(key)) {
+			return producers.get(key);
+		}
 		RPCHook rpcHook = null;
 		if (!StringUtils.isEmpty(producerProperties.getAccessKey())
 				&& !StringUtils.isEmpty(producerProperties.getSecretKey())) {
@@ -96,10 +104,12 @@ public final class RocketMQProduceFactory {
 			}
 		}
 		else {
-			producer = new DefaultMQProducer(producerProperties.getNamespace(),
+			producer = new ReusableMQProducer(producerProperties.getNamespace(),
 					producerProperties.getGroup(), rpcHook,
 					producerProperties.getEnableMsgTrace(),
-					producerProperties.getCustomizedTraceTopic());
+					producerProperties.getCustomizedTraceTopic(),
+					key);
+			producers.put(key, producer);
 		}
 
 		producer.setVipChannelEnabled(
@@ -134,4 +144,34 @@ public final class RocketMQProduceFactory {
 		return producer;
 	}
 
+	private static String getKey(RocketMQProducerProperties producerProperties) {
+		return producerProperties.getNameServer() + "," + producerProperties.getGroup();
+	}
+
+	protected static class ReusableMQProducer extends DefaultMQProducer {
+
+		private final AtomicInteger atomicInteger = new AtomicInteger();
+
+		private final String key;
+
+		public ReusableMQProducer(String namespace, String group, RPCHook rpcHook, boolean enableMsgTrace, String customizedTraceTopic, String key) {
+			super(namespace, group, rpcHook, enableMsgTrace, customizedTraceTopic);
+			this.key = key;
+		}
+
+		@Override
+		public void start() throws MQClientException {
+			if (atomicInteger.getAndIncrement() == 0) {
+				super.start();
+			}
+		}
+
+		@Override
+		public void shutdown() {
+			if (atomicInteger.decrementAndGet() == 0) {
+				producers.remove(key);
+				super.shutdown();
+			}
+		}
+	}
 }
