@@ -3,10 +3,49 @@ on:
   push:
     branches:
       - 2021.x
+    paths:
+      - '.github/workflows/integration-test.yml'
+      - '**/pom.xml'
+      - '**/src/main/**'
   pull_request:
     branches:
       - 2021.x
+    paths:
+      - '.github/workflows/integration-test.yml'
+      - '**/pom.xml'
+      - '**/src/main/**'
 jobs:
+  build-it-image:
+    name: build-it-image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v2
+      - name: Maven resolve ranges
+        run: ./mvnw versions:resolve-ranges -ntp -Dincludes='org.springframework:*,org.springframework.boot:*'
+      - name: Cache Maven Repos
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: spring-cloud-alibaba-it-cache-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: 8
+      - name: Build IT image
+        run: ./mvnw -B clean install -am -pl spring-cloud-alibaba-tests/spring-cloud-alibaba-testcontainers -Pit.env.docker -DskipTests -Dspotless.apply.skip=true
+      - name: Save IT image
+        run: docker save -o /tmp/spring-cloud-alibaba-testcontainers.tar apache/spring-cloud-alibaba-testcontainers:latest
+      - name: Upload IT image
+        uses: actions/upload-artifact@v3
+        with:
+          name: it-image
+          path: /tmp/spring-cloud-alibaba-testcontainers.tar
+          retention-days: 1
+
   integration-testing:
     name: Integration Testing
     runs-on: ubuntu-latest
@@ -29,4 +68,18 @@ jobs:
       - name: Testing
         run: mvn clean test
 #        run: mvn clean -Dit.enabled=true test
+      - name: Download IT image
+        uses: actions/download-artifact@v3
+        with:
+          name: it-image
+          path: /tmp/
+      - name: Load IT image
+        run: docker load -i /tmp/spring-cloud-alibaba-testcontainers.tar
+      - name: "run install by skip tests"
+        if: ${{ steps.check_changes.outputs.docs_only != 'true' }}
+        run: mvn -q -B -ntp clean install -DskipTests
+      - name: run integration tests
+        if: ${{ steps.check_changes.outputs.docs_only != 'true' }}
+        run: ./build/run_integration_group.sh CLI
+
 

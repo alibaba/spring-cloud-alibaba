@@ -19,7 +19,6 @@ package com.alibaba.cloud.testsupport;
 /**
  *
  * @author freeman
- * @date 2021.0.1.0
  */
 public class Tester {
 
