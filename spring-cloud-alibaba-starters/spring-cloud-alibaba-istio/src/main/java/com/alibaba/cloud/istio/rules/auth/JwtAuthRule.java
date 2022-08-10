@@ -2,6 +2,7 @@ package com.alibaba.cloud.istio.rules.auth;
 
 import io.envoyproxy.envoy.type.matcher.v3.ListMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,12 +11,12 @@ import java.util.Map;
 
 public class JwtAuthRule {
     private String name;
-    private List<List<StringMatcher>> requestPrincipals = new ArrayList<>();
-    private List<List<StringMatcher>> authAudiences = new ArrayList<>();
-    private Map<String, List<List<ListMatcher>>> authClaims = new HashMap<>();
-    private List<List<StringMatcher>> authPresenters = new ArrayList<>();
+    private List<Pair<List<StringMatcher>, Boolean>> requestPrincipals;
+    private List<Pair<List<StringMatcher>, Boolean>> authAudiences;
+    private Map<String, List<Pair<List<ListMatcher>, Boolean>>> authClaims;
+    private List<Pair<List<StringMatcher>, Boolean>> authPresenters;
 
-    public JwtAuthRule(String name, List<List<StringMatcher>> requestPrincipals, List<List<StringMatcher>> authAudiences, Map<String, List<List<ListMatcher>>> authClaims, List<List<StringMatcher>> authPresenters) {
+    public JwtAuthRule(String name, List<Pair<List<StringMatcher>, Boolean>> requestPrincipals, List<Pair<List<StringMatcher>, Boolean>> authAudiences, Map<String, List<Pair<List<ListMatcher>, Boolean>>> authClaims, List<Pair<List<StringMatcher>, Boolean>> authPresenters) {
         this.name = name;
         this.requestPrincipals = requestPrincipals;
         this.authAudiences = authAudiences;
@@ -27,19 +28,19 @@ public class JwtAuthRule {
         return name;
     }
 
-    public List<List<StringMatcher>> getRequestPrincipals() {
+    public List<Pair<List<StringMatcher>, Boolean>> getRequestPrincipals() {
         return requestPrincipals;
     }
 
-    public List<List<StringMatcher>> getAuthAudiences() {
+    public List<Pair<List<StringMatcher>, Boolean>> getAuthAudiences() {
         return authAudiences;
     }
 
-    public Map<String, List<List<ListMatcher>>> getAuthClaims() {
+    public Map<String, List<Pair<List<ListMatcher>, Boolean>>> getAuthClaims() {
         return authClaims;
     }
 
-    public List<List<StringMatcher>> getAuthPresenters() {
+    public List<Pair<List<StringMatcher>, Boolean>> getAuthPresenters() {
         return authPresenters;
     }
 }

@@ -1,12 +1,11 @@
 package com.alibaba.cloud.istio.util;
 
-import com.alibaba.cloud.istio.rules.auth.IdentityRule;
-import com.alibaba.cloud.istio.rules.auth.IpBlockRule;
-import com.alibaba.cloud.istio.rules.auth.JwtAuthRule;
-import com.alibaba.cloud.istio.rules.auth.TargetRule;
+import com.alibaba.cloud.istio.rules.auth.*;
 import com.alibaba.cloud.istio.rules.manager.*;
 import com.google.protobuf.Any;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import io.envoyproxy.envoy.config.listener.v3.FilterChain;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
@@ -16,11 +15,13 @@ import io.envoyproxy.envoy.config.rbac.v3.Principal;
 import io.envoyproxy.envoy.config.rbac.v3.RBAC;
 import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
 import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtAuthentication;
+import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtProvider;
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager;
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.HttpFilter;
 import io.envoyproxy.envoy.type.matcher.v3.ListMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -136,25 +137,42 @@ public class XdsParseUtil {
                 }
             }
         }
-        resolveJWT(httpFilters);
+        List<JwtAuthentication> jwtRules = resolveJWT(httpFilters);
+        for (JwtAuthentication jwtRule : jwtRules) {
+            Map<String, JwtProvider> jwtProviders = jwtRule.getProvidersMap();
+            for (Map.Entry<String, JwtProvider> entry : jwtProviders.entrySet()) {
+                JwtProvider provider = entry.getValue();
+                JwtRuleManager.addJwtRule(new JwtRule(entry.getKey(),
+                        provider.getFromHeadersList(),
+                        provider.getIssuer(),
+                        new ArrayList<>(provider.getAudiencesList()),
+                        provider.getLocalJwks().getInlineString(),
+                        new ArrayList<>(provider.getFromParamsList()),
+                        provider.getForwardPayloadHeader(),
+                        provider.getForward())
+                );
+            }
+        }
     }
 
     private static void resolvePrincipal(String name, Principal principal, boolean isAllowed) {
-        if (!isAllowed) {
-            principal = principal.getNotId();
-        }
         Principal.Set andIds = principal.getAndIds();
-        List<List<CidrRange>> ipBlockList = new ArrayList<>();
-        List<List<CidrRange>> remoteIpBlockList = new ArrayList<>();
-        List<List<StringMatcher>> requestPrincipalList = new ArrayList<>();
-        List<List<StringMatcher>> authAudienceList = new ArrayList<>();
-        List<List<StringMatcher>> authPresenterList = new ArrayList<>();
-        Map<String, List<List<ListMatcher>>> authClaimMap = new HashMap<>();
-        Map<String, List<List<HeaderMatcher>>> headerMap = new HashMap<>();
-        List<List<StringMatcher>> identityList = new ArrayList<>();
+        List<Pair<List<CidrRange>, Boolean>> ipBlockList = new ArrayList<>();
+        List<Pair<List<CidrRange>, Boolean>> remoteIpBlockList = new ArrayList<>();
+        List<Pair<List<StringMatcher>, Boolean>> requestPrincipalList = new ArrayList<>();
+        List<Pair<List<StringMatcher>, Boolean>> authAudienceList = new ArrayList<>();
+        List<Pair<List<StringMatcher>, Boolean>> authPresenterList = new ArrayList<>();
+        Map<String, List<Pair<List<ListMatcher>, Boolean>>> authClaimMap = new HashMap<>();
+        Map<String, List<Pair<List<HeaderMatcher>, Boolean>>> headerMap = new HashMap<>();
+        List<Pair<List<StringMatcher>, Boolean>> identityList = new ArrayList<>();
         for (Principal andId : andIds.getIdsList()) {
             if (andId.getAny()) {
                 return;
+            }
+            boolean isNot = false;
+            if (andId.hasNotId()) {
+                isNot = true;
+                andId = andId.getNotId();
             }
             Principal.Set orIds = andId.getOrIds();
             List<StringMatcher> identities = new ArrayList<>();
@@ -212,31 +230,31 @@ public class XdsParseUtil {
                 }
             }
             if (!identities.isEmpty()) {
-                identityList.add(identities);
+                identityList.add(Pair.of(identities, isNot));
             }
             if (!requestPrincipals.isEmpty()) {
-                requestPrincipalList.add(requestPrincipals);
+                requestPrincipalList.add(Pair.of(requestPrincipals, isNot));
             }
             if (!authAudiences.isEmpty()) {
-                authAudienceList.add(authAudiences);
+                authAudienceList.add(Pair.of(authAudiences, isNot));
             }
             if (!authPresenters.isEmpty()) {
-                authPresenterList.add(authPresenters);
+                authPresenterList.add(Pair.of(authPresenters, isNot));
             }
             if (!ipBlocks.isEmpty()) {
-                ipBlockList.add(ipBlocks);
+                ipBlockList.add(Pair.of(ipBlocks, isNot));
             }
             if (!remoteIpBlocks.isEmpty()) {
-                remoteIpBlockList.add(remoteIpBlocks);
+                remoteIpBlockList.add(Pair.of(remoteIpBlocks, isNot));
             }
             for (Map.Entry<String, List<ListMatcher>> entry : authClaims.entrySet()) {
-                List<List<ListMatcher>> authClaimEntries = authClaimMap.getOrDefault(entry.getKey(), new ArrayList<>());
-                authClaimEntries.add(entry.getValue());
+                List<Pair<List<ListMatcher>, Boolean>> authClaimEntries = authClaimMap.getOrDefault(entry.getKey(), new ArrayList<>());
+                authClaimEntries.add(Pair.of(entry.getValue(), isNot));
                 authClaimMap.put(entry.getKey(), authClaimEntries);
             }
             for (Map.Entry<String, List<HeaderMatcher>> entry : headers.entrySet()) {
-                List<List<HeaderMatcher>> headerEntries = headerMap.getOrDefault(entry.getKey(), new ArrayList<>());
-                headerEntries.add(entry.getValue());
+                List<Pair<List<HeaderMatcher>, Boolean>> headerEntries = headerMap.getOrDefault(entry.getKey(), new ArrayList<>());
+                headerEntries.add(Pair.of(entry.getValue(), isNot));
                 headerMap.put(entry.getKey(), headerEntries);
             }
         }
@@ -246,18 +264,20 @@ public class XdsParseUtil {
     }
 
     private static void resolvePermission(String name, Permission permission, boolean isAllowed) {
-        if (!isAllowed) {
-            permission = permission.getNotRule();
-        }
         Permission.Set andRules = permission.getAndRules();
-        List<List<StringMatcher>> hostList = new ArrayList<>();
-        List<List<Integer>> portList = new ArrayList<>();
-        List<List<StringMatcher>> methodList = new ArrayList<>();
-        List<List<StringMatcher>> pathList = new ArrayList<>();
-        List<List<CidrRange>> destIpList = new ArrayList<>();
+        List<Pair<List<StringMatcher>, Boolean>> hostList = new ArrayList<>();
+        List<Pair<List<Integer>, Boolean>> portList = new ArrayList<>();
+        List<Pair<List<StringMatcher>, Boolean>> methodList = new ArrayList<>();
+        List<Pair<List<StringMatcher>, Boolean>> pathList = new ArrayList<>();
+        List<Pair<List<CidrRange>, Boolean>> destIpList = new ArrayList<>();
         for (Permission andRule : andRules.getRulesList()) {
             if (andRule.getAny()) {
                 return;
+            }
+            boolean isNot = false;
+            if (andRule.hasNotRule()) {
+                isNot = true;
+                andRule = andRule.getNotRule();
             }
             Permission.Set orRules = andRule.getOrRules();
             List<StringMatcher> hosts = new ArrayList<>();
@@ -288,19 +308,19 @@ public class XdsParseUtil {
                 }
             }
             if (!hosts.isEmpty()) {
-                hostList.add(hosts);
+                hostList.add(Pair.of(hosts, isNot));
             }
             if (!ports.isEmpty()) {
-                portList.add(ports);
+                portList.add(Pair.of(ports, isNot));
             }
             if (!methods.isEmpty()) {
-                methodList.add(methods);
+                methodList.add(Pair.of(methods, isNot));
             }
             if (!paths.isEmpty()) {
-                pathList.add(paths);
+                pathList.add(Pair.of(paths, isNot));
             }
             if (!destIps.isEmpty()) {
-                destIpList.add(destIps);
+                destIpList.add(Pair.of(destIps, isNot));
             }
         }
         TargetRuleManager.addTargetRules(new TargetRule(name, hostList, portList, methodList, pathList), isAllowed);

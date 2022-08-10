@@ -9,18 +9,16 @@ public class JwtRule {
     private List<JwtHeader> fromHeaders;
     private String issuer;
     private List<String> audiences;
-    private String jwksUri;
     private String jwks;
     private List<String> fromParams;
     private String outputPayloadToHeader;
     private boolean forwardOriginalToken;
 
-    public JwtRule(String name, List<JwtHeader> fromHeaders, String issuer, List<String> audiences, String jwksUri, String jwks, List<String> fromParams, String outputPayloadToHeader, boolean forwardOriginalToken) {
+    public JwtRule(String name, List<JwtHeader> fromHeaders, String issuer, List<String> audiences, String jwks, List<String> fromParams, String outputPayloadToHeader, boolean forwardOriginalToken) {
         this.name = name;
         this.fromHeaders = fromHeaders;
         this.issuer = issuer;
         this.audiences = audiences;
-        this.jwksUri = jwksUri;
         this.jwks = jwks;
         this.fromParams = fromParams;
         this.outputPayloadToHeader = outputPayloadToHeader;
@@ -41,10 +39,6 @@ public class JwtRule {
 
     public List<String> getAudiences() {
         return audiences;
-    }
-
-    public String getJwksUri() {
-        return jwksUri;
     }
 
     public String getJwks() {
