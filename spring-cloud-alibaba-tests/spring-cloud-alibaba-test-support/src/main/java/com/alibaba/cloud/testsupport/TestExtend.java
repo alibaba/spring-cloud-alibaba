@@ -24,28 +24,11 @@ import java.lang.annotation.Target;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 
-/**
- * Disables test execution if Docker is unavailable.
- * <p>
- * We don't want to run integration tests on local machine, but still give a chance to run
- * it.
- * <p>
- * Typically, used for CI and local integration test.
- * <p>
- * Set system property
- * {@link HasDockerAndItEnabledCondition#RUN_INTEGRATION_TESTS_PROPERTY} to 'true'
- * <p>
- * general usage: {@code mvn -Dit.enabled=true test}
- * <p>
- * `it` means integration test
- *
- * @author freeman
- * @since 2021.0.1.0
- */
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@ExtendWith(HasDockerAndItEnabledCondition.class)
-public @interface HasDockerAndItEnabled {
+@ExtendWith(TestTimeoutExtension.class)
+public @interface TestExtend {
 
+	long time();
 }

@@ -16,36 +16,26 @@
 
 package com.alibaba.cloud.testsupport;
 
-import java.lang.annotation.Documented;
+
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-/**
- * Disables test execution if Docker is unavailable.
- * <p>
- * We don't want to run integration tests on local machine, but still give a chance to run
- * it.
- * <p>
- * Typically, used for CI and local integration test.
- * <p>
- * Set system property
- * {@link HasDockerAndItEnabledCondition#RUN_INTEGRATION_TESTS_PROPERTY} to 'true'
- * <p>
- * general usage: {@code mvn -Dit.enabled=true test}
- * <p>
- * `it` means integration test
- *
- * @author freeman
- * @since 2021.0.1.0
- */
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Inherited
+@Testcontainers
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
-@ExtendWith(HasDockerAndItEnabledCondition.class)
-public @interface HasDockerAndItEnabled {
+@TestMethodOrder(OrderAnnotation.class)
+@ExtendWith(SpringCloudAlibabaExtension.class)
+public @interface SpringCloudAlibaba {
+	String[] composeFiles();
 
+	String serviceName();
 }
