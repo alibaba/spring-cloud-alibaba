@@ -1,7 +1,5 @@
 package com.alibaba.cloud.istio.filter;
 
-import com.alibaba.cloud.istio.rules.auth.IpBlockRule;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;

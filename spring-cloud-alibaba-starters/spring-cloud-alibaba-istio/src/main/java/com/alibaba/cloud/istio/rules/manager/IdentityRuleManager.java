@@ -5,18 +5,20 @@ import com.alibaba.cloud.istio.rules.auth.IdentityRule;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+// TODO: To use this feature requires implementing mTLS first
 public class IdentityRuleManager {
-    private static Map<String, IdentityRule> identityRules = new ConcurrentHashMap<>();
-    private static Map<String, IdentityRule> notIdentityRules = new ConcurrentHashMap<>();
+    private static Map<String, IdentityRule> allowIdentityRules = new ConcurrentHashMap<>();
+    private static Map<String, IdentityRule> denyIdentityRules = new ConcurrentHashMap<>();
     public static void addIdentityRule(IdentityRule rule, boolean isAllow) {
         if (isAllow) {
-            identityRules.put(rule.getName(), rule);
+            allowIdentityRules.put(rule.getName(), rule);
         } else {
-            notIdentityRules.put(rule.getName(), rule);
+            denyIdentityRules.put(rule.getName(), rule);
         }
     }
     public static void clear() {
-        identityRules.clear();
-        notIdentityRules.clear();
+        allowIdentityRules.clear();
+        denyIdentityRules.clear();
     }
+
 }
