@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 // @HasDockerAndItEnabled
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
-@TestExtend(time = TIME_OUT)
+@TestExtend(time = 2 * TIME_OUT)
 public class NacosConfigRefreshTest {
 
 	/**
@@ -75,8 +75,8 @@ public class NacosConfigRefreshTest {
 	}
 
 	@Test
-	public void testRefreshConfig()  {
-
+	public void testRefreshConfig() throws InterruptedException {
+		Thread.sleep(2000L);
 		Tester.testFunction("Dynamic refresh config", () -> {
 			// update config
 			updateConfig();
