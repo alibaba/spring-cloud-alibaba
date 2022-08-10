@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 // @HasDockerAndItEnabled
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
-@TestExtend(time = 3 * TIME_OUT)
+@TestExtend(time = TIME_OUT)
 public class NacosConfigRefreshTest {
 
 	/**
@@ -55,7 +55,7 @@ public class NacosConfigRefreshTest {
 			+ "        age: 20\n" + "      - name: mom\n" + "        age: 18";
 
 	@Mock
-	protected ConfigService service1;
+	protected ConfigService configService;
 
 	@BeforeAll
 	public static void setUp() {
@@ -65,19 +65,17 @@ public class NacosConfigRefreshTest {
 	@BeforeEach
 	public void prepare() throws NacosException {
 		Properties nacosSettings = new Properties();
-		String serverIp8 = "127.0.0.1:8848";
-		nacosSettings.put(PropertyKeyConst.SERVER_ADDR, serverIp8);
+		String serverAddress = "127.0.0.1:8848";
+		nacosSettings.put(PropertyKeyConst.SERVER_ADDR, serverAddress);
 		nacosSettings.put(PropertyKeyConst.USERNAME, "nacos");
 		nacosSettings.put(PropertyKeyConst.PASSWORD, "nacos");
 
-		service1 = ConfigFactory.createConfigService(nacosSettings);
+		configService = ConfigFactory.createConfigService(nacosSettings);
 
 	}
 
 	@Test
-	public void testRefreshConfig() throws InterruptedException {
-		// make sure everything is ready !
-		Thread.sleep(2000L);
+	public void testRefreshConfig()  {
 
 		Tester.testFunction("Dynamic refresh config", () -> {
 			// update config
@@ -85,7 +83,7 @@ public class NacosConfigRefreshTest {
 
 			// wait config refresh
 			Thread.sleep(2000L);
-			String content = service1.getConfig("nacos-config-refresh.yml",
+			String content = configService.getConfig("nacos-config-refresh.yml",
 					"DEFAULT_GROUP", TIME_OUT);
 
 			assertThat(content).isEqualTo(YAML_CONTENT);
@@ -93,7 +91,7 @@ public class NacosConfigRefreshTest {
 	}
 
 	private void updateConfig() throws NacosException {
-		service1.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP", YAML_CONTENT,
+		configService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP", YAML_CONTENT,
 				"yaml");
 	}
 }

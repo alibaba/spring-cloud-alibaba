@@ -7,7 +7,7 @@ on:
     branches:
       - 2021.x
 jobs:
-  deploy-docker-iamge:
+  deploy-docker-image:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
