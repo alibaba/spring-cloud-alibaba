@@ -3,9 +3,7 @@ package com.alibaba.cloud.istio.util;
 import com.alibaba.cloud.istio.rules.auth.*;
 import com.alibaba.cloud.istio.rules.manager.*;
 import com.google.protobuf.Any;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import io.envoyproxy.envoy.config.listener.v3.FilterChain;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
@@ -106,6 +104,21 @@ public class XdsParseUtil {
         List<RBAC> rbacList = resolveRbac(httpFilters);
         for (RBAC rbac : rbacList) {
             for (Map.Entry<String, Policy> entry : rbac.getPoliciesMap().entrySet()) {
+                // principals
+                List<Principal> principals = entry.getValue().getPrincipalsList();
+                for (Principal principal : principals) {
+                    switch (rbac.getAction()) {
+                        case ALLOW:
+                        case UNRECOGNIZED:
+                            resolvePrincipal(entry.getKey(), principal, true);
+                            break;
+                        case DENY:
+                            resolvePrincipal(entry.getKey(), principal, false);
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 // permission
                 List<Permission> permissions = entry.getValue().getPermissionsList();
                 for (Permission permission : permissions) {
@@ -116,20 +129,6 @@ public class XdsParseUtil {
                             break;
                         case DENY:
                             resolvePermission(entry.getKey(), permission, false);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                List<Principal> principals = entry.getValue().getPrincipalsList();
-                for (Principal principal : principals) {
-                    switch (rbac.getAction()) {
-                        case ALLOW:
-                        case UNRECOGNIZED:
-                            resolvePrincipal(entry.getKey(), principal, true);
-                            break;
-                        case DENY:
-                            resolvePrincipal(entry.getKey(), principal, false);
                             break;
                         default:
                             break;
@@ -258,9 +257,15 @@ public class XdsParseUtil {
                 headerMap.put(entry.getKey(), headerEntries);
             }
         }
-        IpBlockRuleManager.addIpBlockRules(new IpBlockRule(name, ipBlockList, remoteIpBlockList), isAllowed);
-        JwtAuthRuleManager.addJwtAuthRule(new JwtAuthRule(name, requestPrincipalList, authAudienceList, authClaimMap, authPresenterList), isAllowed);
-        IdentityRuleManager.addIdentityRule(new IdentityRule(name, identityList), isAllowed);
+        if (!ipBlockList.isEmpty() && !remoteIpBlockList.isEmpty()) {
+            IpBlockRuleManager.addIpBlockRules(new IpBlockRule(name, ipBlockList, remoteIpBlockList), isAllowed);
+        }
+        if (!requestPrincipalList.isEmpty() && !authAudienceList.isEmpty() && !authClaimMap.isEmpty() && !authPresenterList.isEmpty()) {
+            JwtAuthRuleManager.addJwtAuthRule(new JwtAuthRule(name, requestPrincipalList, authAudienceList, authClaimMap, authPresenterList), isAllowed);
+        }
+        if (!identityList.isEmpty()) {
+            IdentityRuleManager.addIdentityRule(new IdentityRule(name, identityList), isAllowed);
+        }
     }
 
     private static void resolvePermission(String name, Permission permission, boolean isAllowed) {
@@ -323,8 +328,12 @@ public class XdsParseUtil {
                 destIpList.add(Pair.of(destIps, isNot));
             }
         }
-        TargetRuleManager.addTargetRules(new TargetRule(name, hostList, portList, methodList, pathList), isAllowed);
-        IpBlockRuleManager.updateDestIpRules(name, destIpList, isAllowed);
+        if (!hostList.isEmpty() && !portList.isEmpty() && !methodList.isEmpty() && !pathList.isEmpty()) {
+            TargetRuleManager.addTargetRules(new TargetRule(name, hostList, portList, methodList, pathList), isAllowed);
+        }
+        if (!destIpList.isEmpty()) {
+            IpBlockRuleManager.updateDestIpRules(name, destIpList, isAllowed);
+        }
     }
 
     private static StringMatcher headerMatch2StringMatch(HeaderMatcher headerMatcher) {

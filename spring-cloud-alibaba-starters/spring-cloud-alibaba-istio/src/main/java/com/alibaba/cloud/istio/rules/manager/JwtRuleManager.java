@@ -7,6 +7,8 @@ import org.jose4j.jwt.JwtClaims;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,11 +28,9 @@ public class JwtRuleManager {
         for (JwtRule rule : jwtRules.values()) {
             JwtClaims jwtClaims = JwtUtil.matchJwt(params, headers, rule);
             if (jwtClaims != null) {
-                if (rule.isForwardOriginalToken()) {
-                    // original token will be kept for upstream request
-                }
                 if (!StringUtils.isEmpty(rule.getOutputPayloadToHeader())) {
                     // output
+                    headers.set(rule.getOutputPayloadToHeader(), Base64.getEncoder().encodeToString(jwtClaims.toJson().getBytes(StandardCharsets.UTF_8)));
                 }
                 return jwtClaims;
             }

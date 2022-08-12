@@ -1,0 +1,11 @@
+  apiVersion: security.istio.io/v1beta1
+  kind: AuthorizationPolicy
+  metadata:
+    name: httpbin-policy
+    namespace: foo
+  spec:
+    action: ALLOW
+    rules:
+      - from:
+          - source:
+              ipBlocks: ["127.0.0.1"]

@@ -36,7 +36,14 @@ public class IpUtil {
     public static String ip2BinaryString(String ip) {
         try {
             String[] ips = ip.split("\\.");
-            return String.format("%32s", Long.toBinaryString(Long.parseLong(ips[0]) << 24) + (Long.parseLong(ips[1]) << 16) + (Long.parseLong(ips[2]) << 8) + Long.parseLong(ips[3])).replace(" ", "0");
+            long[] ipLong = new long[4];
+            for (int i = 0; i < 4; ++i) {
+                ipLong[i] = Long.parseLong(ips[i]);
+                if (ipLong[i] < 0 || ipLong[i] > 255) {
+                    return "";
+                }
+            }
+            return String.format("%32s", Long.toBinaryString((ipLong[0] << 24) + (ipLong[1] << 16) + (ipLong[2] << 8) + ipLong[3])).replace(" ", "0");
         } catch (Exception e) {
             log.error("failed to parse ip {} to binary string", ip);
         }
