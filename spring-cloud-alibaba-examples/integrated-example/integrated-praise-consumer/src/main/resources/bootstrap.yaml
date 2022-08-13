@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: integrated-consumer
+  cloud:
+    nacos:
+      config:
+        file-extension: yaml
+        server-addr: localhost:8848
+        shared-configs[0]:
+          dataId: datasorce-config.yaml
+server:
+  port: 8014

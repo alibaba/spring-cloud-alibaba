@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: integrated-provider
+  cloud:
+    nacos:
+      config:
+        file-extension: yaml
+        server-addr: localhost:8848
+server:
+  port: 8015
