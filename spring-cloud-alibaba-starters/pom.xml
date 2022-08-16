@@ -15,6 +15,7 @@
     <description>Spring Cloud Alibaba Starters</description>
     
     <modules>
+        <module>spring-cloud-starter-alibaba-governance</module>
         <module>spring-cloud-starter-alibaba-nacos-config</module>
         <module>spring-cloud-starter-alibaba-nacos-config-server</module>
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
