@@ -19,6 +19,7 @@ package com.alibaba.cloud.stream.binder.rocketmq.integration.outbound;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
@@ -51,7 +52,7 @@ public final class RocketMQProduceFactory {
 
 	private final static Logger log = LoggerFactory.getLogger(RocketMQProduceFactory.class);
 
-	private static Map<String, DefaultMQProducer> producers = new HashMap<>();
+	private static Map<String, DefaultMQProducer> PRODUCER_REUSABLE_MAP = new ConcurrentHashMap<>();
 
 	private RocketMQProduceFactory() {
 	}
@@ -68,10 +69,6 @@ public final class RocketMQProduceFactory {
 				"Property 'group' is required - producerGroup");
 		Assert.notNull(producerProperties.getNameServer(),
 				"Property 'nameServer' is required");
-		String key = getKey(producerProperties);
-		if (producers.containsKey(key)) {
-			return producers.get(key);
-		}
 		RPCHook rpcHook = null;
 		if (!StringUtils.isEmpty(producerProperties.getAccessKey())
 				&& !StringUtils.isEmpty(producerProperties.getSecretKey())) {
@@ -104,12 +101,16 @@ public final class RocketMQProduceFactory {
 			}
 		}
 		else {
+			String key = getKey(producerProperties);
+			if (PRODUCER_REUSABLE_MAP.containsKey(key)) {
+				return PRODUCER_REUSABLE_MAP.get(key);
+			}
 			producer = new ReusableMQProducer(producerProperties.getNamespace(),
 					producerProperties.getGroup(), rpcHook,
 					producerProperties.getEnableMsgTrace(),
 					producerProperties.getCustomizedTraceTopic(),
 					key);
-			producers.put(key, producer);
+			PRODUCER_REUSABLE_MAP.put(key, producer);
 		}
 
 		producer.setVipChannelEnabled(
@@ -145,7 +146,8 @@ public final class RocketMQProduceFactory {
 	}
 
 	private static String getKey(RocketMQProducerProperties producerProperties) {
-		return producerProperties.getNameServer() + "," + producerProperties.getGroup();
+		return producerProperties.getNameServer() + "," + producerProperties.getGroup()
+				+ producerProperties.getSendCallBack();
 	}
 
 	protected static class ReusableMQProducer extends DefaultMQProducer {
@@ -169,7 +171,7 @@ public final class RocketMQProduceFactory {
 		@Override
 		public void shutdown() {
 			if (atomicInteger.decrementAndGet() == 0) {
-				producers.remove(key);
+				PRODUCER_REUSABLE_MAP.remove(key);
 				super.shutdown();
 			}
 		}
