@@ -37,14 +37,17 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class URIRegister {
+public final class URIRegister {
 
 	private static final String MATCH_ALL = "/**";
 
 	private static ServiceMetaObject serviceMetaObject;
 
+	private URIRegister() {
+	}
+
 	/**
-	 * publish to registry meta like dubbo rather than building a new appactive rule type
+	 * publish to registry meta like dubbo rather than building a new appactive rule type.
 	 */
 	public static void collectUris(List<FilterRegistrationBean> beanList) {
 		if (CollectionUtils.isNotEmpty(beanList)) {

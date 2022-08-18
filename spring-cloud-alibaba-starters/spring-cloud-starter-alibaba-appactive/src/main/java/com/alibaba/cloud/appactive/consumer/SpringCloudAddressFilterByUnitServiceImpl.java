@@ -16,11 +16,15 @@
 
 package com.alibaba.cloud.appactive.consumer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.appactive.util.Util;
+import com.alibaba.cloud.appactive.util.BaseUtil;
 import io.appactive.java.api.base.enums.MiddleWareTypeEnum;
 import io.appactive.rpc.base.consumer.RPCAddressFilterByUnitServiceImpl;
 import io.appactive.support.lang.CollectionUtils;
@@ -56,9 +60,9 @@ public class SpringCloudAddressFilterByUnitServiceImpl<T>
 		// javax.servlet.http.HttpServletRequest)
 		String bestMatcher = EMPTY_MATCHER;
 		List<String> matchingPatterns = new ArrayList<>();
-		String targetUri = Util.getUriFromPrimaryName(nameOfTarget);
-		Set<String> candidateUris = candidates.stream().map(Util::getUriFromPrimaryName)
-				.collect(Collectors.toSet());
+		String targetUri = BaseUtil.getUriFromPrimaryName(nameOfTarget);
+		Set<String> candidateUris = candidates.stream()
+				.map(BaseUtil::getUriFromPrimaryName).collect(Collectors.toSet());
 		for (String candidateUri : candidateUris) {
 			if (antPathMatcher.match(candidateUri, targetUri)) {
 				matchingPatterns.add(candidateUri);
@@ -74,8 +78,8 @@ public class SpringCloudAddressFilterByUnitServiceImpl<T>
 			}
 			bestMatcher = matchingPatterns.get(0);
 		}
-		bestMatcher = Util.buildServicePrimaryName(
-				Util.getAppNameFromPrimaryName(nameOfTarget), bestMatcher);
+		bestMatcher = BaseUtil.buildServicePrimaryName(
+				BaseUtil.getAppNameFromPrimaryName(nameOfTarget), bestMatcher);
 		return bestMatcher;
 	}
 

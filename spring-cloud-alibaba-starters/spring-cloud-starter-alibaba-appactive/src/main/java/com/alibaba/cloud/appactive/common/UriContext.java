@@ -20,7 +20,10 @@ package com.alibaba.cloud.appactive.common;
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class UriContext {
+public final class UriContext {
+
+	private UriContext() {
+	}
 
 	private static final ThreadLocal<String> URI_INFO = new ThreadLocal<String>();
 

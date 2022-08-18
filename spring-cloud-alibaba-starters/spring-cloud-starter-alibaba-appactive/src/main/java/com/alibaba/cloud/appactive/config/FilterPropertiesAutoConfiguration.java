@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.appactive.constant;
+package com.alibaba.cloud.appactive.config;
+
+import com.alibaba.cloud.appactive.AppactiveProperties;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author raozihao, mageekchiu
- * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
+ * @author ChengPu raozihao
+ * @description
+ * @date 2022/8/15
  */
-public final class Constants {
+@Configuration
+public class FilterPropertiesAutoConfiguration {
 
-	/**
-	 * Router Id header key.
-	 */
-	public static final String ROUTER_ID_HEADER_KEY = "appactive-router-id";
-
-	private Constants() {
+	@Bean
+	public AppactiveProperties appactiveProperties() {
+		return new AppactiveProperties();
 	}
 
 }

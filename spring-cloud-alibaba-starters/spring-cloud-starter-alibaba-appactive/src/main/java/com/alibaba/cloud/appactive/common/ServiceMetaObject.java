@@ -27,7 +27,7 @@ public class ServiceMetaObject {
 	private List<ServiceMeta> serviceMetaList;
 
 	/**
-	 * string of serviceMetaList
+	 * string of serviceMetaList.
 	 */
 	private String meta;
 

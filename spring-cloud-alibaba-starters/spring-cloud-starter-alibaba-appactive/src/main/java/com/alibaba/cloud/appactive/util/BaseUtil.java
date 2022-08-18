@@ -14,20 +14,29 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.appactive.constant;
+package com.alibaba.cloud.appactive.util;
 
 /**
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public final class Constants {
+public final class BaseUtil {
 
-	/**
-	 * Router Id header key.
-	 */
-	public static final String ROUTER_ID_HEADER_KEY = "appactive-router-id";
+	private BaseUtil() {
+	}
 
-	private Constants() {
+	private static String split = "@active@";
+
+	public static String buildServicePrimaryName(String appName, String uriPrefix) {
+		return appName + split + uriPrefix;
+	}
+
+	public static String getUriFromPrimaryName(String servicePrimaryName) {
+		return servicePrimaryName.split(split)[1];
+	}
+
+	public static String getAppNameFromPrimaryName(String servicePrimaryName) {
+		return servicePrimaryName.split(split)[0];
 	}
 
 }

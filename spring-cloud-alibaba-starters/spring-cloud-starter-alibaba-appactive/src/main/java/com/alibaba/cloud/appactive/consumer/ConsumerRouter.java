@@ -22,7 +22,7 @@ import java.util.List;
 import com.alibaba.cloud.appactive.common.ServiceMeta;
 import com.alibaba.cloud.appactive.common.UriContext;
 import com.alibaba.cloud.appactive.consumer.callback.SpringCloud2AddressCallBack;
-import com.alibaba.cloud.appactive.util.Util;
+import com.alibaba.cloud.appactive.util.BaseUtil;
 import com.alibaba.fastjson.JSON;
 import com.netflix.loadbalancer.Server;
 import io.appactive.java.api.base.AppContextClient;
@@ -38,7 +38,7 @@ import org.slf4j.Logger;
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class ConsumerRouter {
+public final class ConsumerRouter {
 
 	private static final Logger logger = LogUtil.getLogger();
 
@@ -46,9 +46,12 @@ public class ConsumerRouter {
 
 	private static final SpringCloudAddressFilterByUnitServiceImpl<Server> addressFilterByUnitService;
 
+	private ConsumerRouter() {
+	}
+
 	static {
-		String baseName = "io.appactive.rpc.springcloud.nacos.consumer.";
-		String[] classes = new String[] { "NacosServerMeta", "EurekaServerMeta", };
+		String baseName = "com.alibaba.cloud.appactive.consumer.";
+		String[] classes = new String[] { "NacosServerMeta" };
 		serverMeta = loadServerMeta(baseName, classes);
 		if (serverMeta == null) {
 			String msg = MessageFormat
@@ -79,7 +82,7 @@ public class ConsumerRouter {
 	}
 
 	/**
-	 * return qualified server subset from origin list
+	 * return qualified server subset from origin list.
 	 * @param servers origin server list
 	 * @return qualified server list
 	 */
@@ -89,7 +92,7 @@ public class ConsumerRouter {
 		}
 		Server oneServer = servers.get(0);
 		String appName = oneServer.getMetaInfo().getAppName();
-		String servicePrimaryKey = Util.buildServicePrimaryName(appName,
+		String servicePrimaryKey = BaseUtil.buildServicePrimaryName(appName,
 				UriContext.getUriPath());
 
 		/// We all ready make sure all service stored through ConsumerRouter.refresh and
@@ -128,7 +131,7 @@ public class ConsumerRouter {
 			return changed;
 		}
 		for (ServiceMeta serviceMeta : serviceMetaList) {
-			String servicePrimaryKey = Util.buildServicePrimaryName(appName,
+			String servicePrimaryKey = BaseUtil.buildServicePrimaryName(appName,
 					serviceMeta.getUriPrefix());
 			if (addressFilterByUnitService.refreshAddressList(null, servicePrimaryKey,
 					servers, version, serviceMeta.getRa())) {

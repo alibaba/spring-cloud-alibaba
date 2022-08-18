@@ -23,7 +23,6 @@ import java.util.Objects;
 import com.alibaba.cloud.appactive.common.UriContext;
 import feign.FeignException;
 import feign.Response;
-import feign.codec.DecodeException;
 import feign.codec.Decoder;
 import io.appactive.support.log.LogUtil;
 import org.slf4j.Logger;

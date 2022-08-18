@@ -38,7 +38,7 @@ public class ServerListFilterInterceptor {
 	private static final Logger logger = LogUtil.getLogger();
 
 	/**
-	 * filtering servers for every ribbon request
+	 * filtering servers for every ribbon request.
 	 * @param pjp ProceedingJoinPoint
 	 * @return filtered servers
 	 */
@@ -66,7 +66,7 @@ public class ServerListFilterInterceptor {
 	}
 
 	/**
-	 * refresh local server list cache when servers changes
+	 * refresh local server list cache when servers changes.
 	 * @param jp JoinPoint
 	 */
 	@After("execution(* com.netflix.loadbalancer.BaseLoadBalancer.setServersList(..))")

@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.appactive.util;
+package com.alibaba.cloud.appactive.consumer;
+
+import java.util.Map;
+
+import com.alibaba.cloud.nacos.ribbon.NacosServer;
+import com.netflix.loadbalancer.Server;
 
 /**
- * @author raozihao, mageekchiu
- * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
+ * @author mageekchiu
  */
-public class Util {
+public class NacosServerMeta implements ServerMeta {
 
-	private static String split = "@active@";
-
-	public static String buildServicePrimaryName(String appName, String uriPrefix) {
-		return appName + split + uriPrefix;
+	public NacosServerMeta() {
 	}
 
-	public static String getUriFromPrimaryName(String servicePrimaryName) {
-		return servicePrimaryName.split(split)[1];
-	}
-
-	public static String getAppNameFromPrimaryName(String servicePrimaryName) {
-		return servicePrimaryName.split(split)[0];
+	@Override
+	public Map<String, String> getMetaMap(Server server) {
+		return ((NacosServer) server).getMetadata();
 	}
 
 }
