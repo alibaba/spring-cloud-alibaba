@@ -1,0 +1,39 @@
+<!--
+  ~ Copyright 1999-2022 Alibaba Group Holding Ltd.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="header.html :: commonHead"></head>
+<body>
+    <header th:replace="header.html :: pageHeader"></header>
+    <div id="welcome-page" class="container">
+        <div class="row">
+            <div th:each="product: ${products}" class="col-md-3">
+                <div class="card" style="width: 8rem">
+                    <img class="card-img-top" th:src="${product.img}">
+                    <div class="card-body" th:id="${product.id}">
+                        <h5 class="card-title" style="text-align: center">
+                        <a th:href="@{'/detailProduct?id=' + ${product.id}}" th:text="${product.name}"></a>
+                        </h5>
+                        <p class="card-text" style="text-align: center" th:text="${product.description}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <header th:replace="header.html :: pageTraffic"></header>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!--
+  ~ Copyright 1999-2022 Alibaba Group Holding Ltd.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:fragment="commonHead">
+    <meta charset="UTF-8">
+    <title>Appactive Demo</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/jquery-3.2.1.slim.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <style>
+        ul li.active>a {
+            color: #00CED1 !important;
+        }
+
+        .card-body {
+            position:relative;
+        }
+
+        .card-body .card-body-badge {
+            position:absolute;
+            display: none;
+            top:-10px;
+            left:-30px;
+            padding:5px;
+            background: #00CC66;
+            color:white;
+            transform:rotate(-20deg);
+        }
+    </style>
+
+    <script>
+        window.onload=function(){
+            setMenu();
+            hideGateway();
+            refresh(undefined, undefined);
+            drawArrow();
+        };
+
+        // function drawArrow() {
+        //     let activeColor = "#00CC66";
+        //
+        //     let chainNode = $("#chain");
+        //     let chain = JSON.parse(chainNode.val());
+        //     let num = chain.length;
+        //
+        //     $("#center-gateway").css({backgroundColor: activeColor});
+        //
+        //     chain.forEach((val)=>{
+        //       let elem = $("#" + val.unitFlag + "-" + val.app);
+        //       elem.css({backgroundColor: activeColor});
+        //     });
+        // }
+
+        function drawArrow() {
+            let activeColor = "#FFCC66";
+            activeColor = "#00CC66";
+
+            let interval = 700;
+
+            let chainNode = $("#chain");
+            let chain = JSON.parse(chainNode.val());
+            let num = chain.length;
+
+            lightUp({"unitFlag":"center","app":"gateway"},activeColor,0);
+            for(let i = 0; i < num; i++){
+                (function(i){setTimeout(function(){
+                    let val = chain[i];
+                    lightUp(val,activeColor,num-i)
+                },interval*(num-i))})(i)
+            }
+        }
+
+        function lightUp(val,activeColor,i) {
+            let id = val.unitFlag + "-" + val.app;
+            console.log(id)
+            let elem = $("#" + id);
+            elem.css({backgroundColor: activeColor});
+
+            let id1 = val.unitFlag + "T" + val.app
+            let elem1 = $("#" + id1);
+            elem1.text("第 "+(i)+" 跳");
+            elem1.show();
+        }
+
+        function hideGateway() {
+            let host = window.location.host;
+            if ("demo.appactive.io" !== host){
+                $("#domainArea").hide();
+            }
+        }
+
+        function setMenu() {
+            let currentNode = $("#current");
+            let current = currentNode.val();
+            let elem = $("#" + current);
+            elem.addClass("active");
+        }
+
+        function refresh(routerIdNew, rpcTypeNew){
+          let routerId = routerIdNew === undefined ? getRouterId() : routerIdNew;
+          let rpcType = rpcTypeNew === undefined ? getRpcType() : rpcTypeNew;
+	        let element = document.getElementById("routerId");
+	        element.value = routerId;
+	        element = document.getElementById("rpcType");
+          element.value = rpcType;
+          document.cookie = ("rpc_type="+rpcType+"; path=/");
+          document.cookie = ("r_id="+routerId+"; path=/");
+        }
+
+        function setMeta() {
+	        let element = document.getElementById("routerId");
+	        let routerId = element.value;
+	        let element1 = document.getElementById("rpcType");
+          let rpcType = element1.value;
+          console.log(routerId+","+rpcType)
+            // 整个网站生效 用 /
+	        refresh(routerId, rpcType);
+        }
+
+        function getRouterId() {
+            let routerId = getQuery("r_id")
+            if (routerId === undefined){
+                routerId = getCookie("r_id")
+            }
+            if (routerId === undefined){
+              routerId = 24
+            }
+            return routerId;
+        }
+
+        function getRpcType() {
+            let rpcType = getQuery("rpc_type")
+            if (rpcType === undefined){
+                rpcType = getCookie("rpc_type")
+            }
+            if (rpcType === undefined){
+                rpcType = "Dubbo"
+            }
+            return rpcType;
+        }
+
+        function getCookie(cname){
+	        let name = cname + "=";
+	        let ca = document.cookie.split(';');
+	        for(let i=0; i<ca.length; i++){
+		        let c = ca[i].trim();
+		        if (c.indexOf(name) === 0) return c.substring(name.length,c.length);
+	        }
+	        return undefined;
+        }
+
+        function getQuery(variable){
+          let query = window.location.search.substring(1);
+          let vars = query.split("&");
+          for (let i=0;i < vars.length;i++) {
+            let pair = vars[i].split("=");
+            if(pair[0] === variable){
+              return pair[1];
+            }
+          }
+          return undefined;
+        }
+    </script>
+</head>
+<body>
+    <header th:fragment="pageHeader">
+        <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Appactive Demo</a>
+                </div>
+                <ul class="nav">
+                    <li id="listProduct"><a class="nav-link" th:href="@{'/listProduct'}">列表(普通服务)</a></li>
+                    <li id="detailProduct"><a class="nav-link" th:href="@{'/detailProduct'}">详情(单元服务)</a></li>
+                    <li id="buyProduct"><a class="nav-link" th:href="@{'/buyProduct'}">下单(中心服务)</a></li>
+<!--                    <li><input type="text" class="form-control" placeholder="Rpc类型" id="rpcType" onblur="setMeta()"></li>-->
+                    <select name="rpcType" id="rpcType" class="form-control" style="width:150px" onchange="setMeta()">
+                        <option value="Dubbo">Dubbo</option>
+                        <option value="SpringCloud">SpringCloud</option>
+                    </select>
+                    <li><input type="text" class="form-control" placeholder="路由ID" id="routerId" onchange="setMeta()" onblur="setMeta()"></li>
+                </ul>
+            </div>
+        </nav>
+        <input hidden th:value="${result}" id="result"/>
+        <input hidden th:value="${chain}" id="chain"/>
+        <input hidden th:value="${current}" id="current"/>
+        <br>
+    </header>
+
+    <header th:fragment="pageTraffic">
+        <br>
+        <div class="row">
+            <div class="col"><hr></div>
+            <div class="col-auto">绿色格子-流量路径</div>
+            <div class="col"><hr></div>
+        </div>
+        <div class="container m-auto">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-md-4" id="domainArea">
+                            <div class="card" style="width: 8rem">
+                                <img class="card-img-top" src="/img/gateway.png">
+                                <div class="card-body" id="center-gateway">
+                                    <h5 class="card-title" style="text-align: center">center</h5>
+                                    <h5 class="card-title" style="text-align: center">gateway</h5>
+                                    <div class="card-body-badge" id="centerTgateway"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div th:each="unit: ${metaData.unitList}" class="row">
+                        <div th:each="app: ${metaData.appList}" class="col-md-4">
+                            <div class="card" style="width: 8rem">
+                                <img class="card-img-top" th:src="'/img/' + ${app} + '.png'">
+                                <div class="card-body" th:id="@{${unit} + '-' + ${app}}">
+                                    <h5 class="card-title" style="text-align: center" th:text="${unit}"></h5>
+                                    <h5 class="card-title" style="text-align: center" th:text="${app}"></h5>
+                                    <div class="card-body-badge" th:id="@{${unit} + 'T' + ${app}}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+</body>
+</html>
