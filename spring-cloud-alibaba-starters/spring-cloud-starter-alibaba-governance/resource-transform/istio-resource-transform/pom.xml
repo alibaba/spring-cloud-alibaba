@@ -34,7 +34,6 @@
             <version>2.2.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
     <properties>
         <java.version>1.8</java.version>
     </properties>
