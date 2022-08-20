@@ -104,7 +104,7 @@ public class NacosConfigurationTests {
         assertThat(nacosConfigProperties.getSharedConfigs() != null);
         assertThat(nacosConfigProperties.getSharedConfigs()).contains(
                 new NacosConfigProperties.Config("common1.properties"), new NacosConfigProperties.Config("common2.properties"));
-        System.out.println("hello");
+
 
     }
 
