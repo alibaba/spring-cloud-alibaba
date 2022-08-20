@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Starters</name>
     <description>Spring Cloud Alibaba Starters</description>
-    
+
     <modules>
         <module>spring-cloud-starter-alibaba-governance</module>
         <module>spring-cloud-starter-alibaba-nacos-config</module>
