@@ -1,0 +1,25 @@
+server:
+  port: 28086
+spring:
+  application:
+    name: rocketmq-delay-consume-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+      bindings:
+        producer-out-0:
+          destination: delay
+        consumer-in-0:
+          destination: delay
+          group: delay-group
+logging:
+  level:
+    org.springframework.context.support: debug

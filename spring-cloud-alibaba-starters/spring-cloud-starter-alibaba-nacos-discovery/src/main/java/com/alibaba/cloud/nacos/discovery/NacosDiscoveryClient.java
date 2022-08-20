@@ -59,7 +59,8 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	@Override
 	public List<ServiceInstance> getInstances(String serviceId) {
 		try {
-			return Optional.of(serviceDiscovery.getInstances(serviceId)).map(instances -> {
+			return Optional.of(serviceDiscovery.getInstances(serviceId))
+					.map(instances -> {
 						ServiceCache.setInstances(serviceId, instances);
 						return instances;
 					}).get();
@@ -77,13 +78,14 @@ public class NacosDiscoveryClient implements DiscoveryClient {
 	public List<String> getServices() {
 		try {
 			return Optional.of(serviceDiscovery.getServices()).map(services -> {
-						ServiceCache.setServiceIds(services);
-						return services;
-					}).get();
+				ServiceCache.setServiceIds(services);
+				return services;
+			}).get();
 		}
 		catch (Exception e) {
-			log.error("get service name from nacos server fail,", e);
-			return failureToleranceEnabled ? ServiceCache.getServiceIds() : Collections.emptyList();
+			log.error("get service name from nacos server failed.", e);
+			return failureToleranceEnabled ? ServiceCache.getServiceIds()
+					: Collections.emptyList();
 		}
 	}
 

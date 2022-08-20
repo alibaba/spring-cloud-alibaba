@@ -207,7 +207,7 @@ public class NacosConfigProperties {
 	private String secretKey;
 
 	/**
-	 * access key for namespace.
+	 * role name for aliyun ram.
 	 */
 	private String ramRoleName;
 

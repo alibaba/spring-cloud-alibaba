@@ -34,6 +34,7 @@ import static com.alibaba.cloud.circuitbreaker.sentinel.feign.CircuitBreakerRule
  * @since 2021.0.1.0
  * @see CircuitBreakerNameResolver
  */
+@SuppressWarnings("rawtypes")
 public class FeignClientCircuitNameResolver implements CircuitBreakerNameResolver {
 
 	private final Map configurations;

@@ -44,15 +44,15 @@ feign:
 Startup project
 
 Verify that the default feign client takes effect.  
-First visit http:localhost/test/default/false 2 times  
+First visit http:localhost/test/default/false 2 times (in 1 second)  
 and then visit http:localhost/test/default/true, the circuit breaker is open
 
 Verify that the specified feign client takes effect.  
-First visit http:localhost/test/feign/false 2 times  
+First visit http:localhost/test/feign/false 2 times (in 1 second)  
 and then visit http:localhost/test/feign/true, the circuit breaker is open
 
 Verify that the specified method of feign client takes effect.  
-First visit http://localhost/test/feignMethod/false 2 times  
+First visit http://localhost/test/feignMethod/false 2 times (in 1 second)  
 and then visit http://localhost/test/feignMethod/true, the circuit breaker is open
 
 ## Rules are dynamically refreshed

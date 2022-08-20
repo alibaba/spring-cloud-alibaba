@@ -52,6 +52,7 @@ import org.springframework.core.annotation.AnnotationUtils;
  * @author freeman
  * @since 2021.0.1.0
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class CircuitBreakerRuleChangeListener implements ApplicationContextAware,
 		ApplicationListener<RefreshScopeRefreshedEvent>, SmartInitializingSingleton {
 	private static final Logger LOGGER = LoggerFactory
@@ -148,8 +149,7 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 		Arrays.stream(applicationContext.getBeanNamesForAnnotation(FeignClient.class))
 				// A little trick, FeignClient bean name is full class name.
 				// Simple exclusions, such as its subclass.
-				.filter(beanName -> beanName.contains("."))
-				.map(beanName -> {
+				.filter(beanName -> beanName.contains(".")).map(beanName -> {
 					try {
 						return Class.forName(beanName);
 					}
@@ -157,9 +157,7 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 						// definitely not a feign client, just ignore
 						return null;
 					}
-				})
-				.filter(Objects::nonNull)
-				.forEach(clazz -> {
+				}).filter(Objects::nonNull).forEach(clazz -> {
 					FeignClient anno = clazz.getAnnotation(FeignClient.class);
 					if (anno == null || AnnotationUtils.getValue(anno) == null) {
 						return;

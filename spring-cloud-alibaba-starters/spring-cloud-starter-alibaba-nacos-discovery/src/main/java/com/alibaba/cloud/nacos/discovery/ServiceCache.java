@@ -22,12 +22,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.cloud.nacos.discovery.reactive.NacosReactiveDiscoveryClient;
+
 import org.springframework.cloud.client.ServiceInstance;
 
 /**
  * Service cache.
  * <p>
  * Cache serviceIds and corresponding instances in Nacos.
+ * <p>
+ * It's very useful to query services and instances on runtime, but it's not real-time,
+ * depends on {@link NacosDiscoveryClient} or {@link NacosReactiveDiscoveryClient}
+ * {@code getServices(), getInstances(..)} invoke.
  *
  * @author freeman
  * @since 2021.0.1.0

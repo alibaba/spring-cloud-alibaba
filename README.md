@@ -38,8 +38,6 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 
 **[RocketMQ](https://rocketmq.apache.org/)**: A distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
 
-**[Dubbo](https://github.com/apache/dubbo)**: A high-performance, Java based open source RPC framework.
-
 **[Seata](https://github.com/seata/seata)**: A distributed transaction solution with high performance and ease of use for microservices architecture.
 
 **[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**: An application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
