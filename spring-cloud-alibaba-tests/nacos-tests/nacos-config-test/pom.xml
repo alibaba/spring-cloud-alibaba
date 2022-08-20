@@ -34,6 +34,11 @@
             <artifactId>spring-cloud-alibaba-test-support</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-client</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
