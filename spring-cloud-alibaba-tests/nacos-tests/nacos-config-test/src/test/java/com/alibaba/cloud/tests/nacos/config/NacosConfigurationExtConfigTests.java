@@ -44,7 +44,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"spring.cloud.nacos.config.shared-dataids=common1.properties,common2.properties",
 		"spring.cloud.bootstrap.enabled=true" })
 public class NacosConfigurationExtConfigTests {
-	
+
 	/**
 	 * nacos upload conf file.
 	 */
@@ -54,20 +54,19 @@ public class NacosConfigurationExtConfigTests {
 			+ "        - movie\n" + "      intro: Hello, I'm freeman\n"
 			+ "      extra: yo~\n" + "    users:\n" + "      - name: dad\n"
 			+ "        age: 20\n" + "      - name: mom\n" + "        age: 18";
-	
-	
+
 	@Autowired
 	private NacosConfigProperties nacosConfigProperties;
-	
+
 	private ConfigService remoteService;
-	
+
 	private NacosConfigManager nacosConfigManager;
-	
+
 	@BeforeAll
-	public static void setUp(){
-	
+	public static void setUp() {
+
 	}
-	
+
 	@BeforeEach
 	public void prepare() throws NacosException {
 		Properties nacosSettings = new Properties();
@@ -75,38 +74,40 @@ public class NacosConfigurationExtConfigTests {
 		nacosSettings.put(PropertyKeyConst.SERVER_ADDR, serverAddress);
 		nacosSettings.put(PropertyKeyConst.USERNAME, "nacos");
 		nacosSettings.put(PropertyKeyConst.PASSWORD, "nacos");
-		
+
 		remoteService = ConfigFactory.createConfigService(nacosSettings);
 		nacosConfigManager = new NacosConfigManager(nacosConfigProperties);
 	}
-	
+
 	@Test
 	public void contextLoads() throws NacosException {
-		ConfigService localService =  nacosConfigManager.getConfigService();
+		ConfigService localService = nacosConfigManager.getConfigService();
 		updateConfig();
 		String localContent = fetchConfig(localService, "nacos-config-refresh.yml",
 				"DEFAULT_GROUP", TIME_OUT);
 		String remoteContent = fetchConfig(remoteService, "nacos-config-refresh.yml",
 				"DEFAULT_GROUP", TIME_OUT);
 		Assertions.assertEquals(localContent, remoteContent);
-		
+
 		List<NacosConfigProperties.Config> mockConfig = mockExtConfigs();
-		
-		List<NacosConfigProperties.Config> extConfig =  nacosConfigProperties.getExtensionConfigs();
-		Assertions.assertArrayEquals(extConfig.toArray(),mockConfig.toArray());
-		
+
+		List<NacosConfigProperties.Config> extConfig = nacosConfigProperties
+				.getExtensionConfigs();
+		Assertions.assertArrayEquals(extConfig.toArray(), mockConfig.toArray());
+
 	}
-	
-	private String fetchConfig(ConfigService configService, String dataId, String group, long timeoutMs) throws NacosException {
+
+	private String fetchConfig(ConfigService configService, String dataId, String group,
+			long timeoutMs) throws NacosException {
 		return configService.getConfig(dataId, group, timeoutMs);
 	}
-	
+
 	private void updateConfig() throws NacosException {
-		remoteService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP", YAML_CONTENT,
-				"yaml");
+		remoteService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
+				YAML_CONTENT, "yaml");
 	}
-	
-	public static List<NacosConfigProperties.Config> mockExtConfigs(){
+
+	public static List<NacosConfigProperties.Config> mockExtConfigs() {
 		List<NacosConfigProperties.Config> mockConfig = new ArrayList<>();
 		NacosConfigProperties.Config config1 = new NacosConfigProperties.Config();
 		config1.setDataId("ext-config-common01.properties");
@@ -120,12 +121,12 @@ public class NacosConfigurationExtConfigTests {
 		mockConfig.add(config2);
 		return mockConfig;
 	}
-	
+
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ NacosConfigEndpointAutoConfiguration.class,
 			NacosConfigAutoConfiguration.class, NacosConfigBootstrapConfiguration.class })
 	public static class TestConfig {
-	
+
 	}
 }
