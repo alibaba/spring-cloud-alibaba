@@ -23,6 +23,9 @@
         <module>sentinel-example/sentinel-webflux-example</module>
         <module>sentinel-example/sentinel-spring-cloud-gateway-example</module>
         <module>sentinel-example/sentinel-zuul-example</module>
+        <module>appactive-example/common</module>
+        <module>appactive-example/frontend</module>
+        <module>appactive-example/product</module>
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
         <module>nacos-example/nacos-gateway-example</module>
