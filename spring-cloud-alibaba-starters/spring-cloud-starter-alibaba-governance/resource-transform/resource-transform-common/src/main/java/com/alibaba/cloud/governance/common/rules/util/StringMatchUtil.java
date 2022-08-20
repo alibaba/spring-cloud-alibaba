@@ -1,4 +1,4 @@
-package com.alibaba.cloud.istio.util;
+package com.alibaba.cloud.governance.common.rules.util;
 
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class StringMatchUtil {
