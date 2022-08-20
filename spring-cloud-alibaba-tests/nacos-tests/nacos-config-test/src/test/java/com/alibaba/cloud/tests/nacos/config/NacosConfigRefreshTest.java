@@ -75,8 +75,8 @@ public class NacosConfigRefreshTest {
 	}
 
 	@Test
-	public void testRefreshConfig()  {
-
+	public void testRefreshConfig() throws InterruptedException {
+		Thread.sleep(2000L);
 		Tester.testFunction("Dynamic refresh config", () -> {
 			// update config
 			updateConfig();
