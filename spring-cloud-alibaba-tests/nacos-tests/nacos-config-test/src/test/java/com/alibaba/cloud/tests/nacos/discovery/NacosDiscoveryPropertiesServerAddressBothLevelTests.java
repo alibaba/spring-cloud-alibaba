@@ -34,15 +34,6 @@ public class NacosDiscoveryPropertiesServerAddressBothLevelTests {
 	@Autowired
 	private NacosDiscoveryProperties properties;
 
-	@Mock
-	private NacosServiceDiscovery serviceDiscovery;
-
-	@Mock
-	private NacosServiceInstance serviceInstance;
-
-	@InjectMocks
-	private NacosDiscoveryClient client;
-
 	@Test
 	public void testGetServerAddr() {
 

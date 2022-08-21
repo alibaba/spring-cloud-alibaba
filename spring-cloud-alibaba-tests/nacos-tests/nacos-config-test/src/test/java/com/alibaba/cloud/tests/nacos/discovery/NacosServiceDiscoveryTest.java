@@ -84,8 +84,6 @@ public class NacosServiceDiscoveryTest {
 		map.put("test-key", "test-value");
 		map.put("secure", "true");
 
-		when(serviceDiscovery.getInstances(serviceName))
-				.thenReturn(singletonList(serviceInstance));
 
 		Instance instance = serviceInstance(serviceName, true, host, port, map);
 
