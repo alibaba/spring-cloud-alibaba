@@ -19,6 +19,7 @@ import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,40 +30,34 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.ServiceInstance;
 
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
-@TestExtend(time = 4 * TIME_OUT)
+@TestExtend(time = 6 * TIME_OUT)
 @SpringBootTest(classes = NacosDiscoveryPropertiesServerAddressBothLevelTests.TestConfig.class, webEnvironment = NONE, properties = {
 		"spring.application.name=app",
 		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+		"spring.cloud.nacos.discovery.group=DEFAULT_GROUP",
 		"spring.cloud.nacos.server-addr=127.0.0.1:8848" })
 public class NacosServiceDiscoveryTest {
 
-	private static final String serviceName = "DEFAULT";
-	private final String host = "127.0.0.1";
-	private final int port = 8888;
+	private static final String serviceName = "service-test";
+
 	@Autowired
 	private NacosConfigProperties properties;
+	@Autowired
+	private NacosDiscoveryProperties discoveryProperties;
+
 	private NacosConfigManager nacosConfigManager;
-	@Mock
-	private NacosServiceDiscovery serviceDiscovery;
+
 	@Mock
 	private NacosServiceInstance serviceInstance;
 
 	@BeforeAll
 	public static void setUp() {
 
-	}
-
-	@BeforeEach
-	public void prepare() {
-		nacosConfigManager = new NacosConfigManager(properties);
 	}
 
 	public static Instance serviceInstance(String serviceName, boolean isHealthy,
@@ -76,33 +71,35 @@ public class NacosServiceDiscoveryTest {
 		return instance;
 	}
 
+	private static Map<String, String> buildMetadata() {
+		HashMap<String, String> map = new HashMap<>();
+		map.put("test-key", "test-value");
+		map.put("secure", "true");
+		return map;
+	}
+
+	@BeforeEach
+	public void prepare() {
+		nacosConfigManager = new NacosConfigManager(properties);
+	}
+
 	@Test
 	public void testGetInstances() throws NacosException {
 		ArrayList<Instance> instances = new ArrayList<>();
 
-		HashMap<String, String> map = new HashMap<>();
-		map.put("test-key", "test-value");
-		map.put("secure", "true");
+		Instance instance = serviceInstance(serviceName, true, "127.0.0.1", 8888,
+				buildMetadata());
 
-
-		Instance instance = serviceInstance(serviceName, true, host, port, map);
-
-		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
-				NacosDiscoveryProperties.class);
-		NacosServiceManager nacosServiceManager = mock(NacosServiceManager.class);
+		NacosServiceManager nacosServiceManager = new NacosServiceManager();
+		nacosServiceManager.setNacosDiscoveryProperties(discoveryProperties);
 
 		NamingService namingService = NamingFactory
 				.createNamingService(properties.getServerAddr());
 
-		namingService.registerInstance(serviceName, instance);
-
-		when(nacosServiceManager.getNamingService()).thenReturn(namingService);
-		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
-		when(namingService.selectInstances(eq(serviceName), eq("DEFAULT"), eq(true)))
-				.thenReturn(instances);
+		namingService.registerInstance(serviceName, "DEFAULT_GROUP", instance);
 
 		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(
-				nacosDiscoveryProperties, nacosServiceManager);
+				discoveryProperties, nacosServiceManager);
 
 		List<ServiceInstance> serviceInstances = serviceDiscovery
 				.getInstances(serviceName);
@@ -112,8 +109,8 @@ public class NacosServiceDiscoveryTest {
 		ServiceInstance serviceInstance = serviceInstances.get(0);
 
 		assertThat(serviceInstance.getServiceId()).isEqualTo(serviceName);
-		assertThat(serviceInstance.getHost()).isEqualTo(host);
-		assertThat(serviceInstance.getPort()).isEqualTo(port);
+		assertThat(serviceInstance.getHost()).isEqualTo("127.0.0.1");
+		assertThat(serviceInstance.getPort()).isEqualTo(8888);
 		assertThat(serviceInstance.isSecure()).isEqualTo(true);
 		assertThat(serviceInstance.getUri().toString())
 				.isEqualTo(getUri(serviceInstance));
@@ -126,20 +123,34 @@ public class NacosServiceDiscoveryTest {
 
 		nacosServices.setData(new LinkedList<>());
 
-		nacosServices.getData().add(serviceName + "1");
-		nacosServices.getData().add(serviceName + "2");
 		nacosServices.getData().add(serviceName + "3");
+		nacosServices.getData().add(serviceName + "2");
+		nacosServices.getData().add(serviceName + "1");
+		nacosServices.setCount(3);
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
-		NacosServiceManager nacosServiceManager = mock(NacosServiceManager.class);
+		NacosServiceManager nacosServiceManager = new NacosServiceManager();
+		nacosServiceManager.setNacosDiscoveryProperties(discoveryProperties);
 
-		NamingService namingService = mock(NamingService.class);
+		NamingService namingService = NamingFactory
+				.createNamingService(properties.getServerAddr());
 
-		when(nacosServiceManager.getNamingService()).thenReturn(namingService);
-		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
-		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE),
-				eq("DEFAULT"))).thenReturn(nacosServices);
+		Instance instance1 = serviceInstance(serviceName, true, "127.0.0.1", 8888,
+				buildMetadata());
+		Instance instance2 = serviceInstance(serviceName, true, "127.0.0.1", 8889,
+				buildMetadata());
+		Instance instance3 = serviceInstance(serviceName, true, "127.0.0.1", 8890,
+				buildMetadata());
+
+		namingService.registerInstance(serviceName + "1", "DEFAULT_GROUP", instance1);
+		namingService.registerInstance(serviceName + "2", "DEFAULT_GROUP", instance2);
+		namingService.registerInstance(serviceName + "3", "DEFAULT_GROUP", instance3);
+
+		ListView<String> atucal = namingService.getServicesOfServer(1, Integer.MAX_VALUE,
+				"DEFAULT_GROUP");
+		Assertions.assertEquals(atucal.getData().toString(),
+				nacosServices.getData().toString());
 
 		NacosServiceDiscovery serviceDiscovery = new NacosServiceDiscovery(
 				nacosDiscoveryProperties, nacosServiceManager);
@@ -155,10 +166,10 @@ public class NacosServiceDiscoveryTest {
 	private String getUri(ServiceInstance instance) {
 
 		if (instance.isSecure()) {
-			return "https://" + host + ":" + port;
+			return "https://127.0.0.1:8888";
 		}
 
-		return "http://" + host + ":" + port;
+		return "http://127.0.0.1:8888";
 	}
 
 }

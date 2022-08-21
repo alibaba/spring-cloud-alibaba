@@ -3,15 +3,10 @@ package com.alibaba.cloud.tests.nacos.discovery;
 import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosServiceInstance;
-import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClient;
-import com.alibaba.cloud.nacos.discovery.NacosServiceDiscovery;
 import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
 import com.alibaba.cloud.testsupport.SpringCloudAlibaba;
 import com.alibaba.cloud.testsupport.TestExtend;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
