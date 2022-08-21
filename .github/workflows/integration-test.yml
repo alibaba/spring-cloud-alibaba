@@ -40,7 +40,7 @@ jobs:
       - name: Compile & Checkstyle
         run: mvn clean compile
       - name: install dependencies
-        run: mvn clean install -U package -DskipTests
+        run: mvn clean install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: Testing
         run: ./mvnw verify -B -Dmaven.test.skip=false
 #        run: mvn clean -Dit.enabled=true test
