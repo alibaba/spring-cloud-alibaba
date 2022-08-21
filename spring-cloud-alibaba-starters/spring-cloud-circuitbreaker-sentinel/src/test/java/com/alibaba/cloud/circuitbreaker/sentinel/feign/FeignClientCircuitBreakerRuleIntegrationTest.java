@@ -37,16 +37,13 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author freeman
  */
 @SpringBootTest(webEnvironment = DEFINED_PORT, classes = Application.class, properties = {
-		"server.port=10101",
-		"feign.circuitbreaker.enabled=true",
-		"feign.sentinel.default-rule=default",
-		"feign.sentinel.rules.default[0].grade=2",
+		"server.port=10101", "feign.circuitbreaker.enabled=true",
+		"feign.sentinel.default-rule=default", "feign.sentinel.rules.default[0].grade=2",
 		"feign.sentinel.rules.default[0].count=2",
 		"feign.sentinel.rules.default[0].timeWindow=1",
 		"feign.sentinel.rules.default[0].statIntervalMs=30000",
 		"feign.sentinel.rules.default[0].minRequestAmount=5",
-		"feign.sentinel.rules.user[0].grade=2",
-		"feign.sentinel.rules.user[0].count=2",
+		"feign.sentinel.rules.user[0].grade=2", "feign.sentinel.rules.user[0].count=2",
 		"feign.sentinel.rules.user[0].timeWindow=1",
 		"feign.sentinel.rules.user[0].statIntervalMs=30000",
 		"feign.sentinel.rules.user[0].minRequestAmount=5",
@@ -54,8 +51,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].count=1",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].timeWindow=1",
 		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].statIntervalMs=30000",
-		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].minRequestAmount=5"
-})
+		"feign.sentinel.rules.[user#specificFeignMethod(boolean)][0].minRequestAmount=5" })
 public class FeignClientCircuitBreakerRuleIntegrationTest {
 
 	@Autowired

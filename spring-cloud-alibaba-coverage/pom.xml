@@ -91,7 +91,8 @@
                             <goal>report-aggregate</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/../target/site/jacoco</outputDirectory>
+                            <outputDirectory>${basedir}/../target/site/jacoco
+                            </outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

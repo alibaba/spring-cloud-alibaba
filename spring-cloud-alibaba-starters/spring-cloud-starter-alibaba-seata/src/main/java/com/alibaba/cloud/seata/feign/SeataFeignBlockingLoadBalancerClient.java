@@ -33,10 +33,11 @@ public class SeataFeignBlockingLoadBalancerClient
 		extends FeignBlockingLoadBalancerClient {
 
 	public SeataFeignBlockingLoadBalancerClient(Client delegate,
-												BlockingLoadBalancerClient loadBalancerClient,
-												LoadBalancerClientFactory loadBalancerClientFactory,
-												SeataFeignObjectWrapper seataFeignObjectWrapper) {
-		super((Client) seataFeignObjectWrapper.wrap(delegate), loadBalancerClient, loadBalancerClientFactory);
+			BlockingLoadBalancerClient loadBalancerClient,
+			LoadBalancerClientFactory loadBalancerClientFactory,
+			SeataFeignObjectWrapper seataFeignObjectWrapper) {
+		super((Client) seataFeignObjectWrapper.wrap(delegate), loadBalancerClient,
+				loadBalancerClientFactory);
 	}
 
 	@Override

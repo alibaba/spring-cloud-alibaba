@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +14,7 @@
     <packaging>pom</packaging>
     <name>Spring Cloud Alibaba Starters</name>
     <description>Spring Cloud Alibaba Starters</description>
-    
+
     <modules>
         <module>spring-cloud-starter-alibaba-nacos-config</module>
         <module>spring-cloud-starter-alibaba-nacos-config-server</module>

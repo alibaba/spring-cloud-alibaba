@@ -19,7 +19,6 @@ package com.alibaba.cloud.sentinel.datasource.config;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.ZookeeperDataSourceFactoryBean;
 
-
 /**
  * Zookeeper Properties class Using by {@link DataSourcePropertiesConfiguration} and
  * {@link ZookeeperDataSourceFactoryBean}.

@@ -26,7 +26,6 @@ import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.remoting.RPCHook;
 
-
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */

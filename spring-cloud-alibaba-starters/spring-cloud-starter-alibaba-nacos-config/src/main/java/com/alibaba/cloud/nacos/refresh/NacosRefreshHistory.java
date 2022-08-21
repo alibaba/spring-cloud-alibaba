@@ -30,7 +30,6 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class NacosRefreshHistory {
 
 	private final static Logger log = LoggerFactory.getLogger(NacosRefreshHistory.class);

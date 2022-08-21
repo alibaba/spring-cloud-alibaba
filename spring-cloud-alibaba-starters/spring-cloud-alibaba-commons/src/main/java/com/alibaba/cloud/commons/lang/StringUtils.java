@@ -76,6 +76,7 @@ public final class StringUtils {
 	 * StringUtils.isNotEmpty("bob")     = true
 	 * StringUtils.isNotEmpty("  bob  ") = true
 	 * </pre>
+	 * 
 	 * @param cs the CharSequence to check, may be null
 	 * @return {@code true} if the CharSequence is not empty and not null
 	 * @since 3.0 Changed signature from isNotEmpty(String) to isNotEmpty(CharSequence)
@@ -96,6 +97,7 @@ public final class StringUtils {
 	 * StringUtils.isBlank("bob")     = false
 	 * StringUtils.isBlank("  bob  ") = false
 	 * </pre>
+	 * 
 	 * @param cs the CharSequence to check, may be null
 	 * @return {@code true} if the CharSequence is null, empty or whitespace
 	 */
@@ -128,6 +130,7 @@ public final class StringUtils {
 	 * StringUtils.isNotBlank("bob")     = true
 	 * StringUtils.isNotBlank("  bob  ") = true
 	 * </pre>
+	 * 
 	 * @param cs the CharSequence to check, may be null
 	 * @return {@code true} if the CharSequence is not empty and not null and not
 	 * whitespace only
@@ -159,6 +162,7 @@ public final class StringUtils {
 	 * StringUtils.trim("abc")         = "abc"
 	 * StringUtils.trim("    abc    ") = "abc"
 	 * </pre>
+	 * 
 	 * @param str the String to be trimmed, may be null
 	 * @return the trimmed string, {@code null} if null String input
 	 */
@@ -187,6 +191,7 @@ public final class StringUtils {
 	 * StringUtils.equals("abc", "abc") = true
 	 * StringUtils.equals("abc", "ABC") = false
 	 * </pre>
+	 * 
 	 * @param cs1 the first CharSequence, may be {@code null}
 	 * @param cs2 the second CharSequence, may be {@code null}
 	 * @return {@code true} if the CharSequences are equal (case-sensitive), or both
@@ -276,6 +281,7 @@ public final class StringUtils {
 	 * StringUtils.substringAfter("abc", "d")   = ""
 	 * StringUtils.substringAfter("abc", "")    = "abc"
 	 * </pre>
+	 * 
 	 * @param str the String to get a substring from, may be null
 	 * @param separator the String to search for, may be null
 	 * @return the substring after the first occurrence of the separator,
@@ -316,6 +322,7 @@ public final class StringUtils {
 	 * StringUtils.substringBetween("tagabctag", "")    = ""
 	 * StringUtils.substringBetween("tagabctag", "tag") = "abc"
 	 * </pre>
+	 * 
 	 * @param str the String containing the substring, may be null
 	 * @param tag the String before and after the substring, may be null
 	 * @return the substring, <code>null</code> if no match
@@ -349,6 +356,7 @@ public final class StringUtils {
 	 * StringUtils.substringBetween("yabcz", "y", "z")   = "abc"
 	 * StringUtils.substringBetween("yabczyabcz", "y", "z")   = "abc"
 	 * </pre>
+	 * 
 	 * @param str the String containing the substring, may be null
 	 * @param open the String before the substring, may be null
 	 * @param close the String after the substring, may be null

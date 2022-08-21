@@ -127,10 +127,8 @@ public class DataSourcePropertiesConfiguration {
 
 	@JsonIgnore
 	public List<String> getValidField() {
-		return Arrays
-				.stream(this.getClass().getDeclaredFields())
-				.filter(field -> !field.isSynthetic())
-				.map(field -> {
+		return Arrays.stream(this.getClass().getDeclaredFields())
+				.filter(field -> !field.isSynthetic()).map(field -> {
 					try {
 						if (!ObjectUtils.isEmpty(field.get(this))) {
 							return field.getName();
@@ -140,9 +138,7 @@ public class DataSourcePropertiesConfiguration {
 						// won't happen
 					}
 					return null;
-				})
-				.filter(Objects::nonNull)
-				.collect(Collectors.toList());
+				}).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 	@JsonIgnore

@@ -43,18 +43,19 @@ public class RocketMQTxApplication {
 			.getLogger(RocketMQTxApplication.class);
 	@Autowired
 	private StreamBridge streamBridge;
+
 	public static void main(String[] args) {
 		SpringApplication.run(RocketMQTxApplication.class, args);
 	}
-
 
 	@Bean
 	public ApplicationRunner producer() {
 		return args -> {
 			for (int i = 1; i <= 4; i++) {
-				MessageBuilder builder = MessageBuilder.withPayload(new SimpleMsg("Hello Tx msg " + i));
-				builder.setHeader("test", String.valueOf(i))
-						.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+				MessageBuilder builder = MessageBuilder
+						.withPayload(new SimpleMsg("Hello Tx msg " + i));
+				builder.setHeader("test", String.valueOf(i)).setHeader(
+						MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
 				builder.setHeader(RocketMQConst.USER_TRANSACTIONAL_ARGS, "binder");
 				Message<SimpleMsg> msg = builder.build();
 				streamBridge.send("producer-out-0", msg);
@@ -67,8 +68,8 @@ public class RocketMQTxApplication {
 	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
 			Object arg = msg.getHeaders();
-			log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload().getMsg() + " ARG:"
-				+ arg.toString());
+			log.info(Thread.currentThread().getName() + " Receive New Messages: "
+					+ msg.getPayload().getMsg() + " ARG:" + arg.toString());
 		};
 	}
 }

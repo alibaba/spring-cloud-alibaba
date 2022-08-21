@@ -52,11 +52,13 @@ public class SentinelDataSourceHandlerTests {
 		beanFactory = mock(DefaultListableBeanFactory.class);
 		sentinelProperties = mock(SentinelProperties.class);
 		env = mock(Environment.class);
-		sentinelDataSourceHandler = new SentinelDataSourceHandler(beanFactory, sentinelProperties, env);
+		sentinelDataSourceHandler = new SentinelDataSourceHandler(beanFactory,
+				sentinelProperties, env);
 	}
 
 	/**
-	 * Test cases for {@link SentinelDataSourceHandler#parseBeanDefinition(AbstractDataSourceProperties, String)}.
+	 * Test cases for
+	 * {@link SentinelDataSourceHandler#parseBeanDefinition(AbstractDataSourceProperties, String)}.
 	 *
 	 * @see com.alibaba.cloud.sentinel.datasource.config.ApolloDataSourceProperties
 	 * @see com.alibaba.cloud.sentinel.datasource.factorybean.ApolloDataSourceFactoryBean
@@ -71,22 +73,36 @@ public class SentinelDataSourceHandlerTests {
 		dataSourceProperties.setRuleType(RuleType.FLOW);
 		String dataSourceName = "ds1" + "-sentinel-" + "apollo" + "-datasource";
 
-		//init BeanDefinitionBuilder for ApolloDataSourceFactoryBean
-		BeanDefinitionBuilder builder = sentinelDataSourceHandler.parseBeanDefinition(dataSourceProperties, dataSourceName);
-		MutablePropertyValues propertyValues = builder.getBeanDefinition().getPropertyValues();
+		// init BeanDefinitionBuilder for ApolloDataSourceFactoryBean
+		BeanDefinitionBuilder builder = sentinelDataSourceHandler
+				.parseBeanDefinition(dataSourceProperties, dataSourceName);
+		MutablePropertyValues propertyValues = builder.getBeanDefinition()
+				.getPropertyValues();
 
-		//ApolloDataSourceFactoryBean has four parameters, $jacocoData should not be included
+		// ApolloDataSourceFactoryBean has four parameters, $jacocoData should not be
+		// included
 		assertThat(propertyValues.size()).isEqualTo(4);
-		assertThat(propertyValues).noneMatch(propertyValue -> "$jacocoData".equals(propertyValue.getName()));
-		assertThat(propertyValues).anyMatch(propertyValue -> "flowRulesKey".equals(propertyValue.getName())
-				&& dataSourceProperties.getFlowRulesKey().equals(propertyValue.getValue()));
-		assertThat(propertyValues).anyMatch(propertyValue -> "defaultFlowRuleValue".equals(propertyValue.getName())
-				&& dataSourceProperties.getDefaultFlowRuleValue().equals(propertyValue.getValue()));
-		assertThat(propertyValues).anyMatch(propertyValue -> "namespaceName".equals(propertyValue.getName())
-				&& dataSourceProperties.getNamespaceName().equals(propertyValue.getValue()));
-		assertThat(propertyValues).anyMatch(propertyValue -> "converter".equals(propertyValue.getName())
+		assertThat(propertyValues).noneMatch(
+				propertyValue -> "$jacocoData".equals(propertyValue.getName()));
+		assertThat(propertyValues)
+				.anyMatch(propertyValue -> "flowRulesKey".equals(propertyValue.getName())
+						&& dataSourceProperties.getFlowRulesKey()
+								.equals(propertyValue.getValue()));
+		assertThat(propertyValues).anyMatch(
+				propertyValue -> "defaultFlowRuleValue".equals(propertyValue.getName())
+						&& dataSourceProperties.getDefaultFlowRuleValue()
+								.equals(propertyValue.getValue()));
+		assertThat(propertyValues)
+				.anyMatch(propertyValue -> "namespaceName".equals(propertyValue.getName())
+						&& dataSourceProperties.getNamespaceName()
+								.equals(propertyValue.getValue()));
+		assertThat(propertyValues).anyMatch(propertyValue -> "converter"
+				.equals(propertyValue.getName())
 				&& propertyValue.getValue() instanceof RuntimeBeanReference
-				&& ((RuntimeBeanReference) propertyValue.getValue()).getBeanName().equals("sentinel-" + dataSourceProperties.getDataType() + "-" + dataSourceProperties.getRuleType().getName() + "-converter"));
+				&& ((RuntimeBeanReference) propertyValue.getValue()).getBeanName()
+						.equals("sentinel-" + dataSourceProperties.getDataType() + "-"
+								+ dataSourceProperties.getRuleType().getName()
+								+ "-converter"));
 	}
 
 }

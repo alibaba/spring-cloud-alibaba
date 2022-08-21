@@ -34,6 +34,7 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
+
 /**
  * @author sorie
  */
@@ -48,7 +49,8 @@ public class RocketMQOrderlyConsumeApplication {
 	/***
 	 * tag array.
 	 */
-	public static final String[] tags = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
+	public static final String[] tags = new String[] { "TagA", "TagB", "TagC", "TagD",
+			"TagE" };
 
 	public static void main(String[] args) {
 		SpringApplication.run(RocketMQOrderlyConsumeApplication.class, args);
@@ -63,7 +65,8 @@ public class RocketMQOrderlyConsumeApplication {
 				headers.put(MessageConst.PROPERTY_KEYS, key);
 				headers.put(MessageConst.PROPERTY_TAGS, tags[i % tags.length]);
 				headers.put(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID, i);
-				Message<SimpleMsg> msg = new GenericMessage(new SimpleMsg("Hello RocketMQ " + i), headers);
+				Message<SimpleMsg> msg = new GenericMessage(
+						new SimpleMsg("Hello RocketMQ " + i), headers);
 				streamBridge.send("producer-out-0", msg);
 			}
 		};
@@ -72,10 +75,11 @@ public class RocketMQOrderlyConsumeApplication {
 	@Bean
 	public Consumer<Message<SimpleMsg>> consumer() {
 		return msg -> {
-			String tagHeaderKey = RocketMQMessageConverterSupport.toRocketHeaderKey(
-					MessageConst.PROPERTY_TAGS).toString();
-			log.info(Thread.currentThread().getName() + " Receive New Messages: " + msg.getPayload().getMsg() + " TAG:" +
-					msg.getHeaders().get(tagHeaderKey).toString());
+			String tagHeaderKey = RocketMQMessageConverterSupport
+					.toRocketHeaderKey(MessageConst.PROPERTY_TAGS).toString();
+			log.info(Thread.currentThread().getName() + " Receive New Messages: "
+					+ msg.getPayload().getMsg() + " TAG:"
+					+ msg.getHeaders().get(tagHeaderKey).toString());
 			try {
 				Thread.sleep(100);
 			}

@@ -43,8 +43,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ContextIdSentinelFeignTests.TestConfig.class },
-		properties = { "feign.sentinel.enabled=true" })
+@SpringBootTest(classes = { ContextIdSentinelFeignTests.TestConfig.class }, properties = {
+		"feign.sentinel.enabled=true" })
 public class ContextIdSentinelFeignTests {
 
 	@Autowired
@@ -70,9 +70,7 @@ public class ContextIdSentinelFeignTests {
 
 	}
 
-	@FeignClient(contextId = "echoService", name = "service-provider",
-			fallback = EchoServiceFallback.class,
-			configuration = FeignConfiguration.class)
+	@FeignClient(contextId = "echoService", name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 	public interface EchoService {
 
 		@GetMapping("/echo/{str}")
@@ -80,9 +78,7 @@ public class ContextIdSentinelFeignTests {
 
 	}
 
-	@FeignClient(contextId = "fooService", value = "foo-service",
-			fallbackFactory = CustomFallbackFactory.class,
-			configuration = FeignConfiguration.class)
+	@FeignClient(contextId = "fooService", value = "foo-service", fallbackFactory = CustomFallbackFactory.class, configuration = FeignConfiguration.class)
 	public interface FooService {
 
 		@RequestMapping(path = "echo/{str}")
@@ -122,8 +118,7 @@ public class ContextIdSentinelFeignTests {
 
 	}
 
-	public static class CustomFallbackFactory
-			implements FallbackFactory<FooService> {
+	public static class CustomFallbackFactory implements FallbackFactory<FooService> {
 
 		private FooService fooService = new FooServiceFallback();
 

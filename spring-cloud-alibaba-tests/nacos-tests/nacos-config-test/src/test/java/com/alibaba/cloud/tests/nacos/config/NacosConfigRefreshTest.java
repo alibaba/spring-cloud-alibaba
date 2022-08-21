@@ -91,7 +91,7 @@ public class NacosConfigRefreshTest {
 	}
 
 	private void updateConfig() throws NacosException {
-		configService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP", YAML_CONTENT,
-				"yaml");
+		configService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
+				YAML_CONTENT, "yaml");
 	}
 }

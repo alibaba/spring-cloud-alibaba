@@ -52,7 +52,8 @@ public class NacosDiscoveryEndpointAutoConfiguration {
 
 	@Bean
 	@ConditionalOnEnabledHealthIndicator("nacos-discovery")
-	public HealthIndicator nacosDiscoveryHealthIndicator(NacosServiceManager nacosServiceManager) {
+	public HealthIndicator nacosDiscoveryHealthIndicator(
+			NacosServiceManager nacosServiceManager) {
 		return new NacosDiscoveryHealthIndicator(nacosServiceManager);
 	}
 
