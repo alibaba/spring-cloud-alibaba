@@ -17,4 +17,14 @@
     <artifactId>nacos-tests</artifactId>
     <name>Nacos Tests</name>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <version>3.1.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -50,7 +50,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 更多组件请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.0/Roadmap-zh.md)。
 
 ## 如何构建
-* 2021.x 分支对应的是 Spring Cloud 2022 与 Spring Boot 2.6.x，最低支持 JDK 1.8。
+* 2021.x 分支对应的是 Spring Cloud 2021 与 Spring Boot 2.6.x，最低支持 JDK 1.8。
 * 2020.0 分支对应的是 Spring Cloud 2020 与 Spring Boot 2.4.x，最低支持 JDK 1.8。
 * 2.2.x 分支对应的是 Spring Cloud Hoxton 与 Spring Boot 2.2.x，最低支持 JDK 1.8。
 * greenwich 分支对应的是 Spring Cloud Greenwich 与 Spring Boot 2.1.x，最低支持 JDK 1.8。
@@ -81,7 +81,7 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
     </dependencies>
 </dependencyManagement>
 ```
-然后在 `dependencies` 中添加自己所需使用的依赖即可使用。
+然后在 `dependencies` 中添加自己所需使用的依赖即可使用。如果你想选择老版本，可以参考[版本说明](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E)。
 
 ## 演示 Demo
 

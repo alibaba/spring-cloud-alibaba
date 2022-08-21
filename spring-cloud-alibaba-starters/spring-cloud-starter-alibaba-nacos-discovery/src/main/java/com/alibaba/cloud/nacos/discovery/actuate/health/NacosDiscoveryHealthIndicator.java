@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.discovery.actuate.health;
 
+import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.nacos.api.naming.NamingService;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
@@ -41,8 +42,16 @@ public class NacosDiscoveryHealthIndicator extends AbstractHealthIndicator {
 	 */
 	private static final String STATUS_DOWN = "DOWN";
 
-	private final NamingService namingService;
+	private NacosServiceManager nacosServiceManager;
 
+	@Deprecated
+	private NamingService namingService;
+
+	public NacosDiscoveryHealthIndicator(NacosServiceManager nacosServiceManager) {
+		this.nacosServiceManager = nacosServiceManager;
+	}
+
+	@Deprecated
 	public NacosDiscoveryHealthIndicator(NamingService namingService) {
 		this.namingService = namingService;
 	}
@@ -50,7 +59,7 @@ public class NacosDiscoveryHealthIndicator extends AbstractHealthIndicator {
 	@Override
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
 		// Just return "UP" or "DOWN"
-		String status = namingService.getServerStatus();
+		String status = nacosServiceManager.getNamingService().getServerStatus();
 		// Set the status to Builder
 		builder.status(status);
 		switch (status) {

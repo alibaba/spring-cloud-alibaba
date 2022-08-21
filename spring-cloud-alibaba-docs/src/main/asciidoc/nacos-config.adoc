@@ -73,6 +73,19 @@ public class NacosConfigApplication {
 }
 ----
 
+NOTE: Note that when your ```spring-cloud-alibaba```'s version is ````2021.1```, since the ```nacos``` gets the configuration in the ```bootstrap.yml ``` file Will be loaded before the ```application.yml``` file.
+According to the official documentation of spring mentioned [bootstrap](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#config-first-bootstrap)
+To solve this problem, we recommend that you add the following dependencies to the project root ```pom.xml``` file
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bootstrap</artifactId>
+    <version>3.1.1</version>
+</dependency>
+----
+
 Before running this example, we need to configure the address of the Nacos server in bootstrap.properties. For example:
 
 .bootstrap.properties

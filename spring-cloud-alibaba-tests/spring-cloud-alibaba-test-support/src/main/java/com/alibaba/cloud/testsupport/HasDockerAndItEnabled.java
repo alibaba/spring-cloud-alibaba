@@ -27,7 +27,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Disables test execution if Docker is unavailable.
  * <p>
- * We don't want to run integration tests on local machine, but still give a chance to run it.
+ * We don't want to run integration tests on local machine, but still give a chance to run
+ * it.
  * <p>
  * Typically, used for CI and local integration test.
  * <p>

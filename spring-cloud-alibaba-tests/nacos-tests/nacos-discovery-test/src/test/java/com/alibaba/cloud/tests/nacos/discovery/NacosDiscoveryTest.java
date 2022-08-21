@@ -52,6 +52,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class NacosDiscoveryTest {
 
 	static GenericContainer nacos;
+	static ConfigurableApplicationContext service1 = new SpringApplicationBuilder(
+			NacosDiscoveryTestApp.class).profiles("service-1").run();
+	static ConfigurableApplicationContext service2_0 = new SpringApplicationBuilder(
+			NacosDiscoveryTestApp.class).profiles("service-2").run();
+	static ConfigurableApplicationContext service2_1 = new SpringApplicationBuilder(
+			NacosDiscoveryTestApp.class).profiles("service-2").run();
 
 	static {
 		nacos = ContainerStarter.startNacos();
@@ -64,15 +70,6 @@ public class NacosDiscoveryTest {
 		String serverAddr = "localhost:" + nacos.getMappedPort(8848);
 		System.setProperty("spring.cloud.nacos.discovery.server-addr", serverAddr);
 	}
-
-	static ConfigurableApplicationContext service1 = new SpringApplicationBuilder(
-			NacosDiscoveryTestApp.class).profiles("service-1").run();
-
-	static ConfigurableApplicationContext service2_0 = new SpringApplicationBuilder(
-			NacosDiscoveryTestApp.class).profiles("service-2").run();
-
-	static ConfigurableApplicationContext service2_1 = new SpringApplicationBuilder(
-			NacosDiscoveryTestApp.class).profiles("service-2").run();
 
 	@BeforeAll
 	static void init() {

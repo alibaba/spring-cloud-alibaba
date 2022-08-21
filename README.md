@@ -40,8 +40,6 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 
 **[Seata](https://github.com/seata/seata)**: A distributed transaction solution with high performance and ease of use for microservices architecture.
 
-**[Alibaba Cloud ACM](https://www.aliyun.com/product/acm)**: An application configuration center that enables you to centralize the management of application configurations, and accomplish real-time configuration push in a distributed environment.
-
 **[Alibaba Cloud OSS](https://www.aliyun.com/product/oss)**: An encrypted and secure cloud storage service which stores, processes and accesses massive amounts of data from anywhere in the world.
 
 **[Alibaba Cloud SMS](https://www.aliyun.com/product/sms)**: A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
@@ -81,7 +79,7 @@ These artifacts are available from Maven Central and Spring Release repository v
     </dependencies>
 </dependencyManagement>
 ```
-add the module in  `dependencies`.
+add the module in  `dependencies`. If you want to choose an older version, you can refer to the [Release Notes](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E).
 
 
 ### Reference Doc

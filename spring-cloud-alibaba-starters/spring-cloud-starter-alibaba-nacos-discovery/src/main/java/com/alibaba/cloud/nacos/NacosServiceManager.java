@@ -19,20 +19,14 @@ package com.alibaba.cloud.nacos;
 import java.util.Objects;
 import java.util.Properties;
 
-import com.alibaba.cloud.nacos.registry.NacosRegistration;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.cloud.client.discovery.event.InstancePreRegisteredEvent;
-import org.springframework.cloud.client.serviceregistry.Registration;
-import org.springframework.context.event.EventListener;
-
 import static com.alibaba.nacos.api.NacosFactory.createMaintainService;
 import static com.alibaba.nacos.api.NacosFactory.createNamingService;
-import static org.springframework.beans.BeanUtils.copyProperties;
 
 /**
  * @author yuhuangbin
@@ -41,12 +35,20 @@ public class NacosServiceManager {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosServiceManager.class);
 
-	private NacosDiscoveryProperties nacosDiscoveryPropertiesCache;
+	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private NamingService namingService;
+	private volatile NamingService namingService;
 
-	private NamingMaintainService namingMaintainService;
+	private volatile NamingMaintainService namingMaintainService;
 
+	public NamingService getNamingService() {
+		if (Objects.isNull(this.namingService)) {
+			buildNamingService(nacosDiscoveryProperties.getNacosProperties());
+		}
+		return namingService;
+	}
+
+	@Deprecated
 	public NamingService getNamingService(Properties properties) {
 		if (Objects.isNull(this.namingService)) {
 			buildNamingService(properties);
@@ -62,12 +64,11 @@ public class NacosServiceManager {
 	}
 
 	public boolean isNacosDiscoveryInfoChanged(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		if (Objects.isNull(nacosDiscoveryPropertiesCache)
-				|| this.nacosDiscoveryPropertiesCache.equals(nacosDiscoveryProperties)) {
+			NacosDiscoveryProperties currentNacosDiscoveryPropertiesCache) {
+		if (Objects.isNull(this.nacosDiscoveryProperties)
+				|| this.nacosDiscoveryProperties.equals(currentNacosDiscoveryPropertiesCache)) {
 			return false;
 		}
-		copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
 		return true;
 	}
 
@@ -122,18 +123,7 @@ public class NacosServiceManager {
 		}
 	}
 
-	@EventListener
-	public void onInstancePreRegisteredEvent(
-			InstancePreRegisteredEvent instancePreRegisteredEvent) {
-		Registration registration = instancePreRegisteredEvent.getRegistration();
-		if (Objects.isNull(nacosDiscoveryPropertiesCache)
-				&& registration instanceof NacosRegistration) {
-			NacosDiscoveryProperties nacosDiscoveryProperties = ((NacosRegistration) registration)
-					.getNacosDiscoveryProperties();
-
-			nacosDiscoveryPropertiesCache = new NacosDiscoveryProperties();
-			copyProperties(nacosDiscoveryProperties, nacosDiscoveryPropertiesCache);
-		}
+	public void setNacosDiscoveryProperties(NacosDiscoveryProperties nacosDiscoveryProperties) {
+		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 	}
-
 }
