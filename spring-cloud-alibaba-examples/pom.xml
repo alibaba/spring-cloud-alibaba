@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <parent>
-        <groupId>com.alibaba.cloud</groupId>
-        <artifactId>spring-cloud-alibaba</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.alibaba.cloud</groupId>
+		<artifactId>spring-cloud-alibaba</artifactId>
+		<version>${revision}</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-alibaba-examples</artifactId>
-    <packaging>pom</packaging>
-    <name>Spring Cloud Alibaba Examples</name>
-    <description>Example showing how to use features of Spring Cloud Alibaba</description>
+	<artifactId>spring-cloud-alibaba-examples</artifactId>
+	<packaging>pom</packaging>
+	<name>Spring Cloud Alibaba Examples</name>
+	<description>Example showing how to use features of Spring Cloud Alibaba</description>
 
-    <modules>
-        <module>sentinel-example/sentinel-core-example</module>
-        <module>sentinel-example/sentinel-feign-example/sentinel-feign-consumer-example
-        </module>
-        <module>sentinel-example/sentinel-feign-example/sentinel-feign-provider-example
-        </module>
-        <module>sentinel-example/sentinel-circuitbreaker-example</module>
-        <module>sentinel-example/sentinel-webflux-example</module>
-        <module>sentinel-example/sentinel-spring-cloud-gateway-example</module>
-        <module>nacos-example/nacos-discovery-example</module>
-        <module>nacos-example/nacos-config-example</module>
-        <module>nacos-example/nacos-config-2.4.x-example</module>
-        <module>nacos-example/nacos-gateway-example</module>
-        <module>seata-example/business-service</module>
-        <module>seata-example/order-service</module>
-        <module>seata-example/storage-service</module>
-        <module>seata-example/account-service</module>
-        <module>seata-example/seata-server</module>
-        <module>rocketmq-example/rocketmq-comprehensive-example</module>
-        <module>rocketmq-example/rocketmq-orderly-consume-example</module>
-        <module>
-            rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-producer-example
-        </module>
-        <module>
-            rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-consumer1-example
-        </module>
-        <module>
-            rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-consumer2-example
-        </module>
-        <module>rocketmq-example/rocketmq-delay-consume-example</module>
-        <module>rocketmq-example/rocketmq-sql-consume-example</module>
-        <module>rocketmq-example/rocketmq-example-common</module>
-        <module>rocketmq-example/rocketmq-tx-example</module>
+	<modules>
+		<module>sentinel-example/sentinel-core-example</module>
+		<module>sentinel-example/sentinel-feign-example/sentinel-feign-consumer-example
+		</module>
+		<module>sentinel-example/sentinel-feign-example/sentinel-feign-provider-example
+		</module>
+		<module>sentinel-example/sentinel-circuitbreaker-example</module>
+		<module>sentinel-example/sentinel-webflux-example</module>
+		<module>sentinel-example/sentinel-spring-cloud-gateway-example</module>
+		<module>nacos-example/nacos-discovery-example</module>
+		<module>nacos-example/nacos-config-example</module>
+		<module>nacos-example/nacos-config-2.4.x-example</module>
+		<module>nacos-example/nacos-gateway-example</module>
+		<module>seata-example/business-service</module>
+		<module>seata-example/order-service</module>
+		<module>seata-example/storage-service</module>
+		<module>seata-example/account-service</module>
+		<module>seata-example/seata-server</module>
+		<module>rocketmq-example/rocketmq-comprehensive-example</module>
+		<module>rocketmq-example/rocketmq-orderly-consume-example</module>
+		<module>
+			rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-producer-example
+		</module>
+		<module>
+			rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-consumer1-example
+		</module>
+		<module>
+			rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-consumer2-example
+		</module>
+		<module>rocketmq-example/rocketmq-delay-consume-example</module>
+		<module>rocketmq-example/rocketmq-sql-consume-example</module>
+		<module>rocketmq-example/rocketmq-example-common</module>
+		<module>rocketmq-example/rocketmq-tx-example</module>
 
-        <module>spring-cloud-bus-rocketmq-example</module>
-        <module>
-            spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example
-        </module>
-        <module>
-            spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example
-        </module>
-    </modules>
+		<module>spring-cloud-bus-rocketmq-example</module>
+		<module>
+			spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example
+		</module>
+		<module>
+			spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example
+		</module>
+	</modules>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>${maven-deploy-plugin.version}</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 
 </project>
