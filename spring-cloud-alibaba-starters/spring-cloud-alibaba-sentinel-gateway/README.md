@@ -1,9 +1,10 @@
 # Sentinel Spring Cloud Zuul Adapter
 
-Zuul does not provide rateLimit function, If use default `SentinelRibbonFilter` route filter. it wrapped by Hystrix Command. so only provide Service level 
-circuit protect. 
+Zuul does not provide rateLimit function, If use default `SentinelRibbonFilter` route
+filter. it wrapped by Hystrix Command. so only provide Service level circuit protect.
 
-Sentinel can provide `ServiceId` level and `API Path` level flow control for spring cloud zuul gateway service. 
+Sentinel can provide `ServiceId` level and `API Path` level flow control for spring cloud
+zuul gateway service.
 
 *Note*: this project is for zuul 1.
 
@@ -29,12 +30,13 @@ spring.cloud.sentinel.zuul.enabled=true
 
 ## How it works
 
-As Zuul run as per thread per connection block model, we add filters around `route Filter` to trace sentinel statistics.   
+As Zuul run as per thread per connection block model, we add filters around `route Filter`
+to trace sentinel statistics.
 
-- `SentinelPreFilter`: Get an entry of resource,the first order is **ServiceId**, then **API Path**. 
+- `SentinelPreFilter`: Get an entry of resource,the first order is **ServiceId**, then **
+  API Path**.
 - `SentinelPostFilter`: When success response,exit entry.
-- `SentinelErrorFilter`:  When get an `Exception`, trace the exception and exit context. 
-
+- `SentinelErrorFilter`:  When get an `Exception`, trace the exception and exit context.
 
 the order of Filter can be changed by configuration:
 
@@ -44,9 +46,7 @@ spring.cloud.sentinel.zuul.order.pre=10000
 spring.cloud.sentinel.zuul.order.error=-1
 ```
 
-
 Filters create structure like:
-
 
 ```bash
 
@@ -61,26 +61,28 @@ EntranceNode: machine-root(t:3 pq:0 bq:0 tq:0 rt:0 prq:0 1mp:0 1mb:0 1mt:0)
 
 ```
 
-`book` and `coke` are serviceId. 
+`book` and `coke` are serviceId.
 
-`---/book/uri` is api path, the real uri is `/uri`. 
-
+`---/book/uri` is api path, the real uri is `/uri`.
 
 ## Integration with Sentinel DashBord
 
-Start [Sentinel DashBord](https://github.com/alibaba/Sentinel/wiki/%E6%8E%A7%E5%88%B6%E5%8F%B0).
+Start [Sentinel DashBord](https://github.com/alibaba/Sentinel/wiki/%E6%8E%A7%E5%88%B6%E5%8F%B0)
+.
 
 ## Rule config with dataSource
 
-Sentinel has full rule config features. see [Dynamic-Rule-Configuration](https://github.com/alibaba/Sentinel/wiki/Dynamic-Rule-Configuration)
-
+Sentinel has full rule config features.
+see [Dynamic-Rule-Configuration](https://github.com/alibaba/Sentinel/wiki/Dynamic-Rule-Configuration)
 
 ## Custom Fallbacks
 
-Implements `SentinelFallbackProvider` to define your own Fallback Provider when Sentinel Block Exception throwing for different rout. the default 
-Fallback Provider is `DefaultBlockFallbackProvider`. 
+Implements `SentinelFallbackProvider` to define your own Fallback Provider when Sentinel
+Block Exception throwing for different rout. the default Fallback Provider
+is `DefaultBlockFallbackProvider`.
 
-By default Fallback route is `ServiveId + URI PATH`, example `/book/coke`, first `book` is serviceId, `/uri` is URI PATH, so both  
+By default Fallback route is `ServiveId + URI PATH`, example `/book/coke`, first `book` is
+serviceId, `/uri` is URI PATH, so both  
 can be needed.
 
 Here is an example:
@@ -112,6 +114,7 @@ public class MyCokeServiceBlockFallbackProvider implements SentinelFallbackProvi
 ```
 
 ## Custom Request Origin Parser
+
 By default this adapter use `DefaultRequestOriginParser` to parse sentinel origin.
 
 ```java
@@ -127,7 +130,8 @@ public class CustomRequestOriginParser implements RequestOriginParser {
 ```
 
 ## Custom UrlCleaner
-By default this adapter use `DefaultUrlCleaner` to define uri resource. 
+
+By default this adapter use `DefaultUrlCleaner` to define uri resource.
 
 ```java
 public class CustomUrlCleaner implements UrlCleaner {

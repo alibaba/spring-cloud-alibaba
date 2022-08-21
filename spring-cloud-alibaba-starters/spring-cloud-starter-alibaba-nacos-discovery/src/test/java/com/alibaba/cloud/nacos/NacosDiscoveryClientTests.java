@@ -129,7 +129,8 @@ public class NacosDiscoveryClientTests {
 		when(serviceDiscovery.getInstances("a"))
 				.thenReturn(singletonList(serviceInstance));
 		this.client.getInstances("a");
-		assertThat(ServiceCache.getInstances("a")).isEqualTo(singletonList(serviceInstance));
+		assertThat(ServiceCache.getInstances("a"))
+				.isEqualTo(singletonList(serviceInstance));
 	}
 
 }

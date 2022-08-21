@@ -113,8 +113,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 		customize(registrationCustomizers);
 	}
 
-	protected void customize(
-			List<NacosRegistrationCustomizer> registrationCustomizers) {
+	protected void customize(List<NacosRegistrationCustomizer> registrationCustomizers) {
 		if (registrationCustomizers != null) {
 			for (NacosRegistrationCustomizer customizer : registrationCustomizers) {
 				customizer.customize(this);

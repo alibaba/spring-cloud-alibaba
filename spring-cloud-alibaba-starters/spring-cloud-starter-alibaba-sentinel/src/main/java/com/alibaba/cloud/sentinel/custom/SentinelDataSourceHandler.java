@@ -100,12 +100,12 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 				});
 	}
 
-	protected BeanDefinitionBuilder parseBeanDefinition(final AbstractDataSourceProperties dataSourceProperties,
-														String dataSourceName) {
+	protected BeanDefinitionBuilder parseBeanDefinition(
+			final AbstractDataSourceProperties dataSourceProperties,
+			String dataSourceName) {
 		Map<String, Object> propertyMap = Arrays
 				.stream(dataSourceProperties.getClass().getDeclaredFields())
-				.filter(field -> !field.isSynthetic())
-				.collect(HashMap::new, (m, v) -> {
+				.filter(field -> !field.isSynthetic()).collect(HashMap::new, (m, v) -> {
 					try {
 						v.setAccessible(true);
 						m.put(v.getName(), v.get(dataSourceProperties));
@@ -200,7 +200,8 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 
 	private void registerBean(final AbstractDataSourceProperties dataSourceProperties,
 			String dataSourceName) {
-		BeanDefinitionBuilder builder = parseBeanDefinition(dataSourceProperties, dataSourceName);
+		BeanDefinitionBuilder builder = parseBeanDefinition(dataSourceProperties,
+				dataSourceName);
 
 		this.beanFactory.registerBeanDefinition(dataSourceName,
 				builder.getBeanDefinition());

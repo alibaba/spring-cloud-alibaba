@@ -212,7 +212,9 @@
                         </goals>
                         <configuration>
                             <!-- Checkstyle rules inherited from spring-cloud-build -->
-                            <suppressionsLocation>${session.executionRootDirectory}/eclipse/checkstyle-suppressions.xml</suppressionsLocation>
+                            <suppressionsLocation>
+                                ${session.executionRootDirectory}/eclipse/checkstyle-suppressions.xml
+                            </suppressionsLocation>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
@@ -336,7 +338,8 @@
                 <repository>
                     <id>sonatype-nexus-staging</id>
                     <name>Nexus Release Repository</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
+                    </url>
                 </repository>
             </distributionManagement>
         </profile>

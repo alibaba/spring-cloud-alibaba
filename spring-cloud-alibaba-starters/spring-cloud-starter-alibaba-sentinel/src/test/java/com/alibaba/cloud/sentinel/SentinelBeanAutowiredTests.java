@@ -41,8 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SentinelBeanAutowiredTests.TestConfig.class },
-		properties = { "spring.cloud.sentinel.filter.order=111" })
+@SpringBootTest(classes = { SentinelBeanAutowiredTests.TestConfig.class }, properties = {
+		"spring.cloud.sentinel.filter.order=111" })
 public class SentinelBeanAutowiredTests {
 
 	@Autowired

@@ -33,7 +33,8 @@ public class UserRemoteApplicationEvent extends RemoteApplicationEvent {
 
 	public UserRemoteApplicationEvent(Object source, User user, String originService,
 			String destinationService) {
-		super(source, originService, DEFAULT_DESTINATION_FACTORY.getDestination(originService));
+		super(source, originService,
+				DEFAULT_DESTINATION_FACTORY.getDestination(originService));
 		this.user = user;
 	}
 

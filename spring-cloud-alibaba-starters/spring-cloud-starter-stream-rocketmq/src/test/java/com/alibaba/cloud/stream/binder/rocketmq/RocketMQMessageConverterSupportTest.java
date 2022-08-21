@@ -34,11 +34,9 @@ public class RocketMQMessageConverterSupportTest {
 	public void convertMessage2MQBlankHeaderTest() {
 		String destination = "test";
 		Message message = MessageBuilder.withPayload("msg")
-				.setHeader(MessageConst.PROPERTY_TAGS, "a")
-				.setHeader("test", "")
-				.build();
-		org.apache.rocketmq.common.message.Message rkmqMsg =
-				RocketMQMessageConverterSupport.convertMessage2MQ(destination, message);
+				.setHeader(MessageConst.PROPERTY_TAGS, "a").setHeader("test", "").build();
+		org.apache.rocketmq.common.message.Message rkmqMsg = RocketMQMessageConverterSupport
+				.convertMessage2MQ(destination, message);
 		String testProp = rkmqMsg.getProperty("test");
 		String tagProp = rkmqMsg.getProperty(MessageConst.PROPERTY_TAGS);
 		assertThat(testProp).isNull();

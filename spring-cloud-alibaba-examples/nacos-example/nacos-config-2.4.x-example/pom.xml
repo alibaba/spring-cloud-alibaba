@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
@@ -12,7 +13,8 @@
 
     <artifactId>nacos-config-2.4.x-example</artifactId>
     <name>Spring Cloud Starter Alibaba Nacos Config 2.4.x Example</name>
-    <description>Example demonstrating how to use nacos config in spring boot 2.4.x</description>
+    <description>Example demonstrating how to use nacos config in spring boot 2.4.x
+    </description>
     <packaging>jar</packaging>
 
 

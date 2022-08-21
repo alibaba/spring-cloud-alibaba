@@ -10,25 +10,27 @@
 
 这是官方对 Spring Cloud Stream 的一段介绍：
 
-Spring Cloud Stream 是一个用于构建基于消息的微服务应用框架。它基于 SpringBoot 来创建具有生产级别的单机 Spring 应用，并且使用 `Spring Integration` 与 Broker 进行连接。
+Spring Cloud Stream 是一个用于构建基于消息的微服务应用框架。它基于 SpringBoot 来创建具有生产级别的单机 Spring
+应用，并且使用 `Spring Integration` 与 Broker 进行连接。
 
-Spring Cloud Stream 提供了消息中间件配置的统一抽象，推出了 publish-subscribe、consumer groups、partition 这些统一的概念。
+Spring Cloud Stream 提供了消息中间件配置的统一抽象，推出了 publish-subscribe、consumer groups、partition
+这些统一的概念。
 
 Spring Cloud Stream 内部有两个概念：Binder 和 Binding。
 
 * Binder: 跟外部消息中间件集成的组件，用来创建 Binding，各消息中间件都有自己的 Binder 实现。
 
-比如 `Kafka` 的实现 `KafkaMessageChannelBinder`，`RabbitMQ` 的实现 `RabbitMessageChannelBinder` 以及 `RocketMQ` 的实现 `RocketMQMessageChannelBinder`。
+比如 `Kafka` 的实现 `KafkaMessageChannelBinder`，`RabbitMQ` 的实现 `RabbitMessageChannelBinder`
+以及 `RocketMQ` 的实现 `RocketMQMessageChannelBinder`。
 
 * Binding: 包括 Input Binding 和 Output Binding。
 
-Binding 在消息中间件与应用程序提供的 Provider 和 Consumer 之间提供了一个桥梁，实现了开发者只需使用应用程序的 Provider 或 Consumer 生产或消费数据即可，屏蔽了开发者与底层消息中间件的接触。
+Binding 在消息中间件与应用程序提供的 Provider 和 Consumer 之间提供了一个桥梁，实现了开发者只需使用应用程序的 Provider 或 Consumer
+生产或消费数据即可，屏蔽了开发者与底层消息中间件的接触。
 
 下图是 Spring Cloud Stream 的架构设计。
 
 ![](https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/images/SCSt-with-binder.png)
-
-
 
 ## 准备工作
 
@@ -36,7 +38,9 @@ Binding 在消息中间件与应用程序提供的 Provider 和 Consumer 之间�
 
 **在接入 RocketMQ Binder 之前，首先需要启动 RocketMQ 的 Name Server 和 Broker。**
 
-1. 下载[RocketMQ最新的二进制文件](https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip)，并解压
+1.
+
+下载[RocketMQ最新的二进制文件](https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip)，并解压
 
 2. 启动 Name Server
 
@@ -84,6 +88,7 @@ public class RocketMQApplication {
 ```
 
 配置 Binding 信息：
+
 ```properties
 # 配置rocketmq的nameserver地址
 spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876
@@ -99,7 +104,7 @@ spring.cloud.stream.bindings.input.group=test-group
 ### 应用启动
 
 1. 增加配置，在应用的 /src/main/resources/application.properties 中添加基本配置信息
-	
+
 ```properties
 spring.application.name=rocketmq-example
 server.port=28081
@@ -107,9 +112,9 @@ server.port=28081
 
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
-	1. IDE 直接启动：找到主类 `RocketMQApplication`，执行 main 方法启动应用。
-	2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar rocketmq-example.jar` 启动应用。
-
+    1. IDE 直接启动：找到主类 `RocketMQApplication`，执行 main 方法启动应用。
+    2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar rocketmq-example.jar`
+       启动应用。
 
 ### 消息处理
 
@@ -197,7 +202,7 @@ public class ReceiveService {
 
 ## 广播消费示例
 
-​	广播会发送消息给所有消费者。如果你想同一消费组下所有消费者接收到同一个topic下的消息，广播消费非常适合此场景。
+​ 广播会发送消息给所有消费者。如果你想同一消费组下所有消费者接收到同一个topic下的消息，广播消费非常适合此场景。
 
 ### 创建Topic
 
@@ -375,7 +380,9 @@ public class RocketMQBroadcastConsumer2Application {
 
 顺序消息分为两类：
 
-- 全局顺序：对于指定的一个Topic，所有消息按照严格的先入先出FIFO（First In First Out）的顺序进行发布和消费。分区顺序：对于指定的一个Topic，所有消息根据Sharding Key进行区块分区。同一个分区内的消息按照严格的FIFO顺序进行发布和消费。Sharding Key是顺序消息中用来区分不同分区的关键字段，和普通消息的Key是完全不同的概念。
+- 全局顺序：对于指定的一个Topic，所有消息按照严格的先入先出FIFO（First In First
+  Out）的顺序进行发布和消费。分区顺序：对于指定的一个Topic，所有消息根据Sharding
+  Key进行区块分区。同一个分区内的消息按照严格的FIFO顺序进行发布和消费。Sharding Key是顺序消息中用来区分不同分区的关键字段，和普通消息的Key是完全不同的概念。
 
 ### 创建Topic
 
@@ -589,7 +596,8 @@ sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t sql
 
 **application.yml**
 
-支持tag过滤或者sql过滤，设置`spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.subscription`即可。
+支持tag过滤或者sql过滤，设置`spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.subscription`
+即可。
 
 tag示例: `tag:red || blue`
 
@@ -816,10 +824,12 @@ public class RocketMQTxApplication {
 Spring Boot 应用支持通过 Endpoint 来暴露相关信息，RocketMQ Stream Starter 也支持这一点。
 
 在使用之前需要在 Maven 中添加 `spring-boot-starter-actuator`依赖，并在配置中允许 Endpoints 的访问。
+
 * Spring Boot 1.x 中添加配置 `management.security.enabled=false`
 * Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`
 
-Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq_binder 来查看 RocketMQ Binder Endpoint 的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:28081/actuator/rocketmq-binder 来访问。
+Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq_binder 来查看 RocketMQ Binder Endpoint
+的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:28081/actuator/rocketmq-binder 来访问。
 
 这里会统计消息最后一次发送的数据，消息发送成功或失败的次数，消息消费成功或失败的次数等数据。
 
@@ -873,7 +883,8 @@ Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq_binder 来查
 }
 ```
 
-注意：要想查看统计数据需要在pom里加上 [metrics-core依赖](https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core)。如若不加，endpoint 将会显示 warning 信息而不会显示统计信息：
+注意：要想查看统计数据需要在pom里加上 [metrics-core依赖](https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core)。如若不加，endpoint
+将会显示 warning 信息而不会显示统计信息：
 
 ```json
 {
@@ -883,9 +894,11 @@ Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq_binder 来查
 
 ## More
 
-RocketMQ 是一款功能强大的分布式消息系统，广泛应用于多个领域，包括异步通信解耦、企业解决方案、金融支付、电信、电子商务、快递物流、广告营销、社交、即时通信、移动应用、手游、视频、物联网、车联网等。
+RocketMQ
+是一款功能强大的分布式消息系统，广泛应用于多个领域，包括异步通信解耦、企业解决方案、金融支付、电信、电子商务、快递物流、广告营销、社交、即时通信、移动应用、手游、视频、物联网、车联网等。
 
-此 Demo 仅演示了 RocketMQ 与 Spring Cloud Stream 结合后的使用，更多 RocketMQ 相关的信息，请参考 [RocketMQ 项目](https://github.com/apache/rocketmq)。
+此 Demo 仅演示了 RocketMQ 与 Spring Cloud Stream 结合后的使用，更多 RocketMQ
+相关的信息，请参考 [RocketMQ 项目](https://github.com/apache/rocketmq)。
 
 如果您对 spring cloud starter stream rocketmq 有任何建议或想法，欢迎在 issue 中或者通过其他社区渠道向我们提出。
 

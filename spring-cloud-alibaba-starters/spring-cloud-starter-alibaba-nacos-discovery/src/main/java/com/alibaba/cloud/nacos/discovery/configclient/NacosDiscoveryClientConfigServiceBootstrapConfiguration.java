@@ -33,8 +33,7 @@ import org.springframework.context.annotation.Configuration;
  * @author JevonYang
  */
 @ConditionalOnClass(ConfigServicePropertySourceLocator.class)
-@ConditionalOnProperty(value = "spring.cloud.config.discovery.enabled",
-		matchIfMissing = false)
+@ConditionalOnProperty(value = "spring.cloud.config.discovery.enabled", matchIfMissing = false)
 @Configuration(proxyBeanMethods = false)
 @ImportAutoConfiguration({ NacosDiscoveryAutoConfiguration.class,
 		NacosServiceAutoConfiguration.class, NacosDiscoveryClientConfiguration.class,

@@ -40,8 +40,7 @@ public class NacosDiscoveryClientConfigurationTest {
 			.withConfiguration(AutoConfigurations.of(
 					AutoServiceRegistrationConfiguration.class,
 					NacosServiceRegistryAutoConfiguration.class,
-					UtilAutoConfiguration.class,
-					NacosServiceAutoConfiguration.class,
+					UtilAutoConfiguration.class, NacosServiceAutoConfiguration.class,
 					NacosDiscoveryAutoConfiguration.class,
 					NacosDiscoveryClientConfiguration.class, this.getClass()));
 

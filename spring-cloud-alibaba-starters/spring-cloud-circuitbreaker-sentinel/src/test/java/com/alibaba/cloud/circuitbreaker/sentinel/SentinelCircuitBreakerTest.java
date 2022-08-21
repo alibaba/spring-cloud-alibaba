@@ -77,7 +77,7 @@ public class SentinelCircuitBreakerTest {
 	public void testRunWithFallback() {
 		CircuitBreaker cb = new SentinelCircuitBreakerFactory()
 				.create("testSentinelRunWithFallback");
-		assertThat(cb.<String>run(() -> {
+		assertThat(cb.<String> run(() -> {
 			throw new RuntimeException("boom");
 		}, t -> "fallback")).isEqualTo("fallback");
 	}

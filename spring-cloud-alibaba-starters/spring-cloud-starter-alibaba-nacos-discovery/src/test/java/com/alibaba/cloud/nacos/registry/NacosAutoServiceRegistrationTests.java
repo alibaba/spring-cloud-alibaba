@@ -46,23 +46,22 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author xiaojing
  */
 
-@SpringBootTest(classes = NacosAutoServiceRegistrationTests.TestConfig.class,
-		properties = { "spring.application.name=myTestService1",
-				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
-				"spring.cloud.nacos.discovery.endpoint=test-endpoint",
-				"spring.cloud.nacos.discovery.namespace=test-namespace",
-				"spring.cloud.nacos.discovery.log-name=test-logName",
-				"spring.cloud.nacos.discovery.weight=2",
-				"spring.cloud.nacos.discovery.clusterName=test-cluster",
-				"spring.cloud.nacos.discovery.namingLoadCacheAtStart=true",
-				"spring.cloud.nacos.discovery.secure=true",
-				"spring.cloud.nacos.discovery.accessKey=test-accessKey",
-				"spring.cloud.nacos.discovery.ip=8.8.8.8",
-				"spring.cloud.nacos.discovery.secretKey=test-secretKey",
-				"spring.cloud.nacos.discovery.heart-beat-interval=3000",
-				"spring.cloud.nacos.discovery.heart-beat-timeout=6000",
-				"spring.cloud.nacos.discovery.ip-delete-timeout=9000" },
-		webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = NacosAutoServiceRegistrationTests.TestConfig.class, properties = {
+		"spring.application.name=myTestService1",
+		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+		"spring.cloud.nacos.discovery.endpoint=test-endpoint",
+		"spring.cloud.nacos.discovery.namespace=test-namespace",
+		"spring.cloud.nacos.discovery.log-name=test-logName",
+		"spring.cloud.nacos.discovery.weight=2",
+		"spring.cloud.nacos.discovery.clusterName=test-cluster",
+		"spring.cloud.nacos.discovery.namingLoadCacheAtStart=true",
+		"spring.cloud.nacos.discovery.secure=true",
+		"spring.cloud.nacos.discovery.accessKey=test-accessKey",
+		"spring.cloud.nacos.discovery.ip=8.8.8.8",
+		"spring.cloud.nacos.discovery.secretKey=test-secretKey",
+		"spring.cloud.nacos.discovery.heart-beat-interval=3000",
+		"spring.cloud.nacos.discovery.heart-beat-timeout=6000",
+		"spring.cloud.nacos.discovery.ip-delete-timeout=9000" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationTests {
 
 	@Autowired
@@ -86,9 +85,11 @@ public class NacosAutoServiceRegistrationTests {
 	private static MockedStatic<NacosFactory> nacosFactoryMockedStatic;
 	static {
 		nacosFactoryMockedStatic = Mockito.mockStatic(NacosFactory.class);
-		nacosFactoryMockedStatic.when(() -> NacosFactory.createNamingService((Properties) any()))
+		nacosFactoryMockedStatic
+				.when(() -> NacosFactory.createNamingService((Properties) any()))
 				.thenReturn(new MockNamingService());
 	}
+
 	@AfterAll
 	public static void finished() {
 		if (nacosFactoryMockedStatic != null) {

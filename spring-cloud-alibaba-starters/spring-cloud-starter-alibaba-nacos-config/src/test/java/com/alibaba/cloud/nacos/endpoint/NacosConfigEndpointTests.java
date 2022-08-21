@@ -69,6 +69,7 @@ public class NacosConfigEndpointTests {
 			ignore.printStackTrace();
 		}
 	}
+
 	@Test
 	public void contextLoads() throws Exception {
 

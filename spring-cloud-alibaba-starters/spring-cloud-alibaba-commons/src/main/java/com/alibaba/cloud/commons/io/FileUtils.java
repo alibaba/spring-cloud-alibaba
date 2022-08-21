@@ -88,8 +88,8 @@ public final class FileUtils {
 	 * @return the file contents, never {@code null}
 	 * @throws java.io.IOException in case of an I/O error
 	 * @throws java.nio.charset.UnsupportedCharsetException thrown instead of
-	 * {@link java.io .UnsupportedEncodingException} in version 2.2 if the encoding is not
-	 * supported.
+	 *     {@link java.io .UnsupportedEncodingException} in version 2.2 if the encoding is
+	 *     not supported.
 	 */
 	public static String readFileToString(final File file, final String encoding)
 			throws IOException {

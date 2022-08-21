@@ -81,8 +81,8 @@ seata:
       distributed-lock-table: distributed_lock
       query-limit: 100
       max-wait: 5000
-#  server:
-#    service-port: 8091 #If not configured, the default is '${server.port} + 1000'
+  #  server:
+  #    service-port: 8091 #If not configured, the default is '${server.port} + 1000'
   security:
     secretKey: SeataSecretKey0c382ef121d778043159209298fd40bf3850a017
     tokenValidityInMilliseconds: 1800000

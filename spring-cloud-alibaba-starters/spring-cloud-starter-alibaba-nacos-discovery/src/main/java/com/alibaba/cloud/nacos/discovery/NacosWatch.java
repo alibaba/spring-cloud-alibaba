@@ -48,7 +48,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  * @author yuhuangbin
  * @author pengfei.lu
  */
-public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycle, DisposableBean {
+public class NacosWatch
+		implements ApplicationEventPublisherAware, SmartLifecycle, DisposableBean {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosWatch.class);
 

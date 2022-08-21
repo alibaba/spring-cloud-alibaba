@@ -47,10 +47,10 @@ public class DataSourcePropertiesConfigurationTests {
 		apollo.setRuleType(RuleType.FLOW);
 		configuration.setApollo(apollo);
 
-		//indicate which datasource active
+		// indicate which datasource active
 		List<String> validField = configuration.getValidField();
 
-		//not allowed multi datasource active, $jacocoData should not be included
+		// not allowed multi datasource active, $jacocoData should not be included
 		assertThat(validField.size()).isEqualTo(1);
 		assertThat(validField).doesNotContain("$jacocoData");
 		assertThat(validField).contains("apollo");

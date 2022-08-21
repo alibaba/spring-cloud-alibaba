@@ -41,14 +41,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author xiaojing
  */
 
-@SpringBootTest(
-		classes = NacosAutoServiceRegistrationManagementPortTests.TestConfig.class,
-		properties = { "spring.application.name=myTestService1",
-				"management.server.port=8888",
-				"management.server.servlet.context-path=/test-context-path",
-				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
-				"spring.cloud.nacos.discovery.port=8888" },
-		webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = NacosAutoServiceRegistrationManagementPortTests.TestConfig.class, properties = {
+		"spring.application.name=myTestService1", "management.server.port=8888",
+		"management.server.servlet.context-path=/test-context-path",
+		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+		"spring.cloud.nacos.discovery.port=8888" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationManagementPortTests {
 
 	@Autowired
@@ -63,9 +60,11 @@ public class NacosAutoServiceRegistrationManagementPortTests {
 	private static MockedStatic<NacosFactory> nacosFactoryMockedStatic;
 	static {
 		nacosFactoryMockedStatic = Mockito.mockStatic(NacosFactory.class);
-		nacosFactoryMockedStatic.when(() -> NacosFactory.createNamingService((Properties) any()))
+		nacosFactoryMockedStatic
+				.when(() -> NacosFactory.createNamingService((Properties) any()))
 				.thenReturn(new MockNamingService());
 	}
+
 	@AfterAll
 	public static void finished() {
 		if (nacosFactoryMockedStatic != null) {

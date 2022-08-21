@@ -1,4 +1,5 @@
-{"properties": [
+{
+  "properties": [
     {
       "name": "spring.cloud.nacos.server-addr",
       "type": "java.lang.String",
@@ -75,4 +76,5 @@
       "defaultValue": false,
       "description": "Integrate LoadBalancer or not."
     }
-]}
+  ]
+}

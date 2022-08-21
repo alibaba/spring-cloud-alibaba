@@ -2,16 +2,20 @@
 
 ## Project Instruction
 
-Spring Boot version 2.4.0 does not start the bootstrap container by default. 
-This project demonstrates how to use nacos when Spring boot >= 2.4.0 version does not enable the bootstrap container.
+Spring Boot version 2.4.0 does not start the bootstrap container by default. This project
+demonstrates how to use nacos when Spring boot >= 2.4.0 version does not enable the
+bootstrap container.
 
-***<font color=red>Applicable to Spring boot >= 2.4.0 and import the configuration using the import method, the configuration will no longer be pulled by default, and the dataId needs to be configured manually.</font>***
+***<font color=red>Applicable to Spring boot >= 2.4.0 and import the configuration using
+the import method, the configuration will no longer be pulled by default, and the dataId
+needs to be configured manually.</font>***
 
 ## Demo
 
 ### How to use
 
 1. First, modify the pom.xml file and introduce Nacos Config Starter
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -23,8 +27,9 @@ This project demonstrates how to use nacos when Spring boot >= 2.4.0 version doe
 </dependency>
 ```
 
-	
-2. Configure Nacos Config metadata in the application's src/main/resources/***application.yml*** configuration file
+2. Configure Nacos Config metadata in the application's src/main/resources/***
+   application.yml*** configuration file
+
 ```yaml
 server:
   port: 8888
@@ -44,6 +49,7 @@ spring:
 ```
 
 3. Create test.yml in nacos
+
 ```yaml
 configdata:
   user:
@@ -60,8 +66,10 @@ configdata:
       - name: mom
         age: 18
 ```
-		  
-4. After completing the above operations, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment
+
+4. After completing the above operations, the application will obtain the corresponding
+   configuration from Nacos Config and add it to the PropertySources of Spring Environment
+
 ```java
 // controller
 @RestController
@@ -94,6 +102,6 @@ public class UserConfig {
 }
 ```
 
-Verify dynamic refresh 
-access http://localhost:8888  
-Then modify the configuration from nacos, and visit again to verify that the dynamic configuration takes effect.
+Verify dynamic refresh access http://localhost:8888  
+Then modify the configuration from nacos, and visit again to verify that the dynamic
+configuration takes effect.

@@ -16,7 +16,7 @@ spring:
               group: output_1
           consumer-in-0:
             consumer:
-#             tag: {@code tag1||tag2||tag3 }; sql: {@code 'color'='blue' AND 'price'>100 } .
+              #             tag: {@code tag1||tag2||tag3 }; sql: {@code 'color'='blue' AND 'price'>100 } .
               subscription: sql:(color in ('red1', 'red2', 'red4') and price>3)
       bindings:
         producer-out-0:

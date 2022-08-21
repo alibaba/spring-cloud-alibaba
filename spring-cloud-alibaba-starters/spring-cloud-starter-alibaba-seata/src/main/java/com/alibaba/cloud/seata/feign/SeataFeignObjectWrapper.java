@@ -35,7 +35,6 @@ public class SeataFeignObjectWrapper {
 
 	private final BeanFactory beanFactory;
 
-
 	SeataFeignObjectWrapper(BeanFactory beanFactory) {
 		this.beanFactory = beanFactory;
 	}
@@ -46,8 +45,7 @@ public class SeataFeignObjectWrapper {
 				FeignBlockingLoadBalancerClient client = (FeignBlockingLoadBalancerClient) bean;
 				return new SeataFeignBlockingLoadBalancerClient(client.getDelegate(),
 						beanFactory.getBean(BlockingLoadBalancerClient.class),
-						beanFactory.getBean(LoadBalancerClientFactory.class),
-						this);
+						beanFactory.getBean(LoadBalancerClientFactory.class), this);
 			}
 			return new SeataFeignClient(this.beanFactory, (Client) bean);
 		}

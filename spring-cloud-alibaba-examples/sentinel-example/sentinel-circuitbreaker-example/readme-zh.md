@@ -9,6 +9,7 @@ OpenFeign 整合 Sentinel 断路器实现
 1. 添加配置到配置中心
 
 dataId 为 `sentinel-circuitbreaker-rules.yml`
+
 ```yaml
 feign:
   circuitbreaker:
@@ -43,7 +44,8 @@ feign:
 2. 启动 FeignCircuitBreakerApplication
 
 ## 验证配置生效
-启动项目  
+
+启动项目
 
 验证默认 feign client 生效  
 先访问 http://localhost/test/default/false 2 次 （1秒内）  
@@ -58,6 +60,7 @@ feign:
 再访问 http://localhost/test/feignMethod/true 断路器处于打开状态
 
 ## 规则动态刷新
+
 修改配置中心的规则, 再访问上述接口
 
 

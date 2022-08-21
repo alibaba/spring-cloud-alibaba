@@ -65,8 +65,8 @@ public class NacosServiceManager {
 
 	public boolean isNacosDiscoveryInfoChanged(
 			NacosDiscoveryProperties currentNacosDiscoveryPropertiesCache) {
-		if (Objects.isNull(this.nacosDiscoveryProperties)
-				|| this.nacosDiscoveryProperties.equals(currentNacosDiscoveryPropertiesCache)) {
+		if (Objects.isNull(this.nacosDiscoveryProperties) || this.nacosDiscoveryProperties
+				.equals(currentNacosDiscoveryPropertiesCache)) {
 			return false;
 		}
 		return true;
@@ -123,7 +123,8 @@ public class NacosServiceManager {
 		}
 	}
 
-	public void setNacosDiscoveryProperties(NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public void setNacosDiscoveryProperties(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 	}
 }
