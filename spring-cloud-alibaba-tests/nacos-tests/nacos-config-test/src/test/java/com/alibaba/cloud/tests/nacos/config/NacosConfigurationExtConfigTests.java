@@ -1,4 +1,24 @@
+/*
+ * Copyright 2013-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.tests.nacos.config;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
@@ -15,18 +35,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
@@ -56,7 +72,6 @@ public class NacosConfigurationExtConfigTests {
             + "      extra: yo~\n" + "    users:\n" + "      - name: dad\n"
             + "        age: 20\n" + "      - name: mom\n" + "        age: 18";
 
-
     @Autowired
     private NacosConfigProperties nacosConfigProperties;
 
@@ -65,7 +80,7 @@ public class NacosConfigurationExtConfigTests {
     private NacosConfigManager nacosConfigManager;
 
     @BeforeAll
-    public static void setUp(){
+    public static void setUp() {
 
     }
 
@@ -83,7 +98,7 @@ public class NacosConfigurationExtConfigTests {
 
     @Test
     public void contextLoads() throws NacosException {
-        ConfigService localService =  nacosConfigManager.getConfigService();
+        ConfigService localService = nacosConfigManager.getConfigService();
         updateConfig();
         String localContent = fetchConfig(localService, "nacos-config-refresh.yml",
                 "DEFAULT_GROUP", TIME_OUT);
@@ -93,21 +108,23 @@ public class NacosConfigurationExtConfigTests {
 
         List<NacosConfigProperties.Config> mockConfig = mockExtConfigs();
 
-        List<NacosConfigProperties.Config> extConfig =  nacosConfigProperties.getExtensionConfigs();
-        Assertions.assertArrayEquals(extConfig.toArray(),mockConfig.toArray());
+        List<NacosConfigProperties.Config> extConfig = nacosConfigProperties
+                .getExtensionConfigs();
+        Assertions.assertArrayEquals(extConfig.toArray(), mockConfig.toArray());
 
     }
 
-    private String fetchConfig(ConfigService configService, String dataId, String group, long timeoutMs) throws NacosException {
+    private String fetchConfig(ConfigService configService, String dataId, String group,
+            long timeoutMs) throws NacosException {
         return configService.getConfig(dataId, group, timeoutMs);
     }
 
     private void updateConfig() throws NacosException {
-        remoteService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP", YAML_CONTENT,
-                "yaml");
+        remoteService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
+                YAML_CONTENT, "yaml");
     }
 
-    public static List<NacosConfigProperties.Config> mockExtConfigs(){
+    public static List<NacosConfigProperties.Config> mockExtConfigs() {
         List<NacosConfigProperties.Config> mockConfig = new ArrayList<>();
         NacosConfigProperties.Config config1 = new NacosConfigProperties.Config();
         config1.setDataId("ext-config-common01.properties");
