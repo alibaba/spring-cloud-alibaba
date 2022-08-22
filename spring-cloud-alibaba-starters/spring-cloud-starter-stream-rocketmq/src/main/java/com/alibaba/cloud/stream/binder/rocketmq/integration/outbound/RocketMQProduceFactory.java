@@ -145,11 +145,21 @@ public final class RocketMQProduceFactory {
 		return producer;
 	}
 
+	/**
+	 * get the key from producerProperties.
+	 * @param producerProperties producer properties
+	 * @return key
+	 */
 	private static String getKey(RocketMQProducerProperties producerProperties) {
 		return producerProperties.getNameServer() + "," + producerProperties.getGroup()
 				+ producerProperties.getSendCallBack();
 	}
 
+	/**
+	 * This is a special kind of MQProducer that can be reused among different threads.
+	 * The start and shutdown method can be invoked multiple times, but the real start and shutdown logics will only
+	 * be executed once.
+	 */
 	protected static class ReusableMQProducer extends DefaultMQProducer {
 
 		private final AtomicInteger atomicInteger = new AtomicInteger();
