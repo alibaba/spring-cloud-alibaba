@@ -17,7 +17,6 @@
 package com.alibaba.cloud.stream.binder.rocketmq.integration.outbound;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,7 +49,8 @@ import org.springframework.util.StringUtils;
  */
 public final class RocketMQProduceFactory {
 
-	private final static Logger log = LoggerFactory.getLogger(RocketMQProduceFactory.class);
+	private final static Logger log = LoggerFactory
+			.getLogger(RocketMQProduceFactory.class);
 
 	private static Map<String, DefaultMQProducer> PRODUCER_REUSABLE_MAP = new ConcurrentHashMap<>();
 
@@ -108,8 +108,7 @@ public final class RocketMQProduceFactory {
 			producer = new ReusableMQProducer(producerProperties.getNamespace(),
 					producerProperties.getGroup(), rpcHook,
 					producerProperties.getEnableMsgTrace(),
-					producerProperties.getCustomizedTraceTopic(),
-					key);
+					producerProperties.getCustomizedTraceTopic(), key);
 			PRODUCER_REUSABLE_MAP.put(key, producer);
 		}
 
@@ -157,8 +156,8 @@ public final class RocketMQProduceFactory {
 
 	/**
 	 * This is a special kind of MQProducer that can be reused among different threads.
-	 * The start and shutdown method can be invoked multiple times, but the real start and shutdown logics will only
-	 * be executed once.
+	 * The start and shutdown method can be invoked multiple times, but the real start and
+	 * shutdown logics will only be executed once.
 	 */
 	protected static class ReusableMQProducer extends DefaultMQProducer {
 
@@ -166,7 +165,8 @@ public final class RocketMQProduceFactory {
 
 		private final String key;
 
-		public ReusableMQProducer(String namespace, String group, RPCHook rpcHook, boolean enableMsgTrace, String customizedTraceTopic, String key) {
+		public ReusableMQProducer(String namespace, String group, RPCHook rpcHook,
+				boolean enableMsgTrace, String customizedTraceTopic, String key) {
 			super(namespace, group, rpcHook, enableMsgTrace, customizedTraceTopic);
 			this.key = key;
 		}
@@ -185,5 +185,7 @@ public final class RocketMQProduceFactory {
 				super.shutdown();
 			}
 		}
+
 	}
+
 }
