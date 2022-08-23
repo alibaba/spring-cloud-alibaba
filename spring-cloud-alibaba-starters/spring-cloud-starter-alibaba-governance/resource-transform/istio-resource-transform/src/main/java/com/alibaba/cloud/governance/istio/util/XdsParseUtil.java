@@ -22,11 +22,14 @@ import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3
 import io.envoyproxy.envoy.type.matcher.v3.ListMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class XdsParseUtil {
+	private static final Logger log = LoggerFactory.getLogger(XdsParseUtil.class);
 
 	private static final String VIRTUAL_INBOUND = "virtualInbound";
 
@@ -170,6 +173,7 @@ public class XdsParseUtil {
 						provider.getForwardPayloadHeader(), provider.getForward()));
 			}
 		}
+		log.info("auth rules resolve finish, RBAC rules {}, Jwt rules {}", rbacList.size(), jwtRules.size());
 	}
 
 	private static void resolvePrincipal(String name, Principal principal,
