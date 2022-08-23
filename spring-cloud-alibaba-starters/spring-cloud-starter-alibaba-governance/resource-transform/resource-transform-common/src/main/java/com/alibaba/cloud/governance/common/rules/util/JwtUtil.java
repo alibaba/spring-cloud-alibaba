@@ -24,82 +24,96 @@ import java.util.Objects;
 import java.util.Set;
 
 public class JwtUtil {
-    private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
-    private static final String BEARER_PREFIX = "Bearer ";
 
-    private static String getTokenFromJwtRule(MultiValueMap<String, String> params, HttpHeaders headers, JwtRule jwtRule) {
-        try {
-            List<JwtHeader> jwtHeaders = jwtRule.getFromHeaders();
-            if (jwtHeaders != null && !jwtHeaders.isEmpty()) {
-                for (JwtHeader jwtHeader : jwtHeaders) {
-                    if (headers.containsKey(jwtHeader.getName())) {
-                        String token = headers.getFirst(jwtHeader.getName());
-                        if (!StringUtils.isEmpty(token) && token.startsWith(jwtHeader.getValuePrefix())) {
-                            return token.substring(jwtHeader.getValuePrefix().length());
-                        }
-                    }
-                }
-            }
-            List<String> fromParams = jwtRule.getFromParams();
-            if (fromParams != null && !fromParams.isEmpty()) {
-                for (String fromParam : fromParams) {
-                    if (params.containsKey(fromParam)) {
-                        return params.getFirst(fromParam);
-                    }
-                }
-            }
-            return Objects.requireNonNull(headers.getFirst(HttpHeaders.AUTHORIZATION)).substring(BEARER_PREFIX.length());
-        } catch (Exception e) {
-            log.error("unable to extract token from header or params", e);
-        }
-        return "";
-    }
+	private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
 
-    public static JwtClaims matchJwt(MultiValueMap<String, String> params, HttpHeaders headers, JwtRule jwtRule) {
-        String token = getTokenFromJwtRule(params, headers, jwtRule);
-        if (StringUtils.isEmpty(token)) {
-            return null;
-        }
-        String jwks = jwtRule.getJwks();
-        if (jwks == null || jwks.isEmpty()) {
-            return null;
-        }
-        JsonWebSignature jws = null;
-        try {
-            // don't validate jwt's attribute, just validate the sign
-            JwtConsumerBuilder jwtConsumerBuilder = new JwtConsumerBuilder().setSkipAllValidators();
-            jws = new JsonWebSignature();
-            jws.setCompactSerialization(token);
-            JsonWebKeySet jsonWebKeySet = new JsonWebKeySet(jwks);
-            JwksVerificationKeyResolver jwksResolver = new JwksVerificationKeyResolver(jsonWebKeySet.getJsonWebKeys());
-            jwtConsumerBuilder.setVerificationKeyResolver(jwksResolver);
-            JwtConsumer jwtConsumer = jwtConsumerBuilder.build();
-            JwtContext jwtContext = jwtConsumer.process(token);
+	private static final String BEARER_PREFIX = "Bearer ";
 
-            String issuer = jwtContext.getJwtClaims().getIssuer();
-            List<String> audiences = jwtContext.getJwtClaims().getAudience();
-            if (!StringUtils.isEmpty(jwtRule.getIssuer()) && !jwtRule.getIssuer().equals(issuer)) {
-                return null;
-            }
+	private static String getTokenFromJwtRule(MultiValueMap<String, String> params,
+			HttpHeaders headers, JwtRule jwtRule) {
+		try {
+			List<JwtHeader> jwtHeaders = jwtRule.getFromHeaders();
+			if (jwtHeaders != null && !jwtHeaders.isEmpty()) {
+				for (JwtHeader jwtHeader : jwtHeaders) {
+					if (headers.containsKey(jwtHeader.getName())) {
+						String token = headers.getFirst(jwtHeader.getName());
+						if (!StringUtils.isEmpty(token)
+								&& token.startsWith(jwtHeader.getValuePrefix())) {
+							return token.substring(jwtHeader.getValuePrefix().length());
+						}
+					}
+				}
+			}
+			List<String> fromParams = jwtRule.getFromParams();
+			if (fromParams != null && !fromParams.isEmpty()) {
+				for (String fromParam : fromParams) {
+					if (params.containsKey(fromParam)) {
+						return params.getFirst(fromParam);
+					}
+				}
+			}
+			return Objects.requireNonNull(headers.getFirst(HttpHeaders.AUTHORIZATION))
+					.substring(BEARER_PREFIX.length());
+		}
+		catch (Exception e) {
+			log.error("unable to extract token from header or params", e);
+		}
+		return "";
+	}
 
-            if (jwtRule.getAudiences() == null || jwtRule.getAudiences().isEmpty()) {
-                return jwtContext.getJwtClaims();
-            }
+	public static JwtClaims matchJwt(MultiValueMap<String, String> params,
+			HttpHeaders headers, JwtRule jwtRule) {
+		String token = getTokenFromJwtRule(params, headers, jwtRule);
+		if (StringUtils.isEmpty(token)) {
+			return null;
+		}
+		String jwks = jwtRule.getJwks();
+		if (jwks == null || jwks.isEmpty()) {
+			return null;
+		}
+		JsonWebSignature jws = null;
+		try {
+			// don't validate jwt's attribute, just validate the sign
+			JwtConsumerBuilder jwtConsumerBuilder = new JwtConsumerBuilder()
+					.setSkipAllValidators();
+			jws = new JsonWebSignature();
+			jws.setCompactSerialization(token);
+			JsonWebKeySet jsonWebKeySet = new JsonWebKeySet(jwks);
+			JwksVerificationKeyResolver jwksResolver = new JwksVerificationKeyResolver(
+					jsonWebKeySet.getJsonWebKeys());
+			jwtConsumerBuilder.setVerificationKeyResolver(jwksResolver);
+			JwtConsumer jwtConsumer = jwtConsumerBuilder.build();
+			JwtContext jwtContext = jwtConsumer.process(token);
 
-            Set<String> acceptAud = new HashSet<>(jwtRule.getAudiences());
-            for (String aud : audiences) {
-                if (acceptAud.contains(aud)) {
-                    return jwtContext.getJwtClaims();
-                }
-            }
-            return null;
-        } catch (JoseException e) {
-            log.error("invalid jws", e);
-        } catch (InvalidJwtException e) {
-            log.warn("invalid jwt token {} for rule {}", token, jwtRule);
-        } catch (MalformedClaimException e) {
-            log.warn("invalid jwt claims for rule {}", jwtRule);
-        }
-        return null;
-    }
+			String issuer = jwtContext.getJwtClaims().getIssuer();
+			List<String> audiences = jwtContext.getJwtClaims().getAudience();
+			if (!StringUtils.isEmpty(jwtRule.getIssuer())
+					&& !jwtRule.getIssuer().equals(issuer)) {
+				return null;
+			}
+
+			if (jwtRule.getAudiences() == null || jwtRule.getAudiences().isEmpty()) {
+				return jwtContext.getJwtClaims();
+			}
+
+			Set<String> acceptAud = new HashSet<>(jwtRule.getAudiences());
+			for (String aud : audiences) {
+				if (acceptAud.contains(aud)) {
+					return jwtContext.getJwtClaims();
+				}
+			}
+			return null;
+		}
+		catch (JoseException e) {
+			log.error("invalid jws", e);
+		}
+		catch (InvalidJwtException e) {
+			log.warn("invalid jwt token {} for rule {}", token, jwtRule);
+		}
+		catch (MalformedClaimException e) {
+			log.warn("invalid jwt claims for rule {}", jwtRule);
+		}
+		return null;
+	}
+
 }

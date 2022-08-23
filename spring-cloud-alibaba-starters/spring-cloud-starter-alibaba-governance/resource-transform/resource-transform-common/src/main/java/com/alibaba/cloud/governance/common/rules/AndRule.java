@@ -4,25 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AndRule<T> {
-    private List<OrRule<T>> rules;
 
-    public AndRule(List<OrRule<T>> rules) {
-        this.rules = rules;
-    }
+	private List<OrRule<T>> rules;
 
-    public AndRule() {
-        this.rules = new ArrayList<>();
-    }
+	public AndRule(List<OrRule<T>> rules) {
+		this.rules = rules;
+	}
 
-    public List<OrRule<T>> getRules() {
-        return rules;
-    }
+	public AndRule() {
+		this.rules = new ArrayList<>();
+	}
 
-    public void addOrRule(OrRule<T> orRule) {
-        rules.add(orRule);
-    }
+	public List<OrRule<T>> getRules() {
+		return rules;
+	}
 
-    public boolean isEmpty() {
-        return rules.isEmpty();
-    }
+	public void addOrRule(OrRule<T> orRule) {
+		rules.add(orRule);
+	}
+
+	public boolean isEmpty() {
+		return rules.isEmpty();
+	}
+
 }

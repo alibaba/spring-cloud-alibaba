@@ -8,8 +8,8 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>Authentication</artifactId>
-    <name>Authentication</name>
+    <artifactId>auth</artifactId>
+    <name>auth</name>
 
 
     <dependencies>

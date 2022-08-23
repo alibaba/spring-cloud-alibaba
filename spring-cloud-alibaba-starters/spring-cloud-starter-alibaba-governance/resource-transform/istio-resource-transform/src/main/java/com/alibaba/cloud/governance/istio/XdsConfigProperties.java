@@ -4,41 +4,47 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(XdsConfigProperties.PREFIX)
 public class XdsConfigProperties {
-    public static final String PREFIX = "spring.cloud.istio.config";
-    private String host;
-    private int port;
-    private int pollingPoolSize;
-    private int pollingTimeout;
 
-    public String getHost() {
-        return host;
-    }
+	public static final String PREFIX = "spring.cloud.istio.config";
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+	private String host;
 
-    public int getPort() {
-        return port;
-    }
+	private int port;
 
-    public void setPort(int port) {
-        this.port = port;
-    }
+	private int pollingPoolSize;
 
-    public int getPollingPoolSize() {
-        return pollingPoolSize;
-    }
+	private int pollingTimeout;
 
-    public void setPollingPoolSize(int pollingPoolSize) {
-        this.pollingPoolSize = pollingPoolSize;
-    }
+	public String getHost() {
+		return host;
+	}
 
-    public int getPollingTimeout() {
-        return pollingTimeout;
-    }
+	public void setHost(String host) {
+		this.host = host;
+	}
 
-    public void setPollingTimeout(int pollingTimeout) {
-        this.pollingTimeout = pollingTimeout;
-    }
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public int getPollingPoolSize() {
+		return pollingPoolSize;
+	}
+
+	public void setPollingPoolSize(int pollingPoolSize) {
+		this.pollingPoolSize = pollingPoolSize;
+	}
+
+	public int getPollingTimeout() {
+		return pollingTimeout;
+	}
+
+	public void setPollingTimeout(int pollingTimeout) {
+		this.pollingTimeout = pollingTimeout;
+	}
+
 }

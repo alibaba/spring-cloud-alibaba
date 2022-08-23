@@ -7,37 +7,46 @@ import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
 import java.util.Map;
 
 public class JwtAuthRule {
-    private String name;
-    private AndRule<StringMatcher> requestPrincipals;
-    private AndRule<StringMatcher> authAudiences;
-    private Map<String, AndRule<ListMatcher>> authClaims;
-    private AndRule<StringMatcher> authPresenters;
 
-    public JwtAuthRule(String name, AndRule<StringMatcher> requestPrincipals, AndRule<StringMatcher> authAudiences, Map<String, AndRule<ListMatcher>> authClaims, AndRule<StringMatcher> authPresenters) {
-        this.name = name;
-        this.requestPrincipals = requestPrincipals;
-        this.authAudiences = authAudiences;
-        this.authClaims = authClaims;
-        this.authPresenters = authPresenters;
-    }
+	private String name;
 
-    public String getName() {
-        return name;
-    }
+	private AndRule<StringMatcher> requestPrincipals;
 
-    public AndRule<StringMatcher> getRequestPrincipals() {
-        return requestPrincipals;
-    }
+	private AndRule<StringMatcher> authAudiences;
 
-    public AndRule<StringMatcher> getAuthAudiences() {
-        return authAudiences;
-    }
+	private Map<String, AndRule<ListMatcher>> authClaims;
 
-    public Map<String, AndRule<ListMatcher>> getAuthClaims() {
-        return authClaims;
-    }
+	private AndRule<StringMatcher> authPresenters;
 
-    public AndRule<StringMatcher> getAuthPresenters() {
-        return authPresenters;
-    }
+	public JwtAuthRule(String name, AndRule<StringMatcher> requestPrincipals,
+			AndRule<StringMatcher> authAudiences,
+			Map<String, AndRule<ListMatcher>> authClaims,
+			AndRule<StringMatcher> authPresenters) {
+		this.name = name;
+		this.requestPrincipals = requestPrincipals;
+		this.authAudiences = authAudiences;
+		this.authClaims = authClaims;
+		this.authPresenters = authPresenters;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public AndRule<StringMatcher> getRequestPrincipals() {
+		return requestPrincipals;
+	}
+
+	public AndRule<StringMatcher> getAuthAudiences() {
+		return authAudiences;
+	}
+
+	public Map<String, AndRule<ListMatcher>> getAuthClaims() {
+		return authClaims;
+	}
+
+	public AndRule<StringMatcher> getAuthPresenters() {
+		return authPresenters;
+	}
+
 }

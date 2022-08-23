@@ -10,14 +10,16 @@ import java.util.*;
  * @author musi
  */
 public class PilotExchanger {
-    private LdsProtocol ldsProtocol;
 
-    private void observeListeners(List<Listener> listeners) {
-        XdsParseUtil.clearLdsCache();
-        XdsParseUtil.resolveAuthRules(listeners);
-    }
+	private LdsProtocol ldsProtocol;
 
-    public PilotExchanger(LdsProtocol ldsProtocol) {
-        ldsProtocol.observeResource(null, this::observeListeners);
-    }
+	private void observeListeners(List<Listener> listeners) {
+		XdsParseUtil.clearLdsCache();
+		XdsParseUtil.resolveAuthRules(listeners);
+	}
+
+	public PilotExchanger(LdsProtocol ldsProtocol) {
+		ldsProtocol.observeResource(null, this::observeListeners);
+	}
+
 }

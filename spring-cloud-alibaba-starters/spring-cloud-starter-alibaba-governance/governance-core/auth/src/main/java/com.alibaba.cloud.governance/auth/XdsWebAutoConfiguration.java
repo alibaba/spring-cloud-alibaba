@@ -8,11 +8,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled",
+		matchIfMissing = true)
 public class XdsWebAutoConfiguration {
-    @Bean
-    @ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled")
-    public AuthWebInterceptor authWebInterceptor() {
-        return new AuthWebInterceptor();
-    }
+
+	@Bean
+	@ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled")
+	public AuthWebInterceptor authWebInterceptor() {
+		return new AuthWebInterceptor();
+	}
+
 }
