@@ -348,7 +348,7 @@ Nacos Config 目前提供了三种配置能力从 Nacos 拉取相关的配置
 * B: 通过 `spring.cloud.nacos.config.ext-config[n].data-id` 的方式支持多个扩展 Data Id 的配置
 * C: 通过内部相关规则(应用名、应用名+ Profile )自动生成相关的 Data Id 配置
 
-当三种方式共同使用时，他们的一个优先级关系是: A < B < C
+若三种配置同时使用，优先级由高到低依次为: A --> B --> C
 
 === Nacos Config 对外暴露的 Endpoint
 
@@ -406,11 +406,11 @@ Endpoint 暴露的 json 中包含了三种属性:
 
 === 完全关闭 Nacos Config 的自动化配置
 
-通过设置 spring.cloud.nacos.config.enabled = false 来完全关闭 Spring Cloud Nacos Config
+通过设置 `spring.cloud.nacos.config.enabled = false` 来完全关闭 `Spring Cloud Nacos Config`
 
 === 关于 Nacos Config Starter 更多的配置项信息
 
-更多关于 Nacos Config Starter 的配置项如下所示:
+更多关于 `Nacos Config Starter` 的配置项如下所示:
 
 |===
 |配置项 |Key |默认值 |说明
