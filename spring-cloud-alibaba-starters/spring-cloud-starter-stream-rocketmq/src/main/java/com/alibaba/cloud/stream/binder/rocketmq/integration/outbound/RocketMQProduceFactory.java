@@ -52,7 +52,7 @@ public final class RocketMQProduceFactory {
 	private final static Logger log = LoggerFactory
 			.getLogger(RocketMQProduceFactory.class);
 
-	private static Map<String, DefaultMQProducer> PRODUCER_REUSABLE_MAP = new ConcurrentHashMap<>();
+	private static final Map<String, DefaultMQProducer> PRODUCER_REUSABLE_MAP = new ConcurrentHashMap<>();
 
 	private RocketMQProduceFactory() {
 	}
