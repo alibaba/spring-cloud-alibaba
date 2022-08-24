@@ -84,10 +84,10 @@ public final class Charsets {
 	 * encoding.
 	 * </p>
 	 *
+	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 * @see <a href=
 	 * "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard
 	 * charsets</a>
-	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 */
 	@Deprecated
 	public static final Charset ISO_8859_1 = StandardCharsets.ISO_8859_1;
@@ -102,10 +102,10 @@ public final class Charsets {
 	 * encoding.
 	 * </p>
 	 *
+	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 * @see <a href=
 	 * "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard
 	 * charsets</a>
-	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 */
 	@Deprecated
 	public static final Charset US_ASCII = StandardCharsets.US_ASCII;
@@ -120,10 +120,10 @@ public final class Charsets {
 	 * encoding.
 	 * </p>
 	 *
+	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 * @see <a href=
 	 * "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard
 	 * charsets</a>
-	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 */
 	@Deprecated
 	public static final Charset UTF_16 = StandardCharsets.UTF_16;
@@ -137,10 +137,10 @@ public final class Charsets {
 	 * encoding.
 	 * </p>
 	 *
+	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 * @see <a href=
 	 * "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard
 	 * charsets</a>
-	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 */
 	@Deprecated
 	public static final Charset UTF_16BE = StandardCharsets.UTF_16BE;
@@ -154,10 +154,10 @@ public final class Charsets {
 	 * encoding.
 	 * </p>
 	 *
+	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 * @see <a href=
 	 * "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard
 	 * charsets</a>
-	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 */
 	@Deprecated
 	public static final Charset UTF_16LE = StandardCharsets.UTF_16LE;
@@ -171,10 +171,10 @@ public final class Charsets {
 	 * encoding.
 	 * </p>
 	 *
+	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 * @see <a href=
 	 * "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Standard
 	 * charsets</a>
-	 * @deprecated Use Java 7's {@link java.nio.charset.StandardCharsets}
 	 */
 	@Deprecated
 	public static final Charset UTF_8 = StandardCharsets.UTF_8;
