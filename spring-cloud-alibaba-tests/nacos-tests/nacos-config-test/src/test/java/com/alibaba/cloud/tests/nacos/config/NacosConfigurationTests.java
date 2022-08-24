@@ -16,11 +16,18 @@
 
 package com.alibaba.cloud.tests.nacos.config;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import com.alibaba.cloud.nacos.NacosConfigAutoConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigBootstrapConfiguration;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpoint;
 import com.alibaba.cloud.nacos.endpoint.NacosConfigEndpointAutoConfiguration;
+import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.cloud.testsupport.SpringCloudAlibaba;
 import com.alibaba.cloud.testsupport.TestExtend;
 import com.alibaba.nacos.api.PropertyKeyConst;
@@ -31,24 +38,22 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
 @TestExtend(time = 5 * TIME_OUT)
 @SpringBootTest(classes = NacosConfigurationTests.TestConfig.class, webEnvironment = NONE, properties = {
-		"spring.application.name=myTestService1", "spring.profiles.active=dev,test",
+		"spring.application.name=myTestService1",
+		"spring.profiles.active=dev,test",
 		"spring.cloud.nacos.config.server-addr=127.0.0.1:8848",
 		"spring.cloud.nacos.config.username=nacos",
 		"spring.cloud.nacos.config.password=nacos",
@@ -75,6 +80,8 @@ public class NacosConfigurationTests {
 
 	@Autowired
 	private NacosConfigProperties nacosConfigProperties;
+	@Autowired
+	private NacosRefreshHistory refreshHistory;
 
 	private ConfigService remoteService;
 
@@ -120,17 +127,25 @@ public class NacosConfigurationTests {
 		assertThat(nacosConfigProperties.getSharedConfigs()).contains(
 				new NacosConfigProperties.Config("common1.properties"),
 				new NacosConfigProperties.Config("common2.properties"));
+		checkoutEndpoint();
 
 	}
 
-	private String fetchConfig(ConfigService configService, String dataId, String group,
-			long timeoutMs) throws NacosException {
+	private String fetchConfig(ConfigService configService, String dataId, String group, long timeoutMs) throws NacosException {
 		return configService.getConfig(dataId, group, timeoutMs);
 	}
 
 	private void updateConfig() throws NacosException {
 		remoteService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
 				YAML_CONTENT, "yaml");
+	}
+
+	private void checkoutEndpoint() throws NacosException {
+		NacosConfigEndpoint nacosConfigEndpoint = new NacosConfigEndpoint(nacosConfigProperties,
+				refreshHistory);
+		Map<String, Object> map = nacosConfigEndpoint.invoke();
+		assertThat(nacosConfigProperties).isEqualTo(map.get("NacosConfigProperties"));
+		assertThat(refreshHistory.getRecords()).isEqualTo(map.get("RefreshHistory"));
 	}
 
 	public static List<NacosConfigProperties.Config> mockExtConfigs() {
@@ -156,3 +171,4 @@ public class NacosConfigurationTests {
 
 	}
 }
+
