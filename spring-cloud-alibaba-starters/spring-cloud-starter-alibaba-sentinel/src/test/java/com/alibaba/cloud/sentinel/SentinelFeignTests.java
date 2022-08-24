@@ -46,8 +46,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class },
-		properties = { "feign.sentinel.enabled=true" })
+@SpringBootTest(classes = { SentinelFeignTests.TestConfig.class }, properties = {
+		"feign.sentinel.enabled=true" })
 public class SentinelFeignTests {
 
 	@Autowired
@@ -191,8 +191,7 @@ public class SentinelFeignTests {
 
 	}
 
-	public static class CustomFallbackFactory
-			implements FallbackFactory<FooService> {
+	public static class CustomFallbackFactory implements FallbackFactory<FooService> {
 
 		private FooService fooService = new FooServiceFallback();
 

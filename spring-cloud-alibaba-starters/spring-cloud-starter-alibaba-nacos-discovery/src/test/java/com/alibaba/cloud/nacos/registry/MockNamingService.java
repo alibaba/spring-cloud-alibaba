@@ -333,6 +333,7 @@ public class MockNamingService implements NamingService {
 	public void shutDown() throws NacosException {
 
 	}
+
 	private ListView<String> emptyListView() {
 		ListView<String> emptyListView = new ListView<>();
 		emptyListView.setCount(0);

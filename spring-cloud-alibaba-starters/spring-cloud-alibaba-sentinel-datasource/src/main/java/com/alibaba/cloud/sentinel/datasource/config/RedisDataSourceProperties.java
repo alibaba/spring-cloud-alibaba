@@ -22,7 +22,6 @@ import java.util.List;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.sentinel.datasource.factorybean.RedisDataSourceFactoryBean;
 
-
 /**
  * Redis Properties class Using by {@link DataSourcePropertiesConfiguration} and
  * {@link RedisDataSourceFactoryBean}.

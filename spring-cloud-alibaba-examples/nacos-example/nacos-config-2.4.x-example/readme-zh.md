@@ -2,16 +2,18 @@
 
 ## 项目说明
 
-Spring Boot 2.4.0 版本开始默认不启动 bootstrap 容器
-本项目演示如何在 Spring boot >= 2.4.0 版本不启用 bootstrap 容器情况下如何使用 nacos
+Spring Boot 2.4.0 版本开始默认不启动 bootstrap 容器 本项目演示如何在 Spring boot >= 2.4.0 版本不启用 bootstrap
+容器情况下如何使用 nacos
 
-***<font color=red>适用于 Spring boot >= 2.4.0 并且使用 import 方式导入配置，将不会再默认拉取配置，需要手动配置 dataId。</font>***
+***<font color=red>适用于 Spring boot >= 2.4.0 并且使用 import 方式导入配置，将不会再默认拉取配置，需要手动配置
+dataId。</font>***
 
 ## 示例
 
 ### 如何接入
 
 1. 首先，修改 pom.xml 文件，引入 Nacos Config Starter
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -23,8 +25,8 @@ Spring Boot 2.4.0 版本开始默认不启动 bootstrap 容器
 </dependency>
 ```
 
-	
 2. 在应用的 /src/main/resources/***application.yml*** 配置文件中配置 Nacos Config 元数据
+
 ```yaml
 server:
   port: 8888
@@ -43,7 +45,8 @@ spring:
       - optional:nacos:test02.yml?group=group_03&refreshEnabled=false
 ```
 
-3. 在 nacos 创建 test.yml 
+3. 在 nacos 创建 test.yml
+
 ```yaml
 configdata:
   user:
@@ -60,8 +63,9 @@ configdata:
       - name: mom
         age: 18
 ```
-		  
+
 4. 完成上述操作后，应用会从 Nacos Config 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中
+
 ```java
 // controller
 @RestController

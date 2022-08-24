@@ -34,8 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  *
  */
-@SpringBootTest(classes = TestConfig.class, properties = {
-		"spring.application.name=app",
+@SpringBootTest(classes = TestConfig.class, properties = { "spring.application.name=app",
 		"spring.cloud.nacos.server-addr=123.123.123.123:8848" })
 public class NacosDiscoveryPropertiesServerAddressTopLevelTests {
 

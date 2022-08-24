@@ -2,23 +2,33 @@
 
 ## Project Instruction
 
-This example illustrates how to use RocketMQ Binder implement pub/sub messages for Spring Cloud applications.
+This example illustrates how to use RocketMQ Binder implement pub/sub messages for Spring
+Cloud applications.
 
-[RocketMQ](https://rocketmq.apache.org/) is a distributed messaging and streaming platform with low latency, high performance and reliability, trillion-level capacity and flexible scalability.
+[RocketMQ](https://rocketmq.apache.org/) is a distributed messaging and streaming platform
+with low latency, high performance and reliability, trillion-level capacity and flexible
+scalability.
 
 Before we start the demo, let's look at Spring Cloud Stream.
 
-Spring Cloud Stream is a framework for building message-driven microservice applications. Spring Cloud Stream builds upon Spring Boot to create standalone, production-grade Spring applications and uses Spring Integration to provide connectivity to message brokers. It provides opinionated configuration of middleware from several vendors, introducing the concepts of persistent publish-subscribe semantics, consumer groups, and partitions.
+Spring Cloud Stream is a framework for building message-driven microservice applications.
+Spring Cloud Stream builds upon Spring Boot to create standalone, production-grade Spring
+applications and uses Spring Integration to provide connectivity to message brokers. It
+provides opinionated configuration of middleware from several vendors, introducing the
+concepts of persistent publish-subscribe semantics, consumer groups, and partitions.
 
 There are two concepts in Spring Cloud Stream: Binder 和 Binding.
 
 * Binder: A strategy interface used to bind an app interface to a logical name.
 
-Binder Implementations includes `KafkaMessageChannelBinder` of kafka, `RabbitMessageChannelBinder` of RabbitMQ and `RocketMQMessageChannelBinder` of `RocketMQ`.  
+Binder Implementations includes `KafkaMessageChannelBinder` of
+kafka, `RabbitMessageChannelBinder` of RabbitMQ and `RocketMQMessageChannelBinder`
+of `RocketMQ`.
 
 * Binding: Including Input Binding and Output Binding.
 
-Binding is Bridge between the external messaging systems and application provided Producers and Consumers of messages.
+Binding is Bridge between the external messaging systems and application provided
+Producers and Consumers of messages.
 
 This is a overview of Spring Cloud Stream.
 
@@ -30,7 +40,10 @@ This is a overview of Spring Cloud Stream.
 
 You should startup Name Server and Broker before using RocketMQ Binder.
 
-1. Download [RocketMQ](https://archive.apache.org/dist/rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip) and unzip it.
+1.
+
+Download [RocketMQ](https://archive.apache.org/dist/rocketmq/4.3.2/rocketmq-all-4.3.2-bin-release.zip)
+and unzip it.
 
 2. Startup Name Server
 
@@ -46,7 +59,8 @@ sh bin/mqbroker -n localhost:9876
 
 ### Declare dependency
 
-Add dependency spring-cloud-starter-stream-rocketmq to the `pom.xml` file in your Spring Cloud project.
+Add dependency spring-cloud-starter-stream-rocketmq to the `pom.xml` file in your Spring
+Cloud project.
 
 ```xml
 <dependency>
@@ -78,6 +92,7 @@ public class RocketMQApplication {
 ```
 
 Configure Binding:
+
 ```properties
 # configure the nameserver of rocketmq
 spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876
@@ -94,7 +109,7 @@ spring.cloud.stream.bindings.input.group=test-group
 ### Start Application
 
 1. Add necessary configurations to file `/src/main/resources/application.properties`.
-	
+
 ```properties
 spring.application.name=rocketmq-example
 server.port=28081
@@ -102,9 +117,9 @@ server.port=28081
 
 2. Start the application in IDE or by building a fatjar.
 
-	1. Start in IDE: Find main class  `RocketMQApplication`, and execute the main method.
-    2. Build a fatjar: Execute command `mvn clean package` to build a fatjar, and run command `java -jar rocketmq-example.jar` to start the application.
-
+    1. Start in IDE: Find main class  `RocketMQApplication`, and execute the main method.
+    2. Build a fatjar: Execute command `mvn clean package` to build a fatjar, and run
+       command `java -jar rocketmq-example.jar` to start the application.
 
 ### Message Handle
 
@@ -112,9 +127,11 @@ Using the binding named output and sent messages to `test-topic` topic.
 
 And using two input bindings to subscribe messages.
 
-* input1: subscribe the message of `test-topic` topic and consume ordered messages(all messages should in the same MessageQueue if you want to consuming ordered messages).
+* input1: subscribe the message of `test-topic` topic and consume ordered messages(all
+  messages should in the same MessageQueue if you want to consuming ordered messages).
 
-* input2: subscribe the message of `test-topic` topic and consume concurrent messages which tags is `tagStr`, the thread number in pool is 20 in Consumer side.
+* input2: subscribe the message of `test-topic` topic and consume concurrent messages
+  which tags is `tagStr`, the thread number in pool is 20 in Consumer side.
 
 see the configuration below:
 
@@ -364,12 +381,17 @@ public class RocketMQBroadcastConsumer2Application {
 
 ## Order example
 
-​	RocketMQ provides ordered messages using FIFO order.
+​ RocketMQ provides ordered messages using FIFO order.
 
-​	There are two types of ordered messages.
+​ There are two types of ordered messages.
 
-* Global: For a specified topic, all messages are published and consumed in strict FIFO (First In First Out) order.
-* Partition: For a specified topic, all messages are partitioned according to the `Sharding Key`. Messages within the same partition are published and consumed in strict FIFO order. `Sharding Key` is a key field used to distinguish different partitions in sequential messages, and it is a completely different concept from the Key of ordinary messages.
+* Global: For a specified topic, all messages are published and consumed in strict FIFO (
+  First In First Out) order.
+* Partition: For a specified topic, all messages are partitioned according to
+  the `Sharding Key`. Messages within the same partition are published and consumed in
+  strict FIFO order. `Sharding Key` is a key field used to distinguish different
+  partitions in sequential messages, and it is a completely different concept from the Key
+  of ordinary messages.
 
 ### Create Topic
 
@@ -420,7 +442,8 @@ logging:
 
 **MessageQueueSelector**
 
-Choose a partition selection algorithm for you, and ensure that the same parameters get the same results.
+Choose a partition selection algorithm for you, and ensure that the same parameters get
+the same results.
 
 ```java
 @Component
@@ -492,7 +515,8 @@ public class RocketMQOrderlyConsumeApplication {
 
 ## Schedule example
 
-Scheduled messages differ from normal messages in that they won’t be delivered until a provided time later.
+Scheduled messages differ from normal messages in that they won’t be delivered until a
+provided time later.
 
 ### Create topic
 
@@ -583,7 +607,8 @@ sh bin/mqadmin updateTopic -n localhost:9876 -c DefaultCluster -t sql
 
 **application.yml**
 
-RocketMQ stream binder supports filter by tag or sql, just setting `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.subscription`.
+RocketMQ stream binder supports filter by tag or sql, just
+setting `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.subscription`.
 
 Tag example: `tag:red || blue`
 
@@ -807,16 +832,20 @@ public class RocketMQTxApplication {
 
 ## Endpoint
 
-Add dependency `spring-cloud-starter-stream-rocketmq` to your pom.xml file, and configure your endpoint security strategy.
+Add dependency `spring-cloud-starter-stream-rocketmq` to your pom.xml file, and configure
+your endpoint security strategy.
 
-* Spring Boot1.x: Add configuration `management.security.enabled=false`    
+* Spring Boot1.x: Add configuration `management.security.enabled=false`
 * Spring Boot2.x: Add configuration `management.endpoints.web.exposure.include=*`
 
 To view the endpoint information, visit the following URLS:
-* Spring Boot1.x: Sentinel Endpoint URL is http://127.0.0.1:18083/rocketmq_binder.
-* Spring Boot2.x: Sentinel Endpoint URL is http://127.0.0.1:18083/actuator/rocketmq-binder.
 
-Endpoint will metrics some data like last send timestamp, sending or receive message successfully times or unsuccessfully times. 
+* Spring Boot1.x: Sentinel Endpoint URL is http://127.0.0.1:18083/rocketmq_binder.
+* Spring Boot2.x: Sentinel Endpoint URL is http://127.0.0.1:18083/actuator/rocketmq-binder
+  .
+
+Endpoint will metrics some data like last send timestamp, sending or receive message
+successfully times or unsuccessfully times.
 
 ```json
 {
@@ -868,7 +897,10 @@ Endpoint will metrics some data like last send timestamp, sending or receive mes
 }
 ```
 
-Note: You should add [metrics-core dependency](https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core) if you want to see metrics data. endpoint will show warning information if you don't add that dependency:
+Note: You should
+add [metrics-core dependency](https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core)
+if you want to see metrics data. endpoint will show warning information if you don't add
+that dependency:
 
 ```json
 {
@@ -880,5 +912,6 @@ Note: You should add [metrics-core dependency](https://mvnrepository.com/artifac
 
 For more information about RocketMQ, see [RocketMQ Project](https://rocketmq.apache.org).
 
-If you have any ideas or suggestions for Spring Cloud RocketMQ Binder, please don't hesitate to tell us by submitting github issues.
+If you have any ideas or suggestions for Spring Cloud RocketMQ Binder, please don't
+hesitate to tell us by submitting github issues.
 

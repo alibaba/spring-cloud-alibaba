@@ -108,7 +108,7 @@ public final class IOUtils {
 	 * @param input the <code>InputStream</code> to read from
 	 * @param output the <code>Writer</code> to write to
 	 * @param inputEncoding the encoding to use for the input stream, null means platform
-	 * default
+	 *     default
 	 * @throws NullPointerException if the input or output is null
 	 * @throws IOException if an I/O error occurs
 	 * @since 2.3

@@ -1,7 +1,9 @@
-{"properties": [
+{
+  "properties": [
     {
       "name": "spring.cloud.circuitbreaker.sentinel.enabled",
       "type": "java.lang.Boolean",
       "description": "enable sentinel circuitbreaker or not."
     }
-]}
+  ]
+}

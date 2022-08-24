@@ -83,8 +83,8 @@ class NacosReactiveDiscoveryClientTests {
 
 		Flux<ServiceInstance> instances = this.client.getInstances("a");
 
-		StepVerifier.create(instances).expectNext(serviceInstance)
-				.expectComplete().verify();
+		StepVerifier.create(instances).expectNext(serviceInstance).expectComplete()
+				.verify();
 	}
 
 	@Test
@@ -106,11 +106,9 @@ class NacosReactiveDiscoveryClientTests {
 		when(serviceDiscovery.getServices()).thenThrow(new NacosException());
 		ReflectionTestUtils.setField(client, "failureToleranceEnabled", true);
 
-
 		Flux<String> services = this.client.getServices();
 
-		StepVerifier.create(services).expectNext("a", "b")
-				.expectComplete().verify();
+		StepVerifier.create(services).expectNext("a", "b").expectComplete().verify();
 	}
 
 	@Test
@@ -137,9 +135,8 @@ class NacosReactiveDiscoveryClientTests {
 			}
 		});
 
-		StepVerifier.create(instances)
-						.expectNext(serviceInstance)
-						.expectComplete().verify();
+		StepVerifier.create(instances).expectNext(serviceInstance).expectComplete()
+				.verify();
 	}
 
 }

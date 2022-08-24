@@ -42,4 +42,3 @@ jobs:
       - name: Testing
         run: mvn clean test
 #        run: mvn clean -Dit.enabled=true test
-

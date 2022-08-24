@@ -2,67 +2,89 @@
 
 ## Project Instruction
 
-This example illustrates how to use Nacos Config Starter implement externalized configuration for Spring Cloud applications.
-Note: Applicable to spring boot version lower than 2.4.0
+This example illustrates how to use Nacos Config Starter implement externalized
+configuration for Spring Cloud applications. Note: Applicable to spring boot version lower
+than 2.4.0
 
-***<font color=red>Note: Applicable to spring boot versions lower than 2.4.0, if the version is higher than 2.4.0, consider using import to import the configuration.</font>***
+***<font color=red>Note: Applicable to spring boot versions lower than 2.4.0, if the
+version is higher than 2.4.0, consider using import to import the configuration.</font>***
 
-[Nacos](https://github.com/alibaba/Nacos) an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
+[Nacos](https://github.com/alibaba/Nacos) an easy-to-use dynamic service discovery,
+configuration and service management platform for building cloud native applications.
 
 ## Demo
 
 ### Connect to Nacos Config
-Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Config. The configurations have been completed in the following example, so you don't need modify the code any more.**
 
+Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud
+application. **Note: This section is to show you how to connect to Nacos Config. The
+configurations have been completed in the following example, so you don't need modify the
+code any more.**
 
-1. Add dependency spring-cloud-starter-alibaba-nacos-config in the pom.xml file in your Spring Cloud project.
+1. Add dependency spring-cloud-starter-alibaba-nacos-config in the pom.xml file in your
+   Spring Cloud project.
 
-	    <dependency>
+       <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
-	
-2. Add Nacos config metadata configurations to file /src/main/resources/bootstrap.properties
-	
+
+2. Add Nacos config metadata configurations to file
+   /src/main/resources/bootstrap.properties
+
         spring.application.name=nacos-config-example
         spring.cloud.nacos.config.server-addr=127.0.0.1:8848
 
-3. After completing the above two steps, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment. Suppose we save part of the configuration of Nacos through the Nacos configuration center, there are the following four examples:
-- BeanAutoRefreshConfigExample: An example that supports automatic refresh of configuration changes by configuring configuration information as beans
+3. After completing the above two steps, the application will obtain the corresponding
+   configuration from Nacos Config and add it to the PropertySources of Spring
+   Environment. Suppose we save part of the configuration of Nacos through the Nacos
+   configuration center, there are the following four examples:
+
+- BeanAutoRefreshConfigExample: An example that supports automatic refresh of
+  configuration changes by configuring configuration information as beans
 - ConfigListenerExample: Example of listening configuration information
-- DockingInterfaceExample: An example of docking the nacos interface and completing the addition, deletion, modification and checking of configuration information through the interface
-- ValueAnnotationExample: An example of obtaining configuration information through @Value annotation
+- DockingInterfaceExample: An example of docking the nacos interface and completing the
+  addition, deletion, modification and checking of configuration information through the
+  interface
+- ValueAnnotationExample: An example of obtaining configuration information through @Value
+  annotation
 - SharedConfigExample:           Example of shared configuration
 - ExtensionConfigExample:        Example of extended configuration
 
-### Start Nacos Server 
+### Start Nacos Server
 
-1. Install Nacos Server by downloading or build from source code.**Recommended latest version Nacos Server**
+1. Install Nacos Server by downloading or build from source code.**Recommended latest
+   version Nacos Server**
 
-	1. Download: Download Nacos Server [download page](https://github.com/alibaba/nacos/releases) 
-	2. Build from source code: Get source code by git clone git@github.com:alibaba/Nacos.git from Github Nacos and build your code. See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
-	
-2. Unzip the downloaded file and go to the nacos/bin folder(), And according to the actual situation of the operating system, execute the following command。[see reference for more detail](https://nacos.io/en-us/docs/quick-start.html)。
-	
-	1. Linux/Unix/Mac , execute `sh startup.sh -m standalone`
-	2. Windows , execute `cmd startup.cmd -m standalone`
+    1. Download: Download Nacos
+       Server [download page](https://github.com/alibaba/nacos/releases)
+    2. Build from source code: Get source code by git clone git@github.com:
+       alibaba/Nacos.git from Github Nacos and build your code.
+       See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
+
+2. Unzip the downloaded file and go to the nacos/bin folder(), And according to the actual
+   situation of the operating system, execute the following
+   command。[see reference for more detail](https://nacos.io/en-us/docs/quick-start.html)。
+
+    1. Linux/Unix/Mac , execute `sh startup.sh -m standalone`
+    2. Windows , execute `cmd startup.cmd -m standalone`
 
 3. Execute the following command to add a configuration to Nacos Server.
 
    	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
-		
-	**Note: You can also add it in other ways. If you are using the Nacos version with its own console, it is recommended to configure it directly using the console.**
-	
-	
-	Details of the added configuration are as follows
-	
-		dataId is nacos-config-example.properties
-		group is DEFAULT_GROUP
-		
-		content is:
-		
+
+   **Note: You can also add it in other ways. If you are using the Nacos version with its
+   own console, it is recommended to configure it directly using the console.**
+
+   Details of the added configuration are as follows
+
+   	dataId is nacos-config-example.properties
+   	group is DEFAULT_GROUP
+   	
+   	content is:
+   	
    		spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
-	    spring.cloud.nacos.config.prefix=PREFIX
+       spring.cloud.nacos.config.prefix=PREFIX
         spring.cloud.nacos.config.group=GROUP
         spring.cloud.nacos.config.namespace=NAMESPACE
 
@@ -97,46 +119,51 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
         password: ext-root
    ```
 
-
 ### Start Application
 
 1. Add necessary configurations to file /src/main/resources/application.properties
-	
+
         server.port=18084
         management.endpoints.web.exposure.include=*
 
-		
+
 2. Start the application in IDE or by building a fatjar.
 
-	1. Start in IDE: Find main class `Application`, and execute the main method.
-	2. Build a fatjar：Execute command `mvn clean package` to build a fatjar，and run command `java -jar nacos-config-example.jar` to start the application.
+    1. Start in IDE: Find main class `Application`, and execute the main method.
+    2. Build a fatjar：Execute command `mvn clean package` to build a fatjar，and run
+       command `java -jar nacos-config-example.jar` to start the application.
 
 ### Verification
 
 #### Automatic Injection
-Enter `http://127.0.0.1:18084/nacos/bean` in the browser address bar and click Go to, we can see the data successfully obtained from Nacos Config Server.
+
+Enter `http://127.0.0.1:18084/nacos/bean` in the browser address bar and click Go to, we
+can see the data successfully obtained from Nacos Config Server.
 
 ![get](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gbowleyrj20o40bo753.jpg)
 
 #### Dynamic Refresh
+
 1. Run the following command to modify the configuration data on the Nacos Server side.
 
    	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=DEFAULT_GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
 
-2. Enter `http://127.0.0.1:18084/nacos/bean` in the address bar of the browser, and click Flip, you can see that the application has obtained the latest data from Nacos Server, and the group has become DEFAULT_GROUP.
+2. Enter `http://127.0.0.1:18084/nacos/bean` in the address bar of the browser, and click
+   Flip, you can see that the application has obtained the latest data from Nacos Server,
+   and the group has become DEFAULT_GROUP.
 
 ![refresh](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gbpram9rj20nq0ccmxz.jpg)
 
-
 ## Principle
-
 
 ### Nacos Config Data Structure
 
-Nacos Config primarily determines a piece of config through dataId and group, and we assume that you already know this background. If you don't understand, please refer to [Nacos Doc](https://nacos.io/en-us/docs/concepts.html)。
+Nacos Config primarily determines a piece of config through dataId and group, and we
+assume that you already know this background. If you don't understand, please refer
+to [Nacos Doc](https://nacos.io/en-us/docs/concepts.html)。
 
-Nacos Client gets data from Nacos Server through this method. `ConfigService.getConfig(String dataId, String group, long timeoutMs)`。
-
+Nacos Client gets data from Nacos Server through this
+method. `ConfigService.getConfig(String dataId, String group, long timeoutMs)`。
 
 ### Spring Cloud Retrieve Data
 
@@ -146,34 +173,50 @@ In Nacos Config Starter, the splicing format of dataId is as follows
 
 	${prefix} - ${spring.profiles.active} . ${file-extension}
 
-* `prefix` default value is `spring.application.name` value, which can also be configured via the configuration item `spring.cloud.nacos.config.prefix`.
+* `prefix` default value is `spring.application.name` value, which can also be configured
+  via the configuration item `spring.cloud.nacos.config.prefix`.
 
-* `spring.profiles.active` is the profile corresponding to the current environment. For details, please refer to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
+* `spring.profiles.active` is the profile corresponding to the current environment. For
+  details, please refer
+  to [Spring Boot Doc](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html#boot-features-profiles)
 
-	**Note: when the active profile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
+  **Note: when the active profile is empty, the corresponding connector `-` will also not
+  exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
 
-* `file-extension` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.file-extension`.
-Currently only the `properties` type is supported.
+* `file-extension` is the data format of the configuration content, which can be
+  configured by the configuration item `spring.cloud.nacos.config.file-extension`.
+  Currently only the `properties` type is supported.
 
 #### group
-* `group` defaults to `DEFAULT_GROUP` and can be configured via `spring.cloud.nacos.config.group`.
 
+* `group` defaults to `DEFAULT_GROUP` and can be configured
+  via `spring.cloud.nacos.config.group`.
 
 ### Automatic Injection
-Nacos Config Starter implement `org.springframework.cloud.bootstrap.config.PropertySourceLocator` interface, and set order to 0.
 
-In the startup phase of the Spring Cloud application, the corresponding data is obtained from the Nacos Server side, and the acquired data is converted into a PropertySource and injected into the PropertySources property of the Spring Environment. so the @Value annotation can also directly obtain the configuration of the Nacos Server side.
+Nacos Config Starter
+implement `org.springframework.cloud.bootstrap.config.PropertySourceLocator` interface,
+and set order to 0.
+
+In the startup phase of the Spring Cloud application, the corresponding data is obtained
+from the Nacos Server side, and the acquired data is converted into a PropertySource and
+injected into the PropertySources property of the Spring Environment. so the @Value
+annotation can also directly obtain the configuration of the Nacos Server side.
 
 ### Dynamic Refresh
 
-By default, Nacos Config Starter adds a listening function to all Nacos configuration items that have successfully acquired data. It will trigger `org.springframework.cloud.context.refresh.ContextRefresher` 's refresh method in real time when it detects changes in the server configuration. 
-		
-If you need to dynamically refresh a bean, please refer to the Spring and Spring Cloud specifications. It is recommended to add `@RefreshScope` or `@ConfigurationProperties ` annotations to the class.
+By default, Nacos Config Starter adds a listening function to all Nacos configuration
+items that have successfully acquired data. It will
+trigger `org.springframework.cloud.context.refresh.ContextRefresher` 's refresh method in
+real time when it detects changes in the server configuration.
 
-Please refer to [ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
+If you need to dynamically refresh a bean, please refer to the Spring and Spring Cloud
+specifications. It is recommended to add `@RefreshScope` or `@ConfigurationProperties `
+annotations to the class.
 
-	
-
+Please refer
+to [ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html)
+for more details.
 
 ## Endpoint
 
@@ -181,19 +224,22 @@ Nacos Config starter also supports the implementation of Spring Boot actuator en
 
 **Prerequisite:**
 
-Add dependency spring-boot-starter-actuator to your pom.xml file, and configure your endpoint security strategy.
+Add dependency spring-boot-starter-actuator to your pom.xml file, and configure your
+endpoint security strategy.
 
-Spring Boot 1.x: Add configuration management.security.enabled=false
-Spring Boot 2.x: Add configuration management.endpoints.web.exposure.include=*
+Spring Boot 1.x: Add configuration management.security.enabled=false Spring Boot 2.x: Add
+configuration management.endpoints.web.exposure.include=*
 To view the endpoint information, visit the following URLS:
 
-Spring Boot 1.x: Nacos Config  Endpoint URL is http://127.0.0.1:18084/nacos_config.
-Spring Boot 2.x: Nacos Config  Endpoint URL is http://127.0.0.1:18084/actuator/nacosconfig.
+Spring Boot 1.x: Nacos Config Endpoint URL is http://127.0.0.1:18084/nacos_config. Spring
+Boot 2.x: Nacos Config Endpoint URL is http://127.0.0.1:18084/actuator/nacosconfig.
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 
-As shown in the figure above, Sources indicates which Nacos Config configuration items the client has obtained information, RefreshHistory indicates the dynamic refresh history, and up to 20, and NacosConfigProperties is the configuration of Nacos Config Starter itself.
-    	
+As shown in the figure above, Sources indicates which Nacos Config configuration items the
+client has obtained information, RefreshHistory indicates the dynamic refresh history, and
+up to 20, and NacosConfigProperties is the configuration of Nacos Config Starter itself.
+
 ## More
 
 #### More configuration items
@@ -214,12 +260,17 @@ endpoint|spring.cloud.nacos.config.endpoint||The domain name of a service, throu
 refresh|spring.cloud.nacos.config.refresh.enabled|true|enable auto refresh
 cluster name|spring.cloud.nacos.config.cluster-name||
 
-
-
 #### More introduction
-[Nacos](https://github.com/alibaba/Nacos) is committed to help you discover, configure, and manage your microservices. It provides a set of simple and useful features enabling you to realize dynamic service discovery, service configuration, service metadata and traffic management.
 
-Nacos makes it easier and faster to construct, deliver and manage your microservices platform. It is the infrastructure that supports a service-centered modern application architecture with a microservices or cloud-native approach.
+[Nacos](https://github.com/alibaba/Nacos) is committed to help you discover, configure,
+and manage your microservices. It provides a set of simple and useful features enabling
+you to realize dynamic service discovery, service configuration, service metadata and
+traffic management.
 
-If you have any ideas or suggestions for Nacos Config starter, please don't hesitate to tell us by submitting github issues.
+Nacos makes it easier and faster to construct, deliver and manage your microservices
+platform. It is the infrastructure that supports a service-centered modern application
+architecture with a microservices or cloud-native approach.
+
+If you have any ideas or suggestions for Nacos Config starter, please don't hesitate to
+tell us by submitting github issues.
 
