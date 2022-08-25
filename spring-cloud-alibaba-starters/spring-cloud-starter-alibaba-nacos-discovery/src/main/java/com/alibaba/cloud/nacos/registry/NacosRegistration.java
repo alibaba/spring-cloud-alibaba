@@ -30,6 +30,7 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
@@ -116,6 +117,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 	protected void customize(
 			List<NacosRegistrationCustomizer> registrationCustomizers) {
 		if (registrationCustomizers != null) {
+			registrationCustomizers.sort(AnnotationAwareOrderComparator.INSTANCE);
 			for (NacosRegistrationCustomizer customizer : registrationCustomizers) {
 				customizer.customize(this);
 			}
