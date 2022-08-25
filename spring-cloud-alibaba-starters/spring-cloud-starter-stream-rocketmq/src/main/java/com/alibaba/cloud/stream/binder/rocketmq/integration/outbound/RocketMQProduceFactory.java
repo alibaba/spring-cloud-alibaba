@@ -54,6 +54,8 @@ public final class RocketMQProduceFactory {
 
 	private static final Map<String, DefaultMQProducer> PRODUCER_REUSABLE_MAP = new ConcurrentHashMap<>();
 
+	private static final String DEFAULT_GROUP_NAME = "DEFAULT_GROUP_NAME";
+
 	private RocketMQProduceFactory() {
 	}
 
@@ -65,6 +67,9 @@ public final class RocketMQProduceFactory {
 	 */
 	public static DefaultMQProducer initRocketMQProducer(String topic,
 			RocketMQProducerProperties producerProperties) {
+		if (StringUtils.isEmpty(producerProperties.getGroup())) {
+			producerProperties.setGroup(DEFAULT_GROUP_NAME);
+		}
 		Assert.notNull(producerProperties.getGroup(),
 				"Property 'group' is required - producerGroup");
 		Assert.notNull(producerProperties.getNameServer(),
