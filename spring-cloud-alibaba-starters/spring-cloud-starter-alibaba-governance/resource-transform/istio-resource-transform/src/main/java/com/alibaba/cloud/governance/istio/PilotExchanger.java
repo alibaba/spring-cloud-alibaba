@@ -12,6 +12,7 @@ import java.util.*;
  * @author musi
  */
 public class PilotExchanger {
+
 	private static final Logger log = LoggerFactory.getLogger(PilotExchanger.class);
 
 	private LdsProtocol ldsProtocol;

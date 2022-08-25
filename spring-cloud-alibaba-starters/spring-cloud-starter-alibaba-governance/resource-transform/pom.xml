@@ -13,6 +13,11 @@
     <name>Resource Transform</name>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>istio-resource-transform</module>
+        <module>resource-transform-common</module>
+    </modules>
+
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -23,10 +28,5 @@
             <artifactId>spring-web</artifactId>
         </dependency>
     </dependencies>
-
-    <modules>
-        <module>istio-resource-transform</module>
-        <module>resource-transform-common</module>
-    </modules>
 
 </project>

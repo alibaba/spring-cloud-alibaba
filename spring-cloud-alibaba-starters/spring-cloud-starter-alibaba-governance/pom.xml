@@ -11,6 +11,10 @@
     <artifactId>spring-cloud-starter-alibaba-governance</artifactId>
     <name>Spring Cloud Starter Alibaba Governance</name>
     <packaging>pom</packaging>
+    <modules>
+        <module>governance-core</module>
+        <module>resource-transform</module>
+    </modules>
     <dependencies>
     <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,8 +70,4 @@
         </dependency>
 
     </dependencies>
-    <modules>
-        <module>governance-core</module>
-        <module>resource-transform</module>
-    </modules>
 </project>

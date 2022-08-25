@@ -13,6 +13,11 @@
     <name>governance-core</name>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>label-routing</module>
+        <module>auth</module>
+    </modules>
+
     <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -21,9 +26,5 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <modules>
-        <module>label-routing</module>
-    </modules>
 
 </project>

@@ -7,6 +7,8 @@ import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +19,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
+
+	private static final Logger log = LoggerFactory.getLogger(AbstractXdsProtocol.class);
 
 	protected final XdsChannel xdsChannel;
 
@@ -55,12 +59,12 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 		@Override
 		public void onError(Throwable throwable) {
-
+			log.error("connect to xds server failed", throwable);
 		}
 
 		@Override
 		public void onCompleted() {
-
+			log.info("xds connect completed");
 		}
 
 	}
@@ -81,14 +85,14 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 			consumer.accept(doGetSource(id, resourceNames));
 		}
 		catch (Exception e) {
-			// TODO: print log
+			log.error("error on get observe resource from xds", e);
 		}
 		pollingExecutor.scheduleAtFixedRate(() -> {
 			try {
 				consumer.accept(doGetSource(id, resourceNames));
 			}
 			catch (Exception e) {
-				// TODO: print log
+				log.error("error on get observe resource from xds", e);
 			}
 		}, xdsConfigProperties.getPollingTimeout(),
 				xdsConfigProperties.getPollingTimeout(), TimeUnit.SECONDS);
