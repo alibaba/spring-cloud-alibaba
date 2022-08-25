@@ -46,6 +46,7 @@ import org.springframework.retry.RetryListener;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -62,13 +63,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 
 	private DefaultMQPushConsumer pushConsumer;
 
-	private final String topic;
+	private final String destination;
 
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties;
 
-	public RocketMQInboundChannelAdapter(String topic,
+	public RocketMQInboundChannelAdapter(String destination,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
-		this.topic = topic;
+		this.destination = destination;
 		this.extendedConsumerProperties = extendedConsumerProperties;
 	}
 
@@ -182,10 +183,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				|| !extendedConsumerProperties.getExtension().getEnabled()) {
 			return;
 		}
-		Instrumentation instrumentation = new Instrumentation(topic, this);
+		Instrumentation instrumentation = new Instrumentation(destination, this);
 		try {
-			pushConsumer.subscribe(topic, RocketMQUtils.getMessageSelector(
-					extendedConsumerProperties.getExtension().getSubscription()));
+			String[] topics = StringUtils.commaDelimitedListToStringArray(destination);
+			for (String topic: topics) {
+				pushConsumer.subscribe(topic, RocketMQUtils.getMessageSelector(
+						extendedConsumerProperties.getExtension().getSubscription()));
+			}
 			pushConsumer.start();
 			instrumentation.markStartedSuccessfully();
 		}

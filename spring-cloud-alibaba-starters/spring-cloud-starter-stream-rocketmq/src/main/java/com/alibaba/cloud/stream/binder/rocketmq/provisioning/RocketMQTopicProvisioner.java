@@ -27,6 +27,7 @@ import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Timur Valiev
@@ -39,7 +40,7 @@ public class RocketMQTopicProvisioner implements
 	public ProducerDestination provisionProducerDestination(String name,
 			ExtendedProducerProperties<RocketMQProducerProperties> properties)
 			throws ProvisioningException {
-		checkTopic(name);
+		checkDestination(name);
 		return new RocketProducerDestination(name);
 	}
 
@@ -47,13 +48,16 @@ public class RocketMQTopicProvisioner implements
 	public ConsumerDestination provisionConsumerDestination(String name, String group,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> properties)
 			throws ProvisioningException {
-		checkTopic(name);
+		checkDestination(name);
 		return new RocketConsumerDestination(name);
 	}
 
-	private void checkTopic(String topic) {
+	private void checkDestination(String destination) {
+		String[] topics = StringUtils.commaDelimitedListToStringArray(destination);
 		try {
-			Validators.checkTopic(topic);
+			for (String topic: topics) {
+				Validators.checkTopic(topic);
+			}
 		}
 		catch (MQClientException e) {
 			throw new AssertionError(e);
