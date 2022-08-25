@@ -15,6 +15,10 @@ public class XdsConfigProperties {
 
 	private int pollingTimeout;
 
+	private boolean secure;
+
+	private String caCert;
+
 	public String getHost() {
 		return host;
 	}
@@ -45,6 +49,22 @@ public class XdsConfigProperties {
 
 	public void setPollingTimeout(int pollingTimeout) {
 		this.pollingTimeout = pollingTimeout;
+	}
+
+	public boolean isSecure() {
+		return secure;
+	}
+
+	public void setSecure(boolean secure) {
+		this.secure = secure;
+	}
+
+	public String getCaCert() {
+		return caCert;
+	}
+
+	public void setCaCert(String caCert) {
+		this.caCert = caCert;
 	}
 
 }

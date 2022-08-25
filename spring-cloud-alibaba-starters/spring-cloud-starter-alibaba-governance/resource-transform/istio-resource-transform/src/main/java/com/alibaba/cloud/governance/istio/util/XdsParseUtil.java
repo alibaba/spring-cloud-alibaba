@@ -29,6 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class XdsParseUtil {
+
 	private static final Logger log = LoggerFactory.getLogger(XdsParseUtil.class);
 
 	private static final String VIRTUAL_INBOUND = "virtualInbound";
@@ -173,7 +174,8 @@ public class XdsParseUtil {
 						provider.getForwardPayloadHeader(), provider.getForward()));
 			}
 		}
-		log.info("auth rules resolve finish, RBAC rules {}, Jwt rules {}", rbacList.size(), jwtRules.size());
+		log.info("auth rules resolve finish, RBAC rules {}, Jwt rules {}",
+				rbacList.size(), jwtRules.size());
 	}
 
 	private static void resolvePrincipal(String name, Principal principal,
