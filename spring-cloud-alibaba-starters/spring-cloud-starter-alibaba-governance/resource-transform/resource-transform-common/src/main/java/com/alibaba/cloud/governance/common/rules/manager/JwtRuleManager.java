@@ -41,4 +41,8 @@ public class JwtRuleManager {
 		return null;
 	}
 
+	public static boolean isEmpty() {
+		return jwtRules.isEmpty();
+	}
+
 }

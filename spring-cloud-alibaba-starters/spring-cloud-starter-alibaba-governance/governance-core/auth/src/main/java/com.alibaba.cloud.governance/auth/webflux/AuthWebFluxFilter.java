@@ -37,8 +37,8 @@ public class AuthWebFluxFilter implements WebFilter {
 			return ret401(exchange);
 		}
 		JwtClaims jwtClaims = null;
-		if ((jwtClaims = JwtRuleManager.isValid(request.getQueryParams(),
-				request.getHeaders())) == null) {
+		if (!JwtRuleManager.isEmpty() && (jwtClaims = JwtRuleManager
+				.isValid(request.getQueryParams(), request.getHeaders())) == null) {
 			return ret401(exchange);
 		}
 		if (!JwtAuthRuleManager.isValid(jwtClaims)) {

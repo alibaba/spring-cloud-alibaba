@@ -39,7 +39,8 @@ public class AuthWebInterceptor implements HandlerInterceptor {
 		}
 		JwtClaims jwtClaims = null;
 		MultiValueMap<String, String> params = getQueryParams(request);
-		if ((jwtClaims = JwtRuleManager.isValid(params, headers)) == null) {
+		if (JwtRuleManager.isEmpty()
+				&& (jwtClaims = JwtRuleManager.isValid(params, headers)) == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return false;
 		}

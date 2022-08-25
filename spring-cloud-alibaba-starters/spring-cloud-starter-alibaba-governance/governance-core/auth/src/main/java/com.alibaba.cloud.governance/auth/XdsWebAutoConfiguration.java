@@ -13,9 +13,17 @@ import org.springframework.context.annotation.Configuration;
 public class XdsWebAutoConfiguration {
 
 	@Bean
-	@ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled")
+	@ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled",
+			matchIfMissing = true)
 	public AuthWebInterceptor authWebInterceptor() {
 		return new AuthWebInterceptor();
+	}
+
+	@Bean
+	@ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled",
+			matchIfMissing = true)
+	public XdsWebMvcConfigurer xdsWebMvcConfigurer() {
+		return new XdsWebMvcConfigurer();
 	}
 
 }
