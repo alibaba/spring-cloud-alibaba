@@ -110,7 +110,7 @@ public class JwtUtil {
 			return Pair.of(null, false);
 		}
 		catch (JoseException e) {
-			log.error("invalid jws", e);
+			log.warn("invalid jws from rule {}", jwtRule);
 		}
 		catch (InvalidJwtException e) {
 			log.warn("invalid jwt token {} for rule {}", token, jwtRule);

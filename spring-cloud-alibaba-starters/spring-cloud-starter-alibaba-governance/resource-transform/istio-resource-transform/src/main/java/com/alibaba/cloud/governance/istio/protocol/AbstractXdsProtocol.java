@@ -10,10 +10,7 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -58,6 +55,7 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 			if (future == null) {
 				// means it is push operation from xds, consume it directly
 				consumer.accept(responses);
+				sendAckRequest(id, discoveryResponse);
 				return;
 			}
 			future.complete(responses);
@@ -67,6 +65,13 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 		@Override
 		public void onError(Throwable throwable) {
 			log.error("connect to xds server failed", throwable);
+			CompletableFuture<List<T>> future = futureMap.get(id);
+			if (future != null) {
+				future.complete(null);
+				futureMap.remove(id);
+			}
+			resourceMap.remove(id);
+			requestObserverMap.remove(id);
 		}
 
 		@Override
@@ -157,7 +162,8 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 		}
 		DiscoveryRequest request = DiscoveryRequest.newBuilder()
 				.setVersionInfo(response.getVersionInfo()).setNode(node)
-				.addAllResourceNames(resourceMap.get(id))
+				.addAllResourceNames(resourceMap.get(id) == null ? new ArrayList<>()
+						: resourceMap.get(id))
 				.setTypeUrl(response.getTypeUrl()).setResponseNonce(response.getNonce())
 				.build();
 		observer.onNext(request);

@@ -154,6 +154,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 	}
 
 	public void resolveAuthRules(List<Listener> listeners) {
+		if (listeners == null || listeners.isEmpty()) {
+			return;
+		}
 		List<HttpFilter> httpFilters = resolveHttpFilter(listeners);
 		List<RBAC> rbacList = resolveRbac(httpFilters);
 		for (RBAC rbac : rbacList) {
