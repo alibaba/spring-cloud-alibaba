@@ -2,13 +2,19 @@ package com.alibaba.cloud.governance.auth.webflux;
 
 import com.alibaba.cloud.governance.common.rules.manager.*;
 import com.alibaba.cloud.governance.common.rules.util.IpUtil;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 public class AuthWebFluxFilter implements WebFilter {
 
@@ -26,7 +32,7 @@ public class AuthWebFluxFilter implements WebFilter {
 		if (!IpBlockRuleManager.isValid(sourceIp, destIp, remoteIp)) {
 			return ret401(exchange);
 		}
-		String host = request.getRemoteAddress().getHostName();
+		String host = request.getHeaders().getFirst(HttpHeaders.HOST);
 		int port = request.getLocalAddress().getPort();
 		String method = request.getMethodValue();
 		String path = request.getPath().value();
@@ -37,10 +43,19 @@ public class AuthWebFluxFilter implements WebFilter {
 			return ret401(exchange);
 		}
 		JwtClaims jwtClaims = null;
-		if (!JwtRuleManager.isEmpty() && (jwtClaims = JwtRuleManager
-				.isValid(request.getQueryParams(), request.getHeaders())) == null) {
-			return ret401(exchange);
+		if (!JwtRuleManager.isEmpty()) {
+			Pair<JwtClaims, Boolean> jwtClaimsBooleanPair = JwtRuleManager
+					.isValid(request.getQueryParams(), request.getHeaders());
+			if (!jwtClaimsBooleanPair.getRight()) {
+				return ret401(exchange);
+			}
+			jwtClaims = jwtClaimsBooleanPair.getLeft();
 		}
+
+		if (jwtClaims == null && JwtAuthRuleManager.isEmpty()) {
+			return chain.filter(exchange);
+		}
+
 		if (!JwtAuthRuleManager.isValid(jwtClaims)) {
 			return ret401(exchange);
 		}
@@ -48,7 +63,16 @@ public class AuthWebFluxFilter implements WebFilter {
 	}
 
 	private Mono<Void> ret401(ServerWebExchange exchange) {
-		exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+		return ret401(exchange, "Auth failed, please check the request and auth rule");
+	}
+
+	private Mono<Void> ret401(ServerWebExchange exchange, String errorMsg) {
+		ServerHttpResponse response = exchange.getResponse();
+		response.setStatusCode(HttpStatus.UNAUTHORIZED);
+		response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
+		byte[] data = errorMsg.getBytes(StandardCharsets.UTF_8);
+		DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(data);
+		response.writeWith(Mono.just(buffer));
 		return exchange.getResponse().setComplete();
 	}
 

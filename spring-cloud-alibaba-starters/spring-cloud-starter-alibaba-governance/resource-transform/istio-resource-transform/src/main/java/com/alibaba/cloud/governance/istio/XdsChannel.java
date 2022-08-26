@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import sun.security.x509.X509CertImpl;
 
 import java.io.ByteArrayInputStream;
+import java.util.concurrent.TimeUnit;
 
 public class XdsChannel implements AutoCloseable {
 
@@ -32,6 +33,8 @@ public class XdsChannel implements AutoCloseable {
 				this.channel = NettyChannelBuilder
 						.forTarget(xdsConfigProperties.getHost() + ":"
 								+ xdsConfigProperties.getPort())
+						.idleTimeout(xdsConfigProperties.getPollingTimeout() * 5L,
+								TimeUnit.SECONDS)
 						.negotiationType(NegotiationType.TLS).sslContext(sslcontext)
 						.build();
 			}
@@ -39,6 +42,8 @@ public class XdsChannel implements AutoCloseable {
 				this.channel = NettyChannelBuilder
 						.forTarget(xdsConfigProperties.getHost() + ":"
 								+ xdsConfigProperties.getPort())
+						.idleTimeout(xdsConfigProperties.getPollingTimeout() * 5L,
+								TimeUnit.SECONDS)
 						.negotiationType(NegotiationType.PLAINTEXT).build();
 			}
 		}

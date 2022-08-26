@@ -1,11 +1,15 @@
 package com.alibaba.cloud.governance.common.rules.util;
 
 import io.envoyproxy.envoy.config.core.v3.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class NodeBuilder {
+
+	private static final Logger log = LoggerFactory.getLogger(NodeBuilder.class);
 
 	private static final String SVC_CLUSTER_LOCAL = ".svc.cluster.local";
 
@@ -13,7 +17,7 @@ public class NodeBuilder {
 
 	private static final String DEFAULT_NAMESPACE = "default";
 
-	private static final String DEFAULT_SVC_NAME = "app";
+	private static final String DEFAULT_SVC_NAME = "default";
 
 	private static Node NODE;
 
@@ -33,22 +37,18 @@ public class NodeBuilder {
 		if (svcName == null) {
 			svcName = DEFAULT_SVC_NAME;
 		}
-		String ip = System.getenv("HOST_IP");
-		String hostName = System.getenv("HOST_NAME");
+		String ip = "127.0.0.1";
 		try {
 			InetAddress local = InetAddress.getLocalHost();
-			if (ip == null) {
-				ip = local.getHostAddress();
-			}
-			if (hostName == null) {
-				hostName = local.getHostName();
-			}
+			ip = local.getHostAddress();
 		}
 		catch (UnknownHostException e) {
-
+			log.error("can not get local ip", e);
 		}
-		return Node.newBuilder().setId(String.format("%s~%s~%s.%s~%s" + SVC_CLUSTER_LOCAL,
-				podName, ip, hostName, podNamespace, podNamespace)).build();
+		return Node.newBuilder()
+				.setId(String.format("sidecar~%s~%s~%s" + SVC_CLUSTER_LOCAL, ip, podName,
+						podNamespace))
+				.setCluster(svcName).build();
 	}
 
 }

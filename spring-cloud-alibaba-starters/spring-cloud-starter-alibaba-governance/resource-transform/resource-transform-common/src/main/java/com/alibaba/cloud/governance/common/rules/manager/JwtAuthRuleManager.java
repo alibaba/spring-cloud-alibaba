@@ -7,6 +7,7 @@ import org.jose4j.jwt.MalformedClaimException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,6 +35,9 @@ public class JwtAuthRuleManager {
 	}
 
 	public static boolean isValid(JwtClaims jwtClaims) {
+		if (jwtClaims == null) {
+			return false;
+		}
 		try {
 			if (!denyJwtAuthRules.isEmpty() && judgeJwt(denyJwtAuthRules, jwtClaims)) {
 				return false;
@@ -61,7 +65,7 @@ public class JwtAuthRuleManager {
 
 	private static boolean judgePrincipal(String subject, String issuer,
 			JwtAuthRule andRules) {
-		return andRules == null || andRules.getAuthPresenters().isEmpty() || andRules
+		return andRules == null || andRules.getRequestPrincipals().isEmpty() || andRules
 				.getRequestPrincipals().getRules().stream().allMatch(orRules -> {
 					boolean flag = orRules.getRules().stream()
 							.anyMatch(jwtPrincipal -> StringMatchUtil
@@ -71,7 +75,10 @@ public class JwtAuthRuleManager {
 	}
 
 	private static boolean judgeAudience(List<String> audiences, JwtAuthRule andRules) {
-		return andRules == null || andRules.getAuthPresenters().isEmpty()
+		if (audiences == null || audiences.isEmpty()) {
+			return andRules.getAuthAudiences().isEmpty();
+		}
+		return andRules == null || andRules.getAuthAudiences().isEmpty()
 				|| andRules.getAuthAudiences().getRules().stream().allMatch(orRules -> {
 					boolean flag = audiences.stream()
 							.anyMatch(audStr -> orRules.getRules().stream()
@@ -82,25 +89,34 @@ public class JwtAuthRuleManager {
 	}
 
 	private static boolean judgeClaims(JwtClaims jwtClaims, JwtAuthRule andRules) {
-		return andRules == null || andRules.getAuthPresenters().isEmpty()
+		return andRules == null || andRules.getAuthClaims().isEmpty()
 				|| andRules.getAuthClaims().entrySet().stream().allMatch(allHeader -> {
 					String key = allHeader.getKey();
-					String claimValue;
+					Object claimValue = jwtClaims.getClaimValue(key);
+					List<String> claimList = new ArrayList<>();
 					try {
-						claimValue = jwtClaims.getStringClaimValue(key);
+						if (claimValue instanceof List) {
+							claimList.addAll(jwtClaims.getStringListClaimValue(key));
+						}
+						else {
+							claimList.add(jwtClaims.getStringClaimValue(key));
+						}
 					}
 					catch (MalformedClaimException e) {
-						return false;
+						log.error("invalid key type, unable to get key {} from jwtClaims",
+								key);
 					}
-					return allHeader.getValue().getRules().stream().allMatch(andRule -> {
-						// only support string header
-						boolean flag = andRule.getRules().stream()
-								.anyMatch(orRule -> orRule.hasOneOf()
-										&& orRule.getOneOf().hasStringMatch()
-										&& StringMatchUtil.matchStr(claimValue,
-												orRule.getOneOf().getStringMatch()));
-						return andRule.isNot() != flag;
-					});
+					return claimList.stream().anyMatch(claimStr -> allHeader.getValue()
+							.getRules().stream().allMatch(andRule -> {
+								// only support string header
+								boolean flag = andRule.getRules().stream()
+										.anyMatch(orRule -> orRule.hasOneOf()
+												&& orRule.getOneOf().hasStringMatch()
+												&& StringMatchUtil.matchStr(claimStr,
+														orRule.getOneOf()
+																.getStringMatch()));
+								return andRule.isNot() != flag;
+							}));
 				});
 	}
 
@@ -115,6 +131,10 @@ public class JwtAuthRuleManager {
 						&& judgePrincipal(subject, issuer, andRules)
 						&& judgeAudience(audiences, andRules)
 						&& judgeClaims(jwtClaims, andRules));
+	}
+
+	public static boolean isEmpty() {
+		return allowJwtAuthRules.isEmpty() && denyJwtAuthRules.isEmpty();
 	}
 
 }

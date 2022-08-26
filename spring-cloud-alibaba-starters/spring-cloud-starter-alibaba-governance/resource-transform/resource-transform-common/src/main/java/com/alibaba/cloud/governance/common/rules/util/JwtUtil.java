@@ -3,6 +3,7 @@ package com.alibaba.cloud.governance.common.rules.util;
 import com.alibaba.cloud.governance.common.rules.auth.JwtRule;
 import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtHeader;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwk.JsonWebKeySet;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -31,6 +32,9 @@ public class JwtUtil {
 
 	private static String getTokenFromJwtRule(MultiValueMap<String, String> params,
 			HttpHeaders headers, JwtRule jwtRule) {
+		if (headers == null) {
+			return "";
+		}
 		try {
 			List<JwtHeader> jwtHeaders = jwtRule.getFromHeaders();
 			if (jwtHeaders != null && !jwtHeaders.isEmpty()) {
@@ -52,24 +56,25 @@ public class JwtUtil {
 					}
 				}
 			}
-			return Objects.requireNonNull(headers.getFirst(HttpHeaders.AUTHORIZATION))
+			return headers.getFirst(HttpHeaders.AUTHORIZATION)
 					.substring(BEARER_PREFIX.length());
 		}
 		catch (Exception e) {
-			log.error("unable to extract token from header or params", e);
+			log.error("unable to extract token from header or params");
 		}
 		return "";
 	}
 
-	public static JwtClaims matchJwt(MultiValueMap<String, String> params,
+	public static Pair<JwtClaims, Boolean> matchJwt(MultiValueMap<String, String> params,
 			HttpHeaders headers, JwtRule jwtRule) {
 		String token = getTokenFromJwtRule(params, headers, jwtRule);
+		// if the token is empty, return true
 		if (StringUtils.isEmpty(token)) {
-			return null;
+			return Pair.of(null, true);
 		}
 		String jwks = jwtRule.getJwks();
 		if (jwks == null || jwks.isEmpty()) {
-			return null;
+			return Pair.of(null, false);
 		}
 		JsonWebSignature jws = null;
 		try {
@@ -89,20 +94,20 @@ public class JwtUtil {
 			List<String> audiences = jwtContext.getJwtClaims().getAudience();
 			if (!StringUtils.isEmpty(jwtRule.getIssuer())
 					&& !jwtRule.getIssuer().equals(issuer)) {
-				return null;
+				return Pair.of(null, false);
 			}
 
 			if (jwtRule.getAudiences() == null || jwtRule.getAudiences().isEmpty()) {
-				return jwtContext.getJwtClaims();
+				return Pair.of(jwtContext.getJwtClaims(), true);
 			}
 
 			Set<String> acceptAud = new HashSet<>(jwtRule.getAudiences());
 			for (String aud : audiences) {
 				if (acceptAud.contains(aud)) {
-					return jwtContext.getJwtClaims();
+					return Pair.of(jwtContext.getJwtClaims(), true);
 				}
 			}
-			return null;
+			return Pair.of(null, false);
 		}
 		catch (JoseException e) {
 			log.error("invalid jws", e);
@@ -113,7 +118,7 @@ public class JwtUtil {
 		catch (MalformedClaimException e) {
 			log.warn("invalid jwt claims for rule {}", jwtRule);
 		}
-		return null;
+		return Pair.of(null, false);
 	}
 
 }

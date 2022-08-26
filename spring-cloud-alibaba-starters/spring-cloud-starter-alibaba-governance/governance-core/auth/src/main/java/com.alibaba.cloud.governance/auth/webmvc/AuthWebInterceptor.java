@@ -2,6 +2,7 @@ package com.alibaba.cloud.governance.auth.webmvc;
 
 import com.alibaba.cloud.governance.common.rules.manager.*;
 import com.alibaba.cloud.governance.common.rules.util.IpUtil;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 
@@ -21,32 +23,36 @@ public class AuthWebInterceptor implements HandlerInterceptor {
 		String sourceIp = request.getRemoteAddr(), destIp = request.getLocalAddr(),
 				remoteIp = IpUtil.getRemoteIpAddress(request);
 		if (!IpBlockRuleManager.isValid(sourceIp, destIp, remoteIp)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return false;
+			return ret401(response);
 		}
-		String host = request.getRemoteHost();
+		String host = request.getHeader(HttpHeaders.HOST);
 		String method = request.getMethod();
 		String path = request.getRequestURI();
 		int port = request.getLocalPort();
 		if (!TargetRuleManager.isValid(host, port, method, path)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return false;
+			return ret401(response);
 		}
 		HttpHeaders headers = getHeaders(request);
 		if (!HeaderRuleManager.isValid(headers)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return false;
+			return ret401(response);
 		}
 		JwtClaims jwtClaims = null;
 		MultiValueMap<String, String> params = getQueryParams(request);
-		if (JwtRuleManager.isEmpty()
-				&& (jwtClaims = JwtRuleManager.isValid(params, headers)) == null) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return false;
+		if (!JwtRuleManager.isEmpty()) {
+			Pair<JwtClaims, Boolean> jwtClaimsBooleanPair = JwtRuleManager.isValid(params,
+					headers);
+			if (!jwtClaimsBooleanPair.getRight()) {
+				return ret401(response);
+			}
+			jwtClaims = jwtClaimsBooleanPair.getLeft();
 		}
+
+		if (jwtClaims == null && JwtAuthRuleManager.isEmpty()) {
+			return true;
+		}
+
 		if (!JwtAuthRuleManager.isValid(jwtClaims)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return false;
+			return ret401(response);
 		}
 		return true;
 	}
@@ -73,6 +79,17 @@ public class AuthWebInterceptor implements HandlerInterceptor {
 			params.addAll(key, Arrays.asList(paramValues));
 		}
 		return params;
+	}
+
+	private boolean ret401(HttpServletResponse response) throws IOException {
+		return ret401(response, "Auth failed, please check the request and auth rule");
+	}
+
+	private boolean ret401(HttpServletResponse response, String errorMsg)
+			throws IOException {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.getWriter().println(errorMsg);
+		return false;
 	}
 
 }

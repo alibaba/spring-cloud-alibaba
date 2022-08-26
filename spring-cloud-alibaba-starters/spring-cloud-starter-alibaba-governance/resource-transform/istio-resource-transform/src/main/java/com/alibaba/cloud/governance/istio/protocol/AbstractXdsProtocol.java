@@ -40,20 +40,27 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 	private class XdsObserver implements StreamObserver<DiscoveryResponse> {
 
+		private Consumer<List<T>> consumer;
+
 		private long id;
 
-		public XdsObserver(long id) {
+		public XdsObserver(long id, Consumer<List<T>> consumer) {
 			this.id = id;
+			this.consumer = consumer;
 		}
 
 		@Override
 		public void onNext(DiscoveryResponse discoveryResponse) {
-			List<T> t = decodeXdsResponse(discoveryResponse);
+			log.info("receive notification from xds server, type: " + getTypeUrl()
+					+ " requestId: " + id);
+			List<T> responses = decodeXdsResponse(discoveryResponse);
 			CompletableFuture<List<T>> future = futureMap.get(id);
 			if (future == null) {
+				// means it is push operation from xds, consume it directly
+				consumer.accept(responses);
 				return;
 			}
-			future.complete(t);
+			future.complete(responses);
 			sendAckRequest(id, discoveryResponse);
 		}
 
@@ -82,14 +89,14 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 	public long observeResource(Set<String> resourceNames, Consumer<List<T>> consumer) {
 		long id = requestId.getAndDecrement();
 		try {
-			consumer.accept(doGetSource(id, resourceNames));
+			consumer.accept(doGetResource(id, resourceNames, consumer));
 		}
 		catch (Exception e) {
 			log.error("error on get observe resource from xds", e);
 		}
 		pollingExecutor.scheduleAtFixedRate(() -> {
 			try {
-				consumer.accept(doGetSource(id, resourceNames));
+				consumer.accept(doGetResource(id, resourceNames, consumer));
 			}
 			catch (Exception e) {
 				log.error("error on get observe resource from xds", e);
@@ -102,23 +109,35 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 	@Override
 	public List<T> getResource(Set<String> resourceNames) {
 		long id = requestId.getAndDecrement();
-		return doGetSource(id, resourceNames);
+		List<T> source = doGetResource(id, resourceNames, null);
+		requestObserverMap.remove(id);
+		return source;
 	}
 
-	private List<T> doGetSource(long id, Set<String> resourceNames) {
+	private List<T> doGetResource(long id, Set<String> resourceNames,
+			Consumer<List<T>> consumer) {
 		if (resourceNames == null) {
 			resourceNames = new HashSet<>();
 		}
 		CompletableFuture<List<T>> future = new CompletableFuture<>();
 		futureMap.put(id, future);
-		StreamObserver<DiscoveryRequest> requestObserver = xdsChannel
-				.createDiscoveryRequest(new XdsObserver(id));
+		StreamObserver<DiscoveryRequest> requestObserver = requestObserverMap.get(id);
+		if (requestObserver == null) {
+			// reuse observer
+			requestObserver = xdsChannel
+					.createDiscoveryRequest(new XdsObserver(id, consumer));
+			requestObserverMap.put(id, requestObserver);
+		}
 		sendXdsRequest(requestObserver, resourceNames);
+		resourceMap.put(id, resourceNames);
 		try {
 			return future.get();
 		}
 		catch (ExecutionException | InterruptedException e) {
 			return null;
+		}
+		finally {
+			futureMap.remove(id);
 		}
 	}
 
@@ -142,6 +161,7 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 				.setTypeUrl(response.getTypeUrl()).setResponseNonce(response.getNonce())
 				.build();
 		observer.onNext(request);
+		resourceMap.remove(id);
 	}
 
 }

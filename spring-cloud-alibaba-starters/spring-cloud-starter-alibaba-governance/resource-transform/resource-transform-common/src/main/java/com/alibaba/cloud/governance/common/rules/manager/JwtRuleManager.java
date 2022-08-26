@@ -3,6 +3,7 @@ package com.alibaba.cloud.governance.common.rules.manager;
 import com.alibaba.cloud.governance.common.rules.auth.JwtRule;
 import com.alibaba.cloud.governance.common.rules.util.JwtUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
@@ -24,21 +25,23 @@ public class JwtRuleManager {
 		jwtRules.clear();
 	}
 
-	public static JwtClaims isValid(MultiValueMap<String, String> params,
+	public static Pair<JwtClaims, Boolean> isValid(MultiValueMap<String, String> params,
 			HttpHeaders headers) {
 		for (JwtRule rule : jwtRules.values()) {
-			JwtClaims jwtClaims = JwtUtil.matchJwt(params, headers, rule);
-			if (jwtClaims != null) {
+			Pair<JwtClaims, Boolean> jwtClaimsBooleanPair = JwtUtil.matchJwt(params,
+					headers, rule);
+			if (jwtClaimsBooleanPair.getRight()) {
 				if (!StringUtils.isEmpty(rule.getOutputPayloadToHeader())) {
 					// output
 					headers.set(rule.getOutputPayloadToHeader(),
-							Base64.getEncoder().encodeToString(
-									jwtClaims.toJson().getBytes(StandardCharsets.UTF_8)));
+							Base64.getEncoder()
+									.encodeToString(jwtClaimsBooleanPair.getLeft()
+											.toJson().getBytes(StandardCharsets.UTF_8)));
 				}
-				return jwtClaims;
+				return jwtClaimsBooleanPair;
 			}
 		}
-		return null;
+		return Pair.of(null, false);
 	}
 
 	public static boolean isEmpty() {
