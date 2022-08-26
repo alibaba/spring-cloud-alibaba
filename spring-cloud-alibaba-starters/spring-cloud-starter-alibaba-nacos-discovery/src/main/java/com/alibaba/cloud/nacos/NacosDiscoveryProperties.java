@@ -265,7 +265,7 @@ public class NacosDiscoveryProperties {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 				}
 				else if ("IPv6".equalsIgnoreCase(ipType)) {
-					ip = inetIPv6Util.findAddress();
+					ip = inetIPv6Util.findIPv6Address();
 				}
 				else {
 					throw new IllegalArgumentException(
