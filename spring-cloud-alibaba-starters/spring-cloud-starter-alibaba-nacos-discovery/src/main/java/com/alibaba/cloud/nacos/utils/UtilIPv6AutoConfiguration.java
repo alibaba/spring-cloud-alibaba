@@ -32,13 +32,13 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnNacosDiscoveryEnabled
 public class UtilIPv6AutoConfiguration {
 
-    public UtilIPv6AutoConfiguration() {
-    }
+	public UtilIPv6AutoConfiguration() {
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public InetIPv6Util inetIPv6Util(InetUtilsProperties properties) {
-        return new InetIPv6Util(properties);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public InetIPv6Util inetIPv6Util(InetUtilsProperties properties) {
+		return new InetIPv6Util(properties);
+	}
 
 }
