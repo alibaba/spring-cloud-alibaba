@@ -23,25 +23,27 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
+
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 public class ChainAspect {
 
-    private static final Logger logger = LogUtil.getLogger();
+	private static final Logger logger = LogUtil.getLogger();
 
-    @AfterReturning(pointcut=
-            "execution(* io.appactive.demo.frontend.service.*.*(..)) || " +
-            "execution(* io.appactive.demo.product.service.*.*(..)) || " +
-            "execution(* io.appactive.demo.storage.service.*.*(..)) || " +
-            "execution(* io.appactive.demo.common.service.springcloud.*.*(..))" ,
-            returning = "result")
-    public void afterRunning(JoinPoint joinPoint, Object result){
-        if (result instanceof ResultHolder){
-            ResultHolder resultHolder = (ResultHolder)result;
-            resultHolder.addChain(JvmPropertyUtil.getJvmAndEnvValue("appactive.app"),JvmPropertyUtil.getJvmAndEnvValue("appactive.unit"));
-            logger.info("ChainAspect: "+resultHolder);
-        }
-    }
+	@AfterReturning(pointcut =
+			"execution(* io.appactive.demo.frontend.service.*.*(..)) || " +
+					"execution(* io.appactive.demo.product.service.*.*(..)) || " +
+					"execution(* io.appactive.demo.storage.service.*.*(..)) || " +
+					"execution(* io.appactive.demo.common.service.springcloud.*.*(..))",
+			returning = "result")
+	public void afterRunning(JoinPoint joinPoint, Object result) {
+		if (result instanceof ResultHolder) {
+			ResultHolder resultHolder = (ResultHolder) result;
+			resultHolder.addChain(JvmPropertyUtil.getJvmAndEnvValue("appactive.app"), JvmPropertyUtil
+					.getJvmAndEnvValue("appactive.unit"));
+			logger.info("ChainAspect: " + resultHolder);
+		}
+	}
 }

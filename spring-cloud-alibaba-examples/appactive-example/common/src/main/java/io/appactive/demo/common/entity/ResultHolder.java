@@ -20,85 +20,84 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultHolder <T>  implements Serializable {
+public class ResultHolder<T> implements Serializable {
 
-    private T result;
+	List<Node> chain = new ArrayList<>();
+	private T result;
 
-    List<Node> chain = new ArrayList<>();
+	/**
+	 * 默认构造器，便于序列化
+	 */
+	public ResultHolder() {
 
-    public T getResult() {
-        return result;
-    }
+	}
 
-    public void setResult(T result) {
-        this.result = result;
-    }
+	public ResultHolder(T result) {
+		this.result = result;
+	}
 
-    public List<Node> getChain() {
-        return chain;
-    }
+	public T getResult() {
+		return result;
+	}
 
-    public void setChain(List<Node> chain) {
-        this.chain = chain;
-    }
+	public void setResult(T result) {
+		this.result = result;
+	}
 
-    public void addChain(String app, String unitFlag){
-        chain.add(new Node(app, unitFlag));
-    }
+	public List<Node> getChain() {
+		return chain;
+	}
 
-    /**
-     * 默认构造器，便于序列化
-     */
-    public ResultHolder() {
+	public void setChain(List<Node> chain) {
+		this.chain = chain;
+	}
 
-    }
+	public void addChain(String app, String unitFlag) {
+		chain.add(new Node(app, unitFlag));
+	}
 
-    static class Node implements Serializable{
-        private String app;
-        private String unitFlag;
+	@Override
+	public String toString() {
+		return "ResultHolder{" +
+				"result=" + result +
+				", chain=" + chain +
+				'}';
+	}
 
-        public Node() {
-        }
+	static class Node implements Serializable {
+		private String app;
+		private String unitFlag;
 
-        public Node(String app, String unitFlag) {
-            this.app = app;
-            this.unitFlag = unitFlag;
-        }
+		public Node() {
+		}
 
-        public String getApp() {
-            return app;
-        }
+		public Node(String app, String unitFlag) {
+			this.app = app;
+			this.unitFlag = unitFlag;
+		}
 
-        public void setApp(String app) {
-            this.app = app;
-        }
+		public String getApp() {
+			return app;
+		}
 
-        public String getUnitFlag() {
-            return unitFlag;
-        }
+		public void setApp(String app) {
+			this.app = app;
+		}
 
-        public void setUnitFlag(String unitFlag) {
-            this.unitFlag = unitFlag;
-        }
+		public String getUnitFlag() {
+			return unitFlag;
+		}
 
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "app='" + app + '\'' +
-                    ", unitFlag='" + unitFlag + '\'' +
-                    '}';
-        }
-    }
+		public void setUnitFlag(String unitFlag) {
+			this.unitFlag = unitFlag;
+		}
 
-    public ResultHolder(T result) {
-        this.result = result;
-    }
-
-    @Override
-    public String toString() {
-        return "ResultHolder{" +
-                "result=" + result +
-                ", chain=" + chain +
-                '}';
-    }
+		@Override
+		public String toString() {
+			return "Node{" +
+					"app='" + app + '\'' +
+					", unitFlag='" + unitFlag + '\'' +
+					'}';
+		}
+	}
 }

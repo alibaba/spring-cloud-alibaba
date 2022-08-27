@@ -31,18 +31,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceUnitHiddenImpl implements ProductServiceUnitHidden {
 
-    private static final Logger logger = LogUtil.getLogger();
+	private static final Logger logger = LogUtil.getLogger();
+	@Autowired
+	ProductRepository productRepository;
+	@Value("${appactive.unit}")
+	private String unit;
 
-    @Value("${appactive.unit}")
-    private String unit;
-
-    @Autowired
-    ProductRepository productRepository;
-
-    @Override
-    public ResultHolder<Product> detail(String pId) {
-        String rId = AppContextClient.getRouteId();
-        logger.info("detail: " + pId + ",rId " + rId);
-        return new ResultHolder<>(productRepository.findById(pId).orElse(new Product()));
-    }
+	@Override
+	public ResultHolder<Product> detail(String pId) {
+		String rId = AppContextClient.getRouteId();
+		logger.info("detail: " + pId + ",rId " + rId);
+		return new ResultHolder<>(productRepository.findById(pId).orElse(new Product()));
+	}
 }

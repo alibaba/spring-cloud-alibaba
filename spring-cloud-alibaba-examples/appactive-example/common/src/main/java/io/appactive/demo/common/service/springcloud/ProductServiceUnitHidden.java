@@ -21,5 +21,5 @@ import io.appactive.demo.common.entity.ResultHolder;
 
 public interface ProductServiceUnitHidden {
 
-    ResultHolder<Product> detail(String pId);
+	ResultHolder<Product> detail(String pId);
 }

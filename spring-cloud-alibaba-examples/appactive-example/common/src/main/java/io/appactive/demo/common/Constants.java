@@ -18,8 +18,8 @@ package io.appactive.demo.common;
 
 public class Constants {
 
-    private Constants() {
-    }
+	public static final String CENTER_FLAG = "center";
 
-    public static final String CENTER_FLAG = "center";
+	private Constants() {
+	}
 }

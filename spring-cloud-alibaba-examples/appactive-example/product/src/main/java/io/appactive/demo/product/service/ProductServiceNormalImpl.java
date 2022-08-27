@@ -30,15 +30,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceNormalImpl implements ProductServiceNormal {
 
-    @Value("${appactive.unit}")
-    private String unit;
+	@Autowired
+	ProductRepository productRepository;
+	@Value("${appactive.unit}")
+	private String unit;
 
-    @Autowired
-    ProductRepository productRepository;
-
-    @Override
-    public ResultHolder<List<Product>> list() {
-        return new ResultHolder<>(productRepository.findAll());
-    }
+	@Override
+	public ResultHolder<List<Product>> list() {
+		return new ResultHolder<>(productRepository.findAll());
+	}
 
 }

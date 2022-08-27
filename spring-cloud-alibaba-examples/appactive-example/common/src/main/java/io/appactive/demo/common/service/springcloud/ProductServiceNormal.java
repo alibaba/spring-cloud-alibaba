@@ -23,6 +23,6 @@ import io.appactive.demo.common.entity.ResultHolder;
 
 public interface ProductServiceNormal {
 
-    ResultHolder<List<Product>> list();
+	ResultHolder<List<Product>> list();
 
 }

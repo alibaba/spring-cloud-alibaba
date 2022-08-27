@@ -30,18 +30,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceUnitImpl implements ProductServiceUnit {
 
-    private static final Logger logger = LogUtil.getLogger();
+	private static final Logger logger = LogUtil.getLogger();
+	@Autowired
+	ProductRepository productRepository;
+	@Value("${appactive.unit}")
+	private String unit;
 
-    @Value("${appactive.unit}")
-    private String unit;
-
-    @Autowired
-    ProductRepository productRepository;
-
-    @Override
-    public ResultHolder<Product> detail(String rId, String pId) {
-        // unit
-        return new ResultHolder<>(productRepository.findById(pId).orElse(new Product()));
-    }
+	@Override
+	public ResultHolder<Product> detail(String rId, String pId) {
+		// unit
+		return new ResultHolder<>(productRepository.findById(pId).orElse(new Product()));
+	}
 
 }

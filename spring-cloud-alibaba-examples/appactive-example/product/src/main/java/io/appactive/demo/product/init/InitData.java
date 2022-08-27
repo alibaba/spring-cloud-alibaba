@@ -16,77 +16,80 @@
 
 package io.appactive.demo.product.init;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import io.appactive.demo.common.entity.Product;
 import io.appactive.demo.product.repository.ProductRepository;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 import static io.appactive.demo.common.Constants.CENTER_FLAG;
 
 @Component
 public class InitData implements ApplicationRunner {
 
-    @Resource
-    ProductRepository productRepository;
+	@Resource
+	ProductRepository productRepository;
 
-    @Value("${appactive.unit}")
-    private String unit;
+	@Value("${appactive.unit}")
+	private String unit;
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+	@Override
+	public void run(ApplicationArguments args) throws Exception {
 
-        if (!CENTER_FLAG.equals(unit)){
-            return;
-        }
+		if (!CENTER_FLAG.equals(unit)) {
+			return;
+		}
 
-        List<Product> products = new ArrayList<>(4);
-        Product p1 = new Product();
-        p1.setId("12");
-        p1.setName("书包");
-        p1.setImg("/img/backpack.png");
-        p1.setDescription("好用的书包");
-        p1.setPrice(300);
-        p1.setNumber(10);
-        products.add(p1);
+		List<Product> products = new ArrayList<>(4);
+		Product p1 = new Product();
+		p1.setId("12");
+		p1.setName("书包");
+		p1.setImg("/img/backpack.png");
+		p1.setDescription("好用的书包");
+		p1.setPrice(300);
+		p1.setNumber(10);
+		products.add(p1);
 
-        Product p2 = new Product();
-        p2.setId("14");
-        p2.setName("球拍");
-        p2.setImg("/img/badminton.png");
-        p2.setDescription("好用的球拍");
-        p2.setPrice(200);
-        p2.setNumber(20);
-        products.add(p2);
+		Product p2 = new Product();
+		p2.setId("14");
+		p2.setName("球拍");
+		p2.setImg("/img/badminton.png");
+		p2.setDescription("好用的球拍");
+		p2.setPrice(200);
+		p2.setNumber(20);
+		products.add(p2);
 
-        Product p3 = new Product();
-        p3.setId("16");
-        p3.setName("键盘");
-        p3.setImg("/img/keyboard.png");
-        p3.setDescription("好用的键盘");
-        p3.setPrice(800);
-        p3.setNumber(50);
-        products.add(p3);
+		Product p3 = new Product();
+		p3.setId("16");
+		p3.setName("键盘");
+		p3.setImg("/img/keyboard.png");
+		p3.setDescription("好用的键盘");
+		p3.setPrice(800);
+		p3.setNumber(50);
+		products.add(p3);
 
-        Product p4 = new Product();
-        p4.setId("18");
-        p4.setName("茶杯");
-        p4.setImg("/img/cup.png");
-        p4.setDescription("好用的茶杯");
-        p4.setPrice(100);
-        p4.setNumber(60);
-        products.add(p4);
+		Product p4 = new Product();
+		p4.setId("18");
+		p4.setName("茶杯");
+		p4.setImg("/img/cup.png");
+		p4.setDescription("好用的茶杯");
+		p4.setPrice(100);
+		p4.setNumber(60);
+		products.add(p4);
 
-        try {
-            productRepository.deleteAll();
-            productRepository.saveAll(products);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+		try {
+			productRepository.deleteAll();
+			productRepository.saveAll(products);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
