@@ -91,7 +91,7 @@ public class RocketmqProduceAndConsumerTests {
 		@Bean(name = "consumer")
 		@Profile("test")
 		@DependsOn(value = "produce")
-		public ApplicationRunner consumerRunner(PollableMessageSource dest) {
+		public ApplicationRunner consumerRunner(MessageChannel dest) {
 			return args -> {
 				((SubscribableChannel) dest).subscribe(message -> Assertions.assertEquals(message,"Hello RocketMQ" ));
 			};
