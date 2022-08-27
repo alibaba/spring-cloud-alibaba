@@ -46,14 +46,11 @@ public final class URIRegister {
 	private URIRegister() {
 	}
 
-	/**
-	 * publish to registry meta like dubbo rather than building a new appactive rule type.
-	 */
-	public static void collectUris(List<FilterRegistrationBean> beanList) {
-		if (CollectionUtils.isNotEmpty(beanList)) {
+	public static void collectUris(List<FilterRegistrationBean> filterRegistrationBeans) {
+		if (CollectionUtils.isNotEmpty(filterRegistrationBeans)) {
 			List<ServiceMeta> serviceMetaList = new LinkedList<>();
 			boolean hasWildChar = false;
-			for (FilterRegistrationBean filterRegistrationBean : beanList) {
+			for (FilterRegistrationBean filterRegistrationBean : filterRegistrationBeans) {
 				Filter filter = filterRegistrationBean.getFilter();
 				if (filter == null) {
 					continue;

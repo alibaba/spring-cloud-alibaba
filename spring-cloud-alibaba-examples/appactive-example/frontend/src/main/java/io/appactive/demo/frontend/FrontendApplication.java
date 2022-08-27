@@ -28,7 +28,7 @@ import org.springframework.context.annotation.ComponentScan;
 		"io.appactive.demo",
 })
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = {"io.appactive.demo"})
+@EnableFeignClients(basePackages = { "io.appactive.demo" })
 public class FrontendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FrontendApplication.class, args);
