@@ -47,79 +47,79 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
 @TestExtend(time = 4 * TIME_OUT)
 @SpringBootTest(classes = NacosConfigPropertiesServerAddressBothLevelTests.TestConfig.class, webEnvironment = RANDOM_PORT, properties = {
-        "spring.application.name=test-name",
-        "spring.cloud.nacos.config.server-addr=321,321,321,321:8848",
-        "spring.cloud.nacos.server-addr=123.123.123.123:8848",
-        "spring.cloud.nacos.config.username=nacos",
-        "spring.cloud.nacos.config.password=nacos",
-        "spring.cloud.nacos.config.file-extension=properties",
-        "spring.cloud.bootstrap.enabled=true" })
+		"spring.application.name=test-name",
+		"spring.cloud.nacos.config.server-addr=321,321,321,321:8848",
+		"spring.cloud.nacos.server-addr=123.123.123.123:8848",
+		"spring.cloud.nacos.config.username=nacos",
+		"spring.cloud.nacos.config.password=nacos",
+		"spring.cloud.nacos.config.file-extension=properties",
+		"spring.cloud.bootstrap.enabled=true"})
 
 public class NacosConfigPropertiesServerAddressBothLevelTests {
 
-    /**
-     * nacos upload conf file.
-     */
-    public static final String YAML_CONTENT = "configdata:\n" + "  user:\n"
-            + "    age: 22\n" + "    name: freeman1123\n" + "    map:\n"
-            + "      hobbies:\n" + "        - art\n" + "        - programming\n"
-            + "        - movie\n" + "      intro: Hello, I'm freeman\n"
-            + "      extra: yo~\n" + "    users:\n" + "      - name: dad\n"
-            + "        age: 20\n" + "      - name: mom\n" + "        age: 18";
+	/**
+	 * nacos upload conf file.
+	 */
+	public static final String YAML_CONTENT = "configdata:\n" + "  user:\n"
+			+ "    age: 22\n" + "    name: freeman1123\n" + "    map:\n"
+			+ "      hobbies:\n" + "        - art\n" + "        - programming\n"
+			+ "        - movie\n" + "      intro: Hello, I'm freeman\n"
+			+ "      extra: yo~\n" + "    users:\n" + "      - name: dad\n"
+			+ "        age: 20\n" + "      - name: mom\n" + "        age: 18";
 
-    @Autowired
-    private NacosConfigProperties nacosConfigProperties;
+	@Autowired
+	private NacosConfigProperties nacosConfigProperties;
 
-    private ConfigService remoteService;
+	private ConfigService remoteService;
 
-    private NacosConfigManager nacosConfigManager;
+	private NacosConfigManager nacosConfigManager;
 
-    @BeforeAll
-    public static void setUp() {
+	@BeforeAll
+	public static void setUp() {
 
-    }
+	}
 
-    @BeforeEach
-    public void prepare() throws NacosException {
-        Properties nacosSettings = new Properties();
-        String serverAddress = "321,321,321,321:8848";
-        nacosSettings.put(PropertyKeyConst.SERVER_ADDR, serverAddress);
-        nacosSettings.put(PropertyKeyConst.USERNAME, "nacos");
-        nacosSettings.put(PropertyKeyConst.PASSWORD, "nacos");
+	@BeforeEach
+	public void prepare() throws NacosException {
+		Properties nacosSettings = new Properties();
+		String serverAddress = "321,321,321,321:8848";
+		nacosSettings.put(PropertyKeyConst.SERVER_ADDR, serverAddress);
+		nacosSettings.put(PropertyKeyConst.USERNAME, "nacos");
+		nacosSettings.put(PropertyKeyConst.PASSWORD, "nacos");
 
-        remoteService = ConfigFactory.createConfigService(nacosSettings);
-        nacosConfigManager = new NacosConfigManager(nacosConfigProperties);
-    }
+		remoteService = ConfigFactory.createConfigService(nacosSettings);
+		nacosConfigManager = new NacosConfigManager(nacosConfigProperties);
+	}
 
-    @Test
-    public void contextLoads() throws NacosException {
-        ConfigService localService = nacosConfigManager.getConfigService();
-        updateConfig();
-        String localContent = fetchConfig(localService, "nacos-config-refresh.yml",
-                "DEFAULT_GROUP", TIME_OUT);
-        String remoteContent = fetchConfig(remoteService, "nacos-config-refresh.yml",
-                "DEFAULT_GROUP", TIME_OUT);
-        Assertions.assertEquals(localContent, remoteContent);
+	@Test
+	public void contextLoads() throws NacosException {
+		ConfigService localService = nacosConfigManager.getConfigService();
+		updateConfig();
+		String localContent = fetchConfig(localService, "nacos-config-refresh.yml",
+				"DEFAULT_GROUP", TIME_OUT);
+		String remoteContent = fetchConfig(remoteService, "nacos-config-refresh.yml",
+				"DEFAULT_GROUP", TIME_OUT);
+		Assertions.assertEquals(localContent, remoteContent);
 
-        assertThat(nacosConfigProperties.getServerAddr()).isEqualTo("321,321,321,321:8848");
+		assertThat(nacosConfigProperties.getServerAddr()).isEqualTo("321,321,321,321:8848");
 
-    }
+	}
 
-    private String fetchConfig(ConfigService configService, String dataId, String group, long timeoutMs) throws NacosException {
-        return configService.getConfig(dataId, group, timeoutMs);
-    }
+	private String fetchConfig(ConfigService configService, String dataId, String group, long timeoutMs) throws NacosException {
+		return configService.getConfig(dataId, group, timeoutMs);
+	}
 
-    private void updateConfig() throws NacosException {
-        remoteService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
-                YAML_CONTENT, "yaml");
-    }
+	private void updateConfig() throws NacosException {
+		remoteService.publishConfig("nacos-config-refresh.yml", "DEFAULT_GROUP",
+				YAML_CONTENT, "yaml");
+	}
 
-    @Configuration
-    @EnableAutoConfiguration
-    @ImportAutoConfiguration({ NacosConfigEndpointAutoConfiguration.class,
-            NacosConfigAutoConfiguration.class, NacosConfigBootstrapConfiguration.class })
-    public static class TestConfig {
+	@Configuration
+	@EnableAutoConfiguration
+	@ImportAutoConfiguration({NacosConfigEndpointAutoConfiguration.class,
+			NacosConfigAutoConfiguration.class, NacosConfigBootstrapConfiguration.class})
+	public static class TestConfig {
 
-    }
+	}
 }
 
