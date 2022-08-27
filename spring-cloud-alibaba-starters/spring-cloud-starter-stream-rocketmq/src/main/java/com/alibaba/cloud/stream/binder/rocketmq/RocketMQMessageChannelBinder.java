@@ -20,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
@@ -57,6 +59,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
+import org.springframework.messaging.SubscribableChannel;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -81,6 +84,9 @@ public class RocketMQMessageChannelBinder extends
 	private final RocketMQExtendedBindingProperties extendedBindingProperties;
 
 	private final RocketMQBinderConfigurationProperties binderConfigurationProperties;
+
+	private final MessageCollectorImpl messageCollector = new MessageCollectorImpl();
+	private final ConcurrentMap<String, MessageChannel> messageChannels = new ConcurrentHashMap();
 
 	public RocketMQMessageChannelBinder(
 			RocketMQBinderConfigurationProperties binderConfigurationProperties,
@@ -116,8 +122,14 @@ public class RocketMQMessageChannelBinder extends
 		messageHandler.setPartitioningInterceptor(partitioningInterceptor);
 		messageHandler.setBeanFactory(this.getApplicationContext().getBeanFactory());
 		messageHandler.setErrorMessageStrategy(this.getErrorMessageStrategy());
+
+		final BlockingQueue<Message<?>> queue = this.messageCollector.register(channel, extendedProducerProperties.isUseNativeEncoding());
+		((SubscribableChannel)channel).subscribe(queue::add);
+		this.messageChannels.put(destination.getName(), channel);
+
 		return messageHandler;
 	}
+
 
 	@Override
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
@@ -285,7 +297,6 @@ public class RocketMQMessageChannelBinder extends
 		}
 	}
 
-
 	private static class MessageCollectorImpl implements MessageCollector {
 		private final Map<MessageChannel, BlockingQueue<Message<?>>> results;
 
@@ -304,12 +315,8 @@ public class RocketMQMessageChannelBinder extends
 			return result;
 		}
 
-		private void unregister(MessageChannel channel) {
-			Assert.notNull(this.results.remove(channel), "Trying to unregister a mapping for an unknown channel [" + channel + "]");
-		}
-
 		public BlockingQueue<Message<?>> forChannel(MessageChannel channel) {
-			BlockingQueue<Message<?>> queue = (BlockingQueue)this.results.get(channel);
+			BlockingQueue<Message<?>> queue = this.results.get(channel);
 			Assert.notNull(queue, "Channel [" + channel + "] was not bound by " + RocketMQMessageChannelBinder.class);
 			return queue;
 		}

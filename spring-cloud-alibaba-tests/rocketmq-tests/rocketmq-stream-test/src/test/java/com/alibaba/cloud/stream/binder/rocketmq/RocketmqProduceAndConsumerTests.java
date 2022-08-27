@@ -6,7 +6,6 @@ import java.util.concurrent.BlockingQueue;
 
 import com.alibaba.cloud.rocketmq.SimpleMsg;
 import com.alibaba.cloud.stream.binder.rocketmq.autoconfigurate.RocketMQBinderAutoConfiguration;
-import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.support.MessageCollector;
 import com.alibaba.cloud.testsupport.SpringCloudAlibaba;
 import com.alibaba.cloud.testsupport.TestExtend;
@@ -14,7 +13,6 @@ import org.apache.rocketmq.common.message.MessageConst;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,18 +23,13 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.cloud.stream.messaging.Processor;
-import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
 import static org.hamcrest.CoreMatchers.is;
