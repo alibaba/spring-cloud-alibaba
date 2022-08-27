@@ -71,7 +71,8 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 				futureMap.remove(id);
 			}
 			resourceMap.remove(id);
-			requestObserverMap.remove(id);
+			requestObserverMap.put(id,
+					xdsChannel.createDiscoveryRequest(new XdsObserver(id, consumer)));
 		}
 
 		@Override

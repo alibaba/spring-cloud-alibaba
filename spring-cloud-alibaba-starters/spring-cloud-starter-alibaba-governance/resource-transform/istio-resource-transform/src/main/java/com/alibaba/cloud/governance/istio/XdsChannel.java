@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import sun.security.x509.X509CertImpl;
 
 import java.io.ByteArrayInputStream;
-import java.util.concurrent.TimeUnit;
 
 public class XdsChannel implements AutoCloseable {
 

@@ -4,6 +4,8 @@ import com.alibaba.cloud.governance.common.rules.manager.*;
 import com.alibaba.cloud.governance.common.rules.util.IpUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,11 +14,14 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 
 public class AuthWebFluxFilter implements WebFilter {
+
+	private final static Logger log = LoggerFactory.getLogger(AuthWebFluxFilter.class);
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -26,7 +31,7 @@ public class AuthWebFluxFilter implements WebFilter {
 			sourceIp = request.getRemoteAddress().getAddress().getHostAddress();
 		}
 		if (request.getLocalAddress() != null) {
-			destIp = request.getRemoteAddress().getAddress().getHostAddress();
+			destIp = request.getLocalAddress().getAddress().getHostAddress();
 		}
 		remoteIp = IpUtil.getRemoteIpAddress(request);
 		if (!IpBlockRuleManager.isValid(sourceIp, destIp, remoteIp)) {
@@ -69,11 +74,9 @@ public class AuthWebFluxFilter implements WebFilter {
 	private Mono<Void> ret401(ServerWebExchange exchange, String errorMsg) {
 		ServerHttpResponse response = exchange.getResponse();
 		response.setStatusCode(HttpStatus.UNAUTHORIZED);
-		response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
 		byte[] data = errorMsg.getBytes(StandardCharsets.UTF_8);
-		DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(data);
-		response.writeWith(Mono.just(buffer));
-		return exchange.getResponse().setComplete();
+		DataBuffer buffer = response.bufferFactory().wrap(data);
+		return response.writeWith(Mono.just(buffer));
 	}
 
 }
