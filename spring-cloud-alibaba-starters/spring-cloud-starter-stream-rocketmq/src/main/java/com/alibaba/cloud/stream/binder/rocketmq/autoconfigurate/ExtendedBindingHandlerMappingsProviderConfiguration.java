@@ -28,6 +28,7 @@ import org.springframework.cloud.stream.config.BindingHandlerAdvise.MappingsProv
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.CompositeMessageConverter;
+import org.springframework.messaging.converter.MessageConverter;
 
 @Configuration
 public class ExtendedBindingHandlerMappingsProviderConfiguration {
@@ -60,6 +61,16 @@ public class ExtendedBindingHandlerMappingsProviderConfiguration {
 	@ConditionalOnMissingBean(name = { RocketMQMessageConverter.DEFAULT_NAME })
 	public CompositeMessageConverter rocketMQMessageConverter() {
 		return new RocketMQMessageConverter().getMessageConverter();
+	}
+
+	/**
+	 * Register message converter to adapte Spring Cloud Stream.
+	 * Refer to https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#spring-cloud-stream-overview-user-defined-message-converters .
+	 * @return message converter.
+	 */
+	@Bean
+	public MessageConverter rocketMQCustomMessageConverter() {
+		return new RocketMQMessageConverter();
 	}
 
 }
