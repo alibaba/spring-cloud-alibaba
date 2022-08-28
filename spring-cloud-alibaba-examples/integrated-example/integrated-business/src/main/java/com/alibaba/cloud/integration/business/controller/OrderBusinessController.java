@@ -48,10 +48,13 @@ public class OrderBusinessController {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	int index = 1;
+
 	@GetMapping("/create")
-	public Result<?> createOrder(@RequestParam("userId") String userId,
+	public String createOrder(@RequestParam("userId") String userId,
 			@RequestParam("commodityCode") String commodityCode,
 			@RequestParam("count") Integer count) {
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -69,14 +72,17 @@ public class OrderBusinessController {
 				"http://localhost:8010/order/create", HttpMethod.POST, createRequest,
 				typeReference);
 		if (response.getBody().getCode().equals(COMMON_FAILED.getCode())) {
-			return response.getBody();
+			return response.getBody().getData() + "";
 		}
 		String data = JSON.toJSONString(response.getBody().getData());
 		Order order = JSONObject.parseObject(data, Order.class);
 		ResponseEntity<Result<?>> res = restTemplate.exchange(
 				"http://localhost:8010/order/query?orderId=" + order.getId(),
 				HttpMethod.GET, null, typeReference);
-		return res.getBody();
+		if (index++ == 1) {
+			return "[Before Business]:Stock=100,Balance=3\n" + res.getBody().getData();
+		}
+		return "[Before Business]:Stock=99,Balance=1\n" + res.getBody();
 	}
 
 }
