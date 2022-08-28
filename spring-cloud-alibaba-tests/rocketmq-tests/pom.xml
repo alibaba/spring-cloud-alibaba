@@ -8,7 +8,6 @@
   <artifactId>rocketmq-tests</artifactId>
   <version>2021.0.1.1-SNAPSHOT</version>
   <modules>
-    <module>rocketmq-bus-test</module>
     <module>rocketmq-stream-test</module>
   </modules>
 
