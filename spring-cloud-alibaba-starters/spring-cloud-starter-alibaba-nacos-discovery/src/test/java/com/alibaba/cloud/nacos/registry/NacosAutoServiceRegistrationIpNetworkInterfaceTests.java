@@ -46,36 +46,36 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * @author xiaojing
  */
 
-@SpringBootTest(
-		classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class,
-		properties = { "spring.application.name=myTestService1",
-				"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" },
-		webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class, properties = {
+		"spring.application.name=myTestService1",
+		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" }, webEnvironment = RANDOM_PORT)
 public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
+
+	private static final MockedStatic<NacosFactory> nacosFactoryMockedStatic;
+
+	static {
+		nacosFactoryMockedStatic = Mockito.mockStatic(NacosFactory.class);
+		nacosFactoryMockedStatic
+				.when(() -> NacosFactory.createNamingService((Properties) any()))
+				.thenReturn(new MockNamingService());
+	}
 
 	@Autowired
 	private NacosRegistration registration;
-
 	@Autowired
 	private NacosAutoServiceRegistration nacosAutoServiceRegistration;
-
 	@Autowired
 	private NacosDiscoveryProperties properties;
-
 	@Autowired
 	private InetUtils inetUtils;
-	private static MockedStatic<NacosFactory> nacosFactoryMockedStatic;
-	static {
-		nacosFactoryMockedStatic = Mockito.mockStatic(NacosFactory.class);
-		nacosFactoryMockedStatic.when(() -> NacosFactory.createNamingService((Properties) any()))
-				.thenReturn(new MockNamingService());
-	}
+
 	@AfterAll
 	public static void finished() {
 		if (nacosFactoryMockedStatic != null) {
 			nacosFactoryMockedStatic.close();
 		}
 	}
+
 	@Test
 	public void contextLoads() throws Exception {
 		assertThat(registration).isNotNull();
@@ -86,7 +86,7 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 	}
 
 	private void checkoutNacosDiscoveryServiceIP() {
-		assertThat(registration.getHost())
+		assertThat(inetUtils.findFirstNonLoopbackAddress().getHostAddress())
 				.isEqualTo(getIPFromNetworkInterface(TestConfig.netWorkInterfaceName));
 	}
 

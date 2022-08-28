@@ -45,7 +45,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(classes = NacosAutoServiceRegistrationIpTests.TestConfig.class, properties = {
 		"spring.application.name=myTestService1",
 		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
-		"spring.cloud.nacos.discovery.ip=123.123.123.123" }, webEnvironment = NONE)
+		"spring.cloud.nacos.discovery.ip=127.0.0.1" }, webEnvironment = NONE)
 public class NacosAutoServiceRegistrationIpTests {
 
 	@Autowired

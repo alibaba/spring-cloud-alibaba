@@ -28,14 +28,11 @@ import com.alibaba.cloud.nacos.registry.NacosRegistration;
 import com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration;
 import com.alibaba.cloud.testsupport.SpringCloudAlibaba;
 import com.alibaba.cloud.testsupport.TestExtend;
-import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -53,10 +50,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @TestExtend(time = 4 * TIME_OUT)
 @SpringBootTest(classes = NacosAutoServiceRegistrationIpNetworkInterfaceTests.TestConfig.class, properties = {
 		"spring.application.name=myTestService1",
-		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848" }, webEnvironment = NONE)
+		"spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848",
+		"spring.cloud.nacos.discovery.ip=127.0.0.1" }, webEnvironment = NONE)
 public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 
-	private static MockedStatic<NacosFactory> nacosFactoryMockedStatic;
 	@Autowired
 	private NacosRegistration registration;
 	@Autowired
@@ -69,13 +66,6 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 	@BeforeAll
 	public static void setUp() throws NacosException {
 		NamingFactory.createNamingService("127.0.0.1:8848");
-	}
-
-	@AfterAll
-	public static void finished() {
-		if (nacosFactoryMockedStatic != null) {
-			nacosFactoryMockedStatic.close();
-		}
 	}
 
 	@BeforeEach
@@ -92,8 +82,10 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 	}
 
 	private void checkoutNacosDiscoveryServiceIP() {
-		assertThat(registration.getHost())
-				.isEqualTo(getIPFromNetworkInterface(TestConfig.netWorkInterfaceName));
+
+		String actual = inetUtils.findFirstNonLoopbackAddress().getHostAddress();
+		String excepted = getIPFromNetworkInterface(TestConfig.netWorkInterfaceName);
+		assertThat(actual).isEqualTo(excepted);
 	}
 
 	private String getIPFromNetworkInterface(String networkInterface) {
