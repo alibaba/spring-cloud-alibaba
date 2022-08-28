@@ -297,10 +297,10 @@ public class RocketMQMessageChannelBinder extends
 		}
 	}
 
-	private static class MessageCollectorImpl implements MessageCollector {
+	protected static class MessageCollectorImpl implements MessageCollector {
 		private final Map<MessageChannel, BlockingQueue<Message<?>>> results;
 
-		private MessageCollectorImpl() {
+		MessageCollectorImpl() {
 			this.results = new HashMap();
 		}
 

@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
-import com.alibaba.cloud.rocketmq.SimpleMsg;
-import com.alibaba.cloud.stream.binder.rocketmq.autoconfigurate.RocketMQBinderAutoConfiguration;
+import com.alibaba.cloud.stream.binder.rocketmq.fixture.RocketmqBinderProcessor;
 import com.alibaba.cloud.stream.binder.rocketmq.support.MessageCollector;
 import com.alibaba.cloud.testsupport.SpringCloudAlibaba;
 import com.alibaba.cloud.testsupport.TestExtend;
@@ -16,20 +15,15 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
-import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.SubscribableChannel;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
 import static org.hamcrest.CoreMatchers.is;
@@ -38,31 +32,35 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringCloudAlibaba(composeFiles = "docker/rocket-compose-test.yml", serviceName = "rocketmq-standalone")
 @TestExtend(time = 6 * TIME_OUT)
-//@EnableBinding({Processor.class, RocketmqProduceAndConsumerTests.PolledProcessor.class})
-@SpringBootTest(classes = RocketmqProduceAndConsumerTests.TestConfig.class, webEnvironment = NONE, properties = {
+@DirtiesContext
+@ImportAutoConfiguration(value = {}, exclude = {
+			DataSourceAutoConfiguration.class,
+			TransactionAutoConfiguration.class,
+			DataSourceTransactionManagerAutoConfiguration.class})
+@SpringBootTest(classes = RocketmqBinderProcessor.class, webEnvironment = NONE, properties = {
 		"spring.cloud.stream.rocketmq.binder.name-server=127.0.0.1:9876,127.0.0.1:9877",
 		"spring.cloud.stream.rocketmq.binder.group=flaky-group",
 //		"spring.cloud.stream.rocketmq.binder.consumer-group=flaky-group",
 //		"spring.cloud.stream.pollable-source=pollable",
-		"spring.cloud.stream.bindings.output.destination=TopicOrderTest",
-		"spring.cloud.stream.bindings.output.content-type=application/json",
-		"spring.cloud.stream.bindings.output.group=test-group1",
-		"spring.cloud.stream.bindings.input1.destination=TopicOrderTest",
-		"spring.cloud.stream.bindings.input1.content-type=application/json",
-		"spring.cloud.stream.bindings.input1.group=test-group1",
-		"spring.cloud.stream.bindings.input1.consumer.push.orderly=true",
-		"spring.cloud.stream.bindings.input1.consumer.maxAttempts=1",})
+		"spring.cloud.stream.bindings.uppercaseFunction-out-0.destination=TopicOrderTest",
+		"spring.cloud.stream.bindings.uppercaseFunction-out-0.content-type=application/json",
+		"spring.cloud.stream.bindings.uppercaseFunction-out-0.group=test-group1",
+		"spring.cloud.stream.bindings.uppercaseFunction-in-0.destination=TopicOrderTest",
+		"spring.cloud.stream.bindings.uppercaseFunction-in-0.content-type=application/json",
+		"spring.cloud.stream.bindings.uppercaseFunction-in-0.group=test-group1",
+		"spring.cloud.stream.bindings.uppercaseFunction-in-0.consumer.push.orderly=true",
+		"spring.cloud.stream.bindings.uppercaseFunction-in-0.consumer.maxAttempts=1",})
 public class RocketmqProduceAndConsumerTests {
-	
-	@Autowired
-	private MessageCollector collector;
+
+
+	private final MessageCollector collector = getInstance();
 
 	@Autowired
-	@Qualifier("input1")
+	@Qualifier("uppercaseFunction-in-0")
 	private MessageChannel input1;
 
 	@Autowired
-	@Qualifier("output")
+	@Qualifier("uppercaseFunction-out-0")
 	private MessageChannel output;
 
 	@BeforeAll
@@ -89,29 +87,25 @@ public class RocketmqProduceAndConsumerTests {
 		assertThat(messages, is("Hello RocketMQ"));
 	}
 
-	@Configuration
-	@EnableAutoConfiguration
-	@ImportAutoConfiguration(value = { AutoServiceRegistrationConfiguration.class,
-			RocketMQBinderAutoConfiguration.class}, exclude = {
-			DataSourceAutoConfiguration.class,
-			TransactionAutoConfiguration.class,
-			DataSourceTransactionManagerAutoConfiguration.class})
-	public static class TestConfig {
-
+	public static RocketMQMessageChannelBinder.MessageCollectorImpl getInstance(){
+		return new RocketMQMessageChannelBinder.MessageCollectorImpl();
 	}
-	/**
-	 * 自定义发送消息接口
-	 */
-	public interface PolledProcessor {
 
-		String CUSTOMIZE_OUTPUT = "output";
+	public class SimpleMsg {
 
-		@Output(CUSTOMIZE_OUTPUT)
-		MessageChannel output();
+		private String msg;
 
-		String CUSTOMIZE_INPUT = "input1";
-		@Input(CUSTOMIZE_INPUT)
-		SubscribableChannel input();
+		public SimpleMsg(String msg) {
+			this.msg = msg;
+		}
+
+		public String getMsg() {
+			return msg;
+		}
+
+		public void setMsg(String msg) {
+			this.msg = msg;
+		}
 	}
 
 }
