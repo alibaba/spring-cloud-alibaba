@@ -55,10 +55,6 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.alibaba.nacos</groupId>
-			<artifactId>nacos-client</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>5.1.0.Final</version>
@@ -67,11 +63,6 @@
 		<dependency>
 			<groupId>com.alibaba.msha</groupId>
 			<artifactId>client-spi-metainfo</artifactId>
-			<version>0.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba.msha</groupId>
-			<artifactId>client-rule</artifactId>
 			<version>0.2.1</version>
 		</dependency>
 		<dependency>

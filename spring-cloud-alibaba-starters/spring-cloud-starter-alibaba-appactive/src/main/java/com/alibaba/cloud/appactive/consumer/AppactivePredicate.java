@@ -16,9 +16,11 @@
 
 package com.alibaba.cloud.appactive.consumer;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import com.alibaba.cloud.appactive.common.ServiceMeta;
 import com.alibaba.cloud.appactive.common.UriContext;
@@ -31,12 +33,13 @@ import com.netflix.loadbalancer.PredicateKey;
 import io.appactive.java.api.base.AppContextClient;
 import io.appactive.java.api.base.constants.AppactiveConstant;
 import io.appactive.java.api.base.constants.ResourceActiveType;
-import io.appactive.java.api.rule.machine.AbstractMachineUnitRuleService;
 import io.appactive.java.api.rule.traffic.TrafficRouteRuleService;
 import io.appactive.java.api.utils.lang.StringUtils;
 import io.appactive.rule.ClientRuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.util.AntPathMatcher;
 
 /**
  * @author ChengPu raozihao
@@ -48,11 +51,10 @@ public class AppactivePredicate extends AbstractServerPredicate {
 	private static final Logger logger = LoggerFactory
 			.getLogger(AppactivePredicate.class);
 
-	private final AbstractMachineUnitRuleService machineUnitRuleService = ClientRuleService
-			.getMachineUnitRuleService();
-
 	private final TrafficRouteRuleService trafficRouteRuleService = ClientRuleService
 			.getTrafficRouteRuleService();
+
+	private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
 	public AppactivePredicate(IRule rule, IClientConfig clientConfig) {
 		super(rule, clientConfig);
@@ -65,7 +67,7 @@ public class AppactivePredicate extends AbstractServerPredicate {
 	@Override
 	public boolean apply(PredicateKey predicateKey) {
 		// Just support Nacos Registry now, if it's a NacosServer, return true directly.
-		if (predicateKey.getServer() instanceof NacosServer) {
+		if (!(predicateKey.getServer() instanceof NacosServer)) {
 			return true;
 		}
 		NacosServer server = (NacosServer) predicateKey.getServer();
@@ -78,17 +80,23 @@ public class AppactivePredicate extends AbstractServerPredicate {
 		String svcMeta = metadata.get("svc_meta");
 		String version = metadata.get("svc_meta_v");
 		if (zone == null || svcMeta == null || version == null) {
-			// todo whether is false or true?
-			return false;
+			return true;
 		}
 		String targetZone = null;
 		List<ServiceMeta> serviceMetas = JSONObject.parseArray(svcMeta,
 				ServiceMeta.class);
+		Map<String, String> matchingPatterns = new HashMap<>();
 		for (ServiceMeta sm : serviceMetas) {
-			if (Pattern.matches(sm.getUriPrefix(), uriPath)) {
-				targetZone = sm.getRa();
-				break;
+			if (antPathMatcher.match(sm.getUriPrefix(), uriPath)) {
+				matchingPatterns.put(sm.getUriPrefix(), sm.getRa());
 			}
+		}
+		Comparator<String> patternComparator = antPathMatcher
+				.getPatternComparator(uriPath);
+		if (!matchingPatterns.isEmpty()) {
+			List<String> urls = new ArrayList<>(matchingPatterns.keySet());
+			urls.sort(patternComparator);
+			targetZone = matchingPatterns.get(urls.get(0));
 		}
 
 		if (!StringUtils.isBlank(targetZone)
@@ -109,9 +117,7 @@ public class AppactivePredicate extends AbstractServerPredicate {
 					&& targetZoneByRouteId.equalsIgnoreCase(zone);
 		}
 
-		/** 普通服务 或 是未单元化的服务 */
-		String currentZone = machineUnitRuleService.getCurrentUnit();
-		return StringUtils.isEmpty(currentZone) || currentZone.equalsIgnoreCase(zone);
+		return true;
 	}
 
 }

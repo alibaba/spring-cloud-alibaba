@@ -1,11 +1,11 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,13 +16,17 @@
 
 package io.appactive.demo.common.entity;
 
-
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * @author ChengPu raozihao
+ * @description
+ * @date 2022/8/15
+ */
 @Entity
 public class Product implements Serializable {
 
@@ -96,13 +100,9 @@ public class Product implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Product{" +
-				"id='" + id + '\'' +
-				", name='" + name + '\'' +
-				", img='" + img + '\'' +
-				", description='" + description + '\'' +
-				", price=" + price +
-				", number=" + number +
-				'}';
+		return "Product{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", img='"
+				+ img + '\'' + ", description='" + description + '\'' + ", price=" + price
+				+ ", number=" + number + '}';
 	}
+
 }

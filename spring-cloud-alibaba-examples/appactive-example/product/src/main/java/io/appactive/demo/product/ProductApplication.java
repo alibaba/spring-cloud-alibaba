@@ -1,11 +1,11 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,27 +42,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 @SpringBootApplication
-@ComponentScan(basePackages = {
-		"io.appactive.demo",
-})
+@ComponentScan(basePackages = { "io.appactive.demo" })
 @EntityScan("io.appactive.demo.*")
 @Controller
 @RequestMapping("/")
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = {"io.appactive.demo"})
+@EnableFeignClients(basePackages = { "io.appactive.demo" })
 public class ProductApplication {
 
 	private static final Logger logger = LogUtil.getLogger();
+
 	@Autowired
 	OrderDAO orderDAO;
+
 	@Value("${spring.application.name}")
 	private String appName;
+
 	@Autowired
 	private ProductServiceNormal productServiceNormal;
+
 	@Autowired
 	private ProductServiceUnit productServiceUnit;
+
 	@Autowired
 	private ProductServiceUnitHidden productServiceUnitHidden;
 
@@ -72,7 +74,8 @@ public class ProductApplication {
 
 	@RequestMapping("/echo")
 	@ResponseBody
-	public String echo(@RequestParam(required = false, defaultValue = "jack") String user) {
+	public String echo(
+			@RequestParam(required = false, defaultValue = "jack") String user) {
 		String s = String.valueOf(user);
 		return String.format("%s get %s", s, productServiceNormal.list().toString());
 	}
@@ -83,18 +86,20 @@ public class ProductApplication {
 		return productServiceNormal.list();
 	}
 
-
-	@RequestMapping(value = "/detailHidden")
+	@RequestMapping("/detailHidden")
 	@ResponseBody
-	public ResultHolder<Product> detailHidden(@RequestParam(required = false, defaultValue = "12") String pId) {
+	public ResultHolder<Product> detailHidden(
+			@RequestParam(required = false, defaultValue = "12") String pId) {
 		// unit
-		logger.info("detailHidden, routerId: {}, pId: {}", AppContextClient.getRouteId(), pId);
+		logger.info("detailHidden, routerId: {}, pId: {}", AppContextClient.getRouteId(),
+				pId);
 		return productServiceUnitHidden.detail(pId);
 	}
 
-	@RequestMapping(value = "/detail")
+	@RequestMapping("/detail")
 	@ResponseBody
-	public ResultHolder<Product> detail(@RequestParam(required = false, defaultValue = "12") String rId,
+	public ResultHolder<Product> detail(
+			@RequestParam(required = false, defaultValue = "12") String rId,
 			@RequestParam(required = false, defaultValue = "12") String pId) {
 		// unit
 		logger.info("detail, routerId: {}, pId: {}", AppContextClient.getRouteId(), pId);
@@ -107,9 +112,9 @@ public class ProductApplication {
 			@RequestParam(required = false, defaultValue = "Dubbo") RPCType rpcType,
 			@RequestParam(required = false, defaultValue = "12") String rId,
 			@RequestParam(required = false, defaultValue = "12") String pId,
-			@RequestParam(required = false, defaultValue = "5") Integer number
-	) {
-		logger.info("buy, routerId: {}, rpcType: {}", AppContextClient.getRouteId(), rpcType);
+			@RequestParam(required = false, defaultValue = "5") Integer number) {
+		logger.info("buy, routerId: {}, rpcType: {}", AppContextClient.getRouteId(),
+				rpcType);
 		return orderDAO.buy(rId, pId, number);
 
 	}
@@ -119,4 +124,5 @@ public class ProductApplication {
 	public String check() {
 		return "OK From " + appName;
 	}
+
 }

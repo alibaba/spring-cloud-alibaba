@@ -157,7 +157,7 @@
                 rpcType = getCookie("rpc_type")
             }
             if (rpcType === undefined) {
-                rpcType = "Dubbo"
+                rpcType = "SpringCloud"
             }
             return rpcType;
         }
@@ -198,7 +198,6 @@
                 <li id="buyProduct"><a class="nav-link" th:href="@{'/buyProduct'}">下单(中心服务)</a></li>
                 <!--                    <li><input type="text" class="form-control" placeholder="Rpc类型" id="rpcType" onblur="setMeta()"></li>-->
                 <select class="form-control" id="rpcType" name="rpcType" onchange="setMeta()" style="width:150px">
-                    <option value="Dubbo">Dubbo</option>
                     <option value="SpringCloud">SpringCloud</option>
                 </select>
                 <li><input class="form-control" id="routerId" onblur="setMeta()" onchange="setMeta()" placeholder="路由ID"

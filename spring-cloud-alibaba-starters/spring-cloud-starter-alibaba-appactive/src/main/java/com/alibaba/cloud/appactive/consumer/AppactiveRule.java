@@ -18,6 +18,7 @@ package com.alibaba.cloud.appactive.consumer;
 
 import com.netflix.loadbalancer.AbstractServerPredicate;
 import com.netflix.loadbalancer.CompositePredicate;
+import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.PredicateBasedRule;
 import com.netflix.loadbalancer.PredicateKey;
 import com.netflix.loadbalancer.RoundRobinRule;
@@ -37,8 +38,13 @@ public class AppactiveRule extends PredicateBasedRule {
 	public AppactiveRule() {
 		super();
 		predicate = CompositePredicate.withPredicate(new AppactivePredicate(this, null))
-				.addFallbackPredicate(AbstractServerPredicate.alwaysTrue())
-				.build();
+				.addFallbackPredicate(AbstractServerPredicate.alwaysTrue()).build();
+	}
+
+	@Override
+	public void setLoadBalancer(ILoadBalancer lb) {
+		super.setLoadBalancer(lb);
+		roundRobinRule.setLoadBalancer(lb);
 	}
 
 	@Override
@@ -58,4 +64,5 @@ public class AppactiveRule extends PredicateBasedRule {
 		}
 		return super.choose(key);
 	}
+
 }

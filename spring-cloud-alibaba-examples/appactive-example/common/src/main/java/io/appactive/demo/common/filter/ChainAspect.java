@@ -1,11 +1,11 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,18 +32,19 @@ public class ChainAspect {
 
 	private static final Logger logger = LogUtil.getLogger();
 
-	@AfterReturning(pointcut =
-			"execution(* io.appactive.demo.frontend.service.*.*(..)) || " +
-					"execution(* io.appactive.demo.product.service.*.*(..)) || " +
-					"execution(* io.appactive.demo.storage.service.*.*(..)) || " +
-					"execution(* io.appactive.demo.common.service.springcloud.*.*(..))",
+	@AfterReturning(
+			pointcut = "execution(* io.appactive.demo.frontend.service.*.*(..)) || "
+					+ "execution(* io.appactive.demo.product.service.*.*(..)) || "
+					+ "execution(* io.appactive.demo.storage.service.*.*(..)) || "
+					+ "execution(* io.appactive.demo.common.service.springcloud.*.*(..))",
 			returning = "result")
 	public void afterRunning(JoinPoint joinPoint, Object result) {
 		if (result instanceof ResultHolder) {
 			ResultHolder resultHolder = (ResultHolder) result;
-			resultHolder.addChain(JvmPropertyUtil.getJvmAndEnvValue("appactive.app"), JvmPropertyUtil
-					.getJvmAndEnvValue("appactive.unit"));
+			resultHolder.addChain(JvmPropertyUtil.getJvmAndEnvValue("appactive.app"),
+					JvmPropertyUtil.getJvmAndEnvValue("appactive.unit"));
 			logger.info("ChainAspect: " + resultHolder);
 		}
 	}
+
 }

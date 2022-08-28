@@ -1,11 +1,11 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,7 @@ import java.util.List;
 public class ResultHolder<T> implements Serializable {
 
 	List<Node> chain = new ArrayList<>();
+
 	private T result;
 
 	/**
@@ -58,20 +59,19 @@ public class ResultHolder<T> implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ResultHolder{" +
-				"result=" + result +
-				", chain=" + chain +
-				'}';
+		return "ResultHolder{" + "result=" + result + ", chain=" + chain + '}';
 	}
 
 	static class Node implements Serializable {
+
 		private String app;
+
 		private String unitFlag;
 
-		public Node() {
+		Node() {
 		}
 
-		public Node(String app, String unitFlag) {
+		Node(String app, String unitFlag) {
 			this.app = app;
 			this.unitFlag = unitFlag;
 		}
@@ -94,10 +94,10 @@ public class ResultHolder<T> implements Serializable {
 
 		@Override
 		public String toString() {
-			return "Node{" +
-					"app='" + app + '\'' +
-					", unitFlag='" + unitFlag + '\'' +
-					'}';
+			return "Node{" + "app='" + app + '\'' + ", unitFlag='" + unitFlag + '\''
+					+ '}';
 		}
+
 	}
+
 }
