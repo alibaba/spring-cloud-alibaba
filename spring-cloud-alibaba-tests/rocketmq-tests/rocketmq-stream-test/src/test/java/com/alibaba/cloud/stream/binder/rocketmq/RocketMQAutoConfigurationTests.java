@@ -31,7 +31,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.context.annotation.Configuration;
 
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
@@ -92,8 +91,7 @@ public class RocketMQAutoConfigurationTests {
 
 	@Configuration
 	@EnableAutoConfiguration
-	@ImportAutoConfiguration({ AutoServiceRegistrationConfiguration.class,
-			RocketMQBinderAutoConfiguration.class })
+	@ImportAutoConfiguration({RocketMQBinderAutoConfiguration.class })
 	public static class TestConfig {
 
 	}
