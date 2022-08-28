@@ -9,6 +9,7 @@ import com.alibaba.cloud.testsupport.SpringCloudAlibaba;
 import com.alibaba.cloud.testsupport.TestExtend;
 import com.alibaba.fastjson.JSON;
 import org.apache.rocketmq.common.message.MessageConst;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,6 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.receivesPayloadThat;
 
@@ -69,10 +69,6 @@ public class RocketmqProduceAndConsumerTests {
 
 	}
 
-	public static RocketMQMessageChannelBinder.MessageCollectorImpl getInstance() {
-		return new RocketMQMessageChannelBinder.MessageCollectorImpl();
-	}
-
 	@BeforeEach
 	public void setup() {
 		String key = "KEY";
@@ -90,7 +86,7 @@ public class RocketmqProduceAndConsumerTests {
 	public void testConsumeAndProduce() throws Exception {
 		BlockingQueue<Message<?>> messages = this.collector.forChannel(this.output);
 
-		assertThat(messages, receivesPayloadThat(is("\"HELLO ROCKETMQ\"")));
+		MatcherAssert.assertThat(messages, receivesPayloadThat(is("\"HELLO ROCKETMQ\"")));
 	}
 
 }
