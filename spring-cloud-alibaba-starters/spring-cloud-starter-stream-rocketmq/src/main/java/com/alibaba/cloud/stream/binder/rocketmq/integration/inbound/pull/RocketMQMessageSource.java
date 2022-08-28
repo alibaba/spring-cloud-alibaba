@@ -45,6 +45,7 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -61,7 +62,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	private volatile boolean running;
 
-	private final String topic;
+	private final String name;
 
 	private final MessageSelector messageSelector;
 
@@ -71,7 +72,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	public RocketMQMessageSource(String name,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
-		this.topic = name;
+		this.name = name;
 		this.messageSelector = RocketMQUtils.getMessageSelector(
 				extendedConsumerProperties.getExtension().getSubscription());
 		this.extendedConsumerProperties = extendedConsumerProperties;
@@ -80,7 +81,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	@Override
 	public synchronized void start() {
-		Instrumentation instrumentation = new Instrumentation(topic, this);
+		Instrumentation instrumentation = new Instrumentation(name, this);
 		try {
 			if (this.isRunning()) {
 				throw new IllegalStateException(
@@ -90,14 +91,18 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 					.initPullConsumer(topic, extendedConsumerProperties);
 			// This parameter must be 1, otherwise doReceive cannot be handled singly.
 			// this.consumer.setPullBatchSize(1);
-			this.consumer.subscribe(topic, messageSelector);
+			String[] topics = StringUtils.commaDelimitedListToStringArray(name);
+			for (String topic: topics) {
+				this.consumer.subscribe(topic, messageSelector);
+				// register TopicMessageQueueChangeListener for messageQueuesForTopic
+				this.consumer.registerTopicMessageQueueChangeListener(topic, messageQueuesForTopic::put);
+			}
 			this.consumer.setAutoCommit(false);
-			// register TopicMessageQueueChangeListener for messageQueuesForTopic
-			consumer.registerTopicMessageQueueChangeListener(topic,
-					messageQueuesForTopic::put);
 			this.consumer.start();
 			// Initialize messageQueuesForTopic immediately
-			messageQueuesForTopic.put(topic, consumer.fetchMessageQueues(topic));
+			for (String topic: topics) {
+				messageQueuesForTopic.put(topic, consumer.fetchMessageQueues(topic));
+			}
 			instrumentation.markStartedSuccessfully();
 		}
 		catch (MQClientException e) {
@@ -128,7 +133,9 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 	@Override
 	public synchronized void stop() {
 		if (this.isRunning() && null != consumer) {
-			consumer.unsubscribe(topic);
+			for (String topic: StringUtils.commaDelimitedListToStringArray(name)) {
+				consumer.unsubscribe(topic);
+			}
 			consumer.shutdown();
 			this.running = false;
 		}
