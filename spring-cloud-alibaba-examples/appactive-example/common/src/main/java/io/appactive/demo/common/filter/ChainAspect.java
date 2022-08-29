@@ -32,6 +32,9 @@ public class ChainAspect {
 
 	private static final Logger logger = LogUtil.getLogger();
 
+	/**
+	 * Add tag information in result.
+	 */
 	@AfterReturning(
 			pointcut = "execution(* io.appactive.demo.frontend.service.*.*(..)) || "
 					+ "execution(* io.appactive.demo.product.service.*.*(..)) || "

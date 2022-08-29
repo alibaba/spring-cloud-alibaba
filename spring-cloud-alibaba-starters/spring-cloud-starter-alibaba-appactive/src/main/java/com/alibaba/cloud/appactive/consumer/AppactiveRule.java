@@ -20,9 +20,7 @@ import com.netflix.loadbalancer.AbstractServerPredicate;
 import com.netflix.loadbalancer.CompositePredicate;
 import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.PredicateBasedRule;
-import com.netflix.loadbalancer.PredicateKey;
 import com.netflix.loadbalancer.RoundRobinRule;
-import com.netflix.loadbalancer.Server;
 
 /**
  * @description
@@ -52,17 +50,5 @@ public class AppactiveRule extends PredicateBasedRule {
 		return predicate;
 	}
 
-	@Override
-	public Server choose(Object key) {
-		int count = 0;
-		Server server = roundRobinRule.choose(key);
-		while (count++ <= 10) {
-			if (predicate.apply(new PredicateKey(server))) {
-				return server;
-			}
-			server = roundRobinRule.choose(key);
-		}
-		return super.choose(key);
-	}
 
 }
