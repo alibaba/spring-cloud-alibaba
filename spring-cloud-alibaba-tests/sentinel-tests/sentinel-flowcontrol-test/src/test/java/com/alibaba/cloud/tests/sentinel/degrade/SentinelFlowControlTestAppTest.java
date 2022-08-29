@@ -1,4 +1,4 @@
-package com.alibaba.cloud.tests.sentinel.flowcontrol;
+package com.alibaba.cloud.tests.sentinel.degrade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +42,7 @@ class SentinelFlowControlTestAppTest {
 
 		latch.await();
 
-		assertThat(result).isEmpty();
-//		assertThat(result).anyMatch(s -> s.contains("Blocked by Sentinel"));
+		assertThat(result).anyMatch(s -> s.contains("fallback"));
 	}
 
 }

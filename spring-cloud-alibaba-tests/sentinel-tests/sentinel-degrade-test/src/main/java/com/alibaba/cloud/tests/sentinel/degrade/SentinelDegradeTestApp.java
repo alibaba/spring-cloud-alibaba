@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.tests.sentinel.flowcontrol;
+package com.alibaba.cloud.tests.sentinel.degrade;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import org.springframework.boot.SpringApplication;
@@ -27,6 +29,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -35,31 +38,32 @@ import java.util.Collections;
  */
 @SpringBootApplication
 @RestController
-public class SentinelFlowControlTestApp {
+public class SentinelDegradeTestApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(SentinelFlowControlTestApp.class, args);
+        SpringApplication.run(SentinelDegradeTestApp.class, args);
     }
 
-    @RequestMapping("/notFlowControl")
-    @SentinelResource("/notFlowControl")
-    public String notFlowControl() {
-        return "OK";
+    @RequestMapping("/degrade")
+    @SentinelResource(value = "/degrade", fallback = "fallback")
+    public String degrade() {
+        throw new RuntimeException("Ops, something wrong!");
     }
 
-    @RequestMapping("/flowControl")
-    @SentinelResource("/flowControl")
-    public String flowControl() {
-        return "OK";
+    public static String fallback() {
+        return "fallback";
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
-        FlowRule flowRule = new FlowRule();
-        flowRule.setResource("/flowControl");
-        flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        flowRule.setCount(2);
-        FlowRuleManager.loadRules(Collections.singletonList(flowRule));
+        DegradeRule degradeRule = new DegradeRule();
+        degradeRule.setResource("/degrade");
+        degradeRule.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT);
+        degradeRule.setMinRequestAmount(1);
+        degradeRule.setStatIntervalMs(2);
+        degradeRule.setTimeWindow(1);
+        degradeRule.setCount(1);
+        DegradeRuleManager.loadRules(Arrays.asList(degradeRule));
     }
 
 }
