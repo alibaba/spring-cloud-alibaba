@@ -20,7 +20,6 @@ import com.netflix.loadbalancer.AbstractServerPredicate;
 import com.netflix.loadbalancer.CompositePredicate;
 import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.PredicateBasedRule;
-import com.netflix.loadbalancer.RoundRobinRule;
 
 /**
  * @description
@@ -28,8 +27,6 @@ import com.netflix.loadbalancer.RoundRobinRule;
  * @date 2022/8/21
  */
 public class AppactiveRule extends PredicateBasedRule {
-
-	RoundRobinRule roundRobinRule = new RoundRobinRule();
 
 	private AbstractServerPredicate predicate;
 
@@ -42,7 +39,6 @@ public class AppactiveRule extends PredicateBasedRule {
 	@Override
 	public void setLoadBalancer(ILoadBalancer lb) {
 		super.setLoadBalancer(lb);
-		roundRobinRule.setLoadBalancer(lb);
 	}
 
 	@Override
