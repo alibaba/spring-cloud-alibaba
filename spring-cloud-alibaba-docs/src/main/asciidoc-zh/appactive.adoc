@@ -1,0 +1,332 @@
+== Spring Cloud Alibaba AppActive
+
+=== AppActive介绍
+AppActive，是一个面向业务应用构建云原生高可用多活容灾架构的开源中间件。它提供了应用多活容灾架构的标准、实现和 Demo，适用于丰富的业务场景（单 AZ、单 Region、单云、多 AZ、多 Region、多云、自建 IDC等）。
+
+AppActive 建立在 阿里巴巴 使用 AHAS-MSHA 系统大规模运行生产应用系统的8年经验之上，且结合了来自阿里云商业化服务的外部多家客户和社区的最佳实践，具备高可靠、可拓展等特性。
+
+AppActive 具备以下特性
+
+==== 一、单元分流
+===== 流量统一接入
+对流量的把控能力，来源于流量的统一接入，我们将这一层称为接入层。接入层是单元所有流量的入口，它能解析请求协议，并按照设置的分流模式与分流粒度，将请求流量正确引导到正确单元的相应应用服务SLB上。下文若无特殊说明，请求协议默认HTTP。下图为接入层示意图。
+
+===== 分流模式
+多活场景下，流量会按照某个纬度切片，分流到不同的单元。多活支持多种分流模式，比如按比例分流，按业务属性分流，具体选择哪种分流模式还是取决于业务场景需要。分流模式最终体现在路由规则里，路由规则是一项配置，它定义了某个流量应该隶属于哪个单元。
+
+1. 按比例分流。在某些业务场景下，需要按用户分流，或者按设备号分流。用户、设备等都可以抽象成一个ID，那就可以将ID划为多个区间，每个区间归属于某个单元。这种分流模式，每个单元的流量比例，就可以通过ID区间进行估算，通过设置ID区间与单元容量的比例一致，就可以做到全局的负载均衡。
+2. 按业务属性分流。在某些业务场景下，需要按流量属性分流，比如将爬虫流量引入特定单元，或者按省份分流。爬虫、省份等都可以抽象成一个标签，那就可以将不同的标签值流量引入不同单元。这种分流模式，可以支持对不同业务属性的流量进行物理隔离。
+
+===== 分流粒度
+随着应用服务化，当今应用早已不是单体架构，提供用户访问入口的应用也可能成百上千。接入层将用户流量引入正确的应用，支持域名与URI前缀两种粒度。
+
+1. 按域名分流。按照不同域名区分不同应用。比如应用app1的域名是app1.example.com，app2的域名是app2.example.com。
+2. 按URI前缀分流。按照不同URI前缀区分不同应用。比如应用app1与app2的域名都是app.example.com，但是将URI中/app1前缀的流量引入app1，将/app2前缀的流量引入app2。
+
+===== 流量协议
+接入层支持四层、七层丰富的流量请求协议，以满足用户互联网、物联网等多样化场景需求。
+
+1. HTTP协议支持。接入层默认支持HTTP协议，从HTTP协议中解析出域名与URI，进行转发路由。
+2. HTTPS协议支持。接入层支持HTTPS协议，提供集中化的域名证书管理，满足用户可靠传输、安全传输的要求。用户在接入层配置好域名证书，则应用SLB无需再配置证书。
+3. 其他协议支持。接入层除了支持HTTP与HTTPS协议，还支持其他基于HTTP的协议，比如SOAP等。接入层在协议上有很大的扩展性，能以插件的形式迅速支持特殊协议，比如物联网场景下的MQTT，COAP等。
+
+===== 路由透传
+为了确保流量能在单元内闭环，接入层、应用层、数据层每一层都会进行路由纠错或单元保护。为了识别流量，需要明确流量所属的单元化类型与分流id，我们称之为路由参数，以便通过路由规则计算出流量所属正确单元，因此，路由参数需要跟随请求路径一路传递，我们称之为路由透传。
+
+1. 接入层路由透传。当浏览器发起业务请求时，需要在请求中携带路由参数。路由参数可以在cookie、head或body中，建议cookie。接入层能解析HTTP请求，拿到路由参数并路由到正确的应用SLB，同时应用服务器仍然能从请求中拿到原生的路由参数。
+2. 应用层路由透传。流量到达应用服务器，多活提供插件从HTTP请求中提取路由参数，并保存到上下文，下一步应用可能会发起RPC调用或异步消息，因此路由参数还需要在RPC与消息层面透传。
+3. RPC路由透传。当应用发起RPC调用时，RPC客户端能从上下文中取出路由参数，并跟随RPC请求到远程服务提供者Provider，Provider客户端识别出Request中的路由参数，亦保存到调用上下文。路由参数在RPC中的传递过程对用户透明。
+4. 消息路由透传。MQ客户端在发送消息时，会从当前上下文获取路由参数添加到消息属性中。MQ客户端消费消息时，能从消息属性中取出路由参数，亦保存到调用上下文。路由参数在MQ中的传递过程对用户透明。
+5. 数据层路由透传。数据脏写会造成很严重的后果，因此要保证数据落库到正确单元的DB。多活提供了 DRIVER 插件，对非本单元的请求拒绝。
+
+==== 二、单元协同
+在容灾场景中，理想场景中各个单元独立，但实际上会存在部分跨单元场景的业务场景，为了满足这些场景，产品需要提供单元协同的能力。
+
+===== 中心调用
+有些特定业务场景，为保证数据强一致性，特定服务只能在特定中心单元提供，所有对中心服务的调用都会直接路由到中心单元来完成。异地多活产品通过CSB组件和RPC多活插件来完成服务单元间协同调用，满足业务的完整性。
+
+==== 三、单元保护
+产品保证业务逻辑的全局正确性，不会因切流操作导致单元业务逻辑不一致问题。系统自上而下各层都有对错误流量的纠错保护能力，保证业务按单元化规则进行正确的流转。
+
+===== 接入层纠错
+流量打入接入层，接入层通过请求附加的路由参数判断流量归属单元，非本单元流量将被代理到正确的目标单元，保证了接入层入口流量的正确性。
+
+===== RPC纠错
+RPC服务调用时，RPC多活Plugin在Consumer端会根据请求的单元信息，对服务调用进行正确的路由选址，对错误的流量服务调用，RPC多活Plugin会计算出正确的目标单元，跨单元调用目标单元服务，保证服务流转逻辑的一致性。同时RPC多活Plugin 在Provider端会对过来的请求进行二次校验，保证服务调用的正确。通过双重校验机制，RPC多活Plugin实现对RPC调用的纠错，保证服务调用的正确性。
+
+==== 四、单元扩展
+===== 水平扩展
+当现有单元的业务承载量已达上限且无法扩容时，产品 提供简单快捷单元水平扩展能力：
+
+1. 全国范围内扩展新单元不受地域限制
+2. 扩展的新单元数量不受限制，单元的稳定性和性能不受单元数量影响
+3. 提供两种单元扩展形式：独立 DB 的异地单元 、 共享 DB 的同城单元
+
+=== 如何使用AppActive
+
+==== 一、数据面
+
+**前置条件**
+
+- 需要你的应用服务基于 Java 实现，并且以 SpringCloud 实现服务调用
+- 负载均衡支持 Ribbon，暂不支持 SpringCloudBalancer
+- 支持声明式http客户端：Feign 和 RestTemplate，暂不支持 原始Http客户端如 OkHttp 和 HttpClient
+
+===== 入口应用
+入口应用负责从流量中提取路由标，并设置到上下文中
+
+**改造步骤**
+
+1. 引入 maven 依赖
+
+    ```
+    <dependency>
+        <groupId>com.alibaba.msha</groupId>
+        <artifactId>client-bridge-servlet</artifactId>
+        <version>0.2.1</version>
+    </dependency>
+    ```
+
+2. 引入 filter，以 Spring 为例
+
+    ```java
+    @Configuration
+    public class WebConfig {
+        @Bean
+        public FilterRegistrationBean<RequestFilter> appActiveFilter() {
+            FilterRegistrationBean<RequestFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+            RequestFilter reqResFilter = new RequestFilter();
+            filterRegistrationBean.setFilter(reqResFilter);
+            filterRegistrationBean.addUrlPatterns("/*");
+            return filterRegistrationBean;
+        }
+    }
+    ```
+
+3. 当请求到来时，可以在应用中调用 `AppContextClient.getRouteId();` 来获取路由ID
+
+===== 所有应用
+
+**改造步骤**
+
+1. 在 provider 和 consumer 都引入 maven 依赖
+
+    ```
+    <dependency>
+        <groupId>com.alibaba.msha</groupId>
+        <artifactId>client-bridge-rpc-springcloud-common</artifactId>
+        <version>0.2.1</version>
+    </dependency>
+    ```
+
+    对于 使用 Nacos 作为注册中心的应用，还应引入
+    ```
+    <dependency>
+        <groupId>com.alibaba.msha</groupId>
+        <artifactId>client-bridge-rpc-springcloud-nacos</artifactId>
+        <version>0.2.1</version>
+    </dependency>
+    ```
+
+    注意，不同的注册中心不能同时使用。
+
+    然后引入自动配置
+
+    `@Import({ConsumerAutoConfig.class, NacosAutoConfig.class})`
+
+2. 在 consumer 的 maven 中引入切面，植入多活寻址逻辑
+
+    ```
+    <build>
+        <plugins>
+            </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <version>1.11</version>
+            <configuration>
+                <aspectLibraries>
+                    <aspectLibrary>
+                    <groupId>com.alibaba.msha</groupId>
+                    <artifactId>client-bridge-rpc-springcloud-common</artifactId>
+                    </aspectLibrary>
+                </aspectLibraries>
+                <source>${maven.compiler.source}</source>
+                <target>${maven.compiler.target}</target>
+                <complianceLevel>1.8</complianceLevel>
+                <forceAjcCompile>true</forceAjcCompile>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>compileId</id>
+                    <phase>compile</phase>
+                    <goals>
+                    <goal>compile</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        </plugins>
+    </build>
+    ```
+
+3. 在 provider 中定义不同uri的属性，支持 ant 模式的 uri，举例
+
+    ```
+        @Bean
+        public FilterRegistrationBean<UnitServiceFilter> appActiveUnitServiceFilter() {
+            FilterRegistrationBean<UnitServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+            UnitServiceFilter reqResFilter = new UnitServiceFilter();
+            filterRegistrationBean.setFilter(reqResFilter);
+            filterRegistrationBean.addUrlPatterns("/detailHidden/*","/detail/*");
+            return filterRegistrationBean;
+        }
+
+        @Bean
+        public FilterRegistrationBean<CenterServiceFilter> appActiveCenterServiceFilter() {
+            FilterRegistrationBean<CenterServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+            CenterServiceFilter reqResFilter = new CenterServiceFilter();
+            filterRegistrationBean.setFilter(reqResFilter);
+            filterRegistrationBean.addUrlPatterns("/buy/*");
+            return filterRegistrationBean;
+        }
+    ```
+    不同服务类型如下
+
+- center: 中心服务，强一致的业务（例如库存、金额等）的服务，强制路由到中心机房，使用 `CenterServiceFilter` 过滤
+- unit: 单元服务，基于规则，仅在本单元路由的服务，使用 `UnitServiceFilter` 过滤
+- normal: 普通服务，不做多活改造，使用 `NormalServiceFilter` 过滤，本类服务亦可不单独配置，除上述两种服务以外都认为是普通服务
+
+===== 基本配置
+
+凡是依赖 `appactive-java-api` 模块的应用，启动时候都要配置参数：
+
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+```
+
+表征当前应用使用 Nacos 作为命令通道，并且使用 appactiveDemoNamespaceId空间。
+该空间需要有一些几个 dataId（下面管控面进行说明），这些 dataId 的 groudId 必须一致，比如默认为 `appactive.groupId`
+当然这些都可以在启动参数进行配置，如
+
+```
+-Dappactive.dataId.idSourceRulePath=someDataId
+-Dappactive.dataId.transformerRulePath=otherDataId
+......
+-Dappactive.groupId=myGroupId
+```
+
+==== 二、管控面
+
+在应用部署完成后要进行基线推送，在希望调整流量时进行切流。核心是规则的构造和推送，这里重点将几个规则进行说明。
+
+- appactive.dataId.idSourceRulePath，举例：
+
+```
+{
+    "source": "arg,header,cookie",
+    "tokenKey": "r_id"
+}
+```
+
+说明，从http parameter、header、cookie 中按顺序寻找以r_id为key的value，找到一个即终止寻找过程。
+
+- appactive.dataId.transformerRulePath，举例：
+
+```
+{
+  "id": "userIdBetween",
+  "mod": "10000"
+}
+```
+
+说明，提取到路由标后按照10000取模，作为最终路由标。
+
+
+- appactive.dataId.trafficRouteRulePath，举例：
+
+```
+{
+  "itemType": "UnitRuleItem",
+  "items": [
+    {
+      "name": "unit",
+      "conditions": [
+        {
+          "@userIdBetween": [
+            "0~1999"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "center",
+      "conditions": [
+        {
+          "@userIdBetween": [
+            "2000~9999"
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+```
+说明 按 10000 取模后在 0～1999 范围内的路由标应该被路由到 unit；
+
+按 10000 取模后在 2000～9999 范围内的路由标应该被路由到 center；
+
+- appactive.dataId.forbiddenRulePath，举例：
+
+假设我们希望将 2000~2999 从 unit 划分到 center，则新的appactive.trafficRulePath如下
+
+```
+{
+  "itemType": "UnitRuleItem",
+  "items": [
+    {
+      "name": "unit",
+      "conditions": [
+        {
+          "@userIdBetween": [
+            "0~2999"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "center",
+      "conditions": [
+        {
+          "@userIdBetween": [
+            "3000~9999"
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+```
+
+对应的appactive.forbiddenRulePath 为
+
+```
+    {
+      "itemType": "ForbiddenRuleItem",
+      "items": [
+        {
+          "name": "between",
+          "conditions": [
+            {
+              "@userIdBetween": [
+                "2000~2999"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+```
