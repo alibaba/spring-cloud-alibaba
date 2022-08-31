@@ -1,6 +1,6 @@
-package com.alibaba.cloud.governance.common.rules.util;
+package com.alibaba.cloud.governance.auth.rules.util;
 
-import com.alibaba.cloud.governance.common.rules.auth.IpBlockRule;
+import com.alibaba.cloud.governance.auth.rules.auth.IpBlockRule;
 import com.google.common.net.HttpHeaders;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import org.apache.commons.lang3.StringUtils;

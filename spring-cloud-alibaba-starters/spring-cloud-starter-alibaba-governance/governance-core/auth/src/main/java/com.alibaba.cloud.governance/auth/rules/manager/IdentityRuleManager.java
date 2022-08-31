@@ -1,6 +1,6 @@
-package com.alibaba.cloud.governance.common.rules.manager;
+package com.alibaba.cloud.governance.auth.rules.manager;
 
-import com.alibaba.cloud.governance.common.rules.auth.IdentityRule;
+import com.alibaba.cloud.governance.auth.rules.auth.IdentityRule;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

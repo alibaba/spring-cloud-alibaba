@@ -1,6 +1,6 @@
-package com.alibaba.cloud.governance.common.rules.util;
+package com.alibaba.cloud.governance.auth.rules.util;
 
-import com.alibaba.cloud.governance.common.rules.auth.JwtRule;
+import com.alibaba.cloud.governance.auth.rules.auth.JwtRule;
 import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtHeader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,7 +21,6 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 public class JwtUtil {

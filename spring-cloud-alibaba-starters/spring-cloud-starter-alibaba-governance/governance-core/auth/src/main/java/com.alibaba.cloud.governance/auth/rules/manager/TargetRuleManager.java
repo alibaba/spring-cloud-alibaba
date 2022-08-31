@@ -1,7 +1,7 @@
-package com.alibaba.cloud.governance.common.rules.manager;
+package com.alibaba.cloud.governance.auth.rules.manager;
 
-import com.alibaba.cloud.governance.common.rules.auth.TargetRule;
-import com.alibaba.cloud.governance.common.rules.util.StringMatchUtil;
+import com.alibaba.cloud.governance.auth.rules.auth.TargetRule;
+import com.alibaba.cloud.governance.auth.rules.util.StringMatchUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

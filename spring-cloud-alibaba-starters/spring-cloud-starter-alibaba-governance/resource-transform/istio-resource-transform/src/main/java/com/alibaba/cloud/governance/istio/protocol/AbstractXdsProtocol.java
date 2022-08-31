@@ -1,8 +1,8 @@
 package com.alibaba.cloud.governance.istio.protocol;
 
+import com.alibaba.cloud.governance.istio.NodeBuilder;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsChannel;
-import com.alibaba.cloud.governance.common.rules.util.NodeBuilder;
 import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;

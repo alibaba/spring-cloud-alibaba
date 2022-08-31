@@ -1,10 +1,10 @@
 package com.alibaba.cloud.governance.istio.protocol.impl;
 
-import com.alibaba.cloud.governance.common.rules.AndRule;
-import com.alibaba.cloud.governance.common.rules.OrRule;
-import com.alibaba.cloud.governance.common.rules.auth.*;
-import com.alibaba.cloud.governance.common.rules.manager.*;
-import com.alibaba.cloud.governance.common.rules.util.HeaderMatchUtil;
+import com.alibaba.cloud.governance.auth.rules.AndRule;
+import com.alibaba.cloud.governance.auth.rules.OrRule;
+import com.alibaba.cloud.governance.auth.rules.auth.*;
+import com.alibaba.cloud.governance.auth.rules.manager.*;
+import com.alibaba.cloud.governance.auth.rules.util.HeaderMatchUtil;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;

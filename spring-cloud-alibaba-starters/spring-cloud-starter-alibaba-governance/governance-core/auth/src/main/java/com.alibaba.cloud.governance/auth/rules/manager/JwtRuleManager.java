@@ -1,7 +1,7 @@
-package com.alibaba.cloud.governance.common.rules.manager;
+package com.alibaba.cloud.governance.auth.rules.manager;
 
-import com.alibaba.cloud.governance.common.rules.auth.JwtRule;
-import com.alibaba.cloud.governance.common.rules.util.JwtUtil;
+import com.alibaba.cloud.governance.auth.rules.auth.JwtRule;
+import com.alibaba.cloud.governance.auth.rules.util.JwtUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;

@@ -1,4 +1,4 @@
-package com.alibaba.cloud.governance.common.rules.util;
+package com.alibaba.cloud.governance.auth.rules.util;
 
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;

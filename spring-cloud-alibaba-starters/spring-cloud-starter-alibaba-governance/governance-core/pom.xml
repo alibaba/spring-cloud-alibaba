@@ -19,12 +19,6 @@
     </modules>
 
     <dependencies>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>istio-resource-transform</artifactId>
-            <version>2.2.9-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
 </project>

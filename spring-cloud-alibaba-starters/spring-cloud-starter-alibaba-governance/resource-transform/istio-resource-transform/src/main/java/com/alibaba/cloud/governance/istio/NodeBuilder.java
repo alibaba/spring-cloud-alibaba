@@ -1,4 +1,4 @@
-package com.alibaba.cloud.governance.common.rules.util;
+package com.alibaba.cloud.governance.istio;
 
 import io.envoyproxy.envoy.config.core.v3.Node;
 import org.slf4j.Logger;

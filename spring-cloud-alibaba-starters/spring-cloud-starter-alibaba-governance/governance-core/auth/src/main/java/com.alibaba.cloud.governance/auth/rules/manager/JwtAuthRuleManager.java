@@ -1,7 +1,7 @@
-package com.alibaba.cloud.governance.common.rules.manager;
+package com.alibaba.cloud.governance.auth.rules.manager;
 
-import com.alibaba.cloud.governance.common.rules.auth.JwtAuthRule;
-import com.alibaba.cloud.governance.common.rules.util.StringMatchUtil;
+import com.alibaba.cloud.governance.auth.rules.auth.JwtAuthRule;
+import com.alibaba.cloud.governance.auth.rules.util.StringMatchUtil;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.slf4j.Logger;

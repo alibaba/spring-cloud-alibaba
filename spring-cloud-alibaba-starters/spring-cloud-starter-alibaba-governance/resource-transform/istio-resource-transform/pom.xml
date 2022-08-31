@@ -28,11 +28,6 @@
             <artifactId>grpc-netty-shaded</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>resource-transform-common</artifactId>
-            <version>2.2.9-SNAPSHOT</version>
-        </dependency>
     </dependencies>
     <properties>
         <java.version>1.8</java.version>

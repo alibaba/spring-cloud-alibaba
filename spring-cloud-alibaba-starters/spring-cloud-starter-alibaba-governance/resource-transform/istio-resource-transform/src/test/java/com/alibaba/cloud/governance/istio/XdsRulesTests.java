@@ -1,6 +1,6 @@
 package com.alibaba.cloud.governance.istio;
 
-import com.alibaba.cloud.governance.common.rules.manager.IpBlockRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.IpBlockRuleManager;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;

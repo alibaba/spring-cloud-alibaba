@@ -30,6 +30,12 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.envoyproxy.controlplane</groupId>
+            <artifactId>api</artifactId>
+            <version>0.1.32</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

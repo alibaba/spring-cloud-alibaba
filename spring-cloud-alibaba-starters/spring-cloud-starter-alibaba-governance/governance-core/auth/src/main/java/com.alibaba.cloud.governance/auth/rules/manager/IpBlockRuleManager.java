@@ -1,8 +1,8 @@
-package com.alibaba.cloud.governance.common.rules.manager;
+package com.alibaba.cloud.governance.auth.rules.manager;
 
-import com.alibaba.cloud.governance.common.rules.AndRule;
-import com.alibaba.cloud.governance.common.rules.auth.IpBlockRule;
-import com.alibaba.cloud.governance.common.rules.util.IpUtil;
+import com.alibaba.cloud.governance.auth.rules.util.IpUtil;
+import com.alibaba.cloud.governance.auth.rules.AndRule;
+import com.alibaba.cloud.governance.auth.rules.auth.IpBlockRule;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
 
 import java.util.Map;

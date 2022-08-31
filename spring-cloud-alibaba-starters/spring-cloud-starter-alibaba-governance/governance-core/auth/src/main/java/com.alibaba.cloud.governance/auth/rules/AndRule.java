@@ -1,4 +1,4 @@
-package com.alibaba.cloud.governance.common.rules;
+package com.alibaba.cloud.governance.auth.rules;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.alibaba.cloud.governance.common.rules.auth;
+package com.alibaba.cloud.governance.auth.rules.auth;
 
-import com.alibaba.cloud.governance.common.rules.AndRule;
+import com.alibaba.cloud.governance.auth.rules.AndRule;
 import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
 
 public class IdentityRule {

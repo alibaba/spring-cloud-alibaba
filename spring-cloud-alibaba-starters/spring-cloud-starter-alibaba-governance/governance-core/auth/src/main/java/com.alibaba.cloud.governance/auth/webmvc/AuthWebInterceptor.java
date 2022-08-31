@@ -1,7 +1,7 @@
 package com.alibaba.cloud.governance.auth.webmvc;
 
-import com.alibaba.cloud.governance.common.rules.manager.*;
-import com.alibaba.cloud.governance.common.rules.util.IpUtil;
+import com.alibaba.cloud.governance.auth.rules.manager.*;
+import com.alibaba.cloud.governance.auth.rules.util.IpUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
 import org.springframework.http.HttpHeaders;

@@ -1,4 +1,4 @@
-package com.alibaba.cloud.governance.common.rules.auth;
+package com.alibaba.cloud.governance.auth.rules.auth;
 
 import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtHeader;
 
