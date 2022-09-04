@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 1999-2022 Alibaba Group Holding Ltd.
+  ~ Copyright 2013-2019 the original author or authors.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -30,10 +30,6 @@
                     <p class="card-text">
                         <span>价格: </span><span class="badge text-bg-success" th:text="${product.price}"></span>
                         <span>库存: </span><span class="badge text-bg-info" th:text="${product.number}"></span>
-                        <a class="btn btn-primary" style="text-align: center"
-                           th:href="@{'/buyProduct?pId=' + ${product.id}}">
-                            购买
-                        </a>
                     </p>
                 </div>
             </div>
