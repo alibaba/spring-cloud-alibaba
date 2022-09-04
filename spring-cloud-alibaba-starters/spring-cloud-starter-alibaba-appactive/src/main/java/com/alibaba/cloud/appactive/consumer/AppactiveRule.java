@@ -46,5 +46,4 @@ public class AppactiveRule extends PredicateBasedRule {
 		return predicate;
 	}
 
-
 }

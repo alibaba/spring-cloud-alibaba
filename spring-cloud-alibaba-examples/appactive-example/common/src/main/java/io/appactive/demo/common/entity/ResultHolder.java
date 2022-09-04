@@ -27,7 +27,7 @@ public class ResultHolder<T> implements Serializable {
 	private T result;
 
 	/**
-	 * 默认构造器，便于序列化
+	 * Default constructor.
 	 */
 	public ResultHolder() {
 
