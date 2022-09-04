@@ -1,109 +1,168 @@
-# 样例
+# AppActive Example
 
-## 整体架构
+## 项目说明
 
-![appactive_landscape](http://appactive.oss-cn-beijing.aliyuncs.com/images/SCA-DEMO.png)
+[![vTlxsA.jpg](https://s1.ax1x.com/2022/09/04/vTlxsA.jpg)](https://imgse.com/i/vTlxsA)
 
 本 demo 整体架构如图。 
 
 注：
 
-- 应用共同依赖的注册中心 nacos 和 数据库 mysql 未在图中展示出来。
-- 本 demo 的命令通道依赖于 nacos
+- 应用共同依赖的注册中心 Nacos 和 数据库 MySQL 未在图中展示出来。
+- 本 demo 的命令通道依赖于 Nacos。
 
 
-共有 2 个单元：
+共有 3 类单元：
 
-- center: 中心单元 
-- unit: 普通单元
+- center: 中心单元，无法做多活改造的应用
+- unit: 普通单元，做了多活改造应用
+- normal：非单元，未做多活改造的应用
 
-共有 2 个应用，按照距离（调用链路）终端用户由近及远分别为：
+共有 3 个应用，按照距离（调用链路）终端用户由近及远分别为：
 
 - frontend: 前端应用，接受用户请求，请求到实际数据后返回
 - product: 产品应用，提供三个服务：
 	- 产品列表: 普通服务
 	- 产品详情: 单元服务
 	- 产品下单: 中心服务
+- storage: 库存应用，供下单服务扣减库存
 
 应用在 center 和 unit 各部署一套（对等部署）。
 
 图中绿色格子代表了本次请求的调用链路。
 
-## 快速启动
+## 示例
 
-### 步骤
+### 快速接入
+在启动示例进行演示之前，我们先了解一下 Spring Cloud 应用如何使用 AppActive所提供的异地多活能力。
+**注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
 
-1. 往 nacos 中推送多活规则，详见 https://doc.appactive.io/docs/cn/details/demo_nacos.html#%E6%AD%A5%E9%AA%A4
-2. 启动 4 套应用，启动参数分别为
+1. 首先，修改 pom.xml 文件，引入 Nacos Config Starter。
 
-frontend
-```
--Dappactive.channelTypeEnum=NACOS
--Dappactive.namespaceId=appactiveDemoNamespaceId
--Dappactive.unit=center
--Dappactive.app=frontend
--Dio.appactive.demo.unitlist=center,unit
--Dio.appactive.demo.applist=frontend,product
--Dserver.port=8885
-```
-product
-```
--Dappactive.channelTypeEnum=NACOS
--Dappactive.namespaceId=appactiveDemoNamespaceId
--Dappactive.unit=center
--Dappactive.app=product
--Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT&activeInstanceId=mysql&activeDbName=product
--Dserver.port=8883
-```
+       <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-appactive</artifactId>
+        </dependency>
 
-若想直接体验更多，请见[AppActive官方demo站点](http://demo.appactive.io/)
+2. 在应用的 /src/main/resources/application.properties 配置文件中给特定接口配置其所调用的实例类型。
 
-## 分模块体验
+        spring.cloud.appactive.filter.unit-path=/detailHidden/*,/detail/*
+        spring.cloud.appactive.filter.center-path=/buy/*
+        spring.cloud.appactive.filter.normal-path=/*
 
-### Filter
+3. 在应用的 /src/main/resources/application.properties 配置客户端负载均衡为 AppActive 所提供的负载均衡算法，配置方式如下，注意需要将[service-name]替换成具体的待消费服务名。
+
+        [service-name].ribbon.NFLoadBalancerRuleClassName =com.alibaba.cloud.appactive.consumer.AppactiveRule
+
+
+### 快速启动
+
+1. 启动 Nacos, MySQL, 并往 Nacos 中推送多活规则：
+   
+   - 在 `appactive-example` 目录下，执行：`docker-compose -f component-quickstart.yml up -d` 启动 Nacos, MySQL。 
+   - 执行以下命令：`curl -X POST 'http://127.0.0.1:8848/nacos/v1/console/namespaces' -d 'customNamespaceId=appactiveDemoNamespaceId&namespaceName=appactiveDemoNamespaceName&namespaceDesc=appactiveDemoNamespaceDesc'` 在 Nacos 配置中心中创建一个演示用命名空间 appactiveDemoNamespaceId。 
+   - 执行以下命令：`sh baseline.sh 2 NACOS appactiveDemoNamespaceId`，往命名空间中推送多活规则。
+   
+2. 启动 5 套应用，启动参数分别为：
+
+- frontend
+    ```
+    -Dappactive.channelTypeEnum=NACOS
+    -Dappactive.namespaceId=appactiveDemoNamespaceId
+    -Dappactive.unit=unit
+    -Dappactive.app=frontend
+    -Dio.appactive.demo.unitlist=center,unit
+    -Dio.appactive.demo.applist=frontend,product,storage
+    -Dserver.port=8875
+    ```
+- product
+    ```
+    -Dappactive.channelTypeEnum=NACOS
+    -Dappactive.namespaceId=appactiveDemoNamespaceId
+    -Dappactive.unit=center
+    -Dappactive.app=product
+    -Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT&activeInstanceId=mysql&activeDbName=product
+    -Dserver.port=8883
+    ```
+    ```
+    -Dappactive.channelTypeEnum=NACOS
+    -Dappactive.namespaceId=appactiveDemoNamespaceId
+    -Dappactive.unit=unit
+    -Dappactive.app=product
+    -Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT&activeInstanceId=mysql&activeDbName=product
+    -Dserver.port=8873
+    ```
+- storage
+    ```
+    -Dappactive.channelTypeEnum=NACOS
+    -Dappactive.namespaceId=appactiveDemoNamespaceId
+    -Dappactive.unit=center
+    -Dappactive.app=storage
+    -Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+    -Dserver.port=8881
+    ```
+    ```
+    -Dappactive.channelTypeEnum=NACOS
+    -Dappactive.namespaceId=appactiveDemoNamespaceId
+    -Dappactive.unit=unit
+    -Dappactive.app=storage
+    -Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+    -Dserver.port=8871
+    ```
+
+## 效果演示
+
+### 普通服务
 
 #### 步骤
 
-1. 构建相关 jar 包
-2. 运行
+1. 在浏览器中输入：http://127.0.0.1:8079/listProduct 地址，可见请求通过 frontend 应用被发送给了 product。
 
+    [![vTlxsA.jpg](https://s1.ax1x.com/2022/09/04/vTlxsA.jpg)](https://imgse.com/i/vTlxsA)
+
+    由于上述路径中的 /listProduct 在 product 应用中匹配到的是 /* 路径规则，对应 normal 非单元，所以frontend 在从注册中心获取的 product 地址列表中不存在倾向性，会随机选择地址进行请求发送。因此多次请求上述路径，会看到请求在 product 的 unit 和 center 单元中来回切换。
+
+2. 在浏览器中输入：http://127.0.0.1:8079/detailProduct 路径，由于上述路径中的 /detailProduct 在 product 应用中匹配到的是 /detail/* 路径规则，对应 unit 单元，其会根据请求中 Header, Cookie 或请求参数中的变量具体的值去判断该请求的下游单元类型，由于事先配置如下切流规则（具体可见 rule 目录下的 idUnitMapping.json 文件内容）：
     ```
-    java -Dappactive.channelTypeEnum=NACOS \
-           -Dappactive.namespaceId=appactiveDemoNamespaceId \
-           -Dappactive.unit=unit \
-           -Dappactive.app=frontend \
-           -Dio.appactive.demo.unitlist=center,unit \
-           -Dio.appactive.demo.applist=frontend,product \
-           -Dserver.port=8886 \
-    -jar xxxxxx.jar
+    {
+      "itemType": "UnitRuleItem",
+      "items": [
+        {
+          "name": "unit",
+          "conditions": [
+            {
+              "@userIdBetween": [
+                "0~1999"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "center",
+          "conditions": [
+            {
+              "@userIdBetween": [
+                "2000~9999"
+              ]
+            }
+          ]
+        }
+      ]
+    }
     ```
+    上述规则表示，用户Id为 0~1999 的请求将发送给下游提供者中的 unit 单元，用户Id为 2000~9999 的请求将发送给下游提供者中的 center 单元。
+    如下图，模拟一个用户Id为 1999 的请求，可见请求通过 frontend 发送到了下游中 product 的 unit 单元。
 
-3. 测试
+    [![1sOhE.jpg](https://s1.328888.xyz/2022/09/04/1sOhE.jpg)](https://imgloc.com/i/1sOhE)
 
-    ```
-    curl 127.0.0.1:8886/show?r_id=1 -H "r_id:2" -b "r_id=3"
-    routerId: 1
-    curl 127.0.0.1:8886/show -H "r_id:2" -b "r_id=3"
-    routerId: 2
-    curl 127.0.0.1:8886/show  -b "r_id=3"
-    routerId: 3
-    curl 127.0.0.1:8886/show  
-    routerId: null
-    ```
+    如下图，模拟一个用户Id为 2000 的请求，可见请求通过 frontend 发送到了下游中 product 的 center 单元。
 
-### SpringCloud
+    [![1sjsJ.jpg](https://s1.328888.xyz/2022/09/04/1sjsJ.jpg)](https://imgloc.com/i/1sjsJ)
 
-构建 SpringCloud 的 demo 过于复杂，建议使用 quick start 中启用的demo，直接进行体验，特别地，单元保护功能测试步骤如下：
+3. 在浏览器中输入：http://127.0.0.1:8079/buyProduct 路径，由于上述路径中的 /buyProduct 在 product 和 storage 应用中匹配到的是 /buy/* 路径规则，对应 center 单元，其会直接将请求发送到下游的 center 单元中节点。
 
-1. 发起测试
+    [![1s4Oi.jpg](https://s1.328888.xyz/2022/09/04/1s4Oi.jpg)](https://imgloc.com/i/1s4Oi)
 
-    ```
-    curl 127.0.0.1:8884/detail -H "Host:demo.appactive.io" -H "appactive-router-id:2499"
-    # 注意到报错会有这样一段
-    403 FORBIDDEN "routerId 2499 does not belong in unit:unit"
-    ```
-
-因为我们直接将 路由id为 2499 的 请求路由到了单元，但实际上，这个请求应该路由到中心，所以被单元的provider拒绝请求了。
 
 ## 规则说明
 
