@@ -12,7 +12,7 @@ dataIdPrefix="appactive.dataId."
 groupId="appactive.groupId"
 
 forbiddenFile="forbiddenRule.json"
-forbiddenFileEmpty="forbiddenFileEmpty.json"
+forbiddenFileEmpty="forbiddenRuleEmpty.json"
 idUnitMappingNextFile="idUnitMappingNext.json"
 
 if [ $channel = "FILE" ]
