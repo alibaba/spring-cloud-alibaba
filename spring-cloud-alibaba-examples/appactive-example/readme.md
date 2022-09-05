@@ -160,7 +160,7 @@ Before starting the example for demonstration, let's take a look at how Spring C
       ]
     }
     ```
-    The above rules mean that requests with user IDs of 0~1999 will be sent to the unit in the downstream provider, and requests with user IDs of 2000~9999 will be sent to the center of the downstream provider.
+    The above rules mean that requests with user IDs of 0 ~ 1999 will be sent to the unit in the downstream provider, and requests with user IDs of 2000 ~ 9999 will be sent to the center of the downstream provider.
     As shown in the figure below, a request with a user ID of 1999 is simulated. It can be seen that the request is sent to the unit node of product in the downstream through the frontend.
 
     [![1xnI7.jpg](https://s1.328888.xyz/2022/09/05/1xnI7.jpg)](https://imgloc.com/i/1xnI7)
@@ -177,7 +177,7 @@ Before starting the example for demonstration, let's take a look at how Spring C
     - Build new mapping relationship rules and write prohibition rules (manually).
     - Push the write prohibition rules to the application.
     - Push the new mapping relationship rules to the application after waiting for the data to equalize.
-   The streaming rule demonstrated next will send requests with user IDs 0~2999 to the unit in the downstream provider, and requests with user IDs 3000~9999 will be sent to the center in the downstream provider. For specific rules, see idUnitMappingNext.json:
+   The streaming rule demonstrated next will send requests with user IDs 0 ~ 2999 to the unit in the downstream provider, and requests with user IDs 3000 ~ 9999 will be sent to the center in the downstream provider. For specific rules, see idUnitMappingNext.json:
         ```
         {
           "itemType": "UnitRuleItem",
