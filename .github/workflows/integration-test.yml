@@ -39,7 +39,9 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Compile & Checkstyle
         run: mvn clean compile
+      - name: install dependencies
+        run: mvn clean install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: Testing
-        run: mvn clean test
+        run: ./mvnw verify -B -Dmaven.test.skip=false
 #        run: mvn clean -Dit.enabled=true test
 

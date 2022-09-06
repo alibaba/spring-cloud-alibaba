@@ -19,6 +19,8 @@ package com.alibaba.cloud.stream.binder.rocketmq.convert;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.messaging.Message;
+import org.springframework.messaging.converter.AbstractMessageConverter;
 import org.springframework.messaging.converter.ByteArrayMessageConverter;
 import org.springframework.messaging.converter.CompositeMessageConverter;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -31,7 +33,7 @@ import org.springframework.util.ClassUtils;
  *
  * @author zkzlx
  */
-public class RocketMQMessageConverter {
+public class RocketMQMessageConverter extends AbstractMessageConverter {
 
 	/**
 	 * if you want to customize a bean, please use the BeanName.
@@ -86,5 +88,45 @@ public class RocketMQMessageConverter {
 	public void setMessageConverter(CompositeMessageConverter messageConverter) {
 		this.messageConverter = messageConverter;
 	}
+
+	/**
+	 * support all classes.
+	 * @param clazz classes.
+	 * @return awayls true.
+	 */
+	@Override
+	protected boolean supports(Class<?> clazz) {
+		return true;
+	}
+
+	/**
+	 * Convert the message payload from serialized form to an Object by RocketMQMessageConverter.
+	 * @param message the input message
+	 * @param targetClass the target class for the conversion
+	 * @param conversionHint an extra object passed to the {@link MessageConverter},
+	 * e.g. the associated {@code MethodParameter} (may be {@code null}}
+	 * @return the result of the conversion, or {@code null} if the converter cannot
+	 * perform the conversion
+	 * @since 4.2
+	 */
+	@Override
+	protected Object convertFromInternal(Message<?> message, Class<?> targetClass, Object conversionHint) {
+		Object payload = null;
+		for (MessageConverter converter : getMessageConverter().getConverters()) {
+			try {
+				payload = converter.fromMessage(message, targetClass);
+			}
+			catch (Exception ignore) {
+			}
+			if (payload != null) {
+				return payload;
+			}
+		}
+		if (payload == null && logger.isDebugEnabled()) {
+			logger.debug("Can convert message " + message.toString());
+		}
+		return payload;
+	}
+
 
 }

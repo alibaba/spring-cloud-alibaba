@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 // @HasDockerAndItEnabled
 @SpringCloudAlibaba(composeFiles = "docker/nacos-compose-test.yml", serviceName = "nacos-standalone")
-@TestExtend(time = 3 * TIME_OUT)
+@TestExtend(time = 4 * TIME_OUT)
 public class NacosConfigRefreshTest {
 
 	/**

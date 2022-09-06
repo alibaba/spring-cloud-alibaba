@@ -1,0 +1,23 @@
+server:
+  port: 28089
+spring:
+  application:
+    name: rocketmq-pollable-consume-example
+  cloud:
+    stream:
+      pollable-source: pollable
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+      bindings:
+        producer-out-0:
+          destination: pollable
+        pollable-in-0:
+          destination: pollable
+logging:
+  level:
+    org.springframework.context.support: debug

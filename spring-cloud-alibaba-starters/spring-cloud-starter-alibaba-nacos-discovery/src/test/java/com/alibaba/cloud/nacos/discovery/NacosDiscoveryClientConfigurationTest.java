@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos.discovery;
 
 import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
 import com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration;
+import com.alibaba.cloud.nacos.utils.UtilIPv6AutoConfiguration;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -41,6 +42,7 @@ public class NacosDiscoveryClientConfigurationTest {
 					AutoServiceRegistrationConfiguration.class,
 					NacosServiceRegistryAutoConfiguration.class,
 					UtilAutoConfiguration.class,
+					UtilIPv6AutoConfiguration.class,
 					NacosServiceAutoConfiguration.class,
 					NacosDiscoveryAutoConfiguration.class,
 					NacosDiscoveryClientConfiguration.class, this.getClass()));
