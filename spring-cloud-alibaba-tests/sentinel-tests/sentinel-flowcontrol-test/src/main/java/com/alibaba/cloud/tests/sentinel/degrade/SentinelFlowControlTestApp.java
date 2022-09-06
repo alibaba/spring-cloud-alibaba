@@ -16,18 +16,19 @@
 
 package com.alibaba.cloud.tests.sentinel.degrade;
 
+import java.util.Collections;
+
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collections;
 
 /**
  * @author Freeman
@@ -37,33 +38,33 @@ import java.util.Collections;
 @RestController
 public class SentinelFlowControlTestApp {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SentinelFlowControlTestApp.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(SentinelFlowControlTestApp.class, args);
+	}
 
-    @RequestMapping("/notFlowControl")
-    @SentinelResource("/notFlowControl")
-    public String notFlowControl() {
-        return "OK";
-    }
+	@RequestMapping("/notFlowControl")
+	@SentinelResource("/notFlowControl")
+	public String notFlowControl() {
+		return "OK";
+	}
 
-    @RequestMapping("/flowControl")
-    @SentinelResource(value = "/flowControl", fallback = "flowControlFallback")
-    public String flowControl() {
-        return "OK";
-    }
+	@RequestMapping("/flowControl")
+	@SentinelResource(value = "/flowControl", fallback = "flowControlFallback")
+	public String flowControl() {
+		return "OK";
+	}
 
-    public static String flowControlFallback() {
-        return "fallback";
-    }
+	public static String flowControlFallback() {
+		return "fallback";
+	}
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void onApplicationReady() {
-        FlowRule flowRule = new FlowRule();
-        flowRule.setResource("/flowControl");
-        flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        flowRule.setCount(2);
-        FlowRuleManager.loadRules(Collections.singletonList(flowRule));
-    }
+	@EventListener(ApplicationReadyEvent.class)
+	public void onApplicationReady() {
+		FlowRule flowRule = new FlowRule();
+		flowRule.setResource("/flowControl");
+		flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+		flowRule.setCount(2);
+		FlowRuleManager.loadRules(Collections.singletonList(flowRule));
+	}
 
 }
