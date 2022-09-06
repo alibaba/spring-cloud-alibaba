@@ -1,31 +1,31 @@
 package com.alibaba.cloud.governance.istio.protocol.impl;
 
-import com.alibaba.cloud.governance.auth.rules.AndRule;
-import com.alibaba.cloud.governance.auth.rules.OrRule;
 import com.alibaba.cloud.governance.auth.rules.auth.*;
 import com.alibaba.cloud.governance.auth.rules.manager.*;
-import com.alibaba.cloud.governance.auth.rules.util.HeaderMatchUtil;
+import com.alibaba.cloud.governance.common.matcher.HeaderMatcher;
+import com.alibaba.cloud.governance.common.matcher.IpMatcher;
+import com.alibaba.cloud.governance.common.matcher.StringMatcher;
+import com.alibaba.cloud.governance.common.rule.AndRule;
+import com.alibaba.cloud.governance.common.rule.OrRule;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
+import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import io.envoyproxy.envoy.config.listener.v3.FilterChain;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.rbac.v3.Permission;
 import io.envoyproxy.envoy.config.rbac.v3.Policy;
 import io.envoyproxy.envoy.config.rbac.v3.Principal;
 import io.envoyproxy.envoy.config.rbac.v3.RBAC;
-import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
 import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtAuthentication;
+import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtHeader;
 import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtProvider;
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager;
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.HttpFilter;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
-import io.envoyproxy.envoy.type.matcher.v3.ListMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
-import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,8 +198,12 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			Map<String, JwtProvider> jwtProviders = jwtRule.getProvidersMap();
 			for (Map.Entry<String, JwtProvider> entry : jwtProviders.entrySet()) {
 				JwtProvider provider = entry.getValue();
-				JwtRuleManager.addJwtRule(new JwtRule(entry.getKey(),
-						provider.getFromHeadersList(), provider.getIssuer(),
+				Map<String, String> fromHeaders = new HashMap<>();
+				for (JwtHeader header : provider.getFromHeadersList()) {
+					fromHeaders.put(header.getName(), header.getValuePrefix());
+				}
+				JwtRuleManager.addJwtRule(new JwtRule(entry.getKey(), fromHeaders,
+						provider.getIssuer(),
 						new ArrayList<>(provider.getAudiencesList()),
 						provider.getLocalJwks().getInlineString(),
 						new ArrayList<>(provider.getFromParamsList()),
@@ -212,12 +216,12 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	private void resolvePrincipal(String name, Principal principal, boolean isAllowed) {
 		Principal.Set andIds = principal.getAndIds();
-		AndRule<CidrRange> ipBlockList = new AndRule<>();
-		AndRule<CidrRange> remoteIpBlockList = new AndRule<>();
+		AndRule<IpMatcher> ipBlockList = new AndRule<>();
+		AndRule<IpMatcher> remoteIpBlockList = new AndRule<>();
 		AndRule<StringMatcher> requestPrincipalList = new AndRule<>();
 		AndRule<StringMatcher> authAudienceList = new AndRule<>();
 		AndRule<StringMatcher> authPresenterList = new AndRule<>();
-		Map<String, AndRule<ListMatcher>> authClaimMap = new HashMap<>();
+		Map<String, AndRule<StringMatcher>> authClaimMap = new HashMap<>();
 		Map<String, AndRule<HeaderMatcher>> headerMap = new HashMap<>();
 		AndRule<StringMatcher> identityList = new AndRule<>();
 		for (Principal andId : andIds.getIdsList()) {
@@ -231,23 +235,27 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			}
 			Principal.Set orIds = andId.getOrIds();
 			List<StringMatcher> identities = new ArrayList<>();
-			List<CidrRange> ipBlocks = new ArrayList<>();
-			List<CidrRange> remoteIpBlocks = new ArrayList<>();
+			List<IpMatcher> ipBlocks = new ArrayList<>();
+			List<IpMatcher> remoteIpBlocks = new ArrayList<>();
 			List<StringMatcher> requestPrincipals = new ArrayList<>();
 			List<StringMatcher> authAudiences = new ArrayList<>();
 			List<StringMatcher> authPresenters = new ArrayList<>();
-			Map<String, List<ListMatcher>> authClaims = new HashMap<>();
+			Map<String, List<StringMatcher>> authClaims = new HashMap<>();
 			Map<String, List<HeaderMatcher>> headers = new HashMap<>();
 			for (Principal orId : orIds.getIdsList()) {
 				if (orId.hasAuthenticated()
 						&& orId.getAuthenticated().hasPrincipalName()) {
-					identities.add(orId.getAuthenticated().getPrincipalName());
+					StringMatcher identity = ConvUtil.convStringMatcher(
+							orId.getAuthenticated().getPrincipalName());
+					if (identity != null) {
+						identities.add(identity);
+					}
 				}
 				if (orId.hasDirectRemoteIp()) {
-					ipBlocks.add(orId.getDirectRemoteIp());
+					ipBlocks.add(ConvUtil.convertIpMatcher(orId.getDirectRemoteIp()));
 				}
 				if (orId.hasRemoteIp()) {
-					remoteIpBlocks.add(orId.getRemoteIp());
+					remoteIpBlocks.add(ConvUtil.convertIpMatcher(orId.getRemoteIp()));
 				}
 				if (orId.hasMetadata()
 						&& ISTIO_AUTHN.equals(orId.getMetadata().getFilter())) {
@@ -257,33 +265,57 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 					case REQUEST_AUTH_PRINCIPAL:
 						if (orId.hasMetadata() && orId.getMetadata().hasValue()
 								&& orId.getMetadata().getValue().hasStringMatch()) {
-							requestPrincipals
-									.add(orId.getMetadata().getValue().getStringMatch());
+							StringMatcher requestPrinciple = ConvUtil.convStringMatcher(
+									orId.getMetadata().getValue().getStringMatch());
+							if (requestPrinciple != null) {
+								requestPrincipals.add(requestPrinciple);
+							}
 						}
 						break;
 					case REQUEST_AUTH_AUDIENCE:
 						if (orId.hasMetadata() && orId.getMetadata().hasValue()
 								&& orId.getMetadata().getValue().hasStringMatch()) {
-							authAudiences
-									.add(orId.getMetadata().getValue().getStringMatch());
+							StringMatcher authAudience = ConvUtil.convStringMatcher(
+									orId.getMetadata().getValue().getStringMatch());
+							if (authAudience != null) {
+								authAudiences.add(authAudience);
+							}
 						}
 						break;
 					case REQUEST_AUTH_PRESENTER:
 						if (orId.hasMetadata() && orId.getMetadata().hasValue()
 								&& orId.getMetadata().getValue().hasStringMatch()) {
-							authPresenters
-									.add(orId.getMetadata().getValue().getStringMatch());
+							StringMatcher authPresenter = ConvUtil.convStringMatcher(
+									orId.getMetadata().getValue().getStringMatch());
+							if (authPresenter != null) {
+								authPresenters.add(authPresenter);
+							}
 						}
 						break;
 					case REQUEST_AUTH_CLAIMS:
 						if (orId.hasMetadata() && orId.getMetadata().hasValue()
 								&& orId.getMetadata().getValue().hasListMatch()) {
 							if (segments.size() >= 2) {
-								List<ListMatcher> listMatchers = authClaims.getOrDefault(
-										segments.get(1).getKey(), new ArrayList<>());
-								listMatchers.add(
-										orId.getMetadata().getValue().getListMatch());
-								authClaims.put(segments.get(1).getKey(), listMatchers);
+								List<StringMatcher> stringMatchers = authClaims
+										.getOrDefault(segments.get(1).getKey(),
+												new ArrayList<>());
+								StringMatcher stringMatcher = null;
+								try {
+									stringMatcher = ConvUtil.convStringMatcher(
+											orId.getMetadata().getValue().getListMatch()
+													.getOneOf().getStringMatch());
+								}
+								catch (Exception e) {
+									log.error(
+											"unable to get/convert request auth claims");
+								}
+								if (stringMatcher != null) {
+									stringMatchers.add(stringMatcher);
+								}
+								if (!stringMatchers.isEmpty()) {
+									authClaims.put(segments.get(1).getKey(),
+											stringMatchers);
+								}
 							}
 						}
 						break;
@@ -293,7 +325,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				if (orId.hasHeader()) {
 					List<HeaderMatcher> headerMatchers = headers
 							.getOrDefault(orId.getHeader().getName(), new ArrayList<>());
-					headerMatchers.add(orId.getHeader());
+					HeaderMatcher headerMatcher = ConvUtil
+							.convertHeaderMatcher(orId.getHeader());
+					headerMatchers.add(headerMatcher);
 					headers.put(orId.getHeader().getName(), headerMatchers);
 				}
 			}
@@ -315,8 +349,8 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			if (!remoteIpBlocks.isEmpty()) {
 				remoteIpBlockList.addOrRule(new OrRule<>(remoteIpBlocks, isNot));
 			}
-			for (Map.Entry<String, List<ListMatcher>> entry : authClaims.entrySet()) {
-				AndRule<ListMatcher> authClaimEntries = authClaimMap
+			for (Map.Entry<String, List<StringMatcher>> entry : authClaims.entrySet()) {
+				AndRule<StringMatcher> authClaimEntries = authClaimMap
 						.getOrDefault(entry.getKey(), new AndRule<>());
 				authClaimEntries.addOrRule(new OrRule<>(entry.getValue(), isNot));
 				authClaimMap.put(entry.getKey(), authClaimEntries);
@@ -354,7 +388,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		AndRule<Integer> portList = new AndRule<>();
 		AndRule<StringMatcher> methodList = new AndRule<>();
 		AndRule<StringMatcher> pathList = new AndRule<>();
-		AndRule<CidrRange> destIpList = new AndRule<>();
+		AndRule<IpMatcher> destIpList = new AndRule<>();
 		for (Permission andRule : andRules.getRulesList()) {
 			if (andRule.getAny()) {
 				return;
@@ -369,7 +403,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			List<Integer> ports = new ArrayList<>();
 			List<StringMatcher> methods = new ArrayList<>();
 			List<StringMatcher> paths = new ArrayList<>();
-			List<CidrRange> destIps = new ArrayList<>();
+			List<IpMatcher> destIps = new ArrayList<>();
 			for (Permission orRule : orRules.getRulesList()) {
 				int port = orRule.getDestinationPort();
 				if (port > MIN_PORT && port <= MAX_PORT) {
@@ -378,20 +412,30 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				if (orRule.hasHeader()) {
 					switch (orRule.getHeader().getName()) {
 					case HEADER_NAME_AUTHORITY:
-						hosts.add(HeaderMatchUtil
-								.headerMatch2StringMatch(orRule.getHeader()));
+						StringMatcher host = ConvUtil
+								.convStringMatcher(orRule.getHeader());
+						if (host != null) {
+							hosts.add(host);
+						}
 						break;
 					case HEADER_NAME_METHOD:
-						methods.add(HeaderMatchUtil
-								.headerMatch2StringMatch(orRule.getHeader()));
+						StringMatcher method = ConvUtil
+								.convStringMatcher(orRule.getHeader());
+						if (method != null) {
+							methods.add(method);
+						}
 						break;
 					}
 				}
 				if (orRule.hasUrlPath() && orRule.getUrlPath().hasPath()) {
-					paths.add(orRule.getUrlPath().getPath());
+					StringMatcher path = ConvUtil
+							.convStringMatcher(orRule.getUrlPath().getPath());
+					if (path != null) {
+						paths.add(path);
+					}
 				}
 				if (orRule.hasDestinationIp()) {
-					destIps.add(orRule.getDestinationIp());
+					destIps.add(ConvUtil.convertIpMatcher(orRule.getDestinationIp()));
 				}
 			}
 			if (!hosts.isEmpty()) {

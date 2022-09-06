@@ -28,6 +28,13 @@
             <artifactId>grpc-netty-shaded</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.envoyproxy.controlplane</groupId>
+            <artifactId>api</artifactId>
+            <version>0.1.32</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
     <properties>
         <java.version>1.8</java.version>

@@ -1,8 +1,7 @@
 package com.alibaba.cloud.governance.auth.rules.auth;
 
-import com.alibaba.cloud.governance.auth.rules.AndRule;
-import io.envoyproxy.envoy.type.matcher.v3.ListMatcher;
-import io.envoyproxy.envoy.type.matcher.v3.StringMatcher;
+import com.alibaba.cloud.governance.common.matcher.StringMatcher;
+import com.alibaba.cloud.governance.common.rule.AndRule;
 
 import java.util.Map;
 
@@ -14,13 +13,13 @@ public class JwtAuthRule {
 
 	private AndRule<StringMatcher> authAudiences;
 
-	private Map<String, AndRule<ListMatcher>> authClaims;
+	private Map<String, AndRule<StringMatcher>> authClaims;
 
 	private AndRule<StringMatcher> authPresenters;
 
 	public JwtAuthRule(String name, AndRule<StringMatcher> requestPrincipals,
 			AndRule<StringMatcher> authAudiences,
-			Map<String, AndRule<ListMatcher>> authClaims,
+			Map<String, AndRule<StringMatcher>> authClaims,
 			AndRule<StringMatcher> authPresenters) {
 		this.name = name;
 		this.requestPrincipals = requestPrincipals;
@@ -41,7 +40,7 @@ public class JwtAuthRule {
 		return authAudiences;
 	}
 
-	public Map<String, AndRule<ListMatcher>> getAuthClaims() {
+	public Map<String, AndRule<StringMatcher>> getAuthClaims() {
 		return authClaims;
 	}
 

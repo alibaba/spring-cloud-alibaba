@@ -1,7 +1,6 @@
 package com.alibaba.cloud.governance.auth.rules.manager;
 
 import com.alibaba.cloud.governance.auth.rules.auth.JwtAuthRule;
-import com.alibaba.cloud.governance.auth.rules.util.StringMatchUtil;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.slf4j.Logger;
@@ -57,8 +56,7 @@ public class JwtAuthRuleManager {
 		return andRules == null || andRules.getAuthPresenters().isEmpty()
 				|| andRules.getAuthPresenters().getRules().stream().allMatch(orRules -> {
 					boolean flag = orRules.getRules().stream()
-							.anyMatch(jwtPresenter -> StringMatchUtil.matchStr(presenter,
-									jwtPresenter));
+							.anyMatch(jwtPresenter -> jwtPresenter.match(presenter));
 					return orRules.isNot() != flag;
 				});
 	}
@@ -67,9 +65,8 @@ public class JwtAuthRuleManager {
 			JwtAuthRule andRules) {
 		return andRules == null || andRules.getRequestPrincipals().isEmpty() || andRules
 				.getRequestPrincipals().getRules().stream().allMatch(orRules -> {
-					boolean flag = orRules.getRules().stream()
-							.anyMatch(jwtPrincipal -> StringMatchUtil
-									.matchStr(issuer + "/" + subject, jwtPrincipal));
+					boolean flag = orRules.getRules().stream().anyMatch(
+							jwtPrincipal -> jwtPrincipal.match(issuer + "/" + subject));
 					return orRules.isNot() != flag;
 				});
 	}
@@ -82,8 +79,7 @@ public class JwtAuthRuleManager {
 				|| andRules.getAuthAudiences().getRules().stream().allMatch(orRules -> {
 					boolean flag = audiences.stream()
 							.anyMatch(audStr -> orRules.getRules().stream()
-									.anyMatch(jwtAudience -> StringMatchUtil
-											.matchStr(audStr, jwtAudience)));
+									.anyMatch(jwtAudience -> jwtAudience.match(audStr)));
 					return orRules.isNot() != flag;
 				});
 	}
@@ -110,11 +106,7 @@ public class JwtAuthRuleManager {
 							.getRules().stream().allMatch(andRule -> {
 								// only support string header
 								boolean flag = andRule.getRules().stream()
-										.anyMatch(orRule -> orRule.hasOneOf()
-												&& orRule.getOneOf().hasStringMatch()
-												&& StringMatchUtil.matchStr(claimStr,
-														orRule.getOneOf()
-																.getStringMatch()));
+										.anyMatch(orRule -> orRule.match(claimStr));
 								return andRule.isNot() != flag;
 							}));
 				});

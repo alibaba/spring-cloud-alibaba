@@ -1,7 +1,6 @@
 package com.alibaba.cloud.governance.auth.rules.util;
 
 import com.alibaba.cloud.governance.auth.rules.auth.JwtRule;
-import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtHeader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwk.JsonWebKeySet;
@@ -21,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class JwtUtil {
@@ -35,14 +35,15 @@ public class JwtUtil {
 			return "";
 		}
 		try {
-			List<JwtHeader> jwtHeaders = jwtRule.getFromHeaders();
+			Map<String, String> jwtHeaders = jwtRule.getFromHeaders();
 			if (jwtHeaders != null && !jwtHeaders.isEmpty()) {
-				for (JwtHeader jwtHeader : jwtHeaders) {
-					if (headers.containsKey(jwtHeader.getName())) {
-						String token = headers.getFirst(jwtHeader.getName());
-						if (!StringUtils.isEmpty(token)
-								&& token.startsWith(jwtHeader.getValuePrefix())) {
-							return token.substring(jwtHeader.getValuePrefix().length());
+				for (Map.Entry<String, String> entry : jwtHeaders.entrySet()) {
+					String headerName = entry.getKey();
+					String prefix = entry.getValue();
+					if (headers.containsKey(headerName)) {
+						String token = headers.getFirst(headerName);
+						if (!StringUtils.isEmpty(token) && token.startsWith(prefix)) {
+							return token.substring(prefix.length());
 						}
 					}
 				}

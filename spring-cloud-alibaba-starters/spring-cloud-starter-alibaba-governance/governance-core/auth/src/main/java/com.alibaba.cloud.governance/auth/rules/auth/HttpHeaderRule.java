@@ -1,7 +1,7 @@
 package com.alibaba.cloud.governance.auth.rules.auth;
 
-import com.alibaba.cloud.governance.auth.rules.AndRule;
-import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
+import com.alibaba.cloud.governance.common.matcher.HeaderMatcher;
+import com.alibaba.cloud.governance.common.rule.AndRule;
 
 import java.util.Map;
 

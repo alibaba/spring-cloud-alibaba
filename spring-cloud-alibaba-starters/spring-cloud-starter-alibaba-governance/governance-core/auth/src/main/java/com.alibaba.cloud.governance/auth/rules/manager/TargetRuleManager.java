@@ -1,7 +1,6 @@
 package com.alibaba.cloud.governance.auth.rules.manager;
 
 import com.alibaba.cloud.governance.auth.rules.auth.TargetRule;
-import com.alibaba.cloud.governance.auth.rules.util.StringMatchUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,8 +25,8 @@ public class TargetRuleManager {
 	private static boolean judgeHost(String host, TargetRule andRules) {
 		return andRules.getHosts() == null || andRules.getHosts().isEmpty()
 				|| andRules.getHosts().getRules().stream().allMatch(orRules -> {
-					boolean flag = orRules.getRules().stream().anyMatch(
-							httpHost -> StringMatchUtil.matchStr(host, httpHost));
+					boolean flag = orRules.getRules().stream()
+							.anyMatch(httpHost -> httpHost.match(host));
 					return orRules.isNot() != flag;
 				});
 	}
@@ -44,8 +43,8 @@ public class TargetRuleManager {
 	private static boolean judgeMethod(String method, TargetRule andRules) {
 		return andRules.getMethods() == null || andRules.getMethods().isEmpty()
 				|| andRules.getMethods().getRules().stream().allMatch(orRules -> {
-					boolean flag = orRules.getRules().stream().anyMatch(
-							httpMethod -> StringMatchUtil.matchStr(method, httpMethod));
+					boolean flag = orRules.getRules().stream()
+							.anyMatch(httpMethod -> httpMethod.match(method));
 					return orRules.isNot() != flag;
 				});
 	}
@@ -53,8 +52,8 @@ public class TargetRuleManager {
 	private static boolean judgePath(String path, TargetRule andRules) {
 		return andRules.getPaths() == null || andRules.getPaths().isEmpty()
 				|| andRules.getPaths().getRules().stream().allMatch(orRules -> {
-					boolean flag = orRules.getRules().stream().anyMatch(
-							httpPath -> StringMatchUtil.matchStr(path, httpPath));
+					boolean flag = orRules.getRules().stream()
+							.anyMatch(httpPath -> httpPath.match(path));
 					return orRules.isNot() != flag;
 				});
 	}

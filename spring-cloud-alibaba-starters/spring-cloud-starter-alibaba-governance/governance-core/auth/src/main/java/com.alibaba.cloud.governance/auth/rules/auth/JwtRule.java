@@ -1,14 +1,13 @@
 package com.alibaba.cloud.governance.auth.rules.auth;
 
-import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtHeader;
-
 import java.util.List;
+import java.util.Map;
 
 public class JwtRule {
 
 	private String name;
 
-	private List<JwtHeader> fromHeaders;
+	private Map<String, String> fromHeaders;
 
 	private String issuer;
 
@@ -22,7 +21,7 @@ public class JwtRule {
 
 	private boolean forwardOriginalToken;
 
-	public JwtRule(String name, List<JwtHeader> fromHeaders, String issuer,
+	public JwtRule(String name, Map<String, String> fromHeaders, String issuer,
 			List<String> audiences, String jwks, List<String> fromParams,
 			String outputPayloadToHeader, boolean forwardOriginalToken) {
 		this.name = name;
@@ -39,7 +38,7 @@ public class JwtRule {
 		return name;
 	}
 
-	public List<JwtHeader> getFromHeaders() {
+	public Map<String, String> getFromHeaders() {
 		return fromHeaders;
 	}
 

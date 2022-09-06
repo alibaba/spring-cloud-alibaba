@@ -1,6 +1,5 @@
 package com.alibaba.cloud.governance.auth.rules.manager;
 
-import com.alibaba.cloud.governance.auth.rules.util.HeaderMatchUtil;
 import com.alibaba.cloud.governance.auth.rules.auth.HttpHeaderRule;
 import org.springframework.http.HttpHeaders;
 
@@ -50,8 +49,7 @@ public class HeaderRuleManager {
 					String key = allHeader.getKey();
 					return allHeader.getValue().getRules().stream().allMatch(andRule -> {
 						boolean flag = andRule.getRules().stream()
-								.anyMatch(orRule -> HeaderMatchUtil.matchHeader(headers,
-										key, orRule));
+								.anyMatch(orRule -> orRule.match(headers, key));
 						return andRule.isNot() != flag;
 					});
 				});

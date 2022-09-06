@@ -1,4 +1,4 @@
-package com.alibaba.cloud.governance.auth.rules;
+package com.alibaba.cloud.governance.common.rule;
 
 import java.util.List;
 

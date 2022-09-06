@@ -1,9 +1,8 @@
 package com.alibaba.cloud.governance.auth.rules.manager;
 
-import com.alibaba.cloud.governance.auth.rules.util.IpUtil;
-import com.alibaba.cloud.governance.auth.rules.AndRule;
 import com.alibaba.cloud.governance.auth.rules.auth.IpBlockRule;
-import io.envoyproxy.envoy.config.core.v3.CidrRange;
+import com.alibaba.cloud.governance.common.matcher.IpMatcher;
+import com.alibaba.cloud.governance.common.rule.AndRule;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +36,7 @@ public class IpBlockRuleManager {
 		return andRules.getSourceIps() == null || andRules.getSourceIps().isEmpty()
 				|| andRules.getSourceIps().getRules().stream().allMatch(orRules -> {
 					boolean flag = orRules.getRules().stream()
-							.anyMatch(httpSourceIp -> IpUtil.matchIp(ip, httpSourceIp));
+							.anyMatch(httpSourceIp -> httpSourceIp.match(ip));
 					return orRules.isNot() != flag;
 				});
 	}
@@ -45,8 +44,8 @@ public class IpBlockRuleManager {
 	private static boolean judgeDestIp(String destIp, IpBlockRule andRules) {
 		return andRules.getDestIps() == null || andRules.getDestIps().isEmpty()
 				|| andRules.getDestIps().getRules().stream().allMatch(orRules -> {
-					boolean flag = orRules.getRules().stream().anyMatch(
-							httpSourceIp -> IpUtil.matchIp(destIp, httpSourceIp));
+					boolean flag = orRules.getRules().stream()
+							.anyMatch(httpDestIp -> httpDestIp.match(destIp));
 					return orRules.isNot() != flag;
 				});
 	}
@@ -54,8 +53,8 @@ public class IpBlockRuleManager {
 	private static boolean judgeRemoteIp(String remoteIp, IpBlockRule andRules) {
 		return andRules.getRemoteIps() == null || andRules.getRemoteIps().isEmpty()
 				|| andRules.getRemoteIps().getRules().stream().allMatch(orRules -> {
-					boolean flag = orRules.getRules().stream().anyMatch(
-							httpSourceIp -> IpUtil.matchIp(remoteIp, httpSourceIp));
+					boolean flag = orRules.getRules().stream()
+							.anyMatch(httpRemoteIp -> httpRemoteIp.match(remoteIp));
 					return orRules.isNot() != flag;
 				});
 	}
@@ -69,7 +68,7 @@ public class IpBlockRuleManager {
 		}
 	}
 
-	public static void updateDestIpRules(String name, AndRule<CidrRange> destIpRules,
+	public static void updateDestIpRules(String name, AndRule<IpMatcher> destIpRules,
 			boolean isAllow) {
 		if (isAllow && allowIpBlockRules.containsKey(name)) {
 			allowIpBlockRules.get(name).setDestIps(destIpRules);
