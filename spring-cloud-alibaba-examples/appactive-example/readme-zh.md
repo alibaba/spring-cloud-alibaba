@@ -13,18 +13,18 @@
 
 ### 核心概念
 
-基于 AppActive 做应用多活方案，可根据应用属性将应用分为全局应用、核心应用和共享应用 3 类，其又可归属到中心单元和普通单元 2 类单元中。
+异地多活的思想类比于日常中的鸡蛋不要放在一个篮子里面，通过对业务应用进行单元化拆分部署，使得一个单元的故障影响面限定在特定单元内。在基于 AppActive 做应用多活方案中，可根据应用属性将应用分为全局、核心和一般服务 3 类，其又可归属到中心单元和普通单元 2 类单元中，单元一般用来指代机房。
 
-3 类应用：
-- 全局应用：对延时要求极高，强一致性的业务应用（例如库存、金额等），无法做异地多活拆分，其需要在中心单元进行服务读写。
-- 核心应用：做单元化拆分的业务应用，根据预设的多活规则，根据请求信息在特定单元进行读写的应用。
-- 普通应用：属于系统非核心链路上的业务，对数据一致性要求较低，未做单元化才分的应用。
+3 类服务：
+- 全局服务：强一致性的服务（例如库存、金额等），无法做异地多活单元化拆分，其需要在中心单元进行服务读写。
+- 核心服务：做单元化拆分的业务应用，根据预设的多活规则，根据请求信息在特定单元进行读写的业务，核心业务的拆分是异地多活系统建设中的核心。
+- 普通服务：属于系统非核心链路上的业务，对数据一致性要求较低的应用，一般出于成本考虑不做单元化拆分。
 
 
 2 类单元：
 
-- Center 单元：承载全局应用
-- Unit 单元：其他非中心单元的应用。
+- 中心单元：中心单元，也可称为中心机房，可承载全局、核心和普通服务 3 类，其一般在机房硬件配置上较一般单元高。
+- 一般单元：其他非中心单元的单元，用来承载非全局服务以外的其他服务，也可称为一般机房。
 
 
 
@@ -37,7 +37,7 @@
 	- 产品下单: 中心服务
 - storage: 库存应用，供下单服务扣减库存
 
-应用在 center 和 unit 各部署一套（对等部署）。
+应用在中心单元（Center）和 普通单元（unit） 各部署一套（对等部署）。
 
 图中绿色格子代表了本次请求的调用链路。
 
@@ -54,11 +54,11 @@
             <artifactId>spring-cloud-starter-alibaba-appactive</artifactId>
         </dependency>
 
-2. 在 Provider 应用的 `application.properties` 配置文件中给特定接口配置分流策略。
+2. 在 Provider 应用的 `application.properties` 配置文件中给特定接口配置分流策略。其中后缀 `core-path` 用于配置核心服务，`global-path` 用于配置全局服务，`general-path` 用于配置一般服务，比如 demo 中的 product 应用分流策略配置如下：
 
-        spring.cloud.appactive.filter.unit-path=/detailHidden/*,/detail/*
-        spring.cloud.appactive.filter.center-path=/buy/*
-        spring.cloud.appactive.filter.normal-path=/*
+        spring.cloud.appactive.filter.core-path=/detailHidden/*,/detail/*
+        spring.cloud.appactive.filter.global-path=/buy/*
+        spring.cloud.appactive.filter.general-path=/*
 
 3. 在 Consumer 应用的 `application.properties` 配置客户端负载均衡为 AppActive 所提供的负载均衡算法，配置方式如下，注意需要将`[service-name]`替换成具体的待消费服务名。
 
@@ -127,11 +127,11 @@
 
 ## 效果演示
 
-1. 归属于 unit 单元的普通应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/listProduct` 地址，可见请求通过 frontend 应用被发送给了 product。
+1. 归属于一般（Unit）单元的普通应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/listProduct` 地址，可见请求通过 frontend 应用被发送给了 product。
 
     [![vTlxsA.jpg](https://s1.ax1x.com/2022/09/04/vTlxsA.jpg)](https://imgse.com/i/vTlxsA)
 
-    由于上述路径中的 `/listProduct` 在 product 应用中匹配到的是 `/*` 路径规则，根据规则内容，该服务属于普通应用做了未做单元化拆分，所以frontend 在从注册中心获取的 product 地址列表中不存在倾向性，会随机选择地址进行请求发送。因此多次请求上述路径，会看到请求在 product 的 unit 和 center 单元应用中来回切换。
+    由于上述路径中的 `/listProduct` 在 product 应用中匹配到的是 `/*` 路径规则，根据规则内容，该服务属于普通应用做了未做单元化拆分，所以frontend 在从注册中心获取的 product 地址列表中不存在倾向性，会随机选择地址进行请求发送。因此多次请求上述路径，会看到请求在 product 的一般（Unit)和 中心（center）单元应用中来回切换。
 
 2. 归属于 unit 单元的核心应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/detailProduct` 路径，由于上述路径中的 `/detailProduct` 在 product 应用中匹配到的是 `/detail/*` 路径规则，根据规则内容，该服务属于核心应用做了单元会拆分，其会根据请求中 Header, Cookie 或请求参数中的变量具体的值去判断该请求的下游单元类型，由于事先配置如下切流规则（具体可见 rule 目录下的 idUnitMapping.json 文件内容）：
     ```
@@ -161,16 +161,16 @@
       ]
     }
     ```
-    上述规则表示，用户Id为 0 ~ 1999 的请求将发送给下游提供者中的 unit 单元中的核心应用实例，用户Id为 2000 ~ 9999 的请求将发送给下游提供者中的 center 单元全局应用实例。
-    如下图，模拟一个用户Id为 1999 的请求，可见请求通过 frontend 发送到了下游中 product 的 unit 单元中的核心应用实例。
+    上述规则表示，用户Id为 0 ~ 1999 的请求将发送给下游提供者中的一般（Unit）单元中的核心应用实例，用户Id为 2000 ~ 9999 的请求将发送给下游提供者中的中心（Center）单元全局应用实例。
+    如下图，模拟一个用户Id为 1999 的请求，可见请求通过 frontend 发送到了下游中 product 的一般（Unit）单元中的核心应用实例。
 
     [![1xnI7.jpg](https://s1.328888.xyz/2022/09/05/1xnI7.jpg)](https://imgloc.com/i/1xnI7)
 
-    如下图，模拟一个用户Id为 2000 的请求，可见请求通过 frontend 发送到了下游中 product 的 center 单元中的全局应用实例。
+    如下图，模拟一个用户Id为 2000 的请求，可见请求通过 frontend 发送到了下游中 product 的中心（center）单元中的全局应用实例。
 
     [![1xAHk.jpg](https://s1.328888.xyz/2022/09/05/1xAHk.jpg)](https://imgloc.com/i/1xAHk)
 
-3. 归属于 center 单元的全局应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/buyProduct` 路径，由于上述路径中的 `/buyProduct` 在 product 和 storage 应用中匹配到的是 `/buy/*` 路径规则，根据规则内容，该服务属于全局应用未做单元会拆分，其会直接将请求发送到下游的 center 单元中全局应用实例。
+3. 归属于中心（Center）单元的全局应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/buyProduct` 路径，由于上述路径中的 `/buyProduct` 在 product 和 storage 应用中匹配到的是 `/buy/*` 路径规则，根据规则内容，该服务属于全局应用未做单元会拆分，其会直接将请求发送到下游的中心（Center）单元中全局应用实例。
 
     [![1s4Oi.jpg](https://s1.328888.xyz/2022/09/04/1s4Oi.jpg)](https://imgloc.com/i/1s4Oi)
 
@@ -178,7 +178,7 @@
     - 构建新的映射关系规则和禁写规则（手动）
     - 将禁写规则推送给应用
     - 等待数据追平后将新的映射关系规则推送给应用
-   接下来演示的切流规则，会将用户Id为 0 ~ 2999 的请求将发送给下游提供者中的 unit 单元中的核心应用实例，用户Id为 3000 ~ 9999 的请求将发送给下游提供者中的 center 单元中的全局应用实例。具体的规则详情见 idUnitMappingNext.json：
+   接下来演示的切流规则，会将用户Id为 0 ~ 2999 的请求将发送给下游提供者中的一般（Unit）单元中的核心应用实例，用户Id为 3000 ~ 9999 的请求将发送给下游提供者中的中心（Center）单元中的全局应用实例。具体的规则详情见 idUnitMappingNext.json：
         ```
         {
           "itemType": "UnitRuleItem",

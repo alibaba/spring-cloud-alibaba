@@ -76,13 +76,13 @@ public class AppactivePredicate extends AbstractServerPredicate {
 		String uriPath = UriContext.getUriPath();
 		Map<String, String> metadata = server.getMetadata();
 		// zone
-		String zone = metadata.get("ut");
+		String unitType = metadata.get("ut");
 		String svcMeta = metadata.get("svc_meta");
 		String version = metadata.get("svc_meta_v");
-		if (zone == null || svcMeta == null || version == null) {
+		if (unitType == null || svcMeta == null || version == null) {
 			return true;
 		}
-		String targetZone = null;
+		String serviceType = null;
 		List<ServiceMeta> serviceMetas = JSONObject.parseArray(svcMeta,
 				ServiceMeta.class);
 		Map<String, String> matchingPatterns = new HashMap<>();
@@ -96,25 +96,26 @@ public class AppactivePredicate extends AbstractServerPredicate {
 		if (!matchingPatterns.isEmpty()) {
 			List<String> urls = new ArrayList<>(matchingPatterns.keySet());
 			urls.sort(patternComparator);
-			targetZone = matchingPatterns.get(urls.get(0));
+			serviceType = matchingPatterns.get(urls.get(0));
 		}
 
-		if (!StringUtils.isBlank(targetZone)
-				&& ResourceActiveType.CENTER_RESOURCE_TYPE.equalsIgnoreCase(targetZone)) {
-			return AppactiveConstant.CENTER_FLAG.equalsIgnoreCase(zone);
+		if (!StringUtils.isBlank(serviceType)
+				&& ResourceActiveType.CENTER_RESOURCE_TYPE.equalsIgnoreCase(serviceType)) {
+			return AppactiveConstant.CENTER_FLAG.equalsIgnoreCase(unitType);
 		}
-		else if (!StringUtils.isBlank(targetZone)
-				&& ResourceActiveType.UNIT_RESOURCE_TYPE.equalsIgnoreCase(targetZone)) {
+		else if (!StringUtils.isBlank(serviceType)
+				&& ResourceActiveType.UNIT_RESOURCE_TYPE.equalsIgnoreCase(serviceType)) {
 			// routeId of the request.
 			String routeId = AppContextClient.getRouteId();
 			if (routeId == null) {
 				return false;
 			}
 
-			String targetZoneByRouteId = trafficRouteRuleService
+			// targetUnit setting by users, such as unit0,unit1,...,unitn.
+			String targetUnitByRouteId = trafficRouteRuleService
 					.getUnitByRouteId(routeId);
-			return !StringUtils.isBlank(targetZoneByRouteId)
-					&& targetZoneByRouteId.equalsIgnoreCase(zone);
+			return !StringUtils.isBlank(targetUnitByRouteId)
+					&& targetUnitByRouteId.equalsIgnoreCase(unitType);
 		}
 
 		return true;
