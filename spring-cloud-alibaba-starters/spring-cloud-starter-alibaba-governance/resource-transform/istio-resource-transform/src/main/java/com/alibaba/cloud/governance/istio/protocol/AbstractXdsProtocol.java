@@ -1,8 +1,8 @@
 package com.alibaba.cloud.governance.istio.protocol;
 
 import com.alibaba.cloud.governance.istio.NodeBuilder;
-import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -11,29 +11,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
-	private static final Logger log = LoggerFactory.getLogger(AbstractXdsProtocol.class);
+	protected static final Logger log = LoggerFactory
+			.getLogger(AbstractXdsProtocol.class);
 
-	protected final XdsChannel xdsChannel;
+	protected XdsChannel xdsChannel;
 
-	protected final Node node;
+	protected final Node node = NodeBuilder.getNode();
 
-	protected final XdsConfigProperties xdsConfigProperties;
+	protected int pollingTime;
 
-	private final ScheduledThreadPoolExecutor pollingExecutor;
+	private XdsScheduledThreadPool xdsScheduledThreadPool;
+
+	private boolean isPolling;
 
 	private final Map<Long, StreamObserver<DiscoveryRequest>> requestObserverMap = new ConcurrentHashMap<>();
 
 	private final Map<Long, CompletableFuture<List<T>>> futureMap = new ConcurrentHashMap<>();
 
-	private final Map<Long, Set<String>> resourceMap = new ConcurrentHashMap<>();
+	private final Map<Long, Set<String>> requestResource = new ConcurrentHashMap<>();
 
 	protected final static AtomicLong requestId = new AtomicLong(0);
+
+	private static final int DEFAULT_POLLING_TIME = 30;
+
+	public AbstractXdsProtocol(XdsChannel xdsChannel,
+			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime) {
+		this.xdsChannel = xdsChannel;
+		this.xdsScheduledThreadPool = xdsScheduledThreadPool;
+		this.pollingTime = pollingTime <= 0 ? DEFAULT_POLLING_TIME : pollingTime;
+	}
 
 	private class XdsObserver implements StreamObserver<DiscoveryResponse> {
 
@@ -70,7 +85,7 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 				future.complete(null);
 				futureMap.remove(id);
 			}
-			resourceMap.remove(id);
+			requestResource.remove(id);
 			requestObserverMap.put(id,
 					xdsChannel.createDiscoveryRequest(new XdsObserver(id, consumer)));
 		}
@@ -82,33 +97,30 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 	}
 
-	public AbstractXdsProtocol(XdsChannel xdsChannel,
-			XdsConfigProperties xdsConfigProperties) {
-		this.xdsChannel = xdsChannel;
-		this.xdsConfigProperties = xdsConfigProperties;
-		this.node = NodeBuilder.getNode();
-		this.pollingExecutor = new ScheduledThreadPoolExecutor(
-				xdsConfigProperties.getPollingPoolSize());
-	}
-
 	@Override
 	public long observeResource(Set<String> resourceNames, Consumer<List<T>> consumer) {
 		long id = requestId.getAndDecrement();
+		if (resourceNames == null) {
+			resourceNames = new HashSet<>();
+		}
+		requestResource.put(id, resourceNames);
 		try {
 			consumer.accept(doGetResource(id, resourceNames, consumer));
 		}
 		catch (Exception e) {
 			log.error("error on get observe resource from xds", e);
 		}
-		pollingExecutor.scheduleAtFixedRate(() -> {
-			try {
-				consumer.accept(doGetResource(id, resourceNames, consumer));
-			}
-			catch (Exception e) {
-				log.error("error on get observe resource from xds", e);
-			}
-		}, xdsConfigProperties.getPollingTimeout(),
-				xdsConfigProperties.getPollingTimeout(), TimeUnit.SECONDS);
+		if (!isPolling) {
+			xdsScheduledThreadPool.scheduleAtFixedRate(() -> {
+				try {
+					consumer.accept(doGetResource(id, requestResource.get(id), consumer));
+				}
+				catch (Exception e) {
+					log.error("error on get observe resource from xds", e);
+				}
+			}, pollingTime, pollingTime, TimeUnit.SECONDS);
+			isPolling = true;
+		}
 		return id;
 	}
 
@@ -135,7 +147,6 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 			requestObserverMap.put(id, requestObserver);
 		}
 		sendXdsRequest(requestObserver, resourceNames);
-		resourceMap.put(id, resourceNames);
 		try {
 			return future.get();
 		}
@@ -148,6 +159,8 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 	}
 
 	protected abstract List<T> decodeXdsResponse(DiscoveryResponse response);
+
+	protected abstract void clearCache();
 
 	private void sendXdsRequest(StreamObserver<DiscoveryRequest> observer,
 			Set<String> resourceNames) {
@@ -163,12 +176,11 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 		}
 		DiscoveryRequest request = DiscoveryRequest.newBuilder()
 				.setVersionInfo(response.getVersionInfo()).setNode(node)
-				.addAllResourceNames(resourceMap.get(id) == null ? new ArrayList<>()
-						: resourceMap.get(id))
+				.addAllResourceNames(requestResource.get(id) == null ? new ArrayList<>()
+						: requestResource.get(id))
 				.setTypeUrl(response.getTypeUrl()).setResponseNonce(response.getNonce())
 				.build();
 		observer.onNext(request);
-		resourceMap.remove(id);
 	}
 
 }

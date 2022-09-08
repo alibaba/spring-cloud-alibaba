@@ -9,10 +9,12 @@ import com.alibaba.cloud.governance.common.rule.AndRule;
 import com.alibaba.cloud.governance.common.rule.OrRule;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
+import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.envoyproxy.envoy.config.listener.v3.Filter;
 import io.envoyproxy.envoy.config.listener.v3.FilterChain;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.rbac.v3.Permission;
@@ -24,8 +26,10 @@ import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtHeader;
 import io.envoyproxy.envoy.extensions.filters.http.jwt_authn.v3.JwtProvider;
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager;
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.HttpFilter;
+import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.Rds;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +66,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	private static final int MAX_PORT = 65535;
 
-	public LdsProtocol(XdsChannel xdsChannel, XdsConfigProperties xdsConfigProperties) {
-		super(xdsChannel, xdsConfigProperties);
+	public LdsProtocol(XdsChannel xdsChannel,
+			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime) {
+		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
 	}
 
 	@Override
@@ -77,14 +82,25 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		for (com.google.protobuf.Any res : response.getResourcesList()) {
 			try {
 				Listener listener = res.unpack(Listener.class);
-				listeners.add(listener);
+				if (listener != null) {
+					listeners.add(listener);
+				}
 			}
 			catch (Exception e) {
-				// TODO: print with slf4j
-				e.printStackTrace();
+				log.error("unpack listeners failed", e);
 			}
 		}
 		return listeners;
+	}
+
+	@Override
+	public void clearCache() {
+		IdentityRuleManager.clear();
+		IpBlockRuleManager.clear();
+		JwtAuthRuleManager.clear();
+		JwtRuleManager.clear();
+		TargetRuleManager.clear();
+		HeaderRuleManager.clear();
 	}
 
 	private List<RBAC> resolveRbac(List<HttpFilter> httpFilters) {
@@ -144,13 +160,15 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		}
 	}
 
-	public void clearLdsCache() {
-		IdentityRuleManager.clear();
-		IpBlockRuleManager.clear();
-		JwtAuthRuleManager.clear();
-		JwtRuleManager.clear();
-		TargetRuleManager.clear();
-		HeaderRuleManager.clear();
+	public Set<String> getRouteNames(List<Listener> listeners) {
+		Set<String> routeNames = new HashSet<>();
+		listeners.forEach(listener -> routeNames.addAll(listener.getFilterChainsList()
+				.stream().flatMap((e) -> e.getFiltersList().stream())
+				.map(Filter::getTypedConfig).map(this::unpackHttpConnectionManager)
+				.filter(Objects::nonNull).map(HttpConnectionManager::getRds)
+				.map(Rds::getRouteConfigName).filter(StringUtils::isNotEmpty)
+				.collect(Collectors.toList())));
+		return routeNames;
 	}
 
 	public void resolveAuthRules(List<Listener> listeners) {

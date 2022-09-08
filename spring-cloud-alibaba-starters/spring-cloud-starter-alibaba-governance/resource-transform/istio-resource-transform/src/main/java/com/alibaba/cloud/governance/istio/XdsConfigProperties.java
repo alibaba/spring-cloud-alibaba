@@ -13,7 +13,7 @@ public class XdsConfigProperties {
 
 	private int pollingPoolSize;
 
-	private int pollingTimeout;
+	private int pollingTime;
 
 	private boolean secure;
 
@@ -43,12 +43,12 @@ public class XdsConfigProperties {
 		this.pollingPoolSize = pollingPoolSize;
 	}
 
-	public int getPollingTimeout() {
-		return pollingTimeout;
+	public int getPollingTime() {
+		return pollingTime;
 	}
 
-	public void setPollingTimeout(int pollingTimeout) {
-		this.pollingTimeout = pollingTimeout;
+	public void setPollingTime(int pollingTime) {
+		this.pollingTime = pollingTime;
 	}
 
 	public boolean isSecure() {

@@ -18,7 +18,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 				"spring.cloud.istio.config.port=15010",
 				"spring.cloud.istio.config.enabled=true",
 				"spring.cloud.istio.config.polling-pool-size=10",
-				"spring.cloud.istio.config.polling-timeout=30" },
+				"spring.cloud.istio.config.polling-time=30" },
 		webEnvironment = NONE)
 public class XdsRulesTests {
 
