@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>3.1.1</version>
+        <version>3.1.4</version>
         <relativePath/>
     </parent>
 
@@ -80,10 +80,10 @@
 
     <properties>
         <!-- Project revision -->
-        <revision>2021.0.1.1-SNAPSHOT</revision>
+        <revision>2021.0.4.0-SNAPSHOT</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>2021.0.1</spring.cloud.version>
+        <spring.cloud.version>2021.0.4</spring.cloud.version>
 
         <curator.version>4.0.1</curator.version>
 
