@@ -45,7 +45,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class UnitServiceFilter implements Filter {
+public class CoreServiceFilter implements Filter {
 
 	private final TrafficRouteRuleService trafficRouteRuleService = ClientRuleService
 			.getTrafficRouteRuleService();
@@ -78,7 +78,7 @@ public class UnitServiceFilter implements Filter {
 		}
 		if (!trafficMachineService.isInCurrentUnit(routerId)) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-					"routerId " + routerId + " does not belong in unit:"
+					"routerId " + routerId + " does not belong in core : "
 							+ machineUnitRuleService.getCurrentUnit());
 		}
 		AppContextClient.setUnitContext(routerId);

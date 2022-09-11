@@ -40,7 +40,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class CenterServiceFilter implements Filter {
+public class GlobalServiceFilter implements Filter {
 
 	private final AbstractMachineUnitRuleService machineUnitRuleService = ClientRuleService
 			.getMachineUnitRuleService();
@@ -55,7 +55,7 @@ public class CenterServiceFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		if (!machineUnitRuleService.isCenterUnit()) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-					"this is not center machine:"
+					"this is not global machine : "
 							+ machineUnitRuleService.getCurrentUnit());
 		}
 		HttpServletRequest httpRequest = (HttpServletRequest) request;

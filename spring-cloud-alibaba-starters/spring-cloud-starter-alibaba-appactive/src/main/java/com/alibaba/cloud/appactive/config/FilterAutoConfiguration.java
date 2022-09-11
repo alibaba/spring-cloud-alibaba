@@ -17,8 +17,8 @@
 package com.alibaba.cloud.appactive.config;
 
 import com.alibaba.cloud.appactive.AppactiveProperties;
-import com.alibaba.cloud.appactive.provider.CenterServiceFilter;
-import com.alibaba.cloud.appactive.provider.UnitServiceFilter;
+import com.alibaba.cloud.appactive.provider.CoreServiceFilter;
+import com.alibaba.cloud.appactive.provider.GlobalServiceFilter;
 import io.appactive.servlet.RequestFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,38 +38,38 @@ public class FilterAutoConfiguration {
 	private AppactiveProperties appactiveProperties;
 
 	@Bean
-	public FilterRegistrationBean<CenterServiceFilter> appActiveCenterServiceFilter() {
-		if (appactiveProperties.getCenterPath() == null) {
+	public FilterRegistrationBean<GlobalServiceFilter> appActiveCenterServiceFilter() {
+		if (appactiveProperties.getGlobalPath() == null) {
 			return null;
 		}
-		FilterRegistrationBean<CenterServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-		CenterServiceFilter reqResFilter = new CenterServiceFilter();
+		FilterRegistrationBean<GlobalServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+		GlobalServiceFilter reqResFilter = new GlobalServiceFilter();
 		filterRegistrationBean.setFilter(reqResFilter);
-		filterRegistrationBean.addUrlPatterns(appactiveProperties.getCenterPath());
+		filterRegistrationBean.addUrlPatterns(appactiveProperties.getGlobalPath());
 		return filterRegistrationBean;
 	}
 
 	@Bean
-	public FilterRegistrationBean<UnitServiceFilter> appActiveUnitServiceFilter() {
-		if (appactiveProperties.getUnitPath() == null) {
+	public FilterRegistrationBean<CoreServiceFilter> appActiveUnitServiceFilter() {
+		if (appactiveProperties.getCorePath() == null) {
 			return null;
 		}
-		FilterRegistrationBean<UnitServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-		UnitServiceFilter reqResFilter = new UnitServiceFilter();
+		FilterRegistrationBean<CoreServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+		CoreServiceFilter reqResFilter = new CoreServiceFilter();
 		filterRegistrationBean.setFilter(reqResFilter);
-		filterRegistrationBean.addUrlPatterns(appactiveProperties.getUnitPath());
+		filterRegistrationBean.addUrlPatterns(appactiveProperties.getCorePath());
 		return filterRegistrationBean;
 	}
 
 	@Bean
 	public FilterRegistrationBean<RequestFilter> appActiveNormalServiceFilter() {
-		if (appactiveProperties.getNormalPath() == null) {
+		if (appactiveProperties.getGeneralPath() == null) {
 			return null;
 		}
 		FilterRegistrationBean<RequestFilter> filterRegistrationBean = new FilterRegistrationBean<>();
 		RequestFilter reqResFilter = new RequestFilter();
 		filterRegistrationBean.setFilter(reqResFilter);
-		filterRegistrationBean.addUrlPatterns(appactiveProperties.getNormalPath());
+		filterRegistrationBean.addUrlPatterns(appactiveProperties.getGeneralPath());
 		return filterRegistrationBean;
 	}
 

@@ -29,7 +29,7 @@ import javax.servlet.ServletResponse;
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class NormalServiceFilter implements Filter {
+public class GeneralServiceFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {

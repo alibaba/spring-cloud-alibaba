@@ -31,37 +31,37 @@ import org.springframework.util.StringUtils;
 @ConfigurationProperties("spring.cloud.appactive.filter")
 public class AppactiveProperties {
 
-	private String[] unitPath;
+	private String[] corePath;
 
-	private String[] centerPath;
+	private String[] globalPath;
 
-	private String[] normalPath;
+	private String[] generalPath;
 
 	@Autowired
 	private Environment environment;
 
-	public String[] getUnitPath() {
-		return unitPath;
+	public String[] getCorePath() {
+		return corePath;
 	}
 
-	public void setUnitPath(String[] unitPath) {
-		this.unitPath = unitPath;
+	void setCorePath(String[] corePath) {
+		this.corePath = corePath;
 	}
 
-	public String[] getCenterPath() {
-		return centerPath;
+	public String[] getGlobalPath() {
+		return globalPath;
 	}
 
-	public void setCenterPath(String[] centerPath) {
-		this.centerPath = centerPath;
+	void setGlobalPath(String[] globalPath) {
+		this.globalPath = globalPath;
 	}
 
-	public String[] getNormalPath() {
-		return normalPath;
+	public String[] getGeneralPath() {
+		return generalPath;
 	}
 
-	public void setNormalPath(String[] normalPath) {
-		this.normalPath = normalPath;
+	void setGeneralPath(String[] generalPath) {
+		this.generalPath = generalPath;
 	}
 
 	@PostConstruct
@@ -71,23 +71,23 @@ public class AppactiveProperties {
 
 	public void overrideFromEnv(Environment env) {
 
-		if (StringUtils.isEmpty(this.getUnitPath())) {
-			String unitValue = env
-					.resolvePlaceholders("${spring.cloud.appactive.filter.unit-path:}");
-			String[] units = unitValue.split(",");
-			this.setUnitPath(units);
+		if (StringUtils.isEmpty(this.getCorePath())) {
+			String coreValue = env
+					.resolvePlaceholders("${spring.cloud.appactive.filter.core-path:}");
+			String[] cores = coreValue.split(",");
+			this.setCorePath(cores);
 		}
-		if (StringUtils.isEmpty(this.getCenterPath())) {
-			String centerValue = env
-					.resolvePlaceholders("${spring.cloud.appactive.filter.center-path:}");
-			String[] centers = centerValue.split(",");
-			this.setCenterPath(centers);
+		if (StringUtils.isEmpty(this.getGlobalPath())) {
+			String globalValue = env
+					.resolvePlaceholders("${spring.cloud.appactive.filter.global-path:}");
+			String[] globals = globalValue.split(",");
+			this.setGlobalPath(globals);
 		}
-		if (StringUtils.isEmpty(this.getNormalPath())) {
-			String centerValue = env
-					.resolvePlaceholders("${spring.cloud.appactive.filter.normal-path:}");
-			String[] centers = centerValue.split(",");
-			this.setCenterPath(centers);
+		if (StringUtils.isEmpty(this.getGeneralPath())) {
+			String generalValue = env.resolvePlaceholders(
+					"${spring.cloud.appactive.filter.general-path:}");
+			String[] generals = generalValue.split(",");
+			this.setGeneralPath(generals);
 		}
 	}
 

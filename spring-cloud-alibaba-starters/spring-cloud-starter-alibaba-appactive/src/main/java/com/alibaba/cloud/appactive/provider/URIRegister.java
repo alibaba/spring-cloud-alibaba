@@ -55,7 +55,7 @@ public final class URIRegister {
 				if (filter == null) {
 					continue;
 				}
-				if (filter instanceof UnitServiceFilter) {
+				if (filter instanceof CoreServiceFilter) {
 					Collection<String> urlPatterns = filterRegistrationBean
 							.getUrlPatterns();
 					for (String urlPattern : urlPatterns) {
@@ -67,7 +67,7 @@ public final class URIRegister {
 						serviceMetaList.add(serviceMeta);
 					}
 				}
-				else if (filter instanceof CenterServiceFilter) {
+				else if (filter instanceof GlobalServiceFilter) {
 					Collection<String> urlPatterns = filterRegistrationBean
 							.getUrlPatterns();
 					for (String urlPattern : urlPatterns) {
@@ -79,7 +79,7 @@ public final class URIRegister {
 						serviceMetaList.add(serviceMeta);
 					}
 				}
-				else if (filter instanceof NormalServiceFilter) {
+				else if (filter instanceof GeneralServiceFilter) {
 					Collection<String> urlPatterns = filterRegistrationBean
 							.getUrlPatterns();
 					for (String urlPattern : urlPatterns) {

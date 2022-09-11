@@ -190,11 +190,10 @@ In which we defined a multi-active routing policy
     }
     ```
 
-Service types are defined the same way as in Dubbo
 
-- center: center service, which will only route within center idc, and is filtered by `CenterServiceFilter`
-- unit: unit service, which will only route within right unit according to multi-active rules, and is filtered by `UnitServiceFilter`
-- normal: normal service, which requires no multi-active modification, and will route as it was, and is filtered by `NormalServiceFilter`. Fyi, you can skip this service cause any service other than the above 2 types is considered as normal services.
+- center: center service, which will only route within center idc, and is filtered by `GlobalServiceFilter`
+- unit: unit service, which will only route within right unit according to multi-active rules, and is filtered by `CoreServiceFilter`
+- normal: normal service, which requires no multi-active modification, and will route as it was, and is filtered by `GeneralServiceFilter`. Fyi, you can skip this service cause any service other than the above 2 types is considered as normal services.
 
 ===== 4.1 Basic configuration
 

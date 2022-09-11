@@ -193,9 +193,9 @@ RPC服务调用时，RPC多活Plugin在Consumer端会根据请求的单元信息
     ```
     不同服务类型如下
 
-- center: 中心服务，强一致的业务（例如库存、金额等）的服务，强制路由到中心机房，使用 `CenterServiceFilter` 过滤
-- unit: 单元服务，基于规则，仅在本单元路由的服务，使用 `UnitServiceFilter` 过滤
-- normal: 普通服务，不做多活改造，使用 `NormalServiceFilter` 过滤，本类服务亦可不单独配置，除上述两种服务以外都认为是普通服务
+- center: 中心服务，强一致的业务（例如库存、金额等）的服务，强制路由到中心机房，使用 `GlobalServiceFilter` 过滤
+- unit: 单元服务，基于规则，仅在本单元路由的服务，使用 `CoreServiceFilter` 过滤
+- normal: 普通服务，不做多活改造，使用 `GeneralServiceFilter` 过滤，本类服务亦可不单独配置，除上述两种服务以外都认为是普通服务
 
 ===== 基本配置
 

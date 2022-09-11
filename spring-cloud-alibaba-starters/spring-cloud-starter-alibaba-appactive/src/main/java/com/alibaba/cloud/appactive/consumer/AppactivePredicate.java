@@ -99,8 +99,8 @@ public class AppactivePredicate extends AbstractServerPredicate {
 			serviceType = matchingPatterns.get(urls.get(0));
 		}
 
-		if (!StringUtils.isBlank(serviceType)
-				&& ResourceActiveType.CENTER_RESOURCE_TYPE.equalsIgnoreCase(serviceType)) {
+		if (!StringUtils.isBlank(serviceType) && ResourceActiveType.CENTER_RESOURCE_TYPE
+				.equalsIgnoreCase(serviceType)) {
 			return AppactiveConstant.CENTER_FLAG.equalsIgnoreCase(unitType);
 		}
 		else if (!StringUtils.isBlank(serviceType)
