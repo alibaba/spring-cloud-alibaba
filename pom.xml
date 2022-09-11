@@ -88,8 +88,7 @@
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
-        <rocketmq.starter.version>2.0.4</rocketmq.starter.version>
-        <rocketmq.version>4.9.3</rocketmq.version>
+        <rocketmq.version>4.9.4</rocketmq.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
