@@ -32,16 +32,11 @@ import com.alibaba.nacos.api.naming.NamingFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties;
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 
 import static com.alibaba.cloud.testsupport.Constant.TIME_OUT;
@@ -87,12 +82,6 @@ public class NacosAutoServiceRegistrationTests {
 
 	@Autowired
 	private NacosServiceManager nacosServiceManager;
-
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
-
-	@Mock
-	private MockManagementServer mockManagementServer;
 
 	@BeforeAll
 	public static void setUp() throws NacosException {
@@ -213,16 +202,6 @@ public class NacosAutoServiceRegistrationTests {
 			NacosServiceRegistryAutoConfiguration.class })
 	public static class TestConfig {
 
-	}
-
-	@Endpoint(id = "127.0.0.1")
-	public static class MockManagementServer {
-		private final ManagementServerProperties sentinelProperties;
-
-		public MockManagementServer(
-				ManagementServerProperties managementServerProperties) {
-			this.sentinelProperties = managementServerProperties;
-		}
 	}
 
 }
