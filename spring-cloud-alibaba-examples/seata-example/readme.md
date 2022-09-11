@@ -28,7 +28,7 @@ Before running this example, you need to complete the following steps:
    service.vgroupMapping.storage-service-tx-group=default
 ``` 
 5. Start Seata Server
-   Seata 1.5.1 supports Seata console local access console address: http://127.0.0.1:7091
+   Since 1.5.1, Seata supports Seata console local access console address: http://127.0.0.1:7091
    Through the Seata console, you can observe the executing transaction information and global lock information, and delete the relevant information when the transaction is completed.
 
 ### Configuration database
