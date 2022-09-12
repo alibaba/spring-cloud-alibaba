@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.integration.order.feign;
+package com.alibaba.cloud.integration.frontend.controller;
 
-import com.alibaba.cloud.integration.common.Result;
-import com.alibaba.cloud.integration.order.feign.dto.AccountDTO;
-
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * @author TrevorLink
+ * @author HuangSir
+ * @date 2022-09-08 14:00
  */
-@FeignClient(name = "integrated-account")
-public interface AccountServiceFeignClient {
+@Controller
+public class IntegrationController {
+	@RequestMapping("/order")
+	public String order() {
+		return "order";
+	}
 
-	@PostMapping("/account/reduce-balance")
-	Result<?> reduceBalance(@RequestBody AccountDTO accountReduceBalanceDTO);
+	@RequestMapping("/rocketmq")
+	public String rocketmq() {
+		return "rocketmq";
+	}
 
-
+	@RequestMapping("/sentinel")
+	public String sentinel() {
+		return "sentinel";
+	}
 }

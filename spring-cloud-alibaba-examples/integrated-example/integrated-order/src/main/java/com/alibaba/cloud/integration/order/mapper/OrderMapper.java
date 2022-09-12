@@ -20,7 +20,6 @@ import com.alibaba.cloud.integration.order.entity.Order;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
 
 import org.springframework.stereotype.Repository;
 
@@ -34,8 +33,5 @@ public interface OrderMapper {
 	@Insert("INSERT INTO `order` (user_id, commodity_code,money,create_time,update_time) VALUES (#{userId}, #{commodityCode},#{money},#{createTime},#{updateTime})")
 	@Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
 	int saveOrder(Order order);
-
-	@Select("select * from `order` where id= #{orderId}")
-	Order getOrder(Integer orderId);
 
 }

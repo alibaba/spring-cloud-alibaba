@@ -22,6 +22,7 @@ import com.alibaba.cloud.integration.common.BusinessException;
 import com.alibaba.cloud.integration.common.Result;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,9 +49,9 @@ public class AccountController {
 		return Result.success("");
 	}
 
-	@PostMapping("/get-account")
-	public Result<?> getRemainAccount(@RequestBody AccountDTO accountDTO) {
-		return accountService.getRemainAccount(accountDTO.getUserId());
+	@GetMapping("/")
+	public Result<?> getRemainAccount(String userId) {
+		return accountService.getRemainAccount(userId);
 	}
 
 }

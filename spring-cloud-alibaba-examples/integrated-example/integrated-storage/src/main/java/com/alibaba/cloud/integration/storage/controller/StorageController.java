@@ -22,6 +22,7 @@ import com.alibaba.cloud.integration.storage.dto.StorageDTO;
 import com.alibaba.cloud.integration.storage.service.StorageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,9 +50,9 @@ public class StorageController {
 		return Result.success("");
 	}
 
-	@PostMapping("/get-stock")
-	public Result<?> getRemainCount(@RequestBody StorageDTO storageDTO) {
-		return storageService.getRemainCount(storageDTO.getCommodityCode());
+	@GetMapping("/")
+	public Result<?> getRemainCount(String commodityCode) {
+		return storageService.getRemainCount(commodityCode);
 	}
 
 }

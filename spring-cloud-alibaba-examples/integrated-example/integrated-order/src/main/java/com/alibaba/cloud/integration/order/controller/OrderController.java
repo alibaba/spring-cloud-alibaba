@@ -21,7 +21,6 @@ import com.alibaba.cloud.integration.common.Result;
 import com.alibaba.cloud.integration.order.service.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,9 +50,5 @@ public class OrderController {
 		return res;
 	}
 
-	@GetMapping("/query")
-	public Result<?> queryBusinessResult(@RequestParam("orderId") Integer orderId) {
-		return orderService.queryBusinessResult(orderId);
-	}
 
 }

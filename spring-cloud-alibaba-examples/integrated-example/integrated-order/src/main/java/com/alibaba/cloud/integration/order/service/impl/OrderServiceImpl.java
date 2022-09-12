@@ -93,22 +93,4 @@ public class OrderServiceImpl implements OrderService {
 		return Result.success(order);
 	}
 
-	@Override
-	public Result<?> queryBusinessResult(Integer orderId) {
-		Order order = orderMapper.getOrder(orderId);
-
-		StorageDTO storageDTO = new StorageDTO();
-		storageDTO.setCommodityCode(order.getCommodityCode());
-		Integer storageRemain = (Integer) storageService.getRemainCount(storageDTO)
-				.getData();
-
-		AccountDTO accountDTO = new AccountDTO();
-		accountDTO.setUserId(order.getUserId());
-		Integer accountRemain = (Integer) accountService.getRemainAccount(accountDTO)
-				.getData();
-
-		return Result.success(
-				"StorageRemain:" + storageRemain + "AccountRemain:" + accountRemain);
-	}
-
 }

@@ -27,6 +27,4 @@ public interface OrderService {
 	Result<?> createOrder(String userId, String commodityCode, Integer count)
 			throws BusinessException;
 
-	Result<?> queryBusinessResult(Integer orderId);
-
 }
