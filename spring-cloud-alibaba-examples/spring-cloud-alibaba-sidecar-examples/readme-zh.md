@@ -25,8 +25,8 @@ startup.cmd -m standalone
 
 3. 登录 Nacos
    
-   我们来到浏览器 输入localhost:8848/nacos 可以看到naocs的运行的界面
-   用户名和密码都是 naocs
+   我们来到浏览器 输入localhost:8848/nacos 可以看到Nacos的运行的界面
+   用户名和密码都是 `nacos`
 
 
 ## 简单示例
