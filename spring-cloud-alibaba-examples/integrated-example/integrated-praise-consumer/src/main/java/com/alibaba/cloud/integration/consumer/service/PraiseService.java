@@ -23,4 +23,6 @@ public interface PraiseService {
 
 	void praiseItem(Integer itemId);
 
+	int getPraise(Integer itemId);
+
 }

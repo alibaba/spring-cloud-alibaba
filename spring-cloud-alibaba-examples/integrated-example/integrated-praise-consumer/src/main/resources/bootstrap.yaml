@@ -8,5 +8,7 @@ spring:
         server-addr: localhost:8848
         shared-configs[0]:
           dataId: datasorce-config.yaml
+      discovery:
+        server-addr: localhost:8848
 server:
   port: 8014

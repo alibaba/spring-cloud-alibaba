@@ -14,34 +14,28 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.integration.consumer.service.impl;
+package com.alibaba.cloud.integration.consumer.controller;
 
-import java.sql.Timestamp;
-
-import com.alibaba.cloud.integration.consumer.mapper.PraiseMapper;
 import com.alibaba.cloud.integration.consumer.service.PraiseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author TrevorLink
  */
-@Service
-public class PraiseServiceImpl implements PraiseService {
+@RestController
+@RequestMapping("/praise")
+public class PraiseController {
 
 	@Autowired
-	private PraiseMapper praiseMapper;
+	private PraiseService praiseService;
 
-	@Override
-	public void praiseItem(Integer itemId) {
-		Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-		praiseMapper.praiseItem(itemId, updateTime);
-	}
-
-	@Override
-	public int getPraise(Integer itemId) {
-		return praiseMapper.getPraise(itemId);
+	@GetMapping("/query")
+	public Integer getPraise(Integer itemId) {
+		return praiseService.getPraise(itemId);
 	}
 
 }

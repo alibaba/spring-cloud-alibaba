@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import org.springframework.stereotype.Repository;
@@ -34,5 +35,8 @@ public interface PraiseMapper {
 	@Update("update item set praise = praise+1,update_time=#{updateTime} where id = #{itemId}")
 	int praiseItem(@Param("itemId") Integer itemId,
 			@Param("updateTime") Timestamp updateTime);
+
+	@Select("select praise from item where id = #{itemId}")
+	int getPraise(@Param("itemId") Integer itemId);
 
 }
