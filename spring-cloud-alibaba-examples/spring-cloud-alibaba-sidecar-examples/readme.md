@@ -22,7 +22,7 @@ This project demonstrates how to use `Nacos + Spring Cloud Alibaba Sidecar` to a
 startup.cmd -m standalone
 ```
 
-3. Sing in Nacos
+3. Sign in Nacos
    
    Open you browser then input `localhost:8848/nacos` ,you can see the Nacos dashboard ui .
    The default username and password are `nacos`
