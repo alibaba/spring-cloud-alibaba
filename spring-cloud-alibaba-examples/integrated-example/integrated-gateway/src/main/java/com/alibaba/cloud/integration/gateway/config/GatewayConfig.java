@@ -17,10 +17,8 @@
 package com.alibaba.cloud.integration.gateway.config;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -94,12 +92,9 @@ public class GatewayConfig {
 			@Override
 			public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange,
 					Throwable throwable) {
-				Map map = new HashMap();
-				map.put("code", 200);
-				map.put("message", "此接口被限流了");
 				return ServerResponse.status(HttpStatus.OK)
 						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.body(BodyInserters.fromObject(map));
+						.body(BodyInserters.fromObject("此接口被限流了"));
 			}
 		};
 		GatewayCallbackManager.setBlockHandler(blockRequestHandler);

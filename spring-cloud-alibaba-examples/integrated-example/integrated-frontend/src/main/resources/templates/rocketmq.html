@@ -19,10 +19,33 @@
     </div>
 </div>
 <script charset="utf-8">
+    var count = 0;
+    window.onload = function () {
+        const timeId = setInterval(function () {
+            if (count == 1000) {
+                console.log("终止轮询")
+                clearInterval(timeId)
+            }
+            queryRes()
+        }, 500)
+
+        function queryRes() {
+            $.ajax({
+                url: "http://localhost:8010/praise/query",
+                type: "get",
+                dataType: "json",
+                data: "itemId=" + $('#itemId').val(),
+                success: function (res) {
+                    console.log("准备查询，此时count=" + count)
+                    $('#rocketmqResultSection').append(`<p> 点赞数： ${res} </p>`);
+                }
+            })
+        }
+    }
     $('.btnStart').click(() => {
         var itemId = $('#itemId').val();
         $('#rocketmqResultSection').empty();
-        var count = 0;
+
         for (let i = 0; i < 1000; i++) {
             $.ajax({
                 url: "http://localhost:8010/praise/rocketmq",
@@ -30,26 +53,12 @@
                 dataType: "json",
                 data: "itemId=" + itemId,
                 success: function () {
-                    console.log("success")
+                    console.log("点赞成功，更新count")
                     count++;
                 }
             });
         }
-        const timeId = setInterval(() => {
-            console.log(count)
-            if (count == 1000) {
-                clearInterval(timeId)
-            }
-            $.ajax({
-                url: "http://localhost:8010/praise/query",
-                type: "get",
-                dataType: "json",
-                data: "itemId=" + itemId,
-                success: function (res) {
-                    $('#rocketmqResultSection').append(`<p> ${getDateTime()} 当前库存： ${res}</p>`);
-                }
-            });
-        }, 100)
+
     });
 
     const getDateTime = () => {
