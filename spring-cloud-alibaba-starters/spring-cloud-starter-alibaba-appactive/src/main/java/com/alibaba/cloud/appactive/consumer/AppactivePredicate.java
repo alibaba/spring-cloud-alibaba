@@ -43,8 +43,6 @@ import org.springframework.util.AntPathMatcher;
 
 /**
  * @author ChengPu raozihao
- * @description
- * @date 2022/8/20
  */
 public class AppactivePredicate extends AbstractServerPredicate {
 
