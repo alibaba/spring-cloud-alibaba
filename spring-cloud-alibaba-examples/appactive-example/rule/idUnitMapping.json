@@ -1,0 +1,25 @@
+{
+  "itemType": "UnitRuleItem",
+  "items": [
+    {
+      "name": "unit",
+      "conditions": [
+        {
+          "@userIdBetween": [
+            "0~1999"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "center",
+      "conditions": [
+        {
+          "@userIdBetween": [
+            "2000~9999"
+          ]
+        }
+      ]
+    }
+  ]
+}
