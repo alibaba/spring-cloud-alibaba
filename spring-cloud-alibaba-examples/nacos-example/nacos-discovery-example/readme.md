@@ -198,6 +198,7 @@ server address|spring.cloud.nacos.discovery.server-addr||
 service|spring.cloud.nacos.discovery.service|${spring.application.name}|service id to registry
 weight|spring.cloud.nacos.discovery.weight|1|value from 1 to 100, The larger the value, the larger the weight
 ip|spring.cloud.nacos.discovery.ip||ip address to registry, Highest priority
+ip type|spring.cloud.nacos.discovery.ip-type|IPv4|IPv4 and IPv6 can be configured
 network interface|spring.cloud.nacos.discovery.network-interface||When the IP is not configured, the registered IP address is the IP address corresponding to the network-interface. If this item is not configured, the address of the first network-interface is taken by default.
 port|spring.cloud.nacos.discovery.port|-1|port to registry, Automatically detect without configuration
 namesapce|spring.cloud.nacos.discovery.namespace||One of the common scenarios is the separation of the configuration of different environments, such as the development of the test environment and the resource isolation of the production environment.

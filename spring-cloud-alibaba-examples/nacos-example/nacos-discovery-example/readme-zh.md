@@ -191,6 +191,7 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos-discove
 权重|spring.cloud.nacos.discovery.weight|1|取值范围 1 到 100，数值越大，权重越大
 网卡名|spring.cloud.nacos.discovery.network-interface||当IP未配置时，注册的IP为此网卡所对应的IP地址，如果此项也未配置，则默认取第一块网卡的地址
 注册的IP地址|spring.cloud.nacos.discovery.ip||优先级最高
+注册的IP地址类型|spring.cloud.nacos.discovery.ip-type|IPv4|可以配置IPv4和IPv6两种类型
 注册的端口|spring.cloud.nacos.discovery.port|-1|默认情况下不用配置，会自动探测
 命名空间|spring.cloud.nacos.discovery.namespace||常用场景之一是不同环境的注册的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等。
 AccessKey|spring.cloud.nacos.discovery.access-key||
