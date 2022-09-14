@@ -11,6 +11,7 @@ spring:
       config:
         server-addr: localhost:8848
         file-extension: yaml
+        group: integrated-example
         shared-dataids: datasorce-config.yaml
 
 seata:

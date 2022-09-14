@@ -6,5 +6,6 @@ spring:
       config:
         file-extension: yaml
         server-addr: localhost:8848
+        group: integrated-example
 server:
   port: 8015

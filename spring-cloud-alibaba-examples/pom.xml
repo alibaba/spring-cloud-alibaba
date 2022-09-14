@@ -48,12 +48,12 @@
         <module>integrated-example/integrated-storage</module>
         <module>integrated-example/integrated-account</module>
         <module>integrated-example/integrated-order</module>
-        <module>integrated-example/integrated-business</module>
         <module>integrated-example/integrated-gateway</module>
         <module>integrated-example/integrated-praise-provider</module>
         <module>integrated-example/integrated-praise-consumer</module>
         <module>integrated-example/integrated-common</module>
-    </modules>
+		<module>integrated-example/integrated-frontend</module>
+	</modules>
 
     <build>
         <plugins>

@@ -32,5 +32,4 @@ public interface AccountServiceFeignClient {
 	@PostMapping("/account/reduce-balance")
 	Result<?> reduceBalance(@RequestBody AccountDTO accountReduceBalanceDTO);
 
-
 }

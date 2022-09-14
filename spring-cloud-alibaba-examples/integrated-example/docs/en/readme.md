@@ -2,84 +2,84 @@
 
 ## Project Description
 
-This project is a demo project of Spring CLoud Alibaba containerized deployment best practices, it is an Example project integrating Spring Cloud Alibaba related components (Nacos, Sentinel, Seata, RocketMQ).
+This project is a demo of Spring Cloud Alibaba containerized deployment best practices, and is an example project integrating Spring Cloud Alibaba components (Nacos, Sentinel, Seata, RocketMQ).
 
-The main components used, and their usage features are as follows.
+The main components used and their usage features are as follows.
 
-- Spring Cloud Gateway gateway
-- Nacos configuration center and service registry
-- Sentinel fusion flow limitation
-- Seata Distributed Transactions
-- RocketMQ message queue peak-shaving
-- Docker Microservice Containerized Deployment
-- Docker-Compose Microservice Container Management
+- Spring Cloud Gateway:gateway
+- Nacos:configuration centre and service registry
+- Sentinel:fusion flow limiting
+- Seata:Distributed Transactions
+- RocketMQ:message queues for peak and valley reduction
+- Docker:Microservices Containerized Deployment
+- Kubernetes Helm Chart
 
-Kubernetes cluster orchestration management! [Overall Overview](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220816004541921.png)
+![Overall Overview](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220816004541921.png)
 
 ## Application Scenario Description
 
-In this demo example, we provide two business scenarios
+In this demo, we provide two business scenarios.
 
-1) The scenario where a user places an order to buy goods, and after placing the order
+1) A scenario where a user places an order for goods and after placing the order.
 
-- first request the inventory module and deduct the inventory
+- First request the inventory module to deduct the inventory
 
 - Deduct the account balance
 
-- Generate order information and return the response
+- Generate order information and return a response
 
-2) User likes the goods (simulating the producer-consumer application scenario of MQ) to return the details of the goods after the likes (number of likes, etc.)
+2) The user likes the goods (simulating the producer-consumer application scenario of MQ) and returns the details (number of likes, etc.) after the goods have been liked.
 
-### Component details
+### Detailed description of the component
 
-1) In which the user places an order to purchase goods scenario mainly using Seata to reflect the ability of distributed transactions
+1) In which the scenario where the user places an order for the goods mainly uses Seata to perform distributed transactions to represent the capabilities.
 
-2) In the scenario where the user likes the product, we simulate a high traffic environment with Sentinel to limit the flow or RocketMQ to cut the peaks and fill the valleys. In this scenario, we provide two ways to deal with high traffic
+2) The scenario where the user likes a product simulates a high traffic environment with Sentinel for flow limiting or RocketMQ for peak shaving. In this scenario, we provide two ways to deal with high traffic.
 
-- Sentinel binds specified gateway routes on the gateway side for service fusion degradation
-- RocketMQ for peak-shaving, where producers send messages to RocketMQ while consumers pull and consume at configurable consumption rates to reduce the pressure of high traffic direct requests to the database and increase the number of likes
+- Sentinel binds a specified gateway route on the gateway side for service fusion degradation.
+- RocketMQ performs peak-shaving, where producers send messages to RocketMQ and consumers pull and consume at configurable consumption rates, reducing the pressure of high traffic direct requests to the database and increasing the number of likes.
 
-> SpringCloud Gateway
+#### SpringCloud Gateway
 
-Gateway for microservice modules
+A gateway to the microservices module.
 
-Spring Cloud GateWay integration with Nacos for dynamic routing configuration
+Spring Cloud GateWay integrates with Nacos, enabling dynamic routing configuration.
 
-By listening to the changes in Nacos configuration, the service gateway routing configuration is dynamically refreshed so that each time the routing information changes, there is no need to modify the configuration file and restart the service.
+By listening for changes to the Nacos configuration, the service gateway routing configuration is dynamically refreshed so that each time the routing information changes, there is no need to modify the configuration file and then restart the service.
 
-> Nacos
+#### Nacos
 
-Configuration center for each microservice, service registration center
+The configuration centre for each microservice, the service registry.
 
-- Configuration Center
-    - Shared configuration: mysql data source related information configuration
+- Configuration Centre
+  - Shared configuration: MySQL data source related information configuration.
 
-- Registration information
-- All microservice modules are registered to Nacos for service registration and discovery
-- Integration with SpringCloud Gateway 
+- Registration Centre
+  - All microservice modules are registered to Nacos for service registration and discovery.
+  - Integration with SpringCloud Gateway gateway.
 
-> Seata
+#### Seata
 
-Seata based AT schema for distributed transactions for Inventory, Account, Order modules
+Seata-based AT model for distributed transaction processing for the Inventory, Accounts and Orders modules.
 
-Rollback transactions whenever inventory is low/account balance is low
+Roll back transactions whenever stock is low/account balance is low.
 
-> Sentinel
+#### Sentinel
 
-Service fusion flow limiting for point-and-click scenarios
+Service fusion flow limiting for point and click scenarios.
 
-Integration of Nacos Configuration Center and Spring Cloud Gateway for dynamic configuration of fusion flow restriction rules for specified routing rules
+Integrates Nacos Configuration Center with Spring Cloud Gateway to enable dynamic configuration of fused flow limiting rules for specified routing rules.
 
-> RocketMQ
+#### RocketMQ
 
-Peaks and valleys reduction for like service traffic
+Used for peaks and valleys reduction of like service traffic.
 
-By sending high volume of like requests from the producer to mq, the consumer module pulls from mq to consume at a certain frequency, instead of simply downgrading the direct service fuse limit, realizing the ability of rocketmq to cut peaks and fill valleys for high volume of traffic.
+By sending high volume like requests from the producer to the mq, the consumer module pulls from the mq and consumes them with a certain frequency, rather than simply fusing and limiting the degradation of the service directly, enabling RocketMQ's ability to shave peaks and valleys for high volume traffic.
 
 ## Release Notes
 
-This project provides for [local-deployment version](local-deployment.md) and [docker-compose container version](container-deployment.md)
+This project provides a [local-deployment](local-deployment.md) and a [Kubernetes Helm-Chart version](kubernetes-deployment.md).
 
-- If you want to learn how to configure the components and write the complete business process, we recommend learning [local-deployment version](local-deployment.md)
+- To learn how to configure the components and build the complete environment, we recommend learning the [local-deployment](local-deployment.md).
 
-- If you want to quickly experience the effect of components and skip the process of environment deployment, please check out [docker-compose container version](container-deployment.md)
+- If you want to quickly experience the components on a K8S cluster and skip the process of deploying each component, please check out the [Kubernetes Helm-Chart version](kubernetes-deployment.md).

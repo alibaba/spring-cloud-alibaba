@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class IntegrationController {
+
 	@RequestMapping("/order")
 	public String order() {
 		return "order";
@@ -39,4 +40,5 @@ public class IntegrationController {
 	public String sentinel() {
 		return "sentinel";
 	}
+
 }

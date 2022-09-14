@@ -32,5 +32,4 @@ public interface StorageServiceFeignClient {
 	@PostMapping("/storage/reduce-stock")
 	Result<?> reduceStock(@RequestBody StorageDTO productReduceStockDTO);
 
-
 }
