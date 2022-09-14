@@ -126,6 +126,17 @@ public class InetIPv6Utils implements Closeable {
 		return null;
 	}
 
+	public String findIPv6Address() {
+		String ip = findFirstNonLoopbackHostInfo().getIpAddress();
+		int index = ip.indexOf('%');
+		ip = index > 0 ? ip.substring(0, index) : ip;
+		return iPv6Format(ip);
+	}
+
+	public String iPv6Format(String ip) {
+		return "[" + ip + "]";
+	}
+
 	boolean isPreferredAddress(InetAddress address) {
 		if (this.properties.isUseOnlySiteLocalInterfaces()) {
 			final boolean siteLocalAddress = address.isSiteLocalAddress();
