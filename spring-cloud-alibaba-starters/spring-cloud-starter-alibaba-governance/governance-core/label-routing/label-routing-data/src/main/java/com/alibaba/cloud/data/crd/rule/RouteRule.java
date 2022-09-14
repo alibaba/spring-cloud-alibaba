@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.rule;
+package com.alibaba.cloud.data.crd.rule;
 
 /**
  * @author HH
  */
-public class HeaderRule implements RouteRule {
-
-	private String condition;
-
-	private String key;
-
-	private String value;
+public interface RouteRule {
 }

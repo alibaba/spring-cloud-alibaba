@@ -18,8 +18,6 @@ package com.alibaba.cloud.data.crd;
 
 import java.util.Objects;
 
-import com.alibaba.cloud.data.filter.CurrentServiceMetadata;
-
 /**
  * @author HH
  */
@@ -39,8 +37,45 @@ public class ServiceMetadata {
 	 */
 	private String targetService;
 
-	public CurrentServiceMetadata createCurrentServiceMetadata() {
-		return new CurrentServiceMetadata(this.service, this.serviceVersion);
+	public String getService() {
+		return service;
 	}
 
+	public void setService(String service) {
+		this.service = service;
+	}
+
+	public String getServiceVersion() {
+		return serviceVersion;
+	}
+
+	public void setServiceVersion(String serviceVersion) {
+		this.serviceVersion = serviceVersion;
+	}
+
+	public String getTargetService() {
+		return targetService;
+	}
+
+	public void setTargetService(String targetService) {
+		this.targetService = targetService;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		ServiceMetadata that = (ServiceMetadata) o;
+		return Objects.equals(service, that.service) && Objects
+				.equals(serviceVersion, that.serviceVersion) && Objects.equals(targetService, that.targetService);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(service, serviceVersion, targetService);
+	}
 }
