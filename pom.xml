@@ -200,7 +200,7 @@
                         <configuration>
                             <!-- Checkstyle rules inherited from spring-cloud-build -->
                             <suppressionsLocation>
-                                ${session.executionRootDirectory}/eclipse/checkstyle-suppressions.xml
+                                ${maven.multiModuleProjectDirectory}/eclipse/checkstyle-suppressions.xml
                             </suppressionsLocation>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <consoleOutput>true</consoleOutput>

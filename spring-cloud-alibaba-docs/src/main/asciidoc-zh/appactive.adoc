@@ -7,7 +7,7 @@ AppActive 建立在 阿里巴巴 使用 AHAS-MSHA 系统大规模运行生产应
 
 AppActive 具备以下特性
 
-==== 一、单元分流
+==== 单元分流
 ===== 流量统一接入
 对流量的把控能力，来源于流量的统一接入，我们将这一层称为接入层。接入层是单元所有流量的入口，它能解析请求协议，并按照设置的分流模式与分流粒度，将请求流量正确引导到正确单元的相应应用服务SLB上。下文若无特殊说明，请求协议默认HTTP。下图为接入层示意图。
 
@@ -39,13 +39,13 @@ AppActive 具备以下特性
 4. 消息路由透传。MQ客户端在发送消息时，会从当前上下文获取路由参数添加到消息属性中。MQ客户端消费消息时，能从消息属性中取出路由参数，亦保存到调用上下文。路由参数在MQ中的传递过程对用户透明。
 5. 数据层路由透传。数据脏写会造成很严重的后果，因此要保证数据落库到正确单元的DB。多活提供了 DRIVER 插件，对非本单元的请求拒绝。
 
-==== 二、单元协同
+==== 单元协同
 在容灾场景中，理想场景中各个单元独立，但实际上会存在部分跨单元场景的业务场景，为了满足这些场景，产品需要提供单元协同的能力。
 
 ===== 中心调用
 有些特定业务场景，为保证数据强一致性，特定服务只能在特定中心单元提供，所有对中心服务的调用都会直接路由到中心单元来完成。异地多活产品通过CSB组件和RPC多活插件来完成服务单元间协同调用，满足业务的完整性。
 
-==== 三、单元保护
+==== 单元保护
 产品保证业务逻辑的全局正确性，不会因切流操作导致单元业务逻辑不一致问题。系统自上而下各层都有对错误流量的纠错保护能力，保证业务按单元化规则进行正确的流转。
 
 ===== 接入层纠错
@@ -54,7 +54,7 @@ AppActive 具备以下特性
 ===== RPC纠错
 RPC服务调用时，RPC多活Plugin在Consumer端会根据请求的单元信息，对服务调用进行正确的路由选址，对错误的流量服务调用，RPC多活Plugin会计算出正确的目标单元，跨单元调用目标单元服务，保证服务流转逻辑的一致性。同时RPC多活Plugin 在Provider端会对过来的请求进行二次校验，保证服务调用的正确。通过双重校验机制，RPC多活Plugin实现对RPC调用的纠错，保证服务调用的正确性。
 
-==== 四、单元扩展
+==== 单元扩展
 ===== 水平扩展
 当现有单元的业务承载量已达上限且无法扩容时，产品 提供简单快捷单元水平扩展能力：
 
@@ -64,269 +64,181 @@ RPC服务调用时，RPC多活Plugin在Consumer端会根据请求的单元信息
 
 === 如何使用AppActive
 
-==== 一、数据面
+==== 数据面
 
 **前置条件**
 
-- 需要你的应用服务基于 Java 实现，并且以 SpringCloud 实现服务调用
+- 需要你的应用服务基于 Java 实现，并且以 Spring Cloud 实现服务调用
 - 负载均衡支持 Ribbon，暂不支持 SpringCloudBalancer
-- 支持声明式http客户端：Feign 和 RestTemplate，暂不支持 原始Http客户端如 OkHttp 和 HttpClient
+- 支持声明式 Http 客户端：OpenFeign 和 RestTemplate，暂不支持 原始 Http 客户端如 OkHttp 和 HttpClient
 
-===== 入口应用
-入口应用负责从流量中提取路由标，并设置到上下文中
+**快速接入**
+在启动示例进行演示之前，我们先了解一下 Spring Cloud 应用如何使用 AppActive 所提供的异地多活能力。
+**注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
 
-**改造步骤**
+1. 首先，修改 pom.xml 文件，在 provider 和 consumer 已添加最新 `spring-cloud-alibaba-dependencies` 的基础上添加以下 maven 依赖。
 
-1. 引入 maven 依赖
-
-    ```
     <dependency>
-        <groupId>com.alibaba.msha</groupId>
-        <artifactId>client-bridge-servlet</artifactId>
-        <version>0.2.1</version>
+         <groupId>com.alibaba.cloud</groupId>
+         <artifactId>spring-cloud-starter-alibaba-appactive</artifactId>
     </dependency>
-    ```
 
-2. 引入 filter，以 Spring 为例
+2. 在 Provider 应用的 `application.properties` 配置文件中给特定接口配置分流策略。其中后缀 `core-path` 用于配置核心服务，`global-path` 用于配置全局服务，`general-path` 用于配置一般服务，比如 demo 中的 product 应用分流策略配置如下：
 
-    ```java
-    @Configuration
-    public class WebConfig {
-        @Bean
-        public FilterRegistrationBean<RequestFilter> appActiveFilter() {
-            FilterRegistrationBean<RequestFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-            RequestFilter reqResFilter = new RequestFilter();
-            filterRegistrationBean.setFilter(reqResFilter);
-            filterRegistrationBean.addUrlPatterns("/*");
-            return filterRegistrationBean;
-        }
-    }
-    ```
+     spring.cloud.appactive.filter.core-path=/detailHidden/*,/detail/*
+     spring.cloud.appactive.filter.global-path=/buy/*
+     spring.cloud.appactive.filter.general-path=/*
 
-3. 当请求到来时，可以在应用中调用 `AppContextClient.getRouteId();` 来获取路由ID
+3. 在 Consumer 应用的 `application.properties` 配置客户端负载均衡为 AppActive 所提供的负载均衡算法，配置方式如下，注意需要将`[service-name]`替换成具体的待消费服务名。
 
-===== 所有应用
+     [service-name].ribbon.NFLoadBalancerRuleClassName =com.alibaba.cloud.appactive.consumer.AppactiveRule
 
-**改造步骤**
+**快速启动**
 
-1. 在 provider 和 consumer 都引入 maven 依赖
+1. 启动 Nacos, MySQL, 并往 Nacos 中推送多活规则：
 
-    ```
-    <dependency>
-        <groupId>com.alibaba.msha</groupId>
-        <artifactId>client-bridge-rpc-springcloud-common</artifactId>
-        <version>0.2.1</version>
-    </dependency>
-    ```
+    - 在 `appactive-example` 目录下，执行：`docker-compose -f component-quickstart.yml up -d` 启动 Nacos, MySQL。
+    - 执行以下命令：`curl -X POST 'http://127.0.0.1:8848/nacos/v1/console/namespaces' -d 'customNamespaceId=appactiveDemoNamespaceId&namespaceName=appactiveDemoNamespaceName&namespaceDesc=appactiveDemoNamespaceDesc'` 在 Nacos 配置中心中创建一个演示用命名空间 appactiveDemoNamespaceId。
+    - 执行以下命令：`sh baseline.sh 2 NACOS appactiveDemoNamespaceId`，往命名空间中推送多活规则。多活规则说明如下：
+    - `appactive.dataId.idSourceRulePath`: 描述如何从 http 流量中提取路由标
+    - `appactive.dataId.transformerRulePath`: 描述如何解析路由标
+    - `appactive.dataId.trafficRouteRulePath`: 描述路由标和单元的映射关系
+    - `appactive.dataId.dataScopeRuleDirectoryPath_mysql-product`: 描述数据库的属性
 
-    对于 使用 Nacos 作为注册中心的应用，还应引入
-    ```
-    <dependency>
-        <groupId>com.alibaba.msha</groupId>
-        <artifactId>client-bridge-rpc-springcloud-nacos</artifactId>
-        <version>0.2.1</version>
-    </dependency>
-    ```
+2. 启动 5 套应用，启动参数分别为：
 
-    注意，不同的注册中心不能同时使用。
-
-    然后引入自动配置
-
-    `@Import({ConsumerAutoConfig.class, NacosAutoConfig.class})`
-
-2. 在 consumer 的 maven 中引入切面，植入多活寻址逻辑
-
-    ```
-    <build>
-        <plugins>
-            </plugin>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>aspectj-maven-plugin</artifactId>
-            <version>1.11</version>
-            <configuration>
-                <aspectLibraries>
-                    <aspectLibrary>
-                    <groupId>com.alibaba.msha</groupId>
-                    <artifactId>client-bridge-rpc-springcloud-common</artifactId>
-                    </aspectLibrary>
-                </aspectLibraries>
-                <source>${maven.compiler.source}</source>
-                <target>${maven.compiler.target}</target>
-                <complianceLevel>1.8</complianceLevel>
-                <forceAjcCompile>true</forceAjcCompile>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>compileId</id>
-                    <phase>compile</phase>
-                    <goals>
-                    <goal>compile</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-        </plugins>
-    </build>
-    ```
-
-3. 在 provider 中定义不同uri的属性，支持 ant 模式的 uri，举例
-
-    ```
-        @Bean
-        public FilterRegistrationBean<UnitServiceFilter> appActiveUnitServiceFilter() {
-            FilterRegistrationBean<UnitServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-            UnitServiceFilter reqResFilter = new UnitServiceFilter();
-            filterRegistrationBean.setFilter(reqResFilter);
-            filterRegistrationBean.addUrlPatterns("/detailHidden/*","/detail/*");
-            return filterRegistrationBean;
-        }
-
-        @Bean
-        public FilterRegistrationBean<CenterServiceFilter> appActiveCenterServiceFilter() {
-            FilterRegistrationBean<CenterServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-            CenterServiceFilter reqResFilter = new CenterServiceFilter();
-            filterRegistrationBean.setFilter(reqResFilter);
-            filterRegistrationBean.addUrlPatterns("/buy/*");
-            return filterRegistrationBean;
-        }
-    ```
-    不同服务类型如下
-
-- center: 中心服务，强一致的业务（例如库存、金额等）的服务，强制路由到中心机房，使用 `GlobalServiceFilter` 过滤
-- unit: 单元服务，基于规则，仅在本单元路由的服务，使用 `CoreServiceFilter` 过滤
-- normal: 普通服务，不做多活改造，使用 `GeneralServiceFilter` 过滤，本类服务亦可不单独配置，除上述两种服务以外都认为是普通服务
-
-===== 基本配置
-
-凡是依赖 `appactive-java-api` 模块的应用，启动时候都要配置参数：
-
+- frontend
 ```
 -Dappactive.channelTypeEnum=NACOS
 -Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=unit
+-Dappactive.app=frontend
+-Dio.appactive.demo.unitlist=center,unit
+-Dio.appactive.demo.applist=frontend,product,storage
+-Dserver.port=8875
+```
+- product
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=center
+-Dappactive.app=product
+-Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT&activeInstanceId=mysql&activeDbName=product
+-Dserver.port=8883
+```
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=unit
+-Dappactive.app=product
+-Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT&activeInstanceId=mysql&activeDbName=product
+-Dserver.port=8873
+```
+- storage
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=center
+-Dappactive.app=storage
+-Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+-Dserver.port=8881
+```
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=unit
+-Dappactive.app=storage
+-Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+-Dserver.port=8871
 ```
 
-表征当前应用使用 Nacos 作为命令通道，并且使用 appactiveDemoNamespaceId空间。
-该空间需要有一些几个 dataId（下面管控面进行说明），这些 dataId 的 groudId 必须一致，比如默认为 `appactive.groupId`
-当然这些都可以在启动参数进行配置，如
+**效果演示**
 
-```
--Dappactive.dataId.idSourceRulePath=someDataId
--Dappactive.dataId.transformerRulePath=otherDataId
-......
--Dappactive.groupId=myGroupId
-```
+1. 归属于一般（Unit）单元的普通应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/listProduct` 地址，可见请求通过 frontend 应用被发送给了 product。
 
-==== 二、管控面
+image::pic/image-2022-09-15-16-16-25-989.png[]
 
-在应用部署完成后要进行基线推送，在希望调整流量时进行切流。核心是规则的构造和推送，这里重点将几个规则进行说明。
+  由于上述路径中的 `/listProduct` 在 product 应用中匹配到的是 `/*` 路径规则，根据规则内容，该服务属于普通应用做了未做单元化拆分，所以frontend 在从注册中心获取的 product 地址列表中不存在倾向性，会随机选择地址进行请求发送。因此多次请求上述路径，会看到请求在 product 的一般（Unit)和 中心（center）单元应用中来回切换。
 
-- appactive.dataId.idSourceRulePath，举例：
+2. 归属于 unit 单元的核心应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/detailProduct` 路径，由于上述路径中的 `/detailProduct` 在 product 应用中匹配到的是 `/detail/*` 路径规则，根据规则内容，该服务属于核心应用做了单元会拆分，其会根据请求中 Header, Cookie 或请求参数中的变量具体的值去判断该请求的下游单元类型，由于事先配置如下切流规则（具体可见 rule 目录下的 idUnitMapping.json 文件内容）：
 
-```
-{
-    "source": "arg,header,cookie",
-    "tokenKey": "r_id"
-}
-```
-
-说明，从http parameter、header、cookie 中按顺序寻找以r_id为key的value，找到一个即终止寻找过程。
-
-- appactive.dataId.transformerRulePath，举例：
-
-```
-{
-  "id": "userIdBetween",
-  "mod": "10000"
-}
-```
-
-说明，提取到路由标后按照10000取模，作为最终路由标。
-
-
-- appactive.dataId.trafficRouteRulePath，举例：
-
-```
-{
-  "itemType": "UnitRuleItem",
-  "items": [
     {
-      "name": "unit",
-      "conditions": [
-        {
-          "@userIdBetween": [
-            "0~1999"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "center",
-      "conditions": [
-        {
-          "@userIdBetween": [
-            "2000~9999"
-          ]
-        }
-      ]
-    }
-  ]
-}
-
-```
-说明 按 10000 取模后在 0～1999 范围内的路由标应该被路由到 unit；
-
-按 10000 取模后在 2000～9999 范围内的路由标应该被路由到 center；
-
-- appactive.dataId.forbiddenRulePath，举例：
-
-假设我们希望将 2000~2999 从 unit 划分到 center，则新的appactive.trafficRulePath如下
-
-```
-{
-  "itemType": "UnitRuleItem",
-  "items": [
-    {
-      "name": "unit",
-      "conditions": [
-        {
-          "@userIdBetween": [
-            "0~2999"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "center",
-      "conditions": [
-        {
-          "@userIdBetween": [
-            "3000~9999"
-          ]
-        }
-      ]
-    }
-  ]
-}
-
-```
-
-对应的appactive.forbiddenRulePath 为
-
-```
-    {
-      "itemType": "ForbiddenRuleItem",
+      "itemType": "UnitRuleItem",
       "items": [
         {
-          "name": "between",
+          "name": "unit",
           "conditions": [
             {
               "@userIdBetween": [
-                "2000~2999"
+                "0~1999"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "center",
+          "conditions": [
+            {
+              "@userIdBetween": [
+                "2000~9999"
               ]
             }
           ]
         }
       ]
     }
-```
+
+    上述规则表示，用户Id为 0 ~ 1999 的请求将发送给下游提供者中的一般（Unit）单元中的核心应用实例，用户Id为 2000 ~ 9999 的请求将发送给下游提供者中的中心（Center）单元全局应用实例。
+    如下图，模拟一个用户Id为 1999 的请求，可见请求通过 frontend 发送到了下游中 product 的一般（Unit）单元中的核心应用实例。
+
+image::pic/image-2022-09-15-16-15-39-851.png[]
+
+  如下图，模拟一个用户Id为 2000 的请求，可见请求通过 frontend 发送到了下游中 product 的中心（center）单元中的全局应用实例。
+
+image::pic/image-2022-09-15-16-14-50-461.png[]
+
+3. 归属于中心（Center）单元的全局应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/buyProduct` 路径，由于上述路径中的 `/buyProduct` 在 product 和 storage 应用中匹配到的是 `/buy/*` 路径规则，根据规则内容，该服务属于全局应用未做单元会拆分，其会直接将请求发送到下游的中心（Center）单元中全局应用实例。
+
+image::pic/image-2022-09-15-16-14-02-388.png[]
+
+
+4. 切流演示。切流时主要做了如下几件事：
+    - 构建新的映射关系规则和禁写规则（手动）
+    - 将禁写规则推送给应用
+    - 等待数据追平后将新的映射关系规则推送给应用
+   接下来演示的切流规则，会将用户Id为 0 ~ 2999 的请求将发送给下游提供者中的一般（Unit）单元中的核心应用实例，用户Id为 3000 ~ 9999 的请求将发送给下游提供者中的中心（Center）单元中的全局应用实例。具体的规则详情见 idUnitMappingNext.json：
+
+        {
+          "itemType": "UnitRuleItem",
+          "items": [
+            {
+              "name": "unit",
+              "conditions": [
+                {
+                  "@userIdBetween": [
+                    "0~2999"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "center",
+              "conditions": [
+                {
+                  "@userIdBetween": [
+                    "3000~9999"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+
+如下图，模拟一个用户Id为 2999 的请求，可见请求通过 frontend 发送到了下游中 product 的 unit 单元中的核心应用实例，切流规则生效。
+
+image::pic/image-2022-09-15-16-12-58-177.png[]
+
+如下图，模拟一个用户Id为 3000 的请求，可见请求通过 frontend 发送到了下游中 product 的 center 单元中的全局应用实例，切流规则生效。
+
+image::pic/image-2022-09-15-16-12-26-461.png[]
+

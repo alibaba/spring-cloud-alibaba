@@ -13,7 +13,7 @@ commercial services, and has the characteristics of high reliability and scalabi
 
 AppActive has the following features:
 
-==== One, unit diversion
+==== Unit diversion
 
 ===== Unified traffic access
 The ability to control traffic comes from the unified access of traffic. We call this layer the access layer. The access layer is the entrance of all traffic of the unit. It can parse the request protocol and correctly guide the request traffic to the corresponding application service SLB of the correct unit according to the set split mode and split granularity. If there are no special instructions below, the request protocol defaults to HTTP. The figure below is a schematic diagram of the access layer.
@@ -46,13 +46,13 @@ In order to ensure that the flow can be closed in the cell, each layer of the ac
 4. Message routing transparent transmission.When the MQ client sends a message, it will obtain routing parameters from the current context and add it to the message properties. When the MQ client consumes a message, it can retrieve routing parameters from the message attributes and save them in the calling context. The process of routing parameters in MQ is transparent to users.
 5. Data layer routing transparent transmission.Dirty writing of data can cause serious consequences, so it is necessary to ensure that the data is stored in the correct unit of DB. Duohuo provides the DRIVER plug-in, and rejects requests from non-this unit.
 
-==== Two, unit collaboration
+==== Unit collaboration
 In the disaster recovery scenario, each unit in the ideal scenario is independent, but in fact there will be some business scenarios that cross-unit scenarios. In order to meet these scenarios, the product needs to provide unit collaboration capabilities.
 
 ===== Center call
 In some specific business scenarios, in order to ensure strong data consistency, specific services can only be provided in specific central units, and all calls to central services will be directly routed to the central unit for completion. Remote multi-active products use CSB components and RPC multi-active plug-ins to complete coordinated calls between service units to meet business integrity.
 
-==== Three, unit protection
+==== Unit protection
 The product guarantees the global correctness of the business logic, and will not cause inconsistencies in the unit business logic due to cut-flow operations. Each layer of the system from top to bottom has error correction protection capabilities for error traffic to ensure that services are flowed correctly according to the unitized rules.
 
 ===== Access layer error correction
@@ -61,7 +61,7 @@ The traffic enters the access layer, and the access layer determines the unit of
 ===== RPC error correction
 When the RPC service is called, the RPC Multi-Live Plugin will perform the correct routing of the service call based on the requested unit information on the Consumer side, and call the wrong traffic service. The RPC Multi-Live Plugin will calculate the correct target unit and call across units. Target unit services to ensure the consistency of service circulation logic. At the same time, the RPC Multi-Live Plugin will perform a second check on the incoming request on the Provider side to ensure the correct service call. Through the double check mechanism, RPC Multi-Live Plugin realizes the error correction of RPC calls to ensure the correctness of service calls.
 
-==== Four, unit extension
+==== Unit extension
 ===== Horizontal extension
 When the business carrying capacity of the existing unit has reached the upper limit and cannot be expanded, the product provides simple and fast unit horizontal expansion capabilities:
 
@@ -69,262 +69,182 @@ When the business carrying capacity of the existing unit has reached the upper l
 2. The number of new units to be expanded is not limited, and the stability and performance of the unit are not affected by the number of units
 3. Two types of unit expansion are provided: remote unit with independent DB and same-city unit with shared DB
 
-=== AppActive: How to
+=== How to use
 
-==== A. Data Plane
+==== Data Plane
 
-===== Frontend application
+**Precondition**
 
-The frontend application is responsible for extracting the routing beacon from the traffic and setting it in the context
+- Require your application service to be implemented in Java and implement service invocation with Spring Cloud
+- Load balancing supports Ribbon, but SpringCloudBalancer is not currently supported
+- Support declarative Http clients: OpenFeign and RestTemplate, not support original Http clients such as OkHttp and HttpClient
 
-1. Introduce maven dependency
+**Quick Start**
+Before starting the example for demonstration, let's take a look at how Spring Cloud applications use the remote multi-active capabilities provided by AppActive.
+**Note, this chapter is only for your understanding of the access method. The access work has been completed in this examples, and you do not need to modify it.**
 
-    ```
+1. First, modify the pom.xml file to add the following maven dependencies based on the latest `spring-cloud-alibaba-dependencies` added to the provider and consumer.
+
     <dependency>
-        <groupId>com.alibaba.msha</groupId>
-        <artifactId>client-bridge-servlet</artifactId>
-        <version>0.2.1</version>
+         <groupId>com.alibaba.cloud</groupId>
+         <artifactId>spring-cloud-starter-alibaba-appactive</artifactId>
     </dependency>
-    ```
 
-2. import filter，for example
+2. Configure offload policies for specific interfaces in the `application.properties` configuration file of the Provider application. The suffix `core-path` is used to configure core services, `global-path` is used to configure global services, and `general-path` is used to configure general services. For example, the product application distribution strategy in the demo is configured as follows：
 
-    ```java
-    @Configuration
-    public class WebConfig {
-        @Bean
-        public FilterRegistrationBean<RequestFilter> appActiveFilter() {
-            FilterRegistrationBean<RequestFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-            RequestFilter reqResFilter = new RequestFilter();
-            filterRegistrationBean.setFilter(reqResFilter);
-            filterRegistrationBean.addUrlPatterns("/*");
-            return filterRegistrationBean;
-        }
-    }
-    ```
+     spring.cloud.appactive.filter.core-path=/detailHidden/*,/detail/*
+     spring.cloud.appactive.filter.global-path=/buy/*
+     spring.cloud.appactive.filter.general-path=/*
 
-3. When the request comes, you can call `AppContextClient.getRouteId();` in the application to get the route ID
+3. In the `application.properties` of the Consumer application, configure the client load balancing as the load balancing algorithm provided by AppActive. The configuration method is as follows. Note that `[service-name]` needs to be replaced with the specific service name to be consumed.
 
-===== All applications
+     [service-name].ribbon.NFLoadBalancerRuleClassName =com.alibaba.cloud.appactive.consumer.AppactiveRule
 
-1. Introduce maven dependency for both consumer and producer
+**Presentation preparation**
 
-    ```
-    <dependency>
-        <groupId>com.alibaba.msha</groupId>
-        <artifactId>client-bridge-rpc-springcloud-common</artifactId>
-        <version>0.2.1</version>
-    </dependency>
-    ```
+1. Start Nacos, MySQL, and push multi-active rules to Nacos:
 
-    if you use Nacos as service registry，you should import
-    ```
-    <dependency>
-        <groupId>com.alibaba.msha</groupId>
-        <artifactId>client-bridge-rpc-springcloud-nacos</artifactId>
-        <version>0.2.1</version>
-    </dependency>
-    ```
+- In the `appactive-example` directory, execute: `docker-compose -f component-quickstart.yml up -d` to start Nacos, MySQL.
+- Execute the following command: `curl -X POST 'http://127.0.0.1:8848/nacos/v1/console/namespaces' -d 'customNamespaceId=appactiveDemoNamespaceId&namespaceName=appactiveDemoNamespaceName&namespaceDesc=appactiveDemoNamespaceDesc'` Create a demo named in Nacos configuration center Space appactiveDemoNamespaceId.
+- Execute the following command: `sh baseline.sh 2 NACOS appactiveDemoNamespaceId` to push the multi-active rule to the namespace. The multi-live rules are described as follows:
+- `appactive.dataId.idSourceRulePath`: Describes how to extract routing tokens from http traffic
+- `appactive.dataId.transformerRulePath`: Describes how to parse routing tokens
+- `appactive.dataId.trafficRouteRulePath`: Describes the mapping between routing labels and units
+- `appactive.dataId.dataScopeRuleDirectoryPath_mysql-product`: Properties that describe the database
 
-    It should be noted that you can not use 2 registry at the same time.
-    Then import auto config
+2. Start five sets of applications, the startup parameters are:
 
-    `@Import({ConsumerAutoConfig.class, NacosAutoConfig.class})`
-
-2. import aspect config for consumer
-
-    ```
-    <build>
-        <plugins>
-            </plugin>
-            <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>aspectj-maven-plugin</artifactId>
-        <version>1.11</version>
-        <configuration>
-        <aspectLibraries>
-            <aspectLibrary>
-            <groupId>com.alibaba.msha</groupId>
-            <artifactId>client-bridge-rpc-springcloud-common</artifactId>
-            </aspectLibrary>
-        </aspectLibraries>
-        <source>${maven.compiler.source}</source>
-        <target>${maven.compiler.target}</target>
-        <complianceLevel>1.8</complianceLevel>
-        <forceAjcCompile>true</forceAjcCompile>
-        </configuration>
-        <executions>
-            <execution>
-                <id>compileId</id>
-                <phase>compile</phase>
-                <goals>
-                    <goal>compile</goal>
-                </goals>
-            </execution>
-        </executions>
-        </plugin>
-        </plugins>
-    </build>
-    ```
-In which we defined a multi-active routing policy
-
-3. Define service type for uris in providers, such as
-
-    ```
-    @Bean
-    public FilterRegistrationBean<UnitServiceFilter> appActiveUnitServiceFilter() {
-        FilterRegistrationBean<UnitServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        UnitServiceFilter reqResFilter = new UnitServiceFilter();
-        filterRegistrationBean.setFilter(reqResFilter);
-        filterRegistrationBean.addUrlPatterns("/detailHidden/*","/detail/*");
-        return filterRegistrationBean;
-    }
-
-    @Bean
-    public FilterRegistrationBean<CenterServiceFilter> appActiveCenterServiceFilter() {
-        FilterRegistrationBean<CenterServiceFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        CenterServiceFilter reqResFilter = new CenterServiceFilter();
-        filterRegistrationBean.setFilter(reqResFilter);
-        filterRegistrationBean.addUrlPatterns("/buy/*");
-        return filterRegistrationBean;
-    }
-    ```
-
-
-- center: center service, which will only route within center idc, and is filtered by `GlobalServiceFilter`
-- unit: unit service, which will only route within right unit according to multi-active rules, and is filtered by `CoreServiceFilter`
-- normal: normal service, which requires no multi-active modification, and will route as it was, and is filtered by `GeneralServiceFilter`. Fyi, you can skip this service cause any service other than the above 2 types is considered as normal services.
-
-===== 4.1 Basic configuration
-
-All applications that rely on the `appactive-java-api` module must configure the parameters bellow
-
+- frontend
 ```
 -Dappactive.channelTypeEnum=NACOS
 -Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=unit
+-Dappactive.app=frontend
+-Dio.appactive.demo.unitlist=center,unit
+-Dio.appactive.demo.applist=frontend,product,storage
+-Dserver.port=8875
+```
+- product
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=center
+-Dappactive.app=product
+-Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT&activeInstanceId=mysql&activeDbName=product
+-Dserver.port=8883
+```
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=unit
+-Dappactive.app=product
+-Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT&activeInstanceId=mysql&activeDbName=product
+-Dserver.port=8873
+```
+- storage
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=center
+-Dappactive.app=storage
+-Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+-Dserver.port=8881
+```
+```
+-Dappactive.channelTypeEnum=NACOS
+-Dappactive.namespaceId=appactiveDemoNamespaceId
+-Dappactive.unit=unit
+-Dappactive.app=storage
+-Dspring.datasource.url=jdbc:mysql://127.0.0.1:3306/product?characterEncoding=utf8&useSSL=false&serverTimezone=GMT
+-Dserver.port=8871
 ```
 
-which indicate we use naocs as command channel and use namespace with the id "appactiveDemoNamespaceId".
-The namespace must contains several dataIds(which will be described in controll plane section), which share one groupId( "appactive.groupId" by default).
-Of course, all these parameters can be redefined,such as:
+**Demonstration process**
 
+1. Demonstration of general service calls belonging to the normal unit. Typing: `http://127.0.0.1:8079/listProduct` address in the browser, it can be seen that the request is sent to the product through the frontend application.
 
-```
--Dappactive.dataId.idSourceRulePath=someDataId
--Dappactive.dataId.transformerRulePath=otherDataId
-......
--Dappactive.groupId=myGroupId
-```
+image::pic/image-2022-09-15-16-16-25-989.png[]
 
-==== B. Control Plane
+  Since `/listProduct` in the above path matches the `/*` path rule in the product application, which corresponds to the normal unit, frontend does not have a tendency in the product address list obtained from the registry, and will randomly select an address for request sending. So requesting the above path multiple times will see the request switch back and forth between the normal and center units of the product.
 
-After the application is deployed, the baseline is pushed, and the flow is switched when you want to adjust the traffic. The core is the construction and push of rules, here are a few rules to explain.
+2. Demonstration of core service calls belonging to the different unit by request information. Typing: `http://127.0.0.1:8079/detailProduct` in the browser, because the `/detailProduct` in the above path matches the `/detail/*` path rule in the product application, corresponding to the normal(unit) unit, it will be based on the request The specific value of the variable in the Header, Cookie or request parameter is used to determine the downstream unit type of the request, because the following flow switching rules are configured in advance (for details, see the content of the idUnitMapping.json file in the rule directory):
 
-- appactive.dataId.idSourceRulePath, example:
-
-```
-{
-    "source": "arg,header,cookie",
-    "tokenKey": "r_id"
-}
-```
-
-AppActive would extract value corresponding to the key r_id in the order of parameter, header, cookie.
-
-- appactive.dataId.transformerRulePath, example:
-
-```
-{
-  "id": "userIdBetween",
-  "mod": "10000"
-}
-```
-
-The final routing target would be decided by rawValue % 10000
-
-- appactive.dataId.trafficRouteRulePath, example:
-
-```
-{
-  "itemType": "UnitRuleItem",
-  "items": [
     {
-      "name": "unit",
-      "conditions": [
-        {
-          "@userIdBetween": [
-            "0~1999"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "center",
-      "conditions": [
-        {
-          "@userIdBetween": [
-            "2000~9999"
-          ]
-        }
-      ]
-    }
-  ]
-}
-
-```
-Modulo by 10000, the routing targets within the range of 0-1999 should be routed to unit,
-the routing targets within the range of 2000-9999 should be routed to the center
-
-
-- appactive.dataId.forbiddenRulePath, example:
-
-Suppose we would like to switch routing targets 2000~2999 from unit to center, the new value of appactive.trafficRulePath would be
-
-```
-{
-  "itemType": "UnitRuleItem",
-  "items": [
-    {
-      "name": "unit",
-      "conditions": [
-        {
-          "@userIdBetween": [
-            "0~2999"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "center",
-      "conditions": [
-        {
-          "@userIdBetween": [
-            "3000~9999"
-          ]
-        }
-      ]
-    }
-  ]
-}
-
-```
-
-the corresponding value of appactive.forbiddenRulePath is
-
-```
-    {
-      "itemType": "ForbiddenRuleItem",
+      "itemType": "UnitRuleItem",
       "items": [
         {
-          "name": "between",
+          "name": "unit",
           "conditions": [
             {
               "@userIdBetween": [
-                "2000~2999"
+                "0~1999"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "center",
+          "conditions": [
+            {
+              "@userIdBetween": [
+                "2000~9999"
               ]
             }
           ]
         }
       ]
     }
-```
+
+    The above rules mean that requests with user IDs of 0 ~ 1999 will be sent to the noraml(unit) in the downstream provider, and requests with user IDs of 2000 ~ 9999 will be sent to the center unit of the downstream provider.
+    As shown in the figure below, a request with a user ID of 1999 is simulated. It can be seen that the request is sent to the normal unit of product in the downstream through the frontend.
+
+image::pic/image-2022-09-15-16-15-39-851.png[]
+
+  As shown in the figure below, a request with a user ID of 2000 is simulated. It can be seen that the request is sent to the center unit node of the product in the downstream through the frontend.
+
+image::pic/image-2022-09-15-16-14-50-461.png[]
+
+3. Demonstration of global service invocation belonging to the center unit. Typing: `http://127.0.0.1:8079/buyProduct` path in the browser, because the `/buyProduct` in the above path matches the `/buy/*` path rule in the product and storage applications, corresponding to the center unit, it will directly send the request to the downstream center unit node.
+
+image::pic/image-2022-09-15-16-14-02-388.png[]
+
+
+4. Cut flow demo. The main things to do when cutting flow are as follows:
+- Build new mapping relationship rules and write prohibition rules (manually).
+- Push the write prohibition rules to the application.
+- Push the new mapping relationship rules to the application after waiting for the data to equalize.
+The streaming rule demonstrated next will send requests with user IDs 0 ~ 2999 to the normal(called unit) unit in the downstream provider, and requests with user IDs 3000 ~ 9999 will be sent to the center(called center) unit in the downstream provider. For specific rules, see idUnitMappingNext.json:
+
+        {
+          "itemType": "UnitRuleItem",
+          "items": [
+            {
+              "name": "unit",
+              "conditions": [
+                {
+                  "@userIdBetween": [
+                    "0~2999"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "center",
+              "conditions": [
+                {
+                  "@userIdBetween": [
+                    "3000~9999"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+
+As shown in the figure below, a request with a user ID of 2999 is simulated. It can be seen that the request is sent to the unit node of the product in the downstream through the frontend, and the flow switching rule takes effect.
+
+image::pic/image-2022-09-15-16-12-58-177.png[]
+
+As shown in the figure below, a request with a user ID of 3000 is simulated. It can be seen that the request is sent to the center unit node of the product in the downstream through the frontend, and the cut flow rule takes effect.
+
+image::pic/image-2022-09-15-16-12-26-461.png[]
