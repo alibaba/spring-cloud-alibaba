@@ -102,7 +102,7 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 |DanielLiu1123
 |Committer
 |llw599502537@gmail.com
-|Student
+|Shenzhen Mengshi Technology Co., Ltd.
 
 |Lengleng
 |lltx
@@ -114,6 +114,12 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 |echooymxq
 |Committer
 |echooy.mxq@gmail.com
+|~
+
+|Cheng Xingyuan
+|complone
+|Committer
+|yuluoxinsheng@gmail.com
 |~
 
 |===

@@ -102,7 +102,7 @@ Contributor是对项目有贡献的个人，标准为：
 |DanielLiu1123
 |Committer
 |llw599502537@gmail.com
-|在校学生
+|深圳市萌时科技有限公司
 
 |冷冷
 |lltx
@@ -114,6 +114,12 @@ Contributor是对项目有贡献的个人，标准为：
 |echooymxq
 |Committer
 |echooy.mxq@gmail.com
+|~
+
+|程兴源
+|complone
+|Committer
+|yuluoxinsheng@gmail.com
 |~
 
 |===
