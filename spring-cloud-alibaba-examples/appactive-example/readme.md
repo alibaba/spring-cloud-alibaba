@@ -15,12 +15,12 @@ Note:
 
 concept
 
-The idea of multi-activity in different places is analogous to that eggs in daily life should not be placed in one basket. By splitting and deploying business applications in units, the impact of a unit's failure is limited to a specific unit. In the application multi-activity scheme based on AppActive, applications can be divided into three categories: global business, core business and shared business according to application attributes, which can be classified into two types of units: center unit and general unit. Units are generally used to refer to server room.
+The idea of multi-activity in different places is analogous to that eggs in daily life should not be placed in one basket. By splitting and deploying business applications in units, the impact of a unit's failure is limited to a specific unit. In the application multi-activity scheme based on AppActive, service can be divided into three categories: global service, core service and general service, which can be classified into two types of units: center unit and normal unit. Units are generally used to refer to server room.
 
-3 types applications:
-- Global application: business applications (such as inventory, amount, etc.) with strong consistency cannot be split between multiple activities in different places, and they need to read and write services in the center unit.
-- Core application: an application that is divided into units, an application that reads and writes in a specific unit according to the preset multi-active rules and request information.
-- General application: It belongs to the business on the non-core link of the system, has low requirements on data consistency, and is not divided into units.
+3 types service:
+- Global service: business applications (such as inventory, amount, etc.) with strong consistency cannot be split between multiple activities in different places, and they need to read and write services in the center unit.
+- Core service: an application that is divided into units, an application that reads and writes in a specific unit according to the preset multi-active rules and request information.
+- General service: It belongs to the business on the non-core link of the system, has low requirements on data consistency, and is not divided into units.
 
 2 types units:
 
@@ -31,10 +31,10 @@ There are three applications in demo, according to the distance (call link) of t
 
 - frontend: frontend application, accept user requests, and return after requesting actual data.
 - product: product application, providing three services:
-    - product List: General Service
-    - product Details: Unit Service
-    - product order: central service, relying on inventory application
-- storage: storage application, it provide create orders service for users.
+    - product list: general service
+    - product details: core service
+    - product order: global service, relying on inventory application
+- storage: storage application, it provides create orders service for users.
 
 The applications are deployed in each of the center and normal unit.
 
