@@ -40,7 +40,7 @@ import org.springframework.core.io.Resource;
 /**
  * Parsing for XML requires overwriting the default
  * {@link PropertiesPropertySourceLoader}, because it internally rigorously validates
- * ({@conde DOCTYPE}) THE XML in a way that makes it difficult to customize the
+ * ({@code DOCTYPE}) THE XML in a way that makes it difficult to customize the
  * configuration; at finally, make sure it's in the first place.
  *
  * @author zkz
