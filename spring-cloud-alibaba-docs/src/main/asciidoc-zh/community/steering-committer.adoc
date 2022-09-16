@@ -13,8 +13,11 @@ Steering Committee 作为Spring Cloud Alibaba项目的技术发展指导委员�
 Committer是具有仓库写权限的个人，包含以下的标准：
 
 * 能够在长时间内做持续贡献issue、PR的个人；
-* 参与issue列表的维护及重要feature的讨论；
+* 对社区做出了重要feature贡献；
+* 参与issue列表的维护、重要feature的讨论、社区周会主持与参与社区周会分享等社区活动；
+* 参加过至少1次的社区季度活跃贡献者计划；
 * 参与code review；
+* Committer由Steering Committee Member成员提名投票产生，至少获得3票同意才能当选；
 
 ==== Contributor
 Contributor是对项目有贡献的个人，标准为：

@@ -13,8 +13,11 @@ Steering Committee, as the technical development steering committee of the Sprin
 A committer is an individual with write permissions to the repository, and includes the following criteria:
 
 * Individuals who can make continuous contributions to issues and PRs for a long time;
-* Participate in the maintenance of the issue list and the discussion of important features;
+* Made important feature contributions to the community;
+* Participate in the maintenance of the issue list, the discussion of important features, the hosting of the community weekly meeting and the participation in community activities such as sharing the weekly community meeting
+* Participated in the quarterly active contributor program of the community at least once;
 * Participate in code review;
+* Committer is nominated and voted by members of the Steering Committee Member, and can be elected with at least 3 votes;
 
 ==== Contributor
 Contributors are individuals who contribute to the project, the standard is
