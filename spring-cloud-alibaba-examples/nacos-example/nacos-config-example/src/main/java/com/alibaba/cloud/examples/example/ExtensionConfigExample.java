@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Example of extended configuration. When a configuration in the shared configuration
  * does not meet the requirements, the extended configuration can be used to override the
- * shared configuration. Priority: Main Configuration > Extended Configuration > Shared
+ * shared configuration. Priority: Main Configuration &gt; Extended Configuration &gt; Shared
  * Configuration.
  * @author lixiaoshuang
  */

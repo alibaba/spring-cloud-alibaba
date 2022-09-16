@@ -35,9 +35,9 @@ import org.springframework.core.io.Resource;
  * Nacos-specific loader, If need to support other methods of parsing,you need to do the
  * following steps:
  * <p>
- * 1.inherit {@link AbstractPropertySourceLoader} ;<br/>
+ * 1.inherit {@link AbstractPropertySourceLoader};<br>
  * 2. define the file{@code spring.factories} and append
- * {@code org.springframework.boot.env.PropertySourceLoader=..}; <br/>
+ * {@code org.springframework.boot.env.PropertySourceLoader=..};<br>
  * 3.the last step validate.
  * </p>
  * Notice the use of {@link NacosByteArrayResource} .
