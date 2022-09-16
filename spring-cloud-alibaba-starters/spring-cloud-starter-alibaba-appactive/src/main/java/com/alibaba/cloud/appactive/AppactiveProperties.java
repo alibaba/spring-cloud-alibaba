@@ -25,8 +25,6 @@ import org.springframework.util.StringUtils;
 
 /**
  * @author ChengPu raozihao
- * @description
- * @date 2022/8/15
  */
 @ConfigurationProperties("spring.cloud.appactive.filter")
 public class AppactiveProperties {

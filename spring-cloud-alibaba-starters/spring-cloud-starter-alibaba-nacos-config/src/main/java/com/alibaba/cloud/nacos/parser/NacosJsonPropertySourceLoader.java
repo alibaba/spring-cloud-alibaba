@@ -72,6 +72,7 @@ public class NacosJsonPropertySourceLoader extends AbstractPropertySourceLoader 
 
 	/**
 	 * Reload the key ending in `value` if need.
+	 * @param map the map parameter
 	 */
 	protected Map<String, Object> reloadMap(Map<String, Object> map) {
 		if (map == null || map.isEmpty()) {

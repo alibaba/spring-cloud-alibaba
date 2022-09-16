@@ -22,9 +22,7 @@ import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.PredicateBasedRule;
 
 /**
- * @description
  * @author ChengPu raozihao
- * @date 2022/8/21
  */
 public class AppactiveRule extends PredicateBasedRule {
 

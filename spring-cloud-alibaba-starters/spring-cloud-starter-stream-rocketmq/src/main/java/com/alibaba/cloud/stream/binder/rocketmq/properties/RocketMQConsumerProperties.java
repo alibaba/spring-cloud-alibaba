@@ -49,9 +49,9 @@ public class RocketMQConsumerProperties extends RocketMQCommonProperties {
 
 	/**
 	 * The expressions include tags or SQL,as follow:
-	 * <p/>
+	 * <p>
 	 * tag: {@code tag1||tag2||tag3 }; sql: {@code 'color'='blue' AND 'price'>100 } .
-	 * <p/>
+	 * </p>
 	 * Determines whether there are specific characters "{@code ||}" in the expression to
 	 * determine how the message is filtered,tags or SQL.
 	 */

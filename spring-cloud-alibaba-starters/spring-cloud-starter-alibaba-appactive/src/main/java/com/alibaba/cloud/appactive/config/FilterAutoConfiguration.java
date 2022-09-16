@@ -28,8 +28,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author ChengPu raozihao
- * @description
- * @date 2022/8/15
  */
 @Configuration
 public class FilterAutoConfiguration {

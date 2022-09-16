@@ -18,8 +18,6 @@ package com.alibaba.cloud.example.common;
 
 /**
  * @author ChengPu raozihao
- * @description
- * @date 2022/8/15
  */
 public final class Constants {
 
