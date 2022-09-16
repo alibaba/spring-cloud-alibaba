@@ -60,6 +60,14 @@ public class UrlRule {
 		public int hashCode() {
 			return Objects.hash(getCondition(), getValue());
 		}
+
+		@Override
+		public String toString() {
+			return "Path{" +
+					"condition='" + condition + '\'' +
+					", value='" + value + '\'' +
+					'}';
+		}
 	}
 
 	class Parameter implements RouteRule {
@@ -109,6 +117,15 @@ public class UrlRule {
 		@Override
 		public int hashCode() {
 			return Objects.hash(getCondition(), getKey(), getValue());
+		}
+
+		@Override
+		public String toString() {
+			return "Parameter{" +
+					"condition='" + condition + '\'' +
+					", key='" + key + '\'' +
+					", value='" + value + '\'' +
+					'}';
 		}
 	}
 }

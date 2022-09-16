@@ -70,4 +70,13 @@ public class HeaderRule implements RouteRule {
 	public int hashCode() {
 		return Objects.hash(getCondition(), getKey(), getValue());
 	}
+
+	@Override
+	public String toString() {
+		return "HeaderRule{" +
+				"condition='" + condition + '\'' +
+				", key='" + key + '\'' +
+				", value='" + value + '\'' +
+				'}';
+	}
 }

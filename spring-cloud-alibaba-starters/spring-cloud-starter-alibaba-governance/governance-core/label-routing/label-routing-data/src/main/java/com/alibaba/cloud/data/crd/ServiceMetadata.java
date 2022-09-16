@@ -78,4 +78,13 @@ public class ServiceMetadata {
 	public int hashCode() {
 		return Objects.hash(service, serviceVersion, targetService);
 	}
+
+	@Override
+	public String toString() {
+		return "ServiceMetadata{" +
+				"service='" + service + '\'' +
+				", serviceVersion='" + serviceVersion + '\'' +
+				", targetService='" + targetService + '\'' +
+				'}';
+	}
 }

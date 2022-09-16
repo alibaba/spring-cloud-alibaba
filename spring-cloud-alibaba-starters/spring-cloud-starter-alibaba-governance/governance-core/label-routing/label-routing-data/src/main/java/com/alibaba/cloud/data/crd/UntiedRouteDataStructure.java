@@ -19,7 +19,7 @@ package com.alibaba.cloud.data.crd;
 /**
  * @author HH
  */
-public class UntiedRouterDataStructure {
+public class UntiedRouteDataStructure {
 
 	private LabelRouteData labelRouteData;
 
@@ -39,5 +39,13 @@ public class UntiedRouterDataStructure {
 
 	public void setServiceMetadata(ServiceMetadata serviceMetadata) {
 		this.serviceMetadata = serviceMetadata;
+	}
+
+	@Override
+	public String toString() {
+		return "UntiedRouterDataStructure{" +
+				"labelRouteData=" + labelRouteData +
+				", serviceMetadata=" + serviceMetadata +
+				'}';
 	}
 }

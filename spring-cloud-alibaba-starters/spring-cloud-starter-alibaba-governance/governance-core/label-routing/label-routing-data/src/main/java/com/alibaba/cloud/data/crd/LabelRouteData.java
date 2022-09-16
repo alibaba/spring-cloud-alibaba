@@ -85,6 +85,15 @@ public class LabelRouteData {
 		return Objects.hash(getDefaultRoute(), getRuleList(), getMatchRouteList());
 	}
 
+	@Override
+	public String toString() {
+		return "LabelRouteData{" +
+				"defaultRoute='" + defaultRoute + '\'' +
+				", ruleList=" + ruleList +
+				", matchRouteList=" + matchRouteList +
+				'}';
+	}
+
 	class MatchService {
 		private List<RouteRule> ruleList;
 
@@ -122,6 +131,14 @@ public class LabelRouteData {
 		@Override
 		public int hashCode() {
 			return Objects.hash(getRuleList(), getServiceMetadata());
+		}
+
+		@Override
+		public String toString() {
+			return "MatchService{" +
+					"ruleList=" + ruleList +
+					", serviceMetadata=" + serviceMetadata +
+					'}';
 		}
 	}
 
