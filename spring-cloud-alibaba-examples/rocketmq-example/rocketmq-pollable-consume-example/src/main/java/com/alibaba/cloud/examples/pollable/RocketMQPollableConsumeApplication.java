@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.orderly;
+package com.alibaba.cloud.examples.pollable;
 
 import java.util.HashMap;
 import java.util.Map;

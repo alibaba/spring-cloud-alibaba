@@ -27,7 +27,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author: chao.wu
+ * @author chao.wu
  */
 public class SentinelWebMvcConfigurer implements WebMvcConfigurer {
 
