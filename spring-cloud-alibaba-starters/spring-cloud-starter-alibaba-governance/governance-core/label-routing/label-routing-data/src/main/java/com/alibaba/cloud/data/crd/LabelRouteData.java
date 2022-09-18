@@ -29,11 +29,11 @@ public class LabelRouteData {
 
 	private List<MatchService> matchRouteList;
 
-	String getDefaultRouteVersion() {
+	public String getDefaultRouteVersion() {
 		return defaultRouteVersion;
 	}
 
-	void setDefaultRouteVersion(String defaultRouteVersion) {
+	public void setDefaultRouteVersion(String defaultRouteVersion) {
 		this.defaultRouteVersion = defaultRouteVersion;
 	}
 

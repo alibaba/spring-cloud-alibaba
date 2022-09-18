@@ -33,11 +33,11 @@ public class UntiedRouteDataStructure {
 		this.labelRouteData = labelRouteData;
 	}
 
-	String getTargetService() {
+	public String getTargetService() {
 		return targetService;
 	}
 
-	void setTargetService(String targetService) {
+	public void setTargetService(String targetService) {
 		this.targetService = targetService;
 	}
 

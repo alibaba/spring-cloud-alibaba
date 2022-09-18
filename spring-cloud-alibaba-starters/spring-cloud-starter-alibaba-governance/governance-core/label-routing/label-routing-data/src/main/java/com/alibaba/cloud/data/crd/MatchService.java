@@ -37,11 +37,11 @@ public class MatchService {
 		this.ruleList = ruleList;
 	}
 
-	String getVersion() {
+	public String getVersion() {
 		return version;
 	}
 
-	void setVersion(String version) {
+	public void setVersion(String version) {
 		this.version = version;
 	}
 
