@@ -22,7 +22,7 @@ import java.util.Objects;
  * @author HH
  */
 public class UrlRule {
-	class Path implements RouteRule {
+	public class Path implements RouteRule {
 		private String condition;
 
 		private String value;
@@ -70,7 +70,7 @@ public class UrlRule {
 		}
 	}
 
-	class Parameter implements RouteRule {
+	public class Parameter implements RouteRule {
 		private String condition;
 
 		private String key;

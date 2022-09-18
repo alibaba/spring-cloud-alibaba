@@ -23,7 +23,7 @@ public class UntiedRouteDataStructure {
 
 	private LabelRouteData labelRouteData;
 
-	private ServiceMetadata serviceMetadata;
+	private String targetService;
 
 	public LabelRouteData getLabelRouteData() {
 		return labelRouteData;
@@ -33,19 +33,19 @@ public class UntiedRouteDataStructure {
 		this.labelRouteData = labelRouteData;
 	}
 
-	public ServiceMetadata getServiceMetadata() {
-		return serviceMetadata;
+	String getTargetService() {
+		return targetService;
 	}
 
-	public void setServiceMetadata(ServiceMetadata serviceMetadata) {
-		this.serviceMetadata = serviceMetadata;
+	void setTargetService(String targetService) {
+		this.targetService = targetService;
 	}
 
 	@Override
 	public String toString() {
-		return "UntiedRouterDataStructure{" +
+		return "UntiedRouteDataStructure{" +
 				"labelRouteData=" + labelRouteData +
-				", serviceMetadata=" + serviceMetadata +
+				", targetService='" + targetService + '\'' +
 				'}';
 	}
 }

@@ -19,30 +19,30 @@ package com.alibaba.cloud.data.crd;
 import java.util.List;
 import java.util.Objects;
 
+import com.alibaba.cloud.data.crd.rule.RouteRule;
 
 /**
  * @author HH
  */
-public class LabelRouteData {
+public class MatchService {
+	private List<RouteRule> ruleList;
 
-	private String defaultRouteVersion;
+	private String version;
 
-	private List<MatchService> matchRouteList;
-
-	String getDefaultRouteVersion() {
-		return defaultRouteVersion;
+	public List<RouteRule> getRuleList() {
+		return ruleList;
 	}
 
-	void setDefaultRouteVersion(String defaultRouteVersion) {
-		this.defaultRouteVersion = defaultRouteVersion;
+	public void setRuleList(List<RouteRule> ruleList) {
+		this.ruleList = ruleList;
 	}
 
-	public List<MatchService> getMatchRouteList() {
-		return matchRouteList;
+	String getVersion() {
+		return version;
 	}
 
-	public void setMatchRouteList(List<MatchService> matchRouteList) {
-		this.matchRouteList = matchRouteList;
+	void setVersion(String version) {
+		this.version = version;
 	}
 
 	@Override
@@ -53,21 +53,21 @@ public class LabelRouteData {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		LabelRouteData that = (LabelRouteData) o;
-		return Objects.equals(defaultRouteVersion, that.defaultRouteVersion) && Objects
-				.equals(getMatchRouteList(), that.getMatchRouteList());
+		MatchService that = (MatchService) o;
+		return Objects.equals(getRuleList(), that.getRuleList()) && Objects
+				.equals(getVersion(), that.getVersion());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(defaultRouteVersion, getMatchRouteList());
+		return Objects.hash(getRuleList(), getVersion());
 	}
 
 	@Override
 	public String toString() {
-		return "LabelRouteData{" +
-				"defaultRouteVersion='" + defaultRouteVersion + '\'' +
-				", matchRouteList=" + matchRouteList +
+		return "MatchService{" +
+				"ruleList=" + ruleList +
+				", version='" + version + '\'' +
 				'}';
 	}
 }
