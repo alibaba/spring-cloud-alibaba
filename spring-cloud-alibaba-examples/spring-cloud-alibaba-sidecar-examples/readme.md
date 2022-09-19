@@ -104,7 +104,7 @@ Note: This article takes the `spring-cloud-alibaba-sidecar-nacos-example` projec
 
 
 ### Step4: Accessing services
-After completing the above 4 steps, we find that the corresponding service `node-service` has been successfully registered to the registry. At this point, the service has been successfully integrated into the Spring Cloud microservice. For Spring Cloud microservices, accessing it is no different than accessing any other Java microservice.
+After completing the above 4 steps, we find that the corresponding service `node-service` has been successfully registered to the registry. At this point, the service has been successfully integrated into the Spring Cloud microservice. For Spring Cloud microservices, accessing it is no different from accessing any other Java microservice.
 This is where the beauty of Spring Cloud Alibaba Sidecar comes in. Next, we will continue to demonstrate how to access this service.
 
 Browser Access below address:
@@ -115,5 +115,5 @@ If you see the following message, the access was successful.
 
 ## More
 
-If you have any ideas or suggestions for `Spring Cloud Alibaba Sidecar`, please don't hesitate to tell us by submitting github issues.
+If you have any ideas or suggestions for `Spring Cloud Alibaba Sidecar`, please don't hesitate to tell us by submitting GitHub issues.
 

@@ -37,7 +37,7 @@ First, you need a MySQL database that supports the InnoDB engine.
 
 **NOTE**: In fact, Seata supports different applications that use totally unrelated databases, but here we chose to use only one database for a simple demonstration of one principle.
 
-Will application in the resources directory of the `account-server`, `order-service`, `storage-service` three applications. The following configuration in the yml file is modified to the actual configuration in your running environment.
+Will application in the resources' directory of the `account-server`, `order-service`, `storage-service` three applications. The following configuration in the yml file is modified to the actual configuration in your running environment.
 
 ```
 base:

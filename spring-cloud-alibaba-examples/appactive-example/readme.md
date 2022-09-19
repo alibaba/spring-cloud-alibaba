@@ -44,7 +44,7 @@ The green grid in the figure represents the call link of the request.
 
 ### Quick start
 Before starting the example for demonstration, let's take a look at how Spring Cloud applications use the remote multi-active capabilities provided by AppActive.
-**Note, this chapter is only for your understanding of the access method. The access work has been completed in this examples, and you do not need to modify it.**
+**Note, this chapter is only for your understanding of the access method. The access work has been completed in these examples, and you do not need to modify it.**
 
 1. First, modify the pom.xml file to add the following maven dependencies based on the latest `spring-cloud-alibaba-dependencies` added to the provider and consumer.
 
@@ -175,7 +175,7 @@ Before starting the example for demonstration, let's take a look at how Spring C
 
 4. Cut flow demo. The main things to do when cutting flow are as follows:
     - Build new mapping relationship rules and write prohibition rules (manually).
-    - Push the write prohibition rules to the application.
+    - Push to write prohibition rules to the application.
     - Push the new mapping relationship rules to the application after waiting for the data to equalize.
    The streaming rule demonstrated next will send requests with user IDs 0 ~ 2999 to the normal(called unit) unit in the downstream provider, and requests with user IDs 3000 ~ 9999 will be sent to the center(called center) unit in the downstream provider. For specific rules, see idUnitMappingNext.json:
         ```

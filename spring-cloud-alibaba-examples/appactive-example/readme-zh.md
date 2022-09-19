@@ -60,7 +60,7 @@
         spring.cloud.appactive.filter.global-path=/buy/*
         spring.cloud.appactive.filter.general-path=/*
 
-3. 在 Consumer 应用的 `application.properties` 配置客户端负载均衡为 AppActive 所提供的负载均衡算法，配置方式如下，注意需要将`[service-name]`替换成具体的待消费服务名。
+3. 在 Consumer 应用的 `application.properties` 配置客户端负载均衡为 AppActive 所提供的负载均衡算法，配置方式如下，注意需要将`[service-name]`替换成具体地待消费服务名。
 
         [service-name].ribbon.NFLoadBalancerRuleClassName =com.alibaba.cloud.appactive.consumer.AppactiveRule
 
@@ -175,9 +175,9 @@
     [![1s4Oi.jpg](https://s1.328888.xyz/2022/09/04/1s4Oi.jpg)](https://imgloc.com/i/1s4Oi)
 
 4. 切流演示。切流时主要做了如下几件事：
-    - 构建新的映射关系规则和禁写规则（手动）
+    - 构建新地映射关系规则和禁写规则（手动）
     - 将禁写规则推送给应用
-    - 等待数据追平后将新的映射关系规则推送给应用
+    - 等待数据追平后将新地映射关系规则推送给应用
    接下来演示的切流规则，会将用户Id为 0 ~ 2999 的请求将发送给下游提供者中的一般（Unit）单元中的核心应用实例，用户Id为 3000 ~ 9999 的请求将发送给下游提供者中的中心（Center）单元中的全局应用实例。具体的规则详情见 idUnitMappingNext.json：
         ```
         {

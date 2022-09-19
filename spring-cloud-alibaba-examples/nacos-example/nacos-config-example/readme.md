@@ -9,7 +9,7 @@ This example illustrates how to use Nacos Config Starter implement externalized 
 ## Demo
 
 ### Connect to Nacos Config
-Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Config. The configurations have been completed in the following example, so you don't need modify the code any more.**
+Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Config. The configurations have been completed in the following example, so you don't need to modify the code anymore.**
 
 
 1. Add dependency spring-cloud-starter-alibaba-nacos-config in the pom.xml file in your Spring Cloud project.
@@ -37,7 +37,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 1. Install Nacos Server by downloading or build from source code.**Recommended latest version Nacos Server**
 
 	1. Download: Download Nacos Server [download page](https://github.com/alibaba/nacos/releases) 
-	2. Build from source code: Get source code by git clone git@github.com:alibaba/Nacos.git from Github Nacos and build your code. See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
+	2. Build from source code: Get source code by git clone git@github.com:alibaba/Nacos.git from GitHub Nacos and build your code. See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
 	
 2. Unzip the downloaded file and go to the nacos/bin folder(), And according to the actual situation of the operating system, execute the following command。[see reference for more detail](https://nacos.io/en-us/docs/quick-start.html)。
 	
@@ -150,7 +150,7 @@ In Nacos Config Starter, the splicing format of dataId is as follows
 	**Note: when the active profile is empty, the corresponding connector `-` will also not exist, and the splicing format of the dataId becomes `${prefix}`.`${file-extension}`**
 
 * `file-extension` is the data format of the configuration content, which can be configured by the configuration item `spring.cloud.nacos.config.file-extension`.
-Currently only the `properties` type is supported.
+Currently, only the `properties` type is supported.
 
 #### group
 * `group` defaults to `DEFAULT_GROUP` and can be configured via `spring.cloud.nacos.config.group`.
@@ -218,5 +218,5 @@ cluster name|spring.cloud.nacos.config.cluster-name||
 
 Nacos makes it easier and faster to construct, deliver and manage your microservices platform. It is the infrastructure that supports a service-centered modern application architecture with a microservices or cloud-native approach.
 
-If you have any ideas or suggestions for Nacos Config starter, please don't hesitate to tell us by submitting github issues.
+If you have any ideas or suggestions for Nacos Config starter, please don't hesitate to tell us by submitting GitHub issues.
 
