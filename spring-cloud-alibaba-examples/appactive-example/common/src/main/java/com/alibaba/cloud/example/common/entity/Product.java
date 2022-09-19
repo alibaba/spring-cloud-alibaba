@@ -24,7 +24,6 @@ import javax.persistence.Id;
 
 /**
  * @author ChengPu raozihao
- * @since 2022/8/15
  */
 @Entity
 public class Product implements Serializable {
