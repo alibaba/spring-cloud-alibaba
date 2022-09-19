@@ -119,7 +119,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 						.fetchPublishMessageQueues(destination.getName());
 				if (extendedProducerProperties.getPartitionCount() != messageQueues
 						.size()) {
-					logger.info(String.format(
+					log.info(String.format(
 							"The partition count of topic '%s' will change from '%s' to '%s'",
 							destination.getName(),
 							extendedProducerProperties.getPartitionCount(),
