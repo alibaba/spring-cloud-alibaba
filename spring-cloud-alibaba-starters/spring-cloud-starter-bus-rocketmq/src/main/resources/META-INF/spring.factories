@@ -1,3 +1,6 @@
 # EnvironmentPostProcessor
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.alibaba.cloud.bus.rocketmq.env.RocketMQBusEnvironmentPostProcessor
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.alibaba.cloud.bus.rocketmq.autoconfigurate.RocketMQBusAutoConfiguration

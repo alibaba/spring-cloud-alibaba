@@ -18,6 +18,7 @@ package com.alibaba.cloud.stream.binder.rocketmq.integration.outbound;
 
 import java.lang.reflect.Field;
 
+import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
@@ -59,8 +60,10 @@ public final class RocketMQProduceFactory {
 	 */
 	public static DefaultMQProducer initRocketMQProducer(String topic,
 			RocketMQProducerProperties producerProperties) {
-		Assert.notNull(producerProperties.getGroup(),
-				"Property 'group' is required - producerGroup");
+		if (!StringUtils.hasLength(producerProperties.getGroup())) {
+			producerProperties.setGroup(RocketMQConst.DEFAULT_GROUP);
+		}
+
 		Assert.notNull(producerProperties.getNameServer(),
 				"Property 'nameServer' is required");
 
