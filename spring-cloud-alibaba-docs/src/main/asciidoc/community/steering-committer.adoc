@@ -8,6 +8,7 @@ Steering Committee, as the technical development steering committee of the Sprin
 * Continuous investment and passion, able to actively participate in the maintenance of community, official website, issue, PR and other project related matters;
 * Has a visible influence in the community and can represent Spring Cloud Alibaba to participate in important community conferences and activities;
 * Have the awareness and ability to cultivate Committer and Contributor;
+* The Steering Committee Member is elected in the senior Committer, and is discussed and voted by all members of the Steering Committee. It is necessary to obtain more than half of the total number of votes to be elected;
 
 ==== Committer
 A committer is an individual with write permissions to the repository, and includes the following criteria:
@@ -63,6 +64,12 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 |chenxilzx1@gmail.com
 |Alibaba
 
+|Zihao Rao
+|steverao
+|Committer
+|zihaorao@126.com
+|Alibaba
+
 |===
 
 
@@ -94,12 +101,6 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 |Committer
 |kiss_maple@163.com
 |Poizon
-
-|Zihao Rao
-|steverao
-|Committer
-|zihaorao@126.com
-|Alibaba
 
 |Liangwen Liu
 |DanielLiu1123
