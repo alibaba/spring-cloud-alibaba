@@ -25,6 +25,7 @@ import com.alibaba.cloud.data.crd.rule.RouteRule;
  * @author HH
  */
 public class MatchService {
+
 	private List<RouteRule> ruleList;
 
 	private String version;
@@ -54,8 +55,8 @@ public class MatchService {
 			return false;
 		}
 		MatchService that = (MatchService) o;
-		return Objects.equals(getRuleList(), that.getRuleList()) && Objects
-				.equals(getVersion(), that.getVersion());
+		return Objects.equals(getRuleList(), that.getRuleList())
+				&& Objects.equals(getVersion(), that.getVersion());
 	}
 
 	@Override
@@ -65,9 +66,8 @@ public class MatchService {
 
 	@Override
 	public String toString() {
-		return "MatchService{" +
-				"ruleList=" + ruleList +
-				", version='" + version + '\'' +
-				'}';
+		return "MatchService{" + "ruleList=" + ruleList + ", version='" + version + '\''
+				+ '}';
 	}
+
 }

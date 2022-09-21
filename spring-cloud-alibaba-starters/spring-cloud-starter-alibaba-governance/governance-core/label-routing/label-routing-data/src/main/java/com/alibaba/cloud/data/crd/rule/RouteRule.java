@@ -20,4 +20,5 @@ package com.alibaba.cloud.data.crd.rule;
  * @author HH
  */
 public interface RouteRule {
+
 }

@@ -19,7 +19,6 @@ package com.alibaba.cloud.data.crd;
 import java.util.List;
 import java.util.Objects;
 
-
 /**
  * @author HH
  */
@@ -54,8 +53,8 @@ public class LabelRouteData {
 			return false;
 		}
 		LabelRouteData that = (LabelRouteData) o;
-		return Objects.equals(defaultRouteVersion, that.defaultRouteVersion) && Objects
-				.equals(getMatchRouteList(), that.getMatchRouteList());
+		return Objects.equals(defaultRouteVersion, that.defaultRouteVersion)
+				&& Objects.equals(getMatchRouteList(), that.getMatchRouteList());
 	}
 
 	@Override
@@ -65,9 +64,8 @@ public class LabelRouteData {
 
 	@Override
 	public String toString() {
-		return "LabelRouteData{" +
-				"defaultRouteVersion='" + defaultRouteVersion + '\'' +
-				", matchRouteList=" + matchRouteList +
-				'}';
+		return "LabelRouteData{" + "defaultRouteVersion='" + defaultRouteVersion + '\''
+				+ ", matchRouteList=" + matchRouteList + '}';
 	}
+
 }

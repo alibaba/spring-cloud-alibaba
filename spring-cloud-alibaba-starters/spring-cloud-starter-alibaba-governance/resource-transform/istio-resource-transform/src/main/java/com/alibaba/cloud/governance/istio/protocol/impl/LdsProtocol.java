@@ -1,14 +1,48 @@
+/*
+ * Copyright 2013-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.governance.istio.protocol.impl;
 
-import com.alibaba.cloud.governance.auth.rules.auth.*;
-import com.alibaba.cloud.governance.auth.rules.manager.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.alibaba.cloud.governance.auth.rules.auth.HttpHeaderRule;
+import com.alibaba.cloud.governance.auth.rules.auth.IdentityRule;
+import com.alibaba.cloud.governance.auth.rules.auth.IpBlockRule;
+import com.alibaba.cloud.governance.auth.rules.auth.JwtAuthRule;
+import com.alibaba.cloud.governance.auth.rules.auth.JwtRule;
+import com.alibaba.cloud.governance.auth.rules.auth.TargetRule;
+import com.alibaba.cloud.governance.auth.rules.manager.HeaderRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.IdentityRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.IpBlockRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.JwtAuthRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.JwtRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.TargetRuleManager;
 import com.alibaba.cloud.governance.common.matcher.HeaderMatcher;
 import com.alibaba.cloud.governance.common.matcher.IpMatcher;
 import com.alibaba.cloud.governance.common.matcher.StringMatcher;
 import com.alibaba.cloud.governance.common.rule.AndRule;
 import com.alibaba.cloud.governance.common.rule.OrRule;
 import com.alibaba.cloud.governance.istio.XdsChannel;
-import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
@@ -32,9 +66,6 @@ import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 

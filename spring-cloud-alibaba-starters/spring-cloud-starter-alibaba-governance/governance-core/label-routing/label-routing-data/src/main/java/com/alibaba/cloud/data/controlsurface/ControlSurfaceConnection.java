@@ -20,17 +20,19 @@ import java.util.List;
 
 import com.alibaba.cloud.data.cache.RouteDataCache;
 import com.alibaba.cloud.data.crd.UntiedRouteDataStructure;
+
 /**
  * @author HH
  */
-public class ControlSurfaceConnection implements ControlSurface{
+public class ControlSurfaceConnection implements ControlSurface {
 
 	private final RouteDataCache routeDataCache = new RouteDataCache();
 
 	private boolean cacheInitialized = false;
 
 	@Override
-	public void getDataFromControlSurface(List<UntiedRouteDataStructure> untiedRouterDataStructureList) {
+	public void getDataFromControlSurface(
+			List<UntiedRouteDataStructure> untiedRouterDataStructureList) {
 		if (!cacheInitialized) {
 			routeDataCache.init(untiedRouterDataStructureList);
 			cacheInitialized = true;
@@ -39,4 +41,5 @@ public class ControlSurfaceConnection implements ControlSurface{
 			routeDataCache.updateRouteData(untiedRouterDataStructureList);
 		}
 	}
+
 }

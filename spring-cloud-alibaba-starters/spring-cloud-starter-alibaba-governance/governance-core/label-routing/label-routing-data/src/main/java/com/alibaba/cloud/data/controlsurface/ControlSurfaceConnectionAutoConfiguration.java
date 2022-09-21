@@ -16,14 +16,14 @@
 
 package com.alibaba.cloud.data.controlsurface;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  */
-@EnableAutoConfiguration
+@Configuration(proxyBeanMethods = false)
 public class ControlSurfaceConnectionAutoConfiguration {
 
 	@Bean
@@ -31,4 +31,5 @@ public class ControlSurfaceConnectionAutoConfiguration {
 	public ControlSurfaceConnection controlSurfaceConnection() {
 		return new ControlSurfaceConnection();
 	}
+
 }

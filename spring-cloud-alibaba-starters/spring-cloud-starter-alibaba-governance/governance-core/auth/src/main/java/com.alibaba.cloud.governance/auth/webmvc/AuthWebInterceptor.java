@@ -1,27 +1,50 @@
+/*
+ * Copyright 2013-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.alibaba.cloud.governance.auth.webmvc;
 
-import com.alibaba.cloud.governance.auth.rules.manager.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.cloud.governance.auth.rules.manager.HeaderRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.IpBlockRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.JwtAuthRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.JwtRuleManager;
+import com.alibaba.cloud.governance.auth.rules.manager.TargetRuleManager;
 import com.alibaba.cloud.governance.auth.rules.util.IpUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Enumeration;
 
 public class AuthWebInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 			Object handler) throws Exception {
-		String sourceIp = request.getRemoteAddr(), destIp = request.getLocalAddr(),
-				remoteIp = IpUtil.getRemoteIpAddress(request);
+		String sourceIp = request.getRemoteAddr();
+		String destIp = request.getLocalAddr();
+		String remoteIp = IpUtil.getRemoteIpAddress(request);
 		if (!IpBlockRuleManager.isValid(sourceIp, destIp, remoteIp)) {
 			return ret401(response);
 		}

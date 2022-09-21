@@ -16,13 +16,11 @@
 
 package com.alibaba.cloud.data.cache;
 
-
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.cloud.data.crd.LabelRouteData;
-import com.alibaba.cloud.data.crd.ServiceMetadata;
 import com.alibaba.cloud.data.crd.UntiedRouteDataStructure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +30,9 @@ import org.slf4j.LoggerFactory;
  */
 public class RouteDataCache {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(RouteDataCache.class);
+	private static final Logger log = LoggerFactory.getLogger(RouteDataCache.class);
 
-	private ConcurrentHashMap<ServiceMetadata, LabelRouteData> routeCache;
+	private ConcurrentHashMap<Object, LabelRouteData> routeCache;
 
 	private boolean routeDataChanged = false;
 
@@ -63,16 +60,17 @@ public class RouteDataCache {
 		while (routeDataChanged) {
 			int routeDataListSize = routeDataList.size();
 
-			if (waitUpdateIndex.get() == routeDataListSize){
+			if (waitUpdateIndex.get() == routeDataListSize) {
 				return;
 			}
 
 			int i = waitUpdateIndex.incrementAndGet();
 
-			//avoid generate critical condition.
-			if (i > routeDataListSize){
-				UntiedRouteDataStructure routerData = routeDataList.get(waitUpdateIndex.incrementAndGet());
-				LabelRouteData labelRouteData = routeCache.get(routerData.getServiceMetadata());
+			// avoid generate critical condition.
+			if (i > routeDataListSize) {
+				UntiedRouteDataStructure routerData = routeDataList
+						.get(waitUpdateIndex.incrementAndGet());
+				LabelRouteData labelRouteData = routeCache.get(null);
 
 				if (!routerData.getLabelRouteData().equals(labelRouteData)) {
 					putRouteData(routerData);
@@ -87,8 +85,9 @@ public class RouteDataCache {
 	}
 
 	private void putRouteData(UntiedRouteDataStructure routerData) {
-		LabelRouteData putLabelRouteData = routeCache.put(routerData.getServiceMetadata(), routerData.getLabelRouteData());
-		if (putLabelRouteData == null){
+		LabelRouteData putLabelRouteData = routeCache.put(null,
+				routerData.getLabelRouteData());
+		if (putLabelRouteData == null) {
 			log.warn("Label route rule:" + routerData + "failed to add to router cache");
 		}
 	}
@@ -97,29 +96,31 @@ public class RouteDataCache {
 		LabelRouteData putLabelRouteData = null;
 
 		for (UntiedRouteDataStructure routerData : routerDataList) {
-			putLabelRouteData = routeCache.put(routerData.getServiceMetadata(), routerData.getLabelRouteData());
-			if (putLabelRouteData != null){
-				log.info("Label route rule:" + routerData + "had been add to router cache");
+			putLabelRouteData = routeCache.put(null, routerData.getLabelRouteData());
+			if (putLabelRouteData != null) {
+				log.info("Label route rule:" + routerData
+						+ "had been add to router cache");
 			}
 			else {
-				log.warn("Label route rule:" + routerData + "failed to add to router cache");
+				log.warn("Label route rule:" + routerData
+						+ "failed to add to router cache");
 			}
 		}
 	}
 
-	public LabelRouteData getRouteData(ServiceMetadata serviceMetadata) {
+	public LabelRouteData getRouteData(Object serviceMetadata) {
 
-		//double check.
+		// double check.
 		while (routeDataChanged) {
 			updateRouteData();
 
-			if (routeDataChanged){
+			if (routeDataChanged) {
 				int matchIndex = 0;
-				for (UntiedRouteDataStructure routeData: routeDataList) {
-					if (serviceMetadata.equals(routeData.getServiceMetadata())){
+				for (UntiedRouteDataStructure routeData : routeDataList) {
+					if (serviceMetadata.equals(null)) {
 						break;
 					}
-					matchIndex ++;
+					matchIndex++;
 				}
 				if (matchIndex <= updateIndex.get()) {
 					return routeCache.get(serviceMetadata);
@@ -129,4 +130,5 @@ public class RouteDataCache {
 
 		return routeCache.get(serviceMetadata);
 	}
+
 }

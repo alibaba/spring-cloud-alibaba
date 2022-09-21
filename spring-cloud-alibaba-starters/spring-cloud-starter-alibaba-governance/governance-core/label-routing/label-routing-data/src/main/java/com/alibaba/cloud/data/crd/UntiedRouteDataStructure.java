@@ -43,9 +43,8 @@ public class UntiedRouteDataStructure {
 
 	@Override
 	public String toString() {
-		return "UntiedRouteDataStructure{" +
-				"labelRouteData=" + labelRouteData +
-				", targetService='" + targetService + '\'' +
-				'}';
+		return "UntiedRouteDataStructure{" + "labelRouteData=" + labelRouteData
+				+ ", targetService='" + targetService + '\'' + '}';
 	}
+
 }
