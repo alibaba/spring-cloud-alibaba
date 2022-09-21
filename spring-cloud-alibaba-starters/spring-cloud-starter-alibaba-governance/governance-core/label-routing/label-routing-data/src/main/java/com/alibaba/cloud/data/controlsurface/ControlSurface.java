@@ -27,7 +27,7 @@ public interface ControlSurface {
 
 	/**
 	 * Control surface untied interface.
-	 * @param untiedRouterDataStructureList untiedRouterDataStructureList
+	 * @param untiedRouterDataStructureList List<UntiedRouteDataStructure/>
 	 */
 	void getDataFromControlSurface(
 			List<UntiedRouteDataStructure> untiedRouterDataStructureList);

@@ -22,27 +22,51 @@ import java.util.Objects;
  * @author HH
  */
 public class UrlRule {
-
 	public static class Path implements RouteRule {
+		private String type;
 
 		private String condition;
 
 		private String value;
 
+		@Override
 		public String getCondition() {
 			return condition;
 		}
 
+		@Override
+		public String getKey() {
+			return null;
+		}
+
+		@Override
 		public void setCondition(String condition) {
 			this.condition = condition;
 		}
 
+		@Override
+		public void setKey(String key) {
+			//
+		}
+
+		@Override
 		public String getValue() {
 			return value;
 		}
 
+		@Override
 		public void setValue(String value) {
 			this.value = value;
+		}
+
+		@Override
+		public String getType() {
+			return this.type;
+		}
+
+		@Override
+		public void setType(String type) {
+			this.type = type;
 		}
 
 		@Override
@@ -54,24 +78,28 @@ public class UrlRule {
 				return false;
 			}
 			Path path = (Path) o;
-			return Objects.equals(getCondition(), path.getCondition())
-					&& Objects.equals(getValue(), path.getValue());
+			return Objects.equals(getType(), path.getType()) && Objects
+					.equals(getCondition(), path.getCondition()) && Objects.equals(getValue(), path.getValue());
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(getCondition(), getValue());
+			return Objects.hash(getType(), getCondition(), getValue());
 		}
 
 		@Override
 		public String toString() {
-			return "Path{" + "condition='" + condition + '\'' + ", value='" + value + '\''
-					+ '}';
+			return "Path{" +
+					"type='" + type + '\'' +
+					", condition='" + condition + '\'' +
+					", value='" + value + '\'' +
+					'}';
 		}
 
 	}
 
 	public static class Parameter implements RouteRule {
+		private String type;
 
 		private String condition;
 
@@ -79,28 +107,44 @@ public class UrlRule {
 
 		private String value;
 
+		@Override
 		public String getCondition() {
 			return condition;
 		}
 
+		@Override
 		public void setCondition(String condition) {
 			this.condition = condition;
 		}
 
+		@Override
 		public String getKey() {
 			return key;
 		}
 
+		@Override
 		public void setKey(String key) {
 			this.key = key;
 		}
 
+		@Override
 		public String getValue() {
 			return value;
 		}
 
+		@Override
 		public void setValue(String value) {
 			this.value = value;
+		}
+
+		@Override
+		public String getType() {
+			return this.type;
+		}
+
+		@Override
+		public void setType(String type) {
+			this.type = type;
 		}
 
 		@Override
@@ -112,20 +156,24 @@ public class UrlRule {
 				return false;
 			}
 			Parameter parameter = (Parameter) o;
-			return Objects.equals(getCondition(), parameter.getCondition())
-					&& Objects.equals(getKey(), parameter.getKey())
-					&& Objects.equals(getValue(), parameter.getValue());
+			return Objects.equals(getType(), parameter.getType()) && Objects
+					.equals(getCondition(), parameter.getCondition()) && Objects
+					.equals(getKey(), parameter.getKey()) && Objects.equals(getValue(), parameter.getValue());
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(getCondition(), getKey(), getValue());
+			return Objects.hash(getType(), getCondition(), getKey(), getValue());
 		}
 
 		@Override
 		public String toString() {
-			return "Parameter{" + "condition='" + condition + '\'' + ", key='" + key
-					+ '\'' + ", value='" + value + '\'' + '}';
+			return "Parameter{" +
+					"type='" + type + '\'' +
+					", condition='" + condition + '\'' +
+					", key='" + key + '\'' +
+					", value='" + value + '\'' +
+					'}';
 		}
 
 	}

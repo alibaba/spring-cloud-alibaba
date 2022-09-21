@@ -30,6 +30,8 @@ public class MatchService {
 
 	private String version;
 
+	private int weight;
+
 	public List<RouteRule> getRuleList() {
 		return ruleList;
 	}
@@ -46,6 +48,14 @@ public class MatchService {
 		this.version = version;
 	}
 
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -55,19 +65,22 @@ public class MatchService {
 			return false;
 		}
 		MatchService that = (MatchService) o;
-		return Objects.equals(getRuleList(), that.getRuleList())
-				&& Objects.equals(getVersion(), that.getVersion());
+		return getWeight() == that.getWeight() && Objects
+				.equals(getRuleList(), that.getRuleList()) && Objects.equals(getVersion(), that.getVersion());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getRuleList(), getVersion());
+		return Objects.hash(getRuleList(), getVersion(), getWeight());
 	}
 
 	@Override
 	public String toString() {
-		return "MatchService{" + "ruleList=" + ruleList + ", version='" + version + '\''
-				+ '}';
+		return "MatchService{" +
+				"ruleList=" + ruleList +
+				", version='" + version + '\'' +
+				", weight=" + weight +
+				'}';
 	}
 
 }

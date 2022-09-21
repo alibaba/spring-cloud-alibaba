@@ -20,5 +20,23 @@ package com.alibaba.cloud.data.crd.rule;
  * @author HH
  */
 public interface RouteRule {
+	/**
+	 * get type of rule.
+	 * @return String
+	 */
+	String getType();
 
+	String getCondition();
+
+	String getKey();
+
+	String getValue();
+
+	void setType(String type);
+
+	void setCondition(String condition);
+
+	void setKey(String key);
+
+	void setValue(String value);
 }

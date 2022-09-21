@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.alibaba.cloud.data.controlsurface.ControlSurfaceConnectionAutoConfiguration
+  com.alibaba.cloud.data.controlsurface.ControlSurfaceConnectionAutoConfiguration,\
+  com.alibaba.cloud.data.cache.RouteDataCacheAutoConfiguration
