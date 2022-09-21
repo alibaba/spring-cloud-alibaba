@@ -25,18 +25,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.governance.auth.rules.auth.HttpHeaderRule;
-import com.alibaba.cloud.governance.auth.rules.auth.IdentityRule;
-import com.alibaba.cloud.governance.auth.rules.auth.IpBlockRule;
-import com.alibaba.cloud.governance.auth.rules.auth.JwtAuthRule;
-import com.alibaba.cloud.governance.auth.rules.auth.JwtRule;
-import com.alibaba.cloud.governance.auth.rules.auth.TargetRule;
-import com.alibaba.cloud.governance.auth.rules.manager.HeaderRuleManager;
-import com.alibaba.cloud.governance.auth.rules.manager.IdentityRuleManager;
-import com.alibaba.cloud.governance.auth.rules.manager.IpBlockRuleManager;
-import com.alibaba.cloud.governance.auth.rules.manager.JwtAuthRuleManager;
-import com.alibaba.cloud.governance.auth.rules.manager.JwtRuleManager;
-import com.alibaba.cloud.governance.auth.rules.manager.TargetRuleManager;
+import com.alibaba.cloud.governance.auth.cache.AuthCache;
+import com.alibaba.cloud.governance.auth.cache.AuthData;
+import com.alibaba.cloud.governance.auth.rule.HttpHeaderRule;
+import com.alibaba.cloud.governance.auth.rule.IdentityRule;
+import com.alibaba.cloud.governance.auth.rule.IpBlockRule;
+import com.alibaba.cloud.governance.auth.rule.JwtAuthRule;
+import com.alibaba.cloud.governance.auth.rule.JwtRule;
+import com.alibaba.cloud.governance.auth.rule.TargetRule;
 import com.alibaba.cloud.governance.common.matcher.HeaderMatcher;
 import com.alibaba.cloud.governance.common.matcher.IpMatcher;
 import com.alibaba.cloud.governance.common.matcher.StringMatcher;
@@ -97,9 +93,13 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	private static final int MAX_PORT = 65535;
 
+	private AuthCache authCache;
+
 	public LdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime) {
+			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime,
+			AuthCache authCache) {
 		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
+		this.authCache = authCache;
 	}
 
 	@Override
@@ -122,16 +122,6 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			}
 		}
 		return listeners;
-	}
-
-	@Override
-	public void clearCache() {
-		IdentityRuleManager.clear();
-		IpBlockRuleManager.clear();
-		JwtAuthRuleManager.clear();
-		JwtRuleManager.clear();
-		TargetRuleManager.clear();
-		HeaderRuleManager.clear();
 	}
 
 	private List<RBAC> resolveRbac(List<HttpFilter> httpFilters) {
@@ -206,6 +196,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		if (listeners == null || listeners.isEmpty()) {
 			return;
 		}
+		AuthData authData = new AuthData();
 		List<HttpFilter> httpFilters = resolveHttpFilter(listeners);
 		List<RBAC> rbacList = resolveRbac(httpFilters);
 		for (RBAC rbac : rbacList) {
@@ -216,10 +207,10 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 					switch (rbac.getAction()) {
 					case ALLOW:
 					case UNRECOGNIZED:
-						resolvePrincipal(entry.getKey(), principal, true);
+						resolvePrincipal(authData, entry.getKey(), principal, true);
 						break;
 					case DENY:
-						resolvePrincipal(entry.getKey(), principal, false);
+						resolvePrincipal(authData, entry.getKey(), principal, false);
 						break;
 					default:
 						break;
@@ -231,10 +222,10 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 					switch (rbac.getAction()) {
 					case ALLOW:
 					case UNRECOGNIZED:
-						resolvePermission(entry.getKey(), permission, true);
+						resolvePermission(authData, entry.getKey(), permission, true);
 						break;
 					case DENY:
-						resolvePermission(entry.getKey(), permission, false);
+						resolvePermission(authData, entry.getKey(), permission, false);
 						break;
 					default:
 						break;
@@ -251,19 +242,22 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				for (JwtHeader header : provider.getFromHeadersList()) {
 					fromHeaders.put(header.getName(), header.getValuePrefix());
 				}
-				JwtRuleManager.addJwtRule(new JwtRule(entry.getKey(), fromHeaders,
-						provider.getIssuer(),
-						new ArrayList<>(provider.getAudiencesList()),
-						provider.getLocalJwks().getInlineString(),
-						new ArrayList<>(provider.getFromParamsList()),
-						provider.getForwardPayloadHeader(), provider.getForward()));
+				authData.getJwtRuleManager().getJwtRules().put(entry.getKey(),
+						new JwtRule(entry.getKey(), fromHeaders, provider.getIssuer(),
+								new ArrayList<>(provider.getAudiencesList()),
+								provider.getLocalJwks().getInlineString(),
+								new ArrayList<>(provider.getFromParamsList()),
+								provider.getForwardPayloadHeader(),
+								provider.getForward()));
 			}
 		}
 		log.info("auth rules resolve finish, RBAC rules {}, Jwt rules {}",
 				rbacList.size(), jwtRules.size());
+		authCache.setAuthData(authData);
 	}
 
-	private void resolvePrincipal(String name, Principal principal, boolean isAllowed) {
+	private void resolvePrincipal(AuthData authData, String name, Principal principal,
+			boolean isAllowed) {
 		Principal.Set andIds = principal.getAndIds();
 		AndRule<IpMatcher> ipBlockList = new AndRule<>();
 		AndRule<IpMatcher> remoteIpBlockList = new AndRule<>();
@@ -273,6 +267,24 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		Map<String, AndRule<StringMatcher>> authClaimMap = new HashMap<>();
 		Map<String, AndRule<HeaderMatcher>> headerMap = new HashMap<>();
 		AndRule<StringMatcher> identityList = new AndRule<>();
+
+		Map<String, HttpHeaderRule> allowHeaderRules = authData.getHeaderRuleManager()
+				.getAllowHeaderRules();
+		Map<String, HttpHeaderRule> denyHeaderRules = authData.getHeaderRuleManager()
+				.getDenyHeaderRules();
+		Map<String, IdentityRule> allowIdentityRules = authData.getIdentityRuleManager()
+				.getAllowIdentityRules();
+		Map<String, IdentityRule> denyIdentityRules = authData.getIdentityRuleManager()
+				.getDenyIdentityRules();
+		Map<String, IpBlockRule> allowIpBlockRules = authData.getIpBlockRuleManager()
+				.getAllowIpBlockRules();
+		Map<String, IpBlockRule> denyIpBlockRules = authData.getIpBlockRuleManager()
+				.getDenyIpBlockRules();
+		Map<String, JwtAuthRule> allowJwtAuthRules = authData.getJwtAuthRuleManager()
+				.getAllowJwtAuthRules();
+		Map<String, JwtAuthRule> denyJwtAuthRules = authData.getJwtAuthRuleManager()
+				.getDenyJwtAuthRules();
+
 		for (Principal andId : andIds.getIdsList()) {
 			if (andId.getAny()) {
 				return;
@@ -412,25 +424,47 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			}
 		}
 		if (!ipBlockList.isEmpty() || !remoteIpBlockList.isEmpty()) {
-			IpBlockRuleManager.addIpBlockRules(
-					new IpBlockRule(name, ipBlockList, remoteIpBlockList), isAllowed);
+			IpBlockRule ipBlockRule = new IpBlockRule(name, ipBlockList,
+					remoteIpBlockList);
+			if (isAllowed) {
+				allowIpBlockRules.put(name, ipBlockRule);
+			}
+			else {
+				denyIpBlockRules.put(name, ipBlockRule);
+			}
 		}
 		if (!requestPrincipalList.isEmpty() || !authAudienceList.isEmpty()
 				|| !authClaimMap.isEmpty() || !authPresenterList.isEmpty()) {
-			JwtAuthRuleManager.addJwtAuthRule(new JwtAuthRule(name, requestPrincipalList,
-					authAudienceList, authClaimMap, authPresenterList), isAllowed);
+			JwtAuthRule jwtAuthRule = new JwtAuthRule(name, requestPrincipalList,
+					authAudienceList, authClaimMap, authPresenterList);
+			if (isAllowed) {
+				allowJwtAuthRules.put(name, jwtAuthRule);
+			}
+			else {
+				denyJwtAuthRules.put(name, jwtAuthRule);
+			}
 		}
 		if (!identityList.isEmpty()) {
-			IdentityRuleManager.addIdentityRule(new IdentityRule(name, identityList),
-					isAllowed);
+			IdentityRule identityRule = new IdentityRule(name, identityList);
+			if (isAllowed) {
+				allowIdentityRules.put(name, identityRule);
+			}
+			else {
+				denyIdentityRules.put(name, identityRule);
+			}
 		}
 		if (!headerMap.isEmpty()) {
-			HeaderRuleManager.addHttpHeaderRule(new HttpHeaderRule(name, headerMap),
-					isAllowed);
+			HttpHeaderRule headerRule = new HttpHeaderRule(name, headerMap);
+			if (isAllowed) {
+				allowHeaderRules.put(name, headerRule);
+			}
+			else {
+				denyHeaderRules.put(name, headerRule);
+			}
 		}
 	}
 
-	private void resolvePermission(String name, Permission permission,
+	private void resolvePermission(AuthData authData, String name, Permission permission,
 			boolean isAllowed) {
 		Permission.Set andRules = permission.getAndRules();
 		AndRule<StringMatcher> hostList = new AndRule<>();
@@ -438,6 +472,14 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		AndRule<StringMatcher> methodList = new AndRule<>();
 		AndRule<StringMatcher> pathList = new AndRule<>();
 		AndRule<IpMatcher> destIpList = new AndRule<>();
+		Map<String, IpBlockRule> allowIpBlockRules = authData.getIpBlockRuleManager()
+				.getAllowIpBlockRules();
+		Map<String, IpBlockRule> denyIpBlockRules = authData.getIpBlockRuleManager()
+				.getDenyIpBlockRules();
+		Map<String, TargetRule> allowTargetRules = authData.getTargetRuleManager()
+				.getAllowTargetRules();
+		Map<String, TargetRule> denyTargetRules = authData.getTargetRuleManager()
+				.getDenyTargetRules();
 		for (Permission andRule : andRules.getRulesList()) {
 			if (andRule.getAny()) {
 				return;
@@ -505,12 +547,22 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		}
 		if (!hostList.isEmpty() || !portList.isEmpty() || !methodList.isEmpty()
 				|| !pathList.isEmpty()) {
-			TargetRuleManager.addTargetRules(
-					new TargetRule(name, hostList, portList, methodList, pathList),
-					isAllowed);
+			TargetRule targetRule = new TargetRule(name, hostList, portList, methodList,
+					pathList);
+			if (isAllowed) {
+				allowTargetRules.put(name, targetRule);
+			}
+			else {
+				denyTargetRules.put(name, targetRule);
+			}
 		}
 		if (!destIpList.isEmpty()) {
-			IpBlockRuleManager.updateDestIpRules(name, destIpList, isAllowed);
+			if (isAllowed) {
+				allowIpBlockRules.get(name).setDestIps(destIpList);
+			}
+			else {
+				denyIpBlockRules.get(name).setDestIps(destIpList);
+			}
 		}
 	}
 

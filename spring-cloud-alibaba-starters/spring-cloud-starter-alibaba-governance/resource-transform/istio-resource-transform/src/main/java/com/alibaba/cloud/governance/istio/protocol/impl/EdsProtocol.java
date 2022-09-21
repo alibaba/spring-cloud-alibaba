@@ -48,11 +48,6 @@ public class EdsProtocol extends AbstractXdsProtocol<ClusterLoadAssignment> {
 	}
 
 	@Override
-	protected void clearCache() {
-
-	}
-
-	@Override
 	public String getTypeUrl() {
 		return "type.googleapis.com/envoy.config.endpoint.v3.ClusterLoadAssignment";
 	}

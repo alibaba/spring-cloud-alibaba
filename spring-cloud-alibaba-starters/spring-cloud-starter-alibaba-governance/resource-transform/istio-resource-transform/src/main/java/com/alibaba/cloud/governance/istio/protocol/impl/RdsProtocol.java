@@ -197,11 +197,6 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 	}
 
 	@Override
-	protected void clearCache() {
-
-	}
-
-	@Override
 	public String getTypeUrl() {
 		return "type.googleapis.com/envoy.config.route.v3.RouteConfiguration";
 	}

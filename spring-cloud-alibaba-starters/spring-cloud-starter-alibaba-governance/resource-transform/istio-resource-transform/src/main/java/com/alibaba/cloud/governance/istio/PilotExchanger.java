@@ -47,7 +47,6 @@ public class PilotExchanger {
 
 	private void observeListeners(List<Listener> listeners) {
 		synchronized (ldsProtocol) {
-			ldsProtocol.clearCache();
 			ldsProtocol.resolveAuthRules(listeners);
 			Set<String> resourceName = ldsProtocol.getRouteNames(listeners);
 			if (resourceName != null && !resourceName.isEmpty()) {

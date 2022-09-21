@@ -39,6 +39,12 @@
             <artifactId>label-routing-data</artifactId>
             <version>2.2.9-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>auth-data</artifactId>
+            <version>2.2.9-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
     <properties>

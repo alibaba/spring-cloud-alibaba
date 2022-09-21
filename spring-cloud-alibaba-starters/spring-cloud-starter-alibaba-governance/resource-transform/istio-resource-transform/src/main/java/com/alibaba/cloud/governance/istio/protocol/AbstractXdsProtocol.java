@@ -133,8 +133,6 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 	protected abstract List<T> decodeXdsResponse(DiscoveryResponse response);
 
-	protected abstract void clearCache();
-
 	private void sendXdsRequest(StreamObserver<DiscoveryRequest> observer,
 			Set<String> resourceNames) {
 		DiscoveryRequest request = DiscoveryRequest.newBuilder().setNode(node)

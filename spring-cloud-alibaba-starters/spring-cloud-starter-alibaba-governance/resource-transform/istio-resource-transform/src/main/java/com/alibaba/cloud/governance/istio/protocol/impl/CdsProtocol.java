@@ -49,11 +49,6 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 		return clusters;
 	}
 
-	@Override
-	protected void clearCache() {
-
-	}
-
 	public Set<String> getEndPointNames(List<Cluster> clusters) {
 		Set<String> endpoints = new HashSet<>();
 		for (Cluster cluster : clusters) {

@@ -18,6 +18,8 @@ package com.alibaba.cloud.governance.istio;
 
 import com.alibaba.cloud.data.controlsurface.ControlSurfaceConnection;
 import com.alibaba.cloud.data.controlsurface.ControlSurfaceConnectionAutoConfiguration;
+import com.alibaba.cloud.governance.auth.AuthDataAutoConfiguration;
+import com.alibaba.cloud.governance.auth.cache.AuthCache;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
@@ -31,7 +33,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(ControlSurfaceConnectionAutoConfiguration.class)
+@AutoConfigureAfter({ ControlSurfaceConnectionAutoConfiguration.class,
+		AuthDataAutoConfiguration.class })
 @ConditionalOnProperty(name = "spring.cloud.istio.config.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(XdsConfigProperties.class)
 public class XdsAutoConfiguration {
@@ -57,9 +60,9 @@ public class XdsAutoConfiguration {
 
 	@Bean
 	public LdsProtocol ldsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool) {
+			XdsScheduledThreadPool xdsScheduledThreadPool, AuthCache authCache) {
 		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime());
+				xdsConfigProperties.getPollingTime(), authCache);
 	}
 
 	@Bean
