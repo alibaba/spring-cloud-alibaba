@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.governance.auth;
 
-import com.alibaba.cloud.governance.auth.cache.AuthCache;
+import com.alibaba.cloud.governance.auth.cache.AuthRepository;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +27,8 @@ import org.springframework.context.annotation.Configuration;
 public class AuthValidatorAutoConfiguration {
 
 	@Bean
-	public AuthValidator authValidator(AuthCache authCache) {
-		return new AuthValidator(authCache);
+	public AuthValidator authValidator(AuthRepository authRepository) {
+		return new AuthValidator(authRepository);
 	}
 
 }

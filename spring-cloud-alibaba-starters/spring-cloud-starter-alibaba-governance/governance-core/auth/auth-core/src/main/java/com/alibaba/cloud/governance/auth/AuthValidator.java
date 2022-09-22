@@ -22,7 +22,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.governance.auth.cache.AuthCache;
+import com.alibaba.cloud.governance.auth.cache.AuthRepository;
 import com.alibaba.cloud.governance.auth.rule.HttpHeaderRule;
 import com.alibaba.cloud.governance.auth.rule.IpBlockRule;
 import com.alibaba.cloud.governance.auth.rule.JwtAuthRule;
@@ -43,10 +43,10 @@ public class AuthValidator {
 
 	private static final Logger log = LoggerFactory.getLogger(AuthValidator.class);
 
-	private AuthCache authCache;
+	private AuthRepository authRepository;
 
-	public AuthValidator(AuthCache authCache) {
-		this.authCache = authCache;
+	public AuthValidator(AuthRepository authRepository) {
+		this.authRepository = authRepository;
 	}
 
 	public boolean validateHeader(HttpHeaders headers) {
@@ -71,20 +71,20 @@ public class AuthValidator {
 	}
 
 	public boolean isEmptyJwtAuthRule() {
-		return this.authCache.getAuthData().getJwtAuthRuleManager().getAllowJwtAuthRules()
+		return this.authRepository.getAuthData().getJwtAuthRuleManager().getAllowJwtAuthRules()
 				.isEmpty()
-				&& this.authCache.getAuthData().getJwtAuthRuleManager()
+				&& this.authRepository.getAuthData().getJwtAuthRuleManager()
 						.getDenyJwtAuthRules().isEmpty();
 	}
 
 	public boolean isEmptyJwtRule() {
-		return this.authCache.getAuthData().getJwtRuleManager().getJwtRules().isEmpty();
+		return this.authRepository.getAuthData().getJwtRuleManager().getJwtRules().isEmpty();
 	}
 
 	private boolean isValidHeader(HttpHeaders headers) {
-		Map<String, HttpHeaderRule> denyHeaderRules = this.authCache.getAuthData()
+		Map<String, HttpHeaderRule> denyHeaderRules = this.authRepository.getAuthData()
 				.getHeaderRuleManager().getDenyHeaderRules();
-		Map<String, HttpHeaderRule> allowHeaderRules = this.authCache.getAuthData()
+		Map<String, HttpHeaderRule> allowHeaderRules = this.authRepository.getAuthData()
 				.getHeaderRuleManager().getAllowHeaderRules();
 		if (!denyHeaderRules.isEmpty() && judgeHttpHeaderRule(denyHeaderRules, headers)) {
 			return false;
@@ -114,9 +114,9 @@ public class AuthValidator {
 	}
 
 	private boolean isValidIp(String sourceIp, String destIp, String remoteIp) {
-		Map<String, IpBlockRule> denyIpBlockRules = this.authCache.getAuthData()
+		Map<String, IpBlockRule> denyIpBlockRules = this.authRepository.getAuthData()
 				.getIpBlockRuleManager().getDenyIpBlockRules();
-		Map<String, IpBlockRule> allowIpBlockRules = this.authCache.getAuthData()
+		Map<String, IpBlockRule> allowIpBlockRules = this.authRepository.getAuthData()
 				.getIpBlockRuleManager().getAllowIpBlockRules();
 		if (!denyIpBlockRules.isEmpty()
 				&& judgeIpBlockRule(denyIpBlockRules, sourceIp, destIp, remoteIp)) {
@@ -164,9 +164,9 @@ public class AuthValidator {
 	}
 
 	private boolean isValidJwtRule(JwtClaims jwtClaims) {
-		Map<String, JwtAuthRule> denyJwtAuthRules = this.authCache.getAuthData()
+		Map<String, JwtAuthRule> denyJwtAuthRules = this.authRepository.getAuthData()
 				.getJwtAuthRuleManager().getDenyJwtAuthRules();
-		Map<String, JwtAuthRule> allowJwtAuthRules = this.authCache.getAuthData()
+		Map<String, JwtAuthRule> allowJwtAuthRules = this.authRepository.getAuthData()
 				.getJwtAuthRuleManager().getAllowJwtAuthRules();
 		if (jwtClaims == null) {
 			return false;
@@ -260,7 +260,7 @@ public class AuthValidator {
 
 	private Pair<JwtClaims, Boolean> isValidJwt(MultiValueMap<String, String> params,
 			HttpHeaders headers) {
-		Map<String, JwtRule> jwtRules = this.authCache.getAuthData().getJwtRuleManager()
+		Map<String, JwtRule> jwtRules = this.authRepository.getAuthData().getJwtRuleManager()
 				.getJwtRules();
 		for (JwtRule rule : jwtRules.values()) {
 			Pair<JwtClaims, Boolean> jwtClaimsBooleanPair = JwtUtil.matchJwt(params,
@@ -280,9 +280,9 @@ public class AuthValidator {
 	}
 
 	private boolean isValidTargetRule(String host, int port, String method, String path) {
-		Map<String, TargetRule> denyTargetRules = this.authCache.getAuthData()
+		Map<String, TargetRule> denyTargetRules = this.authRepository.getAuthData()
 				.getTargetRuleManager().getDenyTargetRules();
-		Map<String, TargetRule> allowTargetRules = this.authCache.getAuthData()
+		Map<String, TargetRule> allowTargetRules = this.authRepository.getAuthData()
 				.getTargetRuleManager().getAllowTargetRules();
 		if (!denyTargetRules.isEmpty()
 				&& judgeTargetRule(denyTargetRules, host, port, method, path)) {

@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.governance.auth.cache.AuthCache;
+import com.alibaba.cloud.governance.auth.cache.AuthRepository;
 import com.alibaba.cloud.governance.auth.cache.AuthData;
 import com.alibaba.cloud.governance.auth.rule.HttpHeaderRule;
 import com.alibaba.cloud.governance.auth.rule.IdentityRule;
@@ -93,13 +93,13 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	private static final int MAX_PORT = 65535;
 
-	private AuthCache authCache;
+	private AuthRepository authRepository;
 
 	public LdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime,
-			AuthCache authCache) {
+			AuthRepository authRepository) {
 		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
-		this.authCache = authCache;
+		this.authRepository = authRepository;
 	}
 
 	@Override
@@ -253,7 +253,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		}
 		log.info("auth rules resolve finish, RBAC rules {}, Jwt rules {}",
 				rbacList.size(), jwtRules.size());
-		authCache.setAuthData(authData);
+		authRepository.setAuthData(authData);
 	}
 
 	private void resolvePrincipal(AuthData authData, String name, Principal principal,

@@ -19,7 +19,7 @@ package com.alibaba.cloud.governance.istio;
 import com.alibaba.cloud.data.controlsurface.ControlSurfaceConnection;
 import com.alibaba.cloud.data.controlsurface.ControlSurfaceConnectionAutoConfiguration;
 import com.alibaba.cloud.governance.auth.AuthDataAutoConfiguration;
-import com.alibaba.cloud.governance.auth.cache.AuthCache;
+import com.alibaba.cloud.governance.auth.cache.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
@@ -60,9 +60,9 @@ public class XdsAutoConfiguration {
 
 	@Bean
 	public LdsProtocol ldsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool, AuthCache authCache) {
+			XdsScheduledThreadPool xdsScheduledThreadPool, AuthRepository authRepository) {
 		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime(), authCache);
+				xdsConfigProperties.getPollingTime(), authRepository);
 	}
 
 	@Bean

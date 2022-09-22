@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.governance.auth.cache;
 
-public class AuthCache {
+public class AuthRepository {
 
 	private AuthData authData;
 
