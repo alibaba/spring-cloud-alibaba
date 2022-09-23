@@ -16,18 +16,13 @@
 
 package com.alibaba.cloud.router.ribbon;
 
-import com.netflix.loadbalancer.AbstractServerPredicate;
-import com.netflix.loadbalancer.PredicateKey;
-
-import org.springframework.lang.Nullable;
-
 /**
  * @author HH
  */
-//public class LabelRoutePredicate extends AbstractServerPredicate {
+// public class LabelRoutePredicate extends AbstractServerPredicate {
 //
-//	boolean apply(@Nullable PredicateKey input) {
-//		return true;
-//	}
+// boolean apply(@Nullable PredicateKey input) {
+// return true;
+// }
 //
-//}
+// }

@@ -16,9 +16,9 @@
 
 package com.alibaba.cloud.router.feign;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -28,11 +28,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
 	@Autowired
-	RequestInterceptor requestInterceptor;
+	private Optional<RequestInterceptor> requestInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(requestInterceptor);
-		WebMvcConfigurer.super.addInterceptors(registry);
+		if (!requestInterceptor.isPresent()) {
+			return;
+		}
+		registry.addInterceptor(requestInterceptor.get());
 	}
+
 }

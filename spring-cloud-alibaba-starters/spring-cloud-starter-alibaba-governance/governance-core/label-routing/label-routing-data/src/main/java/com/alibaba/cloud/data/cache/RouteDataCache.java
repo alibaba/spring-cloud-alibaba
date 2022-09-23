@@ -47,7 +47,7 @@ public class RouteDataCache {
 
 	private List<UntiedRouteDataStructure> routeDataList;
 
-	private ConcurrentHashMap<RouteRule, AddrBitMap> addrCache;
+	// private ConcurrentHashMap<RouteRule, AddrBitMap> addrCache;
 
 	private List<HeaderRule> headerRuleList;
 
@@ -60,7 +60,7 @@ public class RouteDataCache {
 	}
 
 	public void init(List<UntiedRouteDataStructure> routerDataList) {
-		//Try to avoid capacity expansion, and space is used to exchange time.
+		// Try to avoid capacity expansion, and space is used to exchange time.
 		int initCacheSize = routerDataList.size() * 2;
 		routeCache = new ConcurrentHashMap<>(initCacheSize);
 
@@ -84,10 +84,11 @@ public class RouteDataCache {
 
 			int i = waitUpdateIndex.incrementAndGet();
 
-			//avoid generate critical condition.
+			// avoid generate critical condition.
 			if (i > routeDataListSize) {
 				UntiedRouteDataStructure routerData = routeDataList.get(i);
-				LabelRouteData labelRouteData = routeCache.get(routerData.getTargetService());
+				LabelRouteData labelRouteData = routeCache
+						.get(routerData.getTargetService());
 
 				if (!routerData.getLabelRouteData().equals(labelRouteData)) {
 					putRouteData(routerData);
@@ -102,8 +103,8 @@ public class RouteDataCache {
 	}
 
 	private void putRouteData(UntiedRouteDataStructure routerData) {
-		LabelRouteData putLabelRouteData = routeCache
-				.put(routerData.getTargetService(), routerData.getLabelRouteData());
+		LabelRouteData putLabelRouteData = routeCache.put(routerData.getTargetService(),
+				routerData.getLabelRouteData());
 		if (putLabelRouteData == null) {
 			log.warn("Label route rule:" + routerData + "failed to add to router cache");
 		}
@@ -113,9 +114,11 @@ public class RouteDataCache {
 		LabelRouteData putLabelRouteData = null;
 
 		for (UntiedRouteDataStructure routerData : routerDataList) {
-			putLabelRouteData = routeCache.put(routerData.getTargetService(), routerData.getLabelRouteData());
+			putLabelRouteData = routeCache.put(routerData.getTargetService(),
+					routerData.getLabelRouteData());
 			if (putLabelRouteData != null) {
-				log.info("Label route rule:" + routerData + "had been add to router cache");
+				log.info("Label route rule:" + routerData
+						+ "had been add to router cache");
 			}
 			else {
 				log.warn("Label route rule:" + routerData
@@ -178,45 +181,48 @@ public class RouteDataCache {
 		labelRouteData.setMatchRouteList(matchServices);
 
 		untiedRouteDataStructure.setLabelRouteData(labelRouteData);
-		routeCache.put(untiedRouteDataStructure.getTargetService(), untiedRouteDataStructure.getLabelRouteData());
+		routeCache.put(untiedRouteDataStructure.getTargetService(),
+				untiedRouteDataStructure.getLabelRouteData());
 	}
 
-//	private void AddrCache(List<UntiedRouteDataStructure> routerDataList) {
-//		for (UntiedRouteDataStructure routerData : routerDataList) {
-//			List<MatchService> matchRouteList = routerData.getLabelRouteData().getMatchRouteList();
-//			int size = matchRouteList.size();
-//
-//			for (int index = 0; index < size; index++) {
-//				MatchService matchService = matchRouteList.get(index);
-//				List<RouteRule> ruleList = matchService.getRuleList();
-//				for (RouteRule routeRule : ruleList) {
-//					String type = routeRule.getType();
-//					if (type.equalsIgnoreCase("header")) {
-//						headerRuleList.add((HeaderRule) routeRule);
-//					}
-//					if (type.equalsIgnoreCase("path")) {
-//						pathList.add((UrlRule.Path) routeRule);
-//					}
-//					if (type.equalsIgnoreCase("parameter")) {
-//						parameterList.add((UrlRule.Parameter) routeRule);
-//					}
-//					updateAddrBitMap(routeRule, index, size);
-//				}
-//			}
-//		}
-//
-//	}
+	// private void AddrCache(List<UntiedRouteDataStructure> routerDataList) {
+	// for (UntiedRouteDataStructure routerData : routerDataList) {
+	// List<MatchService> matchRouteList =
+	// routerData.getLabelRouteData().getMatchRouteList();
+	// int size = matchRouteList.size();
+	//
+	// for (int index = 0; index < size; index++) {
+	// MatchService matchService = matchRouteList.get(index);
+	// List<RouteRule> ruleList = matchService.getRuleList();
+	// for (RouteRule routeRule : ruleList) {
+	// String type = routeRule.getType();
+	// if (type.equalsIgnoreCase("header")) {
+	// headerRuleList.add((HeaderRule) routeRule);
+	// }
+	// if (type.equalsIgnoreCase("path")) {
+	// pathList.add((UrlRule.Path) routeRule);
+	// }
+	// if (type.equalsIgnoreCase("parameter")) {
+	// parameterList.add((UrlRule.Parameter) routeRule);
+	// }
+	// updateAddrBitMap(routeRule, index, size);
+	// }
+	// }
+	// }
+	//
+	// }
 
-//	private void updateAddrBitMap(RouteRule routeRule, int index, int size) {
-//		AddrBitMap getAddrBitMap = addrCache.get(routeRule);
-//		if (getAddrBitMap == null) {
-//			AddrBitMap addrBitMap = new AddrBitMap(size);
-//			addrBitMap.setValueByIndex(index);
-//			addrCache.put(routeRule, addrBitMap);
-//		}
-//		else {
-//			getAddrBitMap.setValueByIndex(index);
-//		}
-//
-//	}
+	// private void updateAddrBitMap(RouteRule routeRule, int index, int size) {
+	// AddrBitMap getAddrBitMap = addrCache.get(routeRule);
+	// if (getAddrBitMap == null) {
+	// AddrBitMap addrBitMap = new AddrBitMap(size);
+	// addrBitMap.setValueByIndex(index);
+	// addrCache.put(routeRule, addrBitMap);
+	// }
+	// else {
+	// getAddrBitMap.setValueByIndex(index);
+	// }
+	//
+	// }
+
 }

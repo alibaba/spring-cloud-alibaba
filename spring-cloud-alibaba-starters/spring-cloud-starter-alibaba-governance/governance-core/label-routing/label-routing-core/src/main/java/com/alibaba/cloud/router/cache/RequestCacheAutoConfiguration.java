@@ -22,11 +22,12 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author HH
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class RequestCacheAutoConfiguration {
 
 	@Bean
 	public RequestCache requestCache() {
 		return new RequestCache();
 	}
+
 }

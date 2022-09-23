@@ -22,7 +22,9 @@ import java.util.Objects;
  * @author HH
  */
 public class UrlRule {
+
 	public static class Path implements RouteRule {
+
 		private String type;
 
 		private String condition;
@@ -78,8 +80,9 @@ public class UrlRule {
 				return false;
 			}
 			Path path = (Path) o;
-			return Objects.equals(getType(), path.getType()) && Objects
-					.equals(getCondition(), path.getCondition()) && Objects.equals(getValue(), path.getValue());
+			return Objects.equals(getType(), path.getType())
+					&& Objects.equals(getCondition(), path.getCondition())
+					&& Objects.equals(getValue(), path.getValue());
 		}
 
 		@Override
@@ -89,16 +92,14 @@ public class UrlRule {
 
 		@Override
 		public String toString() {
-			return "Path{" +
-					"type='" + type + '\'' +
-					", condition='" + condition + '\'' +
-					", value='" + value + '\'' +
-					'}';
+			return "Path{" + "type='" + type + '\'' + ", condition='" + condition + '\''
+					+ ", value='" + value + '\'' + '}';
 		}
 
 	}
 
 	public static class Parameter implements RouteRule {
+
 		private String type;
 
 		private String condition;
@@ -156,9 +157,10 @@ public class UrlRule {
 				return false;
 			}
 			Parameter parameter = (Parameter) o;
-			return Objects.equals(getType(), parameter.getType()) && Objects
-					.equals(getCondition(), parameter.getCondition()) && Objects
-					.equals(getKey(), parameter.getKey()) && Objects.equals(getValue(), parameter.getValue());
+			return Objects.equals(getType(), parameter.getType())
+					&& Objects.equals(getCondition(), parameter.getCondition())
+					&& Objects.equals(getKey(), parameter.getKey())
+					&& Objects.equals(getValue(), parameter.getValue());
 		}
 
 		@Override
@@ -168,12 +170,8 @@ public class UrlRule {
 
 		@Override
 		public String toString() {
-			return "Parameter{" +
-					"type='" + type + '\'' +
-					", condition='" + condition + '\'' +
-					", key='" + key + '\'' +
-					", value='" + value + '\'' +
-					'}';
+			return "Parameter{" + "type='" + type + '\'' + ", condition='" + condition
+					+ '\'' + ", key='" + key + '\'' + ", value='" + value + '\'' + '}';
 		}
 
 	}

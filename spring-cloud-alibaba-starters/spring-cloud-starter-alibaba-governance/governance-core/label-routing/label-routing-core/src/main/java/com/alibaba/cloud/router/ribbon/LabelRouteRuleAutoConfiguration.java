@@ -16,14 +16,14 @@
 
 package com.alibaba.cloud.router.ribbon;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  */
-@EnableAutoConfiguration
+@Configuration(proxyBeanMethods = false)
 public class LabelRouteRuleAutoConfiguration {
 
 	@Bean
@@ -31,4 +31,5 @@ public class LabelRouteRuleAutoConfiguration {
 	public LabelRouteRule labelRouteRule() {
 		return new LabelRouteRule();
 	}
+
 }

@@ -65,8 +65,9 @@ public class MatchService {
 			return false;
 		}
 		MatchService that = (MatchService) o;
-		return getWeight() == that.getWeight() && Objects
-				.equals(getRuleList(), that.getRuleList()) && Objects.equals(getVersion(), that.getVersion());
+		return getWeight() == that.getWeight()
+				&& Objects.equals(getRuleList(), that.getRuleList())
+				&& Objects.equals(getVersion(), that.getVersion());
 	}
 
 	@Override
@@ -76,11 +77,8 @@ public class MatchService {
 
 	@Override
 	public String toString() {
-		return "MatchService{" +
-				"ruleList=" + ruleList +
-				", version='" + version + '\'' +
-				", weight=" + weight +
-				'}';
+		return "MatchService{" + "ruleList=" + ruleList + ", version='" + version + '\''
+				+ ", weight=" + weight + '}';
 	}
 
 }

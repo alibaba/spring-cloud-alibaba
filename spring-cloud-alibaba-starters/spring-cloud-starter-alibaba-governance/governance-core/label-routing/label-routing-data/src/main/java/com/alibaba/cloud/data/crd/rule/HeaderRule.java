@@ -80,9 +80,10 @@ public class HeaderRule implements RouteRule {
 			return false;
 		}
 		HeaderRule that = (HeaderRule) o;
-		return Objects.equals(getType(), that.getType()) && Objects
-				.equals(getCondition(), that.getCondition()) && Objects
-				.equals(getKey(), that.getKey()) && Objects.equals(getValue(), that.getValue());
+		return Objects.equals(getType(), that.getType())
+				&& Objects.equals(getCondition(), that.getCondition())
+				&& Objects.equals(getKey(), that.getKey())
+				&& Objects.equals(getValue(), that.getValue());
 	}
 
 	@Override
@@ -92,12 +93,8 @@ public class HeaderRule implements RouteRule {
 
 	@Override
 	public String toString() {
-		return "HeaderRule{" +
-				"type='" + type + '\'' +
-				", condition='" + condition + '\'' +
-				", key='" + key + '\'' +
-				", value='" + value + '\'' +
-				'}';
+		return "HeaderRule{" + "type='" + type + '\'' + ", condition='" + condition + '\''
+				+ ", key='" + key + '\'' + ", value='" + value + '\'' + '}';
 	}
 
 }

@@ -25,8 +25,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.governance.auth.cache.AuthRepository;
 import com.alibaba.cloud.governance.auth.cache.AuthData;
+import com.alibaba.cloud.governance.auth.cache.AuthRepository;
 import com.alibaba.cloud.governance.auth.rule.HttpHeaderRule;
 import com.alibaba.cloud.governance.auth.rule.IdentityRule;
 import com.alibaba.cloud.governance.auth.rule.IpBlockRule;

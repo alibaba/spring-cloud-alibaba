@@ -60,7 +60,8 @@ public class XdsAutoConfiguration {
 
 	@Bean
 	public LdsProtocol ldsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool, AuthRepository authRepository) {
+			XdsScheduledThreadPool xdsScheduledThreadPool,
+			AuthRepository authRepository) {
 		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool,
 				xdsConfigProperties.getPollingTime(), authRepository);
 	}

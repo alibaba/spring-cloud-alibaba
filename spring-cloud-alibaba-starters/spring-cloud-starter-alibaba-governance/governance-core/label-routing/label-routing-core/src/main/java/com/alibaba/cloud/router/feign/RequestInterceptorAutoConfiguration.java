@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author HH
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class RequestInterceptorAutoConfiguration {
 
 	@Bean
@@ -31,4 +31,5 @@ public class RequestInterceptorAutoConfiguration {
 	public RequestInterceptor requestInterceptor() {
 		return new RequestInterceptor();
 	}
+
 }

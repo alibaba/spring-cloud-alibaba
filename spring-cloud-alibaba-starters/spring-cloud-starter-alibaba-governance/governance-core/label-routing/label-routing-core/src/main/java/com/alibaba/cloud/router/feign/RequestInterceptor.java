@@ -33,9 +33,10 @@ public class RequestInterceptor implements HandlerInterceptor {
 	RequestCache requestCache;
 
 	@Override
-	public boolean preHandle(HttpServletRequest request,
-			HttpServletResponse response, Object handler) {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+			Object handler) {
 		requestCache.setRequest(request);
 		return true;
 	}
+
 }

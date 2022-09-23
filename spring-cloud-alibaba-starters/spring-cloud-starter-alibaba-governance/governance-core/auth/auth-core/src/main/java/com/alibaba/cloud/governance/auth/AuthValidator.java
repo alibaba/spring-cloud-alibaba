@@ -71,14 +71,15 @@ public class AuthValidator {
 	}
 
 	public boolean isEmptyJwtAuthRule() {
-		return this.authRepository.getAuthData().getJwtAuthRuleManager().getAllowJwtAuthRules()
-				.isEmpty()
+		return this.authRepository.getAuthData().getJwtAuthRuleManager()
+				.getAllowJwtAuthRules().isEmpty()
 				&& this.authRepository.getAuthData().getJwtAuthRuleManager()
 						.getDenyJwtAuthRules().isEmpty();
 	}
 
 	public boolean isEmptyJwtRule() {
-		return this.authRepository.getAuthData().getJwtRuleManager().getJwtRules().isEmpty();
+		return this.authRepository.getAuthData().getJwtRuleManager().getJwtRules()
+				.isEmpty();
 	}
 
 	private boolean isValidHeader(HttpHeaders headers) {
@@ -260,8 +261,8 @@ public class AuthValidator {
 
 	private Pair<JwtClaims, Boolean> isValidJwt(MultiValueMap<String, String> params,
 			HttpHeaders headers) {
-		Map<String, JwtRule> jwtRules = this.authRepository.getAuthData().getJwtRuleManager()
-				.getJwtRules();
+		Map<String, JwtRule> jwtRules = this.authRepository.getAuthData()
+				.getJwtRuleManager().getJwtRules();
 		for (JwtRule rule : jwtRules.values()) {
 			Pair<JwtClaims, Boolean> jwtClaimsBooleanPair = JwtUtil.matchJwt(params,
 					headers, rule);

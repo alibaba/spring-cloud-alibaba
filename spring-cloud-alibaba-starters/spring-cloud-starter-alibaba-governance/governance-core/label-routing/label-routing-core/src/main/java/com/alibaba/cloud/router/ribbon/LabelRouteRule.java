@@ -130,7 +130,6 @@ public class LabelRouteRule extends PredicateBasedRule {
 		return this.predicate;
 	}
 
-
 	private void serviceFilter(String targetServiceName) {
 		HttpServletRequest request = requestCache.getRequest();
 		Map<String, String[]> parameterMap = request.getParameterMap();
@@ -151,12 +150,14 @@ public class LabelRouteRule extends PredicateBasedRule {
 			List<RouteRule> ruleList = matchService.getRuleList();
 			for (RouteRule routeRule : ruleList) {
 				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
-					if (!routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
+					if (!routeRule.getValue()
+							.equals(requestHeaders.get(routeRule.getKey()))) {
 						break;
 					}
 				}
 				if (PARAMETER.equalsIgnoreCase(routeRule.getType())) {
-					if (!routeRule.getValue().equals(parameterMap.get(routeRule.getKey())[0])) {
+					if (!routeRule.getValue()
+							.equals(parameterMap.get(routeRule.getKey())[0])) {
 						break;
 					}
 				}
@@ -181,7 +182,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 			Integer weight = weightMap.get(version);
 
 			if (weight == null || weight < 0 || weight > 100) {
-				LOGGER.error("The weight of provider = {} version = {} had set error,please check it",
+				LOGGER.error(
+						"The weight of provider = {} version = {} had set error,please check it",
 						targetService, version);
 			}
 
@@ -204,4 +206,5 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 		return server;
 	}
+
 }

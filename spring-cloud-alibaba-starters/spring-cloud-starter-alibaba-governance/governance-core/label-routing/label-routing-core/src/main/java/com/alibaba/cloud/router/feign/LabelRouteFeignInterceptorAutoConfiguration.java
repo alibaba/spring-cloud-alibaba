@@ -16,14 +16,14 @@
 
 package com.alibaba.cloud.router.feign;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  */
-@EnableAutoConfiguration
+@Configuration(proxyBeanMethods = false)
 public class LabelRouteFeignInterceptorAutoConfiguration {
 
 	@Bean
@@ -31,4 +31,5 @@ public class LabelRouteFeignInterceptorAutoConfiguration {
 	public LabelRouteFeignInterceptor labelRouteFeignInterceptor() {
 		return new LabelRouteFeignInterceptor();
 	}
+
 }

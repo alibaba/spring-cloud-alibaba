@@ -24,6 +24,7 @@ import org.springframework.lang.Nullable;
  * @author HH
  */
 public class RequestCache {
+
 	private static final ThreadLocal<HttpServletRequest> requestHeadersHolder = new ThreadLocal<>();
 
 	public void setRequest(@Nullable HttpServletRequest request) {
@@ -39,4 +40,5 @@ public class RequestCache {
 	public HttpServletRequest getRequest() {
 		return requestHeadersHolder.get();
 	}
+
 }
