@@ -14,22 +14,31 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.controlsurface;
-
-import java.util.List;
-
-import com.alibaba.cloud.data.crd.UntiedRouteDataStructure;
+package com.alibaba.cloud.router.data.crd.rule;
 
 /**
  * @author HH
  */
-public interface ControlSurface {
+public interface RouteRule {
 
 	/**
-	 * Control surface untied interface.
-	 * @param untiedRouterDataStructureList List<UntiedRouteDataStructure/>
+	 * get type of rule.
+	 * @return String
 	 */
-	void getDataFromControlSurface(
-			List<UntiedRouteDataStructure> untiedRouterDataStructureList);
+	String getType();
+
+	String getCondition();
+
+	String getKey();
+
+	String getValue();
+
+	void setType(String type);
+
+	void setCondition(String condition);
+
+	void setKey(String key);
+
+	void setValue(String value);
 
 }

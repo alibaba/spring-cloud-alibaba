@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.governance.istio;
 
-import com.alibaba.cloud.data.controlsurface.ControlSurfaceConnectionAutoConfiguration;
+import com.alibaba.cloud.router.data.ControlPlaneConnectionAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,7 +46,7 @@ public class XdsRulesTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ XdsAutoConfiguration.class,
-			ControlSurfaceConnectionAutoConfiguration.class })
+			ControlPlaneConnectionAutoConfiguration.class })
 	public static class TestConfig {
 
 	}

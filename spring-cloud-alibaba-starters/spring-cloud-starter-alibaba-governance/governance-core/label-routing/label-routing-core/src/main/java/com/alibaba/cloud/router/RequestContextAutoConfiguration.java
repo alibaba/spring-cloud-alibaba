@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.feign;
+package com.alibaba.cloud.router;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.alibaba.cloud.router.context.RequestContext;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,12 +25,10 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class RequestInterceptorAutoConfiguration {
-
+public class RequestContextAutoConfiguration {
 	@Bean
-	@ConditionalOnMissingBean
-	public RequestInterceptor requestInterceptor() {
-		return new RequestInterceptor();
+	public RequestContext requestContext() {
+		return new RequestContext();
 	}
 
 }

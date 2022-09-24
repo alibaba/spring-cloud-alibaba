@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.crd.rule;
+package com.alibaba.cloud.router.data.crd.rule;
 
 import java.util.Objects;
 

@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.cache;
+package com.alibaba.cloud.router.data;
 
-import javax.servlet.http.HttpServletRequest;
+import com.alibaba.cloud.router.data.repository.RouteDataRepository;
 
-import org.springframework.lang.Nullable;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  */
-public class RequestCache {
+@Configuration(proxyBeanMethods = false)
+public class RouteDataRepositoryAutoConfiguration {
 
-	private static final ThreadLocal<HttpServletRequest> requestHeadersHolder = new ThreadLocal<>();
-
-	public void setRequest(@Nullable HttpServletRequest request) {
-		if (request == null) {
-			requestHeadersHolder.remove();
-		}
-		else {
-			requestHeadersHolder.set(request);
-		}
-	}
-
-	@Nullable
-	public HttpServletRequest getRequest() {
-		return requestHeadersHolder.get();
+	@Bean
+	@ConditionalOnMissingBean
+	public RouteDataRepository routeDataRepository() {
+		return new RouteDataRepository();
 	}
 
 }

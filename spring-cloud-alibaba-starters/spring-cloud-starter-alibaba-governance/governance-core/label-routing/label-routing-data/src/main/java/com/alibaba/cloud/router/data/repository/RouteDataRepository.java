@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.cache;
+package com.alibaba.cloud.router.data.repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.alibaba.cloud.data.crd.LabelRouteData;
-import com.alibaba.cloud.data.crd.MatchService;
-import com.alibaba.cloud.data.crd.UntiedRouteDataStructure;
-import com.alibaba.cloud.data.crd.rule.HeaderRule;
-import com.alibaba.cloud.data.crd.rule.RouteRule;
-import com.alibaba.cloud.data.crd.rule.UrlRule;
+import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.router.data.crd.rule.RouteRule;
+import com.alibaba.cloud.router.data.crd.rule.UrlRule;
+import com.alibaba.cloud.router.data.crd.LabelRouteData;
+import com.alibaba.cloud.router.data.crd.MatchService;
+import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author HH
  */
-public class RouteDataCache {
+public class RouteDataRepository {
 
-	private static final Logger log = LoggerFactory.getLogger(RouteDataCache.class);
+	private static final Logger log = LoggerFactory.getLogger(RouteDataRepository.class);
 
 	private ConcurrentHashMap<String, LabelRouteData> routeCache = new ConcurrentHashMap<>();
 
@@ -47,15 +47,7 @@ public class RouteDataCache {
 
 	private List<UntiedRouteDataStructure> routeDataList;
 
-	// private ConcurrentHashMap<RouteRule, AddrBitMap> addrCache;
-
-	private List<HeaderRule> headerRuleList;
-
-	private List<UrlRule.Path> pathList;
-
-	private List<UrlRule.Parameter> parameterList;
-
-	public RouteDataCache() {
+	public RouteDataRepository() {
 		test();
 	}
 
@@ -184,45 +176,4 @@ public class RouteDataCache {
 		routeCache.put(untiedRouteDataStructure.getTargetService(),
 				untiedRouteDataStructure.getLabelRouteData());
 	}
-
-	// private void AddrCache(List<UntiedRouteDataStructure> routerDataList) {
-	// for (UntiedRouteDataStructure routerData : routerDataList) {
-	// List<MatchService> matchRouteList =
-	// routerData.getLabelRouteData().getMatchRouteList();
-	// int size = matchRouteList.size();
-	//
-	// for (int index = 0; index < size; index++) {
-	// MatchService matchService = matchRouteList.get(index);
-	// List<RouteRule> ruleList = matchService.getRuleList();
-	// for (RouteRule routeRule : ruleList) {
-	// String type = routeRule.getType();
-	// if (type.equalsIgnoreCase("header")) {
-	// headerRuleList.add((HeaderRule) routeRule);
-	// }
-	// if (type.equalsIgnoreCase("path")) {
-	// pathList.add((UrlRule.Path) routeRule);
-	// }
-	// if (type.equalsIgnoreCase("parameter")) {
-	// parameterList.add((UrlRule.Parameter) routeRule);
-	// }
-	// updateAddrBitMap(routeRule, index, size);
-	// }
-	// }
-	// }
-	//
-	// }
-
-	// private void updateAddrBitMap(RouteRule routeRule, int index, int size) {
-	// AddrBitMap getAddrBitMap = addrCache.get(routeRule);
-	// if (getAddrBitMap == null) {
-	// AddrBitMap addrBitMap = new AddrBitMap(size);
-	// addrBitMap.setValueByIndex(index);
-	// addrCache.put(routeRule, addrBitMap);
-	// }
-	// else {
-	// getAddrBitMap.setValueByIndex(index);
-	// }
-	//
-	// }
-
 }

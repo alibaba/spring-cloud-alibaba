@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.controlsurface;
+package com.alibaba.cloud.router.data;
+
+import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -24,12 +26,12 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class ControlSurfaceConnectionAutoConfiguration {
+public class ControlPlaneConnectionAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public ControlSurfaceConnection controlSurfaceConnection() {
-		return new ControlSurfaceConnection();
+	public ControlPlaneConnection controlPlaneConnection() {
+		return new ControlPlaneConnection();
 	}
 
 }

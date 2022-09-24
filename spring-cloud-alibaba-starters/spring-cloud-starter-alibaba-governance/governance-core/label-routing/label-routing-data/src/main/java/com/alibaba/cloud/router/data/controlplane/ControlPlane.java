@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.cache;
+package com.alibaba.cloud.router.data.controlplane;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.util.List;
+
+import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
 
 /**
  * @author HH
  */
-@Configuration(proxyBeanMethods = false)
-public class RequestCacheAutoConfiguration {
+public interface ControlPlane {
 
-	@Bean
-	public RequestCache requestCache() {
-		return new RequestCache();
-	}
+	/**
+	 * Control surface untied interface.
+	 * @param untiedRouterDataStructureList List<UntiedRouteDataStructure/>
+	 */
+	void getDataFromControlSurface(
+			List<UntiedRouteDataStructure> untiedRouterDataStructureList);
 
 }

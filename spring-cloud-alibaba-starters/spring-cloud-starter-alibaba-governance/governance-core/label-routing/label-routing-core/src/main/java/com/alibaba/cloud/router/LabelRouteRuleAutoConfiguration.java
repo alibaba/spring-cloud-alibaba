@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.ribbon;
+package com.alibaba.cloud.router;
+
+import com.alibaba.cloud.router.ribbon.LabelRouteRule;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

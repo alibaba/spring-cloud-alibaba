@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.controlsurface;
+package com.alibaba.cloud.router.data.controlplane;
 
 import java.util.List;
 
-import com.alibaba.cloud.data.cache.RouteDataCache;
-import com.alibaba.cloud.data.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.router.data.repository.RouteDataRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author HH
  */
-public class ControlSurfaceConnection implements ControlSurface {
+public class ControlPlaneConnection implements ControlPlane {
 
-	private final RouteDataCache routeDataCache = new RouteDataCache();
+	@Autowired
+	private RouteDataRepository routeDataRepository;
 
 	private boolean cacheInitialized = false;
 
@@ -34,11 +37,11 @@ public class ControlSurfaceConnection implements ControlSurface {
 	public void getDataFromControlSurface(
 			List<UntiedRouteDataStructure> untiedRouterDataStructureList) {
 		if (!cacheInitialized) {
-			routeDataCache.init(untiedRouterDataStructureList);
+			routeDataRepository.init(untiedRouterDataStructureList);
 			cacheInitialized = true;
 		}
 		else {
-			routeDataCache.updateRouteData(untiedRouterDataStructureList);
+			routeDataRepository.updateRouteData(untiedRouterDataStructureList);
 		}
 	}
 

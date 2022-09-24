@@ -14,46 +14,34 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.crd;
+package com.alibaba.cloud.router.data.crd;
 
 import java.util.List;
 import java.util.Objects;
 
-import com.alibaba.cloud.data.crd.rule.RouteRule;
-
 /**
  * @author HH
  */
-public class MatchService {
+public class LabelRouteData {
 
-	private List<RouteRule> ruleList;
+	private String defaultRouteVersion;
 
-	private String version;
+	private List<MatchService> matchRouteList;
 
-	private int weight;
-
-	public List<RouteRule> getRuleList() {
-		return ruleList;
+	public String getDefaultRouteVersion() {
+		return defaultRouteVersion;
 	}
 
-	public void setRuleList(List<RouteRule> ruleList) {
-		this.ruleList = ruleList;
+	public void setDefaultRouteVersion(String defaultRouteVersion) {
+		this.defaultRouteVersion = defaultRouteVersion;
 	}
 
-	public String getVersion() {
-		return version;
+	public List<MatchService> getMatchRouteList() {
+		return matchRouteList;
 	}
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public int getWeight() {
-		return weight;
-	}
-
-	public void setWeight(int weight) {
-		this.weight = weight;
+	public void setMatchRouteList(List<MatchService> matchRouteList) {
+		this.matchRouteList = matchRouteList;
 	}
 
 	@Override
@@ -64,21 +52,20 @@ public class MatchService {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		MatchService that = (MatchService) o;
-		return getWeight() == that.getWeight()
-				&& Objects.equals(getRuleList(), that.getRuleList())
-				&& Objects.equals(getVersion(), that.getVersion());
+		LabelRouteData that = (LabelRouteData) o;
+		return Objects.equals(defaultRouteVersion, that.defaultRouteVersion)
+				&& Objects.equals(getMatchRouteList(), that.getMatchRouteList());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getRuleList(), getVersion(), getWeight());
+		return Objects.hash(defaultRouteVersion, getMatchRouteList());
 	}
 
 	@Override
 	public String toString() {
-		return "MatchService{" + "ruleList=" + ruleList + ", version='" + version + '\''
-				+ ", weight=" + weight + '}';
+		return "LabelRouteData{" + "defaultRouteVersion='" + defaultRouteVersion + '\''
+				+ ", matchRouteList=" + matchRouteList + '}';
 	}
 
 }

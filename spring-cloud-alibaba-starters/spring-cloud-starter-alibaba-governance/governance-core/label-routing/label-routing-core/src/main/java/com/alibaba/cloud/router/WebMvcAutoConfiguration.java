@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.feign;
+package com.alibaba.cloud.router;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.alibaba.cloud.router.web.WebMvcConfig;
+import com.alibaba.cloud.router.web.WebMvcInterceptor;
 
-import com.alibaba.cloud.router.cache.RequestCache;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  */
-public class RequestInterceptor implements HandlerInterceptor {
+@Configuration(proxyBeanMethods = false)
+public class WebMvcAutoConfiguration {
 
-	@Autowired
-	RequestCache requestCache;
-
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-			Object handler) {
-		requestCache.setRequest(request);
-		return true;
+	@Bean
+	@ConditionalOnMissingBean
+	public WebMvcInterceptor webMvcInterceptor() {
+		return new WebMvcInterceptor();
 	}
 
+	@Bean
+	@ConditionalOnMissingBean
+	public WebMvcConfig webMvcConfig() {
+		return new WebMvcConfig();
+	}
 }

@@ -17,12 +17,15 @@
 package com.alibaba.cloud.router.feign;
 
 import java.util.Enumeration;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.cloud.router.cache.RequestCache;
+import com.alibaba.cloud.router.context.RequestContext;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,19 +33,23 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author HH
  */
 public class LabelRouteFeignInterceptor implements RequestInterceptor {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LabelRouteFeignInterceptor.class);
 
 	@Autowired
-	private RequestCache requestCache;
+	private RequestContext requestContext;
 
 	@Override
 	public void apply(RequestTemplate requestTemplate) {
-		HttpServletRequest request = requestCache.getRequest();
-		Enumeration<String> headerNames = request.getHeaderNames();
+		final HttpServletRequest request = requestContext.getRequest(false);
+		final Optional<Enumeration<String>> headerNames = Optional.ofNullable(request.getHeaderNames());
 
-		while (headerNames.hasMoreElements()) {
-			String headerName = headerNames.nextElement();
+		if (!headerNames.isPresent()) {
+			return;
+		}
+
+		while (headerNames.get().hasMoreElements()) {
+			String headerName = headerNames.get().nextElement();
 			requestTemplate.header(headerName, request.getHeader(headerName));
 		}
 	}
-
 }

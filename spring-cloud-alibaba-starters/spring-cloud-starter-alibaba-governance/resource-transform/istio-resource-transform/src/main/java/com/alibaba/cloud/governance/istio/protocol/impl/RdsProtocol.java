@@ -21,13 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.data.controlsurface.ControlSurfaceConnection;
-import com.alibaba.cloud.data.crd.LabelRouteData;
-import com.alibaba.cloud.data.crd.MatchService;
-import com.alibaba.cloud.data.crd.UntiedRouteDataStructure;
-import com.alibaba.cloud.data.crd.rule.HeaderRule;
-import com.alibaba.cloud.data.crd.rule.RouteRule;
-import com.alibaba.cloud.data.crd.rule.UrlRule;
+import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
+import com.alibaba.cloud.router.data.crd.LabelRouteData;
+import com.alibaba.cloud.router.data.crd.MatchService;
+import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
+import com.alibaba.cloud.router.data.crd.rule.RouteRule;
+import com.alibaba.cloud.router.data.crd.rule.UrlRule;
 import com.alibaba.cloud.governance.common.matcher.MatcherType;
 import com.alibaba.cloud.governance.common.matcher.StringMatcher;
 import com.alibaba.cloud.governance.istio.XdsChannel;
@@ -49,11 +49,11 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 	 */
 	private static final String ALLOW_ANY = "allow_any";
 
-	private ControlSurfaceConnection controlSurfaceConnection;
+	private ControlPlaneConnection controlSurfaceConnection;
 
 	public RdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime,
-			ControlSurfaceConnection controlSurfaceConnection) {
+			ControlPlaneConnection controlSurfaceConnection) {
 		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
 		this.controlSurfaceConnection = controlSurfaceConnection;
 	}

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.cache;
+package com.alibaba.cloud.router;
+
+import com.alibaba.cloud.router.feign.LabelRouteFeignInterceptor;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -24,12 +26,12 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class RouteDataCacheAutoConfiguration {
+public class LabelRouteFeignInterceptorAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public RouteDataCache routeDataCache() {
-		return new RouteDataCache();
+	public LabelRouteFeignInterceptor labelRouteFeignInterceptor() {
+		return new LabelRouteFeignInterceptor();
 	}
 
 }

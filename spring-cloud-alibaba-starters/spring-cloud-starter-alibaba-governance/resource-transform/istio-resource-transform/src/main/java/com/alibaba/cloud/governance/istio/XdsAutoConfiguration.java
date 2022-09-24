@@ -16,8 +16,8 @@
 
 package com.alibaba.cloud.governance.istio;
 
-import com.alibaba.cloud.data.controlsurface.ControlSurfaceConnection;
-import com.alibaba.cloud.data.controlsurface.ControlSurfaceConnectionAutoConfiguration;
+import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
+import com.alibaba.cloud.router.data.ControlPlaneConnectionAutoConfiguration;
 import com.alibaba.cloud.governance.auth.AuthDataAutoConfiguration;
 import com.alibaba.cloud.governance.auth.cache.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter({ ControlSurfaceConnectionAutoConfiguration.class,
+@AutoConfigureAfter({ ControlPlaneConnectionAutoConfiguration.class,
 		AuthDataAutoConfiguration.class })
 @ConditionalOnProperty(name = "spring.cloud.istio.config.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(XdsConfigProperties.class)
@@ -83,7 +83,7 @@ public class XdsAutoConfiguration {
 	@Bean
 	RdsProtocol rdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool,
-			ControlSurfaceConnection controlSurfaceConnection) {
+			ControlPlaneConnection controlSurfaceConnection) {
 		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool,
 				xdsConfigProperties.getPollingTime(), controlSurfaceConnection);
 	}

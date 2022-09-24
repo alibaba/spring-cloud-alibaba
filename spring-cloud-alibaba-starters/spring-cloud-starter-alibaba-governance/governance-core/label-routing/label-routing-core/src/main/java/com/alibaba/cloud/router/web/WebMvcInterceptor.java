@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.data.crd.rule;
+package com.alibaba.cloud.router.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.cloud.router.context.RequestContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * @author HH
  */
-public interface RouteRule {
+public class WebMvcInterceptor implements HandlerInterceptor {
 
-	/**
-	 * get type of rule.
-	 * @return String
-	 */
-	String getType();
+	@Autowired
+	RequestContext requestContext;
 
-	String getCondition();
-
-	String getKey();
-
-	String getValue();
-
-	void setType(String type);
-
-	void setCondition(String condition);
-
-	void setKey(String key);
-
-	void setValue(String value);
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+			Object handler) {
+		requestContext.setRequest(request);
+		return true;
+	}
 
 }

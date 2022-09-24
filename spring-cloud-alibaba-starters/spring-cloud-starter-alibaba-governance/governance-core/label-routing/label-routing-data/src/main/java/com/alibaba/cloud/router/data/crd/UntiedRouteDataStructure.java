@@ -14,28 +14,37 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.feign;
-
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+package com.alibaba.cloud.router.data.crd;
 
 /**
  * @author HH
  */
-public class WebConfig implements WebMvcConfigurer {
+public class UntiedRouteDataStructure {
 
-	@Autowired
-	private Optional<RequestInterceptor> requestInterceptor;
+	private LabelRouteData labelRouteData;
+
+	private String targetService;
+
+	public LabelRouteData getLabelRouteData() {
+		return labelRouteData;
+	}
+
+	public void setLabelRouteData(LabelRouteData labelRouteData) {
+		this.labelRouteData = labelRouteData;
+	}
+
+	public String getTargetService() {
+		return targetService;
+	}
+
+	public void setTargetService(String targetService) {
+		this.targetService = targetService;
+	}
 
 	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		if (!requestInterceptor.isPresent()) {
-			return;
-		}
-		registry.addInterceptor(requestInterceptor.get());
+	public String toString() {
+		return "UntiedRouteDataStructure{" + "labelRouteData=" + labelRouteData
+				+ ", targetService='" + targetService + '\'' + '}';
 	}
 
 }
