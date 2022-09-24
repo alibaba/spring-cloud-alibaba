@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>com.alibaba.cloud</groupId>
+		<artifactId>spring-cloud-alibaba-examples</artifactId>
+		<version>${revision}</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>label-routing-example</artifactId>
+	<name>Spring Cloud Starter Alibaba Label Routing Examples</name>
+	<description>Example demonstrating how to use label route</description>
+
+	<modules>
+		<module>label-routing-consumer-example</module>
+		<module>label-routing-provider-default-example</module>
+		<module>label-routing-provider-version-example</module>
+		<module>untitled</module>
+		<module>label-routing-provider-default-example</module>
+		<module>label-routing-default-provider-version-example</module>
+	</modules>
+	<packaging>pom</packaging>
+
+</project>
