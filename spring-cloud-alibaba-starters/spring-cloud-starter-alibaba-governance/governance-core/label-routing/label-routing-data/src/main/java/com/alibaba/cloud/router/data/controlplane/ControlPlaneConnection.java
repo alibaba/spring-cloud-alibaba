@@ -28,10 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ControlPlaneConnection implements ControlPlane {
 
-	@Autowired
 	private RouteDataRepository routeDataRepository;
 
 	private boolean cacheInitialized = false;
+
+	public ControlPlaneConnection(RouteDataRepository routeDataRepository) {
+		this.routeDataRepository = routeDataRepository;
+	}
 
 	@Override
 	public void getDataFromControlSurface(
