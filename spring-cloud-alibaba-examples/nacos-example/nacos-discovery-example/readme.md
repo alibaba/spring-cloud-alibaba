@@ -210,7 +210,6 @@ cluster|spring.cloud.nacos.discovery.cluster-name|DEFAULT|Nacos cluster name
 endpoint|spring.cloud.nacos.discovery.endpoint||The domain name of a service, through which the server address can be dynamically obtained.
 Integration LoadBalancer|spring.cloud.loadbalancer.nacos.enabled|false|
 enable Nacos Watch|spring.cloud.nacos.discovery.watch.enabled|true|Switch it to false to disable nacos watch
-Integration Ribbon|ribbon.nacos.enabled|true|
 enabled|spring.cloud.nacos.discovery.enabled|true|The switch to enable or disable nacos service discovery
 
 
