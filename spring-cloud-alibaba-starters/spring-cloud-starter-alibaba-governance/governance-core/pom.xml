@@ -15,6 +15,10 @@
 
     <modules>
         <module>label-routing</module>
+        <module>auth</module>
     </modules>
+
+    <dependencies>
+    </dependencies>
 
 </project>

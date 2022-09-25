@@ -16,6 +16,10 @@
 
 package com.alibaba.cloud.examples;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -61,8 +65,24 @@ public class ProviderApplication {
 			return "ok";
 		}
 
+		private Enumeration<String> enumeration;
 		@GetMapping("/echo/{string}")
-		public String echo(@PathVariable String string) {
+		public String echo(@PathVariable String string, HttpServletRequest request) {
+			Enumeration<String> headerNames = request.getHeaderNames();
+			while (headerNames.hasMoreElements()) {
+				String name = headerNames.nextElement();
+				//根据名称获取请求头的值
+				String value = request.getHeader(name);
+				System.out.println(name + "---" + value);
+			}
+			if (headerNames.equals(this.enumeration)) {
+				System.out.println("same request");
+			}
+			else {
+				this.enumeration = headerNames;
+				System.out.println("赋值操作");
+			}
+
 			return "hello Nacos Discovery " + string;
 		}
 

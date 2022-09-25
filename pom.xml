@@ -111,7 +111,13 @@
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
-    </modules>
+		<module>governance-example</module>
+        <module>spring-cloud-alibaba-examples/governance-example/label-routing-example</module>
+        <module>spring-cloud-alibaba-examples/untitled</module>
+		<module>label-routing-provider-version-example</module>
+		<module>label-routing-provider-default-example</module>
+		<module>label-routing-provider-default-version-example</module>
+	</modules>
 
     <dependencyManagement>
         <dependencies>

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.alibaba.cloud.router.data.ControlPlaneConnectionAutoConfiguration,\
+  com.alibaba.cloud.router.data.RouteDataRepositoryAutoConfiguration
