@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.InetUtilsProperties;
 
@@ -75,7 +77,7 @@ public class InetIPv6Util implements Closeable {
 		try {
 			int lowest = Integer.MAX_VALUE;
 			for (Enumeration<NetworkInterface> nics = NetworkInterface
-					.getNetworkInterfaces(); nics.hasMoreElements(); ) {
+					.getNetworkInterfaces(); nics.hasMoreElements();) {
 				NetworkInterface ifc = nics.nextElement();
 				if (ifc.isUp()) {
 					log.trace("Testing interface:" + ifc.getDisplayName());
@@ -88,7 +90,7 @@ public class InetIPv6Util implements Closeable {
 
 					if (!ignoreInterface(ifc.getDisplayName())) {
 						for (Enumeration<InetAddress> addrs = ifc
-								.getInetAddresses(); addrs.hasMoreElements(); ) {
+								.getInetAddresses(); addrs.hasMoreElements();) {
 							InetAddress inetAddress = addrs.nextElement();
 							if (inetAddress instanceof Inet6Address
 									&& !inetAddress.isLoopbackAddress()
@@ -105,7 +107,18 @@ public class InetIPv6Util implements Closeable {
 		catch (IOException e) {
 			log.error("Cannot get first non-loopback address", e);
 		}
-
+		if (address == null) {
+			try {
+				InetAddress localHost = InetAddress.getLocalHost();
+				if (localHost instanceof Inet6Address && !localHost.isLoopbackAddress()
+						&& isPreferredAddress(localHost)) {
+					address = localHost;
+				}
+			}
+			catch (UnknownHostException e) {
+				log.warn("Unable to retrieve localhost");
+			}
+		}
 		return address;
 	}
 
