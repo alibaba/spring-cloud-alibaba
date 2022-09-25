@@ -66,12 +66,13 @@ public class ProviderApplication {
 		}
 
 		private Enumeration<String> enumeration;
+
 		@GetMapping("/echo/{string}")
 		public String echo(@PathVariable String string, HttpServletRequest request) {
 			Enumeration<String> headerNames = request.getHeaderNames();
 			while (headerNames.hasMoreElements()) {
 				String name = headerNames.nextElement();
-				//根据名称获取请求头的值
+				// 根据名称获取请求头的值
 				String value = request.getHeader(name);
 				System.out.println(name + "---" + value);
 			}

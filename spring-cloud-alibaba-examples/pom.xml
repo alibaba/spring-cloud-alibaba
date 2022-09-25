@@ -45,7 +45,10 @@
         <module>spring-cloud-bus-rocketmq-example</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example</module>
         <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example</module>
-		<module>label-routing-example</module>
+        <module>governance-example/label-routing-example/label-routing-consumer-example</module>
+        <module>governance-example/label-routing-example/label-routing-default-provider-version-example</module>
+        <module>governance-example/label-routing-example/label-routing-provider-version-example</module>
+
 	</modules>
 
     <build>
