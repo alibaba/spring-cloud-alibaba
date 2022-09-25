@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.cloud.bus.BusEnvironmentPostProcessor;
