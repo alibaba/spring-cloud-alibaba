@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -31,9 +30,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.InetUtilsProperties;
+
+import com.alibaba.cloud.commons.lang.StringUtils;
 
 /**
  * @author HH
@@ -66,13 +66,7 @@ public class InetIPv6Util implements Closeable {
 		if (address != null) {
 			return this.convertAddress(address);
 		}
-		else {
-			InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
-			this.properties.setDefaultIpAddress("0:0:0:0:0:0:0:1");
-			hostInfo.setHostname(this.properties.getDefaultHostname());
-			hostInfo.setIpAddress(this.properties.getDefaultIpAddress());
-			return hostInfo;
-		}
+		return null;
 	}
 
 	public InetAddress findFirstNonLoopbackIPv6Address() {
@@ -112,25 +106,18 @@ public class InetIPv6Util implements Closeable {
 			log.error("Cannot get first non-loopback address", e);
 		}
 
-		if (address != null) {
-			return address;
-		}
-
-		try {
-			return InetAddress.getLocalHost();
-		}
-		catch (UnknownHostException e) {
-			log.warn("Unable to retrieve localhost");
-		}
-
-		return null;
+		return address;
 	}
 
 	public String findIPv6Address() {
-		String ip = findFirstNonLoopbackHostInfo().getIpAddress();
-		int index = ip.indexOf('%');
-		ip = index > 0 ? ip.substring(0, index) : ip;
-		return iPv6Format(ip);
+		InetUtils.HostInfo hostInfo = findFirstNonLoopbackHostInfo();
+		String ip = hostInfo != null ? hostInfo.getIpAddress() : "";
+		if (!StringUtils.isEmpty(ip)) {
+			int index = ip.indexOf('%');
+			ip = index > 0 ? ip.substring(0, index) : ip;
+			return iPv6Format(ip);
+		}
+		return ip;
 	}
 
 	public String iPv6Format(String ip) {
