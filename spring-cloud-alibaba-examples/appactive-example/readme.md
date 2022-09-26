@@ -175,7 +175,7 @@ Before starting the example for demonstration, let's take a look at how Spring C
 
 4. Cut flow demo. The main things to do when cutting flow are as follows:
     - Build new mapping relationship rules and write prohibition rules (manually).
-    - Push to write prohibition rules to the application.
+    - Push the write prohibition rules to the application.
     - Push the new mapping relationship rules to the application after waiting for the data to equalize.
    The streaming rule demonstrated next will send requests with user IDs 0 ~ 2999 to the normal(called unit) unit in the downstream provider, and requests with user IDs 3000 ~ 9999 will be sent to the center(called center) unit in the downstream provider. For specific rules, see idUnitMappingNext.json:
         ```
