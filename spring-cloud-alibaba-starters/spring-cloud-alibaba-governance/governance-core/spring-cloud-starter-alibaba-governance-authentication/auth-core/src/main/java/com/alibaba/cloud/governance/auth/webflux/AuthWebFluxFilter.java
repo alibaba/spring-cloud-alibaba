@@ -18,9 +18,9 @@ package com.alibaba.cloud.governance.auth.webflux;
 
 import java.nio.charset.StandardCharsets;
 
+import com.alibaba.cloud.commons.pair.Pair;
 import com.alibaba.cloud.governance.auth.AuthValidator;
 import com.alibaba.cloud.governance.auth.util.IpUtil;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
 import reactor.core.publisher.Mono;
 

@@ -22,15 +22,15 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.governance.auth.cache.AuthRepository;
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.commons.pair.Pair;
+import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.auth.rule.HttpHeaderRule;
 import com.alibaba.cloud.governance.auth.rule.IpBlockRule;
 import com.alibaba.cloud.governance.auth.rule.JwtAuthRule;
 import com.alibaba.cloud.governance.auth.rule.JwtRule;
 import com.alibaba.cloud.governance.auth.rule.TargetRule;
 import com.alibaba.cloud.governance.auth.util.JwtUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.slf4j.Logger;

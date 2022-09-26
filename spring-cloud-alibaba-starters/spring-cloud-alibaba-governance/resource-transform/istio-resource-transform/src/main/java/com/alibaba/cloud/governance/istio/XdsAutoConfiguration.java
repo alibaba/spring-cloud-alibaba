@@ -19,7 +19,7 @@ package com.alibaba.cloud.governance.istio;
 import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
 import com.alibaba.cloud.router.data.ControlPlaneConnectionAutoConfiguration;
 import com.alibaba.cloud.governance.auth.AuthDataAutoConfiguration;
-import com.alibaba.cloud.governance.auth.cache.AuthRepository;
+import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;

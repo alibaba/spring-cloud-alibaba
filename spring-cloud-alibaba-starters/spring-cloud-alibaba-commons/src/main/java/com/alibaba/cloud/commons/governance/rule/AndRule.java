@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.common.rule;
+package com.alibaba.cloud.commons.governance.rule;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class OrRule<T> {
+public class AndRule<T> {
 
-	private List<T> rules;
+	private List<OrRule<T>> rules;
 
-	private boolean not;
-
-	public OrRule(List<T> rules, boolean not) {
+	public AndRule(List<OrRule<T>> rules) {
 		this.rules = rules;
-		this.not = not;
 	}
 
-	public OrRule(List<T> rules) {
-		this(rules, false);
+	public AndRule() {
+		this.rules = new ArrayList<>();
 	}
 
-	public List<T> getRules() {
+	public List<OrRule<T>> getRules() {
 		return rules;
 	}
 
-	public boolean isNot() {
-		return not;
+	public void addOrRule(OrRule<T> orRule) {
+		rules.add(orRule);
+	}
+
+	public boolean isEmpty() {
+		return rules.isEmpty();
 	}
 
 }

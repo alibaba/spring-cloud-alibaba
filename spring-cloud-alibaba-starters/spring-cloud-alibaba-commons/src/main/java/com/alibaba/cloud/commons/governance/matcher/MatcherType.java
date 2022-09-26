@@ -14,30 +14,13 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.auth.rule;
+package com.alibaba.cloud.commons.governance.matcher;
 
-import java.util.Map;
+public enum MatcherType {
 
-import com.alibaba.cloud.commons.governance.matcher.HeaderMatcher;
-import com.alibaba.cloud.commons.governance.rule.AndRule;
-
-public class HttpHeaderRule {
-
-	private String name;
-
-	private Map<String, AndRule<HeaderMatcher>> headers;
-
-	public HttpHeaderRule(String name, Map<String, AndRule<HeaderMatcher>> headers) {
-		this.name = name;
-		this.headers = headers;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public Map<String, AndRule<HeaderMatcher>> getHeaders() {
-		return headers;
-	}
+	/**
+	 * Different matcher type, include exact match, prefix match and etc.
+	 */
+	EXACT, PREFIX, SUFFIX, PRESENT, REGEX, CONTAINS
 
 }

@@ -25,19 +25,20 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.governance.auth.cache.AuthData;
-import com.alibaba.cloud.governance.auth.cache.AuthRepository;
+import com.alibaba.cloud.commons.governance.matcher.HeaderMatcher;
+import com.alibaba.cloud.commons.governance.matcher.IpMatcher;
+import com.alibaba.cloud.commons.governance.rule.AndRule;
+import com.alibaba.cloud.commons.governance.rule.OrRule;
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.governance.auth.data.AuthData;
+import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.auth.rule.HttpHeaderRule;
 import com.alibaba.cloud.governance.auth.rule.IdentityRule;
 import com.alibaba.cloud.governance.auth.rule.IpBlockRule;
 import com.alibaba.cloud.governance.auth.rule.JwtAuthRule;
 import com.alibaba.cloud.governance.auth.rule.JwtRule;
 import com.alibaba.cloud.governance.auth.rule.TargetRule;
-import com.alibaba.cloud.governance.common.matcher.HeaderMatcher;
-import com.alibaba.cloud.governance.common.matcher.IpMatcher;
-import com.alibaba.cloud.governance.common.matcher.StringMatcher;
-import com.alibaba.cloud.governance.common.rule.AndRule;
-import com.alibaba.cloud.governance.common.rule.OrRule;
+import com.alibaba.cloud.commons.governance.matcher.StringMatcher;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
@@ -59,7 +60,6 @@ import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.Rds;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

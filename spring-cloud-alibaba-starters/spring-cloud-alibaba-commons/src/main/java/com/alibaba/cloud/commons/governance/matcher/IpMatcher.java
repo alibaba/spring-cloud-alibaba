@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.common.matcher;
+package com.alibaba.cloud.commons.governance.matcher;
 
-import org.apache.commons.lang3.StringUtils;
+import com.alibaba.cloud.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

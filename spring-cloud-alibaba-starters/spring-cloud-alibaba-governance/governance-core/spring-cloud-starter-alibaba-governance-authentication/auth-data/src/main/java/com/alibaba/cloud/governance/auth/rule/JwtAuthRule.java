@@ -18,8 +18,8 @@ package com.alibaba.cloud.governance.auth.rule;
 
 import java.util.Map;
 
-import com.alibaba.cloud.governance.common.matcher.StringMatcher;
-import com.alibaba.cloud.governance.common.rule.AndRule;
+import com.alibaba.cloud.commons.governance.matcher.StringMatcher;
+import com.alibaba.cloud.commons.governance.rule.AndRule;
 
 public class JwtAuthRule {
 

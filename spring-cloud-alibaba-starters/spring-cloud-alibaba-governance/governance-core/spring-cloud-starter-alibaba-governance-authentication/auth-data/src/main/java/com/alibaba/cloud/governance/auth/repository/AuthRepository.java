@@ -14,28 +14,20 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.common.matcher;
+package com.alibaba.cloud.governance.auth.repository;
 
-import java.util.List;
+import com.alibaba.cloud.governance.auth.data.AuthData;
 
-import org.springframework.http.HttpHeaders;
+public class AuthRepository {
 
-public class HeaderMatcher {
+	private AuthData authData;
 
-	private StringMatcher stringMatcher;
-
-	public boolean match(HttpHeaders headers, String headerName) {
-		List<String> headerValues = headers.getValuesAsList(headerName);
-		for (String headerValue : headerValues) {
-			if (stringMatcher.match(headerValue)) {
-				return true;
-			}
-		}
-		return false;
+	public AuthData getAuthData() {
+		return authData;
 	}
 
-	public HeaderMatcher(StringMatcher stringMatcher) {
-		this.stringMatcher = stringMatcher;
+	public void setAuthData(AuthData authData) {
+		this.authData = authData;
 	}
 
 }

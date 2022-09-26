@@ -21,7 +21,6 @@ import java.util.List;
 import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
 import com.alibaba.cloud.router.data.repository.RouteDataRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author HH

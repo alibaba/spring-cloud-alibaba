@@ -16,8 +16,8 @@
 
 package com.alibaba.cloud.governance.auth.rule;
 
-import com.alibaba.cloud.governance.common.matcher.IpMatcher;
-import com.alibaba.cloud.governance.common.rule.AndRule;
+import com.alibaba.cloud.commons.governance.matcher.IpMatcher;
+import com.alibaba.cloud.commons.governance.rule.AndRule;
 
 public class IpBlockRule {
 

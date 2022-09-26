@@ -23,9 +23,9 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.cloud.commons.pair.Pair;
 import com.alibaba.cloud.governance.auth.AuthValidator;
 import com.alibaba.cloud.governance.auth.util.IpUtil;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jose4j.jwt.JwtClaims;
 
 import org.springframework.http.HttpHeaders;

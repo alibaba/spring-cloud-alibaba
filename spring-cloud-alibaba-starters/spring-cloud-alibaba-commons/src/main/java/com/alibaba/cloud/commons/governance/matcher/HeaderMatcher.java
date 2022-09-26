@@ -14,13 +14,28 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.common.matcher;
+package com.alibaba.cloud.commons.governance.matcher;
 
-public enum MatcherType {
+import java.util.List;
 
-	/**
-	 * Different matcher type, include exact match, prefix match and etc.
-	 */
-	EXACT, PREFIX, SUFFIX, PRESENT, REGEX, CONTAINS
+import org.springframework.http.HttpHeaders;
+
+public class HeaderMatcher {
+
+	private StringMatcher stringMatcher;
+
+	public boolean match(HttpHeaders headers, String headerName) {
+		List<String> headerValues = headers.getValuesAsList(headerName);
+		for (String headerValue : headerValues) {
+			if (stringMatcher.match(headerValue)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public HeaderMatcher(StringMatcher stringMatcher) {
+		this.stringMatcher = stringMatcher;
+	}
 
 }

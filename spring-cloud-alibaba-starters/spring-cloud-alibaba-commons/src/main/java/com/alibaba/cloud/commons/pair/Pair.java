@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2018 the original author or authors.
+ * Copyright 2013-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,29 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.auth.cache;
+package com.alibaba.cloud.commons.pair;
 
-public class AuthRepository {
+public class Pair<L, R> {
 
-	private AuthData authData;
+	private L l;
 
-	public AuthData getAuthData() {
-		return authData;
+	private R r;
+
+	public L getLeft() {
+		return l;
 	}
 
-	public void setAuthData(AuthData authData) {
-		this.authData = authData;
+	public R getRight() {
+		return r;
+	}
+
+	public Pair(L l, R r) {
+		this.l = l;
+		this.r = r;
+	}
+
+	public static <L, R> Pair<L, R> of(L l, R r) {
+		return new Pair<>(l, r);
 	}
 
 }

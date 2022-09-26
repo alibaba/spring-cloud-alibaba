@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.auth.cache;
+package com.alibaba.cloud.governance.auth.data;
 
 import com.alibaba.cloud.governance.auth.manager.HeaderRuleManager;
 import com.alibaba.cloud.governance.auth.manager.IdentityRuleManager;

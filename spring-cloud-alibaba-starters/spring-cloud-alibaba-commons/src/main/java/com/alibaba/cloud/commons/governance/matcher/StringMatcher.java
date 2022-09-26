@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.common.matcher;
+package com.alibaba.cloud.commons.governance.matcher;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
+import com.alibaba.cloud.commons.lang.StringUtils;
 
 public class StringMatcher {
 
@@ -58,8 +59,8 @@ public class StringMatcher {
 			return false;
 		}
 		if (isIgnoreCase) {
-			str = StringUtils.toRootLowerCase(str);
-			matcher = StringUtils.toRootLowerCase(str);
+			str = str.toLowerCase(Locale.ROOT);
+			matcher = matcher.toLowerCase(Locale.ROOT);
 		}
 		switch (type) {
 		case EXACT:

@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.governance.auth;
 
-import com.alibaba.cloud.governance.auth.cache.AuthRepository;
+import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +27,7 @@ public class AuthDataAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public AuthRepository authCache() {
+	public AuthRepository authRepository() {
 		return new AuthRepository();
 	}
 

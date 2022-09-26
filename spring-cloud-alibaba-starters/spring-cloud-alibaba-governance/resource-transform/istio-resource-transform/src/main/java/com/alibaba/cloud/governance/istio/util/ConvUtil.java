@@ -16,13 +16,14 @@
 
 package com.alibaba.cloud.governance.istio.util;
 
-import com.alibaba.cloud.governance.common.matcher.HeaderMatcher;
-import com.alibaba.cloud.governance.common.matcher.IpMatcher;
-import com.alibaba.cloud.governance.common.matcher.MatcherType;
-import com.alibaba.cloud.governance.common.matcher.StringMatcher;
+import com.alibaba.cloud.commons.governance.matcher.HeaderMatcher;
+import com.alibaba.cloud.commons.governance.matcher.IpMatcher;
+import com.alibaba.cloud.commons.governance.matcher.MatcherType;
+import com.alibaba.cloud.commons.governance.matcher.StringMatcher;
+import com.alibaba.cloud.commons.lang.StringUtils;
+
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
-import org.apache.commons.lang3.StringUtils;
 
 public final class ConvUtil {
 
