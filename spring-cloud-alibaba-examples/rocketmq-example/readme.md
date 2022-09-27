@@ -20,7 +20,7 @@ Binder Implementations includes `KafkaMessageChannelBinder` of kafka, `RabbitMes
 
 Binding is Bridge between the external messaging systems and application provided Producers and Consumers of messages.
 
-This is a overview of Spring Cloud Stream.
+This is an overview of Spring Cloud Stream.
 
 ![](https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/images/SCSt-with-binder.png)
 
@@ -112,9 +112,9 @@ Using the binding named output and sent messages to `test-topic` topic.
 
 And using two input bindings to subscribe messages.
 
-* input1: subscribe the message of `test-topic` topic and consume ordered messages(all messages should in the same MessageQueue if you want to consuming ordered messages).
+* input1: subscribe the message of `test-topic` topic and consume ordered messages(all messages should in the same MessageQueue if you want to consume ordered messages).
 
-* input2: subscribe the message of `test-topic` topic and consume concurrent messages which tags is `tagStr`, the thread number in pool is 20 in Consumer side.
+* input2: subscribe the message of `test-topic` topic and consume concurrent messages which tags are `tagStr`, the thread number in pool is 20 in Consumer side.
 
 see the configuration below:
 
@@ -156,7 +156,7 @@ public class ProducerRunner implements CommandLineRunner {
 }
 ```
 
-Or you can using the native API of RocketMQ to send messages:
+Or you can use the native API of RocketMQ to send messages:
 
 ```java
 public class RocketMQProducer {
@@ -968,5 +968,5 @@ Note: You should add [metrics-core dependency](https://mvnrepository.com/artifac
 
 For more information about RocketMQ, see [RocketMQ Project](https://rocketmq.apache.org).
 
-If you have any ideas or suggestions for Spring Cloud RocketMQ Binder, please don't hesitate to tell us by submitting github issues.
+If you have any ideas or suggestions for Spring Cloud RocketMQ Binder, please don't hesitate to tell us by submitting GitHub issues.
 

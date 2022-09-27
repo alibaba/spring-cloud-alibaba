@@ -10,7 +10,7 @@ This example illustrates how to use Sentinel starter to implement flow control f
 
 ### Connect to Sentinel
 Before we start the demo, let's learn how to connect Sentinel to a Spring Cloud application.
-**Note: This section is to show you how to connect to Sentinel. The configurations have been completed in the following example, so you don't need modify the code any more.**
+**Note: This section is to show you how to connect to Sentinel. The configurations have been completed in the following example, so you don't need to modify the code anymore.**
 
 1. Add dependency spring-cloud-starter-alibaba-sentinel in the pom.xml file in your Spring Cloud project.
 
@@ -173,7 +173,7 @@ To see the metrics, click **实时监控(Real-time Monitoring)** in the left-sid
 
 Sentinel provide [ReadableDataSource](https://github.com/alibaba/Sentinel/blob/master/sentinel-extension/sentinel-datasource-extension/src/main/java/com/alibaba/csp/sentinel/datasource/ReadableDataSource.java) to manage dynamic rules.
 
-Sentinel starter integrated 4 DataSources provided by Sentinel. It will be register into Spring Context if you write some configs in `application.properties`.
+Sentinel starter integrated 4 DataSources provided by Sentinel. It will be registered into Spring Context if you write some configs in `application.properties`.
 
 If you want to define `FileRefreshableDataSource` and `NacosDataSource`, see the code below:
 
@@ -202,7 +202,7 @@ When ReadableDataSource load rule data successfully, console will print some log
 [Sentinel Starter] DataSource ds2-sentinel-nacos-datasource load 2 FlowRule
 ```   
 ## Warning
-You should  use `file` ReadableDataSource in a fatjar carefully or you may get error like this below
+You should  use `file` ReadableDataSource in a fatjar carefully, or you may get error like this below
 
 ```
 java.lang.RuntimeException: [Sentinel Starter] DataSource ds1 handle file [classpath: flowrule.json] error: class path resource [flowrule.json] cannot be resolved to absolute file path because it does not reside in the file system: jar:file:xxx/xxx.jar!/BOOT-INF/classes!/flowrule.jso
@@ -216,4 +216,4 @@ https://github.com/alibaba/spring-cloud-alibaba/issues/428
 ## More
 For more information about Sentinel, see [Sentinel Project](https://github.com/alibaba/Sentinel).
 
-If you have any ideas or suggestions for Spring Cloud Sentinel starter, please don't hesitate to tell us by submitting github issues.
+If you have any ideas or suggestions for Spring Cloud Sentinel starter, please don't hesitate to tell us by submitting GitHub issues.

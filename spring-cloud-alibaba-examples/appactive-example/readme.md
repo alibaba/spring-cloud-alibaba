@@ -44,7 +44,7 @@ The green grid in the figure represents the call link of the request.
 
 ### Quick start
 Before starting the example for demonstration, let's take a look at how Spring Cloud applications use the remote multi-active capabilities provided by AppActive.
-**Note, this chapter is only for your understanding of the access method. The access work has been completed in this examples, and you do not need to modify it.**
+**Note, this chapter is only for your understanding of the access method. The access work has been completed in these examples, and you do not need to modify it.**
 
 1. First, modify the pom.xml file to add the following maven dependencies based on the latest `spring-cloud-alibaba-dependencies` added to the provider and consumer.
 
