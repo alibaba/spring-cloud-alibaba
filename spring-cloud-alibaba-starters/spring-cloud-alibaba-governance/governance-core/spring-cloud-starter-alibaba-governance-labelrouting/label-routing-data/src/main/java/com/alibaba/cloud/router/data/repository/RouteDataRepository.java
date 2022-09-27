@@ -16,17 +16,12 @@
 
 package com.alibaba.cloud.router.data.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
-import com.alibaba.cloud.router.data.crd.rule.RouteRule;
-import com.alibaba.cloud.router.data.crd.rule.UrlRule;
 import com.alibaba.cloud.router.data.crd.LabelRouteData;
-import com.alibaba.cloud.router.data.crd.MatchService;
-import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
+import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +41,6 @@ public class RouteDataRepository {
 	private AtomicInteger updateIndex = new AtomicInteger(-1);
 
 	private List<UntiedRouteDataStructure> routeDataList;
-
-	public RouteDataRepository() {
-		test();
-	}
 
 	public void init(List<UntiedRouteDataStructure> routerDataList) {
 		// Try to avoid capacity expansion, and space is used to exchange time.
@@ -140,41 +131,4 @@ public class RouteDataRepository {
 
 		return routeCache.get(targetService);
 	}
-
-	public void test() {
-		List<RouteRule> routeRules = new ArrayList<>();
-		List<MatchService> matchServices = new ArrayList<>();
-
-		UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-		untiedRouteDataStructure.setTargetService("service-provider");
-
-		LabelRouteData labelRouteData = new LabelRouteData();
-		labelRouteData.setDefaultRouteVersion("v1");
-
-		RouteRule routeRule = new HeaderRule();
-		routeRule.setType("header");
-		routeRule.setCondition("=");
-		routeRule.setKey("tag");
-		routeRule.setValue("gray");
-		RouteRule routeRule1 = new UrlRule.Parameter();
-		routeRule1.setType("parameter");
-		routeRule1.setCondition("=");
-		routeRule1.setKey("test");
-		routeRule1.setValue("gray");
-		routeRules.add(routeRule);
-		routeRules.add(routeRule1);
-
-		MatchService matchService = new MatchService();
-		matchService.setVersion("v2");
-		matchService.setWeight(100);
-		matchService.setRuleList(routeRules);
-		matchServices.add(matchService);
-
-		labelRouteData.setMatchRouteList(matchServices);
-
-		untiedRouteDataStructure.setLabelRouteData(labelRouteData);
-		routeCache.put(untiedRouteDataStructure.getTargetService(),
-				untiedRouteDataStructure.getLabelRouteData());
-	}
-
 }

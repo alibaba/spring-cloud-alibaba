@@ -28,20 +28,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ControlPlaneConnection implements ControlPlane {
 
+	@Autowired
 	private RouteDataRepository routeDataRepository;
 
-	private boolean cacheInitialized = false;
-
-	public ControlPlaneConnection(RouteDataRepository routeDataRepository) {
-		this.routeDataRepository = routeDataRepository;
-	}
+	private boolean isRepositoryInitialized = false;
 
 	@Override
-	public void getDataFromControlSurface(
+	public void getDataFromControlPlane(
 			List<UntiedRouteDataStructure> untiedRouterDataStructureList) {
-		if (!cacheInitialized) {
+		if (!isRepositoryInitialized) {
 			routeDataRepository.init(untiedRouterDataStructureList);
-			cacheInitialized = true;
+			isRepositoryInitialized = true;
 		}
 		else {
 			routeDataRepository.updateRouteData(untiedRouterDataStructureList);

@@ -17,6 +17,8 @@
 package com.alibaba.cloud.examples;
 
 
+import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
+import com.alibaba.cloud.router.data.util.RouteDataFilter;
 import com.alibaba.cloud.router.ribbon.LabelRouteRule;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @EnableDiscoveryClient(autoRegister = true)
 @EnableFeignClients
-@RibbonClient(name = "service-provider", configuration = LabelRouteRule.class)
+@RibbonClient(name = "label-route", configuration = LabelRouteRule.class)
 public class ConsumerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumerApplication.class, args);
