@@ -1,0 +1,24 @@
+server:
+  port: 8011
+
+spring:
+  application:
+    name: integrated-storage
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        group: integrated-example
+        shared-dataids: datasorce-config.yaml
+
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: ${spring.application.name}-group
+  service:
+    vgroup-mapping:
+      integrated-storage-group: default
+    grouplist:
+      default: localhost:8091

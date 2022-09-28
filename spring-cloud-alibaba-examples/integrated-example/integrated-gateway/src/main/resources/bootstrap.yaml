@@ -1,0 +1,13 @@
+server:
+  port: 8010
+spring:
+  application:
+    name: integrated-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        group: integrated-example
