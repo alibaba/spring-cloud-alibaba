@@ -66,7 +66,7 @@ Contributor是对项目有贡献的个人，标准为：
 
 |饶子昊
 |steverao
-|Committer
+|Steering Committee Member
 |zihaorao@126.com
 |阿里巴巴
 
