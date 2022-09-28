@@ -121,10 +121,14 @@ public class InetIPv6Utils implements Closeable {
 	}
 
 	public String findIPv6Address() {
-		String ip = findFirstNonLoopbackHostInfo().getIpAddress();
-		int index = ip.indexOf('%');
-		ip = index > 0 ? ip.substring(0, index) : ip;
-		return iPv6Format(ip);
+		InetUtils.HostInfo hostInfo = findFirstNonLoopbackHostInfo();
+		String ip = hostInfo != null ? hostInfo.getIpAddress() : "";
+		if (!StringUtils.isEmpty(ip)) {
+			int index = ip.indexOf('%');
+			ip = index > 0 ? ip.substring(0, index) : ip;
+			return iPv6Format(ip);
+		}
+		return ip;
 	}
 
 	public String iPv6Format(String ip) {
