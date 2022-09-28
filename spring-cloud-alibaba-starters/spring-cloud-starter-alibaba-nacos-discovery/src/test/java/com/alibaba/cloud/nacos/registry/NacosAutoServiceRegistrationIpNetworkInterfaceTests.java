@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.registry;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
@@ -119,7 +120,8 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 			while (inetAddress.hasMoreElements()) {
 				InetAddress currentAddress = inetAddress.nextElement();
 				if (currentAddress instanceof Inet4Address
-						&& !currentAddress.isLoopbackAddress()) {
+						|| currentAddress instanceof Inet6Address
+								&& !currentAddress.isLoopbackAddress()) {
 					return currentAddress.getHostAddress();
 				}
 			}
@@ -152,7 +154,8 @@ public class NacosAutoServiceRegistrationIpNetworkInterfaceTests {
 					while (inetAddress.hasMoreElements()) {
 						InetAddress currentAddress = inetAddress.nextElement();
 						if (currentAddress instanceof Inet4Address
-								&& !currentAddress.isLoopbackAddress()) {
+								|| currentAddress instanceof Inet6Address
+										&& !currentAddress.isLoopbackAddress()) {
 							hasValidNetworkInterface = true;
 							netWorkInterfaceName = networkInterface.getName();
 							System.setProperty(
