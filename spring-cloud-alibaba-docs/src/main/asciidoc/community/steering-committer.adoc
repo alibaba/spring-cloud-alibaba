@@ -66,7 +66,7 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 
 |Zihao Rao
 |steverao
-|Committer
+|Steering Committee Member
 |zihaorao@126.com
 |Alibaba
 
