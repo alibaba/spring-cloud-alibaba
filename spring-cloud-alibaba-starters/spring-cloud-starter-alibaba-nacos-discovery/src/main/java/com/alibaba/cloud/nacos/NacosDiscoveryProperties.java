@@ -269,7 +269,7 @@ public class NacosDiscoveryProperties {
 				else if ("IPv6".equalsIgnoreCase(ipType)) {
 					ip = inetIPv6Util.findIPv6Address();
 					if (StringUtils.isEmpty(ip)) {
-						log.error("There is no available IPv6 found. SCA will automatically find IPv4.");
+						log.warn("There is no available IPv6 found. Spring Cloud Alibaba will automatically find IPv4.");
 						ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 					}
 				}
