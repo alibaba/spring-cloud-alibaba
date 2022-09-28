@@ -66,13 +66,7 @@ public class InetIPv6Utils implements Closeable {
 		if (address != null) {
 			return this.convertAddress(address);
 		}
-		else {
-			InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
-			this.properties.setDefaultIpAddress("0:0:0:0:0:0:0:1");
-			hostInfo.setHostname(this.properties.getDefaultHostname());
-			hostInfo.setIpAddress(this.properties.getDefaultIpAddress());
-			return hostInfo;
-		}
+		return null;
 	}
 
 	public InetAddress findFirstNonLoopbackIPv6Address() {
@@ -111,19 +105,19 @@ public class InetIPv6Utils implements Closeable {
 		catch (IOException e) {
 			log.error("Cannot get first non-loopback address", e);
 		}
-
-		if (address != null) {
-			return address;
+		if (address == null) {
+			try {
+				InetAddress localHost = InetAddress.getLocalHost();
+				if (localHost instanceof Inet6Address && !localHost.isLoopbackAddress()
+						&& isPreferredAddress(localHost)) {
+					address = localHost;
+				}
+			}
+			catch (UnknownHostException e) {
+				log.warn("Unable to retrieve localhost");
+			}
 		}
-
-		try {
-			return InetAddress.getLocalHost();
-		}
-		catch (UnknownHostException e) {
-			log.warn("Unable to retrieve localhost");
-		}
-
-		return null;
+		return address;
 	}
 
 	public String findIPv6Address() {
