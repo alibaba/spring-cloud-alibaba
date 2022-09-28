@@ -166,7 +166,7 @@ public class NacosDiscoveryProperties {
 
 	/**
 	 * choose IPv4 or IPv6,if you don't set it will choose IPv4.
-	 * When IPv6 is chosen but no IPv6 can be found, system will automatically finds IPv4 to ensure there is an
+	 * When IPv6 is chosen but no IPv6 can be found, system will automatically find IPv4 to ensure there is an
 	 * available service address.
 	 */
 	private String ipType = "IPv4";
