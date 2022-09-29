@@ -8,9 +8,23 @@ spring:
         server-addr: 127.0.0.1:8848
     loadbalancer:
       ribbon:
-        enabled:true
+        enabled: true
+    seata:
+      tx-service-group: business-service
+
   application:
     name: business-service
+  datasource:
+    name: "businessDataSource"
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://xxx:3306/seata?useSSL=false&serverTimezone=UTC
+    username: xxx
+    password: xxx
+    druid:
+      - max-active:20
+      - min-idle:2
+      - initial-size:2
 
 seata:
   enabled: true
@@ -32,7 +46,18 @@ seata:
       username: "nacos"
       password: "nacos"
 
+  service:
+    vgroup-mapping:
+      business-service: default
+    grouplist:
+      default: 127.0.0.1:8091
+    disable-global-transaction: false
+
 feign:
+  hystrix:
+    enabled: true
+  sentinel:
+    enabled: true
   client:
     config:
       default:
