@@ -27,7 +27,7 @@ package com.alibaba.cloud.nacos.configdata;
  * the local profile specific config.
  *
  * @author freeman
- * @since 2021.0.1.1
+ * @since 2021.0.4.0
  */
 public enum ConfigPreference {
 	/**

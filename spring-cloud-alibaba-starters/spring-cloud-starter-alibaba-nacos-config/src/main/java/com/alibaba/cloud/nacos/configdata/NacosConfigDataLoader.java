@@ -92,7 +92,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			return new ConfigData(propertySources, getOptions(context, resource));
 		}
 		catch (Exception e) {
-			log.warn("Error getting properties from nacos: " + resource, e);
+			log.error("Error getting properties from nacos: " + resource, e);
 			if (!resource.isOptional()) {
 				throw new ConfigDataResourceNotFoundException(resource, e);
 			}
@@ -127,7 +127,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			}
 			catch (IllegalArgumentException ignore) {
 				// illegal preference value, just ignore.
-				log.warn(String.format(
+				log.error(String.format(
 						"illegal preference value: %s, using default preference: %s",
 						specificPreference, preference));
 			}
