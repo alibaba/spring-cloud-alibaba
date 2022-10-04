@@ -166,7 +166,7 @@ spring.application.group=company.department.team
 
 Then, you application will retrieve configurations from the following DataId in turn before it retrieves its own configuration: company:application.properties, company.department:application.properties, company.department.team:application.properties.
 After that, it also retrieves configuration from  {spring.application.group}: {spring.application.name}. {file-extension}
-The later in order, the higer the priority, and the unique configuration of the application itself has the highest priority.
+The later in order, the higher the priority, and the unique configuration of the application itself has the highest priority.
 
 
 NOTE: The default suffix of DataId is properties, and you can change it using spring.cloud.alicloud.acm.file-extension. `{spring.application.group}: {spring.application.name}. {file-extension}` .
@@ -175,4 +175,4 @@ NOTE: If you configured `spring.profiles.active` , then the DataId format of `{s
 
 === Actuator Endpoint
 
-the Actuator endpoint of ACM is `/acm`, `config` represents the ACM metadata configuration information, `runtime.sources` corresponds to the configuration information obtained from the ACM server and the last refresh time, `runtime.refreshHistory` corresponds to the dynamic refresh history.
+the actuator endpoint of ACM is `/acm`, `config` represents the ACM metadata configuration information, `runtime.sources` corresponds to the configuration information obtained from the ACM server and the last refresh time, `runtime.refreshHistory` corresponds to the dynamic refresh history.
