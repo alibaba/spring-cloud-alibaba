@@ -166,7 +166,7 @@ spring.application.group=company.department.team
 
 Then, you application will retrieve configurations from the following DataId in turn before it retrieves its own configuration: company:application.properties, company.department:application.properties, company.department.team:application.properties.
 After that, it also retrieves configuration from  {spring.application.group}: {spring.application.name}. {file-extension}
-The later in order, the higer the priority, and the unique configuration of the application itself has the highest priority.
+The later in order, the higher the priority, and the unique configuration of the application itself has the highest priority.
 
 
 NOTE: The default suffix of DataId is properties, and you can change it using spring.cloud.alicloud.acm.file-extension. `{spring.application.group}: {spring.application.name}. {file-extension}` .
