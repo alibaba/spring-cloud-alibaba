@@ -1,7 +1,7 @@
 # Sentinel Spring Cloud Zuul Adapter
 
 Zuul does not provide rateLimit function, If you use default `SentinelRibbonFilter` route filter. it wrapped by Hystrix Command. so only provide Service level 
-circuit protect. 
+circuit protection. 
 
 Sentinel can provide `ServiceId` level and `API Path` level flow control for spring cloud zuul gateway service. 
 
