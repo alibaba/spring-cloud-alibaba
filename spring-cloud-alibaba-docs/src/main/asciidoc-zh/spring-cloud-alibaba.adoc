@@ -19,8 +19,6 @@ include::sentinel.adoc[]
 
 include::rocketmq-new.adoc[]
 
-include::rocketmq.adoc[]
-
 include::ans.adoc[]
 
 include::acm.adoc[]
