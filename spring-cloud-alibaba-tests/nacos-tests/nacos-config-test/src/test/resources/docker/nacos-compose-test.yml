@@ -7,6 +7,7 @@ services:
       - MODE=standalone
     ports:
       - "8848:8848"
+      - "9848:9848"
     healthcheck:
       test: "curl --fail http://127.0.0.1:8848/nacos/v1/console/health/liveness || exit 1"
       interval: 5s
