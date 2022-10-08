@@ -1,0 +1,62 @@
+== Spring Cloud Alibaba Seata
+
+=== Introducing Seata
+
+Seata is a distributed transaction framework to ensure the data consistency of each service under the microservice architecture
+
+
+=== How to use seata
+
+To include Seata in your project, use the starter with group ID `com.alibaba.cloud` and artifact ID `spring-cloud-starter-alibaba-seata`.
+
+````xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+</dependency>
+````
+
+Running [spring-cloud-alibaba-examples/seata-example](https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/seata-example) Before, you need to complete the following steps:
+    - 1. Ensure that ```nacos-server ``` is running locally on the ```8848``` port
+    - 2. Configure the database according to ```all.sql ``` under ```spring-cloud-alibaba-examples/seata-example```
+    - 3. According to the selected transaction mode, create a [transaction log table] (https://github.com/seata/seata/tree/develop/script/client) For example, the default is AT mode, then enter at/db and select the corresponding The database script executes
+    - 4. Create a [status record table] related to seata transactions (https://github.com/seata/seata/tree/develop/script/server/db) ```global_table```, ```branch_table`` `, ```lock_table```, ```distributed_lock```
+    - 5. Create the database tables required by ```spring-cloud-alibaba-examples/seata-example```
+    - 6. Start ```seata-server```
+
+    - 7. Create the Nacos configuration in ```spring-cloud-alibaba-examples/seata-example```, data id: seata.properties, Group: SEATA_ Group (Seata 1.5.1 default group) Configuration import nacos configuration in Add the following transaction group configuration required in the example to the seata attribute
+    ```txt
+    service.vgroupMapping.order-service-tx-group=default
+    service.vgroupMapping.account-service-tx-group=default
+    service.vgroupMapping.business-service-tx-group=default
+    service.vgroupMapping.storage-service-tx-group=default
+    ```
+    - 8. Start Seata Server according to the official [seata-server.jar](https://seata.io/zh-cn/docs/ops/deploy-guide-beginner.html) provided by seata
+    - 9. Start the sub-services under the ```spring-cloud-alibaba-examples/seata-example``` folder locally ``` business-service```, ```order-service ```, ` ``storage-service ```, and finally start the global transaction control service ``` account-service```
+
+=== Seata Dashboard
+
+Seata 1.5.1 supports Seata console local access console address: ```http://127.0.0.1:7091```
+Through the Seata console, you can observe the executing transaction information and global lock information, and delete the relevant information when the transaction is completed.
+
+
+=== How to verify the success of a distributed transaction?
+### Whether the Xid information is successfully transmitted
+In the ````Controller``` of the four services ````account-service```, ```order-service```, ```business-service```, ```storage-service` `` First of all, the logic executed by ````storage-service``` is to output the ```Xid``` information in ```RootContext```. If you see that the correct ```Xid``` information is output, it changes every time, and the ```Xid``` of all services in the same call is the same. This indicates that the transfer and recovery of the ```Xid``` of ```Seata``` is normal.
+### Consistency of data in the database
+
+In this example, we simulate a scenario in which a user purchases goods. StorageService is responsible for deducting the inventory quantity, OrderService is responsible for saving orders, BusinessService is responsible for deducting the user's account balance, and AccountService is responsible for updating the account balance, which is used as a global transaction control entry.
+To demonstrate the example, we use Random in OrderService and AcountService. NextBoolean() throws an exception randomly, simulating a scenario where an exception occurs randomly when calling a service.
+
+If distributed transactions are efficient, then the following equation should be true
+
+    - User's original amount (1000) = user's existing amount + product unit price (2) * order quantity * product quantity per order (2)
+
+    - Initial Item Quantity (100) = Existing Item Quantity + Order Quantity * Item Quantity per Order (2)
+
+=== Spring Cloud Support Points
+    - Service providers that provide services through Spring MVC can automatically restore the Seata context when they receive an HTTP request that includes Seata information in the header.
+    - Supports automatic passing of Seata context when service caller calls via RestTemplate.
+    - Supports automatic passing of Seata context when service caller calls via FeignClient.
+    - Supports scenarios using SeataClient and Hystrix at the same time.
+    - Support for scenarios used by SeataClient and entinel.

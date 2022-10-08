@@ -28,3 +28,5 @@ include::oss.adoc[]
 include::schedulerx.adoc[]
 
 include::sms.adoc[]
+
+include::appactive.adoc[]

@@ -85,13 +85,10 @@
         <!-- Spring Cloud -->
         <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
 
-        <!-- Apache Dubbo -->
-        <dubbo.version>2.7.15</dubbo.version>
         <curator.version>4.0.1</curator.version>
 
         <!-- Apache RocketMQ -->
-        <rocketmq.starter.version>2.0.4</rocketmq.starter.version>
-        <rocketmq.version>4.9.3</rocketmq.version>
+        <rocketmq.version>4.9.4</rocketmq.version>
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -141,44 +138,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- Dubbo Dependencies -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-dependencies-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-framework-bom</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${dubbo.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-spring-boot-actuator</artifactId>
-                <version>${dubbo.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo</artifactId>
-                <version>${dubbo.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-client</artifactId>
@@ -241,7 +200,7 @@
                         <configuration>
                             <!-- Checkstyle rules inherited from spring-cloud-build -->
                             <suppressionsLocation>
-                                ${session.executionRootDirectory}/eclipse/checkstyle-suppressions.xml
+                                ${maven.multiModuleProjectDirectory}/eclipse/checkstyle-suppressions.xml
                             </suppressionsLocation>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <consoleOutput>true</consoleOutput>

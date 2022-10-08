@@ -20,7 +20,6 @@
         <module>spring-cloud-alibaba-governance/resource-transform/istio-resource-transform</module>
         <module>spring-cloud-alibaba-governance/governance-common</module>
         <module>spring-cloud-starter-alibaba-nacos-config</module>
-        <module>spring-cloud-starter-alibaba-nacos-config-server</module>
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
         <module>spring-cloud-starter-alibaba-seata</module>
         <module>spring-cloud-starter-stream-rocketmq</module>
@@ -30,6 +29,7 @@
         <module>spring-cloud-starter-alibaba-sentinel</module>
         <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-sentinel-gateway</module>
+        <module>spring-cloud-starter-alibaba-appactive</module>
         <module>spring-cloud-alibaba-commons</module>
     </modules>
 
