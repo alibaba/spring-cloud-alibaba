@@ -97,9 +97,10 @@ public class NacosConfigurationExtConfigTests {
 	}
 
 	@Test
-	public void contextLoads() throws NacosException {
+	public void contextLoads() throws NacosException, InterruptedException {
 		ConfigService localService = nacosConfigManager.getConfigService();
 		updateConfig();
+		Thread.sleep(2000L);
 		String localContent = fetchConfig(localService, "nacos-config-refresh.yml",
 				"DEFAULT_GROUP", TIME_OUT);
 		String remoteContent = fetchConfig(remoteService, "nacos-config-refresh.yml",
