@@ -40,4 +40,5 @@ public class WebMvcAutoConfiguration {
 	public WebMvcConfig webMvcConfig() {
 		return new WebMvcConfig();
 	}
+
 }

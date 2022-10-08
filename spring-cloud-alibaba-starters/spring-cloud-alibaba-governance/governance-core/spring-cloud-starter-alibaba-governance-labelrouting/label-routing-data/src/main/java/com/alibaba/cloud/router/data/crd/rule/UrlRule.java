@@ -37,13 +37,13 @@ public class UrlRule {
 		}
 
 		@Override
-		public String getKey() {
-			return null;
+		public void setCondition(String condition) {
+			this.condition = condition;
 		}
 
 		@Override
-		public void setCondition(String condition) {
-			this.condition = condition;
+		public String getKey() {
+			return null;
 		}
 
 		@Override

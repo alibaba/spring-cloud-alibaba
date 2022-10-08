@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author HH
  */
 public class FeignInterceptor implements RequestInterceptor {
+
 	private static final Logger LOG = LoggerFactory.getLogger(FeignInterceptor.class);
 
 	@Autowired
@@ -41,7 +42,8 @@ public class FeignInterceptor implements RequestInterceptor {
 	@Override
 	public void apply(RequestTemplate requestTemplate) {
 		final HttpServletRequest request = requestContext.getRequest(false);
-		final Optional<Enumeration<String>> headerNames = Optional.ofNullable(request.getHeaderNames());
+		final Optional<Enumeration<String>> headerNames = Optional
+				.ofNullable(request.getHeaderNames());
 
 		if (!headerNames.isPresent()) {
 			return;
@@ -52,4 +54,5 @@ public class FeignInterceptor implements RequestInterceptor {
 			requestTemplate.header(headerName, request.getHeader(headerName));
 		}
 	}
+
 }

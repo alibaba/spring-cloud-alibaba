@@ -25,13 +25,10 @@ import org.slf4j.LoggerFactory;
  * @author HH
  */
 public class RequestContext {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestContext.class);
 
 	private static final ThreadLocal<HttpServletRequest> requestHeadersHolder = new ThreadLocal<>();
-
-	public void setRequest(HttpServletRequest request) {
-		requestHeadersHolder.set(request);
-	}
 
 	public HttpServletRequest getRequest(Boolean ifRemove) {
 		if (ifRemove) {
@@ -52,4 +49,9 @@ public class RequestContext {
 		}
 		return request;
 	}
+
+	public void setRequest(HttpServletRequest request) {
+		requestHeadersHolder.set(request);
+	}
+
 }

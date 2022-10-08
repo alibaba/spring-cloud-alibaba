@@ -27,17 +27,17 @@ public interface RouteRule {
 	 */
 	String getType();
 
-	String getCondition();
-
-	String getKey();
-
-	String getValue();
-
 	void setType(String type);
+
+	String getCondition();
 
 	void setCondition(String condition);
 
+	String getKey();
+
 	void setKey(String key);
+
+	String getValue();
 
 	void setValue(String value);
 

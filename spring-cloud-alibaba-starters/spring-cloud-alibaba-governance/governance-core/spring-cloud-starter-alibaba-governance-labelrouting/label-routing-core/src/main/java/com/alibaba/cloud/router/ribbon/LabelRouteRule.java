@@ -119,18 +119,22 @@ public class LabelRouteRule extends PredicateBasedRule {
 		return this.predicate;
 	}
 
-	private void serviceFilter(String targetServiceName, HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
+	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
+			HashMap<String, Integer> weightMap) {
 		final Optional<LabelRouteData> routeData = Optional
 				.ofNullable(routeDataRepository.getRouteData(targetServiceName));
-		final Optional<List<MatchService>> matchRouteList = Optional.ofNullable(routeData.get().getMatchRouteList());
+		final Optional<List<MatchService>> matchRouteList = Optional
+				.ofNullable(routeData.get().getMatchRouteList());
 
 		if (doNotNullCheck(routeData, matchRouteList, targetServiceName)) {
 			return;
 		}
 
 		final HttpServletRequest request = requestContext.getRequest(true);
-		final Optional<Enumeration<String>> headerNames = Optional.ofNullable(request.getHeaderNames());
-		final Optional<Map<String, String[]>> parameterMap = Optional.ofNullable(request.getParameterMap());
+		final Optional<Enumeration<String>> headerNames = Optional
+				.ofNullable(request.getHeaderNames());
+		final Optional<Map<String, String[]>> parameterMap = Optional
+				.ofNullable(request.getParameterMap());
 		HashMap<String, String> requestHeaders = new HashMap<>();
 
 		if (headerNames.isPresent()) {
@@ -143,27 +147,29 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 		int defaultVersionWeight = 100;
 		for (MatchService matchService : matchRouteList.get()) {
-			Optional<List<RouteRule>> ruleList = Optional.ofNullable(matchService.getRuleList());
+			Optional<List<RouteRule>> ruleList = Optional
+					.ofNullable(matchService.getRuleList());
 			Optional<String> version = Optional.ofNullable(matchService.getVersion());
 			Integer weight = matchService.getWeight();
 			if (weight == null) {
 				weight = 100;
 			}
 
-			if (doNotNullCheck(ruleList, version, weight, matchService, targetServiceName)) {
+			if (doNotNullCheck(ruleList, version, weight, matchService,
+					targetServiceName)) {
 				continue;
 			}
 
 			for (RouteRule routeRule : ruleList.get()) {
 				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
-					if (!headerNames.isPresent()
-							|| !routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
+					if (!headerNames.isPresent() || !routeRule.getValue()
+							.equals(requestHeaders.get(routeRule.getKey()))) {
 						break;
 					}
 				}
 				if (PARAMETER.equalsIgnoreCase(routeRule.getType())) {
-					if (!parameterMap.isPresent()
-							|| !routeRule.getValue().equals(parameterMap.get().get(routeRule.getKey())[0])) {
+					if (!parameterMap.isPresent() || !routeRule.getValue()
+							.equals(parameterMap.get().get(routeRule.getKey())[0])) {
 						break;
 					}
 				}
@@ -181,10 +187,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	}
 
-	private boolean doNotNullCheck(
-			Optional<LabelRouteData> routeData,
-			Optional<List<MatchService>> matchRouteList,
-			String targetServiceName) {
+	private boolean doNotNullCheck(Optional<LabelRouteData> routeData,
+			Optional<List<MatchService>> matchRouteList, String targetServiceName) {
 		boolean ifReturn = false;
 
 		if (!routeData.isPresent()) {
@@ -200,11 +204,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 		return ifReturn;
 	}
 
-	private boolean doNotNullCheck(
-			Optional<List<RouteRule>> ruleList,
-			Optional<String> version,
-			Integer weight,
-			MatchService matchService,
+	private boolean doNotNullCheck(Optional<List<RouteRule>> ruleList,
+			Optional<String> version, Integer weight, MatchService matchService,
 			String targetServiceName) {
 		boolean ifContinue = false;
 
@@ -213,8 +214,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 		}
 
 		if (!version.isPresent()) {
-			LOGGER.warn(
-					"Target service ={} rule ={} lose version,please check it",
+			LOGGER.warn("Target service ={} rule ={} lose version,please check it",
 					targetServiceName, matchService);
 			ifContinue = true;
 		}
