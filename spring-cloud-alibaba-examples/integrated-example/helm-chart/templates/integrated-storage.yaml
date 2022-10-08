@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-service
+  labels:
+    app: integrated-storage
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8011
+      name: server
+  selector:
+    app: integrated-storage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrated-storage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integrated-storage
+  template:
+    metadata:
+      labels:
+        appName: integrated-storage
+        app: integrated-storage
+    spec:
+      containers:
+        - name: integrated-storage
+          image: "{{ .Values.image.repository }}integrated-storage"
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8011
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+              weight: 50
+            - podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+              weight: 100

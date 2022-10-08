@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  labels:
+    app: integrated-order
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8013
+      name: server
+  selector:
+    app: integrated-order
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrated-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integrated-order
+  template:
+    metadata:
+      labels:
+        appName: integrated-order
+        app: integrated-order
+    spec:
+      containers:
+        - name: integrated-order
+          image: "{{ .Values.image.repository }}integrated-order"
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8013
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+              weight: 50
+            - podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+              weight: 100

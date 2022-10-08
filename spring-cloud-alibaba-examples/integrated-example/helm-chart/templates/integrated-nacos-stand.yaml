@@ -1,0 +1,137 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-svc
+  labels:
+    app: nacos-svc
+spec:
+  type: NodePort
+  ports:
+    - port: 8848
+      name: server
+      targetPort: 8848
+      nodePort: 30848
+  selector:
+    app: nacos-standalone
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-server
+  labels:
+    app: nacos-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8848
+      name: server
+      targetPort: 8848
+    - port: 9848
+      name: client-rpc
+      targetPort: 9848
+    - port: 9849
+      name: raft-rpc
+      targetPort: 9849
+    ## 兼容1.4.x版本的选举端口
+    - port: 7848
+      name: old-raft-rpc
+      targetPort: 7848
+  selector:
+    app: nacos-standalone
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nacos-cm
+data:
+  mysql.host: "nacos-mysql"
+  mysql.db.name: "nacos_config"
+  mysql.port: "3307"
+  mysql.user: "nacos"
+  mysql.password: "nacos"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos-standalone
+spec:
+  #单机模式设置大于1个副本,注册的时候会分配到不同的副本上,web登录查看注册列表的时候,
+  #只能看到其中一个副本的注册服务,刷新web网页可切换不同的副本,查看到其注册的服务,也就是注册的服务被副本分摊了
+  #所以这里多个副本就出现了和集群模式一样的现象了,就是注册服务被注册到不同的nacos上了,需要刷新web页面来访问到
+  #不同的nacos服务来查看其注册的服务有哪些,也就是只有一个副本的时候,注册的服务才会全部能看到
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nacos-standalone
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                      - nacos-standalone
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: local-nacos
+          imagePullPolicy: Always
+          image: nacos/nacos-server
+          #资源不足时,这先不做设置,让其自动分配
+          #resources:
+          #  requests:
+          #    memory: "1Gi"
+          #    cpu: "100m"
+          ports:
+            - containerPort: 8848
+              name: client
+            - containerPort: 9848
+              name: client-rpc
+            - containerPort: 9849
+              name: raft-rpc
+            - containerPort: 7848
+              name: old-raft-rpc
+          env:
+            #设置使用mysql存储,默认是嵌入式存储
+            - name: SPRING_DATASOURCE_PLATFORM
+              value: "mysql"
+            - name: MYSQL_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.host
+            - name: MYSQL_SERVICE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.db.name
+            - name: MYSQL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.port
+            - name: MYSQL_SERVICE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.user
+            - name: MYSQL_SERVICE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.password
+            - name: MODE
+              value: "standalone"
+            - name: NACOS_SERVER_PORT
+              value: "8848"
+            - name: PREFER_HOST_MODE
+              value: "hostname"
+  selector:
+    matchLabels:
+      app: nacos-standalone
+

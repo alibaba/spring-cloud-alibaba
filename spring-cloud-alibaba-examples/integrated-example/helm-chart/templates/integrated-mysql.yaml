@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: integrated-mysql-web
+spec:
+  ports:
+    - name: integrated-mysql-port
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+      nodePort: 30306
+  type: NodePort
+  selector:
+    app: integrated-mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: integrated-mysql
+  labels:
+    app: integrated-mysql
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      name: server
+  selector:
+    app: integrated-mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrated-mysql
+spec:
+  selector:
+    matchLabels:
+      app: integrated-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: integrated-mysql
+    spec:
+      containers:
+        - name: integrated-mysql
+          image: {{ .Values.image.repository }}integrated-mysql
+          imagePullPolicy: Always
+          env:                        #以下是设置MySQL数据库的密码
+            - name: MYSQL_ROOT_PASSWORD
+              value: "123456"
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+#          volumeMounts:
+#            - name: mysql-persistent-storage
+#              mountPath: /var/lib/mysql           #MySQL容器的数据都是存在这个目录的，要对这个目录做数据持久化
+#            - name: config-volume
+#              mountPath: /etc/mysql/conf.d             #mysql 配置
+#      volumes:
+#        - name: mysql-persistent-storage
+#          persistentVolumeClaim:
+#            claimName: mysql-pvc       #指定pvc的名称
+#        - name: config-volume
+#          configMap:
+#            name: mysql-config
