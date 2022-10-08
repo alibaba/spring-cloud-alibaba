@@ -94,8 +94,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 				return null;
 			}
 
+			int[] weightArray = new int[instances.size()];
 			List<Instance> instanceList = new ArrayList<>();
-			int[] weightArray;
 
 			for (Instance instance : instances) {
 				Map<String, String> metadata = instance.getMetadata();
@@ -105,9 +105,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 				}
 			}
 
-			weightArray = new int[instances.size()];
-
-			return chooseServerByWeight(instances, name, weightMap, weightArray);
+			return chooseServerByWeight(instanceList, name, weightMap, weightArray);
 
 		}
 		catch (Exception e) {
@@ -122,17 +120,18 @@ public class LabelRouteRule extends PredicateBasedRule {
 	}
 
 	private void serviceFilter(String targetServiceName, HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
-		Optional<LabelRouteData> routeData = Optional.ofNullable(routeDataRepository.getRouteData(targetServiceName));
-		if (!routeData.isPresent()) {
+		final Optional<LabelRouteData> routeData = Optional
+				.ofNullable(routeDataRepository.getRouteData(targetServiceName));
+		final Optional<List<MatchService>> matchRouteList = Optional.ofNullable(routeData.get().getMatchRouteList());
+
+		if (doNotNullCheck(routeData, matchRouteList, targetServiceName)) {
 			return;
 		}
 
 		final HttpServletRequest request = requestContext.getRequest(true);
 		final Optional<Enumeration<String>> headerNames = Optional.ofNullable(request.getHeaderNames());
 		final Optional<Map<String, String[]>> parameterMap = Optional.ofNullable(request.getParameterMap());
-
 		HashMap<String, String> requestHeaders = new HashMap<>();
-		List<MatchService> matchRouteList = routeData.get().getMatchRouteList();
 
 		if (headerNames.isPresent()) {
 			while (headerNames.get().hasMoreElements()) {
@@ -143,9 +142,19 @@ public class LabelRouteRule extends PredicateBasedRule {
 		}
 
 		int defaultVersionWeight = 100;
-		for (MatchService matchService : matchRouteList) {
-			List<RouteRule> ruleList = matchService.getRuleList();
-			for (RouteRule routeRule : ruleList) {
+		for (MatchService matchService : matchRouteList.get()) {
+			Optional<List<RouteRule>> ruleList = Optional.ofNullable(matchService.getRuleList());
+			Optional<String> version = Optional.ofNullable(matchService.getVersion());
+			Integer weight = matchService.getWeight();
+			if (weight == null) {
+				weight = 100;
+			}
+
+			if (doNotNullCheck(ruleList, version, weight, matchService, targetServiceName)) {
+				continue;
+			}
+
+			for (RouteRule routeRule : ruleList.get()) {
 				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
 					if (!headerNames.isPresent()
 							|| !routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
@@ -159,9 +168,10 @@ public class LabelRouteRule extends PredicateBasedRule {
 					}
 				}
 			}
-			versionSet.add(matchService.getVersion());
-			weightMap.put(matchService.getVersion(), matchService.getWeight());
-			defaultVersionWeight -= matchService.getWeight();
+
+			versionSet.add(version.get());
+			weightMap.put(version.get(), weight);
+			defaultVersionWeight -= weight;
 		}
 
 		versionSet.add(routeData.get().getDefaultRouteVersion());
@@ -169,6 +179,53 @@ public class LabelRouteRule extends PredicateBasedRule {
 			weightMap.put(routeData.get().getDefaultRouteVersion(), defaultVersionWeight);
 		}
 
+	}
+
+	private boolean doNotNullCheck(
+			Optional<LabelRouteData> routeData,
+			Optional<List<MatchService>> matchRouteList,
+			String targetServiceName) {
+		boolean ifReturn = false;
+
+		if (!routeData.isPresent()) {
+			LOGGER.info("Target service ={} have not set rule", targetServiceName);
+			ifReturn = true;
+		}
+
+		if (!matchRouteList.isPresent()) {
+			LOGGER.warn("Target service ={} rule is empty", targetServiceName);
+			ifReturn = true;
+		}
+
+		return ifReturn;
+	}
+
+	private boolean doNotNullCheck(
+			Optional<List<RouteRule>> ruleList,
+			Optional<String> version,
+			Integer weight,
+			MatchService matchService,
+			String targetServiceName) {
+		boolean ifContinue = false;
+
+		if (!ruleList.isPresent() || ruleList.get().size() == 0) {
+			ifContinue = true;
+		}
+
+		if (!version.isPresent()) {
+			LOGGER.warn(
+					"Target service ={} rule ={} lose version,please check it",
+					targetServiceName, matchService);
+			ifContinue = true;
+		}
+
+		if (weight < 0 || weight > 100) {
+			LOGGER.warn(
+					"The weight of provider = {} version = {} had set error,please check it",
+					targetServiceName, version);
+			ifContinue = true;
+		}
+		return ifContinue;
 	}
 
 	private Server chooseServerByWeight(List<Instance> instances, String targetService,

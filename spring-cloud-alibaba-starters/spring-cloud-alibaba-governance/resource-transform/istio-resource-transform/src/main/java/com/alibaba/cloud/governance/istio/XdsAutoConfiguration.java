@@ -17,7 +17,7 @@
 package com.alibaba.cloud.governance.istio;
 
 import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
-import com.alibaba.cloud.router.data.ControlPlaneConnectionAutoConfiguration;
+import com.alibaba.cloud.router.data.ControlPlaneAutoConfiguration;
 import com.alibaba.cloud.governance.auth.AuthDataAutoConfiguration;
 import com.alibaba.cloud.governance.auth.cache.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter({ ControlPlaneConnectionAutoConfiguration.class,
+@AutoConfigureAfter({ ControlPlaneAutoConfiguration.class,
 		AuthDataAutoConfiguration.class })
 @ConditionalOnProperty(name = "spring.cloud.istio.config.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(XdsConfigProperties.class)

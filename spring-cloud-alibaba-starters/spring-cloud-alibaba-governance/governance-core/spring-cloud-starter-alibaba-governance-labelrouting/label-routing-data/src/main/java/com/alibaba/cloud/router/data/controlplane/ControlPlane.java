@@ -29,7 +29,7 @@ public interface ControlPlane {
 	 * Control surface untied interface.
 	 * @param untiedRouterDataStructureList List<UntiedRouteDataStructure/>
 	 */
-	void getDataFromControlSurface(
+	void getDataFromControlPlane(
 			List<UntiedRouteDataStructure> untiedRouterDataStructureList);
 
 }

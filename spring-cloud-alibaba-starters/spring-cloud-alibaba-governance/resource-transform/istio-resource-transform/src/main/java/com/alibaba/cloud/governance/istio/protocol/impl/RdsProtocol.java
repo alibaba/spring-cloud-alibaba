@@ -21,6 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.governance.common.matcher.MatcherType;
+import com.alibaba.cloud.governance.common.matcher.StringMatcher;
+import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
+import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
+import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
 import com.alibaba.cloud.router.data.crd.LabelRouteData;
 import com.alibaba.cloud.router.data.crd.MatchService;
@@ -28,12 +34,6 @@ import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
 import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
 import com.alibaba.cloud.router.data.crd.rule.RouteRule;
 import com.alibaba.cloud.router.data.crd.rule.UrlRule;
-import com.alibaba.cloud.governance.common.matcher.MatcherType;
-import com.alibaba.cloud.governance.common.matcher.StringMatcher;
-import com.alibaba.cloud.governance.istio.XdsChannel;
-import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
-import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
-import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
 import io.envoyproxy.envoy.config.route.v3.QueryParameterMatcher;
 import io.envoyproxy.envoy.config.route.v3.Route;
@@ -119,7 +119,7 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 						untiedRouteDataStructure);
 			}
 		}
-		controlSurfaceConnection.getDataFromControlSurface(
+		controlSurfaceConnection.getDataFromControlPlane(
 				new ArrayList<>(untiedRouteDataStructures.values()));
 	}
 

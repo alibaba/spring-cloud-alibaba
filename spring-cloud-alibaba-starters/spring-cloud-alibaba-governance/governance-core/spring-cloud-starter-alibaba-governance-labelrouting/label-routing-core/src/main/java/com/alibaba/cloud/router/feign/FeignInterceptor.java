@@ -32,8 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author HH
  */
-public class LabelRouteFeignInterceptor implements RequestInterceptor {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LabelRouteFeignInterceptor.class);
+public class FeignInterceptor implements RequestInterceptor {
+	private static final Logger LOG = LoggerFactory.getLogger(FeignInterceptor.class);
 
 	@Autowired
 	private RequestContext requestContext;
