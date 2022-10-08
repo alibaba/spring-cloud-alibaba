@@ -151,7 +151,6 @@
                 <version>${rocketmq.version}</version>
             </dependency>
 
-            <!--fix miss bootstrap dependcy-->
             <dependency>
                <groupId>org.springframework.cloud</groupId>
                <artifactId>spring-cloud-starter-bootstrap</artifactId>
