@@ -45,21 +45,9 @@ spec:
         - name: integrated-mysql
           image: {{ .Values.image.repository }}integrated-mysql
           imagePullPolicy: Always
-          env:                        #以下是设置MySQL数据库的密码
+          env:
             - name: MYSQL_ROOT_PASSWORD
               value: "123456"
           ports:
             - containerPort: 3306
               protocol: TCP
-#          volumeMounts:
-#            - name: mysql-persistent-storage
-#              mountPath: /var/lib/mysql           #MySQL容器的数据都是存在这个目录的，要对这个目录做数据持久化
-#            - name: config-volume
-#              mountPath: /etc/mysql/conf.d             #mysql 配置
-#      volumes:
-#        - name: mysql-persistent-storage
-#          persistentVolumeClaim:
-#            claimName: mysql-pvc       #指定pvc的名称
-#        - name: config-volume
-#          configMap:
-#            name: mysql-config
