@@ -41,8 +41,6 @@ helm uninstall integrated-example
 
 ##### 启动测试
 
-分别启动`integrated_storage`,`integrated_account`,`integrated_order`三个微服务。
-
 访问`http://127.0.0.1:30080/order` 来体验对应场景。
 
 直接点击下单按钮提交表单，我们模拟客户端向网关发送了一个创建订单的请求。
@@ -77,8 +75,6 @@ helm uninstall integrated-example
 - RocketMQ 进行流量削峰填谷，在大流量请求下，生产者向 RocketMQ 发送消息，而消费者则通过可配置的消费速率进行拉取消费，减少大流量直接请求数据库增加点赞请求的压力。
 
 #### 启动测试
-
-分别启动`integrated_provider`以及`integrated_consumer`模块。
 
 - Sentinel 服务熔断降级
 

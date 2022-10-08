@@ -41,7 +41,6 @@ For the distributed transaction capability, we provide a scenario **where a user
 
 ##### start test
 
-Start `integrated_storage`,`integrated_account`,`integrated_order` microservices respectively.
 
 Visit `http://127.0.0.1:30080/order` to experience the corresponding scenario.
 
@@ -78,7 +77,6 @@ For service fusion limiting and peak and valley cutting in the context of high t
 
 #### startup test
 
-Start the `integrated_provider` and `integrated_consumer` modules separately.
 
 - Sentinel service meltdown degradation
 
