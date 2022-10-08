@@ -150,11 +150,6 @@
                 <artifactId>rocketmq-acl</artifactId>
                 <version>${rocketmq.version}</version>
             </dependency>
-
-            <dependency>
-               <groupId>org.springframework.cloud</groupId>
-               <artifactId>spring-cloud-starter-bootstrap</artifactId>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
