@@ -21,13 +21,11 @@ import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-@Import(RouteDataRepositoryAutoConfiguration.class)
 public class ControlPlaneAutoConfiguration {
 
 	@Bean
