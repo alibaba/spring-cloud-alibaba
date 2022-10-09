@@ -180,11 +180,10 @@ public class LabelRouteRule extends PredicateBasedRule {
 						break;
 					}
 				}
+				versionSet.add(version.get());
+				weightMap.put(version.get(), weight);
+				defaultVersionWeight -= weight;
 			}
-
-			versionSet.add(version.get());
-			weightMap.put(version.get(), weight);
-			defaultVersionWeight -= weight;
 		}
 
 		versionSet.add(routeData.get().getDefaultRouteVersion());

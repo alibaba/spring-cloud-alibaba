@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @EnableDiscoveryClient(autoRegister = true)
 @EnableFeignClients
-@RibbonClient(name = "label-route", configuration = LabelRouteRule.class)
+@RibbonClient(name = "service-provider", configuration = LabelRouteRule.class)
 public class ConsumerApplication {
 
 	public static void main(String[] args) {
@@ -67,10 +67,9 @@ public class ConsumerApplication {
 	public class Controller {
 
 		@Autowired
-		private ConsumerApplication.FeignService feignService;
-
-		@Autowired
 		ControlPlaneConnection controlPlaneConnection;
+		@Autowired
+		private ConsumerApplication.FeignService feignService;
 
 		@GetMapping("/router-test")
 		public String notFound() {
@@ -111,7 +110,7 @@ public class ConsumerApplication {
 
 			untiedRouteDataStructure.setLabelRouteData(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList=new ArrayList<>();
+			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
 			untiedRouteDataStructureList.add(untiedRouteDataStructure);
 			controlPlaneConnection.getDataFromControlPlane(untiedRouteDataStructureList);
 		}
@@ -150,7 +149,7 @@ public class ConsumerApplication {
 
 			untiedRouteDataStructure.setLabelRouteData(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList=new ArrayList<>();
+			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
 			untiedRouteDataStructureList.add(untiedRouteDataStructure);
 			controlPlaneConnection.getDataFromControlPlane(untiedRouteDataStructureList);
 		}
