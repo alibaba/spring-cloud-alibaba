@@ -16,14 +16,14 @@
 
 package com.alibaba.cloud.governance.istio;
 
-import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
-import com.alibaba.cloud.router.data.ControlPlaneAutoConfiguration;
 import com.alibaba.cloud.governance.auth.AuthDataAutoConfiguration;
-import com.alibaba.cloud.governance.auth.cache.AuthRepository;
+import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
+import com.alibaba.cloud.router.data.ControlPlaneAutoConfiguration;
+import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -32,6 +32,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter({ ControlPlaneAutoConfiguration.class,
 		AuthDataAutoConfiguration.class })
@@ -83,9 +87,9 @@ public class XdsAutoConfiguration {
 	@Bean
 	RdsProtocol rdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool,
-			ControlPlaneConnection controlSurfaceConnection) {
+			ControlPlaneConnection controlPlaneConnection) {
 		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime(), controlSurfaceConnection);
+				xdsConfigProperties.getPollingTime(), controlPlaneConnection);
 	}
 
 }

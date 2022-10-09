@@ -27,6 +27,10 @@ import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.cluster.v3.Cluster;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 
 	public CdsProtocol(XdsChannel xdsChannel,
@@ -51,6 +55,9 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 
 	public Set<String> getEndPointNames(List<Cluster> clusters) {
 		Set<String> endpoints = new HashSet<>();
+		if (clusters == null) {
+			return endpoints;
+		}
 		for (Cluster cluster : clusters) {
 			cluster.getEdsClusterConfig().getServiceName();
 			endpoints.add(cluster.getEdsClusterConfig().getServiceName());

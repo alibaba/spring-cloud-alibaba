@@ -16,36 +16,56 @@
 
 package com.alibaba.cloud.governance.istio;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
+import com.alibaba.cloud.commons.io.FileUtils;
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import io.envoyproxy.envoy.service.discovery.v3.AggregatedDiscoveryServiceGrpc;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 import io.grpc.ManagedChannel;
+import io.grpc.Metadata;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.grpc.netty.NegotiationType;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class XdsChannel implements AutoCloseable {
+
+	private static final int ISTIOD_SECURE_PORT = 15012;
 
 	private static final Logger log = LoggerFactory.getLogger(XdsChannel.class);
 
 	private ManagedChannel channel;
 
+	private String istiodToken;
+
 	public XdsChannel(XdsConfigProperties xdsConfigProperties) {
 		try {
-			if (xdsConfigProperties.isSecure()) {
+			if (xdsConfigProperties.getPort() == ISTIOD_SECURE_PORT) {
+				// fetch token first
+				if (StringUtils.isNotEmpty(xdsConfigProperties.getIstiodToken())) {
+					istiodToken = xdsConfigProperties.getIstiodToken();
+				}
+				else {
+					istiodToken = this.fetchIstiodToken();
+				}
 				SslContext sslcontext = GrpcSslContexts.forClient()
 						// if server's cert doesn't chain to a standard root
 						.trustManager(InsecureTrustManagerFactory.INSTANCE)
 						// TODO: fill the publicKey and privateKey
-						.keyManager(new ByteArrayInputStream("".getBytes()),
-								new ByteArrayInputStream("".getBytes()))
 						.build();
 				this.channel = NettyChannelBuilder
 						.forTarget(xdsConfigProperties.getHost() + ":"
@@ -65,8 +85,26 @@ public class XdsChannel implements AutoCloseable {
 		}
 	}
 
+	private String fetchIstiodToken() {
+		File saFile = new File(IstioConstants.KUBERNETES_SA_PATH);
+		if (saFile.canRead()) {
+			try {
+				return FileUtils.readFileToString(saFile, StandardCharsets.UTF_8);
+			}
+			catch (IOException e) {
+				log.error("Unable to read token file", e);
+			}
+		}
+		if (this.istiodToken == null) {
+			throw new UnsupportedOperationException(
+					"Unable to found kubernetes service account token file. "
+							+ "Please check if work in Kubernetes and mount service account token file correctly.");
+		}
+		return null;
+	}
+
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		if (channel != null) {
 			channel.shutdown();
 		}
@@ -74,8 +112,14 @@ public class XdsChannel implements AutoCloseable {
 
 	public StreamObserver<DiscoveryRequest> createDiscoveryRequest(
 			StreamObserver<DiscoveryResponse> observer) {
-		return AggregatedDiscoveryServiceGrpc.newStub(channel)
-				.streamAggregatedResources(observer);
+		AggregatedDiscoveryServiceGrpc.AggregatedDiscoveryServiceStub stub = AggregatedDiscoveryServiceGrpc
+				.newStub(channel);
+		Metadata header = new Metadata();
+		Metadata.Key<String> key = Metadata.Key.of("authorization",
+				Metadata.ASCII_STRING_MARSHALLER);
+		header.put(key, "Bearer " + this.istiodToken);
+		stub = MetadataUtils.attachHeaders(stub, header);
+		return stub.streamAggregatedResources(observer);
 	}
 
 }

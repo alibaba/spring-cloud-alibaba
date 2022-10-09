@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 public class PilotExchanger {
 
@@ -46,6 +47,9 @@ public class PilotExchanger {
 	private RdsProtocol rdsProtocol;
 
 	private void observeListeners(List<Listener> listeners) {
+		if (listeners == null) {
+			return;
+		}
 		synchronized (ldsProtocol) {
 			ldsProtocol.resolveAuthRules(listeners);
 			Set<String> resourceName = ldsProtocol.getRouteNames(listeners);
@@ -77,7 +81,6 @@ public class PilotExchanger {
 
 	private void observeRoutes(List<RouteConfiguration> routes) {
 		synchronized (rdsProtocol) {
-			// TODO: update route info
 			rdsProtocol.resolveLabelRouting(routes);
 		}
 	}
@@ -89,6 +92,11 @@ public class PilotExchanger {
 		this.edsProtocol = edsProtocol;
 		this.rdsProtocol = rdsProtocol;
 		// observe cluster first, and update the other xds sequentially
+		this.ldsProtocol.setNeedPolling(false);
+		this.edsProtocol.setNeedPolling(false);
+		this.rdsProtocol.setNeedPolling(false);
+		// only polling cds, other protocol will be obtained sequentially
+		this.cdsProtocol.setNeedPolling(true);
 		cdsProtocol.observeResource(null, this::observeClusters);
 	}
 

@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.governance.common.matcher.MatcherType;
-import com.alibaba.cloud.governance.common.matcher.StringMatcher;
+import com.alibaba.cloud.commons.matcher.MatcherType;
+import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
@@ -42,6 +42,10 @@ import io.envoyproxy.envoy.config.route.v3.RouteMatch;
 import io.envoyproxy.envoy.config.route.v3.VirtualHost;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 
 	/**
@@ -49,13 +53,13 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 	 */
 	private static final String ALLOW_ANY = "allow_any";
 
-	private ControlPlaneConnection controlSurfaceConnection;
+	private ControlPlaneConnection controlPlaneConnection;
 
 	public RdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime,
-			ControlPlaneConnection controlSurfaceConnection) {
+			ControlPlaneConnection controlPlaneConnection) {
 		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
-		this.controlSurfaceConnection = controlSurfaceConnection;
+		this.controlPlaneConnection = controlPlaneConnection;
 	}
 
 	@Override
@@ -74,6 +78,9 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 	}
 
 	public void resolveLabelRouting(List<RouteConfiguration> routeConfigurations) {
+		if (routeConfigurations == null) {
+			return;
+		}
 		Map<String, UntiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
 			List<VirtualHost> virtualHosts = routeConfiguration.getVirtualHostsList();
@@ -119,7 +126,7 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 						untiedRouteDataStructure);
 			}
 		}
-		controlSurfaceConnection.getDataFromControlPlane(
+		controlPlaneConnection.getDataFromControlPlane(
 				new ArrayList<>(untiedRouteDataStructures.values()));
 	}
 

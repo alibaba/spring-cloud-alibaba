@@ -19,6 +19,10 @@ package com.alibaba.cloud.governance.auth.rule;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class JwtRule {
 
 	private String name;

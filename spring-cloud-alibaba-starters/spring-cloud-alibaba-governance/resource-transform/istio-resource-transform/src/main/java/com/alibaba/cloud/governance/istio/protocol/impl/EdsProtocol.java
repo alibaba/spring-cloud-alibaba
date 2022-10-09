@@ -25,6 +25,10 @@ import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.endpoint.v3.ClusterLoadAssignment;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class EdsProtocol extends AbstractXdsProtocol<ClusterLoadAssignment> {
 
 	public EdsProtocol(XdsChannel xdsChannel,

@@ -23,10 +23,6 @@
         <module>sentinel-example/sentinel-webflux-example</module>
         <module>sentinel-example/sentinel-spring-cloud-gateway-example</module>
         <module>sentinel-example/sentinel-zuul-example</module>
-        <module>appactive-example/common</module>
-        <module>appactive-example/frontend</module>
-        <module>appactive-example/product</module>
-        <module>appactive-example/storage</module>
         <module>nacos-example/nacos-discovery-example</module>
         <module>nacos-example/nacos-config-example</module>
         <module>nacos-example/nacos-gateway-example</module>
@@ -44,7 +40,6 @@
         <module>rocketmq-example/rocketmq-sql-consume-example</module>
         <module>rocketmq-example/rocketmq-example-common</module>
         <module>rocketmq-example/rocketmq-tx-example</module>
-        <module>rocketmq-example/rocketmq-pollable-consume-example</module>
         <module>rocketmq-example/rocketmq-retrieable-consume-example</module>
 
         <module>spring-cloud-bus-rocketmq-example</module>

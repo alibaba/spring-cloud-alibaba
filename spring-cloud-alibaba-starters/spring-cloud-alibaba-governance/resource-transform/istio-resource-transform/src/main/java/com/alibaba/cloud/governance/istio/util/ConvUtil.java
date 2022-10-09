@@ -16,14 +16,17 @@
 
 package com.alibaba.cloud.governance.istio.util;
 
-import com.alibaba.cloud.governance.common.matcher.HeaderMatcher;
-import com.alibaba.cloud.governance.common.matcher.IpMatcher;
-import com.alibaba.cloud.governance.common.matcher.MatcherType;
-import com.alibaba.cloud.governance.common.matcher.StringMatcher;
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.commons.matcher.IpMatcher;
+import com.alibaba.cloud.commons.matcher.MatcherType;
+import com.alibaba.cloud.commons.matcher.StringMatcher;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
-import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public final class ConvUtil {
 
 	private ConvUtil() {
@@ -69,10 +72,9 @@ public final class ConvUtil {
 				cidrRange.getAddressPrefix());
 	}
 
-	public static HeaderMatcher convertHeaderMatcher(
+	public static StringMatcher convertHeaderMatcher(
 			io.envoyproxy.envoy.config.route.v3.HeaderMatcher headerMatcher) {
-		return new HeaderMatcher(
-				convStringMatcher(headerMatch2StringMatch(headerMatcher)));
+		return convStringMatcher(headerMatch2StringMatch(headerMatcher));
 	}
 
 	public static io.envoyproxy.envoy.type.matcher.v3.StringMatcher headerMatch2StringMatch(
