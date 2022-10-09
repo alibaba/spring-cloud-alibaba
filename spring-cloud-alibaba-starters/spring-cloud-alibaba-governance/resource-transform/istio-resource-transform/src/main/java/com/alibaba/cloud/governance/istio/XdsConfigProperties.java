@@ -18,6 +18,10 @@ package com.alibaba.cloud.governance.istio;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 @ConfigurationProperties(XdsConfigProperties.PREFIX)
 public class XdsConfigProperties {
 
@@ -34,9 +38,10 @@ public class XdsConfigProperties {
 
 	private int pollingTime;
 
-	private boolean secure;
-
-	private String caCert;
+	/**
+	 * jwt token for istiod 15012 port.
+	 */
+	private String istiodToken;
 
 	public String getHost() {
 		return host;
@@ -70,20 +75,12 @@ public class XdsConfigProperties {
 		this.pollingTime = pollingTime;
 	}
 
-	public boolean isSecure() {
-		return secure;
+	public String getIstiodToken() {
+		return istiodToken;
 	}
 
-	public void setSecure(boolean secure) {
-		this.secure = secure;
-	}
-
-	public String getCaCert() {
-		return caCert;
-	}
-
-	public void setCaCert(String caCert) {
-		this.caCert = caCert;
+	public void setIstiodToken(String istiodToken) {
+		this.istiodToken = istiodToken;
 	}
 
 }

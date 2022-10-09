@@ -18,6 +18,10 @@ package com.alibaba.cloud.governance.istio;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class XdsScheduledThreadPool extends ScheduledThreadPoolExecutor {
 
 	public XdsScheduledThreadPool(XdsConfigProperties xdsConfigProperties) {

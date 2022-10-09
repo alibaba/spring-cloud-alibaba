@@ -12,15 +12,15 @@
 
 	<artifactId>auth-data</artifactId>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.bitbucket.b_c</groupId>
+			<artifactId>jose4j</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>governance-common</artifactId>
-			<version>2.2.9-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<artifactId>spring-cloud-alibaba-commons</artifactId>
 		</dependency>
 	</dependencies>
 

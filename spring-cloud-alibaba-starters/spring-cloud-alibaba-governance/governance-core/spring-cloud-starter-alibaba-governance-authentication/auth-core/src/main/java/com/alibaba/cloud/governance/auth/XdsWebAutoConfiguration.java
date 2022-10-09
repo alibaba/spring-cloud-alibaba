@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.governance.auth;
 
+import com.alibaba.cloud.governance.auth.validator.AuthValidator;
 import com.alibaba.cloud.governance.auth.webmvc.AuthWebInterceptor;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -24,8 +25,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(AuthValidatorAutoConfiguration.class)
+@AutoConfigureAfter(AuthDataAutoConfiguration.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled",
 		matchIfMissing = true)

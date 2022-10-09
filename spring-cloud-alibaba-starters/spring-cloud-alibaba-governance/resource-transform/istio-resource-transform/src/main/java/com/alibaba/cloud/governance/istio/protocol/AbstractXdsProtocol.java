@@ -38,6 +38,10 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 	protected static final Logger log = LoggerFactory
@@ -51,7 +55,10 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 	private XdsScheduledThreadPool xdsScheduledThreadPool;
 
-	private boolean isPolling;
+	/**
+	 * does the protocol need polling.
+	 */
+	private boolean needPolling;
 
 	private final Map<Long, StreamObserver<DiscoveryRequest>> requestObserverMap = new ConcurrentHashMap<>();
 
@@ -70,9 +77,13 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 		this.pollingTime = pollingTime <= 0 ? DEFAULT_POLLING_TIME : pollingTime;
 	}
 
+	public void setNeedPolling(boolean needPolling) {
+		this.needPolling = needPolling;
+	}
+
 	@Override
 	public long observeResource(Set<String> resourceNames, Consumer<List<T>> consumer) {
-		long id = requestId.getAndDecrement();
+		long id = requestId.getAndIncrement();
 		if (resourceNames == null) {
 			resourceNames = new HashSet<>();
 		}
@@ -83,7 +94,7 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 		catch (Exception e) {
 			log.error("error on get observe resource from xds", e);
 		}
-		if (!isPolling) {
+		if (needPolling) {
 			xdsScheduledThreadPool.scheduleAtFixedRate(() -> {
 				try {
 					consumer.accept(doGetResource(id, requestResource.get(id), consumer));
@@ -92,7 +103,7 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 					log.error("error on get observe resource from xds", e);
 				}
 			}, pollingTime, pollingTime, TimeUnit.SECONDS);
-			isPolling = true;
+			needPolling = false;
 		}
 		return id;
 	}
@@ -190,6 +201,7 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 				futureMap.remove(id);
 			}
 			requestResource.remove(id);
+			// reconnected immediately
 			requestObserverMap.put(id,
 					xdsChannel.createDiscoveryRequest(new XdsObserver(id, consumer)));
 		}
