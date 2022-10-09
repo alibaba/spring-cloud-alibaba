@@ -168,7 +168,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 					if (!headerNames.isPresent() || requestHeaders.size() == 0) {
 						break;
 					}
-					if (!routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
+					if (!routeRule.getValue()
+							.equals(requestHeaders.get(routeRule.getKey()))) {
 						break;
 					}
 				}
@@ -176,7 +177,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 					if (!parameterMap.isPresent() || parameterMap.get().size() == 0) {
 						break;
 					}
-					if (!routeRule.getValue().equals(parameterMap.get().get(routeRule.getKey())[0])) {
+					if (!routeRule.getValue()
+							.equals(parameterMap.get().get(routeRule.getKey())[0])) {
 						break;
 					}
 				}
@@ -203,7 +205,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 		return ifReturn;
 	}
 
-	private boolean doNotNullCheck(Optional<List<MatchService>> matchRouteList, String targetServiceName) {
+	private boolean doNotNullCheck(Optional<List<MatchService>> matchRouteList,
+			String targetServiceName) {
 		boolean ifReturn = false;
 
 		if (!matchRouteList.isPresent()) {
