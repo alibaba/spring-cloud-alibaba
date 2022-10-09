@@ -123,10 +123,13 @@ public class LabelRouteRule extends PredicateBasedRule {
 			HashMap<String, Integer> weightMap) {
 		final Optional<LabelRouteData> routeData = Optional
 				.ofNullable(routeDataRepository.getRouteData(targetServiceName));
+		if (doNotNullCheck(routeData)) {
+			return;
+		}
+
 		final Optional<List<MatchService>> matchRouteList = Optional
 				.ofNullable(routeData.get().getMatchRouteList());
-
-		if (doNotNullCheck(routeData, matchRouteList, targetServiceName)) {
+		if (doNotNullCheck(matchRouteList, targetServiceName)) {
 			return;
 		}
 
@@ -162,14 +165,18 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 			for (RouteRule routeRule : ruleList.get()) {
 				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
-					if (!headerNames.isPresent() || !routeRule.getValue()
-							.equals(requestHeaders.get(routeRule.getKey()))) {
+					if (!headerNames.isPresent() || requestHeaders.size() == 0) {
+						break;
+					}
+					if (!routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
 						break;
 					}
 				}
 				if (PARAMETER.equalsIgnoreCase(routeRule.getType())) {
-					if (!parameterMap.isPresent() || !routeRule.getValue()
-							.equals(parameterMap.get().get(routeRule.getKey())[0])) {
+					if (!parameterMap.isPresent() || parameterMap.get().size() == 0) {
+						break;
+					}
+					if (!routeRule.getValue().equals(parameterMap.get().get(routeRule.getKey())[0])) {
 						break;
 					}
 				}
@@ -187,20 +194,22 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	}
 
-	private boolean doNotNullCheck(Optional<LabelRouteData> routeData,
-			Optional<List<MatchService>> matchRouteList, String targetServiceName) {
+	private boolean doNotNullCheck(Optional<LabelRouteData> routeData) {
 		boolean ifReturn = false;
 
 		if (!routeData.isPresent()) {
-			LOGGER.info("Target service ={} have not set rule", targetServiceName);
 			ifReturn = true;
 		}
+		return ifReturn;
+	}
+
+	private boolean doNotNullCheck(Optional<List<MatchService>> matchRouteList, String targetServiceName) {
+		boolean ifReturn = false;
 
 		if (!matchRouteList.isPresent()) {
 			LOGGER.warn("Target service ={} rule is empty", targetServiceName);
 			ifReturn = true;
 		}
-
 		return ifReturn;
 	}
 
