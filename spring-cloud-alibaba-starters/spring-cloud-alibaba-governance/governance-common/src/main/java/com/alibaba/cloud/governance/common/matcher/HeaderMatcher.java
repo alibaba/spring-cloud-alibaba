@@ -24,6 +24,10 @@ public class HeaderMatcher {
 
 	private StringMatcher stringMatcher;
 
+	public HeaderMatcher(StringMatcher stringMatcher) {
+		this.stringMatcher = stringMatcher;
+	}
+
 	public boolean match(HttpHeaders headers, String headerName) {
 		List<String> headerValues = headers.getValuesAsList(headerName);
 		for (String headerValue : headerValues) {
@@ -32,10 +36,6 @@ public class HeaderMatcher {
 			}
 		}
 		return false;
-	}
-
-	public HeaderMatcher(StringMatcher stringMatcher) {
-		this.stringMatcher = stringMatcher;
 	}
 
 }

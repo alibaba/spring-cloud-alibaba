@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 
 public class IpMatcher {
 
+	private static final Logger log = LoggerFactory.getLogger(IpMatcher.class);
 	private int prefixLen;
-
 	private String ip;
 
 	public IpMatcher() {
@@ -42,8 +42,6 @@ public class IpMatcher {
 	public String getIp() {
 		return ip;
 	}
-
-	private static final Logger log = LoggerFactory.getLogger(IpMatcher.class);
 
 	public boolean match(String ip) {
 		String ruleIp = ip2BinaryString(this.ip);
