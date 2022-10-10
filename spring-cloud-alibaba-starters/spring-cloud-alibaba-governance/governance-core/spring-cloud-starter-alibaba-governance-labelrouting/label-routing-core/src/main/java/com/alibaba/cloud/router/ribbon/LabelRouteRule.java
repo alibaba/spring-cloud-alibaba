@@ -173,29 +173,37 @@ public class LabelRouteRule extends PredicateBasedRule {
 				continue;
 			}
 
+			boolean ifBreak = false;
 			for (RouteRule routeRule : ruleList.get()) {
 				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
 					if (!headerNames.isPresent() || requestHeaders.size() == 0) {
+						ifBreak = true;
 						break;
 					}
 					if (!routeRule.getValue()
 							.equals(requestHeaders.get(routeRule.getKey()))) {
+						ifBreak = true;
 						break;
 					}
 				}
 				if (PARAMETER.equalsIgnoreCase(routeRule.getType())) {
 					if (!parameterMap.isPresent() || parameterMap.get().size() == 0) {
+						ifBreak = true;
 						break;
 					}
 					if (!routeRule.getValue()
 							.equals(parameterMap.get().get(routeRule.getKey())[0])) {
+						ifBreak = true;
 						break;
 					}
 				}
-				versionSet.add(version.get());
-				weightMap.put(version.get(), weight);
-				defaultVersionWeight -= weight;
 			}
+			if (ifBreak) {
+				break;
+			}
+			versionSet.add(version.get());
+			weightMap.put(version.get(), weight);
+			defaultVersionWeight -= weight;
 		}
 
 		if (defaultVersionWeight > 0) {
@@ -227,8 +235,6 @@ public class LabelRouteRule extends PredicateBasedRule {
 			}
 		}
 		Server server = new NacosServer(instances.get(chooseServiceIndex));
-
-		LOGGER.info("choose instance = {}", instances.get(chooseServiceIndex));
 
 		return server;
 	}

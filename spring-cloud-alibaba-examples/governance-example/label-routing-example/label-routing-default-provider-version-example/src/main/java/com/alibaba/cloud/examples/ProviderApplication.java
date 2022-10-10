@@ -47,7 +47,7 @@ public class ProviderApplication {
 			String host = nacosRegistration.getHost();
 			int port = nacosRegistration.getPort();
 			String version = nacosRegistration.getMetadata().get("version");
-			return "Route in " + host + ":" + port + ",version is" + version;
+			return "Route in " + host + ":" + port + ",version is " + version;
 		}
 
 	}
