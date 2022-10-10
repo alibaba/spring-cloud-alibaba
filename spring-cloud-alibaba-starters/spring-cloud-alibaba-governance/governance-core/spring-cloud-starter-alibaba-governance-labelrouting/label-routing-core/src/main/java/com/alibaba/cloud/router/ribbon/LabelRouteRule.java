@@ -87,6 +87,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 			HashSet<String> versionSet = new HashSet<>();
 			HashMap<String, Integer> weightMap = new HashMap<>();
 
+			//filter by route rules,the result will be kept in versionSet and weightMap.
 			serviceFilter(name, versionSet, weightMap);
 
 			if (CollectionUtils.isEmpty(instances)) {
@@ -123,14 +124,13 @@ public class LabelRouteRule extends PredicateBasedRule {
 			HashMap<String, Integer> weightMap) {
 		final Optional<LabelRouteData> routeData = Optional
 				.ofNullable(routeDataRepository.getRouteData(targetServiceName));
-		if (doNotNullCheck(routeData)) {
+		if (!routeData.isPresent()) {
 			return;
 		}
-
 		final Optional<List<MatchService>> matchRouteList = Optional
 				.ofNullable(routeData.get().getMatchRouteList());
-		if (doNotNullCheck(matchRouteList, targetServiceName)) {
-			return;
+		if (!matchRouteList.isPresent()) {
+			LOGGER.warn("Target service ={} rule is empty", targetServiceName);
 		}
 
 		final HttpServletRequest request = requestContext.getRequest(true);
@@ -154,12 +154,22 @@ public class LabelRouteRule extends PredicateBasedRule {
 					.ofNullable(matchService.getRuleList());
 			Optional<String> version = Optional.ofNullable(matchService.getVersion());
 			Integer weight = matchService.getWeight();
+
 			if (weight == null) {
 				weight = 100;
 			}
-
-			if (doNotNullCheck(ruleList, version, weight, matchService,
-					targetServiceName)) {
+			if (!ruleList.isPresent() || ruleList.get().size() == 0) {
+				continue;
+			}
+			if (!version.isPresent()) {
+				LOGGER.warn("Target service ={} rule ={} lose version,please check it",
+						targetServiceName, matchService);
+				continue;
+			}
+			if (weight < 0 || weight > 100) {
+				LOGGER.warn(
+						"The weight of provider = {} version = {} had set error,please check it",
+						targetServiceName, version);
 				continue;
 			}
 
@@ -168,7 +178,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 					if (!headerNames.isPresent() || requestHeaders.size() == 0) {
 						break;
 					}
-					if (!routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
+					if (!routeRule.getValue()
+							.equals(requestHeaders.get(routeRule.getKey()))) {
 						break;
 					}
 				}
@@ -176,7 +187,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 					if (!parameterMap.isPresent() || parameterMap.get().size() == 0) {
 						break;
 					}
-					if (!routeRule.getValue().equals(parameterMap.get().get(routeRule.getKey())[0])) {
+					if (!routeRule.getValue()
+							.equals(parameterMap.get().get(routeRule.getKey())[0])) {
 						break;
 					}
 				}
@@ -186,54 +198,11 @@ public class LabelRouteRule extends PredicateBasedRule {
 			}
 		}
 
-		versionSet.add(routeData.get().getDefaultRouteVersion());
 		if (defaultVersionWeight > 0) {
+			versionSet.add(routeData.get().getDefaultRouteVersion());
 			weightMap.put(routeData.get().getDefaultRouteVersion(), defaultVersionWeight);
 		}
 
-	}
-
-	private boolean doNotNullCheck(Optional<LabelRouteData> routeData) {
-		boolean ifReturn = false;
-
-		if (!routeData.isPresent()) {
-			ifReturn = true;
-		}
-		return ifReturn;
-	}
-
-	private boolean doNotNullCheck(Optional<List<MatchService>> matchRouteList, String targetServiceName) {
-		boolean ifReturn = false;
-
-		if (!matchRouteList.isPresent()) {
-			LOGGER.warn("Target service ={} rule is empty", targetServiceName);
-			ifReturn = true;
-		}
-		return ifReturn;
-	}
-
-	private boolean doNotNullCheck(Optional<List<RouteRule>> ruleList,
-			Optional<String> version, Integer weight, MatchService matchService,
-			String targetServiceName) {
-		boolean ifContinue = false;
-
-		if (!ruleList.isPresent() || ruleList.get().size() == 0) {
-			ifContinue = true;
-		}
-
-		if (!version.isPresent()) {
-			LOGGER.warn("Target service ={} rule ={} lose version,please check it",
-					targetServiceName, matchService);
-			ifContinue = true;
-		}
-
-		if (weight < 0 || weight > 100) {
-			LOGGER.warn(
-					"The weight of provider = {} version = {} had set error,please check it",
-					targetServiceName, version);
-			ifContinue = true;
-		}
-		return ifContinue;
 	}
 
 	private Server chooseServerByWeight(List<Instance> instances, String targetService,
@@ -244,17 +213,6 @@ public class LabelRouteRule extends PredicateBasedRule {
 		for (Instance instance : instances) {
 			String version = instance.getMetadata().get(VERSION);
 			Integer weight = weightMap.get(version);
-
-			if (weight == null) {
-				weight = 100;
-			}
-
-			if (weight < 0 || weight > 100) {
-				LOGGER.error(
-						"The weight of provider = {} version = {} had set error,please check it",
-						targetService, version);
-			}
-
 			weightArray[index] = weight + sum;
 			sum = weightArray[index];
 			index++;

@@ -16,19 +16,16 @@
 
 package com.alibaba.cloud.router;
 
-import com.alibaba.cloud.router.data.RouteDataRepositoryAutoConfiguration;
 import com.alibaba.cloud.router.feign.FeignInterceptor;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-@Import(RouteDataRepositoryAutoConfiguration.class)
 public class FeignInterceptorAutoConfiguration {
 
 	@Bean
