@@ -60,6 +60,21 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	private static final String VERSION = "version";
 
+	/**
+	 * If do not set weight value,it will be set 100 by default.
+	 */
+	private static final int DEFAULT_WEIGHT = 100;
+
+	/**
+	 * Sum of all version's weight.
+	 */
+	private static final int SUM_WEIGHT = 100;
+
+	/**
+	 * Weight value can't less than it.
+	 */
+	private static final int MIN_WEIGHT = 0;
+
 	private AbstractServerPredicate predicate;
 
 	@Autowired
@@ -130,7 +145,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 		final Optional<List<MatchService>> matchRouteList = Optional
 				.ofNullable(routeData.get().getMatchRouteList());
 		if (!matchRouteList.isPresent()) {
-			LOGGER.warn("Target service ={} rule is empty", targetServiceName);
+			LOGGER.warn("Target service = {} rule is empty", targetServiceName);
 		}
 
 		final HttpServletRequest request = requestContext.getRequest(true);
@@ -148,65 +163,57 @@ public class LabelRouteRule extends PredicateBasedRule {
 			}
 		}
 
-		int defaultVersionWeight = 100;
+		int defaultVersionWeight = SUM_WEIGHT;
 		for (MatchService matchService : matchRouteList.get()) {
 			Optional<List<RouteRule>> ruleList = Optional
 					.ofNullable(matchService.getRuleList());
 			Optional<String> version = Optional.ofNullable(matchService.getVersion());
 			Integer weight = matchService.getWeight();
 
-			if (weight == null) {
-				weight = 100;
-			}
 			if (!ruleList.isPresent() || ruleList.get().size() == 0) {
 				continue;
 			}
-			if (!version.isPresent()) {
-				LOGGER.warn("Target service ={} rule ={} lose version,please check it",
-						targetServiceName, matchService);
-				continue;
+			if (weight == null) {
+				weight = DEFAULT_WEIGHT;
 			}
-			if (weight < 0 || weight > 100) {
-				LOGGER.warn(
+			if (!version.isPresent()) {
+				LOGGER.error("Target service = {} rule = {} lose version,please check it",
+						targetServiceName, matchService);
+			}
+			if (weight < MIN_WEIGHT || weight > SUM_WEIGHT) {
+				LOGGER.error(
 						"The weight of provider = {} version = {} had set error,please check it",
 						targetServiceName, version);
-				continue;
 			}
 
-			boolean ifBreak = false;
+			boolean isMatchRule = true;
 			for (RouteRule routeRule : ruleList.get()) {
 				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
-					if (!headerNames.isPresent() || requestHeaders.size() == 0) {
-						ifBreak = true;
-						break;
-					}
-					if (!routeRule.getValue()
-							.equals(requestHeaders.get(routeRule.getKey()))) {
-						ifBreak = true;
+					if (!headerNames.isPresent()
+							|| requestHeaders.size() == 0
+							|| !routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
+						isMatchRule = false;
 						break;
 					}
 				}
 				if (PARAMETER.equalsIgnoreCase(routeRule.getType())) {
-					if (!parameterMap.isPresent() || parameterMap.get().size() == 0) {
-						ifBreak = true;
-						break;
-					}
-					if (!routeRule.getValue()
-							.equals(parameterMap.get().get(routeRule.getKey())[0])) {
-						ifBreak = true;
+					if (!parameterMap.isPresent()
+							|| parameterMap.get().size() == 0
+							|| !routeRule.getValue().equals(parameterMap.get().get(routeRule.getKey())[0])) {
+						isMatchRule = false;
 						break;
 					}
 				}
 			}
-			if (ifBreak) {
-				break;
+			if (!isMatchRule) {
+				continue;
 			}
 			versionSet.add(version.get());
 			weightMap.put(version.get(), weight);
 			defaultVersionWeight -= weight;
 		}
 
-		if (defaultVersionWeight > 0) {
+		if (defaultVersionWeight > MIN_WEIGHT) {
 			versionSet.add(routeData.get().getDefaultRouteVersion());
 			weightMap.put(routeData.get().getDefaultRouteVersion(), defaultVersionWeight);
 		}
