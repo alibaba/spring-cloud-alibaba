@@ -54,10 +54,24 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LabelRouteRule.class);
 
+	/**
+	 * Support Parsing Rules from path,only URI at present.
+	 */
+	private static final String PATH = "path";
+
+	/**
+	 * Support Parsing Rules from header.
+	 */
 	private static final String HEADER = "header";
 
+	/**
+	 * Support Parsing Rules from parameter.
+	 */
 	private static final String PARAMETER = "parameter";
 
+	/**
+	 * Filter base on version metadata.
+	 */
 	private static final String VERSION = "version";
 
 	/**
@@ -75,6 +89,10 @@ public class LabelRouteRule extends PredicateBasedRule {
 	 */
 	private static final int MIN_WEIGHT = 0;
 
+	/**
+	 * Composite route.
+	 * todo
+	 */
 	private AbstractServerPredicate predicate;
 
 	@Autowired
@@ -188,6 +206,12 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 			boolean isMatchRule = true;
 			for (RouteRule routeRule : ruleList.get()) {
+				if (PATH.equalsIgnoreCase(routeRule.getType())) {
+					if (!routeRule.getValue().equals(request.getRequestURI())) {
+						isMatchRule = false;
+						break;
+					}
+				}
 				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
 					if (!headerNames.isPresent()
 							|| requestHeaders.size() == 0

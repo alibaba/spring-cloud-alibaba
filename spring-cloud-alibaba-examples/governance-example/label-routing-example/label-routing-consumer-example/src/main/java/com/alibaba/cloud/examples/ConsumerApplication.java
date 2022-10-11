@@ -97,8 +97,13 @@ public class ConsumerApplication {
 			routeRule1.setCondition("=");
 			routeRule1.setKey("test");
 			routeRule1.setValue("gray");
+			RouteRule routeRule2 = new UrlRule.Path();
+			routeRule2.setType("path");
+			routeRule2.setCondition("=");
+			routeRule2.setValue("/router-test");
 			routeRules.add(routeRule);
 			routeRules.add(routeRule1);
+			routeRules.add(routeRule2);
 
 			MatchService matchService = new MatchService();
 			matchService.setVersion("v2");
