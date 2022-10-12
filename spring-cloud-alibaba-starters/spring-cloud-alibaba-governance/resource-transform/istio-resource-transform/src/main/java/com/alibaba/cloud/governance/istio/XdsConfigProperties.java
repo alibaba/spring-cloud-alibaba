@@ -16,6 +16,11 @@
 
 package com.alibaba.cloud.governance.istio;
 
+import javax.annotation.PostConstruct;
+
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -42,6 +47,22 @@ public class XdsConfigProperties {
 	 * jwt token for istiod 15012 port.
 	 */
 	private String istiodToken;
+
+	@PostConstruct
+	public void init() {
+		if (this.port <= 0 || this.port > 65535) {
+			this.port = IstioConstants.ISTIOD_SECURE_PORT;
+		}
+		if (StringUtils.isEmpty(host)) {
+			this.host = IstioConstants.DEFAULT_ISTIOD_ADDR;
+		}
+		if (pollingPoolSize <= 0) {
+			pollingPoolSize = IstioConstants.DEFAULT_POLLING_SIZE;
+		}
+		if (pollingTime <= 0) {
+			pollingTime = IstioConstants.DEFAULT_POLLING_TIME;
+		}
+	}
 
 	public String getHost() {
 		return host;

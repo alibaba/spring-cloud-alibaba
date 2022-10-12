@@ -23,6 +23,7 @@ import java.util.Set;
 
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.cluster.v3.Cluster;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -67,7 +68,7 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 
 	@Override
 	public String getTypeUrl() {
-		return "type.googleapis.com/envoy.config.cluster.v3.Cluster";
+		return IstioConstants.CDS_URL;
 	}
 
 }

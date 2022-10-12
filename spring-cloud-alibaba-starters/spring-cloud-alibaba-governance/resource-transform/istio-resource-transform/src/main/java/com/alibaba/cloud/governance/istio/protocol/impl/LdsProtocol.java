@@ -33,6 +33,7 @@ import com.alibaba.cloud.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.governance.auth.rule.JwtRule;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import com.google.protobuf.Any;
@@ -100,7 +101,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	@Override
 	public String getTypeUrl() {
-		return "type.googleapis.com/envoy.config.listener.v3.Listener";
+		return IstioConstants.LDS_URL;
 	}
 
 	@Override

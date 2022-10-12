@@ -38,13 +38,13 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.alibaba.cloud.governance.istio.constant.IstioConstants.ISTIOD_SECURE_PORT;
+
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 public class XdsChannel implements AutoCloseable {
-
-	private static final int ISTIOD_SECURE_PORT = 15012;
 
 	private static final Logger log = LoggerFactory.getLogger(XdsChannel.class);
 

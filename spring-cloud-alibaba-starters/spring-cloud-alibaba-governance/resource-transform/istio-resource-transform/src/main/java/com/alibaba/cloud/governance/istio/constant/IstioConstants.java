@@ -52,6 +52,46 @@ public final class IstioConstants {
 	 */
 	public static final String KUBERNETES_SA_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token";
 
+	/**
+	 * url of cds request.
+	 */
+	public static final String CDS_URL = "type.googleapis.com/envoy.config.cluster.v3.Cluster";
+
+	/**
+	 * url of eds request.
+	 */
+	public static final String EDS_URL = "type.googleapis.com/envoy.config.endpoint.v3.ClusterLoadAssignment";
+
+	/**
+	 * url of lds request.
+	 */
+	public static final String LDS_URL = "type.googleapis.com/envoy.config.listener.v3.Listener";
+
+	/**
+	 * url of rds request.
+	 */
+	public static final String RDS_URL = "type.googleapis.com/envoy.config.route.v3.RouteConfiguration";
+
+	/**
+	 * secure port of istiod.
+	 */
+	public static final int ISTIOD_SECURE_PORT = 15012;
+
+	/**
+	 * default polling size of xds request.
+	 */
+	public static final int DEFAULT_POLLING_SIZE = 10;
+
+	/**
+	 * default polling time of xds request.
+	 */
+	public static final int DEFAULT_POLLING_TIME = 30;
+
+	/**
+	 * default ip address of istiod.
+	 */
+	public static final String DEFAULT_ISTIOD_ADDR = "127.0.0.1";
+
 	private IstioConstants() {
 
 	}

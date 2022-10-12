@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.endpoint.v3.ClusterLoadAssignment;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -53,7 +54,7 @@ public class EdsProtocol extends AbstractXdsProtocol<ClusterLoadAssignment> {
 
 	@Override
 	public String getTypeUrl() {
-		return "type.googleapis.com/envoy.config.endpoint.v3.ClusterLoadAssignment";
+		return IstioConstants.EDS_URL;
 	}
 
 }

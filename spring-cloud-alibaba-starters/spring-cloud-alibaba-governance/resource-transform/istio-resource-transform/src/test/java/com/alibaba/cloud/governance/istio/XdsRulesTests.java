@@ -38,12 +38,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = XdsRulesTests.TestConfig.class, properties = {
-		"spring.cloud.istio.config.host=39.105.35.234",
-		"spring.cloud.istio.config.port=15010",
-		"spring.cloud.istio.config.enabled=true",
-		"spring.cloud.istio.config.polling-pool-size=10",
-		"spring.cloud.istio.config.polling-time=30" }, webEnvironment = NONE)
+@SpringBootTest(classes = XdsRulesTests.TestConfig.class,
+		properties = { "spring.cloud.istio.config.host=39.105.35.234",
+				"spring.cloud.istio.config.port=15010",
+				"spring.cloud.istio.config.enabled=true",
+				"spring.cloud.istio.config.polling-pool-size=10",
+				"spring.cloud.istio.config.polling-time=30" },
+		webEnvironment = NONE)
 public class XdsRulesTests {
 
 	private static final Logger log = LoggerFactory.getLogger(XdsRulesTests.class);
@@ -55,7 +56,7 @@ public class XdsRulesTests {
 	public static void setEnv() {
 		// init some envi
 		setEnv(IstioConstants.POD_NAME, "sca");
-		setEnv(IstioConstants.NAMESPACE_NAME, "auth");
+		setEnv(IstioConstants.NAMESPACE_NAME, "default");
 	}
 
 	@Test

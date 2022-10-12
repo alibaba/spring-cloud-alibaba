@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 import com.alibaba.cloud.governance.istio.NodeBuilder;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -83,7 +84,7 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 	@Override
 	public long observeResource(Set<String> resourceNames, Consumer<List<T>> consumer) {
-		long id = requestId.getAndIncrement();
+		long id = getDefaultRequestId();
 		if (resourceNames == null) {
 			resourceNames = new HashSet<>();
 		}
@@ -163,6 +164,20 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 				.setTypeUrl(response.getTypeUrl()).setResponseNonce(response.getNonce())
 				.build();
 		observer.onNext(request);
+	}
+
+	private int getDefaultRequestId() {
+		switch (getTypeUrl()) {
+		case IstioConstants.CDS_URL:
+			return -1;
+		case IstioConstants.EDS_URL:
+			return -2;
+		case IstioConstants.LDS_URL:
+			return -3;
+		case IstioConstants.RDS_URL:
+			return -4;
+		}
+		throw new UnsupportedOperationException("Unknown type url");
 	}
 
 	private class XdsObserver implements StreamObserver<DiscoveryResponse> {
