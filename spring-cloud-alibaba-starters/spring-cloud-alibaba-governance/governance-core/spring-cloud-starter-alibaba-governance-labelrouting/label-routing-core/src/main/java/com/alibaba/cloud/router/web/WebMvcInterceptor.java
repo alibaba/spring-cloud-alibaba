@@ -19,7 +19,7 @@ package com.alibaba.cloud.router.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.cloud.router.context.RequestContext;
+import com.alibaba.cloud.router.util.RequestContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;

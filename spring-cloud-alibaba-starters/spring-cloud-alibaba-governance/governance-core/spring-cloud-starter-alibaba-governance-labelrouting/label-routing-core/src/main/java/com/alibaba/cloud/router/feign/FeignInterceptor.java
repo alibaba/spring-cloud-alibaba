@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.cloud.router.context.RequestContext;
+import com.alibaba.cloud.router.util.RequestContext;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.slf4j.Logger;

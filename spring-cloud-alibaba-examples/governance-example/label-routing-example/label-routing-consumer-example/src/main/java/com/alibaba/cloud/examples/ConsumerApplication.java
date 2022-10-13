@@ -94,9 +94,9 @@ public class ConsumerApplication {
 			routeRule.setValue("gray");
 			RouteRule routeRule1 = new UrlRule.Parameter();
 			routeRule1.setType("parameter");
-			routeRule1.setCondition("=");
-			routeRule1.setKey("test");
-			routeRule1.setValue("gray");
+			routeRule1.setCondition(">");
+			routeRule1.setKey("id");
+			routeRule1.setValue("10");
 			RouteRule routeRule2 = new UrlRule.Path();
 			routeRule2.setType("path");
 			routeRule2.setCondition("=");

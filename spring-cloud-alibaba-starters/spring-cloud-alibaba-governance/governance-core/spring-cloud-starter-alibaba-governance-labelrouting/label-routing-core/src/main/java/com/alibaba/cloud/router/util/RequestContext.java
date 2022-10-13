@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.context;
+package com.alibaba.cloud.router.util;
 
 import javax.servlet.http.HttpServletRequest;
 

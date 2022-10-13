@@ -30,10 +30,11 @@ import javax.servlet.http.HttpServletRequest;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
-import com.alibaba.cloud.router.context.RequestContext;
 import com.alibaba.cloud.router.data.crd.MatchService;
 import com.alibaba.cloud.router.data.crd.rule.RouteRule;
 import com.alibaba.cloud.router.data.repository.RouteDataRepository;
+import com.alibaba.cloud.router.util.ConditionMatchUtil;
+import com.alibaba.cloud.router.util.RequestContext;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.loadbalancer.AbstractServerPredicate;
@@ -98,6 +99,11 @@ public class LabelRouteRule extends PredicateBasedRule {
 	 * todo
 	 */
 	private AbstractServerPredicate predicate;
+
+	/**
+	 * Match condition util.
+	 */
+	private final ConditionMatchUtil conditionMatchUtil = new ConditionMatchUtil();
 
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
@@ -178,8 +184,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 				requestHeaders.put(name, value);
 			}
 		}
-		final Optional<Map<String, String[]>> parameterMap = Optional
-				.ofNullable(request.getParameterMap());
+		final Map<String, String[]> parameterMap = request.getParameterMap();
 		int defaultVersionWeight = SUM_WEIGHT;
 		boolean isMatch = false;
 
@@ -195,8 +200,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 			}
 		}
 
-		if (!isMatch && parameterMap.isPresent()) {
-			for (String keyName : parameterMap.get().keySet()) {
+		if (!isMatch && parameterMap != null) {
+			for (String keyName : parameterMap.keySet()) {
 				int weight = matchRule(targetServiceName, keyName, requestHeaders, parameterMap, request, versionSet, weightMap);
 				if (weight != NO_MATCH) {
 					isMatch = true;
@@ -230,7 +235,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 	}
 
 	private int matchRule(String targetServiceName, String keyName, HashMap<String, String> requestHeaders,
-			Optional<Map<String, String[]>> parameterMap, HttpServletRequest request, HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
+			Map<String, String[]> parameterMap, HttpServletRequest request, HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
 		final Optional<List<MatchService>> matchServiceList = Optional
 				.ofNullable(routeDataRepository.getRouteData(targetServiceName).get(keyName));
 		if (!matchServiceList.isPresent()) {
@@ -259,26 +264,23 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 			boolean isMatchRule = true;
 			for (RouteRule routeRule : ruleList.get()) {
-				if (PATH.equalsIgnoreCase(routeRule.getType())) {
-					if (!routeRule.getValue().equals(request.getRequestURI())) {
-						isMatchRule = false;
-						break;
-					}
+				String type = routeRule.getType();
+				switch (type) {
+				case PATH:
+					isMatchRule = parseRequestPath(routeRule, request);
+					break;
+				case HEADER:
+					isMatchRule = parseRequestHeader(routeRule, requestHeaders);
+					break;
+				case PARAMETER:
+					isMatchRule = parseRequestParameter(routeRule, parameterMap);
+					break;
+				default:
+					throw new UnsupportedOperationException(
+							"unsupported string compare operation");
 				}
-				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
-					if (requestHeaders.size() == 0
-							|| !routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
-						isMatchRule = false;
-						break;
-					}
-				}
-				if (PARAMETER.equalsIgnoreCase(routeRule.getType())) {
-					if (!parameterMap.isPresent()
-							|| parameterMap.get().size() == 0
-							|| !routeRule.getValue().equals(parameterMap.get().get(routeRule.getKey())[0])) {
-						isMatchRule = false;
-						break;
-					}
+				if (!isMatchRule) {
+					break;
 				}
 			}
 			if (!isMatchRule) {
@@ -289,6 +291,54 @@ public class LabelRouteRule extends PredicateBasedRule {
 			return weight;
 		}
 		return NO_MATCH;
+	}
+
+	private boolean parseRequestPath(final RouteRule routeRule, final HttpServletRequest request) {
+		String condition = routeRule.getCondition();
+		String value = routeRule.getValue();
+		String uri = request.getRequestURI();
+		return conditionMatch(condition, value, uri);
+	}
+
+	private boolean parseRequestHeader(final RouteRule routeRule, final HashMap<String, String> requestHeaders) {
+		if (requestHeaders.size() == 0) {
+			return false;
+		}
+		String condition = routeRule.getCondition();
+		String value = routeRule.getValue();
+		String headerValue = requestHeaders.get(routeRule.getKey());
+		return conditionMatch(condition, value, headerValue);
+	}
+
+	private boolean parseRequestParameter(final RouteRule routeRule, final Map<String, String[]> parameterMap) {
+		if (parameterMap == null || parameterMap.size() == 0) {
+			return false;
+		}
+		String condition = routeRule.getCondition();
+		String value = routeRule.getValue();
+		String paramValue = parameterMap.get(routeRule.getKey())[0];
+		return conditionMatch(condition, value, paramValue);
+	}
+
+	private boolean conditionMatch(String condition, String str, String comparator) {
+		switch (condition) {
+		case ConditionMatchUtil.EXACT:
+		case ConditionMatchUtil.EQUAL:
+			return conditionMatchUtil.exactMatch(str, comparator);
+		case ConditionMatchUtil.REGEX:
+			return conditionMatchUtil.regexMatch(str, comparator);
+		case ConditionMatchUtil.CONTAIN:
+			return conditionMatchUtil.containMatch(str, comparator);
+		case ConditionMatchUtil.GREATER:
+			return conditionMatchUtil.greaterMatch(str, comparator);
+		case ConditionMatchUtil.LESS:
+			return conditionMatchUtil.lessMatch(str, comparator);
+		case ConditionMatchUtil.NOT_EQUAL:
+			return conditionMatchUtil.noEqualMatch(str, comparator);
+		default:
+			throw new UnsupportedOperationException(
+					"unsupported string compare operation");
+		}
 	}
 
 	private Server chooseServerByWeight(List<Instance> instances,
