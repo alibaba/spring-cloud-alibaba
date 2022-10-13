@@ -16,12 +16,16 @@
 
 package com.alibaba.cloud.router.data.repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.cloud.router.data.crd.LabelRouteData;
+import com.alibaba.cloud.router.data.crd.MatchService;
 import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.router.data.crd.rule.RouteRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,99 +34,163 @@ import org.slf4j.LoggerFactory;
  */
 public class RouteDataRepository {
 
-	private static final Logger log = LoggerFactory.getLogger(RouteDataRepository.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RouteDataRepository.class);
 
-	private ConcurrentHashMap<String, LabelRouteData> routeCache = new ConcurrentHashMap<>();
+	/**
+	 * Key is service name,value is hashmap,which key is single RouteRule key,value is match service.
+	 * Use double hash index to parse route rule.
+	 */
+	private ConcurrentHashMap<String, HashMap<String, List<MatchService>>> routeCache;
 
+	/**
+	 * Control plane original data structure,use to accelerate compare if change.
+	 */
+	private HashMap<String, LabelRouteData> originalRouteData;
+
+	/**
+	 * Sign of Route rule change.
+	 */
 	private boolean routeDataChanged = false;
 
-	private AtomicInteger waitUpdateIndex = new AtomicInteger(-1);
+	/**
+	 * Support Parsing Rules from path,only URI at present.
+	 */
+	private static final String PATH = "path";
 
-	private AtomicInteger updateIndex = new AtomicInteger(-1);
-
+	/**
+	 * Use to update route data.
+	 */
 	private List<UntiedRouteDataStructure> routeDataList;
 
-	public void init(List<UntiedRouteDataStructure> routerDataList) {
-		// Try to avoid capacity expansion, and space is used to exchange time.
-		int initCacheSize = routerDataList.size() * 2;
+	/**
+	 * Contain rule of single path rule.
+	 */
+	private HashMap<String, List<MatchService>> pathRuleMap;
+
+	public void init(final List<UntiedRouteDataStructure> routerDataList) {
+		int initCacheSize = routerDataList.size();
 		routeCache = new ConcurrentHashMap<>(initCacheSize);
+		originalRouteData = new HashMap<>(initCacheSize);
 
 		putRouteData(routerDataList);
 	}
 
-	public void updateRouteData(List<UntiedRouteDataStructure> routerDataList) {
+	public void updateRouteData(final List<UntiedRouteDataStructure> routerDataList) {
 		this.routeDataList = routerDataList;
 		routeDataChanged = true;
 
 		updateRouteData();
 	}
 
-	private void updateRouteData() {
+	/**
+	 *
+	 * @return Finished updating data index.
+	 */
+	private int updateRouteData() {
+		final AtomicInteger waitUpdateIndex = new AtomicInteger(-1);
+		final AtomicInteger updateIndex = new AtomicInteger(-1);
+
 		while (routeDataChanged) {
 			int routeDataListSize = routeDataList.size();
-
+			//If all tasks had been distributed
 			if (waitUpdateIndex.get() == routeDataListSize) {
-				return;
+				return updateIndex.get();
 			}
-
+			//If not,get a task.
 			int i = waitUpdateIndex.incrementAndGet();
 
-			// avoid generate critical condition.
+			// May be multi-thread competition,avoid critical condition.
 			if (i < routeDataListSize) {
 				UntiedRouteDataStructure routerData = routeDataList.get(i);
-				LabelRouteData labelRouteData = routeCache
+				LabelRouteData labelRouteData = originalRouteData
 						.get(routerData.getTargetService());
 
 				if (!routerData.getLabelRouteData().equals(labelRouteData)) {
-					putRouteData(routerData);
+					buildHashIndex(routerData);
+					originalRouteData.put(routerData.getTargetService(), routerData.getLabelRouteData());
 				}
 				int updateNumber = updateIndex.incrementAndGet();
 
-				if (updateNumber >= routeDataListSize) {
+				if (updateNumber >= routeDataListSize - 1) {
 					routeDataChanged = false;
 				}
 			}
 		}
+
+		return updateIndex.get();
 	}
 
-	private void putRouteData(UntiedRouteDataStructure routerData) {
-		LabelRouteData putLabelRouteData = routeCache.put(routerData.getTargetService(),
-				routerData.getLabelRouteData());
-	}
-
-	private void putRouteData(List<UntiedRouteDataStructure> routerDataList) {
-		LabelRouteData putLabelRouteData = null;
-
+	private void putRouteData(final List<UntiedRouteDataStructure> routerDataList) {
 		for (UntiedRouteDataStructure routerData : routerDataList) {
-			putLabelRouteData = routeCache.put(routerData.getTargetService(),
-					routerData.getLabelRouteData());
-			if (putLabelRouteData == null) {
-				log.info("Label route rule:" + routerData
-						+ "had been add to router cache");
-			}
+			buildHashIndex(routerData);
+			originalRouteData.put(routerData.getTargetService(), routerData.getLabelRouteData());
 		}
 	}
 
-	public LabelRouteData getRouteData(String targetService) {
-		// double check.
-		while (routeDataChanged) {
-			updateRouteData();
+	private void buildHashIndex(final UntiedRouteDataStructure routerData) {
+		final List<MatchService> matchRouteList = routerData.getLabelRouteData().getMatchRouteList();
+		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();
 
+		for (MatchService matchService : matchRouteList) {
+			List<RouteRule> ruleList = matchService.getRuleList();
+
+			//Take out the path label separately, because there is no key for hash index.
+			if (ruleList.size() == 1 && PATH.equalsIgnoreCase(ruleList.get(0).getType())) {
+				List<MatchService> matchServiceList = pathRuleMap.get(routerData.getTargetService());
+				if (matchServiceList == null) {
+					matchServiceList = new ArrayList<>();
+				}
+				matchServiceList.add(matchService);
+				pathRuleMap.put(routerData.getTargetService(), matchServiceList);
+				continue;
+			}
+			for (RouteRule routeRule : ruleList) {
+				List<MatchService> matchServiceList = singleRuleMap.get(routeRule.getKey());
+				if (matchServiceList == null) {
+					matchServiceList = new ArrayList<>();
+				}
+				matchServiceList.add(matchService);
+				singleRuleMap.put(routeRule.getKey(), matchServiceList);
+			}
+		}
+		routeCache.put(routerData.getTargetService(), singleRuleMap);
+	}
+
+	public HashMap<String, List<MatchService>> getRouteData(String targetService) {
+		updateData(targetService);
+		return routeCache.get(targetService);
+	}
+
+	public LabelRouteData getOriginalRouteData(String targetService) {
+		updateData(targetService);
+		return originalRouteData.get(targetService);
+	}
+
+	public List<MatchService> getPathRules(String targetService) {
+		updateData(targetService);
+		return pathRuleMap == null ? null : pathRuleMap.get(targetService);
+	}
+
+	private void updateData(String targetService) {
+		while (routeDataChanged) {
+			//Update label rule data.
+			int updateIndex = updateRouteData();
+
+			// Double check.
 			if (routeDataChanged) {
 				int matchIndex = 0;
+				//Find targetService index in list.
 				for (UntiedRouteDataStructure routeData : routeDataList) {
 					if (targetService.equals(routeData.getTargetService())) {
 						break;
 					}
 					matchIndex++;
 				}
-				if (matchIndex <= updateIndex.get()) {
-					return routeCache.get(targetService);
+				//If match index has update.
+				if (matchIndex <= updateIndex) {
+					return;
 				}
 			}
 		}
-
-		return routeCache.get(targetService);
 	}
-
 }
