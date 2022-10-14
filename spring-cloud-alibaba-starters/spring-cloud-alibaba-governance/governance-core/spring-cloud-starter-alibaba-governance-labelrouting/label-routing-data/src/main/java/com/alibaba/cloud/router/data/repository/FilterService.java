@@ -18,7 +18,6 @@ package com.alibaba.cloud.router.data.repository;
 
 import java.util.HashSet;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -53,14 +52,14 @@ public class FilterService implements ApplicationContextAware {
 	private ApplicationContext applicationContext;
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 
 	public HashSet<String> getDefinitionFeignService(int size) {
 		String[] allBeanNames = applicationContext.getBeanDefinitionNames();
 		HashSet<String> serviceSet = new HashSet<>(size);
-		for (String beanName: allBeanNames) {
+		for (String beanName : allBeanNames) {
 			if (beanName.contains(FEIGN_CLIENT_BEAN_SPECIFICATION) && !beanName.startsWith(FEIGN_CLIENT_BEAN_DEFAULT)) {
 				String feignName = beanName.substring(0, beanName.indexOf(FEIGN_CLIENT_BEAN_SPECIFICATION));
 				if (feignName.startsWith(FEIGN_CLIENT_BEAN_START)) {

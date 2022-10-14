@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RouteDataRepository {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RouteDataRepository.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RouteDataRepository.class);
 
 	/**
 	 * Key is service name,value is hashmap,which key is single RouteRule key,value is match service.
@@ -53,7 +53,7 @@ public class RouteDataRepository {
 	private boolean routeDataChanged = false;
 
 	/**
-	 * Support Parsing Rules from path,only URI at present.
+	 * Sign of path.
 	 */
 	private static final String PATH = "path";
 

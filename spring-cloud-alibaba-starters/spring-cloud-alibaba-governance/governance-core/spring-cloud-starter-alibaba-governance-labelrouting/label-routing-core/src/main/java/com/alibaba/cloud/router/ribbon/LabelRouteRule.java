@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,6 +97,11 @@ public class LabelRouteRule extends PredicateBasedRule {
 	private static final int NO_MATCH = -1;
 
 	/**
+	 *Avoid loss of accuracy
+	 */
+	private static final double KEEP_ACCURACY = 1.0;
+
+	/**
 	 * Composite route.
 	 * todo
 	 */
@@ -155,17 +160,22 @@ public class LabelRouteRule extends PredicateBasedRule {
 			}
 
 			//Filter instances by versionSet and weightMap.
-			int[] weightArray = new int[instances.size()];
-			List<Instance> instanceList = new ArrayList<>();
+			double[] weightArray = new double[instances.size()];
+			final LinkedHashMap<String, List<Instance>> instanceMap = new LinkedHashMap<>();
 			for (Instance instance : instances) {
-				String version = instance.getMetadata().get("version");
+				String version = instance.getMetadata().get(VERSION);
 				if (versionSet.contains(version)) {
+					List<Instance> instanceList = instanceMap.get(version);
+					if (instanceList == null) {
+						instanceList = new ArrayList<>();
+					}
 					instanceList.add(instance);
+					instanceMap.put(version, instanceList);
 				}
 			}
 
 			//Routing with Weight algorithm.
-			return chooseServerByWeight(instanceList, weightMap, weightArray);
+			return chooseServerByWeight(instanceMap, weightMap, weightArray);
 
 		}
 		catch (Exception e) {
@@ -349,20 +359,24 @@ public class LabelRouteRule extends PredicateBasedRule {
 		}
 	}
 
-	private Server chooseServerByWeight(List<Instance> instances,
-			HashMap<String, Integer> weightMap, int[] weightArray) {
+	private Server chooseServerByWeight(LinkedHashMap<String, List<Instance>> instanceMap,
+			HashMap<String, Integer> weightMap, double[] weightArray) {
 		int index = 0;
-		int sum = 0;
+		double sum = 0;
+		List<Instance> instances = new ArrayList<>();
 
-		for (Instance instance : instances) {
-			String version = instance.getMetadata().get(VERSION);
-			Integer weight = weightMap.get(version);
-			weightArray[index] = weight + sum;
-			sum = weightArray[index];
-			index++;
+		for (String version : instanceMap.keySet()) {
+			int weight = weightMap.get(version);
+			List<Instance> instanceList = instanceMap.get(version);
+			for (Instance instance : instanceList) {
+				instances.add(instance);
+				weightArray[index] = KEEP_ACCURACY * weight / instanceList.size() + sum;
+				sum = weightArray[index];
+				index++;
+			}
 		}
 
-		int random = ThreadLocalRandom.current().nextInt(1, 101);
+		double random = ThreadLocalRandom.current().nextDouble(1, 101);
 		int chooseServiceIndex = 0;
 		for (int i = 0; i < weightArray.length; i++) {
 			if (random < weightArray[i]) {
