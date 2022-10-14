@@ -17,6 +17,7 @@
 package com.alibaba.cloud.router.ribbon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -97,7 +98,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 	private static final int NO_MATCH = -1;
 
 	/**
-	 *Avoid loss of accuracy
+	 *Avoid loss of accuracy.
 	 */
 	private static final double KEEP_ACCURACY = 1.0;
 
@@ -376,13 +377,14 @@ public class LabelRouteRule extends PredicateBasedRule {
 			}
 		}
 
-		double random = ThreadLocalRandom.current().nextDouble(1, 101);
-		int chooseServiceIndex = 0;
-		for (int i = 0; i < weightArray.length; i++) {
-			if (random < weightArray[i]) {
-				chooseServiceIndex = i;
-				break;
-			}
+		if (sum > SUM_WEIGHT) {
+			LOG.error("Sum of weight has over {} ", SUM_WEIGHT);
+		}
+
+		double random = ThreadLocalRandom.current().nextDouble(MIN_WEIGHT, SUM_WEIGHT);
+		int chooseServiceIndex = Arrays.binarySearch(weightArray, random);
+		if (chooseServiceIndex < 0) {
+			chooseServiceIndex = -chooseServiceIndex - 1;
 		}
 
 		return new NacosServer(instances.get(chooseServiceIndex));
