@@ -158,12 +158,12 @@ public class RouteDataRepository {
 
 	public HashMap<String, List<MatchService>> getRouteData(String targetService) {
 		updateData(targetService);
-		return routeCache.get(targetService);
+		return routeCache == null ? null : routeCache.get(targetService);
 	}
 
 	public LabelRouteData getOriginalRouteData(String targetService) {
 		updateData(targetService);
-		return originalRouteData.get(targetService);
+		return originalRouteData == null ? null : originalRouteData.get(targetService);
 	}
 
 	public List<MatchService> getPathRules(String targetService) {

@@ -30,10 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
+import com.alibaba.cloud.router.RouterProperties;
 import com.alibaba.cloud.router.data.crd.MatchService;
 import com.alibaba.cloud.router.data.crd.rule.RouteRule;
 import com.alibaba.cloud.router.data.repository.RouteDataRepository;
 import com.alibaba.cloud.router.util.ConditionMatchUtil;
+import com.alibaba.cloud.router.util.LoadBalanceUtil;
 import com.alibaba.cloud.router.util.RequestContext;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
@@ -52,7 +54,7 @@ import org.springframework.util.CollectionUtils;
  */
 public class LabelRouteRule extends PredicateBasedRule {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LabelRouteRule.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LabelRouteRule.class);
 
 	/**
 	 * Support Parsing Rules from path,only URI at present.
@@ -105,6 +107,11 @@ public class LabelRouteRule extends PredicateBasedRule {
 	 */
 	private final ConditionMatchUtil conditionMatchUtil = new ConditionMatchUtil();
 
+	/**
+	 * Load Balance Util.
+	 */
+	private final LoadBalanceUtil loadBalanceUtil = new LoadBalanceUtil();
+
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
@@ -117,6 +124,9 @@ public class LabelRouteRule extends PredicateBasedRule {
 	@Autowired
 	private RequestContext requestContext;
 
+	@Autowired
+	private RouterProperties routerProperties;
+
 	@Override
 	public Server choose(Object key) {
 		try {
@@ -127,6 +137,12 @@ public class LabelRouteRule extends PredicateBasedRule {
 			NamingService namingService = nacosServiceManager.getNamingService();
 			List<Instance> instances = namingService.selectInstances(targetServiceName, group, true);
 
+			//If routeData isn't present, use normal load balance rule.
+			final HashMap<String, List<MatchService>> routeData = routeDataRepository.getRouteData(targetServiceName);
+			if (routeData == null) {
+				return loadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key, routerProperties.getRule());
+			}
+
 			//Filter by route rules,the result will be kept in versionSet and weightMap.
 			HashSet<String> versionSet = new HashSet<>();
 			HashMap<String, Integer> weightMap = new HashMap<>();
@@ -134,7 +150,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 			//None instance match rule.
 			if (CollectionUtils.isEmpty(instances)) {
-				LOGGER.warn("no instance in service {}", targetServiceName);
+				LOG.warn("no instance in service {}", targetServiceName);
 				return null;
 			}
 
@@ -153,7 +169,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 		}
 		catch (Exception e) {
-			LOGGER.warn("LabelRouteRule error", e);
+			LOG.warn("LabelRouteRule error", e);
 			return null;
 		}
 	}
@@ -165,14 +181,6 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
 			HashMap<String, Integer> weightMap) {
-		final Optional<HashMap<String, List<MatchService>>> routeData = Optional
-				.ofNullable(routeDataRepository.getRouteData(targetServiceName));
-		//if routeData isn't present, use normal load balance rule.
-		//todo
-		if (!routeData.isPresent()) {
-			return;
-		}
-
 		//Get request metadata.
 		final HttpServletRequest request = requestContext.getRequest(true);
 		final Optional<Enumeration<String>> headerNames = Optional.ofNullable(request.getHeaderNames());
@@ -236,34 +244,33 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	private int matchRule(String targetServiceName, String keyName, HashMap<String, String> requestHeaders,
 			Map<String, String[]> parameterMap, HttpServletRequest request, HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
-		final Optional<List<MatchService>> matchServiceList = Optional
-				.ofNullable(routeDataRepository.getRouteData(targetServiceName).get(keyName));
-		if (!matchServiceList.isPresent()) {
+		final List<MatchService> matchServiceList = routeDataRepository.getRouteData(targetServiceName).get(keyName);
+		if (matchServiceList == null) {
 			return NO_MATCH;
 		}
-		for (MatchService matchService : matchServiceList.get()) {
-			Optional<List<RouteRule>> ruleList = Optional
-					.ofNullable(matchService.getRuleList());
-			Optional<String> version = Optional.ofNullable(matchService.getVersion());
+		for (MatchService matchService : matchServiceList) {
+			//No null check.
+			final List<RouteRule> ruleList = matchService.getRuleList();
+			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
-			if (!ruleList.isPresent() || ruleList.get().size() == 0) {
+			if (ruleList == null || ruleList.size() == 0) {
 				continue;
 			}
 			if (weight == null) {
 				weight = DEFAULT_WEIGHT;
 			}
-			if (!version.isPresent()) {
-				LOGGER.error("Target service = {} rule = {} lose version,please check it",
+			if (version == null) {
+				LOG.error("Target service = {} rule = {} lose version,please check it",
 						targetServiceName, matchService);
 			}
 			if (weight < MIN_WEIGHT || weight > SUM_WEIGHT) {
-				LOGGER.error(
+				LOG.error(
 						"The weight of provider = {} version = {} had set error,please check it",
 						targetServiceName, version);
 			}
 
 			boolean isMatchRule = true;
-			for (RouteRule routeRule : ruleList.get()) {
+			for (RouteRule routeRule : ruleList) {
 				String type = routeRule.getType();
 				switch (type) {
 				case PATH:
@@ -286,8 +293,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 			if (!isMatchRule) {
 				continue;
 			}
-			versionSet.add(version.get());
-			weightMap.put(version.get(), weight);
+			versionSet.add(version);
+			weightMap.put(version, weight);
 			return weight;
 		}
 		return NO_MATCH;
