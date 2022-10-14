@@ -16,9 +16,8 @@
 
 package com.alibaba.cloud.router.data;
 
-import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
+import com.alibaba.cloud.router.data.repository.FilterService;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,11 +25,11 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class ControlPlaneAutoConfiguration {
+public class FilterServiceAutoConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean
-	public ControlPlaneConnection controlPlaneConnection() {
-		return new ControlPlaneConnection();
+	public FilterService filterService() {
+		return new FilterService();
 	}
 }
+

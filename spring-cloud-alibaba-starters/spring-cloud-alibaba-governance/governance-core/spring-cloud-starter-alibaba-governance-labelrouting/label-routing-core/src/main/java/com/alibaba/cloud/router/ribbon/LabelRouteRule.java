@@ -183,11 +183,11 @@ public class LabelRouteRule extends PredicateBasedRule {
 			HashMap<String, Integer> weightMap) {
 		//Get request metadata.
 		final HttpServletRequest request = requestContext.getRequest(true);
-		final Optional<Enumeration<String>> headerNames = Optional.ofNullable(request.getHeaderNames());
+		final Enumeration<String> headerNames = request.getHeaderNames();
 		HashMap<String, String> requestHeaders = new HashMap<>();
-		if (headerNames.isPresent()) {
-			while (headerNames.get().hasMoreElements()) {
-				String name = headerNames.get().nextElement();
+		if (headerNames != null) {
+			while (headerNames.hasMoreElements()) {
+				String name = headerNames.nextElement();
 				String value = request.getHeader(name);
 				requestHeaders.put(name, value);
 			}
@@ -197,7 +197,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 		boolean isMatch = false;
 
 		//Parse rule.
-		if (headerNames.isPresent()) {
+		if (requestHeaders.size() > 0) {
 			for (String keyName : requestHeaders.keySet()) {
 				int weight = matchRule(targetServiceName, keyName, requestHeaders, parameterMap, request, versionSet, weightMap);
 				if (weight != NO_MATCH) {
@@ -323,7 +323,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 		}
 		String condition = routeRule.getCondition();
 		String value = routeRule.getValue();
-		String paramValue = parameterMap.get(routeRule.getKey())[0];
+		String[] paramValues = parameterMap.get(routeRule.getKey());
+		String paramValue = paramValues == null ? null : paramValues[0];
 		return conditionMatch(condition, value, paramValue);
 	}
 
