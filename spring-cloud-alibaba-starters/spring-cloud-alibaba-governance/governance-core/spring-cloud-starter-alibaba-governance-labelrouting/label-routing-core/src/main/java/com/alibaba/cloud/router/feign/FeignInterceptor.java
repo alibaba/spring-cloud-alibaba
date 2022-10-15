@@ -17,7 +17,6 @@
 package com.alibaba.cloud.router.feign;
 
 import java.util.Enumeration;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,17 +41,13 @@ public class FeignInterceptor implements RequestInterceptor {
 	@Override
 	public void apply(RequestTemplate requestTemplate) {
 		final HttpServletRequest request = requestContext.getRequest(false);
-		final Optional<Enumeration<String>> headerNames = Optional
-				.ofNullable(request.getHeaderNames());
-
-		if (!headerNames.isPresent()) {
+		final Enumeration<String> headerNames = request.getHeaderNames();
+		if (headerNames == null) {
 			return;
 		}
-
-		while (headerNames.get().hasMoreElements()) {
-			String headerName = headerNames.get().nextElement();
+		while (headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
 			requestTemplate.header(headerName, request.getHeader(headerName));
 		}
 	}
-
 }

@@ -137,11 +137,15 @@ public class LabelRouteRule extends PredicateBasedRule {
 	public Server choose(Object key) {
 		try {
 			//Get instances from register-center.
-			String group = this.nacosDiscoveryProperties.getGroup();
-			DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
+			final DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
 			String targetServiceName = loadBalancer.getName();
-			NamingService namingService = nacosServiceManager.getNamingService();
-			List<Instance> instances = namingService.selectInstances(targetServiceName, group, true);
+			String group = this.nacosDiscoveryProperties.getGroup();
+			final NamingService namingService = nacosServiceManager.getNamingService();
+			final List<Instance> instances = namingService.selectInstances(targetServiceName, group, true);
+			if (CollectionUtils.isEmpty(instances)) {
+				LOG.warn("no instance in service {}", targetServiceName);
+				return null;
+			}
 
 			//If routeData isn't present, use normal load balance rule.
 			final HashMap<String, List<MatchService>> routeData = routeDataRepository.getRouteData(targetServiceName);
@@ -153,12 +157,6 @@ public class LabelRouteRule extends PredicateBasedRule {
 			HashSet<String> versionSet = new HashSet<>();
 			HashMap<String, Integer> weightMap = new HashMap<>();
 			serviceFilter(targetServiceName, versionSet, weightMap);
-
-			//None instance match rule.
-			if (CollectionUtils.isEmpty(instances)) {
-				LOG.warn("no instance in service {}", targetServiceName);
-				return null;
-			}
 
 			//Filter instances by versionSet and weightMap.
 			double[] weightArray = new double[instances.size()];
@@ -173,6 +171,12 @@ public class LabelRouteRule extends PredicateBasedRule {
 					instanceList.add(instance);
 					instanceMap.put(version, instanceList);
 				}
+			}
+
+			//None instance match rule
+			if (CollectionUtils.isEmpty(instanceMap)) {
+				LOG.warn("no instance match route rule");
+				return null;
 			}
 
 			//Routing with Weight algorithm.
@@ -253,8 +257,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	}
 
-	private int matchRule(String targetServiceName, String keyName, HashMap<String, String> requestHeaders,
-			Map<String, String[]> parameterMap, HttpServletRequest request, HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
+	private int matchRule(String targetServiceName, String keyName, final HashMap<String, String> requestHeaders,
+			final Map<String, String[]> parameterMap, final HttpServletRequest request, HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
 		final List<MatchService> matchServiceList = routeDataRepository.getRouteData(targetServiceName).get(keyName);
 		if (matchServiceList == null) {
 			return NO_MATCH;
@@ -360,20 +364,18 @@ public class LabelRouteRule extends PredicateBasedRule {
 		}
 	}
 
-	private Server chooseServerByWeight(LinkedHashMap<String, List<Instance>> instanceMap,
-			HashMap<String, Integer> weightMap, double[] weightArray) {
-		int index = 0;
-		double sum = 0;
+	private Server chooseServerByWeight(final LinkedHashMap<String, List<Instance>> instanceMap,
+			final HashMap<String, Integer> weightMap, final double[] weightArray) {
+		double sum = 0.0D;
 		List<Instance> instances = new ArrayList<>();
 
 		for (String version : instanceMap.keySet()) {
 			int weight = weightMap.get(version);
-			List<Instance> instanceList = instanceMap.get(version);
-			for (Instance instance : instanceList) {
-				instances.add(instance);
+			final List<Instance> instanceList = instanceMap.get(version);
+			for (int index = 0; index < instanceList.size(); index++) {
+				instances.add(instanceList.get(index));
 				weightArray[index] = KEEP_ACCURACY * weight / instanceList.size() + sum;
 				sum = weightArray[index];
-				index++;
 			}
 		}
 
