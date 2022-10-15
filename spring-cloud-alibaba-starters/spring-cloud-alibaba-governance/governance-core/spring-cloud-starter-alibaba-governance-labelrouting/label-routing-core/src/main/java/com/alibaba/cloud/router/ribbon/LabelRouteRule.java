@@ -366,16 +366,18 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	private Server chooseServerByWeight(final LinkedHashMap<String, List<Instance>> instanceMap,
 			final HashMap<String, Integer> weightMap, final double[] weightArray) {
+		int index = 0;
 		double sum = 0.0D;
 		List<Instance> instances = new ArrayList<>();
 
 		for (String version : instanceMap.keySet()) {
 			int weight = weightMap.get(version);
-			final List<Instance> instanceList = instanceMap.get(version);
-			for (int index = 0; index < instanceList.size(); index++) {
-				instances.add(instanceList.get(index));
+			List<Instance> instanceList = instanceMap.get(version);
+			for (Instance instance : instanceList) {
+				instances.add(instance);
 				weightArray[index] = KEEP_ACCURACY * weight / instanceList.size() + sum;
 				sum = weightArray[index];
+				index++;
 			}
 		}
 
