@@ -20,9 +20,22 @@
 - [RocketMQ: 4.9.4 版本](https://github.com/apache/rocketmq/releases)
 - MySQL: 5.7 版本
 
+### host配置
+
+为了保证代码可以正常启动，请先配置好本机的 host 映射，在配置文件中新增如下的映射。
+```sh
+# for integrated-example
+127.0.0.1 integrated-mysql
+127.0.0.1 nacos-server
+127.0.0.1 seata-server
+127.0.0.1 rocketmq
+127.0.0.1 gateway-service
+127.0.0.1 integrated-frontend
+```
+
 ### 数据库配置
 
-下面开始本地环境搭建准备，在数据库配置开始之前，请确保MySQL的服务端开启。
+下面开始本地环境搭建准备，在数据库配置开始之前，请确保 MySQL 的服务端开启。
 
 #### 初始化业务表
 
@@ -117,7 +130,7 @@ sh bin/mqbroker
 
 分别启动`integrated_storage`,`integrated_account`,`integrated_order`三个微服务。
 
-访问`http://127.0.0.1:8080/order` 来体验对应场景。
+访问`http://integrated-frontend:8080/order` 来体验对应场景。
 
 直接点击下单按钮提交表单，我们模拟客户端向网关发送了一个创建订单的请求。
 
@@ -125,7 +138,7 @@ sh bin/mqbroker
 - 用户下单的商品编号为1号
 - 此次订单购买的商品个数为1个
 
-![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220914153234414.png)
+![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155416524.png)
 
 在本 demo 示例中，为了便于演示，每件商品的单价都为2。
 
@@ -133,11 +146,11 @@ sh bin/mqbroker
 
 因此通过上述的操作，我们会创建一个订单，扣减对应商品编号为 1 号的库存个数(100-1=99)，扣减 admin 用户的余额(3-2=1)。
 
-![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220914153126925.png)
+![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155429801.png)
 
 如果再次请求相同的接口，同样是先扣减库存(99-1=98)，但是会因为 admin 用户余额不足而抛出异常，并被 Seata 捕获，执行分布式事务二阶段提交，回滚事务。
 
-![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220914153313127.png)
+![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155436112.png)
 
 可以看到数据库中库存的记录因为回滚之后仍然为 99 件。
 
@@ -156,9 +169,9 @@ sh bin/mqbroker
 
 - Sentinel 服务熔断降级
 
-访问`http://127.0.0.1:8080/sentinel` 体验对应场景。
+访问`http://integrated-frontend:8080/sentinel` 体验对应场景。
 
-![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220914155720469.png)
+![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155501290.png)
 
 网关路由点赞服务的限流规则为 5，而在前端通过异步处理模拟了 10 次并发请求。
 
@@ -168,14 +181,14 @@ sh bin/mqbroker
 
 - RocketMQ 进行流量削峰填谷
 
-访问`http://127.0.0.1:8080/rocketmq` 体验对应场景。
+访问`http://integrated-frontend:8080/rocketmq` 体验对应场景。
 
 由于我们之前在 Nacos 中配置了`integrated-consumer`消费者模块的消费速率以及间隔，在点击按钮时我们模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated_provider`
 会将 1000 次请求都向 Broker 投递消息，而在消费者模块中会根据配置的消费速率进行消费，向数据库更新点赞的商品数据，模拟大流量下 RocketMQ 削峰填谷的特性。
 
 可以看到数据库中点赞的个数正在动态更新。
 
-![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220914155815191.png)
+![image-20221016173604059](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016173604059.png)
 
 ## 其他
 
