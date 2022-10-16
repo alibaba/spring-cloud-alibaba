@@ -23,6 +23,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = RouterProperties.PROPERTY_PREFIX)
 public class RouterProperties {
+
 	/**
 	 * Properties prefix.
 	 */
@@ -40,4 +41,5 @@ public class RouterProperties {
 	public void setRule(String rule) {
 		this.rule = rule;
 	}
+
 }

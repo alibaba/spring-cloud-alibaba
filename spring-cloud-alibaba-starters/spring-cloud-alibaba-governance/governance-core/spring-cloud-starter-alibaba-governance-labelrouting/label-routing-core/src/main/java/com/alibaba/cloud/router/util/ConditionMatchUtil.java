@@ -24,37 +24,37 @@ import java.util.regex.Pattern;
 public class ConditionMatchUtil {
 
 	/**
-	 *Sign of exact.
+	 * Sign of exact.
 	 */
 	public static final String EXACT = "exact";
 
 	/**
-	 *Sign of regex.
+	 * Sign of regex.
 	 */
 	public static final String REGEX = "regex";
 
 	/**
-	 *Sign of contain.
+	 * Sign of contain.
 	 */
 	public static final String CONTAIN = "contain";
 
 	/**
-	 *Sign of greater.
+	 * Sign of greater.
 	 */
 	public static final String GREATER = ">";
 
 	/**
-	 *Sign of less.
+	 * Sign of less.
 	 */
 	public static final String LESS = "<";
 
 	/**
-	 *Sign of equal.
+	 * Sign of equal.
 	 */
 	public static final String EQUAL = "=";
 
 	/**
-	 *Sign of no equal.
+	 * Sign of no equal.
 	 */
 	public static final String NOT_EQUAL = "not_equal";
 
@@ -81,4 +81,5 @@ public class ConditionMatchUtil {
 	public boolean noEqualMatch(String str, String comparor) {
 		return Integer.parseInt(str) == Integer.parseInt(comparor);
 	}
+
 }

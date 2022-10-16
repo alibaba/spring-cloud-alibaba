@@ -50,4 +50,5 @@ public class FeignInterceptor implements RequestInterceptor {
 			requestTemplate.header(headerName, request.getHeader(headerName));
 		}
 	}
+
 }

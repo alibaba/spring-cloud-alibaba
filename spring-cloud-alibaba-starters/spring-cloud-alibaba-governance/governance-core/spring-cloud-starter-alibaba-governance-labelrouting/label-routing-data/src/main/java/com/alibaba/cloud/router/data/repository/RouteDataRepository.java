@@ -39,8 +39,8 @@ public class RouteDataRepository {
 	private static final Logger LOG = LoggerFactory.getLogger(RouteDataRepository.class);
 
 	/**
-	 * Key is service name,value is hashmap,which key is single RouteRule key,value is match service.
-	 * Use double hash index to parse route rule.
+	 * Key is service name,value is hashmap,which key is single RouteRule key,value is
+	 * match service. Use double hash index to parse route rule.
 	 */
 	private ConcurrentHashMap<String, HashMap<String, List<MatchService>>> routeCache;
 
@@ -114,11 +114,11 @@ public class RouteDataRepository {
 	private int updateRouteData() {
 		while (routeDataChanged) {
 			int routeDataListSize = routeDataList.size();
-			//If all tasks had been distributed
+			// If all tasks had been distributed
 			if (waitUpdateIndex.get() == routeDataListSize) {
 				return updateIndex.get();
 			}
-			//If not,get a task.
+			// If not,get a task.
 			int i = waitUpdateIndex.incrementAndGet();
 			// May be multi-thread competition,avoid critical condition.
 			if (i < routeDataListSize) {
@@ -129,7 +129,8 @@ public class RouteDataRepository {
 
 				if (!routerData.getLabelRouteData().equals(labelRouteData)) {
 					buildHashIndex(routerData);
-					originalRouteData.put(routerData.getTargetService(), routerData.getLabelRouteData());
+					originalRouteData.put(routerData.getTargetService(),
+							routerData.getLabelRouteData());
 				}
 				int updateNumber = updateIndex.incrementAndGet();
 
@@ -146,19 +147,19 @@ public class RouteDataRepository {
 
 	private void updateData(String targetService) {
 		while (routeDataChanged) {
-			//Update label rule data.
+			// Update label rule data.
 			int updateIndex = updateRouteData();
 			// Double check.
 			if (routeDataChanged) {
 				int matchIndex = 0;
-				//Find targetService index in list.
+				// Find targetService index in list.
 				for (UntiedRouteDataStructure routeData : routeDataList) {
 					if (targetService.equals(routeData.getTargetService())) {
 						break;
 					}
 					matchIndex++;
 				}
-				//If match index has update.
+				// If match index has update.
 				if (matchIndex <= updateIndex) {
 					return;
 				}
@@ -171,7 +172,8 @@ public class RouteDataRepository {
 		if (targetService == null) {
 			LOG.error("Lose target Service name.");
 		}
-		final LabelRouteData labelRouteData = untiedRouteDataStructure.getLabelRouteData();
+		final LabelRouteData labelRouteData = untiedRouteDataStructure
+				.getLabelRouteData();
 		final List<MatchService> matchServiceList = labelRouteData.getMatchRouteList();
 		for (MatchService matchService : matchServiceList) {
 			final List<RouteRule> ruleList = matchService.getRuleList();
@@ -181,7 +183,8 @@ public class RouteDataRepository {
 				LOG.error("Rule is empty in version = {} ", version);
 			}
 			if (version == null) {
-				LOG.error("Target service = {} lose version,please check it. ", targetService);
+				LOG.error("Target service = {} lose version,please check it. ",
+						targetService);
 			}
 			if (weight == null) {
 				weight = DEFAULT_WEIGHT;
@@ -197,20 +200,24 @@ public class RouteDataRepository {
 	private void putRouteData(final List<UntiedRouteDataStructure> routerDataList) {
 		for (UntiedRouteDataStructure routerData : routerDataList) {
 			buildHashIndex(routerData);
-			originalRouteData.put(routerData.getTargetService(), routerData.getLabelRouteData());
+			originalRouteData.put(routerData.getTargetService(),
+					routerData.getLabelRouteData());
 		}
 	}
 
 	private void buildHashIndex(final UntiedRouteDataStructure routerData) {
-		final List<MatchService> matchRouteList = routerData.getLabelRouteData().getMatchRouteList();
+		final List<MatchService> matchRouteList = routerData.getLabelRouteData()
+				.getMatchRouteList();
 		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();
 
 		for (MatchService matchService : matchRouteList) {
 			List<RouteRule> ruleList = matchService.getRuleList();
 
-			//Take out the path label separately, because there is no key for hash index.
-			if (ruleList.size() == 1 && PATH.equalsIgnoreCase(ruleList.get(0).getType())) {
-				List<MatchService> matchServiceList = pathRuleMap.get(routerData.getTargetService());
+			// Take out the path label separately, because there is no key for hash index.
+			if (ruleList.size() == 1
+					&& PATH.equalsIgnoreCase(ruleList.get(0).getType())) {
+				List<MatchService> matchServiceList = pathRuleMap
+						.get(routerData.getTargetService());
 				if (matchServiceList == null) {
 					matchServiceList = new ArrayList<>();
 				}
@@ -219,7 +226,8 @@ public class RouteDataRepository {
 				continue;
 			}
 			for (RouteRule routeRule : ruleList) {
-				List<MatchService> matchServiceList = singleRuleMap.get(routeRule.getKey());
+				List<MatchService> matchServiceList = singleRuleMap
+						.get(routeRule.getKey());
 				if (matchServiceList == null) {
 					matchServiceList = new ArrayList<>();
 				}
@@ -250,4 +258,5 @@ public class RouteDataRepository {
 		}
 		return pathRuleMap == null ? null : pathRuleMap.get(targetService);
 	}
+
 }

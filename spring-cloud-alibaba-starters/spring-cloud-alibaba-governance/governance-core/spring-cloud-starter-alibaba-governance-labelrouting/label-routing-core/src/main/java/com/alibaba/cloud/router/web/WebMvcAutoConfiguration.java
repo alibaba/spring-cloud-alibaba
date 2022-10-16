@@ -16,9 +16,6 @@
 
 package com.alibaba.cloud.router.web;
 
-import com.alibaba.cloud.router.web.WebMvcConfig;
-import com.alibaba.cloud.router.web.WebMvcInterceptor;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

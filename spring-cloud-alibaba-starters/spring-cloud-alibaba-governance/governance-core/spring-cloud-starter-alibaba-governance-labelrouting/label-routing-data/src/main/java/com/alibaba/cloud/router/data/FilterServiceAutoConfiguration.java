@@ -31,5 +31,5 @@ public class FilterServiceAutoConfiguration {
 	public FilterService filterService() {
 		return new FilterService();
 	}
-}
 
+}

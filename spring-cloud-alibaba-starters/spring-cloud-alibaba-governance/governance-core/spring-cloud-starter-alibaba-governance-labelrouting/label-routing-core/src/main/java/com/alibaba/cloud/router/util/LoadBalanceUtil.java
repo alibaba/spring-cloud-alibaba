@@ -30,6 +30,7 @@ import com.netflix.loadbalancer.ZoneAvoidanceRule;
  * @author HH
  */
 public class LoadBalanceUtil {
+
 	/**
 	 * Default polling.
 	 */
@@ -61,11 +62,12 @@ public class LoadBalanceUtil {
 	public static final String ZONE_AVOIDANCE_RULE = "ZoneAvoidanceRule";
 
 	/**
-	 *Filter by Availability.
+	 * Filter by Availability.
 	 */
 	public static final String AVAILABILITY_FILTERING_RULE = "AvailabilityFilteringRule";
 
-	public  Server loadBalanceByOrdinaryRule(ILoadBalancer iLoadBalancer, Object key, String rule) {
+	public Server loadBalanceByOrdinaryRule(ILoadBalancer iLoadBalancer, Object key,
+			String rule) {
 		if (rule == null) {
 			rule = ZONE_AVOIDANCE_RULE;
 		}
@@ -95,4 +97,5 @@ public class LoadBalanceUtil {
 					"unsupported string compare operation");
 		}
 	}
+
 }

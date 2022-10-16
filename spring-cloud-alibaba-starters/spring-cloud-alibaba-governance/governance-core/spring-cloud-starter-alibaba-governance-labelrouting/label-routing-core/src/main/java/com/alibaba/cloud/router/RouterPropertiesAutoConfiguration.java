@@ -31,4 +31,5 @@ public class RouterPropertiesAutoConfiguration {
 	public RouterProperties routerProperties() {
 		return new RouterProperties();
 	}
+
 }

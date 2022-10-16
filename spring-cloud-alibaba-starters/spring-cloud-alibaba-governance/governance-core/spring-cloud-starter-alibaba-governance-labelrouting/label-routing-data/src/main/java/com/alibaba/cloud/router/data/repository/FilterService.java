@@ -60,11 +60,15 @@ public class FilterService implements ApplicationContextAware {
 		String[] allBeanNames = applicationContext.getBeanDefinitionNames();
 		HashSet<String> serviceSet = new HashSet<>(size);
 		for (String beanName : allBeanNames) {
-			if (beanName.contains(FEIGN_CLIENT_BEAN_SPECIFICATION) && !beanName.startsWith(FEIGN_CLIENT_BEAN_DEFAULT)) {
-				String feignName = beanName.substring(0, beanName.indexOf(FEIGN_CLIENT_BEAN_SPECIFICATION));
+			if (beanName.contains(FEIGN_CLIENT_BEAN_SPECIFICATION)
+					&& !beanName.startsWith(FEIGN_CLIENT_BEAN_DEFAULT)) {
+				String feignName = beanName.substring(0,
+						beanName.indexOf(FEIGN_CLIENT_BEAN_SPECIFICATION));
 				if (feignName.startsWith(FEIGN_CLIENT_BEAN_START)) {
-					String resolveFeignName = feignName.replace(FEIGN_CLIENT_BEAN_START, "");
-					resolveFeignName = resolveFeignName.replace(FEIGN_CLIENT_BEAN_END, "");
+					String resolveFeignName = feignName.replace(FEIGN_CLIENT_BEAN_START,
+							"");
+					resolveFeignName = resolveFeignName.replace(FEIGN_CLIENT_BEAN_END,
+							"");
 					feignName = resolveFeignName;
 				}
 				serviceSet.add(feignName);
@@ -73,4 +77,5 @@ public class FilterService implements ApplicationContextAware {
 
 		return serviceSet;
 	}
+
 }

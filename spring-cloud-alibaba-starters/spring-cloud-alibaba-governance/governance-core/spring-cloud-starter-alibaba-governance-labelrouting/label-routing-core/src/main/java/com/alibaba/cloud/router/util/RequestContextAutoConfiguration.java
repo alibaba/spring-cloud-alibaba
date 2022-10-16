@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.router.util;
 
-import com.alibaba.cloud.router.util.RequestContext;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

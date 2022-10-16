@@ -45,15 +45,16 @@ public class ControlPlaneConnection implements ControlPlane {
 	@Override
 	public void getDataFromControlPlane(
 			List<UntiedRouteDataStructure> untiedRouterDataStructureList) {
-		//Filter service.
+		// Filter service.
 		HashSet<String> definitionFeignService = filterService
 				.getDefinitionFeignService(untiedRouterDataStructureList.size());
 		List<UntiedRouteDataStructure> routeDatalist = untiedRouterDataStructureList
 				.stream()
 				.filter(untiedRouteDataStructure -> definitionFeignService
-						.contains(untiedRouteDataStructure.getTargetService())).collect(Collectors.toList());
+						.contains(untiedRouteDataStructure.getTargetService()))
+				.collect(Collectors.toList());
 
-		//Put data into repository.
+		// Put data into repository.
 		if (!isRepositoryInitialized) {
 			routeDataRepository.init(routeDatalist);
 			isRepositoryInitialized = true;
