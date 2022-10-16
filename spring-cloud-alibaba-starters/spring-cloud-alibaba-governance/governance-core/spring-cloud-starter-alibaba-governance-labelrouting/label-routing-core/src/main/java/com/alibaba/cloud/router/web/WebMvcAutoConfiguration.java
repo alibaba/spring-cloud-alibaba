@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router;
+package com.alibaba.cloud.router.web;
 
-import com.alibaba.cloud.router.feign.FeignInterceptor;
+import com.alibaba.cloud.router.web.WebMvcConfig;
+import com.alibaba.cloud.router.web.WebMvcInterceptor;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -26,12 +27,18 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class FeignInterceptorAutoConfiguration {
+public class WebMvcAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public FeignInterceptor feignInterceptor() {
-		return new FeignInterceptor();
+	public WebMvcInterceptor webMvcInterceptor() {
+		return new WebMvcInterceptor();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public WebMvcConfig webMvcConfig() {
+		return new WebMvcConfig();
 	}
 
 }

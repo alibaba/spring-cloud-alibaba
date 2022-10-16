@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -78,21 +77,6 @@ public class LabelRouteRule extends PredicateBasedRule {
 	private static final String VERSION = "version";
 
 	/**
-	 * If do not set weight value,it will be set 100 by default.
-	 */
-	private static final int DEFAULT_WEIGHT = 100;
-
-	/**
-	 * Sum of all version's weight.
-	 */
-	private static final int SUM_WEIGHT = 100;
-
-	/**
-	 * Weight value can't less than it.
-	 */
-	private static final int MIN_WEIGHT = 0;
-
-	/**
 	 * Sign of no match any rule.
 	 */
 	private static final int NO_MATCH = -1;
@@ -143,7 +127,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 			final NamingService namingService = nacosServiceManager.getNamingService();
 			final List<Instance> instances = namingService.selectInstances(targetServiceName, group, true);
 			if (CollectionUtils.isEmpty(instances)) {
-				LOG.warn("no instance in service {}", targetServiceName);
+				LOG.warn("no instance in service {} ", targetServiceName);
 				return null;
 			}
 
@@ -160,7 +144,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 			//Filter instances by versionSet and weightMap.
 			double[] weightArray = new double[instances.size()];
-			final LinkedHashMap<String, List<Instance>> instanceMap = new LinkedHashMap<>();
+			HashMap<String, List<Instance>> instanceMap = new HashMap<>();
 			for (Instance instance : instances) {
 				String version = instance.getMetadata().get(VERSION);
 				if (versionSet.contains(version)) {
@@ -194,7 +178,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 		return this.predicate;
 	}
 
-	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
+	private void serviceFilter(String targetServiceName,
+			HashSet<String> versionSet,
 			HashMap<String, Integer> weightMap) {
 		//Get request metadata.
 		final HttpServletRequest request = requestContext.getRequest(true);
@@ -208,7 +193,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 			}
 		}
 		final Map<String, String[]> parameterMap = request.getParameterMap();
-		int defaultVersionWeight = SUM_WEIGHT;
+		int defaultVersionWeight = RouteDataRepository.SUM_WEIGHT;
 		boolean isMatch = false;
 
 		//Parse rule.
@@ -248,7 +233,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 		}
 
 		//Add default route
-		if (defaultVersionWeight > MIN_WEIGHT) {
+		if (defaultVersionWeight > RouteDataRepository.MIN_WEIGHT) {
 			String defaultRouteVersion = routeDataRepository.getOriginalRouteData(targetServiceName)
 					.getDefaultRouteVersion();
 			versionSet.add(defaultRouteVersion);
@@ -257,33 +242,21 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	}
 
-	private int matchRule(String targetServiceName, String keyName, final HashMap<String, String> requestHeaders,
-			final Map<String, String[]> parameterMap, final HttpServletRequest request, HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
+	private int matchRule(String targetServiceName,
+			String keyName,
+			final HashMap<String, String> requestHeaders,
+			final Map<String, String[]> parameterMap,
+			final HttpServletRequest request,
+			HashSet<String> versionSet,
+			HashMap<String, Integer> weightMap) {
 		final List<MatchService> matchServiceList = routeDataRepository.getRouteData(targetServiceName).get(keyName);
 		if (matchServiceList == null) {
 			return NO_MATCH;
 		}
 		for (MatchService matchService : matchServiceList) {
-			//No null check.
 			final List<RouteRule> ruleList = matchService.getRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
-			if (ruleList == null || ruleList.size() == 0) {
-				continue;
-			}
-			if (weight == null) {
-				weight = DEFAULT_WEIGHT;
-			}
-			if (version == null) {
-				LOG.error("Target service = {} rule = {} lose version,please check it",
-						targetServiceName, matchService);
-			}
-			if (weight < MIN_WEIGHT || weight > SUM_WEIGHT) {
-				LOG.error(
-						"The weight of provider = {} version = {} had set error,please check it",
-						targetServiceName, version);
-			}
-
 			boolean isMatchRule = true;
 			for (RouteRule routeRule : ruleList) {
 				String type = routeRule.getType();
@@ -364,8 +337,9 @@ public class LabelRouteRule extends PredicateBasedRule {
 		}
 	}
 
-	private Server chooseServerByWeight(final LinkedHashMap<String, List<Instance>> instanceMap,
-			final HashMap<String, Integer> weightMap, final double[] weightArray) {
+	private Server chooseServerByWeight(final HashMap<String, List<Instance>> instanceMap,
+			final HashMap<String, Integer> weightMap,
+			final double[] weightArray) {
 		int index = 0;
 		double sum = 0.0D;
 		List<Instance> instances = new ArrayList<>();
@@ -381,11 +355,11 @@ public class LabelRouteRule extends PredicateBasedRule {
 			}
 		}
 
-		if (sum > SUM_WEIGHT) {
-			LOG.error("Sum of weight has over {} ", SUM_WEIGHT);
+		if (sum > RouteDataRepository.SUM_WEIGHT) {
+			LOG.error("Sum of weight has over {} ", RouteDataRepository.SUM_WEIGHT);
 		}
 
-		double random = ThreadLocalRandom.current().nextDouble(MIN_WEIGHT, SUM_WEIGHT);
+		double random = ThreadLocalRandom.current().nextDouble(RouteDataRepository.MIN_WEIGHT, RouteDataRepository.SUM_WEIGHT);
 		int chooseServiceIndex = Arrays.binarySearch(weightArray, random);
 		if (chooseServiceIndex < 0) {
 			chooseServiceIndex = -chooseServiceIndex - 1;

@@ -29,6 +29,8 @@ import com.alibaba.cloud.router.data.crd.rule.RouteRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.util.CollectionUtils;
+
 /**
  * @author HH
  */
@@ -70,12 +72,27 @@ public class RouteDataRepository {
 	/**
 	 * Wait update index.
 	 */
-	final AtomicInteger waitUpdateIndex = new AtomicInteger(-1);
+	private final AtomicInteger waitUpdateIndex = new AtomicInteger(-1);
 
 	/**
 	 * Updated index.
 	 */
-	final AtomicInteger updateIndex = new AtomicInteger(-1);
+	private final AtomicInteger updateIndex = new AtomicInteger(-1);
+
+	/**
+	 * If do not set weight value,it will be set 100 by default.
+	 */
+	private static final int DEFAULT_WEIGHT = 100;
+
+	/**
+	 * Sum of all version's weight.
+	 */
+	public static final int SUM_WEIGHT = 100;
+
+	/**
+	 * Weight value can't less than it.
+	 */
+	public static final int MIN_WEIGHT = 0;
 
 	public void init(final List<UntiedRouteDataStructure> routerDataList) {
 		int initCacheSize = routerDataList.size();
@@ -92,7 +109,6 @@ public class RouteDataRepository {
 	}
 
 	/**
-	 *
 	 * @return Finished updating data index.
 	 */
 	private int updateRouteData() {
@@ -104,10 +120,10 @@ public class RouteDataRepository {
 			}
 			//If not,get a task.
 			int i = waitUpdateIndex.incrementAndGet();
-
 			// May be multi-thread competition,avoid critical condition.
 			if (i < routeDataListSize) {
 				UntiedRouteDataStructure routerData = routeDataList.get(i);
+				nonNullCheck(routerData);
 				LabelRouteData labelRouteData = originalRouteData
 						.get(routerData.getTargetService());
 
@@ -126,6 +142,56 @@ public class RouteDataRepository {
 		}
 
 		return updateIndex.get();
+	}
+
+	private void updateData(String targetService) {
+		while (routeDataChanged) {
+			//Update label rule data.
+			int updateIndex = updateRouteData();
+			// Double check.
+			if (routeDataChanged) {
+				int matchIndex = 0;
+				//Find targetService index in list.
+				for (UntiedRouteDataStructure routeData : routeDataList) {
+					if (targetService.equals(routeData.getTargetService())) {
+						break;
+					}
+					matchIndex++;
+				}
+				//If match index has update.
+				if (matchIndex <= updateIndex) {
+					return;
+				}
+			}
+		}
+	}
+
+	private void nonNullCheck(UntiedRouteDataStructure untiedRouteDataStructure) {
+		String targetService = untiedRouteDataStructure.getTargetService();
+		if (targetService == null) {
+			LOG.error("Lose target Service name.");
+		}
+		final LabelRouteData labelRouteData = untiedRouteDataStructure.getLabelRouteData();
+		final List<MatchService> matchServiceList = labelRouteData.getMatchRouteList();
+		for (MatchService matchService : matchServiceList) {
+			final List<RouteRule> ruleList = matchService.getRuleList();
+			String version = matchService.getVersion();
+			Integer weight = matchService.getWeight();
+			if (CollectionUtils.isEmpty(ruleList)) {
+				LOG.error("Rule is empty in version = {} ", version);
+			}
+			if (version == null) {
+				LOG.error("Target service = {} lose version,please check it. ", targetService);
+			}
+			if (weight == null) {
+				weight = DEFAULT_WEIGHT;
+			}
+			if (weight < MIN_WEIGHT || weight > SUM_WEIGHT) {
+				LOG.error(
+						"The weight of provider = {} version = {} had set error,please check it. ",
+						targetService, version);
+			}
+		}
 	}
 
 	private void putRouteData(final List<UntiedRouteDataStructure> routerDataList) {
@@ -165,46 +231,23 @@ public class RouteDataRepository {
 	}
 
 	public HashMap<String, List<MatchService>> getRouteData(String targetService) {
-		if (routeDataChanged){
+		if (routeDataChanged) {
 			updateData(targetService);
 		}
 		return routeCache == null ? null : routeCache.get(targetService);
 	}
 
 	public LabelRouteData getOriginalRouteData(String targetService) {
-		if (routeDataChanged){
+		if (routeDataChanged) {
 			updateData(targetService);
 		}
 		return originalRouteData == null ? null : originalRouteData.get(targetService);
 	}
 
 	public List<MatchService> getPathRules(String targetService) {
-		if (routeDataChanged){
+		if (routeDataChanged) {
 			updateData(targetService);
 		}
 		return pathRuleMap == null ? null : pathRuleMap.get(targetService);
-	}
-
-	private void updateData(String targetService) {
-		while (routeDataChanged) {
-			//Update label rule data.
-			int updateIndex = updateRouteData();
-
-			// Double check.
-			if (routeDataChanged) {
-				int matchIndex = 0;
-				//Find targetService index in list.
-				for (UntiedRouteDataStructure routeData : routeDataList) {
-					if (targetService.equals(routeData.getTargetService())) {
-						break;
-					}
-					matchIndex++;
-				}
-				//If match index has update.
-				if (matchIndex <= updateIndex) {
-					return;
-				}
-			}
-		}
 	}
 }

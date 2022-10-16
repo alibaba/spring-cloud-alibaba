@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router;
+package com.alibaba.cloud.router.util;
 
-import com.alibaba.cloud.router.ribbon.LabelRouteRule;
+import com.alibaba.cloud.router.util.RequestContext;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,12 +25,11 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class LabelRouteRuleAutoConfiguration {
+public class RequestContextAutoConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean
-	public LabelRouteRule labelRouteRule() {
-		return new LabelRouteRule();
+	public RequestContext requestContext() {
+		return new RequestContext();
 	}
 
 }

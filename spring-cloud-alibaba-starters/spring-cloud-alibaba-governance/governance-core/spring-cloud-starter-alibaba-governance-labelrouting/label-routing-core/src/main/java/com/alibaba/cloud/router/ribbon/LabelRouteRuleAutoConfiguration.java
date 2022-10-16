@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router;
+package com.alibaba.cloud.router.ribbon;
 
-import com.alibaba.cloud.router.web.WebMvcConfig;
-import com.alibaba.cloud.router.web.WebMvcInterceptor;
+import com.alibaba.cloud.router.ribbon.LabelRouteRule;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -27,18 +26,12 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class WebMvcAutoConfiguration {
+public class LabelRouteRuleAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public WebMvcInterceptor webMvcInterceptor() {
-		return new WebMvcInterceptor();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public WebMvcConfig webMvcConfig() {
-		return new WebMvcConfig();
+	public LabelRouteRule labelRouteRule() {
+		return new LabelRouteRule();
 	}
 
 }
