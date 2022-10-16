@@ -61,9 +61,15 @@ public class NacosConfigAutoConfiguration {
 		return new NacosRefreshHistory();
 	}
 
+    /**
+     * nacos 配置管理
+     * @param nacosConfigProperties  配置管理依赖于配置属性
+     * @return
+     */
 	@Bean
 	public NacosConfigManager nacosConfigManager(
 			NacosConfigProperties nacosConfigProperties) {
+        // 在进行配置管理的时候，会创建好nacosClient依赖库里面所提供的configService
 		return new NacosConfigManager(nacosConfigProperties);
 	}
 
