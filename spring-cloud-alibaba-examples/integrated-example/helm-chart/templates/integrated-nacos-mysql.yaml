@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: {{ .Values.image.repository }}nacos-mysql
+          image: trevorlink/nacos-mysql
           ports:
             - containerPort: 3306
           env:

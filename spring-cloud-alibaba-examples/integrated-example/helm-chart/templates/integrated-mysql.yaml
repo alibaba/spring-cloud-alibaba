@@ -43,7 +43,7 @@ spec:
     spec:
       containers:
         - name: integrated-mysql
-          image: {{ .Values.image.repository }}integrated-mysql
+          image: "{{ .Values.image.repository }}integrated-mysql"
           imagePullPolicy: Always
           env:
             - name: MYSQL_ROOT_PASSWORD

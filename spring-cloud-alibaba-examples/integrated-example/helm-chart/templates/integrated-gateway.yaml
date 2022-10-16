@@ -7,9 +7,9 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8010
+    - port: 30010
       name: server
-      targetPort: 8010
+      targetPort: 30010
       nodePort: 30010
   selector:
     app: integrated-gateway
@@ -35,7 +35,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: http-port
-              containerPort: 8010
+              containerPort: 30010
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

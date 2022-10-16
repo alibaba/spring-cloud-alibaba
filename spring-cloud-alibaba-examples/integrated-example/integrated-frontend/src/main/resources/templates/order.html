@@ -34,57 +34,66 @@
         var userId = $("#userId").val();
         var commodityCode = $("#commodityCode").val();
         $.ajax({
-            url: "http://localhost:8010/storage/",
+            url: "http://gateway-service:30010/storage/",
             type: "get",
             dataType: "json",
             data: "commodityCode=" + commodityCode,
             async:false,
             success: function (res) {
-                $('#orderResultSection').append(`<p> 执行分布式业务前商品库存： ${res.data} </p>`);
+                $('#orderResultSection').append(`<p> [${getDateTime()}] 执行分布式业务前商品库存： ${res.data} </p>`);
             }
         });
         $.ajax({
-            url: "http://localhost:8010/account/",
+            url: "http://gateway-service:30010/account/",
             type: "get",
             dataType: "json",
             data: "userId=" + userId,
             async:false,
             success: function (res) {
-                $('#orderResultSection').append(`<p> 执行分布式业务前账户余额： ${res.data}</p>`);
+                $('#orderResultSection').append(`<p> [${getDateTime()}] 执行分布式业务前账户余额： ${res.data}</p>`);
             }
         });
         $.ajax({
             type: "POST",
-            url: "http://localhost:8010/order/create",
+            url: "http://gateway-service:30010/order/create",
             data: $('#orderForm').serialize(),
             dataType: 'json',
             async:false,
             success: function (res) {
-                $('#orderResultSection').append(`<p> ${res.message} </p>`);
+                $('#orderResultSection').append(`<p> [${getDateTime()}] ${res.message} </p>`);
                 $.ajax({
-                    url: "http://localhost:8010/storage/",
+                    url: "http://gateway-service:30010/storage/",
                     type: "get",
                     dataType: "json",
                     data: "commodityCode=" + commodityCode,
                     async:false,
                     success: function (res) {
-                        $('#orderResultSection').append(`<p> 执行分布式业务后商品库存： ${res.data}</p>`);
+                        $('#orderResultSection').append(`<p> [${getDateTime()}] 执行分布式业务后商品库存： ${res.data}</p>`);
                     }
                 });
                 $.ajax({
-                    url: "http://localhost:8010/account/",
+                    url: "http://gateway-service:30010/account/",
                     type: "get",
                     dataType: "json",
                     data: "userId=" + userId,
                     async:false,
                     success: function (res) {
-                        $('#orderResultSection').append(`<p> 执行分布式业务后账户余额： ${res.data}</p>`);
+                        $('#orderResultSection').append(`<p> [${getDateTime()}] 执行分布式业务后账户余额： ${res.data}</p>`);
                     }
                 });
             }
         });
     });
-
+    const getDateTime = () => {
+        const myDate = new Date;
+        const year = myDate.getFullYear();
+        const month = myDate.getMonth() + 1;
+        const date = myDate.getDate();
+        const hours = myDate.getHours();
+        const minutes = myDate.getMinutes();
+        const seconds = myDate.getSeconds();
+        return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    };
 
 </script>
 </body>

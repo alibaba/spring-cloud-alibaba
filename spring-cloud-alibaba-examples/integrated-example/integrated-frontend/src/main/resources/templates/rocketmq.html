@@ -31,13 +31,13 @@
 
         function queryRes() {
             $.ajax({
-                url: "http://localhost:8010/praise/query",
+                url: "http://gateway-service:30010/praise/query",
                 type: "get",
                 dataType: "json",
                 data: "itemId=" + $('#itemId').val(),
                 success: function (res) {
                     console.log("准备查询，此时count=" + count)
-                    $('#rocketmqResultSection').append(`<p> 点赞数： ${res} </p>`);
+                    $('#rocketmqResultSection').append(`<p> [${getDateTime()}] 点赞数： ${res} </p>`);
                 }
             })
         }
@@ -48,7 +48,7 @@
 
         for (let i = 0; i < 1000; i++) {
             $.ajax({
-                url: "http://localhost:8010/praise/rocketmq",
+                url: "http://gateway-service:30010/praise/rocketmq",
                 type: "get",
                 dataType: "json",
                 data: "itemId=" + itemId,

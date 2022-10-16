@@ -5,11 +5,11 @@ spring:
     nacos:
       config:
         file-extension: yaml
-        server-addr: localhost:8848
+        server-addr: nacos-server:8848
         shared-configs[0]:
-          dataId: datasorce-config.yaml
+          dataId: datasource-config.yaml
         group: integrated-example
       discovery:
-        server-addr: localhost:8848
+        server-addr: nacos-server:8848
 server:
   port: 8014
