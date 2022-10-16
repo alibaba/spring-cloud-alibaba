@@ -16,10 +16,19 @@
 
 package com.alibaba.cloud.governance.istio;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+
+import com.alibaba.cloud.governance.auth.repository.AuthRepository;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.router.data.ControlPlaneAutoConfiguration;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,9 +47,35 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		webEnvironment = NONE)
 public class XdsRulesTests {
 
-	@Test
-	public void testIpBlockRules() {
+	private static final Logger log = LoggerFactory.getLogger(XdsRulesTests.class);
 
+	@Autowired
+	private AuthRepository authRepository;
+
+	@BeforeClass
+	public static void setEnv() {
+		// init some envi
+		setEnv(IstioConstants.POD_NAME, "sca");
+		setEnv(IstioConstants.NAMESPACE_NAME, "default");
+	}
+
+	@Test
+	public void testRBACRules() {
+		log.info("target rules: {}", authRepository);
+	}
+
+	private static void setEnv(String key, String value) {
+		try {
+			Map<String, String> env = System.getenv();
+			Class<?> cl = env.getClass();
+			Field field = cl.getDeclaredField("m");
+			field.setAccessible(true);
+			Map<String, String> writableEnv = (Map<String, String>) field.get(env);
+			writableEnv.put(key, value);
+		}
+		catch (Exception e) {
+			throw new IllegalStateException("Failed to set environment variable", e);
+		}
 	}
 
 	@Configuration

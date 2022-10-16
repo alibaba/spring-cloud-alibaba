@@ -16,12 +16,17 @@
 
 package com.alibaba.cloud.governance.auth;
 
-import com.alibaba.cloud.governance.auth.cache.AuthRepository;
+import com.alibaba.cloud.governance.auth.repository.AuthRepository;
+import com.alibaba.cloud.governance.auth.validator.AuthValidator;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(AuthDataAutoConfiguration.class)
 public class AuthValidatorAutoConfiguration {

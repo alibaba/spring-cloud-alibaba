@@ -23,16 +23,18 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.cloud.governance.auth.AuthValidator;
 import com.alibaba.cloud.governance.auth.util.IpUtil;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jose4j.jwt.JwtClaims;
+import com.alibaba.cloud.governance.auth.validator.AuthValidator;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class AuthWebInterceptor implements HandlerInterceptor {
 
 	private AuthValidator authValidator;
@@ -47,36 +49,18 @@ public class AuthWebInterceptor implements HandlerInterceptor {
 		String sourceIp = request.getRemoteAddr();
 		String destIp = request.getLocalAddr();
 		String remoteIp = IpUtil.getRemoteIpAddress(request);
-		if (!authValidator.validateIp(sourceIp, destIp, remoteIp)) {
-			return ret401(response);
-		}
 		String host = request.getHeader(HttpHeaders.HOST);
 		String method = request.getMethod();
 		String path = request.getRequestURI();
 		int port = request.getLocalPort();
-		if (!authValidator.validateTargetRule(host, port, method, path)) {
-			return ret401(response);
-		}
 		HttpHeaders headers = getHeaders(request);
-		if (!authValidator.validateHeader(headers)) {
-			return ret401(response);
-		}
-		JwtClaims jwtClaims = null;
 		MultiValueMap<String, String> params = getQueryParams(request);
-		if (!authValidator.isEmptyJwtRule()) {
-			Pair<JwtClaims, Boolean> jwtClaimsBooleanPair = authValidator
-					.validateJwt(params, headers);
-			if (!jwtClaimsBooleanPair.getRight()) {
-				return ret401(response);
-			}
-			jwtClaims = jwtClaimsBooleanPair.getLeft();
-		}
-
-		if (jwtClaims == null && authValidator.isEmptyJwtAuthRule()) {
-			return true;
-		}
-
-		if (!authValidator.validateJwtAuthRule(jwtClaims)) {
+		AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder builder = new AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder();
+		AuthValidator.UnifiedHttpRequest unifiedHttpRequest = builder.setDestIp(destIp)
+				.setRemoteIp(remoteIp).setSourceIp(sourceIp).setHost(host).setPort(port)
+				.setMethod(method).setPath(path).setHeaders(headers).setParams(params)
+				.build();
+		if (!authValidator.validate(unifiedHttpRequest)) {
 			return ret401(response);
 		}
 		return true;

@@ -18,10 +18,8 @@ package com.alibaba.cloud.governance.auth.webflux;
 
 import java.nio.charset.StandardCharsets;
 
-import com.alibaba.cloud.governance.auth.AuthValidator;
 import com.alibaba.cloud.governance.auth.util.IpUtil;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jose4j.jwt.JwtClaims;
+import com.alibaba.cloud.governance.auth.validator.AuthValidator;
 import reactor.core.publisher.Mono;
 
 import org.springframework.core.io.buffer.DataBuffer;
@@ -29,10 +27,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class AuthWebFluxFilter implements WebFilter {
 
 	private AuthValidator authValidator;
@@ -44,9 +47,9 @@ public class AuthWebFluxFilter implements WebFilter {
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 		ServerHttpRequest request = exchange.getRequest();
-		String sourceIp = null;
 		String destIp = null;
 		String remoteIp = null;
+		String sourceIp = null;
 		if (request.getRemoteAddress() != null) {
 			sourceIp = request.getRemoteAddress().getAddress().getHostAddress();
 		}
@@ -54,34 +57,19 @@ public class AuthWebFluxFilter implements WebFilter {
 			destIp = request.getLocalAddress().getAddress().getHostAddress();
 		}
 		remoteIp = IpUtil.getRemoteIpAddress(request);
-		if (!authValidator.validateIp(sourceIp, destIp, remoteIp)) {
-			return ret401(exchange);
-		}
 		String host = request.getHeaders().getFirst(HttpHeaders.HOST);
 		int port = request.getLocalAddress().getPort();
 		String method = request.getMethodValue();
 		String path = request.getPath().value();
-		if (!authValidator.validateTargetRule(host, port, method, path)) {
-			return ret401(exchange);
-		}
-		if (!authValidator.validateHeader(request.getHeaders())) {
-			return ret401(exchange);
-		}
-		JwtClaims jwtClaims = null;
-		if (!authValidator.isEmptyJwtRule()) {
-			Pair<JwtClaims, Boolean> jwtClaimsBooleanPair = authValidator
-					.validateJwt(request.getQueryParams(), request.getHeaders());
-			if (!jwtClaimsBooleanPair.getRight()) {
-				return ret401(exchange);
-			}
-			jwtClaims = jwtClaimsBooleanPair.getLeft();
-		}
+		HttpHeaders headers = request.getHeaders();
+		MultiValueMap<String, String> params = request.getQueryParams();
+		AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder builder = new AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder();
+		AuthValidator.UnifiedHttpRequest unifiedHttpRequest = builder.setDestIp(destIp)
+				.setRemoteIp(remoteIp).setSourceIp(sourceIp).setHost(host).setPort(port)
+				.setMethod(method).setPath(path).setHeaders(headers).setParams(params)
+				.build();
 
-		if (jwtClaims == null && authValidator.isEmptyJwtAuthRule()) {
-			return chain.filter(exchange);
-		}
-
-		if (!authValidator.validateJwtAuthRule(jwtClaims)) {
+		if (!authValidator.validate(unifiedHttpRequest)) {
 			return ret401(exchange);
 		}
 		return chain.filter(exchange);
