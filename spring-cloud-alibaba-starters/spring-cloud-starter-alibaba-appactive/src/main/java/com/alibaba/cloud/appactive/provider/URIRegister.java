@@ -36,6 +36,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 /**
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
+ * @author <a href="mailto:1262917629@qq.com">RovingSea</a>
  */
 public final class URIRegister {
 
@@ -46,68 +47,82 @@ public final class URIRegister {
 	private URIRegister() {
 	}
 
-	public static void collectUris(List<FilterRegistrationBean> filterRegistrationBeans) {
-		if (CollectionUtils.isNotEmpty(filterRegistrationBeans)) {
-			List<ServiceMeta> serviceMetaList = new LinkedList<>();
-			boolean hasWildChar = false;
-			for (FilterRegistrationBean filterRegistrationBean : filterRegistrationBeans) {
-				Filter filter = filterRegistrationBean.getFilter();
-				if (filter == null) {
-					continue;
-				}
-				if (filter instanceof CoreServiceFilter) {
-					Collection<String> urlPatterns = filterRegistrationBean
-							.getUrlPatterns();
-					for (String urlPattern : urlPatterns) {
-						if (MATCH_ALL.equalsIgnoreCase(urlPattern)) {
-							hasWildChar = true;
-						}
-						ServiceMeta serviceMeta = new ServiceMeta(urlPattern,
-								ResourceActiveType.UNIT_RESOURCE_TYPE);
-						serviceMetaList.add(serviceMeta);
-					}
-				}
-				else if (filter instanceof GlobalServiceFilter) {
-					Collection<String> urlPatterns = filterRegistrationBean
-							.getUrlPatterns();
-					for (String urlPattern : urlPatterns) {
-						if (MATCH_ALL.equalsIgnoreCase(urlPattern)) {
-							hasWildChar = true;
-						}
-						ServiceMeta serviceMeta = new ServiceMeta(urlPattern,
-								ResourceActiveType.CENTER_RESOURCE_TYPE);
-						serviceMetaList.add(serviceMeta);
-					}
-				}
-				else if (filter instanceof GeneralServiceFilter) {
-					Collection<String> urlPatterns = filterRegistrationBean
-							.getUrlPatterns();
-					for (String urlPattern : urlPatterns) {
-						if (MATCH_ALL.equalsIgnoreCase(urlPattern)) {
-							hasWildChar = true;
-						}
-						ServiceMeta serviceMeta = new ServiceMeta(urlPattern,
-								ResourceActiveType.NORMAL_RESOURCE_TYPE);
-						serviceMetaList.add(serviceMeta);
-					}
-				}
+	public static void collectUris(List<FilterRegistrationBean<? extends Filter>> beanList) {
+		if (CollectionUtils.isEmpty(beanList)) {
+			return;
+		}
+		List<ServiceMeta> serviceMetaList = new LinkedList<>();
+		boolean hasWildChar = false;
+		for (FilterRegistrationBean<? extends Filter> filterRegistrationBean : beanList) {
+			Filter filter = filterRegistrationBean.getFilter();
+			if (filter == null) {
+				continue;
 			}
-			if (CollectionUtils.isNotEmpty(serviceMetaList)) {
-				if (!hasWildChar) {
-					// 保证所有 service(app+uri) 都纳入管理，不然不好做缓存管理
-					ServiceMeta serviceMeta = new ServiceMeta(MATCH_ALL,
-							ResourceActiveType.NORMAL_RESOURCE_TYPE);
-					serviceMetaList.add(serviceMeta);
-				}
-				serviceMetaObject = new ServiceMetaObject();
-				Collections.sort(serviceMetaList);
-				serviceMetaObject.setServiceMetaList(serviceMetaList);
-				String meta = JSON.toJSONString(serviceMetaList);
-				serviceMetaObject.setMeta(meta);
-				String md5 = DigestUtils.md5Hex(meta.getBytes(StandardCharsets.UTF_8));
-				serviceMetaObject.setMd5OfList(md5);
+			Collection<String> urlPatterns = filterRegistrationBean.getUrlPatterns();
+			if (filter instanceof CoreServiceFilter) {
+				hasWildChar = expandAndDetermine(serviceMetaList, hasWildChar, urlPatterns,
+						ResourceActiveType.UNIT_RESOURCE_TYPE);
+			} else if (filter instanceof GlobalServiceFilter) {
+				hasWildChar = expandAndDetermine(serviceMetaList, hasWildChar, urlPatterns,
+						ResourceActiveType.CENTER_RESOURCE_TYPE);
+			} else if (filter instanceof GeneralServiceFilter) {
+				hasWildChar = expandAndDetermine(serviceMetaList, hasWildChar, urlPatterns,
+						ResourceActiveType.NORMAL_RESOURCE_TYPE);
 			}
 		}
+		if (CollectionUtils.isEmpty(serviceMetaList)) {
+			return;
+		}
+		if (!hasWildChar) {
+			// 保证所有 service(app+uri) 都纳入管理，不然不好做缓存管理
+			expand(serviceMetaList, MATCH_ALL, ResourceActiveType.NORMAL_RESOURCE_TYPE);
+		}
+		initServiceMetaObject(serviceMetaList);
+	}
+
+	/**
+	 * initialize {@link #serviceMetaObject} based on {@link ServiceMeta} list.
+	 * @param serviceMetaList list needed for initialization
+	 */
+	private static void initServiceMetaObject(List<ServiceMeta> serviceMetaList) {
+		serviceMetaObject = new ServiceMetaObject();
+		Collections.sort(serviceMetaList);
+		serviceMetaObject.setServiceMetaList(serviceMetaList);
+		String meta = JSON.toJSONString(serviceMetaList);
+		serviceMetaObject.setMeta(meta);
+		String md5 = DigestUtils.md5Hex(meta.getBytes(StandardCharsets.UTF_8));
+		serviceMetaObject.setMd5OfList(md5);
+	}
+
+	/**
+	 * Expand {@link ServiceMeta} list while determining whether it is a wild char.
+	 * @param serviceMetaList extended list
+	 * @param hasWildChar keyword to be determined
+	 * @param urlPatterns looped list
+	 * @param resourceActiveType attribute of {@link ServiceMeta}
+	 * @return is that a wild char
+	 */
+	private static boolean expandAndDetermine(List<ServiceMeta> serviceMetaList, boolean hasWildChar,
+										 Collection<String> urlPatterns, String resourceActiveType) {
+		for (String urlPattern : urlPatterns) {
+			if (MATCH_ALL.equalsIgnoreCase(urlPattern)) {
+				hasWildChar = true;
+			}
+			expand(serviceMetaList, urlPattern, resourceActiveType);
+		}
+		return hasWildChar;
+	}
+
+	/**
+	 * Expand ServiceMeta list.
+	 * @param serviceMetaList extended list
+	 * @param urlPattern attribute of {@link ServiceMeta}
+	 * @param resourceActiveType attribute of {@link ServiceMeta}
+	 */
+	private static void expand(List<ServiceMeta> serviceMetaList, String urlPattern,
+									   String resourceActiveType) {
+		ServiceMeta serviceMeta = new ServiceMeta(urlPattern, resourceActiveType);
+		serviceMetaList.add(serviceMeta);
 	}
 
 	public static ServiceMetaObject getServiceMetaObject() {
