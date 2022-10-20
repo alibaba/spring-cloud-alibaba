@@ -42,11 +42,11 @@ public class TestTimeoutExtension
 	public void beforeEach(ExtensionContext context) throws Exception {
 		final Class<?> clazz = context.getRequiredTestClass();
 		final TestExtend annotation = clazz.getAnnotation(TestExtend.class);
-		ScheduledExecutorService singlonThread = Executors
+		ScheduledExecutorService singletonThread = Executors
 				.newSingleThreadScheduledExecutor();
-		while (!singlonThread.awaitTermination(annotation.time(),
+		while (!singletonThread.awaitTermination(annotation.time(),
 				TimeUnit.MILLISECONDS)) {
-			singlonThread.shutdown();
+			singletonThread.shutdown();
 		}
 	}
 }
