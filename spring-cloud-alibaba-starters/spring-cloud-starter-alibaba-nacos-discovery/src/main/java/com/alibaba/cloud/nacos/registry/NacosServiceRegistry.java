@@ -37,6 +37,7 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:78552423@qq.com">eshun</a>
+ * @author JAY
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
@@ -166,7 +167,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
 						&& instance.getPort() == nacosDiscoveryProperties.getPort()) {
-					return instance.isEnabled() ? "UP" : "DOWN";
+					return instance.isEnabled() ? STATUS_UP : STATUS_DOWN;
 				}
 			}
 		}
