@@ -60,13 +60,13 @@ public final class URIRegister {
 			}
 			Collection<String> urlPatterns = filterRegistrationBean.getUrlPatterns();
 			if (filter instanceof CoreServiceFilter) {
-				hasWildChar = expandAndDetermine(serviceMetaList, hasWildChar, urlPatterns,
+				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar, urlPatterns,
 						ResourceActiveType.UNIT_RESOURCE_TYPE);
 			} else if (filter instanceof GlobalServiceFilter) {
-				hasWildChar = expandAndDetermine(serviceMetaList, hasWildChar, urlPatterns,
+				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar, urlPatterns,
 						ResourceActiveType.CENTER_RESOURCE_TYPE);
 			} else if (filter instanceof GeneralServiceFilter) {
-				hasWildChar = expandAndDetermine(serviceMetaList, hasWildChar, urlPatterns,
+				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar, urlPatterns,
 						ResourceActiveType.NORMAL_RESOURCE_TYPE);
 			}
 		}
@@ -75,13 +75,13 @@ public final class URIRegister {
 		}
 		if (!hasWildChar) {
 			// 保证所有 service(app+uri) 都纳入管理，不然不好做缓存管理
-			expand(serviceMetaList, MATCH_ALL, ResourceActiveType.NORMAL_RESOURCE_TYPE);
+			collectServiceMeta(serviceMetaList, MATCH_ALL, ResourceActiveType.NORMAL_RESOURCE_TYPE);
 		}
 		initServiceMetaObject(serviceMetaList);
 	}
 
 	/**
-	 * initialize {@link #serviceMetaObject} based on {@link ServiceMeta} list.
+	 * Initialize {@link #serviceMetaObject} based on {@link ServiceMeta} list.
 	 * @param serviceMetaList list needed for initialization
 	 */
 	private static void initServiceMetaObject(List<ServiceMeta> serviceMetaList) {
@@ -95,31 +95,34 @@ public final class URIRegister {
 	}
 
 	/**
-	 * Expand {@link ServiceMeta} list while determining whether it is a wild char.
+	 * Collect {@link ServiceMeta} into the given <i>serviceMetaList</i> according to
+	 * each item of the given <i>urlPatterns</i> and the given <i>resourceActiveType</i>,
+	 * finally determine whether <i>hasWildChar</i> is a new wildChar.
 	 * @param serviceMetaList extended list
 	 * @param hasWildChar keyword to be determined
 	 * @param urlPatterns looped list
 	 * @param resourceActiveType attribute of {@link ServiceMeta}
-	 * @return is that a wild char
+	 * @return is new wildChar
 	 */
-	private static boolean expandAndDetermine(List<ServiceMeta> serviceMetaList, boolean hasWildChar,
+	private static boolean collectServiceMetas(List<ServiceMeta> serviceMetaList, boolean hasWildChar,
 										 Collection<String> urlPatterns, String resourceActiveType) {
 		for (String urlPattern : urlPatterns) {
 			if (MATCH_ALL.equalsIgnoreCase(urlPattern)) {
 				hasWildChar = true;
 			}
-			expand(serviceMetaList, urlPattern, resourceActiveType);
+			collectServiceMeta(serviceMetaList, urlPattern, resourceActiveType);
 		}
 		return hasWildChar;
 	}
 
 	/**
-	 * Expand ServiceMeta list.
+	 * Collect {@link ServiceMeta} into the given <i>serviceMetaList</i> according to
+	 * the given <i>urlPattern</i> and the given <i>resourceActiveType</i>.
 	 * @param serviceMetaList extended list
 	 * @param urlPattern attribute of {@link ServiceMeta}
 	 * @param resourceActiveType attribute of {@link ServiceMeta}
 	 */
-	private static void expand(List<ServiceMeta> serviceMetaList, String urlPattern,
+	private static void collectServiceMeta(List<ServiceMeta> serviceMetaList, String urlPattern,
 									   String resourceActiveType) {
 		ServiceMeta serviceMeta = new ServiceMeta(urlPattern, resourceActiveType);
 		serviceMetaList.add(serviceMeta);
