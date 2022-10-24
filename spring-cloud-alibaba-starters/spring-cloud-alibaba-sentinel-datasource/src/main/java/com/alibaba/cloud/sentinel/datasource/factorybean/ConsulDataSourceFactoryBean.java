@@ -35,13 +35,15 @@ public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource
 
 	private String ruleKey;
 
+	private String token;
+
 	private int waitTimeoutInSecond;
 
 	private Converter converter;
 
 	@Override
 	public ConsulDataSource getObject() throws Exception {
-		return new ConsulDataSource(host, port, ruleKey, waitTimeoutInSecond, converter);
+		return new ConsulDataSource(host, port, token, ruleKey, waitTimeoutInSecond, converter);
 	}
 
 	@Override
@@ -89,4 +91,11 @@ public class ConsulDataSourceFactoryBean implements FactoryBean<ConsulDataSource
 		this.converter = converter;
 	}
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 }

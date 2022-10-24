@@ -43,6 +43,12 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 	private int port = 8500;
 
 	/**
+	 * consul acl-token.
+	 */
+
+	private String token;
+
+	/**
 	 * data key in Redis.
 	 */
 	private String ruleKey;
@@ -95,4 +101,11 @@ public class ConsulDataSourceProperties extends AbstractDataSourceProperties {
 		this.waitTimeoutInSecond = waitTimeoutInSecond;
 	}
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 }
