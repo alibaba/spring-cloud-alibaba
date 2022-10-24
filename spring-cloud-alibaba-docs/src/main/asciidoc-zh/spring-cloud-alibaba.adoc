@@ -19,8 +19,6 @@ include::sentinel.adoc[]
 
 include::rocketmq-new.adoc[]
 
-include::rocketmq.adoc[]
-
 include::ans.adoc[]
 
 include::acm.adoc[]
@@ -32,5 +30,7 @@ include::schedulerx.adoc[]
 include::sms.adoc[]
 
 include::sidecar.adoc[]
+
+include::appactive.adoc[]
 
 

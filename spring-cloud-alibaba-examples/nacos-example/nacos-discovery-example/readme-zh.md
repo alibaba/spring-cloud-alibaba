@@ -191,6 +191,7 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos-discove
 权重|spring.cloud.nacos.discovery.weight|1|取值范围 1 到 100，数值越大，权重越大
 网卡名|spring.cloud.nacos.discovery.network-interface||当IP未配置时，注册的IP为此网卡所对应的IP地址，如果此项也未配置，则默认取第一块网卡的地址
 注册的IP地址|spring.cloud.nacos.discovery.ip||优先级最高
+注册的IP地址类型|spring.cloud.nacos.discovery.ip-type|IPv4|可以配置IPv4和IPv6两种类型，如果网卡同类型IP地址存在多个，希望制定特定网段地址，可使用`spring.cloud.inetutils.preferred-networks`配置筛选地址
 注册的端口|spring.cloud.nacos.discovery.port|-1|默认情况下不用配置，会自动探测
 命名空间|spring.cloud.nacos.discovery.namespace||常用场景之一是不同环境的注册的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等。
 AccessKey|spring.cloud.nacos.discovery.access-key||
@@ -199,11 +200,14 @@ Metadata|spring.cloud.nacos.discovery.metadata||使用Map格式配置
 日志文件名|spring.cloud.nacos.discovery.log-name||
 接入点|spring.cloud.nacos.discovery.endpoint|UTF-8|地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 是否集成Ribbon|ribbon.nacos.enabled|true|
+集群|spring.cloud.nacos.discovery.cluster-name|DEFAULT|Nacos集群名称
+是否开启Nacos Watch|spring.cloud.nacos.discovery.watch.enabled|true|可以设置成false来关闭 watch
+是否启用Nacos|spring.cloud.nacos.discovery.enabled|true|默认启动，设置为false时会关闭自动向Nacos注册的功能
 
 
 
 #### 更多介绍
-Nacos为用户提供包括动态服务发现，配置管理，服务管理等服务基础设施，帮助用户更灵活，更轻松地构建，交付和管理他们的微服务平台，基于Nacos, 用户可以更快速的构建以“服务”为中心的现代云原生应用。Nacos可以和Spring Cloud、Kubernetes/CNCF、Dubbo 等微服务生态无缝融合，为用户提供更卓越的体验。更多 Nacos 相关的信息，请参考 [Nacos 项目](https://github.com/alibaba/Nacos)。
+Nacos为用户提供包括动态服务发现，配置管理，服务管理等服务基础设施，帮助用户更灵活，更轻松地构建，交付和管理他们的微服务平台，基于Nacos, 用户可以更快速地构建以“服务”为中心的现代云原生应用。Nacos可以和Spring Cloud、Kubernetes/CNCF、Dubbo 等微服务生态无缝融合，为用户提供更卓越的体验。更多 Nacos 相关的信息，请参考 [Nacos 项目](https://github.com/alibaba/Nacos)。
 
 如果您对 Spring Cloud Nacos Discovery 有任何建议或想法，欢迎在 issue 中或者通过其他社区渠道向我们提出。
 

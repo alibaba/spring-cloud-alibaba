@@ -71,14 +71,14 @@ These artifacts are available from Maven Central and Spring Release repository v
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>2.2.8.RELEASE</version>
+            <version>2.2.9.RELEASE</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
     </dependencies>
 </dependencyManagement>
 ```
-add the module in  `dependencies`.
+add the module in  `dependencies`. If you want to choose an older version, you can refer to the [Release Notes](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E).
 
 
 ### Reference Doc

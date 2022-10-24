@@ -47,7 +47,8 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-        </dependency>
+			<version>1.2.16</version>
+		</dependency>
     </dependencies>
 
 

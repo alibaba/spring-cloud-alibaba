@@ -28,7 +28,7 @@
    service.vgroupMapping.storage-service-tx-group=default
 ```   
 5. 启动 Seata Server
-  Seata 1.5.1 支持seata控制台 本地访问控制台地址：http://127.0.0.1:7091
+  Seata 1.5.1 开始支持seata控制台 本地访问控制台地址：http://127.0.0.1:7091
   通过seata控制台可以观察正在执行的事务信息和全局锁信息,事务执行结束即删除相关信息。
 ### 配置数据库
 

@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -66,13 +67,7 @@ public class InetIPv6Utils implements Closeable {
 		if (address != null) {
 			return this.convertAddress(address);
 		}
-		else {
-			InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
-			this.properties.setDefaultIpAddress("0:0:0:0:0:0:0:1");
-			hostInfo.setHostname(this.properties.getDefaultHostname());
-			hostInfo.setIpAddress(this.properties.getDefaultIpAddress());
-			return hostInfo;
-		}
+		return null;
 	}
 
 	public InetAddress findFirstNonLoopbackIPv6Address() {
@@ -111,19 +106,34 @@ public class InetIPv6Utils implements Closeable {
 		catch (IOException e) {
 			log.error("Cannot get first non-loopback address", e);
 		}
-
-		if (address != null) {
-			return address;
+		if (address == null) {
+			try {
+				InetAddress localHost = InetAddress.getLocalHost();
+				if (localHost instanceof Inet6Address && !localHost.isLoopbackAddress()
+						&& isPreferredAddress(localHost)) {
+					address = localHost;
+				}
+			}
+			catch (UnknownHostException e) {
+				log.warn("Unable to retrieve localhost");
+			}
 		}
+		return address;
+	}
 
-		try {
-			return InetAddress.getLocalHost();
+	public String findIPv6Address() {
+		InetUtils.HostInfo hostInfo = findFirstNonLoopbackHostInfo();
+		String ip = hostInfo != null ? hostInfo.getIpAddress() : "";
+		if (!StringUtils.isEmpty(ip)) {
+			int index = ip.indexOf('%');
+			ip = index > 0 ? ip.substring(0, index) : ip;
+			return iPv6Format(ip);
 		}
-		catch (UnknownHostException e) {
-			log.warn("Unable to retrieve localhost");
-		}
+		return ip;
+	}
 
-		return null;
+	public String iPv6Format(String ip) {
+		return "[" + ip + "]";
 	}
 
 	boolean isPreferredAddress(InetAddress address) {

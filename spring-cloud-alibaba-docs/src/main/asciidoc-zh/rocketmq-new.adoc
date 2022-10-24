@@ -1,4 +1,4 @@
-== Spring Cloud Alibaba RocketMQ Binder (NEW)
+== Spring Cloud Alibaba RocketMQ Binder
 
 === RocketMQ 介绍
 

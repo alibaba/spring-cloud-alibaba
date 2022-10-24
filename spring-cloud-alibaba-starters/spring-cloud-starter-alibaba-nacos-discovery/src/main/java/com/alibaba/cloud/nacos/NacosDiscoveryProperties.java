@@ -166,6 +166,8 @@ public class NacosDiscoveryProperties {
 
 	/**
 	 * choose IPv4 or IPv6,if you don't set it will choose IPv4.
+	 * When IPv6 is chosen but no IPv6 can be found, system will automatically find IPv4 to ensure there is an
+	 * available service address.
 	 */
 	private String ipType = "IPv4";
 
@@ -259,10 +261,11 @@ public class NacosDiscoveryProperties {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 				}
 				else if ("IPv6".equalsIgnoreCase(ipType)) {
-					ip = inetIPv6Utils.findFirstNonLoopbackHostInfo().getIpAddress();
-					int index = ip.indexOf('%');
-					ip = index > 0 ? ip.substring(0, index) : ip;
-					ip = "[" + ip + "]";
+					ip = inetIPv6Utils.findIPv6Address();
+					if (StringUtils.isEmpty(ip)) {
+						log.warn("There is no available IPv6 found. Spring Cloud Alibaba will automatically find IPv4.");
+						ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+					}
 				}
 				else {
 					throw new IllegalArgumentException(

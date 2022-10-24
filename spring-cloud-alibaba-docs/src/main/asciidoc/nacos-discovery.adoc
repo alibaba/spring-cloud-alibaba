@@ -315,6 +315,7 @@ The following shows the other configurations of the starter of Nacos Discovery:
 |Weight|`spring.cloud.nacos.discovery.weight`|`1`|Value range: 1 to 100. The bigger the value, the greater the weight
 |Network card name|`spring.cloud.nacos.discovery.network-interface`||If the IP address is not specified, the registered IP address is the IP address of the network card. If this is not specified either, the IP address of the first network card will be used by default.
 |Registered IP address|`spring.cloud.nacos.discovery.ip`||Highest priority
+|Registered IP address Type|`spring.cloud.nacos.discovery.ip-type`|`IPv4`|IPv4 and IPv6 can be configured, If there are multiple IP addresses of the same type of network card, and you want to specify a specific network segment address, you can use `spring.cloud.inetutils.preferred-networks` to configure the filter address
 |Registered port|`spring.cloud.nacos.discovery.port`|`-1`|Will be detected automatically by default. Do not need to be configured.
 |Namespace|`spring.cloud.nacos.discovery.namespace`||A typical scenario is to isolate the service registration for different environment, such as resource (configurations, services etc.) isolation between testing and production environment
 |AccessKey|`spring.cloud.nacos.discovery.access-key`||Alibaba Cloud account accesskey

@@ -19,10 +19,9 @@
 
     <properties>
         <revision>2.2.9-SNAPSHOT</revision>
-        <sentinel.version>1.8.4</sentinel.version>
-        <seata.version>1.5.1</seata.version>
+        <sentinel.version>1.8.5</sentinel.version>
+        <seata.version>1.5.2</seata.version>
         <nacos.client.version>2.1.0</nacos.client.version>
-        <nacos.config.version>0.8.0</nacos.config.version>
         <spring.context.support.version>1.0.11</spring.context.support.version>
 
         <!-- Maven Plugin Versions -->
@@ -45,7 +44,7 @@
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-config</artifactId>
-                <version>${nacos.config.version}</version>
+                <version>${nacos.client.version}</version>
             </dependency>
 
             <!-- Sentinel -->
@@ -211,12 +210,6 @@
             </dependency>
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-starter-alibaba-nacos-config-server</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
                 <version>${revision}</version>
             </dependency>
@@ -230,6 +223,12 @@
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-sidecar</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-appactive</artifactId>
                 <version>${revision}</version>
             </dependency>
 

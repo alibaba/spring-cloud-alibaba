@@ -18,7 +18,7 @@ If you want to use ANS in your project, please use the starter with the group ID
 
 === Use ANS to Register Service
 
-When Spring Cloud AliCloud ANS Starter is introduced on the client, the metadata of the service such as IP, port number and weright will be registered to the registration center automatically. The client will maintain heartbeat with the server to prove that it is capable of providing service properly.
+When Spring Cloud AliCloud ANS Starter is introduced on the client, the metadata of the service such as IP, port number and weight will be registered to the registration center automatically. The client will maintain heartbeat with the server to prove that it is capable of providing service properly.
 
 The following is a simple illustration.
 

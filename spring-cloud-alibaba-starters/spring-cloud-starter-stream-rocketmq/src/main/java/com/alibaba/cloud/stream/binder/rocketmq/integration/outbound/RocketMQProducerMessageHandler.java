@@ -117,7 +117,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 						.fetchPublishMessageQueues(destination.getName());
 				if (extendedProducerProperties.getPartitionCount() != messageQueues
 						.size()) {
-					logger.info(String.format(
+					log.info(String.format(
 							"The partition count of topic '%s' will change from '%s' to '%s'",
 							destination.getName(),
 							extendedProducerProperties.getPartitionCount(),
@@ -182,8 +182,6 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 				sendResult = this.send(mqMessage, this.messageQueueSelector,
 						message.getHeaders(), message);
 			}
-			log.info("the message has sent,message={},sendResult={}", mqMessage,
-					sendResult);
 			if (log.isDebugEnabled()) {
 				log.debug("the message has sent,message={},sendResult={}", mqMessage,
 						sendResult);
