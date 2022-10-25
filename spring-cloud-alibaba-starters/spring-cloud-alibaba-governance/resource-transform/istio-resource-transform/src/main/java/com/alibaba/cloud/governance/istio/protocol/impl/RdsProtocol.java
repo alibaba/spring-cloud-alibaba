@@ -28,7 +28,7 @@ import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
-import com.alibaba.cloud.router.data.crd.LabelRouteData;
+import com.alibaba.cloud.router.data.crd.LabelRouteRule;
 import com.alibaba.cloud.router.data.crd.MatchService;
 import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
 import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
@@ -91,7 +91,7 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 				List<Route> routes = virtualHost.getRoutesList();
 				final int n = routes.size();
 				List<MatchService> matchServices = new ArrayList<>();
-				LabelRouteData labelRouteData = new LabelRouteData();
+				LabelRouteRule labelRouteData = new LabelRouteRule();
 				for (int i = 0; i < n; ++i) {
 					Route route = routes.get(i);
 					String cluster = route.getRoute().getCluster();
@@ -111,15 +111,15 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 					matchService.setVersion(version);
 					matchService.setRuleList(match2RouteRules(route.getMatch()));
 					matchServices.add(matchService);
-					untiedRouteDataStructure.setLabelRouteData(labelRouteData);
+					untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 				}
 				labelRouteData.setMatchRouteList(matchServices);
-				untiedRouteDataStructure.setLabelRouteData(labelRouteData);
+				untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 				untiedRouteDataStructures.put(untiedRouteDataStructure.getTargetService(),
 						untiedRouteDataStructure);
 			}
 		}
-		controlSurfaceConnection.getDataFromControlPlane(
+		controlSurfaceConnection.pushRouteData(
 				new ArrayList<>(untiedRouteDataStructures.values()));
 	}
 

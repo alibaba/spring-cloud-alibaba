@@ -26,8 +26,6 @@ import feign.RequestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * @author HH
  */
@@ -35,12 +33,9 @@ public class FeignInterceptor implements RequestInterceptor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FeignInterceptor.class);
 
-	@Autowired
-	private RequestContext requestContext;
-
 	@Override
 	public void apply(RequestTemplate requestTemplate) {
-		final HttpServletRequest request = requestContext.getRequest(false);
+		final HttpServletRequest request = RequestContext.getRequest();
 		final Enumeration<String> headerNames = request.getHeaderNames();
 		if (headerNames == null) {
 			return;

@@ -133,7 +133,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 			// If routeData isn't present, use normal load balance rule.
 			final HashMap<String, List<MatchService>> routeData = routeDataRepository
-					.getRouteData(targetServiceName);
+					.getRouteRule(targetServiceName);
 			if (routeData == null) {
 				return loadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
 						routerProperties.getRule());
@@ -183,7 +183,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
 			HashMap<String, Integer> weightMap) {
 		// Get request metadata.
-		final HttpServletRequest request = requestContext.getRequest(true);
+		final HttpServletRequest request = RequestContext.getRequest();
 		final Enumeration<String> headerNames = request.getHeaderNames();
 		HashMap<String, String> requestHeaders = new HashMap<>();
 		if (headerNames != null) {
@@ -240,7 +240,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 		// Add default route
 		if (defaultVersionWeight > RouteDataRepository.MIN_WEIGHT) {
 			String defaultRouteVersion = routeDataRepository
-					.getOriginalRouteData(targetServiceName).getDefaultRouteVersion();
+					.getOriginalRouteRule(targetServiceName).getDefaultRouteVersion();
 			versionSet.add(defaultRouteVersion);
 			weightMap.put(defaultRouteVersion, defaultVersionWeight);
 		}
@@ -252,7 +252,7 @@ public class LabelRouteRule extends PredicateBasedRule {
 			final Map<String, String[]> parameterMap, final HttpServletRequest request,
 			HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
 		final List<MatchService> matchServiceList = routeDataRepository
-				.getRouteData(targetServiceName).get(keyName);
+				.getRouteRule(targetServiceName).get(keyName);
 		if (matchServiceList == null) {
 			return NO_MATCH;
 		}

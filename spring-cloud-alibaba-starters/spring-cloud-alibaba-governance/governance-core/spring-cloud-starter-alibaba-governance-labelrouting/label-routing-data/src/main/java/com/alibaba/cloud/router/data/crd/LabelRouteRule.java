@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * @author HH
  */
-public class LabelRouteData {
+public class LabelRouteRule {
 
 	private String defaultRouteVersion;
 
@@ -52,7 +52,7 @@ public class LabelRouteData {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		LabelRouteData that = (LabelRouteData) o;
+		LabelRouteRule that = (LabelRouteRule) o;
 		return Objects.equals(defaultRouteVersion, that.defaultRouteVersion)
 				&& Objects.equals(getMatchRouteList(), that.getMatchRouteList());
 	}

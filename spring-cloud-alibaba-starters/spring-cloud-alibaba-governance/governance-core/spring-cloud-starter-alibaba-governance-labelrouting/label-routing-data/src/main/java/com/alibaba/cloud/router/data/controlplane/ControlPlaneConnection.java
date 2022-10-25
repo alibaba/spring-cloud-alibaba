@@ -31,11 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ControlPlaneConnection implements ControlPlane {
 
-	/**
-	 * Sign of init.
-	 */
-	private boolean isRepositoryInitialized = false;
-
 	@Autowired
 	private RouteDataRepository routeDataRepository;
 
@@ -43,7 +38,7 @@ public class ControlPlaneConnection implements ControlPlane {
 	private FilterService filterService;
 
 	@Override
-	public void getDataFromControlPlane(
+	public void pushRouteData(
 			List<UntiedRouteDataStructure> untiedRouterDataStructureList) {
 		// Filter service.
 		HashSet<String> definitionFeignService = filterService
@@ -54,14 +49,7 @@ public class ControlPlaneConnection implements ControlPlane {
 						.contains(untiedRouteDataStructure.getTargetService()))
 				.collect(Collectors.toList());
 
-		// Put data into repository.
-		if (!isRepositoryInitialized) {
-			routeDataRepository.init(routeDatalist);
-			isRepositoryInitialized = true;
-		}
-		else {
-			routeDataRepository.updateRouteData(routeDatalist);
-		}
+		routeDataRepository.updateRouteData(routeDatalist);
 	}
 
 }

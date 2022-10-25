@@ -18,6 +18,7 @@ package com.alibaba.cloud.router.data;
 
 import com.alibaba.cloud.router.data.repository.FilterService;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.Configuration;
 public class FilterServiceAutoConfiguration {
 
 	@Bean
+	@ConditionalOnMissingBean
 	public FilterService filterService() {
 		return new FilterService();
 	}

@@ -20,13 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
-import com.alibaba.cloud.router.data.crd.LabelRouteData;
+import com.alibaba.cloud.router.data.crd.LabelRouteRule;
 import com.alibaba.cloud.router.data.crd.MatchService;
 import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
 import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
 import com.alibaba.cloud.router.data.crd.rule.RouteRule;
 import com.alibaba.cloud.router.data.crd.rule.UrlRule;
-import com.alibaba.cloud.router.ribbon.LabelRouteRule;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -44,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @EnableDiscoveryClient(autoRegister = true)
 @EnableFeignClients
-@RibbonClient(name = "service-provider", configuration = LabelRouteRule.class)
+@RibbonClient(name = "service-provider", configuration = com.alibaba.cloud.router.ribbon.LabelRouteRule.class)
 public class ConsumerApplication {
 
 	public static void main(String[] args) {
@@ -84,7 +83,7 @@ public class ConsumerApplication {
 			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
 			untiedRouteDataStructure.setTargetService("service-provider");
 
-			LabelRouteData labelRouteData = new LabelRouteData();
+			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
 
 			RouteRule routeRule = new HeaderRule();
@@ -113,11 +112,11 @@ public class ConsumerApplication {
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteData(labelRouteData);
+			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
 			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
 			untiedRouteDataStructureList.add(untiedRouteDataStructure);
-			controlPlaneConnection.getDataFromControlPlane(untiedRouteDataStructureList);
+			controlPlaneConnection.pushRouteData(untiedRouteDataStructureList);
 		}
 
 		@GetMapping("/update")
@@ -128,7 +127,7 @@ public class ConsumerApplication {
 			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
 			untiedRouteDataStructure.setTargetService("service-provider");
 
-			LabelRouteData labelRouteData = new LabelRouteData();
+			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
 
 			RouteRule routeRule = new HeaderRule();
@@ -157,11 +156,11 @@ public class ConsumerApplication {
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteData(labelRouteData);
+			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
 			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
 			untiedRouteDataStructureList.add(untiedRouteDataStructure);
-			controlPlaneConnection.getDataFromControlPlane(untiedRouteDataStructureList);
+			controlPlaneConnection.pushRouteData(untiedRouteDataStructureList);
 		}
 	}
 }
