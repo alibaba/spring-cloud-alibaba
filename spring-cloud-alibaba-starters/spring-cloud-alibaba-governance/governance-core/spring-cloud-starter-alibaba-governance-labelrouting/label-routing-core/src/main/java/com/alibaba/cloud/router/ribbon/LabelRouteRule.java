@@ -111,9 +111,6 @@ public class LabelRouteRule extends PredicateBasedRule {
 	private RouteDataRepository routeDataRepository;
 
 	@Autowired
-	private RequestContext requestContext;
-
-	@Autowired
 	private RouterProperties routerProperties;
 
 	@Override
