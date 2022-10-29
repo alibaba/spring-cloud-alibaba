@@ -12,10 +12,13 @@ If you don't have the above environment, please go to the official documentation
 - [Helm Installation](https://helm.sh/zh/docs/intro/install/)
 - [Kubernetes Docker Desktop Quick Installation](https://docs.docker.com/desktop/kubernetes/)
 
-In addition, you need to configure the host profile mapping of the Kubernetes master node before starting the tests.
-
+Here we expose the services of the Pod in Kubernetes to the outside world by means of NodePort, and configure the ip mapping of the Kubernetes cluster node before starting the test.
 ```sh
-127.0.0.1 integrated-frontend
+# Please adjust with the public ip of your K8S node
+120.24.xxx.xxx integrated-frontend
+120.24.xxx.xxx gateway-service
+120.24.xxx.xxx integrated-mysql-web
+120.24.xxx.xxx nacos-mysql-web
 ```
 
 ## Start the test

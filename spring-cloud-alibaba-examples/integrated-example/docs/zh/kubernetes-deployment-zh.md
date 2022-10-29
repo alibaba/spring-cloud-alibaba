@@ -12,10 +12,14 @@
 - [Helm 安装](https://helm.sh/zh/docs/intro/install/)
 - [Kubernetes Docker Desktop 快捷安装](https://docs.docker.com/desktop/kubernetes/)
 
-此外，在启动测试前还需配置好 Kubernetes 主节点的 host 配置文件映射。
+在这里我们通过 NodePort 的方式来向外界暴露 Kubernetes 中 Pod 的服务，在启动测试前还需配置好 Kubernetes 集群节点的 ip 映射。
 
 ```sh
-127.0.0.1 integrated-frontend
+# 实际情况请结合您的 K8S 节点的公网 ip 进行调整
+120.24.xxx.xxx integrated-frontend
+120.24.xxx.xxx gateway-service
+120.24.xxx.xxx integrated-mysql-web
+120.24.xxx.xxx nacos-mysql-web
 ```
 
 ## 启动测试
