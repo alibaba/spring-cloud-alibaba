@@ -8,11 +8,14 @@ spring:
     nacos:
       discovery:
         server-addr: nacos-server:8848
+        group: integrated-example
       config:
         server-addr: nacos-server:8848
         file-extension: yaml
         group: integrated-example
-        shared-dataids: datasource-config.yaml
+        shared-configs[0]:
+          dataid: datasource-config.yaml
+          group: integrated-example
 
 seata:
   application-id: ${spring.application.name}

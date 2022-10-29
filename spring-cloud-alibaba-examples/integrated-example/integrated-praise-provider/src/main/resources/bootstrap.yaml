@@ -9,5 +9,6 @@ spring:
         group: integrated-example
       discovery:
         server-addr: nacos-server:8848
+        group: integrated-example
 server:
   port: 8015

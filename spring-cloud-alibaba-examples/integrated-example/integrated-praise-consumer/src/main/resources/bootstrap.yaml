@@ -6,10 +6,12 @@ spring:
       config:
         file-extension: yaml
         server-addr: nacos-server:8848
-        shared-configs[0]:
-          dataId: datasource-config.yaml
         group: integrated-example
+        shared-configs[0]:
+          dataid: datasource-config.yaml
+          group: integrated-example
       discovery:
         server-addr: nacos-server:8848
+        group: integrated-example
 server:
   port: 8014
