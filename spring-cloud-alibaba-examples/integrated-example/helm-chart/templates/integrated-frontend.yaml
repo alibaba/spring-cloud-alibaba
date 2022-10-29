@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-web
+  name: integrated-frontend
   labels:
     app: integrated-frontend
 spec:

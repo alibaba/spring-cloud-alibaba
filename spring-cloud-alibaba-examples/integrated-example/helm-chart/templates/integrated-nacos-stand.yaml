@@ -76,7 +76,7 @@ spec:
       containers:
         - name: local-nacos
           imagePullPolicy: Always
-          image: nacos/nacos-server
+          image: registry.cn-hangzhou.aliyuncs.com/sca-community/nacos-server
           ports:
             - containerPort: 8848
               name: client

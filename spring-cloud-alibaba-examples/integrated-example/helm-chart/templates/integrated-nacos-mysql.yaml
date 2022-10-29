@@ -1,5 +1,5 @@
-apiVersion: v1
-kind: ReplicationController
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: nacos-mysql
   labels:
@@ -7,7 +7,8 @@ metadata:
 spec:
   replicas: 1
   selector:
-    name: nacos-mysql
+    matchLabels:
+      name: nacos-mysql
   template:
     metadata:
       labels:
@@ -15,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: trevorlink/nacos-mysql
+          image: registry.cn-hangzhou.aliyuncs.com/sca-community/integrated-nacos-mysql
           ports:
             - containerPort: 3306
           env:

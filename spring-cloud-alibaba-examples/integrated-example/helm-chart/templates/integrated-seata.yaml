@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: seata-server
-          image: docker.io/seataio/seata-server:latest
+          image: registry.cn-hangzhou.aliyuncs.com/sca-community/seata-server
           imagePullPolicy: IfNotPresent
           env:
             - name: SEATA_PORT
