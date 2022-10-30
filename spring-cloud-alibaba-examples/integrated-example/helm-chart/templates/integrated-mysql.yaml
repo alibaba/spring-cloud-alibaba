@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: integrated-mysql-web
+spec:
+  ports:
+    - name: integrated-mysql-port
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+      nodePort: 30306
+  type: NodePort
+  selector:
+    app: integrated-mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: integrated-mysql
+  labels:
+    app: integrated-mysql
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      name: server
+  selector:
+    app: integrated-mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrated-mysql
+spec:
+  selector:
+    matchLabels:
+      app: integrated-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: integrated-mysql
+    spec:
+      containers:
+        - name: integrated-mysql
+          image: "{{ .Values.image.repository }}integrated-mysql"
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "123456"
+          ports:
+            - containerPort: 3306
+              protocol: TCP
