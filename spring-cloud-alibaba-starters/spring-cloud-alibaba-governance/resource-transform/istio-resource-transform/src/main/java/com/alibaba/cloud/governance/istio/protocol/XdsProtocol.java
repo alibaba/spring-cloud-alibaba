@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public interface XdsProtocol<T> {
 
 	List<T> getResource(Set<String> resourceNames);

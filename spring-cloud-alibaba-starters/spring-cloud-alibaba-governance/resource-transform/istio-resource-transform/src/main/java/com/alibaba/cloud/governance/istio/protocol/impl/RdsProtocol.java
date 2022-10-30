@@ -21,10 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.governance.common.matcher.MatcherType;
-import com.alibaba.cloud.governance.common.matcher.StringMatcher;
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.commons.matcher.MatcherType;
+import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
@@ -40,8 +42,13 @@ import io.envoyproxy.envoy.config.route.v3.Route;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import io.envoyproxy.envoy.config.route.v3.RouteMatch;
 import io.envoyproxy.envoy.config.route.v3.VirtualHost;
+import io.envoyproxy.envoy.config.route.v3.WeightedCluster;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 
 	/**
@@ -49,13 +56,19 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 	 */
 	private static final String ALLOW_ANY = "allow_any";
 
-	private ControlPlaneConnection controlSurfaceConnection;
+	private static final String HEADER = "header";
+
+	private static final String PARAMETER = "parameter";
+
+	private static final String PATH = "path";
+
+	private ControlPlaneConnection controlPlaneConnection;
 
 	public RdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime,
-			ControlPlaneConnection controlSurfaceConnection) {
+			ControlPlaneConnection controlPlaneConnection) {
 		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
-		this.controlSurfaceConnection = controlSurfaceConnection;
+		this.controlPlaneConnection = controlPlaneConnection;
 	}
 
 	@Override
@@ -74,6 +87,9 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 	}
 
 	public void resolveLabelRouting(List<RouteConfiguration> routeConfigurations) {
+		if (routeConfigurations == null) {
+			return;
+		}
 		Map<String, UntiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
 			List<VirtualHost> virtualHosts = routeConfiguration.getVirtualHostsList();
@@ -119,8 +135,46 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 						untiedRouteDataStructure);
 			}
 		}
+
 		controlSurfaceConnection.pushRouteData(
 				new ArrayList<>(untiedRouteDataStructures.values()));
+	}
+
+	private LabelRouteData getLabelRouteData(List<Route> routes) {
+		List<MatchService> matchServices = new ArrayList<>();
+		LabelRouteData labelRouteData = new LabelRouteData();
+		for (Route route : routes) {
+			String cluster = route.getRoute().getCluster();
+			if (StringUtils.isNotEmpty(cluster)) {
+				MatchService matchService = getMatchService(route, cluster, 100);
+				matchServices.add(matchService);
+			}
+			WeightedCluster weightedCluster = route.getRoute().getWeightedClusters();
+			for (WeightedCluster.ClusterWeight clusterWeight : weightedCluster
+					.getClustersList()) {
+				MatchService matchService = getMatchService(route,
+						clusterWeight.getName(), clusterWeight.getWeight().getValue());
+				matchServices.add(matchService);
+			}
+		}
+		labelRouteData.setMatchRouteList(matchServices);
+		return labelRouteData;
+	}
+
+	private MatchService getMatchService(Route route, String cluster, int weight) {
+		String version = "";
+		try {
+			String[] info = cluster.split("\\|");
+			version = info[2];
+		}
+		catch (Exception e) {
+			log.error("invalid cluster info for route {}", route.getName());
+		}
+		MatchService matchService = new MatchService();
+		matchService.setVersion(version);
+		matchService.setRuleList(match2RouteRules(route.getMatch()));
+		matchService.setWeight(weight);
+		return matchService;
 	}
 
 	private List<RouteRule> match2RouteRules(RouteMatch routeMatch) {
@@ -142,6 +196,7 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 		}
 
 		UrlRule.Path path = new UrlRule.Path();
+		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:
 			path.setCondition(MatcherType.PREFIX.toString());
@@ -178,6 +233,7 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 			parameter.setCondition(stringMatcher.getType().toString());
 			parameter.setKey(queryParameterMatcher.getName());
 			parameter.setValue(stringMatcher.getMatcher());
+			parameter.setType(PARAMETER);
 			return parameter;
 		}
 		return null;
@@ -191,6 +247,7 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 			headerRule.setCondition(stringMatcher.getType().toString());
 			headerRule.setKey(headerMatcher.getName());
 			headerRule.setValue(stringMatcher.getMatcher());
+			headerRule.setType(HEADER);
 			return headerRule;
 		}
 		return null;
@@ -198,7 +255,7 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 
 	@Override
 	public String getTypeUrl() {
-		return "type.googleapis.com/envoy.config.route.v3.RouteConfiguration";
+		return IstioConstants.RDS_URL;
 	}
 
 }

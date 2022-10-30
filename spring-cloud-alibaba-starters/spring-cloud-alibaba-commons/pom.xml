@@ -13,6 +13,13 @@
 
     <artifactId>spring-cloud-alibaba-commons</artifactId>
     <name>Spring Cloud Alibaba Commons</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 
 </project>

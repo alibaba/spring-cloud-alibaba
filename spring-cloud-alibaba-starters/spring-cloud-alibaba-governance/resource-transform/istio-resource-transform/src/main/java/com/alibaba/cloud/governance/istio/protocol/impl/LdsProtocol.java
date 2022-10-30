@@ -25,21 +25,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.governance.auth.cache.AuthData;
-import com.alibaba.cloud.governance.auth.cache.AuthRepository;
-import com.alibaba.cloud.governance.auth.rule.HttpHeaderRule;
-import com.alibaba.cloud.governance.auth.rule.IdentityRule;
-import com.alibaba.cloud.governance.auth.rule.IpBlockRule;
-import com.alibaba.cloud.governance.auth.rule.JwtAuthRule;
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.commons.matcher.StringMatcher;
+import com.alibaba.cloud.governance.auth.condition.AuthCondition;
+import com.alibaba.cloud.governance.auth.repository.AuthRepository;
+import com.alibaba.cloud.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.governance.auth.rule.JwtRule;
-import com.alibaba.cloud.governance.auth.rule.TargetRule;
-import com.alibaba.cloud.governance.common.matcher.HeaderMatcher;
-import com.alibaba.cloud.governance.common.matcher.IpMatcher;
-import com.alibaba.cloud.governance.common.matcher.StringMatcher;
-import com.alibaba.cloud.governance.common.rule.AndRule;
-import com.alibaba.cloud.governance.common.rule.OrRule;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
+import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import com.google.protobuf.Any;
@@ -59,10 +53,13 @@ import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.Rds;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	private static final Logger log = LoggerFactory.getLogger(LdsProtocol.class);
@@ -104,7 +101,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	@Override
 	public String getTypeUrl() {
-		return "type.googleapis.com/envoy.config.listener.v3.Listener";
+		return IstioConstants.LDS_URL;
 	}
 
 	@Override
@@ -196,45 +193,56 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		if (listeners == null || listeners.isEmpty()) {
 			return;
 		}
-		AuthData authData = new AuthData();
+		Map<String, AuthRule> allowAuthRules = new HashMap<>();
+		Map<String, AuthRule> denyAuthRules = new HashMap<>();
+		Map<String, JwtRule> jwtRules = new HashMap<>();
 		List<HttpFilter> httpFilters = resolveHttpFilter(listeners);
 		List<RBAC> rbacList = resolveRbac(httpFilters);
 		for (RBAC rbac : rbacList) {
 			for (Map.Entry<String, Policy> entry : rbac.getPoliciesMap().entrySet()) {
+				AuthRule authRule = new AuthRule(AuthRule.RuleOperation.AND);
+				AuthRule principalOr = new AuthRule(AuthRule.RuleOperation.OR);
 				// principals
 				List<Principal> principals = entry.getValue().getPrincipalsList();
 				for (Principal principal : principals) {
-					switch (rbac.getAction()) {
-					case ALLOW:
-					case UNRECOGNIZED:
-						resolvePrincipal(authData, entry.getKey(), principal, true);
-						break;
-					case DENY:
-						resolvePrincipal(authData, entry.getKey(), principal, false);
-						break;
-					default:
-						break;
+					AuthRule principalAnd = resolvePrincipal(principal);
+					if (principalAnd != null && !principalAnd.isEmpty()) {
+						principalOr.addChildren(principalAnd);
 					}
 				}
 				// permission
+				AuthRule permissionOr = new AuthRule(AuthRule.RuleOperation.OR);
 				List<Permission> permissions = entry.getValue().getPermissionsList();
 				for (Permission permission : permissions) {
-					switch (rbac.getAction()) {
-					case ALLOW:
-					case UNRECOGNIZED:
-						resolvePermission(authData, entry.getKey(), permission, true);
-						break;
-					case DENY:
-						resolvePermission(authData, entry.getKey(), permission, false);
-						break;
-					default:
-						break;
+					AuthRule permissionAnd = resolvePermission(permission);
+					if (permissionAnd != null && !permissionAnd.isEmpty()) {
+						permissionOr.addChildren(permissionAnd);
 					}
+				}
+				if (!principalOr.isEmpty()) {
+					authRule.addChildren(principalOr);
+				}
+				if (!permissionOr.isEmpty()) {
+					authRule.addChildren(permissionOr);
+				}
+				if (authRule.isEmpty()) {
+					continue;
+				}
+				switch (rbac.getAction()) {
+				case UNRECOGNIZED:
+				case ALLOW:
+					allowAuthRules.put(entry.getKey(), authRule);
+					break;
+				case DENY:
+					denyAuthRules.put(entry.getKey(), authRule);
+					break;
+				default:
+					log.warn("Unknown rbac action, {}", rbac.getAction());
 				}
 			}
 		}
-		List<JwtAuthentication> jwtRules = resolveJWT(httpFilters);
-		for (JwtAuthentication jwtRule : jwtRules) {
+		List<JwtAuthentication> jwtAuthentications = resolveJWT(httpFilters);
+		for (JwtAuthentication jwtRule : jwtAuthentications) {
 			Map<String, JwtProvider> jwtProviders = jwtRule.getProvidersMap();
 			for (Map.Entry<String, JwtProvider> entry : jwtProviders.entrySet()) {
 				JwtProvider provider = entry.getValue();
@@ -242,7 +250,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				for (JwtHeader header : provider.getFromHeadersList()) {
 					fromHeaders.put(header.getName(), header.getValuePrefix());
 				}
-				authData.getJwtRuleManager().getJwtRules().put(entry.getKey(),
+				jwtRules.put(entry.getKey(),
 						new JwtRule(entry.getKey(), fromHeaders, provider.getIssuer(),
 								new ArrayList<>(provider.getAudiencesList()),
 								provider.getLocalJwks().getInlineString(),
@@ -252,71 +260,45 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			}
 		}
 		log.info("auth rules resolve finish, RBAC rules {}, Jwt rules {}",
-				rbacList.size(), jwtRules.size());
-		authRepository.setAuthData(authData);
+				rbacList.size(), jwtAuthentications.size());
+		authRepository.setAllowAuthRule(allowAuthRules);
+		authRepository.setDenyAuthRules(denyAuthRules);
+		authRepository.setJwtRule(jwtRules);
 	}
 
-	private void resolvePrincipal(AuthData authData, String name, Principal principal,
-			boolean isAllowed) {
+	private AuthRule resolvePrincipal(Principal principal) {
 		Principal.Set andIds = principal.getAndIds();
-		AndRule<IpMatcher> ipBlockList = new AndRule<>();
-		AndRule<IpMatcher> remoteIpBlockList = new AndRule<>();
-		AndRule<StringMatcher> requestPrincipalList = new AndRule<>();
-		AndRule<StringMatcher> authAudienceList = new AndRule<>();
-		AndRule<StringMatcher> authPresenterList = new AndRule<>();
-		Map<String, AndRule<StringMatcher>> authClaimMap = new HashMap<>();
-		Map<String, AndRule<HeaderMatcher>> headerMap = new HashMap<>();
-		AndRule<StringMatcher> identityList = new AndRule<>();
-
-		Map<String, HttpHeaderRule> allowHeaderRules = authData.getHeaderRuleManager()
-				.getAllowHeaderRules();
-		Map<String, HttpHeaderRule> denyHeaderRules = authData.getHeaderRuleManager()
-				.getDenyHeaderRules();
-		Map<String, IdentityRule> allowIdentityRules = authData.getIdentityRuleManager()
-				.getAllowIdentityRules();
-		Map<String, IdentityRule> denyIdentityRules = authData.getIdentityRuleManager()
-				.getDenyIdentityRules();
-		Map<String, IpBlockRule> allowIpBlockRules = authData.getIpBlockRuleManager()
-				.getAllowIpBlockRules();
-		Map<String, IpBlockRule> denyIpBlockRules = authData.getIpBlockRuleManager()
-				.getDenyIpBlockRules();
-		Map<String, JwtAuthRule> allowJwtAuthRules = authData.getJwtAuthRuleManager()
-				.getAllowJwtAuthRules();
-		Map<String, JwtAuthRule> denyJwtAuthRules = authData.getJwtAuthRuleManager()
-				.getDenyJwtAuthRules();
-
+		AuthRule andChildren = new AuthRule(AuthRule.RuleOperation.AND);
 		for (Principal andId : andIds.getIdsList()) {
 			if (andId.getAny()) {
-				return;
+				return null;
 			}
 			boolean isNot = false;
 			if (andId.hasNotId()) {
 				isNot = true;
 				andId = andId.getNotId();
 			}
+			AuthRule orChildren = new AuthRule(AuthRule.RuleOperation.OR, isNot);
 			Principal.Set orIds = andId.getOrIds();
-			List<StringMatcher> identities = new ArrayList<>();
-			List<IpMatcher> ipBlocks = new ArrayList<>();
-			List<IpMatcher> remoteIpBlocks = new ArrayList<>();
-			List<StringMatcher> requestPrincipals = new ArrayList<>();
-			List<StringMatcher> authAudiences = new ArrayList<>();
-			List<StringMatcher> authPresenters = new ArrayList<>();
-			Map<String, List<StringMatcher>> authClaims = new HashMap<>();
-			Map<String, List<HeaderMatcher>> headers = new HashMap<>();
 			for (Principal orId : orIds.getIdsList()) {
 				if (orId.hasAuthenticated()
 						&& orId.getAuthenticated().hasPrincipalName()) {
 					StringMatcher identity = ConvUtil.convStringMatcher(
 							orId.getAuthenticated().getPrincipalName());
 					if (identity != null) {
-						identities.add(identity);
+						orChildren.addChildren(new AuthRule(new AuthCondition(
+								AuthCondition.ValidationType.IDENTITY, identity)));
 					}
 				}
 				if (orId.hasDirectRemoteIp()) {
-					ipBlocks.add(ConvUtil.convertIpMatcher(orId.getDirectRemoteIp()));
+					orChildren.addChildren(new AuthRule(new AuthCondition(
+							AuthCondition.ValidationType.SOURCE_IP,
+							ConvUtil.convertIpMatcher(orId.getDirectRemoteIp()))));
 				}
 				if (orId.hasRemoteIp()) {
-					remoteIpBlocks.add(ConvUtil.convertIpMatcher(orId.getRemoteIp()));
+					orChildren.addChildren(new AuthRule(
+							new AuthCondition(AuthCondition.ValidationType.REMOTE_IP,
+									ConvUtil.convertIpMatcher(orId.getRemoteIp()))));
 				}
 				if (orId.hasMetadata()
 						&& ISTIO_AUTHN.equals(orId.getMetadata().getFilter())) {
@@ -329,7 +311,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 							StringMatcher requestPrinciple = ConvUtil.convStringMatcher(
 									orId.getMetadata().getValue().getStringMatch());
 							if (requestPrinciple != null) {
-								requestPrincipals.add(requestPrinciple);
+								orChildren.addChildren(new AuthRule(new AuthCondition(
+										AuthCondition.ValidationType.REQUEST_PRINCIPALS,
+										requestPrinciple)));
 							}
 						}
 						break;
@@ -339,7 +323,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 							StringMatcher authAudience = ConvUtil.convStringMatcher(
 									orId.getMetadata().getValue().getStringMatch());
 							if (authAudience != null) {
-								authAudiences.add(authAudience);
+								orChildren.addChildren(new AuthRule(new AuthCondition(
+										AuthCondition.ValidationType.AUTH_AUDIENCES,
+										authAudience)));
 							}
 						}
 						break;
@@ -349,7 +335,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 							StringMatcher authPresenter = ConvUtil.convStringMatcher(
 									orId.getMetadata().getValue().getStringMatch());
 							if (authPresenter != null) {
-								authPresenters.add(authPresenter);
+								orChildren.addChildren(new AuthRule(new AuthCondition(
+										AuthCondition.ValidationType.AUTH_PRESENTERS,
+										authPresenter)));
 							}
 						}
 						break;
@@ -357,9 +345,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 						if (orId.hasMetadata() && orId.getMetadata().hasValue()
 								&& orId.getMetadata().getValue().hasListMatch()) {
 							if (segments.size() >= 2) {
-								List<StringMatcher> stringMatchers = authClaims
-										.getOrDefault(segments.get(1).getKey(),
-												new ArrayList<>());
+								String key = segments.get(1).getKey();
 								StringMatcher stringMatcher = null;
 								try {
 									stringMatcher = ConvUtil.convStringMatcher(
@@ -370,13 +356,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 									log.error(
 											"unable to get/convert request auth claims");
 								}
-								if (stringMatcher != null) {
-									stringMatchers.add(stringMatcher);
-								}
-								if (!stringMatchers.isEmpty()) {
-									authClaims.put(segments.get(1).getKey(),
-											stringMatchers);
-								}
+								orChildren.addChildren(new AuthRule(new AuthCondition(
+										AuthCondition.ValidationType.AUTH_CLAIMS, key,
+										stringMatcher)));
 							}
 						}
 						break;
@@ -384,105 +366,30 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 					}
 				}
 				if (orId.hasHeader()) {
-					List<HeaderMatcher> headerMatchers = headers
-							.getOrDefault(orId.getHeader().getName(), new ArrayList<>());
-					HeaderMatcher headerMatcher = ConvUtil
+					String headerName = orId.getHeader().getName();
+					if (StringUtils.isEmpty(headerName)) {
+						continue;
+					}
+					StringMatcher stringMatcher = ConvUtil
 							.convertHeaderMatcher(orId.getHeader());
-					headerMatchers.add(headerMatcher);
-					headers.put(orId.getHeader().getName(), headerMatchers);
+					orChildren.addChildren(new AuthRule(
+							new AuthCondition(AuthCondition.ValidationType.HEADER,
+									headerName, stringMatcher)));
 				}
 			}
-			if (!identities.isEmpty()) {
-				identityList.addOrRule(new OrRule<>(identities, isNot));
-			}
-			if (!requestPrincipals.isEmpty()) {
-				requestPrincipalList.addOrRule(new OrRule<>(requestPrincipals, isNot));
-			}
-			if (!authAudiences.isEmpty()) {
-				authAudienceList.addOrRule(new OrRule<>(authAudiences, isNot));
-			}
-			if (!authPresenters.isEmpty()) {
-				authPresenterList.addOrRule(new OrRule<>(authPresenters, isNot));
-			}
-			if (!ipBlocks.isEmpty()) {
-				ipBlockList.addOrRule(new OrRule<>(ipBlocks, isNot));
-			}
-			if (!remoteIpBlocks.isEmpty()) {
-				remoteIpBlockList.addOrRule(new OrRule<>(remoteIpBlocks, isNot));
-			}
-			for (Map.Entry<String, List<StringMatcher>> entry : authClaims.entrySet()) {
-				AndRule<StringMatcher> authClaimEntries = authClaimMap
-						.getOrDefault(entry.getKey(), new AndRule<>());
-				authClaimEntries.addOrRule(new OrRule<>(entry.getValue(), isNot));
-				authClaimMap.put(entry.getKey(), authClaimEntries);
-			}
-			for (Map.Entry<String, List<HeaderMatcher>> entry : headers.entrySet()) {
-				AndRule<HeaderMatcher> headerEntries = headerMap
-						.getOrDefault(entry.getKey(), new AndRule<>());
-				headerEntries.addOrRule(new OrRule<>(entry.getValue(), isNot));
-				headerMap.put(entry.getKey(), headerEntries);
+			if (!orChildren.isEmpty()) {
+				andChildren.addChildren(orChildren);
 			}
 		}
-		if (!ipBlockList.isEmpty() || !remoteIpBlockList.isEmpty()) {
-			IpBlockRule ipBlockRule = new IpBlockRule(name, ipBlockList,
-					remoteIpBlockList);
-			if (isAllowed) {
-				allowIpBlockRules.put(name, ipBlockRule);
-			}
-			else {
-				denyIpBlockRules.put(name, ipBlockRule);
-			}
-		}
-		if (!requestPrincipalList.isEmpty() || !authAudienceList.isEmpty()
-				|| !authClaimMap.isEmpty() || !authPresenterList.isEmpty()) {
-			JwtAuthRule jwtAuthRule = new JwtAuthRule(name, requestPrincipalList,
-					authAudienceList, authClaimMap, authPresenterList);
-			if (isAllowed) {
-				allowJwtAuthRules.put(name, jwtAuthRule);
-			}
-			else {
-				denyJwtAuthRules.put(name, jwtAuthRule);
-			}
-		}
-		if (!identityList.isEmpty()) {
-			IdentityRule identityRule = new IdentityRule(name, identityList);
-			if (isAllowed) {
-				allowIdentityRules.put(name, identityRule);
-			}
-			else {
-				denyIdentityRules.put(name, identityRule);
-			}
-		}
-		if (!headerMap.isEmpty()) {
-			HttpHeaderRule headerRule = new HttpHeaderRule(name, headerMap);
-			if (isAllowed) {
-				allowHeaderRules.put(name, headerRule);
-			}
-			else {
-				denyHeaderRules.put(name, headerRule);
-			}
-		}
+		return andChildren;
 	}
 
-	private void resolvePermission(AuthData authData, String name, Permission permission,
-			boolean isAllowed) {
+	private AuthRule resolvePermission(Permission permission) {
 		Permission.Set andRules = permission.getAndRules();
-		AndRule<StringMatcher> hostList = new AndRule<>();
-		AndRule<Integer> portList = new AndRule<>();
-		AndRule<StringMatcher> methodList = new AndRule<>();
-		AndRule<StringMatcher> pathList = new AndRule<>();
-		AndRule<IpMatcher> destIpList = new AndRule<>();
-		Map<String, IpBlockRule> allowIpBlockRules = authData.getIpBlockRuleManager()
-				.getAllowIpBlockRules();
-		Map<String, IpBlockRule> denyIpBlockRules = authData.getIpBlockRuleManager()
-				.getDenyIpBlockRules();
-		Map<String, TargetRule> allowTargetRules = authData.getTargetRuleManager()
-				.getAllowTargetRules();
-		Map<String, TargetRule> denyTargetRules = authData.getTargetRuleManager()
-				.getDenyTargetRules();
+		AuthRule andChildren = new AuthRule(AuthRule.RuleOperation.AND);
 		for (Permission andRule : andRules.getRulesList()) {
 			if (andRule.getAny()) {
-				return;
+				return null;
 			}
 			boolean isNot = false;
 			if (andRule.hasNotRule()) {
@@ -490,15 +397,12 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				andRule = andRule.getNotRule();
 			}
 			Permission.Set orRules = andRule.getOrRules();
-			List<StringMatcher> hosts = new ArrayList<>();
-			List<Integer> ports = new ArrayList<>();
-			List<StringMatcher> methods = new ArrayList<>();
-			List<StringMatcher> paths = new ArrayList<>();
-			List<IpMatcher> destIps = new ArrayList<>();
+			AuthRule orChildren = new AuthRule(AuthRule.RuleOperation.OR, isNot);
 			for (Permission orRule : orRules.getRulesList()) {
 				int port = orRule.getDestinationPort();
 				if (port > MIN_PORT && port <= MAX_PORT) {
-					ports.add(port);
+					orChildren.addChildren(new AuthRule(
+							new AuthCondition(AuthCondition.ValidationType.PORTS, port)));
 				}
 				if (orRule.hasHeader()) {
 					switch (orRule.getHeader().getName()) {
@@ -506,14 +410,16 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 						StringMatcher host = ConvUtil
 								.convStringMatcher(orRule.getHeader());
 						if (host != null) {
-							hosts.add(host);
+							orChildren.addChildren(new AuthRule(new AuthCondition(
+									AuthCondition.ValidationType.HOSTS, host)));
 						}
 						break;
 					case HEADER_NAME_METHOD:
 						StringMatcher method = ConvUtil
 								.convStringMatcher(orRule.getHeader());
 						if (method != null) {
-							methods.add(method);
+							orChildren.addChildren(new AuthRule(new AuthCondition(
+									AuthCondition.ValidationType.METHODS, method)));
 						}
 						break;
 					}
@@ -522,48 +428,21 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 					StringMatcher path = ConvUtil
 							.convStringMatcher(orRule.getUrlPath().getPath());
 					if (path != null) {
-						paths.add(path);
+						orChildren.addChildren(new AuthRule(new AuthCondition(
+								AuthCondition.ValidationType.PATHS, path)));
 					}
 				}
 				if (orRule.hasDestinationIp()) {
-					destIps.add(ConvUtil.convertIpMatcher(orRule.getDestinationIp()));
+					orChildren.addChildren(new AuthRule(new AuthCondition(
+							AuthCondition.ValidationType.DEST_IP,
+							ConvUtil.convertIpMatcher(orRule.getDestinationIp()))));
 				}
 			}
-			if (!hosts.isEmpty()) {
-				hostList.addOrRule(new OrRule<>(hosts, isNot));
-			}
-			if (!ports.isEmpty()) {
-				portList.addOrRule(new OrRule<>(ports, isNot));
-			}
-			if (!methods.isEmpty()) {
-				methodList.addOrRule(new OrRule<>(methods, isNot));
-			}
-			if (!paths.isEmpty()) {
-				pathList.addOrRule(new OrRule<>(paths, isNot));
-			}
-			if (!destIps.isEmpty()) {
-				destIpList.addOrRule(new OrRule<>(destIps, isNot));
+			if (!orChildren.isEmpty()) {
+				andChildren.addChildren(orChildren);
 			}
 		}
-		if (!hostList.isEmpty() || !portList.isEmpty() || !methodList.isEmpty()
-				|| !pathList.isEmpty()) {
-			TargetRule targetRule = new TargetRule(name, hostList, portList, methodList,
-					pathList);
-			if (isAllowed) {
-				allowTargetRules.put(name, targetRule);
-			}
-			else {
-				denyTargetRules.put(name, targetRule);
-			}
-		}
-		if (!destIpList.isEmpty()) {
-			if (isAllowed) {
-				allowIpBlockRules.get(name).setDestIps(destIpList);
-			}
-			else {
-				denyIpBlockRules.get(name).setDestIps(destIpList);
-			}
-		}
+		return andChildren;
 	}
 
 }

@@ -19,10 +19,14 @@ package com.alibaba.cloud.governance.auth.util;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
+import com.alibaba.cloud.commons.lang.StringUtils;
 
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public final class IpUtil {
 
 	private static final String UNKNOWN = "unknown";
