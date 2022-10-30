@@ -34,12 +34,3 @@ spec:
           ports:
             - name: http-port
               containerPort: 8014
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - podAffinityTerm:
-                topologyKey: failure-domain.beta.kubernetes.io/zone
-              weight: 50
-            - podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
-              weight: 100
