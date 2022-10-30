@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title></title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+</head>
+<body th:style="${'background-color:' + backgroundColor }">
+<div style="margin: 30px auto 0 30px;">
+    <div id="RocketMQSection">
+        <label>RocketMQ 削峰填谷场景：</label>
+        <br>
+        <label>被点赞的商品ID</label>
+        <input id="itemId" style="width: 200px;height: 20px;" value="1">
+        <br>
+        <button class="btnStart">开始调用</button>
+    </div>
+    <div id="rocketmqResultSection" style="margin-top: 30px; border-top: 1px solid #eaeaea;">
+    </div>
+</div>
+<script charset="utf-8">
+    var count = 0;
+    window.onload = function () {
+        const timeId = setInterval(function () {
+            if (count == 1000) {
+                console.log("终止轮询")
+                clearInterval(timeId)
+            }
+            queryRes()
+        }, 500)
+
+        function queryRes() {
+            $.ajax({
+                url: "http://gateway-service:30010/praise/query",
+                type: "get",
+                dataType: "json",
+                data: "itemId=" + $('#itemId').val(),
+                success: function (res) {
+                    console.log("准备查询，此时count=" + count)
+                    $('#rocketmqResultSection').append(`<p> [${getDateTime()}] 点赞数： ${res} </p>`);
+                }
+            })
+        }
+    }
+    $('.btnStart').click(() => {
+        var itemId = $('#itemId').val();
+        $('#rocketmqResultSection').empty();
+
+        for (let i = 0; i < 1000; i++) {
+            $.ajax({
+                url: "http://gateway-service:30010/praise/rocketmq",
+                type: "get",
+                dataType: "json",
+                data: "itemId=" + itemId,
+                success: function () {
+                    console.log("点赞成功，更新count")
+                    count++;
+                }
+            });
+        }
+
+    });
+
+    const getDateTime = () => {
+        const myDate = new Date;
+        const year = myDate.getFullYear();
+        const month = myDate.getMonth() + 1;
+        const date = myDate.getDate();
+        const hours = myDate.getHours();
+        const minutes = myDate.getMinutes();
+        const seconds = myDate.getSeconds();
+        return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    };
+</script>
+</body>
+</html>
