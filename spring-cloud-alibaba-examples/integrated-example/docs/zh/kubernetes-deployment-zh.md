@@ -20,6 +20,7 @@
 120.24.xxx.xxx gateway-service
 120.24.xxx.xxx integrated-mysql-web
 120.24.xxx.xxx nacos-mysql-web
+120.24.xxx.xxx nacos-svc
 ```
 
 ## 启动测试

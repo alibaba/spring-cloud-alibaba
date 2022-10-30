@@ -19,6 +19,7 @@ Here we expose the services of the Pod in Kubernetes to the outside world by mea
 120.24.xxx.xxx gateway-service
 120.24.xxx.xxx integrated-mysql-web
 120.24.xxx.xxx nacos-mysql-web
+120.24.xxx.xxx nacos-svc
 ```
 
 ## Start the test
