@@ -20,10 +20,6 @@ This module includes a consumer instance and a provider cluster, which contains 
           <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
       </dependency>
 
-2. Secondly, introduce the load balancer defined by the governance module on the startup class.
-   
-       @RibbonClient(name = "label-route", configuration = LabelRouteRule.class)
-
 ### Application Start
 
 Start a startup class of three modules, ConsumerApplication and two ProviderApplications, and inject them into the Nacos registry.

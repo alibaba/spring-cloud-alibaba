@@ -41,6 +41,7 @@ public class ControlPlaneConnection implements ControlPlane {
 	public void pushRouteData(
 			List<UntiedRouteDataStructure> untiedRouterDataStructureList) {
 		// Filter service.
+		// todo can cache the result
 		HashSet<String> definitionFeignService = filterService
 				.getDefinitionFeignService(untiedRouterDataStructureList.size());
 		List<UntiedRouteDataStructure> routeDatalist = untiedRouterDataStructureList

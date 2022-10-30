@@ -20,10 +20,6 @@
           <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
       </dependency>
 
-2. 其次，在启动类上引入治理模块定义的负载均衡器
-   
-       @RibbonClient(name = "label-route", configuration = LabelRouteRule.class)
-
 ### 应用启动
 
 启动一个三个模块的启动类，分别为ConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。

@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @EnableDiscoveryClient(autoRegister = true)
 @EnableFeignClients
-@RibbonClient(name = "service-provider", configuration = com.alibaba.cloud.router.ribbon.LabelRouteRule.class)
 public class ConsumerApplication {
 
 	public static void main(String[] args) {

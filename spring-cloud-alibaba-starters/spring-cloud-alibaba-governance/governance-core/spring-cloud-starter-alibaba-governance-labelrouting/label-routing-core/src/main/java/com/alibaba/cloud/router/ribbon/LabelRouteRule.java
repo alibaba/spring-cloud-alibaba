@@ -116,17 +116,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 	@Override
 	public Server choose(Object key) {
 		try {
-			// Get instances from register-center.
 			final DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
 			String targetServiceName = loadBalancer.getName();
-			String group = this.nacosDiscoveryProperties.getGroup();
-			final NamingService namingService = nacosServiceManager.getNamingService();
-			final List<Instance> instances = namingService
-					.selectInstances(targetServiceName, group, true);
-			if (CollectionUtils.isEmpty(instances)) {
-				LOG.warn("no instance in service {} ", targetServiceName);
-				return null;
-			}
 
 			// If routeData isn't present, use normal load balance rule.
 			final HashMap<String, List<MatchService>> routeData = routeDataRepository
@@ -134,6 +125,16 @@ public class LabelRouteRule extends PredicateBasedRule {
 			if (routeData == null) {
 				return loadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
 						routerProperties.getRule());
+			}
+
+			// Get instances from register-center.
+			String group = this.nacosDiscoveryProperties.getGroup();
+			final NamingService namingService = nacosServiceManager.getNamingService();
+			final List<Instance> instances = namingService
+					.selectInstances(targetServiceName, group, true);
+			if (CollectionUtils.isEmpty(instances)) {
+				LOG.warn("no instance in service {} ", targetServiceName);
+				return null;
 			}
 
 			// Filter by route rules,the result will be kept in versionSet and weightMap.
@@ -326,6 +327,8 @@ public class LabelRouteRule extends PredicateBasedRule {
 			return conditionMatchUtil.exactMatch(str, comparator);
 		case ConditionMatchUtil.REGEX:
 			return conditionMatchUtil.regexMatch(str, comparator);
+		case ConditionMatchUtil.PREFIX:
+			return conditionMatchUtil.prefixMatch(str, comparator);
 		case ConditionMatchUtil.CONTAIN:
 			return conditionMatchUtil.containMatch(str, comparator);
 		case ConditionMatchUtil.GREATER:

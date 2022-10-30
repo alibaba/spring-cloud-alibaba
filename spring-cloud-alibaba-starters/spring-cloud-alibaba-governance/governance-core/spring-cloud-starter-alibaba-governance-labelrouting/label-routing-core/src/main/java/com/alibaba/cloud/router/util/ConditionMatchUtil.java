@@ -36,6 +36,11 @@ public class ConditionMatchUtil {
 	/**
 	 * Sign of contain.
 	 */
+	public static final String PREFIX = "prefix";
+
+	/**
+	 * Sign of contain.
+	 */
 	public static final String CONTAIN = "contain";
 
 	/**
@@ -68,6 +73,10 @@ public class ConditionMatchUtil {
 
 	public boolean containMatch(String sub, String base) {
 		return base.contains(sub);
+	}
+
+	public boolean prefixMatch(String prefix, String str) {
+		return str.startsWith(prefix);
 	}
 
 	public boolean greaterMatch(String str, String comparor) {
