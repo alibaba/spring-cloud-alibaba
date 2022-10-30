@@ -7,12 +7,15 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: nacos-server:8848
+        group: integrated-example
       config:
-        server-addr: localhost:8848
+        server-addr: nacos-server:8848
         file-extension: yaml
         group: integrated-example
-        shared-dataids: datasorce-config.yaml
+        shared-configs[0]:
+          dataid: datasource-config.yaml
+          group: integrated-example
 
 seata:
   application-id: ${spring.application.name}
@@ -21,4 +24,4 @@ seata:
     vgroup-mapping:
       integrated-storage-group: default
     grouplist:
-      default: localhost:8091
+      default: seata-server:8091

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrated-praise-provider
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integrated-praise-provider
+  template:
+    metadata:
+      labels:
+        appName: integrated-praise-provider
+        app: integrated-praise-provider
+    spec:
+      containers:
+        - name: integrated-praise-provider
+          image: "{{ .Values.image.repository }}integrated-praise-provider"
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8015

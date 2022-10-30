@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq
+spec:
+  ports:
+    - port: 9876
+      protocol: TCP
+      targetPort: 9876
+  selector:
+    app: mqnamesrv
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mqnamesrv
+spec:
+  serviceName: mqnamesrv
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqnamesrv
+  template:
+    metadata:
+      labels:
+        app: mqnamesrv
+    spec:
+      containers:
+        - name: mqnamesrv
+          image: registry.cn-hangzhou.aliyuncs.com/sca-community/rocketmq-server
+          command: ["sh","/usr/local/rocketmq-4.8.0/bin/mqnamesrv"]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9876
+              protocol: TCP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mqbroker
+spec:
+  serviceName: mqbroker
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqbroker
+  template:
+    metadata:
+      labels:
+        app: mqbroker
+    spec:
+      containers:
+        - name: mqbroker
+          image: registry.cn-hangzhou.aliyuncs.com/sca-community/rocketmq-server
+          command: ["sh","/usr/local/rocketmq-4.8.0/bin/mqbroker", "-n","rocketmq:9876"]
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAVA_OPT
+              value: "-server -XX:ParallelGCThreads=1 -Xms1g -Xmx1g -Xmn512m"
+          ports:
+            - containerPort: 10909
+            - containerPort: 10911
+          resources:
+            requests:
+              memory: 128Mi

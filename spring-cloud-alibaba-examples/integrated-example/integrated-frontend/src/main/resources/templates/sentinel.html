@@ -23,40 +23,40 @@
         $('#sentinelResultSection').empty();
         var itemId = $('#itemId').val();
         $.ajax({
-            url: "http://localhost:8010/praise/query",
+            url: "http://gateway-service:30010/praise/query",
             type: "get",
             dataType: "json",
             data: "itemId=" + itemId,
             async: false,
             success: function (res) {
-                $('#sentinelResultSection').append(`<p> 点赞前的点赞数： ${res} </p>`);
+                $('#sentinelResultSection').append(`<p> [${getDateTime()}] 点赞前的点赞数： ${res} </p>`);
             }
         });
         for (let i = 0; i < 10; i++) {
             $.ajax({
-                url: "http://localhost:8010/praise/sentinel",
+                url: "http://gateway-service:30010/praise/sentinel",
                 type: "get",
                 dataType: "json",
                 data: "itemId=" + itemId,
                 success: function (res) {
                     console.log(res)
-                    $('#sentinelResultSection').append(`<p> ${getDateTime()}: ${res}</p>`);
+                    $('#sentinelResultSection').append(`<p> [${getDateTime()}] ${getDateTime()}: ${res}</p>`);
                 },
                 error: function (res) {
                     console.log(res)
-                    $('#sentinelResultSection').append(`<p> ${getDateTime()}: 请求失败，接口被限流 </p>`);
+                    $('#sentinelResultSection').append(`<p> [${getDateTime()}]: 请求失败，接口被限流 </p>`);
                 }
             });
         }
         timeoutid = setTimeout(queryRes, 1000);
         function queryRes() {
             $.ajax({
-                url: "http://localhost:8010/praise/query",
+                url: "http://gateway-service:30010/praise/query",
                 type: "get",
                 dataType: "json",
                 data: "itemId=" + $('#itemId').val(),
                 success: function (res) {
-                    $('#sentinelResultSection').append(`<p> 点赞后的点赞数： ${res} </p>`);
+                    $('#sentinelResultSection').append(`<p> [${getDateTime()}] 点赞后的点赞数： ${res} </p>`);
                 }
             })
         }

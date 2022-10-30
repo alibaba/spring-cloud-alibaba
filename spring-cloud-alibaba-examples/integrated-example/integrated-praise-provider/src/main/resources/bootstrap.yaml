@@ -5,7 +5,10 @@ spring:
     nacos:
       config:
         file-extension: yaml
-        server-addr: localhost:8848
+        server-addr: nacos-server:8848
+        group: integrated-example
+      discovery:
+        server-addr: nacos-server:8848
         group: integrated-example
 server:
   port: 8015
