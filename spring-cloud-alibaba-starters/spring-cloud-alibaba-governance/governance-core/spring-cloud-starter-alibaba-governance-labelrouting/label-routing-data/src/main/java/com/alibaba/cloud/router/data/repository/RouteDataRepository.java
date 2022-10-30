@@ -54,11 +54,6 @@ public class RouteDataRepository {
 	private static final String PATH = "path";
 
 	/**
-	 * Use to update route data.
-	 */
-	private List<UntiedRouteDataStructure> routeDataList;
-
-	/**
 	 * Contain rule of single path rule.
 	 */
 	private ConcurrentHashMap<String, List<MatchService>> pathRuleMap = new ConcurrentHashMap<>();
@@ -78,14 +73,7 @@ public class RouteDataRepository {
 	 */
 	public static final int MIN_WEIGHT = 0;
 
-	public void updateRouteData(final List<UntiedRouteDataStructure> routerDataList) {
-		synchronized (this) {
-			this.routeDataList = routerDataList;
-		}
-		updateRouteData();
-	}
-
-	private void updateRouteData() {
+	public void updateRouteData(final List<UntiedRouteDataStructure> routeDataList) {
 		for (UntiedRouteDataStructure routeData : routeDataList) {
 			nonNullCheck(routeData);
 			LabelRouteRule labelRouteData = originalRouteData
