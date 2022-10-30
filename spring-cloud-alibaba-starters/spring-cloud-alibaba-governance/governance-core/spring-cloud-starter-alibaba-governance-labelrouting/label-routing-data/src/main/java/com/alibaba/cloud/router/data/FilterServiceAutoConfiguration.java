@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router;
+package com.alibaba.cloud.router.data;
 
-import com.alibaba.cloud.router.context.RequestContext;
+import com.alibaba.cloud.router.data.repository.FilterService;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,11 +26,12 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class RequestContextAutoConfiguration {
+public class FilterServiceAutoConfiguration {
 
 	@Bean
-	public RequestContext requestContext() {
-		return new RequestContext();
+	@ConditionalOnMissingBean
+	public FilterService filterService() {
+		return new FilterService();
 	}
 
 }

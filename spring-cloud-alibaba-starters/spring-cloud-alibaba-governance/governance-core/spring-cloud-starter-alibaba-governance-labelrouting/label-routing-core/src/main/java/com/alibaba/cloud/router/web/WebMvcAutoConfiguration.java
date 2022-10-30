@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router;
-
-import com.alibaba.cloud.router.web.WebMvcConfig;
-import com.alibaba.cloud.router.web.WebMvcInterceptor;
+package com.alibaba.cloud.router.web;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

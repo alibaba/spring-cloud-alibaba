@@ -17,12 +17,12 @@
 package com.alibaba.cloud.router.ribbon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +30,13 @@ import javax.servlet.http.HttpServletRequest;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
-import com.alibaba.cloud.router.context.RequestContext;
-import com.alibaba.cloud.router.data.crd.LabelRouteData;
+import com.alibaba.cloud.router.RouterProperties;
 import com.alibaba.cloud.router.data.crd.MatchService;
 import com.alibaba.cloud.router.data.crd.rule.RouteRule;
 import com.alibaba.cloud.router.data.repository.RouteDataRepository;
+import com.alibaba.cloud.router.util.ConditionMatchUtil;
+import com.alibaba.cloud.router.util.LoadBalanceUtil;
+import com.alibaba.cloud.router.util.RequestContext;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.loadbalancer.AbstractServerPredicate;
@@ -52,15 +54,52 @@ import org.springframework.util.CollectionUtils;
  */
 public class LabelRouteRule extends PredicateBasedRule {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LabelRouteRule.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LabelRouteRule.class);
 
+	/**
+	 * Support Parsing Rules from path,only URI at present.
+	 */
+	private static final String PATH = "path";
+
+	/**
+	 * Support Parsing Rules from header.
+	 */
 	private static final String HEADER = "header";
 
+	/**
+	 * Support Parsing Rules from parameter.
+	 */
 	private static final String PARAMETER = "parameter";
 
+	/**
+	 * Filter base on version metadata.
+	 */
 	private static final String VERSION = "version";
 
+	/**
+	 * Sign of no match any rule.
+	 */
+	private static final int NO_MATCH = -1;
+
+	/**
+	 * Avoid loss of accuracy.
+	 */
+	private static final double KEEP_ACCURACY = 1.0;
+
+	/**
+	 * Composite route. todo
+	 */
 	private AbstractServerPredicate predicate;
+
+	/**
+	 * Match condition util.
+	 */
+	private final ConditionMatchUtil conditionMatchUtil = new ConditionMatchUtil();
+
+	/**
+	 * Load Balance Util.
+	 */
+	private final LoadBalanceUtil loadBalanceUtil = new LoadBalanceUtil();
 
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
@@ -72,44 +111,64 @@ public class LabelRouteRule extends PredicateBasedRule {
 	private RouteDataRepository routeDataRepository;
 
 	@Autowired
-	private RequestContext requestContext;
+	private RouterProperties routerProperties;
 
 	@Override
 	public Server choose(Object key) {
 		try {
+			final DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
+			String targetServiceName = loadBalancer.getName();
+
+			// If routeData isn't present, use normal load balance rule.
+			final HashMap<String, List<MatchService>> routeData = routeDataRepository
+					.getRouteRule(targetServiceName);
+			if (routeData == null) {
+				return loadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
+						routerProperties.getRule());
+			}
+
+			// Get instances from register-center.
 			String group = this.nacosDiscoveryProperties.getGroup();
-			DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
-			String name = loadBalancer.getName();
-
-			NamingService namingService = nacosServiceManager.getNamingService();
-			List<Instance> instances = namingService.selectInstances(name, group, true);
-
-			HashSet<String> versionSet = new HashSet<>();
-			HashMap<String, Integer> weightMap = new HashMap<>();
-
-			serviceFilter(name, versionSet, weightMap);
-
+			final NamingService namingService = nacosServiceManager.getNamingService();
+			final List<Instance> instances = namingService
+					.selectInstances(targetServiceName, group, true);
 			if (CollectionUtils.isEmpty(instances)) {
-				LOGGER.warn("no instance in service {}", name);
+				LOG.warn("no instance in service {} ", targetServiceName);
 				return null;
 			}
 
-			int[] weightArray = new int[instances.size()];
-			List<Instance> instanceList = new ArrayList<>();
+			// Filter by route rules,the result will be kept in versionSet and weightMap.
+			HashSet<String> versionSet = new HashSet<>();
+			HashMap<String, Integer> weightMap = new HashMap<>();
+			serviceFilter(targetServiceName, versionSet, weightMap);
 
+			// Filter instances by versionSet and weightMap.
+			double[] weightArray = new double[instances.size()];
+			HashMap<String, List<Instance>> instanceMap = new HashMap<>();
 			for (Instance instance : instances) {
-				Map<String, String> metadata = instance.getMetadata();
-				String version = metadata.get("version");
+				String version = instance.getMetadata().get(VERSION);
 				if (versionSet.contains(version)) {
+					List<Instance> instanceList = instanceMap.get(version);
+					if (instanceList == null) {
+						instanceList = new ArrayList<>();
+					}
 					instanceList.add(instance);
+					instanceMap.put(version, instanceList);
 				}
 			}
 
-			return chooseServerByWeight(instanceList, name, weightMap, weightArray);
+			// None instance match rule
+			if (CollectionUtils.isEmpty(instanceMap)) {
+				LOG.warn("no instance match route rule");
+				return null;
+			}
+
+			// Routing with Weight algorithm.
+			return chooseServerByWeight(instanceMap, weightMap, weightArray);
 
 		}
 		catch (Exception e) {
-			LOGGER.warn("LabelRouteRule error", e);
+			LOG.warn("LabelRouteRule error", e);
 			return null;
 		}
 	}
@@ -121,158 +180,198 @@ public class LabelRouteRule extends PredicateBasedRule {
 
 	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
 			HashMap<String, Integer> weightMap) {
-		final Optional<LabelRouteData> routeData = Optional
-				.ofNullable(routeDataRepository.getRouteData(targetServiceName));
-		if (doNotNullCheck(routeData)) {
-			return;
-		}
-
-		final Optional<List<MatchService>> matchRouteList = Optional
-				.ofNullable(routeData.get().getMatchRouteList());
-		if (doNotNullCheck(matchRouteList, targetServiceName)) {
-			return;
-		}
-
-		final HttpServletRequest request = requestContext.getRequest(true);
-		final Optional<Enumeration<String>> headerNames = Optional
-				.ofNullable(request.getHeaderNames());
-		final Optional<Map<String, String[]>> parameterMap = Optional
-				.ofNullable(request.getParameterMap());
+		// Get request metadata.
+		final HttpServletRequest request = RequestContext.getRequest();
+		final Enumeration<String> headerNames = request.getHeaderNames();
 		HashMap<String, String> requestHeaders = new HashMap<>();
-
-		if (headerNames.isPresent()) {
-			while (headerNames.get().hasMoreElements()) {
-				String name = headerNames.get().nextElement();
+		if (headerNames != null) {
+			while (headerNames.hasMoreElements()) {
+				String name = headerNames.nextElement();
 				String value = request.getHeader(name);
 				requestHeaders.put(name, value);
 			}
 		}
+		final Map<String, String[]> parameterMap = request.getParameterMap();
+		int defaultVersionWeight = RouteDataRepository.SUM_WEIGHT;
+		boolean isMatch = false;
 
-		int defaultVersionWeight = 100;
-		for (MatchService matchService : matchRouteList.get()) {
-			Optional<List<RouteRule>> ruleList = Optional
-					.ofNullable(matchService.getRuleList());
-			Optional<String> version = Optional.ofNullable(matchService.getVersion());
-			Integer weight = matchService.getWeight();
-			if (weight == null) {
-				weight = 100;
+		// Parse rule.
+		if (requestHeaders.size() > 0) {
+			for (String keyName : requestHeaders.keySet()) {
+				int weight = matchRule(targetServiceName, keyName, requestHeaders,
+						parameterMap, request, versionSet, weightMap);
+				if (weight != NO_MATCH) {
+					isMatch = true;
+					defaultVersionWeight -= weight;
+					break;
+				}
 			}
+		}
 
-			if (doNotNullCheck(ruleList, version, weight, matchService,
-					targetServiceName)) {
+		if (!isMatch && parameterMap != null) {
+			for (String keyName : parameterMap.keySet()) {
+				int weight = matchRule(targetServiceName, keyName, requestHeaders,
+						parameterMap, request, versionSet, weightMap);
+				if (weight != NO_MATCH) {
+					isMatch = true;
+					defaultVersionWeight -= weight;
+					break;
+				}
+			}
+		}
+
+		final List<MatchService> pathRules = routeDataRepository
+				.getPathRules(targetServiceName);
+		if (!isMatch && pathRules != null) {
+			for (MatchService matchService : pathRules) {
+				if (matchService.getRuleList().get(0).getValue()
+						.equals(request.getRequestURI())) {
+					String version = matchService.getVersion();
+					Integer weight = matchService.getWeight();
+					versionSet.add(version);
+					weightMap.put(version, weight);
+					defaultVersionWeight -= weight;
+				}
+			}
+		}
+
+		// Add default route
+		if (defaultVersionWeight > RouteDataRepository.MIN_WEIGHT) {
+			String defaultRouteVersion = routeDataRepository
+					.getOriginalRouteRule(targetServiceName).getDefaultRouteVersion();
+			versionSet.add(defaultRouteVersion);
+			weightMap.put(defaultRouteVersion, defaultVersionWeight);
+		}
+
+	}
+
+	private int matchRule(String targetServiceName, String keyName,
+			final HashMap<String, String> requestHeaders,
+			final Map<String, String[]> parameterMap, final HttpServletRequest request,
+			HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
+		final List<MatchService> matchServiceList = routeDataRepository
+				.getRouteRule(targetServiceName).get(keyName);
+		if (matchServiceList == null) {
+			return NO_MATCH;
+		}
+		for (MatchService matchService : matchServiceList) {
+			final List<RouteRule> ruleList = matchService.getRuleList();
+			String version = matchService.getVersion();
+			Integer weight = matchService.getWeight();
+			boolean isMatchRule = true;
+			for (RouteRule routeRule : ruleList) {
+				String type = routeRule.getType();
+				switch (type) {
+				case PATH:
+					isMatchRule = parseRequestPath(routeRule, request);
+					break;
+				case HEADER:
+					isMatchRule = parseRequestHeader(routeRule, requestHeaders);
+					break;
+				case PARAMETER:
+					isMatchRule = parseRequestParameter(routeRule, parameterMap);
+					break;
+				default:
+					throw new UnsupportedOperationException(
+							"unsupported string compare operation");
+				}
+				if (!isMatchRule) {
+					break;
+				}
+			}
+			if (!isMatchRule) {
 				continue;
 			}
-
-			for (RouteRule routeRule : ruleList.get()) {
-				if (HEADER.equalsIgnoreCase(routeRule.getType())) {
-					if (!headerNames.isPresent() || requestHeaders.size() == 0) {
-						break;
-					}
-					if (!routeRule.getValue().equals(requestHeaders.get(routeRule.getKey()))) {
-						break;
-					}
-				}
-				if (PARAMETER.equalsIgnoreCase(routeRule.getType())) {
-					if (!parameterMap.isPresent() || parameterMap.get().size() == 0) {
-						break;
-					}
-					if (!routeRule.getValue().equals(parameterMap.get().get(routeRule.getKey())[0])) {
-						break;
-					}
-				}
-				versionSet.add(version.get());
-				weightMap.put(version.get(), weight);
-				defaultVersionWeight -= weight;
-			}
+			versionSet.add(version);
+			weightMap.put(version, weight);
+			return weight;
 		}
-
-		versionSet.add(routeData.get().getDefaultRouteVersion());
-		if (defaultVersionWeight > 0) {
-			weightMap.put(routeData.get().getDefaultRouteVersion(), defaultVersionWeight);
-		}
-
+		return NO_MATCH;
 	}
 
-	private boolean doNotNullCheck(Optional<LabelRouteData> routeData) {
-		boolean ifReturn = false;
-
-		if (!routeData.isPresent()) {
-			ifReturn = true;
-		}
-		return ifReturn;
+	private boolean parseRequestPath(final RouteRule routeRule,
+			final HttpServletRequest request) {
+		String condition = routeRule.getCondition();
+		String value = routeRule.getValue();
+		String uri = request.getRequestURI();
+		return conditionMatch(condition, value, uri);
 	}
 
-	private boolean doNotNullCheck(Optional<List<MatchService>> matchRouteList, String targetServiceName) {
-		boolean ifReturn = false;
-
-		if (!matchRouteList.isPresent()) {
-			LOGGER.warn("Target service ={} rule is empty", targetServiceName);
-			ifReturn = true;
+	private boolean parseRequestHeader(final RouteRule routeRule,
+			final HashMap<String, String> requestHeaders) {
+		if (requestHeaders.size() == 0) {
+			return false;
 		}
-		return ifReturn;
+		String condition = routeRule.getCondition();
+		String value = routeRule.getValue();
+		String headerValue = requestHeaders.get(routeRule.getKey());
+		return conditionMatch(condition, value, headerValue);
 	}
 
-	private boolean doNotNullCheck(Optional<List<RouteRule>> ruleList,
-			Optional<String> version, Integer weight, MatchService matchService,
-			String targetServiceName) {
-		boolean ifContinue = false;
-
-		if (!ruleList.isPresent() || ruleList.get().size() == 0) {
-			ifContinue = true;
+	private boolean parseRequestParameter(final RouteRule routeRule,
+			final Map<String, String[]> parameterMap) {
+		if (parameterMap == null || parameterMap.size() == 0) {
+			return false;
 		}
-
-		if (!version.isPresent()) {
-			LOGGER.warn("Target service ={} rule ={} lose version,please check it",
-					targetServiceName, matchService);
-			ifContinue = true;
-		}
-
-		if (weight < 0 || weight > 100) {
-			LOGGER.warn(
-					"The weight of provider = {} version = {} had set error,please check it",
-					targetServiceName, version);
-			ifContinue = true;
-		}
-		return ifContinue;
+		String condition = routeRule.getCondition();
+		String value = routeRule.getValue();
+		String[] paramValues = parameterMap.get(routeRule.getKey());
+		String paramValue = paramValues == null ? null : paramValues[0];
+		return conditionMatch(condition, value, paramValue);
 	}
 
-	private Server chooseServerByWeight(List<Instance> instances, String targetService,
-			HashMap<String, Integer> weightMap, int[] weightArray) {
+	private boolean conditionMatch(String condition, String str, String comparator) {
+		switch (condition) {
+		case ConditionMatchUtil.EXACT:
+		case ConditionMatchUtil.EQUAL:
+			return conditionMatchUtil.exactMatch(str, comparator);
+		case ConditionMatchUtil.REGEX:
+			return conditionMatchUtil.regexMatch(str, comparator);
+		case ConditionMatchUtil.PREFIX:
+			return conditionMatchUtil.prefixMatch(str, comparator);
+		case ConditionMatchUtil.CONTAIN:
+			return conditionMatchUtil.containMatch(str, comparator);
+		case ConditionMatchUtil.GREATER:
+			return conditionMatchUtil.greaterMatch(str, comparator);
+		case ConditionMatchUtil.LESS:
+			return conditionMatchUtil.lessMatch(str, comparator);
+		case ConditionMatchUtil.NOT_EQUAL:
+			return conditionMatchUtil.noEqualMatch(str, comparator);
+		default:
+			throw new UnsupportedOperationException(
+					"unsupported string compare operation");
+		}
+	}
+
+	private Server chooseServerByWeight(final HashMap<String, List<Instance>> instanceMap,
+			final HashMap<String, Integer> weightMap, final double[] weightArray) {
 		int index = 0;
-		int sum = 0;
+		double sum = 0.0D;
+		List<Instance> instances = new ArrayList<>();
 
-		for (Instance instance : instances) {
-			String version = instance.getMetadata().get(VERSION);
-			Integer weight = weightMap.get(version);
-
-			if (weight == null) {
-				weight = 100;
-			}
-
-			if (weight < 0 || weight > 100) {
-				LOGGER.error(
-						"The weight of provider = {} version = {} had set error,please check it",
-						targetService, version);
-			}
-
-			weightArray[index] = weight + sum;
-			sum = weightArray[index];
-			index++;
-		}
-
-		int random = ThreadLocalRandom.current().nextInt(1, 101);
-		int chooseServiceIndex = 0;
-		for (int i = 0; i < weightArray.length; i++) {
-			if (random < weightArray[i]) {
-				chooseServiceIndex = i;
-				break;
+		for (String version : instanceMap.keySet()) {
+			int weight = weightMap.get(version);
+			List<Instance> instanceList = instanceMap.get(version);
+			for (Instance instance : instanceList) {
+				instances.add(instance);
+				weightArray[index] = KEEP_ACCURACY * weight / instanceList.size() + sum;
+				sum = weightArray[index];
+				index++;
 			}
 		}
-		Server server = new NacosServer(instances.get(chooseServiceIndex));
 
-		LOGGER.info("choose instance = {}", instances.get(chooseServiceIndex));
+		if (sum > RouteDataRepository.SUM_WEIGHT) {
+			LOG.error("Sum of weight has over {} ", RouteDataRepository.SUM_WEIGHT);
+		}
 
-		return server;
+		double random = ThreadLocalRandom.current().nextDouble(
+				RouteDataRepository.MIN_WEIGHT, RouteDataRepository.SUM_WEIGHT);
+		int chooseServiceIndex = Arrays.binarySearch(weightArray, random);
+		if (chooseServiceIndex < 0) {
+			chooseServiceIndex = -chooseServiceIndex - 1;
+		}
+
+		return new NacosServer(instances.get(chooseServiceIndex));
 	}
 
 }

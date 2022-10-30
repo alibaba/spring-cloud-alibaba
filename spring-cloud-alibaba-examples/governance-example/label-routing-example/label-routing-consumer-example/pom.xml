@@ -34,9 +34,8 @@
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>label-routing-core</artifactId>
-			<version>2.2.9-SNAPSHOT</version>
+			<version>${revision}</version>
 		</dependency>
-
 	</dependencies>
 
 </project>

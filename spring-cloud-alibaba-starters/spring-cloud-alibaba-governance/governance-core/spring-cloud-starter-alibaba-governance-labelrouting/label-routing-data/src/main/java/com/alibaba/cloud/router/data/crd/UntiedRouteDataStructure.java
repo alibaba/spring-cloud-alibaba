@@ -21,16 +21,16 @@ package com.alibaba.cloud.router.data.crd;
  */
 public class UntiedRouteDataStructure {
 
-	private LabelRouteData labelRouteData;
+	private LabelRouteRule labelRouteRule;
 
 	private String targetService;
 
-	public LabelRouteData getLabelRouteData() {
-		return labelRouteData;
+	public LabelRouteRule getLabelRouteRule() {
+		return labelRouteRule;
 	}
 
-	public void setLabelRouteData(LabelRouteData labelRouteData) {
-		this.labelRouteData = labelRouteData;
+	public void setLabelRouteRule(LabelRouteRule labelRouteRule) {
+		this.labelRouteRule = labelRouteRule;
 	}
 
 	public String getTargetService() {
@@ -43,7 +43,7 @@ public class UntiedRouteDataStructure {
 
 	@Override
 	public String toString() {
-		return "UntiedRouteDataStructure{" + "labelRouteData=" + labelRouteData
+		return "UntiedRouteDataStructure{" + "labelRouteData=" + labelRouteRule
 				+ ", targetService='" + targetService + '\'' + '}';
 	}
 

@@ -16,9 +16,12 @@
 
 package com.alibaba.cloud.router.data.controlplane;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.router.data.repository.FilterService;
 import com.alibaba.cloud.router.data.repository.RouteDataRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,18 +34,23 @@ public class ControlPlaneConnection implements ControlPlane {
 	@Autowired
 	private RouteDataRepository routeDataRepository;
 
-	private boolean isRepositoryInitialized = false;
+	@Autowired
+	private FilterService filterService;
 
 	@Override
-	public void getDataFromControlPlane(
+	public void pushRouteData(
 			List<UntiedRouteDataStructure> untiedRouterDataStructureList) {
-		if (!isRepositoryInitialized) {
-			routeDataRepository.init(untiedRouterDataStructureList);
-			isRepositoryInitialized = true;
-		}
-		else {
-			routeDataRepository.updateRouteData(untiedRouterDataStructureList);
-		}
+		// Filter service.
+		// todo can cache the result
+		HashSet<String> definitionFeignService = filterService
+				.getDefinitionFeignService(untiedRouterDataStructureList.size());
+		List<UntiedRouteDataStructure> routeDatalist = untiedRouterDataStructureList
+				.stream()
+				.filter(untiedRouteDataStructure -> definitionFeignService
+						.contains(untiedRouteDataStructure.getTargetService()))
+				.collect(Collectors.toList());
+
+		routeDataRepository.updateRouteData(routeDatalist);
 	}
 
 }

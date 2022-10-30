@@ -30,7 +30,7 @@ import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
 import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
-import com.alibaba.cloud.router.data.crd.LabelRouteData;
+import com.alibaba.cloud.router.data.crd.LabelRouteRule;
 import com.alibaba.cloud.router.data.crd.MatchService;
 import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
 import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
@@ -105,13 +105,38 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 				}
 				untiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
-				LabelRouteData labelRouteData = getLabelRouteData(routes);
-				untiedRouteDataStructure.setLabelRouteData(labelRouteData);
+				final int n = routes.size();
+				List<MatchService> matchServices = new ArrayList<>();
+				LabelRouteRule labelRouteData = new LabelRouteRule();
+				for (int i = 0; i < n; ++i) {
+					Route route = routes.get(i);
+					String cluster = route.getRoute().getCluster();
+					String version = "";
+					try {
+						String[] info = cluster.split("\\|");
+						version = info[2];
+					}
+					catch (Exception e) {
+						log.error("invalid cluster info for route {}", route.getName());
+					}
+					// last route is default route
+					if (i == n - 1) {
+						labelRouteData.setDefaultRouteVersion(version);
+					}
+					MatchService matchService = new MatchService();
+					matchService.setVersion(version);
+					matchService.setRuleList(match2RouteRules(route.getMatch()));
+					matchServices.add(matchService);
+					untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+				}
+				labelRouteData.setMatchRouteList(matchServices);
+				untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 				untiedRouteDataStructures.put(untiedRouteDataStructure.getTargetService(),
 						untiedRouteDataStructure);
 			}
 		}
-		controlPlaneConnection.getDataFromControlPlane(
+
+		controlSurfaceConnection.pushRouteData(
 				new ArrayList<>(untiedRouteDataStructures.values()));
 	}
 

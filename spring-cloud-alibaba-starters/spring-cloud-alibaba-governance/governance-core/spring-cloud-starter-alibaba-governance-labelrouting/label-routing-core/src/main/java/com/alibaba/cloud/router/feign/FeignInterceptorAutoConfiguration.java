@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.data;
-
-import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
+package com.alibaba.cloud.router.feign;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -26,12 +24,12 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class ControlPlaneAutoConfiguration {
+public class FeignInterceptorAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public ControlPlaneConnection controlPlaneConnection() {
-		return new ControlPlaneConnection();
+	public FeignInterceptor feignInterceptor() {
+		return new FeignInterceptor();
 	}
 
 }

@@ -17,17 +17,14 @@
 package com.alibaba.cloud.router.feign;
 
 import java.util.Enumeration;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.cloud.router.context.RequestContext;
+import com.alibaba.cloud.router.util.RequestContext;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author HH
@@ -36,21 +33,15 @@ public class FeignInterceptor implements RequestInterceptor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FeignInterceptor.class);
 
-	@Autowired
-	private RequestContext requestContext;
-
 	@Override
 	public void apply(RequestTemplate requestTemplate) {
-		final HttpServletRequest request = requestContext.getRequest(false);
-		final Optional<Enumeration<String>> headerNames = Optional
-				.ofNullable(request.getHeaderNames());
-
-		if (!headerNames.isPresent()) {
+		final HttpServletRequest request = RequestContext.getRequest();
+		final Enumeration<String> headerNames = request.getHeaderNames();
+		if (headerNames == null) {
 			return;
 		}
-
-		while (headerNames.get().hasMoreElements()) {
-			String headerName = headerNames.get().nextElement();
+		while (headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
 			requestTemplate.header(headerName, request.getHeader(headerName));
 		}
 	}

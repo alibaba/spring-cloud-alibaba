@@ -19,9 +19,9 @@ package com.alibaba.cloud.router.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.cloud.router.context.RequestContext;
+import com.alibaba.cloud.router.util.RequestContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
@@ -29,14 +29,17 @@ import org.springframework.web.servlet.HandlerInterceptor;
  */
 public class WebMvcInterceptor implements HandlerInterceptor {
 
-	@Autowired
-	RequestContext requestContext;
-
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 			Object handler) {
-		requestContext.setRequest(request);
+		RequestContext.setRequest(request);
 		return true;
+	}
+
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+			Object handler, @Nullable Exception ex) {
+		RequestContext.removeRequest();
 	}
 
 }

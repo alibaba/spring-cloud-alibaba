@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.context;
+package com.alibaba.cloud.router.util;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,34 +24,25 @@ import org.slf4j.LoggerFactory;
 /**
  * @author HH
  */
-public class RequestContext {
+public final class RequestContext {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RequestContext.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RequestContext.class);
 
-	private static final ThreadLocal<HttpServletRequest> requestHeadersHolder = new ThreadLocal<>();
+	private static final ThreadLocal<HttpServletRequest> REQUEST_THREAD_HOLDER = new ThreadLocal<>();
 
-	public HttpServletRequest getRequest(Boolean ifRemove) {
-		if (ifRemove) {
-			return getRequest();
-		}
-
-		return requestHeadersHolder.get();
+	private RequestContext() {
 	}
 
-	private HttpServletRequest getRequest() {
-		HttpServletRequest request;
-
-		try {
-			request = requestHeadersHolder.get();
-		}
-		finally {
-			requestHeadersHolder.remove();
-		}
-		return request;
+	public static HttpServletRequest getRequest() {
+		return REQUEST_THREAD_HOLDER.get();
 	}
 
-	public void setRequest(HttpServletRequest request) {
-		requestHeadersHolder.set(request);
+	public static void setRequest(HttpServletRequest request) {
+		REQUEST_THREAD_HOLDER.set(request);
+	}
+
+	public static void removeRequest() {
+		REQUEST_THREAD_HOLDER.remove();
 	}
 
 }
