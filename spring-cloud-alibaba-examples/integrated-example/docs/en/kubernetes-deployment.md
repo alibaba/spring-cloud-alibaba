@@ -48,7 +48,7 @@ For the distributed transaction capability, we provide a scenario **where a user
 - Deduct the account balance
 - Generate order information to return a response
 
-##### start test
+##### Start test
 
 Visit `http://integrated-frontend:30080/order` to experience the corresponding scenario.
 
@@ -82,7 +82,7 @@ For service fusion limiting and peak and valley cutting in the context of high t
 - Sentinel binds specified gateway routes on the gateway side for fusion degradation of services.
 - RocketMQ performs traffic clipping, where the producer sends messages to RocketMQ under high traffic requests, while the consumer pulls and consumes through a configurable consumption rate, reducing the pressure of high traffic direct requests to the database to increase the number of likes requests.
 
-#### startup test
+#### Startup test
 
 - Sentinel Service Meltdown Degradation
 
@@ -115,9 +115,9 @@ This example **is just a selection of typical features for each component to ser
 
 Of course, there is more to each component than just what is demonstrated in the best practices, so if you are interested or want to go deeper, feel free to study the individual example documentation for each component.
 
-- Nacos Examples
-  - [nacos-config-example](../../../nacos-example/nacos-config-example/readme.md)
-  - [nacos-discovery-example](../../../nacos-example/nacos-discovery-example/readme.md)
-- [Sentinel-Core-Example](../../../sentinel-example/sentinel-core-example/readme.md)
-- [Seata Examples](../../../seata-example/readme.md)
-- [RocketMQ Example](../../../rocketmq-example/readme-zh.md)
+- Nacos examples
+  - [Nacos config example](../../../nacos-example/nacos-config-example/readme.md)
+  - [Nacos discovery example](../../../nacos-example/nacos-discovery-example/readme.md)
+- [Sentinel core example](../../../sentinel-example/sentinel-core-example/readme.md)
+- [Seata example](../../../seata-example/readme.md)
+- [RocketMQ example](../../rocketmq-example/readme.md)
