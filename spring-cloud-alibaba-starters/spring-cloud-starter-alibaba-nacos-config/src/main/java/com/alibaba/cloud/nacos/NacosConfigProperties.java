@@ -590,6 +590,11 @@ public class NacosConfigProperties {
 		return properties;
 	}
 
+	/**
+	 * refer
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2872
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2869 .
+	 */
 	private String resolveNamespace() {
 		if (DEFAULT_NAMESPACE.equals(this.namespace)) {
 			log.info("set nacos config namespace 'public' to ''");
