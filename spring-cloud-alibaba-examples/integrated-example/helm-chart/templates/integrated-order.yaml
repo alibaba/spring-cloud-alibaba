@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrated-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integrated-order
+  template:
+    metadata:
+      labels:
+        appName: integrated-order
+        app: integrated-order
+    spec:
+      containers:
+        - name: integrated-order
+          image: "{{ .Values.image.repository }}integrated-order"
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8013
