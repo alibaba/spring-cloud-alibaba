@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Freeman
- * @date 2022/8/27
  */
 @SpringBootApplication
 @RestController
@@ -49,7 +48,7 @@ public class SentinelFlowControlTestApp {
 	}
 
 	@RequestMapping("/flowControl")
-	@SentinelResource(value = "/flowControl", fallback = "flowControlFallback")
+	@SentinelResource("/flowControl")
 	public String flowControl() {
 		return "OK";
 	}

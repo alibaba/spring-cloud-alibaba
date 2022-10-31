@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Freeman
- * @date 2022/8/27
  */
 @SpringBootApplication
 @RestController
