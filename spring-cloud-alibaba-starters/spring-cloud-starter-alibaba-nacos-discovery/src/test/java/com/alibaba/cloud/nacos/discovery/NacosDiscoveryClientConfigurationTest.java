@@ -56,7 +56,8 @@ public class NacosDiscoveryClientConfigurationTest {
 	public void testDefaultInitialization() {
 		contextRunner.run(context -> {
 			assertThat(context).hasSingleBean(DiscoveryClient.class);
-			assertThat(context).hasSingleBean(NacosWatch.class);
+			// NacosWatch is no longer enabled by default
+			assertThat(context).doesNotHaveBean(NacosWatch.class);
 		});
 	}
 
