@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrated-account
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integrated-account
+  template:
+    metadata:
+      labels:
+        appName: integrated-account
+        app: integrated-account
+    spec:
+      containers:
+        - name: integrated-account
+          image: "{{ .Values.image.repository }}integrated-account"
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8012
