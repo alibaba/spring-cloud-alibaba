@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
@@ -36,65 +34,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.cloud.client.discovery.event.HeartbeatEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.SmartLifecycle;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 /**
  * @author xiaojing
  * @author yuhuangbin
  * @author pengfei.lu
+ * @author ruansheng
  */
-public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycle, DisposableBean {
+public class NacosWatch implements SmartLifecycle, DisposableBean {
 
 	private static final Logger log = LoggerFactory.getLogger(NacosWatch.class);
 
-	private Map<String, EventListener> listenerMap = new ConcurrentHashMap<>(16);
+	private final Map<String, EventListener> listenerMap = new ConcurrentHashMap<>(16);
 
 	private final AtomicBoolean running = new AtomicBoolean(false);
-
-	private final AtomicLong nacosWatchIndex = new AtomicLong(0);
-
-	private ApplicationEventPublisher publisher;
-
-	private ScheduledFuture<?> watchFuture;
 
 	private final NacosServiceManager nacosServiceManager;
 
 	private final NacosDiscoveryProperties properties;
 
-	private final ThreadPoolTaskScheduler taskScheduler;
-
 	public NacosWatch(NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties properties) {
 		this.nacosServiceManager = nacosServiceManager;
 		this.properties = properties;
-		this.taskScheduler = getTaskScheduler();
-	}
-
-	@Deprecated
-	public NacosWatch(NacosServiceManager nacosServiceManager,
-			NacosDiscoveryProperties properties,
-			ObjectProvider<ThreadPoolTaskScheduler> taskScheduler) {
-		this.nacosServiceManager = nacosServiceManager;
-		this.properties = properties;
-		this.taskScheduler = taskScheduler.stream().findAny()
-				.orElseGet(NacosWatch::getTaskScheduler);
-	}
-
-	private static ThreadPoolTaskScheduler getTaskScheduler() {
-		ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-		taskScheduler.setBeanName("Nacos-Watch-Task-Scheduler");
-		taskScheduler.initialize();
-		return taskScheduler;
-	}
-
-	@Override
-	public void setApplicationEventPublisher(ApplicationEventPublisher publisher) {
-		this.publisher = publisher;
 	}
 
 	@Override
@@ -136,8 +99,6 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 				log.error("namingService subscribe failed, properties:{}", properties, e);
 			}
 
-			this.watchFuture = this.taskScheduler.scheduleWithFixedDelay(
-					this::nacosServicesWatch, this.properties.getWatchDelay());
 		}
 	}
 
@@ -161,12 +122,6 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 	@Override
 	public void stop() {
 		if (this.running.compareAndSet(true, false)) {
-			if (this.watchFuture != null) {
-				// shutdown current user-thread,
-				// then the other daemon-threads will terminate automatic.
-				this.taskScheduler.shutdown();
-				this.watchFuture.cancel(true);
-			}
 
 			EventListener eventListener = listenerMap.get(buildKey());
 			try {
@@ -189,14 +144,6 @@ public class NacosWatch implements ApplicationEventPublisherAware, SmartLifecycl
 	@Override
 	public int getPhase() {
 		return 0;
-	}
-
-	public void nacosServicesWatch() {
-
-		// nacos doesn't support watch now , publish an event every 30 seconds.
-		this.publisher.publishEvent(
-				new HeartbeatEvent(this, nacosWatchIndex.getAndIncrement()));
-
 	}
 
 	@Override
