@@ -70,4 +70,26 @@ public class NacosDiscoveryClientConfigurationTest {
 				});
 	}
 
+	@Test
+	public void testNacosWatchEnabled() {
+		contextRunner.withPropertyValues("spring.cloud.nacos.discovery.watch.enabled=true")
+				.run(context -> assertThat(context).hasSingleBean(NacosWatch.class));
+	}
+
+	@Test
+	public void testDefaultNacosGatewayLocatorHeartBeat() {
+		contextRunner.run(context ->
+				assertThat(context).doesNotHaveBean(NacosGatewayLocatorHeartBeat.class)
+		);
+	}
+
+	@Test
+	public void testNacosGatewayLocatorHeartBeatEnabled() {
+		contextRunner
+				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
+				.run(context ->
+						assertThat(context).hasSingleBean(NacosGatewayLocatorHeartBeat.class)
+				);
+	}
+
 }
