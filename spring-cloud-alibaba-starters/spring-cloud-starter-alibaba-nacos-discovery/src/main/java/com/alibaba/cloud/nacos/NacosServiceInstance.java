@@ -29,6 +29,8 @@ public class NacosServiceInstance implements ServiceInstance {
 
 	private String serviceId;
 
+	private String instanceId;
+
 	private String host;
 
 	private int port;
@@ -40,6 +42,11 @@ public class NacosServiceInstance implements ServiceInstance {
 	@Override
 	public String getServiceId() {
 		return serviceId;
+	}
+
+	@Override
+	public String getInstanceId() {
+		return instanceId;
 	}
 
 	@Override
@@ -69,6 +76,10 @@ public class NacosServiceInstance implements ServiceInstance {
 
 	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
+	}
+
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
 	}
 
 	public void setHost(String host) {

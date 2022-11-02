@@ -16,10 +16,7 @@
 
 package com.alibaba.cloud.nacos.discovery;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
@@ -57,7 +54,8 @@ public class NacosServiceDiscoveryTest {
 		map.put("test-key", "test-value");
 		map.put("secure", "true");
 
-		instances.add(serviceInstance(serviceName, true, host, port, map));
+		String instanceId = UUID.randomUUID().toString();
+		instances.add(serviceInstance(serviceName, instanceId,true, host, port, map));
 
 		NacosDiscoveryProperties nacosDiscoveryProperties = mock(
 				NacosDiscoveryProperties.class);
@@ -83,6 +81,8 @@ public class NacosServiceDiscoveryTest {
 		ServiceInstance serviceInstance = serviceInstances.get(0);
 
 		assertThat(serviceInstance.getServiceId()).isEqualTo(serviceName);
+		assertThat(serviceInstance.getInstanceId()).isEqualTo(instanceId);
+
 		assertThat(serviceInstance.getHost()).isEqualTo(host);
 		assertThat(serviceInstance.getPort()).isEqualTo(port);
 		assertThat(serviceInstance.isSecure()).isEqualTo(true);

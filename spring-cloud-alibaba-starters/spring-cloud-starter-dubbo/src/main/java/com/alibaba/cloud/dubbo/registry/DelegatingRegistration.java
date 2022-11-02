@@ -37,6 +37,11 @@ class DelegatingRegistration implements Registration {
 	}
 
 	@Override
+	public String getInstanceId() {
+		return delegate.getInstanceId();
+	}
+
+	@Override
 	public String getServiceId() {
 		return delegate.getServiceId();
 	}

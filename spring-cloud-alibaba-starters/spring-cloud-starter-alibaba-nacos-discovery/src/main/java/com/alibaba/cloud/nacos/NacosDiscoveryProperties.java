@@ -120,6 +120,11 @@ public class NacosDiscoveryProperties {
 	private String service;
 
 	/**
+	 * service instance-id to registry.
+	 */
+	private String instanceId;
+
+	/**
 	 * weight for service instance, the larger the value, the larger the weight.
 	 */
 	private float weight = 1;
@@ -332,6 +337,14 @@ public class NacosDiscoveryProperties {
 
 	public void setService(String service) {
 		this.service = service;
+	}
+
+	public String getInstanceId() {
+		return instanceId;
+	}
+
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
 	}
 
 	public boolean isRegisterEnabled() {
@@ -582,6 +595,9 @@ public class NacosDiscoveryProperties {
 		}
 		if (StringUtils.isEmpty(this.getPassword())) {
 			this.setPassword(env.resolvePlaceholders("${spring.cloud.nacos.password:}"));
+		}
+		if (StringUtils.isEmpty(this.getInstanceId())) {
+			this.setInstanceId(env.resolvePlaceholders("${spring.application.name}:" + ip + ":" + port));
 		}
 	}
 

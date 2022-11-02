@@ -92,6 +92,7 @@ public class NacosServiceDiscovery {
 		nacosServiceInstance.setHost(instance.getIp());
 		nacosServiceInstance.setPort(instance.getPort());
 		nacosServiceInstance.setServiceId(serviceId);
+		nacosServiceInstance.setInstanceId(instance.getInstanceId());
 
 		Map<String, String> metadata = new HashMap<>();
 		metadata.put("nacos.instanceId", instance.getInstanceId());

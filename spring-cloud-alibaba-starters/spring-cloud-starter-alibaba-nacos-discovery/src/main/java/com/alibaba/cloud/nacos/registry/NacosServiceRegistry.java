@@ -159,7 +159,8 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 			List<Instance> instances = namingService().getAllInstances(serviceName);
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
-						&& instance.getPort() == nacosDiscoveryProperties.getPort()) {
+						&& instance.getPort() == nacosDiscoveryProperties.getPort()
+				        && instance.getInstanceId().equals(nacosDiscoveryProperties.getInstanceId())) {
 					return instance.isEnabled() ? "UP" : "DOWN";
 				}
 			}
@@ -179,6 +180,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		instance.setEnabled(nacosDiscoveryProperties.isInstanceEnabled());
 		instance.setMetadata(registration.getMetadata());
 		instance.setEphemeral(nacosDiscoveryProperties.isEphemeral());
+		instance.setInstanceId(nacosDiscoveryProperties.getInstanceId());
 		return instance;
 	}
 

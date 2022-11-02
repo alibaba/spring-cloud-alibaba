@@ -18,6 +18,12 @@
       "description": "the service name to register, default value is ${spring.application.name}."
     },
     {
+    "name": "spring.cloud.nacos.discovery.instance-id",
+    "type": "java.lang.String",
+    "defaultValue": "${spring.cloud.nacos.instance-id}",
+    "description": "the service instance-id to register, default value is ${spring.cloud.nacos.instance-id}."
+    },
+    {
       "name": "spring.cloud.nacos.discovery.enabled",
       "type": "java.lang.Boolean",
       "defaultValue": true,
