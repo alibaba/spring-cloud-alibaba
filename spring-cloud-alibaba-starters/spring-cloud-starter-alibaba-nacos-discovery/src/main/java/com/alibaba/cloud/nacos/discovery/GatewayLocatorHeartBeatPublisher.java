@@ -35,9 +35,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  * @author yuhuangbin
  * @author ruansheng
  */
-public class NacosGatewayLocatorHeartBeat implements ApplicationEventPublisherAware, SmartLifecycle {
+public class GatewayLocatorHeartBeatPublisher implements ApplicationEventPublisherAware, SmartLifecycle {
 
-	private static final Logger log = LoggerFactory.getLogger(NacosGatewayLocatorHeartBeat.class);
+	private static final Logger log = LoggerFactory.getLogger(GatewayLocatorHeartBeatPublisher.class);
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
@@ -47,7 +47,7 @@ public class NacosGatewayLocatorHeartBeat implements ApplicationEventPublisherAw
 	private ApplicationEventPublisher publisher;
 	private ScheduledFuture<?> watchFuture;
 
-	public NacosGatewayLocatorHeartBeat(NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public GatewayLocatorHeartBeatPublisher(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 		this.taskScheduler = getTaskScheduler();
 	}

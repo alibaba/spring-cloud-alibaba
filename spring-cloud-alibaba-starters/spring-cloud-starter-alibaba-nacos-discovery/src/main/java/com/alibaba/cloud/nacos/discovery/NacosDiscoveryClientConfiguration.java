@@ -72,8 +72,8 @@ public class NacosDiscoveryClientConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(value = "spring.cloud.gateway.discovery.locator.enabled", matchIfMissing = false)
-	public NacosGatewayLocatorHeartBeat nacosGatewayHeartBeat(NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosGatewayLocatorHeartBeat(nacosDiscoveryProperties);
+	public GatewayLocatorHeartBeatPublisher gatewayLocatorHeartBeatPublisher(NacosDiscoveryProperties nacosDiscoveryProperties) {
+		return new GatewayLocatorHeartBeatPublisher(nacosDiscoveryProperties);
 	}
 
 }
