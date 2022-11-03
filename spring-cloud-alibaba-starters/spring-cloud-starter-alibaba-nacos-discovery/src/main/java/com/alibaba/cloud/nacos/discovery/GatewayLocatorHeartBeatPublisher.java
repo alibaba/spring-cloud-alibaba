@@ -54,7 +54,7 @@ public class GatewayLocatorHeartBeatPublisher implements ApplicationEventPublish
 
 	private static ThreadPoolTaskScheduler getTaskScheduler() {
 		ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-		taskScheduler.setBeanName("Nacos-SCG-HeartBeat-Task-Scheduler");
+		taskScheduler.setBeanName("HeartBeat-Task-Scheduler");
 		taskScheduler.initialize();
 		return taskScheduler;
 	}
