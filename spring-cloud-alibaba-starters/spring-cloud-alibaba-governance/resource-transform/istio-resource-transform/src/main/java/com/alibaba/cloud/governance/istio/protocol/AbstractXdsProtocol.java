@@ -216,6 +216,8 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 				futureMap.remove(id);
 			}
 			requestResource.remove(id);
+			// refresh token again
+			xdsChannel.refreshIstiodToken();
 			// reconnected immediately
 			requestObserverMap.put(id,
 					xdsChannel.createDiscoveryRequest(new XdsObserver(id, consumer)));

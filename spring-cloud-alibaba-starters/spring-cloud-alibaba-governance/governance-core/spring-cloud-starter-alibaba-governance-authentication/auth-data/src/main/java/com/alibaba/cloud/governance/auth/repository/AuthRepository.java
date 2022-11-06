@@ -21,12 +21,15 @@ import java.util.Map;
 
 import com.alibaba.cloud.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.governance.auth.rule.JwtRule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 public class AuthRepository {
+	private static final Logger log = LoggerFactory.getLogger(AuthRepository.class);
 
 	private Map<String, AuthRule> allowAuthRules = new HashMap<>();
 

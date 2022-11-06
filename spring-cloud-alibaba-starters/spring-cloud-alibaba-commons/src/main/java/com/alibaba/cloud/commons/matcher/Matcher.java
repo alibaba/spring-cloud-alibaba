@@ -20,11 +20,6 @@ package com.alibaba.cloud.commons.matcher;
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public enum MatcherType {
-
-	/**
-	 * Different matcher type, include exact match, prefix match and etc.
-	 */
-	EXACT, PREFIX, SUFFIX, PRESENT, REGEX, CONTAINS
-
+public interface Matcher {
+	boolean match(Object obj);
 }
