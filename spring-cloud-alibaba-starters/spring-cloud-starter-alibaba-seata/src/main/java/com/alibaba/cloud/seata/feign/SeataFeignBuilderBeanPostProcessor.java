@@ -36,9 +36,7 @@ public class SeataFeignBuilderBeanPostProcessor implements BeanPostProcessor {
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof Feign.Builder) {
 			((Feign.Builder) bean).retryer(Retryer.NEVER_RETRY);
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("change the retryer of the bean '{}' to 'Retryer.NEVER_RETRY'", beanName);
-			}
+			LOGGER.info("change the retryer of the bean '{}' to 'Retryer.NEVER_RETRY'", beanName);
 		}
 		return bean;
 	}
