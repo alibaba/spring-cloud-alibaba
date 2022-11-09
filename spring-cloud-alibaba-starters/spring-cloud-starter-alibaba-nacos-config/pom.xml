@@ -85,12 +85,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-test-support</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.powermock.modules.test.powermockito/powermock-modules-test-powermockito -->
         <dependency>
             <groupId>org.powermock</groupId>

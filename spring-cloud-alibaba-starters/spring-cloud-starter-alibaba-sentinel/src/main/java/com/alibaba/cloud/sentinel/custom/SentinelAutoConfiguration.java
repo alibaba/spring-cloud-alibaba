@@ -147,7 +147,7 @@ public class SentinelAutoConfiguration {
 	@ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
 	@ConditionalOnProperty(name = "resttemplate.sentinel.enabled", havingValue = "true",
 			matchIfMissing = true)
-	public SentinelBeanPostProcessor sentinelBeanPostProcessor(
+	public static SentinelBeanPostProcessor sentinelBeanPostProcessor(
 			ApplicationContext applicationContext) {
 		return new SentinelBeanPostProcessor(applicationContext);
 	}

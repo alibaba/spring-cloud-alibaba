@@ -15,34 +15,43 @@
 
 1. 配置数据库
 
-1. 创建 UNDO_LOG 表
+2. 创建 UNDO_LOG 表
 
-1. 创建 示例中 业务所需要的数据库表
+3. 创建 示例中 业务所需要的数据库表
 
-1. 启动 Seata Server
-
-
+4. 创建示例中Nacos data-id: `seata.properties` , Group: `SEATA_GROUP`(seata 1.5.1 默认分组) ,导入 [Nacos 配置](https://github.com/seata/seata/blob/1.5.0/script/config-center/config.txt)
+    在seata.properties中增加示例中需要的如下[事务群组配置](https://seata.io/zh-cn/docs/user/configurations.html)
+```
+   service.vgroupMapping.order-service-tx-group=default
+   service.vgroupMapping.account-service-tx-group=default
+   service.vgroupMapping.business-service-tx-group=default
+   service.vgroupMapping.storage-service-tx-group=default
+```   
+5. 启动 Seata Server
+  Seata 1.5.1 开始支持seata控制台 本地访问控制台地址：http://127.0.0.1:7091
+  通过seata控制台可以观察正在执行的事务信息和全局锁信息,事务执行结束即删除相关信息。
 ### 配置数据库
 
 首先，你需要有一个支持 InnoDB 引擎的 MySQL 数据库。
 
 **注意**： 实际上，Seata 支持不同的应用使用完全不相干的数据库，但是这里为了简单地演示一个原理，所以我们选择了只使用一个数据库。
 
-将 `account-server`、`order-service`、`storage-service` 这三个应用中的 resources 目录下的 `application.properties` 文件中的如下配置修改成你运行环境中的实际配置。
+将 `account-server`、`order-service`、`storage-service` 这三个应用中的 resources 目录下的 `application.yml` 文件中的如下配置修改成你运行环境中的实际配置。
 
 ```
-mysql.server.ip=your mysql server ip address
-mysql.server.port=your mysql server listening port
-mysql.db.name=your database name for test
-
-mysql.user.name=your mysql server username
-mysql.user.password=your mysql server password
-
+base:
+  config:
+    mdb:
+      hostname: your mysql server ip address
+      dbname: your database name for test
+      port: your mysql server listening port
+      username: your mysql server username
+      password: your mysql server password
 ```
 
 ### 创建 undo_log 表
 
-[Seata AT 模式]() 需要使用到 undo_log 表。
+Seata AT 模式 需要使用到 undo_log 表。
 
 ``` $sql
 -- 注意此处0.3.0+ 增加唯一索引 ux_undo_log
@@ -60,7 +69,83 @@ CREATE TABLE `undo_log` (
   UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
+### 导入 seata-server db模式所需要的数据库表
+在数据库中初始化[global_table、branch_table、lock_table、distributed_lock](https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)
+```$sql
+-- -------------------------------- The script used when storeMode is 'db' --------------------------------
+-- the table to store GlobalSession data
+CREATE TABLE IF NOT EXISTS `global_table`
+(
+    `xid`                       VARCHAR(128) NOT NULL,
+    `transaction_id`            BIGINT,
+    `status`                    TINYINT      NOT NULL,
+    `application_id`            VARCHAR(32),
+    `transaction_service_group` VARCHAR(32),
+    `transaction_name`          VARCHAR(128),
+    `timeout`                   INT,
+    `begin_time`                BIGINT,
+    `application_data`          VARCHAR(2000),
+    `gmt_create`                DATETIME,
+    `gmt_modified`              DATETIME,
+    PRIMARY KEY (`xid`),
+    KEY `idx_status_gmt_modified` (`status` , `gmt_modified`),
+    KEY `idx_transaction_id` (`transaction_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
+-- the table to store BranchSession data
+CREATE TABLE IF NOT EXISTS `branch_table`
+(
+    `branch_id`         BIGINT       NOT NULL,
+    `xid`               VARCHAR(128) NOT NULL,
+    `transaction_id`    BIGINT,
+    `resource_group_id` VARCHAR(32),
+    `resource_id`       VARCHAR(256),
+    `branch_type`       VARCHAR(8),
+    `status`            TINYINT,
+    `client_id`         VARCHAR(64),
+    `application_data`  VARCHAR(2000),
+    `gmt_create`        DATETIME(6),
+    `gmt_modified`      DATETIME(6),
+    PRIMARY KEY (`branch_id`),
+    KEY `idx_xid` (`xid`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- the table to store lock data
+CREATE TABLE IF NOT EXISTS `lock_table`
+(
+    `row_key`        VARCHAR(128) NOT NULL,
+    `xid`            VARCHAR(128),
+    `transaction_id` BIGINT,
+    `branch_id`      BIGINT       NOT NULL,
+    `resource_id`    VARCHAR(256),
+    `table_name`     VARCHAR(32),
+    `pk`             VARCHAR(36),
+    `status`         TINYINT      NOT NULL DEFAULT '0' COMMENT '0:locked ,1:rollbacking',
+    `gmt_create`     DATETIME,
+    `gmt_modified`   DATETIME,
+    PRIMARY KEY (`row_key`),
+    KEY `idx_status` (`status`),
+    KEY `idx_branch_id` (`branch_id`),
+    KEY `idx_xid_and_branch_id` (`xid` , `branch_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `distributed_lock`
+(
+    `lock_key`       CHAR(20) NOT NULL,
+    `lock_value`     VARCHAR(20) NOT NULL,
+    `expire`         BIGINT,
+    primary key (`lock_key`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('AsyncCommitting', ' ', 0);
+INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('RetryCommitting', ' ', 0);
+INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('RetryRollbacking', ' ', 0);
+INSERT INTO `distributed_lock` (lock_key, lock_value, expire) VALUES ('TxTimeoutCheck', ' ', 0);
+```
 ### 创建 示例中 业务所需要的数据库表
 
 ```$sql
@@ -94,11 +179,12 @@ CREATE TABLE `account_tbl` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-### 启动 Seata Server
+### 启动 Seata Server 这里介绍SpringBoot 和下载server两种方式
 
-点击这个页面 [https://github.com/seata/seata/releases](https://github.com/seata/seata/releases)，下载最新版本的 Seata Server 端.
+1.运行 seata-server 启动Seata server
+示例中采用nacos 作为配置，注册中心 存储模式为：db 采用mysql 
 
-
+2.或点击这个页面 [Seata 官网Github](https://github.com/seata/seata/releases)，下载最新版本的 Seata Server 端.
 进入解压之后的 bin 目录，执行如下命令来启动, 所有启动参数为可选项。
 
 ```$shell
@@ -106,10 +192,10 @@ sh seata-server.sh -p $LISTEN_PORT -m $MODE(file or db) -h $HOST -e $ENV
 ```
 -p seata-server 监听服务端口号   
 -m 存储模式，可选值：file、db。file 用于单点模式，db用于ha模式，当使用db存储模式，需要修改配置中store配置节点的数据库配置，同时在数据库中初始化[global_table、branch_table和 
-lock_table](https://github.com/seata/seata/blob/develop/server/src/main/resources/db_store.sql)   
+lock_table](https://github.com/seata/seata/blob/1.5.0/script/server/db/mysql.sql)   
 -h 用于解决seata-server和业务侧跨网络问题，其配置的host值直接显示到注册中心的服务可用地址host，当跨网络时这里需要配置为公网IP或NATIP，若都在同一局域网则无需配置   
 -e 用于解决多环境配置中心隔离问题   
-在这个示例中，采用如下命令来启动 Seata Server
+采用如下命令来启动 Seata Server
 
 ```$shell
 sh seata-server.sh -p 8091 -m file
@@ -122,12 +208,13 @@ sh seata-server.sh -p 8091 -m file
 
 分别运行 `account-server`、`order-service`、`storage-service` 和 `business-service` 这三个应用的 Main 函数，启动示例。
 
-启动示例后，通过 HTTP 的 GET 方法访问如下两个 URL，可以分别验证在 `business-service` 中 通过 RestTemplate 和 FeignClient 调用其他服务的场景。
+启动示例后，通过 HTTP 的 GET 方法访问如下 URL，可以分别验证在 `business-service` 中 通过 RestTemplate 和 FeignClient 调用其他服务的场景。
 
 ```$xslt
 http://127.0.0.1:18081/seata/feign
 
 http://127.0.0.1:18081/seata/rest
+
 ```
 
 ## 如何验证分布式事务成功？

@@ -53,6 +53,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.ENDPOINT_PORT;
 import static com.alibaba.nacos.api.PropertyKeyConst.MAX_RETRY;
 import static com.alibaba.nacos.api.PropertyKeyConst.NAMESPACE;
 import static com.alibaba.nacos.api.PropertyKeyConst.PASSWORD;
+import static com.alibaba.nacos.api.PropertyKeyConst.RAM_ROLE_NAME;
 import static com.alibaba.nacos.api.PropertyKeyConst.SECRET_KEY;
 import static com.alibaba.nacos.api.PropertyKeyConst.SERVER_ADDR;
 import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
@@ -82,6 +83,11 @@ public class NacosConfigProperties {
 	 * SEPARATOR , .
 	 */
 	public static final String SEPARATOR = "[,]";
+
+	/**
+	 * Nacos default namespace .
+	 */
+	public static final String DEFAULT_NAMESPACE = "public";
 
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
@@ -201,6 +207,11 @@ public class NacosConfigProperties {
 	 * secret key for namespace.
 	 */
 	private String secretKey;
+
+	/**
+	 * role name for aliyun ram.
+	 */
+	private String ramRoleName;
 
 	/**
 	 * context path for nacos config server.
@@ -356,6 +367,14 @@ public class NacosConfigProperties {
 		this.secretKey = secretKey;
 	}
 
+	public String getRamRoleName() {
+		return ramRoleName;
+	}
+
+	public void setRamRoleName(String ramRoleName) {
+		this.ramRoleName = ramRoleName;
+	}
+
 	public String getEncode() {
 		return encode;
 	}
@@ -490,7 +509,8 @@ public class NacosConfigProperties {
 				.forEach((key, list) -> {
 					list.stream()
 							.reduce((a, b) -> new Config(a.getDataId(), a.getGroup(),
-									a.isRefresh() || (b != null && b.isRefresh())))
+									a.isRefresh() || (b != null && b.isRefresh()),
+									a.getFileExtension()))
 							.ifPresent(result::add);
 				});
 		this.setSharedConfigs(result);
@@ -545,9 +565,10 @@ public class NacosConfigProperties {
 		properties.put(USERNAME, Objects.toString(this.username, ""));
 		properties.put(PASSWORD, Objects.toString(this.password, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
-		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
+		properties.put(NAMESPACE, this.resolveNamespace());
 		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
+		properties.put(RAM_ROLE_NAME, Objects.toString(this.ramRoleName, ""));
 		properties.put(CLUSTER_NAME, Objects.toString(this.clusterName, ""));
 		properties.put(MAX_RETRY, Objects.toString(this.maxRetry, ""));
 		properties.put(CONFIG_LONG_POLL_TIMEOUT,
@@ -567,6 +588,21 @@ public class NacosConfigProperties {
 
 		enrichNacosConfigProperties(properties);
 		return properties;
+	}
+
+	/**
+	 * refer
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2872
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2869 .
+	 */
+	private String resolveNamespace() {
+		if (DEFAULT_NAMESPACE.equals(this.namespace)) {
+			log.info("set nacos config namespace 'public' to ''");
+			return "";
+		}
+		else {
+			return Objects.toString(this.namespace, "");
+		}
 	}
 
 	private void enrichNacosConfigProperties(Properties nacosConfigProperties) {
@@ -597,10 +633,10 @@ public class NacosConfigProperties {
 				+ ", enableRemoteSyncConfig=" + enableRemoteSyncConfig + ", endpoint='"
 				+ endpoint + '\'' + ", namespace='" + namespace + '\'' + ", accessKey='"
 				+ accessKey + '\'' + ", secretKey='" + secretKey + '\''
-				+ ", contextPath='" + contextPath + '\'' + ", clusterName='" + clusterName
-				+ '\'' + ", name='" + name + '\'' + '\'' + ", shares=" + sharedConfigs
-				+ ", extensions=" + extensionConfigs + ", refreshEnabled="
-				+ refreshEnabled + '}';
+				+ ", ramRoleName='" + ramRoleName + '\'' + ", contextPath='" + contextPath
+				+ '\'' + ", clusterName='" + clusterName + '\'' + ", name='" + name + '\''
+				+ '\'' + ", shares=" + sharedConfigs + ", extensions=" + extensionConfigs
+				+ ", refreshEnabled=" + refreshEnabled + '}';
 	}
 
 	public static class Config {
@@ -614,6 +650,11 @@ public class NacosConfigProperties {
 		 * the group of extended configuration, the default value is DEFAULT_GROUP.
 		 */
 		private String group = "DEFAULT_GROUP";
+
+		/**
+		 * the suffix of nacos config dataId, also the file extension of config content.
+		 */
+		private String fileExtension;
 
 		/**
 		 * whether to support dynamic refresh, the default does not support .
@@ -640,6 +681,12 @@ public class NacosConfigProperties {
 		public Config(String dataId, String group, boolean refresh) {
 			this(dataId, group);
 			this.refresh = refresh;
+		}
+
+		public Config(String dataId, String group, boolean refresh,
+				String fileExtension) {
+			this(dataId, group, refresh);
+			this.fileExtension = fileExtension;
 		}
 
 		public String getDataId() {
@@ -669,10 +716,19 @@ public class NacosConfigProperties {
 			return this;
 		}
 
+		public String getFileExtension() {
+			return fileExtension;
+		}
+
+		public void setFileExtension(String fileExtension) {
+			this.fileExtension = fileExtension;
+		}
+
 		@Override
 		public String toString() {
 			return "Config{" + "dataId='" + dataId + '\'' + ", group='" + group + '\''
-					+ ", refresh=" + refresh + '}';
+					+ ", fileExtension='" + fileExtension + '\'' + ", refresh=" + refresh
+					+ '}';
 		}
 
 		@Override
@@ -685,12 +741,13 @@ public class NacosConfigProperties {
 			}
 			Config config = (Config) o;
 			return refresh == config.refresh && Objects.equals(dataId, config.dataId)
-					&& Objects.equals(group, config.group);
+					&& Objects.equals(group, config.group)
+					&& Objects.equals(fileExtension, config.fileExtension);
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(dataId, group, refresh);
+			return Objects.hash(dataId, group, refresh, fileExtension);
 		}
 
 	}

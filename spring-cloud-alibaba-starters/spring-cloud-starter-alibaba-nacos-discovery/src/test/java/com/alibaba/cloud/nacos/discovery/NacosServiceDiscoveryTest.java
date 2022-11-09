@@ -65,9 +65,7 @@ public class NacosServiceDiscoveryTest {
 
 		NamingService namingService = mock(NamingService.class);
 
-		when(nacosServiceManager
-				.getNamingService(nacosDiscoveryProperties.getNacosProperties()))
-						.thenReturn(namingService);
+		when(nacosServiceManager.getNamingService()).thenReturn(namingService);
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
 		when(namingService.selectInstances(eq(serviceName), eq("DEFAULT"), eq(true)))
 				.thenReturn(instances);
@@ -107,9 +105,7 @@ public class NacosServiceDiscoveryTest {
 
 		NamingService namingService = mock(NamingService.class);
 
-		when(nacosServiceManager
-				.getNamingService(nacosDiscoveryProperties.getNacosProperties()))
-						.thenReturn(namingService);
+		when(nacosServiceManager.getNamingService()).thenReturn(namingService);
 		when(nacosDiscoveryProperties.getGroup()).thenReturn("DEFAULT");
 		when(namingService.getServicesOfServer(eq(1), eq(Integer.MAX_VALUE),
 				eq("DEFAULT"))).thenReturn(nacosServices);

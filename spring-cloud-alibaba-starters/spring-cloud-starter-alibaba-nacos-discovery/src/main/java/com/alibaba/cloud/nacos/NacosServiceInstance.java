@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
@@ -85,6 +86,27 @@ public class NacosServiceInstance implements ServiceInstance {
 
 	public void setMetadata(Map<String, String> metadata) {
 		this.metadata = metadata;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		NacosServiceInstance that = (NacosServiceInstance) o;
+
+		return Objects.equals(this.serviceId, that.serviceId)
+				&& Objects.equals(this.host, that.host) && this.port == that.port
+				&& this.secure == that.secure
+				&& Objects.equals(this.metadata, that.metadata);
+	}
+
+	@Override
+	public int hashCode() {
+		return (serviceId == null) ? 31 : (serviceId.hashCode() + 31);
 	}
 
 }

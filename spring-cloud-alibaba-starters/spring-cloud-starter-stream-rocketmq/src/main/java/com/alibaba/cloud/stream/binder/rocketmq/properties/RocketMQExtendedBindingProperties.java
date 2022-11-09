@@ -21,12 +21,14 @@ import org.springframework.cloud.stream.binder.AbstractExtendedBindingProperties
 import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 
 /**
- * @author Timur Valiev
+ * rocketMQ specific extended binding properties class that extends from
+ * {@link AbstractExtendedBindingProperties}.
+ *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties("spring.cloud.stream.rocketmq")
 public class RocketMQExtendedBindingProperties extends
-		AbstractExtendedBindingProperties<RocketMQConsumerProperties, RocketMQProducerProperties, RocketMQBindingProperties> {
+		AbstractExtendedBindingProperties<RocketMQConsumerProperties, RocketMQProducerProperties, RocketMQSpecificPropertiesProvider> {
 
 	private static final String DEFAULTS_PREFIX = "spring.cloud.stream.rocketmq.default";
 
@@ -37,7 +39,7 @@ public class RocketMQExtendedBindingProperties extends
 
 	@Override
 	public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
-		return RocketMQBindingProperties.class;
+		return RocketMQSpecificPropertiesProvider.class;
 	}
 
 }

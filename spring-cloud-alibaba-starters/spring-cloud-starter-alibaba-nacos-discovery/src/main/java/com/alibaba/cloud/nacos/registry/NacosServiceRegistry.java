@@ -27,7 +27,6 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.util.StringUtils;
@@ -38,6 +37,7 @@ import static org.springframework.util.ReflectionUtils.rethrowRuntimeException;
  * @author xiaojing
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:78552423@qq.com">eshun</a>
+ * @author JAY
  */
 public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
@@ -49,11 +49,12 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	@Autowired
-	private NacosServiceManager nacosServiceManager;
+	private final NacosServiceManager nacosServiceManager;
 
-	public NacosServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public NacosServiceRegistry(NacosServiceManager nacosServiceManager,
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
+		this.nacosServiceManager = nacosServiceManager;
 	}
 
 	@Override
@@ -76,11 +77,15 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 					instance.getIp(), instance.getPort());
 		}
 		catch (Exception e) {
-			log.error("nacos registry, {} register failed...{},", serviceId,
-					registration.toString(), e);
-			// rethrow a RuntimeException if the registration is failed.
-			// issue : https://github.com/alibaba/spring-cloud-alibaba/issues/1132
-			rethrowRuntimeException(e);
+			if (nacosDiscoveryProperties.isFailFast()) {
+				log.error("nacos registry, {} register failed...{},", serviceId,
+						registration.toString(), e);
+				rethrowRuntimeException(e);
+			}
+			else {
+				log.warn("Failfast is false. {} register failed...{},", serviceId,
+						registration.toString(), e);
+			}
 		}
 	}
 
@@ -155,12 +160,14 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	public Object getStatus(Registration registration) {
 
 		String serviceName = registration.getServiceId();
+		String group = nacosDiscoveryProperties.getGroup();
 		try {
-			List<Instance> instances = namingService().getAllInstances(serviceName);
+			List<Instance> instances = namingService().getAllInstances(serviceName,
+					group);
 			for (Instance instance : instances) {
 				if (instance.getIp().equalsIgnoreCase(nacosDiscoveryProperties.getIp())
 						&& instance.getPort() == nacosDiscoveryProperties.getPort()) {
-					return instance.isEnabled() ? "UP" : "DOWN";
+					return instance.isEnabled() ? STATUS_UP : STATUS_DOWN;
 				}
 			}
 		}
@@ -183,8 +190,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	}
 
 	private NamingService namingService() {
-		return nacosServiceManager
-				.getNamingService(nacosDiscoveryProperties.getNacosProperties());
+		return nacosServiceManager.getNamingService();
 	}
 
 }

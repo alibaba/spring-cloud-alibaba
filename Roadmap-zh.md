@@ -6,7 +6,6 @@ Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解�
 
 如果您对 Roadmap 有任何建议或想法，欢迎在 issues 中或者通过其他社区渠道向我们提出，一起讨论。
 
-
 ## 已包含的组件
 
 **Sentinel**
@@ -20,10 +19,6 @@ Spring Cloud Alibaba 致力于提供分布式应用服务开发的一站式解�
 **RocketMQ**
 
 Apache RocketMQ™ 基于 Java 的高性能、高吞吐量的分布式消息和流计算平台。
-
-**Dubbo**
-
-Apache Dubbo™ 是一款高性能 Java RPC 框架。
 
 **Seata**
 

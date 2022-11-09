@@ -1,0 +1,53 @@
+base:
+  config:
+    mdb:
+      hostname: 127.0.0.1 #your mysql server ip address
+      dbname: seata #your database name for test
+      port: 3306 #your mysql server listening port
+      username: root #your mysql server username
+      password: root #your mysql server password
+
+server:
+  port: 18084
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: account-service
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    name: storageDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${base.config.mdb.hostname}:${base.config.mdb.port}/${base.config.mdb.dbname}?useSSL=false&serverTimezone=UTC
+    username: ${base.config.mdb.username}
+    password: ${base.config.mdb.password}
+    druid:
+      max-active: 20
+      min-idle: 2
+      initial-size: 2
+
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+
+  tx-service-group: ${spring.application.name}-tx-group
+  config:
+    type: nacos
+
+    nacos:
+      serverAddr: 127.0.0.1:8848
+      dataId: "seata.properties"
+      username: "nacos"
+      password: "nacos"
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 127.0.0.1:8848
+      username: "nacos"
+      password: "nacos"

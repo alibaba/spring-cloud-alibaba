@@ -82,7 +82,7 @@ Job Description： Empty
 Custom Parameters： Empty
 ----
 
-The job above is a “Simple Single-Server Job”, and speficied a Cron expression of "0 * * * * ?" . This means that the job will be executed once and once only in every minute.
+The job above is a “Simple Single-Server Job”, and specified a Cron expression of "0 * * * * ?" . This means that the job will be executed once and once only in every minute.
 
 For more job types, refer to https://help.aliyun.com/document_detail/43136.html[SchedulerX Documentation].
 

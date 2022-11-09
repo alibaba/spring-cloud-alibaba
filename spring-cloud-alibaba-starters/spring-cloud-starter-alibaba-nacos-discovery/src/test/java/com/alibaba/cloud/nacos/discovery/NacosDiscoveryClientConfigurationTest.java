@@ -16,11 +16,15 @@
 
 package com.alibaba.cloud.nacos.discovery;
 
+import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
+import com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration;
+import com.alibaba.cloud.nacos.util.UtilIPv6AutoConfiguration;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.commons.util.UtilAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
@@ -34,9 +38,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NacosDiscoveryClientConfigurationTest {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(UtilAutoConfiguration.class,
-					NacosDiscoveryAutoConfiguration.class,
-					NacosDiscoveryClientConfiguration.class, this.getClass()));
+			.withConfiguration(
+					AutoConfigurations.of(AutoServiceRegistrationConfiguration.class,
+							NacosServiceRegistryAutoConfiguration.class,
+							UtilAutoConfiguration.class, UtilIPv6AutoConfiguration.class,
+							NacosServiceAutoConfiguration.class,
+							NacosDiscoveryAutoConfiguration.class,
+							NacosDiscoveryClientConfiguration.class, this.getClass()));
 
 	@Bean
 	public TaskScheduler taskScheduler() {

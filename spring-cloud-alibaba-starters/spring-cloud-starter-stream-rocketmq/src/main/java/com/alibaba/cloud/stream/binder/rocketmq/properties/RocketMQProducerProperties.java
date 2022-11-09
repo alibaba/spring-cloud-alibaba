@@ -16,55 +16,37 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.properties;
 
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
-
 /**
- * @author Timur Valiev
+ * Extended producer properties for RocketMQ binder.
+ *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public class RocketMQProducerProperties {
-
-	private Boolean enabled = true;
+public class RocketMQProducerProperties extends RocketMQCommonProperties {
 
 	/**
-	 * Name of producer.
+	 * Timeout for sending messages.
 	 */
-	private String group;
-
-	/**
-	 * Maximum allowed message size in bytes {@link DefaultMQProducer#maxMessageSize}.
-	 */
-	private Integer maxMessageSize = 1024 * 1024 * 4;
-
-	private Boolean transactional = false;
-
-	private Boolean sync = false;
-
-	private Boolean vipChannelEnabled = true;
-
-	/**
-	 * Millis of send message timeout.
-	 */
-	private int sendMessageTimeout = 3000;
+	private int sendMsgTimeout = 3000;
 
 	/**
 	 * Compress message body threshold, namely, message body larger than 4k will be
 	 * compressed on default.
 	 */
-	private int compressMessageBodyThreshold = 1024 * 4;
+	private int compressMsgBodyThreshold = 1024 * 4;
 
 	/**
 	 * Maximum number of retry to perform internally before claiming sending failure in
-	 * synchronous mode. This may potentially cause message duplication which is up to
-	 * application developers to resolve.
+	 * synchronous mode.
+	 *
+	 * This may potentially cause message duplication which is up to application
+	 * developers to resolve.
 	 */
 	private int retryTimesWhenSendFailed = 2;
 
 	/**
-	 * <p>
 	 * Maximum number of retry to perform internally before claiming sending failure in
 	 * asynchronous mode.
-	 * </p>
+	 *
 	 * This may potentially cause message duplication which is up to application
 	 * developers to resolve.
 	 */
@@ -73,70 +55,45 @@ public class RocketMQProducerProperties {
 	/**
 	 * Indicate whether to retry another broker on sending failure internally.
 	 */
-	private boolean retryNextServer = false;
+	private boolean retryAnotherBroker = false;
 
-	public String getGroup() {
-		return group;
+	/**
+	 * Maximum allowed message size in bytes.
+	 */
+	private int maxMessageSize = 1024 * 1024 * 4;
+
+	private String producerType = ProducerType.Normal.name();
+
+	private String sendType = SendType.Sync.name();
+
+	private String sendCallBack;
+
+	private String transactionListener;
+
+	private String messageQueueSelector;
+
+	private String errorMessageStrategy;
+
+	private String sendFailureChannel;
+
+	private String checkForbiddenHook;
+
+	private String sendMessageHook;
+
+	public int getSendMsgTimeout() {
+		return sendMsgTimeout;
 	}
 
-	public void setGroup(String group) {
-		this.group = group;
+	public void setSendMsgTimeout(int sendMsgTimeout) {
+		this.sendMsgTimeout = sendMsgTimeout;
 	}
 
-	public Boolean getEnabled() {
-		return enabled;
+	public int getCompressMsgBodyThreshold() {
+		return compressMsgBodyThreshold;
 	}
 
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public Integer getMaxMessageSize() {
-		return maxMessageSize;
-	}
-
-	public void setMaxMessageSize(Integer maxMessageSize) {
-		this.maxMessageSize = maxMessageSize;
-	}
-
-	public Boolean getTransactional() {
-		return transactional;
-	}
-
-	public void setTransactional(Boolean transactional) {
-		this.transactional = transactional;
-	}
-
-	public Boolean getSync() {
-		return sync;
-	}
-
-	public void setSync(Boolean sync) {
-		this.sync = sync;
-	}
-
-	public Boolean getVipChannelEnabled() {
-		return vipChannelEnabled;
-	}
-
-	public void setVipChannelEnabled(Boolean vipChannelEnabled) {
-		this.vipChannelEnabled = vipChannelEnabled;
-	}
-
-	public int getSendMessageTimeout() {
-		return sendMessageTimeout;
-	}
-
-	public void setSendMessageTimeout(int sendMessageTimeout) {
-		this.sendMessageTimeout = sendMessageTimeout;
-	}
-
-	public int getCompressMessageBodyThreshold() {
-		return compressMessageBodyThreshold;
-	}
-
-	public void setCompressMessageBodyThreshold(int compressMessageBodyThreshold) {
-		this.compressMessageBodyThreshold = compressMessageBodyThreshold;
+	public void setCompressMsgBodyThreshold(int compressMsgBodyThreshold) {
+		this.compressMsgBodyThreshold = compressMsgBodyThreshold;
 	}
 
 	public int getRetryTimesWhenSendFailed() {
@@ -155,12 +112,130 @@ public class RocketMQProducerProperties {
 		this.retryTimesWhenSendAsyncFailed = retryTimesWhenSendAsyncFailed;
 	}
 
-	public boolean isRetryNextServer() {
-		return retryNextServer;
+	public boolean getRetryAnotherBroker() {
+		return retryAnotherBroker;
 	}
 
-	public void setRetryNextServer(boolean retryNextServer) {
-		this.retryNextServer = retryNextServer;
+	public void setRetryAnotherBroker(boolean retryAnotherBroker) {
+		this.retryAnotherBroker = retryAnotherBroker;
+	}
+
+	public int getMaxMessageSize() {
+		return maxMessageSize;
+	}
+
+	public void setMaxMessageSize(int maxMessageSize) {
+		this.maxMessageSize = maxMessageSize;
+	}
+
+	public String getProducerType() {
+		return producerType;
+	}
+
+	public void setProducerType(String producerType) {
+		this.producerType = producerType;
+	}
+
+	public String getSendType() {
+		return sendType;
+	}
+
+	public void setSendType(String sendType) {
+		this.sendType = sendType;
+	}
+
+	public String getSendCallBack() {
+		return sendCallBack;
+	}
+
+	public void setSendCallBack(String sendCallBack) {
+		this.sendCallBack = sendCallBack;
+	}
+
+	public String getTransactionListener() {
+		return transactionListener;
+	}
+
+	public void setTransactionListener(String transactionListener) {
+		this.transactionListener = transactionListener;
+	}
+
+	public String getMessageQueueSelector() {
+		return messageQueueSelector;
+	}
+
+	public void setMessageQueueSelector(String messageQueueSelector) {
+		this.messageQueueSelector = messageQueueSelector;
+	}
+
+	public String getErrorMessageStrategy() {
+		return errorMessageStrategy;
+	}
+
+	public void setErrorMessageStrategy(String errorMessageStrategy) {
+		this.errorMessageStrategy = errorMessageStrategy;
+	}
+
+	public String getSendFailureChannel() {
+		return sendFailureChannel;
+	}
+
+	public void setSendFailureChannel(String sendFailureChannel) {
+		this.sendFailureChannel = sendFailureChannel;
+	}
+
+	public String getCheckForbiddenHook() {
+		return checkForbiddenHook;
+	}
+
+	public void setCheckForbiddenHook(String checkForbiddenHook) {
+		this.checkForbiddenHook = checkForbiddenHook;
+	}
+
+	public String getSendMessageHook() {
+		return sendMessageHook;
+	}
+
+	public void setSendMessageHook(String sendMessageHook) {
+		this.sendMessageHook = sendMessageHook;
+	}
+
+	public enum ProducerType {
+
+		/**
+		 * Is not a transaction.
+		 */
+		Normal,
+		/**
+		 * a transaction.
+		 */
+		Trans;
+
+		public boolean equalsName(String name) {
+			return this.name().equalsIgnoreCase(name);
+		}
+
+	}
+
+	public enum SendType {
+
+		/**
+		 * one way.
+		 */
+		OneWay,
+		/**
+		 * Asynchronization Model.
+		 */
+		Async,
+		/**
+		 * synchronization.
+		 */
+		Sync,;
+
+		public boolean equalsName(String name) {
+			return this.name().equalsIgnoreCase(name);
+		}
+
 	}
 
 }

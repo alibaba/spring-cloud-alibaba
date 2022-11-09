@@ -17,6 +17,7 @@
 package com.alibaba.cloud.nacos;
 
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
@@ -30,6 +31,7 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
@@ -60,6 +62,7 @@ import static com.alibaba.nacos.api.PropertyKeyConst.USERNAME;
 /**
  * @author dungu.zpf
  * @author xiaojing
+ * @author HH
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  * @author <a href="mailto:lyuzb@lyuzb.com">lyuzb</a>
  * @author <a href="mailto:78552423@qq.com">eshun</a>
@@ -162,6 +165,13 @@ public class NacosDiscoveryProperties {
 	private String networkInterface = "";
 
 	/**
+	 * choose IPv4 or IPv6,if you don't set it will choose IPv4.
+	 * When IPv6 is chosen but no IPv6 can be found, system will automatically find IPv4 to ensure there is an
+	 * available service address.
+	 */
+	private String ipType = "IPv4";
+
+	/**
 	 * The port your want to register for your service instance, needn't to set it if the
 	 * auto detect port works well.
 	 */
@@ -207,6 +217,15 @@ public class NacosDiscoveryProperties {
 	 */
 	private boolean ephemeral = true;
 
+	/**
+	 * Throw exceptions during service registration if true, otherwise, log error
+	 * (defaults to true).
+	 */
+	private boolean failFast = true;
+
+	@Autowired
+	private InetIPv6Utils inetIPv6Utils;
+
 	@Autowired
 	private InetUtils inetUtils;
 
@@ -238,7 +257,20 @@ public class NacosDiscoveryProperties {
 		if (StringUtils.isEmpty(ip)) {
 			// traversing network interfaces if didn't specify a interface
 			if (StringUtils.isEmpty(networkInterface)) {
-				ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+				if ("IPv4".equalsIgnoreCase(ipType)) {
+					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+				}
+				else if ("IPv6".equalsIgnoreCase(ipType)) {
+					ip = inetIPv6Utils.findIPv6Address();
+					if (StringUtils.isEmpty(ip)) {
+						log.warn("There is no available IPv6 found. Spring Cloud Alibaba will automatically find IPv4.");
+						ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+					}
+				}
+				else {
+					throw new IllegalArgumentException(
+							"please checking the type of IP " + ipType);
+				}
 			}
 			else {
 				NetworkInterface netInterface = NetworkInterface
@@ -252,7 +284,8 @@ public class NacosDiscoveryProperties {
 				while (inetAddress.hasMoreElements()) {
 					InetAddress currentAddress = inetAddress.nextElement();
 					if (currentAddress instanceof Inet4Address
-							&& !currentAddress.isLoopbackAddress()) {
+							|| currentAddress instanceof Inet6Address
+									&& !currentAddress.isLoopbackAddress()) {
 						ip = currentAddress.getHostAddress();
 						break;
 					}
@@ -271,15 +304,16 @@ public class NacosDiscoveryProperties {
 			applicationEventPublisher
 					.publishEvent(new NacosDiscoveryInfoChangedEvent(this));
 		}
+		nacosServiceManager.setNacosDiscoveryProperties(this);
 	}
 
 	/**
-	 * recommend to use {@link NacosServiceManager#getNamingService(Properties)}.
+	 * recommend to use {@link NacosServiceManager#getNamingService()}.
 	 * @return NamingService
 	 */
 	@Deprecated
 	public NamingService namingServiceInstance() {
-		return nacosServiceManager.getNamingService(this.getNacosProperties());
+		return nacosServiceManager.getNamingService();
 	}
 
 	public String getEndpoint() {
@@ -304,6 +338,10 @@ public class NacosDiscoveryProperties {
 
 	public void setLogName(String logName) {
 		this.logName = logName;
+	}
+
+	public void setInetIPv6Utils(InetIPv6Utils inetIPv6Utils) {
+		this.inetIPv6Utils = inetIPv6Utils;
 	}
 
 	public void setInetUtils(InetUtils inetUtils) {
@@ -364,6 +402,14 @@ public class NacosDiscoveryProperties {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public String getIpType() {
+		return ipType;
+	}
+
+	public void setIpType(String ipType) {
+		this.ipType = ipType;
 	}
 
 	public boolean isSecure() {
@@ -486,6 +532,14 @@ public class NacosDiscoveryProperties {
 		this.ephemeral = ephemeral;
 	}
 
+	public boolean isFailFast() {
+		return failFast;
+	}
+
+	public void setFailFast(boolean failFast) {
+		this.failFast = failFast;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -510,6 +564,7 @@ public class NacosDiscoveryProperties {
 				&& Objects.equals(secretKey, that.secretKey)
 				&& Objects.equals(heartBeatInterval, that.heartBeatInterval)
 				&& Objects.equals(heartBeatTimeout, that.heartBeatTimeout)
+				&& Objects.equals(failFast, that.failFast)
 				&& Objects.equals(ipDeleteTimeout, that.ipDeleteTimeout);
 	}
 
@@ -519,7 +574,7 @@ public class NacosDiscoveryProperties {
 				watchDelay, logName, service, weight, clusterName, group,
 				namingLoadCacheAtStart, registerEnabled, ip, networkInterface, port,
 				secure, accessKey, secretKey, heartBeatInterval, heartBeatTimeout,
-				ipDeleteTimeout, instanceEnabled, ephemeral);
+				ipDeleteTimeout, instanceEnabled, ephemeral, failFast);
 	}
 
 	@Override
@@ -535,7 +590,7 @@ public class NacosDiscoveryProperties {
 				+ ", port=" + port + ", secure=" + secure + ", accessKey='" + accessKey
 				+ '\'' + ", secretKey='" + secretKey + '\'' + ", heartBeatInterval="
 				+ heartBeatInterval + ", heartBeatTimeout=" + heartBeatTimeout
-				+ ", ipDeleteTimeout=" + ipDeleteTimeout + '}';
+				+ ", ipDeleteTimeout=" + ipDeleteTimeout + ", failFast=" + failFast + '}';
 	}
 
 	public void overrideFromEnv(Environment env) {

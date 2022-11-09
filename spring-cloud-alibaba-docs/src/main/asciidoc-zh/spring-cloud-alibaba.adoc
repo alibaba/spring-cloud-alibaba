@@ -17,9 +17,7 @@ include::nacos-config.adoc[]
 
 include::sentinel.adoc[]
 
-include::dubbo.adoc[]
-
-include::rocketmq.adoc[]
+include::rocketmq-new.adoc[]
 
 include::ans.adoc[]
 
@@ -32,5 +30,7 @@ include::schedulerx.adoc[]
 include::sms.adoc[]
 
 include::sidecar.adoc[]
+
+include::appactive.adoc[]
 
 

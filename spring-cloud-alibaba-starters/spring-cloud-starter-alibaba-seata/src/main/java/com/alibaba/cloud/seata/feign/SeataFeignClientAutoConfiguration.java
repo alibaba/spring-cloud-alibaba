@@ -38,4 +38,5 @@ public class SeataFeignClientAutoConfiguration {
 	public SeataFeignRequestInterceptor seataFeignRequestInterceptor() {
 		return new SeataFeignRequestInterceptor();
 	}
+
 }

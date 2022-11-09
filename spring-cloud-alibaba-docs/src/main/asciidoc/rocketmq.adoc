@@ -57,7 +57,7 @@ Send messages:
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
 ```
 
-Output when the message is successfuly sent: `SendResult [sendStatus=SEND_OK, msgId= ...`
+Output when the message is successfully sent: `SendResult [sendStatus=SEND_OK, msgId= ...`
 
 Receive messages:
 
@@ -246,7 +246,11 @@ spring.cloud.stream.rocketmq.binder.customized-trace-topic::
 The trace topic for message trace.
 +
 Default: `RMQ_SYS_TRACE_TOPIC`.
-
++
+spring.cloud.stream.rocketmq.binder.access-channel::
+The commercial version of rocketmq message trajectory topic is adaptive,the value is CLOUD
++
+Default: null.
 
 ==== RocketMQ Consumer Properties
 

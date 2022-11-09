@@ -41,4 +41,11 @@ public class SentinelFeignAutoConfiguration {
 		return SentinelFeign.builder();
 	}
 
+	@Bean
+	@ConditionalOnProperty(name = "feign.sentinel.enabled")
+	@ConditionalOnClass(name = "org.springframework.cloud.openfeign.Targeter")
+	public SentinelTargeterAspect sentinelTargeterAspect() {
+		return new SentinelTargeterAspect();
+	}
+
 }

@@ -16,37 +16,37 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.metrics;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * @author Timur Valiev
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
-public class InstrumentationManager {
+public final class InstrumentationManager {
 
-	private final Map<String, Object> runtime = new ConcurrentHashMap<>();
-
-	private final Map<String, Instrumentation> healthInstrumentations = new HashMap<>();
-
-	public Set<Instrumentation> getHealthInstrumentations() {
-		return healthInstrumentations.entrySet().stream().map(Map.Entry::getValue)
-				.collect(Collectors.toSet());
+	private InstrumentationManager() {
 	}
 
-	public void addHealthInstrumentation(Instrumentation instrumentation) {
-		healthInstrumentations.put(instrumentation.getName(), instrumentation);
+	private static final Map<Integer, Instrumentation> HEALTH_INSTRUMENTATIONS = new HashMap<>();
+
+	public static Collection<Instrumentation> getHealthInstrumentations() {
+		return HEALTH_INSTRUMENTATIONS.values();
 	}
 
-	public Instrumentation getHealthInstrumentation(String key) {
-		return healthInstrumentations.get(key);
-	}
+	public static void addHealthInstrumentation(Instrumentation instrumentation) {
+		if (null != instrumentation) {
+			HEALTH_INSTRUMENTATIONS.computeIfPresent(instrumentation.hashCode(),
+					(k, v) -> {
+						if (instrumentation.getActuator() != null) {
+							instrumentation.getActuator().stop();
+						}
+						throw new IllegalArgumentException(
+								"The current actuator exists, please confirm if there is a repeat operation!!!");
+					});
+		}
 
-	public Map<String, Object> getRuntime() {
-		return runtime;
 	}
 
 }

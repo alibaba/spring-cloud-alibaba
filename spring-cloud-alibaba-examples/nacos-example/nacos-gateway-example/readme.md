@@ -2,7 +2,7 @@
 
 ## Project Instruction
 
-This example illustrates how to use Nacos Discovery Starter、 Spring Cloud Gateway Starter implement Service route for Spring Cloud applications.
+This example illustrates how to use Nacos Discovery Starter、 Spring Cloud Gateway Starter implement Service routes for Spring Cloud applications.
 
 [Nacos](https://github.com/alibaba/Nacos) an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.  
 [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway)  provides a library for building an API Gateway on top of Spring MVC.
@@ -11,7 +11,7 @@ This example illustrates how to use Nacos Discovery Starter、 Spring Cloud Gate
 ## Demo
 
 ### Connect to Nacos Discovery
-Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Discovery、Nacos Discovery、Spring Cloud Gateway. The configurations have been completed in the following example, so you don't need modify the code any more.**
+Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Discovery、Nacos Discovery、Spring Cloud Gateway. The configurations have been completed in the following example, so you don't need to modify the code anymore.**
 
 1. Add Nacos Discovery Starter、Spring Cloud Gateway Starter in the pom.xml file in your Spring Cloud project.
 
@@ -57,7 +57,7 @@ spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
 1. Install Nacos Server by downloading or build from source code.**Recommended latest version Nacos Server**
 
 	1. Download: Download Nacos Server [download page](https://github.com/alibaba/nacos/releases) 
-	2. Build from source code: Get source code by git clone git@github.com:alibaba/Nacos.git from Github Nacos and build your code. See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
+	2. Build from source code: Get source code by git clone git@github.com:alibaba/Nacos.git from GitHub Nacos and build your code. See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
 	
 
 
@@ -101,5 +101,5 @@ Start the application in IDE or by building a fatjar.
 
 Nacos makes it easier and faster to construct, deliver and manage your microservices platform. It is the infrastructure that supports a service-centered modern application architecture with a microservices or cloud-native approach.
 
-If you have any ideas or suggestions for Nacos Discovery starter, please don't hesitate to tell us by submitting github issues.
+If you have any ideas or suggestions for Nacos Discovery starter, please don't hesitate to tell us by submitting GitHub issues.
 

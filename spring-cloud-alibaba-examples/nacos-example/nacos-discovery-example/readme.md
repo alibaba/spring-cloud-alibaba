@@ -9,7 +9,7 @@ This example illustrates how to use Nacos Discovery Starter implement Service di
 ## Demo
 
 ### Connect to Nacos Discovery
-Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Discovery. The configurations have been completed in the following example, so you don't need modify the code any more.**
+Before we start the demo, let's learn how to connect Nacos Config to a Spring Cloud application. **Note: This section is to show you how to connect to Nacos Discovery. The configurations have been completed in the following example, so you don't need to modify the code anymore.**
 
 1. Add dependency spring-cloud-starter-alibaba-nacos-discovery in the pom.xml file in your Spring Cloud project.
 
@@ -46,7 +46,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 1. Install Nacos Server by downloading or build from source code.**Recommended latest version Nacos Server**
 
 	1. Download: Download Nacos Server [download page](https://github.com/alibaba/nacos/releases) 
-	2. Build from source code: Get source code by git clone git@github.com:alibaba/Nacos.git from Github Nacos and build your code. See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
+	2. Build from source code: Get source code by git clone git@github.com:alibaba/Nacos.git from GitHub Nacos and build your code. See [build reference](https://nacos.io/en-us/docs/quick-start.html) for details.
 	
 
 
@@ -91,7 +91,7 @@ Nacos Discovery Starter integrates Ribbon by default, so for components that use
 
 The code of `nacos-discovery-consumer-example` project will be analyzed below, demonstrating how RestTemplate and FeignClient.
 
-**Note This section is to show you how to connect to Nacos Discovery. The configurations have been completed in the following example, so you don't need modify the code any more.Only the contents related to Ribbon, RestTemplate, and FeignClient are involved here. If other service discovery components have been used, you can access Nacos Discovery by directly replacing the dependencies.**
+**Note This section is to show you how to connect to Nacos Discovery. The configurations have been completed in the following example, so you don't need to modify the code anymore.Only the contents related to Ribbon, RestTemplate, and FeignClient are involved here. If other service discovery components have been used, you can access Nacos Discovery by directly replacing the dependencies.**
 
 1. Add the @LoadBlanced annotation to make RestTemplate accessible to the Ribbon
 
@@ -198,6 +198,7 @@ server address|spring.cloud.nacos.discovery.server-addr||
 service|spring.cloud.nacos.discovery.service|spring.application.name|service id to registry
 weight|spring.cloud.nacos.discovery.weight|1|value from 1 to 100, The larger the value, the larger the weight
 ip|spring.cloud.nacos.discovery.ip||ip address to registry, Highest priority
+ip type|spring.cloud.nacos.discovery.ip-type|IPv4|IPv4 and IPv6 can be configured, If there are multiple IP addresses of the same type of network card, and you want to specify a specific network segment address, you can use `spring.cloud.inetutils.preferred-networks` to configure the filter address.
 network interface|spring.cloud.nacos.discovery.network-interface||When the IP is not configured, the registered IP address is the IP address corresponding to the network-interface. If this item is not configured, the address of the first network-interface is taken by default.
 port|spring.cloud.nacos.discovery.port|-1|port to registry, Automatically detect without configuration
 namesapce|spring.cloud.nacos.discovery.namespace||One of the common scenarios is the separation of the configuration of different environments, such as the development of the test environment and the resource isolation of the production environment.
@@ -205,7 +206,9 @@ AccessKey|spring.cloud.nacos.discovery.access-key||
 SecretKey|spring.cloud.nacos.discovery.secret-key||
 Metadata|spring.cloud.nacos.discovery.metadata||Extended data, Configure using Map format
 log name|spring.cloud.nacos.discovery.log-name||
+cluster|spring.cloud.nacos.discovery.cluster-name|DEFAULT|Nacos cluster name
 endpoint|spring.cloud.nacos.discovery.endpoint||The domain name of a service, through which the server address can be dynamically obtained.
+enable Nacos Watch|spring.cloud.nacos.discovery.watch.enabled|true|Switch it to false to disable nacos watch
 Integration Ribbon|ribbon.nacos.enabled|true|
 enabled|spring.cloud.nacos.discovery.enabled|true|The switch to enable or disable nacos service discovery
 
@@ -217,5 +220,5 @@ enabled|spring.cloud.nacos.discovery.enabled|true|The switch to enable or disabl
 
 Nacos makes it easier and faster to construct, deliver and manage your microservices platform. It is the infrastructure that supports a service-centered modern application architecture with a microservices or cloud-native approach.
 
-If you have any ideas or suggestions for Nacos Discovery starter, please don't hesitate to tell us by submitting github issues.
+If you have any ideas or suggestions for Nacos Discovery starter, please don't hesitate to tell us by submitting GitHub issues.
 

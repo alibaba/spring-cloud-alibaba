@@ -280,7 +280,7 @@ NOTE: This configuration must be in the bootstrap.properties file, and the value
 
 === Support Custom Data Id
 
-As of Spring Cloud Alibaba Nacos Config, data id can be self-defined. For detailed design of this part, refer to https://github.com/spring-cloud-incubator/spring-cloud-alibaba/issues/141[Github issue].
+As of Spring Cloud Alibaba Nacos Config, data id can be self-defined. For detailed design of this part, refer to https://github.com/alibaba/spring-cloud-alibaba/issues/141[Github issue].
 The following is a complete sample:
 
 [source,properties]

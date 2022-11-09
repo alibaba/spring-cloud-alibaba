@@ -115,7 +115,7 @@ messageChannel.send(MessageBuilder.withPayload("simple msg").build());
 **Spring Cloud Stream 底层基于这段代码去做了各种抽象。**
 
 
-=== 如何使用 Spring Cloud Alibaba RocketMQ Binder ###
+=== 如何使用 Spring Cloud Alibaba RocketMQ Binder
 
 如果要在您的项目中引入 RocketMQ Binder，需要引入如下 maven 依赖：
 
@@ -249,6 +249,11 @@ spring.cloud.stream.rocketmq.binder.customized-trace-topic::
 消息轨迹开启后存储的 topic 名称。
 +
 Default: `RMQ_SYS_TRACE_TOPIC`.
++
+spring.cloud.stream.rocketmq.binder.access-channel::
+商业版rocketmq消息轨迹topic自适应，值为CLOUD
++
+Default: null.
 
 
 ==== RocketMQ Consumer Properties
@@ -346,6 +351,7 @@ NOTE: 0.1.2 & 0.2.2 & 0.9.0 才支持该功能
 spring.cloud.stream.rocketmq.binder.access-key=YourAccessKey
 spring.cloud.stream.rocketmq.binder.secret-key=YourSecretKey
 spring.cloud.stream.rocketmq.binder.name-server=NameServerInMQ
+spring.cloud.stream.rocketmq.binder.access-channel=CLOUD
 ```
 
 NOTE: topic 和 group 请以 实例id% 为前缀进行配置。比如 topic 为 "test"，需要配置成 "实例id%test"

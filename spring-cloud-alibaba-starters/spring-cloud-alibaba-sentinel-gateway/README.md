@@ -1,7 +1,7 @@
 # Sentinel Spring Cloud Zuul Adapter
 
-Zuul does not provide rateLimit function, If use default `SentinelRibbonFilter` route filter. it wrapped by Hystrix Command. so only provide Service level 
-circuit protect. 
+Zuul does not provide rateLimit function, If you use default `SentinelRibbonFilter` route filter. it wrapped by Hystrix Command. so only provide Service level 
+circuit protection. 
 
 Sentinel can provide `ServiceId` level and `API Path` level flow control for spring cloud zuul gateway service. 
 
@@ -29,7 +29,7 @@ spring.cloud.sentinel.zuul.enabled=true
 
 ## How it works
 
-As Zuul run as per thread per connection block model, we add filters around `route Filter` to trace sentinel statistics.   
+As Zuul run as per thread connection block model, we add filters around `route Filter` to trace sentinel statistics.   
 
 - `SentinelPreFilter`: Get an entry of resource,the first order is **ServiceId**, then **API Path**. 
 - `SentinelPostFilter`: When success response,exit entry.
@@ -80,7 +80,7 @@ Sentinel has full rule config features. see [Dynamic-Rule-Configuration](https:/
 Implements `SentinelFallbackProvider` to define your own Fallback Provider when Sentinel Block Exception throwing for different rout. the default 
 Fallback Provider is `DefaultBlockFallbackProvider`. 
 
-By default Fallback route is `ServiveId + URI PATH`, example `/book/coke`, first `book` is serviceId, `/uri` is URI PATH, so both  
+By default, fallback route is `ServiveId + URI PATH`, example `/book/coke`, first `book` is serviceId, `/uri` is URI PATH, so both  
 can be needed.
 
 Here is an example:
@@ -112,7 +112,7 @@ public class MyCokeServiceBlockFallbackProvider implements SentinelFallbackProvi
 ```
 
 ## Custom Request Origin Parser
-By default this adapter use `DefaultRequestOriginParser` to parse sentinel origin.
+By default, this adapter use `DefaultRequestOriginParser` to parse sentinel origin.
 
 ```java
 

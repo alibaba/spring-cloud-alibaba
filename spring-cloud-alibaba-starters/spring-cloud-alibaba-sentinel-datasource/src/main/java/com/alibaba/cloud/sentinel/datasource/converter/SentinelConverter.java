@@ -77,7 +77,7 @@ public abstract class SentinelConverter<T extends Object>
 		}
 
 		if (StringUtils.isEmpty(source)) {
-			log.warn("converter can not convert rules because source is empty");
+			log.info("converter can not convert rules because source is empty");
 			return ruleCollection;
 		}
 		try {
@@ -86,9 +86,8 @@ public abstract class SentinelConverter<T extends Object>
 					});
 
 			for (Object obj : sourceArray) {
-				String item = null;
 				try {
-					item = objectMapper.writeValueAsString(obj);
+					String item = objectMapper.writeValueAsString(obj);
 					Optional.ofNullable(convertRule(item))
 							.ifPresent(convertRule -> ruleCollection.add(convertRule));
 				}

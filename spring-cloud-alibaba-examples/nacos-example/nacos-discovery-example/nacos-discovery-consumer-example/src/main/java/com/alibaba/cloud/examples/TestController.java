@@ -44,21 +44,6 @@ public class TestController {
 	@Autowired
 	private DiscoveryClient discoveryClient;
 
-	// @PostConstruct
-	// public void init() {
-	// restTemplate1.setErrorHandler(new ResponseErrorHandler() {
-	// @Override
-	// public boolean hasError(ClientHttpResponse response) throws IOException {
-	// return false;
-	// }
-	//
-	// @Override
-	// public void handleError(ClientHttpResponse response) throws IOException {
-	// System.err.println("handle error");
-	// }
-	// });
-	// }
-
 	@GetMapping("/echo-rest/{str}")
 	public String rest(@PathVariable String str) {
 		return restTemplate.getForObject("http://service-provider/echo/" + str,

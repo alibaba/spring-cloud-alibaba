@@ -51,11 +51,6 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
             <version>${revision}</version>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config-server</artifactId>
-            <version>${revision}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -72,12 +67,6 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sidecar</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-dubbo</artifactId>
             <version>${revision}</version>
         </dependency>
     </dependencies>
