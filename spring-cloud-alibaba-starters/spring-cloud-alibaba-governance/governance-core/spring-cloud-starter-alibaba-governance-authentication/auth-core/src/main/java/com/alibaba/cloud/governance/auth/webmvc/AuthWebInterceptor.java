@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.cloud.governance.auth.util.IpUtil;
 import com.alibaba.cloud.governance.auth.validator.AuthValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,6 +38,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 public class AuthWebInterceptor implements HandlerInterceptor {
+
+	private static final Logger log = LoggerFactory.getLogger(AuthWebInterceptor.class);
 
 	private AuthValidator authValidator;
 
@@ -70,10 +74,16 @@ public class AuthWebInterceptor implements HandlerInterceptor {
 		HttpHeaders headers = new HttpHeaders();
 		Enumeration<String> headerNames = request.getHeaderNames();
 		while (headerNames.hasMoreElements()) {
-			String key = headerNames.nextElement();
-			Enumeration<String> headerValues = request.getHeaders(key);
-			while (headerValues.hasMoreElements()) {
-				headers.add(key, headerValues.nextElement());
+			try {
+				String key = headerNames.nextElement();
+				key = key.substring(0, 1).toUpperCase() + key.substring(1);
+				Enumeration<String> headerValues = request.getHeaders(key);
+				while (headerValues.hasMoreElements()) {
+					headers.add(key, headerValues.nextElement());
+				}
+			}
+			catch (Exception e) {
+				log.error("Unknown header key", e);
 			}
 		}
 		return headers;

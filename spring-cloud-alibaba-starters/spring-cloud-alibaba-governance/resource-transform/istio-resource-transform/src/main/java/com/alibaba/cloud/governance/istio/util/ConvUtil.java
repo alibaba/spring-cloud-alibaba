@@ -54,7 +54,7 @@ public final class ConvUtil {
 			return new StringMatcher(suffix, MatcherType.SUFFIX, isIgnoreCase);
 		}
 		if (StringUtils.isNotBlank(contains)) {
-			return new StringMatcher(contains, MatcherType.CONTAINS, isIgnoreCase);
+			return new StringMatcher(contains, MatcherType.CONTAIN, isIgnoreCase);
 		}
 		if (StringUtils.isNotBlank(regex)) {
 			return new StringMatcher(regex);

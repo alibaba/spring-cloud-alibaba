@@ -73,7 +73,7 @@ public class StringMatcher {
 			return str.startsWith(matcher);
 		case SUFFIX:
 			return str.endsWith(matcher);
-		case CONTAINS:
+		case CONTAIN:
 			return str.contains(matcher);
 		case REGEX:
 			try {

@@ -27,7 +27,9 @@ import org.slf4j.LoggerFactory;
 public class IpMatcher {
 
 	private static final Logger log = LoggerFactory.getLogger(IpMatcher.class);
+
 	private int prefixLen;
+
 	private String ip;
 
 	public IpMatcher() {

@@ -260,7 +260,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			}
 		}
 		log.info("auth rules resolve finish, RBAC rules {}, Jwt rules {}",
-				rbacList.size(), jwtAuthentications.size());
+				allowAuthRules.size() + denyAuthRules.size(), jwtRules.size());
 		authRepository.setAllowAuthRule(allowAuthRules);
 		authRepository.setDenyAuthRules(denyAuthRules);
 		authRepository.setJwtRule(jwtRules);

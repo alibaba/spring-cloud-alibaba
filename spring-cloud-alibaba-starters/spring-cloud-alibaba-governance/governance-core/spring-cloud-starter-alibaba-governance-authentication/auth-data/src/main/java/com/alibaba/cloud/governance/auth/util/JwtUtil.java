@@ -79,8 +79,14 @@ public final class JwtUtil {
 					}
 				}
 			}
-			return headers.getFirst(HttpHeaders.AUTHORIZATION)
-					.substring(BEARER_PREFIX.length());
+			String token = headers.getFirst(HttpHeaders.AUTHORIZATION);
+			if (StringUtils.isEmpty(token)) {
+				return "";
+			}
+			if (token.startsWith(BEARER_PREFIX)) {
+				return token.substring(BEARER_PREFIX.length());
+			}
+			return token;
 		}
 		catch (Exception e) {
 			log.info("no jwt token extracted from header or params");

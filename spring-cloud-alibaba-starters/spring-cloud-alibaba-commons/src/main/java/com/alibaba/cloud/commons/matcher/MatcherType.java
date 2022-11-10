@@ -23,8 +23,42 @@ package com.alibaba.cloud.commons.matcher;
 public enum MatcherType {
 
 	/**
-	 * Different matcher type, include exact match, prefix match and etc.
+	 * exact match.
 	 */
-	EXACT, PREFIX, SUFFIX, PRESENT, REGEX, CONTAINS
+	EXACT("exact"),
+	/**
+	 * prefix match.
+	 */
+	PREFIX("prefix"),
+	/**
+	 * suffix match.
+	 */
+	SUFFIX("suffix"),
+	/**
+	 * present match.
+	 */
+	PRESENT("present"),
+	/**
+	 * regex match.
+	 */
+	REGEX("regex"),
+	/**
+	 * contain match.
+	 */
+	CONTAIN("contain");
+
+	/**
+	 * type of matcher.
+	 */
+	public final String type;
+
+	MatcherType(String type) {
+		this.type = type;
+	}
+
+	@Override
+	public String toString() {
+		return this.type;
+	}
 
 }
