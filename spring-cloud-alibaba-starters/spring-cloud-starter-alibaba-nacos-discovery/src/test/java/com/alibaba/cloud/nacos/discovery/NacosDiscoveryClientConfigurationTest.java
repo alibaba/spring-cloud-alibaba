@@ -56,7 +56,8 @@ public class NacosDiscoveryClientConfigurationTest {
 	public void testDefaultInitialization() {
 		contextRunner.run(context -> {
 			assertThat(context).hasSingleBean(DiscoveryClient.class);
-			assertThat(context).hasSingleBean(NacosWatch.class);
+			// NacosWatch is no longer enabled by default
+			assertThat(context).doesNotHaveBean(NacosWatch.class);
 		});
 	}
 
@@ -67,6 +68,28 @@ public class NacosDiscoveryClientConfigurationTest {
 					assertThat(context).doesNotHaveBean(DiscoveryClient.class);
 					assertThat(context).doesNotHaveBean(NacosWatch.class);
 				});
+	}
+
+	@Test
+	public void testNacosWatchEnabled() {
+		contextRunner.withPropertyValues("spring.cloud.nacos.discovery.watch.enabled=true")
+				.run(context -> assertThat(context).hasSingleBean(NacosWatch.class));
+	}
+
+	@Test
+	public void testDefaultGatewayLocatorHeartBeatPublisher() {
+		contextRunner.run(context ->
+				assertThat(context).doesNotHaveBean(GatewayLocatorHeartBeatPublisher.class)
+		);
+	}
+
+	@Test
+	public void testGatewayLocatorHeartBeatPublisherEnabled() {
+		contextRunner
+				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
+				.run(context ->
+						assertThat(context).hasSingleBean(GatewayLocatorHeartBeatPublisher.class)
+				);
 	}
 
 }
