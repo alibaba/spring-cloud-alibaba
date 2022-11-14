@@ -18,15 +18,17 @@ package com.alibaba.cloud.tests.sentinel.degrade;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import org.junit.jupiter.api.Test;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
+import static com.alibaba.cloud.tests.sentinel.degrade.Util.FLOW_CONTROL_NOT_TRIGGERED;
+import static com.alibaba.cloud.tests.sentinel.degrade.Util.FLOW_CONTROL_TRIGGERED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -36,31 +38,36 @@ class SentinelFlowControlTestAppTest {
 	@LocalServerPort
 	int port;
 
-	@Test
-	public void testFlowControl_whenNotTrigger() throws InterruptedException {
-		RestTemplate rest = new RestTemplate();
+	@Autowired
+	TestRestTemplate rest;
 
-		final int threadCount = 2;
-		CountDownLatch latch = new CountDownLatch(threadCount);
+	@Test
+	void testFlowControl_whenNotTriggered() {
+		final int count = 3;
 		List<String> result = new ArrayList<>();
 
-		for (int i = 0; i < threadCount; i++) {
-			new Thread(() -> {
-				try {
-					// TODO: why server will occur 500 error, need digging?
-					ResponseEntity<String> res = rest.getForEntity(
-							"http://localhost:" + port + "/flowControl", String.class);
-					result.add(res.getBody());
-				}
-				finally {
-					latch.countDown();
-				}
-			}).start();
+		for (int i = 0; i < count; i++) {
+			ResponseEntity<String> res = rest.getForEntity(
+					"http://localhost:" + port + FLOW_CONTROL_NOT_TRIGGERED,
+					String.class);
+			result.add(res.getBody());
 		}
 
-		latch.await();
+		assertThat(result).doesNotContain("fallback");
+	}
 
-		assertThat(result).noneMatch(s -> s.contains("Blocked by Sentinel"));
+	@Test
+	void testFlowControl_whenTriggered() {
+		final int count = 3;
+		List<String> result = new ArrayList<>();
+
+		for (int i = 0; i < count; i++) {
+			ResponseEntity<String> res = rest.getForEntity(
+					"http://localhost:" + port + FLOW_CONTROL_TRIGGERED, String.class);
+			result.add(res.getBody());
+		}
+
+		assertThat(result).containsSequence("fallback");
 	}
 
 }

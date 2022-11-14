@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.tests.sentinel.degrade;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
@@ -30,6 +30,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.alibaba.cloud.tests.sentinel.degrade.Util.FLOW_CONTROL_NOT_TRIGGERED;
+import static com.alibaba.cloud.tests.sentinel.degrade.Util.FLOW_CONTROL_TRIGGERED;
+
 /**
  * @author Freeman
  */
@@ -41,29 +44,33 @@ public class SentinelFlowControlTestApp {
 		SpringApplication.run(SentinelFlowControlTestApp.class, args);
 	}
 
-	@RequestMapping("/notFlowControl")
-	@SentinelResource("/notFlowControl")
-	public String notFlowControl() {
+	@RequestMapping(FLOW_CONTROL_NOT_TRIGGERED)
+	@SentinelResource(value = FLOW_CONTROL_NOT_TRIGGERED, defaultFallback = "fallback")
+	public String flowControlNotTriggered() {
 		return "OK";
 	}
 
-	@RequestMapping("/flowControl")
-	@SentinelResource("/flowControl")
-	public String flowControl() {
+	@RequestMapping(FLOW_CONTROL_TRIGGERED)
+	@SentinelResource(value = FLOW_CONTROL_TRIGGERED, defaultFallback = "fallback")
+	public String flowControlTriggered() {
 		return "OK";
 	}
 
-	public static String flowControlFallback() {
+	private static String fallback() {
 		return "fallback";
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void onApplicationReady() {
-		FlowRule flowRule = new FlowRule();
-		flowRule.setResource("/flowControl");
-		flowRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-		flowRule.setCount(2);
-		FlowRuleManager.loadRules(Collections.singletonList(flowRule));
+		FlowRule notTriggeredRule = new FlowRule();
+		notTriggeredRule.setResource(FLOW_CONTROL_NOT_TRIGGERED);
+		notTriggeredRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+		notTriggeredRule.setCount(4);
+		FlowRule triggeredRule = new FlowRule();
+		triggeredRule.setResource(FLOW_CONTROL_TRIGGERED);
+		triggeredRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+		triggeredRule.setCount(3);
+		FlowRuleManager.loadRules(Arrays.asList(notTriggeredRule, triggeredRule));
 	}
 
 }
