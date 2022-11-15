@@ -16,6 +16,7 @@
         <module>spring-cloud-alibaba-test-support</module>
         <module>nacos-tests</module>
         <module>rocketmq-tests</module>
+        <module>sentinel-tests</module>
     </modules>
 
     <properties>

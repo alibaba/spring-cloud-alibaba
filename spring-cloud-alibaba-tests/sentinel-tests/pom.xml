@@ -1,0 +1,17 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-alibaba-tests</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>sentinel-tests</artifactId>
+    <packaging>pom</packaging>
+    <name>Sentinel Tests</name>
+    <modules>
+        <module>sentinel-flowcontrol-test</module>
+        <module>sentinel-degrade-test</module>
+    </modules>
+
+</project>
