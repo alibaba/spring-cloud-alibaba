@@ -201,7 +201,7 @@ Metadata|spring.cloud.nacos.discovery.metadata||使用Map格式配置
 接入点|spring.cloud.nacos.discovery.endpoint|UTF-8|地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 是否集成Ribbon|ribbon.nacos.enabled|true|
 集群|spring.cloud.nacos.discovery.cluster-name|DEFAULT|Nacos集群名称
-是否开启Nacos Watch|spring.cloud.nacos.discovery.watch.enabled|true|可以设置成false来关闭 watch
+是否开启Nacos Watch|spring.cloud.nacos.discovery.watch.enabled|false|可以设置成true来开启 watch
 是否启用Nacos|spring.cloud.nacos.discovery.enabled|true|默认启动，设置为false时会关闭自动向Nacos注册的功能
 
 
