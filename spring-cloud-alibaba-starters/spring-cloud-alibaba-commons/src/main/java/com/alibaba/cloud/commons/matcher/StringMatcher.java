@@ -25,11 +25,11 @@ import com.alibaba.cloud.commons.lang.StringUtils;
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public class StringMatcher {
+public class StringMatcher implements Matcher {
 
 	private String matcher;
 
-	private MatcherType type;
+	private StringMatcherType type;
 
 	private boolean isIgnoreCase;
 
@@ -41,24 +41,20 @@ public class StringMatcher {
 
 	public StringMatcher(String regex) {
 		this.regex = regex;
-		this.type = MatcherType.REGEX;
+		this.type = StringMatcherType.REGEX;
 	}
 
-	public StringMatcher(String matcher, MatcherType type, boolean isIgnoreCase) {
+	public StringMatcher(String matcher, StringMatcherType type, boolean isIgnoreCase) {
 		this.matcher = matcher;
 		this.type = type;
 		this.isIgnoreCase = isIgnoreCase;
 	}
 
-	public MatcherType getType() {
-		return type;
-	}
-
-	public String getMatcher() {
-		return matcher;
-	}
-
-	public boolean match(String str) {
+	public boolean match(Object obj) {
+		if (!(obj instanceof String)) {
+			return false;
+		}
+		String str = (String) obj;
 		if (StringUtils.isEmpty(str)) {
 			return false;
 		}
@@ -88,4 +84,35 @@ public class StringMatcher {
 		}
 	}
 
+	public String getMatcher() {
+		return matcher;
+	}
+
+	public void setMatcher(String matcher) {
+		this.matcher = matcher;
+	}
+
+	public StringMatcherType getType() {
+		return type;
+	}
+
+	public void setType(StringMatcherType type) {
+		this.type = type;
+	}
+
+	public boolean isIgnoreCase() {
+		return isIgnoreCase;
+	}
+
+	public void setIgnoreCase(boolean ignoreCase) {
+		isIgnoreCase = ignoreCase;
+	}
+
+	public String getRegex() {
+		return regex;
+	}
+
+	public void setRegex(String regex) {
+		this.regex = regex;
+	}
 }

@@ -18,7 +18,7 @@ package com.alibaba.cloud.governance.istio.util;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.IpMatcher;
-import com.alibaba.cloud.commons.matcher.MatcherType;
+import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
@@ -45,16 +45,16 @@ public final class ConvUtil {
 		String contains = stringMatcher.getContains();
 		String regex = stringMatcher.getSafeRegex().getRegex();
 		if (StringUtils.isNotBlank(exact)) {
-			return new StringMatcher(exact, MatcherType.EXACT, isIgnoreCase);
+			return new StringMatcher(exact, StringMatcherType.EXACT, isIgnoreCase);
 		}
 		if (StringUtils.isNotBlank(prefix)) {
-			return new StringMatcher(prefix, MatcherType.PREFIX, isIgnoreCase);
+			return new StringMatcher(prefix, StringMatcherType.PREFIX, isIgnoreCase);
 		}
 		if (StringUtils.isNotBlank(suffix)) {
-			return new StringMatcher(suffix, MatcherType.SUFFIX, isIgnoreCase);
+			return new StringMatcher(suffix, StringMatcherType.SUFFIX, isIgnoreCase);
 		}
 		if (StringUtils.isNotBlank(contains)) {
-			return new StringMatcher(contains, MatcherType.CONTAIN, isIgnoreCase);
+			return new StringMatcher(contains, StringMatcherType.CONTAIN, isIgnoreCase);
 		}
 		if (StringUtils.isNotBlank(regex)) {
 			return new StringMatcher(regex);

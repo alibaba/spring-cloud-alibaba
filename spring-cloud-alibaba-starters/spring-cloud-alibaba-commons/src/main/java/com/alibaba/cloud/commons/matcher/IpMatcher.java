@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public class IpMatcher {
+public class IpMatcher implements Matcher {
 
 	private static final Logger log = LoggerFactory.getLogger(IpMatcher.class);
 
@@ -41,15 +41,11 @@ public class IpMatcher {
 		this.ip = ip;
 	}
 
-	public int getPrefixLen() {
-		return prefixLen;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
-	public boolean match(String ip) {
+	public boolean match(Object object) {
+		if (!(object instanceof String)) {
+			return false;
+		}
+		String ip = (String) object;
 		String ruleIp = ip2BinaryString(this.ip);
 		if (StringUtils.isEmpty(ruleIp)) {
 			return false;
@@ -91,6 +87,22 @@ public class IpMatcher {
 			log.error("failed to parse ip {} to binary string", ip);
 		}
 		return "";
+	}
+
+	public int getPrefixLen() {
+		return prefixLen;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setPrefixLen(int prefixLen) {
+		this.prefixLen = prefixLen;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

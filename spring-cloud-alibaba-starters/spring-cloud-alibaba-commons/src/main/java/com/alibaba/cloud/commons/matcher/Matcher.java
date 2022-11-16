@@ -20,45 +20,6 @@ package com.alibaba.cloud.commons.matcher;
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public enum MatcherType {
-
-	/**
-	 * exact match.
-	 */
-	EXACT("exact"),
-	/**
-	 * prefix match.
-	 */
-	PREFIX("prefix"),
-	/**
-	 * suffix match.
-	 */
-	SUFFIX("suffix"),
-	/**
-	 * present match.
-	 */
-	PRESENT("present"),
-	/**
-	 * regex match.
-	 */
-	REGEX("regex"),
-	/**
-	 * contain match.
-	 */
-	CONTAIN("contain");
-
-	/**
-	 * type of matcher.
-	 */
-	public final String type;
-
-	MatcherType(String type) {
-		this.type = type;
-	}
-
-	@Override
-	public String toString() {
-		return this.type;
-	}
-
+public interface Matcher {
+	boolean match(Object obj);
 }

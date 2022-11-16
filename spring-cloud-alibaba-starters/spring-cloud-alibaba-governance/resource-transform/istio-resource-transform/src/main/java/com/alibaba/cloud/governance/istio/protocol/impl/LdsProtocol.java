@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.commons.matcher.PortMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.governance.auth.condition.AuthCondition;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
@@ -402,7 +403,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				int port = orRule.getDestinationPort();
 				if (port > MIN_PORT && port <= MAX_PORT) {
 					orChildren.addChildren(new AuthRule(
-							new AuthCondition(AuthCondition.ValidationType.PORTS, port)));
+							new AuthCondition(AuthCondition.ValidationType.PORTS, new PortMatcher(port))));
 				}
 				if (orRule.hasHeader()) {
 					switch (orRule.getHeader().getName()) {

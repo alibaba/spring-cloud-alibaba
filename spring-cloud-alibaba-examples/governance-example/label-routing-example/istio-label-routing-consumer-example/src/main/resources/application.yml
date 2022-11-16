@@ -14,7 +14,7 @@ spring:
         password: nacos
     governance:
       auth:
-        enabled: ${ISTIO_AUTH_ENABLE:true}
+        enabled: ${ISTIO_AUTH_ENABLE:false}
     istio:
       config:
         enabled: ${ISTIO_CONFIG_ENABLE:true}

@@ -54,8 +54,8 @@ public class IstioConsumerApplication {
 		@Autowired
 		private IstioConsumerApplication.FeignService feignService;
 
-		@GetMapping("/istio-router-test")
-		public String notFound() {
+		@GetMapping("/istio-label-routing")
+		public String labelRouting() {
 			return feignService.test();
 		}
 	}

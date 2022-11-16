@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.commons.matcher.MatcherType;
+import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
@@ -178,17 +178,17 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:
-			path.setCondition(MatcherType.PREFIX.toString());
+			path.setCondition(StringMatcherType.PREFIX.toString());
 			path.setValue(routeMatch.getPrefix());
 			break;
 
 		case PATH:
-			path.setCondition(MatcherType.EXACT.toString());
+			path.setCondition(StringMatcherType.EXACT.toString());
 			path.setValue(routeMatch.getPath());
 			break;
 
 		case SAFE_REGEX:
-			path.setCondition(MatcherType.REGEX.toString());
+			path.setCondition(StringMatcherType.REGEX.toString());
 			path.setValue(routeMatch.getSafeRegex().getRegex());
 			break;
 
