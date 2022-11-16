@@ -402,8 +402,8 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 			for (Permission orRule : orRules.getRulesList()) {
 				int port = orRule.getDestinationPort();
 				if (port > MIN_PORT && port <= MAX_PORT) {
-					orChildren.addChildren(new AuthRule(
-							new AuthCondition(AuthCondition.ValidationType.PORTS, new PortMatcher(port))));
+					orChildren.addChildren(new AuthRule(new AuthCondition(
+							AuthCondition.ValidationType.PORTS, new PortMatcher(port))));
 				}
 				if (orRule.hasHeader()) {
 					switch (orRule.getHeader().getName()) {

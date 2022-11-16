@@ -115,4 +115,5 @@ public class StringMatcher implements Matcher {
 	public void setRegex(String regex) {
 		this.regex = regex;
 	}
+
 }

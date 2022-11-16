@@ -160,8 +160,7 @@ public class AuthValidator {
 					}
 					return false;
 				case AUTH_PRESENTERS:
-					return matcher
-							.match(claims.getClaimValueAsString("azp"));
+					return matcher.match(claims.getClaimValueAsString("azp"));
 				}
 				return false;
 			// int
@@ -198,8 +197,7 @@ public class AuthValidator {
 					}
 				}
 				else {
-					return matcher
-							.match(claims.getStringClaimValue(key));
+					return matcher.match(claims.getStringClaimValue(key));
 				}
 				return false;
 			}

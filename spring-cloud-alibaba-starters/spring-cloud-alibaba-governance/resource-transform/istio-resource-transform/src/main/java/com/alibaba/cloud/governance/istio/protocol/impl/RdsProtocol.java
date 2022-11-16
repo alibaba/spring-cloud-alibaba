@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
+import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;

@@ -108,4 +108,5 @@ public class AuthRule {
 	public void setNot(boolean not) {
 		isNot = not;
 	}
+
 }

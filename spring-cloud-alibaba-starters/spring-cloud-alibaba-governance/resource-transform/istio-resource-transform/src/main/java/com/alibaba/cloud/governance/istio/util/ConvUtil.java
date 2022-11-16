@@ -18,8 +18,8 @@ package com.alibaba.cloud.governance.istio.util;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.IpMatcher;
-import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
+import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
 

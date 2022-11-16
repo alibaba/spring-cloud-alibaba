@@ -21,11 +21,13 @@ package com.alibaba.cloud.commons.matcher;
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 public class PortMatcher implements Matcher {
+
 	private Integer matcher;
 
 	public PortMatcher() {
 
 	}
+
 	public PortMatcher(Integer matcher) {
 		this.matcher = matcher;
 	}
@@ -41,4 +43,5 @@ public class PortMatcher implements Matcher {
 	public void setMatcher(Integer matcher) {
 		this.matcher = matcher;
 	}
+
 }

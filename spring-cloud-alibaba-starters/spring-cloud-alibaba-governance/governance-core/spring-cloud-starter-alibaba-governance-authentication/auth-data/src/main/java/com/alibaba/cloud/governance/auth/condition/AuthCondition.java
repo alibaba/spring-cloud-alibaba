@@ -76,4 +76,5 @@ public class AuthCondition {
 	public void setMatcher(Matcher matcher) {
 		this.matcher = matcher;
 	}
+
 }

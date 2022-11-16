@@ -89,7 +89,8 @@ public class XdsChannel implements AutoCloseable {
 		File saFile = new File(IstioConstants.KUBERNETES_SA_PATH);
 		if (saFile.canRead()) {
 			try {
-				this.istiodToken = FileUtils.readFileToString(saFile, StandardCharsets.UTF_8);
+				this.istiodToken = FileUtils.readFileToString(saFile,
+						StandardCharsets.UTF_8);
 				return;
 			}
 			catch (IOException e) {

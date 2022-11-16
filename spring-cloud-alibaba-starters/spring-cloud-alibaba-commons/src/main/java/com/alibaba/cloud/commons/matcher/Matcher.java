@@ -21,5 +21,7 @@ package com.alibaba.cloud.commons.matcher;
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 public interface Matcher {
+
 	boolean match(Object obj);
+
 }
