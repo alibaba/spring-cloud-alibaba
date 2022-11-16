@@ -44,7 +44,7 @@
     {
       "name": "spring.cloud.nacos.discovery.watch.enabled",
       "type": "java.lang.Boolean",
-      "defaultValue": "true",
+      "defaultValue": "false",
       "description": "enable nacos discovery watch or not ."
     },
     {
