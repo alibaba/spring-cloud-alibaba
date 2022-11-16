@@ -238,9 +238,9 @@ spec:
         subset: v1
 EOF
 ```
-这条VirtualService指定了一条最简单的标签路由规则，将请求头tag为gray，请求路径为/istio-label-routing的HTTP请求路由到v2版本，其余的流量都路由到v1版本
-### Demonstrate effect
 This VirtualService specifies the simplest label routing rule. HTTP requests with a gray header and /istio-label-routing path are routed to v2, and the rest of the traffic is routed to v1
+### Demonstrate effect
+We send an HTTP request without a request header to IstioConsumerApplication
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing'
 ```
