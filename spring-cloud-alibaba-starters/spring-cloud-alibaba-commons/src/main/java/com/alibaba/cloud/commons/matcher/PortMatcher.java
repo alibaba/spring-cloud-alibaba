@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2018 the original author or authors.
+ * Copyright 2013-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,28 @@ package com.alibaba.cloud.commons.matcher;
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public enum MatcherType {
+public class PortMatcher implements Matcher {
 
-	/**
-	 * Different matcher type, include exact match, prefix match and etc.
-	 */
-	EXACT, PREFIX, SUFFIX, PRESENT, REGEX, CONTAINS
+	private Integer matcher;
+
+	public PortMatcher() {
+
+	}
+
+	public PortMatcher(Integer matcher) {
+		this.matcher = matcher;
+	}
+
+	@Override
+	public boolean match(Object object) {
+		if (!(object instanceof Integer)) {
+			return false;
+		}
+		return matcher != null && matcher.equals(object);
+	}
+
+	public void setMatcher(Integer matcher) {
+		this.matcher = matcher;
+	}
 
 }

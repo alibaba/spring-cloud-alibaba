@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.governance.auth.condition;
 
+import com.alibaba.cloud.commons.matcher.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,18 +37,18 @@ public class AuthCondition {
 
 	private static final Logger log = LoggerFactory.getLogger(AuthCondition.class);
 
-	private final ValidationType type;
+	private ValidationType type;
 
 	private String key;
 
-	private final Object matcher;
+	private Matcher matcher;
 
-	public AuthCondition(ValidationType type, Object matcher) {
+	public AuthCondition(ValidationType type, Matcher matcher) {
 		this.type = type;
 		this.matcher = matcher;
 	}
 
-	public AuthCondition(ValidationType type, String key, Object matcher) {
+	public AuthCondition(ValidationType type, String key, Matcher matcher) {
 		this(type, matcher);
 		this.key = key;
 	}
@@ -56,12 +57,24 @@ public class AuthCondition {
 		return type;
 	}
 
+	public void setType(ValidationType type) {
+		this.type = type;
+	}
+
 	public String getKey() {
 		return key;
 	}
 
-	public Object getMatcher() {
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public Matcher getMatcher() {
 		return matcher;
+	}
+
+	public void setMatcher(Matcher matcher) {
+		this.matcher = matcher;
 	}
 
 }

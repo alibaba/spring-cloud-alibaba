@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.commons.matcher.MatcherType;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
+import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
@@ -98,51 +98,26 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 				String targetService = "";
 				String[] serviceAndPort = virtualHost.getName().split(":");
 				if (serviceAndPort.length > 0) {
-					targetService = serviceAndPort[0];
+					targetService = serviceAndPort[0].split("\\.")[0];
 				}
 				if (ALLOW_ANY.equals(targetService)) {
 					continue;
 				}
 				untiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
-				final int n = routes.size();
-				List<MatchService> matchServices = new ArrayList<>();
-				LabelRouteRule labelRouteData = new LabelRouteRule();
-				for (int i = 0; i < n; ++i) {
-					Route route = routes.get(i);
-					String cluster = route.getRoute().getCluster();
-					String version = "";
-					try {
-						String[] info = cluster.split("\\|");
-						version = info[2];
-					}
-					catch (Exception e) {
-						log.error("invalid cluster info for route {}", route.getName());
-					}
-					// last route is default route
-					if (i == n - 1) {
-						labelRouteData.setDefaultRouteVersion(version);
-					}
-					MatchService matchService = new MatchService();
-					matchService.setVersion(version);
-					matchService.setRuleList(match2RouteRules(route.getMatch()));
-					matchServices.add(matchService);
-					untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-				}
-				labelRouteData.setMatchRouteList(matchServices);
-				untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+				LabelRouteRule labelRouteRule = getLabelRouteData(routes);
+				untiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
 				untiedRouteDataStructures.put(untiedRouteDataStructure.getTargetService(),
 						untiedRouteDataStructure);
 			}
 		}
-
-		controlSurfaceConnection.pushRouteData(
-				new ArrayList<>(untiedRouteDataStructures.values()));
+		controlPlaneConnection
+				.pushRouteData(new ArrayList<>(untiedRouteDataStructures.values()));
 	}
 
-	private LabelRouteData getLabelRouteData(List<Route> routes) {
+	private LabelRouteRule getLabelRouteData(List<Route> routes) {
 		List<MatchService> matchServices = new ArrayList<>();
-		LabelRouteData labelRouteData = new LabelRouteData();
+		LabelRouteRule labelRouteRule = new LabelRouteRule();
 		for (Route route : routes) {
 			String cluster = route.getRoute().getCluster();
 			if (StringUtils.isNotEmpty(cluster)) {
@@ -157,8 +132,12 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 				matchServices.add(matchService);
 			}
 		}
-		labelRouteData.setMatchRouteList(matchServices);
-		return labelRouteData;
+		labelRouteRule.setMatchRouteList(matchServices);
+		if (!matchServices.isEmpty()) {
+			labelRouteRule.setDefaultRouteVersion(
+					matchServices.get(matchServices.size() - 1).getVersion());
+		}
+		return labelRouteRule;
 	}
 
 	private MatchService getMatchService(Route route, String cluster, int weight) {
@@ -199,17 +178,17 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:
-			path.setCondition(MatcherType.PREFIX.toString());
+			path.setCondition(StringMatcherType.PREFIX.toString());
 			path.setValue(routeMatch.getPrefix());
 			break;
 
 		case PATH:
-			path.setCondition(MatcherType.EXACT.toString());
+			path.setCondition(StringMatcherType.EXACT.toString());
 			path.setValue(routeMatch.getPath());
 			break;
 
 		case SAFE_REGEX:
-			path.setCondition(MatcherType.REGEX.toString());
+			path.setCondition(StringMatcherType.REGEX.toString());
 			path.setValue(routeMatch.getSafeRegex().getRegex());
 			break;
 

@@ -60,7 +60,7 @@ public class XdsChannel implements AutoCloseable {
 					istiodToken = xdsConfigProperties.getIstiodToken();
 				}
 				else {
-					istiodToken = this.fetchIstiodToken();
+					this.refreshIstiodToken();
 				}
 				SslContext sslcontext = GrpcSslContexts.forClient()
 						// if server's cert doesn't chain to a standard root
@@ -85,11 +85,13 @@ public class XdsChannel implements AutoCloseable {
 		}
 	}
 
-	private String fetchIstiodToken() {
+	public void refreshIstiodToken() {
 		File saFile = new File(IstioConstants.KUBERNETES_SA_PATH);
 		if (saFile.canRead()) {
 			try {
-				return FileUtils.readFileToString(saFile, StandardCharsets.UTF_8);
+				this.istiodToken = FileUtils.readFileToString(saFile,
+						StandardCharsets.UTF_8);
+				return;
 			}
 			catch (IOException e) {
 				log.error("Unable to read token file", e);
@@ -100,7 +102,6 @@ public class XdsChannel implements AutoCloseable {
 					"Unable to found kubernetes service account token file. "
 							+ "Please check if work in Kubernetes and mount service account token file correctly.");
 		}
-		return null;
 	}
 
 	@Override

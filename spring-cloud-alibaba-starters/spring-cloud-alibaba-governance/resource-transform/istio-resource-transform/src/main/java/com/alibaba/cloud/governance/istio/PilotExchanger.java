@@ -38,13 +38,13 @@ public class PilotExchanger {
 
 	private static final Logger log = LoggerFactory.getLogger(PilotExchanger.class);
 
-	private LdsProtocol ldsProtocol;
+	private final LdsProtocol ldsProtocol;
 
-	private CdsProtocol cdsProtocol;
+	private final CdsProtocol cdsProtocol;
 
-	private EdsProtocol edsProtocol;
+	private final EdsProtocol edsProtocol;
 
-	private RdsProtocol rdsProtocol;
+	private final RdsProtocol rdsProtocol;
 
 	private void observeListeners(List<Listener> listeners) {
 		if (listeners == null) {

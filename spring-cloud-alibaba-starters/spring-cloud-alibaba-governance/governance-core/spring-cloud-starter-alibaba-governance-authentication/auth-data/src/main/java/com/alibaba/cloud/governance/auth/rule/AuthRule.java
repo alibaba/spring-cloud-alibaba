@@ -32,11 +32,11 @@ public class AuthRule {
 		/**
 		 * In what way are subrules connected.
 		 */
-		AND, OR
+		UNKNOWN, AND, OR
 
 	}
 
-	private RuleOperation op;
+	private RuleOperation op = RuleOperation.UNKNOWN;
 
 	private List<AuthRule> children = new ArrayList<>();
 
@@ -66,22 +66,6 @@ public class AuthRule {
 		children.add(rule);
 	}
 
-	public boolean isLeaf() {
-		return condition != null;
-	}
-
-	public List<AuthRule> getChildren() {
-		return children;
-	}
-
-	public AuthCondition getCondition() {
-		return condition;
-	}
-
-	public RuleOperation getOp() {
-		return op;
-	}
-
 	public boolean isEmpty() {
 		if (children.isEmpty()) {
 			return condition == null;
@@ -89,8 +73,40 @@ public class AuthRule {
 		return false;
 	}
 
+	public boolean isLeaf() {
+		return condition != null;
+	}
+
+	public RuleOperation getOp() {
+		return op;
+	}
+
+	public void setOp(RuleOperation op) {
+		this.op = op;
+	}
+
+	public List<AuthRule> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<AuthRule> children) {
+		this.children = children;
+	}
+
+	public AuthCondition getCondition() {
+		return condition;
+	}
+
+	public void setCondition(AuthCondition condition) {
+		this.condition = condition;
+	}
+
 	public boolean isNot() {
 		return isNot;
+	}
+
+	public void setNot(boolean not) {
+		isNot = not;
 	}
 
 }

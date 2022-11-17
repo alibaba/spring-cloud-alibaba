@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.commons.matcher.IpMatcher;
-import com.alibaba.cloud.commons.matcher.StringMatcher;
+import com.alibaba.cloud.commons.matcher.Matcher;
 import com.alibaba.cloud.governance.auth.condition.AuthCondition;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.auth.rule.AuthRule;
@@ -42,7 +41,7 @@ public class AuthValidator {
 
 	private static final Logger log = LoggerFactory.getLogger(AuthValidator.class);
 
-	private AuthRepository authRepository;
+	private final AuthRepository authRepository;
 
 	public AuthValidator(AuthRepository authRepository) {
 		this.authRepository = authRepository;
@@ -119,25 +118,25 @@ public class AuthValidator {
 	private boolean validateLeafRule(AuthRule rule, UnifiedHttpRequest request) {
 		try {
 			AuthCondition condition = rule.getCondition();
-			Object matcher = condition.getMatcher();
+			Matcher matcher = condition.getMatcher();
 			String key = condition.getKey();
 			if (matcher == null) {
 				return false;
 			}
 			switch (condition.getType()) {
 			case SOURCE_IP:
-				return ((IpMatcher) matcher).match(request.getSourceIp());
+				return matcher.match(request.getSourceIp());
 			case REMOTE_IP:
-				return ((IpMatcher) matcher).match(request.getRemoteIp());
+				return matcher.match(request.getRemoteIp());
 			case DEST_IP:
-				return ((IpMatcher) matcher).match(request.getDestIp());
+				return matcher.match(request.getDestIp());
 			// string
 			case HOSTS:
-				return ((StringMatcher) matcher).match(request.getHost());
+				return matcher.match(request.getHost());
 			case METHODS:
-				return ((StringMatcher) matcher).match(request.getMethod());
+				return matcher.match(request.getMethod());
 			case PATHS:
-				return ((StringMatcher) matcher).match(request.getPath());
+				return matcher.match(request.getPath());
 			case REQUEST_PRINCIPALS:
 			case AUTH_AUDIENCES:
 			case AUTH_PRESENTERS:
@@ -151,23 +150,22 @@ public class AuthValidator {
 				case REQUEST_PRINCIPALS:
 					String issuer = claims.getIssuer();
 					String subject = claims.getSubject();
-					return ((StringMatcher) matcher).match(issuer + "/" + subject);
+					return matcher.match(issuer + "/" + subject);
 				case AUTH_AUDIENCES:
 					List<String> audiences = claims.getAudience();
 					for (String audience : audiences) {
-						if (((StringMatcher) matcher).match(audience)) {
+						if (matcher.match(audience)) {
 							return true;
 						}
 					}
 					return false;
 				case AUTH_PRESENTERS:
-					return ((StringMatcher) matcher)
-							.match(claims.getClaimValueAsString("azp"));
+					return matcher.match(claims.getClaimValueAsString("azp"));
 				}
 				return false;
 			// int
 			case PORTS:
-				return matcher.equals(request.getPort());
+				return matcher.match(request.getPort());
 			// header
 			case HEADER:
 				HttpHeaders headers = request.getHeaders();
@@ -179,7 +177,7 @@ public class AuthValidator {
 					return false;
 				}
 				for (String header : headerList) {
-					if (((StringMatcher) matcher).match(header)) {
+					if (matcher.match(header)) {
 						return true;
 					}
 				}
@@ -193,14 +191,13 @@ public class AuthValidator {
 
 				if (claimValue instanceof List) {
 					for (String claim : claims.getStringListClaimValue(key)) {
-						if (((StringMatcher) matcher).match(claim)) {
+						if (matcher.match(claim)) {
 							return true;
 						}
 					}
 				}
 				else {
-					return ((StringMatcher) matcher)
-							.match(claims.getStringClaimValue(key));
+					return matcher.match(claims.getStringClaimValue(key));
 				}
 				return false;
 			}
@@ -213,23 +210,23 @@ public class AuthValidator {
 
 	public final static class UnifiedHttpRequest {
 
-		private String sourceIp;
+		private final String sourceIp;
 
-		private String destIp;
+		private final String destIp;
 
-		private String remoteIp;
+		private final String remoteIp;
 
-		private String host;
+		private final String host;
 
-		private int port;
+		private final int port;
 
-		private String method;
+		private final String method;
 
-		private String path;
+		private final String path;
 
-		private HttpHeaders headers;
+		private final HttpHeaders headers;
 
-		private MultiValueMap<String, String> params;
+		private final MultiValueMap<String, String> params;
 
 		private JwtClaims jwtClaims;
 
