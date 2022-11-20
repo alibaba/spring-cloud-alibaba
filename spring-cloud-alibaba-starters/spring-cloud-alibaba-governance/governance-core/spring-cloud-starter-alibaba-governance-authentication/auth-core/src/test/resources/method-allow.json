@@ -1,0 +1,68 @@
+{
+  "allowAuthRules": {
+    "ns[default]-policy[method-allow]-rule[0]": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "condition": {
+                        "matcher": {
+                          "ignoreCase": true,
+                          "matcher": "GET",
+                          "type": "EXACT"
+                        },
+                        "type": "METHODS"
+                      },
+                      "empty": false,
+                      "leaf": true,
+                      "not": false,
+                      "op": "UNKNOWN"
+                    },
+                    {
+                      "children": [],
+                      "condition": {
+                        "matcher": {
+                          "ignoreCase": true,
+                          "matcher": "HEAD",
+                          "type": "EXACT"
+                        },
+                        "type": "METHODS"
+                      },
+                      "empty": false,
+                      "leaf": true,
+                      "not": false,
+                      "op": "UNKNOWN"
+                    }
+                  ],
+                  "empty": false,
+                  "leaf": false,
+                  "not": false,
+                  "op": "OR"
+                }
+              ],
+              "empty": false,
+              "leaf": false,
+              "not": false,
+              "op": "AND"
+            }
+          ],
+          "empty": false,
+          "leaf": false,
+          "not": false,
+          "op": "OR"
+        }
+      ],
+      "empty": false,
+      "leaf": false,
+      "not": false,
+      "op": "AND"
+    }
+  },
+  "denyAuthRules": {},
+  "jwtRules": {}
+}

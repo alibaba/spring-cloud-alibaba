@@ -52,7 +52,10 @@ public class XdsChannel implements AutoCloseable {
 
 	private String istiodToken;
 
+	private final XdsConfigProperties xdsConfigProperties;
+
 	public XdsChannel(XdsConfigProperties xdsConfigProperties) {
+		this.xdsConfigProperties = xdsConfigProperties;
 		try {
 			if (xdsConfigProperties.getPort() == ISTIOD_SECURE_PORT) {
 				// fetch token first
@@ -86,6 +89,9 @@ public class XdsChannel implements AutoCloseable {
 	}
 
 	public void refreshIstiodToken() {
+		if (xdsConfigProperties.getPort() != ISTIOD_SECURE_PORT) {
+			return;
+		}
 		File saFile = new File(IstioConstants.KUBERNETES_SA_PATH);
 		if (saFile.canRead()) {
 			try {
@@ -113,6 +119,9 @@ public class XdsChannel implements AutoCloseable {
 
 	public StreamObserver<DiscoveryRequest> createDiscoveryRequest(
 			StreamObserver<DiscoveryResponse> observer) {
+		if (channel == null) {
+			return null;
+		}
 		AggregatedDiscoveryServiceGrpc.AggregatedDiscoveryServiceStub stub = AggregatedDiscoveryServiceGrpc
 				.newStub(channel);
 		Metadata header = new Metadata();
