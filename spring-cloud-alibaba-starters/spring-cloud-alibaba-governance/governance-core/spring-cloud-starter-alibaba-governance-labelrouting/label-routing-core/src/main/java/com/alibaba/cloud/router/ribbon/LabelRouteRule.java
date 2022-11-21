@@ -34,6 +34,7 @@ import com.alibaba.cloud.router.RouterProperties;
 import com.alibaba.cloud.router.data.crd.MatchService;
 import com.alibaba.cloud.router.data.crd.rule.RouteRule;
 import com.alibaba.cloud.router.data.repository.RouteDataRepository;
+import com.alibaba.cloud.router.publish.TargetServiceChangedPublisher;
 import com.alibaba.cloud.router.util.ConditionMatchUtil;
 import com.alibaba.cloud.router.util.LoadBalanceUtil;
 import com.alibaba.cloud.router.util.RequestContext;
@@ -113,11 +114,15 @@ public class LabelRouteRule extends PredicateBasedRule {
 	@Autowired
 	private RouterProperties routerProperties;
 
+	@Autowired
+	private TargetServiceChangedPublisher targetServiceChangedPublisher;
+
 	@Override
 	public Server choose(Object key) {
 		try {
 			final DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
 			String targetServiceName = loadBalancer.getName();
+			targetServiceChangedPublisher.addTargetService(targetServiceName);
 
 			// If routeData isn't present, use normal load balance rule.
 			final HashMap<String, List<MatchService>> routeData = routeDataRepository
