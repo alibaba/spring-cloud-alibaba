@@ -57,12 +57,12 @@ spring:
 === 使用标签路由
 在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。标签路由模块可以实现对Spring Cloud应用根据请求头，请求参数等标签来路由到不同的服务
 
-如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `label-routing-core` 的starter
+如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-labelrouting` 的starter
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>label-routing-core</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
 </dependency>
 ----
 
@@ -83,12 +83,12 @@ image::pic/image-2022-11-22-14-40-234.png[]
 
 在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。服务鉴权模块给Spring Cloud应用提供多种鉴权方式，如IP黑白名单，JWT鉴权等
 
-如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `auth-core` 的starter
+如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-authentication` 的starter
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>auth-core</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 </dependency>
 ----
 

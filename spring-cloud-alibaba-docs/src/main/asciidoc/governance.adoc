@@ -58,12 +58,12 @@ Here's an explanation of each field:
 === Use Label Routing
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. Label routing module can route the Spring Cloud application according to the request header, request parameters and other tags to route to different services
 
-If you use Spring Cloud Alibaba Governance Label Routing in your project, You need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `label-routing-core`
+If you use Spring Cloud Alibaba Governance Label Routing in your project, You need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-labelrouting`
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>label-routing-core</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
 </dependency>
 ----
 
@@ -84,13 +84,13 @@ image::pic/image-2022-11-22-14-40-234.png[]
 
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. The Authentication module provides various authentication modes for Spring Cloud applications, such as IP blacklist and whitelist and JWT authentication
 
-If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of 'com.alibaba.cloud' and an artifact ID of 'auth-core'
+If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of 'com.alibaba.cloud' and an artifact ID of 'spring-cloud-starter-alibaba-governance-authentication'
 
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>auth-core</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 </dependency>
 ----
 

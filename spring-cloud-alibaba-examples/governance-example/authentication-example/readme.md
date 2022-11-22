@@ -22,7 +22,7 @@ Before launching the example for demonstration, let's look at how a Spring Cloud
 ```xml
 <dependency>
 	<groupId>com.alibaba.cloud</groupId>
-	<artifactId>auth-core</artifactId>
+	<artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 </dependency>
 
 <dependency>
