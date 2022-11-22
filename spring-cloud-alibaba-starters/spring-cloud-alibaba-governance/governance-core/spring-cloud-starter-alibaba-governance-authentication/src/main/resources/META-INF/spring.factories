@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.alibaba.cloud.governance.auth.XdsWebAutoConfiguration,\
+com.alibaba.cloud.governance.auth.XdsWebFluxAutoConfiguration,\
+com.alibaba.cloud.governance.auth.AuthValidatorAutoConfiguration,\
+com.alibaba.cloud.governance.auth.AuthenticationAutoConfiguration

@@ -25,13 +25,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.alibaba.cloud.commons.governance.auth.condition.AuthCondition;
+import com.alibaba.cloud.commons.governance.auth.rule.AuthRule;
+import com.alibaba.cloud.commons.governance.auth.rule.AuthRules;
+import com.alibaba.cloud.commons.governance.auth.rule.JwtRule;
+import com.alibaba.cloud.commons.governance.event.AuthDataChangedEvent;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.PortMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
-import com.alibaba.cloud.governance.auth.condition.AuthCondition;
-import com.alibaba.cloud.governance.auth.repository.AuthRepository;
-import com.alibaba.cloud.governance.auth.rule.AuthRule;
-import com.alibaba.cloud.governance.auth.rule.JwtRule;
 import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
@@ -92,13 +93,10 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	private static final int MAX_PORT = 65535;
 
-	private final AuthRepository authRepository;
-
 	public LdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool,
-			XdsConfigProperties xdsConfigProperties, AuthRepository authRepository) {
+			XdsConfigProperties xdsConfigProperties) {
 		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
-		this.authRepository = authRepository;
 	}
 
 	@Override
@@ -263,9 +261,8 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		}
 		log.info("auth rules resolve finish, RBAC rules {}, Jwt rules {}",
 				allowAuthRules.size() + denyAuthRules.size(), jwtRules.size());
-		authRepository.setAllowAuthRule(allowAuthRules);
-		authRepository.setDenyAuthRules(denyAuthRules);
-		authRepository.setJwtRule(jwtRules);
+		applicationContext.publishEvent(new AuthDataChangedEvent(
+				new AuthRules(allowAuthRules, denyAuthRules, jwtRules)));
 	}
 
 	private AuthRule resolvePrincipal(Principal principal) {

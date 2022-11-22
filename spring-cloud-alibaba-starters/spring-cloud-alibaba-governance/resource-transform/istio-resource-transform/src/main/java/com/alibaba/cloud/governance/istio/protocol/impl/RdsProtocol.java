@@ -21,6 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.LabelRouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.MatchService;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.HeaderRule;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.UrlRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
@@ -30,13 +37,6 @@ import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
-import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
-import com.alibaba.cloud.router.data.crd.LabelRouteRule;
-import com.alibaba.cloud.router.data.crd.MatchService;
-import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
-import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
-import com.alibaba.cloud.router.data.crd.rule.RouteRule;
-import com.alibaba.cloud.router.data.crd.rule.UrlRule;
 import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
 import io.envoyproxy.envoy.config.route.v3.QueryParameterMatcher;
 import io.envoyproxy.envoy.config.route.v3.Route;
@@ -63,14 +63,10 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 
 	private static final String PATH = "path";
 
-	private ControlPlaneConnection controlPlaneConnection;
-
 	public RdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool,
-			XdsConfigProperties xdsConfigProperties,
-			ControlPlaneConnection controlPlaneConnection) {
+			XdsConfigProperties xdsConfigProperties) {
 		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
-		this.controlPlaneConnection = controlPlaneConnection;
 	}
 
 	@Override
@@ -113,8 +109,8 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 						untiedRouteDataStructure);
 			}
 		}
-		controlPlaneConnection
-				.pushRouteData(new ArrayList<>(untiedRouteDataStructures.values()));
+		applicationContext.publishEvent(
+				new LabelRoutingDataChangedEvent(untiedRouteDataStructures.values()));
 	}
 
 	private LabelRouteRule getLabelRouteData(List<Route> routes) {

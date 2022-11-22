@@ -154,26 +154,6 @@
             </dependency>
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
-                <artifactId>auth-core</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>auth-data</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>label-routing-core</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>label-routing-data</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>istio-resource-transform</artifactId>
                 <version>${revision}</version>
             </dependency>

@@ -21,12 +21,13 @@ import java.io.FileInputStream;
 import java.util.List;
 
 import com.alibaba.cloud.commons.io.FileUtils;
+import com.alibaba.cloud.governance.auth.AuthenticationAutoConfiguration;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
-import com.alibaba.cloud.router.data.ControlPlaneAutoConfiguration;
-import com.alibaba.cloud.router.data.repository.FilterService;
-import com.alibaba.cloud.router.data.repository.RouteDataRepository;
+import com.alibaba.cloud.router.LabelRoutingAutoConfiguration;
+import com.alibaba.cloud.router.repository.FilterService;
+import com.alibaba.cloud.router.repository.RouteDataRepository;
 import com.alibaba.fastjson.JSONObject;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
@@ -131,7 +132,7 @@ public class XdsRulesTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ XdsAutoConfiguration.class,
-			ControlPlaneAutoConfiguration.class })
+			AuthenticationAutoConfiguration.class, LabelRoutingAutoConfiguration.class })
 	public static class TestConfig {
 
 		@Bean(name = TARGET_SERVICE + FilterService.FEIGN_CLIENT_BEAN_SPECIFICATION)
