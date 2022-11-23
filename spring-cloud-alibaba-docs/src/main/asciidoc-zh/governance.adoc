@@ -1,12 +1,12 @@
 == Spring Cloud Alibaba Governance
 
-image::pic/image-2022-11-22-11-15-25-187.png[]
+image::pic/governance-module.png[]
 
 Spring Cloud Alibaba Governance模块是Spring Cloud Alibaba推出的微服务治理子模块，提供了多种类型的微服务治理能力，包括标签路由，服务鉴权等。并且对接了多种控制面，比如Istio，OpenSergo，让用户无需改造Spring Cloud应用，也能实时感知到Istio等治理控制面下发的治理规则，并将此规则应用到Spring Cloud应用上，从而完成对Spring Cloud应用的治理。
 
 == 如何使用
 === 配置转换
-image::pic/image-2022-11-22-11-25-298.png[]
+image::pic/resource-transform.png[]
 
 Spring Cloud Alibaba Governance的resource-transform模块会将不同控制面下发的配置进行统一的转换，将来自Istio，OpenSergo等控制面下发的配置统一转换为Spring Cloud Alibaba统一抽象出的数据结构以供后续使用
 
@@ -58,6 +58,19 @@ spring:
 在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。标签路由模块可以实现对Spring Cloud应用根据请求头，请求参数等标签来路由到不同的服务
 
 如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-labelrouting` 的starter
+=== 运行应用
+需要将应用运行在K8s环境中，并给运行的应用将K8s的一些元信息注入以下环境变量中:
+
+|===
+|环境变量名|K8s pod metadata name
+|POD_NAME|metadata.name
+|NAMESPACE_NAME|metadata.namespace
+|===
+
+=== 使用标签路由
+在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。标签路由模块可以实现对Spring Cloud应用根据请求头，请求参数等标签来路由到不同的服务
+
+如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-labelrouting` 的starter
 [source,xml,indent=0]
 ----
 <dependency>
@@ -79,7 +92,7 @@ spring:
 * spring-cloud-alibaba-examples/governance-example/label-routing-example/istio-label-routing-consumer-example
 
 === 使用服务鉴权
-image::pic/image-2022-11-22-14-40-234.png[]
+image::pic/auth-process.png[]
 
 在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。服务鉴权模块给Spring Cloud应用提供多种鉴权方式，如IP黑白名单，JWT鉴权等
 
