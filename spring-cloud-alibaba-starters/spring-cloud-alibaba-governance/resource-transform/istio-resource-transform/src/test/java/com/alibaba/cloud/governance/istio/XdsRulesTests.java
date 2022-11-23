@@ -57,9 +57,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(classes = XdsRulesTests.TestConfig.class,
 		properties = { "spring.cloud.istio.config.port=15010",
 				"spring.cloud.istio.config.enabled=true",
-				"spring.cloud.istio.config.log-xds=false"
-
-		}, webEnvironment = NONE)
+				"spring.cloud.istio.config.log-xds=false",
+				"spring.cloud.nacos.discovery.watch.enabled=false" },
+		webEnvironment = NONE)
 @EnableFeignClients
 public class XdsRulesTests {
 
