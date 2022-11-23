@@ -48,6 +48,8 @@ public class XdsConfigProperties {
 	 */
 	private String istiodToken;
 
+	private Boolean logXds;
+
 	@PostConstruct
 	public void init() {
 		if (this.port <= 0 || this.port > 65535) {
@@ -61,6 +63,9 @@ public class XdsConfigProperties {
 		}
 		if (pollingTime <= 0) {
 			pollingTime = IstioConstants.DEFAULT_POLLING_TIME;
+		}
+		if (logXds == null) {
+			logXds = true;
 		}
 	}
 
@@ -102,6 +107,14 @@ public class XdsConfigProperties {
 
 	public void setIstiodToken(String istiodToken) {
 		this.istiodToken = istiodToken;
+	}
+
+	public boolean isLogXds() {
+		return Boolean.TRUE.equals(logXds);
+	}
+
+	public void setLogXds(boolean logXds) {
+		this.logXds = logXds;
 	}
 
 }

@@ -25,6 +25,7 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
@@ -65,14 +66,15 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 	private ControlPlaneConnection controlPlaneConnection;
 
 	public RdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime,
+			XdsScheduledThreadPool xdsScheduledThreadPool,
+			XdsConfigProperties xdsConfigProperties,
 			ControlPlaneConnection controlPlaneConnection) {
-		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
+		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 		this.controlPlaneConnection = controlPlaneConnection;
 	}
 
 	@Override
-	protected List<RouteConfiguration> decodeXdsResponse(DiscoveryResponse response) {
+	public List<RouteConfiguration> decodeXdsResponse(DiscoveryResponse response) {
 		List<RouteConfiguration> routes = new ArrayList<>();
 		for (com.google.protobuf.Any res : response.getResourcesList()) {
 			try {

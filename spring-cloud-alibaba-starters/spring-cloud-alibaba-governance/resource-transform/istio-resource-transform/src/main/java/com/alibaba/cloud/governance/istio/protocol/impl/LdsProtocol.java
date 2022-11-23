@@ -33,6 +33,7 @@ import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.governance.auth.rule.JwtRule;
 import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
@@ -91,12 +92,12 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	private static final int MAX_PORT = 65535;
 
-	private AuthRepository authRepository;
+	private final AuthRepository authRepository;
 
 	public LdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime,
-			AuthRepository authRepository) {
-		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
+			XdsScheduledThreadPool xdsScheduledThreadPool,
+			XdsConfigProperties xdsConfigProperties, AuthRepository authRepository) {
+		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 		this.authRepository = authRepository;
 	}
 
@@ -107,7 +108,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
 	@Override
 	public List<Listener> decodeXdsResponse(DiscoveryResponse response) {
-		List<Listener> listeners = new ArrayList<Listener>();
+		List<Listener> listeners = new ArrayList<>();
 		for (com.google.protobuf.Any res : response.getResourcesList()) {
 			try {
 				Listener listener = res.unpack(Listener.class);

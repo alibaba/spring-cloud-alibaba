@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
@@ -35,8 +36,9 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 
 	public CdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime) {
-		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
+			XdsScheduledThreadPool xdsScheduledThreadPool,
+			XdsConfigProperties xdsConfigProperties) {
+		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 	@Override

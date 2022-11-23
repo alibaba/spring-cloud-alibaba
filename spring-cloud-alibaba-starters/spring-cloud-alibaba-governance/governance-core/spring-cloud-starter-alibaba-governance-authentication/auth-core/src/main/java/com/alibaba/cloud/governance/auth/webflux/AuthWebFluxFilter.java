@@ -38,7 +38,7 @@ import org.springframework.web.server.WebFilterChain;
  */
 public class AuthWebFluxFilter implements WebFilter {
 
-	private AuthValidator authValidator;
+	private final AuthValidator authValidator;
 
 	public AuthWebFluxFilter(AuthValidator authValidator) {
 		this.authValidator = authValidator;

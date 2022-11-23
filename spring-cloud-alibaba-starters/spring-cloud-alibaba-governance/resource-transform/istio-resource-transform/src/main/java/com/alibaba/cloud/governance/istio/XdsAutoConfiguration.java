@@ -66,30 +66,28 @@ public class XdsAutoConfiguration {
 	public LdsProtocol ldsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool,
 			AuthRepository authRepository) {
-		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime(), authRepository);
+		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
+				authRepository);
 	}
 
 	@Bean
 	public CdsProtocol cdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new CdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime());
+		return new CdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 	@Bean
 	EdsProtocol edsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new EdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime());
+		return new EdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 	@Bean
 	RdsProtocol rdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool,
 			ControlPlaneConnection controlPlaneConnection) {
-		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime(), controlPlaneConnection);
+		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
+				controlPlaneConnection);
 	}
 
 }
