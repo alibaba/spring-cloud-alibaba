@@ -25,11 +25,11 @@ To include Seata in your project, use the starter with group ID `com.alibaba.clo
     base:
         config:
             mdb:
-                hostname: your mysql server ip address
-                dbname: your database name for test
-                port: your mysql server listening port
-                username: your mysql server username
-                password: your mysql server password
+                hostname: 127.0.0.1 #your mysql server ip address
+                dbname: seata #your database name for test
+                port: 3306 #your mysql server listening port
+                username: root #your mysql server username
+                password: root #your mysql server password
 
 3. Create the database tables, you can refer to  `all.sql` under `spring-cloud-alibaba-examples/seata-example` for a quick operation.
     - According to the selected transaction mode, create a https://github.com/seata/seata/tree/develop/script/client[transaction log table]. For example, the default is AT mode, then enter at/db and select the corresponding database script executes
