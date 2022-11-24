@@ -18,7 +18,7 @@ To include Seata in your project, use the starter with group ID `com.alibaba.clo
 </dependency>
 ----
 
-=== Running  https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/seata-example[spring-cloud-alibaba-examples/seata-example] Before, you need to complete the following steps:
+=== The project provides relevant https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/seata-example[Example], before running it, you need to complete the following steps:
 1. Ensure that `nacos-server` is running locally on the `8848` port.
 2. Configuration database, will application in the resources directory of the `account-server`, `order-service`, `storage-service` three applications. The following configuration in the yml file is modified to the actual configuration in your running environment.
 
@@ -83,4 +83,4 @@ If the distributed transaction is valid, then the following equation should be t
 - Support for automatic delivery of Seata context when service callers invoke through RestTemplate.
 - Supports automatic delivery of the Seata context when a service caller invokes through a FeignClient.
 - Supports scenarios where both SeataClient and Hystrix are used.
-- Supports scenarios used by both SeataClient and entinel.
+- Supports scenarios used by both SeataClient and Sentinel.
