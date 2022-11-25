@@ -17,7 +17,7 @@ Seata是一个分布式事务框架, 用于保证在微服务架构下每个服�
 </dependency>
 ----
 
-项目提供了相关实例 https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/seata-example[Example]，在运行之前，您需要完成以下步骤：
+项目提供了相关实例 https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/seata-example[Example]，在运行之前，您需要完成以下步骤：
 
 1. 保证本地已经运行 `nacos-server` 在 `8848` 端口。
 2. 配置数据库，将 `account-server`、`order-service`、`storage-service` 这三个应用中的 resources 目录下的 `application.yml` 文件中的如下配置修改成你运行环境中的实际配置。
