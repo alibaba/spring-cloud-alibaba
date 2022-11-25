@@ -18,7 +18,8 @@ To include Seata in your project, use the starter with group ID `com.alibaba.clo
 </dependency>
 ----
 
-=== The project provides relevant https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/seata-example[Example], before running it, you need to complete the following steps:
+The project provides relevant https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/seata-example[Example], before running it, you need to complete the following steps:
+
 1. Ensure that `nacos-server` is running locally on the `8848` port.
 2. Configuration database, will application in the resources directory of the `account-server`, `order-service`, `storage-service` three applications. The following configuration in the yml file is modified to the actual configuration in your running environment.
 
@@ -62,11 +63,11 @@ To include Seata in your project, use the starter with group ID `com.alibaba.clo
 
 
 === How do I verify the success of a distributed transaction?
-### Whether Xid information was successfully transmitted
+==== Whether Xid information was successfully transmitted
 
 In the Controller of the three services `account-server`, `order-service` and `storage-service`, the first logic executed is to output the Xid information in the RootContext. If you see that the correct Xid information is output, it changes every time and the Xid of all services in the same call is consistent. This indicates that the transfer and restore of Seata's Xid are normal.
 
-### Consistency of data in database
+==== Consistency of data in database
 
 In this example, we simulate a scenario where a user purchases goods, StorageService is responsible for deducting the inventory quantity, OrderService is responsible for saving the order, and AccountService is responsible for deducting the user account balance.
 
@@ -77,7 +78,7 @@ If the distributed transaction is valid, then the following equation should be t
 - User Original Amount (1000) = User Existing Amount + Goods Unit Price (2) * Order Quantity * Goods Quantity per Order (2)
 - Initial Quantity of Goods (100) = Existing Quantity of Goods + Order Quantity * Quantity of Goods per Order (2)
 
-### Support points for Spring Cloud
+=== Support points for Spring Cloud
 
 - Service providers that provide services through Spring MVC can automatically restore the Seata context when they receive HTTP requests with Seata information in the header.
 - Support for automatic delivery of Seata context when service callers invoke through RestTemplate.
