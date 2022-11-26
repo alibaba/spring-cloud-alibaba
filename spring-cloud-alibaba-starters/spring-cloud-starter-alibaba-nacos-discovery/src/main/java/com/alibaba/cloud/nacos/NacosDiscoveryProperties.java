@@ -20,6 +20,7 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -154,8 +155,8 @@ public class NacosDiscoveryProperties {
 	private boolean registerEnabled = true;
 
 	/**
-	 * The ip address your want to register for your service instance, needn't to set it
-	 * if the auto detect ip works well.
+	 * The ip address your want to register for your service instance, needn't set it
+	 * if the autodetected ip works well.
 	 */
 	private String ip;
 
@@ -172,10 +173,16 @@ public class NacosDiscoveryProperties {
 	private String ipType = "IPv4";
 
 	/**
-	 * The port your want to register for your service instance, needn't to set it if the
-	 * auto detect port works well.
+	 * The port your want to register for your service instance, needn't set it if the
+	 * autodetected port works well.
 	 */
 	private int port = -1;
+
+	/**
+	 * If you prefer using hostname to register service, set the preferHostname to true;
+	 * default is false.
+	 */
+	private boolean preferHostname = false;
 
 	/**
 	 * whether your service is a https service.
@@ -305,6 +312,15 @@ public class NacosDiscoveryProperties {
 			}
 		}
 
+		if (preferHostname) {
+			try {
+				ip = InetAddress.getByName(ip).getHostName();
+			}
+			catch (UnknownHostException exception) {
+				log.error("Convert ip: {} to hostname error. fallback to ip", ip, exception);
+			}
+		}
+
 		this.overrideFromEnv(environment);
 		if (nacosServiceManager.isNacosDiscoveryInfoChanged(this)) {
 			applicationEventPublisher
@@ -412,6 +428,14 @@ public class NacosDiscoveryProperties {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public boolean getPreferHostname() {
+		return preferHostname;
+	}
+
+	public void setPreferHostname(boolean preferHostname) {
+		this.preferHostname = preferHostname;
 	}
 
 	public boolean isSecure() {
