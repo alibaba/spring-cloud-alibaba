@@ -15,6 +15,8 @@
  */
 package com.alibaba.cloud.examples;
 
+import com.alibaba.cloud.examples.feign.EchoClient;
+
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

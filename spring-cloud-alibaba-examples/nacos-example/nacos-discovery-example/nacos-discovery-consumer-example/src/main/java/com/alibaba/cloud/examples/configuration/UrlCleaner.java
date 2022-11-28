@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.configuration;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author xiaojing, fangjian0423, MieAh
+ * Change the request path containing echo.
+ *
+ * @author fangjian0423, MieAh
  */
-@SpringBootApplication
-@EnableDiscoveryClient
-@EnableFeignClients
-public class ConsumerApplication {
+public class UrlCleaner {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ConsumerApplication.class, args);
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(UrlCleaner.class);
+
+    private static final String URL_CLEAN_ECHO = ".*/echo/.*";
+
+    public static String clean(String url) {
+        LOGGER.info("enter urlCleaner");
+        if (url.matches(URL_CLEAN_ECHO)) {
+            LOGGER.info("change url");
+            url = url.replaceAll("/echo/.*", "/echo/{str}");
+        }
+        return url;
+    }
 
 }
-

@@ -16,27 +16,21 @@
 
 package com.alibaba.cloud.examples;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Change the request path containing echo.
+ * Configuration for web client.
  *
- * @author MieAh
+ * @author fangjian0423, MieAh
  */
-public class UrlCleaner {
+public class WebClientConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UrlCleaner.class);
-
-    private static final String URL_CLEAN_ECHO = ".*/echo/.*";
-
-    public static String clean(String url) {
-        LOGGER.info("enter urlCleaner");
-        if (url.matches(URL_CLEAN_ECHO)) {
-            LOGGER.info("change url");
-            url = url.replaceAll("/echo/.*", "/echo/{str}");
-        }
-        return url;
-    }
+	@Bean
+	@LoadBalanced
+	public WebClient.Builder webClient() {
+		return WebClient.builder();
+	}
 
 }

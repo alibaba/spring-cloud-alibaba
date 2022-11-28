@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.feign;
 
-public class UrlCleaner {
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
-	public static String clean(String url) {
-		System.out.println("enter urlCleaner");
-		if (url.matches(".*/echo/.*")) {
-			System.out.println("change url");
-			url = url.replaceAll("/echo/.*", "/echo/{str}");
-		}
-		return url;
+/**
+ * When the service is blown, the fallback operation is performed.
+ *
+ * @author fangjian0423, MieAh
+ */
+public class EchoClientFallback implements EchoClient {
+
+	@Override
+	public String echo(@PathVariable("str") String str) {
+		return "echo fallback";
+	}
+
+	@Override
+	public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+		return "divide fallback";
+	}
+
+	@Override
+	public String notFound() {
+		return "notFound fallback";
 	}
 
 }

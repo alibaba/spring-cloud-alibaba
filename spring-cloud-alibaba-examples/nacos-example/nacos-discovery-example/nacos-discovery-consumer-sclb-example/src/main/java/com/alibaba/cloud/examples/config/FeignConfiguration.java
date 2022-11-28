@@ -13,30 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.examples;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+package com.alibaba.cloud.examples.config;
+
+import com.alibaba.cloud.examples.feign.EchoClient;
+import com.alibaba.cloud.examples.feign.EchoClientFallback;
+
+import org.springframework.context.annotation.Bean;
 
 /**
- * When the service is blown, the fallback operation is performed.
+ * Configuration for Feign.
  *
- * @author MeiAh
+ * @author fangjian0423, MieAh
  */
-public class EchoClientFallback implements EchoClient {
+public class FeignConfiguration {
 
-    @Override
-    public String echo(@PathVariable("str") String str) {
-        return "echo fallback";
+    @Bean
+    public EchoClient echoClientFallback() {
+        return new EchoClientFallback();
     }
 
-    @Override
-    public String divide(@RequestParam Integer a, @RequestParam Integer b) {
-        return "divide fallback";
-    }
-
-    @Override
-    public String notFound() {
-        return "notFound fallback";
-    }
 }

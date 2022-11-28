@@ -35,19 +35,4 @@ public class ProviderApplication {
 		SpringApplication.run(ProviderApplication.class, args);
 	}
 
-	@RestController
-	class EchoController {
-
-		@GetMapping("/echo/{string}")
-		public String echo(@PathVariable String string) {
-			return "hello Nacos Discovery " + string;
-		}
-
-		@GetMapping("/divide")
-		public String divide(@RequestParam Integer a, @RequestParam Integer b) {
-			return String.valueOf(a / b);
-		}
-
-	}
-
 }

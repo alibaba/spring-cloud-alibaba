@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.configuration;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import com.alibaba.cloud.examples.feign.EchoClient;
+import com.alibaba.cloud.examples.feign.EchoClientFallback;
+
+import org.springframework.context.annotation.Bean;
 
 /**
- * @author xiaojing, fangjian0423, MieAh
+ * Configuration for Feign.
+ *
+ * @author fangjian0423, MieAh
  */
-@SpringBootApplication
-@EnableDiscoveryClient
-@EnableFeignClients
-public class ConsumerApplication {
+public class FeignConfiguration {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ConsumerApplication.class, args);
+	@Bean
+	public EchoClient echoClientFallback() {
+		return new EchoClientFallback();
 	}
 
 }
-
