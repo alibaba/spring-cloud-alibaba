@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.config;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * When the service is blown, the fallback operation is performed.
+ * Change the request path containing echo.
  *
- * @author MeiAh
+ * @author fangjian0423, MieAh
  */
-public class EchoClientFallback implements EchoClient {
+public class UrlCleaner {
 
-    @Override
-    public String echo(@PathVariable("str") String str) {
-        return "echo fallback";
-    }
+	private static final Logger LOGGER = LoggerFactory.getLogger(UrlCleaner.class);
 
-    @Override
-    public String divide(@RequestParam Integer a, @RequestParam Integer b) {
-        return "divide fallback";
-    }
+	private static final String URL_CLEAN_ECHO = ".*/echo/.*";
 
-    @Override
-    public String notFound() {
-        return "notFound fallback";
-    }
+	public static String clean(String url) {
+		LOGGER.info("enter urlCleaner");
+		if (url.matches(URL_CLEAN_ECHO)) {
+			LOGGER.info("change url");
+			url = url.replaceAll("/echo/.*", "/echo/{str}");
+		}
+		return url;
+	}
+
 }

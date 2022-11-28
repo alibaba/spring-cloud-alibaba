@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.feign;
 
+import com.alibaba.cloud.examples.configuration.FeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Provide the external exposure interface of the service calling client.
  *
- * @author MieAh
+ * @author fangjian0423, MieAh
  */
 @FeignClient(name = "service-provider", fallback = EchoClientFallback.class, configuration = FeignConfiguration.class)
 public interface EchoClient {

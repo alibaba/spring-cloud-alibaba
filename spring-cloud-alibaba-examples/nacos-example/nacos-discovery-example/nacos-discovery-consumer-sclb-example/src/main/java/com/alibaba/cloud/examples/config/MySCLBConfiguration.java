@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.alibaba.cloud.examples.config;
 
-package com.alibaba.cloud.examples;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author xiaojing, fangjian0423, MieAh
+ * Configuration for Self-defined randomLoadBalancer.
+ *
+ * @author fangjian0423, MieAh
  */
-@SpringBootApplication
-@EnableDiscoveryClient
-@EnableFeignClients
-public class ConsumerApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(ConsumerApplication.class, args);
-	}
-
+@Configuration
+@LoadBalancerClient(value = "service-provider", configuration = MyLoadBalancerConfiguration.class)
+public class MySCLBConfiguration {
 }
-

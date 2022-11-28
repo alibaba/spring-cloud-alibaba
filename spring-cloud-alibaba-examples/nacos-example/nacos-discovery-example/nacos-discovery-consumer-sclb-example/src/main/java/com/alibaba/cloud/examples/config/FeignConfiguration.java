@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.alibaba.cloud.examples.config;
 
-package com.alibaba.cloud.examples;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.alibaba.cloud.examples.feign.EchoClient;
+import com.alibaba.cloud.examples.feign.EchoClientFallback;
+import org.springframework.context.annotation.Bean;
 
 /**
- * Change the request path containing echo.
+ * Configuration for Feign.
  *
- * @author MieAh
+ * @author fangjian0423, MieAh
  */
-public class UrlCleaner {
+public class FeignConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UrlCleaner.class);
-
-    private static final String URL_CLEAN_ECHO = ".*/echo/.*";
-
-    public static String clean(String url) {
-        LOGGER.info("enter urlCleaner");
-        if (url.matches(URL_CLEAN_ECHO)) {
-            LOGGER.info("change url");
-            url = url.replaceAll("/echo/.*", "/echo/{str}");
-        }
-        return url;
+    @Bean
+    public EchoClient echoClientFallback() {
+        return new EchoClientFallback();
     }
 
 }
