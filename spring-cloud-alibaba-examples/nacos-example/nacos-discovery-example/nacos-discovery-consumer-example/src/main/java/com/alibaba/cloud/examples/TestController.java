@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.alibaba.cloud.examples;
 
-import com.alibaba.cloud.examples.ConsumerApplication.EchoService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,73 +22,79 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
+
 /**
- * @author xiaojing
+ *
+ *
+ * @author xiaojing, MieAh
  */
 @RestController
 public class TestController {
 
-	@Autowired
-	private RestTemplate restTemplate;
+    @Resource
+    private RestTemplate urlCleanedRestTemplate;
 
-	@Autowired
-	private RestTemplate restTemplate1;
+    @Resource
+    private RestTemplate restTemplate;
 
-	@Autowired
-	private EchoService echoService;
+    @Resource
+    private EchoClient echoClient;
 
-	@Autowired
-	private DiscoveryClient discoveryClient;
+    @Resource
+    private DiscoveryClient discoveryClient;
 
-	@GetMapping("/echo-rest/{str}")
-	public String rest(@PathVariable String str) {
-		return restTemplate.getForObject("http://service-provider/echo/" + str,
-				String.class);
-	}
+    private static final String ECHO_ADDRESS = "http://service-provider";
 
-	@GetMapping("/index")
-	public String index() {
-		return restTemplate1.getForObject("http://service-provider", String.class);
-	}
+    @GetMapping("/echo-rest/{str}")
+    public String rest(@PathVariable String str) {
+        return urlCleanedRestTemplate.getForObject(ECHO_ADDRESS + "/echo/" + str,
+                String.class);
+    }
 
-	@GetMapping("/test")
-	public String test() {
-		return restTemplate1.getForObject("http://service-provider/test", String.class);
-	}
+    @GetMapping("/index")
+    public String index() {
+        return restTemplate.getForObject(ECHO_ADDRESS, String.class);
+    }
 
-	@GetMapping("/sleep")
-	public String sleep() {
-		return restTemplate1.getForObject("http://service-provider/sleep", String.class);
-	}
+    @GetMapping("/test")
+    public String test() {
+        return restTemplate.getForObject(ECHO_ADDRESS + "/test", String.class);
+    }
 
-	@GetMapping("/notFound-feign")
-	public String notFound() {
-		return echoService.notFound();
-	}
+    @GetMapping("/sleep")
+    public String sleep() {
+        return restTemplate.getForObject(ECHO_ADDRESS + "/sleep", String.class);
+    }
 
-	@GetMapping("/divide-feign")
-	public String divide(@RequestParam Integer a, @RequestParam Integer b) {
-		return echoService.divide(a, b);
-	}
+    @GetMapping("/notFound-feign")
+    public String notFound() {
+        return echoClient.notFound();
+    }
 
-	@GetMapping("/divide-feign2")
-	public String divide(@RequestParam Integer a) {
-		return echoService.divide(a);
-	}
+    @GetMapping("/divide-feign")
+    public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+        return echoClient.divide(a, b);
+    }
 
-	@GetMapping("/echo-feign/{str}")
-	public String feign(@PathVariable String str) {
-		return echoService.echo(str);
-	}
+    @GetMapping("/divide-feign2")
+    public String divide(@RequestParam Integer a) {
+        return echoClient.divide(a);
+    }
 
-	@GetMapping("/services/{service}")
-	public Object client(@PathVariable String service) {
-		return discoveryClient.getInstances(service);
-	}
+    @GetMapping("/echo-feign/{str}")
+    public String feign(@PathVariable String str) {
+        return echoClient.echo(str);
+    }
 
-	@GetMapping("/services")
-	public Object services() {
-		return discoveryClient.getServices();
-	}
+    @GetMapping("/services/{service}")
+    public Object client(@PathVariable String service) {
+        return discoveryClient.getInstances(service);
+    }
+
+    @GetMapping("/services")
+    public Object services() {
+        return discoveryClient.getServices();
+    }
 
 }
