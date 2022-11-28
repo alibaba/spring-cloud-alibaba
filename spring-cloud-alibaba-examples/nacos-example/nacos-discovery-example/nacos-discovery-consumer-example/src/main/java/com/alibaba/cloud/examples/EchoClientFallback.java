@@ -13,26 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.alibaba.cloud.examples;
 
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * @author xiaojing, MieAh
+ * When the service is blown, the fallback operation is performed.
+ *
+ * @author MeiAh
  */
-@SpringBootApplication
-@EnableDiscoveryClient
-@EnableFeignClients
-public class ConsumerApplication {
+public class EchoClientFallback implements EchoClient {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ConsumerApplication.class, args);
-	}
+    @Override
+    public String echo(@PathVariable("str") String str) {
+        return "echo fallback";
+    }
 
+    @Override
+    public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+        return "divide fallback";
+    }
+
+    @Override
+    public String notFound() {
+        return "notFound fallback";
+    }
 }
-
