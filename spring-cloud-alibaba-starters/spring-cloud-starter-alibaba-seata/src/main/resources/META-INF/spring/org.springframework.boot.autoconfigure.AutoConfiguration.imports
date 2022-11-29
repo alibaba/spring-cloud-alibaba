@@ -1,0 +1,3 @@
+com.alibaba.cloud.seata.rest.SeataRestTemplateAutoConfiguration
+com.alibaba.cloud.seata.web.SeataHandlerInterceptorConfiguration
+com.alibaba.cloud.seata.feign.SeataFeignClientAutoConfiguration
