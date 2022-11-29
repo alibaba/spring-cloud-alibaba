@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.examples.config;
 
-
 import com.alibaba.cloud.examples.RandomLoadBalancer;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;
@@ -25,6 +26,7 @@ import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
+
 /**
  * Configure for load balancing.
  *
@@ -32,14 +34,14 @@ import org.springframework.core.env.Environment;
  */
 public class MyLoadBalancerConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public ReactorLoadBalancer<ServiceInstance> reactorServiceInstanceLoadBalancer(
-            Environment environment,
-            LoadBalancerClientFactory loadBalancerClientFactory) {
-        String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
-        return new RandomLoadBalancer(loadBalancerClientFactory.getLazyProvider(name,
-                ServiceInstanceListSupplier.class), name);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public ReactorLoadBalancer<ServiceInstance> reactorServiceInstanceLoadBalancer(
+			Environment environment,
+			LoadBalancerClientFactory loadBalancerClientFactory) {
+		String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
+		return new RandomLoadBalancer(loadBalancerClientFactory.getLazyProvider(name,
+				ServiceInstanceListSupplier.class), name);
+	}
 
 }

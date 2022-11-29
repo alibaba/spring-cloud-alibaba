@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.examples.config;
 
 import com.alibaba.cloud.examples.feign.EchoClient;
 import com.alibaba.cloud.examples.feign.EchoClientFallback;
+
 import org.springframework.context.annotation.Bean;
+
 
 /**
  * Configuration for Feign.
@@ -26,9 +29,9 @@ import org.springframework.context.annotation.Bean;
  */
 public class FeignConfiguration {
 
-    @Bean
-    public EchoClient echoClientFallback() {
-        return new EchoClientFallback();
-    }
+	@Bean
+	public EchoClient echoClientFallback() {
+		return new EchoClientFallback();
+	}
 
 }
