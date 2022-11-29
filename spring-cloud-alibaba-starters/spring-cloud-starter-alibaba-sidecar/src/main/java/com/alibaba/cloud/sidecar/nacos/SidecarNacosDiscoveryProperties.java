@@ -37,7 +37,7 @@ public class SidecarNacosDiscoveryProperties extends NacosDiscoveryProperties {
 		super.init();
 
 		String ip = sidecarProperties.getIp();
-		if (!StringUtils.hasText(ip)) {
+		if (StringUtils.hasText(ip)) {
 			this.setIp(ip);
 		}
 
