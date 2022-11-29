@@ -140,8 +140,9 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 			throws NacosException, IOException {
 		String config = configService.getConfig(dataId, group, timeout);
 		logLoadInfo(group, dataId, config);
-		return NacosDataParserHandler.getInstance().parseNacosData(dataId, config,
-				suffix);
+		// fixed issue: https://github.com/alibaba/spring-cloud-alibaba/issues/2906 .
+		String configName = group + "@" + dataId;
+		return NacosDataParserHandler.getInstance().parseNacosData(configName, config, suffix);
 	}
 
 	private void logLoadInfo(String group, String dataId, String config) {
