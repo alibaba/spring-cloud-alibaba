@@ -18,9 +18,8 @@ package com.alibaba.cloud.sentinel.datasource.config;
 
 import java.io.IOException;
 
-import javax.validation.constraints.NotEmpty;
-
 import com.alibaba.cloud.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
+import jakarta.validation.constraints.NotEmpty;
 
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;

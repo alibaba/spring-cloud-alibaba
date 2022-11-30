@@ -103,16 +103,16 @@
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
-        <jacoco.version>0.8.5</jacoco.version>
+        <jacoco.version>0.8.8</jacoco.version>
     </properties>
 
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
-        <module>spring-cloud-alibaba-examples</module>
+        <!--<module>spring-cloud-alibaba-examples</module>-->
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
-        <module>spring-cloud-alibaba-tests</module>
+        <!--<module>spring-cloud-alibaba-tests</module>-->
     </modules>
 
     <dependencyManagement>
@@ -203,36 +203,36 @@
                     </additionalConfig>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>checkstyle-validation</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Checkstyle rules inherited from spring-cloud-build -->
-                            <suppressionsLocation>${maven.multiModuleProjectDirectory}/eclipse/checkstyle-suppressions.xml</suppressionsLocation>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            <consoleOutput>true</consoleOutput>
-                            <failsOnError>true</failsOnError>
-                            <failOnViolation>true</failOnViolation>
-                            <violationSeverity>warning</violationSeverity>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+            <!--    <groupId>org.apache.maven.plugins</groupId>-->
+            <!--    <artifactId>maven-checkstyle-plugin</artifactId>-->
+            <!--    <executions>-->
+            <!--        <execution>-->
+            <!--            <id>checkstyle-validation</id>-->
+            <!--            <phase>validate</phase>-->
+            <!--            <goals>-->
+            <!--                <goal>check</goal>-->
+            <!--            </goals>-->
+            <!--            <configuration>-->
+            <!--                &lt;!&ndash; Checkstyle rules inherited from spring-cloud-build &ndash;&gt;-->
+            <!--                <suppressionsLocation>${maven.multiModuleProjectDirectory}/eclipse/checkstyle-suppressions.xml</suppressionsLocation>-->
+            <!--                <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+            <!--                <consoleOutput>true</consoleOutput>-->
+            <!--                <failsOnError>true</failsOnError>-->
+            <!--                <failOnViolation>true</failOnViolation>-->
+            <!--                <violationSeverity>warning</violationSeverity>-->
+            <!--            </configuration>-->
+            <!--        </execution>-->
+            <!--    </executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>
