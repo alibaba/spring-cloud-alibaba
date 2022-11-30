@@ -16,24 +16,27 @@
 
 package com.alibaba.cloud.examples;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Provide the interface method of config.
+ * Provide a service interface to the gateway for forwarding calls.
  *
  * @author MieAh
  */
 @RestController
-public class GetConfigController {
+public class EchoController {
 
-	@Value("${config}")
-	private String config;
+	@GetMapping("/echo/{string}")
+	public String echo(@PathVariable String string) {
+		return "hello Nacos Discovery " + string;
+	}
 
-	@GetMapping("/config")
-	public String getConfig() {
-		return config;
+	@GetMapping("/divide")
+	public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+		return String.valueOf(a / b);
 	}
 
 }

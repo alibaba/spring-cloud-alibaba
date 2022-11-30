@@ -14,26 +14,31 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.feign;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Provide the interface method of config.
+ * When the service is blown, the fallback operation is performed.
  *
- * @author MieAh
+ * @author fangjian0423, MieAh
  */
-@RestController
-public class GetConfigController {
+public class EchoClientFallback implements EchoClient {
 
-	@Value("${config}")
-	private String config;
+	@Override
+	public String echo(@PathVariable("str") String str) {
+		return "echo fallback";
+	}
 
-	@GetMapping("/config")
-	public String getConfig() {
-		return config;
+	@Override
+	public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+		return "divide fallback";
+	}
+
+	@Override
+	public String notFound() {
+		return "notFound fallback";
 	}
 
 }
