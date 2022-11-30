@@ -28,9 +28,9 @@ import org.springframework.context.annotation.Bean;
  */
 public class FeignConfiguration {
 
-    @Bean
-    public EchoClient echoClientFallback() {
-        return new EchoClientFallback();
-    }
+	@Bean
+	public EchoClient echoClientFallback() {
+		return new EchoClientFallback();
+	}
 
 }
