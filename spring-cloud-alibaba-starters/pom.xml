@@ -17,16 +17,14 @@
     <modules>
         <module>spring-cloud-starter-alibaba-nacos-config</module>
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
-        <!-- todo seata using sentinel -->
-        <!--<module>spring-cloud-starter-alibaba-seata</module>-->
+        <module>spring-cloud-starter-alibaba-seata</module>
         <module>spring-cloud-starter-stream-rocketmq</module>
         <module>spring-cloud-starter-bus-rocketmq</module>
         <module>spring-cloud-starter-alibaba-sidecar</module>
-        <!-- todo sentinel is not supported JDK 17 for now-->
-        <!--<module>spring-cloud-circuitbreaker-sentinel</module>-->
-        <!--<module>spring-cloud-starter-alibaba-sentinel</module>-->
-        <!--<module>spring-cloud-alibaba-sentinel-datasource</module>-->
-        <!--<module>spring-cloud-alibaba-sentinel-gateway</module>-->
+        <module>spring-cloud-circuitbreaker-sentinel</module>
+        <module>spring-cloud-starter-alibaba-sentinel</module>
+        <module>spring-cloud-alibaba-sentinel-datasource</module>
+        <module>spring-cloud-alibaba-sentinel-gateway</module>
         <module>spring-cloud-alibaba-commons</module>
     </modules>
 

@@ -86,8 +86,9 @@ public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 		}
 		else {
 			if (StringUtils.hasText(properties.getBlockPage())) {
-				sentinelWebMvcConfig.setBlockExceptionHandler(((request, response,
-						e) -> response.sendRedirect(properties.getBlockPage())));
+				// todo support jakarta servlet
+				// sentinelWebMvcConfig.setBlockExceptionHandler(((request, response,
+				// 		e) -> response.sendRedirect(properties.getBlockPage())));
 			}
 			else {
 				sentinelWebMvcConfig
