@@ -50,7 +50,7 @@ spring:
 |Istiod的端口| spring.cloud.istio.config.port|15012|注：连接15010端口无需TLS，连接15012端口需TLS认证
 |SCA去Istio拉取配置的线程池大小| spring.cloud.istio.config.polling-pool-size|10|
 |SCA去Istio拉取配置的间隔时间| spring.cloud.istio.config.polling-time|30|单位为秒
-|连接Istio<br>15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的 `/var/run/secrets/kubernetes.io/serviceaccount/token` 文件的内容|
+|连接Istio<br>15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的 `/var/run/secrets/tokens/istio-token` 文件的内容|
 |是否打印xDS相关日志| spring.cloud.istio.config.log-xds|true|
 |===
 

@@ -58,7 +58,7 @@ Here's an explanation of each field
 |Port of Istiod| spring.cloud.istio.config.port|15012|15010 port does not need TLS，but 15012 does
 |Thread pool size for SCA to pull the config| spring.cloud.istio.config.polling-pool-size|10|
 |Time interval for SCA to pull the config| spring.cloud.istio.config.polling-time|30|The unit is second|
-|JWT token for SCA to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `var/run/secrets/kubernetes.io/serviceaccount/token` in the pod of application|
+|JWT token for SCA to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `/var/run/secrets/tokens/istio-token` in the pod of application|
 ### Run the application
 You need to run the application in the K8s environment and inject some meta information about K8s into the following environment variables for the running application
 |Environment variable name|K8s pod metadata name|
