@@ -101,15 +101,16 @@ public class SentinelBeanAutowiredTests {
 			};
 		}
 
-		@Bean
-		public RequestOriginParser requestOriginParser() {
-			return new RequestOriginParser() {
-				@Override
-				public String parseOrigin(HttpServletRequest httpServletRequest) {
-					return httpServletRequest.getRemoteAddr();
-				}
-			};
-		}
+		// todo not support jakarta servlet
+		// @Bean
+		// public RequestOriginParser requestOriginParser() {
+		// 	return new RequestOriginParser() {
+		// 		@Override
+		// 		public String parseOrigin(HttpServletRequest httpServletRequest) {
+		// 			return httpServletRequest.getRemoteAddr();
+		// 		}
+		// 	};
+		// }
 
 		@Bean
 		public BlockExceptionHandler blockExceptionHandler() {
