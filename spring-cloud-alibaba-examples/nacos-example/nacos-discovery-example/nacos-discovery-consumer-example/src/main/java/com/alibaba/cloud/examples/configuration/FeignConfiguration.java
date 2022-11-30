@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.configuration;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.cloud.examples.feign.EchoClient;
+import com.alibaba.cloud.examples.feign.EchoClientFallback;
+
+import org.springframework.context.annotation.Bean;
 
 /**
- * Provide the interface method of config.
+ * Configuration for Feign.
  *
- * @author MieAh
+ * @author fangjian0423, MieAh
  */
-@RestController
-public class GetConfigController {
+public class FeignConfiguration {
 
-	@Value("${config}")
-	private String config;
-
-	@GetMapping("/config")
-	public String getConfig() {
-		return config;
+	@Bean
+	public EchoClient echoClientFallback() {
+		return new EchoClientFallback();
 	}
 
 }

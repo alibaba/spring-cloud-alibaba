@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.config;
 
-import com.alibaba.cloud.examples.ConsumerSCLBApplication.RandomLoadBalancer;
+import com.alibaba.cloud.examples.RandomLoadBalancer;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.ServiceInstance;
@@ -26,8 +26,11 @@ import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
+
 /**
- * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * Configure for load balancing.
+ *
+ * @author fangjian0423, MieAh
  */
 public class MyLoadBalancerConfiguration {
 

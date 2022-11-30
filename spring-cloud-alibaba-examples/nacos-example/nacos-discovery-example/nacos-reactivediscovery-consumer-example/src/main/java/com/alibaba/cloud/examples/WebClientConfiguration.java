@@ -16,24 +16,21 @@
 
 package com.alibaba.cloud.examples;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Provide the interface method of config.
+ * Configuration for web client.
  *
- * @author MieAh
+ * @author fangjian0423, MieAh
  */
-@RestController
-public class GetConfigController {
+public class WebClientConfiguration {
 
-	@Value("${config}")
-	private String config;
-
-	@GetMapping("/config")
-	public String getConfig() {
-		return config;
+	@Bean
+	@LoadBalanced
+	public WebClient.Builder webClient() {
+		return WebClient.builder();
 	}
-
 }
+

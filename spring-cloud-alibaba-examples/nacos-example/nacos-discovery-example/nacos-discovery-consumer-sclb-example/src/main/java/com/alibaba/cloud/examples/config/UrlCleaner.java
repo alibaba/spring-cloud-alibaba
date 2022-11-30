@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Provide the interface method of config.
+ * Change the request path containing echo.
  *
- * @author MieAh
+ * @author fangjian0423, MieAh
  */
-@RestController
-public class GetConfigController {
+public class UrlCleaner {
 
-	@Value("${config}")
-	private String config;
+	private static final Logger LOGGER = LoggerFactory.getLogger(UrlCleaner.class);
 
-	@GetMapping("/config")
-	public String getConfig() {
-		return config;
+	private static final String URL_CLEAN_ECHO = ".*/echo/.*";
+
+	public static String clean(String url) {
+		LOGGER.info("enter urlCleaner");
+		if (url.matches(URL_CLEAN_ECHO)) {
+			LOGGER.info("change url");
+			url = url.replaceAll("/echo/.*", "/echo/{str}");
+		}
+		return url;
 	}
 
 }

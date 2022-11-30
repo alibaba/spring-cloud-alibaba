@@ -16,15 +16,27 @@
 
 package com.alibaba.cloud.examples;
 
-public class UrlCleaner {
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-	public static String clean(String url) {
-		System.out.println("enter urlCleaner");
-		if (url.matches(".*/echo/.*")) {
-			System.out.println("change url");
-			url = url.replaceAll("/echo/.*", "/echo/{str}");
-		}
-		return url;
+/**
+ * Provide a service interface to the gateway for forwarding calls.
+ *
+ * @author MieAh
+ */
+@RestController
+public class EchoController {
+
+	@GetMapping("/echo/{string}")
+	public String echo(@PathVariable String string) {
+		return "hello Nacos Discovery " + string;
+	}
+
+	@GetMapping("/divide")
+	public String divide(@RequestParam Integer a, @RequestParam Integer b) {
+		return String.valueOf(a / b);
 	}
 
 }
