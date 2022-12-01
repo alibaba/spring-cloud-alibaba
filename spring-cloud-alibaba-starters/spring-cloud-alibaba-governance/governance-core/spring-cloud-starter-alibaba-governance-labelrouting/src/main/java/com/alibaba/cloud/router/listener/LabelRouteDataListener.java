@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.UnifiedRouteDataStructure;
 import com.alibaba.cloud.router.repository.FilterService;
 import com.alibaba.cloud.router.repository.RouteDataRepository;
 import org.slf4j.Logger;
@@ -58,16 +58,16 @@ public class LabelRouteDataListener
 		}
 
 		try {
-			Collection<UntiedRouteDataStructure> untiedRouterDataStructureList = (Collection<UntiedRouteDataStructure>) obj;
+			Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList = (Collection<UnifiedRouteDataStructure>) obj;
 
 			// Filter service.
 			// todo can cache the result
 			HashSet<String> definitionFeignService = filterService
 					.getDefinitionFeignService(untiedRouterDataStructureList.size());
-			List<UntiedRouteDataStructure> routeDatalist = untiedRouterDataStructureList
+			List<UnifiedRouteDataStructure> routeDatalist = untiedRouterDataStructureList
 					.stream()
-					.filter(untiedRouteDataStructure -> definitionFeignService
-							.contains(untiedRouteDataStructure.getTargetService()))
+					.filter(unifiedRouteDataStructure -> definitionFeignService
+							.contains(unifiedRouteDataStructure.getTargetService()))
 					.collect(Collectors.toList());
 
 			routeDataRepository.updateRouteData(routeDatalist);

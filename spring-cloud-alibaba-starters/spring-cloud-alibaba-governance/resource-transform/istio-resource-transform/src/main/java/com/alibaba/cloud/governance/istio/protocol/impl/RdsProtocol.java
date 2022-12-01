@@ -24,7 +24,7 @@ import java.util.Map;
 import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.LabelRouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.UnifiedRouteDataStructure;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.HeaderRule;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.RouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.UrlRule;
@@ -88,11 +88,11 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 		if (routeConfigurations == null) {
 			return;
 		}
-		Map<String, UntiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
+		Map<String, UnifiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
 			List<VirtualHost> virtualHosts = routeConfiguration.getVirtualHostsList();
 			for (VirtualHost virtualHost : virtualHosts) {
-				UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
+				UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
 				String targetService = "";
 				String[] serviceAndPort = virtualHost.getName().split(":");
 				if (serviceAndPort.length > 0) {
@@ -101,12 +101,12 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 				if (ALLOW_ANY.equals(targetService)) {
 					continue;
 				}
-				untiedRouteDataStructure.setTargetService(targetService);
+				unifiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
 				LabelRouteRule labelRouteRule = getLabelRouteData(routes);
-				untiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
-				untiedRouteDataStructures.put(untiedRouteDataStructure.getTargetService(),
-						untiedRouteDataStructure);
+				unifiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
+				untiedRouteDataStructures.put(unifiedRouteDataStructure.getTargetService(),
+						unifiedRouteDataStructure);
 			}
 		}
 		applicationContext.publishEvent(

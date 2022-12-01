@@ -34,8 +34,8 @@ The rules set in the instance are as follows:
 List<RouteRule> routeRules = new ArrayList<>();
 List<MatchService> matchServices = new ArrayList<>();
 
-			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-			untiedRouteDataStructure.setTargetService("service-provider");
+			UnifiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
+			unifiedRouteDataStructure.setTargetService("service-provider");
 
 			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
@@ -66,11 +66,11 @@ List<MatchService> matchServices = new ArrayList<>();
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
-			untiedRouteDataStructureList.add(untiedRouteDataStructure);
-			controlPlaneConnection.pushRouteData(untiedRouteDataStructureList);
+			List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
+			controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
 		}
 The rules corresponding to the code are as follows:
 If the request parameter contains tag=gray and the request header contains id and the value is greater than 10, uri is /router-test at the same time, the traffic is routed to the v2 version. If one of the request parameters does not meet the requirement, the traffic is routed to the v1 version.
@@ -82,8 +82,8 @@ Rules also support dynamic modification. The rules for testing dynamic modificat
 			List<RouteRule> routeRules = new ArrayList<>();
 			List<MatchService> matchServices = new ArrayList<>();
 
-			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-			untiedRouteDataStructure.setTargetService("service-provider");
+			UntiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
+			unifiedRouteDataStructure.setTargetService("service-provider");
 
 			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
@@ -114,11 +114,11 @@ Rules also support dynamic modification. The rules for testing dynamic modificat
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
-			untiedRouteDataStructureList.add(untiedRouteDataStructure);
-			controlPlaneConnection.pushRouteData(untiedRouteDataStructureList);
+			List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
+			controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
 		}
 The rules corresponding to the code are as follows:
 If the request parameter contains tag=gray, and the request header contains id and the value is greater than 10,uri is /router-test, 50% of the traffic is routed to the v2 version, and the rest is routed to the v1 version. If one of the traffic does not meet the requirements, the traffic is routed to the v1 version.

@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.cloud.commons.governance.labelrouting.crd.LabelRouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.UnifiedRouteDataStructure;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.RouteRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +73,8 @@ public class RouteDataRepository {
 	 */
 	public static final int MIN_WEIGHT = 0;
 
-	public void updateRouteData(final List<UntiedRouteDataStructure> routeDataList) {
-		for (UntiedRouteDataStructure routeData : routeDataList) {
+	public void updateRouteData(final List<UnifiedRouteDataStructure> routeDataList) {
+		for (UnifiedRouteDataStructure routeData : routeDataList) {
 			nonNullCheck(routeData);
 			LabelRouteRule labelRouteData = originalRouteData
 					.get(routeData.getTargetService());
@@ -87,12 +87,12 @@ public class RouteDataRepository {
 		}
 	}
 
-	private void nonNullCheck(UntiedRouteDataStructure untiedRouteDataStructure) {
-		String targetService = untiedRouteDataStructure.getTargetService();
+	private void nonNullCheck(UnifiedRouteDataStructure unifiedRouteDataStructure) {
+		String targetService = unifiedRouteDataStructure.getTargetService();
 		if (targetService == null) {
 			LOG.error("Lose target Service name.");
 		}
-		final LabelRouteRule labelRouteData = untiedRouteDataStructure
+		final LabelRouteRule labelRouteData = unifiedRouteDataStructure
 				.getLabelRouteRule();
 		final List<MatchService> matchServiceList = labelRouteData.getMatchRouteList();
 		for (MatchService matchService : matchServiceList) {
@@ -117,7 +117,7 @@ public class RouteDataRepository {
 		}
 	}
 
-	private void buildHashIndex(final UntiedRouteDataStructure routerData) {
+	private void buildHashIndex(final UnifiedRouteDataStructure routerData) {
 		final List<MatchService> matchRouteList = routerData.getLabelRouteRule()
 				.getMatchRouteList();
 		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();

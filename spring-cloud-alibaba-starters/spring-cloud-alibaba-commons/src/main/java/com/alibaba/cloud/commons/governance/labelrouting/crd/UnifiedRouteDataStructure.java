@@ -19,7 +19,7 @@ package com.alibaba.cloud.commons.governance.labelrouting.crd;
 /**
  * @author HH
  */
-public class UntiedRouteDataStructure {
+public class UnifiedRouteDataStructure {
 
 	private LabelRouteRule labelRouteRule;
 

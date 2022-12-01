@@ -22,7 +22,7 @@ import java.util.List;
 import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.LabelRouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.UntiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.crd.UnifiedRouteDataStructure;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.HeaderRule;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.RouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.UrlRule;
@@ -88,8 +88,8 @@ public class ConsumerApplication {
 			List<RouteRule> routeRules = new ArrayList<>();
 			List<MatchService> matchServices = new ArrayList<>();
 
-			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-			untiedRouteDataStructure.setTargetService("service-provider");
+			UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
+			unifiedRouteDataStructure.setTargetService("service-provider");
 
 			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
@@ -120,12 +120,12 @@ public class ConsumerApplication {
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
-			untiedRouteDataStructureList.add(untiedRouteDataStructure);
+			List<UnifiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
 			applicationContext.publishEvent(
-					new LabelRoutingDataChangedEvent(untiedRouteDataStructureList));
+					new LabelRoutingDataChangedEvent(unifiedRouteDataStructureList));
 		}
 
 		@GetMapping("/update")
@@ -133,8 +133,8 @@ public class ConsumerApplication {
 			List<RouteRule> routeRules = new ArrayList<>();
 			List<MatchService> matchServices = new ArrayList<>();
 
-			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-			untiedRouteDataStructure.setTargetService("service-provider");
+			UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
+			unifiedRouteDataStructure.setTargetService("service-provider");
 
 			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
@@ -165,12 +165,12 @@ public class ConsumerApplication {
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
-			untiedRouteDataStructureList.add(untiedRouteDataStructure);
+			List<UnifiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
 			applicationContext.publishEvent(
-					new LabelRoutingDataChangedEvent(untiedRouteDataStructureList));
+					new LabelRoutingDataChangedEvent(unifiedRouteDataStructureList));
 		}
 	}
 
