@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.LabelRouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.UnifiedRouteDataStructure;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.HeaderRule;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.RouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.UrlRule;
+import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
+import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
