@@ -107,13 +107,13 @@
     </properties>
 
     <modules>
-        <!-- todo disable the following modules temporarily -->
         <module>spring-cloud-alibaba-dependencies</module>
+        <!-- todo spring boot 3.0 upgrade: disable the examples modules temporarily -->
         <!-- <module>spring-cloud-alibaba-examples</module> -->
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
-        <!--<module>spring-cloud-alibaba-coverage</module>-->
-        <!--<module>spring-cloud-alibaba-tests</module>-->
+        <module>spring-cloud-alibaba-coverage</module>
+        <module>spring-cloud-alibaba-tests</module>
     </modules>
 
     <dependencyManagement>
@@ -205,7 +205,7 @@
                 </configuration>
             </plugin>
 
-            <!-- todo disable checkstyle temporarily -->
+            <!-- todo spring boot 3.0 upgrade: disable checkstyle temporarily -->
             <!--<plugin>-->
             <!--    <groupId>org.apache.maven.plugins</groupId>-->
             <!--    <artifactId>maven-checkstyle-plugin</artifactId>-->

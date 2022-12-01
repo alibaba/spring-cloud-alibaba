@@ -57,7 +57,7 @@ public class RocketMQMessageChannelBinderTest {
 	@Resource
 	RocketMQMessageChannelBinder binder;
 	
-	// todo fix spring cloud stream binder
+	// todo spring boot 3.0 upgrade: fix spring cloud stream binder
 	// @Test
 	// public void createConsumerEndpoint() throws Exception {
 	// 	TestConsumerDestination destination = new TestConsumerDestination("test");

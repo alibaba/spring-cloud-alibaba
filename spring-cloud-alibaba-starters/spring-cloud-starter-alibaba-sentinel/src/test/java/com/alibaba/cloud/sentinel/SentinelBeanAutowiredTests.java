@@ -101,7 +101,7 @@ public class SentinelBeanAutowiredTests {
 			};
 		}
 
-		// todo not support jakarta servlet
+		// todo spring boot 3.0 upgrade: not support jakarta servlet
 		// @Bean
 		// public RequestOriginParser requestOriginParser() {
 		// 	return new RequestOriginParser() {

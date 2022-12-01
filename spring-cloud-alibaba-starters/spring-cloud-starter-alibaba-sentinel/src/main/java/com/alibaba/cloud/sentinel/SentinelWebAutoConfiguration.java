@@ -86,7 +86,7 @@ public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 		}
 		else {
 			if (StringUtils.hasText(properties.getBlockPage())) {
-				// todo support jakarta servlet
+				// todo spring boot 3.0 upgrade: not support jakarta servlet
 				// sentinelWebMvcConfig.setBlockExceptionHandler(((request, response,
 				// 		e) -> response.sendRedirect(properties.getBlockPage())));
 			}
