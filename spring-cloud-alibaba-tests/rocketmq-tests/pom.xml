@@ -19,6 +19,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-cloud-stream-test-support.version>4.0.0-M1</spring-cloud-stream-test-support.version>
   </properties>
 
   <dependencies>
@@ -34,4 +35,13 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <dependencyManagement>
+   <dependencies>
+       <dependency>
+           <groupId>org.springframework.cloud</groupId>
+           <artifactId>spring-cloud-stream-test-support</artifactId>
+           <version>${spring-cloud-stream-test-support.version}</version>
+       </dependency>
+   </dependencies>
+  </dependencyManagement>
 </project>
