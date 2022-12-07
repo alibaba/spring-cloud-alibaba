@@ -44,9 +44,6 @@ public class DubboMetadataServiceExporter {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private ApplicationConfig applicationConfig;
-
-	@Autowired
 	private ObjectProvider<DubboMetadataService> dubboMetadataService;
 
 	@Autowired
@@ -76,7 +73,6 @@ public class DubboMetadataServiceExporter {
 			// Use current Spring application name as the Dubbo Service group
 			serviceConfig.setGroup(currentApplicationName);
 			serviceConfig.setRef(dubboMetadataService.getIfAvailable());
-			serviceConfig.setApplication(applicationConfig);
 			serviceConfig.setProtocol(protocolConfigSupplier.get());
 
 			serviceConfig.export();

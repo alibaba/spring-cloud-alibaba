@@ -222,7 +222,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 				}
 				metadataSubscribeHandlerMap.put(appName, handler);
 			}
-			else if (isConsumerServiceURL(url)) {
+			else {
 				// for general Dubbo Services
 				GenearalServiceSubscribeHandler handler = new GenearalServiceSubscribeHandler(
 						url, listener, this, repository, jsonUtils,

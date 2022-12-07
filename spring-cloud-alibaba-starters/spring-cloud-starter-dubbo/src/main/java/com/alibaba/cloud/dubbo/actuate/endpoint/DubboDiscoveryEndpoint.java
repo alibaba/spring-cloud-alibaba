@@ -16,6 +16,18 @@
 
 package com.alibaba.cloud.dubbo.actuate.endpoint;
 
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.registry.NotifyListener;
+import org.apache.dubbo.registry.integration.RegistryDirectory;
+import org.apache.dubbo.registry.support.RegistryManager;
+import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.model.ModuleModel;
+
+import com.alibaba.cloud.dubbo.registry.DubboCloudRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,16 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.alibaba.cloud.dubbo.registry.DubboCloudRegistry;
-import com.alibaba.cloud.dubbo.registry.SpringCloudRegistryFactory;
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.registry.NotifyListener;
-import org.apache.dubbo.registry.integration.RegistryDirectory;
-import org.apache.dubbo.rpc.Invoker;
-
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 
 import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER_SIDE;
 import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
@@ -45,11 +47,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  */
 @Endpoint(id = "dubboRegistryDirectory")
 public class DubboDiscoveryEndpoint {
+	@Autowired
+	private ModuleModel moduleModel;
 
 	@ReadOperation(produces = APPLICATION_JSON_VALUE)
 	public Object get() {
-		DubboCloudRegistry registry = (DubboCloudRegistry) SpringCloudRegistryFactory
-				.getRegistries().stream().filter(o -> o instanceof DubboCloudRegistry)
+		DubboCloudRegistry registry = (DubboCloudRegistry)
+				RegistryManager.getInstance(moduleModel.getApplicationModel())
+				.getRegistries()
+				.stream()
+				.filter(DubboCloudRegistry.class::isInstance)
 				.findFirst().orElse(null);
 
 		if (registry == null) {
