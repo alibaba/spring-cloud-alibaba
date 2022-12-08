@@ -46,11 +46,15 @@ public class RocketMQCommonProperties implements Serializable {
 	/**
 	 * Consumers of the same role is required to have exactly same subscriptions and
 	 * consumerGroup to correctly achieve load balance. It's required and needs to be
-	 * globally unique. Producer group conceptually aggregates all producer instances of
+	 * globally unique.
+	 * <br>
+	 * Producer group conceptually aggregates all producer instances of
 	 * exactly same role, which is particularly important when transactional messages are
 	 * involved. For non-transactional messages, it does not matter as long as it's unique
 	 * per process. See <a href="http://rocketmq.apache.org/docs/core-concept/">here</a>
-	 * for further discussion.
+	 * for further discussion. However, group for non-transactional messages can indicate
+	 * whether the internal RocketMQProducer should be reused (Only the bindings that use
+	 * the same group can be reused).
 	 */
 	private String group;
 
