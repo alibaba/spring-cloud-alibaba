@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQProducerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
@@ -54,8 +55,6 @@ public final class RocketMQProduceFactory {
 
 	private static final Map<String, DefaultMQProducer> PRODUCER_REUSABLE_MAP = new ConcurrentHashMap<>();
 
-	private static final String DEFAULT_GROUP_NAME = "DEFAULT_GROUP_NAME";
-
 	private RocketMQProduceFactory() {
 	}
 
@@ -68,7 +67,7 @@ public final class RocketMQProduceFactory {
 	public static DefaultMQProducer initRocketMQProducer(String topic,
 			RocketMQProducerProperties producerProperties) {
 		if (StringUtils.isEmpty(producerProperties.getGroup())) {
-			producerProperties.setGroup(DEFAULT_GROUP_NAME);
+			producerProperties.setGroup(RocketMQConst.DEFAULT_GROUP);
 		}
 		Assert.notNull(producerProperties.getGroup(),
 				"Property 'group' is required - producerGroup");
