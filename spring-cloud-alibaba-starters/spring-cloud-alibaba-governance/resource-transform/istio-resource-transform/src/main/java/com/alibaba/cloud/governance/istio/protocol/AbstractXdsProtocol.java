@@ -40,11 +40,16 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
+public abstract class AbstractXdsProtocol<T>
+		implements XdsProtocol<T>, ApplicationContextAware {
 
 	protected static final Logger log = LoggerFactory
 			.getLogger(AbstractXdsProtocol.class);
@@ -62,6 +67,11 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 	 */
 	private boolean needPolling;
 
+	/**
+	 * send event to submodules.
+	 */
+	protected ApplicationContext applicationContext;
+
 	private final Map<Long, StreamObserver<DiscoveryRequest>> requestObserverMap = new ConcurrentHashMap<>();
 
 	private final Map<Long, CompletableFuture<List<T>>> futureMap = new ConcurrentHashMap<>();
@@ -76,6 +86,12 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 		this.xdsChannel = xdsChannel;
 		this.xdsScheduledThreadPool = xdsScheduledThreadPool;
 		this.xdsConfigProperties = xdsConfigProperties;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 
 	public void setNeedPolling(boolean needPolling) {

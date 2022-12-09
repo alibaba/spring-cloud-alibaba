@@ -1,0 +1,47 @@
+{
+  "allowAuthRules": {
+    "ns[default]-policy[from-ip-allow]-rule[0]": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "condition": {
+                        "matcher": {
+                          "ip": "127.0.0.1",
+                          "prefixLen": 32
+                        },
+                        "type": "SOURCE_IP"
+                      },
+                      "empty": false,
+                      "not": false,
+                      "op": "UNKNOWN"
+                    }
+                  ],
+                  "empty": false,
+                  "not": false,
+                  "op": "OR"
+                }
+              ],
+              "empty": false,
+              "not": false,
+              "op": "AND"
+            }
+          ],
+          "empty": false,
+          "not": false,
+          "op": "OR"
+        }
+      ],
+      "empty": false,
+      "not": false,
+      "op": "AND"
+    }
+  },
+  "denyAuthRules": {},
+  "jwtRules": {}
+}

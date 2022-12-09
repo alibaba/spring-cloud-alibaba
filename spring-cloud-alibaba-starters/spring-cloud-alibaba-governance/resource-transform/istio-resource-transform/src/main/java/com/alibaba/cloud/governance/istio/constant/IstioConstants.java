@@ -48,9 +48,9 @@ public final class IstioConstants {
 	public static final String NAMESPACE_NAME = "NAMESPACE_NAME";
 
 	/**
-	 * jwt token location.
+	 * third-part jwt token location.
 	 */
-	public static final String KUBERNETES_SA_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token";
+	public static final String THIRD_PART_JWT_PATH = "/var/run/secrets/tokens/istio-token";
 
 	/**
 	 * url of cds request.

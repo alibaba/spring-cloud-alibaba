@@ -51,7 +51,7 @@ Here's an explanation of each field:
 |Port of Istiod| spring.cloud.istio.config.port|15012|15010 port does not need TLS，but 15012 does
 |Thread pool size for SCA to pull the config| spring.cloud.istio.config.polling-pool-size|10|
 |Time interval for SCA to pull the config| spring.cloud.istio.config.polling-time|30|The unit is second
-|JWT token for SCA to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `var/run/secrets/kubernetes.io/serviceaccount/token` in the pod of application|
+|JWT token for SCA to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `/var/run/secrets/tokens/istio-token` in the pod of application|
 |Whether to print logs about xDS| spring.cloud.istio.config.log-xds|true|
 |===
 
@@ -67,12 +67,12 @@ You need to run the application in the K8s environment and inject some meta info
 === Use Label Routing
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. Label routing module can route the Spring Cloud application according to the request header, request parameters and other tags to route to different services
 
-If you use Spring Cloud Alibaba Governance Label Routing in your project, You need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `label-routing-core`
+If you use Spring Cloud Alibaba Governance Label Routing in your project, You need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-labelrouting`
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>label-routing-core</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
 </dependency>
 ----
 
@@ -93,13 +93,13 @@ image::pic/auth-process.png[]
 
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. The Authentication module provides various authentication modes for Spring Cloud applications, such as IP blacklist and whitelist and JWT authentication
 
-If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of 'com.alibaba.cloud' and an artifact ID of 'auth-core'
+If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of 'com.alibaba.cloud' and an artifact ID of 'spring-cloud-starter-alibaba-governance-authentication'
 
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>auth-core</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 </dependency>
 ----
 

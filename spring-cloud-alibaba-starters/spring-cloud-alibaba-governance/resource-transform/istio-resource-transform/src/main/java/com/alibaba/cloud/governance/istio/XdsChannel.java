@@ -92,7 +92,7 @@ public class XdsChannel implements AutoCloseable {
 		if (xdsConfigProperties.getPort() != ISTIOD_SECURE_PORT) {
 			return;
 		}
-		File saFile = new File(IstioConstants.KUBERNETES_SA_PATH);
+		File saFile = new File(IstioConstants.THIRD_PART_JWT_PATH);
 		if (saFile.canRead()) {
 			try {
 				this.istiodToken = FileUtils.readFileToString(saFile,
