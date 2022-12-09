@@ -16,9 +16,9 @@
 
 package com.alibaba.cloud.sentinel.datasource.config;
 
-import javax.validation.constraints.NotEmpty;
 
 import com.alibaba.cloud.sentinel.datasource.factorybean.ApolloDataSourceFactoryBean;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * Apollo Properties class Using by {@link DataSourcePropertiesConfiguration} and

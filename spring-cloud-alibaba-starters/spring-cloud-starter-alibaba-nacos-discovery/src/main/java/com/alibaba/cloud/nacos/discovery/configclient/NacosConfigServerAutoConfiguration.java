@@ -16,10 +16,10 @@
 
 package com.alibaba.cloud.nacos.discovery.configclient;
 
-import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

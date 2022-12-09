@@ -38,7 +38,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  */
 @SpringBootTest(webEnvironment = DEFINED_PORT, classes = Application.class, properties = {
 		"server.port=10101",
-		"feign.circuitbreaker.enabled=true",
+		"spring.cloud.openfeign.circuitbreaker.enabled=true",
 		"feign.sentinel.default-rule=default",
 		"feign.sentinel.rules.default[0].grade=2",
 		"feign.sentinel.rules.default[0].count=2",

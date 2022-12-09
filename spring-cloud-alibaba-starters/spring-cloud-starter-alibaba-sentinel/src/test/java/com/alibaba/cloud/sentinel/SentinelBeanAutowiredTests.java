@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.sentinel;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.alibaba.cloud.sentinel.custom.SentinelAutoConfiguration;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
@@ -101,15 +101,16 @@ public class SentinelBeanAutowiredTests {
 			};
 		}
 
-		@Bean
-		public RequestOriginParser requestOriginParser() {
-			return new RequestOriginParser() {
-				@Override
-				public String parseOrigin(HttpServletRequest httpServletRequest) {
-					return httpServletRequest.getRemoteAddr();
-				}
-			};
-		}
+		// todo spring boot 3.0 upgrade: not support jakarta servlet
+		// @Bean
+		// public RequestOriginParser requestOriginParser() {
+		// 	return new RequestOriginParser() {
+		// 		@Override
+		// 		public String parseOrigin(HttpServletRequest httpServletRequest) {
+		// 			return httpServletRequest.getRemoteAddr();
+		// 		}
+		// 	};
+		// }
 
 		@Bean
 		public BlockExceptionHandler blockExceptionHandler() {
