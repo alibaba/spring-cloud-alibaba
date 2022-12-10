@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: integrated-provider
+  config:
+    import: optional:cloud:nacos-config.yaml
+
+server:
+  port: 8015
