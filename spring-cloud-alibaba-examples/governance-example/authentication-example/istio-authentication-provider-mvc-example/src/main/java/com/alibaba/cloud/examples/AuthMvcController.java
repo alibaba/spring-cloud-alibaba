@@ -16,21 +16,23 @@
 
 package com.alibaba.cloud.examples;
 
+import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @Slf4j
 public class AuthMvcController {
-    @RequestMapping("/auth")
-    public String auth(HttpServletRequest request) {
-        String resp = "received request from " + request.getRemoteHost() +
-                ", local addr is " + request.getLocalAddr() +
-                ", local host is " + request.getLocalName() +
-                ", request path is" + request.getRequestURI();
-        return resp;
-    }
+
+	@RequestMapping("/auth")
+	public String auth(HttpServletRequest request) {
+		String resp = "received request from " + request.getRemoteHost()
+				+ ", local addr is " + request.getLocalAddr() + ", local host is "
+				+ request.getLocalName() + ", request path is" + request.getRequestURI();
+		return resp;
+	}
+
 }
