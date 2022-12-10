@@ -1,0 +1,10 @@
+server:
+  port: 8012
+
+spring:
+  application:
+    name: integrated-account
+  config:
+    import:
+      - optional:cloud:nacos:nacos-config.yaml
+      - optional:seata-config.yaml

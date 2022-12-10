@@ -1,0 +1,12 @@
+server:
+  port: 8011
+
+spring:
+  application:
+    name: integrated-storage
+  config:
+    import:
+      - optional:cloud:nacos-config.yaml
+      - optional:seata-config.yaml
+
+

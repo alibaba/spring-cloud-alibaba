@@ -1,0 +1,7 @@
+server:
+  port: 30010
+spring:
+  application:
+    name: integrated-gateway
+  config:
+    import: optional:cloud:nacos-config.yaml

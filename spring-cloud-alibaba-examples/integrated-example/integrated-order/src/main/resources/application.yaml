@@ -1,0 +1,11 @@
+server:
+  port: 8013
+
+spring:
+  application:
+    name: integrated-order
+  config:
+    import:
+      - optional:cloud:nacos-config.yaml
+      - optional:seata-config.yaml
+
