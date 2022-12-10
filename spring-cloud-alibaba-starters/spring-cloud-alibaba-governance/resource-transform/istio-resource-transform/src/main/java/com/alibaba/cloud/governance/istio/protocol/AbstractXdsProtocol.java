@@ -33,6 +33,7 @@ import com.alibaba.cloud.governance.istio.XdsChannel;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
+import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -59,6 +60,10 @@ public abstract class AbstractXdsProtocol<T>
 	protected final Node node = NodeBuilder.getNode();
 
 	protected XdsConfigProperties xdsConfigProperties;
+
+	protected List<XdsResolveFilter<List<T>>> filters = new ArrayList<>();
+
+	private Set<String> resourceNames = new HashSet<>();
 
 	private final XdsScheduledThreadPool xdsScheduledThreadPool;
 
@@ -99,7 +104,8 @@ public abstract class AbstractXdsProtocol<T>
 	}
 
 	@Override
-	public long observeResource(Set<String> resourceNames, Consumer<List<T>> consumer) {
+	public synchronized long observeResource(Set<String> resourceNames,
+			Consumer<List<T>> consumer) {
 		long id = getDefaultRequestId();
 		if (resourceNames == null) {
 			resourceNames = new HashSet<>();
@@ -134,6 +140,10 @@ public abstract class AbstractXdsProtocol<T>
 		return source;
 	}
 
+	public Set<String> getResourceNames() {
+		return resourceNames;
+	}
+
 	private List<T> doGetResource(long id, Set<String> resourceNames,
 			Consumer<List<T>> consumer) {
 		if (resourceNames == null) {
@@ -164,6 +174,29 @@ public abstract class AbstractXdsProtocol<T>
 	}
 
 	protected abstract List<T> decodeXdsResponse(DiscoveryResponse response);
+
+	protected Set<String> resolveResourceNames(List<T> resources) {
+		return new HashSet<>();
+	}
+
+	protected void fireXdsFilters(List<T> resources) {
+		try {
+			this.resourceNames = resolveResourceNames(resources);
+		}
+		catch (Exception e) {
+			log.error("Error on resolving resource names from {}", resources);
+		}
+		try {
+			for (XdsResolveFilter<List<T>> filter : filters) {
+				if (!filter.resolve(resources)) {
+					return;
+				}
+			}
+		}
+		catch (Exception e) {
+			log.error("Error on executing Xds filters, resources are {}", resources);
+		}
+	}
 
 	private void sendXdsRequest(StreamObserver<DiscoveryRequest> observer,
 			Set<String> resourceNames) {

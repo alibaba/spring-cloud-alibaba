@@ -36,11 +36,7 @@ public class AuthListener implements ApplicationListener<AuthDataChangedEvent> {
 
 	@Override
 	public void onApplicationEvent(AuthDataChangedEvent event) {
-		Object obj = event.getSource();
-		if (!(obj instanceof AuthRules)) {
-			return;
-		}
-		AuthRules authRules = (AuthRules) obj;
+		AuthRules authRules = event.getAuthRules();
 		if (authRules.getAllowAuthRules() != null) {
 			authRepository.setAllowAuthRule(authRules.getAllowAuthRules());
 		}

@@ -56,12 +56,13 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 		return clusters;
 	}
 
-	public Set<String> getEndPointNames(List<Cluster> clusters) {
+	@Override
+	protected Set<String> resolveResourceNames(List<Cluster> resources) {
 		Set<String> endpoints = new HashSet<>();
-		if (clusters == null) {
+		if (resources == null) {
 			return endpoints;
 		}
-		for (Cluster cluster : clusters) {
+		for (Cluster cluster : resources) {
 			cluster.getEdsClusterConfig().getServiceName();
 			endpoints.add(cluster.getEdsClusterConfig().getServiceName());
 		}

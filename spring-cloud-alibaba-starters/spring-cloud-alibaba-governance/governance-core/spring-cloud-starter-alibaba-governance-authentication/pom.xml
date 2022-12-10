@@ -9,6 +9,7 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
     <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+    <name>Spring Cloud Starter Alibaba Governance Authentication</name>
 
     <dependencies>
         <dependency>

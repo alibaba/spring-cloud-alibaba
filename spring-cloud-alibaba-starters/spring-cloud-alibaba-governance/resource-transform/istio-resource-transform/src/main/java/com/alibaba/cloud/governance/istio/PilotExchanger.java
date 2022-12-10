@@ -50,38 +50,34 @@ public class PilotExchanger {
 		if (listeners == null) {
 			return;
 		}
-		synchronized (ldsProtocol) {
-			ldsProtocol.resolveAuthRules(listeners);
-			Set<String> resourceName = ldsProtocol.getRouteNames(listeners);
-			if (resourceName != null && !resourceName.isEmpty()) {
-				rdsProtocol.observeResource(resourceName, this::observeRoutes);
-			}
+		Set<String> resourceName = ldsProtocol.getResourceNames();
+		if (resourceName != null && !resourceName.isEmpty()) {
+			rdsProtocol.observeResource(resourceName, this::observeRoutes);
 		}
+
 	}
 
 	private void observeClusters(List<Cluster> clusters) {
-		synchronized (cdsProtocol) {
-			Set<String> resourceName = cdsProtocol.getEndPointNames(clusters);
-			if (resourceName != null && !resourceName.isEmpty()) {
-				// eds
-				edsProtocol.observeResource(resourceName, this::observeEndpoints);
-			}
-			else {
-				// lds
-				ldsProtocol.observeResource(null, this::observeListeners);
-			}
+		Set<String> resourceName = cdsProtocol.getResourceNames();
+		if (resourceName != null && !resourceName.isEmpty()) {
+			// eds
+			edsProtocol.observeResource(resourceName, this::observeEndpoints);
 		}
+		else {
+			// lds
+			ldsProtocol.observeResource(null, this::observeListeners);
+		}
+
 	}
 
 	private void observeEndpoints(List<ClusterLoadAssignment> endpoints) {
-		synchronized (edsProtocol) {
-			ldsProtocol.observeResource(null, this::observeListeners);
-		}
+		ldsProtocol.observeResource(null, this::observeListeners);
+
 	}
 
 	private void observeRoutes(List<RouteConfiguration> routes) {
-		synchronized (rdsProtocol) {
-			rdsProtocol.resolveLabelRouting(routes);
+		if (log.isDebugEnabled()) {
+			log.debug("A Xds configuration update is finished");
 		}
 	}
 

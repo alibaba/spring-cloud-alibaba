@@ -16,11 +16,15 @@
 
 package com.alibaba.cloud.governance.istio.util;
 
+import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.IpMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
+import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
+import io.envoyproxy.envoy.config.route.v3.QueryParameterMatcher;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
 
 /**
@@ -28,6 +32,10 @@ import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 public final class ConvUtil {
+
+	private static final String HEADER = "header";
+
+	private static final String PARAMETER = "parameter";
 
 	private ConvUtil() {
 
@@ -114,6 +122,35 @@ public final class ConvUtil {
 			return builder.setIgnoreCase(true).build();
 		}
 		return headerMatcher.getStringMatch();
+	}
+
+	public static UrlRule.Parameter parameterMatcher2ParameterRule(
+			QueryParameterMatcher queryParameterMatcher) {
+		UrlRule.Parameter parameter = new UrlRule.Parameter();
+		StringMatcher stringMatcher = ConvUtil
+				.convStringMatcher(queryParameterMatcher.getStringMatch());
+		if (stringMatcher != null) {
+			parameter.setCondition(stringMatcher.getType().toString());
+			parameter.setKey(queryParameterMatcher.getName());
+			parameter.setValue(stringMatcher.getMatcher());
+			parameter.setType(PARAMETER);
+			return parameter;
+		}
+		return null;
+	}
+
+	public static HeaderRule headerMatcher2HeaderRule(HeaderMatcher headerMatcher) {
+		StringMatcher stringMatcher = ConvUtil
+				.convStringMatcher(ConvUtil.headerMatch2StringMatch(headerMatcher));
+		if (stringMatcher != null) {
+			HeaderRule headerRule = new HeaderRule();
+			headerRule.setCondition(stringMatcher.getType().toString());
+			headerRule.setKey(headerMatcher.getName());
+			headerRule.setValue(stringMatcher.getMatcher());
+			headerRule.setType(HEADER);
+			return headerRule;
+		}
+		return null;
 	}
 
 }

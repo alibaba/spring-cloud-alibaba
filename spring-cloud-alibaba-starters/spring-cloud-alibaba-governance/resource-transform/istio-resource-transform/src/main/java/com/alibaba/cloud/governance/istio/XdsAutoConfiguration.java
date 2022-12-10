@@ -16,10 +16,17 @@
 
 package com.alibaba.cloud.governance.istio;
 
+import java.util.List;
+
+import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
+import com.alibaba.cloud.governance.istio.filter.impl.AuthXdsResolveFilter;
+import com.alibaba.cloud.governance.istio.filter.impl.LabelRoutingXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
+import io.envoyproxy.envoy.config.listener.v3.Listener;
+import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -50,6 +57,16 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
+	public XdsResolveFilter<List<Listener>> authXdsResolveFilter() {
+		return new AuthXdsResolveFilter();
+	}
+
+	@Bean
+	public XdsResolveFilter<List<RouteConfiguration>> labelRoutingXdsResolveFilter() {
+		return new LabelRoutingXdsResolveFilter();
+	}
+
+	@Bean
 	public PilotExchanger pilotExchanger(LdsProtocol ldsProtocol, CdsProtocol cdsProtocol,
 			EdsProtocol edsProtocol, RdsProtocol rdsProtocol) {
 		return new PilotExchanger(ldsProtocol, cdsProtocol, edsProtocol, rdsProtocol);
@@ -57,8 +74,10 @@ public class XdsAutoConfiguration {
 
 	@Bean
 	public LdsProtocol ldsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+			XdsScheduledThreadPool xdsScheduledThreadPool,
+			List<XdsResolveFilter<List<Listener>>> filters) {
+		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
+				filters);
 	}
 
 	@Bean
@@ -75,8 +94,10 @@ public class XdsAutoConfiguration {
 
 	@Bean
 	RdsProtocol rdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+			XdsScheduledThreadPool xdsScheduledThreadPool,
+			List<XdsResolveFilter<List<RouteConfiguration>>> filters) {
+		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
+				filters);
 	}
 
 }

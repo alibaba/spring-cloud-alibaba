@@ -9,6 +9,7 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
     <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+    <name>Spring Cloud Starter Alibaba Governance Label Routing</name>
 
     <dependencies>
         <dependency>

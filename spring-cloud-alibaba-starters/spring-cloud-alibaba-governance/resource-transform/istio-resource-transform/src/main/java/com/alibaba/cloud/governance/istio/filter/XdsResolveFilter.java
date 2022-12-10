@@ -14,30 +14,16 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.event;
-
-import com.alibaba.cloud.commons.governance.auth.rule.AuthRules;
-
-import org.springframework.context.ApplicationEvent;
+package com.alibaba.cloud.governance.istio.filter;
 
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public class AuthDataChangedEvent extends ApplicationEvent {
+public interface XdsResolveFilter<T> {
 
-	/**
-	 * Configuration for authentication.
-	 */
-	private final AuthRules authRules;
+	boolean resolve(T t);
 
-	public AuthDataChangedEvent(Object source, AuthRules authRules) {
-		super(source);
-		this.authRules = authRules;
-	}
-
-	public AuthRules getAuthRules() {
-		return authRules;
-	}
+	String getTypeUrl();
 
 }

@@ -16,17 +16,31 @@
 
 package com.alibaba.cloud.commons.governance.event;
 
+import java.util.Collection;
+
+import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
+
 import org.springframework.context.ApplicationEvent;
 
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
 public class LabelRoutingDataChangedEvent extends ApplicationEvent {
 
 	/**
-	 * Create a new {@code ApplicationEvent}.
-	 * @param source the object on which the event initially occurred or with which the
-	 * event is associated (never {@code null})
+	 * Configuration for Label Routing.
 	 */
-	public LabelRoutingDataChangedEvent(Object source) {
+	private final Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList;
+
+	public LabelRoutingDataChangedEvent(Object source,
+			Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList) {
 		super(source);
+		this.untiedRouterDataStructureList = untiedRouterDataStructureList;
+	}
+
+	public Collection<UnifiedRouteDataStructure> getUntiedRouterDataStructureList() {
+		return untiedRouterDataStructureList;
 	}
 
 }
