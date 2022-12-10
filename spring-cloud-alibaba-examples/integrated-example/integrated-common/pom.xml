@@ -11,5 +11,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>integrated-common</artifactId>
+    <name>Spring Cloud Alibaba Integrated Common Example</name>
 
 </project>

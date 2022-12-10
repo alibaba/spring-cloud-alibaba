@@ -11,6 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>integrated-praise-provider</artifactId>
+    <name>Spring Cloud Alibaba Integrated Praise Provider Example</name>
 
     <dependencies>
         <dependency>
