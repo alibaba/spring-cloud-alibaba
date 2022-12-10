@@ -29,6 +29,7 @@ import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +42,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.istio.config.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(XdsConfigProperties.class)
+@AutoConfigureOrder(XdsAutoConfiguration.RESOURCE_TRANSFORM_AUTO_CONFIG_ORDER)
 public class XdsAutoConfiguration {
+
+	/**
+	 * Order of xds auto config.
+	 */
+	public static final int RESOURCE_TRANSFORM_AUTO_CONFIG_ORDER = 100;
 
 	@Autowired
 	private XdsConfigProperties xdsConfigProperties;
