@@ -51,6 +51,7 @@ public class EdsProtocol extends AbstractXdsProtocol<ClusterLoadAssignment> {
 				log.error("unpack cluster failed", e);
 			}
 		}
+		fireXdsFilters(endpoints);
 		return endpoints;
 	}
 

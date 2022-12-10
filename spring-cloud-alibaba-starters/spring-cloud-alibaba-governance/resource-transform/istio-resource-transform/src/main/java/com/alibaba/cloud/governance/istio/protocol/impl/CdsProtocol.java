@@ -53,6 +53,7 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 				log.error("unpack cluster failed", e);
 			}
 		}
+		fireXdsFilters(clusters);
 		return clusters;
 	}
 
