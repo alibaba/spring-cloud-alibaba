@@ -186,16 +186,18 @@ public abstract class AbstractXdsProtocol<T>
 		catch (Exception e) {
 			log.error("Error on resolving resource names from {}", resources);
 		}
-		try {
-			for (XdsResolveFilter<List<T>> filter : filters) {
+		for (XdsResolveFilter<List<T>> filter : filters) {
+			try {
 				if (!filter.resolve(resources)) {
 					return;
 				}
 			}
+			catch (Exception e) {
+				log.error("Error on executing Xds filter {}", filter.getClass().getName(),
+						e);
+			}
 		}
-		catch (Exception e) {
-			log.error("Error on executing Xds filters, resources are {}", resources);
-		}
+
 	}
 
 	private void sendXdsRequest(StreamObserver<DiscoveryRequest> observer,
