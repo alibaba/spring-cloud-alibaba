@@ -3,5 +3,14 @@ server:
 spring:
   application:
     name: integrated-gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: nacos-server:8848
+        file-extension: yaml
+        group: integrated-example
+      discovery:
+        server-addr: nacos-server:8848
+        group: integrated-example
   config:
-    import: optional:cloud:nacos-config.yaml
+    import: optional:nacos:integrated-gateway.yaml

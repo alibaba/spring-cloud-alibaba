@@ -1,8 +1,0 @@
-seata:
-  application-id: ${spring.application.name}
-  tx-service-group: ${spring.application.name}-group
-  service:
-    vgroup-mapping:
-      integrated-order-group: default
-    grouplist:
-      default: seata-server:8091
