@@ -38,6 +38,21 @@ public final class ConvUtil {
 
 	}
 
+	public static String getOpenSergoHost(String endpoint) {
+		if (StringUtils.isNotEmpty(endpoint)) {
+			return endpoint.split(":")[0];
+		}
+		return null;
+	}
+
+	public static Integer getOpenSergoPort(String endpoint) {
+		if (StringUtils.isNotEmpty(endpoint)) {
+			String portStr = endpoint.split(":")[1];
+			return Integer.valueOf(portStr);
+		}
+		return null;
+	}
+
 	public static ClusterFallbackConfig_ClusterConfig convFallbackClusterConfig(ClusterSpecifierPlugin clusterSpecifierPlugin) throws InvalidProtocolBufferException {
 		Message defaultInstance = Internal.getDefaultInstance(ClusterFallbackConfig_ClusterConfig.class);
 		return  (ClusterFallbackConfig_ClusterConfig)defaultInstance.getParserForType().parseFrom(clusterSpecifierPlugin.getExtension().getTypedConfig().getValue());

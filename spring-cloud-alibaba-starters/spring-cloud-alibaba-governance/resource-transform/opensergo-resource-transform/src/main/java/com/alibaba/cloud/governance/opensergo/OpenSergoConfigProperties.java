@@ -24,12 +24,16 @@ public class OpenSergoConfigProperties {
 	/**
 	 * Prefix in yaml.
 	 */
-	public static final String PREFIX = "spring.cloud.opensergo.config";
+	public static final String PREFIX = "spring.cloud.opensergo";
 
-	private String host;
+	/**
+	 *  Configurations about OpenSergo Server Endpoint
+	 */
+	private String endpoint;
 
-	private int port;
-
+	/**
+	 *  Namespace Configuration about OpenSergo Config
+	 */
 	private String namespace = "default";
 
 	public String getNamespace() {
@@ -40,20 +44,11 @@ public class OpenSergoConfigProperties {
 		this.namespace = namespace;
 	}
 
-	public String getHost() {
-		return host;
+	public String getEndpoint() {
+		return endpoint;
 	}
 
-	public void setHost(String host) {
-		this.host = host;
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
 	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
 }

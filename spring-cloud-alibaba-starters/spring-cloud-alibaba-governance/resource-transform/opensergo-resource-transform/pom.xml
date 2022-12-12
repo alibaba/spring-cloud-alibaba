@@ -30,17 +30,14 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>label-routing-data</artifactId>
-            <version>2.2.9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>label-routing-core</artifactId>
-            <version>2.2.9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.opensergo</groupId>
             <artifactId>opensergo-java-sdk</artifactId>
-            <version>0.1.0-beta1</version>
         </dependency>
 
     </dependencies>

@@ -51,6 +51,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.convFallbackClusterConfig;
+import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.getOpenSergoHost;
+import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.getOpenSergoPort;
 
 public class OpenSergoTrafficExchanger {
 
@@ -58,8 +60,6 @@ public class OpenSergoTrafficExchanger {
 			.getLogger(OpenSergoTrafficExchanger.class);
 
 	private OpenSergoClient client;
-
-	private OpenSergoConfigProperties openSergoConfigProperties;
 
 	private ControlPlaneConnection controlPlaneConnection;
 
@@ -71,16 +71,19 @@ public class OpenSergoTrafficExchanger {
 
 	public OpenSergoTrafficExchanger(OpenSergoConfigProperties openSergoConfigProperties,
 			ControlPlaneConnection controlPlaneConnection) {
-		this.openSergoConfigProperties = openSergoConfigProperties;
 		this.controlPlaneConnection = controlPlaneConnection;
-		System.out.println(openSergoConfigProperties);
-		client = new OpenSergoClient(openSergoConfigProperties.getHost(),
-				openSergoConfigProperties.getPort());
+		Integer port = getOpenSergoPort(openSergoConfigProperties.getEndpoint());
+		String host = getOpenSergoHost(openSergoConfigProperties.getEndpoint());
 		try {
-			client.start();
+			if (port != null && StringUtils.isNotEmpty(host)) {
+				client = new OpenSergoClient(host, port);
+				client.start();
+			} else {
+				log.error("OpenSergo endpoint：" + openSergoConfigProperties.getEndpoint() + " is illegal");
+			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			log.error("start OpenSergo client enhance error", e);
 		}
 	}
 
