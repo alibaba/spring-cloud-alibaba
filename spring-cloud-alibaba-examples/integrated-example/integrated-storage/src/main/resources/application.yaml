@@ -18,7 +18,9 @@ spring:
           group: integrated-example
 
   config:
-    import: optional:nacos:integrated-storage.yaml
+    import:
+      - optional:nacos:integrated-storage.yaml?group=integrated-example
+      - optional:nacos:datasource-config.yaml?group=integrated-example
 
 seata:
   application-id: ${spring.application.name}

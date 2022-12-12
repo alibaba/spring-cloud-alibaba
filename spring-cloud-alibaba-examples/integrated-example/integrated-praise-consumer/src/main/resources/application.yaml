@@ -2,7 +2,9 @@ spring:
   application:
     name: integrated-consumer
   config:
-    import: optional:cloud:integrated-consumer.yaml
+    import:
+      - optional:nacos:integrated-consumer.yaml?group=integrated-example
+      - optional:nacos:datasource-config.yaml?group=integrated-example
   cloud:
     nacos:
       config:
