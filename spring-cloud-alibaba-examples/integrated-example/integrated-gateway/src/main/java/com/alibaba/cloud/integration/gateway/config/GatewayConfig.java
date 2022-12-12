@@ -104,10 +104,11 @@ public class GatewayConfig {
 	public CorsWebFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.addAllowedOrigin("*");
 		config.setAllowCredentials(true);
 		config.addAllowedHeader("*");
+		config.addAllowedOriginPattern("*");
 		config.addAllowedMethod("*");
+		config.addAllowedOriginPattern("*");
 		source.registerCorsConfiguration("/**", config);
 
 		return new CorsWebFilter(source);
