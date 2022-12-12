@@ -47,7 +47,8 @@ spring:
         port: ${ISTIOD_PORT:15010}
         polling-pool-size: ${POLLING_POOL_SIZE:10}
         polling-time: ${POLLING_TIMEOUT:10}
-        istiod-token: ${ISTIOD_TOKEN:}        
+        istiod-token: ${ISTIOD_TOKEN:}
+        log-xds: ${LOG_XDS:true}
 ```
 下面解释一下各字段的含义:
 |配置项|key|默认值|说明
@@ -59,6 +60,7 @@ spring:
 |SCA去Istio拉取配置的线程池大小| spring.cloud.istio.config.polling-pool-size|10|
 |SCA去Istio拉取配置的间隔时间| spring.cloud.istio.config.polling-time|30|单位为秒
 |连接Istio<br>15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的`/var/run/secrets/tokens/istio-token`文件的内容|
+|是否打印xDS相关日志| spring.cloud.istio.config.log-xds|true|
 ### 运行应用
 需要将应用运行在K8s环境中，并给运行的应用将K8s的一些元信息注入以下环境变量中:
 |环境变量名|K8s pod metadata name|
