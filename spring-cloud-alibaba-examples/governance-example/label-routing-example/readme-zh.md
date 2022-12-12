@@ -153,7 +153,7 @@ List<MatchService> matchServices = new ArrayList<>();
       <artifactId>istio-resource-transform</artifactId>
    </dependency>
 ```
-2. 在application.yml配置文件中配置Istio控制面的相关信息
+2. 在`src/main/resources/application.yml`配置文件中配置Istio控制面的相关信息
 ```
 server:
   port: 18084
@@ -187,6 +187,8 @@ spring:
         polling-time: ${POLLING_TIME:10}
         # Istiod鉴权token(访问Istiod 15012端口时可用)
         istiod-token: ${ISTIOD_TOKEN:}
+        # 是否打印xds相关日志
+        log-xds: ${LOG_XDS:true}
 ```
 ### 应用启动
 启动一个三个模块的启动类，分别为IstioConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。

@@ -186,6 +186,8 @@ spring:
         polling-time: ${POLLING_TIME:10}
         # Istiod token(For Istio 15012 port)
         istiod-token: ${ISTIOD_TOKEN:}
+        # Whether to print xds log
+        log-xds: ${LOG_XDS:true}
 ```
 ### Startup Application
 Start IstioConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.
