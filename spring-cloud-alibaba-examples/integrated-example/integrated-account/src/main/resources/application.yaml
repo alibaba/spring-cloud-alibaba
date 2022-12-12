@@ -17,7 +17,9 @@ spring:
           dataid: datasource-config.yaml
           group: integrated-example
   config:
-    import: optional:nacos:integrated-account.yaml
+    import:
+      - optional:nacos:integrated-account.yaml?group=integrated-example
+      - optional:nacos:datasource-config.yaml?group=integrated-example
 
 seata:
   application-id: integrated-account

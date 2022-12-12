@@ -12,7 +12,7 @@ spring:
         group: integrated-example
 
   config:
-    import: optional:cloud:integrated-provider.yaml
+    import: optional:nacos:integrated-provider.yaml?group=integrated-example
 
 server:
   port: 8015

@@ -13,4 +13,4 @@ spring:
         server-addr: nacos-server:8848
         group: integrated-example
   config:
-    import: optional:nacos:integrated-gateway.yaml
+    import: optional:nacos:integrated-gateway.yaml?group=integrated-example
