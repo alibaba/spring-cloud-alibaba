@@ -94,11 +94,11 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			}
 			else {
 				Tracer.traceEntry(e, hostEntry);
-				if (e instanceof IOException) {
-					throw (IOException) e;
+				if (e instanceof IOException ioException) {
+					throw ioException;
 				}
-				else if (e instanceof RuntimeException) {
-					throw (RuntimeException) e;
+				else if (e instanceof RuntimeException runtimeException) {
+					throw runtimeException;
 				}
 				else {
 					throw new IOException(e);

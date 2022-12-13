@@ -98,8 +98,8 @@ public abstract class SentinelConverter<T extends Object>
 			}
 		}
 		catch (Exception e) {
-			if (e instanceof RuntimeException) {
-				throw (RuntimeException) e;
+			if (e instanceof RuntimeException runtimeException) {
+				throw runtimeException;
 			}
 			else {
 				throw new RuntimeException("convert error: " + e.getMessage(), e);

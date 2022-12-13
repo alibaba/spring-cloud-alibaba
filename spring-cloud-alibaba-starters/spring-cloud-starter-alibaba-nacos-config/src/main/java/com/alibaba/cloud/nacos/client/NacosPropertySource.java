@@ -78,8 +78,8 @@ public class NacosPropertySource extends MapPropertySource {
 		// If only one, return the internal element, otherwise wrap it.
 		if (propertySources.size() == 1) {
 			PropertySource propertySource = propertySources.get(0);
-			if (propertySource != null && propertySource.getSource() instanceof Map) {
-				return (Map<String, Object>) propertySource.getSource();
+			if (propertySource != null && propertySource.getSource() instanceof Map source) {
+				return source;
 			}
 		}
 
@@ -89,12 +89,11 @@ public class NacosPropertySource extends MapPropertySource {
 			if (propertySource == null) {
 				continue;
 			}
-			if (propertySource instanceof MapPropertySource) {
+			if (propertySource instanceof MapPropertySource mapPropertySource) {
 				// If the Nacos configuration file uses "---" to separate property name,
 				// propertySources will be multiple documents, and every document is a
 				// map.
 				// see org.springframework.boot.env.YamlPropertySourceLoader#load
-				MapPropertySource mapPropertySource = (MapPropertySource) propertySource;
 				Map<String, Object> source = mapPropertySource.getSource();
 				sourceMap.putAll(source);
 			}

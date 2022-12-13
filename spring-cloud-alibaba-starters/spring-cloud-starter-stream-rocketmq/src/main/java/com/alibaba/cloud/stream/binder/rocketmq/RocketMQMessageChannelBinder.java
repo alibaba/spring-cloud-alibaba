@@ -163,19 +163,17 @@ public class RocketMQMessageChannelBinder extends
 			ConsumerDestination destination, String group,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> properties) {
 		return message -> {
-			if (message.getPayload() instanceof MessagingException) {
+			if (message.getPayload() instanceof MessagingException payload) {
 				AcknowledgmentCallback ack = StaticMessageHeaderAccessor
 						.getAcknowledgmentCallback(
-								((MessagingException) message.getPayload())
-										.getFailedMessage());
+								payload.getFailedMessage());
 				if (ack != null) {
 					ErrorAcknowledgeHandler handler = RocketMQBeanContainerCache.getBean(
 							properties.getExtension().getPull().getErrAcknowledge(),
 							ErrorAcknowledgeHandler.class,
 							new DefaultErrorAcknowledgeHandler());
 					ack.acknowledge(
-							handler.handler(((MessagingException) message.getPayload())
-									.getFailedMessage()));
+							handler.handler(payload.getFailedMessage()));
 				}
 			}
 		};

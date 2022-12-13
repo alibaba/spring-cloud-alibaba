@@ -78,9 +78,8 @@ public class NacosWatch implements SmartLifecycle, DisposableBean {
 					event -> new EventListener() {
 						@Override
 						public void onEvent(Event event) {
-							if (event instanceof NamingEvent) {
-								List<Instance> instances = ((NamingEvent) event)
-										.getInstances();
+							if (event instanceof NamingEvent namingEvent) {
+								List<Instance> instances = namingEvent.getInstances();
 								Optional<Instance> instanceOptional = selectCurrentInstance(
 										instances);
 								instanceOptional.ifPresent(currentInstance -> {

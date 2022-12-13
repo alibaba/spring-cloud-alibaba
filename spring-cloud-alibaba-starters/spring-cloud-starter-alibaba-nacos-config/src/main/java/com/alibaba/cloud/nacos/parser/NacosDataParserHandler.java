@@ -95,8 +95,8 @@ public final class NacosDataParserHandler {
 			}
 			return propertySourceList.stream().filter(Objects::nonNull)
 					.map(propertySource -> {
-						if (propertySource instanceof EnumerablePropertySource) {
-							String[] propertyNames = ((EnumerablePropertySource) propertySource)
+						if (propertySource instanceof EnumerablePropertySource enumerablePropertySource) {
+							String[] propertyNames = enumerablePropertySource
 									.getPropertyNames();
 							if (propertyNames != null && propertyNames.length > 0) {
 								Map<String, Object> map = new LinkedHashMap<>();

@@ -161,7 +161,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 			org.apache.rocketmq.common.message.Message mqMessage = RocketMQMessageConverterSupport
 					.convertMessage2MQ(destination.getName(), message);
 			SendResult sendResult;
-			if (defaultMQProducer instanceof TransactionMQProducer) {
+			if (defaultMQProducer instanceof TransactionMQProducer translateMQProducer) {
 				TransactionListener transactionListener = RocketMQBeanContainerCache
 						.getBean(mqProducerProperties.getTransactionListener(),
 								TransactionListener.class);
@@ -169,8 +169,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 					throw new MessagingException(
 							"TransactionMQProducer must have a TransactionListener !!! ");
 				}
-				((TransactionMQProducer) defaultMQProducer)
-						.setTransactionListener(transactionListener);
+				translateMQProducer.setTransactionListener(transactionListener);
 				if (log.isDebugEnabled()) {
 					log.debug("send transaction message ->{}", mqMessage);
 				}

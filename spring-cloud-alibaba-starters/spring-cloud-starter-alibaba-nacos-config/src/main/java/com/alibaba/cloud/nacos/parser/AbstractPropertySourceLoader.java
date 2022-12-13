@@ -110,14 +110,12 @@ public abstract class AbstractPropertySourceLoader implements PropertySourceLoad
 			String fullKey = StringUtils.isEmpty(parentKey) ? key : key.startsWith("[")
 					? parentKey.concat(key) : parentKey.concat(DOT).concat(key);
 
-			if (value instanceof Map) {
-				Map<String, Object> map = (Map<String, Object>) value;
+			if (value instanceof Map map) {
 				flattenedMap(result, map, fullKey);
 				continue;
 			}
-			else if (value instanceof Collection) {
+			else if (value instanceof Collection collection) {
 				int count = 0;
-				Collection<Object> collection = (Collection<Object>) value;
 				for (Object object : collection) {
 					flattenedMap(result,
 							Collections.singletonMap("[" + (count++) + "]", object),

@@ -77,8 +77,8 @@ public class JacksonRocketMQHeaderMapper extends AbstractRocketMQHeaderMapper {
 		final Map<String, String> jsonHeaders = new HashMap<>();
 		headers.forEach((key, value) -> {
 			if (matches(key)) {
-				if (value instanceof String) {
-					target.put(key, (String) value);
+				if (value instanceof String strValue) {
+					target.put(key, strValue);
 				}
 				else {
 					try {
