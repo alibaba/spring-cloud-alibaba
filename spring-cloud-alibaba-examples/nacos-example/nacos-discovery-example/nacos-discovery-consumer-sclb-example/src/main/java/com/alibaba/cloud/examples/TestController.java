@@ -16,9 +16,8 @@
 
 package com.alibaba.cloud.examples;
 
-import javax.annotation.Resource;
-
 import com.alibaba.cloud.examples.feign.EchoClient;
+import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
