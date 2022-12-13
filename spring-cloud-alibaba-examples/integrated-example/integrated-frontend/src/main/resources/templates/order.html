@@ -34,7 +34,7 @@
         var userId = $("#userId").val();
         var commodityCode = $("#commodityCode").val();
         $.ajax({
-            url: "http://localhost:30010/storage/",
+            url: "http://gateway-service:30010/storage/",
             type: "get",
             dataType: "json",
             data: "commodityCode=" + commodityCode,
@@ -44,7 +44,7 @@
             }
         });
         $.ajax({
-            url: "http://localhost:30010/account/",
+            url: "http://gateway-service:30010/account/",
             type: "get",
             dataType: "json",
             data: "userId=" + userId,
@@ -55,14 +55,14 @@
         });
         $.ajax({
             type: "POST",
-            url: "http://localhost:30010/order/create",
+            url: "http://gateway-service:30010/order/create",
             data: $('#orderForm').serialize(),
             dataType: 'json',
             async:false,
             success: function (res) {
                 $('#orderResultSection').append(`<p> [${getDateTime()}] ${res.message} </p>`);
                 $.ajax({
-                    url: "http://localhost:30010/storage/",
+                    url: "http://gateway-service:30010/storage/",
                     type: "get",
                     dataType: "json",
                     data: "commodityCode=" + commodityCode,
