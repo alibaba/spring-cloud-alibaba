@@ -92,12 +92,8 @@ public class SmartConfigurationPropertiesRebinder
 				// Backwards compatible
 				|| event.getKeys().equals(event.getSource())) {
 			switch (refreshBehavior) {
-			case SPECIFIC_BEAN:
-				rebindSpecificBean(event);
-				break;
-			default:
-				rebind();
-				break;
+			case SPECIFIC_BEAN -> rebindSpecificBean(event);
+			default -> rebind();
 			}
 		}
 	}

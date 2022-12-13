@@ -99,29 +99,13 @@ public class AbstractDataSourceProperties {
 
 	public void postRegister(AbstractDataSource dataSource) {
 		switch (this.getRuleType()) {
-		case FLOW:
-			FlowRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case DEGRADE:
-			DegradeRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case PARAM_FLOW:
-			ParamFlowRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case SYSTEM:
-			SystemRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case AUTHORITY:
-			AuthorityRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case GW_FLOW:
-			GatewayRuleManager.register2Property(dataSource.getProperty());
-			break;
-		case GW_API_GROUP:
-			GatewayApiDefinitionManager.register2Property(dataSource.getProperty());
-			break;
-		default:
-			break;
+		case FLOW -> FlowRuleManager.register2Property(dataSource.getProperty());
+		case DEGRADE -> DegradeRuleManager.register2Property(dataSource.getProperty());
+		case PARAM_FLOW -> ParamFlowRuleManager.register2Property(dataSource.getProperty());
+		case SYSTEM -> SystemRuleManager.register2Property(dataSource.getProperty());
+		case AUTHORITY -> AuthorityRuleManager.register2Property(dataSource.getProperty());
+		case GW_FLOW -> GatewayRuleManager.register2Property(dataSource.getProperty());
+		case GW_API_GROUP -> GatewayApiDefinitionManager.register2Property(dataSource.getProperty());
 		}
 	}
 
