@@ -62,8 +62,8 @@ public class SidecarHealthIndicator extends AbstractHealthIndicator {
 				return;
 			}
 			Object status = map.get("status");
-			if (status instanceof String) {
-				builder.status(status.toString());
+			if (status instanceof String strStatus) {
+				builder.status(strStatus);
 			}
 			else {
 				this.getWarning(builder);

@@ -37,9 +37,8 @@ public class SeataContextBeanPostProcessor implements BeanPostProcessor {
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName)
 			throws BeansException {
-		if (bean instanceof FeignContext && !(bean instanceof SeataFeignContext)) {
-			return new SeataFeignContext(getSeataFeignObjectWrapper(),
-					(FeignContext) bean);
+		if (bean instanceof FeignContext feignContext && !(bean instanceof SeataFeignContext)) {
+			return new SeataFeignContext(getSeataFeignObjectWrapper(), feignContext);
 		}
 		return bean;
 	}

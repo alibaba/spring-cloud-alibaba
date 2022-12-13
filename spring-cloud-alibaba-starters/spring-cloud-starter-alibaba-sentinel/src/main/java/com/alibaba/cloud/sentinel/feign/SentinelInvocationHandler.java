@@ -90,8 +90,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 		Object result;
 		MethodHandler methodHandler = this.dispatch.get(method);
 		// only handle by HardCodedTarget
-		if (target instanceof Target.HardCodedTarget) {
-			Target.HardCodedTarget hardCodedTarget = (Target.HardCodedTarget) target;
+		if (target instanceof Target.HardCodedTarget hardCodedTarget) {
 			MethodMetadata methodMetadata = SentinelContractHolder.METADATA_MAP
 					.get(hardCodedTarget.type().getName()
 							+ Feign.configKey(hardCodedTarget.type(), method));
@@ -151,9 +150,8 @@ public class SentinelInvocationHandler implements InvocationHandler {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof SentinelInvocationHandler) {
-			SentinelInvocationHandler other = (SentinelInvocationHandler) obj;
-			return target.equals(other.target);
+		if (obj instanceof SentinelInvocationHandler sentinelInvocationHandler) {
+			return target.equals(sentinelInvocationHandler.target);
 		}
 		return false;
 	}

@@ -101,11 +101,11 @@ public final class RocketMQMessageConverterSupport {
 		Object payloadObj = message.getPayload();
 		byte[] payloads;
 		try {
-			if (payloadObj instanceof String) {
-				payloads = ((String) payloadObj).getBytes(charset);
+			if (payloadObj instanceof String payload) {
+				payloads = payload.getBytes(charset);
 			}
-			else if (payloadObj instanceof byte[]) {
-				payloads = (byte[]) message.getPayload();
+			else if (payloadObj instanceof byte[] payload) {
+				payloads = payload;
 			}
 			else {
 				String jsonObj = (String) MESSAGE_CONVERTER.fromMessage(message,

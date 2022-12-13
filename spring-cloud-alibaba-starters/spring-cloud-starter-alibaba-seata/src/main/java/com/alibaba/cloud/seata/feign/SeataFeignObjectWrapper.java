@@ -41,15 +41,14 @@ public class SeataFeignObjectWrapper {
 	}
 
 	Object wrap(Object bean) {
-		if (bean instanceof Client && !(bean instanceof SeataFeignClient)) {
-			if (bean instanceof FeignBlockingLoadBalancerClient) {
-				FeignBlockingLoadBalancerClient client = (FeignBlockingLoadBalancerClient) bean;
-				return new SeataFeignBlockingLoadBalancerClient(client.getDelegate(),
+		if (bean instanceof Client client && !(bean instanceof SeataFeignClient)) {
+			if (bean instanceof FeignBlockingLoadBalancerClient feignBlockingLoadBalancerClient) {
+				return new SeataFeignBlockingLoadBalancerClient(feignBlockingLoadBalancerClient.getDelegate(),
 						beanFactory.getBean(BlockingLoadBalancerClient.class),
 						beanFactory.getBean(LoadBalancerClientFactory.class),
 						this);
 			}
-			return new SeataFeignClient(this.beanFactory, (Client) bean);
+			return new SeataFeignClient(this.beanFactory, client);
 		}
 		return bean;
 	}
