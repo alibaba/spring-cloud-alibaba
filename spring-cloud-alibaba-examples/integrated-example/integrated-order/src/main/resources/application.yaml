@@ -8,14 +8,11 @@ spring:
     nacos:
       discovery:
         server-addr: nacos-server:8848
-        group: integrated-example
       config:
         server-addr: nacos-server:8848
         file-extension: yaml
-        group: integrated-example
         shared-configs[0]:
           dataid: datasource-config.yaml
-          group: integrated-example
   config:
     import:
       - optional:nacos:integrated-order.yaml?group=integrated-example

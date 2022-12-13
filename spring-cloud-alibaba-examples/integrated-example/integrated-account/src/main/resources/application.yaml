@@ -8,22 +8,19 @@ spring:
     nacos:
       discovery:
         server-addr: nacos-server:8848
-        group: integrated-example
       config:
         server-addr: nacos-server:8848
         file-extension: yaml
-        group: integrated-example
         shared-configs[0]:
           dataid: datasource-config.yaml
-          group: integrated-example
   config:
     import:
       - optional:nacos:integrated-account.yaml?group=integrated-example
       - optional:nacos:datasource-config.yaml?group=integrated-example
 
 seata:
-  application-id: integrated-account
-  tx-service-group: integrated-account-group
+  application-id: ${spring.application.name}
+  tx-service-group: ${spring.application.name}-group
   service:
     vgroup-mapping:
       integrated-account-group: default
