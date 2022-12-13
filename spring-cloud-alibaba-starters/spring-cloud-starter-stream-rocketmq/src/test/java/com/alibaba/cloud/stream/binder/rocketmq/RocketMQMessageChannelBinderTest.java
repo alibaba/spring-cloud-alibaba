@@ -16,12 +16,12 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
-import javax.annotation.Resource;
 
 import com.alibaba.cloud.stream.binder.rocketmq.autoconfigurate.ExtendedBindingHandlerMappingsProviderConfiguration;
 import com.alibaba.cloud.stream.binder.rocketmq.autoconfigurate.RocketMQBinderAutoConfiguration;
 import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
+import jakarta.annotation.Resource;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -56,28 +56,27 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class RocketMQMessageChannelBinderTest {
 	@Resource
 	RocketMQMessageChannelBinder binder;
-	
-	// todo spring boot 3.0 upgrade: fix spring cloud stream binder
-	// @Test
-	// public void createConsumerEndpoint() throws Exception {
-	// 	TestConsumerDestination destination = new TestConsumerDestination("test");
-	// 	MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, "test",
-	// 			new ExtendedConsumerProperties<>(new RocketMQConsumerProperties()));
-	// 	Assertions.assertThat(consumerEndpoint).isNotNull();
-	// }
-	//
-	// @Test
-	// public void createAnymousConsumerEndpoint() throws Exception {
-	// 	ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties
-	// 			= new ExtendedConsumerProperties<>(new RocketMQConsumerProperties());
-	//
-	// 	TestConsumerDestination destination = new TestConsumerDestination("test");
-	// 	MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, null,
-	// 			extendedConsumerProperties);
-	// 	Assertions.assertThat(consumerEndpoint).isNotNull();
-	// 	Assertions.assertThat(extendedConsumerProperties.getExtension().getGroup())
-	// 			.isEqualTo(RocketMQConst.DEFAULT_GROUP + "_test");
-	// }
+
+	@Test
+	public void createConsumerEndpoint() throws Exception {
+		TestConsumerDestination destination = new TestConsumerDestination("test");
+		MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, "test",
+				new ExtendedConsumerProperties<>(new RocketMQConsumerProperties()));
+		Assertions.assertThat(consumerEndpoint).isNotNull();
+	}
+
+	@Test
+	public void createAnymousConsumerEndpoint() throws Exception {
+		ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties
+				= new ExtendedConsumerProperties<>(new RocketMQConsumerProperties());
+
+		TestConsumerDestination destination = new TestConsumerDestination("test");
+		MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, null,
+				extendedConsumerProperties);
+		Assertions.assertThat(consumerEndpoint).isNotNull();
+		Assertions.assertThat(extendedConsumerProperties.getExtension().getGroup())
+				.isEqualTo(RocketMQConst.DEFAULT_GROUP + "_test");
+	}
 
 	@Test
 	public void createDLQAnymousConsumerEndpoint() throws Exception {
