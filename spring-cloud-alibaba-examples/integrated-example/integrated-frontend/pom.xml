@@ -11,6 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
 	<artifactId>integrated-frontend</artifactId>
+	<name>Spring Cloud Alibaba Integrated Frontend Example</name>
 
 	<dependencies>
 		<dependency>
