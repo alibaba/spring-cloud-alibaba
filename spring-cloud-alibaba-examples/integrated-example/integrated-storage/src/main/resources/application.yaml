@@ -10,7 +10,7 @@ spring:
         server-addr: nacos-server:8848
       config:
         server-addr: nacos-server:8848
-Delete duplicate define  config:
+  config:
     import:
       - optional:nacos:integrated-storage.yaml?group=integrated-example
       - optional:nacos:datasource-config.yaml?group=integrated-example
