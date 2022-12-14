@@ -10,10 +10,7 @@ spring:
         server-addr: nacos-server:8848
       config:
         server-addr: nacos-server:8848
-        file-extension: yaml
-        shared-configs[0]:
-          dataid: datasource-config.yaml
-  config:
+Delete duplicate define  config:
     import:
       - optional:nacos:integrated-storage.yaml?group=integrated-example
       - optional:nacos:datasource-config.yaml?group=integrated-example

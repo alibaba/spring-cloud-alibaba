@@ -1,19 +1,17 @@
 spring:
   application:
     name: integrated-consumer
-  config:
-    import:
-      - optional:nacos:integrated-consumer.yaml?group=integrated-example
-      - optional:nacos:datasource-config.yaml?group=integrated-example
   cloud:
     nacos:
       config:
         file-extension: yaml
         server-addr: nacos-server:8848
-        shared-configs[0]:
-          dataid: datasource-config.yaml
       discovery:
         server-addr: nacos-server:8848
+  config:
+    import:
+      - optional:nacos:integrated-consumer.yaml?group=integrated-example
+      - optional:nacos:datasource-config.yaml?group=integrated-example
 
 
 server:
