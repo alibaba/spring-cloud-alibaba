@@ -18,9 +18,9 @@ package com.alibaba.cloud.examples;
 
 import java.util.Map;
 
-import javax.annotation.Resource;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import jakarta.annotation.Resource;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

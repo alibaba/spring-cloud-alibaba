@@ -17,7 +17,7 @@
         <module>nacos-tests</module>
         <!-- todo spring boot 3.0 upgrade: wait to support jdk17 and spring cloud stream -->
         <!-- <module>rocketmq-tests</module> -->
-        <!-- <module>sentinel-tests</module> -->
+        <module>sentinel-tests</module>
     </modules>
 
     <properties>
