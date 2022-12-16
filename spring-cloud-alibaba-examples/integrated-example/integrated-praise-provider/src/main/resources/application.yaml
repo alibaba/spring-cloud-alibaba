@@ -6,11 +6,12 @@ spring:
       config:
         file-extension: yaml
         server-addr: nacos-server:8848
+        group: integrated-example
       discovery:
         server-addr: nacos-server:8848
-
+        group: integrated-example
   config:
-    import: optional:nacos:integrated-provider.yaml?group=integrated-example
+    import: optional:nacos:integrated-provider.yaml
 
 server:
   port: 8015
