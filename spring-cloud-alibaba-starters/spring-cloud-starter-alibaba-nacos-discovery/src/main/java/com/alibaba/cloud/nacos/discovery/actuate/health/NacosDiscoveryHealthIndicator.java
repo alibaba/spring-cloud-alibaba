@@ -63,15 +63,9 @@ public class NacosDiscoveryHealthIndicator extends AbstractHealthIndicator {
 		// Set the status to Builder
 		builder.status(status);
 		switch (status) {
-		case STATUS_UP:
-			builder.up();
-			break;
-		case STATUS_DOWN:
-			builder.down();
-			break;
-		default:
-			builder.unknown();
-			break;
+		case STATUS_UP -> builder.up();
+		case STATUS_DOWN -> builder.down();
+		default -> builder.unknown();
 		}
 	}
 

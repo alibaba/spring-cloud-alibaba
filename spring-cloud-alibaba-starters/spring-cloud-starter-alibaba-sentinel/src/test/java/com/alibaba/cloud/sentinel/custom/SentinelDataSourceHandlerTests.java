@@ -85,8 +85,8 @@ public class SentinelDataSourceHandlerTests {
 		assertThat(propertyValues).anyMatch(propertyValue -> "namespaceName".equals(propertyValue.getName())
 				&& dataSourceProperties.getNamespaceName().equals(propertyValue.getValue()));
 		assertThat(propertyValues).anyMatch(propertyValue -> "converter".equals(propertyValue.getName())
-				&& propertyValue.getValue() instanceof RuntimeBeanReference
-				&& ((RuntimeBeanReference) propertyValue.getValue()).getBeanName().equals("sentinel-" + dataSourceProperties.getDataType() + "-" + dataSourceProperties.getRuleType().getName() + "-converter"));
+				&& propertyValue.getValue() instanceof RuntimeBeanReference value
+				&& value.getBeanName().equals("sentinel-" + dataSourceProperties.getDataType() + "-" + dataSourceProperties.getRuleType().getName() + "-converter"));
 	}
 
 }

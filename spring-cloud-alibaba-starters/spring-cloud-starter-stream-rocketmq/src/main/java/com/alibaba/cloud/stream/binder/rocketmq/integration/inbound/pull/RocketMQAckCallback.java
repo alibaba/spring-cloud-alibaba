@@ -77,15 +77,8 @@ public class RocketMQAckCallback implements AcknowledgmentCallback {
 			try {
 				long offset = messageExt.getQueueOffset();
 				switch (status) {
-				case REJECT:
-				case ACCEPT:
-					consumer.committed(messageQueue);
-					break;
-				case REQUEUE:
-					consumer.seek(messageQueue, offset);
-					break;
-				default:
-					break;
+				case REJECT, ACCEPT -> consumer.committed(messageQueue);
+				case REQUEUE -> consumer.seek(messageQueue, offset);
 				}
 			}
 			catch (MQClientException e) {

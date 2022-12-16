@@ -68,10 +68,9 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			Class<?> beanType, String beanName) {
 		if (checkSentinelProtect(beanDefinition, beanType, beanName)) {
 			SentinelRestTemplate sentinelRestTemplate;
-			if (beanDefinition.getSource() instanceof StandardMethodMetadata) {
-				sentinelRestTemplate = ((StandardMethodMetadata) beanDefinition
-						.getSource()).getIntrospectedMethod()
-								.getAnnotation(SentinelRestTemplate.class);
+			if (beanDefinition.getSource() instanceof StandardMethodMetadata sentinelSource) {
+				sentinelRestTemplate = sentinelSource.getIntrospectedMethod()
+						.getAnnotation(SentinelRestTemplate.class);
 			}
 			else {
 				sentinelRestTemplate = beanDefinition.getResolvedFactoryMethod()
@@ -117,11 +116,11 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		}
 		Class[] args;
 		if (type.equals(SentinelConstants.URLCLEANER_TYPE)) {
-			args = new Class[] { String.class };
+			args = new Class[] {String.class};
 		}
 		else {
-			args = new Class[] { HttpRequest.class, byte[].class,
-					ClientHttpRequestExecution.class, BlockException.class };
+			args = new Class[] {HttpRequest.class, byte[].class,
+					ClientHttpRequestExecution.class, BlockException.class};
 		}
 		String argsStr = Arrays.toString(
 				Arrays.stream(args).map(clazz -> clazz.getSimpleName()).toArray());
@@ -174,7 +173,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	private boolean checkMethodMetadataReadingVisitor(RootBeanDefinition beanDefinition) {
 		return beanDefinition.getSource() instanceof MethodMetadata
 				&& ((MethodMetadata) beanDefinition.getSource())
-						.isAnnotated(SentinelRestTemplate.class.getName());
+				.isAnnotated(SentinelRestTemplate.class.getName());
 	}
 
 	@Override
