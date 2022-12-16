@@ -106,7 +106,6 @@ public class GatewayConfig {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
 		config.addAllowedHeader("*");
-		config.addAllowedOriginPattern("*");
 		config.addAllowedMethod("*");
 		config.addAllowedOriginPattern("*");
 		source.registerCorsConfiguration("/**", config);

@@ -7,8 +7,10 @@ spring:
     nacos:
       config:
         server-addr: nacos-server:8848
+        group: integrated-example
         file-extension: yaml
       discovery:
         server-addr: nacos-server:8848
+        group: integrated-example
   config:
-    import: optional:nacos:integrated-gateway.yaml?group=integrated-example
+    import: optional:nacos:integrated-gateway.yaml

@@ -8,12 +8,15 @@ spring:
     nacos:
       discovery:
         server-addr: nacos-server:8848
+        group: integrated-example
       config:
         server-addr: nacos-server:8848
+        group: integrated-example
+        file-extension: yaml
   config:
     import:
-      - optional:nacos:integrated-order.yaml?group=integrated-example
-      - optional:nacos:datasource-config.yaml?group=integrated-example
+      - optional:nacos:integrated-order.yaml
+      - optional:nacos:datasource-config.yaml
 
 seata:
   application-id: ${spring.application.name}
