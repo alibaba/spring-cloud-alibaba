@@ -19,7 +19,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-cloud-stream-test-support.version>4.0.0-M1</spring-cloud-stream-test-support.version>
+    <spring-cloud-stream-test-support.version>4.0.0</spring-cloud-stream-test-support.version>
   </properties>
 
   <dependencies>
