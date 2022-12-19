@@ -21,19 +21,19 @@ import java.util.Map;
 
 import feign.Client;
 
-import org.springframework.cloud.openfeign.FeignContext;
+import org.springframework.cloud.openfeign.FeignClientFactory;
 
 /**
  * @author xiaojing
  */
-public class SeataFeignContext extends FeignContext {
+public class SeataFeignContext extends FeignClientFactory {
 
 	private final SeataFeignObjectWrapper seataFeignObjectWrapper;
 
-	private final FeignContext delegate;
+	private final FeignClientFactory delegate;
 
 	SeataFeignContext(SeataFeignObjectWrapper seataFeignObjectWrapper,
-			FeignContext delegate) {
+			FeignClientFactory delegate) {
 		this.seataFeignObjectWrapper = seataFeignObjectWrapper;
 		this.delegate = delegate;
 	}
