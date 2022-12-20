@@ -18,16 +18,22 @@ package com.alibaba.cloud.seata.feign;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.core.Ordered;
 
 /**
  * @author xiaojing
  */
-public class SeataBeanPostProcessor implements BeanPostProcessor {
+public class SeataBeanPostProcessor implements BeanPostProcessor, Ordered {
 
 	private final SeataFeignObjectWrapper seataFeignObjectWrapper;
 
 	SeataBeanPostProcessor(SeataFeignObjectWrapper seataFeignObjectWrapper) {
 		this.seataFeignObjectWrapper = seataFeignObjectWrapper;
+	}
+
+	@Override
+	public int getOrder() {
+		return HIGHEST_PRECEDENCE;
 	}
 
 	@Override
