@@ -56,6 +56,27 @@
 		<module>integrated-example/integrated-frontend</module>
 	</modules>
 
+    <properties>
+        <seata.version>1.6.1-SNAPSHOT</seata.version>
+        <nacos-client.version>1.4.2</nacos-client.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.seata</groupId>
+                <artifactId>seata-all</artifactId>
+                <version>${seata.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
     <build>
         <plugins>
             <plugin>
@@ -69,5 +90,55 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>native</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-maven-plugin</artifactId>
+                            <configuration>
+                                <image>
+                                    <builder>paketobuildpacks/builder:tiny</builder>
+                                    <env>
+                                        <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+                                    </env>
+                                </image>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>process-aot</id>
+                                    <goals>
+                                        <goal>process-aot</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.graalvm.buildtools</groupId>
+                            <artifactId>native-maven-plugin</artifactId>
+                            <configuration>
+                                <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+                                <metadataRepository>
+                                    <enabled>true</enabled>
+                                </metadataRepository>
+                                <requiredVersion>22.3</requiredVersion>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>add-reachability-metadata</id>
+                                    <goals>
+                                        <goal>add-reachability-metadata</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

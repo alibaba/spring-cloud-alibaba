@@ -17,7 +17,7 @@
         <dependency>
             <groupId>io.seata</groupId>
             <artifactId>seata-server</artifactId>
-            <version>1.5.0</version>
+            <version>${seata.version}</version>
         </dependency>
     </dependencies>
 
