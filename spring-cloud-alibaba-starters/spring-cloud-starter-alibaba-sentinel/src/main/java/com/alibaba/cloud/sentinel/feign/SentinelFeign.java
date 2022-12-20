@@ -29,8 +29,8 @@ import feign.Target;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.cloud.openfeign.FeignClientFactory;
 import org.springframework.cloud.openfeign.FeignClientFactoryBean;
-import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.GenericApplicationContext;
@@ -59,7 +59,7 @@ public final class SentinelFeign {
 
 		private ApplicationContext applicationContext;
 
-		private FeignContext feignContext;
+		private FeignClientFactory feignClientFactory;
 
 		@Override
 		public Feign.Builder invocationHandlerFactory(
@@ -119,7 +119,7 @@ public final class SentinelFeign {
 
 				private Object getFromContext(String name, String type,
 						Class fallbackType, Class targetType) {
-					Object fallbackInstance = feignContext.getInstance(name,
+					Object fallbackInstance = feignClientFactory.getInstance(name,
 							fallbackType);
 					if (fallbackInstance == null) {
 						throw new IllegalStateException(String.format(
@@ -156,7 +156,7 @@ public final class SentinelFeign {
 		public void setApplicationContext(ApplicationContext applicationContext)
 				throws BeansException {
 			this.applicationContext = applicationContext;
-			feignContext = this.applicationContext.getBean(FeignContext.class);
+			feignClientFactory = this.applicationContext.getBean(FeignClientFactory.class);
 		}
 
 	}

@@ -70,6 +70,7 @@ public class RocketMQMessageChannelBinderTest {
 		ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties
 				= new ExtendedConsumerProperties<>(new RocketMQConsumerProperties());
 
+		extendedConsumerProperties.populateBindingName("input1");
 		TestConsumerDestination destination = new TestConsumerDestination("test");
 		MessageProducer consumerEndpoint = binder.createConsumerEndpoint(destination, null,
 				extendedConsumerProperties);
