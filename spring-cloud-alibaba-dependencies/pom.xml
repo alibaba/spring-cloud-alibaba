@@ -20,7 +20,7 @@
     <properties>
         <revision>2022.0.0.0-SNAPSHOT</revision>
         <sentinel.version>1.8.6</sentinel.version>
-        <seata.version>1.5.2</seata.version>
+        <seata.version>1.6.1-SNAPSHOT</seata.version>
         <nacos.client.version>2.0.4</nacos.client.version>
         <spring.context.support.version>1.0.11</spring.context.support.version>
 
@@ -328,5 +328,16 @@
         </profile>
 
     </profiles>
+
+    <repositories>
+        <repository>
+            <id>elife</id>
+            <name>elife</name>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>
