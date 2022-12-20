@@ -56,18 +56,6 @@
 		<module>integrated-example/integrated-frontend</module>
 	</modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${revision}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
 
     <build>
         <plugins>
