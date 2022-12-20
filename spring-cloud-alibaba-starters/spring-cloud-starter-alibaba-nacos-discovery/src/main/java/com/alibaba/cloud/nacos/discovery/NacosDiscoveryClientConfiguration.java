@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author xiaojing
  * @author echooymxq
+ * @author ruansheng
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnDiscoveryEnabled
@@ -51,13 +52,33 @@ public class NacosDiscoveryClientConfiguration {
 		return new NacosDiscoveryClient(nacosServiceDiscovery);
 	}
 
+	/**
+	 * NacosWatch is no longer enabled by default.
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2868
+	 * @param nacosServiceManager nacosServiceManager
+	 * @param nacosDiscoveryProperties nacosDiscoveryProperties
+	 * @return nacosWatch.
+	 */
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.watch.enabled",
-			matchIfMissing = true)
+	@ConditionalOnProperty("spring.cloud.nacos.discovery.watch.enabled")
 	public NacosWatch nacosWatch(NacosServiceManager nacosServiceManager,
 			NacosDiscoveryProperties nacosDiscoveryProperties) {
 		return new NacosWatch(nacosServiceManager, nacosDiscoveryProperties);
+	}
+
+	/**
+	 * Spring Cloud Gateway HeartBeat . publish an event every 30 seconds.
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2868
+	 * @param nacosDiscoveryProperties nacosDiscoveryProperties
+	 * @return nacosWatch.
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnProperty("spring.cloud.gateway.discovery.locator.enabled")
+	public GatewayLocatorHeartBeatPublisher gatewayLocatorHeartBeatPublisher(
+			NacosDiscoveryProperties nacosDiscoveryProperties) {
+		return new GatewayLocatorHeartBeatPublisher(nacosDiscoveryProperties);
 	}
 
 }

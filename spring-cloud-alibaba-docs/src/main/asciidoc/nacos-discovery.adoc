@@ -325,6 +325,6 @@ The following shows the other configurations of the starter of Nacos Discovery:
 |Cluster Name|`spring.cloud.nacos.discovery.cluster-name`|`DEFAULT`|Cluster name of Nacos
 |Endpoint|`spring.cloud.nacos.discovery.endpoint`||The domain name of a certain service in a specific region. You can retrieve the server address dynamically with this domain name
 |Integrate Ribbon or not|`ribbon.nacos.enabled`|`true`|Set to true in most cases
-|Enable Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`true`|set to false to close watch
+|Enable Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`false`|set to true to enable watch
 |===
 

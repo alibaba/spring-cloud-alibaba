@@ -11,6 +11,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>integrated-account</artifactId>
+	<name>Spring Cloud Alibaba Integrated Account Example</name>
+
+	<properties>
+		<mysql.version>8.0.28</mysql.version>
+		<durid.version>1.1.10</durid.version>
+		<mybatis.version>2.1.2</mybatis.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -24,19 +32,19 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.47</version>
+			<version>${mysql.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid-spring-boot-starter</artifactId>
-			<version>1.1.10</version>
+			<version>${durid.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>2.1.2</version>
+			<version>${mybatis.version}</version>
 		</dependency>
 
 		<dependency>

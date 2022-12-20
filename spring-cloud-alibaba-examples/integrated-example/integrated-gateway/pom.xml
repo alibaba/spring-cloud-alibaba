@@ -11,6 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>integrated-gateway</artifactId>
+	<name>Spring Cloud Alibaba Integrated Gateway Example</name>
 
 	<dependencies>
 		<dependency>
@@ -39,6 +40,7 @@
 			<groupId>com.alibaba.csp</groupId>
 			<artifactId>sentinel-spring-cloud-gateway-adapter</artifactId>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

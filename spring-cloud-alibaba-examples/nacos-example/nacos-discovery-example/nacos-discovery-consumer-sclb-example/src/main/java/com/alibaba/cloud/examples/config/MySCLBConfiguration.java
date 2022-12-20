@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Provide the interface method of config.
+ * Configuration for Self-defined randomLoadBalancer.
  *
- * @author MieAh
+ * @author fangjian0423, MieAh
  */
-@RestController
-public class GetConfigController {
-
-	@Value("${config}")
-	private String config;
-
-	@GetMapping("/config")
-	public String getConfig() {
-		return config;
-	}
+@Configuration
+@LoadBalancerClient(value = "service-provider",
+		configuration = MyLoadBalancerConfiguration.class)
+public class MySCLBConfiguration {
 
 }

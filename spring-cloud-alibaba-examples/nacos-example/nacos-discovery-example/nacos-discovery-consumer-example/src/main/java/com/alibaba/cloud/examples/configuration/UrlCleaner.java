@@ -14,14 +14,26 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.examples.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Change the request path containing echo.
+ *
+ * @author fangjian0423, MieAh
+ */
 public class UrlCleaner {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(UrlCleaner.class);
+
+	private static final String URL_CLEAN_ECHO = ".*/echo/.*";
+
 	public static String clean(String url) {
-		System.out.println("enter urlCleaner");
-		if (url.matches(".*/echo/.*")) {
-			System.out.println("change url");
+		LOGGER.info("enter urlCleaner");
+		if (url.matches(URL_CLEAN_ECHO)) {
+			LOGGER.info("change url");
 			url = url.replaceAll("/echo/.*", "/echo/{str}");
 		}
 		return url;
