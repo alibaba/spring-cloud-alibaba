@@ -56,16 +56,14 @@
 		<module>integrated-example/integrated-frontend</module>
 	</modules>
 
-    <properties>
-        <seata.version>1.6.1-SNAPSHOT</seata.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.seata</groupId>
-                <artifactId>seata-all</artifactId>
-                <version>${seata.version}</version>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

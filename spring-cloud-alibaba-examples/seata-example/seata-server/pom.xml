@@ -17,7 +17,7 @@
         <dependency>
             <groupId>io.seata</groupId>
             <artifactId>seata-server</artifactId>
-            <version>${seata.version}</version>
+            <version>1.5.0</version>
         </dependency>
     </dependencies>
 
@@ -34,12 +34,6 @@
                     <jvmArguments>
                         -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/
                     </jvmArguments>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
