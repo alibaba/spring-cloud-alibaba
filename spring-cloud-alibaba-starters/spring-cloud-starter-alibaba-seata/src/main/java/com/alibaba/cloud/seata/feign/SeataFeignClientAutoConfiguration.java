@@ -24,13 +24,14 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author xiaojing
+ * @author wang.liang
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Client.class)
 public class SeataFeignClientAutoConfiguration {
 
 	@Bean
-	public SeataFeignBuilderBeanPostProcessor seataFeignBuilderBeanPostProcessor() {
+	public static SeataFeignBuilderBeanPostProcessor seataFeignBuilderBeanPostProcessor() {
 		return new SeataFeignBuilderBeanPostProcessor();
 	}
 
