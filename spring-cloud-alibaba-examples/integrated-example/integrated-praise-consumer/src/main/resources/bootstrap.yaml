@@ -1,16 +1,17 @@
-server:
-  port: 30010
 spring:
   application:
-    name: integrated-gateway
+    name: integrated-consumer
   cloud:
     nacos:
       config:
+        file-extension: yaml
         server-addr: nacos-server:8848
         group: integrated-example
-        file-extension: yaml
+        shared-configs[0]:
+          dataid: datasource-config.yaml
+          group: integrated-example
       discovery:
         server-addr: nacos-server:8848
         group: integrated-example
-  config:
-    import: optional:nacos:integrated-gateway.yaml
+server:
+  port: 8014
