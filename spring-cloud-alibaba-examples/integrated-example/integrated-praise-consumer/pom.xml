@@ -16,7 +16,7 @@
 	<properties>
 		<mysql.version>8.0.28</mysql.version>
 		<druid.version>1.1.10</druid.version>
-		<mybatis.version>2.1.2</mybatis.version>
+		<mybatis.version>3.0.0</mybatis.version>
 	</properties>
 
 	<dependencies>
