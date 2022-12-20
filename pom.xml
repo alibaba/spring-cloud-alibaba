@@ -104,6 +104,7 @@
         <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
         <jacoco.version>0.8.8</jacoco.version>
+        <native-maven-plugin.version>0.9.19</native-maven-plugin.version>
     </properties>
 
     <modules>
