@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.examples.feign;
 
-import com.alibaba.cloud.examples.configuration.FeignConfiguration;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author fangjian0423, MieAh
  */
-@FeignClient(name = "service-provider", fallback = EchoClientFallback.class, configuration = FeignConfiguration.class)
+@FeignClient(name = "service-provider", contextId = "service-provider")
 public interface EchoClient {
 
 	/**

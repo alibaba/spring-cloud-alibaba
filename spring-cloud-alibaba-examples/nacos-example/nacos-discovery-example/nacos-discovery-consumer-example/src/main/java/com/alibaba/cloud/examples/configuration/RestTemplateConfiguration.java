@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.examples.configuration;
 
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -33,14 +32,16 @@ public class RestTemplateConfiguration {
 
 	@LoadBalanced
 	@Bean
-	@SentinelRestTemplate(urlCleanerClass = UrlCleaner.class, urlCleaner = "clean")
+	// todo sentinel need to support GraalVM in future
+//	@SentinelRestTemplate(urlCleanerClass = UrlCleaner.class, urlCleaner = "clean")
 	public RestTemplate urlCleanedRestTemplate() {
 		return new RestTemplate();
 	}
 
 	@LoadBalanced
 	@Bean
-	@SentinelRestTemplate
+	// todo sentinel need to support GraalVM in future
+//	@SentinelRestTemplate
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
