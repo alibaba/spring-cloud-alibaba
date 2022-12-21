@@ -18,21 +18,26 @@ package com.alibaba.cloud.seata.feign;
 
 import feign.Feign;
 import feign.Retryer;
-import feign.hystrix.HystrixFeign;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
- * @author xiaojing
+ * @author wang.liang
+ * @since 2.2.5
  */
-final class SeataHystrixFeignBuilder {
+public class SeataFeignBuilderBeanPostProcessor implements BeanPostProcessor {
 
-	private SeataHystrixFeignBuilder() {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SeataFeignBuilderBeanPostProcessor.class);
+
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		if (bean instanceof Feign.Builder) {
+			((Feign.Builder) bean).retryer(Retryer.NEVER_RETRY);
+			LOGGER.info("change the retryer of the bean '{}' to 'Retryer.NEVER_RETRY'", beanName);
+		}
+		return bean;
 	}
-
-	static Feign.Builder builder(BeanFactory beanFactory) {
-		return HystrixFeign.builder().retryer(Retryer.NEVER_RETRY)
-				.client(new SeataFeignClient(beanFactory));
-	}
-
 }
