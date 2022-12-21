@@ -112,13 +112,13 @@ Example 列表：
 
 由于 Spring Boot 1 和 Spring Boot 2 在 Actuator 模块的接口和注解有很大的变更，且 spring-cloud-commons 从 1.x.x 版本升级到 2.0.0 版本也有较大的变更，因此我们采取跟 SpringBoot 版本号一致的版本:
 
+* 2022.x 版本适用于 Spring Boot 3.0.x
 * 1.5.x 版本适用于 Spring Boot 1.5.x
 * 2.0.x 版本适用于 Spring Boot 2.0.x
 * 2.1.x 版本适用于 Spring Boot 2.1.x
 * 2.2.x 版本适用于 Spring Boot 2.2.x
 * 2020.x 版本适用于 Spring Boot 2.4.x
 * 2021.x 版本适用于 Spring Boot 2.6.x
-* 2022.x 版本适用于 Spring Boot 3.0.x
 
 ## 社区交流
 
