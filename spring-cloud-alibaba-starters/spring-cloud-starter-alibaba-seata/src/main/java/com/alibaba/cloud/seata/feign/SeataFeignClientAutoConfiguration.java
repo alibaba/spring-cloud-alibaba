@@ -17,62 +17,27 @@
 package com.alibaba.cloud.seata.feign;
 
 import feign.Client;
-import feign.Feign;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 /**
  * @author xiaojing
+ * @author wang.liang
  */
-
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Client.class)
-@AutoConfigureBefore(FeignAutoConfiguration.class)
 public class SeataFeignClientAutoConfiguration {
 
 	@Bean
-	@Scope("prototype")
-	@ConditionalOnClass(name = "com.alibaba.csp.sentinel.SphU")
-	@ConditionalOnProperty(name = "feign.sentinel.enabled", havingValue = "true")
-	Feign.Builder feignSentinelBuilder(BeanFactory beanFactory) {
-		return SeataSentinelFeignBuilder.builder(beanFactory);
+	public static SeataFeignBuilderBeanPostProcessor seataFeignBuilderBeanPostProcessor() {
+		return new SeataFeignBuilderBeanPostProcessor();
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	@Scope("prototype")
-	Feign.Builder feignBuilder(BeanFactory beanFactory) {
-		return SeataFeignBuilder.builder(beanFactory);
-	}
-
-	@Configuration(proxyBeanMethods = false)
-	protected static class FeignBeanPostProcessorConfiguration {
-
-		@Bean
-		static SeataBeanPostProcessor seataBeanPostProcessor(
-				SeataFeignObjectWrapper seataFeignObjectWrapper) {
-			return new SeataBeanPostProcessor(seataFeignObjectWrapper);
-		}
-
-		@Bean
-		static SeataContextBeanPostProcessor seataContextBeanPostProcessor(
-				BeanFactory beanFactory) {
-			return new SeataContextBeanPostProcessor(beanFactory);
-		}
-
-		@Bean
-		SeataFeignObjectWrapper seataFeignObjectWrapper(BeanFactory beanFactory) {
-			return new SeataFeignObjectWrapper(beanFactory);
-		}
-
+	public SeataFeignRequestInterceptor seataFeignRequestInterceptor() {
+		return new SeataFeignRequestInterceptor();
 	}
 
 }
