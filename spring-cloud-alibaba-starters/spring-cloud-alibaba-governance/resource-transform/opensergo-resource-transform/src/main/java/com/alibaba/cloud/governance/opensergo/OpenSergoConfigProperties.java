@@ -27,12 +27,12 @@ public class OpenSergoConfigProperties {
 	public static final String PREFIX = "spring.cloud.opensergo";
 
 	/**
-	 *  Configurations about OpenSergo Server Endpoint
+	 * Configurations about OpenSergo Server Endpoint.
 	 */
 	private String endpoint;
 
 	/**
-	 *  Namespace Configuration about OpenSergo Config
+	 * Namespace Configuration about OpenSergo Config.
 	 */
 	private String namespace = "default";
 
@@ -51,4 +51,5 @@ public class OpenSergoConfigProperties {
 	public void setEndpoint(String endpoint) {
 		this.endpoint = endpoint;
 	}
+
 }

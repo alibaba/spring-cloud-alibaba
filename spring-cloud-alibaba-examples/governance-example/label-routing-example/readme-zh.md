@@ -34,8 +34,8 @@
 List<RouteRule> routeRules = new ArrayList<>();
 List<MatchService> matchServices = new ArrayList<>();
 
-			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-			untiedRouteDataStructure.setTargetService("service-provider");
+			UnifiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
+			unifiedRouteDataStructure.setTargetService("service-provider");
 
 			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
@@ -66,11 +66,11 @@ List<MatchService> matchServices = new ArrayList<>();
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
-			untiedRouteDataStructureList.add(untiedRouteDataStructure);
-			controlPlaneConnection.pushRouteData(untiedRouteDataStructureList);
+			List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
+			controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
 		}
 代码对应的规则如下：
 若同时满足请求参数中含有tag=gray，请求头中含有id且值小于10，uri为/router-test则流量全部路由到v2版本中，若有一条不满足，则流量路由到v1版本中。
@@ -82,8 +82,8 @@ List<MatchService> matchServices = new ArrayList<>();
 			List<RouteRule> routeRules = new ArrayList<>();
 			List<MatchService> matchServices = new ArrayList<>();
 
-			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-			untiedRouteDataStructure.setTargetService("service-provider");
+			UntiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
+			unifiedRouteDataStructure.setTargetService("service-provider");
 
 			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
@@ -114,11 +114,11 @@ List<MatchService> matchServices = new ArrayList<>();
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
-			untiedRouteDataStructureList.add(untiedRouteDataStructure);
-			controlPlaneConnection.pushRouteData(untiedRouteDataStructureList);
+			List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
+			controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
 		}
 代码对应的规则如下：
 若同时满足请求参数中含有tag=gray，请求头中含有id且值小于10，uri为/router-test，则50%流量路由到v2版本中，剩下的流量路由到v1版本中，若有一条不满足，则流量路由到v1版本中。

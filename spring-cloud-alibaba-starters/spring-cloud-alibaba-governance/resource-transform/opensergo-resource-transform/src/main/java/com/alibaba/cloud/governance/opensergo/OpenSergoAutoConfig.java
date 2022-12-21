@@ -17,11 +17,8 @@
 package com.alibaba.cloud.governance.opensergo;
 
 import com.alibaba.cloud.governance.opensergo.listener.TargetServiceChangedListener;
-import com.alibaba.cloud.router.data.ControlPlaneAutoConfiguration;
-import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +27,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.opensergo.config.enabled",
 		matchIfMissing = true)
-@AutoConfigureAfter({ ControlPlaneAutoConfiguration.class })
 @EnableConfigurationProperties(OpenSergoConfigProperties.class)
 public class OpenSergoAutoConfig {
 
@@ -38,10 +34,8 @@ public class OpenSergoAutoConfig {
 	private OpenSergoConfigProperties openSergoConfigProperties;
 
 	@Bean
-	public OpenSergoTrafficExchanger openSergoTrafficExchanger(
-			ControlPlaneConnection controlPlaneConnection) {
-		return new OpenSergoTrafficExchanger(openSergoConfigProperties,
-				controlPlaneConnection);
+	public OpenSergoTrafficExchanger openSergoTrafficExchanger() {
+		return new OpenSergoTrafficExchanger(openSergoConfigProperties);
 	}
 
 	@Bean

@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.alibaba.cloud.router.LabelRoutingAutoConfiguration,\
+  com.alibaba.cloud.router.feign.FeignInterceptorAutoConfiguration,\
+  com.alibaba.cloud.router.ribbon.LabelRouteLBRuleAutoConfiguration,\
+  com.alibaba.cloud.router.web.WebMvcAutoConfiguration,\
+  com.alibaba.cloud.router.RouterPropertiesAutoConfiguration

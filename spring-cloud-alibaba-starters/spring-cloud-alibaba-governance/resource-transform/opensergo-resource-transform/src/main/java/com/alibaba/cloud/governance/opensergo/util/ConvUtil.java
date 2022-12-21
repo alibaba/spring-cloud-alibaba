@@ -24,9 +24,9 @@ import com.google.protobuf.Internal;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.envoyproxy.envoy.config.core.v3.CidrRange;
-import io.envoyproxy.envoy.config.route.v3.ClusterFallbackConfig_ClusterConfig;
 import io.envoyproxy.envoy.config.route.v3.ClusterSpecifierPlugin;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
+import io.opensergo.proto.router.v1.ClusterFallbackConfig_ClusterConfig;
 
 /**
  * @author musi
@@ -53,9 +53,14 @@ public final class ConvUtil {
 		return null;
 	}
 
-	public static ClusterFallbackConfig_ClusterConfig convFallbackClusterConfig(ClusterSpecifierPlugin clusterSpecifierPlugin) throws InvalidProtocolBufferException {
-		Message defaultInstance = Internal.getDefaultInstance(ClusterFallbackConfig_ClusterConfig.class);
-		return  (ClusterFallbackConfig_ClusterConfig)defaultInstance.getParserForType().parseFrom(clusterSpecifierPlugin.getExtension().getTypedConfig().getValue());
+	public static ClusterFallbackConfig_ClusterConfig convFallbackClusterConfig(
+			ClusterSpecifierPlugin clusterSpecifierPlugin)
+			throws InvalidProtocolBufferException {
+		Message defaultInstance = Internal
+				.getDefaultInstance(ClusterFallbackConfig_ClusterConfig.class);
+		return (ClusterFallbackConfig_ClusterConfig) defaultInstance.getParserForType()
+				.parseFrom(clusterSpecifierPlugin.getExtension().getTypedConfig()
+						.getValue());
 	}
 
 	public static StringMatcher convStringMatcher(

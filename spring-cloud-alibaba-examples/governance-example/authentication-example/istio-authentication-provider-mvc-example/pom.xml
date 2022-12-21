@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>auth-core</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>

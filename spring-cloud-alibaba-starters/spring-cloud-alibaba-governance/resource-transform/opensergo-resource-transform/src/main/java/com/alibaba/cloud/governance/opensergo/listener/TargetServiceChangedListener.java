@@ -16,9 +16,9 @@
 
 package com.alibaba.cloud.governance.opensergo.listener;
 
+import com.alibaba.cloud.commons.governance.event.TargetServiceChangedEvent;
 import com.alibaba.cloud.governance.opensergo.OpenSergoConfigProperties;
 import com.alibaba.cloud.governance.opensergo.OpenSergoTrafficExchanger;
-import com.alibaba.cloud.router.event.TargetServiceChangedEvent;
 
 import org.springframework.context.ApplicationListener;
 

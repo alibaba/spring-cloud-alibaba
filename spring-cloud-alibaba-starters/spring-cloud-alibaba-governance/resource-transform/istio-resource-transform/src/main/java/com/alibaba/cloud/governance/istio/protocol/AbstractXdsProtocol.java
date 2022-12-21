@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 
 import com.alibaba.cloud.governance.istio.NodeBuilder;
 import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import io.envoyproxy.envoy.config.core.v3.Node;
@@ -39,11 +40,16 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
+public abstract class AbstractXdsProtocol<T>
+		implements XdsProtocol<T>, ApplicationContextAware {
 
 	protected static final Logger log = LoggerFactory
 			.getLogger(AbstractXdsProtocol.class);
@@ -52,14 +58,19 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 	protected final Node node = NodeBuilder.getNode();
 
-	protected int pollingTime;
+	protected XdsConfigProperties xdsConfigProperties;
 
-	private XdsScheduledThreadPool xdsScheduledThreadPool;
+	private final XdsScheduledThreadPool xdsScheduledThreadPool;
 
 	/**
 	 * does the protocol need polling.
 	 */
 	private boolean needPolling;
+
+	/**
+	 * send event to submodules.
+	 */
+	protected ApplicationContext applicationContext;
 
 	private final Map<Long, StreamObserver<DiscoveryRequest>> requestObserverMap = new ConcurrentHashMap<>();
 
@@ -69,13 +80,18 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 	protected final static AtomicLong requestId = new AtomicLong(0);
 
-	private static final int DEFAULT_POLLING_TIME = 30;
-
 	public AbstractXdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime) {
+			XdsScheduledThreadPool xdsScheduledThreadPool,
+			XdsConfigProperties xdsConfigProperties) {
 		this.xdsChannel = xdsChannel;
 		this.xdsScheduledThreadPool = xdsScheduledThreadPool;
-		this.pollingTime = pollingTime <= 0 ? DEFAULT_POLLING_TIME : pollingTime;
+		this.xdsConfigProperties = xdsConfigProperties;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 
 	public void setNeedPolling(boolean needPolling) {
@@ -103,7 +119,8 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 				catch (Exception e) {
 					log.error("error on get observe resource from xds", e);
 				}
-			}, pollingTime, pollingTime, TimeUnit.SECONDS);
+			}, xdsConfigProperties.getPollingTime(), xdsConfigProperties.getPollingTime(),
+					TimeUnit.SECONDS);
 			needPolling = false;
 		}
 		return id;
@@ -129,7 +146,10 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 			// reuse observer
 			requestObserver = xdsChannel
 					.createDiscoveryRequest(new XdsObserver(id, consumer));
-			requestObserverMap.put(id, requestObserver);
+			// requestObserver may be null when testing
+			if (requestObserver != null) {
+				requestObserverMap.put(id, requestObserver);
+			}
 		}
 		sendXdsRequest(requestObserver, resourceNames);
 		try {
@@ -193,8 +213,13 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 		@Override
 		public void onNext(DiscoveryResponse discoveryResponse) {
-			log.info("receive notification from xds server, type: " + getTypeUrl()
-					+ " requestId: " + id);
+			if (xdsChannel == null) {
+				return;
+			}
+			if (xdsConfigProperties.isLogXds()) {
+				log.info("receive notification from xds server, type: " + getTypeUrl()
+						+ " requestId: " + id);
+			}
 			List<T> responses = decodeXdsResponse(discoveryResponse);
 			CompletableFuture<List<T>> future = futureMap.get(id);
 			if (future == null) {
@@ -209,7 +234,12 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 
 		@Override
 		public void onError(Throwable throwable) {
-			log.error("connect to xds server failed", throwable);
+			if (xdsChannel == null) {
+				return;
+			}
+			if (xdsConfigProperties.isLogXds()) {
+				log.error("connect to xds server failed, reconnecting", throwable);
+			}
 			CompletableFuture<List<T>> future = futureMap.get(id);
 			if (future != null) {
 				future.complete(null);
@@ -219,8 +249,11 @@ public abstract class AbstractXdsProtocol<T> implements XdsProtocol<T> {
 			// refresh token again
 			xdsChannel.refreshIstiodToken();
 			// reconnected immediately
-			requestObserverMap.put(id,
-					xdsChannel.createDiscoveryRequest(new XdsObserver(id, consumer)));
+			StreamObserver<DiscoveryRequest> observer = xdsChannel
+					.createDiscoveryRequest(new XdsObserver(id, consumer));
+			if (observer != null) {
+				requestObserverMap.put(id, observer);
+			}
 		}
 
 		@Override

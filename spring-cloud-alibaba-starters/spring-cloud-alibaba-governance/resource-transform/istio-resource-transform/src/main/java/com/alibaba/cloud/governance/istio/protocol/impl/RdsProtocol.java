@@ -21,21 +21,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
+import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import com.alibaba.cloud.governance.istio.util.ConvUtil;
-import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
-import com.alibaba.cloud.router.data.crd.LabelRouteRule;
-import com.alibaba.cloud.router.data.crd.MatchService;
-import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
-import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
-import com.alibaba.cloud.router.data.crd.rule.RouteRule;
-import com.alibaba.cloud.router.data.crd.rule.UrlRule;
 import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
 import io.envoyproxy.envoy.config.route.v3.QueryParameterMatcher;
 import io.envoyproxy.envoy.config.route.v3.Route;
@@ -62,17 +63,14 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 
 	private static final String PATH = "path";
 
-	private ControlPlaneConnection controlPlaneConnection;
-
 	public RdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool, int pollingTime,
-			ControlPlaneConnection controlPlaneConnection) {
-		super(xdsChannel, xdsScheduledThreadPool, pollingTime);
-		this.controlPlaneConnection = controlPlaneConnection;
+			XdsScheduledThreadPool xdsScheduledThreadPool,
+			XdsConfigProperties xdsConfigProperties) {
+		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 	@Override
-	protected List<RouteConfiguration> decodeXdsResponse(DiscoveryResponse response) {
+	public List<RouteConfiguration> decodeXdsResponse(DiscoveryResponse response) {
 		List<RouteConfiguration> routes = new ArrayList<>();
 		for (com.google.protobuf.Any res : response.getResourcesList()) {
 			try {
@@ -90,11 +88,11 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 		if (routeConfigurations == null) {
 			return;
 		}
-		Map<String, UntiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
+		Map<String, UnifiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
 			List<VirtualHost> virtualHosts = routeConfiguration.getVirtualHostsList();
 			for (VirtualHost virtualHost : virtualHosts) {
-				UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
+				UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
 				String targetService = "";
 				String[] serviceAndPort = virtualHost.getName().split(":");
 				if (serviceAndPort.length > 0) {
@@ -103,16 +101,17 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 				if (ALLOW_ANY.equals(targetService)) {
 					continue;
 				}
-				untiedRouteDataStructure.setTargetService(targetService);
+				unifiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
 				LabelRouteRule labelRouteRule = getLabelRouteData(routes);
-				untiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
-				untiedRouteDataStructures.put(untiedRouteDataStructure.getTargetService(),
-						untiedRouteDataStructure);
+				unifiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
+				untiedRouteDataStructures.put(
+						unifiedRouteDataStructure.getTargetService(),
+						unifiedRouteDataStructure);
 			}
 		}
-		controlPlaneConnection
-				.pushRouteData(new ArrayList<>(untiedRouteDataStructures.values()));
+		applicationContext.publishEvent(
+				new LabelRoutingDataChangedEvent(untiedRouteDataStructures.values()));
 	}
 
 	private LabelRouteRule getLabelRouteData(List<Route> routes) {

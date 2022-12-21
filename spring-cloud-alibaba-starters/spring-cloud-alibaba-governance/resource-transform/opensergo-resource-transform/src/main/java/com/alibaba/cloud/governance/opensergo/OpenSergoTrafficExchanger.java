@@ -21,19 +21,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
+import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.governance.opensergo.util.ConvUtil;
-import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
-import com.alibaba.cloud.router.data.crd.LabelRouteRule;
-import com.alibaba.cloud.router.data.crd.MatchService;
-import com.alibaba.cloud.router.data.crd.UntiedRouteDataStructure;
-import com.alibaba.cloud.router.data.crd.rule.HeaderRule;
-import com.alibaba.cloud.router.data.crd.rule.RouteRule;
-import com.alibaba.cloud.router.data.crd.rule.UrlRule;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.envoyproxy.envoy.config.route.v3.ClusterFallbackConfig_ClusterConfig;
 import io.envoyproxy.envoy.config.route.v3.ClusterSpecifierPlugin;
 import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
 import io.envoyproxy.envoy.config.route.v3.QueryParameterMatcher;
@@ -44,24 +43,26 @@ import io.envoyproxy.envoy.config.route.v3.VirtualHost;
 import io.envoyproxy.envoy.config.route.v3.WeightedCluster;
 import io.opensergo.ConfigKind;
 import io.opensergo.OpenSergoClient;
-import io.opensergo.OpenSergoConfigKindRegistry;
+import io.opensergo.proto.router.v1.ClusterFallbackConfig_ClusterConfig;
 import io.opensergo.subscribe.OpenSergoConfigSubscriber;
 import io.opensergo.subscribe.SubscribeKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.convFallbackClusterConfig;
 import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.getOpenSergoHost;
 import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.getOpenSergoPort;
 
-public class OpenSergoTrafficExchanger {
+public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 
 	protected static final Logger log = LoggerFactory
 			.getLogger(OpenSergoTrafficExchanger.class);
 
 	private OpenSergoClient client;
-
-	private ControlPlaneConnection controlPlaneConnection;
 
 	private static final String HEADER = "header";
 
@@ -69,9 +70,10 @@ public class OpenSergoTrafficExchanger {
 
 	private static final String PATH = "path";
 
-	public OpenSergoTrafficExchanger(OpenSergoConfigProperties openSergoConfigProperties,
-			ControlPlaneConnection controlPlaneConnection) {
-		this.controlPlaneConnection = controlPlaneConnection;
+	private ApplicationContext applicationContext;
+
+	public OpenSergoTrafficExchanger(
+			OpenSergoConfigProperties openSergoConfigProperties) {
 		Integer port = getOpenSergoPort(openSergoConfigProperties.getEndpoint());
 		String host = getOpenSergoHost(openSergoConfigProperties.getEndpoint());
 		try {
@@ -87,16 +89,25 @@ public class OpenSergoTrafficExchanger {
 		}
 	}
 
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
 	public void subscribeTrafficRouterConfig(String namespace, String appName) {
 		client.subscribeConfig(
-				new SubscribeKey(namespace, appName, ConfigKind.VIRTUAL_SERVICE_STRATEGY),
+				new SubscribeKey(namespace, appName, ConfigKind.TRAFFIC_ROUTER_STRATEGY),
 				new OpenSergoConfigSubscriber() {
 					@Override
 					public boolean onConfigUpdate(SubscribeKey subscribeKey,
 							Object dataList) {
+						log.debug("OpenSergo client subscribeKey:{} receive message :{}",
+								subscribeKey, dataList);
 						try {
 							resolveLabelRouting((List<RouteConfiguration>) dataList);
-						} catch (InvalidProtocolBufferException e) {
+						}
+						catch (InvalidProtocolBufferException e) {
 							log.error("resolve label routing enhance error", e);
 							return false;
 						}
@@ -105,41 +116,46 @@ public class OpenSergoTrafficExchanger {
 				});
 	}
 
-	public void resolveLabelRouting(List<RouteConfiguration> routeConfigurations) throws InvalidProtocolBufferException {
+	public void resolveLabelRouting(List<RouteConfiguration> routeConfigurations)
+			throws InvalidProtocolBufferException {
 		if (routeConfigurations == null) {
 			return;
 		}
-		Map<String, UntiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
+		Map<String, UnifiedRouteDataStructure> unifiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
 			List<VirtualHost> virtualHosts = routeConfiguration.getVirtualHostsList();
 			for (VirtualHost virtualHost : virtualHosts) {
-				UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
+				UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
 				String targetService = "";
 				String[] serviceAndPort = virtualHost.getName().split(":");
 				if (serviceAndPort.length > 0) {
 					targetService = serviceAndPort[0].split("\\.")[0];
 				}
-				untiedRouteDataStructure.setTargetService(targetService);
+				unifiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
 				LabelRouteRule labelRouteRule = getLabelRouteData(routes);
-				untiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
-				untiedRouteDataStructures.put(untiedRouteDataStructure.getTargetService(),
-						untiedRouteDataStructure);
+				unifiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
+				unifiedRouteDataStructures.put(
+						unifiedRouteDataStructure.getTargetService(),
+						unifiedRouteDataStructure);
 			}
 		}
-		controlPlaneConnection
-				.pushRouteData(new ArrayList<>(untiedRouteDataStructures.values()));
+		applicationContext.publishEvent(
+				new LabelRoutingDataChangedEvent(unifiedRouteDataStructures.values()));
 	}
 
-	private LabelRouteRule getLabelRouteData(List<Route> routes) throws InvalidProtocolBufferException {
+	private LabelRouteRule getLabelRouteData(List<Route> routes)
+			throws InvalidProtocolBufferException {
 		List<MatchService> matchServices = new ArrayList<>();
 		LabelRouteRule labelRouteRule = new LabelRouteRule();
 		for (Route route : routes) {
-			ClusterSpecifierPlugin clusterSpecifierPlugin = route.getRoute().getInlineClusterSpecifierPlugin();
+			ClusterSpecifierPlugin clusterSpecifierPlugin = route.getRoute()
+					.getInlineClusterSpecifierPlugin();
 			String cluster = "";
 			String fallbackCluster = "";
 			if (clusterSpecifierPlugin != null) {
-				ClusterFallbackConfig_ClusterConfig fallbackConfig = convFallbackClusterConfig(clusterSpecifierPlugin);
+				ClusterFallbackConfig_ClusterConfig fallbackConfig = convFallbackClusterConfig(
+						clusterSpecifierPlugin);
 				fallbackCluster = fallbackConfig.getFallbackCluster();
 				cluster = fallbackConfig.getRoutingCluster();
 			}
@@ -150,8 +166,10 @@ public class OpenSergoTrafficExchanger {
 			if (StringUtils.isNotEmpty(cluster)) {
 				MatchService matchService = null;
 				if (StringUtils.isNotEmpty(fallbackCluster)) {
-					matchService = getMatchService(route, cluster, 100, getVersion(route, fallbackCluster));
-				} else {
+					matchService = getMatchService(route, cluster, 100,
+							getVersion(route, fallbackCluster));
+				}
+				else {
 					matchService = getMatchService(route, cluster, 100);
 				}
 
@@ -178,7 +196,8 @@ public class OpenSergoTrafficExchanger {
 		return getMatchService(route, cluster, weight, null);
 	}
 
-	private MatchService getMatchService(Route route, String cluster, int weight, String fallback) {
+	private MatchService getMatchService(Route route, String cluster, int weight,
+			String fallback) {
 		String version = getVersion(route, cluster);
 		MatchService matchService = new MatchService();
 		matchService.setVersion(version);

@@ -16,17 +16,12 @@
 
 package com.alibaba.cloud.governance.istio;
 
-import com.alibaba.cloud.governance.auth.AuthDataAutoConfiguration;
-import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
-import com.alibaba.cloud.router.data.ControlPlaneAutoConfiguration;
-import com.alibaba.cloud.router.data.controlplane.ControlPlaneConnection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -37,8 +32,6 @@ import org.springframework.context.annotation.Configuration;
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter({ ControlPlaneAutoConfiguration.class,
-		AuthDataAutoConfiguration.class })
 @ConditionalOnProperty(name = "spring.cloud.istio.config.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(XdsConfigProperties.class)
 public class XdsAutoConfiguration {
@@ -64,32 +57,26 @@ public class XdsAutoConfiguration {
 
 	@Bean
 	public LdsProtocol ldsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			AuthRepository authRepository) {
-		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime(), authRepository);
+			XdsScheduledThreadPool xdsScheduledThreadPool) {
+		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 	@Bean
 	public CdsProtocol cdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new CdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime());
+		return new CdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 	@Bean
 	EdsProtocol edsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new EdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime());
+		return new EdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 	@Bean
 	RdsProtocol rdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			ControlPlaneConnection controlPlaneConnection) {
-		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool,
-				xdsConfigProperties.getPollingTime(), controlPlaneConnection);
+			XdsScheduledThreadPool xdsScheduledThreadPool) {
+		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 }

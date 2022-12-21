@@ -28,16 +28,13 @@
             <artifactId>spring-cloud-alibaba-commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>label-routing-data</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>label-routing-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.opensergo</groupId>
             <artifactId>opensergo-java-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

@@ -33,14 +33,7 @@
 
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>label-routing-core</artifactId>
-			<version>${revision}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>opensergo-resource-transform</artifactId>
-			<version>${revision}</version>
+			<artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
 		</dependency>
 	</dependencies>
 
