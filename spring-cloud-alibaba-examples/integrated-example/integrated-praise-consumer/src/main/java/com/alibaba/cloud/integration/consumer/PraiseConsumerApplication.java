@@ -16,17 +16,14 @@
 
 package com.alibaba.cloud.integration.consumer;
 
-import com.alibaba.cloud.integration.consumer.message.PraiseSink;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 
 /**
  * @author TrevorLink
  */
 @SpringBootApplication
-@EnableBinding(PraiseSink.class)
 public class PraiseConsumerApplication {
 
 	public static void main(String[] args) {
