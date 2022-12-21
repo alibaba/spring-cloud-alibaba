@@ -16,17 +16,13 @@
 
 package com.alibaba.cloud.integration.provider;
 
-import com.alibaba.cloud.integration.provider.message.PraiseSource;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 
 /**
  * @author TrevorLink
  */
 @SpringBootApplication
-@EnableBinding(PraiseSource.class)
 public class PraiseProviderApplication {
 
 	public static void main(String[] args) {

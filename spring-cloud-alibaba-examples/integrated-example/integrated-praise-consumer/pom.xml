@@ -16,13 +16,18 @@
 	<properties>
 		<mysql.version>8.0.28</mysql.version>
 		<druid.version>1.1.10</druid.version>
-		<mybatis.version>2.1.2</mybatis.version>
+		<mybatis.version>3.0.1</mybatis.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
 		</dependency>
 
 		<dependency>

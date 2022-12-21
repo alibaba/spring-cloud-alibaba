@@ -17,9 +17,9 @@
 package com.alibaba.cloud.integration.provider.controller;
 
 import com.alibaba.cloud.integration.provider.message.PraiseMessage;
-import com.alibaba.cloud.integration.provider.message.PraiseSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,9 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/praise")
 public class PraiseController {
-
+	private static final String BINDING_NAME = "praise-output";
 	@Autowired
-	private PraiseSource praiseSource;
+	private StreamBridge streamBridge;
 
 	@GetMapping({ "/rocketmq", "/sentinel" })
 	public boolean praise(@RequestParam Integer itemId) {
@@ -43,7 +43,7 @@ public class PraiseController {
 		message.setItemId(itemId);
 		Message<PraiseMessage> praiseMessage = MessageBuilder.withPayload(message)
 				.build();
-		return praiseSource.praiseOutput().send(praiseMessage);
+		return streamBridge.send(BINDING_NAME, praiseMessage);
 	}
 
 }
