@@ -35,7 +35,7 @@ public class UserController {
 	@Autowired
 	private UserConfig userConfig;
 
-	@GetMapping
+	@GetMapping(path = "/")
 	public String get() throws JsonProcessingException {
 		return new ObjectMapper().writeValueAsString(userConfig);
 	}

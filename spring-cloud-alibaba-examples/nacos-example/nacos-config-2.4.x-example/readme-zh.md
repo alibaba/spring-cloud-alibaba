@@ -97,3 +97,6 @@ public class UserConfig {
 验证动态刷新  
 访问 http://localhost:8888  
 再从 nacos 修改配置, 再次访问即可验证动态配置生效
+
+### Native Image构建
+请参考`spring-cloud-alibaba-docs`中的`graalvm.adoc`文档
