@@ -12,7 +12,7 @@ Spring Boot 3.0本次带来最大的改动就是GraalVM原生镜像的支持，�
 * 没有惰性类加载，可执行文件中的所有内容都将在启动时加载到内存中。
 * 支持的 Java 应用程序在某些方面存在一些限制，因此目前并不能保证之前的 Java 应用都可直接使用GraalVM技术进行应用构建，有一定概率会存在不兼容的异常情况。
 
-本次发布的 Spring Cloud Alibaba 2022.0.0.0 版本所包含的部分中间件客户端已完成了构建 GraalVM 原生应用的适配，以下是社区对目前所支持的服务注册与发现、分布式事务模块相关示例应用在升级为 Spring Boot 3.0 以后，使用GraalVM构建原生应用镜像做的在启动速度和运行时占用内容相关的测试（Sentinel和RocketMQ目前还在适配中，以下测试过程在MacOS 11.4，2.6 GHz 6-Core Intel Core i7处理器，16G内存环境下分别模拟5次取平均值测得）：
+本次发布的 Spring Cloud Alibaba 2022.0.0.0 版本所包含的部分中间件客户端已完成了构建 GraalVM 原生应用的适配，以下是社区对目前所支持的服务注册与发现相关示例应用在升级为 Spring Boot 3.0 以后，使用GraalVM构建原生应用镜像做的在启动速度和运行时占用内容相关的测试（Sentinel,RocketMQ以及Seata目前还在适配中，以下测试过程在MacOS 11.4，2.6 GHz 6-Core Intel Core i7处理器，16G内存环境下分别模拟5次取平均值测得）：
 
 image::./pic/graalvm_performance.png[]
 
@@ -126,16 +126,18 @@ mvn -Pnative native:compile
 
 可以发现应用的启动速度大大加快。 再通过``vmmap pid | grep Physical``命令查看运行过程中的内存占用情况 通过原生镜像启动的应用内存占用情况如下
 
-```
+[source]
+----
 Physical footprint:         59.2M
 Physical footprint (peak):  59.2M
-```
+----
 
 通过普通的方式启动Java应用的内存占用情况如下
 
-```
+[source]
+----
 Physical footprint:         214.0M
 Physical footprint (peak):  256.8M
-```
+----
 
 可以看到，通过原生镜像启动Java应用后，内存占用大大减少。 <br> 应用启动后各项功能与通过jar启动无异。
