@@ -97,3 +97,6 @@ public class UserConfig {
 Verify dynamic refresh 
 access http://localhost:8888  
 Then modify the configuration from nacos, and visit again to verify that the dynamic configuration takes effect.
+
+### Build Native Image
+Please refer to `graalvm.adoc` document in `spring-cloud-alibaba-docs`

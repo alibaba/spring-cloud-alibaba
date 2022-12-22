@@ -210,3 +210,5 @@ Nacos为用户提供包括动态服务发现，配置管理，服务管理等服
 
 如果您对 Spring Cloud Nacos Discovery 有任何建议或想法，欢迎在 issue 中或者通过其他社区渠道向我们提出。
 
+### Native Image构建
+请参考`spring-cloud-alibaba-docs`中的`graalvm.adoc`文档

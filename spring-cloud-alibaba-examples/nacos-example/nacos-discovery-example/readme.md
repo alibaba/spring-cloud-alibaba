@@ -222,3 +222,5 @@ Nacos makes it easier and faster to construct, deliver and manage your microserv
 
 If you have any ideas or suggestions for Nacos Discovery starter, please don't hesitate to tell us by submitting github issues.
 
+### Build Native Image
+Please refer to `graalvm.adoc` document in `spring-cloud-alibaba-docs`
