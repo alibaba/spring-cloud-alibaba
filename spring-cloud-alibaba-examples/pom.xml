@@ -86,6 +86,7 @@
                             <artifactId>spring-boot-maven-plugin</artifactId>
                             <configuration>
                                 <jvmArguments>
+                                    -Dspring.aot.enabled=true
                                     -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/
                                 </jvmArguments>
                                 <image>
