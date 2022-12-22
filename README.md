@@ -49,13 +49,13 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/Roadmap.md).
 
 ## How to build
+* **2022.x branch**: Corresponds to Spring 2022 & Spring Boot 3.0.x, JDK 17 or later versions are supported.
 * **2021.x branch**: Corresponds to Spring Cloud 2021 & Spring Boot 2.6.x. JDK 1.8 or later versions are supported.
 * **2020.0 branch**: Corresponds to Spring Cloud 2020 & Spring Boot 2.4.x. JDK 1.8 or later versions are supported.
 * **2.2.x branch**: Corresponds to Spring Cloud Hoxton & Spring Boot 2.2.x. JDK 1.8 or later versions are supported.
 * **greenwich branch**: Corresponds to Spring Cloud Greenwich & Spring Boot 2.1.x. JDK 1.8 or later versions are supported.
 * **finchley branch**: Corresponds to Spring Cloud Finchley & Spring Boot 2.0.x. JDK 1.8 or later versions are supported.
 * **1.x branch**: Corresponds to Spring Cloud Edgware & Spring Boot 1.x, JDK 1.7 or later versions are supported.
-* **2022.x branch**: Corresponds to Spring 2022 & Spring Boot 3.0.x, JDK 17 or later versions are supported.
 
 Spring Cloud uses Maven for most build-related activities, and you should be able to get off the ground quite quickly by cloning the project you are interested in and typing:
 ```bash
