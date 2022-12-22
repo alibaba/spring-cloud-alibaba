@@ -109,8 +109,7 @@
 
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
-        <!-- todo spring boot 3.0 upgrade: disable the examples modules temporarily -->
-        <!-- <module>spring-cloud-alibaba-examples</module> -->
+        <module>spring-cloud-alibaba-examples</module>
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
