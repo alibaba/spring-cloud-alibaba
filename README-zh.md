@@ -56,6 +56,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 * greenwich 分支对应的是 Spring Cloud Greenwich 与 Spring Boot 2.1.x，最低支持 JDK 1.8。
 * finchley 分支对应的是 Spring Cloud Finchley 与 Spring Boot 2.0.x，最低支持 JDK 1.8。
 * 1.x 分支对应的是 Spring Cloud Edgware 与 Spring Boot 1.x，最低支持 JDK 1.7。
+* 2022.x分之对应的是 Spring Cloud 2022 与 Spring Boot 3.0.x，最低支持 JDK 17
 
 Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone 到本地，然后执行以下命令：
 ```bash
@@ -70,15 +71,15 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
 ```xml
 <dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>2021.0.4.0</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>com.alibaba.cloud</groupId>
+      <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+      <version>2022.0.0.0-RC1</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
 </dependencyManagement>
 ```
 然后在 `dependencies` 中添加自己所需使用的依赖即可使用。如果你想选择老版本，可以参考[版本说明](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E)。
@@ -111,6 +112,7 @@ Example 列表：
 
 由于 Spring Boot 1 和 Spring Boot 2 在 Actuator 模块的接口和注解有很大的变更，且 spring-cloud-commons 从 1.x.x 版本升级到 2.0.0 版本也有较大的变更，因此我们采取跟 SpringBoot 版本号一致的版本:
 
+* 2022.x 版本适用于 Spring Boot 3.0.x
 * 1.5.x 版本适用于 Spring Boot 1.5.x
 * 2.0.x 版本适用于 Spring Boot 2.0.x
 * 2.1.x 版本适用于 Spring Boot 2.1.x
