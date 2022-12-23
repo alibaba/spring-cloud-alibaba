@@ -52,39 +52,6 @@ public class SentinelFeignLazilyTests {
 	@Autowired
 	private SentinelFeignTests.BazService bazService;
 
-	@Before
-	public void setUp() {
-		FlowRule rule1 = new FlowRule();
-		rule1.setGrade(RuleConstant.FLOW_GRADE_QPS);
-		rule1.setCount(0);
-		rule1.setResource("GET:http://test-service/echo/{str}");
-		rule1.setLimitApp("default");
-		rule1.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
-		rule1.setStrategy(RuleConstant.STRATEGY_DIRECT);
-		FlowRule rule2 = new FlowRule();
-		rule2.setGrade(RuleConstant.FLOW_GRADE_QPS);
-		rule2.setCount(0);
-		rule2.setResource("GET:http://foo-service/echo/{str}");
-		rule2.setLimitApp("default");
-		rule2.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
-		rule2.setStrategy(RuleConstant.STRATEGY_DIRECT);
-		FlowRule rule3 = new FlowRule();
-		rule3.setGrade(RuleConstant.FLOW_GRADE_QPS);
-		rule3.setCount(0);
-		rule3.setResource("GET:http://bar-service/bar");
-		rule3.setLimitApp("default");
-		rule3.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
-		rule3.setStrategy(RuleConstant.STRATEGY_DIRECT);
-		FlowRule rule4 = new FlowRule();
-		rule4.setGrade(RuleConstant.FLOW_GRADE_QPS);
-		rule4.setCount(0);
-		rule4.setResource("GET:http://baz-service/baz");
-		rule4.setLimitApp("default");
-		rule4.setControlBehavior(RuleConstant.CONTROL_BEHAVIOR_DEFAULT);
-		rule4.setStrategy(RuleConstant.STRATEGY_DIRECT);
-		FlowRuleManager.loadRules(Arrays.asList(rule1, rule2, rule3, rule4));
-	}
-
 	@Test
 	public void contextLoads() throws Exception {
 		assertThat(echoService).isNotNull();
