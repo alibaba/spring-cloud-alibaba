@@ -69,7 +69,7 @@ public class SentinelAutoConfiguration {
 	private SentinelProperties properties;
 
 	@PostConstruct
-	private void init() {
+	public void init() {
 		if (StringUtils.isEmpty(System.getProperty(LogBase.LOG_DIR))
 				&& StringUtils.isNotBlank(properties.getLog().getDir())) {
 			System.setProperty(LogBase.LOG_DIR, properties.getLog().getDir());
