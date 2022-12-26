@@ -6,7 +6,8 @@ spring:
     name: nacos-config-example
   cloud:
     nacos:
-      server-addr: 127.0.0.1:8848
+      config:
+        serverAddr: 127.0.0.1:8848
   config:
     import:
       - nacos:nacos-config-example.properties?refresh=true
