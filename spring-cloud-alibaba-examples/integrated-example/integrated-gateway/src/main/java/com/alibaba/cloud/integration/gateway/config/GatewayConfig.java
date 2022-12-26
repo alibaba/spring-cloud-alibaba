@@ -71,7 +71,7 @@ public class GatewayConfig {
 	}
 
 	@PostConstruct
-	private void initGatewayRules() {
+	public void initGatewayRules() {
 		Set<GatewayFlowRule> rules = new HashSet<>();
 		rules.add(
 				new GatewayFlowRule("praiseItemSentinel").setCount(5).setIntervalSec(1));
