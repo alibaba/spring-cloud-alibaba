@@ -185,11 +185,30 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 		}
 		Instrumentation instrumentation = new Instrumentation(destination, this);
 		try {
-			String[] topics = StringUtils.commaDelimitedListToStringArray(destination);
-			for (String topic: topics) {
-				pushConsumer.subscribe(topic, RocketMQUtils.getMessageSelector(
+			if (extendedConsumerProperties.isMultiplex()) {
+				String[] topics = StringUtils.commaDelimitedListToStringArray(destination);
+				String subscription = extendedConsumerProperties.getExtension().getSubscription();
+				if (StringUtils.isEmpty(subscription)) {
+					for (String topic : topics) {
+						pushConsumer.subscribe(topic, "*");
+					}
+				} else {
+					if (subscription.contains(RocketMQUtils.SQL)) {
+						throw new MessagingException("Multiplex scenario doesn't support SQL92 Filtering for now, please use Tag Filtering.");
+					}
+					String[] subscriptions = StringUtils.commaDelimitedListToStringArray(subscription);
+					if (subscriptions.length != topics.length) {
+						throw new MessagingException("Length of subscriptions should be the same as the length of topics.");
+					}
+					for (int i = 0; i < topics.length; i++) {
+						pushConsumer.subscribe(topics[i], subscriptions[i]);
+					}
+				}
+			} else {
+				pushConsumer.subscribe(destination, RocketMQUtils.getMessageSelector(
 						extendedConsumerProperties.getExtension().getSubscription()));
 			}
+
 			pushConsumer.start();
 			instrumentation.markStartedSuccessfully();
 		}

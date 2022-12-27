@@ -91,7 +91,7 @@ public final class RocketMQUtils {
 		return nameServer.replaceAll(",", ";");
 	}
 
-	private static final String SQL = "sql:";
+	public static final String SQL = "sql:";
 
 	public static MessageSelector getMessageSelector(String expression) {
 		if (StringUtils.hasText(expression) && expression.startsWith(SQL)) {
