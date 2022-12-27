@@ -44,6 +44,8 @@ import org.springframework.util.StringUtils;
  */
 public final class SentinelFeign {
 
+	private static final String FEIGN_LAZY_ATTR_RESOLUTION = "spring.cloud.openfeign.lazy-attributes-resolution";
+
 	private SentinelFeign() {
 
 	}
@@ -81,15 +83,24 @@ public final class SentinelFeign {
 						Map<Method, MethodHandler> dispatch) {
 					GenericApplicationContext gctx = (GenericApplicationContext) Builder.this.applicationContext;
 					BeanDefinition def = gctx.getBeanDefinition(target.type().getName());
+					FeignClientFactoryBean feignClientFactoryBean;
 
-					/*
-					 * Due to the change of the initialization sequence,
-					 * BeanFactory.getBean will cause a circular dependency. So
-					 * FeignClientFactoryBean can only be obtained from BeanDefinition
-					 */
-					FeignClientFactoryBean feignClientFactoryBean = (FeignClientFactoryBean) def
-							.getAttribute("feignClientsRegistrarFactoryBean");
-
+					// If you need the attributes to be resolved lazily, set the property value to true.
+					Boolean isLazyInit = applicationContext.getEnvironment()
+							.getProperty(FEIGN_LAZY_ATTR_RESOLUTION, Boolean.class, false);
+					if (isLazyInit) {
+						/*
+						 * Due to the change of the initialization sequence,
+						 * BeanFactory.getBean will cause a circular dependency. So
+						 * FeignClientFactoryBean can only be obtained from BeanDefinition
+						 */
+						feignClientFactoryBean = (FeignClientFactoryBean) def
+								.getAttribute("feignClientsRegistrarFactoryBean");
+					}
+					else {
+						feignClientFactoryBean = (FeignClientFactoryBean) applicationContext
+								.getBean("&" + target.type().getName());
+					}
 					Class fallback = feignClientFactoryBean.getFallback();
 					Class fallbackFactory = feignClientFactoryBean.getFallbackFactory();
 					String beanName = feignClientFactoryBean.getContextId();
