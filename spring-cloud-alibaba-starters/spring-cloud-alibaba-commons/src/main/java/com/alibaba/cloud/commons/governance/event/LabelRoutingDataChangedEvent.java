@@ -20,13 +20,11 @@ import java.util.Collection;
 
 import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
 
-import org.springframework.context.ApplicationEvent;
-
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public class LabelRoutingDataChangedEvent extends ApplicationEvent {
+public class LabelRoutingDataChangedEvent extends GovernanceEvent {
 
 	/**
 	 * Configuration for Label Routing.

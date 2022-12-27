@@ -18,6 +18,7 @@ package com.alibaba.cloud.governance.istio;
 
 import java.util.List;
 
+import com.alibaba.cloud.commons.governance.event.GovernanceEvent;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.AuthXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.LabelRoutingXdsResolveFilter;
@@ -27,11 +28,14 @@ import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -46,12 +50,22 @@ import org.springframework.context.annotation.Configuration;
 public class XdsAutoConfiguration {
 
 	/**
+	 * xds auto configuration log.
+	 */
+	private static final Logger log = LoggerFactory.getLogger(XdsAutoConfiguration.class);
+
+	/**
 	 * Order of xds auto config.
 	 */
 	public static final int RESOURCE_TRANSFORM_AUTO_CONFIG_ORDER = 100;
 
 	@Autowired
 	private XdsConfigProperties xdsConfigProperties;
+
+	@Bean
+	public DummyGovernanceDataListener dummyGovernanceDataListener() {
+		return new DummyGovernanceDataListener();
+	}
 
 	@Bean
 	public XdsChannel xdsChannel() {
@@ -94,17 +108,29 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	EdsProtocol edsProtocol(XdsChannel xdsChannel,
+	public EdsProtocol edsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool) {
 		return new EdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
 	}
 
 	@Bean
-	RdsProtocol rdsProtocol(XdsChannel xdsChannel,
+	public RdsProtocol rdsProtocol(XdsChannel xdsChannel,
 			XdsScheduledThreadPool xdsScheduledThreadPool,
 			List<XdsResolveFilter<List<RouteConfiguration>>> filters) {
 		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
 				filters);
+	}
+
+	private final class DummyGovernanceDataListener
+			implements ApplicationListener<GovernanceEvent> {
+
+		@Override
+		public void onApplicationEvent(GovernanceEvent event) {
+			if (log.isDebugEnabled()) {
+				log.debug("Received governance event " + event.toString());
+			}
+		}
+
 	}
 
 }
