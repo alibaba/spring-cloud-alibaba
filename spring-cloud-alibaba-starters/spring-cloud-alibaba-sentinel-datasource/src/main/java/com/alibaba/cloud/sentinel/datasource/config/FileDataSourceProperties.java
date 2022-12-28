@@ -21,7 +21,7 @@ import java.io.IOException;
 import com.alibaba.cloud.sentinel.datasource.factorybean.FileRefreshableDataSourceFactoryBean;
 import jakarta.validation.constraints.NotEmpty;
 
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.StringUtils;
 
 /**
@@ -81,9 +81,10 @@ public class FileDataSourceProperties extends AbstractDataSourceProperties {
 	public void preCheck(String dataSourceName) {
 		super.preCheck(dataSourceName);
 		try {
-			this.setFile(
-					ResourceUtils.getFile(StringUtils.trimAllWhitespace(this.getFile()))
-							.getAbsolutePath());
+			PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+			String filePath = resourcePatternResolver.getResource(StringUtils.trimAllWhitespace(this.getFile()))
+					.getURL().getFile();
+			this.setFile(filePath);
 		}
 		catch (IOException e) {
 			throw new RuntimeException("[Sentinel Starter] DataSource " + dataSourceName
