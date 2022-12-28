@@ -256,3 +256,82 @@ The request is routed to version v2 because the routing rule is matched by the r
 ```
 Route in 30.221.132.228: 18081,version is v2.
 ```
+## Integrating OpenSergo
+**Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
+1. First, modify the pom.xml file to introduce the spring cloud ailbaba governance label-routing and opensergo-resource-transform dependency
+```
+   <dependency>
+      <groupId>com.alibaba.cloud</groupId>
+      <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+   </dependency>
+   <dependency>
+      <groupId>com.alibaba.cloud</groupId>
+      <artifactId>opensergo-resource-transform</artifactId>
+   </dependency>
+```
+2. Configure application.yml for OpenSergo control plane
+```
+# The endpoint of OpenSergo ControlPlane
+spring.cloud.opensergo.endpoint=127.0.0.1:10246
+```
+### Startup Application
+Start OpenSergoConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.
+### Publish Configuration
+We publish the label routing rules through the OpenSergo control plane. We publish a TrafficRouter rule.
+```
+kubectl apply -f - << EOF
+apiVersion: traffic.opensergo.io/v1alpha1
+kind: TrafficRouter
+metadata:
+  name: service-provider
+  namespace: default
+  labels:
+    app: service-provider
+spec:
+  hosts:
+    - service-provider
+  http:
+    - match:
+        - headers:
+            tag:
+              exact: v2
+      route:
+        - destination:
+            host: service-provider
+            subset: v2
+            fallback:
+              host: service-provider
+              subset: v1
+    - route:
+        - destination:
+            host: service-provider
+            subset: v1
+EOF
+```
+This TrafficRouter specifies the simplest label routing rule. HTTP requests with a gray header are routed to v2, and the rest of the traffic is routed to v1.
+If the version v2 does not have a corresponding instance, the HTTP request will fall back to the version v1.
+### Demonstrate effect
+We send an HTTP request without a request header to IstioConsumerApplication
+```
+curl --location --request GET '127.0.0.1:18083/router-test'
+```
+Since the request header is not gray, the request will be routed to version v1 with the following result
+```
+Route in 30.221.132.228: 18081,version is v1.
+```
+We then send an HTTP request with a gray tag in its header and the request path is /istio-label-routing
+```
+curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: gray'
+```
+The request is routed to version v2 because the routing rule is matched by the request.
+```
+Route in 30.221.132.228: 18081,version is v2.
+```
+After we stop the ProviderApplication of the version v2, we send an HTTP request with the request header tag gray.
+```
+curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
+```
+because the version v2 does not have a corresponding instance, so the Http requesr is fallback to the version v1.
+```
+Route in 30.221.132.228: 18081,version is v1.
+```
