@@ -126,4 +126,10 @@ Contributor是对项目有贡献的个人，标准为：
 |yuluoxinsheng@gmail.com
 |~
 
+|阮胜
+|ruansheng8
+|Committer
+|chrisruans@gmail.com
+|智业软件股份有限公司
+
 |===
