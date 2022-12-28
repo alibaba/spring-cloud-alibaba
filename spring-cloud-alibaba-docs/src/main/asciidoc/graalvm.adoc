@@ -1,4 +1,4 @@
-== GraalVM in Spring Cloud Alibaba
+== AOT and Native Image Support
 
 === Introduction to GraalVM
 

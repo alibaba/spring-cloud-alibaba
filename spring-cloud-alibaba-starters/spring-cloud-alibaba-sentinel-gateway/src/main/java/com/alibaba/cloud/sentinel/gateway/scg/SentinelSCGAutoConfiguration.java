@@ -75,7 +75,7 @@ public class SentinelSCGAutoConfiguration {
 	private SentinelGatewayProperties gatewayProperties;
 
 	@PostConstruct
-	private void init() {
+	public void init() {
 		// blockRequestHandlerOptional has low priority
 		blockRequestHandlerOptional.ifPresent(GatewayCallbackManager::setBlockHandler);
 		initAppType();
