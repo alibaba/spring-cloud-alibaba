@@ -65,24 +65,6 @@ public class DubboMetadataAutoConfiguration {
 	@Autowired
 	private DubboMetadataServiceExporter dubboMetadataConfigServiceExporter;
 
-	@Bean
-	@ConditionalOnMissingBean
-	public MetadataResolver metadataJsonResolver(ObjectProvider<Contract> contract) {
-		return new DubboServiceBeanMetadataResolver(contract);
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public ServiceInstanceSelector metadataServiceInstanceSelector() {
-		return new RandomServiceInstanceSelector();
-	}
-
-	@Bean
-	public Supplier<ProtocolConfig> dubboProtocolConfigSupplier(
-			ObjectProvider<Collection<ProtocolConfig>> protocols) {
-		return new DubboProtocolConfigSupplier(protocols);
-	}
-
 	// Event-Handling
 	@EventListener(ServiceBeanExportedEvent.class)
 	public void onServiceBeanExported(ServiceBeanExportedEvent event) {
