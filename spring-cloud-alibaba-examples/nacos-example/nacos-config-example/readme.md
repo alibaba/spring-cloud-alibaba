@@ -22,12 +22,16 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
     <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
 </dependency>
 ```
-2. Add Nacos config metadata configurations to file /src/main/resources/bootstrap.properties
+
+2. Add Nacos config metadata configurations to file /src/main/resources/application.yaml and import service config
 ```yaml
 spring:
   cloud:
     nacos:
       serverAddr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:nacos-config-example.properties?refresh=true
 ```
 
 3. After completing the above two steps, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment. Suppose we save part of the configuration of Nacos through the Nacos configuration center, there are the following four examples:
