@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.integration.storage.dto;
 
-public class UrlCleaner {
+/**
+ * @author TrevorLink
+ */
+public class StorageDTO {
 
-	public static String clean(String url) {
-		System.out.println("enter urlCleaner");
-		if (url.matches(".*/echo/.*")) {
-			System.out.println("change url");
-			url = url.replaceAll("/echo/.*", "/echo/{str}");
-		}
-		return url;
+	private String commodityCode;
+
+	private Integer count;
+
+	public String getCommodityCode() {
+		return commodityCode;
+	}
+
+	public void setCommodityCode(String commodityCode) {
+		this.commodityCode = commodityCode;
+	}
+
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 
 }

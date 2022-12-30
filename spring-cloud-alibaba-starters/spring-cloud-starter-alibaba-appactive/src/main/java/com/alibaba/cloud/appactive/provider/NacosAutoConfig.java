@@ -19,6 +19,7 @@ package com.alibaba.cloud.appactive.provider;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.Filter;
 
 import com.alibaba.cloud.nacos.registry.NacosRegistration;
 
@@ -33,7 +34,7 @@ import org.springframework.context.annotation.Configuration;
 public class NacosAutoConfig {
 
 	@Autowired
-	private List<FilterRegistrationBean> beanList;
+	private List<FilterRegistrationBean<? extends Filter>> beanList;
 
 	@Autowired(required = false)
 	private NacosRegistration nacosRegistration;

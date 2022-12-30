@@ -20,6 +20,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Provide the interface method of config.
+ *
+ * @author MieAh
+ */
 @RestController
 public class GetConfigController {
 

@@ -6,6 +6,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration,\
   com.alibaba.cloud.nacos.discovery.reactive.NacosReactiveDiscoveryClientConfiguration,\
   com.alibaba.cloud.nacos.discovery.configclient.NacosConfigServerAutoConfiguration,\
+  com.alibaba.cloud.nacos.discovery.ZuulGatewayLocatorAutoConfiguration,\
   com.alibaba.cloud.nacos.NacosServiceAutoConfiguration,\
   com.alibaba.cloud.nacos.util.UtilIPv6AutoConfiguration
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
