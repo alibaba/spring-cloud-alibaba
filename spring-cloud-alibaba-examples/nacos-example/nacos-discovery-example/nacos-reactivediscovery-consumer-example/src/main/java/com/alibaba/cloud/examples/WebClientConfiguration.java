@@ -16,15 +16,21 @@
 
 package com.alibaba.cloud.examples;
 
-public class UrlCleaner {
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.reactive.function.client.WebClient;
 
-	public static String clean(String url) {
-		System.out.println("enter urlCleaner");
-		if (url.matches(".*/echo/.*")) {
-			System.out.println("change url");
-			url = url.replaceAll("/echo/.*", "/echo/{str}");
-		}
-		return url;
+/**
+ * Configuration for web client.
+ *
+ * @author fangjian0423, MieAh
+ */
+public class WebClientConfiguration {
+
+	@Bean
+	@LoadBalanced
+	public WebClient.Builder webClient() {
+		return WebClient.builder();
 	}
 
 }

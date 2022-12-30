@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Random;
 
 import com.alibaba.cloud.examples.ConsumerSCLBApplication.EchoService;
+import com.alibaba.cloud.examples.config.MyLoadBalancerConfiguration;
+import com.alibaba.cloud.examples.config.UrlCleaner;
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,9 +2,10 @@
 
 ## 项目说明
 
-[![vTlxsA.jpg](https://s1.ax1x.com/2022/09/04/vTlxsA.jpg)](https://imgse.com/i/vTlxsA)
 
-本 demo 整体架构如图。 
+![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-16-25-989.png)
+
+本 demo 整体架构如上图： 
 
 注：
 
@@ -129,7 +130,7 @@
 
 1. 归属于一般（Unit）单元的普通应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/listProduct` 地址，可见请求通过 frontend 应用被发送给了 product。
 
-    [![vTlxsA.jpg](https://s1.ax1x.com/2022/09/04/vTlxsA.jpg)](https://imgse.com/i/vTlxsA)
+   ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-16-25-989.png)
 
     由于上述路径中的 `/listProduct` 在 product 应用中匹配到的是 `/*` 路径规则，根据规则内容，该服务属于普通应用做了未做单元化拆分，所以frontend 在从注册中心获取的 product 地址列表中不存在倾向性，会随机选择地址进行请求发送。因此多次请求上述路径，会看到请求在 product 的一般（Unit)和 中心（center）单元应用中来回切换。
 
@@ -164,15 +165,15 @@
     上述规则表示，用户Id为 0 ~ 1999 的请求将发送给下游提供者中的一般（Unit）单元中的核心应用实例，用户Id为 2000 ~ 9999 的请求将发送给下游提供者中的中心（Center）单元全局应用实例。
     如下图，模拟一个用户Id为 1999 的请求，可见请求通过 frontend 发送到了下游中 product 的一般（Unit）单元中的核心应用实例。
 
-    [![1xnI7.jpg](https://s1.328888.xyz/2022/09/05/1xnI7.jpg)](https://imgloc.com/i/1xnI7)
+   ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-15-39-851.png)
 
     如下图，模拟一个用户Id为 2000 的请求，可见请求通过 frontend 发送到了下游中 product 的中心（center）单元中的全局应用实例。
 
-    [![1xAHk.jpg](https://s1.328888.xyz/2022/09/05/1xAHk.jpg)](https://imgloc.com/i/1xAHk)
+   ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-14-50-461.png)
 
 3. 归属于中心（Center）单元的全局应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/buyProduct` 路径，由于上述路径中的 `/buyProduct` 在 product 和 storage 应用中匹配到的是 `/buy/*` 路径规则，根据规则内容，该服务属于全局应用未做单元会拆分，其会直接将请求发送到下游的中心（Center）单元中全局应用实例。
 
-    [![1s4Oi.jpg](https://s1.328888.xyz/2022/09/04/1s4Oi.jpg)](https://imgloc.com/i/1s4Oi)
+   ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-14-02-388.png)
 
 4. 切流演示。切流时主要做了如下几件事：
     - 构建新的映射关系规则和禁写规则（手动）
@@ -207,10 +208,10 @@
         }
         ```
         如下图，模拟一个用户Id为 2999 的请求，可见请求通过 frontend 发送到了下游中 product 的 unit 单元中的核心应用实例，切流规则生效。
-        [![1xUnd.jpg](https://s1.328888.xyz/2022/09/05/1xUnd.jpg)](https://imgloc.com/i/1xUnd)
+        ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-12-58-177.png)
 
         如下图，模拟一个用户Id为 3000 的请求，可见请求通过 frontend 发送到了下游中 product 的 center 单元中的全局应用实例，切流规则生效。
-        [![1xpgr.jpg](https://s1.328888.xyz/2022/09/05/1xpgr.jpg)](https://imgloc.com/i/1xpgr)
+        ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-12-26-461.png)
 
 
 
