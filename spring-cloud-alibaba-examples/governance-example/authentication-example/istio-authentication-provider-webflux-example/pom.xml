@@ -32,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>istio-resource-transform</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-istio</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>spring-web</groupId>

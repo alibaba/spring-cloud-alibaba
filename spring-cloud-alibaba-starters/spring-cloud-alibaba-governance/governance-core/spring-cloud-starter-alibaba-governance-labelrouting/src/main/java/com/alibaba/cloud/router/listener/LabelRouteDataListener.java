@@ -52,13 +52,9 @@ public class LabelRouteDataListener
 
 	@Override
 	public void onApplicationEvent(LabelRoutingDataChangedEvent event) {
-		Object obj = event.getSource();
-		if (!(obj instanceof Collection)) {
-			return;
-		}
-
 		try {
-			Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList = (Collection<UnifiedRouteDataStructure>) obj;
+			Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList = event
+					.getUntiedRouterDataStructureList();
 
 			// Filter service.
 			// todo can cache the result

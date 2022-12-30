@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2022 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.commons.governance.event;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationEvent;
 
-@SpringBootApplication
-public class AuthApplication {
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
+public class GovernanceEvent extends ApplicationEvent {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AuthApplication.class, args);
+	/**
+	 * Create a new {@code ApplicationEvent}.
+	 * @param source the object on which the event initially occurred or with which the
+	 * event is associated (never {@code null})
+	 */
+	public GovernanceEvent(Object source) {
+		super(source);
 	}
 
 }

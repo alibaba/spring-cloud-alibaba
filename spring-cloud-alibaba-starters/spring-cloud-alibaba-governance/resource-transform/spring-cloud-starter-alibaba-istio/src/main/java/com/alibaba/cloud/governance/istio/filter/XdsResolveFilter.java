@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2022 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.governance.istio.filter;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
+public interface XdsResolveFilter<T> {
 
-@SpringBootApplication
-public class AuthApplication {
+	boolean resolve(T t);
 
-	public static void main(String[] args) {
-		SpringApplication.run(AuthApplication.class, args);
-	}
+	String getTypeUrl();
 
 }
