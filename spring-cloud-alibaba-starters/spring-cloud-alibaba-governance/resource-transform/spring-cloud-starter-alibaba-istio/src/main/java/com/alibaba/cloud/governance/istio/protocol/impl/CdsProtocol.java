@@ -31,7 +31,8 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
 /**
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @author <a href="liuziming@buaa.edu.cn"></a> CdsProtocol contains infomation about
+ * service.
  */
 public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 

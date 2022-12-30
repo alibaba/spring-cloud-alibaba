@@ -29,6 +29,8 @@ import org.springframework.context.annotation.Configuration;
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 @Configuration(proxyBeanMethods = false)
+// We need to auto config the class before spring cloud alibaba istio module, to prevent
+// event publisher hang permanently.
 @AutoConfigureOrder(AuthenticationAutoConfiguration.AUTH_AUTO_CONFIG_ORDER)
 
 public class AuthenticationAutoConfiguration {

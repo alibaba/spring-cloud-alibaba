@@ -27,7 +27,7 @@
 
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>istio-resource-transform</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
 </dependency>
 ```
 2. 在应用的 `src/main/resources/application.yml` 配置文件中配置Istio相关元数据:

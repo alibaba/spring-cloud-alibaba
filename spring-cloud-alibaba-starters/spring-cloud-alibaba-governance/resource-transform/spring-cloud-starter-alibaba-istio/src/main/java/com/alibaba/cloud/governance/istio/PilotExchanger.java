@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @author <a href="liuziming@buaa.edu.cn"></a> PilotExchanger is the class which
+ * communicate with istio pilot.
  */
 public class PilotExchanger {
 

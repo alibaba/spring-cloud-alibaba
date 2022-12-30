@@ -46,6 +46,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.istio.config.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(XdsConfigProperties.class)
+// We need to auto config the class after all the governance data listener, to prevent
+// event publisher hang permanently.
 @AutoConfigureOrder(XdsAutoConfiguration.RESOURCE_TRANSFORM_AUTO_CONFIG_ORDER)
 public class XdsAutoConfiguration {
 
@@ -121,6 +123,9 @@ public class XdsAutoConfiguration {
 				filters);
 	}
 
+	/**
+	 * To prevent the event publish hang permanently.
+	 */
 	private final class DummyGovernanceDataListener
 			implements ApplicationListener<GovernanceEvent> {
 

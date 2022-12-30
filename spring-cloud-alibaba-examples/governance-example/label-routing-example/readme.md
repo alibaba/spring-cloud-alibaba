@@ -141,7 +141,7 @@ If the request parameter contains tag=gray, and the request header contains id a
 3. If you don't push rule,it will load balance by common rule you set.
 ## Integrating Istio
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-1. First, modify the pom.xml file to introduce the spring cloud ailbaba governance label-routing and istio-resource-transform dependency
+1. First, modify the pom.xml file to introduce the spring cloud ailbaba governance label-routing and spring-cloud-starter-alibaba-istio dependency
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -149,7 +149,7 @@ If the request parameter contains tag=gray, and the request header contains id a
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>istio-resource-transform</artifactId>
+      <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
    </dependency>
 ```
 2. Configure application.yml for Istio control plane

@@ -9,8 +9,8 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>istio-resource-transform</artifactId>
-    <name>Istio Resource Transform</name>
+    <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+    <name>Spring Cloud Alibaba Istio</name>
 
     <dependencies>
         <dependency>

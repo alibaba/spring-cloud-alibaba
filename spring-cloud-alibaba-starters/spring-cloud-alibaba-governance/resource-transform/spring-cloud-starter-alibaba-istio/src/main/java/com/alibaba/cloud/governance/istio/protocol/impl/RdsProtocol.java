@@ -30,7 +30,7 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
 /**
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @author <a href="liuziming@buaa.edu.cn"></a> RdsProtocol contains route info.
  */
 public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 

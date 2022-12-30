@@ -142,7 +142,7 @@ List<MatchService> matchServices = new ArrayList<>();
 
 ## 集成Istio
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改pom.xml 文件，引入 spring cloud ailbaba governance labelrouting依赖。同时引入Spring Cloud Alibaba的istio-resource-transform模块
+1. 首先，修改pom.xml 文件，引入 spring cloud ailbaba governance labelrouting依赖。同时引入Spring Cloud Alibaba的spring-cloud-starter-alibaba-istio模块
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -150,7 +150,7 @@ List<MatchService> matchServices = new ArrayList<>();
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>istio-resource-transform</artifactId>
+      <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
    </dependency>
 ```
 2. 在`src/main/resources/application.yml`配置文件中配置Istio控制面的相关信息

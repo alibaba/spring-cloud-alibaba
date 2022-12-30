@@ -29,7 +29,7 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
 /**
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @author <a href="liuziming@buaa.edu.cn"></a> TODO: Fetch all endpoints in EdsProtocol.
  */
 public class EdsProtocol extends AbstractXdsProtocol<ClusterLoadAssignment> {
 
