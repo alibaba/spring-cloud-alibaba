@@ -16,20 +16,25 @@
 
 package com.alibaba.cloud.examples;
 
+import reactor.core.publisher.Mono;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
-
 
 @RestController
 public class AuthWebFluxController {
-    @RequestMapping("/auth")
-    public Mono<String> auth(ServerWebExchange request) {
-        String resp = "received request from " + request.getRequest().getRemoteAddress().getAddress().getHostAddress() +
-                ", local addr is " + request.getRequest().getLocalAddress().getAddress().getHostAddress() +
-                ", local host is " + request.getRequest().getLocalAddress().getAddress().getHostName() +
-                ", request path is" + request.getRequest().getURI().getPath();
-        return Mono.just(resp);
-    }
+
+	@RequestMapping("/auth")
+	public Mono<String> auth(ServerWebExchange request) {
+		String resp = "received request from "
+				+ request.getRequest().getRemoteAddress().getAddress().getHostAddress()
+				+ ", local addr is "
+				+ request.getRequest().getLocalAddress().getAddress().getHostAddress()
+				+ ", local host is "
+				+ request.getRequest().getLocalAddress().getAddress().getHostName()
+				+ ", request path is" + request.getRequest().getURI().getPath();
+		return Mono.just(resp);
+	}
+
 }

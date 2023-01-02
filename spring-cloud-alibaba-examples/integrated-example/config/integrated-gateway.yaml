@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: placeOrder
+          uri: lb://integrated-order
+          predicates:
+            - Path=/order/create
+        - id: queryStorage
+          uri: lb://integrated-storage
+          predicates:
+            - Path=/storage/
+        - id: queryAccount
+          uri: lb://integrated-account
+          predicates:
+            - Path=/account/
+        - id: praiseItemRocketMQ
+          uri: lb://integrated-provider
+          predicates:
+            - Path=/praise/rocketmq
+        - id: praiseItemSentinel
+          uri: lb://integrated-provider
+          predicates:
+            - Path=/praise/sentinel
+        - id: queryPraise
+          uri: lb://integrated-consumer
+          predicates:
+            - Path=/praise/query

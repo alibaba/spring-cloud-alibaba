@@ -20,12 +20,19 @@ import com.alibaba.cloud.router.listener.LabelRouteDataListener;
 import com.alibaba.cloud.router.repository.FilterService;
 import com.alibaba.cloud.router.repository.RouteDataRepository;
 
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
+@AutoConfigureOrder(LabelRoutingAutoConfiguration.LABEL_ROUTING_AUTO_CONFIG_ORDER)
 public class LabelRoutingAutoConfiguration {
+
+	/**
+	 * Order of label routing auto config.
+	 */
+	public static final int LABEL_ROUTING_AUTO_CONFIG_ORDER = 10;
 
 	@Bean
 	@ConditionalOnMissingBean

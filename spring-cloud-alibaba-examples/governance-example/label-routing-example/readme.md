@@ -34,8 +34,8 @@ The rules set in the instance are as follows:
 List<RouteRule> routeRules = new ArrayList<>();
 List<MatchService> matchServices = new ArrayList<>();
 
-			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-			untiedRouteDataStructure.setTargetService("service-provider");
+			UnifiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
+			unifiedRouteDataStructure.setTargetService("service-provider");
 
 			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
@@ -66,11 +66,11 @@ List<MatchService> matchServices = new ArrayList<>();
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
-			untiedRouteDataStructureList.add(untiedRouteDataStructure);
-			controlPlaneConnection.pushRouteData(untiedRouteDataStructureList);
+			List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
+			controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
 		}
 The rules corresponding to the code are as follows:
 If the request parameter contains tag=gray and the request header contains id and the value is greater than 10, uri is /router-test at the same time, the traffic is routed to the v2 version. If one of the request parameters does not meet the requirement, the traffic is routed to the v1 version.
@@ -82,8 +82,8 @@ Rules also support dynamic modification. The rules for testing dynamic modificat
 			List<RouteRule> routeRules = new ArrayList<>();
 			List<MatchService> matchServices = new ArrayList<>();
 
-			UntiedRouteDataStructure untiedRouteDataStructure = new UntiedRouteDataStructure();
-			untiedRouteDataStructure.setTargetService("service-provider");
+			UntiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
+			unifiedRouteDataStructure.setTargetService("service-provider");
 
 			LabelRouteRule labelRouteData = new LabelRouteRule();
 			labelRouteData.setDefaultRouteVersion("v1");
@@ -114,11 +114,11 @@ Rules also support dynamic modification. The rules for testing dynamic modificat
 
 			labelRouteData.setMatchRouteList(matchServices);
 
-			untiedRouteDataStructure.setLabelRouteRule(labelRouteData);
+			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UntiedRouteDataStructure> untiedRouteDataStructureList = new ArrayList<>();
-			untiedRouteDataStructureList.add(untiedRouteDataStructure);
-			controlPlaneConnection.pushRouteData(untiedRouteDataStructureList);
+			List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
+			controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
 		}
 The rules corresponding to the code are as follows:
 If the request parameter contains tag=gray, and the request header contains id and the value is greater than 10,uri is /router-test, 50% of the traffic is routed to the v2 version, and the rest is routed to the v1 version. If one of the traffic does not meet the requirements, the traffic is routed to the v1 version.
@@ -141,7 +141,7 @@ If the request parameter contains tag=gray, and the request header contains id a
 3. If you don't push rule,it will load balance by common rule you set.
 ## Integrating Istio
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-1. First, modify the pom.xml file to introduce the spring cloud ailbaba governance label-routing and istio-resource-transform dependency
+1. First, modify the pom.xml file to introduce the spring cloud ailbaba governance label-routing and spring-cloud-starter-alibaba-istio dependency
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -149,7 +149,7 @@ If the request parameter contains tag=gray, and the request header contains id a
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>istio-resource-transform</artifactId>
+      <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
    </dependency>
 ```
 2. Configure application.yml for Istio control plane
@@ -186,6 +186,8 @@ spring:
         polling-time: ${POLLING_TIME:10}
         # Istiod token(For Istio 15012 port)
         istiod-token: ${ISTIOD_TOKEN:}
+        # Whether to print xds log
+        log-xds: ${LOG_XDS:true}
 ```
 ### Startup Application
 Start IstioConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.

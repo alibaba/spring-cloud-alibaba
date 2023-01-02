@@ -26,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>istio-resource-transform</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-istio</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

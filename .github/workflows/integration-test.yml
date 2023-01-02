@@ -2,10 +2,10 @@ name: Integration Testing
 on:
   push:
     branches:
-      - 2.2.x
+      - 2.2.x-governance
   pull_request:
     branches:
-      - 2.2.x
+      - 2.2.x-governance
 jobs:
   integration-testing:
     name: Integration Testing

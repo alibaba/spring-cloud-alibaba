@@ -84,6 +84,11 @@ public class NacosConfigProperties {
 	 */
 	public static final String SEPARATOR = "[,]";
 
+	/**
+	 * Nacos default namespace .
+	 */
+	public static final String DEFAULT_NAMESPACE = "public";
+
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	private static final Logger log = LoggerFactory
@@ -560,7 +565,7 @@ public class NacosConfigProperties {
 		properties.put(USERNAME, Objects.toString(this.username, ""));
 		properties.put(PASSWORD, Objects.toString(this.password, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
-		properties.put(NAMESPACE, Objects.toString(this.namespace, ""));
+		properties.put(NAMESPACE, this.resolveNamespace());
 		properties.put(ACCESS_KEY, Objects.toString(this.accessKey, ""));
 		properties.put(SECRET_KEY, Objects.toString(this.secretKey, ""));
 		properties.put(RAM_ROLE_NAME, Objects.toString(this.ramRoleName, ""));
@@ -583,6 +588,21 @@ public class NacosConfigProperties {
 
 		enrichNacosConfigProperties(properties);
 		return properties;
+	}
+
+	/**
+	 * refer
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2872
+	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2869 .
+	 */
+	private String resolveNamespace() {
+		if (DEFAULT_NAMESPACE.equals(this.namespace)) {
+			log.info("set nacos config namespace 'public' to ''");
+			return "";
+		}
+		else {
+			return Objects.toString(this.namespace, "");
+		}
 	}
 
 	private void enrichNacosConfigProperties(Properties nacosConfigProperties) {

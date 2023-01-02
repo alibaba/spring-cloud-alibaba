@@ -19,6 +19,7 @@ package com.alibaba.cloud.governance.auth;
 import com.alibaba.cloud.governance.auth.listener.AuthListener;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,16 @@ import org.springframework.context.annotation.Configuration;
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 @Configuration(proxyBeanMethods = false)
+// We need to auto config the class before spring cloud alibaba istio module, to prevent
+// event publisher hang permanently.
+@AutoConfigureOrder(AuthenticationAutoConfiguration.AUTH_AUTO_CONFIG_ORDER)
+
 public class AuthenticationAutoConfiguration {
+
+	/**
+	 * Order of auth auto config.
+	 */
+	public static final int AUTH_AUTO_CONFIG_ORDER = 9;
 
 	@Bean
 	@ConditionalOnMissingBean

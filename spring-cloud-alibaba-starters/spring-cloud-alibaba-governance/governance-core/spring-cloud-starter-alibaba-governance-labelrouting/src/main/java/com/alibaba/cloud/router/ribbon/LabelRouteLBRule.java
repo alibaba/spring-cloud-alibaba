@@ -27,8 +27,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.cloud.commons.governance.labelrouting.crd.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.crd.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;

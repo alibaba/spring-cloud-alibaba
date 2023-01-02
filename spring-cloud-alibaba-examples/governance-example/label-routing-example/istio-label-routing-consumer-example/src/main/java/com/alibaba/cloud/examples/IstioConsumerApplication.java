@@ -51,6 +51,7 @@ public class IstioConsumerApplication {
 
 	@RestController
 	public class Controller {
+
 		@Autowired
 		private IstioConsumerApplication.FeignService feignService;
 
@@ -58,5 +59,7 @@ public class IstioConsumerApplication {
 		public String labelRouting() {
 			return feignService.test();
 		}
+
 	}
+
 }
