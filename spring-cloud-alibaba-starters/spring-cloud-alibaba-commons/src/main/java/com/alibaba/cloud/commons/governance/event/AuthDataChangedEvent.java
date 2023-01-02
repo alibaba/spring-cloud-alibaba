@@ -16,17 +16,26 @@
 
 package com.alibaba.cloud.commons.governance.event;
 
-import org.springframework.context.ApplicationEvent;
+import com.alibaba.cloud.commons.governance.auth.rule.AuthRules;
 
-public class AuthDataChangedEvent extends ApplicationEvent {
+/**
+ * @author musi
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ */
+public class AuthDataChangedEvent extends GovernanceEvent {
 
 	/**
-	 * Create a new {@code ApplicationEvent}.
-	 * @param source the object on which the event initially occurred or with which the
-	 * event is associated (never {@code null})
+	 * Configuration for authentication.
 	 */
-	public AuthDataChangedEvent(Object source) {
+	private final AuthRules authRules;
+
+	public AuthDataChangedEvent(Object source, AuthRules authRules) {
 		super(source);
+		this.authRules = authRules;
+	}
+
+	public AuthRules getAuthRules() {
+		return authRules;
 	}
 
 }

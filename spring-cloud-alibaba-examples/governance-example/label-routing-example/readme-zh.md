@@ -142,7 +142,7 @@ List<MatchService> matchServices = new ArrayList<>();
 
 ## 集成Istio
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改pom.xml 文件，引入 spring cloud ailbaba governance labelrouting依赖。同时引入Spring Cloud Alibaba的istio-resource-transform模块
+1. 首先，修改pom.xml 文件，引入 spring cloud ailbaba governance labelrouting依赖。同时引入Spring Cloud Alibaba的spring-cloud-starter-alibaba-istio模块
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -150,10 +150,10 @@ List<MatchService> matchServices = new ArrayList<>();
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>istio-resource-transform</artifactId>
+      <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
    </dependency>
 ```
-2. 在application.yml配置文件中配置Istio控制面的相关信息
+2. 在`src/main/resources/application.yml`配置文件中配置Istio控制面的相关信息
 ```
 server:
   port: 18084
@@ -187,6 +187,8 @@ spring:
         polling-time: ${POLLING_TIME:10}
         # Istiod鉴权token(访问Istiod 15012端口时可用)
         istiod-token: ${ISTIOD_TOKEN:}
+        # 是否打印xds相关日志
+        log-xds: ${LOG_XDS:true}
 ```
 ### 应用启动
 启动一个三个模块的启动类，分别为IstioConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
