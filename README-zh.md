@@ -1,8 +1,8 @@
 # Spring Cloud Alibaba
 
-[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2021.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2021.x)
+[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2022.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2022.x)
 [![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
-[![Codecov](https://codecov.io/gh/alibaba/spring-cloud-alibaba/branch/2021.x/graph/badge.svg)](https://codecov.io/gh/alibaba/spring-cloud-alibaba)
+[![Codecov](https://codecov.io/gh/alibaba/spring-cloud-alibaba/branch/2022.x/graph/badge.svg)](https://codecov.io/gh/alibaba/spring-cloud-alibaba)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
@@ -27,7 +27,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 * **阿里云短信服务**：覆盖全球的短信服务，友好、高效、智能的互联化通讯能力，帮助企业迅速搭建客户触达通道。
 
 
-更多功能请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/Roadmap-zh.md)
+更多功能请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/Roadmap-zh.md)
 
 除了上述所具有的功能外，针对企业级用户的场景，Spring Cloud Alibaba 配套的企业版微服务治理方案 [微服务引擎MSE](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar) 还提供了企业级微服务治理中心，包括全链路灰度、服务预热、无损上下线和离群实例摘除等更多更强大的治理能力，同时还提供了企业级 Nacos 注册配置中心，企业级云原生网关等多种产品及解决方案。
 
@@ -50,13 +50,13 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 更多组件请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.0/Roadmap-zh.md)。
 
 ## 如何构建
+* 2022.x分之对应的是 Spring Cloud 2022 与 Spring Boot 3.x，最低支持 JDK 17。
 * 2021.x 分支对应的是 Spring Cloud 2021 与 Spring Boot 2.6.x，最低支持 JDK 1.8。
 * 2020.0 分支对应的是 Spring Cloud 2020 与 Spring Boot 2.4.x，最低支持 JDK 1.8。
 * 2.2.x 分支对应的是 Spring Cloud Hoxton 与 Spring Boot 2.2.x，最低支持 JDK 1.8。
 * greenwich 分支对应的是 Spring Cloud Greenwich 与 Spring Boot 2.1.x，最低支持 JDK 1.8。
 * finchley 分支对应的是 Spring Cloud Finchley 与 Spring Boot 2.0.x，最低支持 JDK 1.8。
 * 1.x 分支对应的是 Spring Cloud Edgware 与 Spring Boot 1.x，最低支持 JDK 1.7。
-* 2022.x分之对应的是 Spring Cloud 2022 与 Spring Boot 3.0.x，最低支持 JDK 17
 
 Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone 到本地，然后执行以下命令：
 ```bash
@@ -71,15 +71,15 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 如果需要使用已发布的版本，在 `dependencyManagement` 中添加如下配置。
 ```xml
 <dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-      <version>2022.0.0.0-RC1</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2022.0.0.0-RC1</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
 </dependencyManagement>
 ```
 然后在 `dependencies` 中添加自己所需使用的依赖即可使用。如果你想选择老版本，可以参考[版本说明](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E)。
@@ -90,15 +90,15 @@ Spring Cloud 使用 Maven 来构建，最快的使用方式是将本项目 clone
 
 Example 列表：
 
-[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md)
+[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme-zh.md)
 
-[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md)
+[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md)
 
-[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md)
+[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme-zh.md)
 
-[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/rocketmq-example/readme-zh.md)
+[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/rocketmq-example/readme-zh.md)
 
-[Seata Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/seata-example/readme-zh.md)
+[Seata Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/seata-example/readme-zh.md)
 
 [Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
 
@@ -112,7 +112,7 @@ Example 列表：
 
 由于 Spring Boot 1 和 Spring Boot 2 在 Actuator 模块的接口和注解有很大的变更，且 spring-cloud-commons 从 1.x.x 版本升级到 2.0.0 版本也有较大的变更，因此我们采取跟 SpringBoot 版本号一致的版本:
 
-* 2022.x 版本适用于 Spring Boot 3.0.x
+* 2022.x 版本适用于 Spring Boot 3.x
 * 1.5.x 版本适用于 Spring Boot 1.5.x
 * 2.0.x 版本适用于 Spring Boot 2.0.x
 * 2.1.x 版本适用于 Spring Boot 2.1.x
