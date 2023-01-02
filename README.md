@@ -1,13 +1,13 @@
 # Spring Cloud Alibaba
 
-[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2021.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2021.x)
+[![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2022.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2022.x)
 [![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
-[![Codecov](https://codecov.io/gh/alibaba/spring-cloud-alibaba/branch/2021.x/graph/badge.svg)](https://codecov.io/gh/alibaba/spring-cloud-alibaba)
+[![Codecov](https://codecov.io/gh/alibaba/spring-cloud-alibaba/branch/2022.x/graph/badge.svg)](https://codecov.io/gh/alibaba/spring-cloud-alibaba)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 A project maintained by Alibaba.
 
-See the [中文文档](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/README-zh.md) for Chinese readme.
+See the [中文文档](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/README-zh.md) for Chinese readme.
 
 Spring Cloud Alibaba provides a one-stop solution for distributed application development. It contains all the components required to develop distributed applications, making it easy for you to develop your applications using Spring Cloud.
 
@@ -25,7 +25,7 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 * **Alibaba Cloud SchedulerX**: Accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
 * **Alibaba Cloud SMS**: A messaging service that covers the globe, Alibaba SMS provides convenient, efficient, and intelligent communication capabilities that help businesses quickly contact their customers.
 
-For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/Roadmap.md).
+For more features, please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/Roadmap.md).
 
 In addition to the above-mentioned features, for the needs of enterprise users' scenarios, [Microservices Engine (MSE)](https://www.aliyun.com/product/aliware/mse?spm=github.spring.com.topbar) of Spring Cloud Alibaba's enterprise version provides an enterprise-level microservices governance center, which includes more powerful governance capabilities such as Grayscale Release, Service Warm-up, Lossless Online and Offline and Outlier Ejection. At the same time, it also provides a variety of products and solutions such as enterprise-level Nacos registration / configuration center, enterprise-level cloud native gateway.
 
@@ -46,10 +46,10 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 
 **[Alibaba Cloud SchedulerX](https://www.aliyun.com/aliware/schedulerx?spm=5176.10695662.784137.1.4b07363dej23L3)**: Accurate, highly reliable, and highly available scheduled job scheduling services with response time within seconds.
 
-For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/Roadmap.md).
+For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/Roadmap.md).
 
 ## How to build
-* **2022.x branch**: Corresponds to Spring 2022 & Spring Boot 3.0.x, JDK 17 or later versions are supported.
+* **2022.x branch**: Corresponds to Spring 2022 & Spring Boot 3.x, JDK 17 or later versions are supported.
 * **2021.x branch**: Corresponds to Spring Cloud 2021 & Spring Boot 2.6.x. JDK 1.8 or later versions are supported.
 * **2020.0 branch**: Corresponds to Spring Cloud 2020 & Spring Boot 2.4.x. JDK 1.8 or later versions are supported.
 * **2.2.x branch**: Corresponds to Spring Cloud Hoxton & Spring Boot 2.2.x. JDK 1.8 or later versions are supported.
@@ -69,15 +69,15 @@ Spring Cloud uses Maven for most build-related activities, and you should be abl
 These artifacts are available from Maven Central and Spring Release repository via BOM:
 ```xml
 <dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-      <version>2022.0.0.0-RC1</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2022.0.0.0-RC1</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
 </dependencyManagement>
 ```
 add the module in  `dependencies`. If you want to choose an older version, you can refer to the [Release Notes](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E).
@@ -85,11 +85,11 @@ add the module in  `dependencies`. If you want to choose an older version, you c
 
 ### Reference Doc
 
-[Contents](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/spring-cloud-alibaba.adoc)
+[Contents](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/spring-cloud-alibaba.adoc)
 
-[Nacos Config](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
+[Nacos Config](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-config.adoc)
 
-[Nacos Discovery](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
+[Nacos Discovery](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/nacos-discovery.adoc)
 
 
 ## Examples
@@ -98,13 +98,13 @@ A `spring-cloud-alibaba-examples` module is included in our project for you to g
 
 Examples：
 
-[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
+[Sentinel Example](https://github.com/alibaba/spring-cloud-alibaba/tree/2022.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example/readme.md)
 
-[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme.md)
+[Nacos Config Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme.md)
 
-[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme.md)
+[Nacos Discovery Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/nacos-example/nacos-discovery-example/readme.md)
 
-[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2021.x/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
+[RocketMQ Example](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/spring-cloud-alibaba-examples/rocketmq-example/readme.md)
 
 [Alibaba Cloud OSS Example](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
 
@@ -119,7 +119,7 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 * 2.2.x for Spring Boot 2.2.x
 * 2020.x for Spring Boot 2.4.x
 * 2021.x for Spring Boot 2.6.x
-* 2022.x for Spring Boot 3.0.x
+* 2022.x for Spring Boot 3.x
 
 ## Code of Conduct
 This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
@@ -139,7 +139,7 @@ Add some Javadocs and, if you change the namespace, some XSD doc elements.
 
 A few unit tests would help a lot as well —— someone has to do it.
 
-If no-one else is using your branch, please rebase it against the current 2021.x (or other target branch in the main project).
+If no-one else is using your branch, please rebase it against the current 2022.x (or other target branch in the main project).
 
 When writing a commit message please follow these conventions, if you are fixing an existing issue please add Fixes gh-XXXX at the end of the commit message (where XXXX is the issue number).
 
