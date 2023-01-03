@@ -36,7 +36,6 @@ public final class DubboBootstrapWrapper {
 
 	public boolean isReady() {
 		return DubboBootstrap.getInstance().isStarted()
-				&& DubboBootstrap.getInstance().isStarted()
 				&& DubboBootstrap.getInstance().isInitialized();
 	}
 
