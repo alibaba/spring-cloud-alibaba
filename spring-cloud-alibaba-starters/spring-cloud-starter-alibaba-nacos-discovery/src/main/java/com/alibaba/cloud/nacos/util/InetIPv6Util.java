@@ -16,21 +16,13 @@
 
 package com.alibaba.cloud.nacos.util;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
-import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.nacos.shaded.com.google.common.base.Supplier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -40,7 +32,7 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 /**
  * @author HH
  */
-public class InetIPv6Util{
+public class InetIPv6Util {
 
 	private final Log log = LogFactory.getLog(InetIPv6Util.class);
 
@@ -106,11 +98,11 @@ public class InetIPv6Util{
 		return "[" + ip + "]";
 	}
 
-	boolean isLocalAddress(InetAddress address){
+	boolean isLocalAddress(InetAddress address) {
 		return address.toString().startsWith(LOCAL_IPV6_PREFIX);
 	}
 
-	boolean isUndefinedAddress(InetAddress inetAddress){
+	boolean isUndefinedAddress(InetAddress inetAddress) {
 		return inetAddress.toString().equals(UNDEFINED_IPV6);
 	}
 
@@ -147,7 +139,7 @@ public class InetIPv6Util{
 	public InetUtils.HostInfo convertAddress(final InetAddress address) {
 		InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
 		String hostName = address.getHostName();
-		if (hostName == null){
+		if (hostName == null) {
 			hostName = "localhost";
 		}
 		hostInfo.setHostname(hostName);
