@@ -16,21 +16,22 @@
 
 package com.alibaba.cloud.dubbo.autoconfigure;
 
+import java.util.Collection;
+import java.util.function.Supplier;
+
 import org.apache.dubbo.config.ProtocolConfig;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import com.alibaba.cloud.dubbo.metadata.DubboProtocolConfigSupplier;
 import com.alibaba.cloud.dubbo.metadata.repository.RandomServiceInstanceSelector;
 import com.alibaba.cloud.dubbo.metadata.repository.ServiceInstanceSelector;
 import com.alibaba.cloud.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import com.alibaba.cloud.dubbo.metadata.resolver.MetadataResolver;
-import feign.Contract;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-import java.util.Collection;
-import java.util.function.Supplier;
+import feign.Contract;
 
 /**
  * Spring Boot Auto-Configuration class for Dubbo Metadata Bean.
