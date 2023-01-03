@@ -106,6 +106,15 @@ received request from ${from_ip}, local addr is ${local_ip}, local host is ${loc
 ```
 说明通过了SCA的鉴权，将会返回此请求的一些元信息。
 
+在此之后，我们删除这条IP黑白名单的鉴权规则:
+```shell
+kubectl delete AuthorizationPolicy from-ip-allow -n ${namespace_name}
+```
+之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```
+
 #### 请求头认证
 我们在使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则的限制了访问该应用的请求header:
 ```
@@ -143,6 +152,15 @@ curl --location --request GET '${demo_ip}/auth'
 ```
 Auth failed, please check the request and auth rule
 ```
+在此之后，我们删除这条请求头认证的规则:
+```shell
+kubectl delete AuthorizationPolicy http-headers-allow -n ${namespace_name}
+```
+之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```
+
 #### JWT认证
 我们使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则限制了访问该应用需要携带的JWT token value:
 ```
@@ -178,3 +196,12 @@ curl --location --request GET '${demo_ip}/auth' \
 由于此请求没有携带正确的JWT token信息，将会返回:
 ```
 Auth failed, please check the request and auth rule
+```
+在此之后，我们删除这条JWT认证的规则:
+```shell
+kubectl delete RequestAuthentication jwt-jwks-uri -n ${namespace_name}
+```
+之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```

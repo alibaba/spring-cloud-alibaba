@@ -73,7 +73,7 @@ You need to run the application in the K8s environment and inject some meta info
 ### Demostration
 The following are some simple examples of authentication rule configurations
 #### IP Blocks
-The following command is used to deliver an authentication rule to the demo application through Istio. This rule restricts the source IP addresses that can access the application
+The following command is used to deliver an authentication rule to the demo application through Istio. This rule restricts the source IP addresses that can access the application:
 ```
 kubectl apply -f - << EOF
 apiVersion: security.istio.io/v1beta1
@@ -92,7 +92,7 @@ spec:
         ipBlocks: ["127.0.0.1"]
 EOF
 ```
-You can validate the rules by sending request to the auth interface of this demo
+You can validate the rules by sending request to the auth interface of this demo:
 ```
 curl --location --request GET '${demo_ip}/auth'
 ```
@@ -106,8 +106,18 @@ If the source IP of the request is not '127.0.0.1', then the application returns
 received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
 ```
 It indicates that the request has been authenticated by SCA and some meta data of the request will be returned.
+
+After that, we delete the authentication rule for the IP Blocks:
+```shell
+kubectl delete AuthorizationPolicy from-ip-allow -n ${namespace_name}
+```
+Then request the auth interface of this demo again, we can find that the application will return the following message because the authentication rule has been deleted:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```
+
 #### Request Header Authentication
-We use the following command to deliver an authentication rule to the demo application through Istio. This rule restricts the request header for accessing the application
+We use the following command to deliver an authentication rule to the demo application through Istio. This rule restricts the request header for accessing the application:
 ```
 kubectl apply -f - << EOF
 apiVersion: security.istio.io/v1beta1
@@ -126,7 +136,7 @@ spec:
       values: ["PostmanRuntime/*"]
 EOF
 ```
-Then send a HTTP request with a user-agent header to verify whether the rule is valid
+Then send a HTTP request with a user-agent header to verify whether the rule is valid:
 ```
 curl --location --request GET '${demo_ip}/auth' \
 --header 'User-Agent: PostmanRuntime/7.29.2'
@@ -135,7 +145,7 @@ Since this request carries a correct HTTP Header, it will return:
 ```
 received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
 ```
-Then send a HTTP request without a user-agent header to verify whether the rule is valid
+Then send a HTTP request without a user-agent header to verify whether the rule is valid:
 ```
 curl --location --request GET '${demo_ip}/auth'
 ```
@@ -144,8 +154,17 @@ Since this request don't carry a correct HTTP Header, it will return:
 Auth failed, please check the request and auth rule
 ```
 
+After that, we remove the rule for requests header authentication:
+```shell
+kubectl delete AuthorizationPolicy http-headers-allow -n ${namespace_name}
+```
+Then request the auth interface of this demo again, we can find that the application will return the following message because the authentication rule has been deleted:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```
+
 #### JWT Authentication
-We use the following command to deliver an authentication rule to the demo application through Istio. This rule restricts the JWT token value that must be carried to access the application
+We use the following command to deliver an authentication rule to the demo application through Istio. This rule restricts the JWT token value that must be carried to access the application:
 ```
 kubectl apply -f - <<EOF
 apiVersion: security.istio.io/v1beta1
@@ -162,7 +181,7 @@ spec:
     jwksUri: https://raw.githubusercontent.com/istio/istio/release-1.5/security/tools/jwt/samples/jwks.json
 EOF
 ```
-An Http request with a correct JWT token is then sent to verify that the rule is valid
+An Http request with a correct JWT token is then sent to verify that the rule is valid:
 ```
 curl --location --request GET '${demo_ip}/auth' \
 --header 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkRIRmJwb0lVcXJZOHQyenBBMnFYZkNtcjVWTzVaRXI0UnpIVV8tZW52dlEiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjQ2ODU5ODk3MDAsImZvbyI6ImJhciIsImlhdCI6MTUzMjM4OTcwMCwiaXNzIjoidGVzdGluZ0BzZWN1cmUuaXN0aW8uaW8iLCJzdWIiOiJ0ZXN0aW5nQHNlY3VyZS5pc3Rpby5pbyJ9.CfNnxWP2tcnR9q0vxyxweaF3ovQYHYZl82hAUsn21bwQd9zP7c-LS9qd_vpdLG4Tn1A15NxfCjp5f7QNBUo-KC9PJqYpgGbaXhaGx7bEdFWjcwv3nZzvc7M__ZpaCERdwU7igUmJqYGBYQ51vr2njU9ZimyKkfDe3axcyiBZde7G6dabliUosJvvKOPcKIWPccCgefSj_GNfwIip3-SsFdlR7BtbVUcqR-yv-XOxJ3Uc1MI0tz3uMiiZcyPV7sNCU4KRnemRIMHVOfuvHsU60_GhGbiSFzgPTAa9WTltbnarTbxudb_YEOx12JiwYToeX0DCPb43W1tzIBxgm8NxUg'
@@ -171,7 +190,7 @@ Since this request carries a correct JWT token, it will return:
 ```
 received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
 ```
-An Http request with a invalid JWT token is then sent to verify that the rule is valid
+An Http request with a invalid JWT token is then sent to verify that the rule is valid:
 ```
 curl --location --request GET '${demo_ip}/auth' \
 --header 'Authorization: Bearer invalid token'
@@ -179,3 +198,12 @@ curl --location --request GET '${demo_ip}/auth' \
 Since this request carries a invalid JWT token, it will return:
 ```
 Auth failed, please check the request and auth rule
+```
+After that, we remove the rule for JWT authentication:
+```shell
+kubectl delete RequestAuthentication jwt-jwks-uri -n ${namespace_name}
+```
+Then request the auth interface of this demo again, we can find that the application will return the following message because the authentication rule has been deleted:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```
