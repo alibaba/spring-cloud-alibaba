@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 import javax.annotation.PreDestroy;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.slf4j.Logger;

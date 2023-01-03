@@ -16,30 +16,19 @@
 
 package com.alibaba.cloud.dubbo.autoconfigure;
 
-import java.util.Collection;
-import java.util.function.Supplier;
-
-import com.alibaba.cloud.dubbo.metadata.DubboProtocolConfigSupplier;
 import com.alibaba.cloud.dubbo.metadata.repository.DubboServiceMetadataRepository;
-import com.alibaba.cloud.dubbo.metadata.repository.RandomServiceInstanceSelector;
-import com.alibaba.cloud.dubbo.metadata.repository.ServiceInstanceSelector;
-import com.alibaba.cloud.dubbo.metadata.resolver.DubboServiceBeanMetadataResolver;
 import com.alibaba.cloud.dubbo.metadata.resolver.MetadataResolver;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceExporter;
 import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.service.IntrospectiveDubboMetadataService;
 import com.alibaba.cloud.dubbo.util.DubboMetadataUtils;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
-import feign.Contract;
-import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.spring.ServiceBean;
 import org.apache.dubbo.config.spring.context.event.ServiceBeanExportedEvent;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.event.ApplicationFailedEvent;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
@@ -51,9 +40,9 @@ import org.springframework.context.event.EventListener;
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
  */
 @Configuration(proxyBeanMethods = false)
-@Import({ DubboServiceMetadataRepository.class, IntrospectiveDubboMetadataService.class,
+@Import({DubboServiceMetadataRepository.class, IntrospectiveDubboMetadataService.class,
 		DubboMetadataServiceExporter.class, JSONUtils.class,
-		DubboMetadataServiceProxy.class, DubboMetadataUtils.class })
+		DubboMetadataServiceProxy.class, DubboMetadataUtils.class})
 public class DubboMetadataAutoConfiguration {
 
 	@Autowired
