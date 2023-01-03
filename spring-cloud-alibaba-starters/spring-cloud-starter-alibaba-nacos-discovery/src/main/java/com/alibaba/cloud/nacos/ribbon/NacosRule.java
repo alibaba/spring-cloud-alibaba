@@ -16,13 +16,16 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.client.config.IClientConfig;
@@ -33,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -40,16 +44,28 @@ import org.springframework.util.CollectionUtils;
  * instance.
  *
  * @author itmuch.com
+ * @author HH
  */
 public class NacosRule extends AbstractLoadBalancerRule {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NacosRule.class);
+
+	private static final String IPV4_REGEX = "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
+			+ "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
+			+ "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
+			+ "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
 
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	@Autowired
 	private NacosServiceManager nacosServiceManager;
+
+	@Autowired
+	private InetIPv6Utils inetIPv6Utils;
+
+	@Autowired
+	private InetUtils inetUtils;
 
 	@Override
 	public Server choose(Object key) {
@@ -64,6 +80,37 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			if (CollectionUtils.isEmpty(instances)) {
 				LOGGER.warn("no instance in service {}", name);
 				return null;
+			}
+
+			String ipv4 = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+			String ipv6 = inetIPv6Utils.findIPv6Address();
+			if (!StringUtils.isEmpty(ipv6)) {
+				List<Instance> instanceList = new ArrayList<>();
+				for (Instance instance : instances) {
+					if (Pattern.compile(IPV4_REGEX).matcher(instance.getIp()).matches()) {
+						if (!StringUtils.isEmpty(instance.getMetadata().get("IPv6"))) {
+							instanceList.add(instance);
+						}
+					}
+					else {
+						instanceList.add(instance);
+					}
+				}
+				if (instanceList.size() == 0) {
+					instances = instances.stream()
+							.filter(instance -> Pattern.compile(IPV4_REGEX)
+									.matcher(instance.getIp()).matches())
+							.collect(Collectors.toList());
+				}
+				else {
+					instances = instanceList;
+				}
+			}
+			else if (StringUtils.isEmpty(ipv6) && !StringUtils.isEmpty(ipv4)) {
+				instances = instances.stream()
+						.filter(instance -> Pattern.compile(IPV4_REGEX)
+								.matcher(instance.getIp()).matches())
+						.collect(Collectors.toList());
 			}
 
 			List<Instance> instancesToChoose = instances;
@@ -83,6 +130,12 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			}
 
 			Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
+			if (Pattern.compile(IPV4_REGEX).matcher(instance.getIp()).matches()) {
+				String ip = instance.getMetadata().get("IPv6");
+				if (!StringUtils.isEmpty(ip)) {
+					instance.setIp(ip);
+				}
+			}
 
 			return new NacosServer(instance);
 		}
