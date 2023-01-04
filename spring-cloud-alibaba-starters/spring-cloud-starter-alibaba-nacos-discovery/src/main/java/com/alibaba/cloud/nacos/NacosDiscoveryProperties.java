@@ -171,12 +171,12 @@ public class NacosDiscoveryProperties {
 	private String networkInterface = "";
 
 	/**
-	 * choose IPv4 or IPv6 or both_IPv4_IPv6. if you don't set it will choose IPv4. When
-	 * IPv6 is chosen but no IPv6 can be found, system will automatically find IPv4 to
-	 * ensure there is an available service address. If both_IPv4_IPv6 is set,both IPv4
-	 * and IPv6 will be register.
+	 * choose IPv4 or IPv6 or both_IPv4_IPv6. if you don't set it will choose
+	 * both_IPv4_IPv6. When IPv6 is chosen but no IPv6 can be found, system will
+	 * automatically find IPv4 to ensure there is an available service address. If
+	 * both_IPv4_IPv6 is set,both IPv4 and IPv6 will be register.
 	 */
-	private String ipType = "IPv4";
+	private String ipType = BOTH_IPV4_IPV6;
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the

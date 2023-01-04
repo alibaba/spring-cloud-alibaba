@@ -50,10 +50,9 @@ public class NacosRule extends AbstractLoadBalancerRule {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NacosRule.class);
 
-	private static final String IPV4_REGEX = "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
-			+ "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
-			+ "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
-			+ "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+	private static final String IPV4_REGEX = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
+
+	private static final String IPV6_KEY = "IPv6";
 
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
@@ -82,13 +81,13 @@ public class NacosRule extends AbstractLoadBalancerRule {
 				return null;
 			}
 
-			String ipv4 = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-			String ipv6 = inetIPv6Utils.findIPv6Address();
-			if (!StringUtils.isEmpty(ipv6)) {
+			String ipv4 = getIpv4();
+			String ipv6 = getIpv6();
+			if (StringUtils.isNotEmpty(ipv6)) {
 				List<Instance> instanceList = new ArrayList<>();
 				for (Instance instance : instances) {
-					if (Pattern.compile(IPV4_REGEX).matcher(instance.getIp()).matches()) {
-						if (!StringUtils.isEmpty(instance.getMetadata().get("IPv6"))) {
+					if (Pattern.matches(IPV4_REGEX, instance.getIp())) {
+						if (!StringUtils.isEmpty(instance.getMetadata().get(IPV6_KEY))) {
 							instanceList.add(instance);
 						}
 					}
@@ -96,6 +95,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 						instanceList.add(instance);
 					}
 				}
+				// provider has no IPv6,should use Ipv4.
 				if (instanceList.size() == 0) {
 					instances = instances.stream()
 							.filter(instance -> Pattern.compile(IPV4_REGEX)
@@ -106,7 +106,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 					instances = instanceList;
 				}
 			}
-			else if (StringUtils.isEmpty(ipv6) && !StringUtils.isEmpty(ipv4)) {
+			else if (StringUtils.isEmpty(ipv6) && StringUtils.isNotEmpty(ipv4)) {
 				instances = instances.stream()
 						.filter(instance -> Pattern.compile(IPV4_REGEX)
 								.matcher(instance.getIp()).matches())
@@ -130,12 +130,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			}
 
 			Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
-			if (Pattern.compile(IPV4_REGEX).matcher(instance.getIp()).matches()) {
-				String ip = instance.getMetadata().get("IPv6");
-				if (!StringUtils.isEmpty(ip)) {
-					instance.setIp(ip);
-				}
-			}
+			convertIpv4ToIpv6(instance);
 
 			return new NacosServer(instance);
 		}
@@ -147,6 +142,27 @@ public class NacosRule extends AbstractLoadBalancerRule {
 
 	@Override
 	public void initWithNiwsConfig(IClientConfig iClientConfig) {
+	}
+
+	private String getIpv4() {
+		return inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+	}
+
+	private String getIpv6() {
+		return inetIPv6Utils.findIPv6Address();
+	}
+
+	/**
+	 * There is two type Ip,using IPv6 should use IPv6 in metadata to replace IPv4 in IP
+	 * field.
+	 */
+	private void convertIpv4ToIpv6(Instance instance) {
+		if (Pattern.compile(IPV4_REGEX).matcher(instance.getIp()).matches()) {
+			String ip = instance.getMetadata().get(IPV6_KEY);
+			if (StringUtils.isNotEmpty(ip)) {
+				instance.setIp(ip);
+			}
+		}
 	}
 
 }
