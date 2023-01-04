@@ -270,7 +270,7 @@ Route in 30.221.132.228: 18081,version is v2.
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>opensergo-resource-transform</artifactId>
+      <artifactId>spring-cloud-starter-alibaba-opensergo</artifactId>
    </dependency>
 ```
 2. 在application.properties配置文件中配置OpenSergo控制面的相关信息
@@ -282,7 +282,9 @@ spring.cloud.opensergo.endpoint=127.0.0.1:10246
 启动一个三个模块的启动类，分别为OpenSergoConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
 
 ### 下发配置
-通过 OpenSergo 控制面下发流量路由规则
+
+[启动 OpenSergo 控制面](https://opensergo.io/zh-cn/docs/quick-start/opensergo-control-plane/) ，并通过 OpenSergo 控制面下发流量路由规则
+
 ```
 kubectl apply -f - << EOF
 apiVersion: traffic.opensergo.io/v1alpha1

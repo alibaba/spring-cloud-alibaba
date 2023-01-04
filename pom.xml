@@ -161,7 +161,7 @@
             </dependency>
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
-                <artifactId>opensergo-resource-transform</artifactId>
+                <artifactId>spring-cloud-starter-alibaba-opensergo</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

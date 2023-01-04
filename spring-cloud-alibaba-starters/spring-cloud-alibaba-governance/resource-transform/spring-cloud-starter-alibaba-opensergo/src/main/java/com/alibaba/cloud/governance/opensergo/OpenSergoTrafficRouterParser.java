@@ -17,11 +17,11 @@
 package com.alibaba.cloud.governance.opensergo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
 import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
@@ -31,7 +31,7 @@ import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
-import com.alibaba.cloud.governance.opensergo.util.ConvUtil;
+import com.alibaba.cloud.governance.opensergo.util.ConvUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.envoyproxy.envoy.config.route.v3.ClusterSpecifierPlugin;
 import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
@@ -41,28 +41,14 @@ import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import io.envoyproxy.envoy.config.route.v3.RouteMatch;
 import io.envoyproxy.envoy.config.route.v3.VirtualHost;
 import io.envoyproxy.envoy.config.route.v3.WeightedCluster;
-import io.opensergo.ConfigKind;
-import io.opensergo.OpenSergoClient;
 import io.opensergo.proto.router.v1.ClusterFallbackConfig_ClusterConfig;
-import io.opensergo.subscribe.OpenSergoConfigSubscriber;
-import io.opensergo.subscribe.SubscribeKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
-import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.convFallbackClusterConfig;
-import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.getOpenSergoHost;
-import static com.alibaba.cloud.governance.opensergo.util.ConvUtil.getOpenSergoPort;
-
-public class OpenSergoTrafficExchanger implements ApplicationContextAware {
+public class OpenSergoTrafficRouterParser {
 
 	protected static final Logger log = LoggerFactory
-			.getLogger(OpenSergoTrafficExchanger.class);
-
-	private OpenSergoClient client;
+			.getLogger(OpenSergoTrafficRouterParser.class);
 
 	private static final String HEADER = "header";
 
@@ -70,56 +56,20 @@ public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 
 	private static final String PATH = "path";
 
-	private ApplicationContext applicationContext;
-
-	public OpenSergoTrafficExchanger(
-			OpenSergoConfigProperties openSergoConfigProperties) {
-		Integer port = getOpenSergoPort(openSergoConfigProperties.getEndpoint());
-		String host = getOpenSergoHost(openSergoConfigProperties.getEndpoint());
-		try {
-			if (port != null && StringUtils.isNotEmpty(host)) {
-				client = new OpenSergoClient(host, port);
-				client.start();
-			} else {
-				log.error("OpenSergo endpoint：" + openSergoConfigProperties.getEndpoint() + " is illegal");
-			}
-		}
-		catch (Exception e) {
-			log.error("start OpenSergo client enhance error", e);
-		}
+	public OpenSergoTrafficRouterParser() {
 	}
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.applicationContext = applicationContext;
-	}
-
-	public void subscribeTrafficRouterConfig(String namespace, String appName) {
-		client.subscribeConfig(
-				new SubscribeKey(namespace, appName, ConfigKind.TRAFFIC_ROUTER_STRATEGY),
-				new OpenSergoConfigSubscriber() {
-					@Override
-					public boolean onConfigUpdate(SubscribeKey subscribeKey,
-							Object dataList) {
-						log.debug("OpenSergo client subscribeKey:{} receive message :{}",
-								subscribeKey, dataList);
-						try {
-							resolveLabelRouting((List<RouteConfiguration>) dataList);
-						}
-						catch (InvalidProtocolBufferException e) {
-							log.error("resolve label routing enhance error", e);
-							return false;
-						}
-						return true;
-					}
-				});
-	}
-
-	public void resolveLabelRouting(List<RouteConfiguration> routeConfigurations)
+	/**
+	 * transform rds RouterConfig list to spring cloud alibaba router data list.
+	 * @param routeConfigurations the routerConfig list from OpenSergo control plane.
+	 * @return spring cloud alibaba router rules.
+	 * @throws InvalidProtocolBufferException transform exception.
+	 */
+	public Collection<UnifiedRouteDataStructure> resolveLabelRouting(
+			List<RouteConfiguration> routeConfigurations)
 			throws InvalidProtocolBufferException {
 		if (routeConfigurations == null) {
-			return;
+			return new ArrayList<>();
 		}
 		Map<String, UnifiedRouteDataStructure> unifiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
@@ -140,8 +90,7 @@ public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 						unifiedRouteDataStructure);
 			}
 		}
-		applicationContext.publishEvent(
-				new LabelRoutingDataChangedEvent(unifiedRouteDataStructures.values()));
+		return unifiedRouteDataStructures.values();
 	}
 
 	private LabelRouteRule getLabelRouteData(List<Route> routes)
@@ -154,8 +103,8 @@ public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 			String cluster = "";
 			String fallbackCluster = "";
 			if (clusterSpecifierPlugin != null) {
-				ClusterFallbackConfig_ClusterConfig fallbackConfig = convFallbackClusterConfig(
-						clusterSpecifierPlugin);
+				ClusterFallbackConfig_ClusterConfig fallbackConfig = ConvUtils
+						.convFallbackClusterConfig(clusterSpecifierPlugin);
 				fallbackCluster = fallbackConfig.getFallbackCluster();
 				cluster = fallbackConfig.getRoutingCluster();
 			}
@@ -271,7 +220,7 @@ public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 	private UrlRule.Parameter parameterMatcher2ParameterRule(
 			QueryParameterMatcher queryParameterMatcher) {
 		UrlRule.Parameter parameter = new UrlRule.Parameter();
-		StringMatcher stringMatcher = ConvUtil
+		StringMatcher stringMatcher = ConvUtils
 				.convStringMatcher(queryParameterMatcher.getStringMatch());
 		if (stringMatcher != null) {
 			parameter.setCondition(stringMatcher.getType().toString());
@@ -284,8 +233,8 @@ public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 	}
 
 	private HeaderRule headerMatcher2HeaderRule(HeaderMatcher headerMatcher) {
-		StringMatcher stringMatcher = ConvUtil
-				.convStringMatcher(ConvUtil.headerMatch2StringMatch(headerMatcher));
+		StringMatcher stringMatcher = ConvUtils
+				.convStringMatcher(ConvUtils.headerMatch2StringMatch(headerMatcher));
 		if (stringMatcher != null) {
 			HeaderRule headerRule = new HeaderRule();
 			headerRule.setCondition(stringMatcher.getType().toString());

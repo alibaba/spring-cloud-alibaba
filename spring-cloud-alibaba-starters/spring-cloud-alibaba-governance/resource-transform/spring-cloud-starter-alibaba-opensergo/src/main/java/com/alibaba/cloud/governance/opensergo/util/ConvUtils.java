@@ -17,24 +17,18 @@
 package com.alibaba.cloud.governance.opensergo.util;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.commons.matcher.IpMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.google.protobuf.Internal;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-import io.envoyproxy.envoy.config.core.v3.CidrRange;
 import io.envoyproxy.envoy.config.route.v3.ClusterSpecifierPlugin;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
 import io.opensergo.proto.router.v1.ClusterFallbackConfig_ClusterConfig;
 
-/**
- * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
- */
-public final class ConvUtil {
+public final class ConvUtils {
 
-	private ConvUtil() {
+	private ConvUtils() {
 
 	}
 
@@ -90,21 +84,6 @@ public final class ConvUtil {
 			return new StringMatcher(regex);
 		}
 		return null;
-	}
-
-	public static StringMatcher convStringMatcher(
-			io.envoyproxy.envoy.config.route.v3.HeaderMatcher headerMatcher) {
-		return convStringMatcher(headerMatch2StringMatch(headerMatcher));
-	}
-
-	public static IpMatcher convertIpMatcher(CidrRange cidrRange) {
-		return new IpMatcher(cidrRange.getPrefixLen().getValue(),
-				cidrRange.getAddressPrefix());
-	}
-
-	public static StringMatcher convertHeaderMatcher(
-			io.envoyproxy.envoy.config.route.v3.HeaderMatcher headerMatcher) {
-		return convStringMatcher(headerMatch2StringMatch(headerMatcher));
 	}
 
 	public static io.envoyproxy.envoy.type.matcher.v3.StringMatcher headerMatch2StringMatch(

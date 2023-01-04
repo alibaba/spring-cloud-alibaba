@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.opensergo.listener;
+package com.alibaba.cloud.governance.opensergo;
 
 import com.alibaba.cloud.commons.governance.event.TargetServiceChangedEvent;
-import com.alibaba.cloud.governance.opensergo.OpenSergoConfigProperties;
-import com.alibaba.cloud.governance.opensergo.OpenSergoTrafficExchanger;
 
 import org.springframework.context.ApplicationListener;
 
+/**
+ * Subscribe OpenSergo configuration when provider service changed.
+ */
 public class TargetServiceChangedListener
 		implements ApplicationListener<TargetServiceChangedEvent> {
 

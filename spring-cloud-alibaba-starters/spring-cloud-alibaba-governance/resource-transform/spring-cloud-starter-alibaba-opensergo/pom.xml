@@ -9,13 +9,13 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>opensergo-resource-transform</artifactId>
-    <name>OpenSergo Resource Transform</name>
+    <artifactId>spring-cloud-starter-alibaba-opensergo</artifactId>
+    <name>Spring Cloud Alibaba OpenSergo</name>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
+            <artifactId>spring-boot-starter</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -34,6 +34,25 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--  Only for unit test-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>2.0.16</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
 

@@ -268,7 +268,7 @@ Route in 30.221.132.228: 18081,version is v2.
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>opensergo-resource-transform</artifactId>
+      <artifactId>spring-cloud-starter-alibaba-opensergo</artifactId>
    </dependency>
 ```
 2. Configure application.yml for OpenSergo control plane
@@ -279,7 +279,7 @@ spring.cloud.opensergo.endpoint=127.0.0.1:10246
 ### Startup Application
 Start OpenSergoConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.
 ### Publish Configuration
-We publish the label routing rules through the OpenSergo control plane. We publish a TrafficRouter rule.
+[First start OpenSergo control plan](https://opensergo.io/docs/quick-start/opensergo-control-plane/) , Then we publish the label routing rules through the OpenSergo control plane. We publish a TrafficRouter rule.
 ```
 kubectl apply -f - << EOF
 apiVersion: traffic.opensergo.io/v1alpha1

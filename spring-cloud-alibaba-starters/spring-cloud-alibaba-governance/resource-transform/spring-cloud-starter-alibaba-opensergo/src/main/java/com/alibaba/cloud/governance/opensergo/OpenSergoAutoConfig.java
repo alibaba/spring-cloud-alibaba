@@ -16,9 +16,8 @@
 
 package com.alibaba.cloud.governance.opensergo;
 
-import com.alibaba.cloud.governance.opensergo.listener.TargetServiceChangedListener;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,14 +27,27 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(name = "spring.cloud.opensergo.config.enabled",
 		matchIfMissing = true)
 @EnableConfigurationProperties(OpenSergoConfigProperties.class)
+@AutoConfigureOrder(OpenSergoAutoConfig.OPENSERGO_RESOURCE_AUTO_CONFIG_ORDER)
 public class OpenSergoAutoConfig {
+
+	/**
+	 * Order of OpenSergo auto config.
+	 */
+	public static final int OPENSERGO_RESOURCE_AUTO_CONFIG_ORDER = 101;
 
 	@Autowired
 	private OpenSergoConfigProperties openSergoConfigProperties;
 
 	@Bean
-	public OpenSergoTrafficExchanger openSergoTrafficExchanger() {
-		return new OpenSergoTrafficExchanger(openSergoConfigProperties);
+	public OpenSergoTrafficRouterParser openSergoTrafficRouterParser() {
+		return new OpenSergoTrafficRouterParser();
+	}
+
+	@Bean
+	public OpenSergoTrafficExchanger openSergoTrafficExchanger(
+			OpenSergoTrafficRouterParser openSergoTrafficRouterParser) {
+		return new OpenSergoTrafficExchanger(openSergoConfigProperties,
+				openSergoTrafficRouterParser);
 	}
 
 	@Bean

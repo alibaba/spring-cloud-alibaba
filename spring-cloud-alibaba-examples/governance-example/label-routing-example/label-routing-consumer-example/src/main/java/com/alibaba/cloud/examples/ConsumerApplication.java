@@ -124,8 +124,8 @@ public class ConsumerApplication {
 
 			List<UnifiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
 			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-			applicationContext.publishEvent(
-					new LabelRoutingDataChangedEvent(this, unifiedRouteDataStructureList));
+			applicationContext.publishEvent(new LabelRoutingDataChangedEvent(this,
+					unifiedRouteDataStructureList));
 		}
 
 		@GetMapping("/update")
@@ -169,8 +169,8 @@ public class ConsumerApplication {
 
 			List<UnifiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
 			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-			applicationContext.publishEvent(
-					new LabelRoutingDataChangedEvent(this, unifiedRouteDataStructureList));
+			applicationContext.publishEvent(new LabelRoutingDataChangedEvent(this,
+					unifiedRouteDataStructureList));
 		}
 
 	}
