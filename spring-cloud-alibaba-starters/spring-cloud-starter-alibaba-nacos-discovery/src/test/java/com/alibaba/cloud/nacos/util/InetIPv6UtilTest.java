@@ -22,7 +22,8 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 
 public class InetIPv6UtilTest {
 
-	private final InetIPv6Util inetIPv6Util = new InetIPv6Util(new InetUtilsProperties());
+	private final InetIPv6Utils inetIPv6Util = new InetIPv6Utils(
+			new InetUtilsProperties());
 
 	@Test
 	public void getIPv6() {

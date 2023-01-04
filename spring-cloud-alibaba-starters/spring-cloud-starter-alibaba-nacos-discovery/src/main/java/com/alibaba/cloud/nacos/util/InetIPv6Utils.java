@@ -32,17 +32,13 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 /**
  * @author HH
  */
-public class InetIPv6Util {
+public class InetIPv6Utils {
 
-	private final Log log = LogFactory.getLog(InetIPv6Util.class);
-
-	private static final String LOCAL_IPV6_PREFIX = "/fe80";
-
-	private static final String UNDEFINED_IPV6 = "0:0:0:0:0:0:0:0";
+	private final Log log = LogFactory.getLog(InetIPv6Utils.class);
 
 	private final InetUtilsProperties properties;
 
-	public InetIPv6Util(final InetUtilsProperties properties) {
+	public InetIPv6Utils(final InetUtilsProperties properties) {
 		this.properties = properties;
 	}
 
@@ -72,8 +68,8 @@ public class InetIPv6Util {
 							InetAddress inetAddress = addrs.nextElement();
 							if (inetAddress instanceof Inet6Address
 									&& !inetAddress.isLoopbackAddress()
-									&& !isLocalAddress(inetAddress)
-									&& !isUndefinedAddress(inetAddress)
+									&& !inetAddress.isLinkLocalAddress()
+									&& !inetAddress.isAnyLocalAddress()
 									&& isPreferredAddress(inetAddress)) {
 								address = inetAddress;
 								break;
@@ -96,14 +92,6 @@ public class InetIPv6Util {
 
 	public String iPv6Format(String ip) {
 		return "[" + ip + "]";
-	}
-
-	boolean isLocalAddress(InetAddress address) {
-		return address.toString().startsWith(LOCAL_IPV6_PREFIX);
-	}
-
-	boolean isUndefinedAddress(InetAddress inetAddress) {
-		return inetAddress.toString().equals(UNDEFINED_IPV6);
 	}
 
 	boolean isPreferredAddress(InetAddress address) {

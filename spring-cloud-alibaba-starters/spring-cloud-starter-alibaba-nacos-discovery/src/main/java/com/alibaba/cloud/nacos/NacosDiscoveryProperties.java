@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
-import com.alibaba.cloud.nacos.util.InetIPv6Util;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
@@ -224,7 +224,7 @@ public class NacosDiscoveryProperties {
 	private boolean failFast = true;
 
 	@Autowired
-	private InetIPv6Util inetIPv6Utils;
+	private InetIPv6Utils inetIPv6Utils;
 
 	@Autowired
 	private InetUtils inetUtils;
@@ -341,7 +341,7 @@ public class NacosDiscoveryProperties {
 		this.logName = logName;
 	}
 
-	public void setInetIPv6Utils(InetIPv6Util inetIPv6Utils) {
+	public void setInetIPv6Utils(InetIPv6Utils inetIPv6Utils) {
 		this.inetIPv6Utils = inetIPv6Utils;
 	}
 
