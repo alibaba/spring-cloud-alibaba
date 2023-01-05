@@ -10,7 +10,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>label-routing-default-provider-version-example</artifactId>
+	<artifactId>default-provider-version-example</artifactId>
 	<name>Spring Cloud Starter Alibaba Label Routing Provider Example</name>
 	<description>Example demonstrating how to use label routing provider</description>
 	<packaging>jar</packaging>

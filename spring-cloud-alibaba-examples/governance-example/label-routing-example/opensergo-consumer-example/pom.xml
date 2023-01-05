@@ -10,9 +10,9 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>label-routing-consumer-example</artifactId>
-	<name>Spring Cloud Starter Alibaba Label Routing Consumer Example</name>
-	<description>Example demonstrating how to use label routing consumer</description>
+	<artifactId>opensergo-consumer-example</artifactId>
+	<name>Spring Cloud Starter Alibaba OpenSergo Label Routing Consumer Example</name>
+	<description>Example demonstrating how to use OpenSergo label routing consumer</description>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -34,6 +34,11 @@
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-opensergo</artifactId>
 		</dependency>
 	</dependencies>
 

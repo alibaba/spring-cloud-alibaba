@@ -142,7 +142,7 @@ List<MatchService> matchServices = new ArrayList<>();
 
 ## 集成Istio
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改pom.xml 文件，引入 spring cloud ailbaba governance labelrouting依赖。同时引入Spring Cloud Alibaba的spring-cloud-starter-alibaba-istio模块
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-labelrouting`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-alibaba-istio`模块
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -191,7 +191,7 @@ spring:
         log-xds: ${LOG_XDS:true}
 ```
 ### 应用启动
-启动一个三个模块的启动类，分别为IstioConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
+启动三个模块的启动类，分别为IstioConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
 
 ### 下发配置
 我们通过Istio控制面下发标签路由规则，首先下发DestinationRule规则
@@ -258,4 +258,87 @@ curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'ta
 因为满足路由规则，所以请求会被路由至v2版本
 ```
 Route in 30.221.132.228: 18081,version is v2.
+```
+
+## 集成OpenSergo
+**注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-labelrouting`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-alibaba-opensergo`模块
+```
+   <dependency>
+      <groupId>com.alibaba.cloud</groupId>
+      <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+   </dependency>
+   <dependency>
+      <groupId>com.alibaba.cloud</groupId>
+      <artifactId>spring-cloud-starter-alibaba-opensergo</artifactId>
+   </dependency>
+```
+2. 在application.properties配置文件中配置OpenSergo控制面的相关信息
+```
+# OpenSergo 控制面 endpoint
+spring.cloud.opensergo.endpoint=127.0.0.1:10246
+```
+### 应用启动
+启动三个模块的启动类，分别为OpenSergoConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
+
+### 下发配置
+
+[启动 OpenSergo 控制面](https://opensergo.io/zh-cn/docs/quick-start/opensergo-control-plane/) ，并通过 OpenSergo 控制面下发流量路由规则
+
+```
+kubectl apply -f - << EOF
+apiVersion: traffic.opensergo.io/v1alpha1
+kind: TrafficRouter
+metadata:
+  name: service-provider
+  namespace: default
+  labels:
+    app: service-provider
+spec:
+  hosts:
+    - service-provider
+  http:
+    - match:
+        - headers:
+            tag:
+              exact: v2
+      route:
+        - destination:
+            host: service-provider
+            subset: v2
+            fallback:
+              host: service-provider
+              subset: v1
+    - route:
+        - destination:
+            host: service-provider
+            subset: v1
+EOF
+```
+这条TrafficRouter指定了一条最简单的流量路由规则，将请求头tag为v2的HTTP请求路由到v2版本，其余的流量都路由到v1版本。
+如果v2版本没有对应的节点，则将流量fallback至v1版本。
+### 效果演示
+我们发送一条不带请求头的HTTP请求至IstioConsumerApplication
+```
+curl --location --request GET '127.0.0.1:18083/router-test'
+```
+因为请求头不为gray，所以请求将会被路由到v1版本，返回如下
+```
+Route in 30.221.132.228: 18081,version is v1.
+```
+之后我们发送一条请求头tag为gray的HTTP请求
+```
+curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
+```
+因为满足路由规则，所以请求会被路由至v2版本
+```
+Route in 30.221.132.228: 18081,version is v2.
+```
+我们停止v2版本的ProviderApplication后，继续发送一条请求头tag为gray的HTTP请求
+```
+curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
+```
+因为v2版本没有服务提供者，因此流量被fallback至v1版本。
+```
+Route in 30.221.132.228: 18081,version is v1.
 ```

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<parent>
@@ -10,9 +10,9 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>label-routing-provider-version-example</artifactId>
-	<name>Spring Cloud Starter Alibaba Label Routing Provider Example</name>
-	<description>Example demonstrating how to use label routing provider</description>
+	<artifactId>consumer-example</artifactId>
+	<name>Spring Cloud Starter Alibaba Label Routing Consumer Example</name>
+	<description>Example demonstrating how to use label routing consumer</description>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -31,6 +31,10 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>
