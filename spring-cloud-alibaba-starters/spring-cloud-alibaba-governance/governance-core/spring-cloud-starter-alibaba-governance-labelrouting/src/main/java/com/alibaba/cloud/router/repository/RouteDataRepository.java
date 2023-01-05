@@ -44,9 +44,9 @@ public class RouteDataRepository {
 	private ConcurrentHashMap<String, HashMap<String, List<MatchService>>> routeCache = new ConcurrentHashMap<>();
 
 	/**
-	 * Control plane original data structure,use to accelerate compare if change.
+	 * The default version of each service.
 	 */
-	private ConcurrentHashMap<String, LabelRouteRule> originalRouteData = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, String> defaultRouteVersion = new ConcurrentHashMap<>();
 
 	/**
 	 * Sign of path.
@@ -74,17 +74,17 @@ public class RouteDataRepository {
 	public static final int MIN_WEIGHT = 0;
 
 	public void updateRouteData(final List<UnifiedRouteDataStructure> routeDataList) {
+		ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache = new ConcurrentHashMap<>();
+		ConcurrentHashMap<String, List<MatchService>> newPathRuleMap = new ConcurrentHashMap<>();
 		for (UnifiedRouteDataStructure routeData : routeDataList) {
 			nonNullCheck(routeData);
-			LabelRouteRule labelRouteData = originalRouteData
-					.get(routeData.getTargetService());
-
-			if (!routeData.getLabelRouteRule().equals(labelRouteData)) {
-				buildHashIndex(routeData);
-				originalRouteData.put(routeData.getTargetService(),
-						routeData.getLabelRouteRule());
-			}
+			buildHashIndex(routeData, newRouteCache, newPathRuleMap);
+			defaultRouteVersion.put(routeData.getTargetService(),
+					routeData.getLabelRouteRule().getDefaultRouteVersion());
 		}
+		// Replace it atomically
+		this.routeCache = newRouteCache;
+		this.pathRuleMap = newPathRuleMap;
 	}
 
 	private void nonNullCheck(UnifiedRouteDataStructure unifiedRouteDataStructure) {
@@ -117,7 +117,9 @@ public class RouteDataRepository {
 		}
 	}
 
-	private void buildHashIndex(final UnifiedRouteDataStructure routerData) {
+	private void buildHashIndex(final UnifiedRouteDataStructure routerData,
+			ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache,
+			ConcurrentHashMap<String, List<MatchService>> newPathRuleMap) {
 		final List<MatchService> matchRouteList = routerData.getLabelRouteRule()
 				.getMatchRouteList();
 		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();
@@ -128,13 +130,13 @@ public class RouteDataRepository {
 			// Take out the path label separately, because there is no key for hash index.
 			if (ruleList.size() == 1
 					&& PATH.equalsIgnoreCase(ruleList.get(0).getType())) {
-				List<MatchService> matchServiceList = pathRuleMap
+				List<MatchService> matchServiceList = newPathRuleMap
 						.get(routerData.getTargetService());
 				if (matchServiceList == null) {
 					matchServiceList = new ArrayList<>();
 				}
 				matchServiceList.add(matchService);
-				pathRuleMap.put(routerData.getTargetService(), matchServiceList);
+				newPathRuleMap.put(routerData.getTargetService(), matchServiceList);
 				continue;
 			}
 			for (RouteRule routeRule : ruleList) {
@@ -147,15 +149,15 @@ public class RouteDataRepository {
 				singleRuleMap.put(routeRule.getKey(), matchServiceList);
 			}
 		}
-		routeCache.put(routerData.getTargetService(), singleRuleMap);
+		newRouteCache.put(routerData.getTargetService(), singleRuleMap);
 	}
 
 	public HashMap<String, List<MatchService>> getRouteRule(String targetService) {
 		return routeCache.get(targetService);
 	}
 
-	public LabelRouteRule getOriginalRouteRule(String targetService) {
-		return originalRouteData.get(targetService);
+	public String getDefaultRouteVersion(String targetService) {
+		return defaultRouteVersion.get(targetService);
 	}
 
 	public List<MatchService> getPathRules(String targetService) {

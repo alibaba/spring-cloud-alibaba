@@ -238,7 +238,7 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 		// Add default route
 		if (defaultVersionWeight > RouteDataRepository.MIN_WEIGHT) {
 			String defaultRouteVersion = routeDataRepository
-					.getOriginalRouteRule(targetServiceName).getDefaultRouteVersion();
+					.getDefaultRouteVersion(targetServiceName);
 			versionSet.add(defaultRouteVersion);
 			weightMap.put(defaultRouteVersion, defaultVersionWeight);
 		}
