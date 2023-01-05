@@ -38,7 +38,7 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 |fangjian0423
 |Steering Committee Member
 |fangjian0423@gmail.com
-|Alibaba
+|Zoom
 
 |Jing Xiao
 |flystar32
