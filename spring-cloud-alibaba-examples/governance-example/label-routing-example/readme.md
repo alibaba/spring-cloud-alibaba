@@ -141,7 +141,7 @@ If the request parameter contains tag=gray, and the request header contains id a
 3. If you don't push rule,it will load balance by common rule you set.
 ## Integrating Istio
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-1. First, modify the pom.xml file to introduce the spring cloud ailbaba governance label-routing and spring-cloud-starter-alibaba-istio dependency
+1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-labelrouting` and `spring-cloud-starter-alibaba-opensergo` dependency
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -260,7 +260,7 @@ Route in 30.221.132.228: 18081,version is v2.
 ```
 ## Integrating OpenSergo
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-1. First, modify the pom.xml file to introduce the spring cloud ailbaba governance label-routing and opensergo-resource-transform dependency
+1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-labelrouting` and `spring-cloud-starter-alibaba-opensergo` dependency
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>

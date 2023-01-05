@@ -26,6 +26,10 @@ import io.envoyproxy.envoy.config.route.v3.ClusterSpecifierPlugin;
 import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
 import io.opensergo.proto.router.v1.ClusterFallbackConfig_ClusterConfig;
 
+/**
+ * @author panxiaojun233
+ * @author <a href="m13201628570@163.com"></a>
+ */
 public final class ConvUtils {
 
 	private ConvUtils() {

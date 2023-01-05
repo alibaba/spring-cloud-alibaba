@@ -142,7 +142,7 @@ List<MatchService> matchServices = new ArrayList<>();
 
 ## 集成Istio
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改pom.xml 文件，引入 spring cloud ailbaba governance labelrouting依赖。同时引入Spring Cloud Alibaba的spring-cloud-starter-alibaba-istio模块
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-labelrouting`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-alibaba-istio`模块
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -191,7 +191,7 @@ spring:
         log-xds: ${LOG_XDS:true}
 ```
 ### 应用启动
-启动一个三个模块的启动类，分别为IstioConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
+启动三个模块的启动类，分别为IstioConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
 
 ### 下发配置
 我们通过Istio控制面下发标签路由规则，首先下发DestinationRule规则
@@ -262,7 +262,7 @@ Route in 30.221.132.228: 18081,version is v2.
 
 ## 集成OpenSergo
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改pom.xml 文件，引入 spring cloud ailbaba governance labelrouting依赖。同时引入Spring Cloud Alibaba的opensergo-resource-transform模块
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-labelrouting`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-alibaba-opensergo`模块
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -279,7 +279,7 @@ Route in 30.221.132.228: 18081,version is v2.
 spring.cloud.opensergo.endpoint=127.0.0.1:10246
 ```
 ### 应用启动
-启动一个三个模块的启动类，分别为OpenSergoConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
+启动三个模块的启动类，分别为OpenSergoConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
 
 ### 下发配置
 

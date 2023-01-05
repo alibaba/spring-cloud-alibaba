@@ -34,6 +34,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author panxiaojun233
+ * @author <a href="m13201628570@163.com"></a>
+ */
 public class OpenSergoRuleTests {
 
 	private static final Logger log = LoggerFactory.getLogger(OpenSergoRuleTests.class);

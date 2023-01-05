@@ -18,6 +18,10 @@ package com.alibaba.cloud.governance.opensergo;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * @author panxiaojun233
+ * @author <a href="m13201628570@163.com"></a>
+ */
 @ConfigurationProperties(OpenSergoConfigProperties.PREFIX)
 public class OpenSergoConfigProperties {
 

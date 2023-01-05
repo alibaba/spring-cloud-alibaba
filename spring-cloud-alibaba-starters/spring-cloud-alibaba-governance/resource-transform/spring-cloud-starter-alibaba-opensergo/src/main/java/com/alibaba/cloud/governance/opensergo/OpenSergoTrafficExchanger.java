@@ -38,6 +38,8 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  * OpenSergoTrafficExchanger is the class which communicate with OpenSergo control plane.
+ * @author panxiaojun233
+ * @author <a href="m13201628570@163.com"></a>
  */
 public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 

@@ -45,6 +45,10 @@ import io.opensergo.proto.router.v1.ClusterFallbackConfig_ClusterConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author panxiaojun233
+ * @author <a href="m13201628570@163.com"></a>
+ */
 public class OpenSergoTrafficRouterParser {
 
 	protected static final Logger log = LoggerFactory
