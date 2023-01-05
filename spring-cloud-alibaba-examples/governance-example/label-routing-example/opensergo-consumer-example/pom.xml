@@ -10,7 +10,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>label-routing-opensergo-consumer-example</artifactId>
+	<artifactId>opensergo-consumer-example</artifactId>
 	<name>Spring Cloud Starter Alibaba OpenSergo Label Routing Consumer Example</name>
 	<description>Example demonstrating how to use OpenSergo label routing consumer</description>
 	<packaging>jar</packaging>
