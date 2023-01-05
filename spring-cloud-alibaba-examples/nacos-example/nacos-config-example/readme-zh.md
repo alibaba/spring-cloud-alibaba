@@ -4,7 +4,6 @@
 
 本项目演示如何使用 Nacos Config Starter 完成 Spring Cloud 应用的配置管理。
 
-***<font color=red>注意: 适用于 spring boot 版本低于 2.4.0，如果版本高于 2.4.0，考虑使用 import 方式导入配置。</font>***
 
 [Nacos](https://github.com/alibaba/Nacos) 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 
@@ -15,24 +14,29 @@
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
 
 1. 首先，修改 pom.xml 文件，引入 Nacos Config Starter。
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+</dependency>
+```
 
-	    <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
-	
-2. 在应用的 /src/main/resources/bootstrap.properties 配置文件中配置 Nacos Config 元数据
-	
-        spring.application.name=nacos-config-example
-        spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+2. 在应用的 /src/main/resources/application.yaml 配置文件中配置 Nacos Config 地址并引入服务配置
+```yaml
+spring:
+  cloud:
+    nacos:
+      serverAddr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:nacos-config-example.properties?refresh=true
+```
 		  
 3. 完成上述两步后，应用会从 Nacos Config 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中。假设我们通过 Nacos 配置中心保存 Nacos 的部分配置,有以下四种例子:
 - BeanAutoRefreshConfigExample:  通过将配置信息配置为bean，支持配置变自动刷新的例子
 - ConfigListenerExample:         监听配置信息的例子
 - DockingInterfaceExample:       对接 nacos 接口，通过接口完成对配置信息增删改查的例子
 - ValueAnnotationExample:        通过 @Value 注解进行配置信息获取的例子
-- SharedConfigExample:           共享配置的例子
-- ExtensionConfigExample:        扩展配置的例子
 
 ### 启动 Nacos Server 并添加配置
 
@@ -64,48 +68,23 @@
         spring.cloud.nacos.config.group=GROUP
         spring.cloud.nacos.config.namespace=NAMESPACE
 
-4. 添加共享配置和扩展配置
-
-   共享配置:
-   ```
-      dataId为: data-source.yaml
-      group 为： DEFAULT_GROUP
-		
-      内容如下:
-		
-      spring:
-       datasource:
-        name: datasource
-        url: jdbc:mysql://127.0.0.1:3306/nacos?characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useDynamicCharsetInfo=false&useSSL=false
-        username: root
-        password: root
-        driverClassName: com.mysql.jdbc.Driver
-   ```
-   扩展配置:
-   > 可以使用扩展配置覆盖共享配置中的配置
-   ```
-      dataId为: ext-data-source.yaml
-      group 为： DEFAULT_GROUP
-		
-      内容如下:
-		
-      spring:
-       datasource:
-        username: ext-root
-        password: ext-root
-   ```
 
 ### 应用启动
 
-1. 增加配置，在应用的 /src/main/resources/application.properties 中添加基本配置信息
-	
-        server.port=18084
-        management.endpoints.web.exposure.include=*
-
+1. 增加配置，在应用的 /src/main/resources/application.yaml 中添加基本配置信息
+```yaml
+server:
+  port: 18084
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+```
 		
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
-	1. IDE直接启动：找到主类 `Application`，执行 main 方法启动应用。
+	1. IDE直接启动：找到主类 `NacosConfigApplication`，执行 main 方法启动应用。
 	2. 打包编译后启动：首先执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar nacos-config-example.jar`启动应用。
 
 ### 验证
@@ -157,7 +136,7 @@ Nacos Client 从 Nacos Server 端获取数据时，调用的是此接口 `Config
 
 
 ### 自动注入
-Nacos Config Starter 实现了 `org.springframework.cloud.bootstrap.config.PropertySourceLocator`接口，并将优先级设置成了最高。
+Nacos Config Starter 实现了 `org.springframework.boot.context.config.ConfigDataLoader`接口，并将优先级设置成了最高。
 
 在 Spring Cloud 应用启动阶段，会主动从 Nacos Server 端获取对应的数据，并将获取到的数据转换成 PropertySource 且注入到 Environment 的 PropertySources 属性中，所以使用 @Value 注解也能直接获取 Nacos Server 端配置的内容。
 
@@ -208,7 +187,8 @@ SecretKey|spring.cloud.nacos.config.secret-key||
 是否开启监听和自动刷新|spring.cloud.nacos.config.refresh-enabled|true|
 集群服务名|spring.cloud.nacos.config.cluster-name||
 
-
+### Native Image构建
+请参考`spring-cloud-alibaba-docs`中的`graalvm.adoc`文档
 
 #### 更多介绍
 Nacos为用户提供包括动态服务发现，配置管理，服务管理等服务基础设施，帮助用户更灵活，更轻松地构建，交付和管理他们的微服务平台，基于Nacos, 用户可以更快速的构建以“服务”为中心的现代云原生应用。Nacos可以和Spring Cloud、Kubernetes/CNCF、Dubbo 等微服务生态无缝融合，为用户提供更卓越的体验。更多 Nacos 相关的信息，请参考 [Nacos 项目](https://github.com/alibaba/Nacos)。
