@@ -74,7 +74,7 @@ public class NacosConfigApplication {
 }
 ----
 
-NOTE: After ``spring-cloud-alibaba`` ``2022.0``, we recommended to use ``spring.config.import`` to import configuration,
+NOTE: After ``spring-cloud-alibaba`` ``2021.0.1.0``,we use ``spring.config.import`` import configuration by default,
 if you want to continue to use ``bootstrap``,you can add the following dependencies to the project root ``pom.xml`` file:
 
 [source,xml]

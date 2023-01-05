@@ -74,7 +74,7 @@ public class NacosConfigApplication {
 }
 ----
 
-NOTE: ``spring-cloud-alibaba``从``2022.0``版本开始，推荐使用``spring.config.import``方式引入配置，如果您想继续使用``bootstrap``
+NOTE: ``spring-cloud-alibaba``从``2021.0.1.0``版本开始，默认使用``spring.config.import``方式引入配置，如果您想继续使用``bootstrap``
 方式加载配置，您可以在项目根``pom.xml``文件中加入以下依赖：
 
 [source,xml]
