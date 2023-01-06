@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
+ * @since 2.2.10-RC1
  */
 @Configuration(proxyBeanMethods = false)
 public class WebMvcAutoConfiguration {

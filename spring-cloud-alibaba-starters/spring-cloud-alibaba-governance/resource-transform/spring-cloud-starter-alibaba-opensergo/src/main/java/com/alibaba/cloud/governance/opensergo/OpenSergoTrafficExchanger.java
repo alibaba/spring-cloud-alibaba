@@ -38,8 +38,10 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  * OpenSergoTrafficExchanger is the class which communicate with OpenSergo control plane.
+ *
  * @author panxiaojun233
  * @author <a href="m13201628570@163.com"></a>
+ * @since 2.2.10-RC1
  */
 public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 
@@ -91,7 +93,8 @@ public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 								subscribeKey, dataList);
 						try {
 							Collection<UnifiedRouteDataStructure> rules = openSergoTrafficRouterParser
-									.resolveLabelRouting((List<RouteConfiguration>) dataList);
+									.resolveLabelRouting(
+											(List<RouteConfiguration>) dataList);
 							applicationContext.publishEvent(
 									new LabelRoutingDataChangedEvent(this, rules));
 						}

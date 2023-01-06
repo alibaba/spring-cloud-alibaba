@@ -43,6 +43,7 @@ import static com.alibaba.cloud.governance.istio.constant.IstioConstants.ISTIOD_
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class XdsChannel implements AutoCloseable {
 
