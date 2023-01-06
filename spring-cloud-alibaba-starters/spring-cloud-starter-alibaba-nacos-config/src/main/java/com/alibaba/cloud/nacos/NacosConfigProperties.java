@@ -591,8 +591,7 @@ public class NacosConfigProperties {
 	}
 
 	/**
-	 * refer
-	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2872
+	 * refer https://github.com/alibaba/spring-cloud-alibaba/issues/2872
 	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2869 .
 	 */
 	private String resolveNamespace() {

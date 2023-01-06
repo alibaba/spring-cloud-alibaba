@@ -89,23 +89,27 @@ public class NacosDiscoveryClientConfigurationTest {
 	public void testSpringCloudGatewayLocatorHeartBeatPublisherEnabled() {
 		contextRunner
 				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
-				.run(context -> assertThat(context).hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
+				.run(context -> assertThat(context)
+						.hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
 	}
 
 	@Test
 	public void testZuulGatewayLocatorHeartBeatPublisherEnabled() {
 		contextRunner
-				.withConfiguration(AutoConfigurations.of(ZuulProxyMarkerConfiguration.class))
+				.withConfiguration(
+						AutoConfigurations.of(ZuulProxyMarkerConfiguration.class))
 				.run(context -> assertThat(context)
-                        .hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
+						.hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
 	}
 
 	@Test
 	public void testZuulAndSpringCloudGatewayLocatorHeartBeatPublisherEnabled() {
 		contextRunner
 				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
-				.withConfiguration(AutoConfigurations.of(ZuulProxyMarkerConfiguration.class))
-				.run(context -> assertThat(context).hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
+				.withConfiguration(
+						AutoConfigurations.of(ZuulProxyMarkerConfiguration.class))
+				.run(context -> assertThat(context)
+						.hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
 	}
 
 }

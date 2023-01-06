@@ -35,13 +35,13 @@ public class NacosJsonPropertySourceLoaderTests {
 
 	@Test
 	public void testJsonPropWithComment() throws IOException {
-		String propJsonStr = "{\n"
-				+ "    // test comment\n"
-				+ "    \"name\": \"jack\"\n"
+		String propJsonStr = "{\n" + "    // test comment\n" + "    \"name\": \"jack\"\n"
 				+ "}";
 		ByteArrayResource resource = new ByteArrayResource(propJsonStr.getBytes());
-		List<PropertySource<?>> result = new NacosJsonPropertySourceLoader().doLoad("test.json", resource);
+		List<PropertySource<?>> result = new NacosJsonPropertySourceLoader()
+				.doLoad("test.json", resource);
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).getProperty("name")).isEqualTo("jack");
 	}
+
 }
