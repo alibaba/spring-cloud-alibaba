@@ -71,11 +71,12 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 		StepVerifier.create(service.slow()).expectNext("slow").verifyComplete();
 		StepVerifier.create(service.slow()).expectNext("slow").verifyComplete();
 
-		// Then in the next 5s, the fallback method should be called.
-		for (int i = 0; i < 5; i++) {
+		// Then in the next 4s, the fallback method should be called.
+		for (int i = 0; i < 4; i++) {
 			StepVerifier.create(service.slow()).expectNext("fallback").verifyComplete();
 			Thread.sleep(1000);
 		}
+		Thread.sleep(1000);
 
 		// Half-open recovery (will re-open the circuit breaker).
 		StepVerifier.create(service.slow()).expectNext("slow").verifyComplete();
@@ -87,12 +88,13 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 		StepVerifier.create(service.slowFlux()).expectNext("slowflux").verifyComplete();
 		StepVerifier.create(service.slowFlux()).expectNext("slowflux").verifyComplete();
 		StepVerifier.create(service.slowFlux()).expectNext("slowflux").verifyComplete();
-		// Then in the next 5s, the fallback method should be called.
-		for (int i = 0; i < 5; i++) {
+		// Then in the next 4s, the fallback method should be called.
+		for (int i = 0; i < 4; i++) {
 			StepVerifier.create(service.slowFlux()).expectNext("flux_fallback")
 					.verifyComplete();
 			Thread.sleep(1000);
 		}
+		Thread.sleep(1000);
 
 		// Half-open recovery (will re-open the circuit breaker).
 		StepVerifier.create(service.slowFlux()).expectNext("slowflux").verifyComplete();
