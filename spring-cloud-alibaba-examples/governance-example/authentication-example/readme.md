@@ -2,35 +2,35 @@
 
 ## Project Instruction
 
-This project demonstrates how to use Istio to publish authentication config to Spring Cloud Alibaba application and use the config to do authentication.The Spring Cloud Alibaba authentication module supports authentication of Spring MVC and Spring WebFlux applications.
+This project demonstrates how to use Istio to publish authentication config to Spring Cloud Alibaba application and use the config to do authentication. The Spring Cloud Alibaba authentication module supports authentication of Spring MVC and Spring WebFlux applications.
 
 ## Preparation
 ### Install K8s
-Please refer to [tools](https://kubernetes.io/zh-cn/docs/tasks/tools/) chapter of K8s document
+Please refer to [tools](https://kubernetes.io/zh-cn/docs/tasks/tools/) chapter of K8s document.
 ### Enable Istio on K8s
-Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapter of Istio document
+Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapter of Istio document.
 
 ## Introduction to Istio authentication rules
-[overview](https://istio.io/latest/zh/docs/concepts/security/#authorization)
-[detail](https://istio.io/latest/zh/docs/reference/config/security/)
+- [overview](https://istio.io/latest/zh/docs/concepts/security/#authorization)
+- [detail](https://istio.io/latest/zh/docs/reference/config/security/)
 
 ## Demo
 ### Connect to Istio
 Before launching the example for demonstration, let's look at how a Spring Cloud application accesses Istio and provides authentication. This section is only for you to understand how to use it. The config has been filled in this example and you may not need to modify it.
-1. Modify pom.xml to introduce Istio resource transform and Spring Cloud Alibaba authentication module
+1. Modify `pom.xml` to introduce Istio resource transform and Spring Cloud Alibaba authentication module:
 
 ```xml
 <dependency>
-	<groupId>com.alibaba.cloud</groupId>
-	<artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 </dependency>
 
 <dependency>
-	<groupId>com.alibaba.cloud</groupId>
-	<artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
 </dependency>
 ```
-2. Configure Istio related metadata in the `src/main/resources/application` yml configuration file
+2. Configure Istio related metadata in the `src/main/resources/application` yml configuration file:
 
 ```yml
 server:
@@ -50,7 +50,7 @@ spring:
         istiod-token: ${ISTIOD_TOKEN:}
         log-xds: ${LOG_XDS:true}
 ```
-Here's an explanation of each field
+Here's an explanation of each field:
 |Configuration Item|key|Default Value|Description
 |--|--|--|--|
 |Whether to enable authentication| spring.cloud.governance.auth.enabled|true|
@@ -63,15 +63,15 @@ Here's an explanation of each field
 |Whether to print logs about xDS| spring.cloud.istio.config.log-xds|true|
 
 ### Run the application
-You need to run the application in the K8s environment and inject some meta information about K8s into the following environment variables for the running application
+You need to run the application in the K8s environment and inject some meta information about K8s into the following environment variables for the running application:
 |Environment variable name|K8s pod metadata name|
 |--|--|
 |POD_NAME|metadata.name|
 |NAMESPACE_NAME|metadata.namespace|
 
-**HINT：The POD in which your deployed application does not need to be automatically injected by Istio because the various governance modules of Spring Cloud Alibaba will be used to replace the functions of the Envoy Proxy**
+**HINT：The POD in which your deployed application does not need to be automatically injected by Istio because the various governance modules of Spring Cloud Alibaba will be used to replace the functions of the Envoy Proxy.**
 ### Demostration
-The following are some simple examples of authentication rule configurations
+The following are some simple examples of authentication rule configurations:
 #### IP Blocks
 The following command is used to deliver an authentication rule to the demo application through Istio. This rule restricts the source IP addresses that can access the application:
 ```
@@ -100,7 +100,7 @@ In this example, if the source IP of the request is 127.0.0.1, then the applicat
 ```
 Auth failed, please check the request and auth rule
 ```
-This indicates that the request is denied<br>
+This indicates that the request is denied.<br>
 If the source IP of the request is not '127.0.0.1', then the application returns:
 ```
 received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth

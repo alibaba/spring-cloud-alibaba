@@ -6,25 +6,24 @@
 
 ## 准备
 ### 安装K8s环境
-请参考K8s的[安装工具](https://kubernetes.io/zh-cn/docs/tasks/tools/)小节
+请参考K8s的[安装工具](https://kubernetes.io/zh-cn/docs/tasks/tools/)小节。
 ### 在K8s上安装并启用Istio
-请参考Istio官方文档的[安装](https://istio.io/latest/zh/docs/setup/install/)小节
+请参考Istio官方文档的[安装](https://istio.io/latest/zh/docs/setup/install/)小节。
 
 ## Istio鉴权规则介绍
-[授权概述](https://istio.io/latest/zh/docs/concepts/security/#authorization)
-[具体配置方法](https://istio.io/latest/zh/docs/reference/config/security/)
+- [授权概述](https://istio.io/latest/zh/docs/concepts/security/#authorization)
+- [具体配置方法](https://istio.io/latest/zh/docs/reference/config/security/)
 
 ## 示例
 ### 如何接入
 在启动示例进行演示之前，我们先了解一下 Spring Cloud 应用如何接入Istio并提供鉴权功能。 注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。
-1. 修改pom.xml文件，引入Istio资源转换以及Spring Cloud Alibaba鉴权模块:
+1. 修改`pom.xml`文件，引入Istio资源转换以及Spring Cloud Alibaba鉴权模块:
 
 ```xml
 <dependency>
-	<groupId>com.alibaba.cloud</groupId>
-	<artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 </dependency>
-
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
@@ -205,3 +204,4 @@ kubectl delete RequestAuthentication jwt-jwks-uri -n ${namespace_name}
 ```
 received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
 ```
+
