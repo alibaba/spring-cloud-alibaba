@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.router;
 
+import com.alibaba.cloud.router.publish.TargetServiceChangedPublisher;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +34,11 @@ public class RouterPropertiesAutoConfiguration {
 	@ConditionalOnMissingBean
 	public RouterProperties routerProperties() {
 		return new RouterProperties();
+	}
+
+	@Bean
+	public TargetServiceChangedPublisher targetServiceChangedPublisher() {
+		return new TargetServiceChangedPublisher();
 	}
 
 }
