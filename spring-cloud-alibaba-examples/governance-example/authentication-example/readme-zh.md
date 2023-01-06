@@ -6,28 +6,28 @@
 
 ## 准备
 ### 安装K8s环境
-请参考K8s的[安装工具](https://kubernetes.io/zh-cn/docs/tasks/tools/)小节
+请参考K8s的[安装工具](https://kubernetes.io/zh-cn/docs/tasks/tools/)小节。
 ### 在K8s上安装并启用Istio
-请参考Istio官方文档的[安装](https://istio.io/latest/zh/docs/setup/install/)小节
+请参考Istio官方文档的[安装](https://istio.io/latest/zh/docs/setup/install/)小节。
 
 ## Istio鉴权规则介绍
-[授权概述](https://istio.io/latest/zh/docs/concepts/security/#authorization)
-[具体配置方法](https://istio.io/latest/zh/docs/reference/config/security/)
+- [授权概述](https://istio.io/latest/zh/docs/concepts/security/#authorization)
+- [具体配置方法](https://istio.io/latest/zh/docs/reference/config/security/)
 
 ## 示例
 ### 如何接入
 在启动示例进行演示之前，我们先了解一下 Spring Cloud 应用如何接入Istio并提供鉴权功能。 注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。
-1. 修改pom.xml文件，引入Istio资源转换以及Spring Cloud Alibaba鉴权模块:
+1. 修改`pom.xml`文件，引入Istio资源转换以及Spring Cloud Alibaba鉴权模块:
 
 ```xml
 <dependency>
-	<groupId>com.alibaba.cloud</groupId>
-	<artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 </dependency>
 
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>istio-resource-transform</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
 </dependency>
 ```
 2. 在应用的 `src/main/resources/application.yml` 配置文件中配置Istio相关元数据:
@@ -47,7 +47,8 @@ spring:
         port: ${ISTIOD_PORT:15010}
         polling-pool-size: ${POLLING_POOL_SIZE:10}
         polling-time: ${POLLING_TIMEOUT:10}
-        istiod-token: ${ISTIOD_TOKEN:}        
+        istiod-token: ${ISTIOD_TOKEN:}
+        log-xds: ${LOG_XDS:true}
 ```
 下面解释一下各字段的含义:
 |配置项|key|默认值|说明
@@ -59,6 +60,7 @@ spring:
 |SCA去Istio拉取配置的线程池大小| spring.cloud.istio.config.polling-pool-size|10|
 |SCA去Istio拉取配置的间隔时间| spring.cloud.istio.config.polling-time|30|单位为秒
 |连接Istio<br>15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的`/var/run/secrets/tokens/istio-token`文件的内容|
+|是否打印xDS相关日志| spring.cloud.istio.config.log-xds|true|
 ### 运行应用
 需要将应用运行在K8s环境中，并给运行的应用将K8s的一些元信息注入以下环境变量中:
 |环境变量名|K8s pod metadata name|
@@ -104,6 +106,15 @@ received request from ${from_ip}, local addr is ${local_ip}, local host is ${loc
 ```
 说明通过了SCA的鉴权，将会返回此请求的一些元信息。
 
+在此之后，我们删除这条IP黑白名单的鉴权规则:
+```shell
+kubectl delete AuthorizationPolicy from-ip-allow -n ${namespace_name}
+```
+之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```
+
 #### 请求头认证
 我们在使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则的限制了访问该应用的请求header:
 ```
@@ -141,6 +152,15 @@ curl --location --request GET '${demo_ip}/auth'
 ```
 Auth failed, please check the request and auth rule
 ```
+在此之后，我们删除这条请求头认证的规则:
+```shell
+kubectl delete AuthorizationPolicy http-headers-allow -n ${namespace_name}
+```
+之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```
+
 #### JWT认证
 我们使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则限制了访问该应用需要携带的JWT token value:
 ```
@@ -176,3 +196,12 @@ curl --location --request GET '${demo_ip}/auth' \
 由于此请求没有携带正确的JWT token信息，将会返回:
 ```
 Auth failed, please check the request and auth rule
+```
+在此之后，我们删除这条JWT认证的规则:
+```shell
+kubectl delete RequestAuthentication jwt-jwks-uri -n ${namespace_name}
+```
+之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
+```
+received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
+```
