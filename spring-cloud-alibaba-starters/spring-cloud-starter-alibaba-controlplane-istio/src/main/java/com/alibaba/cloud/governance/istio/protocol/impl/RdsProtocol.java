@@ -29,8 +29,11 @@ import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
 /**
+ * RdsProtocol contains route info.
+ *
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a> RdsProtocol contains route info.
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 

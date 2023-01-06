@@ -23,9 +23,11 @@ import com.alibaba.cloud.commons.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.commons.governance.auth.rule.JwtRule;
 
 /**
+ * To store auth rules in Spring Cloud Alibaba.
+ *
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a> To store auth rules in Spring Cloud
- * Alibaba.
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class AuthRepository {
 

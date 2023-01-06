@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY,
 		property = "className")

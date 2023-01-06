@@ -41,6 +41,7 @@ import org.springframework.context.ApplicationContextAware;
  *
  * @author panxiaojun233
  * @author <a href="m13201628570@163.com"></a>
+ * @since 2.2.10-RC1
  */
 public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 

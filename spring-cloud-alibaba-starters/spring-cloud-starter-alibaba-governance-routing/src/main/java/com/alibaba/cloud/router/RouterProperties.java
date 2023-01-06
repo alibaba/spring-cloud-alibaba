@@ -20,6 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author HH
+ * @since 2.2.10-RC1
  */
 @ConfigurationProperties(prefix = RouterProperties.PROPERTY_PREFIX)
 public class RouterProperties {

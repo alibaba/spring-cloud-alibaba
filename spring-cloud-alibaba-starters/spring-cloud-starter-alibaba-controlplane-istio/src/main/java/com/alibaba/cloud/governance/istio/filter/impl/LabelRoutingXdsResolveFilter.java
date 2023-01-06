@@ -44,6 +44,7 @@ import io.envoyproxy.envoy.config.route.v3.WeightedCluster;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class LabelRoutingXdsResolveFilter
 		extends AbstractXdsResolveFilter<List<RouteConfiguration>> {
