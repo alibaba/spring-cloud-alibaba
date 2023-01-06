@@ -52,6 +52,7 @@ import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class AuthXdsResolveFilter extends AbstractXdsResolveFilter<List<Listener>> {
 

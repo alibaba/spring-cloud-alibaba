@@ -38,9 +38,12 @@ import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
 /**
+ * LdsProtocol contains the authentication configuration and other configuration about
+ * security.
+ *
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a> LdsProtocol contains the authentication
- * configuration and other configuration about security.
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 

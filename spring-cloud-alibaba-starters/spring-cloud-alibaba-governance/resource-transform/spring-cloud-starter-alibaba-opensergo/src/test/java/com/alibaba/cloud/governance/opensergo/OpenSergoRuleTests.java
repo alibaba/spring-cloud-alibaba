@@ -47,16 +47,20 @@ public class OpenSergoRuleTests {
 	@Test
 	public void testOpenSergoTrafficRouterTransform() throws Exception {
 		HeaderMatcher headerMatcher = HeaderMatcher.newBuilder().setName("x-tag")
-				.setStringMatch(StringMatcher.newBuilder().setExact("v2").buildPartial()).build();
+				.setStringMatch(StringMatcher.newBuilder().setExact("v2").buildPartial())
+				.build();
 		RouteMatch routeMatch = RouteMatch.newBuilder().addHeaders(headerMatcher).build();
 		Route route = Route.newBuilder().setMatch(routeMatch)
-				.setRoute(RouteAction.newBuilder().setCluster("outbound||v2|service-provider.default.svc.cluster.local")
-						.build()).build();
+				.setRoute(RouteAction.newBuilder()
+						.setCluster(
+								"outbound||v2|service-provider.default.svc.cluster.local")
+						.build())
+				.build();
 		VirtualHost virtualHost = VirtualHost.newBuilder().setName("service-provider")
-				.addDomains("service-provider.default.svc.cluster.local")
-				.addRoutes(route).build();
-		RouteConfiguration routeConfiguration = RouteConfiguration.newBuilder().setName("service-provider")
-				.addVirtualHosts(virtualHost).build();
+				.addDomains("service-provider.default.svc.cluster.local").addRoutes(route)
+				.build();
+		RouteConfiguration routeConfiguration = RouteConfiguration.newBuilder()
+				.setName("service-provider").addVirtualHosts(virtualHost).build();
 		List<RouteConfiguration> routeConfigurations = new ArrayList<>();
 		routeConfigurations.add(routeConfiguration);
 		Collection<UnifiedRouteDataStructure> rules = openSergoTrafficRouterParser

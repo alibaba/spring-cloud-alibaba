@@ -26,6 +26,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * @author HH
+ * @since 2.2.10-RC1
  */
 public class WebMvcInterceptor implements HandlerInterceptor {
 

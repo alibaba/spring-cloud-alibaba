@@ -34,12 +34,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 
 /**
+ * Use a abstract rule tree to validate the request. First, if the rules are all empty, we
+ * just return true. Secondly, if any deny rule matches the request, we just return false.
+ * Thirdly, if the allow rules are empty, we just return true. Last, if any allow rule
+ * matches the request, we just return true, or we return false.
+ *
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a> Use a abstract rule tree to validate the
- * request. First, if the rules are all empty, we just return true. Secondly, if any deny
- * rule matches the request, we just return false. Thirdly, if the allow rules are empty,
- * we just return true. Last, if any allow rule matches the request, we just return true,
- * or we return false.
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class AuthValidator {
 
