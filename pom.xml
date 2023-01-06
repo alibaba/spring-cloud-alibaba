@@ -83,7 +83,7 @@
         <revision>2021.0.4.0-SNAPSHOT</revision>
 
         <!-- Spring Cloud -->
-        <spring.cloud.version>2021.0.4</spring.cloud.version>
+        <spring.cloud.version>2021.0.5</spring.cloud.version>
 
         <curator.version>4.0.1</curator.version>
 
