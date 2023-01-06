@@ -17,7 +17,8 @@
     <modules>
         <module>spring-cloud-alibaba-governance/governance-core/spring-cloud-starter-alibaba-governance-authentication</module>
         <module>spring-cloud-alibaba-governance/governance-core/spring-cloud-starter-alibaba-governance-labelrouting</module>
-        <module>spring-cloud-alibaba-governance/resource-transform/istio-resource-transform</module>
+        <module>spring-cloud-alibaba-governance/resource-transform/spring-cloud-starter-alibaba-istio</module>
+        <module>spring-cloud-alibaba-governance/resource-transform/spring-cloud-starter-alibaba-opensergo</module>
         <module>spring-cloud-starter-alibaba-nacos-config</module>
         <module>spring-cloud-starter-alibaba-nacos-discovery</module>
         <module>spring-cloud-starter-alibaba-seata</module>

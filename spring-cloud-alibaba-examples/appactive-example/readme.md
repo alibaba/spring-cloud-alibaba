@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[![vTlxsA.jpg](https://s1.ax1x.com/2022/09/04/vTlxsA.jpg)](https://imgse.com/i/vTlxsA)
+![](../../spring-cloud-alibaba-docs/src/main/asciidoc/pic/image-2022-09-15-16-16-25-989.png)
 
 The overall structure of this demo is shown above.
 
@@ -128,7 +128,7 @@ Before starting the example for demonstration, let's take a look at how Spring C
 
 1. Demonstration of general service calls belonging to the normal unit. Typing: `http://127.0.0.1:8079/listProduct` address in the browser, it can be seen that the request is sent to the product through the frontend application.
 
-    [![vTlxsA.jpg](https://s1.ax1x.com/2022/09/04/vTlxsA.jpg)](https://imgse.com/i/vTlxsA)
+   ![](../../spring-cloud-alibaba-docs/src/main/asciidoc/pic/image-2022-09-15-16-16-25-989.png)
 
     Since `/listProduct` in the above path matches the `/*` path rule in the product application, which corresponds to the normal unit, frontend does not have a tendency in the product address list obtained from the registry, and will randomly select an address for request sending. So requesting the above path multiple times will see the request switch back and forth between the normal and center units of the product.
 
@@ -163,15 +163,15 @@ Before starting the example for demonstration, let's take a look at how Spring C
     The above rules mean that requests with user IDs of 0 ~ 1999 will be sent to the noraml(unit) in the downstream provider, and requests with user IDs of 2000 ~ 9999 will be sent to the center unit of the downstream provider.
     As shown in the figure below, a request with a user ID of 1999 is simulated. It can be seen that the request is sent to the normal unit of product in the downstream through the frontend.
 
-    [![1xnI7.jpg](https://s1.328888.xyz/2022/09/05/1xnI7.jpg)](https://imgloc.com/i/1xnI7)
+   ![](../../spring-cloud-alibaba-docs/src/main/asciidoc/pic/image-2022-09-15-16-15-39-851.png)
 
     As shown in the figure below, a request with a user ID of 2000 is simulated. It can be seen that the request is sent to the center unit node of the product in the downstream through the frontend.
 
-    [![1xAHk.jpg](https://s1.328888.xyz/2022/09/05/1xAHk.jpg)](https://imgloc.com/i/1xAHk)
+   ![](../../spring-cloud-alibaba-docs/src/main/asciidoc/pic/image-2022-09-15-16-14-50-461.png)
 
 3. Demonstration of global service invocation belonging to the center unit. Typing: `http://127.0.0.1:8079/buyProduct` path in the browser, because the `/buyProduct` in the above path matches the `/buy/*` path rule in the product and storage applications, corresponding to the center unit, it will directly send the request to the downstream center unit node.
 
-    [![1s4Oi.jpg](https://s1.328888.xyz/2022/09/04/1s4Oi.jpg)](https://imgloc.com/i/1s4Oi)
+   ![](../../spring-cloud-alibaba-docs/src/main/asciidoc/pic/image-2022-09-15-16-14-02-388.png)
 
 4. Cut flow demo. The main things to do when cutting flow are as follows:
     - Build new mapping relationship rules and write prohibition rules (manually).
@@ -206,10 +206,10 @@ Before starting the example for demonstration, let's take a look at how Spring C
         }
         ```
         As shown in the figure below, a request with a user ID of 2999 is simulated. It can be seen that the request is sent to the unit node of the product in the downstream through the frontend, and the flow switching rule takes effect.
-        [![1xUnd.jpg](https://s1.328888.xyz/2022/09/05/1xUnd.jpg)](https://imgloc.com/i/1xUnd)
+        ![](../../spring-cloud-alibaba-docs/src/main/asciidoc/pic/image-2022-09-15-16-12-58-177.png)
 
         As shown in the figure below, a request with a user ID of 3000 is simulated. It can be seen that the request is sent to the center unit node of the product in the downstream through the frontend, and the cut flow rule takes effect.
-        [![1xpgr.jpg](https://s1.328888.xyz/2022/09/05/1xpgr.jpg)](https://imgloc.com/i/1xpgr)
+        ![](../../spring-cloud-alibaba-docs/src/main/asciidoc/pic/image-2022-09-15-16-12-26-461.png)
 
 
 

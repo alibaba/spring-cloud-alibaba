@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: integrated-frontend
+  labels:
+    app: integrated-frontend
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      name: web
+      targetPort: 8080
+      nodePort: 30080
+  selector:
+    app: integrated-frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integrated-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integrated-frontend
+  template:
+    metadata:
+      labels:
+        appName: integrated-frontend
+        app: integrated-frontend
+    spec:
+      containers:
+        - name: integrated-frontend
+          image: "{{ .Values.image.repository }}integrated-frontend"
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8080

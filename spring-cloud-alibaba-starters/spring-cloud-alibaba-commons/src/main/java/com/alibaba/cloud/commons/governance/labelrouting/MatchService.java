@@ -32,6 +32,16 @@ public class MatchService {
 
 	private Integer weight;
 
+	private String fallbackVersion;
+
+	public String getFallback() {
+		return fallbackVersion;
+	}
+
+	public void setFallback(String fallbackVersion) {
+		this.fallbackVersion = fallbackVersion;
+	}
+
 	public List<RouteRule> getRuleList() {
 		return ruleList;
 	}
@@ -67,18 +77,19 @@ public class MatchService {
 		MatchService that = (MatchService) o;
 		return getWeight().equals(that.getWeight())
 				&& Objects.equals(getRuleList(), that.getRuleList())
+				&& Objects.equals(getFallback(), that.getFallback())
 				&& Objects.equals(getVersion(), that.getVersion());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getRuleList(), getVersion(), getWeight());
+		return Objects.hash(getRuleList(), getVersion(), getWeight(), getFallback());
 	}
 
 	@Override
 	public String toString() {
 		return "MatchService{" + "ruleList=" + ruleList + ", version='" + version + '\''
-				+ ", weight=" + weight + '}';
+				+ ", weight=" + weight + ", getFallback=" + fallbackVersion + '}';
 	}
 
 }

@@ -10,12 +10,12 @@ image::pic/resource-transform.png[]
 
 Spring Cloud Alibaba Governance的resource-transform模块会将不同控制面下发的配置进行统一的转换，将来自Istio，OpenSergo等控制面下发的配置统一转换为Spring Cloud Alibaba统一抽象出的数据结构以供后续使用
 
-如果在您的项目中使用Istio来实现配置转换，需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `istio-resource-transform` 的starter
+如果在您的项目中使用Istio来实现配置转换，需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-istio` 的starter
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>istio-resource-transform</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
 </dependency>
 ----
 
@@ -50,8 +50,17 @@ spring:
 |Istiod的端口| spring.cloud.istio.config.port|15012|注：连接15010端口无需TLS，连接15012端口需TLS认证
 |SCA去Istio拉取配置的线程池大小| spring.cloud.istio.config.polling-pool-size|10|
 |SCA去Istio拉取配置的间隔时间| spring.cloud.istio.config.polling-time|30|单位为秒
-|连接Istio<br>15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的 `/var/run/secrets/tokens/istio-token` 文件的内容|
+|连接Istio 15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的 `/var/run/secrets/tokens/istio-token` 文件的内容|
 |是否打印xDS相关日志| spring.cloud.istio.config.log-xds|true|
+|===
+
+=== 运行应用
+需要将应用运行在K8s环境中，并给运行的应用将K8s的一些元信息注入以下环境变量中:
+
+|===
+|环境变量名|K8s pod metadata name
+|POD_NAME|metadata.name
+|NAMESPACE_NAME|metadata.namespace
 |===
 
 === 使用标签路由

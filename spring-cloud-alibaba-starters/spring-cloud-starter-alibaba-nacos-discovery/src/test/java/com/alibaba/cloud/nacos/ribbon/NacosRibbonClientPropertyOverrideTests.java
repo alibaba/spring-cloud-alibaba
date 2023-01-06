@@ -48,6 +48,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 				"localApp.ribbon.NIWSServerListClassName="
 						+ "com.netflix.loadbalancer.ConfigurationBasedServerList",
 				"localApp.ribbon.listOfServers=127.0.0.1:19090",
+				"spring.cloud.nacos.discovery.watch.enabled=false",
 				"localApp.ribbon.ServerListRefreshInterval=15000" })
 public class NacosRibbonClientPropertyOverrideTests {
 

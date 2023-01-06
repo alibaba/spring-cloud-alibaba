@@ -33,6 +33,7 @@ import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
 import com.alibaba.cloud.router.RouterProperties;
+import com.alibaba.cloud.router.publish.TargetServiceChangedPublisher;
 import com.alibaba.cloud.router.repository.RouteDataRepository;
 import com.alibaba.cloud.router.util.ConditionMatchUtil;
 import com.alibaba.cloud.router.util.LoadBalanceUtil;
@@ -113,11 +114,15 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 	@Autowired
 	private RouterProperties routerProperties;
 
+	@Autowired
+	private TargetServiceChangedPublisher targetServiceChangedPublisher;
+
 	@Override
 	public Server choose(Object key) {
 		try {
 			final DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
 			String targetServiceName = loadBalancer.getName();
+			targetServiceChangedPublisher.addTargetService(targetServiceName);
 
 			// If routeData isn't present, use normal load balance rule.
 			final HashMap<String, List<MatchService>> routeData = routeDataRepository
@@ -140,7 +145,11 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 			// Filter by route rules,the result will be kept in versionSet and weightMap.
 			HashSet<String> versionSet = new HashSet<>();
 			HashMap<String, Integer> weightMap = new HashMap<>();
-			serviceFilter(targetServiceName, versionSet, weightMap);
+			HashSet<String> fallbackVersionSet = new HashSet<>();
+			HashMap<String, Integer> fallbackWeightMap = new HashMap<>();
+
+			serviceFilter(targetServiceName, versionSet, weightMap, fallbackVersionSet,
+					fallbackWeightMap);
 
 			// Filter instances by versionSet and weightMap.
 			double[] weightArray = new double[instances.size()];
@@ -160,7 +169,18 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 			// None instance match rule
 			if (CollectionUtils.isEmpty(instanceMap)) {
 				LOG.warn("no instance match route rule");
-				return null;
+				for (Instance instance : instances) {
+					String version = instance.getMetadata().get(VERSION);
+					if (fallbackVersionSet.contains(version)) {
+						List<Instance> instanceList = instanceMap.get(version);
+						if (instanceList == null) {
+							instanceList = new ArrayList<>();
+						}
+						instanceList.add(instance);
+						instanceMap.put(version, instanceList);
+					}
+				}
+				return chooseServerByWeight(instanceMap, fallbackWeightMap, weightArray);
 			}
 
 			// Routing with Weight algorithm.
@@ -179,7 +199,8 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 	}
 
 	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
-			HashMap<String, Integer> weightMap) {
+			HashMap<String, Integer> weightMap, HashSet<String> fallbackVersionSet,
+			HashMap<String, Integer> fallbackWeightMap) {
 		// Get request metadata.
 		final HttpServletRequest request = RequestContext.getRequest();
 		final Enumeration<String> headerNames = request.getHeaderNames();
@@ -199,7 +220,8 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 		if (requestHeaders.size() > 0) {
 			for (String keyName : requestHeaders.keySet()) {
 				int weight = matchRule(targetServiceName, keyName, requestHeaders,
-						parameterMap, request, versionSet, weightMap);
+						parameterMap, request, versionSet, weightMap, fallbackVersionSet,
+						fallbackWeightMap);
 				if (weight != NO_MATCH) {
 					isMatch = true;
 					defaultVersionWeight -= weight;
@@ -211,7 +233,8 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 		if (!isMatch && parameterMap != null) {
 			for (String keyName : parameterMap.keySet()) {
 				int weight = matchRule(targetServiceName, keyName, requestHeaders,
-						parameterMap, request, versionSet, weightMap);
+						parameterMap, request, versionSet, weightMap, fallbackVersionSet,
+						fallbackWeightMap);
 				if (weight != NO_MATCH) {
 					isMatch = true;
 					defaultVersionWeight -= weight;
@@ -238,7 +261,7 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 		// Add default route
 		if (defaultVersionWeight > RouteDataRepository.MIN_WEIGHT) {
 			String defaultRouteVersion = routeDataRepository
-					.getOriginalRouteRule(targetServiceName).getDefaultRouteVersion();
+					.getDefaultRouteVersion(targetServiceName);
 			versionSet.add(defaultRouteVersion);
 			weightMap.put(defaultRouteVersion, defaultVersionWeight);
 		}
@@ -248,7 +271,9 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 	private int matchRule(String targetServiceName, String keyName,
 			final HashMap<String, String> requestHeaders,
 			final Map<String, String[]> parameterMap, final HttpServletRequest request,
-			HashSet<String> versionSet, HashMap<String, Integer> weightMap) {
+			HashSet<String> versionSet, HashMap<String, Integer> weightMap,
+			HashSet<String> fallbackVersionSet,
+			HashMap<String, Integer> fallbackWeightMap) {
 		final List<MatchService> matchServiceList = routeDataRepository
 				.getRouteRule(targetServiceName).get(keyName);
 		if (matchServiceList == null) {
@@ -258,6 +283,7 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 			final List<RouteRule> ruleList = matchService.getRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
+			String fallback = matchService.getFallback();
 			boolean isMatchRule = true;
 			for (RouteRule routeRule : ruleList) {
 				String type = routeRule.getType();
@@ -283,6 +309,8 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 				continue;
 			}
 			versionSet.add(version);
+			fallbackVersionSet.add(fallback);
+			fallbackWeightMap.put(fallback, weight);
 			weightMap.put(version, weight);
 			return weight;
 		}
