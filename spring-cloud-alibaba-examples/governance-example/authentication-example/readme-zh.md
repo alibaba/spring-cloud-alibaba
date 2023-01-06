@@ -24,7 +24,6 @@
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
 </dependency>
-
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-istio</artifactId>

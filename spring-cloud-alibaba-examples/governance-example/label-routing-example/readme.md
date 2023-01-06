@@ -119,25 +119,25 @@ If the request parameter contains tag=gray, and the request header contains id a
 1. visit http://localhost:18083/add Push the routing rules from the control surface interface to the routing rule warehouse
    visit http://localhost:18083/router -The test does not meet the routing rules. When the test is routed to the v1 version, the v1 version instance prints and returns the following results:
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v1}, registerEnabled=true, ip='XXX', networkInterface='', port=18082, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18081,version is v1.
    ```
    visit http://localhost:18083/router-test?id=11 and the test value set in the request header is gray, which meets the routing rules. The route is to the v2 version. The v2 version instance prints and returns the following results:
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v2}, registerEnabled=true, ip='XXX', networkInterface='', port=18081, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18082,version is v2.
    ```
 
 2. visit http://localhost:18083/update Simulate dynamic modification of routing rules.
    visit http://localhost:18083/router  The test does not meet the routing rules. When the test is routed to the v1 version, the v1 version instance prints and returns the following results:
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v1}, registerEnabled=true, ip='XXX', networkInterface='', port=18082, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18081,version is v1.
    ```
    visit http://localhost:18083/router-test?id=11 and the test value set in the request header is gray, which meets the routing rules. 50% of the routes are routed to the v2 version. The v2 version instance prints the following results:
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v2}, registerEnabled=true, ip='XXX', networkInterface='', port=18081, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18082,version is v2.
    ```
    50% of them are routed to the v1 version, and the following results are returned when the v1 version instance is printed:
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v1}, registerEnabled=true, ip='XXX', networkInterface='', port=18082, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18081,version is v1.
    ```
 
 3. If you don't push rule,it will load balance by common rule you set.
@@ -265,7 +265,7 @@ curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'ta
 ```
 The request is routed to version v2 because the routing rule is matched by the request:
 ```
-Route in 30.221.132.228: 18081,version is v2.
+Route in 30.221.132.228: 18082,version is v2.
 ```
 Finally, we delete this label routing rule::
 ```shell
@@ -343,7 +343,7 @@ curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: gray'
 ```
 The request is routed to version v2 because the routing rule is matched by the request.
 ```
-Route in 30.221.132.228: 18081,version is v2.
+Route in 30.221.132.228: 18082,version is v2.
 ```
 After we stop the ProviderApplication of the version v2, we send an HTTP request with the request header tag gray.
 ```

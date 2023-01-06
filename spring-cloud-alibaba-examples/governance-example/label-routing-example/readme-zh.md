@@ -119,25 +119,25 @@ public void getDataFromControlPlaneTest() {
 1. 访问 http://localhost:18083/add 将路由规则由控制面接口推入路由规则仓库中。
    访问 http://localhost:18083/router-test 不满足路由规则，路由到v1版本中，v1版本实例打印返回如下结果：
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v1}, registerEnabled=true, ip='XXX', networkInterface='', port=18082, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18081,version is v1.
    ```
    访问 http://localhost:18083/router-test?id=11 且请求头设置test值为gray 满足路由规则，路由到v2版本中，v2版本实例打印返回如下结果：
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v2}, registerEnabled=true, ip='XXX', networkInterface='', port=18081, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18082,version is v2.
    ```
 
 2. 访问 http://localhost:18083/update 模拟动态修改路由规则。
    访问 http://localhost:18083/router-test 不满足路由规则，路由到v1版本中，v1版本实例打印返回如下结果：
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v1}, registerEnabled=true, ip='XXX', networkInterface='', port=18082, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18081,version is v1.
    ```
    访问 http://localhost:18083/router-test?id=11 且请求头设置test值为gray 满足路由规则，50%路由到v2版本中，v2版本实例打印返回如下结果：
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v2}, registerEnabled=true, ip='XXX', networkInterface='', port=18081, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18082,version is v2.
    ```
    50%路由到v1版本中，v1版本实例打印返回如下结果：
    ```
-   NacosRegistration{nacosDiscoveryProperties=NacosDiscoveryProperties{serverAddr='127.0.0.1:8848', endpoint='', namespace='', watchDelay=30000, logName='', service='service-provider', weight=1.0, clusterName='DEFAULT', group='DEFAULT_GROUP', namingLoadCacheAtStart='false', metadata={preserved.register.source=SPRING_CLOUD, version=v1}, registerEnabled=true, ip='XXX', networkInterface='', port=18082, secure=false, accessKey='', secretKey='', heartBeatInterval=null, heartBeatTimeout=null, ipDeleteTimeout=null, failFast=true}}
+   Route in 30.221.132.228: 18081,version is v1.
    ```
 
 3. 如果不推送规则，走正常路由
@@ -266,7 +266,7 @@ curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'ta
 ```
 因为满足路由规则，所以请求会被路由至v2版本:
 ```
-Route in 30.221.132.228: 18081,version is v2.
+Route in 30.221.132.228: 18082,version is v2.
 ```
 最后我们删除这条标签路由规则:
 ```shell
@@ -347,7 +347,7 @@ curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
 因为满足路由规则，所以请求会被路由至v2版本:
 ```
-Route in 30.221.132.228: 18081,version is v2.
+Route in 30.221.132.228: 18082,version is v2.
 ```
 最后我们删除这条标签路由规则:
 ```shell
@@ -428,7 +428,7 @@ curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
 因为满足路由规则，所以请求会被路由至v2版本
 ```
-Route in 30.221.132.228: 18081,version is v2.
+Route in 30.221.132.228: 18082,version is v2.
 ```
 我们停止v2版本的ProviderApplication后，继续发送一条请求头tag为gray的HTTP请求
 ```
