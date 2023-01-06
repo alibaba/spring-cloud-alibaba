@@ -275,6 +275,7 @@ kubectl delete DestinationRule my-destination-rule
 After the rule is deleted, the routing policy is not determined by whether the request header is carried or not, but completely depends on the implementation of the loadbalancer。
 ## Integrating OpenSergo
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
+### Configure
 1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-labelrouting` and `spring-cloud-starter-alibaba-opensergo` dependency
 ```
    <dependency>

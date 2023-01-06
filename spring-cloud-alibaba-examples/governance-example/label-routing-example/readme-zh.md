@@ -151,7 +151,7 @@ public void getDataFromControlPlaneTest() {
 ### Istio流量治理规则介绍
 - [VirtualService](https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/)
 - [DestinationRule](https://istio.io/latest/zh/docs/reference/config/networking/destination-rule/)
-
+### 配置
 1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-labelrouting`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-alibaba-istio`模块
 ```xml
 <dependency>
