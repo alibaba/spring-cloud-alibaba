@@ -141,7 +141,7 @@ If the request parameter contains tag=gray, and the request header contains id a
 3. If you don't push rule,it will load balance by common rule you set.
 ## Integrating Istio
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-labelrouting` and `spring-cloud-starter-alibaba-opensergo` dependency
+1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-labelrouting` and `spring-cloud-starter-alibaba-istio` dependency
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -152,7 +152,7 @@ If the request parameter contains tag=gray, and the request header contains id a
       <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
    </dependency>
 ```
-2. Configure application.yml for Istio control plane
+2. Configure application.yml for Istio control plane:
 ```
 server:
   port: 18084
@@ -193,7 +193,7 @@ spring:
 Start IstioConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.
 
 ### Publish Configuration
-We publish the label routing rules through the Istio control plane. We publish a DestinationRule rule first.
+We publish the label routing rules through the Istio control plane. We publish a DestinationRule rule first:
 ```
 kubectl apply -f - << EOF
 apiVersion: networking.istio.io/v1alpha3
@@ -212,7 +212,7 @@ spec:
 EOF
 ```
 This rule splits the back-end service into two versions. Pod with label v1 is assigned to v1, and pod with label v2 is assigned to v2
-After that, we publish the VirtualService rule
+After that, we publish the VirtualService rule:
 ```
 kubectl apply -f - << EOF
 apiVersion: networking.istio.io/v1alpha3
@@ -240,24 +240,30 @@ spec:
         subset: v1
 EOF
 ```
-This VirtualService specifies the simplest label routing rule. HTTP requests with a gray header and /istio-label-routing path are routed to v2, and the rest of the traffic is routed to v1
+This VirtualService specifies the simplest label routing rule. HTTP requests with a gray header and /istio-label-routing path are routed to v2, and the rest of the traffic is routed to v1:
 ### Demonstrate effect
-We send an HTTP request without a request header to IstioConsumerApplication
+We send an HTTP request without a request header to IstioConsumerApplication:
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing'
 ```
-Since the request header is not gray, the request will be routed to version v1 with the following result
+Since the request header is not gray, the request will be routed to version v1 with the following result:
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-We then send an HTTP request with a gray tag in its header and the request path is /istio-label-routing
+We then send an HTTP request with a gray tag in its header and the request path is /istio-label-routing:
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'tag: gray'
 ```
-The request is routed to version v2 because the routing rule is matched by the request.
+The request is routed to version v2 because the routing rule is matched by the request:
 ```
 Route in 30.221.132.228: 18081,version is v2.
 ```
+Finally, we delete this label routing rule::
+```shell
+kubectl delete VirtualService sca-virtual-service
+kubectl delete DestinationRule my-destination-rule
+```
+After the rule is deleted, the routing policy is not determined by whether the request header is carried or not, but completely depends on the implementation of the loadbalancer。
 ## Integrating OpenSergo
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
 1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-labelrouting` and `spring-cloud-starter-alibaba-opensergo` dependency

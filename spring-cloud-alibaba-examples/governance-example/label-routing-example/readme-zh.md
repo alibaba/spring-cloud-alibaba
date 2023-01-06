@@ -153,7 +153,7 @@ List<MatchService> matchServices = new ArrayList<>();
       <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
    </dependency>
 ```
-2. 在`src/main/resources/application.yml`配置文件中配置Istio控制面的相关信息
+2. 在`src/main/resources/application.yml`配置文件中配置Istio控制面的相关信息:
 ```
 server:
   port: 18084
@@ -194,7 +194,7 @@ spring:
 启动三个模块的启动类，分别为IstioConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
 
 ### 下发配置
-我们通过Istio控制面下发标签路由规则，首先下发DestinationRule规则
+我们通过Istio控制面下发标签路由规则，首先下发DestinationRule规则:
 ```
 kubectl apply -f - << EOF
 apiVersion: networking.istio.io/v1alpha3
@@ -213,7 +213,7 @@ spec:
 EOF
 ```
 此规则将后端服务拆分为两个版本，label为v1的pod被分到v1版本，label为v2的pod被分到v2版本
-之后，我们下发VirtualService规则
+之后，我们下发VirtualService规则:
 ```
 kubectl apply -f - << EOF
 apiVersion: networking.istio.io/v1alpha3
@@ -241,24 +241,30 @@ spec:
         subset: v1
 EOF
 ```
-这条VirtualService指定了一条最简单的标签路由规则，将请求头tag为gray，请求路径为/istio-label-routing的HTTP请求路由到v2版本，其余的流量都路由到v1版本
+这条VirtualService指定了一条最简单的标签路由规则，将请求头tag为gray，请求路径为/istio-label-routing的HTTP请求路由到v2版本，其余的流量都路由到v1版本:
 ### 效果演示
-我们发送一条不带请求头的HTTP请求至IstioConsumerApplication
+我们发送一条不带请求头的HTTP请求至IstioConsumerApplication:
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing'
 ```
-因为请求头不为gray，所以请求将会被路由到v1版本，返回如下
+因为请求头不为gray，所以请求将会被路由到v1版本，返回如下:
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-之后我们发送一条请求头tag为gray，且请求路径为/istio-label-routing的HTTP请求
+之后我们发送一条请求头tag为gray，且请求路径为/istio-label-routing的HTTP请求:
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'tag: gray'
 ```
-因为满足路由规则，所以请求会被路由至v2版本
+因为满足路由规则，所以请求会被路由至v2版本:
 ```
 Route in 30.221.132.228: 18081,version is v2.
 ```
+最后我们删除这条标签路由规则:
+```shell
+kubectl delete VirtualService sca-virtual-service
+kubectl delete DestinationRule my-destination-rule
+```
+删除规则后，可以看到路由的策略将不由请求头的携带与否来决定，而是完全遵从于负载均衡器的实现。
 
 ## 集成OpenSergo
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
