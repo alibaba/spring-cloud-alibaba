@@ -75,6 +75,12 @@ public class MockNamingService implements NamingService {
 	}
 
 	@Override
+	public void batchRegisterInstance(String serviceName, String groupName, List<Instance> instances)
+			throws NacosException {
+
+	}
+
+	@Override
 	public void batchDeregisterInstance(String serviceName, String groupName, List<Instance> instances)
 			throws NacosException {
 
