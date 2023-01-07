@@ -73,10 +73,10 @@ public class MockNamingService implements NamingService {
 			throws NacosException {
 
 	}
-    
+
     @Override
     public void batchDeregisterInstance(String serviceName, String groupName, List<Instance> instances) 
-        throws NacosException {
+			throws NacosException {
 
     }
 
