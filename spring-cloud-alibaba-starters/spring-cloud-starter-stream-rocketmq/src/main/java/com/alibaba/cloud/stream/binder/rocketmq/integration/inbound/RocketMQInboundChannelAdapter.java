@@ -46,6 +46,7 @@ import org.springframework.retry.RetryListener;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -62,13 +63,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 
 	private DefaultMQPushConsumer pushConsumer;
 
-	private final String topic;
+	private final String destination;
 
 	private final ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties;
 
-	public RocketMQInboundChannelAdapter(String topic,
+	public RocketMQInboundChannelAdapter(String destination,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
-		this.topic = topic;
+		this.destination = destination;
 		this.extendedConsumerProperties = extendedConsumerProperties;
 	}
 
@@ -182,10 +183,32 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 				|| !extendedConsumerProperties.getExtension().getEnabled()) {
 			return;
 		}
-		Instrumentation instrumentation = new Instrumentation(topic, this);
+		Instrumentation instrumentation = new Instrumentation(destination, this);
 		try {
-			pushConsumer.subscribe(topic, RocketMQUtils.getMessageSelector(
-					extendedConsumerProperties.getExtension().getSubscription()));
+			if (extendedConsumerProperties.isMultiplex()) {
+				String[] topics = StringUtils.commaDelimitedListToStringArray(destination);
+				String subscription = extendedConsumerProperties.getExtension().getSubscription();
+				if (StringUtils.isEmpty(subscription)) {
+					for (String topic : topics) {
+						pushConsumer.subscribe(topic, "*");
+					}
+				} else {
+					if (subscription.contains(RocketMQUtils.SQL)) {
+						throw new MessagingException("Multiplex scenario doesn't support SQL92 Filtering for now, please use Tag Filtering.");
+					}
+					String[] subscriptions = StringUtils.commaDelimitedListToStringArray(subscription);
+					if (subscriptions.length != topics.length) {
+						throw new MessagingException("Length of subscriptions should be the same as the length of topics.");
+					}
+					for (int i = 0; i < topics.length; i++) {
+						pushConsumer.subscribe(topics[i], subscriptions[i]);
+					}
+				}
+			} else {
+				pushConsumer.subscribe(destination, RocketMQUtils.getMessageSelector(
+						extendedConsumerProperties.getExtension().getSubscription()));
+			}
+
 			pushConsumer.start();
 			instrumentation.markStartedSuccessfully();
 		}

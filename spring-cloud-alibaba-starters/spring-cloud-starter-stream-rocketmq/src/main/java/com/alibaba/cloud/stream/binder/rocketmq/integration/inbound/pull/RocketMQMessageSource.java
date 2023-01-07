@@ -43,8 +43,10 @@ import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.endpoint.AbstractMessageSource;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessagingException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
@@ -61,7 +63,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	private volatile boolean running;
 
-	private final String topic;
+	private final String name;
 
 	private final MessageSelector messageSelector;
 
@@ -71,7 +73,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	public RocketMQMessageSource(String name,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
-		this.topic = name;
+		this.name = name;
 		this.messageSelector = RocketMQUtils.getMessageSelector(
 				extendedConsumerProperties.getExtension().getSubscription());
 		this.extendedConsumerProperties = extendedConsumerProperties;
@@ -80,24 +82,47 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	@Override
 	public synchronized void start() {
-		Instrumentation instrumentation = new Instrumentation(topic, this);
+		Instrumentation instrumentation = new Instrumentation(name, this);
 		try {
 			if (this.isRunning()) {
 				throw new IllegalStateException(
 						"pull consumer already running. " + this.toString());
 			}
 			this.consumer = RocketMQConsumerFactory
-					.initPullConsumer(topic, extendedConsumerProperties);
+					.initPullConsumer(name, extendedConsumerProperties);
 			// This parameter must be 1, otherwise doReceive cannot be handled singly.
 			// this.consumer.setPullBatchSize(1);
-			this.consumer.subscribe(topic, messageSelector);
+			String subscription = extendedConsumerProperties.getExtension().getSubscription();
+			if (extendedConsumerProperties.isMultiplex()) {
+				String[] topics = StringUtils.commaDelimitedListToStringArray(name);
+				if (StringUtils.isEmpty(subscription)) {
+					for (String topic : topics) {
+						consumer.subscribe(topic, "*");
+					}
+				} else {
+					if (subscription.contains(RocketMQUtils.SQL)) {
+						throw new MessagingException("Multiplex scenario doesn't support SQL92 Filtering for now, please use Tag Filtering.");
+					}
+					String[] subscriptions = StringUtils.commaDelimitedListToStringArray(subscription);
+					if (subscriptions.length != topics.length) {
+						throw new MessagingException("Length of subscriptions should be the same as the length of topics.");
+					}
+					for (int i = 0; i < topics.length; i++) {
+						consumer.subscribe(topics[i], subscriptions[i]);
+					}
+				}
+				// Initialize messageQueuesForTopic immediately
+				for (String topic: topics) {
+					messageQueuesForTopic.put(topic, consumer.fetchMessageQueues(topic));
+				}
+			} else {
+				consumer.subscribe(name, RocketMQUtils.getMessageSelector(subscription));
+				messageQueuesForTopic.put(name, consumer.fetchMessageQueues(name));
+			}
+
 			this.consumer.setAutoCommit(false);
-			// register TopicMessageQueueChangeListener for messageQueuesForTopic
-			consumer.registerTopicMessageQueueChangeListener(topic,
-					messageQueuesForTopic::put);
 			this.consumer.start();
-			// Initialize messageQueuesForTopic immediately
-			messageQueuesForTopic.put(topic, consumer.fetchMessageQueues(topic));
+
 			instrumentation.markStartedSuccessfully();
 		}
 		catch (MQClientException e) {
@@ -128,7 +153,9 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 	@Override
 	public synchronized void stop() {
 		if (this.isRunning() && null != consumer) {
-			consumer.unsubscribe(topic);
+			for (String topic: StringUtils.commaDelimitedListToStringArray(name)) {
+				consumer.unsubscribe(topic);
+			}
 			consumer.shutdown();
 			this.running = false;
 		}

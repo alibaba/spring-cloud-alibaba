@@ -91,7 +91,10 @@ public final class RocketMQUtils {
 		return nameServer.replaceAll(",", ";");
 	}
 
-	private static final String SQL = "sql:";
+	/**
+	 * the prefix of subscription when using SQL92 expression.
+	 */
+	public static final String SQL = "sql:";
 
 	public static MessageSelector getMessageSelector(String expression) {
 		if (StringUtils.hasText(expression) && expression.startsWith(SQL)) {
