@@ -23,7 +23,8 @@ spring:
     name: storageDataSource
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${base.config.mdb.hostname}:${base.config.mdb.port}/${base.config.mdb.dbname}?useSSL=false&serverTimezone=UTC
+    # Add allowPublicKeyRetrieval=true to avoid the exception that Public Key Retrieval is not allowed
+    url: jdbc:mysql://${base.config.mdb.hostname}:${base.config.mdb.port}/${base.config.mdb.dbname}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${base.config.mdb.username}
     password: ${base.config.mdb.password}
     druid:

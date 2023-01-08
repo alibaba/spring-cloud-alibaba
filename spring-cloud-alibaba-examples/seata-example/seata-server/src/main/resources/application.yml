@@ -70,7 +70,8 @@ seata:
       datasource: druid
       db-type: mysql
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://${base.config.mdb.hostname}:${base.config.mdb.port}/${base.config.mdb.dbname}?rewriteBatchedStatements=true
+      # Add allowPublicKeyRetrieval=true to avoid the exception that Public Key Retrieval is not allowed
+      url: jdbc:mysql://${base.config.mdb.hostname}:${base.config.mdb.port}/${base.config.mdb.dbname}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       user: ${base.config.mdb.username}
       password: ${base.config.mdb.password}
       min-conn: 5
