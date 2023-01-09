@@ -22,6 +22,8 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
@@ -54,6 +56,10 @@ public class NacosRule extends AbstractLoadBalancerRule {
 
 	private static final String IPV6_KEY = "IPv6";
 
+	private String ipv4;
+
+	private String ipv6;
+
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
@@ -65,6 +71,12 @@ public class NacosRule extends AbstractLoadBalancerRule {
 
 	@Autowired
 	private InetUtils inetUtils;
+
+	@PostConstruct
+	public void initIp() {
+		this.ipv4 = getIPv4();
+		this.ipv6 = getIPv6();
+	}
 
 	@Override
 	public Server choose(Object key) {
@@ -80,38 +92,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 				LOGGER.warn("no instance in service {}", name);
 				return null;
 			}
-
-			String ipv4 = getIpv4();
-			String ipv6 = getIpv6();
-			if (StringUtils.isNotEmpty(ipv6)) {
-				List<Instance> instanceList = new ArrayList<>();
-				for (Instance instance : instances) {
-					if (Pattern.matches(IPV4_REGEX, instance.getIp())) {
-						if (!StringUtils.isEmpty(instance.getMetadata().get(IPV6_KEY))) {
-							instanceList.add(instance);
-						}
-					}
-					else {
-						instanceList.add(instance);
-					}
-				}
-				// provider has no IPv6,should use Ipv4.
-				if (instanceList.size() == 0) {
-					instances = instances.stream()
-							.filter(instance -> Pattern.compile(IPV4_REGEX)
-									.matcher(instance.getIp()).matches())
-							.collect(Collectors.toList());
-				}
-				else {
-					instances = instanceList;
-				}
-			}
-			else if (StringUtils.isEmpty(ipv6) && StringUtils.isNotEmpty(ipv4)) {
-				instances = instances.stream()
-						.filter(instance -> Pattern.compile(IPV4_REGEX)
-								.matcher(instance.getIp()).matches())
-						.collect(Collectors.toList());
-			}
+			instances = filterInstanceByIpType(instances);
 
 			List<Instance> instancesToChoose = instances;
 			if (StringUtils.isNotBlank(clusterName)) {
@@ -130,7 +111,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			}
 
 			Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
-			convertIpv4ToIpv6(instance);
+			convertIPv4ToIPv6(instance);
 
 			return new NacosServer(instance);
 		}
@@ -144,19 +125,47 @@ public class NacosRule extends AbstractLoadBalancerRule {
 	public void initWithNiwsConfig(IClientConfig iClientConfig) {
 	}
 
-	private String getIpv4() {
+	private String getIPv4() {
 		return inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 	}
 
-	private String getIpv6() {
+	private String getIPv6() {
 		return inetIPv6Utils.findIPv6Address();
+	}
+
+	private List<Instance> filterInstanceByIpType(List<Instance> instances) {
+		if (StringUtils.isNotEmpty(this.ipv6)) {
+			List<Instance> ipv6InstanceList = new ArrayList<>();
+			for (Instance instance : instances) {
+				if (Pattern.matches(IPV4_REGEX, instance.getIp())) {
+					if (StringUtils.isNotEmpty(instance.getMetadata().get(IPV6_KEY))) {
+						ipv6InstanceList.add(instance);
+					}
+				}
+				else {
+					ipv6InstanceList.add(instance);
+				}
+			}
+			// provider has no IPv6,should use Ipv4.
+			if (ipv6InstanceList.size() == 0) {
+				return instances.stream()
+						.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getIp()))
+						.collect(Collectors.toList());
+			}
+			else {
+				return ipv6InstanceList;
+			}
+		}
+		return instances.stream()
+				.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getIp()))
+				.collect(Collectors.toList());
 	}
 
 	/**
 	 * There is two type Ip,using IPv6 should use IPv6 in metadata to replace IPv4 in IP
 	 * field.
 	 */
-	private void convertIpv4ToIpv6(Instance instance) {
+	private void convertIPv4ToIPv6(Instance instance) {
 		if (Pattern.compile(IPV4_REGEX).matcher(instance.getIp()).matches()) {
 			String ip = instance.getMetadata().get(IPV6_KEY);
 			if (StringUtils.isNotEmpty(ip)) {

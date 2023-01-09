@@ -301,6 +301,24 @@ Endpoint 暴露的 json 中包含了两种属性:
 [service_name].ribbon.NFLoadBalancerRuleClassName=com.alibaba.cloud.nacos.ribbon.NacosRule
 ----
 
+=== IP地址注册
+
+==== IPv4和IPv6双注册
+不需要配置默认将IPv4和IPv6注册到注册中心中，IPv4在IP字段下，IPv6在metadata字段中。
+
+==== 只注册IPv4
+.application.properties
+[source,properties]
+----
+spring.cloud.nacos.discovery.ip-type=IPv4
+----
+
+==== 只注册IPv6
+.application.properties
+[source,properties]
+----
+spring.cloud.nacos.discovery.ip-type=IPv6
+----
 
 === 关于 Nacos Discovery Starter 更多的配置项信息
 

@@ -304,6 +304,25 @@ The followings shows how a service instance accesses the Endpoint:
 [service_name].ribbon.NFLoadBalancerRuleClassName=com.alibaba.cloud.nacos.ribbon.NacosRule
 ----
 
+=== Register IP Address
+
+==== Both register IPv4 and IPv6
+It is not necessary to configure that IPv4 and IPv6 are registered in the registry by default. IPv4 is in the IP field and IPv6 is in the metadata field.
+
+==== Only Register IPv4
+.application.properties
+[source,properties]
+----
+spring.cloud.nacos.discovery.ip-type=IPv4
+----
+
+==== Only Register IPv6
+.application.properties
+[source,properties]
+----
+spring.cloud.nacos.discovery.ip-type=IPv6
+----
+
 === More Information about Nacos Discovery Starter Configurations
 
 The following shows the other configurations of the starter of Nacos Discovery:

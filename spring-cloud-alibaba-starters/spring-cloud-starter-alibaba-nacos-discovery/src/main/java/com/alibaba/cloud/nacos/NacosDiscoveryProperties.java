@@ -84,8 +84,6 @@ public class NacosDiscoveryProperties {
 
 	private static final String IPV6 = "IPv6";
 
-	private static final String BOTH_IPV4_IPV6 = "both_IPv4_IPv6";
-
 	/**
 	 * nacos discovery server address.
 	 */
@@ -176,7 +174,7 @@ public class NacosDiscoveryProperties {
 	 * automatically find IPv4 to ensure there is an available service address. If
 	 * both_IPv4_IPv6 is set,both IPv4 and IPv6 will be register.
 	 */
-	private String ipType = BOTH_IPV4_IPV6;
+	private String ipType;
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
@@ -275,7 +273,7 @@ public class NacosDiscoveryProperties {
 						ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 					}
 				}
-				else if (BOTH_IPV4_IPV6.equals(ipType)) {
+				else if (ipType == null) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 					metadata.put(IPV6, inetIPv6Utils.findIPv6Address());
 				}
