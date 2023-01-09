@@ -42,15 +42,15 @@ public class InetIPv6Utils {
 		this.properties = properties;
 	}
 
-	public InetUtils.HostInfo findFirstNonLoopbackHostInfo() {
+	private InetUtils.HostInfo findFirstNonLoopbackHostInfo() {
 		InetAddress address = this.findFirstValidIPv6Address();
 		if (address != null) {
-			return this.convertAddress(address);
+			return this.getHostInfo(address);
 		}
 		return null;
 	}
 
-	public InetAddress findFirstValidIPv6Address() {
+	private InetAddress findFirstValidIPv6Address() {
 		InetAddress address = null;
 
 		try {
@@ -97,11 +97,11 @@ public class InetIPv6Utils {
 		return iPv6Format(hostInfo.getIpAddress());
 	}
 
-	public String iPv6Format(String ip) {
+	private String iPv6Format(String ip) {
 		return "[" + ip + "]";
 	}
 
-	boolean isPreferredAddress(InetAddress address) {
+	private boolean isPreferredAddress(InetAddress address) {
 		if (this.properties.isUseOnlySiteLocalInterfaces()) {
 			final boolean siteLocalAddress = address.isSiteLocalAddress();
 			if (!siteLocalAddress) {
@@ -131,7 +131,7 @@ public class InetIPv6Utils {
 		return false;
 	}
 
-	public InetUtils.HostInfo convertAddress(final InetAddress address) {
+	private InetUtils.HostInfo getHostInfo(final InetAddress address) {
 		InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
 		String hostName = address.getHostName();
 		if (hostName == null) {
