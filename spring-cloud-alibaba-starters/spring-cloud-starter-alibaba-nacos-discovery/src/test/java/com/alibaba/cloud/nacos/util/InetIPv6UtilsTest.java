@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.cloud.commons.util.InetUtilsProperties;
 
-public class InetIPv6UtilTest {
+public class InetIPv6UtilsTest {
 
 	private final InetIPv6Utils inetIPv6Util = new InetIPv6Utils(
 			new InetUtilsProperties());

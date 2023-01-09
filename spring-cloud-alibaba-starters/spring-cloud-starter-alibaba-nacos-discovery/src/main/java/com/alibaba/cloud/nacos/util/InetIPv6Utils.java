@@ -57,19 +57,26 @@ public class InetIPv6Utils {
 			for (Enumeration<NetworkInterface> nics = NetworkInterface
 					.getNetworkInterfaces(); nics.hasMoreElements();) {
 				NetworkInterface ifc = nics.nextElement();
-				if (ifc.isUp()) {
+				if (ifc.isUp() || !ifc.isVirtual() || !ifc.isLoopback()) {
 					if (address != null) {
 						break;
 					}
-
 					if (!ignoreInterface(ifc.getDisplayName())) {
 						for (Enumeration<InetAddress> addrs = ifc
 								.getInetAddresses(); addrs.hasMoreElements();) {
 							InetAddress inetAddress = addrs.nextElement();
 							if (inetAddress instanceof Inet6Address
+									// filter ::1
 									&& !inetAddress.isLoopbackAddress()
+									// filter fe80::/10
 									&& !inetAddress.isLinkLocalAddress()
+									// filter ::/128
 									&& !inetAddress.isAnyLocalAddress()
+									// filter fec0::/10,which was discarded,but some
+									// address may be deployed.
+									&& !inetAddress.isSiteLocalAddress()
+									// filter fd00::/8
+									&& !isUniqueLocalAddress(inetAddress)
 									&& isPreferredAddress(inetAddress)) {
 								address = inetAddress;
 								break;
@@ -133,6 +140,11 @@ public class InetIPv6Utils {
 		hostInfo.setHostname(hostName);
 		hostInfo.setIpAddress(address.getHostAddress());
 		return hostInfo;
+	}
+
+	private boolean isUniqueLocalAddress(InetAddress inetAddress) {
+		byte[] ip = inetAddress.getAddress();
+		return (ip[0] & 0xff) == 0xfd;
 	}
 
 }
