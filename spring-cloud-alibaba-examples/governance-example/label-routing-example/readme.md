@@ -21,6 +21,12 @@ This module includes a consumer instance and a provider cluster, which contains 
 </dependency>
 ```
 
+2.Configure a load balance algorithm when there are no routing rules (RandomRule algorithm as an example)
+If no configuration,use default ribbon load balance algorithm ZoneAvoidanceRule.
+```yaml
+spring.cloud.governance.routeing.rule=RandomRule
+```
+
 ### Application Start
 
 Start a startup class of three modules, ConsumerApplication and two ProviderApplications, and inject them into the Nacos registry.
@@ -121,7 +127,7 @@ If the request parameter contains tag=gray, and the request header contains id a
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   visit http://localhost:18083/router-test?id=11 and the test value set in the request header is gray, which meets the routing rules. The route is to the v2 version. The v2 version instance prints and returns the following results:
+   visit http://localhost:18083/router-test?id=11 and the key-tag which value set in the request header is gray, which meets the routing rules. The route is to the v2 version. The v2 version instance prints and returns the following results:
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
@@ -131,7 +137,7 @@ If the request parameter contains tag=gray, and the request header contains id a
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   visit http://localhost:18083/router-test?id=11 and the test value set in the request header is gray, which meets the routing rules. 50% of the routes are routed to the v2 version. The v2 version instance prints the following results:
+   visit http://localhost:18083/router-test?id=11 and the key-tag which value set in the request header is gray, which meets the routing rules. 50% of the routes are routed to the v2 version. The v2 version instance prints the following results:
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
