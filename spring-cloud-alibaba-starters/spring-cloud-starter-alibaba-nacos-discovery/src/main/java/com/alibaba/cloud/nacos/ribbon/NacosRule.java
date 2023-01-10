@@ -73,9 +73,21 @@ public class NacosRule extends AbstractLoadBalancerRule {
 	private InetUtils inetUtils;
 
 	@PostConstruct
-	public void initIp() {
-		this.ipv4 = getIPv4();
-		this.ipv6 = getIPv6();
+	public void init() {
+		String ip = nacosDiscoveryProperties.getIp();
+		if (StringUtils.isNotEmpty(ip)) {
+			if (Pattern.matches(IPV4_REGEX, ip)) {
+				this.ipv4 = ip;
+				this.ipv6 = nacosDiscoveryProperties.getMetadata().get(IPV6_KEY);
+			}
+			else {
+				this.ipv6 = ip;
+			}
+		}
+		else {
+			this.ipv4 = getIPv4();
+			this.ipv6 = getIPv6();
+		}
 	}
 
 	@Override

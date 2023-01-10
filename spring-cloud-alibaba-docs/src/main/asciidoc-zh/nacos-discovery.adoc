@@ -301,20 +301,21 @@ Endpoint 暴露的 json 中包含了两种属性:
 [service_name].ribbon.NFLoadBalancerRuleClassName=com.alibaba.cloud.nacos.ribbon.NacosRule
 ----
 
-=== IP地址注册
+=== IPv4至IPv6地址迁移方案
 
-==== IPv4和IPv6双注册
-不需要配置默认将IPv4和IPv6注册到注册中心中，IPv4在IP字段下，IPv6在metadata字段中。
+==== IPv4和IPv6地址双注册
+不需要配置默认将微服务的IPv4地址和IPv6地址注册到注册中心中，IPv4地址在Nacos的IP字段下，IPv6地址在Nacos的metadata字段中。当服务消费者调用服务提供者时，会根据自身的IP地址以及服务提供者的IP地址选择合适的IP地址。
+如果服务提供者注册了双栈地址，服务提供者在有IPv6地址的条件下会选择自身的IPv6地址进行通信；在服务提供者只有单栈的情况下，服务消费者会选择对应的IP地址进行调用。
 
-==== 只注册IPv4
-.application.properties
+==== 仅注册IPv4
+如果您只想使用IPv4地址进行注册，可以在application.properties使用以下配置：
 [source,properties]
 ----
 spring.cloud.nacos.discovery.ip-type=IPv4
 ----
 
-==== 只注册IPv6
-.application.properties
+==== 仅注册IPv6
+如果您只想使用IPv6地址，可以在application.properties使用以下配置：
 [source,properties]
 ----
 spring.cloud.nacos.discovery.ip-type=IPv6
