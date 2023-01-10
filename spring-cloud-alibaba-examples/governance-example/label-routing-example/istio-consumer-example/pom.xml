@@ -33,12 +33,12 @@
 
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
 		</dependency>
 	</dependencies>
 

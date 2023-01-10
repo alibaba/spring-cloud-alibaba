@@ -11,12 +11,12 @@ image::pic/resource-transform.png[]
 
 The resource-transform module of Spring Cloud Alibaba Governance will uniformly transform the configurations published by different control planes, like Istio and OperSergo, into the unified abstract data structure of Spring Cloud Alibaba for subsequent use.
 
-If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-istio`.
+If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-controlplane-istio`.
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
 </dependency>
 ----
 
@@ -67,12 +67,12 @@ You need to run the application in the K8s environment and inject some meta info
 === Use Label Routing
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. Label routing module can route the Spring Cloud application according to the request header, request parameters and other tags to route to different services.
 
-If you use Spring Cloud Alibaba Governance Label Routing in your project, You need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-labelrouting`.
+If you use Spring Cloud Alibaba Governance Label Routing in your project, You need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-routing`.
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
 ----
 
@@ -93,13 +93,13 @@ image::pic/auth-process.png[]
 
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. The Authentication module provides various authentication modes for Spring Cloud applications, such as IP blacklist and whitelist and JWT authentication.
 
-If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-authentication`.
+If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-auth`.
 
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+  <artifactId>spring-cloud-starter-alibaba-governance-auth</artifactId>
 </dependency>
 ----
 

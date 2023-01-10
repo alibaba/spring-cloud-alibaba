@@ -22,12 +22,12 @@ Before launching the example for demonstration, let's look at how a Spring Cloud
 ```xml
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-governance-auth</artifactId>
 </dependency>
 
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
 </dependency>
 ```
 2. Configure Istio related metadata in the `src/main/resources/application` yml configuration file:

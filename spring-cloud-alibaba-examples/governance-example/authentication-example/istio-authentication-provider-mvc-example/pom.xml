@@ -22,11 +22,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-governance-auth</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

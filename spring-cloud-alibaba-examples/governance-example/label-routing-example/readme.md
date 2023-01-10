@@ -17,7 +17,7 @@ This module includes a consumer instance and a provider cluster, which contains 
 ```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
-   <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
 ```
 
@@ -151,15 +151,15 @@ Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapte
 ### Introduction to Istio traffic control rules
 - [overview](https://istio.io/latest/zh/docs/concepts/security/#authorization)
 - [detail](https://istio.io/latest/zh/docs/reference/config/security/)
-1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-labelrouting` and `spring-cloud-starter-alibaba-istio` dependency
+1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-alibaba-controlplane-istio` dependency
 ```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
-   <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
 </dependency>
 ```
 2. Configure application.yml for Istio control plane:
@@ -276,15 +276,15 @@ After the rule is deleted, the routing policy is not determined by whether the r
 ## Integrating OpenSergo
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
 ### Configure
-1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-labelrouting` and `spring-cloud-starter-alibaba-opensergo` dependency
+1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-alibaba-controlplane-opensergo` dependency
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-starter-alibaba-governance-labelrouting</artifactId>
+      <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-starter-alibaba-opensergo</artifactId>
+      <artifactId>spring-cloud-starter-alibaba-controlplane-opensergo</artifactId>
    </dependency>
 ```
 2. Configure application.yml for OpenSergo control plane

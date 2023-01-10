@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-governance-auth</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>spring-web</groupId>
@@ -32,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>spring-web</groupId>

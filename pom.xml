@@ -154,31 +154,7 @@
                 <artifactId>rocketmq-acl</artifactId>
                 <version>${rocketmq.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-starter-alibaba-opensergo</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.envoyproxy.controlplane</groupId>
-                <artifactId>api</artifactId>
-                <version>${envoy-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bitbucket.b_c</groupId>
-                <artifactId>jose4j</artifactId>
-                <version>${jose4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.opensergo</groupId>
-                <artifactId>opensergo-java-sdk</artifactId>
-                <version>${opensergo.version}</version>
-            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

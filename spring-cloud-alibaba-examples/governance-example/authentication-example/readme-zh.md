@@ -22,11 +22,11 @@
 ```xml
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-governance-authentication</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-governance-auth</artifactId>
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-istio</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
 </dependency>
 ```
 2. 在应用的 `src/main/resources/application.yml` 配置文件中配置Istio相关元数据:
