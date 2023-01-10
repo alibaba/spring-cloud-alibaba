@@ -83,13 +83,14 @@ public class MatchService {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getRoutingRuleList(), getVersion(), getWeight(), getFallback());
+		return Objects.hash(getRoutingRuleList(), getVersion(), getWeight(),
+				getFallback());
 	}
 
 	@Override
 	public String toString() {
-		return "MatchService{" + "ruleList=" + routingRuleList + ", version='" + version + '\''
-				+ ", weight=" + weight + ", getFallback=" + fallbackVersion + '}';
+		return "MatchService{" + "ruleList=" + routingRuleList + ", version='" + version
+				+ '\'' + ", weight=" + weight + ", getFallback=" + fallbackVersion + '}';
 	}
 
 }

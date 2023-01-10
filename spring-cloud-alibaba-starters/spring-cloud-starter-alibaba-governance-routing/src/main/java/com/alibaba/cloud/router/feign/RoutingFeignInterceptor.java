@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
  */
 public class RoutingFeignInterceptor implements RequestInterceptor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RoutingFeignInterceptor.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(RoutingFeignInterceptor.class);
 
 	@Override
 	public void apply(RequestTemplate requestTemplate) {

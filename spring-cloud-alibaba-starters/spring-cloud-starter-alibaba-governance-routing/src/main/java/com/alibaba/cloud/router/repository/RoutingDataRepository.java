@@ -34,7 +34,8 @@ import org.springframework.util.CollectionUtils;
  */
 public class RoutingDataRepository {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RoutingDataRepository.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(RoutingDataRepository.class);
 
 	/**
 	 * Key is service name,value is hashmap,which key is single RouteRule key,value is
@@ -91,11 +92,11 @@ public class RoutingDataRepository {
 		if (targetService == null) {
 			LOG.error("Lose target Service name.");
 		}
-		final RoutingRule labelRouteData = unifiedRouteDataStructure
-				.getLabelRouteRule();
+		final RoutingRule labelRouteData = unifiedRouteDataStructure.getLabelRouteRule();
 		final List<MatchService> matchServiceList = labelRouteData.getMatchRouteList();
 		for (MatchService matchService : matchServiceList) {
-			final List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService.getRoutingRuleList();
+			final List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService
+					.getRoutingRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
 			if (CollectionUtils.isEmpty(ruleList)) {
@@ -124,7 +125,8 @@ public class RoutingDataRepository {
 		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();
 
 		for (MatchService matchService : matchRouteList) {
-			List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService.getRoutingRuleList();
+			List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService
+					.getRoutingRuleList();
 
 			// Take out the path label separately, because there is no key for hash index.
 			if (ruleList.size() == 1

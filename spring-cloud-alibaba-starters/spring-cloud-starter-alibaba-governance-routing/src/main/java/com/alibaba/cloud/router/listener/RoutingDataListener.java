@@ -34,11 +34,9 @@ import org.springframework.context.ApplicationListener;
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public class RoutingDataListener
-		implements ApplicationListener<RoutingDataChangedEvent> {
+public class RoutingDataListener implements ApplicationListener<RoutingDataChangedEvent> {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(RoutingDataListener.class);
+	private static final Logger log = LoggerFactory.getLogger(RoutingDataListener.class);
 
 	private RoutingDataRepository routingDataRepository;
 

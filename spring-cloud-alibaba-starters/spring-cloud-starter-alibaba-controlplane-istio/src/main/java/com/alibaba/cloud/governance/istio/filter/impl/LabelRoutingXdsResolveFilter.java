@@ -74,8 +74,8 @@ public class LabelRoutingXdsResolveFilter
 						unifiedRouteDataStructure);
 			}
 		}
-		applicationContext.publishEvent(new RoutingDataChangedEvent(this,
-				untiedRouteDataStructures.values()));
+		applicationContext.publishEvent(
+				new RoutingDataChangedEvent(this, untiedRouteDataStructures.values()));
 		return true;
 	}
 
@@ -120,10 +120,12 @@ public class LabelRoutingXdsResolveFilter
 		return matchService;
 	}
 
-	private List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> match2RouteRules(RouteMatch routeMatch) {
+	private List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> match2RouteRules(
+			RouteMatch routeMatch) {
 		List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> routeRules = new ArrayList<>();
 		for (HeaderMatcher headerMatcher : routeMatch.getHeadersList()) {
-			HeaderRoutingRule headerRule = ConvUtil.headerMatcher2HeaderRule(headerMatcher);
+			HeaderRoutingRule headerRule = ConvUtil
+					.headerMatcher2HeaderRule(headerMatcher);
 			if (headerRule != null) {
 				routeRules.add(headerRule);
 			}

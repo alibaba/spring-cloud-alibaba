@@ -139,7 +139,8 @@ public final class ConvUtil {
 		return null;
 	}
 
-	public static HeaderRoutingRule headerMatcher2HeaderRule(HeaderMatcher headerMatcher) {
+	public static HeaderRoutingRule headerMatcher2HeaderRule(
+			HeaderMatcher headerMatcher) {
 		StringMatcher stringMatcher = ConvUtil
 				.convStringMatcher(ConvUtil.headerMatch2StringMatch(headerMatcher));
 		if (stringMatcher != null) {

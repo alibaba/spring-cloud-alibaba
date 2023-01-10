@@ -55,7 +55,8 @@ import org.springframework.util.CollectionUtils;
  */
 public class RoutingLoadBalanceRule extends PredicateBasedRule {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RoutingLoadBalanceRule.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(RoutingLoadBalanceRule.class);
 
 	/**
 	 * Support Parsing Rules from path,only URI at present.
