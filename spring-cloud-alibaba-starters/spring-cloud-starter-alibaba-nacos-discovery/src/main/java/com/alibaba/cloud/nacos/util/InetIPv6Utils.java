@@ -94,10 +94,10 @@ public class InetIPv6Utils {
 
 	public String findIPv6Address() {
 		InetUtils.HostInfo hostInfo = findFirstNonLoopbackHostInfo();
-		return iPv6Format(hostInfo.getIpAddress());
+		return normalizeIPv6(hostInfo.getIpAddress());
 	}
 
-	private String iPv6Format(String ip) {
+	private String normalizeIPv6(String ip) {
 		return "[" + ip + "]";
 	}
 
@@ -142,6 +142,12 @@ public class InetIPv6Utils {
 		return hostInfo;
 	}
 
+	/**
+	 * If the address is Unique Local Address.
+	 *
+	 * @param inetAddress {@link InetAddress}
+	 * @return {@code true} if the address is Unique Local Address,otherwise {@code false}
+	 */
 	private boolean isUniqueLocalAddress(InetAddress inetAddress) {
 		byte[] ip = inetAddress.getAddress();
 		return (ip[0] & 0xff) == 0xfd;
