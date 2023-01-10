@@ -33,10 +33,6 @@ import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
  */
 public final class ConvUtil {
 
-	private static final String HEADER = "header";
-
-	private static final String PARAMETER = "parameter";
-
 	private ConvUtil() {
 
 	}
@@ -133,7 +129,6 @@ public final class ConvUtil {
 			parameter.setCondition(stringMatcher.getType().toString());
 			parameter.setKey(queryParameterMatcher.getName());
 			parameter.setValue(stringMatcher.getMatcher());
-			parameter.setType(PARAMETER);
 			return parameter;
 		}
 		return null;
@@ -147,7 +142,6 @@ public final class ConvUtil {
 			headerRule.setCondition(stringMatcher.getType().toString());
 			headerRule.setKey(headerMatcher.getName());
 			headerRule.setValue(stringMatcher.getMatcher());
-			headerRule.setType(HEADER);
 			return headerRule;
 		}
 		return null;

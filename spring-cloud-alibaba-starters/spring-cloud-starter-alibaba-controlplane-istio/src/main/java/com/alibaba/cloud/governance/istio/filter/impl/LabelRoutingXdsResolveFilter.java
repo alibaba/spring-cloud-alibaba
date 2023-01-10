@@ -140,7 +140,6 @@ public class LabelRoutingXdsResolveFilter
 		}
 
 		UrlRule.Path path = new UrlRule.Path();
-		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:
 			path.setCondition(StringMatcherType.PREFIX.toString());

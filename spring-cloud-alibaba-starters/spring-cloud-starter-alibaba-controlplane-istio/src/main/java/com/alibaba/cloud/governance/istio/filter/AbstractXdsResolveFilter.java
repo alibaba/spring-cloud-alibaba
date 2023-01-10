@@ -36,8 +36,6 @@ public abstract class AbstractXdsResolveFilter<T>
 
 	protected static final String ALLOW_ANY = "allow_any";
 
-	protected static final String PATH = "path";
-
 	protected static final String VIRTUAL_INBOUND = "virtualInbound";
 
 	protected static final String CONNECTION_MANAGER = "envoy.filters.network.http_connection_manager";
