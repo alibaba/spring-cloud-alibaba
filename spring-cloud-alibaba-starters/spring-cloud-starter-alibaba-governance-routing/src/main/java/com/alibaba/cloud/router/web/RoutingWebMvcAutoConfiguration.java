@@ -24,18 +24,18 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class WebMvcAutoConfiguration {
+public class RoutingWebMvcAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public WebMvcInterceptor webMvcInterceptor() {
-		return new WebMvcInterceptor();
+	public RoutingWebMvcInterceptor webMvcInterceptor() {
+		return new RoutingWebMvcInterceptor();
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
-	public WebMvcConfig webMvcConfig() {
-		return new WebMvcConfig();
+	public RoutingWebMvcConfig webMvcConfig() {
+		return new RoutingWebMvcConfig();
 	}
 
 }

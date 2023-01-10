@@ -16,21 +16,30 @@
 
 package com.alibaba.cloud.router.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.cloud.router.util.RequestContext;
+
+import org.springframework.lang.Nullable;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * @author HH
  */
-public class WebMvcConfig implements WebMvcConfigurer {
-
-	@Autowired
-	private WebMvcInterceptor webMvcInterceptor;
+public class RoutingWebMvcInterceptor implements HandlerInterceptor {
 
 	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(webMvcInterceptor);
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+			Object handler) {
+		RequestContext.setRequest(request);
+		return true;
+	}
+
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+			Object handler, @Nullable Exception ex) {
+		RequestContext.removeRequest();
 	}
 
 }
