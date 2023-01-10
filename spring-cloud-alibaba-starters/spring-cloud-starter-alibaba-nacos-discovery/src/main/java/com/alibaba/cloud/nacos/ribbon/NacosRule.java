@@ -178,7 +178,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 	 * field.
 	 */
 	private void convertIPv4ToIPv6(Instance instance) {
-		if (Pattern.compile(IPV4_REGEX).matcher(instance.getIp()).matches()) {
+		if (Pattern.matches(IPV4_REGEX, instance.getIp())) {
 			String ip = instance.getMetadata().get(IPV6_KEY);
 			if (StringUtils.isNotEmpty(ip)) {
 				instance.setIp(ip);
