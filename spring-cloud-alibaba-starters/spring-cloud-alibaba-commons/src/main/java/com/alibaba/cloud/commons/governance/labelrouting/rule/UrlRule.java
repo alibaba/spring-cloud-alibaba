@@ -42,16 +42,6 @@ public class UrlRule {
 		}
 
 		@Override
-		public String getKey() {
-			return null;
-		}
-
-		@Override
-		public void setKey(String key) {
-			//
-		}
-
-		@Override
 		public String getValue() {
 			return value;
 		}

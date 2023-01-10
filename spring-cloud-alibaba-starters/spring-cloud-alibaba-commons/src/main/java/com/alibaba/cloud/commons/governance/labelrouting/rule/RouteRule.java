@@ -25,20 +25,36 @@ public interface RouteRule {
 	 * get type of rule.
 	 * @return String
 	 */
-	String getType();
+	default String getType() {
+		return null;
+	}
 
-	void setType(String type);
+	default void setType(String type) {
 
-	String getCondition();
+	}
 
-	void setCondition(String condition);
+	default String getCondition() {
+		return null;
+	}
 
-	String getKey();
+	default void setCondition(String condition) {
 
-	void setKey(String key);
+	}
 
-	String getValue();
+	default String getKey() {
+		return null;
+	}
 
-	void setValue(String value);
+	default void setKey(String key) {
+
+	}
+
+	default String getValue() {
+		return null;
+	}
+
+	default void setValue(String value) {
+
+	}
 
 }
