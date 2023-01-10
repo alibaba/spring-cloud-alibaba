@@ -101,7 +101,7 @@
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
         <jacoco.version>0.8.3</jacoco.version>
         <!-- Envoy Api Versions -->
-        <envoy-api.version>1.0.36</envoy-api.version>
+        <envoy-api.version>0.1.27</envoy-api.version>
         <!-- Jose4j Versions -->
         <jose4j.version>0.8.0</jose4j.version>
         <!-- OpenSergo Versions -->
