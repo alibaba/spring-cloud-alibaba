@@ -86,7 +86,7 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	public XdsResolveFilter<List<RouteConfiguration>> labelRoutingXdsResolveFilter() {
+	public XdsResolveFilter<List<RouteConfiguration>> routingXdsResolveFilter() {
 		return new RoutingXdsResolveFilter();
 	}
 
