@@ -54,12 +54,6 @@ public class OpenSergoTrafficRouterParser {
 	protected static final Logger log = LoggerFactory
 			.getLogger(OpenSergoTrafficRouterParser.class);
 
-	private static final String HEADER = "header";
-
-	private static final String PARAMETER = "parameter";
-
-	private static final String PATH = "path";
-
 	public OpenSergoTrafficRouterParser() {
 	}
 
@@ -193,7 +187,6 @@ public class OpenSergoTrafficRouterParser {
 		}
 
 		UrlRule.Path path = new UrlRule.Path();
-		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:
 			path.setCondition(StringMatcherType.PREFIX.toString());
@@ -230,7 +223,6 @@ public class OpenSergoTrafficRouterParser {
 			parameter.setCondition(stringMatcher.getType().toString());
 			parameter.setKey(queryParameterMatcher.getName());
 			parameter.setValue(stringMatcher.getMatcher());
-			parameter.setType(PARAMETER);
 			return parameter;
 		}
 		return null;
@@ -244,7 +236,6 @@ public class OpenSergoTrafficRouterParser {
 			headerRule.setCondition(stringMatcher.getType().toString());
 			headerRule.setKey(headerMatcher.getName());
 			headerRule.setValue(stringMatcher.getMatcher());
-			headerRule.setType(HEADER);
 			return headerRule;
 		}
 		return null;
