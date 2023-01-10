@@ -58,11 +58,11 @@
         <module>integrated-example/integrated-praise-consumer</module>
         <module>integrated-example/integrated-common</module>
 		<module>integrated-example/integrated-frontend</module>
-        <module>governance-example/label-routing-example/istio-consumer-example</module>
-        <module>governance-example/label-routing-example/opensergo-consumer-example</module>
-        <module>governance-example/label-routing-example/consumer-example</module>
-        <module>governance-example/label-routing-example/default-provider-version-example</module>
-        <module>governance-example/label-routing-example/provider-version-example</module>
+        <module>governance-example/routing-example/istio-consumer-example</module>
+        <module>governance-example/routing-example/opensergo-consumer-example</module>
+        <module>governance-example/routing-example/consumer-example</module>
+        <module>governance-example/routing-example/default-provider-version-example</module>
+        <module>governance-example/routing-example/provider-version-example</module>
 
     </modules>
 
