@@ -29,7 +29,7 @@ import com.netflix.loadbalancer.ZoneAvoidanceRule;
 /**
  * @author HH
  */
-public class LoadBalanceUtil {
+public final class LoadBalanceUtil {
 
 	/**
 	 * Default polling.
@@ -66,35 +66,43 @@ public class LoadBalanceUtil {
 	 */
 	public static final String AVAILABILITY_FILTERING_RULE = "AvailabilityFilteringRule";
 
-	public Server loadBalanceByOrdinaryRule(ILoadBalancer iLoadBalancer, Object key,
-			String rule) {
-		if (rule == null) {
-			rule = ZONE_AVOIDANCE_RULE;
-		}
+	private static final RoundRobinRule roundRobinRule = new RoundRobinRule();
+
+	private static final RandomRule randomRule = new RandomRule();
+
+	private static final WeightedResponseTimeRule weightedResponseTimeRule = new WeightedResponseTimeRule();
+
+	private static final BestAvailableRule bestAvailableRule = new BestAvailableRule();
+
+	private static final RetryRule retryRule = new RetryRule();
+
+	private static final ZoneAvoidanceRule zoneAvoidanceRule = new ZoneAvoidanceRule();
+
+	private static final AvailabilityFilteringRule availabilityFilteringRule = new AvailabilityFilteringRule();
+
+	private LoadBalanceUtil() {
+	}
+
+	public static Server loadBalanceByOrdinaryRule(ILoadBalancer iLoadBalancer,
+			Object key, String rule) {
 		switch (rule) {
 		case ROUND_ROBIN_RULE:
-			return new RoundRobinRule().choose(iLoadBalancer, key);
+			return roundRobinRule.choose(iLoadBalancer, key);
 		case RANDOM_RULE:
-			return new RandomRule().choose(iLoadBalancer, key);
+			return randomRule.choose(iLoadBalancer, key);
 		case WEIGHTED_RESPONSE_TIME_RULE:
-			return new WeightedResponseTimeRule().choose(iLoadBalancer, key);
+			return weightedResponseTimeRule.choose(iLoadBalancer, key);
 		case BEST_AVAILABLE_RULE:
-			BestAvailableRule bestAvailableRule = new BestAvailableRule();
 			bestAvailableRule.setLoadBalancer(iLoadBalancer);
 			return bestAvailableRule.choose(key);
 		case RETRY_RULE:
-			return new RetryRule().choose(iLoadBalancer, key);
-		case ZONE_AVOIDANCE_RULE:
-			ZoneAvoidanceRule zoneAvoidanceRule = new ZoneAvoidanceRule();
-			zoneAvoidanceRule.setLoadBalancer(iLoadBalancer);
-			return zoneAvoidanceRule.choose(key);
+			return retryRule.choose(iLoadBalancer, key);
 		case AVAILABILITY_FILTERING_RULE:
-			AvailabilityFilteringRule availabilityFilteringRule = new AvailabilityFilteringRule();
 			availabilityFilteringRule.setLoadBalancer(iLoadBalancer);
 			return availabilityFilteringRule.choose(key);
 		default:
-			throw new UnsupportedOperationException(
-					"unsupported string compare operation");
+			zoneAvoidanceRule.setLoadBalancer(iLoadBalancer);
+			return zoneAvoidanceRule.choose(key);
 		}
 	}
 

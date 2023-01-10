@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 /**
  * @author HH
  */
-public class ConditionMatchUtil {
+public final class ConditionMatchUtil {
 
 	/**
 	 * Sign of exact.
@@ -63,31 +63,34 @@ public class ConditionMatchUtil {
 	 */
 	public static final String NOT_EQUAL = "not_equal";
 
-	public boolean exactMatch(String one, String another) {
+	private ConditionMatchUtil() {
+	}
+
+	public static boolean exactMatch(String one, String another) {
 		return one.equals(another);
 	}
 
-	public boolean regexMatch(String regex, String path) {
+	public static boolean regexMatch(String regex, String path) {
 		return Pattern.matches(regex, path);
 	}
 
-	public boolean containMatch(String sub, String base) {
+	public static boolean containMatch(String sub, String base) {
 		return base.contains(sub);
 	}
 
-	public boolean prefixMatch(String prefix, String str) {
+	public static boolean prefixMatch(String prefix, String str) {
 		return str.startsWith(prefix);
 	}
 
-	public boolean greaterMatch(String str, String comparor) {
+	public static boolean greaterMatch(String str, String comparor) {
 		return Integer.parseInt(comparor) > Integer.parseInt(str);
 	}
 
-	public boolean lessMatch(String str, String comparor) {
+	public static boolean lessMatch(String str, String comparor) {
 		return Integer.parseInt(comparor) < Integer.parseInt(str);
 	}
 
-	public boolean noEqualMatch(String str, String comparor) {
+	public static boolean noEqualMatch(String str, String comparor) {
 		return Integer.parseInt(str) == Integer.parseInt(comparor);
 	}
 
