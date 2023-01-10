@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-public class RouteLoadBalanceRuleAutoConfiguration {
+public class RoutingLoadBalanceRuleAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
