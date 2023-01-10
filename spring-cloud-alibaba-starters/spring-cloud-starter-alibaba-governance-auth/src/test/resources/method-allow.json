@@ -1,17 +1,22 @@
 {
   "allowAuthRules": {
-    "ns[default]-policy[method-allow]-rule[0]": {
+    "ns[default]-policy[method-allow]-rule[0]]": {
+      "op": "AND",
       "children": [
         {
+          "op": "OR",
           "children": [
             {
+              "op": "AND",
               "children": [
                 {
+                  "op": "OR",
                   "children": [
                     {
                       "children": [],
                       "condition": {
                         "matcher": {
+                          "className": "com.alibaba.cloud.commons.matcher.StringMatcher",
                           "ignoreCase": true,
                           "matcher": "GET",
                           "type": "EXACT"
@@ -27,6 +32,7 @@
                       "children": [],
                       "condition": {
                         "matcher": {
+                          "className": "com.alibaba.cloud.commons.matcher.StringMatcher",
                           "ignoreCase": true,
                           "matcher": "HEAD",
                           "type": "EXACT"
@@ -39,30 +45,28 @@
                       "op": "UNKNOWN"
                     }
                   ],
-                  "empty": false,
-                  "leaf": false,
+                  "condition": null,
                   "not": false,
-                  "op": "OR"
+                  "leaf": false,
+                  "empty": false
                 }
               ],
-              "empty": false,
-              "leaf": false,
+              "condition": null,
               "not": false,
-              "op": "AND"
+              "leaf": false,
+              "empty": false
             }
           ],
-          "empty": false,
-          "leaf": false,
+          "condition": null,
           "not": false,
-          "op": "OR"
+          "leaf": false,
+          "empty": false
         }
       ],
-      "empty": false,
-      "leaf": false,
+      "condition": null,
       "not": false,
-      "op": "AND"
+      "leaf": false,
+      "empty": false
     }
-  },
-  "denyAuthRules": {},
-  "jwtRules": {}
+  }
 }

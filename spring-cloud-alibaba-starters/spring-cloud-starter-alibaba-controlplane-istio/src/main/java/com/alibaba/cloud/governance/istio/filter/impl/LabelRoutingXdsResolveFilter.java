@@ -112,7 +112,7 @@ public class LabelRoutingXdsResolveFilter
 			version = info[2];
 		}
 		catch (Exception e) {
-			log.error("invalid cluster info for route {}", route.getName());
+			log.error("Invalid cluster info for route {}", route.getName());
 		}
 		MatchService matchService = new MatchService();
 		matchService.setVersion(version);

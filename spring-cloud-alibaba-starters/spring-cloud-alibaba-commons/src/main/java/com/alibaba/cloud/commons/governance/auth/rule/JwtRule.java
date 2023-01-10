@@ -41,6 +41,10 @@ public class JwtRule {
 
 	private boolean forwardOriginalToken;
 
+	public JwtRule() {
+
+	}
+
 	public JwtRule(String name, Map<String, String> fromHeaders, String issuer,
 			List<String> audiences, String jwks, List<String> fromParams,
 			String outputPayloadToHeader, boolean forwardOriginalToken) {

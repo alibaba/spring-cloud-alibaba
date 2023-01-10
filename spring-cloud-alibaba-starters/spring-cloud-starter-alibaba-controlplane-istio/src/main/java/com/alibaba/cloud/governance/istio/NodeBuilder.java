@@ -59,7 +59,7 @@ public final class NodeBuilder {
 				ip = local.getHostAddress();
 			}
 			catch (UnknownHostException e) {
-				log.error("can not get local ip", e);
+				log.error("Can not get local ip", e);
 			}
 			Struct.Builder metaBuilder = Struct.newBuilder();
 			// metadata is necessary for RequestAuthentication CRD
@@ -73,7 +73,7 @@ public final class NodeBuilder {
 			return NODE;
 		}
 		catch (Exception e) {
-			log.error("unable to create node for xds request", e);
+			log.error("Unable to create node for xds request", e);
 		}
 		return null;
 	}

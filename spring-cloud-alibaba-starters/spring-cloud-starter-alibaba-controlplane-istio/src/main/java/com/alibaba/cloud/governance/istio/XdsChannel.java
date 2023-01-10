@@ -84,7 +84,7 @@ public class XdsChannel implements AutoCloseable {
 			}
 		}
 		catch (Exception e) {
-			log.error("create XdsChannel failed", e);
+			log.error("Create XdsChannel failed", e);
 		}
 	}
 

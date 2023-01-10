@@ -44,6 +44,10 @@ public class AuthRule {
 
 	private boolean isNot;
 
+	public AuthRule() {
+
+	}
+
 	public AuthRule(RuleOperation op) {
 		this.op = op;
 	}

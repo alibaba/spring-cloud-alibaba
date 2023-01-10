@@ -146,7 +146,9 @@ public class RouteDataRepository {
 					matchServiceList = new ArrayList<>();
 				}
 				matchServiceList.add(matchService);
-				singleRuleMap.put(routeRule.getKey(), matchServiceList);
+				if (routeRule.getKey() != null) {
+					singleRuleMap.put(routeRule.getKey(), matchServiceList);
+				}
 			}
 		}
 		newRouteCache.put(routerData.getTargetService(), singleRuleMap);

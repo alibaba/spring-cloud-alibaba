@@ -66,13 +66,6 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>2.0.16</version>
-            <scope>test</scope>
-        </dependency>
-
 		<!--  Only for unit test-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

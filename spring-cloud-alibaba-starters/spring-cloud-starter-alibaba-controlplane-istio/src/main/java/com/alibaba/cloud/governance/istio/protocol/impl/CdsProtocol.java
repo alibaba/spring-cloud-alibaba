@@ -51,7 +51,7 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 				clusters.add(cluster);
 			}
 			catch (Exception e) {
-				log.error("unpack cluster failed", e);
+				log.error("Unpack cluster failed", e);
 			}
 		}
 		fireXdsFilters(clusters);

@@ -19,16 +19,10 @@ package com.alibaba.cloud.governance.auth;
 import java.io.File;
 import java.nio.charset.Charset;
 
-import com.alibaba.cloud.commons.governance.auth.condition.AuthCondition;
-import com.alibaba.cloud.commons.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.commons.io.FileUtils;
-import com.alibaba.cloud.commons.matcher.IpMatcher;
-import com.alibaba.cloud.commons.matcher.Matcher;
-import com.alibaba.cloud.commons.matcher.PortMatcher;
-import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.auth.validator.AuthValidator;
-import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,11 +44,14 @@ public class AuthenticationTest {
 	@Autowired
 	private AuthRepository authRepository;
 
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	@Test
 	public void judgeFromIpAllow() throws Exception {
-		AuthRepository authRepository = fromJSON(FileUtils.readFileToString(
+		AuthRepository authRepository = objectMapper.readValue(FileUtils.readFileToString(
 				new File("src/test/resources/from-ip-allow.json"),
-				Charset.defaultCharset()));
+				Charset.defaultCharset()), AuthRepository.class);
 		if (authRepository == null) {
 			throw new Exception("Can not load auth rules from auth repository");
 		}
@@ -68,9 +65,9 @@ public class AuthenticationTest {
 
 	@Test
 	public void judgeMethodAllow() throws Exception {
-		AuthRepository authRepository = fromJSON(FileUtils.readFileToString(
+		AuthRepository authRepository = objectMapper.readValue(FileUtils.readFileToString(
 				new File("src/test/resources/method-allow.json"),
-				Charset.defaultCharset()));
+				Charset.defaultCharset()), AuthRepository.class);
 		if (authRepository == null) {
 			throw new Exception("Can not load auth rules from auth repository");
 		}
@@ -90,49 +87,6 @@ public class AuthenticationTest {
 		this.authRepository.setDenyAuthRules(authRepository.getDenyAuthRules());
 		this.authRepository.setAllowAuthRule(authRepository.getAllowAuthRules());
 		this.authRepository.setJwtRule(authRepository.getJwtRules());
-	}
-
-	private AuthRepository fromJSON(String json) {
-		AuthRepository authRepository;
-		authRepository = JSONObject.parseObject(json, AuthRepository.class);
-		for (AuthRule allowRule : authRepository.getAllowAuthRules().values()) {
-			reloadAuthRule(allowRule);
-		}
-		for (AuthRule denyRule : authRepository.getDenyAuthRules().values()) {
-			reloadAuthRule(denyRule);
-		}
-		return authRepository;
-	}
-
-	private void reloadAuthRule(AuthRule authRule) {
-		AuthCondition authCondition = authRule.getCondition();
-		if (authCondition != null) {
-			Matcher matcher = authCondition.getMatcher();
-			if (matcher != null) {
-				String matcherJSON = matcher.toString();
-				switch (authCondition.getType()) {
-				case DEST_IP:
-				case REMOTE_IP:
-				case SOURCE_IP:
-					authCondition.setMatcher(
-							JSONObject.parseObject(matcherJSON, IpMatcher.class));
-					break;
-				case PORTS:
-					authCondition.setMatcher(
-							JSONObject.parseObject(matcherJSON, PortMatcher.class));
-					break;
-				default:
-					authCondition.setMatcher(
-							JSONObject.parseObject(matcherJSON, StringMatcher.class));
-					break;
-				}
-			}
-		}
-		if (authRule.getChildren() != null) {
-			for (AuthRule rule : authRule.getChildren()) {
-				reloadAuthRule(rule);
-			}
-		}
 	}
 
 	@Configuration

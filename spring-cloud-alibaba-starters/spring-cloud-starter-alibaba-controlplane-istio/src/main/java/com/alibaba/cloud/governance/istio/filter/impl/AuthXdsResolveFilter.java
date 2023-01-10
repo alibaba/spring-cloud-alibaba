@@ -126,7 +126,7 @@ public class AuthXdsResolveFilter extends AbstractXdsResolveFilter<List<Listener
 								provider.getForward()));
 			}
 		}
-		log.info("auth rules resolve finish, RBAC rules size: {}, Jwt rules size: {}",
+		log.info("Auth rules resolve finish, RBAC rules size: {}, Jwt rules size: {}",
 				allowAuthRules.size() + denyAuthRules.size(), jwtRules.size());
 		applicationContext.publishEvent(new AuthDataChangedEvent(this,
 				new AuthRules(allowAuthRules, denyAuthRules, jwtRules)));

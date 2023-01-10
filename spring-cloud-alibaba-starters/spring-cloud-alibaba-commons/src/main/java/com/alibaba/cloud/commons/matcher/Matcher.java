@@ -16,10 +16,14 @@
 
 package com.alibaba.cloud.commons.matcher;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY,
+		property = "className")
 public interface Matcher {
 
 	boolean match(Object obj);

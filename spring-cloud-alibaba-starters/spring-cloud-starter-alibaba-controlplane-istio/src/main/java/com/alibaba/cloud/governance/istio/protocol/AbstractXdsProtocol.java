@@ -115,7 +115,7 @@ public abstract class AbstractXdsProtocol<T>
 			consumer.accept(doGetResource(id, resourceNames, consumer));
 		}
 		catch (Exception e) {
-			log.error("error on get observe resource from xds", e);
+			log.error("Error on get observe resource from xds", e);
 		}
 		if (needPolling) {
 			xdsScheduledThreadPool.scheduleAtFixedRate(() -> {
@@ -123,7 +123,7 @@ public abstract class AbstractXdsProtocol<T>
 					consumer.accept(doGetResource(id, requestResource.get(id), consumer));
 				}
 				catch (Exception e) {
-					log.error("error on get observe resource from xds", e);
+					log.error("Error on get observe resource from xds", e);
 				}
 			}, xdsConfigProperties.getPollingTime(), xdsConfigProperties.getPollingTime(),
 					TimeUnit.SECONDS);
@@ -252,7 +252,7 @@ public abstract class AbstractXdsProtocol<T>
 				return;
 			}
 			if (xdsConfigProperties.isLogXds()) {
-				log.info("receive notification from xds server, type: " + getTypeUrl()
+				log.info("Receive notification from xds server, type: " + getTypeUrl()
 						+ " requestId: " + id);
 			}
 			List<T> responses = decodeXdsResponse(discoveryResponse);
@@ -273,7 +273,7 @@ public abstract class AbstractXdsProtocol<T>
 				return;
 			}
 			if (xdsConfigProperties.isLogXds()) {
-				log.error("connect to xds server failed, reconnecting", throwable);
+				log.error("Connect to xds server failed, reconnecting", throwable);
 			}
 			CompletableFuture<List<T>> future = futureMap.get(id);
 			if (future != null) {
@@ -293,7 +293,7 @@ public abstract class AbstractXdsProtocol<T>
 
 		@Override
 		public void onCompleted() {
-			log.info("xds connect completed");
+			log.info("Xds connect completed");
 		}
 
 	}

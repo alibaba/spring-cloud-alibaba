@@ -207,7 +207,7 @@ public class AuthValidator {
 			}
 		}
 		catch (Exception e) {
-			log.error("request {} doesn't match rule {}", request, rule);
+			log.warn("Request {} doesn't match rule {}", request, rule);
 		}
 		return false;
 	}

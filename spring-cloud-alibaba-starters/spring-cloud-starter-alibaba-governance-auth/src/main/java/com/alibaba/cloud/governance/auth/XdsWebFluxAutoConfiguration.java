@@ -36,9 +36,6 @@ import org.springframework.context.annotation.Configuration;
 		matchIfMissing = true)
 public class XdsWebFluxAutoConfiguration {
 
-	@Bean
-	@ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled",
-			matchIfMissing = true)
 	public AuthWebFluxFilter authWebFluxFilter(AuthValidator authValidator) {
 		return new AuthWebFluxFilter(authValidator);
 	}

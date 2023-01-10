@@ -43,6 +43,10 @@ public class AuthCondition {
 
 	private Matcher matcher;
 
+	public AuthCondition() {
+
+	}
+
 	public AuthCondition(ValidationType type, Matcher matcher) {
 		this.type = type;
 		this.matcher = matcher;

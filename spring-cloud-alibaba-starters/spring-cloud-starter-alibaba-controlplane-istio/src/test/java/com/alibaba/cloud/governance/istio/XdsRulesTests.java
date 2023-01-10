@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import com.alibaba.cloud.commons.io.FileUtils;
 import com.alibaba.cloud.governance.auth.AuthenticationAutoConfiguration;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
@@ -28,7 +30,7 @@ import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
 import com.alibaba.cloud.router.LabelRoutingAutoConfiguration;
 import com.alibaba.cloud.router.repository.FilterService;
 import com.alibaba.cloud.router.repository.RouteDataRepository;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -79,6 +81,9 @@ public class XdsRulesTests {
 	@Autowired
 	private RdsProtocol rdsProtocol;
 
+	@Resource
+	private ObjectMapper objectMapper;
+
 	private DiscoveryResponse decodeResponse(String path) throws Exception {
 		File file = new File(path);
 		FileInputStream stream = FileUtils.openInputStream(file);
@@ -98,7 +103,7 @@ public class XdsRulesTests {
 		if (listeners == null) {
 			throw new Exception("Can not parse listeners from xds response");
 		}
-		log.info("Auth rules are {}", JSONObject.toJSONString(authRepository));
+		log.info("Auth rules are {}", objectMapper.writeValueAsString(authRepository));
 		Assert.assertEquals(authRepository.getAllowAuthRules().size(), 1);
 		Assert.assertEquals(authRepository.getDenyAuthRules().size(), 1);
 		Assert.assertEquals(authRepository.getJwtRules().size(), 1);
@@ -116,8 +121,8 @@ public class XdsRulesTests {
 		if (routeDataRepository.getRouteRule(TARGET_SERVICE) == null) {
 			throw new Exception("Can not get target service from route configurations");
 		}
-		log.info("Label routing rules are {}", JSONObject
-				.toJSONString(routeDataRepository.getRouteRule(TARGET_SERVICE)));
+		log.info("Label routing rules are {}", objectMapper
+				.writeValueAsString(routeDataRepository.getRouteRule(TARGET_SERVICE)));
 	}
 
 	/**

@@ -73,7 +73,7 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				}
 			}
 			catch (Exception e) {
-				log.error("unpack listeners failed", e);
+				log.error("Unpack listeners failed", e);
 			}
 		}
 		fireXdsFilters(listeners);
