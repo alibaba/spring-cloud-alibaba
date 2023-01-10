@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting;
+package com.alibaba.cloud.commons.governance.routing;
 
 import java.util.List;
 import java.util.Objects;
 
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.routing.rule.RoutingRule;
 
 /**
  * @author HH
  */
 public class MatchService {
 
-	private List<RouteRule> ruleList;
+	private List<RoutingRule> routingRuleList;
 
 	private String version;
 
@@ -42,12 +42,12 @@ public class MatchService {
 		this.fallbackVersion = fallbackVersion;
 	}
 
-	public List<RouteRule> getRuleList() {
-		return ruleList;
+	public List<RoutingRule> getRoutingRuleList() {
+		return routingRuleList;
 	}
 
-	public void setRuleList(List<RouteRule> ruleList) {
-		this.ruleList = ruleList;
+	public void setRoutingRuleList(List<RoutingRule> routingRuleList) {
+		this.routingRuleList = routingRuleList;
 	}
 
 	public String getVersion() {
@@ -76,19 +76,19 @@ public class MatchService {
 		}
 		MatchService that = (MatchService) o;
 		return getWeight().equals(that.getWeight())
-				&& Objects.equals(getRuleList(), that.getRuleList())
+				&& Objects.equals(getRoutingRuleList(), that.getRoutingRuleList())
 				&& Objects.equals(getFallback(), that.getFallback())
 				&& Objects.equals(getVersion(), that.getVersion());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getRuleList(), getVersion(), getWeight(), getFallback());
+		return Objects.hash(getRoutingRuleList(), getVersion(), getWeight(), getFallback());
 	}
 
 	@Override
 	public String toString() {
-		return "MatchService{" + "ruleList=" + ruleList + ", version='" + version + '\''
+		return "MatchService{" + "ruleList=" + routingRuleList + ", version='" + version + '\''
 				+ ", weight=" + weight + ", getFallback=" + fallbackVersion + '}';
 	}
 

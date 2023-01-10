@@ -16,10 +16,12 @@
 
 package com.alibaba.cloud.router;
 
-import com.alibaba.cloud.router.publish.TargetServiceChangedPublisher;
+import com.alibaba.cloud.router.listener.RoutingDataListener;
+import com.alibaba.cloud.router.repository.FilterService;
+import com.alibaba.cloud.router.repository.RoutingDataRepository;
 
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,18 +29,30 @@ import org.springframework.context.annotation.Configuration;
  * @author HH
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties({ RouterProperties.class })
-public class RouterPropertiesAutoConfiguration {
+@AutoConfigureOrder(RoutingAutoConfiguration.ROUTING_AUTO_CONFIG_ORDER)
+public class RoutingAutoConfiguration {
+
+	/**
+	 * Order of label routing auto config.
+	 */
+	public static final int ROUTING_AUTO_CONFIG_ORDER = 10;
 
 	@Bean
 	@ConditionalOnMissingBean
-	public RouterProperties routerProperties() {
-		return new RouterProperties();
+	public RoutingDataRepository routingDataRepository() {
+		return new RoutingDataRepository();
 	}
 
 	@Bean
-	public TargetServiceChangedPublisher targetServiceChangedPublisher() {
-		return new TargetServiceChangedPublisher();
+	@ConditionalOnMissingBean
+	public FilterService filterService() {
+		return new FilterService();
+	}
+
+	@Bean
+	public RoutingDataListener routingDataListener(
+			RoutingDataRepository routingDataRepository, FilterService filterService) {
+		return new RoutingDataListener(routingDataRepository, filterService);
 	}
 
 }

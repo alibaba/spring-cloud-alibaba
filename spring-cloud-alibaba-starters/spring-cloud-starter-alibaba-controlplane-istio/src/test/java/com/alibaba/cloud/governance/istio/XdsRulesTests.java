@@ -25,9 +25,9 @@ import com.alibaba.cloud.governance.auth.AuthenticationAutoConfiguration;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
-import com.alibaba.cloud.router.LabelRoutingAutoConfiguration;
+import com.alibaba.cloud.router.RoutingAutoConfiguration;
 import com.alibaba.cloud.router.repository.FilterService;
-import com.alibaba.cloud.router.repository.RouteDataRepository;
+import com.alibaba.cloud.router.repository.RoutingDataRepository;
 import com.alibaba.fastjson.JSONObject;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
@@ -71,7 +71,7 @@ public class XdsRulesTests {
 	private AuthRepository authRepository;
 
 	@Autowired
-	private RouteDataRepository routeDataRepository;
+	private RoutingDataRepository routeDataRepository;
 
 	@Autowired
 	private LdsProtocol ldsProtocol;
@@ -130,7 +130,7 @@ public class XdsRulesTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ XdsAutoConfiguration.class,
-			AuthenticationAutoConfiguration.class, LabelRoutingAutoConfiguration.class })
+			AuthenticationAutoConfiguration.class, RoutingAutoConfiguration.class })
 	public static class TestConfig {
 
 		@Bean(name = TARGET_SERVICE + FilterService.FEIGN_CLIENT_BEAN_SPECIFICATION)

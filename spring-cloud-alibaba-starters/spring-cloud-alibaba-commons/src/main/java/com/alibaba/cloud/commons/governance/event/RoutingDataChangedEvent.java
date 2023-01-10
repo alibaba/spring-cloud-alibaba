@@ -18,27 +18,27 @@ package com.alibaba.cloud.commons.governance.event;
 
 import java.util.Collection;
 
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public class LabelRoutingDataChangedEvent extends GovernanceEvent {
+public class RoutingDataChangedEvent extends GovernanceEvent {
 
 	/**
 	 * Configuration for Label Routing.
 	 */
-	private final Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList;
+	private final Collection<UnifiedRoutingDataStructure> unifiedRoutingDataStructureList;
 
-	public LabelRoutingDataChangedEvent(Object source,
-			Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList) {
+	public RoutingDataChangedEvent(Object source,
+			Collection<UnifiedRoutingDataStructure> untiedRouterDataStructureList) {
 		super(source);
-		this.untiedRouterDataStructureList = untiedRouterDataStructureList;
+		this.unifiedRoutingDataStructureList = untiedRouterDataStructureList;
 	}
 
-	public Collection<UnifiedRouteDataStructure> getUntiedRouterDataStructureList() {
-		return untiedRouterDataStructureList;
+	public Collection<UnifiedRoutingDataStructure> getUntiedRouterDataStructureList() {
+		return unifiedRoutingDataStructureList;
 	}
 
 }

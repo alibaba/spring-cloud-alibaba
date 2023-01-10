@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting.rule;
+package com.alibaba.cloud.commons.governance.routing.rule;
 
 import java.util.Objects;
 
 /**
  * @author HH
  */
-public class UrlRule {
+public class UrlRoutingRule {
 
-	public static class Path implements RouteRule {
+	public static class PathRoutingRule implements RoutingRule {
 
 		private String type;
 
@@ -79,7 +79,7 @@ public class UrlRule {
 			if (o == null || getClass() != o.getClass()) {
 				return false;
 			}
-			Path path = (Path) o;
+			PathRoutingRule path = (PathRoutingRule) o;
 			return Objects.equals(getType(), path.getType())
 					&& Objects.equals(getCondition(), path.getCondition())
 					&& Objects.equals(getValue(), path.getValue());
@@ -98,7 +98,7 @@ public class UrlRule {
 
 	}
 
-	public static class Parameter implements RouteRule {
+	public static class ParameterRoutingRule implements RoutingRule {
 
 		private String type;
 
@@ -156,7 +156,7 @@ public class UrlRule {
 			if (o == null || getClass() != o.getClass()) {
 				return false;
 			}
-			Parameter parameter = (Parameter) o;
+			ParameterRoutingRule parameter = (ParameterRoutingRule) o;
 			return Objects.equals(getType(), parameter.getType())
 					&& Objects.equals(getCondition(), parameter.getCondition())
 					&& Objects.equals(getKey(), parameter.getKey())

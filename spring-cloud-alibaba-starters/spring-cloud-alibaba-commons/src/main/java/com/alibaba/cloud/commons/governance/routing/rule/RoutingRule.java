@@ -14,32 +14,31 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
+package com.alibaba.cloud.commons.governance.routing.rule;
 
 /**
  * @author HH
  */
-@ConfigurationProperties(prefix = RouterProperties.PROPERTY_PREFIX)
-public class RouterProperties {
+public interface RoutingRule {
 
 	/**
-	 * Properties prefix.
+	 * get type of rule.
+	 * @return String
 	 */
-	public static final String PROPERTY_PREFIX = "spring.cloud.governance.router";
+	String getType();
 
-	/**
-	 * Load Balance Rule.
-	 */
-	private String rule;
+	void setType(String type);
 
-	public String getRule() {
-		return rule;
-	}
+	String getCondition();
 
-	public void setRule(String rule) {
-		this.rule = rule;
-	}
+	void setCondition(String condition);
+
+	String getKey();
+
+	void setKey(String key);
+
+	String getValue();
+
+	void setValue(String value);
 
 }

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting.rule;
+package com.alibaba.cloud.commons.governance.routing.rule;
 
 import java.util.Objects;
 
 /**
  * @author HH
  */
-public class HeaderRule implements RouteRule {
+public class HeaderRoutingRule implements RoutingRule {
 
 	private String type;
 
@@ -79,7 +79,7 @@ public class HeaderRule implements RouteRule {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		HeaderRule that = (HeaderRule) o;
+		HeaderRoutingRule that = (HeaderRoutingRule) o;
 		return Objects.equals(getType(), that.getType())
 				&& Objects.equals(getCondition(), that.getCondition())
 				&& Objects.equals(getKey(), that.getKey())

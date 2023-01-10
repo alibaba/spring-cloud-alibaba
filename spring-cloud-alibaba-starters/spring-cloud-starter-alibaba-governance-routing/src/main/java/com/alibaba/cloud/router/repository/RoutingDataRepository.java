@@ -21,10 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.routing.RoutingRule;
+import com.alibaba.cloud.commons.governance.routing.MatchService;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +32,9 @@ import org.springframework.util.CollectionUtils;
 /**
  * @author HH
  */
-public class RouteDataRepository {
+public class RoutingDataRepository {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RouteDataRepository.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RoutingDataRepository.class);
 
 	/**
 	 * Key is service name,value is hashmap,which key is single RouteRule key,value is
@@ -73,10 +72,10 @@ public class RouteDataRepository {
 	 */
 	public static final int MIN_WEIGHT = 0;
 
-	public void updateRouteData(final List<UnifiedRouteDataStructure> routeDataList) {
+	public void updateRouteData(final List<UnifiedRoutingDataStructure> routeDataList) {
 		ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache = new ConcurrentHashMap<>();
 		ConcurrentHashMap<String, List<MatchService>> newPathRuleMap = new ConcurrentHashMap<>();
-		for (UnifiedRouteDataStructure routeData : routeDataList) {
+		for (UnifiedRoutingDataStructure routeData : routeDataList) {
 			nonNullCheck(routeData);
 			buildHashIndex(routeData, newRouteCache, newPathRuleMap);
 			defaultRouteVersion.put(routeData.getTargetService(),
@@ -87,16 +86,16 @@ public class RouteDataRepository {
 		this.pathRuleMap = newPathRuleMap;
 	}
 
-	private void nonNullCheck(UnifiedRouteDataStructure unifiedRouteDataStructure) {
+	private void nonNullCheck(UnifiedRoutingDataStructure unifiedRouteDataStructure) {
 		String targetService = unifiedRouteDataStructure.getTargetService();
 		if (targetService == null) {
 			LOG.error("Lose target Service name.");
 		}
-		final LabelRouteRule labelRouteData = unifiedRouteDataStructure
+		final RoutingRule labelRouteData = unifiedRouteDataStructure
 				.getLabelRouteRule();
 		final List<MatchService> matchServiceList = labelRouteData.getMatchRouteList();
 		for (MatchService matchService : matchServiceList) {
-			final List<RouteRule> ruleList = matchService.getRuleList();
+			final List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService.getRoutingRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
 			if (CollectionUtils.isEmpty(ruleList)) {
@@ -117,7 +116,7 @@ public class RouteDataRepository {
 		}
 	}
 
-	private void buildHashIndex(final UnifiedRouteDataStructure routerData,
+	private void buildHashIndex(final UnifiedRoutingDataStructure routerData,
 			ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache,
 			ConcurrentHashMap<String, List<MatchService>> newPathRuleMap) {
 		final List<MatchService> matchRouteList = routerData.getLabelRouteRule()
@@ -125,7 +124,7 @@ public class RouteDataRepository {
 		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();
 
 		for (MatchService matchService : matchRouteList) {
-			List<RouteRule> ruleList = matchService.getRuleList();
+			List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService.getRoutingRuleList();
 
 			// Take out the path label separately, because there is no key for hash index.
 			if (ruleList.size() == 1
@@ -139,7 +138,7 @@ public class RouteDataRepository {
 				newPathRuleMap.put(routerData.getTargetService(), matchServiceList);
 				continue;
 			}
-			for (RouteRule routeRule : ruleList) {
+			for (com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule : ruleList) {
 				List<MatchService> matchServiceList = singleRuleMap
 						.get(routeRule.getKey());
 				if (matchServiceList == null) {

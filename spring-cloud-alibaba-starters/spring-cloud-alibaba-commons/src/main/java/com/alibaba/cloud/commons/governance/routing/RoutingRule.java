@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting;
+package com.alibaba.cloud.commons.governance.routing;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,26 +22,26 @@ import java.util.Objects;
 /**
  * @author HH
  */
-public class LabelRouteRule {
+public class RoutingRule {
 
-	private String defaultRouteVersion;
+	private String defaultRoutingVersion;
 
-	private List<MatchService> matchRouteList;
+	private List<MatchService> matchRoutingList;
 
 	public String getDefaultRouteVersion() {
-		return defaultRouteVersion;
+		return defaultRoutingVersion;
 	}
 
 	public void setDefaultRouteVersion(String defaultRouteVersion) {
-		this.defaultRouteVersion = defaultRouteVersion;
+		this.defaultRoutingVersion = defaultRouteVersion;
 	}
 
 	public List<MatchService> getMatchRouteList() {
-		return matchRouteList;
+		return matchRoutingList;
 	}
 
 	public void setMatchRouteList(List<MatchService> matchRouteList) {
-		this.matchRouteList = matchRouteList;
+		this.matchRoutingList = matchRouteList;
 	}
 
 	@Override
@@ -52,20 +52,20 @@ public class LabelRouteRule {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		LabelRouteRule that = (LabelRouteRule) o;
-		return Objects.equals(defaultRouteVersion, that.defaultRouteVersion)
+		RoutingRule that = (RoutingRule) o;
+		return Objects.equals(defaultRoutingVersion, that.defaultRoutingVersion)
 				&& Objects.equals(getMatchRouteList(), that.getMatchRouteList());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(defaultRouteVersion, getMatchRouteList());
+		return Objects.hash(defaultRoutingVersion, getMatchRouteList());
 	}
 
 	@Override
 	public String toString() {
-		return "LabelRouteData{" + "defaultRouteVersion='" + defaultRouteVersion + '\''
-				+ ", matchRouteList=" + matchRouteList + '}';
+		return "LabelRouteData{" + "defaultRouteVersion='" + defaultRoutingVersion + '\''
+				+ ", matchRouteList=" + matchRoutingList + '}';
 	}
 
 }

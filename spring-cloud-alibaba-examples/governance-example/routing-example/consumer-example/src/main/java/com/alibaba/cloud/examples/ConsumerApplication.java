@@ -19,13 +19,12 @@ package com.alibaba.cloud.examples;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
+import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.routing.RoutingRule;
+import com.alibaba.cloud.commons.governance.routing.MatchService;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,26 +84,26 @@ public class ConsumerApplication {
 
 		@GetMapping("/add")
 		public void getDataFromControlPlaneTest() {
-			List<RouteRule> routeRules = new ArrayList<>();
+			List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> routeRules = new ArrayList<>();
 			List<MatchService> matchServices = new ArrayList<>();
 
-			UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
+			UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
 			unifiedRouteDataStructure.setTargetService("service-provider");
 
-			LabelRouteRule labelRouteData = new LabelRouteRule();
+			RoutingRule labelRouteData = new RoutingRule();
 			labelRouteData.setDefaultRouteVersion("v1");
 
-			RouteRule routeRule = new HeaderRule();
+			com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule = new HeaderRoutingRule();
 			routeRule.setType("header");
 			routeRule.setCondition("=");
 			routeRule.setKey("tag");
 			routeRule.setValue("gray");
-			RouteRule routeRule1 = new UrlRule.Parameter();
+			com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
 			routeRule1.setType("parameter");
 			routeRule1.setCondition(">");
 			routeRule1.setKey("id");
 			routeRule1.setValue("10");
-			RouteRule routeRule2 = new UrlRule.Path();
+			com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule2 = new UrlRoutingRule.PathRoutingRule();
 			routeRule2.setType("path");
 			routeRule2.setCondition("=");
 			routeRule2.setValue("/router-test");
@@ -115,41 +114,41 @@ public class ConsumerApplication {
 			MatchService matchService = new MatchService();
 			matchService.setVersion("v2");
 			matchService.setWeight(100);
-			matchService.setRuleList(routeRules);
+			matchService.setRoutingRuleList(routeRules);
 			matchServices.add(matchService);
 
 			labelRouteData.setMatchRouteList(matchServices);
 
 			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UnifiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
 			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-			applicationContext.publishEvent(new LabelRoutingDataChangedEvent(this,
+			applicationContext.publishEvent(new RoutingDataChangedEvent(this,
 					unifiedRouteDataStructureList));
 		}
 
 		@GetMapping("/update")
 		public void updateDataFromControlPlaneTest() {
-			List<RouteRule> routeRules = new ArrayList<>();
+			List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> routeRules = new ArrayList<>();
 			List<MatchService> matchServices = new ArrayList<>();
 
-			UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
+			UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
 			unifiedRouteDataStructure.setTargetService("service-provider");
 
-			LabelRouteRule labelRouteData = new LabelRouteRule();
+			RoutingRule labelRouteData = new RoutingRule();
 			labelRouteData.setDefaultRouteVersion("v1");
 
-			RouteRule routeRule = new HeaderRule();
+			com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule = new HeaderRoutingRule();
 			routeRule.setType("header");
 			routeRule.setCondition("=");
 			routeRule.setKey("tag");
 			routeRule.setValue("gray");
-			RouteRule routeRule1 = new UrlRule.Parameter();
+			com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
 			routeRule1.setType("parameter");
 			routeRule1.setCondition(">");
 			routeRule1.setKey("id");
 			routeRule1.setValue("10");
-			RouteRule routeRule2 = new UrlRule.Path();
+			com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule2 = new UrlRoutingRule.PathRoutingRule();
 			routeRule2.setType("path");
 			routeRule2.setCondition("=");
 			routeRule2.setValue("/router-test");
@@ -160,16 +159,16 @@ public class ConsumerApplication {
 			MatchService matchService = new MatchService();
 			matchService.setVersion("v2");
 			matchService.setWeight(50);
-			matchService.setRuleList(routeRules);
+			matchService.setRoutingRuleList(routeRules);
 			matchServices.add(matchService);
 
 			labelRouteData.setMatchRouteList(matchServices);
 
 			unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
 
-			List<UnifiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
+			List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
 			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-			applicationContext.publishEvent(new LabelRoutingDataChangedEvent(this,
+			applicationContext.publishEvent(new RoutingDataChangedEvent(this,
 					unifiedRouteDataStructureList));
 		}
 

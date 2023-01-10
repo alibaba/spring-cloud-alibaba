@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting;
+package com.alibaba.cloud.commons.governance.routing;
 
 /**
  * @author HH
  */
-public class UnifiedRouteDataStructure {
+public class UnifiedRoutingDataStructure {
 
-	private LabelRouteRule labelRouteRule;
+	private RoutingRule routingRule;
 
 	private String targetService;
 
-	public LabelRouteRule getLabelRouteRule() {
-		return labelRouteRule;
+	public RoutingRule getLabelRouteRule() {
+		return routingRule;
 	}
 
-	public void setLabelRouteRule(LabelRouteRule labelRouteRule) {
-		this.labelRouteRule = labelRouteRule;
+	public void setLabelRouteRule(RoutingRule labelRouteRule) {
+		this.routingRule = labelRouteRule;
 	}
 
 	public String getTargetService() {
@@ -43,7 +43,7 @@ public class UnifiedRouteDataStructure {
 
 	@Override
 	public String toString() {
-		return "UntiedRouteDataStructure{" + "labelRouteData=" + labelRouteRule
+		return "UntiedRouteDataStructure{" + "labelRouteData=" + routingRule
 				+ ", targetService='" + targetService + '\'' + '}';
 	}
 

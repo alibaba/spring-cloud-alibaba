@@ -21,13 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
+import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.routing.RoutingRule;
+import com.alibaba.cloud.commons.governance.routing.MatchService;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
@@ -53,11 +52,11 @@ public class LabelRoutingXdsResolveFilter
 		if (routeConfigurations == null) {
 			return false;
 		}
-		Map<String, UnifiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
+		Map<String, UnifiedRoutingDataStructure> untiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
 			List<VirtualHost> virtualHosts = routeConfiguration.getVirtualHostsList();
 			for (VirtualHost virtualHost : virtualHosts) {
-				UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
+				UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
 				String targetService = "";
 				String[] serviceAndPort = virtualHost.getName().split(":");
 				if (serviceAndPort.length > 0) {
@@ -68,21 +67,21 @@ public class LabelRoutingXdsResolveFilter
 				}
 				unifiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
-				LabelRouteRule labelRouteRule = getLabelRouteData(routes);
+				RoutingRule labelRouteRule = getLabelRouteData(routes);
 				unifiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
 				untiedRouteDataStructures.put(
 						unifiedRouteDataStructure.getTargetService(),
 						unifiedRouteDataStructure);
 			}
 		}
-		applicationContext.publishEvent(new LabelRoutingDataChangedEvent(this,
+		applicationContext.publishEvent(new RoutingDataChangedEvent(this,
 				untiedRouteDataStructures.values()));
 		return true;
 	}
 
-	private LabelRouteRule getLabelRouteData(List<Route> routes) {
+	private RoutingRule getLabelRouteData(List<Route> routes) {
 		List<MatchService> matchServices = new ArrayList<>();
-		LabelRouteRule labelRouteRule = new LabelRouteRule();
+		RoutingRule labelRouteRule = new RoutingRule();
 		for (Route route : routes) {
 			String cluster = route.getRoute().getCluster();
 			if (StringUtils.isNotEmpty(cluster)) {
@@ -116,15 +115,15 @@ public class LabelRoutingXdsResolveFilter
 		}
 		MatchService matchService = new MatchService();
 		matchService.setVersion(version);
-		matchService.setRuleList(match2RouteRules(route.getMatch()));
+		matchService.setRoutingRuleList(match2RouteRules(route.getMatch()));
 		matchService.setWeight(weight);
 		return matchService;
 	}
 
-	private List<RouteRule> match2RouteRules(RouteMatch routeMatch) {
-		List<RouteRule> routeRules = new ArrayList<>();
+	private List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> match2RouteRules(RouteMatch routeMatch) {
+		List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> routeRules = new ArrayList<>();
 		for (HeaderMatcher headerMatcher : routeMatch.getHeadersList()) {
-			HeaderRule headerRule = ConvUtil.headerMatcher2HeaderRule(headerMatcher);
+			HeaderRoutingRule headerRule = ConvUtil.headerMatcher2HeaderRule(headerMatcher);
 			if (headerRule != null) {
 				routeRules.add(headerRule);
 			}
@@ -132,14 +131,14 @@ public class LabelRoutingXdsResolveFilter
 
 		for (QueryParameterMatcher parameterMatcher : routeMatch
 				.getQueryParametersList()) {
-			UrlRule.Parameter parameter = ConvUtil
+			UrlRoutingRule.ParameterRoutingRule parameter = ConvUtil
 					.parameterMatcher2ParameterRule(parameterMatcher);
 			if (parameter != null) {
 				routeRules.add(parameter);
 			}
 		}
 
-		UrlRule.Path path = new UrlRule.Path();
+		UrlRoutingRule.PathRoutingRule path = new UrlRoutingRule.PathRoutingRule();
 		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:

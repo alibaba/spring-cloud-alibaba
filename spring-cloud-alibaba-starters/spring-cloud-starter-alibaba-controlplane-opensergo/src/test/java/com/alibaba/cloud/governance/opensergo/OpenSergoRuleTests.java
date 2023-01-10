@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.fastjson.JSONObject;
 import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
 import io.envoyproxy.envoy.config.route.v3.Route;
@@ -63,7 +63,7 @@ public class OpenSergoRuleTests {
 				.setName("service-provider").addVirtualHosts(virtualHost).build();
 		List<RouteConfiguration> routeConfigurations = new ArrayList<>();
 		routeConfigurations.add(routeConfiguration);
-		Collection<UnifiedRouteDataStructure> rules = openSergoTrafficRouterParser
+		Collection<UnifiedRoutingDataStructure> rules = openSergoTrafficRouterParser
 				.resolveLabelRouting(routeConfigurations);
 		log.info("TrafficRouter rules are {}", JSONObject.toJSONString(rules));
 		Assert.assertEquals(rules.size(), 1);

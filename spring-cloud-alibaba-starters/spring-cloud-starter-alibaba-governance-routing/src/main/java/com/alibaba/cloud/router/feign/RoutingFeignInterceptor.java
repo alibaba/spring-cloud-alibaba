@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author HH
  */
-public class FeignInterceptor implements RequestInterceptor {
+public class RoutingFeignInterceptor implements RequestInterceptor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(FeignInterceptor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RoutingFeignInterceptor.class);
 
 	@Override
 	public void apply(RequestTemplate requestTemplate) {

@@ -21,10 +21,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
+import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.router.repository.FilterService;
-import com.alibaba.cloud.router.repository.RouteDataRepository;
+import com.alibaba.cloud.router.repository.RoutingDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,39 +34,39 @@ import org.springframework.context.ApplicationListener;
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
-public class LabelRouteDataListener
-		implements ApplicationListener<LabelRoutingDataChangedEvent> {
+public class RoutingDataListener
+		implements ApplicationListener<RoutingDataChangedEvent> {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(LabelRouteDataListener.class);
+			.getLogger(RoutingDataListener.class);
 
-	private RouteDataRepository routeDataRepository;
+	private RoutingDataRepository routingDataRepository;
 
 	private FilterService filterService;
 
-	public LabelRouteDataListener(RouteDataRepository routeDataRepository,
+	public RoutingDataListener(RoutingDataRepository routeDataRepository,
 			FilterService filterService) {
-		this.routeDataRepository = routeDataRepository;
+		this.routingDataRepository = routeDataRepository;
 		this.filterService = filterService;
 	}
 
 	@Override
-	public void onApplicationEvent(LabelRoutingDataChangedEvent event) {
+	public void onApplicationEvent(RoutingDataChangedEvent event) {
 		try {
-			Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList = event
+			Collection<UnifiedRoutingDataStructure> untiedRouterDataStructureList = event
 					.getUntiedRouterDataStructureList();
 
 			// Filter service.
 			// todo can cache the result
 			HashSet<String> definitionFeignService = filterService
 					.getDefinitionFeignService(untiedRouterDataStructureList.size());
-			List<UnifiedRouteDataStructure> routeDatalist = untiedRouterDataStructureList
+			List<UnifiedRoutingDataStructure> routeDatalist = untiedRouterDataStructureList
 					.stream()
 					.filter(unifiedRouteDataStructure -> definitionFeignService
 							.contains(unifiedRouteDataStructure.getTargetService()))
 					.collect(Collectors.toList());
 
-			routeDataRepository.updateRouteData(routeDatalist);
+			routingDataRepository.updateRouteData(routeDatalist);
 		}
 		catch (Exception e) {
 			log.error("Failed to update route data", e);

@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting.rule;
+package com.alibaba.cloud.router.ribbon;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  */
-public interface RouteRule {
+@Configuration(proxyBeanMethods = false)
+public class RouteLoadBalanceRuleAutoConfiguration {
 
-	/**
-	 * get type of rule.
-	 * @return String
-	 */
-	String getType();
-
-	void setType(String type);
-
-	String getCondition();
-
-	void setCondition(String condition);
-
-	String getKey();
-
-	void setKey(String key);
-
-	String getValue();
-
-	void setValue(String value);
+	@Bean
+	@ConditionalOnMissingBean
+	public RoutingLoadBalanceRule routingLoadBalanceRule() {
+		return new RoutingLoadBalanceRule();
+	}
 
 }

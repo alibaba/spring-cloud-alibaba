@@ -16,8 +16,8 @@
 
 package com.alibaba.cloud.governance.istio.util;
 
-import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
+import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.IpMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
@@ -124,9 +124,9 @@ public final class ConvUtil {
 		return headerMatcher.getStringMatch();
 	}
 
-	public static UrlRule.Parameter parameterMatcher2ParameterRule(
+	public static UrlRoutingRule.ParameterRoutingRule parameterMatcher2ParameterRule(
 			QueryParameterMatcher queryParameterMatcher) {
-		UrlRule.Parameter parameter = new UrlRule.Parameter();
+		UrlRoutingRule.ParameterRoutingRule parameter = new UrlRoutingRule.ParameterRoutingRule();
 		StringMatcher stringMatcher = ConvUtil
 				.convStringMatcher(queryParameterMatcher.getStringMatch());
 		if (stringMatcher != null) {
@@ -139,11 +139,11 @@ public final class ConvUtil {
 		return null;
 	}
 
-	public static HeaderRule headerMatcher2HeaderRule(HeaderMatcher headerMatcher) {
+	public static HeaderRoutingRule headerMatcher2HeaderRule(HeaderMatcher headerMatcher) {
 		StringMatcher stringMatcher = ConvUtil
 				.convStringMatcher(ConvUtil.headerMatch2StringMatch(headerMatcher));
 		if (stringMatcher != null) {
-			HeaderRule headerRule = new HeaderRule();
+			HeaderRoutingRule headerRule = new HeaderRoutingRule();
 			headerRule.setCondition(stringMatcher.getType().toString());
 			headerRule.setKey(headerMatcher.getName());
 			headerRule.setValue(stringMatcher.getMatcher());

@@ -16,6 +16,9 @@
 
 package com.alibaba.cloud.router.feign;
 
+import feign.Feign;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +26,14 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author HH
  */
+@ConditionalOnClass(Feign.class)
 @Configuration(proxyBeanMethods = false)
-public class FeignInterceptorAutoConfiguration {
+public class RoutingFeignInterceptorAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public FeignInterceptor feignInterceptor() {
-		return new FeignInterceptor();
+	public RoutingFeignInterceptor routingFeignInterceptor() {
+		return new RoutingFeignInterceptor();
 	}
 
 }

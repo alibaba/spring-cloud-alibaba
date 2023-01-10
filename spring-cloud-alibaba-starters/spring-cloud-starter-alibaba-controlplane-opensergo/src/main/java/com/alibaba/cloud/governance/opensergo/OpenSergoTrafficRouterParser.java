@@ -22,12 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
+import com.alibaba.cloud.commons.governance.routing.RoutingRule;
+import com.alibaba.cloud.commons.governance.routing.MatchService;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
@@ -69,17 +68,17 @@ public class OpenSergoTrafficRouterParser {
 	 * @return spring cloud alibaba router rules.
 	 * @throws InvalidProtocolBufferException transform exception.
 	 */
-	public Collection<UnifiedRouteDataStructure> resolveLabelRouting(
+	public Collection<UnifiedRoutingDataStructure> resolveLabelRouting(
 			List<RouteConfiguration> routeConfigurations)
 			throws InvalidProtocolBufferException {
 		if (routeConfigurations == null) {
 			return new ArrayList<>();
 		}
-		Map<String, UnifiedRouteDataStructure> unifiedRouteDataStructures = new HashMap<>();
+		Map<String, UnifiedRoutingDataStructure> unifiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
 			List<VirtualHost> virtualHosts = routeConfiguration.getVirtualHostsList();
 			for (VirtualHost virtualHost : virtualHosts) {
-				UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
+				UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
 				String targetService = "";
 				String[] serviceAndPort = virtualHost.getName().split(":");
 				if (serviceAndPort.length > 0) {
@@ -87,7 +86,7 @@ public class OpenSergoTrafficRouterParser {
 				}
 				unifiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
-				LabelRouteRule labelRouteRule = getLabelRouteData(routes);
+				RoutingRule labelRouteRule = getLabelRouteData(routes);
 				unifiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
 				unifiedRouteDataStructures.put(
 						unifiedRouteDataStructure.getTargetService(),
@@ -97,10 +96,10 @@ public class OpenSergoTrafficRouterParser {
 		return unifiedRouteDataStructures.values();
 	}
 
-	private LabelRouteRule getLabelRouteData(List<Route> routes)
+	private RoutingRule getLabelRouteData(List<Route> routes)
 			throws InvalidProtocolBufferException {
 		List<MatchService> matchServices = new ArrayList<>();
-		LabelRouteRule labelRouteRule = new LabelRouteRule();
+		RoutingRule labelRouteRule = new RoutingRule();
 		for (Route route : routes) {
 			ClusterSpecifierPlugin clusterSpecifierPlugin = route.getRoute()
 					.getInlineClusterSpecifierPlugin();
@@ -154,7 +153,7 @@ public class OpenSergoTrafficRouterParser {
 		String version = getVersion(route, cluster);
 		MatchService matchService = new MatchService();
 		matchService.setVersion(version);
-		matchService.setRuleList(match2RouteRules(route.getMatch()));
+		matchService.setRoutingRuleList(match2RouteRules(route.getMatch()));
 		matchService.setWeight(weight);
 		if (StringUtils.isNotEmpty(fallback)) {
 			matchService.setFallback(fallback);
@@ -174,10 +173,10 @@ public class OpenSergoTrafficRouterParser {
 		return version;
 	}
 
-	private List<RouteRule> match2RouteRules(RouteMatch routeMatch) {
-		List<RouteRule> routeRules = new ArrayList<>();
+	private List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> match2RouteRules(RouteMatch routeMatch) {
+		List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> routeRules = new ArrayList<>();
 		for (HeaderMatcher headerMatcher : routeMatch.getHeadersList()) {
-			HeaderRule headerRule = headerMatcher2HeaderRule(headerMatcher);
+			HeaderRoutingRule headerRule = headerMatcher2HeaderRule(headerMatcher);
 			if (headerRule != null) {
 				routeRules.add(headerRule);
 			}
@@ -185,14 +184,14 @@ public class OpenSergoTrafficRouterParser {
 
 		for (QueryParameterMatcher parameterMatcher : routeMatch
 				.getQueryParametersList()) {
-			UrlRule.Parameter parameter = parameterMatcher2ParameterRule(
+			UrlRoutingRule.ParameterRoutingRule parameter = parameterMatcher2ParameterRule(
 					parameterMatcher);
 			if (parameter != null) {
 				routeRules.add(parameter);
 			}
 		}
 
-		UrlRule.Path path = new UrlRule.Path();
+		UrlRoutingRule.PathRoutingRule path = new UrlRoutingRule.PathRoutingRule();
 		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:
@@ -221,9 +220,9 @@ public class OpenSergoTrafficRouterParser {
 		return routeRules;
 	}
 
-	private UrlRule.Parameter parameterMatcher2ParameterRule(
+	private UrlRoutingRule.ParameterRoutingRule parameterMatcher2ParameterRule(
 			QueryParameterMatcher queryParameterMatcher) {
-		UrlRule.Parameter parameter = new UrlRule.Parameter();
+		UrlRoutingRule.ParameterRoutingRule parameter = new UrlRoutingRule.ParameterRoutingRule();
 		StringMatcher stringMatcher = ConvUtils
 				.convStringMatcher(queryParameterMatcher.getStringMatch());
 		if (stringMatcher != null) {
@@ -236,11 +235,11 @@ public class OpenSergoTrafficRouterParser {
 		return null;
 	}
 
-	private HeaderRule headerMatcher2HeaderRule(HeaderMatcher headerMatcher) {
+	private HeaderRoutingRule headerMatcher2HeaderRule(HeaderMatcher headerMatcher) {
 		StringMatcher stringMatcher = ConvUtils
 				.convStringMatcher(ConvUtils.headerMatch2StringMatch(headerMatcher));
 		if (stringMatcher != null) {
-			HeaderRule headerRule = new HeaderRule();
+			HeaderRoutingRule headerRule = new HeaderRoutingRule();
 			headerRule.setCondition(stringMatcher.getType().toString());
 			headerRule.setKey(headerMatcher.getName());
 			headerRule.setValue(stringMatcher.getMatcher());
