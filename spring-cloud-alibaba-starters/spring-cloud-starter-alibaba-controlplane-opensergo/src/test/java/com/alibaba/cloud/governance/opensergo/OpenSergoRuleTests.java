@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
-import com.alibaba.fastjson.JSONObject;
 import io.envoyproxy.envoy.config.route.v3.HeaderMatcher;
 import io.envoyproxy.envoy.config.route.v3.Route;
 import io.envoyproxy.envoy.config.route.v3.RouteAction;
@@ -65,7 +64,6 @@ public class OpenSergoRuleTests {
 		routeConfigurations.add(routeConfiguration);
 		Collection<UnifiedRouteDataStructure> rules = openSergoTrafficRouterParser
 				.resolveLabelRouting(routeConfigurations);
-		log.info("TrafficRouter rules are {}", JSONObject.toJSONString(rules));
 		Assert.assertEquals(rules.size(), 1);
 	}
 

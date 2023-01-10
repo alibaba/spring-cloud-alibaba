@@ -21,7 +21,7 @@ import java.util.List;
 import com.alibaba.cloud.commons.governance.event.GovernanceEvent;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.AuthXdsResolveFilter;
-import com.alibaba.cloud.governance.istio.filter.impl.LabelRoutingXdsResolveFilter;
+import com.alibaba.cloud.governance.istio.filter.impl.RoutingXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
@@ -87,7 +87,7 @@ public class XdsAutoConfiguration {
 
 	@Bean
 	public XdsResolveFilter<List<RouteConfiguration>> labelRoutingXdsResolveFilter() {
-		return new LabelRoutingXdsResolveFilter();
+		return new RoutingXdsResolveFilter();
 	}
 
 	@Bean

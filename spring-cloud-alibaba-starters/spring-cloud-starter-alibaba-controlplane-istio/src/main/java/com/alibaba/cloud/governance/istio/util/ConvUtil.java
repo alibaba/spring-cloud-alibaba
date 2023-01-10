@@ -97,29 +97,32 @@ public final class ConvUtil {
 			return builder.setSafeRegex(RegexMatcher.newBuilder().build())
 					.setIgnoreCase(true).build();
 		}
-		io.envoyproxy.envoy.type.matcher.v3.StringMatcher.Builder builder = io.envoyproxy.envoy.type.matcher.v3.StringMatcher
-				.newBuilder();
-		String exactMatch = headerMatcher.getExactMatch();
-		String containsMatch = headerMatcher.getContainsMatch();
-		String prefixMatch = headerMatcher.getPrefixMatch();
-		String suffixMatch = headerMatcher.getSuffixMatch();
-		RegexMatcher safeRegex = headerMatcher.getSafeRegexMatch();
-		if (!StringUtils.isEmpty(exactMatch)) {
-			builder.setExact(exactMatch);
+		if (!headerMatcher.hasStringMatch()) {
+			io.envoyproxy.envoy.type.matcher.v3.StringMatcher.Builder builder = io.envoyproxy.envoy.type.matcher.v3.StringMatcher
+					.newBuilder();
+			String exactMatch = headerMatcher.getExactMatch();
+			String containsMatch = headerMatcher.getContainsMatch();
+			String prefixMatch = headerMatcher.getPrefixMatch();
+			String suffixMatch = headerMatcher.getSuffixMatch();
+			RegexMatcher safeRegex = headerMatcher.getSafeRegexMatch();
+			if (!StringUtils.isEmpty(exactMatch)) {
+				builder.setExact(exactMatch);
+			}
+			else if (!StringUtils.isEmpty(containsMatch)) {
+				builder.setContains(containsMatch);
+			}
+			else if (!StringUtils.isEmpty(prefixMatch)) {
+				builder.setPrefix(prefixMatch);
+			}
+			else if (!StringUtils.isEmpty(suffixMatch)) {
+				builder.setSuffix(suffixMatch);
+			}
+			else if (safeRegex.isInitialized()) {
+				builder.setSafeRegex(safeRegex);
+			}
+			return builder.setIgnoreCase(true).build();
 		}
-		else if (!StringUtils.isEmpty(containsMatch)) {
-			builder.setContains(containsMatch);
-		}
-		else if (!StringUtils.isEmpty(prefixMatch)) {
-			builder.setPrefix(prefixMatch);
-		}
-		else if (!StringUtils.isEmpty(suffixMatch)) {
-			builder.setSuffix(suffixMatch);
-		}
-		else if (safeRegex.isInitialized()) {
-			builder.setSafeRegex(safeRegex);
-		}
-		return builder.setIgnoreCase(true).build();
+		return headerMatcher.getStringMatch();
 	}
 
 	public static UrlRule.Parameter parameterMatcher2ParameterRule(

@@ -25,14 +25,14 @@ import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructu
  * @author <a href="liuziming@buaa.edu.cn"></a>
  * @since 2.2.10-RC1
  */
-public class LabelRoutingDataChangedEvent extends GovernanceEvent {
+public class RoutingDataChangedEvent extends GovernanceEvent {
 
 	/**
 	 * Configuration for Label Routing.
 	 */
 	private final Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList;
 
-	public LabelRoutingDataChangedEvent(Object source,
+	public RoutingDataChangedEvent(Object source,
 			Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList) {
 		super(source);
 		this.untiedRouterDataStructureList = untiedRouterDataStructureList;

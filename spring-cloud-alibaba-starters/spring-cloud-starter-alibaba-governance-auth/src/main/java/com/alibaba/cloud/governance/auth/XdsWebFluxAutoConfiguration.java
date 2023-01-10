@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Configuration;
 		matchIfMissing = true)
 public class XdsWebFluxAutoConfiguration {
 
+	@Bean
 	public AuthWebFluxFilter authWebFluxFilter(AuthValidator authValidator) {
 		return new AuthWebFluxFilter(authValidator);
 	}
