@@ -100,6 +100,12 @@
         <flatten-maven-plugin.version>1.1.0</flatten-maven-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
         <jacoco.version>0.8.3</jacoco.version>
+        <!-- Envoy Api Versions -->
+        <envoy-api.version>1.0.36</envoy-api.version>
+        <!-- Jose4j Versions -->
+        <jose4j.version>0.8.0</jose4j.version>
+        <!-- OpenSergo Versions -->
+        <opensergo.version>0.1.0-beta2</opensergo.version>
     </properties>
 
     <modules>
@@ -108,7 +114,7 @@
         <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
-    </modules>
+	</modules>
 
     <dependencyManagement>
         <dependencies>
@@ -148,6 +154,7 @@
                 <artifactId>rocketmq-acl</artifactId>
                 <version>${rocketmq.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

@@ -26,6 +26,10 @@
         <module>spring-cloud-alibaba-sentinel-datasource</module>
         <module>spring-cloud-alibaba-sentinel-gateway</module>
         <module>spring-cloud-starter-alibaba-appactive</module>
+        <module>spring-cloud-starter-alibaba-controlplane-istio</module>
+        <module>spring-cloud-starter-alibaba-controlplane-opensergo</module>
+        <module>spring-cloud-starter-alibaba-governance-auth</module>
+        <module>spring-cloud-starter-alibaba-governance-routing</module>
         <module>spring-cloud-alibaba-commons</module>
     </modules>
 
