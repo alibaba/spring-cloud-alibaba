@@ -25,7 +25,7 @@ public class UrlRule {
 
 	public static class Path implements RouteRule {
 
-		private String type;
+		private final String type = "path";
 
 		private String condition;
 
@@ -57,11 +57,6 @@ public class UrlRule {
 		}
 
 		@Override
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		@Override
 		public boolean equals(Object o) {
 			if (this == o) {
 				return true;
@@ -90,7 +85,7 @@ public class UrlRule {
 
 	public static class Parameter implements RouteRule {
 
-		private String type;
+		private final String type = "parameter";
 
 		private String condition;
 
@@ -131,11 +126,6 @@ public class UrlRule {
 		@Override
 		public String getType() {
 			return this.type;
-		}
-
-		@Override
-		public void setType(String type) {
-			this.type = type;
 		}
 
 		@Override

@@ -95,17 +95,14 @@ public class ConsumerApplication {
 			labelRouteData.setDefaultRouteVersion("v1");
 
 			RouteRule routeRule = new HeaderRule();
-			routeRule.setType("header");
 			routeRule.setCondition("=");
 			routeRule.setKey("tag");
 			routeRule.setValue("gray");
 			RouteRule routeRule1 = new UrlRule.Parameter();
-			routeRule1.setType("parameter");
 			routeRule1.setCondition(">");
 			routeRule1.setKey("id");
 			routeRule1.setValue("10");
 			RouteRule routeRule2 = new UrlRule.Path();
-			routeRule2.setType("path");
 			routeRule2.setCondition("=");
 			routeRule2.setValue("/router-test");
 			routeRules.add(routeRule);
@@ -140,17 +137,14 @@ public class ConsumerApplication {
 			labelRouteData.setDefaultRouteVersion("v1");
 
 			RouteRule routeRule = new HeaderRule();
-			routeRule.setType("header");
 			routeRule.setCondition("=");
 			routeRule.setKey("tag");
 			routeRule.setValue("gray");
 			RouteRule routeRule1 = new UrlRule.Parameter();
-			routeRule1.setType("parameter");
 			routeRule1.setCondition(">");
 			routeRule1.setKey("id");
 			routeRule1.setValue("10");
 			RouteRule routeRule2 = new UrlRule.Path();
-			routeRule2.setType("path");
 			routeRule2.setCondition("=");
 			routeRule2.setValue("/router-test");
 			routeRules.add(routeRule);
