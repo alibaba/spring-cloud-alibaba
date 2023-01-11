@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.web;
+package com.alibaba.cloud.routing.ribbon;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -25,18 +25,12 @@ import org.springframework.context.annotation.Configuration;
  * @since 2.2.10-RC1
  */
 @Configuration(proxyBeanMethods = false)
-public class WebMvcAutoConfiguration {
+public class RoutingLoadBalanceRuleAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public WebMvcInterceptor webMvcInterceptor() {
-		return new WebMvcInterceptor();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public WebMvcConfig webMvcConfig() {
-		return new WebMvcConfig();
+	public RoutingLoadBalanceRule routingLoadBalanceRule() {
+		return new RoutingLoadBalanceRule();
 	}
 
 }

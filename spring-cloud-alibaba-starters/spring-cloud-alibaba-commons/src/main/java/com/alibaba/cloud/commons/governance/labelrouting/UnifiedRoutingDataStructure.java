@@ -14,33 +14,38 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.web;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.alibaba.cloud.router.util.RequestContext;
-
-import org.springframework.lang.Nullable;
-import org.springframework.web.servlet.HandlerInterceptor;
+package com.alibaba.cloud.commons.governance.labelrouting;
 
 /**
  * @author HH
  * @since 2.2.10-RC1
  */
-public class WebMvcInterceptor implements HandlerInterceptor {
+public class UnifiedRoutingDataStructure {
 
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-			Object handler) {
-		RequestContext.setRequest(request);
-		return true;
+	private RoutingRule routingRule;
+
+	private String targetService;
+
+	public RoutingRule getLabelRouteRule() {
+		return routingRule;
+	}
+
+	public void setLabelRouteRule(RoutingRule labelRouteRule) {
+		this.routingRule = labelRouteRule;
+	}
+
+	public String getTargetService() {
+		return targetService;
+	}
+
+	public void setTargetService(String targetService) {
+		this.targetService = targetService;
 	}
 
 	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-			Object handler, @Nullable Exception ex) {
-		RequestContext.removeRequest();
+	public String toString() {
+		return "UntiedRoutingDataStructure{" + "RoutingData=" + routingRule
+				+ ", targetService='" + targetService + '\'' + '}';
 	}
 
 }

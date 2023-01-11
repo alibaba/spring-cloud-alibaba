@@ -22,7 +22,7 @@ import java.util.Objects;
  * @author HH
  * @since 2.2.10-RC1
  */
-public class HeaderRule implements RouteRule {
+public class HeaderRoutingRule implements RoutingRule {
 
 	private String type;
 
@@ -80,7 +80,7 @@ public class HeaderRule implements RouteRule {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		HeaderRule that = (HeaderRule) o;
+		HeaderRoutingRule that = (HeaderRoutingRule) o;
 		return Objects.equals(getType(), that.getType())
 				&& Objects.equals(getCondition(), that.getCondition())
 				&& Objects.equals(getKey(), that.getKey())
@@ -94,8 +94,8 @@ public class HeaderRule implements RouteRule {
 
 	@Override
 	public String toString() {
-		return "HeaderRule{" + "type='" + type + '\'' + ", condition='" + condition + '\''
-				+ ", key='" + key + '\'' + ", value='" + value + '\'' + '}';
+		return "HeaderRoutingRule{" + "type='" + type + '\'' + ", condition='" + condition
+				+ '\'' + ", key='" + key + '\'' + ", value='" + value + '\'' + '}';
 	}
 
 }

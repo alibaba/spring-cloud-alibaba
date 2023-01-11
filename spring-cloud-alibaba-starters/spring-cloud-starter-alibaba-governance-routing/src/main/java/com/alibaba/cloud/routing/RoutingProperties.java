@@ -14,38 +14,33 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting;
+package com.alibaba.cloud.routing;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author HH
  * @since 2.2.10-RC1
  */
-public class UnifiedRouteDataStructure {
+@ConfigurationProperties(prefix = RoutingProperties.PROPERTY_PREFIX)
+public class RoutingProperties {
 
-	private LabelRouteRule labelRouteRule;
+	/**
+	 * Properties prefix.
+	 */
+	public static final String PROPERTY_PREFIX = "spring.cloud.governance.router";
 
-	private String targetService;
+	/**
+	 * Load Balance Rule.
+	 */
+	private String rule;
 
-	public LabelRouteRule getLabelRouteRule() {
-		return labelRouteRule;
+	public String getRule() {
+		return rule;
 	}
 
-	public void setLabelRouteRule(LabelRouteRule labelRouteRule) {
-		this.labelRouteRule = labelRouteRule;
-	}
-
-	public String getTargetService() {
-		return targetService;
-	}
-
-	public void setTargetService(String targetService) {
-		this.targetService = targetService;
-	}
-
-	@Override
-	public String toString() {
-		return "UntiedRouteDataStructure{" + "labelRouteData=" + labelRouteRule
-				+ ", targetService='" + targetService + '\'' + '}';
+	public void setRule(String rule) {
+		this.rule = rule;
 	}
 
 }

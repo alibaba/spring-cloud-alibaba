@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.ribbon;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package com.alibaba.cloud.commons.governance.labelrouting.rule;
 
 /**
  * @author HH
  * @since 2.2.10-RC1
  */
-@Configuration(proxyBeanMethods = false)
-public class LabelRouteLBRuleAutoConfiguration {
+public interface RoutingRule {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public LabelRouteLBRule labelRouteRule() {
-		return new LabelRouteLBRule();
-	}
+	/**
+	 * get type of rule.
+	 * @return String
+	 */
+	String getType();
+
+	void setType(String type);
+
+	String getCondition();
+
+	void setCondition(String condition);
+
+	String getKey();
+
+	void setKey(String key);
+
+	String getValue();
+
+	void setValue(String value);
 
 }

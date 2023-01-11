@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.repository;
+package com.alibaba.cloud.routing.repository;
 
 import java.util.HashSet;
 

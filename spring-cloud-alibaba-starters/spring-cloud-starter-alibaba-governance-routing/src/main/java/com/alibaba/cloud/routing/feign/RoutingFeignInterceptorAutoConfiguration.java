@@ -14,36 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.util;
+package com.alibaba.cloud.routing.feign;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  * @since 2.2.10-RC1
  */
-public final class RequestContext {
+@Configuration(proxyBeanMethods = false)
+public class RoutingFeignInterceptorAutoConfiguration {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RequestContext.class);
-
-	private static final ThreadLocal<HttpServletRequest> REQUEST_THREAD_HOLDER = new ThreadLocal<>();
-
-	private RequestContext() {
-	}
-
-	public static HttpServletRequest getRequest() {
-		return REQUEST_THREAD_HOLDER.get();
-	}
-
-	public static void setRequest(HttpServletRequest request) {
-		REQUEST_THREAD_HOLDER.set(request);
-	}
-
-	public static void removeRequest() {
-		REQUEST_THREAD_HOLDER.remove();
+	@Bean
+	@ConditionalOnMissingBean
+	public RoutingFeignInterceptor routingFeignInterceptor() {
+		return new RoutingFeignInterceptor();
 	}
 
 }

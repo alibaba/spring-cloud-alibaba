@@ -14,33 +14,36 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router;
+package com.alibaba.cloud.routing.util;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author HH
  * @since 2.2.10-RC1
  */
-@ConfigurationProperties(prefix = RouterProperties.PROPERTY_PREFIX)
-public class RouterProperties {
+public final class RequestContext {
 
-	/**
-	 * Properties prefix.
-	 */
-	public static final String PROPERTY_PREFIX = "spring.cloud.governance.router";
+	private static final Logger LOG = LoggerFactory.getLogger(RequestContext.class);
 
-	/**
-	 * Load Balance Rule.
-	 */
-	private String rule;
+	private static final ThreadLocal<HttpServletRequest> REQUEST_THREAD_HOLDER = new ThreadLocal<>();
 
-	public String getRule() {
-		return rule;
+	private RequestContext() {
 	}
 
-	public void setRule(String rule) {
-		this.rule = rule;
+	public static HttpServletRequest getRequest() {
+		return REQUEST_THREAD_HOLDER.get();
+	}
+
+	public static void setRequest(HttpServletRequest request) {
+		REQUEST_THREAD_HOLDER.set(request);
+	}
+
+	public static void removeRequest() {
+		REQUEST_THREAD_HOLDER.remove();
 	}
 
 }

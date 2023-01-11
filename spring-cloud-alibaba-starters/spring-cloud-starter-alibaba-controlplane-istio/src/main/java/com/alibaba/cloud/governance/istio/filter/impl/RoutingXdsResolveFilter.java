@@ -22,12 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRule;
+import com.alibaba.cloud.commons.governance.labelrouting.RoutingRule;
+import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRoutingRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRoutingRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcherType;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
@@ -54,11 +53,11 @@ public class RoutingXdsResolveFilter
 		if (routeConfigurations == null) {
 			return false;
 		}
-		Map<String, UnifiedRouteDataStructure> untiedRouteDataStructures = new HashMap<>();
+		Map<String, UnifiedRoutingDataStructure> untiedRouteDataStructures = new HashMap<>();
 		for (RouteConfiguration routeConfiguration : routeConfigurations) {
 			List<VirtualHost> virtualHosts = routeConfiguration.getVirtualHostsList();
 			for (VirtualHost virtualHost : virtualHosts) {
-				UnifiedRouteDataStructure unifiedRouteDataStructure = new UnifiedRouteDataStructure();
+				UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
 				String targetService = "";
 				String[] serviceAndPort = virtualHost.getName().split(":");
 				if (serviceAndPort.length > 0) {
@@ -69,7 +68,7 @@ public class RoutingXdsResolveFilter
 				}
 				unifiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
-				LabelRouteRule labelRouteRule = getRouteData(routes);
+				RoutingRule labelRouteRule = getRouteData(routes);
 				unifiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
 				untiedRouteDataStructures.put(
 						unifiedRouteDataStructure.getTargetService(),
@@ -81,9 +80,9 @@ public class RoutingXdsResolveFilter
 		return true;
 	}
 
-	private LabelRouteRule getRouteData(List<Route> routes) {
+	private RoutingRule getRouteData(List<Route> routes) {
 		List<MatchService> matchServices = new ArrayList<>();
-		LabelRouteRule labelRouteRule = new LabelRouteRule();
+		RoutingRule labelRouteRule = new RoutingRule();
 		for (Route route : routes) {
 			String cluster = route.getRoute().getCluster();
 			if (StringUtils.isNotEmpty(cluster)) {
@@ -122,10 +121,12 @@ public class RoutingXdsResolveFilter
 		return matchService;
 	}
 
-	private List<RouteRule> match2RouteRules(RouteMatch routeMatch) {
-		List<RouteRule> routeRules = new ArrayList<>();
+	private List<com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule> match2RouteRules(
+			RouteMatch routeMatch) {
+		List<com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule> routeRules = new ArrayList<>();
 		for (HeaderMatcher headerMatcher : routeMatch.getHeadersList()) {
-			HeaderRule headerRule = ConvUtil.headerMatcher2HeaderRule(headerMatcher);
+			HeaderRoutingRule headerRule = ConvUtil
+					.headerMatcher2HeaderRule(headerMatcher);
 			if (headerRule != null) {
 				routeRules.add(headerRule);
 			}
@@ -133,14 +134,14 @@ public class RoutingXdsResolveFilter
 
 		for (QueryParameterMatcher parameterMatcher : routeMatch
 				.getQueryParametersList()) {
-			UrlRule.Parameter parameter = ConvUtil
+			UrlRoutingRule.Parameter parameter = ConvUtil
 					.parameterMatcher2ParameterRule(parameterMatcher);
 			if (parameter != null) {
 				routeRules.add(parameter);
 			}
 		}
 
-		UrlRule.Path path = new UrlRule.Path();
+		UrlRoutingRule.PathRoutingRule path = new UrlRoutingRule.PathRoutingRule();
 		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.repository;
+package com.alibaba.cloud.routing.repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.RoutingRule;
+import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRoutingDataStructure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +33,13 @@ import org.springframework.util.CollectionUtils;
  * @author HH
  * @since 2.2.10-RC1
  */
-public class RouteDataRepository {
+public class RoutingDataRepository {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RouteDataRepository.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(RoutingDataRepository.class);
 
 	/**
-	 * Key is service name,value is hashmap,which key is single RouteRule key,value is
+	 * Key is service name,value is hashmap,which key is single RoutingRule key,value is
 	 * match service. Use double hash index to parse route rule.
 	 */
 	private ConcurrentHashMap<String, HashMap<String, List<MatchService>>> routeCache = new ConcurrentHashMap<>();
@@ -47,7 +47,7 @@ public class RouteDataRepository {
 	/**
 	 * The default version of each service.
 	 */
-	private ConcurrentHashMap<String, String> defaultRouteVersion = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, String> defaultRoutingVersion = new ConcurrentHashMap<>();
 
 	/**
 	 * Sign of path.
@@ -74,13 +74,13 @@ public class RouteDataRepository {
 	 */
 	public static final int MIN_WEIGHT = 0;
 
-	public void updateRouteData(final List<UnifiedRouteDataStructure> routeDataList) {
+	public void updateRouteData(final List<UnifiedRoutingDataStructure> routeDataList) {
 		ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache = new ConcurrentHashMap<>();
 		ConcurrentHashMap<String, List<MatchService>> newPathRuleMap = new ConcurrentHashMap<>();
-		for (UnifiedRouteDataStructure routeData : routeDataList) {
+		for (UnifiedRoutingDataStructure routeData : routeDataList) {
 			nonNullCheck(routeData);
 			buildHashIndex(routeData, newRouteCache, newPathRuleMap);
-			defaultRouteVersion.put(routeData.getTargetService(),
+			defaultRoutingVersion.put(routeData.getTargetService(),
 					routeData.getLabelRouteRule().getDefaultRouteVersion());
 		}
 		// Replace it atomically
@@ -88,16 +88,17 @@ public class RouteDataRepository {
 		this.pathRuleMap = newPathRuleMap;
 	}
 
-	private void nonNullCheck(UnifiedRouteDataStructure unifiedRouteDataStructure) {
-		String targetService = unifiedRouteDataStructure.getTargetService();
+	private void nonNullCheck(UnifiedRoutingDataStructure unifiedRoutingDataStructure) {
+		String targetService = unifiedRoutingDataStructure.getTargetService();
 		if (targetService == null) {
 			LOG.error("Lose target Service name.");
 		}
-		final LabelRouteRule labelRouteData = unifiedRouteDataStructure
+		final RoutingRule labelRouteData = unifiedRoutingDataStructure
 				.getLabelRouteRule();
 		final List<MatchService> matchServiceList = labelRouteData.getMatchRouteList();
 		for (MatchService matchService : matchServiceList) {
-			final List<RouteRule> ruleList = matchService.getRuleList();
+			final List<com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule> ruleList = matchService
+					.getRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
 			if (CollectionUtils.isEmpty(ruleList)) {
@@ -118,7 +119,7 @@ public class RouteDataRepository {
 		}
 	}
 
-	private void buildHashIndex(final UnifiedRouteDataStructure routerData,
+	private void buildHashIndex(final UnifiedRoutingDataStructure routerData,
 			ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache,
 			ConcurrentHashMap<String, List<MatchService>> newPathRuleMap) {
 		final List<MatchService> matchRouteList = routerData.getLabelRouteRule()
@@ -126,7 +127,8 @@ public class RouteDataRepository {
 		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();
 
 		for (MatchService matchService : matchRouteList) {
-			List<RouteRule> ruleList = matchService.getRuleList();
+			List<com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule> ruleList = matchService
+					.getRuleList();
 
 			// Take out the path label separately, because there is no key for hash index.
 			if (ruleList.size() == 1
@@ -140,7 +142,7 @@ public class RouteDataRepository {
 				newPathRuleMap.put(routerData.getTargetService(), matchServiceList);
 				continue;
 			}
-			for (RouteRule routeRule : ruleList) {
+			for (com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule routeRule : ruleList) {
 				List<MatchService> matchServiceList = singleRuleMap
 						.get(routeRule.getKey());
 				if (matchServiceList == null) {
@@ -160,7 +162,7 @@ public class RouteDataRepository {
 	}
 
 	public String getDefaultRouteVersion(String targetService) {
-		return defaultRouteVersion.get(targetService);
+		return defaultRoutingVersion.get(targetService);
 	}
 
 	public List<MatchService> getPathRules(String targetService) {

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router;
+package com.alibaba.cloud.routing;
 
-import com.alibaba.cloud.router.listener.LabelRouteDataListener;
-import com.alibaba.cloud.router.repository.FilterService;
-import com.alibaba.cloud.router.repository.RouteDataRepository;
+import com.alibaba.cloud.routing.publish.TargetServiceChangedPublisher;
 
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,30 +28,18 @@ import org.springframework.context.annotation.Configuration;
  * @since 2.2.10-RC1
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureOrder(LabelRoutingAutoConfiguration.LABEL_ROUTING_AUTO_CONFIG_ORDER)
-public class LabelRoutingAutoConfiguration {
-
-	/**
-	 * Order of label routing auto config.
-	 */
-	public static final int LABEL_ROUTING_AUTO_CONFIG_ORDER = 10;
+@EnableConfigurationProperties({ RoutingProperties.class })
+public class RoutingPropertiesAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public RouteDataRepository routeDataRepository() {
-		return new RouteDataRepository();
+	public RoutingProperties routingProperties() {
+		return new RoutingProperties();
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	public FilterService filterService() {
-		return new FilterService();
-	}
-
-	@Bean
-	public LabelRouteDataListener labelRouteDataListener(
-			RouteDataRepository routeDataRepository, FilterService filterService) {
-		return new LabelRouteDataListener(routeDataRepository, filterService);
+	public TargetServiceChangedPublisher targetServiceChangedPublisher() {
+		return new TargetServiceChangedPublisher();
 	}
 
 }

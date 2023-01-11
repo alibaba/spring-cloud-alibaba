@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting.rule;
+package com.alibaba.cloud.routing.web;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author HH
  * @since 2.2.10-RC1
  */
-public interface RouteRule {
+public class WebMvcConfig implements WebMvcConfigurer {
 
-	/**
-	 * get type of rule.
-	 * @return String
-	 */
-	String getType();
+	@Autowired
+	private WebMvcInterceptor webMvcInterceptor;
 
-	void setType(String type);
-
-	String getCondition();
-
-	void setCondition(String condition);
-
-	String getKey();
-
-	void setKey(String key);
-
-	String getValue();
-
-	void setValue(String value);
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(webMvcInterceptor);
+	}
 
 }

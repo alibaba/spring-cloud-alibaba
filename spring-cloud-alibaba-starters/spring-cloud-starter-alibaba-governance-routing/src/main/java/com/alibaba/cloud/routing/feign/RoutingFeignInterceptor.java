@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.feign;
+package com.alibaba.cloud.routing.feign;
 
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.cloud.router.util.RequestContext;
+import com.alibaba.cloud.routing.util.RequestContext;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.slf4j.Logger;
@@ -30,9 +30,10 @@ import org.slf4j.LoggerFactory;
  * @author HH
  * @since 2.2.10-RC1
  */
-public class FeignInterceptor implements RequestInterceptor {
+public class RoutingFeignInterceptor implements RequestInterceptor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(FeignInterceptor.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(RoutingFeignInterceptor.class);
 
 	@Override
 	public void apply(RequestTemplate requestTemplate) {

@@ -23,18 +23,18 @@ import java.util.Objects;
  * @author HH
  * @since 2.2.10-RC1
  */
-public class LabelRouteRule {
+public class RoutingRule {
 
-	private String defaultRouteVersion;
+	private String defaultRoutingVersion;
 
 	private List<MatchService> matchRouteList;
 
 	public String getDefaultRouteVersion() {
-		return defaultRouteVersion;
+		return defaultRoutingVersion;
 	}
 
 	public void setDefaultRouteVersion(String defaultRouteVersion) {
-		this.defaultRouteVersion = defaultRouteVersion;
+		this.defaultRoutingVersion = defaultRouteVersion;
 	}
 
 	public List<MatchService> getMatchRouteList() {
@@ -53,19 +53,19 @@ public class LabelRouteRule {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		LabelRouteRule that = (LabelRouteRule) o;
-		return Objects.equals(defaultRouteVersion, that.defaultRouteVersion)
+		RoutingRule that = (RoutingRule) o;
+		return Objects.equals(defaultRoutingVersion, that.defaultRoutingVersion)
 				&& Objects.equals(getMatchRouteList(), that.getMatchRouteList());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(defaultRouteVersion, getMatchRouteList());
+		return Objects.hash(defaultRoutingVersion, getMatchRouteList());
 	}
 
 	@Override
 	public String toString() {
-		return "LabelRouteData{" + "defaultRouteVersion='" + defaultRouteVersion + '\''
+		return "LabelRouteData{" + "defaultRouteVersion='" + defaultRoutingVersion + '\''
 				+ ", matchRouteList=" + matchRouteList + '}';
 	}
 

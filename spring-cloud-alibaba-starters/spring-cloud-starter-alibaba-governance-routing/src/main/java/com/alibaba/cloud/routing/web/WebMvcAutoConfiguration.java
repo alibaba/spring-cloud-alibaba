@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.web;
+package com.alibaba.cloud.routing.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  * @since 2.2.10-RC1
  */
-public class WebMvcConfig implements WebMvcConfigurer {
+@Configuration(proxyBeanMethods = false)
+public class WebMvcAutoConfiguration {
 
-	@Autowired
-	private WebMvcInterceptor webMvcInterceptor;
+	@Bean
+	@ConditionalOnMissingBean
+	public WebMvcInterceptor webMvcInterceptor() {
+		return new WebMvcInterceptor();
+	}
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(webMvcInterceptor);
+	@Bean
+	@ConditionalOnMissingBean
+	public WebMvcConfig webMvcConfig() {
+		return new WebMvcConfig();
 	}
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.publish;
+package com.alibaba.cloud.routing.publish;
 
 import java.util.concurrent.ConcurrentHashMap;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.ribbon;
+package com.alibaba.cloud.routing.ribbon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,16 +28,16 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RouteRule;
+import com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
-import com.alibaba.cloud.router.RouterProperties;
-import com.alibaba.cloud.router.publish.TargetServiceChangedPublisher;
-import com.alibaba.cloud.router.repository.RouteDataRepository;
-import com.alibaba.cloud.router.util.ConditionMatchUtil;
-import com.alibaba.cloud.router.util.LoadBalanceUtil;
-import com.alibaba.cloud.router.util.RequestContext;
+import com.alibaba.cloud.routing.RoutingProperties;
+import com.alibaba.cloud.routing.publish.TargetServiceChangedPublisher;
+import com.alibaba.cloud.routing.repository.RoutingDataRepository;
+import com.alibaba.cloud.routing.util.ConditionMatchUtil;
+import com.alibaba.cloud.routing.util.LoadBalanceUtil;
+import com.alibaba.cloud.routing.util.RequestContext;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.loadbalancer.AbstractServerPredicate;
@@ -54,9 +54,10 @@ import org.springframework.util.CollectionUtils;
  * @author HH
  * @since 2.2.10-RC1
  */
-public class LabelRouteLBRule extends PredicateBasedRule {
+public class RoutingLoadBalanceRule extends PredicateBasedRule {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LabelRouteLBRule.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(RoutingLoadBalanceRule.class);
 
 	/**
 	 * Support Parsing Rules from path,only URI at present.
@@ -110,10 +111,10 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 	private NacosServiceManager nacosServiceManager;
 
 	@Autowired
-	private RouteDataRepository routeDataRepository;
+	private RoutingDataRepository routingDataRepository;
 
 	@Autowired
-	private RouterProperties routerProperties;
+	private RoutingProperties routingProperties;
 
 	@Autowired
 	private TargetServiceChangedPublisher targetServiceChangedPublisher;
@@ -126,11 +127,11 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 			targetServiceChangedPublisher.addTargetService(targetServiceName);
 
 			// If routeData isn't present, use normal load balance rule.
-			final HashMap<String, List<MatchService>> routeData = routeDataRepository
+			final HashMap<String, List<MatchService>> routeData = routingDataRepository
 					.getRouteRule(targetServiceName);
 			if (routeData == null) {
 				return loadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
-						routerProperties.getRule());
+						routingProperties.getRule());
 			}
 
 			// Get instances from register-center.
@@ -214,7 +215,7 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 			}
 		}
 		final Map<String, String[]> parameterMap = request.getParameterMap();
-		int defaultVersionWeight = RouteDataRepository.SUM_WEIGHT;
+		int defaultVersionWeight = RoutingDataRepository.SUM_WEIGHT;
 		boolean isMatch = false;
 
 		// Parse rule.
@@ -244,7 +245,7 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 			}
 		}
 
-		final List<MatchService> pathRules = routeDataRepository
+		final List<MatchService> pathRules = routingDataRepository
 				.getPathRules(targetServiceName);
 		if (!isMatch && pathRules != null) {
 			for (MatchService matchService : pathRules) {
@@ -260,8 +261,8 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 		}
 
 		// Add default route
-		if (defaultVersionWeight > RouteDataRepository.MIN_WEIGHT) {
-			String defaultRouteVersion = routeDataRepository
+		if (defaultVersionWeight > RoutingDataRepository.MIN_WEIGHT) {
+			String defaultRouteVersion = routingDataRepository
 					.getDefaultRouteVersion(targetServiceName);
 			versionSet.add(defaultRouteVersion);
 			weightMap.put(defaultRouteVersion, defaultVersionWeight);
@@ -275,18 +276,18 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 			HashSet<String> versionSet, HashMap<String, Integer> weightMap,
 			HashSet<String> fallbackVersionSet,
 			HashMap<String, Integer> fallbackWeightMap) {
-		final List<MatchService> matchServiceList = routeDataRepository
+		final List<MatchService> matchServiceList = routingDataRepository
 				.getRouteRule(targetServiceName).get(keyName);
 		if (matchServiceList == null) {
 			return NO_MATCH;
 		}
 		for (MatchService matchService : matchServiceList) {
-			final List<RouteRule> ruleList = matchService.getRuleList();
+			final List<RoutingRule> ruleList = matchService.getRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
 			String fallback = matchService.getFallback();
 			boolean isMatchRule = true;
-			for (RouteRule routeRule : ruleList) {
+			for (RoutingRule routeRule : ruleList) {
 				String type = routeRule.getType();
 				switch (type) {
 				case PATH:
@@ -318,7 +319,7 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 		return NO_MATCH;
 	}
 
-	private boolean parseRequestPath(final RouteRule routeRule,
+	private boolean parseRequestPath(final RoutingRule routeRule,
 			final HttpServletRequest request) {
 		String condition = routeRule.getCondition();
 		String value = routeRule.getValue();
@@ -326,7 +327,7 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 		return conditionMatch(condition, value, uri);
 	}
 
-	private boolean parseRequestHeader(final RouteRule routeRule,
+	private boolean parseRequestHeader(final RoutingRule routeRule,
 			final HashMap<String, String> requestHeaders) {
 		if (requestHeaders.size() == 0) {
 			return false;
@@ -337,7 +338,7 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 		return conditionMatch(condition, value, headerValue);
 	}
 
-	private boolean parseRequestParameter(final RouteRule routeRule,
+	private boolean parseRequestParameter(final RoutingRule routeRule,
 			final Map<String, String[]> parameterMap) {
 		if (parameterMap == null || parameterMap.size() == 0) {
 			return false;
@@ -389,12 +390,12 @@ public class LabelRouteLBRule extends PredicateBasedRule {
 			}
 		}
 
-		if (sum > RouteDataRepository.SUM_WEIGHT) {
-			LOG.error("Sum of weight has over {} ", RouteDataRepository.SUM_WEIGHT);
+		if (sum > RoutingDataRepository.SUM_WEIGHT) {
+			LOG.error("Sum of weight has over {} ", RoutingDataRepository.SUM_WEIGHT);
 		}
 
 		double random = ThreadLocalRandom.current().nextDouble(
-				RouteDataRepository.MIN_WEIGHT, RouteDataRepository.SUM_WEIGHT);
+				RoutingDataRepository.MIN_WEIGHT, RoutingDataRepository.SUM_WEIGHT);
 		int chooseServiceIndex = Arrays.binarySearch(weightArray, random);
 		if (chooseServiceIndex < 0) {
 			chooseServiceIndex = -chooseServiceIndex - 1;

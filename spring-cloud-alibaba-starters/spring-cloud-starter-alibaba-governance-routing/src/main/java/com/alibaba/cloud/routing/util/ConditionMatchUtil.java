@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.router.util;
+package com.alibaba.cloud.routing.util;
 
 import java.util.regex.Pattern;
 

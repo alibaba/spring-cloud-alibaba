@@ -22,9 +22,9 @@ import java.util.Objects;
  * @author HH
  * @since 2.2.10-RC1
  */
-public class UrlRule {
+public class UrlRoutingRule {
 
-	public static class Path implements RouteRule {
+	public static class PathRoutingRule implements RoutingRule {
 
 		private String type;
 
@@ -80,7 +80,7 @@ public class UrlRule {
 			if (o == null || getClass() != o.getClass()) {
 				return false;
 			}
-			Path path = (Path) o;
+			PathRoutingRule path = (PathRoutingRule) o;
 			return Objects.equals(getType(), path.getType())
 					&& Objects.equals(getCondition(), path.getCondition())
 					&& Objects.equals(getValue(), path.getValue());
@@ -93,13 +93,13 @@ public class UrlRule {
 
 		@Override
 		public String toString() {
-			return "Path{" + "type='" + type + '\'' + ", condition='" + condition + '\''
-					+ ", value='" + value + '\'' + '}';
+			return "PathRoutingRule{" + "type='" + type + '\'' + ", condition='"
+					+ condition + '\'' + ", value='" + value + '\'' + '}';
 		}
 
 	}
 
-	public static class Parameter implements RouteRule {
+	public static class Parameter implements RoutingRule {
 
 		private String type;
 
@@ -171,8 +171,9 @@ public class UrlRule {
 
 		@Override
 		public String toString() {
-			return "Parameter{" + "type='" + type + '\'' + ", condition='" + condition
-					+ '\'' + ", key='" + key + '\'' + ", value='" + value + '\'' + '}';
+			return "ParameterRoutingRule{" + "type='" + type + '\'' + ", condition='"
+					+ condition + '\'' + ", key='" + key + '\'' + ", value='" + value
+					+ '\'' + '}';
 		}
 
 	}
