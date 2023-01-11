@@ -18,7 +18,7 @@ package com.alibaba.cloud.commons.governance.event;
 
 import java.util.Collection;
 
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 
 /**
  * @author musi

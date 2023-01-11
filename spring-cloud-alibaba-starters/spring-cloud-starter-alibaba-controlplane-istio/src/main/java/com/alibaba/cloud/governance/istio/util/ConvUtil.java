@@ -16,8 +16,8 @@
 
 package com.alibaba.cloud.governance.istio.util;
 
-import com.alibaba.cloud.commons.governance.labelrouting.rule.HeaderRoutingRule;
-import com.alibaba.cloud.commons.governance.labelrouting.rule.UrlRoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.IpMatcher;
 import com.alibaba.cloud.commons.matcher.StringMatcher;

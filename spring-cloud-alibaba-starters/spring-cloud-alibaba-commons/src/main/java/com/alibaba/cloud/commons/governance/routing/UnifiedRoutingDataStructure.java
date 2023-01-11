@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting;
+package com.alibaba.cloud.commons.governance.routing;
 
 /**
  * @author HH

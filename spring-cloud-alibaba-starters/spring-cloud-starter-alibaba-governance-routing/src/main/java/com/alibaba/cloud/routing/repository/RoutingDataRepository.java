@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
-import com.alibaba.cloud.commons.governance.labelrouting.RoutingRule;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.routing.MatchService;
+import com.alibaba.cloud.commons.governance.routing.RoutingRule;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +97,7 @@ public class RoutingDataRepository {
 				.getLabelRouteRule();
 		final List<MatchService> matchServiceList = labelRouteData.getMatchRouteList();
 		for (MatchService matchService : matchServiceList) {
-			final List<com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule> ruleList = matchService
+			final List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService
 					.getRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
@@ -127,7 +127,7 @@ public class RoutingDataRepository {
 		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();
 
 		for (MatchService matchService : matchRouteList) {
-			List<com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule> ruleList = matchService
+			List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService
 					.getRuleList();
 
 			// Take out the path label separately, because there is no key for hash index.
@@ -142,7 +142,7 @@ public class RoutingDataRepository {
 				newPathRuleMap.put(routerData.getTargetService(), matchServiceList);
 				continue;
 			}
-			for (com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule routeRule : ruleList) {
+			for (com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule : ruleList) {
 				List<MatchService> matchServiceList = singleRuleMap
 						.get(routeRule.getKey());
 				if (matchServiceList == null) {

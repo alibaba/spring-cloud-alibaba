@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.governance.opensergo.util.ConvUtils;
 import com.google.protobuf.InvalidProtocolBufferException;

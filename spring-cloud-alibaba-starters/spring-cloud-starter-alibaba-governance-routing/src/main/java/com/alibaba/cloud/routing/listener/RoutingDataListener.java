@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.routing.repository.FilterService;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
 import org.slf4j.Logger;

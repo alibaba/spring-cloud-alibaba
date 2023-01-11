@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.labelrouting;
+package com.alibaba.cloud.commons.governance.routing;
 
 import java.util.List;
 import java.util.Objects;
 
-import com.alibaba.cloud.commons.governance.labelrouting.rule.RoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.RoutingRule;
 
 /**
  * @author HH
