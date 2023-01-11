@@ -169,10 +169,9 @@ public class NacosDiscoveryProperties {
 	private String networkInterface = "";
 
 	/**
-	 * choose IPv4 or IPv6 or both_IPv4_IPv6. if you don't set it will choose
-	 * both_IPv4_IPv6. When IPv6 is chosen but no IPv6 can be found, system will
-	 * automatically find IPv4 to ensure there is an available service address. If
-	 * both_IPv4_IPv6 is set,both IPv4 and IPv6 will be register.
+	 * choose IPv4 or IPv6,if you don't set it will choose IPv4. When IPv6 is chosen but
+	 * no IPv6 can be found, system will automatically find IPv4 to ensure there is an
+	 * available service address.
 	 */
 	private String ipType;
 
@@ -275,7 +274,10 @@ public class NacosDiscoveryProperties {
 				}
 				else if (ipType == null) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-					metadata.put(IPV6, inetIPv6Utils.findIPv6Address());
+					String iPv6Address = inetIPv6Utils.findIPv6Address();
+					if (iPv6Address != null) {
+						metadata.put(IPV6, iPv6Address);
+					}
 				}
 				else {
 					throw new IllegalArgumentException(
@@ -295,7 +297,7 @@ public class NacosDiscoveryProperties {
 					InetAddress currentAddress = inetAddress.nextElement();
 					if (currentAddress instanceof Inet4Address
 							|| currentAddress instanceof Inet6Address
-									&& !currentAddress.isLoopbackAddress()) {
+							&& !currentAddress.isLoopbackAddress()) {
 						ip = currentAddress.getHostAddress();
 						break;
 					}
