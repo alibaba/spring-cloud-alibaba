@@ -37,7 +37,6 @@ import com.alibaba.cloud.routing.publish.TargetServiceChangedPublisher;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
 import com.alibaba.cloud.routing.util.ConditionMatchUtil;
 import com.alibaba.cloud.routing.util.LoadBalanceUtil;
-import com.alibaba.cloud.routing.util.RequestContext;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.loadbalancer.AbstractServerPredicate;
@@ -49,6 +48,8 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author HH
@@ -94,16 +95,6 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 	 */
 	private AbstractServerPredicate predicate;
 
-	/**
-	 * Match condition util.
-	 */
-	private final ConditionMatchUtil conditionMatchUtil = new ConditionMatchUtil();
-
-	/**
-	 * Load Balance Util.
-	 */
-	private final LoadBalanceUtil loadBalanceUtil = new LoadBalanceUtil();
-
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
@@ -130,7 +121,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			final HashMap<String, List<MatchService>> routeData = routingDataRepository
 					.getRouteRule(targetServiceName);
 			if (routeData == null) {
-				return loadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
+				return LoadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
 						routingProperties.getRule());
 			}
 
@@ -204,7 +195,8 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			HashMap<String, Integer> weightMap, HashSet<String> fallbackVersionSet,
 			HashMap<String, Integer> fallbackWeightMap) {
 		// Get request metadata.
-		final HttpServletRequest request = RequestContext.getRequest();
+		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+				.getRequestAttributes()).getRequest();
 		final Enumeration<String> headerNames = request.getHeaderNames();
 		HashMap<String, String> requestHeaders = new HashMap<>();
 		if (headerNames != null) {
@@ -354,19 +346,19 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		switch (condition) {
 		case ConditionMatchUtil.EXACT:
 		case ConditionMatchUtil.EQUAL:
-			return conditionMatchUtil.exactMatch(str, comparator);
+			return ConditionMatchUtil.exactMatch(str, comparator);
 		case ConditionMatchUtil.REGEX:
-			return conditionMatchUtil.regexMatch(str, comparator);
+			return ConditionMatchUtil.regexMatch(str, comparator);
 		case ConditionMatchUtil.PREFIX:
-			return conditionMatchUtil.prefixMatch(str, comparator);
+			return ConditionMatchUtil.prefixMatch(str, comparator);
 		case ConditionMatchUtil.CONTAIN:
-			return conditionMatchUtil.containMatch(str, comparator);
+			return ConditionMatchUtil.containMatch(str, comparator);
 		case ConditionMatchUtil.GREATER:
-			return conditionMatchUtil.greaterMatch(str, comparator);
+			return ConditionMatchUtil.greaterMatch(str, comparator);
 		case ConditionMatchUtil.LESS:
-			return conditionMatchUtil.lessMatch(str, comparator);
+			return ConditionMatchUtil.lessMatch(str, comparator);
 		case ConditionMatchUtil.NOT_EQUAL:
-			return conditionMatchUtil.noEqualMatch(str, comparator);
+			return ConditionMatchUtil.noEqualMatch(str, comparator);
 		default:
 			throw new UnsupportedOperationException(
 					"unsupported string compare operation");

@@ -135,15 +135,14 @@ public class RoutingXdsResolveFilter
 
 		for (QueryParameterMatcher parameterMatcher : routeMatch
 				.getQueryParametersList()) {
-			UrlRoutingRule.Parameter parameter = ConvUtil
+			UrlRoutingRule.ParameterRoutingRule parameterRoutingRule = ConvUtil
 					.parameterMatcher2ParameterRule(parameterMatcher);
-			if (parameter != null) {
-				routeRules.add(parameter);
+			if (parameterRoutingRule != null) {
+				routeRules.add(parameterRoutingRule);
 			}
 		}
 
 		UrlRoutingRule.PathRoutingRule path = new UrlRoutingRule.PathRoutingRule();
-		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:
 			path.setCondition(StringMatcherType.PREFIX.toString());

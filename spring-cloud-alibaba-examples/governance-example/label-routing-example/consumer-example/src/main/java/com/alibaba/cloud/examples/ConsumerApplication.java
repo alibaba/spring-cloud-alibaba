@@ -95,17 +95,14 @@ public class ConsumerApplication {
 			labelRouteData.setDefaultRouteVersion("v1");
 
 			Rule routeRule = new HeaderRoutingRule();
-			routeRule.setType("header");
 			routeRule.setCondition("=");
 			routeRule.setKey("tag");
 			routeRule.setValue("gray");
-			Rule routeRule1 = new UrlRoutingRule.Parameter();
-			routeRule1.setType("parameter");
+			Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
 			routeRule1.setCondition(">");
 			routeRule1.setKey("id");
 			routeRule1.setValue("10");
 			Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-			routeRule2.setType("path");
 			routeRule2.setCondition("=");
 			routeRule2.setValue("/router-test");
 			routeRules.add(routeRule);
@@ -140,17 +137,14 @@ public class ConsumerApplication {
 			labelRouteData.setDefaultRouteVersion("v1");
 
 			Rule routeRule = new HeaderRoutingRule();
-			routeRule.setType("header");
 			routeRule.setCondition("=");
 			routeRule.setKey("tag");
 			routeRule.setValue("gray");
-			Rule routeRule1 = new UrlRoutingRule.Parameter();
-			routeRule1.setType("parameter");
+			Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
 			routeRule1.setCondition(">");
 			routeRule1.setKey("id");
 			routeRule1.setValue("10");
 			Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-			routeRule2.setType("path");
 			routeRule2.setCondition("=");
 			routeRule2.setValue("/router-test");
 			routeRules.add(routeRule);
