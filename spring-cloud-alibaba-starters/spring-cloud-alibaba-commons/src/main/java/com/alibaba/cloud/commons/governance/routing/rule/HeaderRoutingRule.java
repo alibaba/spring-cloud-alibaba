@@ -24,7 +24,7 @@ import java.util.Objects;
  */
 public class HeaderRoutingRule implements Rule {
 
-	private String type;
+	private final String type = "header";
 
 	private String condition;
 
@@ -65,11 +65,6 @@ public class HeaderRoutingRule implements Rule {
 	@Override
 	public String getType() {
 		return this.type;
-	}
-
-	@Override
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	@Override

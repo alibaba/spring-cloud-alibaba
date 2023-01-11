@@ -26,7 +26,7 @@ public class UrlRoutingRule {
 
 	public static class PathRoutingRule implements Rule {
 
-		private String type;
+		private final String type = "path";
 
 		private String condition;
 
@@ -68,11 +68,6 @@ public class UrlRoutingRule {
 		}
 
 		@Override
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		@Override
 		public boolean equals(Object o) {
 			if (this == o) {
 				return true;
@@ -99,9 +94,9 @@ public class UrlRoutingRule {
 
 	}
 
-	public static class Parameter implements Rule {
+	public static class ParameterRoutingRule implements Rule {
 
-		private String type;
+		private final String type = "parameter";
 
 		private String condition;
 
@@ -145,11 +140,6 @@ public class UrlRoutingRule {
 		}
 
 		@Override
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		@Override
 		public boolean equals(Object o) {
 			if (this == o) {
 				return true;
@@ -157,11 +147,11 @@ public class UrlRoutingRule {
 			if (o == null || getClass() != o.getClass()) {
 				return false;
 			}
-			Parameter parameter = (Parameter) o;
-			return Objects.equals(getType(), parameter.getType())
-					&& Objects.equals(getCondition(), parameter.getCondition())
-					&& Objects.equals(getKey(), parameter.getKey())
-					&& Objects.equals(getValue(), parameter.getValue());
+			ParameterRoutingRule parameterRoutingRule = (ParameterRoutingRule) o;
+			return Objects.equals(getType(), parameterRoutingRule.getType())
+					&& Objects.equals(getCondition(), parameterRoutingRule.getCondition())
+					&& Objects.equals(getKey(), parameterRoutingRule.getKey())
+					&& Objects.equals(getValue(), parameterRoutingRule.getValue());
 		}
 
 		@Override

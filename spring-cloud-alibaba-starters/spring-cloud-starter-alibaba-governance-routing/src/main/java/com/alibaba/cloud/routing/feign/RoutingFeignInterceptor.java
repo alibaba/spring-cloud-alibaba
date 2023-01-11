@@ -20,11 +20,13 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.cloud.routing.util.RequestContext;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author HH
@@ -37,7 +39,8 @@ public class RoutingFeignInterceptor implements RequestInterceptor {
 
 	@Override
 	public void apply(RequestTemplate requestTemplate) {
-		final HttpServletRequest request = RequestContext.getRequest();
+		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+				.getRequestAttributes()).getRequest();
 		final Enumeration<String> headerNames = request.getHeaderNames();
 		if (headerNames == null) {
 			return;

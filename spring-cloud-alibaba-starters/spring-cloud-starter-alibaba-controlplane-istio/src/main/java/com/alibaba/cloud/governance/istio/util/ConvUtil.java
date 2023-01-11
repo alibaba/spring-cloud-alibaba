@@ -34,10 +34,6 @@ import io.envoyproxy.envoy.type.matcher.v3.RegexMatcher;
  */
 public final class ConvUtil {
 
-	private static final String HEADER = "header";
-
-	private static final String PARAMETER = "parameter";
-
 	private ConvUtil() {
 
 	}
@@ -125,17 +121,16 @@ public final class ConvUtil {
 		return headerMatcher.getStringMatch();
 	}
 
-	public static UrlRoutingRule.Parameter parameterMatcher2ParameterRule(
+	public static UrlRoutingRule.ParameterRoutingRule parameterMatcher2ParameterRule(
 			QueryParameterMatcher queryParameterMatcher) {
-		UrlRoutingRule.Parameter parameter = new UrlRoutingRule.Parameter();
+		UrlRoutingRule.ParameterRoutingRule parameterRoutingRule = new UrlRoutingRule.ParameterRoutingRule();
 		StringMatcher stringMatcher = ConvUtil
 				.convStringMatcher(queryParameterMatcher.getStringMatch());
 		if (stringMatcher != null) {
-			parameter.setCondition(stringMatcher.getType().toString());
-			parameter.setKey(queryParameterMatcher.getName());
-			parameter.setValue(stringMatcher.getMatcher());
-			parameter.setType(PARAMETER);
-			return parameter;
+			parameterRoutingRule.setCondition(stringMatcher.getType().toString());
+			parameterRoutingRule.setKey(queryParameterMatcher.getName());
+			parameterRoutingRule.setValue(stringMatcher.getMatcher());
+			return parameterRoutingRule;
 		}
 		return null;
 	}
@@ -149,7 +144,6 @@ public final class ConvUtil {
 			headerRule.setCondition(stringMatcher.getType().toString());
 			headerRule.setKey(headerMatcher.getName());
 			headerRule.setValue(stringMatcher.getMatcher());
-			headerRule.setType(HEADER);
 			return headerRule;
 		}
 		return null;

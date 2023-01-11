@@ -55,12 +55,6 @@ public class OpenSergoTrafficRouterParser {
 	protected static final Logger log = LoggerFactory
 			.getLogger(OpenSergoTrafficRouterParser.class);
 
-	private static final String HEADER = "header";
-
-	private static final String PARAMETER = "parameter";
-
-	private static final String PATH = "path";
-
 	public OpenSergoTrafficRouterParser() {
 	}
 
@@ -186,15 +180,14 @@ public class OpenSergoTrafficRouterParser {
 
 		for (QueryParameterMatcher parameterMatcher : routeMatch
 				.getQueryParametersList()) {
-			UrlRoutingRule.Parameter parameter = parameterMatcher2ParameterRule(
+			UrlRoutingRule.ParameterRoutingRule parameterRoutingRule = parameterMatcher2ParameterRule(
 					parameterMatcher);
-			if (parameter != null) {
-				routeRules.add(parameter);
+			if (parameterRoutingRule != null) {
+				routeRules.add(parameterRoutingRule);
 			}
 		}
 
 		UrlRoutingRule.PathRoutingRule path = new UrlRoutingRule.PathRoutingRule();
-		path.setType(PATH);
 		switch (routeMatch.getPathSpecifierCase()) {
 		case PREFIX:
 			path.setCondition(StringMatcherType.PREFIX.toString());
@@ -222,17 +215,16 @@ public class OpenSergoTrafficRouterParser {
 		return routeRules;
 	}
 
-	private UrlRoutingRule.Parameter parameterMatcher2ParameterRule(
+	private UrlRoutingRule.ParameterRoutingRule parameterMatcher2ParameterRule(
 			QueryParameterMatcher queryParameterMatcher) {
-		UrlRoutingRule.Parameter parameter = new UrlRoutingRule.Parameter();
+		UrlRoutingRule.ParameterRoutingRule parameterRoutingRule = new UrlRoutingRule.ParameterRoutingRule();
 		StringMatcher stringMatcher = ConvUtils
 				.convStringMatcher(queryParameterMatcher.getStringMatch());
 		if (stringMatcher != null) {
-			parameter.setCondition(stringMatcher.getType().toString());
-			parameter.setKey(queryParameterMatcher.getName());
-			parameter.setValue(stringMatcher.getMatcher());
-			parameter.setType(PARAMETER);
-			return parameter;
+			parameterRoutingRule.setCondition(stringMatcher.getType().toString());
+			parameterRoutingRule.setKey(queryParameterMatcher.getName());
+			parameterRoutingRule.setValue(stringMatcher.getMatcher());
+			return parameterRoutingRule;
 		}
 		return null;
 	}
@@ -245,7 +237,6 @@ public class OpenSergoTrafficRouterParser {
 			headerRule.setCondition(stringMatcher.getType().toString());
 			headerRule.setKey(headerMatcher.getName());
 			headerRule.setValue(stringMatcher.getMatcher());
-			headerRule.setType(HEADER);
 			return headerRule;
 		}
 		return null;
