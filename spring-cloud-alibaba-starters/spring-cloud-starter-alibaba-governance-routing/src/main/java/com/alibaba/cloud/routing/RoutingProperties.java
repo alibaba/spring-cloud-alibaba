@@ -16,6 +16,11 @@
 
 package com.alibaba.cloud.routing;
 
+import javax.annotation.PostConstruct;
+
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.routing.util.LoadBalanceUtil;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -34,6 +39,13 @@ public class RoutingProperties {
 	 * Load Balance Rule.
 	 */
 	private String rule;
+
+	@PostConstruct
+	public void init() {
+		if (StringUtils.isEmpty(rule)) {
+			rule = LoadBalanceUtil.ZONE_AVOIDANCE_RULE;
+		}
+	}
 
 	public String getRule() {
 		return rule;

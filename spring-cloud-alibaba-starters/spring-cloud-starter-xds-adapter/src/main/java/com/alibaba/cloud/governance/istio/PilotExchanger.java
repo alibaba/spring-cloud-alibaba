@@ -56,7 +56,7 @@ public class PilotExchanger {
 			return;
 		}
 		Set<String> resourceName = ldsProtocol.getResourceNames();
-		if (CollectionUtils.isEmpty(resourceName)) {
+		if (!CollectionUtils.isEmpty(resourceName)) {
 			rdsProtocol.observeResource(resourceName, this::observeRoutes);
 		}
 
