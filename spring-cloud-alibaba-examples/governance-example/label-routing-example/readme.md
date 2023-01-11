@@ -1,12 +1,22 @@
-# label route example
+# routing example
 
 ## Project Description
 
-This project demonstrates how to use the spring cloud ailbaba governance labelrouting module to complete the label routing function.
+This project demonstrates how to use the spring cloud ailbaba governance routing module to complete the label routing function.
 
 ## module structure
 
 This module includes a consumer instance and a provider cluster, which contains two instances.
+
+## Component support description
+
+Currently, the routing module only supports some components:
+
+Remote call Component: OpenFeign
+
+Load balance Component: ribbon
+
+In the future, more components such as resttemplate, loadbalance and so on will be supported.
 
 ## Example
 

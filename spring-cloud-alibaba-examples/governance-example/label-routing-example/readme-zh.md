@@ -1,12 +1,21 @@
-# label route example
+# routing example
 
 ## 项目说明
 
-本项目演示如何使用 spring cloud ailbaba governance labelrouting 模块完成标签路由功能。
+本项目演示如何使用 spring cloud ailbaba governance routing 模块完成标签路由功能。
 
 ## 模块结构
 
 本模块包括一个消费者实例和一个提供者集群，该集群包含着两个实例。
+
+## 组件支持说明
+目前，路由模块只支持了部分组件：
+
+远程调用组件：openfeign
+
+负载均衡组件：ribbon
+
+未来会支持更多的比如resttemplate，loadbalance等组件。
 
 ## 示例
 
