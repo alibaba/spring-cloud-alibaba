@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>com.alibaba.cloud</groupId>
+		<artifactId>spring-cloud-alibaba-examples</artifactId>
+		<version>${revision}</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>istio-authentication-provider-webflux-example</artifactId>
+	<name>Spring Cloud Starter Alibaba Authentication Provider WebFlux Example</name>
+	<description>Example demonstrating how to use authentication on spring webflux application</description>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-governance-auth</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>spring-web</groupId>
+					<artifactId>5.2.15.RELEASE</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>spring-web</groupId>
+					<artifactId>5.2.15.RELEASE</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+
+</project>
