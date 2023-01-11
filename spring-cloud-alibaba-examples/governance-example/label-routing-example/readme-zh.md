@@ -11,11 +11,11 @@
 ## 组件支持说明
 目前，路由模块只支持了部分组件：
 
-远程调用组件：OpenFeign
+远程调用组件：Spring Cloud OpenFeign
 
-负载均衡组件：Ribbon
+负载均衡组件：Spring Cloud Ribbon
 
-未来会支持更多的比如RestTemplate，LoadBalancer等组件。
+未来会支持更多的比如Spring Cloud RestTemplate，Spring Cloud LoadBalancer等组件。
 
 ## 示例
 

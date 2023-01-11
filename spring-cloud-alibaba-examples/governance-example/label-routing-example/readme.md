@@ -12,11 +12,11 @@ This module includes a consumer instance and a provider cluster, which contains 
 
 Currently, the routing module only supports some components:
 
-Remote call Component: OpenFeign
+Remote call Component: Spring Cloud OpenFeign
 
-Load balance Component: Ribbon
+Load balance Component: Spring Cloud Ribbon
 
-In the future, more components such as RestTemplate, LoadBalancer and so on will be supported.
+In the future, more components such as Spring Cloud RestTemplate, Spring Cloud Spring Cloud LoadBalancer and so on will be supported.
 
 ## Example
 

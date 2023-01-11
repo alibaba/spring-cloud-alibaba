@@ -69,11 +69,11 @@ You need to run the application in the K8s environment and inject some meta info
 
 Currently, the routing module only supports some components:
 
-Remote call Component: OpenFeign
+Remote call Component: Spring Cloud OpenFeign
 
-Load balance Component: Ribbon
+Load balance Component: Spring Cloud Ribbon
 
-In the future, more components such as RestTemplate, LoadBalancer and so on will be supported.
+In the future, more components such as Spring Cloud RestTemplate, Spring Cloud LoadBalancer and so on will be supported.
 
 ==== use Routing
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. Label routing module can route the Spring Cloud application according to the request header, request parameters and other tags to route to different services.
