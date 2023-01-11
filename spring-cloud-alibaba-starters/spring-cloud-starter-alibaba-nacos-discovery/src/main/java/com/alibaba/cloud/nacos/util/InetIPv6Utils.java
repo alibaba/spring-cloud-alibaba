@@ -37,7 +37,7 @@ public class InetIPv6Utils {
 
 	private final static Log log = LogFactory.getLog(InetIPv6Utils.class);
 
-	private final static String IPV6_IS_NULL = "";
+	private final static String IPV6_IS_NULL = StringUtils.EMPTY;
 
 	private final InetUtilsProperties properties;
 
@@ -45,12 +45,9 @@ public class InetIPv6Utils {
 		this.properties = properties;
 	}
 
-	private InetUtils.HostInfo findFirstNonLoopbackHostInfo() {
+	private InetUtils.HostInfo findFirstValidHostInfo() {
 		InetAddress address = this.findFirstValidIPv6Address();
-		if (address != null) {
-			return this.getHostInfo(address);
-		}
-		return null;
+		return this.getHostInfo(address);
 	}
 
 	private InetAddress findFirstValidIPv6Address() {
@@ -96,14 +93,8 @@ public class InetIPv6Utils {
 	}
 
 	public String findIPv6Address() {
-		InetUtils.HostInfo hostInfo = findFirstNonLoopbackHostInfo();
-		String ipv6 = hostInfo.getIpAddress();
-		if (StringUtils.isNotEmpty(ipv6)) {
-			return normalizeIPv6(ipv6);
-		}
-		else {
-			return IPV6_IS_NULL;
-		}
+		InetUtils.HostInfo hostInfo = findFirstValidHostInfo();
+		return normalizeIPv6(hostInfo.getIpAddress());
 	}
 
 	private String normalizeIPv6(String ip) {
@@ -147,7 +138,12 @@ public class InetIPv6Utils {
 			hostName = "localhost";
 		}
 		hostInfo.setHostname(hostName);
-		hostInfo.setIpAddress(address.getHostAddress());
+		if (StringUtils.isNotEmpty(address.getHostAddress())) {
+			hostInfo.setIpAddress(address.getHostAddress());
+		}
+		else {
+			hostInfo.setIpAddress(IPV6_IS_NULL);
+		}
 		return hostInfo;
 	}
 
