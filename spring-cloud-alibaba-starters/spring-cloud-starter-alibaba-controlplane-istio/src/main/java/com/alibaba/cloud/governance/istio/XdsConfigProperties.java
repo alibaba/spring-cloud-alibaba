@@ -26,6 +26,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 @ConfigurationProperties(XdsConfigProperties.PREFIX)
 public class XdsConfigProperties {

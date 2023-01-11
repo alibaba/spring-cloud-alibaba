@@ -30,10 +30,14 @@ import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.util.CollectionUtils;
+
 /**
+ * PilotExchanger is the class which communicate with istio pilot.
+ *
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a> PilotExchanger is the class which
- * communicate with istio pilot.
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class PilotExchanger {
 
@@ -48,11 +52,11 @@ public class PilotExchanger {
 	private final RdsProtocol rdsProtocol;
 
 	private void observeListeners(List<Listener> listeners) {
-		if (listeners == null) {
+		if (CollectionUtils.isEmpty(listeners)) {
 			return;
 		}
 		Set<String> resourceName = ldsProtocol.getResourceNames();
-		if (resourceName != null && !resourceName.isEmpty()) {
+		if (CollectionUtils.isEmpty(resourceName)) {
 			rdsProtocol.observeResource(resourceName, this::observeRoutes);
 		}
 
@@ -60,7 +64,7 @@ public class PilotExchanger {
 
 	private void observeClusters(List<Cluster> clusters) {
 		Set<String> resourceName = cdsProtocol.getResourceNames();
-		if (resourceName != null && !resourceName.isEmpty()) {
+		if (CollectionUtils.isEmpty(resourceName)) {
 			// eds
 			edsProtocol.observeResource(resourceName, this::observeEndpoints);
 		}

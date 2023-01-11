@@ -19,7 +19,7 @@ package com.alibaba.cloud.governance.opensergo;
 import java.util.Collection;
 import java.util.List;
 
-import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.governance.opensergo.util.ConvUtils;
@@ -41,6 +41,7 @@ import org.springframework.context.ApplicationContextAware;
  *
  * @author panxiaojun233
  * @author <a href="m13201628570@163.com"></a>
+ * @since 2.2.10-RC1
  */
 public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 
@@ -95,7 +96,7 @@ public class OpenSergoTrafficExchanger implements ApplicationContextAware {
 									.resolveLabelRouting(
 											(List<RouteConfiguration>) dataList);
 							applicationContext.publishEvent(
-									new LabelRoutingDataChangedEvent(this, rules));
+									new RoutingDataChangedEvent(this, rules));
 						}
 						catch (InvalidProtocolBufferException e) {
 							log.error("resolve label routing enhance error", e);

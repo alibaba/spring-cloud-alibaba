@@ -163,6 +163,24 @@ NacosServerList 实现了 com.netflix.loadbalancer.ServerList<Server> 接口，�
 
 如果需要有更加自定义的可以使用 @Autowired 注入一个 NacosRegistration 实例，通过其持有的 NamingService 字段内容直接调用 Nacos API。
 
+## IPv4至IPv6地址迁移方案
+
+### IPv4和IPv6地址双注册
+在配置完成NacosRule作为负载均衡策略后，应用启动后会默认将微服务的IPv4地址和IPv6地址注册到注册中心中，其中IPv4地址会存放在Nacos服务列表中的IP字段下，IPv6地址在Nacos的metadata字段中，其对应的Key为IPv6。当服务消费者调用服务提供者时，会根据自身的IP地址栈支持情况，选择合适的IP地址类型发起服务调用。具体规则：
+（1）服务消费者本身支持IPv4和IPv6双地址栈或仅支持IPv6地址栈的情况下，服务消费者会使用服务提供的IPv6地址发起服务调用，IPv6地址调用失败如本身还同事支持IPv4地址栈时，暂不支持切换到IPv4再发起重试调用；
+（2）服务消费者本身仅支持IPv4单地址栈的情况下，服务消费者会使用服务提供的IPv4地址发起服务调用。
+
+### 仅注册IPv4
+如果您只想使用IPv4地址进行注册，可以在application.properties使用以下配置：
+```
+spring.cloud.nacos.discovery.ip-type=IPv4
+```
+
+### 仅注册IPv6
+如果您只想使用IPv6地址，可以在application.properties使用以下配置：
+```
+spring.cloud.nacos.discovery.ip-type=IPv6
+```
 
 ## Endpoint 信息查看
 

@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationListener;
  *
  * @author panxiaojun233
  * @author <a href="m13201628570@163.com"></a>
+ * @since 2.2.10-RC1
  */
 public class TargetServiceChangedListener
 		implements ApplicationListener<TargetServiceChangedEvent> {

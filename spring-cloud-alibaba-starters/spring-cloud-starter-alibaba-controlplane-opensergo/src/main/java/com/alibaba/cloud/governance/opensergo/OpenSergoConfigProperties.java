@@ -21,6 +21,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author panxiaojun233
  * @author <a href="m13201628570@163.com"></a>
+ * @since 2.2.10-RC1
  */
 @ConfigurationProperties(OpenSergoConfigProperties.PREFIX)
 public class OpenSergoConfigProperties {

@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 @Configuration(proxyBeanMethods = false)
 // We need to auto config the class before spring cloud alibaba istio module, to prevent

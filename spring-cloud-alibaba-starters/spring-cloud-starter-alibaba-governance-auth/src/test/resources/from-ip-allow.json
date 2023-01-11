@@ -1,47 +1,56 @@
 {
   "allowAuthRules": {
     "ns[default]-policy[from-ip-allow]-rule[0]": {
+      "op": "AND",
       "children": [
         {
+          "op": "OR",
           "children": [
             {
+              "op": "AND",
               "children": [
                 {
+                  "op": "OR",
                   "children": [
                     {
+                      "op": "UNKNOWN",
                       "children": [],
                       "condition": {
+                        "type": "SOURCE_IP",
+                        "key": null,
                         "matcher": {
-                          "ip": "127.0.0.1",
-                          "prefixLen": 32
-                        },
-                        "type": "SOURCE_IP"
+                          "className": "com.alibaba.cloud.commons.matcher.IpMatcher",
+                          "prefixLen": 32,
+                          "ip": "127.0.0.1"
+                        }
                       },
-                      "empty": false,
                       "not": false,
-                      "op": "UNKNOWN"
+                      "leaf": true,
+                      "empty": false
                     }
                   ],
-                  "empty": false,
+                  "condition": null,
                   "not": false,
-                  "op": "OR"
+                  "leaf": false,
+                  "empty": false
                 }
               ],
-              "empty": false,
+              "condition": null,
               "not": false,
-              "op": "AND"
+              "leaf": false,
+              "empty": false
             }
           ],
-          "empty": false,
+          "condition": null,
           "not": false,
-          "op": "OR"
+          "leaf": false,
+          "empty": false
         }
       ],
-      "empty": false,
+      "condition": null,
       "not": false,
-      "op": "AND"
+      "leaf": false,
+      "empty": false
     }
-  },
-  "denyAuthRules": {},
-  "jwtRules": {}
+  }
 }

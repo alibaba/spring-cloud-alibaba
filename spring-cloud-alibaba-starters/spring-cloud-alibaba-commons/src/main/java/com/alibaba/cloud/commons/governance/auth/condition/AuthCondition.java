@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class AuthCondition {
 
@@ -42,6 +43,10 @@ public class AuthCondition {
 	private String key;
 
 	private Matcher matcher;
+
+	public AuthCondition() {
+
+	}
 
 	public AuthCondition(ValidationType type, Matcher matcher) {
 		this.type = type;

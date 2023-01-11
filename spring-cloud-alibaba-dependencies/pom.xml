@@ -19,9 +19,9 @@
 
     <properties>
         <revision>2.2.9-SNAPSHOT</revision>
-        <sentinel.version>1.8.5</sentinel.version>
-        <seata.version>1.5.2</seata.version>
         <nacos.client.version>2.2.0</nacos.client.version>
+        <seata.version>1.6.1</seata.version>
+        <sentinel.version>1.8.6</sentinel.version>
         <spring.context.support.version>1.0.11</spring.context.support.version>
 
         <!-- Maven Plugin Versions -->
@@ -38,12 +38,6 @@
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
-                <version>${nacos.client.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.nacos</groupId>
-                <artifactId>nacos-config</artifactId>
                 <version>${nacos.client.version}</version>
             </dependency>
 

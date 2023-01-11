@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author HH
+ * @since 2.2.10-RC1
  */
 public final class RequestContext {
 
