@@ -33,7 +33,7 @@ public class RoutingProperties {
 	/**
 	 * Properties prefix.
 	 */
-	public static final String PROPERTY_PREFIX = "spring.cloud.governance.router";
+	public static final String PROPERTY_PREFIX = "spring.cloud.governance.routing";
 
 	/**
 	 * Load Balance Rule.

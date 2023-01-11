@@ -34,7 +34,7 @@ In the future, more components such as RestTemplate, Spring Cloud LoadBalancer a
 2.Configure a load balance algorithm when there are no routing rules (RandomRule algorithm as an example)
 If no configuration,use default ribbon load balance algorithm ZoneAvoidanceRule.
 ```yaml
-spring.cloud.governance.routeing.rule=RandomRule
+spring.cloud.governance.routing.rule=RandomRule
 ```
 
 ### Application Start

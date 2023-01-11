@@ -32,7 +32,7 @@
 2.配置当没有路由规则时的负载均衡算法(以随机负载均衡算法为例)
 如果没有配置，使用ribbon默认的负载均衡算法ZoneAvoidanceRule
 ```yaml
-spring.cloud.governance.routeing.rule=RandomRule
+spring.cloud.governance.routing.rule=RandomRule
 ```
 
 ### 应用启动
