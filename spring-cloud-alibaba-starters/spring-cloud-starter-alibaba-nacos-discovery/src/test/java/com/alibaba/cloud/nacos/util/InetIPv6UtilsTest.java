@@ -21,6 +21,8 @@ import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -31,18 +33,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(
 		classes = InetIPv6UtilsTest.TestConfig.class,
 		properties = {"spring.cloud.nacos.discovery.ipType=IPv6"},
 		webEnvironment = RANDOM_PORT)
 public class InetIPv6UtilsTest {
 	@Autowired
-	NacosDiscoveryProperties nacosDiscoveryProperties;
+	NacosDiscoveryProperties properties;
 
 	@Test
 	public void getIPv6() {
-		String ip = nacosDiscoveryProperties.getIp();
+		String ip = properties.getIp();
 		ip = ip.substring(1, ip.length() - 1);
 		assert (InetAddressValidator.getInstance().isValidInet6Address(ip));
 	}
