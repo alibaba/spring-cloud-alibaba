@@ -85,8 +85,8 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			}
 		}
 		else {
-			this.ipv4 = getIPv4();
-			this.ipv6 = getIPv6();
+			this.ipv4 = getAppLocalIPv4Address();
+			this.ipv6 = getAppLocalIPv6Address();
 		}
 	}
 
@@ -137,11 +137,11 @@ public class NacosRule extends AbstractLoadBalancerRule {
 	public void initWithNiwsConfig(IClientConfig iClientConfig) {
 	}
 
-	private String getIPv4() {
+	private String getAppLocalIPv4Address() {
 		return inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 	}
 
-	private String getIPv6() {
+	private String getAppLocalIPv6Address() {
 		return inetIPv6Utils.findIPv6Address();
 	}
 

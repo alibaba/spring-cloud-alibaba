@@ -168,6 +168,24 @@ NacosServerList implements the com.netflix.loadbalancer.ServerList <Server> inte
 
 If you need to be more customizable, you can use @Autowired to inject a NacosRegistration bean and call the Nacos API directly through the contents of the NamingService field it holds.
 
+## IPv4 to IPv6 address migration scheme
+
+### Both register IPv4 and IPv6 address
+After configuring NacosRule as the load balancing policy, the IPv4 address and IPv6 address of the microservice will be registered with the registry by default after the application is started, where the IPv4 address will be stored in the IP field of the Nacos service list, the IPv6 address will be in the metadata field of Nacos, and its corresponding Key will be IPv6. When a service consumer calls a service provider, it selects the appropriate IP address type to initiate a service call based on its IP address stack support. Specific rules:
+(1) If the service consumer itself supports IPv4 and IPv6 dual address stacks or only supports IPv6 address stacks, the service consumer will use the IPv6 address provided by the service to initiate a service call, and if the IPv6 address call fails, if it also supports the IPv4 address stack, it is temporarily not supported to switch to IPv4 and then initiate a retry call;
+(2) If the service consumer itself only supports IPv4 single-address stack, the service consumer will use the IPv4 address provided by the service to initiate service calls.
+
+### Only Register IPv4 address
+If you only want to register IPv4 address.Config in application.properties as follows:
+```
+spring.cloud.nacos.discovery.ip-type=IPv4
+```
+
+### Only Register IPv6 address
+If you only want to register IPv6 address.Config in application.properties as follows:
+```
+spring.cloud.nacos.discovery.ip-type=IPv6
+```
 
 ## Endpoint
 
