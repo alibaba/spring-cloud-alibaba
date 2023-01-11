@@ -1,0 +1,56 @@
+{
+  "allowAuthRules": {
+    "ns[default]-policy[from-ip-allow]-rule[0]": {
+      "op": "AND",
+      "children": [
+        {
+          "op": "OR",
+          "children": [
+            {
+              "op": "AND",
+              "children": [
+                {
+                  "op": "OR",
+                  "children": [
+                    {
+                      "op": "UNKNOWN",
+                      "children": [],
+                      "condition": {
+                        "type": "SOURCE_IP",
+                        "key": null,
+                        "matcher": {
+                          "className": "com.alibaba.cloud.commons.matcher.IpMatcher",
+                          "prefixLen": 32,
+                          "ip": "127.0.0.1"
+                        }
+                      },
+                      "not": false,
+                      "leaf": true,
+                      "empty": false
+                    }
+                  ],
+                  "condition": null,
+                  "not": false,
+                  "leaf": false,
+                  "empty": false
+                }
+              ],
+              "condition": null,
+              "not": false,
+              "leaf": false,
+              "empty": false
+            }
+          ],
+          "condition": null,
+          "not": false,
+          "leaf": false,
+          "empty": false
+        }
+      ],
+      "condition": null,
+      "not": false,
+      "leaf": false,
+      "empty": false
+    }
+  }
+}

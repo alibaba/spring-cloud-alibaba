@@ -16,13 +16,18 @@
 
 package com.alibaba.cloud.nacos.ribbon;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.client.config.IClientConfig;
@@ -33,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -40,16 +46,49 @@ import org.springframework.util.CollectionUtils;
  * instance.
  *
  * @author itmuch.com
+ * @author HH
  */
 public class NacosRule extends AbstractLoadBalancerRule {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NacosRule.class);
+
+	private static final String IPV4_REGEX = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
+
+	private static final String IPV6_KEY = "IPv6";
+
+	private String ipv4;
+
+	private String ipv6;
 
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	@Autowired
 	private NacosServiceManager nacosServiceManager;
+
+	@Autowired
+	private InetIPv6Utils inetIPv6Utils;
+
+	@Autowired
+	private InetUtils inetUtils;
+
+	@PostConstruct
+	public void init() {
+		String ip = nacosDiscoveryProperties.getIp();
+		if (StringUtils.isNotEmpty(ip)) {
+			if (Pattern.matches(IPV4_REGEX, ip)) {
+				this.ipv4 = ip;
+				this.ipv6 = nacosDiscoveryProperties.getMetadata().get(IPV6_KEY);
+			}
+			else {
+				this.ipv6 = ip;
+			}
+		}
+		else {
+			this.ipv4 = getAppLocalIPv4Address();
+			this.ipv6 = getAppLocalIPv6Address();
+		}
+	}
 
 	@Override
 	public Server choose(Object key) {
@@ -65,6 +104,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 				LOGGER.warn("no instance in service {}", name);
 				return null;
 			}
+			instances = filterInstanceByIpType(instances);
 
 			List<Instance> instancesToChoose = instances;
 			if (StringUtils.isNotBlank(clusterName)) {
@@ -83,6 +123,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			}
 
 			Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
+			convertIPv4ToIPv6(instance);
 
 			return new NacosServer(instance);
 		}
@@ -94,6 +135,55 @@ public class NacosRule extends AbstractLoadBalancerRule {
 
 	@Override
 	public void initWithNiwsConfig(IClientConfig iClientConfig) {
+	}
+
+	private String getAppLocalIPv4Address() {
+		return inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+	}
+
+	private String getAppLocalIPv6Address() {
+		return inetIPv6Utils.findIPv6Address();
+	}
+
+	private List<Instance> filterInstanceByIpType(List<Instance> instances) {
+		if (StringUtils.isNotEmpty(this.ipv6)) {
+			List<Instance> ipv6InstanceList = new ArrayList<>();
+			for (Instance instance : instances) {
+				if (Pattern.matches(IPV4_REGEX, instance.getIp())) {
+					if (StringUtils.isNotEmpty(instance.getMetadata().get(IPV6_KEY))) {
+						ipv6InstanceList.add(instance);
+					}
+				}
+				else {
+					ipv6InstanceList.add(instance);
+				}
+			}
+			// provider has no IPv6,should use Ipv4.
+			if (ipv6InstanceList.size() == 0) {
+				return instances.stream()
+						.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getIp()))
+						.collect(Collectors.toList());
+			}
+			else {
+				return ipv6InstanceList;
+			}
+		}
+		return instances.stream()
+				.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getIp()))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * There is two type Ip,using IPv6 should use IPv6 in metadata to replace IPv4 in IP
+	 * field.
+	 */
+	private void convertIPv4ToIPv6(Instance instance) {
+		if (Pattern.matches(IPV4_REGEX, instance.getIp())) {
+			String ip = instance.getMetadata().get(IPV6_KEY);
+			if (StringUtils.isNotEmpty(ip)) {
+				instance.setIp(ip);
+			}
+		}
 	}
 
 }
