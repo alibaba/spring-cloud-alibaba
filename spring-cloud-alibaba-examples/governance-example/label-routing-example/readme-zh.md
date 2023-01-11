@@ -13,9 +13,9 @@
 
 远程调用组件：Spring Cloud OpenFeign
 
-负载均衡组件：Spring Cloud Ribbon
+负载均衡组件：Ribbon
 
-未来会支持更多的比如Spring Cloud RestTemplate，Spring Cloud LoadBalancer等组件。
+未来会支持更多的比如RestTemplate，Spring Cloud LoadBalancer等组件。
 
 ## 示例
 

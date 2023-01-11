@@ -14,9 +14,9 @@ Currently, the routing module only supports some components:
 
 Remote call Component: Spring Cloud OpenFeign
 
-Load balance Component: Spring Cloud Ribbon
+Load balance Component: Ribbon
 
-In the future, more components such as Spring Cloud RestTemplate, Spring Cloud Spring Cloud LoadBalancer and so on will be supported.
+In the future, more components such as RestTemplate, Spring Cloud LoadBalancer and so on will be supported.
 
 ## Example
 
