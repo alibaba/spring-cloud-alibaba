@@ -14,9 +14,9 @@ Currently, the routing module only supports some components:
 
 Remote call Component: OpenFeign
 
-Load balance Component: ribbon
+Load balance Component: Ribbon
 
-In the future, more components such as resttemplate, loadbalance and so on will be supported.
+In the future, more components such as RestTemplate, LoadBalancer and so on will be supported.
 
 ## Example
 

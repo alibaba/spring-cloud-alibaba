@@ -77,11 +77,11 @@ spring:
 ==== 组件支持说明
 目前，路由模块只支持了部分组件：
 
-远程调用组件：openfeign
+远程调用组件：OpenFeign
 
-负载均衡组件：ribbon
+负载均衡组件：Ribbon
 
-未来会支持更多的比如resttemplate，loadbalance等组件。
+未来会支持更多的比如RestTemplate，LoadBalancer等组件。
 
 ==== 使用路由
 
