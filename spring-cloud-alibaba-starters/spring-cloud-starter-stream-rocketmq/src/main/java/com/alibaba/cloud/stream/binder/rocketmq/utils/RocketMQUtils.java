@@ -108,4 +108,5 @@ public final class RocketMQUtils {
 	public static String anonymousGroup(final String destination) {
 		return RocketMQConst.DEFAULT_GROUP + "_" + destination;
 	}
+
 }

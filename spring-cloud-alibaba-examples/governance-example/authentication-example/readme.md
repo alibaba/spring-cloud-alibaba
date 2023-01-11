@@ -27,7 +27,7 @@ Before launching the example for demonstration, let's look at how a Spring Cloud
 
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
+    <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
 2. Configure Istio related metadata in the `src/main/resources/application` yml configuration file:

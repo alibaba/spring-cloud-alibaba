@@ -38,7 +38,7 @@
 
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-controlplane-opensergo</artifactId>
+			<artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
 		</dependency>
 	</dependencies>
 

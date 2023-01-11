@@ -32,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
+			<artifactId>spring-cloud-starter-xds-adapter</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>spring-web</groupId>

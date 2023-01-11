@@ -122,8 +122,7 @@ public class RoutingXdsResolveFilter
 		return matchService;
 	}
 
-	private List<Rule> match2RouteRules(
-			RouteMatch routeMatch) {
+	private List<Rule> match2RouteRules(RouteMatch routeMatch) {
 		List<Rule> routeRules = new ArrayList<>();
 		for (HeaderMatcher headerMatcher : routeMatch.getHeadersList()) {
 			HeaderRoutingRule headerRule = ConvUtil

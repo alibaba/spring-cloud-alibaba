@@ -102,19 +102,18 @@ public final class RocketMQConsumerFactory {
 	 * @param extendedConsumerProperties extendedConsumerProperties
 	 * @return DefaultLitePullConsumer
 	 */
-	public static DefaultLitePullConsumer initPullConsumer(
-			String topic,
+	public static DefaultLitePullConsumer initPullConsumer(String topic,
 			ExtendedConsumerProperties<RocketMQConsumerProperties> extendedConsumerProperties) {
 		RocketMQConsumerProperties consumerProperties = extendedConsumerProperties
 				.getExtension();
 		boolean anonymous = !StringUtils.hasLength(consumerProperties.getGroup());
 		/***
-		 * 	When using DLQ, at least the group property must be provided for proper naming of the DLQ destination
-		 *  According to https://docs.spring.io/spring-cloud-stream/docs/3.2.1/reference/html/spring-cloud-stream.html#spring-cloud-stream-reference
+		 * When using DLQ, at least the group property must be provided for proper naming
+		 * of the DLQ destination According to
+		 * https://docs.spring.io/spring-cloud-stream/docs/3.2.1/reference/html/spring-cloud-stream.html#spring-cloud-stream-reference
 		 */
 		if (anonymous && NamespaceUtil.isDLQTopic(topic)) {
-			throw new RuntimeException(
-					"group must be configured for DLQ" + topic);
+			throw new RuntimeException("group must be configured for DLQ" + topic);
 		}
 		if (anonymous) {
 			consumerProperties.setGroup(RocketMQUtils.anonymousGroup(topic));

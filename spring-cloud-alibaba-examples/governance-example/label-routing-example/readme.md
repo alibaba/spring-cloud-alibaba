@@ -167,7 +167,7 @@ Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapte
 ### Introduction to Istio traffic control rules
 - [overview](https://istio.io/latest/zh/docs/concepts/security/#authorization)
 - [detail](https://istio.io/latest/zh/docs/reference/config/security/)
-1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-alibaba-controlplane-istio` dependency
+1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-xds-adapter` dependency
 ```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
@@ -175,7 +175,7 @@ Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapte
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
+    <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
 2. Configure application.yml for Istio control plane:
@@ -292,7 +292,7 @@ After the rule is deleted, the routing policy is not determined by whether the r
 ## Integrating OpenSergo
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
 ### Configure
-1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-alibaba-controlplane-opensergo` dependency
+1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-opensergo-adapter` dependency
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -300,7 +300,7 @@ After the rule is deleted, the routing policy is not determined by whether the r
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-starter-alibaba-controlplane-opensergo</artifactId>
+      <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
    </dependency>
 ```
 2. Configure application.yml for OpenSergo control plane

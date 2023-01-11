@@ -10,12 +10,12 @@ image::pic/resource-transform.png[]
 
 Spring Cloud Alibaba Governance的resource-transform模块会将不同控制面下发的配置进行统一的转换，将来自Istio，OpenSergo等控制面下发的配置统一转换为Spring Cloud Alibaba统一抽象出的数据结构以供后续使用
 
-如果在您的项目中使用Istio来实现配置转换，需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-controlplane-istio` 的starter
+如果在您的项目中使用Istio来实现配置转换，需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-xds-adapter` 的starter
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
+  <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ----
 

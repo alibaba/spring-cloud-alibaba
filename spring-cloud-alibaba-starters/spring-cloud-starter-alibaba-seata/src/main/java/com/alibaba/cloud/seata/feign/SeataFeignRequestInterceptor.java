@@ -41,4 +41,5 @@ public class SeataFeignRequestInterceptor implements RequestInterceptor {
 		seataXid.add(xid);
 		template.header(RootContext.KEY_XID, xid);
 	}
+
 }

@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>spring-cloud-starter-alibaba-controlplane-opensergo</artifactId>
+    <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
     <name>Spring Cloud Alibaba OpenSergo Control Plane</name>
 
     <properties>

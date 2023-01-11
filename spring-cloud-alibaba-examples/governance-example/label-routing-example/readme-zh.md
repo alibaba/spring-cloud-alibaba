@@ -166,7 +166,7 @@ public void getDataFromControlPlaneTest() {
 - [VirtualService](https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/)
 - [DestinationRule](https://istio.io/latest/zh/docs/reference/config/networking/destination-rule/)
 ### 配置
-1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-alibaba-controlplane-istio`模块
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-xds-adapter`模块
 ```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
@@ -174,7 +174,7 @@ public void getDataFromControlPlaneTest() {
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
+    <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
 2. 在`src/main/resources/application.yml`配置文件中配置Istio控制面的相关信息:
@@ -291,7 +291,7 @@ kubectl delete DestinationRule my-destination-rule
 
 ## 集成OpenSergo
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改`pom.xml` 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-alibaba-controlplane-opensergo`模块
+1. 首先，修改`pom.xml` 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-opensergo-adapter`模块
 ```
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
@@ -299,7 +299,7 @@ kubectl delete DestinationRule my-destination-rule
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-controlplane-opensergo</artifactId>
+    <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
 </dependency>
 ```
 2. 在`application.properties`配置文件中配置OpenSergo控制面的相关信息
@@ -372,7 +372,7 @@ kubectl delete DestinationRule my-destination-rule
 
 ## 集成OpenSergo
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-alibaba-controlplane-opensergo`模块
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-opensergo-adapter`模块
 ```
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
@@ -380,7 +380,7 @@ kubectl delete DestinationRule my-destination-rule
    </dependency>
    <dependency>
       <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-starter-alibaba-controlplane-opensergo</artifactId>
+      <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
    </dependency>
 ```
 2. 在application.properties配置文件中配置OpenSergo控制面的相关信息

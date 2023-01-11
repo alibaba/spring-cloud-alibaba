@@ -86,8 +86,8 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 				throw new IllegalStateException(
 						"pull consumer already running. " + this.toString());
 			}
-			this.consumer = RocketMQConsumerFactory
-					.initPullConsumer(topic, extendedConsumerProperties);
+			this.consumer = RocketMQConsumerFactory.initPullConsumer(topic,
+					extendedConsumerProperties);
 			// This parameter must be 1, otherwise doReceive cannot be handled singly.
 			// this.consumer.setPullBatchSize(1);
 			this.consumer.subscribe(topic, messageSelector);
