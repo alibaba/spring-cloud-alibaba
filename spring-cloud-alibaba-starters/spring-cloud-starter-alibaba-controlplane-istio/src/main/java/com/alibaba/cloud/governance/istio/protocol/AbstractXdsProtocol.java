@@ -17,13 +17,13 @@
 package com.alibaba.cloud.governance.istio.protocol;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -162,12 +162,13 @@ public abstract class AbstractXdsProtocol<T>
 				requestObserverMap.put(id, requestObserver);
 			}
 		}
-		sendXdsRequest(requestObserver, resourceNames);
+		sendXdsRequest(requestObserverMap.get(id), resourceNames);
 		try {
-			return future.get();
+			return future.get(xdsConfigProperties.getPollingTime(), TimeUnit.SECONDS);
 		}
-		catch (ExecutionException | InterruptedException e) {
-			return null;
+		catch (Exception e) {
+			log.error("Failed to send Xds request", e);
+			return Collections.emptyList();
 		}
 		finally {
 			futureMap.remove(id);
