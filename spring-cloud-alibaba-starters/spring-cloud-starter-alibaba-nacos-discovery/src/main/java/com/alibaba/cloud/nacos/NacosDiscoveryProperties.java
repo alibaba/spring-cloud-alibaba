@@ -297,7 +297,7 @@ public class NacosDiscoveryProperties {
 					InetAddress currentAddress = inetAddress.nextElement();
 					if (currentAddress instanceof Inet4Address
 							|| currentAddress instanceof Inet6Address
-							&& !currentAddress.isLoopbackAddress()) {
+									&& !currentAddress.isLoopbackAddress()) {
 						ip = currentAddress.getHostAddress();
 						break;
 					}

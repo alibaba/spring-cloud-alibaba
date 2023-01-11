@@ -35,11 +35,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@SpringBootTest(
-		classes = InetIPv6UtilsTest.TestConfig.class,
-		properties = {"spring.cloud.nacos.discovery.ipType=IPv6"},
+@SpringBootTest(classes = InetIPv6UtilsTest.TestConfig.class,
+		properties = { "spring.cloud.nacos.discovery.ipType=IPv6" },
 		webEnvironment = RANDOM_PORT)
 public class InetIPv6UtilsTest {
+
 	@Autowired
 	NacosDiscoveryProperties properties;
 
@@ -52,9 +52,9 @@ public class InetIPv6UtilsTest {
 
 	@Configuration
 	@EnableAutoConfiguration
-	@ImportAutoConfiguration(
-			NacosDiscoveryClientConfiguration.class)
+	@ImportAutoConfiguration(NacosDiscoveryClientConfiguration.class)
 	public static class TestConfig {
 
 	}
+
 }

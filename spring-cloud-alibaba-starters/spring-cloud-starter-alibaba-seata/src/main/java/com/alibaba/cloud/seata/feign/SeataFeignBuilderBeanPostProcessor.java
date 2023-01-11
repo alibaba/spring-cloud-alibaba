@@ -30,14 +30,18 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  */
 public class SeataFeignBuilderBeanPostProcessor implements BeanPostProcessor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SeataFeignBuilderBeanPostProcessor.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(SeataFeignBuilderBeanPostProcessor.class);
 
 	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessAfterInitialization(Object bean, String beanName)
+			throws BeansException {
 		if (bean instanceof Feign.Builder) {
 			((Feign.Builder) bean).retryer(Retryer.NEVER_RETRY);
-			LOGGER.info("change the retryer of the bean '{}' to 'Retryer.NEVER_RETRY'", beanName);
+			LOGGER.info("change the retryer of the bean '{}' to 'Retryer.NEVER_RETRY'",
+					beanName);
 		}
 		return bean;
 	}
+
 }

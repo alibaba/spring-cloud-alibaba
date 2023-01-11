@@ -11,12 +11,12 @@ image::pic/resource-transform.png[]
 
 The resource-transform module of Spring Cloud Alibaba Governance will uniformly transform the configurations published by different control planes, like Istio and OperSergo, into the unified abstract data structure of Spring Cloud Alibaba for subsequent use.
 
-If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-controlplane-istio`.
+If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-xds-adapter`.
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
-  <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
+  <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ----
 

@@ -53,7 +53,7 @@ public class InetIPv6Utils {
 
 		try {
 			for (Enumeration<NetworkInterface> nics = NetworkInterface
-					.getNetworkInterfaces(); nics.hasMoreElements(); ) {
+					.getNetworkInterfaces(); nics.hasMoreElements();) {
 				NetworkInterface ifc = nics.nextElement();
 				if (ifc.isUp() || !ifc.isVirtual() || !ifc.isLoopback()) {
 					if (address != null) {
@@ -61,7 +61,7 @@ public class InetIPv6Utils {
 					}
 					if (!ignoreInterface(ifc.getDisplayName())) {
 						for (Enumeration<InetAddress> addrs = ifc
-								.getInetAddresses(); addrs.hasMoreElements(); ) {
+								.getInetAddresses(); addrs.hasMoreElements();) {
 							InetAddress inetAddress = addrs.nextElement();
 							if (inetAddress instanceof Inet6Address
 									// filter ::1
@@ -147,7 +147,6 @@ public class InetIPv6Utils {
 
 	/**
 	 * If the address is Unique Local Address.
-	 *
 	 * @param inetAddress {@link InetAddress}
 	 * @return {@code true} if the address is Unique Local Address,otherwise {@code false}
 	 */

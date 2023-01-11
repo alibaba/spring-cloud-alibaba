@@ -47,7 +47,8 @@ public final class URIRegister {
 	private URIRegister() {
 	}
 
-	public static void collectUris(List<FilterRegistrationBean<? extends Filter>> beanList) {
+	public static void collectUris(
+			List<FilterRegistrationBean<? extends Filter>> beanList) {
 		if (CollectionUtils.isEmpty(beanList)) {
 			return;
 		}
@@ -60,14 +61,16 @@ public final class URIRegister {
 			}
 			Collection<String> urlPatterns = filterRegistrationBean.getUrlPatterns();
 			if (filter instanceof CoreServiceFilter) {
-				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar, urlPatterns,
-						ResourceActiveType.UNIT_RESOURCE_TYPE);
-			} else if (filter instanceof GlobalServiceFilter) {
-				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar, urlPatterns,
-						ResourceActiveType.CENTER_RESOURCE_TYPE);
-			} else if (filter instanceof GeneralServiceFilter) {
-				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar, urlPatterns,
-						ResourceActiveType.NORMAL_RESOURCE_TYPE);
+				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar,
+						urlPatterns, ResourceActiveType.UNIT_RESOURCE_TYPE);
+			}
+			else if (filter instanceof GlobalServiceFilter) {
+				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar,
+						urlPatterns, ResourceActiveType.CENTER_RESOURCE_TYPE);
+			}
+			else if (filter instanceof GeneralServiceFilter) {
+				hasWildChar = collectServiceMetas(serviceMetaList, hasWildChar,
+						urlPatterns, ResourceActiveType.NORMAL_RESOURCE_TYPE);
 			}
 		}
 		if (CollectionUtils.isEmpty(serviceMetaList)) {
@@ -75,7 +78,8 @@ public final class URIRegister {
 		}
 		if (!hasWildChar) {
 			// 保证所有 service(app+uri) 都纳入管理，不然不好做缓存管理
-			collectServiceMeta(serviceMetaList, MATCH_ALL, ResourceActiveType.NORMAL_RESOURCE_TYPE);
+			collectServiceMeta(serviceMetaList, MATCH_ALL,
+					ResourceActiveType.NORMAL_RESOURCE_TYPE);
 		}
 		initServiceMetaObject(serviceMetaList);
 	}
@@ -95,8 +99,8 @@ public final class URIRegister {
 	}
 
 	/**
-	 * Collect {@link ServiceMeta} into the given <i>serviceMetaList</i> according to
-	 * each item of the given <i>urlPatterns</i> and the given <i>resourceActiveType</i>,
+	 * Collect {@link ServiceMeta} into the given <i>serviceMetaList</i> according to each
+	 * item of the given <i>urlPatterns</i> and the given <i>resourceActiveType</i>,
 	 * finally determine whether <i>hasWildChar</i> is a new wildChar.
 	 * @param serviceMetaList extended list
 	 * @param hasWildChar keyword to be determined
@@ -104,8 +108,9 @@ public final class URIRegister {
 	 * @param resourceActiveType attribute of {@link ServiceMeta}
 	 * @return is new wildChar
 	 */
-	private static boolean collectServiceMetas(List<ServiceMeta> serviceMetaList, boolean hasWildChar,
-										 Collection<String> urlPatterns, String resourceActiveType) {
+	private static boolean collectServiceMetas(List<ServiceMeta> serviceMetaList,
+			boolean hasWildChar, Collection<String> urlPatterns,
+			String resourceActiveType) {
 		for (String urlPattern : urlPatterns) {
 			if (MATCH_ALL.equalsIgnoreCase(urlPattern)) {
 				hasWildChar = true;
@@ -116,14 +121,14 @@ public final class URIRegister {
 	}
 
 	/**
-	 * Collect {@link ServiceMeta} into the given <i>serviceMetaList</i> according to
-	 * the given <i>urlPattern</i> and the given <i>resourceActiveType</i>.
+	 * Collect {@link ServiceMeta} into the given <i>serviceMetaList</i> according to the
+	 * given <i>urlPattern</i> and the given <i>resourceActiveType</i>.
 	 * @param serviceMetaList extended list
 	 * @param urlPattern attribute of {@link ServiceMeta}
 	 * @param resourceActiveType attribute of {@link ServiceMeta}
 	 */
-	private static void collectServiceMeta(List<ServiceMeta> serviceMetaList, String urlPattern,
-									   String resourceActiveType) {
+	private static void collectServiceMeta(List<ServiceMeta> serviceMetaList,
+			String urlPattern, String resourceActiveType) {
 		ServiceMeta serviceMeta = new ServiceMeta(urlPattern, resourceActiveType);
 		serviceMetaList.add(serviceMeta);
 	}

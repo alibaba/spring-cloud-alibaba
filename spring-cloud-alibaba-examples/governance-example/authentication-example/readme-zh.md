@@ -26,7 +26,7 @@
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-controlplane-istio</artifactId>
+    <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
 2. 在应用的 `src/main/resources/application.yml` 配置文件中配置Istio相关元数据:
