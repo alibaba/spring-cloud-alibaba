@@ -76,7 +76,7 @@ public class InetIPv6Utils implements Closeable {
 		try {
 			int lowest = Integer.MAX_VALUE;
 			for (Enumeration<NetworkInterface> nics = NetworkInterface
-					.getNetworkInterfaces(); nics.hasMoreElements();) {
+					.getNetworkInterfaces(); nics.hasMoreElements(); ) {
 				NetworkInterface ifc = nics.nextElement();
 				if (ifc.isUp()) {
 					log.trace("Testing interface:" + ifc.getDisplayName());
@@ -89,7 +89,7 @@ public class InetIPv6Utils implements Closeable {
 
 					if (!ignoreInterface(ifc.getDisplayName())) {
 						for (Enumeration<InetAddress> addrs = ifc
-								.getInetAddresses(); addrs.hasMoreElements();) {
+								.getInetAddresses(); addrs.hasMoreElements(); ) {
 							InetAddress inetAddress = addrs.nextElement();
 							if (inetAddress instanceof Inet6Address
 									&& !inetAddress.isLoopbackAddress()
