@@ -37,8 +37,6 @@ public class InetIPv6Utils {
 
 	private final static Log log = LogFactory.getLog(InetIPv6Utils.class);
 
-	private final static String IPV6_IS_NULL = StringUtils.EMPTY;
-
 	private final InetUtilsProperties properties;
 
 	public InetIPv6Utils(final InetUtilsProperties properties) {
@@ -142,7 +140,7 @@ public class InetIPv6Utils {
 			hostInfo.setIpAddress(address.getHostAddress());
 		}
 		else {
-			hostInfo.setIpAddress(IPV6_IS_NULL);
+			hostInfo.setIpAddress(StringUtils.EMPTY);
 		}
 		return hostInfo;
 	}
