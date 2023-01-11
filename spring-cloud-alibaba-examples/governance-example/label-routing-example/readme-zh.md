@@ -1,12 +1,21 @@
-# label route example
+# routing example
 
 ## 项目说明
 
-本项目演示如何使用 spring cloud ailbaba governance labelrouting 模块完成标签路由功能。
+本项目演示如何使用 spring cloud ailbaba governance routing 模块完成标签路由功能。
 
 ## 模块结构
 
 本模块包括一个消费者实例和一个提供者集群，该集群包含着两个实例。
+
+## 组件支持说明
+目前，路由模块只支持了部分组件：
+
+远程调用组件：Spring Cloud OpenFeign
+
+负载均衡组件：Ribbon
+
+未来会支持更多的比如RestTemplate，Spring Cloud LoadBalancer等组件。
 
 ## 示例
 
@@ -19,6 +28,11 @@
    <groupId>com.alibaba.cloud</groupId>
    <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
+```
+2.配置当没有路由规则时的负载均衡算法(以随机负载均衡算法为例)
+如果没有配置，使用ribbon默认的负载均衡算法ZoneAvoidanceRule
+```yaml
+spring.cloud.governance.routeing.rule=RandomRule
 ```
 
 ### 应用启动
@@ -121,7 +135,7 @@ public void getDataFromControlPlaneTest() {
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   访问 http://localhost:18083/router-test?id=11 且请求头设置test值为gray 满足路由规则，路由到v2版本中，v2版本实例打印返回如下结果：
+   访问 http://localhost:18083/router-test?id=11 且请求头设置tag值为gray 满足路由规则，路由到v2版本中，v2版本实例打印返回如下结果：
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
@@ -131,7 +145,7 @@ public void getDataFromControlPlaneTest() {
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   访问 http://localhost:18083/router-test?id=11 且请求头设置test值为gray 满足路由规则，50%路由到v2版本中，v2版本实例打印返回如下结果：
+   访问 http://localhost:18083/router-test?id=11 且请求头设置tag值为gray 满足路由规则，50%路由到v2版本中，v2版本实例打印返回如下结果：
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```

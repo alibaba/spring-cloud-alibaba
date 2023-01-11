@@ -63,11 +63,6 @@ spring:
 |NAMESPACE_NAME|metadata.namespace
 |===
 
-=== 使用标签路由
-在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。标签路由模块可以实现对Spring Cloud应用根据请求头，请求参数等标签来路由到不同的服务
-
-如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-routing` 的starter
-
 === 运行应用
 需要将应用运行在K8s环境中，并给运行的应用将K8s的一些元信息注入以下环境变量中:
 
@@ -77,16 +72,34 @@ spring:
 |NAMESPACE_NAME|metadata.namespace
 |===
 
-=== 使用标签路由
+=== 路由
+
+==== 组件支持说明
+目前，路由模块只支持了部分组件：
+
+远程调用组件：Spring Cloud OpenFeign
+
+负载均衡组件：Ribbon
+
+未来会支持更多的比如RestTemplate，Spring Cloud LoadBalancer等组件。
+
+==== 使用路由
+
 在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。标签路由模块可以实现对Spring Cloud应用根据请求头，请求参数等标签来路由到不同的服务
 
-如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-routing` 的starter
+1.如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-routing` 的starter
 [source,xml,indent=0]
 ----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
+----
+
+2.配置当没有路由规则时的负载均衡算法(以随机负载均衡算法为例)
+如果没有配置，使用ribbon默认的负载均衡算法ZoneAvoidanceRule
+----
+spring.cloud.governance.routeing.rule=RandomRule
 ----
 
 在引入Istio配置转换模块的前提下，标签路由模块支持对以下几种请求的元信息做路由

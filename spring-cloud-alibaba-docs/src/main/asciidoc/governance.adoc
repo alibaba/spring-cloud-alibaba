@@ -64,7 +64,18 @@ You need to run the application in the K8s environment and inject some meta info
 |NAMESPACE_NAME|metadata.namespace
 |===
 
-=== Use Label Routing
+=== Routing
+==== Component support description
+
+Currently, the routing module only supports some components:
+
+Remote call Component: Spring Cloud OpenFeign
+
+Load balance Component: Ribbon
+
+In the future, more components such as RestTemplate, Spring Cloud LoadBalancer and so on will be supported.
+
+==== use Routing
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. Label routing module can route the Spring Cloud application according to the request header, request parameters and other tags to route to different services.
 
 If you use Spring Cloud Alibaba Governance Label Routing in your project, You need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-routing`.
@@ -74,6 +85,12 @@ If you use Spring Cloud Alibaba Governance Label Routing in your project, You ne
   <groupId>com.alibaba.cloud</groupId>
   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
+----
+
+2.Configure a load balance algorithm when there are no routing rules (RandomRule algorithm as an example)
+If no configuration,use default ribbon load balance algorithm ZoneAvoidanceRule.
+----
+spring.cloud.governance.routeing.rule=RandomRule
 ----
 
 With the introduction of Istio Resource Transform module, the label routing module supports routing of the following types of request meta-information:

@@ -1,12 +1,22 @@
-# label route example
+# routing example
 
 ## Project Description
 
-This project demonstrates how to use the spring cloud ailbaba governance labelrouting module to complete the label routing function.
+This project demonstrates how to use the spring cloud ailbaba governance routing module to complete the label routing function.
 
 ## module structure
 
 This module includes a consumer instance and a provider cluster, which contains two instances.
+
+## Component support description
+
+Currently, the routing module only supports some components:
+
+Remote call Component: Spring Cloud OpenFeign
+
+Load balance Component: Ribbon
+
+In the future, more components such as RestTemplate, Spring Cloud LoadBalancer and so on will be supported.
 
 ## Example
 
@@ -19,6 +29,12 @@ This module includes a consumer instance and a provider cluster, which contains 
    <groupId>com.alibaba.cloud</groupId>
    <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
+```
+
+2.Configure a load balance algorithm when there are no routing rules (RandomRule algorithm as an example)
+If no configuration,use default ribbon load balance algorithm ZoneAvoidanceRule.
+```yaml
+spring.cloud.governance.routeing.rule=RandomRule
 ```
 
 ### Application Start
@@ -121,7 +137,7 @@ If the request parameter contains tag=gray, and the request header contains id a
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   visit http://localhost:18083/router-test?id=11 and the test value set in the request header is gray, which meets the routing rules. The route is to the v2 version. The v2 version instance prints and returns the following results:
+   visit http://localhost:18083/router-test?id=11 and the key-tag which value set in the request header is gray, which meets the routing rules. The route is to the v2 version. The v2 version instance prints and returns the following results:
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
@@ -131,7 +147,7 @@ If the request parameter contains tag=gray, and the request header contains id a
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   visit http://localhost:18083/router-test?id=11 and the test value set in the request header is gray, which meets the routing rules. 50% of the routes are routed to the v2 version. The v2 version instance prints the following results:
+   visit http://localhost:18083/router-test?id=11 and the key-tag which value set in the request header is gray, which meets the routing rules. 50% of the routes are routed to the v2 version. The v2 version instance prints the following results:
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
