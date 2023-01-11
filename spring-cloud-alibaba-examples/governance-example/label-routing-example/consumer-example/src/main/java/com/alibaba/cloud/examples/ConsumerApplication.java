@@ -19,7 +19,7 @@ package com.alibaba.cloud.examples;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
 import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
@@ -124,8 +124,8 @@ public class ConsumerApplication {
 
 			List<UnifiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
 			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-			applicationContext.publishEvent(new LabelRoutingDataChangedEvent(this,
-					unifiedRouteDataStructureList));
+			applicationContext.publishEvent(
+					new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
 		}
 
 		@GetMapping("/update")
@@ -169,8 +169,8 @@ public class ConsumerApplication {
 
 			List<UnifiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
 			unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-			applicationContext.publishEvent(new LabelRoutingDataChangedEvent(this,
-					unifiedRouteDataStructureList));
+			applicationContext.publishEvent(
+					new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
 		}
 
 	}

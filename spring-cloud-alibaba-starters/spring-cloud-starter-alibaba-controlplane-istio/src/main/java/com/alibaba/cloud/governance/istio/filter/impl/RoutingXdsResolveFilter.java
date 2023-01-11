@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.labelrouting.LabelRouteRule;
 import com.alibaba.cloud.commons.governance.labelrouting.MatchService;
 import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
@@ -44,8 +44,9 @@ import io.envoyproxy.envoy.config.route.v3.WeightedCluster;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
-public class LabelRoutingXdsResolveFilter
+public class RoutingXdsResolveFilter
 		extends AbstractXdsResolveFilter<List<RouteConfiguration>> {
 
 	@Override
@@ -68,19 +69,19 @@ public class LabelRoutingXdsResolveFilter
 				}
 				unifiedRouteDataStructure.setTargetService(targetService);
 				List<Route> routes = virtualHost.getRoutesList();
-				LabelRouteRule labelRouteRule = getLabelRouteData(routes);
+				LabelRouteRule labelRouteRule = getRouteData(routes);
 				unifiedRouteDataStructure.setLabelRouteRule(labelRouteRule);
 				untiedRouteDataStructures.put(
 						unifiedRouteDataStructure.getTargetService(),
 						unifiedRouteDataStructure);
 			}
 		}
-		applicationContext.publishEvent(new LabelRoutingDataChangedEvent(this,
-				untiedRouteDataStructures.values()));
+		applicationContext.publishEvent(
+				new RoutingDataChangedEvent(this, untiedRouteDataStructures.values()));
 		return true;
 	}
 
-	private LabelRouteRule getLabelRouteData(List<Route> routes) {
+	private LabelRouteRule getRouteData(List<Route> routes) {
 		List<MatchService> matchServices = new ArrayList<>();
 		LabelRouteRule labelRouteRule = new LabelRouteRule();
 		for (Route route : routes) {
@@ -112,7 +113,7 @@ public class LabelRoutingXdsResolveFilter
 			version = info[2];
 		}
 		catch (Exception e) {
-			log.error("invalid cluster info for route {}", route.getName());
+			log.error("Invalid cluster info for route {}", route.getName());
 		}
 		MatchService matchService = new MatchService();
 		matchService.setVersion(version);

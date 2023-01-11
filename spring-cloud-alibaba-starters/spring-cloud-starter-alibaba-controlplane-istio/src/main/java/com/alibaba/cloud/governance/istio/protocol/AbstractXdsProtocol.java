@@ -17,13 +17,13 @@
 package com.alibaba.cloud.governance.istio.protocol;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -48,6 +48,7 @@ import org.springframework.context.ApplicationContextAware;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public abstract class AbstractXdsProtocol<T>
 		implements XdsProtocol<T>, ApplicationContextAware {
@@ -115,7 +116,7 @@ public abstract class AbstractXdsProtocol<T>
 			consumer.accept(doGetResource(id, resourceNames, consumer));
 		}
 		catch (Exception e) {
-			log.error("error on get observe resource from xds", e);
+			log.error("Error on get observe resource from xds", e);
 		}
 		if (needPolling) {
 			xdsScheduledThreadPool.scheduleAtFixedRate(() -> {
@@ -123,7 +124,7 @@ public abstract class AbstractXdsProtocol<T>
 					consumer.accept(doGetResource(id, requestResource.get(id), consumer));
 				}
 				catch (Exception e) {
-					log.error("error on get observe resource from xds", e);
+					log.error("Error on get observe resource from xds", e);
 				}
 			}, xdsConfigProperties.getPollingTime(), xdsConfigProperties.getPollingTime(),
 					TimeUnit.SECONDS);
@@ -161,12 +162,13 @@ public abstract class AbstractXdsProtocol<T>
 				requestObserverMap.put(id, requestObserver);
 			}
 		}
-		sendXdsRequest(requestObserver, resourceNames);
+		sendXdsRequest(requestObserverMap.get(id), resourceNames);
 		try {
-			return future.get();
+			return future.get(xdsConfigProperties.getPollingTime(), TimeUnit.SECONDS);
 		}
-		catch (ExecutionException | InterruptedException e) {
-			return null;
+		catch (Exception e) {
+			log.error("Failed to send Xds request", e);
+			return Collections.emptyList();
 		}
 		finally {
 			futureMap.remove(id);
@@ -252,7 +254,7 @@ public abstract class AbstractXdsProtocol<T>
 				return;
 			}
 			if (xdsConfigProperties.isLogXds()) {
-				log.info("receive notification from xds server, type: " + getTypeUrl()
+				log.info("Receive notification from xds server, type: " + getTypeUrl()
 						+ " requestId: " + id);
 			}
 			List<T> responses = decodeXdsResponse(discoveryResponse);
@@ -273,7 +275,7 @@ public abstract class AbstractXdsProtocol<T>
 				return;
 			}
 			if (xdsConfigProperties.isLogXds()) {
-				log.error("connect to xds server failed, reconnecting", throwable);
+				log.error("Connect to xds server failed, reconnecting", throwable);
 			}
 			CompletableFuture<List<T>> future = futureMap.get(id);
 			if (future != null) {
@@ -293,7 +295,7 @@ public abstract class AbstractXdsProtocol<T>
 
 		@Override
 		public void onCompleted() {
-			log.info("xds connect completed");
+			log.info("Xds connect completed");
 		}
 
 	}

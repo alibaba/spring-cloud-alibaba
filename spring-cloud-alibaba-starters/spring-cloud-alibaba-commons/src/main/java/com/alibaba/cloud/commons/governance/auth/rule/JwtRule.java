@@ -22,6 +22,7 @@ import java.util.Map;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class JwtRule {
 
@@ -40,6 +41,10 @@ public class JwtRule {
 	private String outputPayloadToHeader;
 
 	private boolean forwardOriginalToken;
+
+	public JwtRule() {
+
+	}
 
 	public JwtRule(String name, Map<String, String> fromHeaders, String issuer,
 			List<String> audiences, String jwks, List<String> fromParams,

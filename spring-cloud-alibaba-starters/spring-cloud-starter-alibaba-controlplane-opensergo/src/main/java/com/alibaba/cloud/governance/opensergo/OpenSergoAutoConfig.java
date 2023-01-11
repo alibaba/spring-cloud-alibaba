@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author panxiaojun233
  * @author <a href="m13201628570@163.com"></a>
+ * @since 2.2.10-RC1
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.opensergo.config.enabled",

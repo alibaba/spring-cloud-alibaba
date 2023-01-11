@@ -414,7 +414,7 @@ EOF
 这条TrafficRouter指定了一条最简单的流量路由规则，将请求头tag为v2的HTTP请求路由到v2版本，其余的流量都路由到v1版本。
 如果v2版本没有对应的节点，则将流量fallback至v1版本。
 ### 效果演示
-我们发送一条不带请求头的HTTP请求至IstioConsumerApplication
+我们发送一条不带请求头的HTTP请求至OpenSergoConsumerApplication
 ```
 curl --location --request GET '127.0.0.1:18083/router-test'
 ```

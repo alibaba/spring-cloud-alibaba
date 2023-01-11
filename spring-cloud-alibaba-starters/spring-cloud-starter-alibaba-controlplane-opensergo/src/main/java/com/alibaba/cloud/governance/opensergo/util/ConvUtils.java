@@ -29,6 +29,7 @@ import io.opensergo.proto.router.v1.ClusterFallbackConfig_ClusterConfig;
 /**
  * @author panxiaojun233
  * @author <a href="m13201628570@163.com"></a>
+ * @since 2.2.10-RC1
  */
 public final class ConvUtils {
 
