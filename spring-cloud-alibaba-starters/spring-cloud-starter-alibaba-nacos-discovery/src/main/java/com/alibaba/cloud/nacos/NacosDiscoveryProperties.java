@@ -274,7 +274,10 @@ public class NacosDiscoveryProperties {
 				}
 				else if (ipType == null) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
-					metadata.put(IPV6, inetIPv6Utils.findIPv6Address());
+					String iPv6Address = inetIPv6Utils.findIPv6Address();
+					if (iPv6Address != null) {
+						metadata.put(IPV6, iPv6Address);
+					}
 				}
 				else {
 					throw new IllegalArgumentException(
@@ -294,7 +297,7 @@ public class NacosDiscoveryProperties {
 					InetAddress currentAddress = inetAddress.nextElement();
 					if (currentAddress instanceof Inet4Address
 							|| currentAddress instanceof Inet6Address
-									&& !currentAddress.isLoopbackAddress()) {
+							&& !currentAddress.isLoopbackAddress()) {
 						ip = currentAddress.getHostAddress();
 						break;
 					}

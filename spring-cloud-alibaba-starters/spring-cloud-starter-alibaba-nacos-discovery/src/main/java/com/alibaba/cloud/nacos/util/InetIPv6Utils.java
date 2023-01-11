@@ -45,7 +45,7 @@ public class InetIPv6Utils {
 
 	private InetUtils.HostInfo findFirstValidHostInfo() {
 		InetAddress address = this.findFirstValidIPv6Address();
-		return this.getHostInfo(address);
+		return address != null ? this.getHostInfo(address) : null;
 	}
 
 	private InetAddress findFirstValidIPv6Address() {
@@ -92,7 +92,7 @@ public class InetIPv6Utils {
 
 	public String findIPv6Address() {
 		InetUtils.HostInfo hostInfo = findFirstValidHostInfo();
-		return normalizeIPv6(hostInfo.getIpAddress());
+		return hostInfo != null ? normalizeIPv6(hostInfo.getIpAddress()) : null;
 	}
 
 	private String normalizeIPv6(String ip) {
