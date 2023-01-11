@@ -52,6 +52,7 @@ import io.envoyproxy.envoy.type.matcher.v3.MetadataMatcher;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class AuthXdsResolveFilter extends AbstractXdsResolveFilter<List<Listener>> {
 
@@ -126,7 +127,7 @@ public class AuthXdsResolveFilter extends AbstractXdsResolveFilter<List<Listener
 								provider.getForward()));
 			}
 		}
-		log.info("auth rules resolve finish, RBAC rules size: {}, Jwt rules size: {}",
+		log.info("Auth rules resolve finish, RBAC rules size: {}, Jwt rules size: {}",
 				allowAuthRules.size() + denyAuthRules.size(), jwtRules.size());
 		applicationContext.publishEvent(new AuthDataChangedEvent(this,
 				new AuthRules(allowAuthRules, denyAuthRules, jwtRules)));

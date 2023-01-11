@@ -29,10 +29,10 @@ import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.cluster.v3.Cluster;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
-/**
+/* CdsProtocol contains infomation about service.
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a> CdsProtocol contains infomation about
- * service.
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 
@@ -51,7 +51,7 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 				clusters.add(cluster);
 			}
 			catch (Exception e) {
-				log.error("unpack cluster failed", e);
+				log.error("Unpack cluster failed", e);
 			}
 		}
 		fireXdsFilters(clusters);

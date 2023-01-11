@@ -23,9 +23,11 @@ import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import org.springframework.context.ApplicationListener;
 
 /**
+ * To receive the auth data when it is changed by user.
+ *
  * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a> To receive the auth data when it is
- * changed by user.
+ * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class AuthListener implements ApplicationListener<AuthDataChangedEvent> {
 

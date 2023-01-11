@@ -18,6 +18,7 @@ package com.alibaba.cloud.commons.governance.labelrouting.rule;
 
 /**
  * @author HH
+ * @since 2.2.10-RC1
  */
 public interface RouteRule {
 

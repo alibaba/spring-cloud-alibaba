@@ -32,6 +32,7 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * @author HH
+ * @since 2.2.10-RC1
  */
 public class RouteDataRepository {
 
@@ -146,7 +147,9 @@ public class RouteDataRepository {
 					matchServiceList = new ArrayList<>();
 				}
 				matchServiceList.add(matchService);
-				singleRuleMap.put(routeRule.getKey(), matchServiceList);
+				if (routeRule.getKey() != null) {
+					singleRuleMap.put(routeRule.getKey(), matchServiceList);
+				}
 			}
 		}
 		newRouteCache.put(routerData.getTargetService(), singleRuleMap);

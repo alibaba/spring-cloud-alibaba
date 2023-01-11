@@ -329,7 +329,7 @@ EOF
 This TrafficRouter specifies the simplest label routing rule. HTTP requests with a gray header are routed to v2, and the rest of the traffic is routed to v1.
 If the version v2 does not have a corresponding instance, the HTTP request will fall back to the version v1.
 ### Demonstrate effect
-We send an HTTP request without a request header to IstioConsumerApplication
+We send an HTTP request without a request header to OpenSergoConsumerApplication
 ```
 curl --location --request GET '127.0.0.1:18083/router-test'
 ```

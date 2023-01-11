@@ -12,6 +12,11 @@
     <artifactId>spring-cloud-starter-alibaba-controlplane-opensergo</artifactId>
     <name>Spring Cloud Alibaba OpenSergo Control Plane</name>
 
+    <properties>
+        <java.version>1.8</java.version>
+        <envoy-api.version>1.0.36</envoy-api.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -26,6 +31,11 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.envoyproxy.controlplane</groupId>
+            <artifactId>api</artifactId>
+            <version>${envoy-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -58,8 +68,5 @@
         </dependency>
 
     </dependencies>
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 
 </project>
