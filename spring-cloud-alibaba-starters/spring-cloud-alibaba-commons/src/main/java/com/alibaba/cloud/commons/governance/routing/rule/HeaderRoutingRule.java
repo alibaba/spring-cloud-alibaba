@@ -22,7 +22,7 @@ import java.util.Objects;
  * @author HH
  * @since 2.2.10-RC1
  */
-public class HeaderRoutingRule implements RoutingRule {
+public class HeaderRoutingRule implements Rule {
 
 	private String type;
 

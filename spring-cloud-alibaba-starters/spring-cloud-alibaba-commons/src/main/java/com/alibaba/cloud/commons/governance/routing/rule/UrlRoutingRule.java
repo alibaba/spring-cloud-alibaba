@@ -24,7 +24,7 @@ import java.util.Objects;
  */
 public class UrlRoutingRule {
 
-	public static class PathRoutingRule implements RoutingRule {
+	public static class PathRoutingRule implements Rule {
 
 		private String type;
 
@@ -99,7 +99,7 @@ public class UrlRoutingRule {
 
 	}
 
-	public static class Parameter implements RoutingRule {
+	public static class Parameter implements Rule {
 
 		private String type;
 

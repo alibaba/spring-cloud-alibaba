@@ -19,7 +19,7 @@ package com.alibaba.cloud.commons.governance.routing;
 import java.util.List;
 import java.util.Objects;
 
-import com.alibaba.cloud.commons.governance.routing.rule.RoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.Rule;
 
 /**
  * @author HH
@@ -27,7 +27,7 @@ import com.alibaba.cloud.commons.governance.routing.rule.RoutingRule;
  */
 public class MatchService {
 
-	private List<RoutingRule> ruleList;
+	private List<Rule> ruleList;
 
 	private String version;
 
@@ -43,11 +43,11 @@ public class MatchService {
 		this.fallbackVersion = fallbackVersion;
 	}
 
-	public List<RoutingRule> getRuleList() {
+	public List<Rule> getRuleList() {
 		return ruleList;
 	}
 
-	public void setRuleList(List<RoutingRule> ruleList) {
+	public void setRuleList(List<Rule> ruleList) {
 		this.ruleList = ruleList;
 	}
 

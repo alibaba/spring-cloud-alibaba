@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.cloud.commons.governance.routing.MatchService;
-import com.alibaba.cloud.commons.governance.routing.rule.RoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.Rule;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
@@ -282,12 +282,12 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			return NO_MATCH;
 		}
 		for (MatchService matchService : matchServiceList) {
-			final List<RoutingRule> ruleList = matchService.getRuleList();
+			final List<Rule> ruleList = matchService.getRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
 			String fallback = matchService.getFallback();
 			boolean isMatchRule = true;
-			for (RoutingRule routeRule : ruleList) {
+			for (Rule routeRule : ruleList) {
 				String type = routeRule.getType();
 				switch (type) {
 				case PATH:
@@ -319,7 +319,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		return NO_MATCH;
 	}
 
-	private boolean parseRequestPath(final RoutingRule routeRule,
+	private boolean parseRequestPath(final Rule routeRule,
 			final HttpServletRequest request) {
 		String condition = routeRule.getCondition();
 		String value = routeRule.getValue();
@@ -327,7 +327,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		return conditionMatch(condition, value, uri);
 	}
 
-	private boolean parseRequestHeader(final RoutingRule routeRule,
+	private boolean parseRequestHeader(final Rule routeRule,
 			final HashMap<String, String> requestHeaders) {
 		if (requestHeaders.size() == 0) {
 			return false;
@@ -338,7 +338,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		return conditionMatch(condition, value, headerValue);
 	}
 
-	private boolean parseRequestParameter(final RoutingRule routeRule,
+	private boolean parseRequestParameter(final Rule routeRule,
 			final Map<String, String[]> parameterMap) {
 		if (parameterMap == null || parameterMap.size() == 0) {
 			return false;

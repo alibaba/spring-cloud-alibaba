@@ -26,6 +26,7 @@ import com.alibaba.cloud.commons.governance.routing.MatchService;
 import com.alibaba.cloud.commons.governance.routing.RoutingRule;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
+import com.alibaba.cloud.commons.governance.routing.rule.Rule;
 import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.StringMatcher;
@@ -174,8 +175,8 @@ public class OpenSergoTrafficRouterParser {
 		return version;
 	}
 
-	private List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> match2RouteRules(RouteMatch routeMatch) {
-		List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> routeRules = new ArrayList<>();
+	private List<Rule> match2RouteRules(RouteMatch routeMatch) {
+		List<Rule> routeRules = new ArrayList<>();
 		for (HeaderMatcher headerMatcher : routeMatch.getHeadersList()) {
 			HeaderRoutingRule headerRule = headerMatcher2HeaderRule(headerMatcher);
 			if (headerRule != null) {

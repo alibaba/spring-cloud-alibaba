@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.alibaba.cloud.commons.governance.routing.MatchService;
 import com.alibaba.cloud.commons.governance.routing.RoutingRule;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.commons.governance.routing.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,8 +98,7 @@ public class RoutingDataRepository {
 				.getLabelRouteRule();
 		final List<MatchService> matchServiceList = labelRouteData.getMatchRouteList();
 		for (MatchService matchService : matchServiceList) {
-			final List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService
-					.getRuleList();
+			final List<Rule> ruleList = matchService.getRuleList();
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
 			if (CollectionUtils.isEmpty(ruleList)) {
@@ -127,8 +127,7 @@ public class RoutingDataRepository {
 		HashMap<String, List<MatchService>> singleRuleMap = new HashMap<>();
 
 		for (MatchService matchService : matchRouteList) {
-			List<com.alibaba.cloud.commons.governance.routing.rule.RoutingRule> ruleList = matchService
-					.getRuleList();
+			List<Rule> ruleList = matchService.getRuleList();
 
 			// Take out the path label separately, because there is no key for hash index.
 			if (ruleList.size() == 1
@@ -142,7 +141,7 @@ public class RoutingDataRepository {
 				newPathRuleMap.put(routerData.getTargetService(), matchServiceList);
 				continue;
 			}
-			for (com.alibaba.cloud.commons.governance.routing.rule.RoutingRule routeRule : ruleList) {
+			for (Rule routeRule : ruleList) {
 				List<MatchService> matchServiceList = singleRuleMap
 						.get(routeRule.getKey());
 				if (matchServiceList == null) {
