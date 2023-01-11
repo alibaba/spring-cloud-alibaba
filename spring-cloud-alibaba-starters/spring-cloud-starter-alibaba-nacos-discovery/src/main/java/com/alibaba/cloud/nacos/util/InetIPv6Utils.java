@@ -23,6 +23,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -34,7 +35,9 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
  */
 public class InetIPv6Utils {
 
-	private final Log log = LogFactory.getLog(InetIPv6Utils.class);
+	private final static Log log = LogFactory.getLog(InetIPv6Utils.class);
+
+	private final static String IPV6_IS_NULL = "";
 
 	private final InetUtilsProperties properties;
 
@@ -55,7 +58,7 @@ public class InetIPv6Utils {
 
 		try {
 			for (Enumeration<NetworkInterface> nics = NetworkInterface
-					.getNetworkInterfaces(); nics.hasMoreElements();) {
+					.getNetworkInterfaces(); nics.hasMoreElements(); ) {
 				NetworkInterface ifc = nics.nextElement();
 				if (ifc.isUp() || !ifc.isVirtual() || !ifc.isLoopback()) {
 					if (address != null) {
@@ -63,7 +66,7 @@ public class InetIPv6Utils {
 					}
 					if (!ignoreInterface(ifc.getDisplayName())) {
 						for (Enumeration<InetAddress> addrs = ifc
-								.getInetAddresses(); addrs.hasMoreElements();) {
+								.getInetAddresses(); addrs.hasMoreElements(); ) {
 							InetAddress inetAddress = addrs.nextElement();
 							if (inetAddress instanceof Inet6Address
 									// filter ::1
@@ -94,7 +97,13 @@ public class InetIPv6Utils {
 
 	public String findIPv6Address() {
 		InetUtils.HostInfo hostInfo = findFirstNonLoopbackHostInfo();
-		return normalizeIPv6(hostInfo.getIpAddress());
+		String ipv6 = hostInfo.getIpAddress();
+		if (StringUtils.isNotEmpty(ipv6)) {
+			return normalizeIPv6(ipv6);
+		}
+		else {
+			return IPV6_IS_NULL;
+		}
 	}
 
 	private String normalizeIPv6(String ip) {

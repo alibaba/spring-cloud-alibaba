@@ -136,6 +136,13 @@
             <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.7</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

@@ -16,18 +16,42 @@
 
 package com.alibaba.cloud.nacos.util;
 
-import org.junit.jupiter.api.Test;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration;
+import org.apache.commons.validator.routines.InetAddressValidator;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import org.springframework.cloud.commons.util.InetUtilsProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(
+		classes = InetIPv6UtilsTest.TestConfig.class,
+		properties = {"spring.cloud.nacos.discovery.ipType=IPv6"},
+		webEnvironment = RANDOM_PORT)
 public class InetIPv6UtilsTest {
-
-	private final InetIPv6Utils inetIPv6Util = new InetIPv6Utils(
-			new InetUtilsProperties());
+	@Autowired
+	NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	@Test
 	public void getIPv6() {
-		System.out.println(inetIPv6Util.findIPv6Address());
+		String ip = nacosDiscoveryProperties.getIp();
+		ip = ip.substring(1, ip.length() - 1);
+		assert (InetAddressValidator.getInstance().isValidInet6Address(ip));
 	}
 
+	@Configuration
+	@EnableAutoConfiguration
+	@ImportAutoConfiguration(
+			NacosDiscoveryClientConfiguration.class)
+	public static class TestConfig {
+
+	}
 }
