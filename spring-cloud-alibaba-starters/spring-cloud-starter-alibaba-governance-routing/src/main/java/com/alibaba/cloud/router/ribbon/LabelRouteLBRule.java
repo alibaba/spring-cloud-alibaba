@@ -53,6 +53,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author HH
+ * @since 2.2.10-RC1
  */
 public class LabelRouteLBRule extends PredicateBasedRule {
 

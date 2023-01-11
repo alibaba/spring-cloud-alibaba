@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.commons.governance.event.LabelRoutingDataChangedEvent;
+import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.labelrouting.UnifiedRouteDataStructure;
 import com.alibaba.cloud.router.repository.FilterService;
 import com.alibaba.cloud.router.repository.RouteDataRepository;
@@ -33,9 +33,10 @@ import org.springframework.context.ApplicationListener;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public class LabelRouteDataListener
-		implements ApplicationListener<LabelRoutingDataChangedEvent> {
+		implements ApplicationListener<RoutingDataChangedEvent> {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(LabelRouteDataListener.class);
@@ -51,7 +52,7 @@ public class LabelRouteDataListener
 	}
 
 	@Override
-	public void onApplicationEvent(LabelRoutingDataChangedEvent event) {
+	public void onApplicationEvent(RoutingDataChangedEvent event) {
 		try {
 			Collection<UnifiedRouteDataStructure> untiedRouterDataStructureList = event
 					.getUntiedRouterDataStructureList();

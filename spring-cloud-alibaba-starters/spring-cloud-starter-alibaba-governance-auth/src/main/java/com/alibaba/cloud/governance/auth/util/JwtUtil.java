@@ -37,17 +37,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 public final class JwtUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
 
-	private static final String BEARER_PREFIX = "Bearer ";
+	private static final String BEARER_PREFIX = "Bearer" + " ";
 
 	private JwtUtil() {
 	}
@@ -55,11 +57,11 @@ public final class JwtUtil {
 	public static String getTokenFromJwtRule(MultiValueMap<String, String> params,
 			HttpHeaders headers, JwtRule jwtRule) {
 		if (headers == null) {
-			return "";
+			return StringUtils.EMPTY;
 		}
 		try {
 			Map<String, String> jwtHeaders = jwtRule.getFromHeaders();
-			if (jwtHeaders != null && !jwtHeaders.isEmpty()) {
+			if (!CollectionUtils.isEmpty(jwtHeaders)) {
 				for (Map.Entry<String, String> entry : jwtHeaders.entrySet()) {
 					String headerName = entry.getKey();
 					String prefix = entry.getValue();
@@ -72,7 +74,7 @@ public final class JwtUtil {
 				}
 			}
 			List<String> fromParams = jwtRule.getFromParams();
-			if (fromParams != null && !fromParams.isEmpty()) {
+			if (!CollectionUtils.isEmpty(fromParams)) {
 				for (String fromParam : fromParams) {
 					if (params.containsKey(fromParam)) {
 						return params.getFirst(fromParam);
@@ -81,7 +83,7 @@ public final class JwtUtil {
 			}
 			String token = headers.getFirst(HttpHeaders.AUTHORIZATION);
 			if (StringUtils.isEmpty(token)) {
-				return "";
+				return StringUtils.EMPTY;
 			}
 			if (token.startsWith(BEARER_PREFIX)) {
 				return token.substring(BEARER_PREFIX.length());
@@ -89,9 +91,9 @@ public final class JwtUtil {
 			return token;
 		}
 		catch (Exception e) {
-			log.info("no jwt token extracted from header or params");
+			log.warn("No jwt token extracted from header or params");
 		}
-		return "";
+		return StringUtils.EMPTY;
 	}
 
 	public static JwtClaims extractJwtClaims(JwtRule jwtRule, String token) {
@@ -133,13 +135,13 @@ public final class JwtUtil {
 			return null;
 		}
 		catch (JoseException e) {
-			log.warn("invalid jws from rule {}", jwtRule);
+			log.warn("Invalid jws from rule {}", jwtRule);
 		}
 		catch (InvalidJwtException e) {
-			log.warn("invalid jwt token {} for rule {}", token, jwtRule);
+			log.warn("Invalid jwt token {} for rule {}", token, jwtRule);
 		}
 		catch (MalformedClaimException e) {
-			log.warn("invalid jwt claims for rule {}", jwtRule);
+			log.warn("Invalid jwt claims for rule {}", jwtRule);
 		}
 		return null;
 	}

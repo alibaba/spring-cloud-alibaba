@@ -24,7 +24,12 @@
             <artifactId>spring-context</artifactId>
             <scope>provided</scope>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
 
 
 </project>

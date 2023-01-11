@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(AuthValidatorAutoConfiguration.class)
@@ -37,8 +38,6 @@ import org.springframework.context.annotation.Configuration;
 public class XdsWebFluxAutoConfiguration {
 
 	@Bean
-	@ConditionalOnProperty(name = "spring.cloud.governance.auth.enabled",
-			matchIfMissing = true)
 	public AuthWebFluxFilter authWebFluxFilter(AuthValidator authValidator) {
 		return new AuthWebFluxFilter(authValidator);
 	}

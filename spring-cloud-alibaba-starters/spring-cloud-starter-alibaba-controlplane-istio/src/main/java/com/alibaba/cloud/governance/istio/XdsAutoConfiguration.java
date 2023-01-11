@@ -21,7 +21,7 @@ import java.util.List;
 import com.alibaba.cloud.commons.governance.event.GovernanceEvent;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.AuthXdsResolveFilter;
-import com.alibaba.cloud.governance.istio.filter.impl.LabelRoutingXdsResolveFilter;
+import com.alibaba.cloud.governance.istio.filter.impl.RoutingXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
@@ -42,6 +42,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
+ * @since 2.2.10-RC1
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "spring.cloud.istio.config.enabled", matchIfMissing = true)
@@ -85,8 +86,8 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	public XdsResolveFilter<List<RouteConfiguration>> labelRoutingXdsResolveFilter() {
-		return new LabelRoutingXdsResolveFilter();
+	public XdsResolveFilter<List<RouteConfiguration>> routingXdsResolveFilter() {
+		return new RoutingXdsResolveFilter();
 	}
 
 	@Bean

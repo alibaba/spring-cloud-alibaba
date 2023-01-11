@@ -25,6 +25,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author HH
+ * @since 2.2.10-RC1
+ */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureOrder(LabelRoutingAutoConfiguration.LABEL_ROUTING_AUTO_CONFIG_ORDER)
 public class LabelRoutingAutoConfiguration {
