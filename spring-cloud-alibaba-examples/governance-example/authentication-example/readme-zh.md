@@ -16,8 +16,8 @@
 
 ## 示例
 ### 如何接入
-在启动示例进行演示之前，我们先了解一下 Spring Cloud 应用如何接入Istio并提供鉴权功能。 注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。
-1. 修改`pom.xml`文件，引入Istio资源转换以及Spring Cloud Alibaba鉴权模块:
+在启动示例进行演示之前，先了解一下应用如何接入Istio并提供鉴权功能。 注意 本章节只是为了便于理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。
+1. 修改`pom.xml`文件，引入Istio规则Adapter以及Spring Cloud Alibaba鉴权模块:
 
 ```xml
 <dependency>
@@ -61,7 +61,7 @@ spring:
 |连接Istio<br>15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的`/var/run/secrets/tokens/istio-token`文件的内容|
 |是否打印xDS相关日志| spring.cloud.istio.config.log-xds|true|
 ### 运行应用
-需要将应用运行在K8s环境中，并给运行的应用将K8s的一些元信息注入以下环境变量中:
+注意，应用运行在K8s环境中，在非默认命名空间下的应用，需要接收Istiod下发的规则，需要将运行的应用K8s的元信息注入以下环境变量中，具体操作方式可参考 [Kubernetes文档](https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information)
 |环境变量名|K8s pod metadata name|
 |--|--|
 |POD_NAME|metadata.name|
@@ -71,8 +71,8 @@ spring:
 ### 效果演示
 下面给出几个简单的鉴权规则配置的示例:
 #### IP黑白名单
-我们在使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则的限制了访问该应用的来源IP:
-```
+使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则的限制了访问该应用的来源IP:
+```YAML
 kubectl apply -f - << EOF
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
@@ -105,7 +105,7 @@ received request from ${from_ip}, local addr is ${local_ip}, local host is ${loc
 ```
 说明通过了SCA的鉴权，将会返回此请求的一些元信息。
 
-在此之后，我们删除这条IP黑白名单的鉴权规则:
+在此之后，删除这条IP黑白名单的鉴权规则:
 ```shell
 kubectl delete AuthorizationPolicy from-ip-allow -n ${namespace_name}
 ```
@@ -115,8 +115,8 @@ received request from ${from_ip}, local addr is ${local_ip}, local host is ${loc
 ```
 
 #### 请求头认证
-我们在使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则的限制了访问该应用的请求header:
-```
+使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则的限制了访问该应用的请求header:
+```YAML
 kubectl apply -f - << EOF
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
@@ -151,7 +151,7 @@ curl --location --request GET '${demo_ip}/auth'
 ```
 Auth failed, please check the request and auth rule
 ```
-在此之后，我们删除这条请求头认证的规则:
+在此之后，删除这条请求头认证的规则:
 ```shell
 kubectl delete AuthorizationPolicy http-headers-allow -n ${namespace_name}
 ```
@@ -161,8 +161,8 @@ received request from ${from_ip}, local addr is ${local_ip}, local host is ${loc
 ```
 
 #### JWT认证
-我们使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则限制了访问该应用需要携带的JWT token value:
-```
+使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则限制了访问该应用需要携带的JWT token value:
+```YAML
 kubectl apply -f - <<EOF
 apiVersion: security.istio.io/v1beta1
 kind: RequestAuthentication
@@ -196,7 +196,7 @@ curl --location --request GET '${demo_ip}/auth' \
 ```
 Auth failed, please check the request and auth rule
 ```
-在此之后，我们删除这条JWT认证的规则:
+在此之后，删除这条JWT认证的规则:
 ```shell
 kubectl delete RequestAuthentication jwt-jwks-uri -n ${namespace_name}
 ```
