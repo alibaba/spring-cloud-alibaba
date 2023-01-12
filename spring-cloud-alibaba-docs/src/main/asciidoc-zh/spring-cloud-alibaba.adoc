@@ -33,4 +33,6 @@ include::sidecar.adoc[]
 
 include::appactive.adoc[]
 
+include::governance.adoc[]
+
 

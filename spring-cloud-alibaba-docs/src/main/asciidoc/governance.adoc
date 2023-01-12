@@ -2,16 +2,15 @@
 
 image::pic/governance-module.png[]
 
-Spring Cloud Alibaba Governance module is a micro-service governance sub-module launched by Spring Cloud Alibaba, which provides various types of micro-service governance capabilities, including label routing, service authentication, etc. Moreover, it supports various control planes, such as Istio and OpenSergo, so that users can get the governance rules in real time without modifying Spring Cloud applications, and apply these rules to Spring Cloud applications to govern the Spring Cloud application.
+Microservices Governance module is a micro-service governance sub-module launched by Spring Cloud Alibaba, which provides various types of microservices governance capabilities, including label routing, service authentication, etc. Moreover, it supports various control planes, such as Istio and OpenSergo, so that users can get the governance rules in real time without modifying Spring Cloud applications, and apply these rules to applications to govern the Spring Cloud application.
 
-== How to use
 
 === Resource-Transform
 image::pic/resource-transform.png[]
 
-The resource-transform module of Spring Cloud Alibaba Governance will uniformly transform the configurations published by different control planes, like Istio and OperSergo, into the unified abstract data structure of Spring Cloud Alibaba for subsequent use.
+The resource-transform module of Microservices Governance will uniformly transform the configurations published by different control planes, like Istio and OperSergo, into the unified abstract data structure of Spring Cloud Alibaba for subsequent use.
 
-If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-xds-adapter`.
+If you use Istio in your project to transform the configuration, you need to use a following starter:
 [source,xml,indent=0]
 ----
 <dependency>
@@ -19,6 +18,7 @@ If you use Istio in your project to transform the configuration, you need to use
   <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ----
+If you want to use OpenSergo, you can refer to https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
 
 After that, configure the following configuration in the application.yml:
 
@@ -49,14 +49,13 @@ Here's an explanation of each field:
 |Whether to connect to Istio to obtain authentication configuration| spring.cloud.istio.config.enabled|true|
 |Host of Istiod| spring.cloud.istio.config.host|127.0.0.1|
 |Port of Istiod| spring.cloud.istio.config.port|15012|15010 port does not need TLS，but 15012 does
-|Thread pool size for SCA to pull the config| spring.cloud.istio.config.polling-pool-size|10|
-|Time interval for SCA to pull the config| spring.cloud.istio.config.polling-time|30|The unit is second
-|JWT token for SCA to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `/var/run/secrets/tokens/istio-token` in the pod of application|
+|Thread pool size for application to pull the config| spring.cloud.istio.config.polling-pool-size|10|
+|Time interval for application to pull the config| spring.cloud.istio.config.polling-time|30|The unit is second
+|JWT token for application to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `/var/run/secrets/tokens/istio-token` in the pod of application|
 |Whether to print logs about xDS| spring.cloud.istio.config.log-xds|true|
 |===
 
-### Run the application
-You need to run the application in the K8s environment and inject some meta information about K8s into the following environment variables for the running application.
+Note that the application runs in the K8s environment, and the application in the non-default namespace needs to receive the rules issued by Istiod, and needs to inject the meta information of the running application Kubernetes into the following environment variables. For the specific operation method, please refer to https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information[Kubernetes documentation]
 
 |===
 |Environment variable name|K8s pod metadata name
@@ -75,10 +74,10 @@ Load balance Component: Ribbon
 
 In the future, more components such as RestTemplate, Spring Cloud LoadBalancer and so on will be supported.
 
-==== use Routing
+==== Using
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. Label routing module can route the Spring Cloud application according to the request header, request parameters and other tags to route to different services.
 
-If you use Spring Cloud Alibaba Governance Label Routing in your project, You need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-routing`.
+If you use Microservices Governance Label Routing in your project, You need to use a following starter:
 [source,xml,indent=0]
 ----
 <dependency>
@@ -87,7 +86,7 @@ If you use Spring Cloud Alibaba Governance Label Routing in your project, You ne
 </dependency>
 ----
 
-2.Configure a load balance algorithm when there are no routing rules (RandomRule algorithm as an example)
+2.Configure a load balance algorithm when there are routing rules (RandomRule algorithm as an example)
 If no configuration,use default ribbon load balance algorithm ZoneAvoidanceRule.
 ----
 spring.cloud.governance.routing.rule=RandomRule
@@ -101,16 +100,16 @@ With the introduction of Istio Resource Transform module, the label routing modu
 
 We use Istio to publish corresponding `DestinationRule` and `VirtualService` to configure corresponding labeled routing rules. For details, see the following documents and examples:
 
-* https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/#VirtualService
-* https://istio.io/latest/zh/docs/concepts/traffic-management/#destination-rules
-* spring-cloud-alibaba-examples/governance-example/label-routing-example/istio-label-routing-consumer-example
+* https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/#VirtualService[Istio VirtualService]
+* https://istio.io/latest/zh/docs/concepts/traffic-management/#destination-rules[Istio Destination Rule]
+* https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
 
-=== Use Authentication
+=== Authentication
 image::pic/auth-process.png[]
 
 With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. The Authentication module provides various authentication modes for Spring Cloud applications, such as IP blacklist and whitelist and JWT authentication.
 
-If you use Istio in your project to transform the configuration, you need to use a starter with a group ID of `com.alibaba.cloud` and an artifact ID of `spring-cloud-starter-alibaba-governance-auth`.
+Add following Microservices Authentication starter:
 
 [source,xml,indent=0]
 ----
@@ -122,7 +121,6 @@ If you use Istio in your project to transform the configuration, you need to use
 
 We use Istio to publish corresponding `AuthorizationPolicy` and `RequestAuthentication` to configure corresponding Authentication rules. For details, see the following documents and examples
 
-* https://istio.io/latest/zh/docs/reference/config/security/request_authentication/
-* https://istio.io/latest/zh/docs/reference/config/security/authorization-policy/
-* spring-cloud-alibaba-examples/governance-example/authentication-example/istio-authentication-provider-mvc-example
-* spring-cloud-alibaba-examples/governance-example/authentication-example/istio-authentication-provider-webflux-example
+* https://istio.io/latest/zh/docs/reference/config/security/request_authentication/[Istio RequestAuthentication]
+* https://istio.io/latest/zh/docs/reference/config/security/authorization-policy/[Authorization Policy]
+* https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/authentication-example[Spring Cloud Alibaba Authorization Examples]

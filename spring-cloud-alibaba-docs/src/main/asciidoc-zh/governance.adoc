@@ -2,15 +2,14 @@
 
 image::pic/governance-module.png[]
 
-Spring Cloud Alibaba Governance模块是Spring Cloud Alibaba推出的微服务治理子模块，提供了多种类型的微服务治理能力，包括标签路由，服务鉴权等。并且对接了多种控制面，比如Istio，OpenSergo，让用户无需改造Spring Cloud应用，也能实时感知到Istio等治理控制面下发的治理规则，并将此规则应用到Spring Cloud应用上，从而完成对Spring Cloud应用的治理。
+Microservices Governance是Spring Cloud Alibaba最新推出的微服务治理能力，提供了多种类型的微服务治理能力，包括标签路由，服务鉴权等。并且对接了多种控制面，比如Istio，OpenSergo，让用户无需改造Spring Cloud应用，也能实时感知到上述治理控制面下发的治理规则，并将此规则应用到Spring Cloud应用上，从而完成对Spring Cloud应用的治理。
 
-== 如何使用
 === 配置转换
 image::pic/resource-transform.png[]
 
-Spring Cloud Alibaba Governance的resource-transform模块会将不同控制面下发的配置进行统一的转换，将来自Istio，OpenSergo等控制面下发的配置统一转换为Spring Cloud Alibaba统一抽象出的数据结构以供后续使用
+Microservices Governance的配置转换模块会将不同控制面下发的配置进行统一的转换，目前支持将来自Istio，OpenSergo等控制面下发的配置统一转换为Spring Cloud Alibaba统一抽象出的数据结构以供后续使用
 
-如果在您的项目中使用Istio来实现配置转换，需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-xds-adapter` 的starter
+如果在项目中使用Istio来实现规则转换，需要使用如下starter依赖：
 [source,xml,indent=0]
 ----
 <dependency>
@@ -18,6 +17,7 @@ Spring Cloud Alibaba Governance的resource-transform模块会将不同控制面�
   <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ----
+OpenSergo请参考https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
 
 之后，在application.yml配置文件中配置如下配置
 
@@ -48,23 +48,13 @@ spring:
 |是否连接Istio获取鉴权配置| spring.cloud.istio.config.enabled|true|
 |Istiod的地址| spring.cloud.istio.config.host|127.0.0.1|
 |Istiod的端口| spring.cloud.istio.config.port|15012|注：连接15010端口无需TLS，连接15012端口需TLS认证
-|SCA去Istio拉取配置的线程池大小| spring.cloud.istio.config.polling-pool-size|10|
-|SCA去Istio拉取配置的间隔时间| spring.cloud.istio.config.polling-time|30|单位为秒
+|应用从Istio拉取配置的线程池大小| spring.cloud.istio.config.polling-pool-size|10|
+|应用从Istio拉取配置的间隔时间| spring.cloud.istio.config.polling-time|30|单位为秒
 |连接Istio 15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的 `/var/run/secrets/tokens/istio-token` 文件的内容|
 |是否打印xDS相关日志| spring.cloud.istio.config.log-xds|true|
 |===
 
-=== 运行应用
-需要将应用运行在K8s环境中，并给运行的应用将K8s的一些元信息注入以下环境变量中:
-
-|===
-|环境变量名|K8s pod metadata name
-|POD_NAME|metadata.name
-|NAMESPACE_NAME|metadata.namespace
-|===
-
-=== 运行应用
-需要将应用运行在K8s环境中，并给运行的应用将K8s的一些元信息注入以下环境变量中:
+注意，应用运行在K8s环境中，在非默认命名空间下的应用，需要接收Istiod下发的规则，需要将运行的应用K8s的元信息注入以下环境变量中，具体操作方式可参考 https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information[Kubernetes文档]:
 
 |===
 |环境变量名|K8s pod metadata name
@@ -85,9 +75,9 @@ spring:
 
 ==== 使用路由
 
-在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。标签路由模块可以实现对Spring Cloud应用根据请求头，请求参数等标签来路由到不同的服务
+在引入配置转换模块后，就能获取到相应的治理规则来对应用赋予相应的治理能力。标签路由模块可以实现对应用根据请求头，请求参数等标签来路由到不同的服务
 
-1.如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-routing` 的starter
+1.如果在项目中使用Spring Cloud Alibaba 标签路由，需要使用添加如下starter
 [source,xml,indent=0]
 ----
 <dependency>
@@ -96,8 +86,8 @@ spring:
 </dependency>
 ----
 
-2.配置当没有路由规则时的负载均衡算法(以随机负载均衡算法为例)
-如果没有配置，使用ribbon默认的负载均衡算法ZoneAvoidanceRule
+2.配置进行路由规则时的负载均衡算法(以随机负载均衡算法为例)
+如果未配置，使用Ribbon默认的负载均衡算法ZoneAvoidanceRule
 ----
 spring.cloud.governance.routing.rule=RandomRule
 ----
@@ -108,18 +98,18 @@ spring.cloud.governance.routing.rule=RandomRule
 * 请求头
 * 请求参数
 
-我们使用Istio下发对应的 `DestinationRule` 以及 `VirtualService` ，即可配置对应的标签路由规则，具体的配置方法请参考以下文档与示例
+使用Istio下发对应的 `DestinationRule` 以及 `VirtualService` ，即可配置对应的标签路由规则，具体的配置方法请参考以下文档与示例
 
-* https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/#VirtualService
-* https://istio.io/latest/zh/docs/concepts/traffic-management/#destination-rules
-* spring-cloud-alibaba-examples/governance-example/label-routing-example/istio-label-routing-consumer-example
+* https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/#VirtualService[Istio VirtualService]
+* https://istio.io/latest/zh/docs/concepts/traffic-management/#destination-rules[Istio Destination Rule]
+* https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
 
-=== 使用服务鉴权
+=== 服务鉴权
 image::pic/auth-process.png[]
 
 在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。服务鉴权模块给Spring Cloud应用提供多种鉴权方式，如IP黑白名单，JWT鉴权等
 
-如果在您的项目中使用Spring Cloud Alibaba Governance 标签路由，需要使用需要使用group ID 为 `com.alibaba.cloud` 和artifact ID 为 `spring-cloud-starter-alibaba-governance-auth` 的starter
+如果使用Spring Cloud Alibaba服务鉴权功能，需要使用添加如下依赖：
 [source,xml,indent=0]
 ----
 <dependency>
@@ -128,9 +118,8 @@ image::pic/auth-process.png[]
 </dependency>
 ----
 
-我们使用Istio下发对应的 `AuthorizationPolicy` 以及 `RequestAuthentication` ，即可配置对应的鉴权规则，具体的配置方法请参考以下文档与示例
+使用Istio下发对应的 `AuthorizationPolicy` 以及 `RequestAuthentication` ，即可配置对应的鉴权规则，具体的配置方法请参考以下文档与示例
 
-* https://istio.io/latest/zh/docs/reference/config/security/request_authentication/
-* https://istio.io/latest/zh/docs/reference/config/security/authorization-policy/
-* spring-cloud-alibaba-examples/governance-example/authentication-example/istio-authentication-provider-mvc-example
-* spring-cloud-alibaba-examples/governance-example/authentication-example/istio-authentication-provider-webflux-example
+* https://istio.io/latest/zh/docs/reference/config/security/request_authentication/[Istio RequestAuthentication]
+* https://istio.io/latest/zh/docs/reference/config/security/authorization-policy/[Authorization Policy]
+* https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/authentication-example[Spring Cloud Alibaba Authorization Examples]
