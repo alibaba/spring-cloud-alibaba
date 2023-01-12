@@ -50,7 +50,7 @@ Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。�
 更多组件请参考 [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.0/Roadmap-zh.md)。
 
 ## 如何构建
-* 2022.x分之对应的是 Spring Cloud 2022 与 Spring Boot 3.x，最低支持 JDK 17。
+* 2022.x分之对应的是 Spring Cloud 2022 与 Spring Boot 3.0.x，最低支持 JDK 17。
 * 2021.x 分支对应的是 Spring Cloud 2021 与 Spring Boot 2.6.x，最低支持 JDK 1.8。
 * 2020.0 分支对应的是 Spring Cloud 2020 与 Spring Boot 2.4.x，最低支持 JDK 1.8。
 * 2.2.x 分支对应的是 Spring Cloud Hoxton 与 Spring Boot 2.2.x，最低支持 JDK 1.8。
@@ -112,13 +112,13 @@ Example 列表：
 
 由于 Spring Boot 1 和 Spring Boot 2 在 Actuator 模块的接口和注解有很大的变更，且 spring-cloud-commons 从 1.x.x 版本升级到 2.0.0 版本也有较大的变更，因此我们采取跟 SpringBoot 版本号一致的版本:
 
-* 2022.x 版本适用于 Spring Boot 3.x
 * 1.5.x 版本适用于 Spring Boot 1.5.x
 * 2.0.x 版本适用于 Spring Boot 2.0.x
 * 2.1.x 版本适用于 Spring Boot 2.1.x
 * 2.2.x 版本适用于 Spring Boot 2.2.x
 * 2020.x 版本适用于 Spring Boot 2.4.x
 * 2021.x 版本适用于 Spring Boot 2.6.x
+* 2022.x 版本适用于 Spring Boot 3.0.x
 
 ## 社区交流
 
