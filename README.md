@@ -119,7 +119,7 @@ As the interfaces and annotations of Spring Boot 1 and Spring Boot 2 have been c
 * 2.2.x for Spring Boot 2.2.x
 * 2020.x for Spring Boot 2.4.x
 * 2021.x for Spring Boot 2.6.x
-* 2022.x for Spring Boot 3.x
+* 2022.x for Spring Boot 3.0.x
 
 ## Code of Conduct
 This project is a sub-project of Spring Cloud, it adheres to the Contributor Covenant [code of conduct](https://github.com/spring-cloud/spring-cloud-build/blob/master/docs/src/main/asciidoc/code-of-conduct.adoc). By participating, you are expected to uphold this code. Please report unacceptable behavior to spring-code-of-conduct@pivotal.io.
