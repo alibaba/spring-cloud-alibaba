@@ -30,3 +30,5 @@ include::schedulerx.adoc[]
 include::sms.adoc[]
 
 include::appactive.adoc[]
+
+include::governance.adoc[]
