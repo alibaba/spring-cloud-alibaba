@@ -2,14 +2,14 @@
 
 image::pic/governance-module.png[]
 
-Microservices Governance是Spring Cloud Alibaba最新推出的微服务治理能力，提供了多种类型的微服务治理能力，包括标签路由，服务鉴权等。并且对接了多种控制面，比如Istio，OpenSergo，让用户无需改造Spring Cloud应用，也能实时感知到上述治理控制面下发的治理规则，并将此规则应用到Spring Cloud应用上，从而完成对Spring Cloud应用的治理。
+Spring Cloud Alibaba Governance是Spring Cloud Alibaba最新推出的微服务治理能力，提供了多种类型的微服务治理能力，包括标签路由，服务鉴权等。并且对接了多种控制面，比如 https://istio.io/[Istio]，http://opensergo.io/[OpenSergo]，让用户仅通过添加特定的Adapter模块，就能实时感知到上述治理控制面下发的治理规则，并将此规则作用到应用上，从而完成对应用的治理。
 
 === 配置转换
 image::pic/resource-transform.png[]
 
-Microservices Governance的配置转换模块会将不同控制面下发的配置进行统一的转换，目前支持将来自Istio，OpenSergo等控制面下发的配置统一转换为Spring Cloud Alibaba统一抽象出的数据结构以供后续使用
+Microservices Governance的规则转换模块会将不同控制面下发的规则进行统一的转换，目前支持将来自Istio，OpenSergo等控制面下发的规则统一转换为Spring Cloud Alibaba统一抽象出的数据结构以供后续使用
 
-如果在项目中使用Istio来实现规则转换，需要使用如下starter依赖：
+如果在项目中使用Istio来实现规则转换，首先注意需要搭建一个Kubernetes集群，并且在其中部署Istio，具体参考 https://istio.io/latest/zh/docs/setup/install[Istio安装]。然后在需要接收到来自Istio规则的应用（一般为服务消费者）中添加如下starter依赖：
 [source,xml,indent=0]
 ----
 <dependency>
@@ -17,9 +17,9 @@ Microservices Governance的配置转换模块会将不同控制面下发的配�
   <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ----
-OpenSergo请参考https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
+OpenSergo请参考 https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
 
-之后，在application.yml配置文件中配置如下配置
+之后，在application.yml配置文件中设置如下配置内容：
 
 [source,yaml,indent=0]
 ----
@@ -75,9 +75,9 @@ spring:
 
 ==== 使用路由
 
-在引入配置转换模块后，就能获取到相应的治理规则来对应用赋予相应的治理能力。标签路由模块可以实现对应用根据请求头，请求参数等标签来路由到不同的服务
+在引入配置转换模块后，就能获取到相应的治理规则来对应用赋予相应的治理能力。标签路由模块可以实现对应用根据请求头，请求参数等标签来路由到不同的服务，
 
-1.如果在项目中使用Spring Cloud Alibaba 标签路由，需要使用添加如下starter
+1.如果在项目中使用Spring Cloud Alibaba 标签路由，需要添加如下starter（一般添加在服务消费者应用上）
 [source,xml,indent=0]
 ----
 <dependency>
@@ -92,13 +92,13 @@ spring:
 spring.cloud.governance.routing.rule=RandomRule
 ----
 
-在引入Istio配置转换模块的前提下，标签路由模块支持对以下几种请求的元信息做路由
+在引入Istio配置转换模块的前提下，标签路由模块支持对以下几种请求的元信息做路由：
 
 * 请求路径
 * 请求头
 * 请求参数
 
-使用Istio下发对应的 `DestinationRule` 以及 `VirtualService` ，即可配置对应的标签路由规则，具体的配置方法请参考以下文档与示例
+使用Istio下发对应的 `DestinationRule` 以及 `VirtualService` ，即可配置对应的标签路由规则，具体的配置方法请参考以下文档与示例：
 
 * https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/#VirtualService[Istio VirtualService]
 * https://istio.io/latest/zh/docs/concepts/traffic-management/#destination-rules[Istio Destination Rule]
@@ -107,7 +107,7 @@ spring.cloud.governance.routing.rule=RandomRule
 === 服务鉴权
 image::pic/auth-process.png[]
 
-在引入配置转换模块后，我们就能获取到相应的治理规则来对Spring Cloud应用赋予相应的治理能力。服务鉴权模块给Spring Cloud应用提供多种鉴权方式，如IP黑白名单，JWT鉴权等
+在引入规则转换Adapter后，就能获取到相应的治理规则来对应用赋予相应的治理能力。服务鉴权模块给应用提供多种鉴权方式，如IP黑白名单，JWT鉴权等
 
 如果使用Spring Cloud Alibaba服务鉴权功能，需要使用添加如下依赖：
 [source,xml,indent=0]

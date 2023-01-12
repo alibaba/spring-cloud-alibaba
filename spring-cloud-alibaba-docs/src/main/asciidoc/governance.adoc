@@ -2,15 +2,15 @@
 
 image::pic/governance-module.png[]
 
-Microservices Governance module is a micro-service governance sub-module launched by Spring Cloud Alibaba, which provides various types of microservices governance capabilities, including label routing, service authentication, etc. Moreover, it supports various control planes, such as Istio and OpenSergo, so that users can get the governance rules in real time without modifying Spring Cloud applications, and apply these rules to applications to govern the Spring Cloud application.
+Spring Cloud Alibaba Governance is a Microservices governance capabilities provided by Spring Cloud Alibaba, which provides various types of microservices governance capabilities, including label routing, service authentication, etc. Moreover, it supports various control planes, such as https://istio.io/[Istio] and http://opensergo.io/[OpenSergo], so that users can get the governance rules in real time just adding relevant dependency, and apply these rules to applications to govern the Spring Cloud Alibaba application.
 
 
-=== Resource-Transform
+=== Resource Transform
 image::pic/resource-transform.png[]
 
-The resource-transform module of Microservices Governance will uniformly transform the configurations published by different control planes, like Istio and OperSergo, into the unified abstract data structure of Spring Cloud Alibaba for subsequent use.
+The resource-transform adapter of Microservices Governance will uniformly transform the rules published by different control planes, like Istio and OperSergo, into the unified abstract data structure of Spring Cloud Alibaba for subsequent use.
 
-If you use Istio in your project to transform the configuration, you need to use a following starter:
+If you use Istio in your project to transform the rule, first of all, note that you need to build a Kubernetes cluster and deploy Istio in it. For details, refer to https://istio.io/latest/zh/docs/setup/install[Istio installation], you need to add a following starter dependency application(Generally added to service consumer application):
 [source,xml,indent=0]
 ----
 <dependency>
@@ -74,10 +74,10 @@ Load balance Component: Ribbon
 
 In the future, more components such as RestTemplate, Spring Cloud LoadBalancer and so on will be supported.
 
-==== Using
-With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. Label routing module can route the Spring Cloud application according to the request header, request parameters and other tags to route to different services.
+==== Using Routing capacity
+With the introduction of the transformation adapter of rule, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. Label routing module can route the Spring Cloud application according to the request header, request parameters and other tags to route to different services.
 
-If you use Microservices Governance Label Routing in your project, You need to use a following starter:
+If you use Microservices Governance Label Routing in your project, You need to use a following starter dependency(Generally added to service consumer application):
 [source,xml,indent=0]
 ----
 <dependency>
@@ -92,7 +92,7 @@ If no configuration,use default ribbon load balance algorithm ZoneAvoidanceRule.
 spring.cloud.governance.routing.rule=RandomRule
 ----
 
-With the introduction of Istio Resource Transform module, the label routing module supports routing of the following types of request meta-information:
+With the introduction of Istio Resource Transform adapter, the label routing module supports routing of the following types of request meta-information:
 
 * Request Path
 * Request Header
@@ -107,7 +107,7 @@ We use Istio to publish corresponding `DestinationRule` and `VirtualService` to 
 === Authentication
 image::pic/auth-process.png[]
 
-With the introduction of the configuration transformation module, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. The Authentication module provides various authentication modes for Spring Cloud applications, such as IP blacklist and whitelist and JWT authentication.
+With the introduction of the transformation adapter of rule, we can obtain the governance rules to give the Spring Cloud application some governance capabilities. The Authentication module provides various authentication modes for Spring Cloud applications, such as IP blacklist and whitelist and JWT authentication.
 
 Add following Microservices Authentication starter:
 

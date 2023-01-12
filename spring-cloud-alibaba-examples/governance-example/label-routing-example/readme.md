@@ -1,10 +1,10 @@
-# routing example
+# Routing Example
 
 ## Project Description
 
-This project demonstrates how to use the spring cloud ailbaba governance routing module to complete the label routing function.
+This project demonstrates how to use the Spring Cloud Alibaba Governance Routing module to complete the routing capacity.
 
-## module structure
+## Module structure
 
 This module includes a consumer instance and a provider cluster, which contains two instances.
 
@@ -23,7 +23,7 @@ In the future, more components such as RestTemplate, Spring Cloud LoadBalancer a
 ### How to access
 
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-1. First, modify the pom XML file, which introduces the spring cloud ailbaba governance labelrouting dependency.
+1. First, modify the pom XML file, which introduces the Spring Cloud Alibaba governance routing dependency.
 ```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
@@ -84,7 +84,7 @@ public void getDataFromControlPlaneTest() {
 }
 ```
 The rules corresponding to the code are as follows:
-If the request parameter contains tag=gray and the request header contains id and the value is greater than 10, uri is /router-test at the same time, the traffic is routed to the v2 version. If one of the request parameters does not meet the requirement, the traffic is routed to the v1 version.
+If the request parameter contains tag=gray and the request header contains id and the value is greater than 10, uri is `/router-test` at the same time, the traffic is routed to the v2 version. If one of the request parameters does not meet the requirement, the traffic is routed to the v1 version.
 
 Rules also support dynamic modification. The rules for testing dynamic modification are as follows:
 ```java
@@ -129,9 +129,9 @@ public void getDataFromControlPlaneTest() {
 }
 ```
 The rules corresponding to the code are as follows:
-If the request parameter contains tag=gray, and the request header contains id and the value is greater than 10,uri is /router-test, 50% of the traffic is routed to the v2 version, and the rest is routed to the v1 version. If one of the traffic does not meet the requirements, the traffic is routed to the v1 version.
+If the request parameter contains tag=gray, and the request header contains id and the value is greater than 10, URL is `/router-test`, 50% of the traffic is routed to the v2 version, and the rest is routed to the v1 version. If one of the traffic does not meet the requirements, the traffic is routed to the v1 version.
 
-#####  demonstrate Steps
+#####  demonstration Steps
 1. visit http://localhost:18083/add Push the routing rules from the control surface interface to the routing rule warehouse
    visit http://localhost:18083/router -The test does not meet the routing rules. When the test is routed to the v1 version, the v1 version instance prints and returns the following results:
    ```
@@ -165,8 +165,8 @@ Please refer to [tools](https://kubernetes.io/zh-cn/docs/tasks/tools/) chapter o
 ### Enable Istio on K8s
 Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapter of Istio document.
 ### Introduction to Istio traffic control rules
-- [overview](https://istio.io/latest/zh/docs/concepts/security/#authorization)
-- [detail](https://istio.io/latest/zh/docs/reference/config/security/)
+- [Istio Authorization Overview](https://istio.io/latest/zh/docs/concepts/security/#authorization)
+- [Istio Security Detail](https://istio.io/latest/zh/docs/reference/config/security/)
 1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-xds-adapter` dependency
 ```xml
 <dependency>
@@ -179,7 +179,7 @@ Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapte
 </dependency>
 ```
 2. Configure application.yml for Istio control plane:
-```
+```YAML
 server:
   port: 18084
 spring:
@@ -220,7 +220,7 @@ Start IstioConsumerApplication and two ProviderApplications, and inject it into 
 
 ### Publish Configuration
 We publish the label routing rules through the Istio control plane. We publish a DestinationRule rule first:
-```
+```YAML
 kubectl apply -f - << EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -239,7 +239,7 @@ EOF
 ```
 This rule splits the back-end service into two versions. Pod with label v1 is assigned to v1, and pod with label v2 is assigned to v2
 After that, we publish the VirtualService rule:
-```
+```YAML
 kubectl apply -f - << EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -265,8 +265,8 @@ spec:
         subset: v1
 EOF
 ```
-This VirtualService specifies the simplest label routing rule. HTTP requests with a gray header and /istio-label-routing path are routed to v2, and the rest of the traffic is routed to v1:
-### Demonstrate effect
+This VirtualService specifies the simplest label routing rule. HTTP requests with a gray header and `/istio-label-routing` path are routed to v2, and the rest of the traffic is routed to v1:
+### Demonstration effect
 We send an HTTP request without a request header to IstioConsumerApplication:
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing'
@@ -275,7 +275,7 @@ Since the request header is not gray, the request will be routed to version v1 w
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-We then send an HTTP request with a gray tag in its header and the request path is /istio-label-routing:
+We then send an HTTP request with a gray tag in its header and the request path is `/istio-label-routing`:
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'tag: gray'
 ```
@@ -283,27 +283,28 @@ The request is routed to version v2 because the routing rule is matched by the r
 ```
 Route in 30.221.132.228: 18082,version is v2.
 ```
-Finally, we delete this label routing rule::
+Finally, we delete this label routing rule:
 ```shell
 kubectl delete VirtualService sca-virtual-service
 kubectl delete DestinationRule my-destination-rule
 ```
-After the rule is deleted, the routing policy is not determined by whether the request header is carried or not, but completely depends on the implementation of the loadbalancer。
+After the rule is deleted, the routing policy is not determined by whether the request header is carried or not, but completely depends on the implementation of the loadbalancer.
+
 ## Integrating OpenSergo
 **Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-### Configure
-1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-opensergo-adapter` dependency
+### Configuration
+1. First, modify the `pom.xml` file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-opensergo-adapter` dependency
+```xml
+<dependency>
+   <groupId>com.alibaba.cloud</groupId>
+   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
+</dependency>
+<dependency>
+   <groupId>com.alibaba.cloud</groupId>
+   <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
+</dependency>
 ```
-   <dependency>
-      <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
-   </dependency>
-   <dependency>
-      <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
-   </dependency>
-```
-2. Configure application.yml for OpenSergo control plane
+2. Configure `application.yml` for OpenSergo control plane
 ```
 # The endpoint of OpenSergo ControlPlane
 spring.cloud.opensergo.endpoint=127.0.0.1:10246
@@ -312,7 +313,7 @@ spring.cloud.opensergo.endpoint=127.0.0.1:10246
 Start OpenSergoConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.
 ### Publish Configuration
 [First start OpenSergo control plan](https://opensergo.io/docs/quick-start/opensergo-control-plane/) , Then we publish the label routing rules through the OpenSergo control plane. We publish a TrafficRouter rule.
-```
+```YAML
 kubectl apply -f - << EOF
 apiVersion: traffic.opensergo.io/v1alpha1
 kind: TrafficRouter
@@ -353,7 +354,7 @@ Since the request header is not gray, the request will be routed to version v1 w
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-We then send an HTTP request with a gray tag in its header and the request path is /istio-label-routing
+We then send an HTTP request with a gray tag in its header and the request path is `/istio-label-routing`:
 ```
 curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: gray'
 ```
