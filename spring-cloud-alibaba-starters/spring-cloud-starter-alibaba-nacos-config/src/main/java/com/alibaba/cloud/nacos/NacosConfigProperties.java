@@ -103,7 +103,7 @@ public class NacosConfigProperties {
 	}
 
 	private void overrideFromEnv() {
-		if (Objects.isNull(environment)) {
+		if (environment == null) {
 			return;
 		}
 		if (StringUtils.isEmpty(this.getServerAddr())) {
@@ -449,7 +449,7 @@ public class NacosConfigProperties {
 	@DeprecatedConfigurationProperty(reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.", replacement = PREFIX
 			+ ".shared-configs[x]")
 	public String getSharedDataids() {
-		return Objects.isNull(getSharedConfigs()) ? null
+		return null == getSharedConfigs() ? null
 				: getSharedConfigs().stream().map(Config::getDataId)
 						.collect(Collectors.joining(COMMAS));
 	}
@@ -462,7 +462,7 @@ public class NacosConfigProperties {
 	 */
 	@Deprecated
 	public void setSharedDataids(String sharedDataids) {
-		if (Objects.nonNull(sharedDataids) && sharedDataids.trim().length() > 0) {
+		if (null != sharedDataids && sharedDataids.trim().length() > 0) {
 			List<Config> list = new ArrayList<>();
 			Stream.of(sharedDataids.split(SEPARATOR))
 					.forEach(dataId -> list.add(new Config(dataId.trim())));
@@ -479,7 +479,7 @@ public class NacosConfigProperties {
 	@DeprecatedConfigurationProperty(reason = "replaced to NacosConfigProperties#sharedConfigs and not use it at the same time.", replacement = PREFIX
 			+ ".shared-configs[x].refresh")
 	public String getRefreshableDataids() {
-		return Objects.isNull(getSharedConfigs()) ? null
+		return null == getSharedConfigs() ? null
 				: getSharedConfigs().stream().filter(Config::isRefresh)
 						.map(Config::getDataId).collect(Collectors.joining(COMMAS));
 	}
@@ -491,7 +491,7 @@ public class NacosConfigProperties {
 	 */
 	@Deprecated
 	public void setRefreshableDataids(String refreshableDataids) {
-		if (Objects.nonNull(refreshableDataids) && refreshableDataids.trim().length() > 0) {
+		if (null != refreshableDataids && refreshableDataids.trim().length() > 0) {
 			List<Config> list = new ArrayList<>();
 			Stream.of(refreshableDataids.split(SEPARATOR)).forEach(
 					dataId -> list.add(new Config(dataId.trim()).setRefresh(true)));
@@ -500,7 +500,7 @@ public class NacosConfigProperties {
 	}
 
 	private void compatibleSharedConfigs(List<Config> configList) {
-		if (Objects.nonNull(this.getSharedConfigs())) {
+		if (null != this.getSharedConfigs()) {
 			configList.addAll(this.getSharedConfigs());
 		}
 		List<Config> result = new ArrayList<>();
@@ -605,7 +605,7 @@ public class NacosConfigProperties {
 	}
 
 	private void enrichNacosConfigProperties(Properties nacosConfigProperties) {
-		if (Objects.isNull(environment)) {
+		if (environment == null) {
 			return;
 		}
 		Map<String, Object> properties = PropertySourcesUtils

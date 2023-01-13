@@ -17,7 +17,6 @@
 package com.alibaba.cloud.nacos.client;
 
 import java.util.List;
-import java.util.Objects;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
@@ -78,7 +77,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		nacosConfigProperties.setEnvironment(env);
 		ConfigService configService = nacosConfigManager.getConfigService();
 
-		if (Objects.isNull(configService)) {
+		if (null == configService) {
 			log.warn("no instance of config service found, can't load config from nacos");
 			return null;
 		}
@@ -167,7 +166,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			String tips) {
 		for (int i = 0; i < configs.size(); i++) {
 			String dataId = configs.get(i).getDataId();
-			if (Objects.isNull(dataId) || Objects.equals(dataId.trim().length(), 0)) {
+			if (dataId == null || dataId.trim().length() == 0) {
 				throw new IllegalStateException(String.format(
 						"the [ spring.cloud.nacos.config.%s[%s] ] must give a dataId",
 						tips, i));
@@ -178,10 +177,10 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadNacosDataIfPresent(final CompositePropertySource composite,
 			final String dataId, final String group, String fileExtension,
 			boolean isRefreshable) {
-		if (Objects.isNull(dataId) || dataId.trim().length() < 1) {
+		if (null == dataId || dataId.trim().length() < 1) {
 			return;
 		}
-		if (Objects.isNull(group) || group.trim().length() < 1) {
+		if (null == group || group.trim().length() < 1) {
 			return;
 		}
 		NacosPropertySource propertySource = this.loadNacosPropertySource(dataId, group,
@@ -191,7 +190,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private NacosPropertySource loadNacosPropertySource(final String dataId,
 			final String group, String fileExtension, boolean isRefreshable) {
-		if (!Objects.equals(NacosContextRefresher.getRefreshCount(), 0)) {
+		if (NacosContextRefresher.getRefreshCount() != 0) {
 			if (!isRefreshable) {
 				return NacosPropertySourceRepository.getNacosPropertySource(dataId,
 						group);
@@ -207,7 +206,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	 */
 	private void addFirstPropertySource(final CompositePropertySource composite,
 			NacosPropertySource nacosPropertySource, boolean ignoreEmpty) {
-		if (Objects.isNull(nacosPropertySource) || Objects.isNull(composite)) {
+		if (null == nacosPropertySource || null == composite) {
 			return;
 		}
 		if (ignoreEmpty && nacosPropertySource.getSource().isEmpty()) {

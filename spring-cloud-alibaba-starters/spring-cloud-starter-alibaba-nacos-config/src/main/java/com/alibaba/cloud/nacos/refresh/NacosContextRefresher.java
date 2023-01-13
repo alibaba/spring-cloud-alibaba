@@ -16,7 +16,6 @@
 
 package com.alibaba.cloud.nacos.refresh;
 
-import java.util.Objects;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -148,7 +147,7 @@ public class NacosContextRefresher
 	}
 
 	public boolean isRefreshEnabled() {
-		if (Objects.isNull(nacosConfigProperties)) {
+		if (null == nacosConfigProperties) {
 			return isRefreshEnabled;
 		}
 		// Compatible with older configurations

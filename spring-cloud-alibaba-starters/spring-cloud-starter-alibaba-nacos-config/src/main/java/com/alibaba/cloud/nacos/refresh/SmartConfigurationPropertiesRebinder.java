@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Objects;
 
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBean;
@@ -69,7 +68,7 @@ public class SmartConfigurationPropertiesRebinder
 	private void fillBeanMap(ConfigurationPropertiesBeans beans) {
 		this.beanMap = new HashMap<>();
 		Field field = ReflectionUtils.findField(beans.getClass(), "beans");
-		if (Objects.nonNull(field)) {
+		if (field != null) {
 			field.setAccessible(true);
 			this.beanMap.putAll((Map<String, ConfigurationPropertiesBean>) Optional
 					.ofNullable(ReflectionUtils.getField(field, beans))

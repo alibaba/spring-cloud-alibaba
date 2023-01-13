@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Objects;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -85,7 +84,7 @@ public class NacosRefreshHistory {
 		if (StringUtils.isEmpty(data)) {
 			return null;
 		}
-		if (Objects.isNull(md)) {
+		if (null == md) {
 			try {
 				md = MessageDigest.getInstance("MD5");
 			}

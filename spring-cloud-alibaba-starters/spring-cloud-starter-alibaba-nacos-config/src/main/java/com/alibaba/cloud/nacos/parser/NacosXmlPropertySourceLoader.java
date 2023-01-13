@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -100,7 +99,7 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
 			Document document = documentBuilder.parse(resource.getInputStream());
-			if (Objects.isNull(document)) {
+			if (null == document) {
 				return null;
 			}
 			parseNodeList(document.getChildNodes(), map, "");
@@ -113,7 +112,7 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 
 	private void parseNodeList(NodeList nodeList, Map<String, Object> map,
 			String parentKey) {
-		if (Objects.isNull(nodeList) || nodeList.getLength() < 1) {
+		if (nodeList == null || nodeList.getLength() < 1) {
 			return;
 		}
 		parentKey = parentKey == null ? "" : parentKey;
@@ -144,12 +143,12 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 
 	private void parseNodeAttr(NamedNodeMap nodeMap, Map<String, Object> map,
 			String parentKey) {
-		if (Objects.isNull(nodeMap) || nodeMap.getLength() < 1) {
+		if (null == nodeMap || nodeMap.getLength() < 1) {
 			return;
 		}
 		for (int i = 0; i < nodeMap.getLength(); i++) {
 			Node node = nodeMap.item(i);
-			if (Objects.isNull(node)) {
+			if (null == node) {
 				continue;
 			}
 			if (node.getNodeType() == Node.ATTRIBUTE_NODE) {

@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,7 +77,7 @@ public class NacosJsonPropertySourceLoader extends AbstractPropertySourceLoader 
 	 * Reload the key ending in `value` if need.
 	 */
 	protected Map<String, Object> reloadMap(Map<String, Object> map) {
-		if (Objects.isNull(map) || map.isEmpty()) {
+		if (map == null || map.isEmpty()) {
 			return null;
 		}
 		Map<String, Object> result = new LinkedHashMap<>(map);

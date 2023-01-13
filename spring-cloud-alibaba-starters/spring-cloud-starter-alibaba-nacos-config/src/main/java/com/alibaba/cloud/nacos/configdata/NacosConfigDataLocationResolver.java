@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
@@ -228,7 +227,7 @@ public class NacosConfigDataLocationResolver
 		Map<String, String> result = new HashMap<>(4);
 		for (String entry : query.split("&")) {
 			String[] kv = entry.split("=");
-			if (Objects.equals(kv.length, 2)) {
+			if (kv.length == 2) {
 				result.put(kv[0], kv[1]);
 			}
 		}
@@ -237,7 +236,7 @@ public class NacosConfigDataLocationResolver
 
 	private String suffixFor(URI uri, NacosConfigProperties properties) {
 		String dataId = dataIdFor(uri);
-		if (Objects.nonNull(dataId) && dataId.contains(".")) {
+		if (dataId != null && dataId.contains(".")) {
 			return dataId.substring(dataId.lastIndexOf('.') + 1);
 		}
 		return properties.getFileExtension();
@@ -253,11 +252,11 @@ public class NacosConfigDataLocationResolver
 	private String dataIdFor(URI uri) {
 		String path = uri.getPath();
 		// notice '/'
-		if (Objects.isNull(path) || path.length() <= 1) {
+		if (path == null || path.length() <= 1) {
 			return StringUtils.EMPTY;
 		}
 		String[] parts = path.substring(1).split("/");
-		if (!Objects.equals(parts.length, 1)) {
+		if (parts.length != 1) {
 			throw new IllegalArgumentException("illegal dataId");
 		}
 		return parts[0];
