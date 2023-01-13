@@ -165,7 +165,7 @@ public final class StringUtils {
 	 * @return the trimmed string, {@code null} if null String input
 	 */
 	public static String trim(final String str) {
-		return Objects.equals(str, null) ? null : str.trim();
+		return Objects.isNull(str)) ? null : str.trim();
 	}
 
 	// Equals
