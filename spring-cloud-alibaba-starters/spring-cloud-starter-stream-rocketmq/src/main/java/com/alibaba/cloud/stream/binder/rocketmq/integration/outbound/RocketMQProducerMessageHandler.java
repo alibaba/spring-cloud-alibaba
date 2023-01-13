@@ -118,7 +118,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 			if (!isTrans && extendedProducerProperties.isPartitioned()) {
 				List<MessageQueue> messageQueues = defaultMQProducer
 						.fetchPublishMessageQueues(destination.getName());
-				if (Objects.euqals(extendedProducerProperties.getPartitionCount(), messageQueues.size())) {
+				if (Objects.equals(extendedProducerProperties.getPartitionCount(), messageQueues.size())) {
 					log.info(String.format(
 							"The partition count of topic '%s' will change from '%s' to '%s'",
 							destination.getName(),
