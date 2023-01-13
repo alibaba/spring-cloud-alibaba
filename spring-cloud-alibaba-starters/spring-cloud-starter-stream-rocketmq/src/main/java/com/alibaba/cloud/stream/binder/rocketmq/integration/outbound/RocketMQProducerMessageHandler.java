@@ -17,6 +17,7 @@
 package com.alibaba.cloud.stream.binder.rocketmq.integration.outbound;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
