@@ -228,7 +228,7 @@ public class NacosConfigDataLocationResolver
 		Map<String, String> result = new HashMap<>(4);
 		for (String entry : query.split("&")) {
 			String[] kv = entry.split("=");
-			if (Objects.equals(kv.length, 2) {
+			if (Objects.equals(kv.length, 2)) {
 				result.put(kv[0], kv[1]);
 			}
 		}
@@ -257,7 +257,7 @@ public class NacosConfigDataLocationResolver
 			return StringUtils.EMPTY;
 		}
 		String[] parts = path.substring(1).split("/");
-		if (parts.length != 1) {
+		if (!Objects.equals(parts.length, 1)) {
 			throw new IllegalArgumentException("illegal dataId");
 		}
 		return parts[0];
