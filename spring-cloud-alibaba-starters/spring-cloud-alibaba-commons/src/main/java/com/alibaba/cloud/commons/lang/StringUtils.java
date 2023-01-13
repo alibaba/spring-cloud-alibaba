@@ -360,7 +360,7 @@ public final class StringUtils {
 	 * @since 2.0
 	 */
 	public static String substringBetween(String str, String open, String close) {
-		if (Objects.isNull(str) || Objects.isNull(open) || Objects.isNull(close) {
+		if (Objects.isNull(str) || Objects.isNull(open) || Objects.isNull(close)) {
 			return null;
 		}
 		int start = str.indexOf(open);
