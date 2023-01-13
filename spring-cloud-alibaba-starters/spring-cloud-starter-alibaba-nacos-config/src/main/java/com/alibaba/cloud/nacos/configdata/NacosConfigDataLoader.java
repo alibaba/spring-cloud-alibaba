@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
@@ -105,7 +106,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 		List<Option> options = new ArrayList<>();
 		options.add(IGNORE_IMPORTS);
 		options.add(IGNORE_PROFILES);
-		if (getPreference(context, resource) == REMOTE) {
+		if (Objects.equals(getPreference(context, resource), REMOTE)) {
 			// mark it as 'PROFILE_SPECIFIC' config, it has higher priority,
 			// will override the none profile specific config.
 			// fixed https://github.com/alibaba/spring-cloud-alibaba/issues/2455
@@ -121,7 +122,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 				.bind("spring.cloud.nacos.config.preference", ConfigPreference.class)
 				.orElse(LOCAL);
 		String specificPreference = resource.getConfig().getPreference();
-		if (specificPreference != null) {
+		if (Objects.nonNull(specificPreference)) {
 			try {
 				preference = ConfigPreference.valueOf(specificPreference.toUpperCase());
 			}
@@ -146,7 +147,7 @@ public class NacosConfigDataLoader implements ConfigDataLoader<NacosConfigDataRe
 	}
 
 	private void logLoadInfo(String group, String dataId, String config) {
-		if (config != null) {
+		if (Objects.nonNull(config)) {
 			log.info(String.format(
 					"[Nacos Config] Load config[dataId=%s, group=%s] success", dataId,
 					group));

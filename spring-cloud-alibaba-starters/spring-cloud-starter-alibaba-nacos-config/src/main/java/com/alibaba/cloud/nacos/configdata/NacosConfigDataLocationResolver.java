@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
@@ -227,7 +228,7 @@ public class NacosConfigDataLocationResolver
 		Map<String, String> result = new HashMap<>(4);
 		for (String entry : query.split("&")) {
 			String[] kv = entry.split("=");
-			if (kv.length == 2) {
+			if (Objects.equals(kv.length, 2) {
 				result.put(kv[0], kv[1]);
 			}
 		}
@@ -236,7 +237,7 @@ public class NacosConfigDataLocationResolver
 
 	private String suffixFor(URI uri, NacosConfigProperties properties) {
 		String dataId = dataIdFor(uri);
-		if (dataId != null && dataId.contains(".")) {
+		if (Objects.nonNull(dataId) && dataId.contains(".")) {
 			return dataId.substring(dataId.lastIndexOf('.') + 1);
 		}
 		return properties.getFileExtension();
@@ -252,7 +253,7 @@ public class NacosConfigDataLocationResolver
 	private String dataIdFor(URI uri) {
 		String path = uri.getPath();
 		// notice '/'
-		if (path == null || path.length() <= 1) {
+		if (Objects.isNull(path) || path.length() <= 1) {
 			return StringUtils.EMPTY;
 		}
 		String[] parts = path.substring(1).split("/");
