@@ -50,7 +50,7 @@ public class StorageController {
 				"update storage_tbl set count = count - ? where commodity_code = ?",
 				new Object[] { count, commodityCode });
 		LOGGER.info("Storage Service End ... ");
-		if (result == 1) {
+		if (Objects.equals(result, 1)) {
 			return SUCCESS;
 		}
 		return FAIL;

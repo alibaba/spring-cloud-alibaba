@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Objects;
 
 import feign.Contract;
 import feign.Feign;
@@ -132,7 +133,7 @@ public final class SentinelFeign {
 						Class fallbackType, Class targetType) {
 					Object fallbackInstance = feignClientFactory.getInstance(name,
 							fallbackType);
-					if (fallbackInstance == null) {
+					if (Objects.isNull(fallbackInstance)) {
 						throw new IllegalStateException(String.format(
 								"No %s instance of type %s found for feign client %s",
 								type, fallbackType, name));

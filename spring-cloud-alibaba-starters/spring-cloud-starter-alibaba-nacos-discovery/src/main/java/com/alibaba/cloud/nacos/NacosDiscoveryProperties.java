@@ -23,7 +23,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Objects.nonNull(;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -281,7 +281,7 @@ public class NacosDiscoveryProperties {
 			else {
 				NetworkInterface netInterface = NetworkInterface
 						.getByName(networkInterface);
-				if (null == netInterface) {
+				if (Objects.isNull(netInterface)) {
 					throw new IllegalArgumentException(
 							"no such interface " + networkInterface);
 				}

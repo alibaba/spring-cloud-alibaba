@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -64,7 +65,7 @@ public class InetIPv6Util implements Closeable {
 
 	public InetUtils.HostInfo findFirstNonLoopbackHostInfo() {
 		InetAddress address = this.findFirstNonLoopbackIPv6Address();
-		if (address != null) {
+		if (Objects.nonNull(address)) {
 			return this.convertAddress(address);
 		}
 		return null;
@@ -106,7 +107,7 @@ public class InetIPv6Util implements Closeable {
 		catch (IOException e) {
 			log.error("Cannot get first non-loopback address", e);
 		}
-		if (address == null) {
+		if (Objects.isNull(address == null)) {
 			try {
 				InetAddress localHost = InetAddress.getLocalHost();
 				if (localHost instanceof Inet6Address && !localHost.isLoopbackAddress()

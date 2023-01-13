@@ -19,6 +19,8 @@ package com.alibaba.cloud.nacos.discovery.configclient;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 
+import java.util.Objects;
+
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -45,7 +47,7 @@ public class NacosConfigServerAutoConfiguration {
 
 	@PostConstruct
 	public void init() {
-		if (this.properties == null || this.server == null) {
+		if (Objects.isNull(this.properties) || Objects.isNull(this.server)) {
 			return;
 		}
 		String prefix = this.server.getPrefix();

@@ -19,6 +19,7 @@ package com.alibaba.cloud.seata.rest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class SeataRestTemplateInterceptorAfterPropertiesSet implements Initializ
 
 	@Override
 	public void afterPropertiesSet() {
-		if (this.restTemplates != null) {
+		if (Objects.nonNull(this.restTemplates)) {
 			for (RestTemplate restTemplate : restTemplates) {
 				List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(
 						restTemplate.getInterceptors());

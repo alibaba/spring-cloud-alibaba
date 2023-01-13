@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.integration.inbound;
 
+import java.util.Objects;
+
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.utils.RocketMQUtils;
@@ -139,7 +141,7 @@ public final class RocketMQConsumerFactory {
 				null == rpcHook && consumerProperties.getVipChannelEnabled());
 		consumer.setInstanceName(
 				RocketMQUtils.getInstanceName(rpcHook, consumerProperties.getGroup()));
-		if (null != allocateMessageQueueStrategy) {
+		if (Objects.nonNull(allocateMessageQueueStrategy)) {
 			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 		}
 		consumer.setNamesrvAddr(consumerProperties.getNameServer());

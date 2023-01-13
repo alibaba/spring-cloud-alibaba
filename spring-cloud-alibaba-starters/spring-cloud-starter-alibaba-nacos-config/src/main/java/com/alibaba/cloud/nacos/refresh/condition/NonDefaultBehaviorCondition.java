@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.nacos.refresh.condition;
 
+import java.util.Objects;
+
 import com.alibaba.cloud.nacos.refresh.RefreshBehavior;
 
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
@@ -39,7 +41,7 @@ public class NonDefaultBehaviorCondition extends SpringBootCondition {
 		RefreshBehavior behavior = context.getEnvironment().getProperty(
 				"spring.cloud.nacos.config.refresh-behavior", RefreshBehavior.class,
 				DEFAULT_REFRESH_BEHAVIOR);
-		if (DEFAULT_REFRESH_BEHAVIOR == behavior) {
+		if (Objects.equals(DEFAULT_REFRESH_BEHAVIOR, behavior)) {
 			return ConditionOutcome.noMatch("no matched");
 		}
 		return ConditionOutcome.match("matched");

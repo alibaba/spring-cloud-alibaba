@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.discovery;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.Objects;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import org.slf4j.Logger;
@@ -69,7 +70,7 @@ public class GatewayLocatorHeartBeatPublisher implements ApplicationEventPublish
 
 	@Override
 	public void stop() {
-		if (this.watchFuture != null) {
+		if (Objects.nonNull(this.watchFuture)) {
 			// shutdown current user-thread,
 			// then the other daemon-threads will terminate automatic.
 			this.taskScheduler.shutdown();

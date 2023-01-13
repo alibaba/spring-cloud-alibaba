@@ -18,6 +18,7 @@ package com.alibaba.cloud.stream.binder.rocketmq.integration.inbound;
 
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.Objects;
 
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.Instrumentation;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.InstrumentationManager;
@@ -74,13 +75,13 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 
 	@Override
 	protected void onInit() {
-		if (extendedConsumerProperties.getExtension() == null
+		if (Objects.isNull(extendedConsumerProperties.getExtension())
 				|| !extendedConsumerProperties.getExtension().getEnabled()) {
 			return;
 		}
 		try {
 			super.onInit();
-			if (this.retryTemplate != null) {
+			if (Objects.nonNull(this.retryTemplate)) {
 				Assert.state(getErrorChannel() == null,
 						"Cannot have an 'errorChannel' property when a 'RetryTemplate' is "
 								+ "provided; use an 'ErrorMessageSendingRecoverer' in the 'recoveryCallback' property to "
@@ -158,7 +159,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 			try {
 				Message<?> message = RocketMQMessageConverterSupport
 						.convertMessage2Spring(messageExt);
-				if (this.retryTemplate != null) {
+				if (Objects.nonNull(this.retryTemplate)) {
 					this.retryTemplate.execute(context -> {
 						this.sendMessage(message);
 						return message;
@@ -203,7 +204,7 @@ public class RocketMQInboundChannelAdapter extends MessageProducerSupport
 
 	@Override
 	protected void doStop() {
-		if (pushConsumer != null) {
+		if (Objects.nonNull(pushConsumer)) {
 			pushConsumer.shutdown();
 		}
 	}

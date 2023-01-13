@@ -18,6 +18,7 @@ package com.alibaba.cloud.seata.feign;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import feign.Client;
 
@@ -50,7 +51,7 @@ public class SeataFeignContext extends FeignClientFactory {
 	@Override
 	public <T> Map<String, T> getInstances(String name, Class<T> type) {
 		Map<String, T> instances = this.delegate.getInstances(name, type);
-		if (instances == null) {
+		if (Objects.isNull(instances)) {
 			return null;
 		}
 		Map<String, T> convertedInstances = new HashMap<>();

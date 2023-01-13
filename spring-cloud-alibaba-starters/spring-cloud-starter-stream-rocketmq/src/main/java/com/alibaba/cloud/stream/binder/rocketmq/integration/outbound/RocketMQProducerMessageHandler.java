@@ -90,7 +90,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 
 	@Override
 	protected void onInit() {
-		if (null == mqProducerProperties || !mqProducerProperties.getEnabled()) {
+		if (Objects.isNull(mqProducerProperties) || !mqProducerProperties.getEnabled()) {
 			return;
 		}
 		super.onInit();
@@ -117,8 +117,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 			if (!isTrans && extendedProducerProperties.isPartitioned()) {
 				List<MessageQueue> messageQueues = defaultMQProducer
 						.fetchPublishMessageQueues(destination.getName());
-				if (extendedProducerProperties.getPartitionCount() != messageQueues
-						.size()) {
+				if (Objects.euqals(extendedProducerProperties.getPartitionCount(), messageQueues.size())) {
 					log.info(String.format(
 							"The partition count of topic '%s' will change from '%s' to '%s'",
 							destination.getName(),
@@ -144,7 +143,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 
 	@Override
 	public void stop() {
-		if (running && null != defaultMQProducer) {
+		if (running && Objects.nonNull(defaultMQProducer)) {
 			defaultMQProducer.shutdown();
 		}
 		running = false;
@@ -165,7 +164,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 				TransactionListener transactionListener = RocketMQBeanContainerCache
 						.getBean(mqProducerProperties.getTransactionListener(),
 								TransactionListener.class);
-				if (transactionListener == null) {
+				if (Objects.isNull(transactionListener)) {
 					throw new MessagingException(
 							"TransactionMQProducer must have a TransactionListener !!! ");
 				}
@@ -187,7 +186,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 				log.debug("the message has sent,message={},sendResult={}", mqMessage,
 						sendResult);
 			}
-			if (sendResult == null
+			if (Objects.isNull(sendResult)
 					|| !SendStatus.SEND_OK.equals(sendResult.getSendStatus())) {
 				log.error("message send fail.SendStatus is not OK.the message={}",
 						mqMessage);
@@ -210,7 +209,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 		sendResult.setSendStatus(SendStatus.SEND_OK);
 		if (RocketMQProducerProperties.SendType.OneWay
 				.equalsName(mqProducerProperties.getSendType())) {
-			if (null != selector) {
+			if (Objects.nonNull(selector)) {
 				defaultMQProducer.sendOneway(mqMessage, selector, args);
 			}
 			else {
@@ -220,14 +219,14 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 		}
 		if (RocketMQProducerProperties.SendType.Sync
 				.equalsName(mqProducerProperties.getSendType())) {
-			if (null != selector) {
+			if (Objects.nonNull(selector)) {
 				return defaultMQProducer.send(mqMessage, selector, args);
 			}
 			return defaultMQProducer.send(mqMessage);
 		}
 		if (RocketMQProducerProperties.SendType.Async
 				.equalsName(mqProducerProperties.getSendType())) {
-			if (null != selector) {
+			if (Objects.nonNull(selector)) {
 				defaultMQProducer.send(mqMessage, selector, args,
 						this.getSendCallback(message));
 			}
@@ -248,7 +247,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 	private SendCallback getSendCallback(Message<?> message) {
 		SendCallback sendCallback = RocketMQBeanContainerCache
 				.getBean(mqProducerProperties.getSendCallBack(), SendCallback.class);
-		if (null == sendCallback) {
+		if (Objects.isNull(sendCallback)) {
 			sendCallback = new SendCallback() {
 				@Override
 				public void onSuccess(SendResult sendResult) {
@@ -264,7 +263,7 @@ public class RocketMQProducerMessageHandler extends AbstractMessageHandler
 	}
 
 	private void doFail(Message<?> message, Throwable e) {
-		if (getSendFailureChannel() != null) {
+		if (Objects.nonNull(getSendFailureChannel())) {
 			getSendFailureChannel().send(getErrorMessageStrategy().buildErrorMessage(e,
 					ErrorMessageUtils.getAttributeAccessor(message, message)));
 		}

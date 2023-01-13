@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.seata.feign;
 
+import java.util.Objects;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -51,7 +53,7 @@ public class SeataContextBeanPostProcessor implements BeanPostProcessor {
 	}
 
 	private SeataFeignObjectWrapper getSeataFeignObjectWrapper() {
-		if (this.seataFeignObjectWrapper == null) {
+		if (Objects.isNull(this.seataFeignObjectWrapper)) {
 			this.seataFeignObjectWrapper = this.beanFactory
 					.getBean(SeataFeignObjectWrapper.class);
 		}

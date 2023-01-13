@@ -17,6 +17,7 @@
 package com.alibaba.cloud.integration.account.service.impl;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 import com.alibaba.cloud.integration.account.mapper.AccountMapper;
 import com.alibaba.cloud.integration.account.service.AccountService;
@@ -50,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
 
 		Timestamp updateTime = new Timestamp(System.currentTimeMillis());
 		int updateCount = accountMapper.reduceBalance(userId, price, updateTime);
-		if (updateCount == 0) {
+		if (Objects.equals(updateCount, 0)) {
 			throw new BusinessException("reduce balance failed");
 		}
 	}
@@ -58,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Result<?> getRemainAccount(String userId) {
 		Integer balance = accountMapper.getBalance(userId);
-		if (balance == null) {
+		if (Objects.equals(balance, null)) {
 			return Result.failed("wrong userId,please check the userId");
 		}
 		return Result.success(balance);

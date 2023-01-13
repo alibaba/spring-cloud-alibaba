@@ -19,6 +19,7 @@ package com.alibaba.cloud.sentinel.custom;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
 
 import com.alibaba.cloud.sentinel.SentinelConstants;
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
@@ -179,7 +180,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName)
 			throws BeansException {
-		if (beanName != null && cache.containsKey(beanName)) {
+		if (Objects.nonNull(beanName) && cache.containsKey(beanName)) {
 			// add interceptor for each RestTemplate with @SentinelRestTemplate annotation
 			StringBuilder interceptorBeanNamePrefix = new StringBuilder();
 			SentinelRestTemplate sentinelRestTemplate = cache.get(beanName);

@@ -19,6 +19,7 @@ package com.alibaba.cloud.nacos.registry;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
@@ -85,7 +86,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 		}
 
 		Integer managementPort = ManagementServerPortUtils.getPort(context);
-		if (null != managementPort) {
+		if (Objects.nonNull(managementPort)) {
 			metadata.put(MANAGEMENT_PORT, managementPort.toString());
 			String contextPath = env
 					.getProperty("management.server.servlet.context-path");
@@ -98,15 +99,15 @@ public class NacosRegistration implements Registration, ServiceInstance {
 			}
 		}
 
-		if (null != nacosDiscoveryProperties.getHeartBeatInterval()) {
+		if (Objects.nonNull(nacosDiscoveryProperties.getHeartBeatInterval())) {
 			metadata.put(PreservedMetadataKeys.HEART_BEAT_INTERVAL,
 					nacosDiscoveryProperties.getHeartBeatInterval().toString());
 		}
-		if (null != nacosDiscoveryProperties.getHeartBeatTimeout()) {
+		if (Objects.nonNull(nacosDiscoveryProperties.getHeartBeatTimeout())) {
 			metadata.put(PreservedMetadataKeys.HEART_BEAT_TIMEOUT,
 					nacosDiscoveryProperties.getHeartBeatTimeout().toString());
 		}
-		if (null != nacosDiscoveryProperties.getIpDeleteTimeout()) {
+		if (Objects.nonNull(nacosDiscoveryProperties.getIpDeleteTimeout())) {
 			metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
 					nacosDiscoveryProperties.getIpDeleteTimeout().toString());
 		}
@@ -115,7 +116,7 @@ public class NacosRegistration implements Registration, ServiceInstance {
 
 	protected void customize(
 			List<NacosRegistrationCustomizer> registrationCustomizers) {
-		if (registrationCustomizers != null) {
+		if (Objects.nonNull(registrationCustomizers)) {
 			for (NacosRegistrationCustomizer customizer : registrationCustomizers) {
 				customizer.customize(this);
 			}

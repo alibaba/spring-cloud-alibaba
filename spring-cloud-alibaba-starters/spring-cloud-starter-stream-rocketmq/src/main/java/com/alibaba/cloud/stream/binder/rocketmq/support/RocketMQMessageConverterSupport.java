@@ -110,7 +110,7 @@ public final class RocketMQMessageConverterSupport {
 			else {
 				String jsonObj = (String) MESSAGE_CONVERTER.fromMessage(message,
 						payloadObj.getClass());
-				if (null == jsonObj) {
+				if (Objects.isNull(jsonObj)) {
 					throw new RuntimeException(String.format(
 							"empty after conversion [messageConverter:%s,payloadClass:%s,payloadObj:%s]",
 							MESSAGE_CONVERTER.getClass(), payloadObj.getClass(),
@@ -127,10 +127,10 @@ public final class RocketMQMessageConverterSupport {
 
 	private static org.apache.rocketmq.common.message.Message getAndWrapMessage(
 			String topic, MessageHeaders headers, byte[] payloads) {
-		if (topic == null || topic.length() < 1) {
+		if (Objects.isNull(topic) || topic.length() < 1) {
 			return null;
 		}
-		if (payloads == null || payloads.length < 1) {
+		if (Objects.isNull(payloads) || payloads.length < 1) {
 			return null;
 		}
 		org.apache.rocketmq.common.message.Message rocketMsg = new org.apache.rocketmq.common.message.Message(
@@ -152,12 +152,12 @@ public final class RocketMQMessageConverterSupport {
 			int flag = 0;
 			int delayLevel = 0;
 			try {
-				flagObj = flagObj == null ? 0 : flagObj;
+				flagObj = Objects.isNull(flagObj) ? 0 : flagObj;
 				Object delayLevelObj = headers.getOrDefault(
 						RocketMQConst.PROPERTY_DELAY_TIME_LEVEL,
 						headers.get(toRocketHeaderKey(
 								RocketMQConst.PROPERTY_DELAY_TIME_LEVEL)));
-				delayLevelObj = delayLevelObj == null ? 0 : delayLevelObj;
+				delayLevelObj = Objects.isNull(delayLevelObj) ? 0 : delayLevelObj;
 				delayLevel = Integer.parseInt(String.valueOf(delayLevelObj));
 				flag = Integer.parseInt(String.valueOf(flagObj));
 			}

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.Objects;
 
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.cloud.sentinel.rest.SentinelClientHttpResponse;
@@ -68,7 +69,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		Method urlCleanerMethod = BlockClassRegistry.lookupUrlCleaner(
 				sentinelRestTemplate.urlCleanerClass(),
 				sentinelRestTemplate.urlCleaner());
-		if (urlCleanerMethod != null) {
+		if (Objects.nonNull(urlCleanerMethod)) {
 			hostWithPathResource = (String) methodInvoke(urlCleanerMethod,
 					hostWithPathResource);
 		}
@@ -106,10 +107,10 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 			}
 		}
 		finally {
-			if (hostWithPathEntry != null) {
+			if (Objects.nonNull(hostWithPathEntry)) {
 				hostWithPathEntry.exit();
 			}
-			if (hostEntry != null) {
+			if (Objects.nonNull(hostEntry)) {
 				hostEntry.exit();
 			}
 		}
@@ -122,7 +123,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		if (isDegradeFailure(ex)) {
 			Method fallbackMethod = extractFallbackMethod(sentinelRestTemplate.fallback(),
 					sentinelRestTemplate.fallbackClass());
-			if (fallbackMethod != null) {
+			if (Objects.nonNull(fallbackMethod)) {
 				return (ClientHttpResponse) methodInvoke(fallbackMethod, args);
 			}
 			else {
@@ -133,7 +134,7 @@ public class SentinelProtectInterceptor implements ClientHttpRequestInterceptor 
 		Method blockHandler = extractBlockHandlerMethod(
 				sentinelRestTemplate.blockHandler(),
 				sentinelRestTemplate.blockHandlerClass());
-		if (blockHandler != null) {
+		if (Objects.nonNull(blockHandler)) {
 			return (ClientHttpResponse) methodInvoke(blockHandler, args);
 		}
 		else {

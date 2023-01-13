@@ -104,7 +104,7 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 		// Do not inject these beans directly,
 		// as it will cause the bean to be initialized prematurely,
 		// and we don't want to change the initialization order of the beans
-		if (circuitBreakerFactory == null) {
+		if (Objects.isNull(circuitBreakerFactory)) {
 			String[] names = applicationContext
 					.getBeanNamesForType(AbstractCircuitBreakerFactory.class);
 			if (names.length >= 1) {
@@ -112,7 +112,7 @@ public class CircuitBreakerRuleChangeListener implements ApplicationContextAware
 						AbstractCircuitBreakerFactory.class);
 			}
 		}
-		if (properties == null) {
+		if (Objects.isNull(properties)) {
 			this.properties = applicationContext
 					.getBean(SentinelFeignClientProperties.class);
 		}

@@ -17,6 +17,7 @@
 package com.alibaba.cloud.stream.binder.rocketmq.integration.outbound;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
@@ -106,7 +107,7 @@ public final class RocketMQProduceFactory {
 		}
 
 		producer.setVipChannelEnabled(
-				null == rpcHook && producerProperties.getVipChannelEnabled());
+				Objects.isNull(rpcHook) && producerProperties.getVipChannelEnabled());
 		producer.setInstanceName(
 				RocketMQUtils.getInstanceName(rpcHook, topic + "|" + UtilAll.getPid()));
 		producer.setNamesrvAddr(producerProperties.getNameServer());
@@ -124,13 +125,13 @@ public final class RocketMQProduceFactory {
 		producer.setUnitName(producerProperties.getUnitName());
 		CheckForbiddenHook checkForbiddenHook = RocketMQBeanContainerCache.getBean(
 				producerProperties.getCheckForbiddenHook(), CheckForbiddenHook.class);
-		if (null != checkForbiddenHook) {
+		if (Objects.nonNull(checkForbiddenHook)) {
 			producer.getDefaultMQProducerImpl()
 					.registerCheckForbiddenHook(checkForbiddenHook);
 		}
 		SendMessageHook sendMessageHook = RocketMQBeanContainerCache
 				.getBean(producerProperties.getSendMessageHook(), SendMessageHook.class);
-		if (null != sendMessageHook) {
+		if (Objects.nonNull(sendMessageHook)) {
 			producer.getDefaultMQProducerImpl().registerSendMessageHook(sendMessageHook);
 		}
 

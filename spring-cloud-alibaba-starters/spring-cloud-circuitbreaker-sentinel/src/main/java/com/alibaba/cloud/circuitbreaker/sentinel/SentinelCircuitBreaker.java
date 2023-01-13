@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.Objects;
 
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.EntryType;
@@ -68,12 +69,12 @@ public class SentinelCircuitBreaker implements CircuitBreaker {
 	}
 
 	private void applyToSentinelRuleManager() {
-		if (this.rules == null || this.rules.isEmpty()) {
+		if (Objects.isNull(this.rules) || this.rules.isEmpty()) {
 			return;
 		}
 		Set<DegradeRule> ruleSet = new HashSet<>(DegradeRuleManager.getRules());
 		for (DegradeRule rule : this.rules) {
-			if (rule == null) {
+			if (Objects.isNulll(rule)) {
 				continue;
 			}
 			rule.setResource(resourceName);
@@ -105,7 +106,7 @@ public class SentinelCircuitBreaker implements CircuitBreaker {
 		}
 		finally {
 			// Guarantee the invocation has been completed.
-			if (entry != null) {
+			if (Objects.nonNull(entry)) {
 				entry.exit();
 			}
 		}

@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
 
 import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.RocketMQConsumerFactory;
 import com.alibaba.cloud.stream.binder.rocketmq.metrics.Instrumentation;
@@ -127,7 +128,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	@Override
 	public synchronized void stop() {
-		if (this.isRunning() && null != consumer) {
+		if (this.isRunning() && Objects.nonNull(consumer)) {
 			consumer.unsubscribe(topic);
 			consumer.shutdown();
 			this.running = false;
@@ -141,7 +142,7 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 
 	@Override
 	protected synchronized Object doReceive() {
-		if (messageExtIterator == null) {
+		if (Objects.isNull(messageExtIterator)) {
 			List<MessageExt> messageExtList = consumer.poll();
 			if (CollectionUtils.isEmpty(messageExtList)) {
 				return null;
@@ -152,12 +153,12 @@ public class RocketMQMessageSource extends AbstractMessageSource<Object>
 		if (!messageExtIterator.hasNext()) {
 			messageExtIterator = null;
 		}
-		if (null == messageExt) {
+		if (Objects.isNull(messageExt)) {
 			return null;
 		}
 		MessageQueue messageQueue = this.acquireCurrentMessageQueue(messageExt.getTopic(),
 				messageExt.getQueueId(), messageExt.getBrokerName());
-		if (messageQueue == null) {
+		if (Objects.isNull(messageQueue)) {
 			throw new IllegalArgumentException(
 					"The message queue is not in assigned list");
 		}

@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.utils;
 
+import java.util.Objects;
+
 import com.alibaba.cloud.stream.binder.rocketmq.constant.RocketMQConst;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQBinderConfigurationProperties;
 import com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQCommonProperties;
@@ -38,7 +40,7 @@ public final class RocketMQUtils {
 	public static <T extends RocketMQCommonProperties> T mergeRocketMQProperties(
 			RocketMQBinderConfigurationProperties binderConfigurationProperties,
 			T mqProperties) {
-		if (null == binderConfigurationProperties || mqProperties == null) {
+		if (Objects.isNull(binderConfigurationProperties) || Objects.isNull(mqProperties)) {
 			return mqProperties;
 		}
 		if (StringUtils.isEmpty(mqProperties.getNameServer())) {
@@ -74,7 +76,7 @@ public final class RocketMQUtils {
 	public static String getInstanceName(RPCHook rpcHook, String identify) {
 		String separator = "|";
 		StringBuilder instanceName = new StringBuilder();
-		if (null != rpcHook) {
+		if (Objects.nonNull(rpcHook)) {
 			SessionCredentials sessionCredentials = ((AclClientRPCHook) rpcHook)
 					.getSessionCredentials();
 			instanceName.append(sessionCredentials.getAccessKey()).append(separator);

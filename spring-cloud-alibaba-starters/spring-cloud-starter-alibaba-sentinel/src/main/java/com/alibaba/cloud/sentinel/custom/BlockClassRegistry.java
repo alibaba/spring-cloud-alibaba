@@ -19,6 +19,7 @@ package com.alibaba.cloud.sentinel.custom;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
 
 import com.alibaba.csp.sentinel.util.StringUtil;
 
@@ -50,21 +51,21 @@ final class BlockClassRegistry {
 	}
 
 	static void updateFallbackFor(Class<?> clazz, String name, Method method) {
-		if (clazz == null || StringUtil.isBlank(name)) {
+		if (Objects.isNull(clazz) || StringUtil.isBlank(name)) {
 			throw new IllegalArgumentException("Bad argument");
 		}
 		FALLBACK_MAP.put(getKey(clazz, name), method);
 	}
 
 	static void updateBlockHandlerFor(Class<?> clazz, String name, Method method) {
-		if (clazz == null || StringUtil.isBlank(name)) {
+		if (Objects.isNull(clazz) || StringUtil.isBlank(name)) {
 			throw new IllegalArgumentException("Bad argument");
 		}
 		BLOCK_HANDLER_MAP.put(getKey(clazz, name), method);
 	}
 
 	static void updateUrlCleanerFor(Class<?> clazz, String name, Method method) {
-		if (clazz == null || StringUtil.isBlank(name)) {
+		if (Objects.isNull(clazz) || StringUtil.isBlank(name)) {
 			throw new IllegalArgumentException("Bad argument");
 		}
 		URL_CLEANER_MAP.put(getKey(clazz, name), method);

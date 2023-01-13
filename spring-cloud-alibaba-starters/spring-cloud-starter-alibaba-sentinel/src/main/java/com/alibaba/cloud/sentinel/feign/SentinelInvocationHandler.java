@@ -71,7 +71,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 			throws Throwable {
 		if ("equals".equals(method.getName())) {
 			try {
-				Object otherHandler = args.length > 0 && args[0] != null
+				Object otherHandler = args.length > 0 && !Objects.equals(args[0], null)
 						? Proxy.getInvocationHandler(args[0])
 						: null;
 				return equals(otherHandler);
@@ -112,7 +112,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 					if (!BlockException.isBlockException(ex)) {
 						Tracer.traceEntry(ex, entry);
 					}
-					if (fallbackFactory != null) {
+					if (Objects.nonNull(fallbackFactory)) {
 						try {
 							Object fallbackResult = fallbackMethodMap.get(method)
 									.invoke(fallbackFactory.create(ex), args);
@@ -133,7 +133,7 @@ public class SentinelInvocationHandler implements InvocationHandler {
 					}
 				}
 				finally {
-					if (entry != null) {
+					if (Objects.nonNull(entry)) {
 						entry.exit(1, args);
 					}
 					ContextUtil.exit();

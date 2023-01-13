@@ -18,6 +18,7 @@ package com.alibaba.cloud.sidecar;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
@@ -45,7 +46,7 @@ public class SidecarHealthIndicator extends AbstractHealthIndicator {
 	protected void doHealthCheck(Health.Builder builder) throws Exception {
 		try {
 			URI uri = this.sidecarProperties.getHealthCheckUrl();
-			if (uri == null) {
+			if (Objects.isNull(uri)) {
 				builder.up();
 				return;
 			}
@@ -57,7 +58,7 @@ public class SidecarHealthIndicator extends AbstractHealthIndicator {
 
 			Map<String, Object> map = exchange.getBody();
 
-			if (map == null) {
+			if (Objects.isNull(map)) {
 				this.getWarning(builder);
 				return;
 			}
