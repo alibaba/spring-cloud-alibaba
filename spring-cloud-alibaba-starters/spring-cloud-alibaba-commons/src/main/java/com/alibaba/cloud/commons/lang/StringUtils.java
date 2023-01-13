@@ -294,7 +294,7 @@ public final class StringUtils {
 			return EMPTY;
 		}
 		int pos = str.indexOf(separator);
-		if (Objects.equals(pos == INDEX_NOT_FOUND)) {
+		if (Objects.equals(pos, INDEX_NOT_FOUND)) {
 			return EMPTY;
 		}
 		return str.substring(pos + separator.length());

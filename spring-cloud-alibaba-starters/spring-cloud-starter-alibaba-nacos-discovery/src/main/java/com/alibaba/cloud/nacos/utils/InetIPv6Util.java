@@ -107,7 +107,7 @@ public class InetIPv6Util implements Closeable {
 		catch (IOException e) {
 			log.error("Cannot get first non-loopback address", e);
 		}
-		if (Objects.isNull(address == null)) {
+		if (Objects.isNull(address)) {
 			try {
 				InetAddress localHost = InetAddress.getLocalHost();
 				if (localHost instanceof Inet6Address && !localHost.isLoopbackAddress()
