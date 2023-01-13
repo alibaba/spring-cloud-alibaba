@@ -81,7 +81,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 				.forEach((dataSourceName, dataSourceProperties) -> {
 					try {
 						List<String> validFields = dataSourceProperties.getValidField();
-						if (!Objects.equals(validFields.size(), 1) {
+						if (!Objects.equals(validFields.size(), 1)) {
 							log.error("[Sentinel Starter] DataSource " + dataSourceName
 									+ " multi datasource active and won't loaded: "
 									+ dataSourceProperties.getValidField());
