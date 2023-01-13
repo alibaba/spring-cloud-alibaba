@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Objects;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 
@@ -97,7 +98,7 @@ public abstract class AbstractPropertySourceLoader implements PropertySourceLoad
 
 	protected void flattenedMap(Map<String, Object> result, Map<String, Object> dataMap,
 			String parentKey) {
-		if (dataMap == null || dataMap.isEmpty()) {
+		if (Objects.isNull(dataMap) || dataMap.isEmpty()) {
 			return;
 		}
 		Set<Entry<String, Object>> entries = dataMap.entrySet();

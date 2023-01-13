@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.nacos.parser;
 
+import java.util.Objects;
+
 import org.springframework.core.io.ByteArrayResource;
 
 /**
@@ -54,7 +56,7 @@ public class NacosByteArrayResource extends ByteArrayResource {
 	 */
 	@Override
 	public String getFilename() {
-		return null == this.filename ? this.getDescription() : this.filename;
+		return Objects.isNull(this.filename) ? this.getDescription() : this.filename;
 	}
 
 }
