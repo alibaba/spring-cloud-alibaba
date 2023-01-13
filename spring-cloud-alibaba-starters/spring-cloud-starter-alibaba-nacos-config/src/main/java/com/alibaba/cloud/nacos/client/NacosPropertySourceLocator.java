@@ -167,7 +167,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 			String tips) {
 		for (int i = 0; i < configs.size(); i++) {
 			String dataId = configs.get(i).getDataId();
-			if (Objects.isNull(dataId) || dataId.trim().length() == 0) {
+			if (Objects.isNull(dataId) || Objects.equals(dataId.trim().length(), 0)) {
 				throw new IllegalStateException(String.format(
 						"the [ spring.cloud.nacos.config.%s[%s] ] must give a dataId",
 						tips, i));
@@ -191,7 +191,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private NacosPropertySource loadNacosPropertySource(final String dataId,
 			final String group, String fileExtension, boolean isRefreshable) {
-		if (Objects.equals(NacosContextRefresher.getRefreshCount(), 0L)) {
+		if (!Objects.equlas(NacosContextRefresher.getRefreshCount(), 0)) {
 			if (!isRefreshable) {
 				return NacosPropertySourceRepository.getNacosPropertySource(dataId,
 						group);
