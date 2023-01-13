@@ -28,16 +28,6 @@ import jakarta.validation.constraints.NotEmpty;
  */
 public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 
-	/**
-	 * nacos host.
-	 */
-	private String host = "127.0.0.1";
-
-	/**
-	 * nacos port.
-	 */	
-	private int port = 8848;
-
 	private String serverAddr;
 
 	private String contextPath;
@@ -69,25 +59,9 @@ public class NacosDataSourceProperties extends AbstractDataSourceProperties {
 		if (StringUtils.isEmpty(serverAddr)) {
 			serverAddr = this.getEnv().getProperty(
 					"spring.cloud.sentinel.datasource.nacos.server-addr",
-					this.getHost() + ":" + this.getPort());
+					"127.0.0.1:8848");
 		}
 	}
-	
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}	
 
 	public String getServerAddr() {
 		return serverAddr;
