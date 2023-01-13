@@ -77,10 +77,10 @@ public final class RocketMQUtils {
 		if (null != rpcHook) {
 			SessionCredentials sessionCredentials = ((AclClientRPCHook) rpcHook)
 					.getSessionCredentials();
-			instanceName.append(sessionCredentials.getAccessKey()).append(separator)
-					.append(sessionCredentials.getSecretKey()).append(separator);
+			instanceName.append(sessionCredentials.getAccessKey()).append(separator);
 		}
-		instanceName.append(identify).append(separator).append(UtilAll.getPid());
+		instanceName.append(identify).append(separator).append(UtilAll.getPid())
+				.append(separator).append(Long.toString(System.nanoTime(), 36));
 		return instanceName.toString();
 	}
 
