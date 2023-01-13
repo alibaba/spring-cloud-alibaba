@@ -63,7 +63,7 @@ public final class StringUtils {
 	 * @since 3.0 Changed signature from isEmpty(String) to isEmpty(CharSequence)
 	 */
 	public static boolean isEmpty(final CharSequence cs) {
-		return Objects.equals(cs, null) || Objects.equals(cs.length(), 0);
+		return Objects.isNull(cs) || Objects.equals(cs.length(), 0);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public final class StringUtils {
 	 * @return {@code true} if the CharSequence is null, empty or whitespace
 	 */
 	public static boolean isBlank(final CharSequence cs) {
-		if (Objects.equals(cs, null) || Objects.equals(cs.length(), 0)) {
+		if (Objects.isNull(cs) || Objects.equals(cs.length(), 0)) {
 			return true;
 		}
 		int strLen = cs.length();

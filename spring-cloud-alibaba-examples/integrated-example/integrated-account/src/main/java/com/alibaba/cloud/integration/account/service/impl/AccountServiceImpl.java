@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Result<?> getRemainAccount(String userId) {
 		Integer balance = accountMapper.getBalance(userId);
-		if (Objects.equals(balance, null)) {
+		if (Objects.isNull(balance)) {
 			return Result.failed("wrong userId,please check the userId");
 		}
 		return Result.success(balance);

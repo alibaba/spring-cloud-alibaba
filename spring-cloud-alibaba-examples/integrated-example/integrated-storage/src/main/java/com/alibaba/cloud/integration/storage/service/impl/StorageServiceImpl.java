@@ -60,7 +60,7 @@ public class StorageServiceImpl implements StorageService {
 	@Override
 	public Result<?> getRemainCount(String commodityCode) {
 		Integer stock = storageMapper.getStock(commodityCode);
-		if (Objects.equals(stock, null)) {
+		if (Objects.isNull(stock)) {
 			return Result.failed("commodityCode wrong,please check commodity code");
 		}
 		return Result.success(stock);
