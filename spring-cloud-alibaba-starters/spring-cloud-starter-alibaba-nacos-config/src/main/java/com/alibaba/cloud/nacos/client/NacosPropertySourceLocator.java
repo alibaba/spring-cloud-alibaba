@@ -191,7 +191,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private NacosPropertySource loadNacosPropertySource(final String dataId,
 			final String group, String fileExtension, boolean isRefreshable) {
-		if (!Objects.equlas(NacosContextRefresher.getRefreshCount(), 0)) {
+		if (!Objects.equals(NacosContextRefresher.getRefreshCount(), 0L)) {
 			if (!isRefreshable) {
 				return NacosPropertySourceRepository.getNacosPropertySource(dataId,
 						group);
