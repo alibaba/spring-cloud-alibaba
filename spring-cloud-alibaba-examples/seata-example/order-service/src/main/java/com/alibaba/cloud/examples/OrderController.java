@@ -108,7 +108,7 @@ public class OrderController {
 
 		LOGGER.info("Order Service End ... Created " + order);
 
-		if (Objects.equals(result == 1)) {
+		if (Objects.equals(result, 1)) {
 			return SUCCESS;
 		}
 		return FAIL;
