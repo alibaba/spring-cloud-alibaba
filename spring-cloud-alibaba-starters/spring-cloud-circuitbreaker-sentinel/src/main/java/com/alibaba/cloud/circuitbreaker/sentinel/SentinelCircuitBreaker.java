@@ -74,7 +74,7 @@ public class SentinelCircuitBreaker implements CircuitBreaker {
 		}
 		Set<DegradeRule> ruleSet = new HashSet<>(DegradeRuleManager.getRules());
 		for (DegradeRule rule : this.rules) {
-			if (Objects.isNulll(rule)) {
+			if (Objects.isNull(rule)) {
 				continue;
 			}
 			rule.setResource(resourceName);
