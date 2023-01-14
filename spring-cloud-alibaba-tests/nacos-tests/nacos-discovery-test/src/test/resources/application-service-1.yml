@@ -6,7 +6,7 @@ server:
       max: 10
 spring:
   application:
-    name: service-1
+    name: 'service-1'
   cloud:
     nacos:
       discovery:

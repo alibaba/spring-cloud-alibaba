@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Objects;
 
 import com.alibaba.cloud.sentinel.SentinelProperties;
 import com.alibaba.cloud.sentinel.datasource.config.AbstractDataSourceProperties;
@@ -80,7 +81,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 				.forEach((dataSourceName, dataSourceProperties) -> {
 					try {
 						List<String> validFields = dataSourceProperties.getValidField();
-						if (validFields.size() != 1) {
+						if (!Objects.equals(validFields.size(), 1)) {
 							log.error("[Sentinel Starter] DataSource " + dataSourceName
 									+ " multi datasource active and won't loaded: "
 									+ dataSourceProperties.getValidField());
@@ -128,7 +129,7 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 		propertyMap.forEach((propertyName, propertyValue) -> {
 			Field field = ReflectionUtils.findField(dataSourceProperties.getClass(),
 					propertyName);
-			if (null == field) {
+			if (Objects.isNull(field)) {
 				return;
 			}
 			if (DATA_TYPE_FIELD.equals(propertyName)) {

@@ -17,6 +17,7 @@
 package com.alibaba.cloud.examples;
 
 import java.util.Random;
+import java.util.Objects;
 
 import io.seata.core.context.RootContext;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class AccountController {
 				"update account_tbl set money = money - ? where user_id = ?",
 				new Object[] { money, userId });
 		LOGGER.info("Account Service End ... ");
-		if (result == 1) {
+		if (Objects.equals(result, 1)) {
 			return SUCCESS;
 		}
 		return FAIL;

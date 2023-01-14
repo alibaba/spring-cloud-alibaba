@@ -19,6 +19,7 @@ package com.alibaba.cloud.stream.binder.rocketmq.metrics;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Timur Valiev
@@ -36,10 +37,10 @@ public final class InstrumentationManager {
 	}
 
 	public static void addHealthInstrumentation(Instrumentation instrumentation) {
-		if (null != instrumentation) {
+		if (Objects.nonNull(instrumentation)) {
 			HEALTH_INSTRUMENTATIONS.computeIfPresent(instrumentation.hashCode(),
 					(k, v) -> {
-						if (instrumentation.getActuator() != null) {
+						if (Objects.nonNull(instrumentation.getActuator())) {
 							instrumentation.getActuator().stop();
 						}
 						throw new IllegalArgumentException(

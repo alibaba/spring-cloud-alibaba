@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.commons.lang;
 
+import java.util.Objects;
+
 /**
  * StringUtils. copy from apache common-lang3.
  *
@@ -61,7 +63,7 @@ public final class StringUtils {
 	 * @since 3.0 Changed signature from isEmpty(String) to isEmpty(CharSequence)
 	 */
 	public static boolean isEmpty(final CharSequence cs) {
-		return cs == null || cs.length() == 0;
+		return Objects.isNull(cs) || Objects.equals(cs.length(), 0);
 	}
 
 	/**
@@ -100,7 +102,7 @@ public final class StringUtils {
 	 * @return {@code true} if the CharSequence is null, empty or whitespace
 	 */
 	public static boolean isBlank(final CharSequence cs) {
-		if (cs == null || cs.length() == 0) {
+		if (Objects.isNull(cs) || Objects.equals(cs.length(), 0)) {
 			return true;
 		}
 		int strLen = cs.length();
@@ -163,7 +165,7 @@ public final class StringUtils {
 	 * @return the trimmed string, {@code null} if null String input
 	 */
 	public static String trim(final String str) {
-		return str == null ? null : str.trim();
+		return Objects.isNull(str) ? null : str.trim();
 	}
 
 	// Equals
@@ -192,12 +194,14 @@ public final class StringUtils {
 	 * @return {@code true} if the CharSequences are equal (case-sensitive), or both
 	 * {@code null}
 	 * @see Object#equals(Object)
+	 * @see Objects#equals(Object)
+	 * @see Objects#isNull(Object)	 
 	 */
 	public static boolean equals(final CharSequence cs1, final CharSequence cs2) {
-		if (cs1 == cs2) {
+		if (Objects.equals(cs1, cs2)) {
 			return true;
 		}
-		if (cs1 == null || cs2 == null) {
+		if (Objects.isNull(cs1) || Objects.isNull(cs2)) {
 			return false;
 		}
 		if (cs1 instanceof String && cs2 instanceof String) {
@@ -232,7 +236,7 @@ public final class StringUtils {
 			final char c1 = cs.charAt(index1++);
 			final char c2 = substring.charAt(index2++);
 
-			if (c1 == c2) {
+			if (Objects.equals(c1, c2)) {
 				continue;
 			}
 
@@ -286,11 +290,11 @@ public final class StringUtils {
 		if (isEmpty(str)) {
 			return str;
 		}
-		if (separator == null) {
+		if (Objects.isNull(separator)) {
 			return EMPTY;
 		}
 		int pos = str.indexOf(separator);
-		if (pos == INDEX_NOT_FOUND) {
+		if (Objects.equals(pos, INDEX_NOT_FOUND)) {
 			return EMPTY;
 		}
 		return str.substring(pos + separator.length());
@@ -356,13 +360,13 @@ public final class StringUtils {
 	 * @since 2.0
 	 */
 	public static String substringBetween(String str, String open, String close) {
-		if (str == null || open == null || close == null) {
+		if (Objects.isNull(str) || Objects.isNull(open) || Objects.isNull(close)) {
 			return null;
 		}
 		int start = str.indexOf(open);
-		if (start != INDEX_NOT_FOUND) {
+		if (!Objects.equals(start, INDEX_NOT_FOUND)) {
 			int end = str.indexOf(close, start + open.length());
-			if (end != INDEX_NOT_FOUND) {
+			if (!Objects.equals(end, INDEX_NOT_FOUND)) {
 				return str.substring(start + open.length(), end);
 			}
 		}

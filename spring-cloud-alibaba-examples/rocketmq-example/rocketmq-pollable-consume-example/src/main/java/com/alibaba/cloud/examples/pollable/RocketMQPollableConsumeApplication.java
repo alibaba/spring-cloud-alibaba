@@ -79,6 +79,7 @@ public class RocketMQPollableConsumeApplication {
 				}
 				catch (Exception e) {
 					// handle failure
+					log.error("Pollable Message error: {}", e.getMessage());
 				}
 			}
 		};

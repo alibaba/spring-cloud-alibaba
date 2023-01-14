@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.cloud.sidecar.SidecarProperties;
 import com.ecwid.consul.v1.agent.model.NewService;
@@ -68,10 +69,10 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 		service.setEnableTagOverride(properties.getEnableTagOverride());
 		service.setMeta(getMetadata(properties));
 
-		if (sidecarProperties.getPort() != null && sidecarProperties.getPort() > 0) {
+		if (Objects.nonNull(sidecarProperties.getPort()) && sidecarProperties.getPort() > 0) {
 			service.setPort(properties.getPort());
 		}
-		else if (properties.getPort() != null && properties.getPort() > 0) {
+		else if (Objects.nonNull(properties.getPort()) && properties.getPort() > 0) {
 			service.setPort(properties.getPort());
 		}
 		else if (context.getEnvironment().getProperty("server.port") != null) {
@@ -81,7 +82,7 @@ public class SidecarConsulAutoRegistration extends ConsulAutoRegistration {
 					Integer.valueOf(context.getEnvironment().getProperty("server.port")));
 		}
 
-		if (service.getPort() != null) {
+		if (Objects.nonNull(service.getPort())) {
 			// we know the port and can set the check
 			setCheck(service, autoServiceRegistrationProperties, properties, context,
 					heartbeatProperties);

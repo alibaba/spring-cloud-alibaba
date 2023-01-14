@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: service-provider
+    name: 'service-provider'
   cloud:
     nacos:
       discovery:

@@ -3,15 +3,15 @@ server:
 
 spring:
   application:
-    name: integrated-storage
+    name: 'integrated-storage'
   cloud:
     nacos:
       discovery:
         server-addr: nacos-server:8848
-        group: integrated-example
+        group: 'integrated-example'
       config:
         server-addr: nacos-server:8848
-        group: integrated-example
+        group: 'integrated-example'
   config:
     import:
       - optional:nacos:integrated-storage.yaml

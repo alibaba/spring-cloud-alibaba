@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nacos-svc
+  name: 'nacos-svc'
   labels:
-    app: nacos-svc
+    app: 'nacos-svc'
 spec:
   type: NodePort
   ports:
@@ -13,14 +13,14 @@ spec:
       targetPort: 8848
       nodePort: 30848
   selector:
-    app: nacos-standalone
+    app: 'nacos-standalone'
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nacos-server
+  name: 'nacos-server'
   labels:
-    app: nacos-server
+    app: 'nacos-server'
 spec:
   type: ClusterIP
   ports:
@@ -37,29 +37,29 @@ spec:
       name: old-raft-rpc
       targetPort: 7848
   selector:
-    app: nacos-standalone
+    app: 'nacos-standalone'
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nacos-cm
 data:
-  mysql.host: "nacos-mysql"
-  mysql.db.name: "nacos_config"
-  mysql.port: "3307"
-  mysql.user: "nacos"
-  mysql.password: "nacos"
+  mysql.host: 'nacos-mysql'
+  mysql.db.name: 'nacos_config'
+  mysql.port: '3307'
+  mysql.user: 'nacos'
+  mysql.password: 'nacos'
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nacos-standalone
+  name: 'nacos-standalone'
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: nacos-standalone
+        app: 'nacos-standalone'
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
@@ -71,10 +71,10 @@ spec:
                   - key: "app"
                     operator: In
                     values:
-                      - nacos-standalone
+                      - 'nacos-standalone'
               topologyKey: "kubernetes.io/hostname"
       containers:
-        - name: local-nacos
+        - name: local-nacos'
           imagePullPolicy: Always
           image: registry.cn-hangzhou.aliyuncs.com/sca-community/nacos-server
           ports:
@@ -87,32 +87,32 @@ spec:
             - containerPort: 7848
               name: old-raft-rpc
           env:
-            - name: SPRING_DATASOURCE_PLATFORM
+            - name: 'SPRING_DATASOURCE_PLATFORM'
               value: "mysql"
-            - name: MYSQL_SERVICE_HOST
+            - name: 'MYSQL_SERVICE_HOST'
               valueFrom:
                 configMapKeyRef:
-                  name: nacos-cm
+                  name: 'nacos-cm'
                   key: mysql.host
             - name: MYSQL_SERVICE_DB_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: nacos-cm
+                  name: 'nacos-cm'
                   key: mysql.db.name
             - name: MYSQL_SERVICE_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: nacos-cm
+                  name: 'nacos-cm'
                   key: mysql.port
             - name: MYSQL_SERVICE_USER
               valueFrom:
                 configMapKeyRef:
-                  name: nacos-cm
+                  name: 'nacos-cm'
                   key: mysql.user
             - name: MYSQL_SERVICE_PASSWORD
               valueFrom:
                 configMapKeyRef:
-                  name: nacos-cm
+                  name: 'nacos-cm'
                   key: mysql.password
             - name: MODE
               value: "standalone"

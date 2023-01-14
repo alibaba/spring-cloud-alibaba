@@ -2,7 +2,7 @@ server:
   port: 18085
 spring:
   application:
-    name: sentinel-spring-cloud-gateway
+    name: 'sentinel-spring-cloud-gateway'
   cloud:
     gateway:
       enabled: true

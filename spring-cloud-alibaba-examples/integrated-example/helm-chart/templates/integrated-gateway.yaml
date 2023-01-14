@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: gateway-service
   labels:
-    app: integrated-gateway
+    app: 'integrated-gateway'
 spec:
   type: NodePort
   ports:
@@ -12,25 +12,25 @@ spec:
       targetPort: 30010
       nodePort: 30010
   selector:
-    app: integrated-gateway
+    app: 'integrated-gateway'
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: integrated-gateway
+  name: 'integrated-gateway'
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: integrated-gateway
+      app: 'integrated-gateway'
   template:
     metadata:
       labels:
-        appName: integrated-gateway
-        app: integrated-gateway
+        appName: 'integrated-gateway'
+        app: 'integrated-gateway'
     spec:
       containers:
-        - name: integrated-gateway
+        - name: 'integrated-gateway'
           image: "{{ .Values.image.repository }}integrated-gateway"
           imagePullPolicy: Always
           ports:

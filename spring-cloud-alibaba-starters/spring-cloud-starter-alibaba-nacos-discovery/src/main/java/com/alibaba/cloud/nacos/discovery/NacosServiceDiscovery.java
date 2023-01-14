@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceInstance;
@@ -77,7 +78,7 @@ public class NacosServiceDiscovery {
 		List<ServiceInstance> result = new ArrayList<>(instances.size());
 		for (Instance instance : instances) {
 			ServiceInstance serviceInstance = hostToServiceInstance(instance, serviceId);
-			if (serviceInstance != null) {
+			if (Objects.nonNull(serviceInstance)) {
 				result.add(serviceInstance);
 			}
 		}
@@ -86,7 +87,7 @@ public class NacosServiceDiscovery {
 
 	public static ServiceInstance hostToServiceInstance(Instance instance,
 			String serviceId) {
-		if (instance == null || !instance.isEnabled() || !instance.isHealthy()) {
+		if (Objects.isNull(instance) || !instance.isEnabled() || !instance.isHealthy()) {
 			return null;
 		}
 		NacosServiceInstance nacosServiceInstance = new NacosServiceInstance();

@@ -2,7 +2,7 @@ server:
   port: 28082
 spring:
   application:
-    name: rocketmq-comprehensive-example
+    name: 'rocketmq-comprehensive-example'
   cloud:
     stream:
       function:
@@ -26,10 +26,10 @@ spring:
           destination: square
         processor-in-0:
           destination: num
-          group: processor_group
+          group: 'processor_group'
         consumer-in-0:
           destination: square
-          group: consumer_group
+          group: 'consumer_group'
 
 logging:
   level:

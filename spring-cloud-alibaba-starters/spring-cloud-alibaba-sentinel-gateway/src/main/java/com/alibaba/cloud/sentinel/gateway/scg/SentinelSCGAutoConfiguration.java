@@ -19,6 +19,7 @@ package com.alibaba.cloud.sentinel.gateway.scg;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
 import com.alibaba.cloud.sentinel.gateway.ConfigConstants;
 import com.alibaba.cloud.sentinel.gateway.FallbackProperties;
@@ -96,7 +97,7 @@ public class SentinelSCGAutoConfiguration {
 
 	private void initFallback() {
 		FallbackProperties fallbackProperties = gatewayProperties.getFallback();
-		if (fallbackProperties == null
+		if (Objects.isNull(fallbackProperties)
 				|| StringUtil.isBlank(fallbackProperties.getMode())) {
 			return;
 		}

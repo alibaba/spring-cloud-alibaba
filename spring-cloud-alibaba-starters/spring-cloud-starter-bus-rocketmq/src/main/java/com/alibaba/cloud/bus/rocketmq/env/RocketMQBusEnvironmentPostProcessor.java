@@ -18,6 +18,7 @@ package com.alibaba.cloud.bus.rocketmq.env;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -101,7 +102,7 @@ public class RocketMQBusEnvironmentPostProcessor
 				}
 			}
 		}
-		if (target == null) {
+		if (Objects.isNull(target)) {
 			target = new MapPropertySource(PROPERTY_SOURCE_NAME, map);
 		}
 		if (!propertySources.contains(PROPERTY_SOURCE_NAME)) {

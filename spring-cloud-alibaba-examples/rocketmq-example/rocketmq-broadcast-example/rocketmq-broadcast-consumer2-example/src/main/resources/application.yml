@@ -2,7 +2,7 @@ server:
   port: 28083
 spring:
   application:
-    name: rocketmq-broadcast-consumer2-example
+    name: 'rocketmq-broadcast-consumer2-example'
   cloud:
     stream:
       function:
@@ -17,7 +17,7 @@ spring:
       bindings:
         consumer-in-0:
           destination: broadcast
-          group: broadcast-consumer
+          group: 'broadcast-consumer'
 logging:
   level:
     org.springframework.context.support: debug

@@ -10,7 +10,7 @@ spring:
       host: localhost
       port: 8500
   application:
-    name: node-service
+    name: 'node-service'
 sidecar:
   # 异构微服务的IP
   ip: 127.0.0.1

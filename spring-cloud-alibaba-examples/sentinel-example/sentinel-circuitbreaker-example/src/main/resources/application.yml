@@ -2,7 +2,7 @@ server:
   port: 80
 spring:
   application:
-    name: circuit-breaker-app
+    name: 'circuit-breaker-app'
   cloud:
     nacos:
       config:

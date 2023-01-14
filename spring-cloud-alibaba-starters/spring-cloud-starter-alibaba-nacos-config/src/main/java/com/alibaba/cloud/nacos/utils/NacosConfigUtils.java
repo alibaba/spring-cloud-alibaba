@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.nacos.utils;
 
+import java.util.Objects;
+
 /**
  * @author zkzlx
  */
@@ -50,7 +52,7 @@ public final class NacosConfigUtils {
 	 */
 	public static boolean isBaseLetter(char ch) {
 		Character.UnicodeBlock ub = Character.UnicodeBlock.of(ch);
-		return ub == Character.UnicodeBlock.BASIC_LATIN || Character.isWhitespace(ch);
+		return Objects.equals(ub, Character.UnicodeBlock.BASIC_LATIN) || Character.isWhitespace(ch);
 	}
 
 	/**
@@ -60,12 +62,12 @@ public final class NacosConfigUtils {
 	 */
 	public static boolean isChinese(char c) {
 		Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
-		return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-				|| ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-				|| ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-				|| ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
-				|| ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
-				|| ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS;
+		return Objects.equals(ub, Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)
+				|| Objects.equals(ub, Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS)
+				|| Objects.equals(ub, Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A)
+				|| Objects.equals(ub, Character.UnicodeBlock.GENERAL_PUNCTUATION)
+				|| Objects.equals(ub, Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION)
+				|| Objects.equals(ub, Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS);
 	}
 
 }

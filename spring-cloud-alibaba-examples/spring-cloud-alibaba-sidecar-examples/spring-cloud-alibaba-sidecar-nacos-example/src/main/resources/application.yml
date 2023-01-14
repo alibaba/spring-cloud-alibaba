@@ -3,8 +3,8 @@ server:
 spring:
   cloud:
     nacos:
-      username: nacos
-      password: nacos
+      username: 'nacos'
+      password: 'nacos'
       discovery:
         server-addr: 127.0.0.1:8848
         group: test
@@ -14,7 +14,7 @@ spring:
           enabled: true
 
   application:
-    name: node-service
+    name: 'node-service'
 sidecar:
   # 异构微服务的IP
   ip: 127.0.0.1

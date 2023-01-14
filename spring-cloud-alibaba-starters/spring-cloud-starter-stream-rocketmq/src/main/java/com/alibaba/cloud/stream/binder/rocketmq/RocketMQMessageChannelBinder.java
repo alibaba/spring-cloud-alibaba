@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq;
 
+import java.util.Objects;
+
 import com.alibaba.cloud.stream.binder.rocketmq.custom.RocketMQBeanContainerCache;
 import com.alibaba.cloud.stream.binder.rocketmq.extend.ErrorAcknowledgeHandler;
 import com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.RocketMQInboundChannelAdapter;
@@ -88,7 +90,7 @@ public class RocketMQMessageChannelBinder extends
 		RocketMQProducerMessageHandler messageHandler = new RocketMQProducerMessageHandler(
 				destination, extendedProducerProperties, mqProducerProperties);
 		messageHandler.setApplicationContext(this.getApplicationContext());
-		if (errorChannel != null) {
+		if (Objects.nonNull(errorChannel)) {
 			messageHandler.setSendFailureChannel(errorChannel);
 		}
 		MessageConverterConfigurer.PartitioningInterceptor partitioningInterceptor = ((AbstractMessageChannel) channel)
@@ -167,7 +169,7 @@ public class RocketMQMessageChannelBinder extends
 				AcknowledgmentCallback ack = StaticMessageHeaderAccessor
 						.getAcknowledgmentCallback(
 								payload.getFailedMessage());
-				if (ack != null) {
+				if (Objects.nonNull(ack)) {
 					ErrorAcknowledgeHandler handler = RocketMQBeanContainerCache.getBean(
 							properties.getExtension().getPull().getErrAcknowledge(),
 							ErrorAcknowledgeHandler.class,

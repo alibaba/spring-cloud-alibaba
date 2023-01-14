@@ -19,6 +19,7 @@ package com.alibaba.cloud.circuitbreaker.sentinel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
@@ -98,7 +99,7 @@ public class SentinelCircuitBreakerIntegrationTest {
 		@GetMapping("/slow")
 		public String slow(@RequestParam(required = false) Boolean slow)
 				throws InterruptedException {
-			if (slow == null || slow) {
+			if (Objects.isNull(slow) || slow) {
 				Thread.sleep(80);
 			}
 			return "slow";

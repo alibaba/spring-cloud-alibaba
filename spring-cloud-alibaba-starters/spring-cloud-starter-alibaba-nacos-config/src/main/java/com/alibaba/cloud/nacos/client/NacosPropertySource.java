@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 
@@ -76,9 +77,9 @@ public class NacosPropertySource extends MapPropertySource {
 			return Collections.emptyMap();
 		}
 		// If only one, return the internal element, otherwise wrap it.
-		if (propertySources.size() == 1) {
+		if (Objects.equals(propertySources.size(), 1)) {
 			PropertySource propertySource = propertySources.get(0);
-			if (propertySource != null && propertySource.getSource() instanceof Map source) {
+			if (Objects.nonNull(propertySource) && propertySource.getSource() instanceof Map source) {
 				return source;
 			}
 		}
@@ -86,7 +87,7 @@ public class NacosPropertySource extends MapPropertySource {
 		Map<String, Object> sourceMap = new LinkedHashMap<>();
 		List<PropertySource<?>> otherTypePropertySources = new ArrayList<>();
 		for (PropertySource<?> propertySource : propertySources) {
-			if (propertySource == null) {
+			if (Objects.isNull(propertySource)) {
 				continue;
 			}
 			if (propertySource instanceof MapPropertySource mapPropertySource) {

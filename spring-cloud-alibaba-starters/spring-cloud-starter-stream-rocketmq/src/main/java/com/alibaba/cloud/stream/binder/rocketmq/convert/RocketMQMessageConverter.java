@@ -18,6 +18,7 @@ package com.alibaba.cloud.stream.binder.rocketmq.convert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.converter.AbstractMessageConverter;
@@ -118,11 +119,11 @@ public class RocketMQMessageConverter extends AbstractMessageConverter {
 			}
 			catch (Exception ignore) {
 			}
-			if (payload != null) {
+			if (Objects.nonNull(payload)) {
 				return payload;
 			}
 		}
-		if (payload == null && logger.isDebugEnabled()) {
+		if (Objects.isNull(payload) && logger.isDebugEnabled()) {
 			logger.debug("Can convert message " + message.toString());
 		}
 		return payload;

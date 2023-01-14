@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.Objects;
 
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.adapter.reactor.EntryConfig;
@@ -67,12 +68,12 @@ public class ReactiveSentinelCircuitBreaker implements ReactiveCircuitBreaker {
 	}
 
 	private void applyToSentinelRuleManager() {
-		if (this.rules == null || this.rules.isEmpty()) {
+		if (Objects.isNull(this.rules) || this.rules.isEmpty()) {
 			return;
 		}
 		Set<DegradeRule> ruleSet = new HashSet<>(DegradeRuleManager.getRules());
 		for (DegradeRule rule : this.rules) {
-			if (rule == null) {
+			if (Objects.isNull(rule)) {
 				continue;
 			}
 			rule.setResource(resourceName);
@@ -85,7 +86,7 @@ public class ReactiveSentinelCircuitBreaker implements ReactiveCircuitBreaker {
 	public <T> Mono<T> run(Mono<T> toRun, Function<Throwable, Mono<T>> fallback) {
 		Mono<T> toReturn = toRun.transform(new SentinelReactorTransformer<>(
 				new EntryConfig(resourceName, entryType)));
-		if (fallback != null) {
+		if (Objects.nonNull(fallback)) {
 			toReturn = toReturn.onErrorResume(fallback);
 		}
 		return toReturn;
@@ -95,7 +96,7 @@ public class ReactiveSentinelCircuitBreaker implements ReactiveCircuitBreaker {
 	public <T> Flux<T> run(Flux<T> toRun, Function<Throwable, Flux<T>> fallback) {
 		Flux<T> toReturn = toRun.transform(new SentinelReactorTransformer<>(
 				new EntryConfig(resourceName, entryType)));
-		if (fallback != null) {
+		if (Objects.nonNull(fallback)) {
 			toReturn = toReturn.onErrorResume(fallback);
 		}
 		return toReturn;

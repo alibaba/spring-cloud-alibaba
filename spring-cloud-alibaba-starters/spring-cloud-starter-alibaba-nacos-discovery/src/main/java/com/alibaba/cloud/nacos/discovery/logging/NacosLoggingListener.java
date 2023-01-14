@@ -18,6 +18,8 @@ package com.alibaba.cloud.nacos.discovery.logging;
 
 import com.alibaba.nacos.client.logging.NacosLogging;
 
+import java.util.Objects;
+
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.GenericApplicationListener;
@@ -35,7 +37,7 @@ public class NacosLoggingListener implements GenericApplicationListener {
 	@Override
 	public boolean supportsEventType(ResolvableType resolvableType) {
 		Class<?> type = resolvableType.getRawClass();
-		if (type != null) {
+		if (Objects.nonNull(type)) {
 			return ApplicationEnvironmentPreparedEvent.class.isAssignableFrom(type);
 		}
 		return false;

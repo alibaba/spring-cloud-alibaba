@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.seata.web;
 
+import java.util.Objects;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -49,7 +51,7 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 			log.debug("xid in RootContext {} xid in RpcContext {}", xid, rpcXid);
 		}
 
-		if (StringUtils.isBlank(xid) && rpcXid != null) {
+		if (StringUtils.isBlank(xid) && Objects.nonNull(rpcXid)) {
 			RootContext.bind(rpcXid);
 			if (log.isDebugEnabled()) {
 				log.debug("bind {} to RootContext", rpcXid);
@@ -75,7 +77,7 @@ public class SeataHandlerInterceptor implements HandlerInterceptor {
 			}
 			if (!rpcXid.equalsIgnoreCase(unbindXid)) {
 				log.warn("xid in change during RPC from {} to {}", rpcXid, unbindXid);
-				if (unbindXid != null) {
+				if (Objects.nonNull(unbindXid)) {
 					RootContext.bind(unbindXid);
 					log.warn("bind {} back to RootContext", unbindXid);
 				}

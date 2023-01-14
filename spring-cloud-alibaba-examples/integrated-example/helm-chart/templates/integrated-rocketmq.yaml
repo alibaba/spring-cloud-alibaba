@@ -8,25 +8,25 @@ spec:
       protocol: TCP
       targetPort: 9876
   selector:
-    app: mqnamesrv
+    app: 'mqnamesrv'
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mqnamesrv
+  name: 'mqnamesrv'
 spec:
-  serviceName: mqnamesrv
+  serviceName: 'mqnamesrv'
   replicas: 1
   selector:
     matchLabels:
-      app: mqnamesrv
+      app: 'mqnamesrv'
   template:
     metadata:
       labels:
-        app: mqnamesrv
+        app: 'mqnamesrv'
     spec:
       containers:
-        - name: mqnamesrv
+        - name: 'mqnamesrv'
           image: registry.cn-hangzhou.aliyuncs.com/sca-community/rocketmq-server
           command: ["sh","/usr/local/rocketmq-4.8.0/bin/mqnamesrv"]
           imagePullPolicy: IfNotPresent
@@ -37,20 +37,20 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mqbroker
+  name: 'mqbroker'
 spec:
-  serviceName: mqbroker
+  serviceName: 'mqbroker'
   replicas: 1
   selector:
     matchLabels:
-      app: mqbroker
+      app: 'mqbroker'
   template:
     metadata:
       labels:
-        app: mqbroker
+        app: 'mqbroker'
     spec:
       containers:
-        - name: mqbroker
+        - name: 'mqbroker'
           image: registry.cn-hangzhou.aliyuncs.com/sca-community/rocketmq-server
           command: ["sh","/usr/local/rocketmq-4.8.0/bin/mqbroker", "-n","rocketmq:9876"]
           imagePullPolicy: IfNotPresent

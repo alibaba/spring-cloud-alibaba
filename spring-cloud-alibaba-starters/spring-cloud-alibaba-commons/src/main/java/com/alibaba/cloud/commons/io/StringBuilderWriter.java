@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.commons.io;
 
+import java.util.Objects;
+
 import java.io.Serializable;
 import java.io.Writer;
 
@@ -54,7 +56,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
 	 * @param builder The String builder. May be null.
 	 */
 	public StringBuilderWriter(final StringBuilder builder) {
-		this.builder = builder != null ? builder : new StringBuilder();
+		this.builder = Objects.nonNull(builder) ? builder : new StringBuilder();
 	}
 
 	/**
@@ -114,7 +116,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
 	 */
 	@Override
 	public void write(final String value) {
-		if (value != null) {
+		if (Objects.nonNull(value)) {
 			builder.append(value);
 		}
 	}
@@ -127,7 +129,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
 	 */
 	@Override
 	public void write(final char[] value, final int offset, final int length) {
-		if (value != null) {
+		if (Objects.nonNull(value)) {
 			builder.append(value, offset, length);
 		}
 	}

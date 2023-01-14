@@ -18,6 +18,7 @@ package com.alibaba.cloud.circuitbreaker.sentinel.feign;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Objects;
 
 import feign.Feign;
 import feign.Target;
@@ -48,7 +49,7 @@ public class FeignClientCircuitNameResolver implements CircuitBreakerNameResolve
 			Method method) {
 		String key = getKey(feignClientName, target, method);
 
-		if (configurations != null && configurations.containsKey(key)) {
+		if (Objects.nonNull(configurations) && configurations.containsKey(key)) {
 			return key;
 		}
 

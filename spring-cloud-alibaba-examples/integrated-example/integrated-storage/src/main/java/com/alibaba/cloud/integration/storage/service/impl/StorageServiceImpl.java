@@ -17,6 +17,7 @@
 package com.alibaba.cloud.integration.storage.service.impl;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 import com.alibaba.cloud.integration.common.BusinessException;
 import com.alibaba.cloud.integration.common.Result;
@@ -51,7 +52,7 @@ public class StorageServiceImpl implements StorageService {
 
 		Timestamp updateTime = new Timestamp(System.currentTimeMillis());
 		int updateCount = storageMapper.reduceStock(commodityCode, count, updateTime);
-		if (updateCount == 0) {
+		if (Objects.equals(updateCount, 0)) {
 			throw new BusinessException("deduct stock failed");
 		}
 	}
@@ -59,7 +60,7 @@ public class StorageServiceImpl implements StorageService {
 	@Override
 	public Result<?> getRemainCount(String commodityCode) {
 		Integer stock = storageMapper.getStock(commodityCode);
-		if (stock == null) {
+		if (Objects.isNull(stock)) {
 			return Result.failed("commodityCode wrong,please check commodity code");
 		}
 		return Result.success(stock);
