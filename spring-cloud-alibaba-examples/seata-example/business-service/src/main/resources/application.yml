@@ -15,7 +15,7 @@ spring:
   application:
     name: business-service
   datasource:
-    name: "businessDataSource"
+    name: 'businessDataSource'
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://xxx:3306/seata?useSSL=false&serverTimezone=UTC
@@ -36,15 +36,15 @@ seata:
     nacos:
       serverAddr: 127.0.0.1:8848
       dataId: "seata.properties"
-      username: "nacos"
-      password: "nacos"
+      username: 'nacos'
+      password: 'nacos'
   registry:
     type: nacos
     nacos:
       application: seata-server
       server-addr: 127.0.0.1:8848
-      username: "nacos"
-      password: "nacos"
+      username: 'nacos'
+      password: 'nacos'
 
   service:
     vgroup-mapping:

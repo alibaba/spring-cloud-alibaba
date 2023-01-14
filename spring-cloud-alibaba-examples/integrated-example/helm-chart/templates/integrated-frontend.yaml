@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: integrated-frontend
-          image: "{{ .Values.image.repository }}integrated-frontend"
+          image: '{{ .Values.image.repository }}integrated-frontend'
           imagePullPolicy: Always
           ports:
             - name: http-port
