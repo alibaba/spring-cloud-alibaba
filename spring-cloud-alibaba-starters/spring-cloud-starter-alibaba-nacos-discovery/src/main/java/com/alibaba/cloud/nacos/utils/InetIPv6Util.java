@@ -81,10 +81,10 @@ public class InetIPv6Util implements Closeable {
 				NetworkInterface ifc = nics.nextElement();
 				if (ifc.isUp()) {
 					log.trace("Testing interface:" + ifc.getDisplayName());
-					if (ifc.getIndex() < lowest || address == null) {
+					if (ifc.getIndex() < lowest || Objects.isNull(address)) {
 						lowest = ifc.getIndex();
 					}
-					else if (address != null) {
+					else if (Objects.nonNull(address)) {
 						continue;
 					}
 
@@ -124,7 +124,7 @@ public class InetIPv6Util implements Closeable {
 
 	public String findIPv6Address() {
 		InetUtils.HostInfo hostInfo = findFirstNonLoopbackHostInfo();
-		String ip = hostInfo != null ? hostInfo.getIpAddress() : "";
+		String ip = Objects.nonNull(hostInfo) ? hostInfo.getIpAddress() : "";
 		if (!StringUtils.isEmpty(ip)) {
 			int index = ip.indexOf('%');
 			ip = index > 0 ? ip.substring(0, index) : ip;

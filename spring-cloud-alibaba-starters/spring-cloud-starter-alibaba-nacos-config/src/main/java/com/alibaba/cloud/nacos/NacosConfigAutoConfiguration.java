@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.nacos;
 
+import java.util.Objects;
+
 import com.alibaba.cloud.nacos.refresh.NacosContextRefresher;
 import com.alibaba.cloud.nacos.refresh.NacosRefreshHistory;
 import com.alibaba.cloud.nacos.refresh.SmartConfigurationPropertiesRebinder;
@@ -42,7 +44,7 @@ public class NacosConfigAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(value = NacosConfigProperties.class, search = SearchStrategy.CURRENT)
 	public NacosConfigProperties nacosConfigProperties(ApplicationContext context) {
-		if (context.getParent() != null
+		if (Objects.nonNull(context.getParent())
 				&& BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 						context.getParent(), NacosConfigProperties.class).length > 0) {
 			return BeanFactoryUtils.beanOfTypeIncludingAncestors(context.getParent(),

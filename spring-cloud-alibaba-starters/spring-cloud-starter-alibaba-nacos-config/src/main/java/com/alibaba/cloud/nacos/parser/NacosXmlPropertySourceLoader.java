@@ -116,13 +116,13 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 		if (Objects.isNull(nodeList) || nodeList.getLength() < 1) {
 			return;
 		}
-		parentKey = parentKey == null ? "" : parentKey;
+		parentKey = Objects.isNull(parentKey) ? "" : parentKey;
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
 			String value = node.getNodeValue();
-			value = value == null ? "" : value.trim();
+			value = Objects.isNull(value) ? "" : value.trim();
 			String name = node.getNodeName();
-			name = name == null ? "" : name.trim();
+			name = Objects.isNull(name) ? "" : name.trim();
 
 			if (StringUtils.isEmpty(name)) {
 				continue;
@@ -131,7 +131,7 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 			String key = StringUtils.isEmpty(parentKey) ? name : parentKey + DOT + name;
 			NamedNodeMap nodeMap = node.getAttributes();
 			parseNodeAttr(nodeMap, map, key);
-			if (node.getNodeType() == Node.ELEMENT_NODE && node.hasChildNodes()) {
+			if (Objects.equals(node.getNodeType(), Node.ELEMENT_NODE) && node.hasChildNodes()) {
 				parseNodeList(node.getChildNodes(), map, key);
 				continue;
 			}
@@ -152,7 +152,7 @@ public class NacosXmlPropertySourceLoader extends AbstractPropertySourceLoader
 			if (Objects.isNull(node)) {
 				continue;
 			}
-			if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+			if (Objects.equals(node.getNodeType(), Node.ATTRIBUTE_NODE)) {
 				if (StringUtils.isEmpty(node.getNodeName())) {
 					continue;
 				}
