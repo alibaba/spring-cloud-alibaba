@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: integrated-praise-provider
-          image: "{{ .Values.image.repository }}integrated-praise-provider"
+          image: '{{ .Values.image.repository }}integrated-praise-provider'
           imagePullPolicy: Always
           ports:
             - name: http-port

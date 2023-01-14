@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: integrated-order
-          image: "{{ .Values.image.repository }}integrated-order"
+          image: '{{ .Values.image.repository }}integrated-order'
           imagePullPolicy: Always
           ports:
             - name: http-port

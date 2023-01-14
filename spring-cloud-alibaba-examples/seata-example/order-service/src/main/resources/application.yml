@@ -4,8 +4,8 @@ base:
       hostname: 127.0.0.1 #your mysql server ip address
       dbname: seata #your database name for test
       port: 3306 #your mysql server listening port
-      username: root #your mysql server username
-      password: root #your mysql server password
+      username: 'root' #your mysql server username
+      password: 'root' #your mysql server password
 server:
   port: 18083
 
@@ -39,12 +39,12 @@ seata:
     nacos:
       serverAddr: 127.0.0.1:8848
       dataId: "seata.properties"
-      username: "nacos"
-      password: "nacos"
+      username: 'nacos'
+      password: 'nacos'
   registry:
     type: nacos
     nacos:
       application: seata-server
       server-addr: 127.0.0.1:8848
-      username: "nacos"
-      password: "nacos"
+      username: 'nacos'
+      password: 'nacos'
