@@ -2,7 +2,7 @@ server:
   port: 28088
 spring:
   application:
-    name: rocketmq-tx-example
+    name: 'rocketmq-tx-example'
   cloud:
     stream:
       function:
@@ -21,7 +21,7 @@ spring:
           destination: tx
         consumer-in-0:
           destination: tx
-          group: tx-group
+          group: 'tx-group'
 logging:
   level:
     org.springframework.context.support: debug

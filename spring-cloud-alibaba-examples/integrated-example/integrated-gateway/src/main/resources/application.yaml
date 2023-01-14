@@ -2,15 +2,15 @@ server:
   port: 30010
 spring:
   application:
-    name: integrated-gateway
+    name: 'integrated-gateway'
   cloud:
     nacos:
       config:
         server-addr: nacos-server:8848
-        group: integrated-example
+        group: 'integrated-example'
         file-extension: yaml
       discovery:
         server-addr: nacos-server:8848
-        group: integrated-example
+        group: 'integrated-example'
   config:
     import: optional:nacos:integrated-gateway.yaml

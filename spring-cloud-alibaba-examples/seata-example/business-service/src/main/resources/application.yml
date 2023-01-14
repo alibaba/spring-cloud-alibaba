@@ -10,7 +10,7 @@ spring:
       ribbon:
         enabled:true
   application:
-    name: business-service
+    name: 'business-service'
 
 seata:
   enabled: true
@@ -27,7 +27,7 @@ seata:
   registry:
     type: nacos
     nacos:
-      application: seata-server
+      application: 'seata-server'
       server-addr: 127.0.0.1:8848
       username: "nacos"
       password: "nacos"

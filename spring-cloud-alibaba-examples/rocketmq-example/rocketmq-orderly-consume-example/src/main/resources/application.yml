@@ -2,7 +2,7 @@ server:
   port: 28082
 spring:
   application:
-    name: rocketmq-orderly-consume-example
+    name: 'rocketmq-orderly-consume-example'
   cloud:
     stream:
       function:
@@ -26,7 +26,7 @@ spring:
           destination: orderly
         consumer-in-0:
           destination: orderly
-          group: orderly-consumer
+          group: 'orderly-consumer'
 
 logging:
   level:

@@ -2,7 +2,7 @@ server:
   port: 28087
 spring:
   application:
-    name: rocketmq-sql-consume-example
+    name: 'rocketmq-sql-consume-example'
   cloud:
     stream:
       function:
@@ -23,7 +23,7 @@ spring:
           destination: sql
         consumer-in-0:
           destination: sql
-          group: sql-group
+          group: 'sql-group'
 logging:
   level:
     org.springframework.context.support: debug

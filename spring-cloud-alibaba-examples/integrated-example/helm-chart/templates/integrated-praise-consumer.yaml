@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: integrated-praise-consumer
+  name: 'integrated-praise-consumer'
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: integrated-praise-consumer
+      app: 'integrated-praise-consumer'
   template:
     metadata:
       labels:
-        appName: integrated-praise-consumer
-        app: integrated-praise-consumer
+        appName: 'integrated-praise-consumer'
+        app: 'integrated-praise-consumer'
     spec:
       containers:
-        - name: integrated-praise-consumer
+        - name: 'integrated-praise-consumer'
           image: "{{ .Values.image.repository }}integrated-praise-consumer"
           imagePullPolicy: Always
           ports:

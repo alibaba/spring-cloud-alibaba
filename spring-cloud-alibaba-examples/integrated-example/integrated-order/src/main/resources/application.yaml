@@ -3,15 +3,15 @@ server:
 
 spring:
   application:
-    name: integrated-order
+    name: 'integrated-order'
   cloud:
     nacos:
       discovery:
         server-addr: nacos-server:8848
-        group: integrated-example
+        group: 'integrated-example'
       config:
         server-addr: nacos-server:8848
-        group: integrated-example
+        group: 'integrated-example'
         file-extension: yaml
   config:
     import:

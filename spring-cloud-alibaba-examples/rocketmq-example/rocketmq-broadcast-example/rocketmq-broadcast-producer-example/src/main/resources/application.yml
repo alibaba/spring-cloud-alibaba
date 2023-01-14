@@ -2,7 +2,7 @@ server:
   port: 28085
 spring:
   application:
-    name: rocketmq-broadcast-producer-example
+    name: 'rocketmq-broadcast-producer-example'
   cloud:
     stream:
       rocketmq:
@@ -14,7 +14,7 @@ spring:
               group: output_1
       bindings:
         producer-out-0:
-          destination: broadcast
+          destination: 'broadcast'
 logging:
   level:
     org.springframework.context.support: debug

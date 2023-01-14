@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: integrated-frontend
+  name: 'integrated-frontend'
   labels:
-    app: integrated-frontend
+    app: 'integrated-frontend'
 spec:
   type: NodePort
   ports:
@@ -12,25 +12,25 @@ spec:
       targetPort: 8080
       nodePort: 30080
   selector:
-    app: integrated-frontend
+    app: 'integrated-frontend'
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: integrated-frontend
+  name: 'integrated-frontend'
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: integrated-frontend
+      app: 'integrated-frontend'
   template:
     metadata:
       labels:
-        appName: integrated-frontend
-        app: integrated-frontend
+        appName: 'integrated-frontend'
+        app: 'integrated-frontend'
     spec:
       containers:
-        - name: integrated-frontend
+        - name: 'integrated-frontend'
           image: "{{ .Values.image.repository }}integrated-frontend"
           imagePullPolicy: Always
           ports:

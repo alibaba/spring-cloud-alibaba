@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: integrated-storage
+  name: 'integrated-storage'
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: integrated-storage
+      app: 'integrated-storage'
   template:
     metadata:
       labels:
-        appName: integrated-storage
-        app: integrated-storage
+        appName: 'integrated-storage'
+        app: 'integrated-storage'
     spec:
       containers:
-        - name: integrated-storage
+        - name: 'integrated-storage'
           image: "{{ .Values.image.repository }}integrated-storage"
           imagePullPolicy: Always
           ports:
