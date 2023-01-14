@@ -4,8 +4,8 @@ base:
       hostname: 127.0.0.1 #your mysql server ip address
       dbname: seata #your database name for test
       port: 3306 #your mysql server listening port
-      username: root #your mysql server username
-      password: root #your mysql server password
+      username: 'root' #your mysql server username
+      password: 'root' #your mysql server password
 
 server:
   port: 7091
@@ -27,8 +27,8 @@ logging:
 
 console:
   user:
-    username: seata
-    password: seata
+    username: 'seata'
+    password: 'seata'
 
 seata:
   config:

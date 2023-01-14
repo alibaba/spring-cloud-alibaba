@@ -23,7 +23,7 @@ spec:
   type: ClusterIP
   ports:
     - port: 3306
-      name: server
+      name: 'server'
   selector:
     app: integrated-mysql
 ---
@@ -43,11 +43,11 @@ spec:
     spec:
       containers:
         - name: integrated-mysql
-          image: "{{ .Values.image.repository }}integrated-mysql"
+          image: '{{ .Values.image.repository }}integrated-mysql'
           imagePullPolicy: Always
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "123456"
+              value: '123456'
           ports:
             - containerPort: 3306
               protocol: TCP

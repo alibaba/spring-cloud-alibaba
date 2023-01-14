@@ -34,7 +34,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: SEATA_PORT
-              value: "8091"
+              value: '8091'
             - name: STORE_MODE
               value: file
           ports:

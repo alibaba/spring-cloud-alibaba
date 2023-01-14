@@ -22,15 +22,15 @@ seata:
     nacos:
       serverAddr: 127.0.0.1:8848
       dataId: "seata.properties"
-      username: "nacos"
-      password: "nacos"
+      username: 'nacos'
+      password: 'nacos'
   registry:
     type: nacos
     nacos:
       application: seata-server
       server-addr: 127.0.0.1:8848
-      username: "nacos"
-      password: "nacos"
+      username: 'nacos'
+      password: 'nacos'
 
 feign:
   client:
