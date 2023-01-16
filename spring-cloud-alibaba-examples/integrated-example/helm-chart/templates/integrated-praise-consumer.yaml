@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: integrated-praise-consumer
-          image: "{{ .Values.image.repository }}integrated-praise-consumer"
+          image: '{{ .Values.image.repository }}integrated-praise-consumer'
           imagePullPolicy: Always
           ports:
             - name: http-port

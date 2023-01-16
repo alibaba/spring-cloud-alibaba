@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: integrated-storage
-          image: "{{ .Values.image.repository }}integrated-storage"
+          image: '{{ .Values.image.repository }}integrated-storage'
           imagePullPolicy: Always
           ports:
             - name: http-port
