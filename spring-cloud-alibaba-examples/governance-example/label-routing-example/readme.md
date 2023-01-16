@@ -343,7 +343,7 @@ spec:
         subset: v1
 EOF
 ```
-This TrafficRouter specifies the simplest label routing rule. HTTP requests with a gray header are routed to v2, and the rest of the traffic is routed to v1.
+This [TrafficRouter](https://github.com/opensergo/opensergo-specification/blob/main/specification/en/traffic-routing.md)  specifies the simplest label routing rule. HTTP requests with a gray header are routed to v2, and the rest of the traffic is routed to v1.
 If the version v2 does not have a corresponding instance, the HTTP request will fall back to the version v1.
 ### Demonstrate effect
 We send an HTTP request without a request header to OpenSergoConsumerApplication
@@ -354,9 +354,9 @@ Since the request header is not gray, the request will be routed to version v1 w
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-We then send an HTTP request with a gray tag in its header and the request path is `/istio-label-routing`:
+We then send an HTTP request with a gray tag in its header and the request path is `/router-test`:
 ```
-curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: gray'
+curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
 The request is routed to version v2 because the routing rule is matched by the request.
 ```
