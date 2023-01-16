@@ -97,7 +97,7 @@ public class ConsumerApplication {
 			Rule routeRule = new HeaderRoutingRule();
 			routeRule.setCondition("=");
 			routeRule.setKey("tag");
-			routeRule.setValue("gray");
+			routeRule.setValue("v2");
 			Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
 			routeRule1.setCondition(">");
 			routeRule1.setKey("id");
@@ -139,7 +139,7 @@ public class ConsumerApplication {
 			Rule routeRule = new HeaderRoutingRule();
 			routeRule.setCondition("=");
 			routeRule.setKey("tag");
-			routeRule.setValue("gray");
+			routeRule.setValue("v2");
 			Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
 			routeRule1.setCondition(">");
 			routeRule1.setKey("id");

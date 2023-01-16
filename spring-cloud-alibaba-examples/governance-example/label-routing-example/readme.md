@@ -58,7 +58,7 @@ public void getDataFromControlPlaneTest() {
     routeRule.setType("header");
     routeRule.setCondition("=");
     routeRule.setKey("tag");
-    routeRule.setValue("gray");
+    routeRule.setValue("v2");
     RouteRule routeRule1 = new UrlRule.Parameter();
     routeRule1.setType("parameter");
     routeRule1.setCondition(">");
@@ -84,7 +84,7 @@ public void getDataFromControlPlaneTest() {
 }
 ```
 The rules corresponding to the code are as follows:
-If the request parameter contains tag=gray and the request header contains id and the value is greater than 10, uri is `/router-test` at the same time, the traffic is routed to the v2 version. If one of the request parameters does not meet the requirement, the traffic is routed to the v1 version.
+If the request parameter contains tag=v2 and the request header contains id and the value is greater than 10, uri is `/router-test` at the same time, the traffic is routed to the v2 version. If one of the request parameters does not meet the requirement, the traffic is routed to the v1 version.
 
 Rules also support dynamic modification. The rules for testing dynamic modification are as follows:
 ```java
@@ -101,7 +101,7 @@ public void getDataFromControlPlaneTest() {
 	routeRule.setType("header");
 	routeRule.setCondition("=");
 	routeRule.setKey("tag");
-	routeRule.setValue("gray");
+	routeRule.setValue("v2");
 	RouteRule routeRule1 = new UrlRule.Parameter();
 	routeRule1.setType("parameter");
 	routeRule1.setCondition(">");
@@ -129,7 +129,7 @@ public void getDataFromControlPlaneTest() {
 }
 ```
 The rules corresponding to the code are as follows:
-If the request parameter contains tag=gray, and the request header contains id and the value is greater than 10, URL is `/router-test`, 50% of the traffic is routed to the v2 version, and the rest is routed to the v1 version. If one of the traffic does not meet the requirements, the traffic is routed to the v1 version.
+If the request parameter contains tag=v2, and the request header contains id and the value is greater than 10, URL is `/router-test`, 50% of the traffic is routed to the v2 version, and the rest is routed to the v1 version. If one of the traffic does not meet the requirements, the traffic is routed to the v1 version.
 
 #####  demonstration Steps
 1. visit http://localhost:18083/add Push the routing rules from the control surface interface to the routing rule warehouse
@@ -137,7 +137,7 @@ If the request parameter contains tag=gray, and the request header contains id a
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   visit http://localhost:18083/router-test?id=11 and the key-tag which value set in the request header is gray, which meets the routing rules. The route is to the v2 version. The v2 version instance prints and returns the following results:
+   visit http://localhost:18083/router-test?id=11 and the key-tag which value set in the request header is v2, which meets the routing rules. The route is to the v2 version. The v2 version instance prints and returns the following results:
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
@@ -147,7 +147,7 @@ If the request parameter contains tag=gray, and the request header contains id a
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   visit http://localhost:18083/router-test?id=11 and the key-tag which value set in the request header is gray, which meets the routing rules. 50% of the routes are routed to the v2 version. The v2 version instance prints the following results:
+   visit http://localhost:18083/router-test?id=11 and the key-tag which value set in the request header is v2, which meets the routing rules. 50% of the routes are routed to the v2 version. The v2 version instance prints the following results:
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
@@ -252,7 +252,7 @@ spec:
   - match:
     - headers:
         tag:
-          exact: gray
+          exact: v2
       uri:
         exact: /istio-label-routing
     route:
@@ -265,19 +265,19 @@ spec:
         subset: v1
 EOF
 ```
-This VirtualService specifies the simplest label routing rule. HTTP requests with a gray header and `/istio-label-routing` path are routed to v2, and the rest of the traffic is routed to v1:
+This VirtualService specifies the simplest label routing rule. HTTP requests with a v2 header and `/istio-label-routing` path are routed to v2, and the rest of the traffic is routed to v1:
 ### Demonstration effect
 We send an HTTP request without a request header to IstioConsumerApplication:
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing'
 ```
-Since the request header is not gray, the request will be routed to version v1 with the following result:
+Since the request header is not v2, the request will be routed to version v1 with the following result:
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-We then send an HTTP request with a gray tag in its header and the request path is `/istio-label-routing`:
+We then send an HTTP request with a v2 tag in its header and the request path is `/istio-label-routing`:
 ```
-curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'tag: gray'
+curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'tag: v2'
 ```
 The request is routed to version v2 because the routing rule is matched by the request:
 ```
@@ -343,26 +343,26 @@ spec:
         subset: v1
 EOF
 ```
-This TrafficRouter specifies the simplest label routing rule. HTTP requests with a gray header are routed to v2, and the rest of the traffic is routed to v1.
+This [TrafficRouter](https://github.com/opensergo/opensergo-specification/blob/main/specification/en/traffic-routing.md)  specifies the simplest label routing rule. HTTP requests with a v2 header are routed to v2, and the rest of the traffic is routed to v1.
 If the version v2 does not have a corresponding instance, the HTTP request will fall back to the version v1.
 ### Demonstrate effect
 We send an HTTP request without a request header to OpenSergoConsumerApplication
 ```
 curl --location --request GET '127.0.0.1:18083/router-test'
 ```
-Since the request header is not gray, the request will be routed to version v1 with the following result
+Since the request header is not v2, the request will be routed to version v1 with the following result
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-We then send an HTTP request with a gray tag in its header and the request path is `/istio-label-routing`:
+We then send an HTTP request with a v2 tag in its header and the request path is `/router-test`:
 ```
-curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: gray'
+curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
 The request is routed to version v2 because the routing rule is matched by the request.
 ```
 Route in 30.221.132.228: 18082,version is v2.
 ```
-After we stop the ProviderApplication of the version v2, we send an HTTP request with the request header tag gray.
+After we stop the ProviderApplication of the version v2, we send an HTTP request with the request header tag v2.
 ```
 curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```

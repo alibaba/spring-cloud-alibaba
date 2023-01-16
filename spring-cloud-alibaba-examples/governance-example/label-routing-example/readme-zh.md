@@ -56,7 +56,7 @@ public void getDataFromControlPlaneTest() {
     routeRule.setType("header");
     routeRule.setCondition("=");
     routeRule.setKey("tag");
-    routeRule.setValue("gray");
+    routeRule.setValue("v2");
     RouteRule routeRule1 = new UrlRule.Parameter();
     routeRule1.setType("parameter");
     routeRule1.setCondition(">");
@@ -82,7 +82,7 @@ public void getDataFromControlPlaneTest() {
 }
 ```
 代码对应的规则如下：
-若同时满足请求参数中含有`tag=gray`，请求头中含有id且值小于10，uri为`/router-test`则流量全部路由到v2版本中，若有一条不满足，则流量路由到v1版本中。
+若同时满足请求参数中含有`tag=v2`，请求头中含有id且值小于10，uri为`/router-test`则流量全部路由到v2版本中，若有一条不满足，则流量路由到v1版本中。
 
 规则也支持动态修改，测试动态修改的规则如下：
 ```java
@@ -99,7 +99,7 @@ public void getDataFromControlPlaneTest() {
 	routeRule.setType("header");
 	routeRule.setCondition("=");
 	routeRule.setKey("tag");
-	routeRule.setValue("gray");
+	routeRule.setValue("v2");
 	RouteRule routeRule1 = new UrlRule.Parameter();
 	routeRule1.setType("parameter");
 	routeRule1.setCondition(">");
@@ -127,7 +127,7 @@ public void getDataFromControlPlaneTest() {
 }
 ```
 代码对应的规则如下：
-若同时满足请求参数中含有`tag=gray`，请求头中含有id且值小于10，uri为`/router-test`，则50%流量路由到v2版本中，剩下的流量路由到v1版本中，若有一条不满足，则流量路由到v1版本中。
+若同时满足请求参数中含有`tag=v2`，请求头中含有id且值小于10，uri为`/router-test`，则50%流量路由到v2版本中，剩下的流量路由到v1版本中，若有一条不满足，则流量路由到v1版本中。
 
 ##### 演示步骤
 1. 访问 http://localhost:18083/add 将路由规则由控制面接口推入路由规则仓库中。
@@ -135,7 +135,7 @@ public void getDataFromControlPlaneTest() {
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   访问 http://localhost:18083/router-test?id=11 且请求头设置tag值为gray 满足路由规则，路由到v2版本中，v2版本实例打印返回如下结果：
+   访问 http://localhost:18083/router-test?id=11 且请求头设置tag值为v2 满足路由规则，路由到v2版本中，v2版本实例打印返回如下结果：
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
@@ -145,7 +145,7 @@ public void getDataFromControlPlaneTest() {
    ```
    Route in 30.221.132.228: 18081,version is v1.
    ```
-   访问 http://localhost:18083/router-test?id=11 且请求头设置tag值为gray 满足路由规则，50%路由到v2版本中，v2版本实例打印返回如下结果：
+   访问 http://localhost:18083/router-test?id=11 且请求头设置tag值为v2 满足路由规则，50%路由到v2版本中，v2版本实例打印返回如下结果：
    ```
    Route in 30.221.132.228: 18082,version is v2.
    ```
@@ -251,7 +251,7 @@ spec:
   - match:
     - headers:
         tag:
-          exact: gray
+          exact: v2
       uri:
         exact: /istio-label-routing
     route:
@@ -264,100 +264,19 @@ spec:
         subset: v1
 EOF
 ```
-这条VirtualService指定了一条最简单的标签路由规则，将请求头tag为gray，请求路径为`/istio-label-routing`的HTTP请求路由到v2版本，其余的流量都路由到v1版本:
+这条VirtualService指定了一条最简单的标签路由规则，将请求头tag为v2，请求路径为`/istio-label-routing`的HTTP请求路由到v2版本，其余的流量都路由到v1版本:
 ### 效果演示
 发送一条不带请求头的HTTP请求至IstioConsumerApplication:
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing'
 ```
-因为请求头不为gray，所以请求将会被路由到v1版本，返回如下:
+因为请求头不为v2，所以请求将会被路由到v1版本，返回如下:
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-之后发送一条请求头tag为gray，且请求路径为`/istio-label-routing`的HTTP请求:
+之后发送一条请求头tag为v2，且请求路径为`/istio-label-routing`的HTTP请求:
 ```
-curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'tag: gray'
-```
-因为满足路由规则，所以请求会被路由至v2版本:
-```
-Route in 30.221.132.228: 18082,version is v2.
-```
-最后删除这条标签路由规则:
-```shell
-kubectl delete VirtualService sca-virtual-service
-kubectl delete DestinationRule my-destination-rule
-```
-删除规则后，可以看到路由的策略将不由请求头的携带与否来决定，而是完全遵从于负载均衡器的实现。
-
-## 集成OpenSergo
-**注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改`pom.xml` 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-opensergo-adapter`模块
-```XML
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
-</dependency>
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
-</dependency>
-```
-2. 在`application.properties`配置文件中配置OpenSergo控制面的相关信息
-```
-# OpenSergo 控制面 endpoint
-spring.cloud.opensergo.endpoint=127.0.0.1:10246
-```
-### 应用启动
-启动三个模块的启动类，分别为OpenSergoConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。
-
-### 下发配置
-
-[启动 OpenSergo 控制面](https://opensergo.io/zh-cn/docs/quick-start/opensergo-control-plane/) ，并通过 OpenSergo 控制面下发流量路由规则
-
-```YAML
-kubectl apply -f - << EOF
-apiVersion: traffic.opensergo.io/v1alpha1
-kind: TrafficRouter
-metadata:
-  name: service-provider
-  namespace: default
-  labels:
-    app: service-provider
-spec:
-  hosts:
-    - service-provider
-  http:
-  - match:
-    - headers:
-        tag:
-          exact: v2
-    route:
-    - destination:
-        host: service-provider
-        subset: v2
-        fallback:
-          host: service-provider
-          subset: v1
-  - route:
-    - destination:
-        host: service-provider
-        subset: v1
-EOF
-```
-这条TrafficRouter指定了一条最简单的流量路由规则，将请求头tag为v2的HTTP请求路由到v2版本，其余的流量都路由到v1版本。
-如果v2版本没有对应的节点，则将流量fallback至v1版本。
-### 效果演示
-发送一条不带请求头的HTTP请求至IstioConsumerApplication:
-```
-curl --location --request GET '127.0.0.1:18083/router-test'
-```
-因为请求头不为gray，所以请求将会被路由到v1版本，返回如下:
-```
-Route in 30.221.132.228: 18081,version is v1.
-```
-之后发送一条请求头tag为gray的HTTP请求
-```
-curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
+curl --location --request GET '127.0.0.1:18084/istio-label-routing' --header 'tag: v2'
 ```
 因为满足路由规则，所以请求会被路由至v2版本:
 ```
@@ -425,18 +344,18 @@ spec:
             subset: v1
 EOF
 ```
-这条TrafficRouter指定了一条最简单的流量路由规则，将请求头tag为v2的HTTP请求路由到v2版本，其余的流量都路由到v1版本。
+这条[TrafficRouter](https://github.com/opensergo/opensergo-specification/blob/main/specification/zh-Hans/traffic-routing.md) 指定了一条最简单的流量路由规则，将请求头tag为v2的HTTP请求路由到v2版本，其余的流量都路由到v1版本。
 如果v2版本没有对应的节点，则将流量fallback至v1版本。
 ### 效果演示
 发送一条不带请求头的HTTP请求至OpenSergoConsumerApplication
 ```
 curl --location --request GET '127.0.0.1:18083/router-test'
 ```
-因为请求头不为gray，所以请求将会被路由到v1版本，返回如下
+因为请求头不为v2，所以请求将会被路由到v1版本，返回如下
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-之后发送一条请求头tag为gray的HTTP请求
+之后发送一条请求头tag为v2的HTTP请求
 ```
 curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
@@ -444,7 +363,7 @@ curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
 Route in 30.221.132.228: 18082,version is v2.
 ```
-停止v2版本的ProviderApplication后，继续发送一条请求头tag为gray的HTTP请求
+停止v2版本的ProviderApplication后，继续发送一条请求头tag为v2的HTTP请求
 ```
 curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
