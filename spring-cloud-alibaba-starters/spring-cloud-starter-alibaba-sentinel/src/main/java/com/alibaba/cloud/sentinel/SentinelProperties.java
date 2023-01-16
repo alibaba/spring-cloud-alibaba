@@ -41,7 +41,6 @@ import org.springframework.validation.annotation.Validated;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = SentinelConstants.PROPERTY_PREFIX)
-@Validated
 public class SentinelProperties {
 
 	/**
