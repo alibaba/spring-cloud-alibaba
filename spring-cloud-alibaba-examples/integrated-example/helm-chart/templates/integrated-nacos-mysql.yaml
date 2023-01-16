@@ -21,13 +21,13 @@ spec:
             - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "root"
+              value: 'root'
             - name: MYSQL_DATABASE
-              value: "nacos_config"
+              value: 'nacos_config'
             - name: MYSQL_USER
-              value: "nacos"
+              value: 'nacos'
             - name: MYSQL_PASSWORD
-              value: "nacos"
+              value: 'nacos'
 ---
 apiVersion: v1
 kind: Service

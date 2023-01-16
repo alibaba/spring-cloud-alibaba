@@ -10,8 +10,8 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         fail-fast: true
-        username: nacos
-        password: nacos
+        username: 'nacos'
+        password: 'nacos'
     governance:
       auth:
         enabled: ${ISTIO_AUTH_ENABLE:false}

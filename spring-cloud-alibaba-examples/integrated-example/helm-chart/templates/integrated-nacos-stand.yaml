@@ -44,11 +44,11 @@ kind: ConfigMap
 metadata:
   name: nacos-cm
 data:
-  mysql.host: "nacos-mysql"
-  mysql.db.name: "nacos_config"
-  mysql.port: "3307"
-  mysql.user: "nacos"
-  mysql.password: "nacos"
+  mysql.host: 'nacos-mysql'
+  mysql.db.name: 'nacos_config'
+  mysql.port: '3307'
+  mysql.user: 'nacos'
+  mysql.password: 'nacos'
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -61,7 +61,7 @@ spec:
       labels:
         app: nacos-standalone
       annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
+        pod.alpha.kubernetes.io/initialized: 'true'
     spec:
       affinity:
         podAntiAffinity:
@@ -72,7 +72,7 @@ spec:
                     operator: In
                     values:
                       - nacos-standalone
-              topologyKey: "kubernetes.io/hostname"
+              topologyKey: 'kubernetes.io/hostname'
       containers:
         - name: local-nacos
           imagePullPolicy: Always
@@ -115,11 +115,11 @@ spec:
                   name: nacos-cm
                   key: mysql.password
             - name: MODE
-              value: "standalone"
+              value: 'standalone'
             - name: NACOS_SERVER_PORT
-              value: "8848"
+              value: '8848'
             - name: PREFER_HOST_MODE
-              value: "hostname"
+              value: 'hostname'
   selector:
     matchLabels:
       app: nacos-standalone
