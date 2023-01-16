@@ -14,6 +14,15 @@
 
     <properties>
         <appactive.version>0.2.1</appactive.version>
+
+        <!--dependencies version-->
+        <feign-java8.version>9.5.1</feign-java8.version>
+        <mysql-connector.version>8.0.28</mysql-connector.version>
+        <client-bridge-servlet.version>0.2.1</client-bridge-servlet.version>
+        <javax.servlet.version>4.0.1</javax.servlet.version>
+        <spring-boot-configuration.version>2.4.0</spring-boot-configuration.version>
+        <guava.version>31.1-jre</guava.version>
+        <fastjson.version>2.0.11</fastjson.version>
     </properties>
 
     <dependencies>
@@ -45,7 +54,7 @@
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-java8</artifactId>
-            <version>9.5.1</version>
+            <version>${feign-java8.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -55,7 +64,7 @@
         <dependency>
             <groupId>com.alibaba.msha</groupId>
             <artifactId>client-bridge-servlet</artifactId>
-            <version>0.2.1</version>
+            <version>${client-bridge-servlet.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -65,13 +74,13 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
+            <version>${javax.servlet.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
-            <version>2.4.0</version>
+            <version>${spring-boot-configuration.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -83,12 +92,12 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>2.0.11</version>
+            <version>${fastjson.version}</version>
         </dependency>
 
 

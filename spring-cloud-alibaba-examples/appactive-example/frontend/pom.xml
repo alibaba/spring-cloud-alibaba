@@ -31,8 +31,11 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target>
+		<java.version>8</java.version>
+
+		<!--maven settings-->
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 

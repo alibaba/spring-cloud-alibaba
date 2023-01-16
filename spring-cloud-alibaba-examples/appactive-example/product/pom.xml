@@ -33,9 +33,15 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target>
+		<java.version>8</java.version>
+
+		<!--maven settings-->
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.deploy.skip>true</maven.deploy.skip>
+
+		<!--dependencies version-->
+		<mysql-connector.version>8.0.28</mysql-connector.version>
 	</properties>
 
 	<dependencies>
@@ -52,7 +58,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.28</version>
+			<version>${mysql-connector.version}</version>
 		</dependency>
 	</dependencies>
 

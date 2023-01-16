@@ -16,6 +16,13 @@
 	<name>Spring Cloud Starter Alibaba Appactive Example - Common Service</name>
 	<packaging>jar</packaging>
 
+	<properties>
+		<!--dependencies version-->
+		<spring-beans.version>5.3.18</spring-beans.version>
+		<hibernate-validator.version>6.0.23.Final</hibernate-validator.version>
+		<client-spi.version>0.2.1</client-spi.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -28,7 +35,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>5.3.18</version>
+			<version>${spring-beans.version}</version>
 		</dependency>
 
 		<dependency>
@@ -46,13 +53,13 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>6.0.23.Final</version>
+			<version>${hibernate-validator.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.alibaba.msha</groupId>
 			<artifactId>client-spi-metainfo</artifactId>
-			<version>0.2.1</version>
+			<version>${client-spi.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
