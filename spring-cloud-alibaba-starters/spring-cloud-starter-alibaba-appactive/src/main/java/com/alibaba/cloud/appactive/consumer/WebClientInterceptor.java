@@ -22,12 +22,11 @@ import com.alibaba.cloud.appactive.constant.AppactiveConstants;
 import io.appactive.java.api.base.AppContextClient;
 import io.appactive.support.log.LogUtil;
 import org.slf4j.Logger;
-
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author yuluo
