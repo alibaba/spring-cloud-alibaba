@@ -99,7 +99,7 @@ public final class URIRegister {
 	}
 
 	/**
-	 * Collect {@link ServiceMeta} into the given <i>serviceMetaList</i> according to each
+	 * Collect {@link ServiceMetaEntity} into the given <i>serviceMetaList</i> according to each
 	 * item of the given <i>urlPatterns</i> and the given <i>resourceActiveType</i>,
 	 * finally determine whether <i>hasWildChar</i> is a new wildChar.
 	 * @param serviceMetaList extended list
@@ -121,16 +121,16 @@ public final class URIRegister {
 	}
 
 	/**
-	 * Collect {@link ServiceMeta} into the given <i>serviceMetaList</i> according to the
+	 * Collect {@link ServiceMetaEntity} into the given <i>serviceMetaList</i> according to the
 	 * given <i>urlPattern</i> and the given <i>resourceActiveType</i>.
 	 * @param serviceMetaList extended list
-	 * @param urlPattern attribute of {@link ServiceMeta}
-	 * @param resourceActiveType attribute of {@link ServiceMeta}
+	 * @param urlPattern attribute of {@link ServiceMetaEntity}
+	 * @param resourceActiveType attribute of {@link ServiceMetaEntity}
 	 */
 	private static void collectServiceMeta(List<ServiceMetaEntity> serviceMetaList,
 			String urlPattern, String resourceActiveType) {
-		ServiceMetaEntity serviceMeta = new ServiceMetaEntity(urlPattern, resourceActiveType);
-		serviceMetaList.add(serviceMeta);
+		ServiceMetaEntity serviceMetaEntity = new ServiceMetaEntity(urlPattern, resourceActiveType);
+		serviceMetaList.add(ServiceMetaEntity);
 	}
 
 	public static ServiceMetaObject getServiceMetaObject() {
