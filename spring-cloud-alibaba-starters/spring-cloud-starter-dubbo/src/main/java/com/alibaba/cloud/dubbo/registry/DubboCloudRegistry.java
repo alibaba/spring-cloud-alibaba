@@ -37,6 +37,7 @@ import com.alibaba.cloud.dubbo.service.DubboMetadataServiceProxy;
 import com.alibaba.cloud.dubbo.util.DubboMetadataUtils;
 import com.alibaba.cloud.dubbo.util.JSONUtils;
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.utils.ConcurrentHashSet;
 import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.support.FailbackRegistry;
 import org.slf4j.Logger;
@@ -91,7 +92,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 	/**
 	 * {subscribedURL : ServiceSubscribeHandler}.
 	 */
-	private final Map<URL, GenearalServiceSubscribeHandler> urlSubscribeHandlerMap = new ConcurrentHashMap<>();
+	private final Map<URL, Set<GenearalServiceSubscribeHandler>> urlSubscribeHandlerMap = new ConcurrentHashMap<>();
 
 	/**
 	 * {appName: MetadataServiceSubscribeHandler}.
@@ -146,7 +147,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 			}
 
 			metadataSubscribeHandlerMap.forEach((url, handler) -> handler.init());
-			urlSubscribeHandlerMap.forEach((url, handler) -> handler.init());
+			urlSubscribeHandlerMap.forEach((url, handlers) -> handlers.forEach(AbstractServiceSubscribeHandler::init));
 			repository.initializeMetadata();
 
 			// meke sure everything prepared, then can listening
@@ -230,7 +231,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 				if (inited.get()) {
 					handler.init();
 				}
-				urlSubscribeHandlerMap.put(url, handler);
+				urlSubscribeHandlerMap.computeIfAbsent(url, k -> new ConcurrentHashSet<>()).add(handler);
 			}
 		}
 	}
@@ -304,10 +305,12 @@ public class DubboCloudRegistry extends FailbackRegistry
 
 			if (!newGroup.containsKey(revision)) {
 				// all instances of this list with revision has losted
-				urlSubscribeHandlerMap.forEach((url, handler) -> {
-					if (handler.relatedWith(appName, revision)) {
-						handler.removeAppNameWithRevision(appName, revision);
-						urls2refresh.add(url);
+				urlSubscribeHandlerMap.forEach((url, handlers) -> {
+					for (GenearalServiceSubscribeHandler handler : handlers) {
+						if (handler.relatedWith(appName, revision)) {
+							handler.removeAppNameWithRevision(appName, revision);
+							urls2refresh.add(url);
+						}
 					}
 				});
 				logger.debug("Subscription app {} revision {} has all losted", appName,
@@ -323,12 +326,18 @@ public class DubboCloudRegistry extends FailbackRegistry
 				// this instance list of revision not exists
 				// should acquire urls
 				urlSubscribeHandlerMap.forEach(
-						(url, handler) -> handler.init(appName, revision, instanceList));
+						(url, handlers) -> {
+							for (GenearalServiceSubscribeHandler handler : handlers) {
+								handler.init(appName, revision, instanceList);
+							}
+						});
 			}
 
-			urlSubscribeHandlerMap.forEach((url, handler) -> {
-				if (handler.relatedWith(appName, revision)) {
-					urls2refresh.add(url);
+			urlSubscribeHandlerMap.forEach((url, handlers) -> {
+				for (GenearalServiceSubscribeHandler handler : handlers) {
+					if (handler.relatedWith(appName, revision)) {
+						urls2refresh.add(url);
+					}
 				}
 			});
 
@@ -336,7 +345,7 @@ public class DubboCloudRegistry extends FailbackRegistry
 				logger.debug("Subscription app {} revision {} changed, instance list {}",
 						appName, revision,
 						instanceList.stream().map(
-								instance -> instance.getHost() + ":" + instance.getPort())
+										instance -> instance.getHost() + ":" + instance.getPort())
 								.collect(Collectors.toList()));
 			}
 		}
@@ -352,13 +361,15 @@ public class DubboCloudRegistry extends FailbackRegistry
 							.collect(Collectors.toList()));
 
 			for (URL url : urls2refresh) {
-				GenearalServiceSubscribeHandler handler = urlSubscribeHandlerMap.get(url);
-				if (handler == null) {
+				Set<GenearalServiceSubscribeHandler> handlers = urlSubscribeHandlerMap.get(url);
+				if (handlers == null) {
 					logger.warn("Subscription app {}, can't find handler for service {}",
 							appName, url.getServiceKey());
 					continue;
 				}
-				handler.refresh();
+				for (GenearalServiceSubscribeHandler handler : handlers) {
+					handler.refresh();
+				}
 			}
 		}
 	}
