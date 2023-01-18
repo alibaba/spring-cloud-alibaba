@@ -27,10 +27,19 @@ public final class AppactiveConstants {
 	 */
 	public static final String ROUTER_ID_HEADER_KEY = "appactive-router-id";
 
+	/**
+	 * Unit type
+	 */
 	public static final String UT = "ut";
 
+	/**
+	 * Meta
+	 */
 	public static final String SVC_META = "svc_meta";
 
+	/**
+	 * Version
+	 */
 	public static final String SVC_META_V = "svc_meta_v";
 
 	private AppactiveConstants() {
