@@ -129,7 +129,7 @@ public final class URIRegister {
 	 */
 	private static void collectServiceMeta(List<ServiceMetaEntity> serviceMetaList,
 			String urlPattern, String resourceActiveType) {
-		ServiceMeta serviceMeta = new ServiceMeta(urlPattern, resourceActiveType);
+		ServiceMetaEntity serviceMeta = new ServiceMetaEntity(urlPattern, resourceActiveType);
 		serviceMetaList.add(serviceMeta);
 	}
 
