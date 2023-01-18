@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.appactive.consumer;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import com.alibaba.cloud.appactive.common.ModifyHttpServletRequestWrapper;
 import com.alibaba.cloud.appactive.common.UriContext;
 import com.alibaba.cloud.appactive.constant.AppactiveConstants;
@@ -25,9 +27,6 @@ import org.slf4j.Logger;
 
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author yuluo
