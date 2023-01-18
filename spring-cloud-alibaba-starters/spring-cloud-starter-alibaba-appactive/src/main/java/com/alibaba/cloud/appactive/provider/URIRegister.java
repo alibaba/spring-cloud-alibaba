@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.servlet.Filter;
 
-import com.alibaba.cloud.appactive.common.ServiceMeta;
+import com.alibaba.cloud.appactive.common.ServiceMetaEntity;
 import com.alibaba.cloud.appactive.common.ServiceMetaObject;
 import com.alibaba.fastjson.JSON;
 import io.appactive.java.api.base.constants.ResourceActiveType;
@@ -52,7 +52,7 @@ public final class URIRegister {
 		if (CollectionUtils.isEmpty(beanList)) {
 			return;
 		}
-		List<ServiceMeta> serviceMetaList = new LinkedList<>();
+		List<ServiceMetaEntity> serviceMetaList = new LinkedList<>();
 		boolean hasWildChar = false;
 		for (FilterRegistrationBean<? extends Filter> filterRegistrationBean : beanList) {
 			Filter filter = filterRegistrationBean.getFilter();
@@ -88,7 +88,7 @@ public final class URIRegister {
 	 * Initialize {@link #serviceMetaObject} based on {@link ServiceMeta} list.
 	 * @param serviceMetaList list needed for initialization
 	 */
-	private static void initServiceMetaObject(List<ServiceMeta> serviceMetaList) {
+	private static void initServiceMetaObject(List<ServiceMetaEntity> serviceMetaList) {
 		serviceMetaObject = new ServiceMetaObject();
 		Collections.sort(serviceMetaList);
 		serviceMetaObject.setServiceMetaList(serviceMetaList);
@@ -108,7 +108,7 @@ public final class URIRegister {
 	 * @param resourceActiveType attribute of {@link ServiceMeta}
 	 * @return is new wildChar
 	 */
-	private static boolean collectServiceMetas(List<ServiceMeta> serviceMetaList,
+	private static boolean collectServiceMetas(List<ServiceMetaEntity> serviceMetaList,
 			boolean hasWildChar, Collection<String> urlPatterns,
 			String resourceActiveType) {
 		for (String urlPattern : urlPatterns) {
@@ -127,7 +127,7 @@ public final class URIRegister {
 	 * @param urlPattern attribute of {@link ServiceMeta}
 	 * @param resourceActiveType attribute of {@link ServiceMeta}
 	 */
-	private static void collectServiceMeta(List<ServiceMeta> serviceMetaList,
+	private static void collectServiceMeta(List<ServiceMetaEntity> serviceMetaList,
 			String urlPattern, String resourceActiveType) {
 		ServiceMeta serviceMeta = new ServiceMeta(urlPattern, resourceActiveType);
 		serviceMetaList.add(serviceMeta);

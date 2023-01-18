@@ -23,6 +23,9 @@ import io.appactive.java.api.base.AppContextClient;
 import io.appactive.support.log.LogUtil;
 import org.slf4j.Logger;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
