@@ -61,7 +61,7 @@ public class FeignDecoderPostProcessor implements BeanPostProcessor {
 			}
 			Decoder decoder = (Decoder) bean;
 			// wrap original decoder
-			return new ResponseInterceptor(decoder);
+			return new FeignResponseDecoderInterceptor(decoder);
 
 			/// another way
 			// Object proxy = Proxy.newProxyInstance(bean.getClass().getClassLoader(),

@@ -1,5 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.alibaba.cloud.appactive.provider.NacosAutoConfig,\
+  com.alibaba.cloud.appactive.provider.ProviderAutoConfig,\
   com.alibaba.cloud.appactive.consumer.ConsumerAutoConfig,\
   com.alibaba.cloud.appactive.config.FilterPropertiesAutoConfiguration,\
   com.alibaba.cloud.appactive.config.FilterAutoConfiguration

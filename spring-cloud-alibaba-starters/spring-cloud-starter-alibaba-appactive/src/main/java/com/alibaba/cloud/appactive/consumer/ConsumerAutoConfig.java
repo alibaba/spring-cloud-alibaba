@@ -51,10 +51,10 @@ public class ConsumerAutoConfig {
 	private static final Logger logger = LogUtil.getLogger();
 
 	@Autowired
-	ApplicationContext context;
+	private ApplicationContext context;
 
 	@Autowired(required = false)
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private ObjectFactory<HttpMessageConverters> messageConverters;
@@ -67,13 +67,21 @@ public class ConsumerAutoConfig {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(name = "feignDecoderPostProcessor")
 	public BeanPostProcessor feignDecoderPostProcessor() {
 		return new FeignDecoderPostProcessor(context);
 	}
 
 	@Bean
-	public RequestInterceptor routerIdTransmissionRequestInterceptor() {
-		return new RouterIdTransmissionRequestInterceptor();
+	@ConditionalOnMissingBean(name = "feignRouterIdTransmissionRequestInterceptor")
+	public RequestInterceptor feignRouterIdTransmissionRequestInterceptor() {
+		return new FeignRouterIdTransmissionRequestInterceptor();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(name = "webClientInterceptor")
+	public WebClientInterceptor webClientInterceptor() {
+		return new WebClientInterceptor();
 	}
 
 	@PostConstruct
@@ -84,7 +92,7 @@ public class ConsumerAutoConfig {
 			if (CollectionUtils.isEmpty(interceptors)) {
 				interceptors = new ArrayList<>();
 			}
-			interceptors.add(new ReqResInterceptor());
+			interceptors.add(new RestTemplateInterceptor());
 			logger.info(
 					"ConsumerAutoConfig adding interceptor for restTemplate[{}]......",
 					restTemplate.getClass());

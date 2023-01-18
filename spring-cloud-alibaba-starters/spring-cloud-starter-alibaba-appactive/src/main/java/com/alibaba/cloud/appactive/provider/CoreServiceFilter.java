@@ -27,7 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.cloud.appactive.constant.Constants;
+import com.alibaba.cloud.appactive.constant.AppactiveConstants;
 import io.appactive.java.api.base.AppContextClient;
 import io.appactive.java.api.base.constants.AppactiveConstant;
 import io.appactive.java.api.bridge.servlet.ServletService;
@@ -71,7 +71,7 @@ public class CoreServiceFilter implements Filter {
 		}
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String routerId = ServletService.getRouteIdFromHeader(httpRequest,
-				Constants.ROUTER_ID_HEADER_KEY);
+				AppactiveConstants.ROUTER_ID_HEADER_KEY);
 		if (StringUtils.isBlank(routerId)) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN,
 					"no routerId provided for this request");

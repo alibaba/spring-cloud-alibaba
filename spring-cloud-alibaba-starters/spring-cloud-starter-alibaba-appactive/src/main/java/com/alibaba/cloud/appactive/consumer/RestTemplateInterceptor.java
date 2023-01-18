@@ -17,39 +17,40 @@
 package com.alibaba.cloud.appactive.consumer;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Objects;
 
 import com.alibaba.cloud.appactive.common.UriContext;
-import feign.FeignException;
-import feign.Response;
-import feign.codec.Decoder;
+import com.alibaba.cloud.appactive.constant.AppactiveConstants;
+import io.appactive.java.api.base.AppContextClient;
 import io.appactive.support.log.LogUtil;
 import org.slf4j.Logger;
+
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
 
 /**
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class ResponseInterceptor implements Decoder {
+public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
 	private static final Logger logger = LogUtil.getLogger();
 
-	final Decoder delegate;
-
-	public ResponseInterceptor(Decoder delegate) {
-		Objects.requireNonNull(delegate, "Decoder must not be null. ");
-		this.delegate = delegate;
-	}
-
 	@Override
-	public Object decode(Response response, Type type)
-			throws IOException, FeignException {
-		Object object = delegate.decode(response, type);
-		logger.info("ResponseInterceptor uri {} for request {} got cleared by {}",
-				UriContext.getUriPath(), response.request().url(), delegate.getClass());
+	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+			ClientHttpRequestExecution execution) throws IOException {
+
+		request.getHeaders().add(AppactiveConstants.ROUTER_ID_HEADER_KEY,
+				AppContextClient.getRouteId());
+		UriContext.setUriPath(request.getURI().getPath());
+
+		ClientHttpResponse response = execution.execute(request, body);
+
+		logger.info("RestTemplateInterceptor uri {} for request {} got cleared",
+				UriContext.getUriPath(), request.getURI());
 		UriContext.clearContext();
-		return object;
+		return response;
 	}
 
 }

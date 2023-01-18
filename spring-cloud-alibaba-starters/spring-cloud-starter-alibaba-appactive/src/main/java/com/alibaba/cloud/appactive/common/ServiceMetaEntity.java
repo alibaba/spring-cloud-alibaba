@@ -20,16 +20,16 @@ package com.alibaba.cloud.appactive.common;
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class ServiceMeta implements Comparable<ServiceMeta> {
+public class ServiceMetaEntity implements Comparable<ServiceMetaEntity> {
 
 	private String uriPrefix;
 
 	private String ra;
 
-	public ServiceMeta() {
+	public ServiceMetaEntity() {
 	}
 
-	public ServiceMeta(String uriPrefix, String ra) {
+	public ServiceMetaEntity(String uriPrefix, String ra) {
 		this.uriPrefix = uriPrefix;
 		this.ra = ra;
 	}
@@ -56,7 +56,7 @@ public class ServiceMeta implements Comparable<ServiceMeta> {
 	}
 
 	@Override
-	public int compareTo(ServiceMeta o) {
+	public int compareTo(ServiceMetaEntity o) {
 		int pre = this.uriPrefix.compareTo(o.getUriPrefix());
 		return pre == 0 ? this.ra.compareTo(o.getRa()) : pre;
 	}
