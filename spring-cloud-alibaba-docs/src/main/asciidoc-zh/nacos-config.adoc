@@ -39,8 +39,9 @@ Group  :    DEFAULT_GROUP
 
 配置格式:    Properties
 
-配置内容：   user.name=nacos-config-properties
-            user.age=90
+配置内容：
+user.name=jack
+user.age=90
 ----
 
 NOTE: 注意DataId是以 properties(默认的文件扩展名方式)为扩展名。
@@ -73,9 +74,8 @@ public class NacosConfigApplication {
 }
 ----
 
-NOTE: 注意当您```spring-cloud-alibaba```的版本为 ````2021.1```时,由于```nacos```获取配置时```bootstrap.yml ```文件将先于```application.yml```文件加载.
-根据spring的官方文档中提及 [bootstrap](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#config-first-bootstrap)
-为解决此问题 我们建议您在项目根```pom.xml```文件中加上如下依赖
+NOTE: ``spring-cloud-alibaba``从``2021.0.1.0``版本开始，默认使用``spring.config.import``方式引入配置，如果您想继续使用``bootstrap``
+方式加载配置，您可以在项目根``pom.xml``文件中加入以下依赖：
 
 [source,xml]
 ----
@@ -87,14 +87,22 @@ NOTE: 注意当您```spring-cloud-alibaba```的版本为 ````2021.1```时,由于
 ----
 
 
-在运行此 NacosConfigApplication 之前， 必须使用 `bootstrap.properties` 配置文件来配置 Nacos Server 地址，例如：
+在运行此 NacosConfigApplication 之前，您需要先配置 `application.yaml` 文件中的 Nacos Server 地址，并引入对应的配置，例如：
 
-.bootstrap.properties
-[source,properties]
+.application.yaml
+[source,yaml]
 ----
-# DataId 默认使用 `spring.application.name` 配置跟文件扩展名结合(配置格式默认使用 properties), GROUP 不配置默认使用 DEFAULT_GROUP。因此该配置文件对应的 Nacos Config 配置的 DataId 为 nacos-config.properties, GROUP 为 DEFAULT_GROUP
-spring.application.name=nacos-config
-spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+# GROUP 不配置默认使用 DEFAULT_GROUP。
+spring:
+  application:
+    name: nacos-config
+  cloud:
+    nacos:
+      config:
+        serverAddr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:nacos-config.properties
 ----
 
 NOTE: 注意当你使用域名的方式来访问 Nacos 时，`spring.cloud.nacos.config.server-addr` 配置的方式为 `域名:port`。
@@ -106,20 +114,28 @@ NOTE: 注意当你使用域名的方式来访问 Nacos 时，`spring.cloud.nacos
 [source,subs="normal"]
 ----
 2018-11-02 14:24:51.638  INFO 32700 --- [main] c.a.demo.provider.ConfigApplication    : Started ConfigApplication in 14.645 seconds (JVM running for 15.139)
-user name :nacos-config-properties; age: 90
-2018-11-02 14:24:51.688  INFO 32700 --- [-127.0.0.1:8848] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@a8c5e74: startup date [Fri Nov 02 14:24:51 CST 2018]; root of context hierarchy
+user name :jack; age: 90
 ----
 
 === 基于 DataId 为 yaml 的文件扩展名配置方式
 
 Nacos Config 除了支持 properties 格式以外，也支持 yaml 格式。这个时候只需要完成以下两步：
 
-1、在应用的 bootstrap.properties 配置文件中显示的声明 DataId 文件扩展名。如下所示
+1、在应用的 application.yaml 配置文件中引入配置，如下所示
 
-.bootstrap.properties
+.application.yaml
 [source,yaml]
 ----
-spring.cloud.nacos.config.file-extension=yaml
+spring:
+  application:
+    name: nacos-config
+  cloud:
+    nacos:
+      config:
+        serverAddr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:nacos-config.yaml
 ----
 
 2、在 Nacos 的控制台新增一个DataId为yaml为扩展名的配置，如下所示：
@@ -132,17 +148,17 @@ Group  :        DEFAULT_GROUP
 
 配置格式:        YAML
 
-配置内容:        user.name: nacos-config-yaml
-                user.age: 68
+配置内容:
+user:
+  name: rose
+  age: 68
 ----
 
 这两步完成后，重启测试程序，可以看到如下输出结果。
 
 [source,subs="normal"]
 ----
-2018-11-02 14:59:00.484  INFO 32928 --- [main] c.a.demo.provider.ConfigApplication:Started ConfigApplication in 14.183 seconds (JVM running for 14.671)
-user name :nacos-config-yaml; age: 68
-2018-11-02 14:59:00.529  INFO 32928 --- [-127.0.0.1:8848] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@265a478e: startup date [Fri Nov 02 14:59:00 CST 2018]; root of context hierarchy
+user name :rose; age: 68
 ----
 
 === 支持配置的动态更新

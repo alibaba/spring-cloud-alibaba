@@ -39,8 +39,9 @@ Group  :    DEFAULT_GROUP
 
 Configuration format:    Properties
 
-Configuration content:   user.name=nacos-config-properties
-            user.age=90
+Configuration content:
+user.name=jack
+user.age=90
 ----
 
 NOTE: The default file extension of DataId is properties.
@@ -73,9 +74,8 @@ public class NacosConfigApplication {
 }
 ----
 
-NOTE: Note that when your ```spring-cloud-alibaba```'s version is ````2021.1```, since the ```nacos``` gets the configuration in the ```bootstrap.yml ``` file Will be loaded before the ```application.yml``` file.
-According to the official documentation of spring mentioned [bootstrap](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#config-first-bootstrap)
-To solve this problem, we recommend that you add the following dependencies to the project root ```pom.xml``` file
+NOTE: After ``spring-cloud-alibaba`` ``2021.0.1.0``,we use ``spring.config.import`` import configuration by default,
+if you want to continue to use ``bootstrap``,you can add the following dependencies to the project root ``pom.xml`` file:
 
 [source,xml]
 ----
@@ -86,14 +86,23 @@ To solve this problem, we recommend that you add the following dependencies to t
 </dependency>
 ----
 
-Before running this example, we need to configure the address of the Nacos server in bootstrap.properties. For example:
 
-.bootstrap.properties
-[source,properties]
+Before running this example, we need to configure the address of the Nacos server in `application.yaml`. For example:
+
+.`application.yaml`
+[source,yaml]
 ----
-# DataId By default, the `spring.application.name` configuration is combined with the file extension (the configuration format uses properties by default), and the GROUP is not configured to use DEFAULT_GROUP by default. Therefore, the Nacos Config configuration corresponding to the configuration file has a DataId of nacos-config.properties and a GROUP of DEFAULT_GROUP
-spring.application.name=nacos-config
-spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+# GROUP is not configured to use DEFAULT_GROUP by default.
+spring:
+  application:
+    name: nacos-config
+  cloud:
+    nacos:
+      config:
+        serverAddr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:nacos-config.properties
 ----
 
 NOTE: If you use domain name to access Nacos, the format of `spring.cloud.nacos.config.server-addr` should be `Domain name:port`.
@@ -105,20 +114,28 @@ Run this example and you can see the following output:
 [source,subs="normal"]
 ----
 2018-11-02 14:24:51.638  INFO 32700 --- [main] c.a.demo.provider.NacosConfigApplication    : Started NacosConfigApplication in 14.645 seconds (JVM running for 15.139)
-user name :nacos-config-properties; age: 90
-2018-11-02 14:24:51.688  INFO 32700 --- [-127.0.0.1:8848] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@a8c5e74: startup date [Fri Nov 02 14:24:51 CST 2018]; root of context hierarchy
+user name :jack; age: 90
 ----
 
 === Add Configurations with DataId in YAML Format
 
 Nacos Config supports yaml format as well. You only need to complete the following 2 steps.
 
-1、In the bootstrap.properties file, add the following line to claim that the format of DataId is yaml. As follows:
+1、In the application.yaml file, add the following line to claim that the format of DataId is yaml. As follows:
 
-.bootstrap.properties
+.application.yaml
 [source,yaml]
 ----
-spring.cloud.nacos.config.file-extension=yaml
+spring:
+  application:
+    name: nacos-config
+  cloud:
+    nacos:
+      config:
+        serverAddr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:nacos-config.yaml
 ----
 
 2、Add a configuration with the DataId in yaml format on the Nacos console, as shown below:
@@ -131,20 +148,20 @@ Group  :        DEFAULT_GROUP
 
 Configuration format:        YAML
 
-Configuration content:        user.name: nacos-config-yaml
-                              user.age: 68
+Configuration content:
+user:
+  name: rose
+  age: 68
 ----
 
 After completing the preivous two steps, restart the testing program and you will see the following result.
 
 [source,subs="normal"]
 ----
-2018-11-02 14:59:00.484  INFO 32928 --- [main] c.a.demo.provider.NacosConfigApplication:Started NacosConfigApplication in 14.183 seconds (JVM running for 14.671)
-user name :nacos-config-yaml; age: 68
-2018-11-02 14:59:00.529  INFO 32928 --- [-127.0.0.1:8848] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@265a478e: startup date [Fri Nov 02 14:59:00 CST 2018]; root of context hierarchy
+user name :rose; age: 68
 ----
 
-=== Support Dynamic Configuration Udpates
+=== Support Dynamic Configuration Updates
 
 Nacos Config also supports dynamic configuration updates. The code for starting Spring Boot application testing is as follows:
 
