@@ -16,15 +16,9 @@
 
 package com.alibaba.cloud.appactive.consumer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
 import feign.RequestInterceptor;
 import feign.codec.Decoder;
 import feign.optionals.OptionalDecoder;
-import io.appactive.support.lang.CollectionUtils;
 import io.appactive.support.log.LogUtil;
 import org.slf4j.Logger;
 
@@ -38,8 +32,6 @@ import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author raozihao, mageekchiu
@@ -52,9 +44,6 @@ public class ConsumerAutoConfig {
 
 	@Autowired
 	private ApplicationContext context;
-
-	@Autowired(required = false)
-	private RestTemplate restTemplate;
 
 	@Autowired
 	private ObjectFactory<HttpMessageConverters> messageConverters;
@@ -76,28 +65,6 @@ public class ConsumerAutoConfig {
 	@ConditionalOnMissingBean(name = "feignRouterIdTransmissionRequestInterceptor")
 	public RequestInterceptor feignRouterIdTransmissionRequestInterceptor() {
 		return new FeignRouterIdTransmissionRequestInterceptor();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(name = "webClientInterceptor")
-	public WebClientInterceptor webClientInterceptor() {
-		return new WebClientInterceptor();
-	}
-
-	@PostConstruct
-	public void init() {
-		if (restTemplate != null) {
-			List<ClientHttpRequestInterceptor> interceptors = restTemplate
-					.getInterceptors();
-			if (CollectionUtils.isEmpty(interceptors)) {
-				interceptors = new ArrayList<>();
-			}
-			interceptors.add(new RestTemplateInterceptor());
-			logger.info(
-					"ConsumerAutoConfig adding interceptor for restTemplate[{}]......",
-					restTemplate.getClass());
-			restTemplate.setInterceptors(interceptors);
-		}
 	}
 
 }
