@@ -64,7 +64,7 @@ public class PilotExchanger {
 
 	private void observeClusters(List<Cluster> clusters) {
 		Set<String> resourceName = cdsProtocol.getResourceNames();
-		if (CollectionUtils.isEmpty(resourceName)) {
+		if (!CollectionUtils.isEmpty(resourceName)) {
 			// eds
 			edsProtocol.observeResource(resourceName, this::observeEndpoints);
 		}
