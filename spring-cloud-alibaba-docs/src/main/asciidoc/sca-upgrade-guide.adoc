@@ -98,7 +98,7 @@ You can manually turn it off by setting `spring.cloud.nacos.config.import-check.
 
 - If you want to keep the previous usage (bootstrap way), you only need to add the dependency `spring-cloud-starter-bootstrap` dependency and don't need modifying a line of code.
 
-you can go https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-2.4.x-example[here] to see the complete example.
+you can go https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/nacos-example/nacos-config-example[here] to see the complete example.
 
 ==== Nacos Failure Tolerance
 
