@@ -196,8 +196,7 @@ endpoint|spring.cloud.nacos.config.endpoint||The domain name of a service, throu
 refresh|spring.cloud.nacos.config.refresh.enabled|true|enable auto refresh
 cluster name|spring.cloud.nacos.config.cluster-name||
 
-### Build Native Image
-Please refer to `graalvm.adoc` document in `spring-cloud-alibaba-docs`
+
 
 #### More introduction
 [Nacos](https://github.com/alibaba/Nacos) is committed to help you discover, configure, and manage your microservices. It provides a set of simple and useful features enabling you to realize dynamic service discovery, service configuration, service metadata and traffic management.

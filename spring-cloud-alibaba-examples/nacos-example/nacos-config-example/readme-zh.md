@@ -187,8 +187,7 @@ SecretKey|spring.cloud.nacos.config.secret-key||
 是否开启监听和自动刷新|spring.cloud.nacos.config.refresh-enabled|true|
 集群服务名|spring.cloud.nacos.config.cluster-name||
 
-### Native Image构建
-请参考`spring-cloud-alibaba-docs`中的`graalvm.adoc`文档
+
 
 #### 更多介绍
 Nacos为用户提供包括动态服务发现，配置管理，服务管理等服务基础设施，帮助用户更灵活，更轻松地构建，交付和管理他们的微服务平台，基于Nacos, 用户可以更快速的构建以“服务”为中心的现代云原生应用。Nacos可以和Spring Cloud、Kubernetes/CNCF、Dubbo 等微服务生态无缝融合，为用户提供更卓越的体验。更多 Nacos 相关的信息，请参考 [Nacos 项目](https://github.com/alibaba/Nacos)。
