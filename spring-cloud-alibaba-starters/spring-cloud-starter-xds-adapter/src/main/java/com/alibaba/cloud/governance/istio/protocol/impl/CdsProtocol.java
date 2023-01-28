@@ -29,7 +29,7 @@ import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.cluster.v3.Cluster;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
-/* CdsProtocol contains infomation about service.
+/** CdsProtocol contains information about service.
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  * @since 2.2.10-RC1
