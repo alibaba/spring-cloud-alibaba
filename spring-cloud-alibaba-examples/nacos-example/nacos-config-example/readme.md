@@ -16,16 +16,23 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 
 1. Add dependency spring-cloud-starter-alibaba-nacos-config in the pom.xml file in your Spring Cloud project.
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+</dependency>
+```
 
-	    <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
-	
-2. Add Nacos config metadata configurations to file /src/main/resources/bootstrap.properties
-	
-        spring.application.name=nacos-config-example
-        spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+2. Add Nacos config metadata configurations to file /src/main/resources/application.yaml and import service config
+```yaml
+spring:
+  cloud:
+    nacos:
+      serverAddr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:nacos-config-example.properties?refresh=true
+```
 
 3. After completing the above two steps, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment. Suppose we save part of the configuration of Nacos through the Nacos configuration center, there are the following four examples:
 - BeanAutoRefreshConfigExample: An example that supports automatic refresh of configuration changes by configuring configuration information as beans
@@ -66,44 +73,19 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
         spring.cloud.nacos.config.group=GROUP
         spring.cloud.nacos.config.namespace=NAMESPACE
 
-4. Add shared configuration and extended configuration
-
-   Shared configuration:
-   ```
-      dataId is: data-source.yaml
-      group is： DEFAULT_GROUP
-		
-      content is:
-		
-      spring:
-       datasource:
-        name: datasource
-        url: jdbc:mysql://127.0.0.1:3306/nacos?characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useDynamicCharsetInfo=false&useSSL=false
-        username: root
-        password: root
-        driverClassName: com.mysql.jdbc.Driver
-   ```
-   Extended configuration:
-   > Configuration in shared configuration can be overridden with extended configuration
-   ```
-      dataId is: ext-data-source.yaml
-      group is： DEFAULT_GROUP
-		
-      content is:
-		
-      spring:
-       datasource:
-        username: ext-root
-        password: ext-root
-   ```
-
 
 ### Start Application
 
 1. Add necessary configurations to file /src/main/resources/application.properties
-	
-        server.port=18084
-        management.endpoints.web.exposure.include=*
+```yaml
+server:
+  port: 18084
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+```
 
 		
 2. Start the application in IDE or by building a fatjar.
@@ -160,7 +142,7 @@ Currently only the `properties` type is supported.
 
 
 ### Automatic Injection
-Nacos Config Starter implement `org.springframework.cloud.bootstrap.config.PropertySourceLocator` interface, and set order to 0.
+Nacos Config Starter implement `org.springframework.boot.context.config.ConfigDataLoader` interface, and set order to 0.
 
 In the startup phase of the Spring Cloud application, the corresponding data is obtained from the Nacos Server side, and the acquired data is converted into a PropertySource and injected into the PropertySources property of the Spring Environment. so the @Value annotation can also directly obtain the configuration of the Nacos Server side.
 
