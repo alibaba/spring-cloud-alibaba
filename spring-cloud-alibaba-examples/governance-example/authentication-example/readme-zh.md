@@ -2,7 +2,7 @@
 
 ## 项目说明
 
-本项目演示如何使用 Istio 下发鉴权配置到Spring Cloud Alibaba并对应用做鉴权。Spring Cloud Alibaba鉴权模块同时支持对Spring MVC以及Spring WebFlux应用做鉴权。
+本项目演示如何使用 Istio 下发鉴权配置到Spring Cloud Alibaba(下文简称：SCA)并对应用做鉴权。SCA鉴权模块同时支持对Spring MVC以及Spring WebFlux应用做鉴权。
 
 ## 准备
 ### 安装K8s环境
@@ -17,7 +17,7 @@
 ## 示例
 ### 如何接入
 在启动示例进行演示之前，先了解一下应用如何接入Istio并提供鉴权功能。 注意 本章节只是为了便于理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。
-1. 修改`pom.xml`文件，引入Istio规则Adapter以及Spring Cloud Alibaba鉴权模块:
+1. 修改`pom.xml`文件，引入Istio规则Adapter以及SCA鉴权模块:
 
 ```xml
 <dependency>
@@ -67,11 +67,11 @@ spring:
 |POD_NAME|metadata.name|
 |NAMESPACE_NAME|metadata.namespace|
 
-**注：您部署的应用所在的pod不需要被Istio执行自动注入，因为Spring Cloud Alibaba的各个治理模块将会被用来替代Envoy Proxy的各种功能。**
+**注：您部署的应用所在的pod不需要被Istio执行自动注入，因为SCA的各个治理模块将会被用来替代Envoy Proxy的各种功能。**
 ### 效果演示
 下面给出几个简单的鉴权规则配置的示例:
 #### IP黑白名单
-使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则的限制了访问该应用的来源IP:
+使用如下命令通过Istio下发一条鉴权规则至demo应用，这条规则限制了访问该应用的来源IP:
 ```YAML
 kubectl apply -f - << EOF
 apiVersion: security.istio.io/v1beta1
