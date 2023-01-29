@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: missing-config
+  cloud:
+    k8s:
+      config:
+        namespace: default
+        configmaps:
+          - name: missing-configmap
+logging:
+  level:
+    com.alibaba.kubernetes.config: debug

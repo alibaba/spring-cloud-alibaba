@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap
+  namespace: default
+data:
+  application-default.yml: |
+    username: admin
+    password: 666
+    hobbies:
+      - reading
+      - writing

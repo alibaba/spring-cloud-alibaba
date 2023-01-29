@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    k8s:
+      config:
+        namespace: default
+        configmaps:
+          - name: configmap-01
+            refreshable: true
+          - name: configmap-02
+            refreshable: false
+  application:
+    name: not-refreshable
+logging:
+  level:
+    com.alibaba.kubernetes.config: debug
