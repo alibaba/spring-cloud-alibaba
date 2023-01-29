@@ -2,7 +2,7 @@
 
 ## Project Instruction
 
-This project demonstrates how to use Istio to publish authentication config to Spring Cloud Alibaba application and use the config to do authentication. The Spring Cloud Alibaba authentication module supports authentication of Spring MVC and Spring WebFlux applications.
+This project demonstrates how to use Istio to publish authentication config to Spring Cloud Alibaba (SCA) application and use the config to do authentication. The SCA authentication module supports authentication of Spring MVC and Spring WebFlux applications.
 
 ## Preparation
 ### Install K8s
@@ -17,7 +17,7 @@ Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapte
 ## Demo
 ### Connect to Istio
 Before launching the example for demonstration, let's look at how a Spring Cloud application accesses Istio and provides authentication. This section is only for you to understand how to use it. The config has been filled in this example and you may not need to modify it.
-1. Modify `pom.xml` to introduce Istio resource transform and Spring Cloud Alibaba authentication module:
+1. Modify `pom.xml` to introduce Istio resource transform and SCA authentication module:
 
 ```xml
 <dependency>
@@ -68,7 +68,7 @@ Note that the application runs in the K8s environment, and the application in th
 |POD_NAME|metadata.name|
 |NAMESPACE_NAME|metadata.namespace|
 
-**HINT：The POD in which your deployed application does not need to be automatically injected by Istio because the various governance modules of Spring Cloud Alibaba will be used to replace the functions of the Envoy Proxy.**
+**HINT：The POD in which your deployed application does not need to be automatically injected by Istio because the various governance modules of SCA will be used to replace the functions of the Envoy Proxy.**
 ### Demostration
 The following are some simple examples of authentication rule configurations:
 #### IP Blocks
