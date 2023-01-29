@@ -240,7 +240,7 @@ spring.cloud.sentinel.datasource.ds4.apollo.rule-type=param-flow
 
 这种配置方式参考了 Spring Cloud Stream Binder 的配置，内部使用了 `TreeMap` 进行存储，comparator 为 `String.CASE_INSENSITIVE_ORDER` 。
 
-NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。后面的 `processor` ，`zk` ，`nacos` , `apollo` 就是对应具体的数据源。 它们后面的配置就是这些具体数据源各自的配置。
+NOTE: d1, ds2, ds3, ds4 是 `ReadableDataSource` 的名字，可随意编写。后面的 `file` ，`zk` ，`nacos` , `apollo` 就是对应具体的数据源。 它们后面的配置就是这些具体数据源各自的配置。
 
 每种数据源都有两个共同的配置项： `data-type`、 `converter-class` 以及 `rule-type`。
 
