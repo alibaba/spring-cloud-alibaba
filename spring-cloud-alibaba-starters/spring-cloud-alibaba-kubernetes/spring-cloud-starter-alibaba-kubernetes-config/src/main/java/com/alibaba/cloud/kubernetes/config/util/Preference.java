@@ -19,13 +19,15 @@ package com.alibaba.cloud.kubernetes.config.util;
 /**
  * @author Freeman
  */
-public enum ConfigPreference {
+public enum Preference {
 	/**
-	 * LOCAL means local configuration has higher priority and will override the remote configuration.
+	 * LOCAL means local configuration has higher priority and will override the remote
+	 * configuration.
 	 */
 	LOCAL,
 	/**
-	 * REMOTE means remote configuration has higher priority and will override the local configuration.
+	 * REMOTE means remote configuration has higher priority and will override the local
+	 * configuration.
 	 */
 	REMOTE
 }

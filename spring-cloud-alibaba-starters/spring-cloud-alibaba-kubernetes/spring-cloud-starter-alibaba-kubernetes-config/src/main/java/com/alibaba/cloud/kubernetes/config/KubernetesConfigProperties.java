@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.alibaba.cloud.kubernetes.commons.KubernetesUtils;
-import com.alibaba.cloud.kubernetes.config.util.ConfigPreference;
+import com.alibaba.cloud.kubernetes.config.util.Preference;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -52,10 +52,10 @@ public class KubernetesConfigProperties implements InitializingBean {
 	private String namespace = determineNamespace();
 
 	/**
-	 * Config preference, default is {@link ConfigPreference#REMOTE}, means remote
+	 * Config preference, default is {@link Preference#REMOTE}, means remote
 	 * configurations 'win', will override the local configurations.
 	 */
-	private ConfigPreference preference = ConfigPreference.REMOTE;
+	private Preference preference = Preference.REMOTE;
 
 	/**
 	 * Whether to refresh environment when remote resource was deleted, default value is
@@ -100,11 +100,11 @@ public class KubernetesConfigProperties implements InitializingBean {
 		this.namespace = namespace;
 	}
 
-	public ConfigPreference getPreference() {
+	public Preference getPreference() {
 		return preference;
 	}
 
-	public void setPreference(ConfigPreference preference) {
+	public void setPreference(Preference preference) {
 		this.preference = preference;
 	}
 
@@ -248,7 +248,7 @@ public class KubernetesConfigProperties implements InitializingBean {
 		 * <span color="orange">{@code spring.cloud.k8s.config.preference}</span> if not
 		 * set.
 		 */
-		private ConfigPreference preference;
+		private Preference preference;
 
 		public String getName() {
 			return name;
@@ -274,11 +274,11 @@ public class KubernetesConfigProperties implements InitializingBean {
 			this.refreshable = refreshable;
 		}
 
-		public ConfigPreference getPreference() {
+		public Preference getPreference() {
 			return preference;
 		}
 
-		public void setPreference(ConfigPreference preference) {
+		public void setPreference(Preference preference) {
 			this.preference = preference;
 		}
 
@@ -335,7 +335,7 @@ public class KubernetesConfigProperties implements InitializingBean {
 		 * <span color="orange">{@code spring.cloud.k8s.config.preference}</span> if not
 		 * set.
 		 */
-		private ConfigPreference preference;
+		private Preference preference;
 
 		public String getName() {
 			return name;
@@ -361,11 +361,11 @@ public class KubernetesConfigProperties implements InitializingBean {
 			this.refreshable = refreshable;
 		}
 
-		public ConfigPreference getPreference() {
+		public Preference getPreference() {
 			return preference;
 		}
 
-		public void setPreference(ConfigPreference preference) {
+		public void setPreference(Preference preference) {
 			this.preference = preference;
 		}
 

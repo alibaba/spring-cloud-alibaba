@@ -24,9 +24,9 @@ import java.util.Optional;
 import com.alibaba.cloud.kubernetes.commons.KubernetesClientHolder;
 import com.alibaba.cloud.kubernetes.config.KubernetesConfigProperties;
 import com.alibaba.cloud.kubernetes.config.exception.ConfigMissingException;
-import com.alibaba.cloud.kubernetes.config.util.ConfigPreference;
 import com.alibaba.cloud.kubernetes.config.util.Converters;
 import com.alibaba.cloud.kubernetes.config.util.Pair;
+import com.alibaba.cloud.kubernetes.config.util.Preference;
 import com.alibaba.cloud.kubernetes.config.util.RefreshContext;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.Secret;
@@ -119,8 +119,8 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 						.map(ps -> Pair.of(configmap.getPreference(), ps)).orElse(null))
 				.filter(Objects::nonNull)
 				.collect(groupingBy(Pair::key, mapping(Pair::value, toList())))
-				.forEach((configPreference, remotePropertySources) -> {
-					addPropertySourcesToEnvironment(environment, configPreference,
+				.forEach((preference, remotePropertySources) -> {
+					addPropertySourcesToEnvironment(environment, preference,
 							remotePropertySources);
 				});
 	}
@@ -133,17 +133,17 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 						.map(ps -> Pair.of(secret.getPreference(), ps)).orElse(null))
 				.filter(Objects::nonNull)
 				.collect(groupingBy(Pair::key, mapping(Pair::value, toList())))
-				.forEach((configPreference, remotePropertySources) -> {
-					addPropertySourcesToEnvironment(environment, configPreference,
+				.forEach((preference, remotePropertySources) -> {
+					addPropertySourcesToEnvironment(environment, preference,
 							remotePropertySources);
 				});
 	}
 
 	private static <T> void addPropertySourcesToEnvironment(
-			ConfigurableEnvironment environment, ConfigPreference configPreference,
+			ConfigurableEnvironment environment, Preference preference,
 			List<EnumerablePropertySource<T>> remotePropertySources) {
 		MutablePropertySources propertySources = environment.getPropertySources();
-		switch (configPreference) {
+		switch (preference) {
 		case LOCAL:
 			// The latter config should win the previous config
 			Collections.reverse(remotePropertySources);
@@ -156,7 +156,7 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 			break;
 		default:
 			throw new IllegalArgumentException(
-					"Unknown config preference: " + configPreference.name());
+					"Unknown config preference: " + preference.name());
 		}
 	}
 
