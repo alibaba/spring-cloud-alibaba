@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import com.alibaba.cloud.kubernetes.config.KubernetesConfigProperties;
 import com.alibaba.cloud.kubernetes.config.util.ResourceKey;
-import com.alibaba.cloud.kubernetes.config.util.Util;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.Secret;
@@ -37,17 +36,16 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
+
+import static com.alibaba.cloud.kubernetes.config.util.Util.resourceKey;
 
 /**
  * Watcher for config resource changes.
  *
  * @author Freeman
  */
-public class ConfigWatcher implements SmartInitializingSingleton, ApplicationContextAware,
-		EnvironmentAware, DisposableBean {
+public class ConfigWatcher
+		implements SmartInitializingSingleton, ApplicationContextAware, DisposableBean {
 	private static final Logger log = LoggerFactory.getLogger(ConfigWatcher.class);
 
 	private final Map<ResourceKey, SharedIndexInformer<ConfigMap>> configmapInformers = new LinkedHashMap<>();
@@ -56,20 +54,10 @@ public class ConfigWatcher implements SmartInitializingSingleton, ApplicationCon
 	private final KubernetesClient client;
 
 	private ApplicationContext context;
-	private ConfigurableEnvironment environment;
 
 	public ConfigWatcher(KubernetesConfigProperties properties, KubernetesClient client) {
 		this.properties = properties;
 		this.client = client;
-	}
-
-	@Override
-	public void setEnvironment(Environment environment) {
-		if (!(environment instanceof ConfigurableEnvironment)) {
-			throw new IllegalStateException(
-					"Environment must be an instance of ConfigurableEnvironment");
-		}
-		this.environment = (ConfigurableEnvironment) environment;
 	}
 
 	@Override
@@ -92,21 +80,25 @@ public class ConfigWatcher implements SmartInitializingSingleton, ApplicationCon
 
 	private void watchRefreshableResources(KubernetesConfigProperties properties,
 			KubernetesClient client) {
-		properties.getConfigMaps().stream().filter(cm -> Util.refreshable(cm, properties))
-				.forEach(cm -> configmapInformers.put(Util.resourceKey(cm, properties),
-						client.configMaps().inNamespace(Util.namespace(cm, properties))
-								.withName(cm.getName())
-								.inform(new HasMetadataResourceEventHandler<>(context,
-										environment, properties))));
+		properties.getConfigMaps().stream()
+				.filter(KubernetesConfigProperties.ConfigMap::getRefreshable)
+				.forEach(cm -> {
+					SharedIndexInformer<ConfigMap> informer = client.configMaps()
+							.inNamespace(cm.getNamespace()).withName(cm.getName())
+							.inform(new HasMetadataResourceEventHandler<>(context,
+									properties));
+					configmapInformers.put(resourceKey(cm), informer);
+				});
 		log(configmapInformers);
 		properties.getSecrets().stream()
-				.filter(secret -> Util.refreshable(secret, properties))
-				.forEach(secret -> secretInformers.put(
-						Util.resourceKey(secret, properties),
-						client.secrets().inNamespace(Util.namespace(secret, properties))
-								.withName(secret.getName())
-								.inform(new HasMetadataResourceEventHandler<>(context,
-										environment, properties))));
+				.filter(KubernetesConfigProperties.Secret::getRefreshable)
+				.forEach(secret -> {
+					SharedIndexInformer<Secret> informer = client.secrets()
+							.inNamespace(secret.getNamespace()).withName(secret.getName())
+							.inform(new HasMetadataResourceEventHandler<>(context,
+									properties));
+					secretInformers.put(resourceKey(secret), informer);
+				});
 		log(secretInformers);
 	}
 

@@ -28,7 +28,6 @@ import com.alibaba.cloud.kubernetes.config.util.ConfigPreference;
 import com.alibaba.cloud.kubernetes.config.util.Converters;
 import com.alibaba.cloud.kubernetes.config.util.Pair;
 import com.alibaba.cloud.kubernetes.config.util.RefreshContext;
-import com.alibaba.cloud.kubernetes.config.util.Util;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -99,13 +98,17 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 
 	private static KubernetesConfigProperties getKubernetesConfigProperties(
 			ConfigurableEnvironment environment) {
-		return Optional.ofNullable(RefreshContext.get())
-				.map(context -> context.applicationContext()
-						.getBean(KubernetesConfigProperties.class))
-				.orElse(Binder.get(environment)
-						.bind(KubernetesConfigProperties.PREFIX,
-								KubernetesConfigProperties.class)
-						.orElseGet(KubernetesConfigProperties::new));
+		return Optional
+				.ofNullable(RefreshContext.get()).map(context -> context
+						.applicationContext().getBean(KubernetesConfigProperties.class))
+				.orElseGet(() -> {
+					KubernetesConfigProperties prop = Binder.get(environment)
+							.bind(KubernetesConfigProperties.PREFIX,
+									KubernetesConfigProperties.class)
+							.orElseGet(KubernetesConfigProperties::new);
+					prop.afterPropertiesSet();
+					return prop;
+				});
 	}
 
 	private void pullConfigMaps(KubernetesConfigProperties properties,
@@ -113,8 +116,7 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		properties.getConfigMaps().stream()
 				.map(configmap -> Optional
 						.ofNullable(propertySourceForConfigMap(configmap, properties))
-						.map(ps -> Pair.of(Util.preference(configmap, properties), ps))
-						.orElse(null))
+						.map(ps -> Pair.of(configmap.getPreference(), ps)).orElse(null))
 				.filter(Objects::nonNull)
 				.collect(groupingBy(Pair::key, mapping(Pair::value, toList())))
 				.forEach((configPreference, remotePropertySources) -> {
@@ -128,8 +130,7 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		properties.getSecrets().stream()
 				.map(secret -> Optional
 						.ofNullable(propertySourceForSecret(secret, properties))
-						.map(ps -> Pair.of(Util.preference(secret, properties), ps))
-						.orElse(null))
+						.map(ps -> Pair.of(secret.getPreference(), ps)).orElse(null))
 				.filter(Objects::nonNull)
 				.collect(groupingBy(Pair::key, mapping(Pair::value, toList())))
 				.forEach((configPreference, remotePropertySources) -> {
@@ -162,16 +163,16 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 	private EnumerablePropertySource<?> propertySourceForConfigMap(
 			KubernetesConfigProperties.ConfigMap cm,
 			KubernetesConfigProperties properties) {
-		if (noNeedToReloadResource(Util.refreshable(cm, properties))) {
+		if (isRefreshing() && !cm.getRefreshable()) {
 			return null;
 		}
-		ConfigMap configMap = client.configMaps()
-				.inNamespace(Util.namespace(cm, properties)).withName(cm.getName()).get();
+		ConfigMap configMap = client.configMaps().inNamespace(cm.getNamespace())
+				.withName(cm.getName()).get();
 		if (configMap == null) {
 			log.warn(String.format("ConfigMap '%s' not found in namespace '%s'",
-					cm.getName(), Util.namespace(cm, properties)));
+					cm.getName(), cm.getNamespace()));
 			failApplicationStartUpIfNecessary(ConfigMap.class, cm.getName(),
-					Util.namespace(cm, properties), properties);
+					cm.getNamespace(), properties);
 			return null;
 		}
 		return Converters.toPropertySource(configMap);
@@ -187,26 +188,19 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 	private EnumerablePropertySource<?> propertySourceForSecret(
 			KubernetesConfigProperties.Secret secret,
 			KubernetesConfigProperties properties) {
-		if (noNeedToReloadResource(Util.refreshable(secret, properties))) {
+		if (isRefreshing() && !secret.getRefreshable()) {
 			return null;
 		}
-		Secret secretInK8s = client.secrets()
-				.inNamespace(Util.namespace(secret, properties))
+		Secret secretInK8s = client.secrets().inNamespace(secret.getNamespace())
 				.withName(secret.getName()).get();
 		if (secretInK8s == null) {
 			log.warn(String.format("Secret '%s' not found in namespace '%s'",
-					secret.getName(), Util.namespace(secret, properties)));
+					secret.getName(), secret.getNamespace()));
 			failApplicationStartUpIfNecessary(Secret.class, secret.getName(),
-					Util.namespace(secret, properties), properties);
+					secret.getNamespace(), properties);
 			return null;
 		}
 		return Converters.toPropertySource(secretInK8s);
-	}
-
-	private static boolean noNeedToReloadResource(boolean refreshable) {
-		// If this is a refresh event, we need to ignore the resource that not enabled
-		// auto refresh.
-		return isRefreshing() && !refreshable;
 	}
 
 	private static boolean isRefreshing() {

@@ -37,13 +37,11 @@ public class HasMetadataResourceEventHandler<T extends HasMetadata>
 			.getLogger(HasMetadataResourceEventHandler.class);
 
 	private final ApplicationContext context;
-	private final ConfigurableEnvironment environment;
 	private final KubernetesConfigProperties properties;
 
 	public HasMetadataResourceEventHandler(ApplicationContext context,
-			ConfigurableEnvironment environment, KubernetesConfigProperties properties) {
+			KubernetesConfigProperties properties) {
 		this.context = context;
-		this.environment = environment;
 		this.properties = properties;
 	}
 
@@ -81,13 +79,17 @@ public class HasMetadataResourceEventHandler<T extends HasMetadata>
 			refresh(obj);
 		}
 		else {
-			log.info("Refresh on delete is disabled, ignore the delete event");
+			log.info(
+					"{} '{}' was deleted in namespace '{}', refresh on delete is disabled, ignore the delete event",
+					obj.getKind(), obj.getMetadata().getName(),
+					obj.getMetadata().getNamespace());
 		}
 	}
 
 	private void deletePropertySourceOfResource(HasMetadata resource) {
 		String propertySourceName = Converters.propertySourceNameForResource(resource);
-		environment.getPropertySources().remove(propertySourceName);
+		((ConfigurableEnvironment) context.getEnvironment()).getPropertySources()
+				.remove(propertySourceName);
 	}
 
 	private void refresh(HasMetadata obj) {
