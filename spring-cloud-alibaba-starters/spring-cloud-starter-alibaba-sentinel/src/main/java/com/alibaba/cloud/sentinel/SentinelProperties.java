@@ -30,7 +30,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
 import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * {@link ConfigurationProperties} for Sentinel.
