@@ -32,10 +32,25 @@ public final class KubernetesUtils {
 
 	private static final Config config = new ConfigBuilder().build();
 
+	/**
+	 * Get the kube config.
+	 *
+	 * @return Config
+	 */
 	public static Config config() {
 		return config;
 	}
 
+	/**
+	 * Get the current namespace.
+	 * <p>
+	 * If in kubernetes, it will return the namespace of the pod.
+	 * <p>
+	 * If not in kubernetes, it will return the namespace of the kube config current
+	 * context.
+	 *
+	 * @return namespace
+	 */
 	public static String currentNamespace() {
 		return config.getNamespace();
 	}
