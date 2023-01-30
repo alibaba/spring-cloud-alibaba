@@ -30,7 +30,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
 import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * {@link ConfigurationProperties} for Sentinel.
@@ -41,7 +40,6 @@ import org.springframework.validation.annotation.Validated;
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
 @ConfigurationProperties(prefix = SentinelConstants.PROPERTY_PREFIX)
-@Validated
 public class SentinelProperties {
 
 	/**
