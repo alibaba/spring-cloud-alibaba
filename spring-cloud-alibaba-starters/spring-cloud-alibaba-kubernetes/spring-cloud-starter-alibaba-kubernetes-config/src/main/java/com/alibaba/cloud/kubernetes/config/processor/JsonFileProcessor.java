@@ -52,7 +52,6 @@ public class JsonFileProcessor implements FileProcessor {
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
 	public EnumerablePropertySource<?> generate(String name, String content) {
 		if (content.trim().startsWith("{")) {
 			// json object
@@ -60,7 +59,7 @@ public class JsonFileProcessor implements FileProcessor {
 		}
 		CompositePropertySource result = new CompositePropertySource(name);
 		try {
-			List list = objectMapper.readValue(content, List.class);
+			List<?> list = objectMapper.readValue(content, List.class);
 			if (list.isEmpty()) {
 				return result;
 			}
@@ -80,13 +79,12 @@ public class JsonFileProcessor implements FileProcessor {
 		return result;
 	}
 
-	@SuppressWarnings("rawtypes")
 	private static CompositePropertySource convertJsonObjectStringToPropertySource(
 			String name, String jsonObjectString) {
 		// We don't want to change the Spring default behavior
 		// this is how we convert json to PropertySource
 		// json -> java.util.Map -> yaml -> PropertySource
-		Map map = new HashMap<>();
+		Map<?, ?> map = new HashMap<>();
 		try {
 			map = objectMapper.readValue(jsonObjectString, Map.class);
 		}
