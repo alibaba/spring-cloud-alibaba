@@ -34,7 +34,7 @@ public class MissingConfigIntegrationTests {
 	@Test
 	void testEnabledFailOnMissingConfig() {
 		assertThatCode(() -> new SpringApplicationBuilder(Empty.class)
-				.web(WebApplicationType.NONE).profiles("missing-config").run())
+				.web(WebApplicationType.NONE).profiles("missing-config").run().close())
 						.isInstanceOf(ConfigMissingException.class);
 	}
 
@@ -44,6 +44,6 @@ public class MissingConfigIntegrationTests {
 				.web(WebApplicationType.NONE)
 				.properties(KubernetesConfigProperties.PREFIX
 						+ ".fail-on-missing-config=false")
-				.profiles("missing-config").run()).doesNotThrowAnyException();
+				.profiles("missing-config").run().close()).doesNotThrowAnyException();
 	}
 }
