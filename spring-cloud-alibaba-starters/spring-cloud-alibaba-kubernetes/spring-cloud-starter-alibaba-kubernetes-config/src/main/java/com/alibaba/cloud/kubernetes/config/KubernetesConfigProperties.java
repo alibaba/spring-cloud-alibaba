@@ -75,14 +75,14 @@ public class KubernetesConfigProperties implements InitializingBean {
 	 */
 	private boolean failOnMissingConfig = true;
 
-	private List<ConfigMap> configMaps = new ArrayList<>();
-
-	private List<Secret> secrets = new ArrayList<>();
-
 	/**
 	 * Whether to enable the auto refresh feature, default value is {@code false}.
 	 */
 	private boolean refreshable = false;
+
+	private List<ConfigMap> configMaps = new ArrayList<>();
+
+	private List<Secret> secrets = new ArrayList<>();
 
 	public boolean isEnabled() {
 		return enabled;
@@ -187,29 +187,12 @@ public class KubernetesConfigProperties implements InitializingBean {
 		mergeSecrets();
 	}
 
-	private void mergeSecrets() {
-		for (Secret secret : secrets) {
-			if (!StringUtils.hasText(secret.getName())) {
-				throw new IllegalArgumentException("Secret name must not be empty.");
-			}
-			if (!StringUtils.hasText(secret.getNamespace())) {
-				secret.setNamespace(namespace);
-			}
-			if (secret.getRefreshable() == null) {
-				secret.setRefreshable(refreshable);
-			}
-			if (secret.getPreference() == null) {
-				secret.setPreference(preference);
-			}
-		}
-	}
-
 	private void mergeConfigmaps() {
 		for (ConfigMap configMap : configMaps) {
 			if (!StringUtils.hasText(configMap.getName())) {
 				throw new IllegalArgumentException("ConfigMap name must not be empty.");
 			}
-			if (!StringUtils.hasText(configMap.getNamespace())) {
+			if (configMap.getNamespace() == null) {
 				configMap.setNamespace(namespace);
 			}
 			if (configMap.getRefreshable() == null) {
@@ -217,6 +200,23 @@ public class KubernetesConfigProperties implements InitializingBean {
 			}
 			if (configMap.getPreference() == null) {
 				configMap.setPreference(preference);
+			}
+		}
+	}
+
+	private void mergeSecrets() {
+		for (Secret secret : secrets) {
+			if (!StringUtils.hasText(secret.getName())) {
+				throw new IllegalArgumentException("Secret name must not be empty.");
+			}
+			if (secret.getNamespace() == null) {
+				secret.setNamespace(namespace);
+			}
+			if (secret.getRefreshable() == null) {
+				secret.setRefreshable(refreshable);
+			}
+			if (secret.getPreference() == null) {
+				secret.setPreference(preference);
 			}
 		}
 	}
@@ -285,8 +285,8 @@ public class KubernetesConfigProperties implements InitializingBean {
 		@Override
 		public String toString() {
 			return "ConfigMap{" + "name='" + name + '\'' + ", namespace='" + namespace
-					+ '\'' + ", refreshEnabled=" + refreshable + ", preference="
-					+ preference + '}';
+					+ '\'' + ", refreshable=" + refreshable + ", preference=" + preference
+					+ '}';
 		}
 
 		@Override
@@ -372,8 +372,7 @@ public class KubernetesConfigProperties implements InitializingBean {
 		@Override
 		public String toString() {
 			return "Secret{" + "name='" + name + '\'' + ", namespace='" + namespace + '\''
-					+ ", refreshEnabled=" + refreshable + ", preference=" + preference
-					+ '}';
+					+ ", refreshable=" + refreshable + ", preference=" + preference + '}';
 		}
 
 		@Override
