@@ -80,6 +80,7 @@ public class DubboSpringCloudConsumerBootstrap {
 
 	@Autowired
 	@LoadBalanced
+	@Lazy
 	private RestTemplate restTemplate;
 
 	@Bean
