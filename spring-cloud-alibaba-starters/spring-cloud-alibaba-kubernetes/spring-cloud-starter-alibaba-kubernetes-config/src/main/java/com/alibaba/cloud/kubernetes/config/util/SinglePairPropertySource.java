@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.kubernetes.config.core;
+package com.alibaba.cloud.kubernetes.config.util;
 
 import java.util.Collections;
 import java.util.Map;
-
-import com.alibaba.cloud.kubernetes.config.util.Pair;
 
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;

@@ -17,8 +17,11 @@
 package com.alibaba.cloud.kubernetes.config.processor;
 
 import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.PropertySource;
 
 /**
+ * {@link FileProcessor} use to generate {@link PropertySource} from file content.
+ *
  * @author Freeman
  */
 public interface FileProcessor {

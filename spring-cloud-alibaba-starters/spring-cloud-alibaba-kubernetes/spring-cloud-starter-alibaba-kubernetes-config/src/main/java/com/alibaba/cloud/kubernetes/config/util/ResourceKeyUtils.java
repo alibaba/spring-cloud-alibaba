@@ -23,20 +23,32 @@ import io.fabric8.kubernetes.api.model.Secret;
 /**
  * @author Freeman
  */
-public final class Util {
+public final class ResourceKeyUtils {
 
-	private Util() {
-		throw new UnsupportedOperationException("No Util instances for you!");
+	private ResourceKeyUtils() {
+		throw new UnsupportedOperationException("No ResourceKeyUtils instances for you!");
 	}
 
+	/**
+	 * Generate a {@link ResourceKey} from {@link KubernetesConfigProperties.ConfigMap}.
+	 * 
+	 * @param configMap {@link KubernetesConfigProperties.ConfigMap}
+	 * @return {@link ResourceKey}
+	 */
 	public static ResourceKey resourceKey(
 			KubernetesConfigProperties.ConfigMap configMap) {
 		return new ResourceKey(ConfigMap.class.getSimpleName(), configMap.getName(),
-				configMap.getNamespace(), configMap.getRefreshable());
+				configMap.getNamespace());
 	}
 
+	/**
+	 * Generate a {@link ResourceKey} from {@link KubernetesConfigProperties.Secret}.
+	 * 
+	 * @param secret {@link KubernetesConfigProperties.Secret}
+	 * @return {@link ResourceKey}
+	 */
 	public static ResourceKey resourceKey(KubernetesConfigProperties.Secret secret) {
 		return new ResourceKey(Secret.class.getSimpleName(), secret.getName(),
-				secret.getNamespace(), secret.getRefreshable());
+				secret.getNamespace());
 	}
 }

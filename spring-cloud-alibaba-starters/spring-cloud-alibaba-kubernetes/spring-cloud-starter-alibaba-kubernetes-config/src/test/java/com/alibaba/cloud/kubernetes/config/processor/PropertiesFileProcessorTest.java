@@ -32,8 +32,13 @@ class PropertiesFileProcessorTest {
 	 */
 	@Test
 	void generate() {
-		String properties = "username=admin\n" + "password=666\n" + "hobbies[0]=reading\n"
-				+ "hobbies[1]=writing\n";
+		// @checkstyle:off
+		String properties = "username=admin\n" +
+							"password=666\n" +
+							"hobbies[0]=reading\n" +
+							"hobbies[1]=writing\n";
+		// @checkstyle:on
+
 		EnumerablePropertySource<?> ps = new PropertiesFileProcessor()
 				.generate("test_generate", properties);
 

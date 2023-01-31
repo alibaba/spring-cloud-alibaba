@@ -32,8 +32,14 @@ class YamlFileProcessorTest {
 	 */
 	@Test
 	void generate_whenSingleDocument() {
-		String yaml = "username: admin\n" + "password: \"666\"\n" + "hobbies:\n"
-				+ "  - reading\n" + "  - writing\n";
+		// @checkstyle:off
+		String yaml = "username: admin\n" +
+					  "password: \"666\"\n" +
+					  "hobbies:\n" +
+					  "  - reading\n" +
+					  "  - writing\n";
+		// @checkstyle:on
+
 		EnumerablePropertySource<?> ps = new YamlFileProcessor().generate("test_generate",
 				yaml);
 		assertThat(ps.getPropertyNames()).hasSize(4);
@@ -48,10 +54,20 @@ class YamlFileProcessorTest {
 	 */
 	@Test
 	void generate_whenMultipleDocuments() {
-		String yaml = "username: admin\n" + "password: \"666\"\n" + "hobbies:\n"
-				+ "  - reading\n" + "  - writing\n" + "---\n" + "username: adminn\n"
-				+ "password: \"6666\"\n" + "hobbies:\n" + "  - readingg\n"
-				+ "  - writingg\n";
+		// @checkstyle:off
+		String yaml = "username: admin\n" +
+					  "password: \"666\"\n" +
+					  "hobbies:\n" +
+					  "  - reading\n" +
+					  "  - writing\n" +
+					  "---\n" +
+					  "username: adminn\n" +
+					  "password: \"6666\"\n" +
+					  "hobbies:\n" +
+					  "  - readingg\n" +
+					  "  - writingg\n";
+		// @checkstyle:on
+
 		EnumerablePropertySource<?> ps = new YamlFileProcessor().generate("test_generate",
 				yaml);
 		assertThat(ps.getPropertyNames()).hasSize(4);

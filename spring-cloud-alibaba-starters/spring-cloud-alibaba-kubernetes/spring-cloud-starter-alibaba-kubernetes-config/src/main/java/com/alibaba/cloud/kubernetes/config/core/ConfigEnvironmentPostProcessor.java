@@ -178,9 +178,20 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		return Converters.toPropertySource(configMap);
 	}
 
+	/**
+	 * Fail the application start up if necessary when the resource is missing.
+	 * 
+	 * <p>
+	 * NOTE: do nothing if the application is refreshing
+	 *
+	 * @param type the type of the resource
+	 * @param name the name of the resource
+	 * @param namespace the namespace of the resource
+	 * @param properties {@link KubernetesConfigProperties}
+	 */
 	private static void failApplicationStartUpIfNecessary(Class<?> type, String name,
 			String namespace, KubernetesConfigProperties properties) {
-		if (properties.isFailOnMissingConfig()) {
+		if (!isRefreshing() && properties.isFailOnMissingConfig()) {
 			throw new ConfigMissingException(type, name, namespace);
 		}
 	}

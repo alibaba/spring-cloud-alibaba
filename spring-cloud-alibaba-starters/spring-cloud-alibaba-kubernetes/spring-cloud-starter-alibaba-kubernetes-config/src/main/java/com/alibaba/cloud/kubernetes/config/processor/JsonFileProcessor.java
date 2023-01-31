@@ -35,6 +35,8 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.ByteArrayResource;
 
 /**
+ * Convert JSON string to {@link PropertySource}, support JSON array.
+ *
  * @author Freeman
  */
 public class JsonFileProcessor implements FileProcessor {

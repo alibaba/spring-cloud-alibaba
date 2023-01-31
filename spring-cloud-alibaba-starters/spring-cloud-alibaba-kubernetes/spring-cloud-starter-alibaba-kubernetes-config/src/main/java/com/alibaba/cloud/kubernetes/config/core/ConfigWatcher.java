@@ -37,7 +37,7 @@ import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import static com.alibaba.cloud.kubernetes.config.util.Util.resourceKey;
+import static com.alibaba.cloud.kubernetes.config.util.ResourceKeyUtils.resourceKey;
 
 /**
  * Watcher for config resource changes.
@@ -82,12 +82,13 @@ public class ConfigWatcher
 			KubernetesClient client) {
 		properties.getConfigMaps().stream()
 				.filter(KubernetesConfigProperties.ConfigMap::getRefreshable)
-				.forEach(cm -> {
+				.forEach(configmap -> {
 					SharedIndexInformer<ConfigMap> informer = client.configMaps()
-							.inNamespace(cm.getNamespace()).withName(cm.getName())
+							.inNamespace(configmap.getNamespace())
+							.withName(configmap.getName())
 							.inform(new HasMetadataResourceEventHandler<>(context,
 									properties));
-					configmapInformers.put(resourceKey(cm), informer);
+					configmapInformers.put(resourceKey(configmap), informer);
 				});
 		log(configmapInformers);
 		properties.getSecrets().stream()

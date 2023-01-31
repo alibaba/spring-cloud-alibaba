@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.alibaba.cloud.kubernetes.config.core.SinglePairPropertySource;
 import com.alibaba.cloud.kubernetes.config.processor.FileProcessor;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.HasMetadata;
@@ -101,7 +100,7 @@ public final class Converters {
 	public static EnumerablePropertySource<?> toPropertySource(Secret secret) {
 		// data is base64 encoded
 		Map<String, String> data = secret.getData();
-		Map<String, Object> encodedValue = new LinkedHashMap<>(data);
+		Map<String, String> encodedValue = new LinkedHashMap<>(data);
 		data.replaceAll((key, value) -> stripTrailing(
 				new String(Base64.getDecoder().decode(value), UTF_8))); // secret will add
 																		// newlines
@@ -111,7 +110,7 @@ public final class Converters {
 				propertySourceNameForResource(secret));
 		result.addPropertySource(toPropertySource(
 				propertySourceNameForResource(secret) + "[decoded]", decodedValue));
-		result.addPropertySource(new MapPropertySource(
+		result.addPropertySource(toPropertySource(
 				propertySourceNameForResource(secret) + "[encoded]", encodedValue));
 		return result;
 	}

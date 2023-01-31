@@ -31,6 +31,8 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.ByteArrayResource;
 
 /**
+ * Convert properties file to {@link PropertySource}.
+ *
  * @author Freeman
  */
 public class PropertiesFileProcessor implements FileProcessor {

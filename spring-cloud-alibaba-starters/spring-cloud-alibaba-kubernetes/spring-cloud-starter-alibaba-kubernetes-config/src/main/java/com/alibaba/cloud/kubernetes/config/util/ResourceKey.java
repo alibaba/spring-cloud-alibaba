@@ -25,13 +25,11 @@ public final class ResourceKey {
 	private final String type;
 	private final String name;
 	private final String namespace;
-	private final boolean refreshable;
 
-	public ResourceKey(String type, String name, String namespace, boolean refreshable) {
+	public ResourceKey(String type, String name, String namespace) {
 		this.type = type;
 		this.name = name;
 		this.namespace = namespace;
-		this.refreshable = refreshable;
 	}
 
 	public String type() {
@@ -46,33 +44,27 @@ public final class ResourceKey {
 		return namespace;
 	}
 
-	public boolean refreshable() {
-		return refreshable;
-	}
-
 	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (obj == null || obj.getClass() != this.getClass()) {
+		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		ResourceKey that = (ResourceKey) obj;
-		return Objects.equals(this.type, that.type)
-				&& Objects.equals(this.name, that.name)
-				&& Objects.equals(this.namespace, that.namespace)
-				&& this.refreshable == that.refreshable;
+		ResourceKey that = (ResourceKey) o;
+		return Objects.equals(type, that.type) && Objects.equals(name, that.name)
+				&& Objects.equals(namespace, that.namespace);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(type, name, namespace, refreshable);
+		return Objects.hash(type, name, namespace);
 	}
 
 	@Override
 	public String toString() {
-		return "ResourceKey[" + "type=" + type + ", " + "name=" + name + ", "
-				+ "namespace=" + namespace + ", " + "refreshEnabled=" + refreshable + ']';
+		return "ResourceKey{" + "type='" + type + '\'' + ", name='" + name + '\''
+				+ ", namespace='" + namespace + '\'' + '}';
 	}
 }

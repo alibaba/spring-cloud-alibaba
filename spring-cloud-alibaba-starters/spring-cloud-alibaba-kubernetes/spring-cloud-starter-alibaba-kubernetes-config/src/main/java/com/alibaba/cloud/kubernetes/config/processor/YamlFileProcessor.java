@@ -32,6 +32,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 /**
+ * Convert yaml file to {@link PropertySource}, support multi-document yaml file.
+ *
  * @author Freeman
  */
 public class YamlFileProcessor implements FileProcessor {

@@ -32,9 +32,17 @@ class JsonFileProcessorTest {
 	 */
 	@Test
 	void generate_whenJsonObject() {
-		String json = "{\n" + "  \"username\": \"admin\",\n"
-				+ "  \"password\": \"666\",\n" + "  \"hobbies\": [\n"
-				+ "    \"reading\",\n" + "    \"writing\"\n" + "  ]\n" + "}\n";
+		// @checkstyle:off
+		String json = "{\n" +
+					  "  \"username\": \"admin\",\n" +
+					  "  \"password\": \"666\",\n" +
+					  "  \"hobbies\": [\n" +
+					  "    \"reading\",\n" +
+					  "    \"writing\"\n" +
+					  "  ]\n" +
+					  "}";
+		// @checkstyle:on
+
 		EnumerablePropertySource<?> ps = new JsonFileProcessor().generate("test_generate",
 				json);
 
@@ -50,13 +58,28 @@ class JsonFileProcessorTest {
 	 */
 	@Test
 	void generate_whenJsonArray() {
-		String jsonArray = "[\n" + "  {\n" + "    \"username\": \"admin\",\n"
-				+ "    \"password\": \"666\",\n" + "    \"hobbies\": [\n"
-				+ "      \"reading\",\n" + "      \"writing\"\n" + "    ]\n" + "  },\n"
-				+ "  {\n" + "    \"username\": \"root\",\n"
-				+ "    \"password\": \"888\",\n" + "    \"hobbies\": [\n"
-				+ "      \"reading\",\n" + "      \"writing\",\n" + "      \"coding\"\n"
-				+ "    ]\n" + "  }\n" + "]\n";
+		// @checkstyle:off
+		String jsonArray = "[\n" +
+						   "  {\n" +
+						   "    \"username\": \"admin\",\n" +
+						   "    \"password\": \"666\",\n" +
+						   "    \"hobbies\": [\n" +
+						   "      \"reading\",\n" +
+						   "      \"writing\"\n" +
+						   "    ]\n" +
+						   "  },\n" +
+						   "  {\n" +
+						   "    \"username\": \"root\",\n" +
+						   "    \"password\": \"888\",\n" +
+						   "    \"hobbies\": [\n" +
+						   "      \"reading\",\n" +
+						   "      \"writing\",\n" +
+						   "      \"coding\"\n" +
+						   "    ]\n" +
+						   "  }\n" +
+						   "]";
+		// @checkstyle:on
+
 		EnumerablePropertySource<?> ps = new JsonFileProcessor().generate("test_generate",
 				jsonArray);
 
