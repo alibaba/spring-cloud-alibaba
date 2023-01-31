@@ -31,7 +31,7 @@ public final class ResourceKeyUtils {
 
 	/**
 	 * Generate a {@link ResourceKey} from {@link KubernetesConfigProperties.ConfigMap}.
-	 * 
+	 *
 	 * @param configMap {@link KubernetesConfigProperties.ConfigMap}
 	 * @return {@link ResourceKey}
 	 */
@@ -43,7 +43,7 @@ public final class ResourceKeyUtils {
 
 	/**
 	 * Generate a {@link ResourceKey} from {@link KubernetesConfigProperties.Secret}.
-	 * 
+	 *
 	 * @param secret {@link KubernetesConfigProperties.Secret}
 	 * @return {@link ResourceKey}
 	 */

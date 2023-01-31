@@ -180,7 +180,7 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 
 	/**
 	 * Fail the application start up if necessary when the resource is missing.
-	 * 
+	 *
 	 * <p>
 	 * NOTE: do nothing if the application is refreshing
 	 *
