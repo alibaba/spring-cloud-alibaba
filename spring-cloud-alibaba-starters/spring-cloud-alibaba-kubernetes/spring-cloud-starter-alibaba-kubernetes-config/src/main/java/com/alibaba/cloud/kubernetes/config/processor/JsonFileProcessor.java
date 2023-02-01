@@ -96,7 +96,7 @@ public class JsonFileProcessor implements FileProcessor {
 		CompositePropertySource propertySource = new CompositePropertySource(name);
 		try {
 			String yamlString = yaml.dump(map);
-			List<PropertySource<?>> pss = loader.load(name,
+			List<PropertySource<?>> pss = loader.load(name + "[part]",
 					new ByteArrayResource(yamlString.getBytes(StandardCharsets.UTF_8)));
 			propertySource.getPropertySources().addAll(pss);
 		}
