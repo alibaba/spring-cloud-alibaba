@@ -103,7 +103,7 @@ public class ConfigWatcher
 		log(secretInformers);
 	}
 
-	private <T extends HasMetadata> void log(
+	private static <T extends HasMetadata> void log(
 			Map<ResourceKey, SharedIndexInformer<T>> informers) {
 		List<String> names = informers.keySet().stream().map(resourceKey -> String
 				.join(".", resourceKey.name(), resourceKey.namespace()))
