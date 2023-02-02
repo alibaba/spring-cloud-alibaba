@@ -5,4 +5,6 @@ org.springframework.boot.env.EnvironmentPostProcessor=\
   com.alibaba.cloud.kubernetes.config.core.ConfigEnvironmentPostProcessor
 
 org.springframework.boot.diagnostics.FailureAnalyzer=\
-  com.alibaba.cloud.kubernetes.config.exception.ConfigMissingFailureAnalyzer
+  com.alibaba.cloud.kubernetes.config.exception.KubernetesConfigMissingFailureAnalyzer,\
+  com.alibaba.cloud.kubernetes.config.exception.KubernetesUnavailableFailureAnalyzer,\
+  com.alibaba.cloud.kubernetes.config.exception.KubernetesForbiddenFailureAnalyzer

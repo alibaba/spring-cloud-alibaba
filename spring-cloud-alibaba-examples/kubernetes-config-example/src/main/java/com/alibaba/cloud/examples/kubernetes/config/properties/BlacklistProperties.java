@@ -14,39 +14,19 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.rocketmq;
+package com.alibaba.cloud.examples.kubernetes.config.properties;
+
+import java.util.Set;
+
+import lombok.Data;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * User Domain.
- *
- * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
- * @since 0.2.1
+ * @author Freeman
  */
-public class User {
-
-	private Long id;
-
-	private String name;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public String toString() {
-		return "User{" + "id=" + id + ", name='" + name + '\'' + '}';
-	}
-
+@Data
+@ConfigurationProperties(prefix = "blacklist")
+public class BlacklistProperties {
+	private Set<String> userIds;
 }

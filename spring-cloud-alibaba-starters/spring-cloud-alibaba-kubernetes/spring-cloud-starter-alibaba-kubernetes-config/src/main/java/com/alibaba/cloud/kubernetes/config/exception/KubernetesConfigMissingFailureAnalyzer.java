@@ -24,11 +24,11 @@ import org.springframework.boot.diagnostics.FailureAnalysis;
 /**
  * @author Freeman
  */
-public class ConfigMissingFailureAnalyzer
-		extends AbstractFailureAnalyzer<ConfigMissingException> {
+public class KubernetesConfigMissingFailureAnalyzer
+		extends AbstractFailureAnalyzer<KubernetesConfigMissingException> {
 	@Override
 	protected FailureAnalysis analyze(Throwable rootFailure,
-			ConfigMissingException cause) {
+			KubernetesConfigMissingException cause) {
 		String description = String.format("%s name '%s' is missing in namespace '%s'",
 				cause.getType().getSimpleName(), cause.getName(), cause.getNamespace());
 		String action = String.format(

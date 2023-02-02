@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.rocketmq;
+package com.alibaba.cloud.examples.kubernetes.config;
 
 import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 

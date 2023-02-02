@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.kubernetes.config;
 
-import com.alibaba.cloud.kubernetes.config.exception.ConfigMissingException;
+import com.alibaba.cloud.kubernetes.config.exception.KubernetesConfigMissingException;
 import com.alibaba.cloud.kubernetes.config.testsupport.KubernetesAvailable;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ public class MissingConfigIntegrationTests {
 	void testEnabledFailOnMissingConfig() {
 		assertThatCode(() -> new SpringApplicationBuilder(Empty.class)
 				.web(WebApplicationType.NONE).profiles("missing-config").run().close())
-						.isInstanceOf(ConfigMissingException.class);
+						.isInstanceOf(KubernetesConfigMissingException.class);
 	}
 
 	@Test

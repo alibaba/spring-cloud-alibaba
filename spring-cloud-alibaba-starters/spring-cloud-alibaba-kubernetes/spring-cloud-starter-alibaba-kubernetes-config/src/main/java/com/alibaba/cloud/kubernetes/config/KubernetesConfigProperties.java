@@ -316,7 +316,7 @@ public class KubernetesConfigProperties implements InitializingBean {
 		 */
 		private String name;
 		/**
-		 * Namespace,
+		 * Namespace, using
 		 * <span color="orange">{@code spring.cloud.k8s.config.namespace}</span> if not
 		 * set.
 		 */

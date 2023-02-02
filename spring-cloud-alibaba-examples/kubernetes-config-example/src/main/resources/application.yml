@@ -1,0 +1,23 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: kubernetes-config-example
+  cloud:
+    k8s:
+      config:
+        config-maps:
+          - name: configmap-01
+            namespace: default
+            refreshable: true
+            preference: remote
+        secrets:
+          - name: secret-01
+            namespace: default
+            refreshable: false
+        refresh-on-delete: false
+        fail-on-missing-config: false
+blacklist:
+  user-ids:
+    - 1
+    - 2

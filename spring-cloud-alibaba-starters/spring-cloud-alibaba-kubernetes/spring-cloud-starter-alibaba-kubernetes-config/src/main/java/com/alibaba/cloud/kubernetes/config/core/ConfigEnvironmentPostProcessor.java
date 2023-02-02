@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.kubernetes.config.core;
 
+import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +24,10 @@ import java.util.Optional;
 
 import com.alibaba.cloud.kubernetes.commons.KubernetesClientHolder;
 import com.alibaba.cloud.kubernetes.config.KubernetesConfigProperties;
-import com.alibaba.cloud.kubernetes.config.exception.ConfigMissingException;
+import com.alibaba.cloud.kubernetes.config.exception.AbstractKubernetesConfigException;
+import com.alibaba.cloud.kubernetes.config.exception.KubernetesConfigMissingException;
+import com.alibaba.cloud.kubernetes.config.exception.KubernetesForbiddenException;
+import com.alibaba.cloud.kubernetes.config.exception.KubernetesUnavailableException;
 import com.alibaba.cloud.kubernetes.config.util.Converters;
 import com.alibaba.cloud.kubernetes.config.util.Pair;
 import com.alibaba.cloud.kubernetes.config.util.Preference;
@@ -31,6 +35,7 @@ import com.alibaba.cloud.kubernetes.config.util.RefreshContext;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 import org.apache.commons.logging.Log;
 
 import org.springframework.boot.SpringApplication;
@@ -74,6 +79,8 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 			return;
 		}
 
+		failApplicationStartUpIfKubernetesUnavailable(client);
+
 		KubernetesConfigProperties properties = getKubernetesConfigProperties(
 				environment);
 
@@ -94,6 +101,10 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 			pullConfigMaps(properties, environment);
 			pullSecrets(properties, environment);
 		}
+	}
+
+	private static void failApplicationStartUpIfKubernetesUnavailable(
+			KubernetesClient client) {
 	}
 
 	private static KubernetesConfigProperties getKubernetesConfigProperties(
@@ -166,8 +177,15 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		if (isRefreshing() && !cm.getRefreshable()) {
 			return null;
 		}
-		ConfigMap configMap = client.configMaps().inNamespace(cm.getNamespace())
-				.withName(cm.getName()).get();
+		ConfigMap configMap;
+		try {
+			configMap = client.configMaps().inNamespace(cm.getNamespace())
+					.withName(cm.getName()).get();
+		}
+		catch (KubernetesClientException e) {
+			throw kubernetesConfigException(ConfigMap.class, cm.getName(),
+					cm.getNamespace(), e);
+		}
 		if (configMap == null) {
 			log.warn(String.format("ConfigMap '%s' not found in namespace '%s'",
 					cm.getName(), cm.getNamespace()));
@@ -176,6 +194,16 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 			return null;
 		}
 		return Converters.toPropertySource(configMap);
+	}
+
+	private static AbstractKubernetesConfigException kubernetesConfigException(
+			Class<?> type, String name, String namespace, KubernetesClientException e) {
+		// Usually the Service Account or user does not have enough privileges.
+		if (e.getCode() == HttpURLConnection.HTTP_FORBIDDEN) {
+			return new KubernetesForbiddenException(type, name, namespace, e);
+		}
+		// Can't connect to the kubernetes cluster.
+		return new KubernetesUnavailableException(type, name, namespace, e);
 	}
 
 	/**
@@ -192,7 +220,7 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 	private static void failApplicationStartUpIfNecessary(Class<?> type, String name,
 			String namespace, KubernetesConfigProperties properties) {
 		if (!isRefreshing() && properties.isFailOnMissingConfig()) {
-			throw new ConfigMissingException(type, name, namespace);
+			throw new KubernetesConfigMissingException(type, name, namespace, null);
 		}
 	}
 
@@ -202,8 +230,15 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		if (isRefreshing() && !secret.getRefreshable()) {
 			return null;
 		}
-		Secret secretInK8s = client.secrets().inNamespace(secret.getNamespace())
-				.withName(secret.getName()).get();
+		Secret secretInK8s;
+		try {
+			secretInK8s = client.secrets().inNamespace(secret.getNamespace())
+					.withName(secret.getName()).get();
+		}
+		catch (KubernetesClientException e) {
+			throw kubernetesConfigException(Secret.class, secret.getName(),
+					secret.getNamespace(), e);
+		}
 		if (secretInK8s == null) {
 			log.warn(String.format("Secret '%s' not found in namespace '%s'",
 					secret.getName(), secret.getNamespace()));

@@ -19,27 +19,10 @@ package com.alibaba.cloud.kubernetes.config.exception;
 /**
  * @author Freeman
  */
-public class ConfigMissingException extends RuntimeException {
+public class KubernetesUnavailableException extends AbstractKubernetesConfigException {
 
-	private final Class<?> type;
-	private final String name;
-	private final String namespace;
-
-	public ConfigMissingException(Class<?> type, String name, String namespace) {
-		this.type = type;
-		this.name = name;
-		this.namespace = namespace;
-	}
-
-	public Class<?> getType() {
-		return type;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getNamespace() {
-		return namespace;
+	public KubernetesUnavailableException(Class<?> type, String name, String namespace,
+			Throwable cause) {
+		super(type, name, namespace, cause);
 	}
 }
