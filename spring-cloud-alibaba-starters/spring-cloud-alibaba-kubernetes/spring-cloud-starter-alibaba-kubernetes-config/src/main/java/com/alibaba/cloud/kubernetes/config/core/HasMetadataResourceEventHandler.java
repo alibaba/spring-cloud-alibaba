@@ -31,7 +31,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 /**
  * @author Freeman
  */
-public class HasMetadataResourceEventHandler<T extends HasMetadata>
+class HasMetadataResourceEventHandler<T extends HasMetadata>
 		implements ResourceEventHandler<T> {
 	private static final Logger log = LoggerFactory
 			.getLogger(HasMetadataResourceEventHandler.class);
@@ -39,7 +39,7 @@ public class HasMetadataResourceEventHandler<T extends HasMetadata>
 	private final ApplicationContext context;
 	private final KubernetesConfigProperties properties;
 
-	public HasMetadataResourceEventHandler(ApplicationContext context,
+	HasMetadataResourceEventHandler(ApplicationContext context,
 			KubernetesConfigProperties properties) {
 		this.context = context;
 		this.properties = properties;
