@@ -28,7 +28,6 @@ import com.alibaba.cloud.kubernetes.config.exception.AbstractKubernetesConfigExc
 import com.alibaba.cloud.kubernetes.config.exception.KubernetesConfigMissingException;
 import com.alibaba.cloud.kubernetes.config.exception.KubernetesForbiddenException;
 import com.alibaba.cloud.kubernetes.config.exception.KubernetesUnavailableException;
-import com.alibaba.cloud.kubernetes.config.util.Converters;
 import com.alibaba.cloud.kubernetes.config.util.Pair;
 import com.alibaba.cloud.kubernetes.config.util.Preference;
 import com.alibaba.cloud.kubernetes.config.util.RefreshContext;
@@ -49,6 +48,7 @@ import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.StandardEnvironment;
 
+import static com.alibaba.cloud.kubernetes.config.util.Converters.toPropertySource;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
@@ -85,11 +85,16 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		if (isRefreshing()) {
 			RefreshEvent event = RefreshContext.get().refreshEvent();
 			Object resource = event.getSource();
+			// Just add it, {@link
+			// org.springframework.cloud.context.refresh.ContextRefresher} will
+			// replace the PropertySource for you.
 			if (resource instanceof ConfigMap) {
-				pullConfigMaps(properties, environment);
+				environment.getPropertySources()
+						.addLast(toPropertySource((ConfigMap) resource));
 			}
 			else if (resource instanceof Secret) {
-				pullSecrets(properties, environment);
+				environment.getPropertySources()
+						.addLast(toPropertySource((Secret) resource));
 			}
 			else {
 				log.warn("Refreshed a unknown resource type: " + resource.getClass());
@@ -168,17 +173,20 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 	private EnumerablePropertySource<?> propertySourceForConfigMap(
 			KubernetesConfigProperties.ConfigMap cm,
 			KubernetesConfigProperties properties) {
-		if (isRefreshing() && !cm.getRefreshable()) {
-			return null;
-		}
 		ConfigMap configMap;
 		try {
 			configMap = client.configMaps().inNamespace(cm.getNamespace())
 					.withName(cm.getName()).get();
 		}
 		catch (KubernetesClientException e) {
-			throw kubernetesConfigException(ConfigMap.class, cm.getName(),
-					cm.getNamespace(), e);
+			if (!isRefreshing()) {
+				throw kubernetesConfigException(ConfigMap.class, cm.getName(),
+						cm.getNamespace(), e);
+			}
+			log.warn(
+					"Kubernetes client exception while refreshing ConfigMap, so properties value won't change",
+					e);
+			return null;
 		}
 		if (configMap == null) {
 			log.warn(String.format("ConfigMap '%s' not found in namespace '%s'",
@@ -187,7 +195,35 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 					cm.getNamespace(), properties);
 			return null;
 		}
-		return Converters.toPropertySource(configMap);
+		return toPropertySource(configMap);
+	}
+
+	private EnumerablePropertySource<?> propertySourceForSecret(
+			KubernetesConfigProperties.Secret secret,
+			KubernetesConfigProperties properties) {
+		Secret secretInK8s;
+		try {
+			secretInK8s = client.secrets().inNamespace(secret.getNamespace())
+					.withName(secret.getName()).get();
+		}
+		catch (KubernetesClientException e) {
+			if (!isRefreshing()) {
+				throw kubernetesConfigException(Secret.class, secret.getName(),
+						secret.getNamespace(), e);
+			}
+			log.warn(
+					"Kubernetes client exception while refreshing Secret, so properties value won't change",
+					e);
+			return null;
+		}
+		if (secretInK8s == null) {
+			log.warn(String.format("Secret '%s' not found in namespace '%s'",
+					secret.getName(), secret.getNamespace()));
+			failApplicationStartUpIfNecessary(Secret.class, secret.getName(),
+					secret.getNamespace(), properties);
+			return null;
+		}
+		return toPropertySource(secretInK8s);
 	}
 
 	private static AbstractKubernetesConfigException kubernetesConfigException(
@@ -216,31 +252,6 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		if (!isRefreshing() && properties.isFailOnMissingConfig()) {
 			throw new KubernetesConfigMissingException(type, name, namespace, null);
 		}
-	}
-
-	private EnumerablePropertySource<?> propertySourceForSecret(
-			KubernetesConfigProperties.Secret secret,
-			KubernetesConfigProperties properties) {
-		if (isRefreshing() && !secret.getRefreshable()) {
-			return null;
-		}
-		Secret secretInK8s;
-		try {
-			secretInK8s = client.secrets().inNamespace(secret.getNamespace())
-					.withName(secret.getName()).get();
-		}
-		catch (KubernetesClientException e) {
-			throw kubernetesConfigException(Secret.class, secret.getName(),
-					secret.getNamespace(), e);
-		}
-		if (secretInK8s == null) {
-			log.warn(String.format("Secret '%s' not found in namespace '%s'",
-					secret.getName(), secret.getNamespace()));
-			failApplicationStartUpIfNecessary(Secret.class, secret.getName(),
-					secret.getNamespace(), properties);
-			return null;
-		}
-		return Converters.toPropertySource(secretInK8s);
 	}
 
 	private static boolean isRefreshing() {
