@@ -183,13 +183,6 @@ public class KubernetesConfigProperties implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() {
-		this.merge();
-	}
-
-	/**
-	 * Merge the default properties value to the ConfigMaps and Secrets.
-	 */
-	public void merge() {
 		mergeConfigmaps();
 		mergeSecrets();
 	}

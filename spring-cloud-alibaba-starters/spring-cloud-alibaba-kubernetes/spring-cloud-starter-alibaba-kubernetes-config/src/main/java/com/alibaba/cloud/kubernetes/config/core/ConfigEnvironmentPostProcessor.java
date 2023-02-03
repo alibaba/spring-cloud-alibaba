@@ -42,6 +42,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.logging.DeferredLogFactory;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
@@ -81,10 +82,23 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 		KubernetesConfigProperties properties = getKubernetesConfigProperties(
 				environment);
 
-		// NOTE: current environment is brand new, we can't just refresh a single
-		// resource, all resources must be re-pulled!
-		pullConfigMaps(properties, environment);
-		pullSecrets(properties, environment);
+		if (isRefreshing()) {
+			RefreshEvent event = RefreshContext.get().refreshEvent();
+			Object resource = event.getSource();
+			if (resource instanceof ConfigMap) {
+				pullConfigMaps(properties, environment);
+			}
+			else if (resource instanceof Secret) {
+				pullSecrets(properties, environment);
+			}
+			else {
+				log.warn("Refreshed a unknown resource type: " + resource.getClass());
+			}
+		}
+		else {
+			pullConfigMaps(properties, environment);
+			pullSecrets(properties, environment);
+		}
 	}
 
 	private static KubernetesConfigProperties getKubernetesConfigProperties(
@@ -97,7 +111,7 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 							.bind(KubernetesConfigProperties.PREFIX,
 									KubernetesConfigProperties.class)
 							.orElseGet(KubernetesConfigProperties::new);
-					prop.merge();
+					prop.afterPropertiesSet();
 					return prop;
 				});
 	}
@@ -178,7 +192,7 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 
 	private static AbstractKubernetesConfigException kubernetesConfigException(
 			Class<?> type, String name, String namespace, KubernetesClientException e) {
-		// Usually the ServiceAccount or user does not have enough privileges.
+		// Usually the Service Account or user does not have enough privileges.
 		if (e.getCode() == HttpURLConnection.HTTP_FORBIDDEN) {
 			return new KubernetesForbiddenException(type, name, namespace, e);
 		}
