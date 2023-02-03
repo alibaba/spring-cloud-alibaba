@@ -29,6 +29,7 @@ import feign.hystrix.FallbackFactory;
 import feign.hystrix.HystrixFeign;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -39,6 +40,7 @@ import org.springframework.util.StringUtils;
  * {@link Feign.Builder} like {@link HystrixFeign.Builder}.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author 黄学敏（huangxuemin)
  */
 public final class SentinelFeign {
 
@@ -123,6 +125,16 @@ public final class SentinelFeign {
 						throw new IllegalStateException(String.format(
 								"No %s instance of type %s found for feign client %s",
 								type, fallbackType, name));
+					}
+
+					if (fallbackInstance instanceof FactoryBean<?> factoryBean) {
+						try {
+							fallbackInstance = factoryBean.getObject();
+						}
+						catch (Exception e) {
+							throw new IllegalStateException(type + " create fail", e);
+						}
+						fallbackType = fallbackInstance.getClass();
 					}
 
 					if (!targetType.isAssignableFrom(fallbackType)) {
