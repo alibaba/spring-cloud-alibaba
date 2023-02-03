@@ -41,9 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class FallbackSupportFactoryBeanTests {
 
-	public static final String FACTORY_BEAN_FALLBACK_MESSAGE = "factoryBean fallback message";
+	private static final String FACTORY_BEAN_FALLBACK_MESSAGE = "factoryBean fallback message";
 
-	public static final String ORIGINAL_FALLBACK_MESSAGE = "OriginalFeign fallback message";
+	private static final String ORIGINAL_FALLBACK_MESSAGE = "OriginalFeign fallback message";
 
 	private final ApplicationContextRunner runner = new ApplicationContextRunner()
 			.withBean(FactoryBeanFallbackFeignFallback.class).withBean(OriginalFeignFallback.class)
@@ -76,13 +76,11 @@ public class FallbackSupportFactoryBeanTests {
 			}).withPropertyValues("spring.cloud.openfeign.circuitbreaker.enabled=true");
 
 	@Test
-	public void factoryBeanFallback() {
-
+	public void shouldRunFallbackFromBeanOrFactoryBean() {
 		runner.run(ctx -> {
 			assertThat(ctx.getBean(OriginalFeign.class).get()).isEqualTo(ORIGINAL_FALLBACK_MESSAGE);
 			assertThat(ctx.getBean(FactoryBeanFallbackFeign.class).get()).isEqualTo(FACTORY_BEAN_FALLBACK_MESSAGE);
 		});
-
 	}
 
 	@Configuration(proxyBeanMethods = false)
@@ -94,7 +92,7 @@ public class FallbackSupportFactoryBeanTests {
 	}
 
 	@FeignClient(name = "original", url = "https://original", fallback = OriginalFeignFallback.class)
-	public interface OriginalFeign {
+	interface OriginalFeign {
 
 		@GetMapping("/")
 		String get();
@@ -102,23 +100,18 @@ public class FallbackSupportFactoryBeanTests {
 	}
 
 	@FeignClient(name = "factoryBean", url = "https://factoryBean", fallback = FactoryBeanFallbackFeignFallback.class)
-	public interface FactoryBeanFallbackFeign {
+	interface FactoryBeanFallbackFeign {
 
 		@GetMapping("/")
 		String get();
 
 	}
 
-	public static class FactoryBeanFallbackFeignFallback implements FactoryBean<FactoryBeanFallbackFeign> {
+	private static class FactoryBeanFallbackFeignFallback implements FactoryBean<FactoryBeanFallbackFeign> {
 
 		@Override
-		public FactoryBeanFallbackFeign getObject() throws Exception {
-			return new FactoryBeanFallbackFeign() {
-				@Override
-				public String get() {
-					return FACTORY_BEAN_FALLBACK_MESSAGE;
-				}
-			};
+		public FactoryBeanFallbackFeign getObject() {
+			return () -> FACTORY_BEAN_FALLBACK_MESSAGE;
 		}
 
 		@Override
@@ -128,7 +121,7 @@ public class FallbackSupportFactoryBeanTests {
 
 	}
 
-	public static class OriginalFeignFallback implements OriginalFeign {
+	private static class OriginalFeignFallback implements OriginalFeign {
 
 		@Override
 		public String get() {
