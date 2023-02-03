@@ -41,7 +41,7 @@ public class KubernetesConfigAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public ConfigWatcher KubernetesConfigWatcher(KubernetesConfigProperties properties,
+	public ConfigWatcher kubernetesConfigWatcher(KubernetesConfigProperties properties,
 			KubernetesClient kubernetesClient) {
 		return new ConfigWatcher(properties, kubernetesClient);
 	}
