@@ -79,8 +79,6 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 			return;
 		}
 
-		failApplicationStartUpIfKubernetesUnavailable(client);
-
 		KubernetesConfigProperties properties = getKubernetesConfigProperties(
 				environment);
 
@@ -101,10 +99,6 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 			pullConfigMaps(properties, environment);
 			pullSecrets(properties, environment);
 		}
-	}
-
-	private static void failApplicationStartUpIfKubernetesUnavailable(
-			KubernetesClient client) {
 	}
 
 	private static KubernetesConfigProperties getKubernetesConfigProperties(
