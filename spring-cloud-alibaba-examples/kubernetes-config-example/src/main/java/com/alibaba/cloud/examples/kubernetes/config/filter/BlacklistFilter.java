@@ -33,10 +33,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 @Component
 public class BlacklistFilter extends OncePerRequestFilter {
-	/**
-	 * User id header.
-	 */
-	public static final String HEADER_USER_ID = "X-User-Id";
 
 	private final BlacklistProperties blacklistProperties;
 
@@ -47,14 +43,16 @@ public class BlacklistFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp,
 			FilterChain chain) throws ServletException, IOException {
-		String userId = req.getHeader(HEADER_USER_ID);
+		String userIdHeader = blacklistProperties.getHeader();
+		String userId = req.getHeader(userIdHeader);
 		if (userId == null) {
-			resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					HEADER_USER_ID + " header is required!");
+			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+					userIdHeader + " header is required!");
 			return;
 		}
 		if (blacklistProperties.getUserIds().contains(userId)) {
-			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User is blacklisted!");
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+					String.format("User %s has been blocked!", userId));
 			return;
 		}
 		chain.doFilter(req, resp);

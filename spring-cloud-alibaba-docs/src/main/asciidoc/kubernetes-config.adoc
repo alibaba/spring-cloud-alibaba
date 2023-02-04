@@ -4,103 +4,119 @@ The purpose of this module is to use Kubernetes ConfigMap/Secret as a distribute
 
 === Quick Start
 
-Maven:
-
-[source,xml]
-----
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-kubernetes-config</artifactId>
-</dependency>
-----
-
-Gradle:
-
-[source,groovy]
-----
-implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-kubernetes-config'
-----
-
-First you need a Kubernetes cluster, you can use https://www.docker.com/products/docker-desktop/[docker-desktop]
-or https://minikube.sigs.k8s.io/docs/[minikube] to create a cluster.
-
-- Clone the project
-
-[source,shell]
-----
-git clone --depth=1 https://github.com/alibaba/spring-cloud-alibaba.git
-----
-
-- Create Role and RoleBinding for ServiceAccount
-
-[source,shell]
-----
-# Created a ClusterRole just for the example, but in fact, you can control resources more finely, only need the get,list,watch permissions of ConfigMap/Secret
-kubectl create clusterrole config-cluster-reader --verb=get,list,watch --resource=configmaps,secrets
-# Bind ClusterRole to ServiceAccount (namespace: default, name: default)
-kubectl create clusterrolebinding config-cluster-reader-default-default --clusterrole config-cluster-reader --serviceaccount default:default
-----
-
-- Build and Start
-
-[source,shell]
-----
-./mvnw clean package -pl com.alibaba.cloud:kubernetes-config-example -am -DskipTests
-
-docker build -f spring-cloud-alibaba-examples/kubernetes-config-example/Dockerfile -t kubernetes-config-example:latest .
-
-kubectl apply -f spring-cloud-alibaba-examples/kubernetes-config-example/deployment.yaml
-----
-
-[source,shell]
-----
-# Execute the following command after the application startup, the startup process should be very fast (less than 3s)
-curl http://localhost:`kubectl get service kubernetes-config-example -o jsonpath='{..nodePort}'`/price
-
-# You should see a response of `100`
-----
-
-- Add ConfigMap
-
-[source,shell]
-----
-# This ConfigMap is being monitored by the current application, so when this ConfigMap is added, the application will automatically update the configuration
-kubectl apply -f spring-cloud-alibaba-examples/kubernetes-config-example/configmap-example-01.yaml
-
-# Visit again
-curl http://localhost:`kubectl get svc kubernetes-config -o jsonpath='{..nodePort}'`/price
-
-# You should see a response of `200`
-----
-
-You can modify the configuration in `configmap-example-01.yaml`, and then re-apply the file to observe the change of the interface result.
-
-Through the above operations, you can see that the application can dynamically update the configuration without restarting.
-
-- Delete Resources
-
-[source,shell]
-----
-# Delete all resources created by the above operations
-kubectl delete -f spring-cloud-alibaba-examples/kubernetes-config-example/deployment.yaml
-kubectl delete -f spring-cloud-alibaba-examples/kubernetes-config-example/configmap-example-01.yaml
-kubectl delete clusterrole config-cluster-reader
-kubectl delete clusterrolebinding config-cluster-reader-default-default
-----
+Go to the [example](./example) and follow the docs to run the example.
+You got this!
 
 === Main Features
 
-- Dynamic update configuration（ConfigMap/Secret）
+If you have experience with `spring-cloud-starter-alibaba-nacos-config`, you will find out that the usage is very similar. `spring-cloud-starter-alibaba-kubernetes-config` has provided all the core features of `spring-cloud-starter-alibaba-nacos-config`, and provides more easier-to-use configurations, better performance and more in line with cloud-native.
 
-  You can manually configure whether to monitor configuration file changes.
+==== Dynamic update configuration（ConfigMap/Secret）
 
-- Configuration priority
+You don't need to restart the application when the configuration is updated, and the application can dynamically update the configurations.
 
-  Through configuration, choose to use local configuration or remote configuration first.
+NOTE: Spring Cloud provides the capability of dynamically refreshing the Environment at runtime, which mainly dynamically updates the properties of two types of beans: `@ConfigurationProperties` and `@RefreshScope` beans.
 
-- Supports multiple configuration file formats
+*Best Practices: use `@ConfigurationProperties` to organize your configurations!*
 
-  Supports configuration files in `yaml`, `properties`, `json` and key-value pair.
+Related configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        refreshable: false # global default config, default value is false
+        config-maps:
+          - name: my-configmap
+            refreshable: true # my-configmap will detect config change and refresh
+        secrets:
+          - name: my-secret # my-secret will NOT detect config change and refresh
+----
+
+==== Configuration priority
+
+If there are same configurations in both local `application.yml` and ConfigMaps/Secret, you can choose which configuration to use first.
+
+Related configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        preference: remote # Global default config, default value is remote, means remote config will override local config
+        config-maps:
+          - name: my-configmap
+            preference: local
+----
+
+==== Multiple configuration file formats
+
+Supports configuration files in `yaml`, `properties`, `json` and key-value pair.
+
+NOTE: Secret only supports key-value pair!
+
+Example:
+
+ConfigMap:
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap
+data:
+  blacklist.yml: |
+    blacklist:
+      user-ids:
+        - 1
+        - 2
+----
+
+Secret:
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+stringData:
+  blacklist.user-ids[0]: 1
+  blacklist.user-ids[1]: 1
+----
+
+The two configurations above convey the same meaning.
+
+==== Abnormal operation protection
+
+If config was deleted by mistake, you don't want your application to crash, right? `spring-cloud-starter-alibaba-kubernetes-config` provides a mechanism to protect the application from abnormal operation, such as deleting the configuration by mistake.
+
+Related configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        refresh-on-deleted: false # when detect the config was deleted, the application will not trigger a refresh. Default value is false.
+----
+
+If your configuration is not synchronized across environments, and you have the `import-config` configuration in the `dev` environment but not in the `prod` environment (it is possible that you forgot to synchronize to `prod`), you may want to have a mechanism to help you find this problem and provide fail-fast ability to prevent the application from starting.
+
+Related configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        fail-on-missing-config: true # application will fail to start if the configs not found. Default value is true.
+----
 
 === Core Configurations
 
@@ -111,28 +127,16 @@ spring:
     k8s:
       config:
         enabled: true
-        namespace: default # The namespace where the configuration is located (global configuration). If it is inside the Kubernetes cluster, it defaults to the namespace where the current pod is located; if it is outside the Kubernetes cluster, it defaults to the namespace of the current context
-        preference: remote # Configuration priority (global configuration), remote is preferred to use remote configuration, local is preferred to use local configuration, and the default is remote
-        refreshable: true # Whether to enable dynamic update configuration (global configuration), the default is true
-        refresh-on-delete: false # Whether to automatically refresh when deleting the configuration, enabling this configuration may bring certain risks, if your configuration items only exist on the remote side but not locally, if you delete the configmap by mistake, it may cause abnormalities in the program, so the default value is false
+        namespace: default # The namespace where the configuration is located (global configuration). If inside the Kubernetes cluster, it defaults to the namespace where the current pod is located; if outside the Kubernetes cluster, it defaults to the namespace of the current context.
+        preference: remote
+        refreshable: false
+        refresh-on-delete: false
         fail-on-missing-config: true
         config-maps:
-          - name: my-configmap # configmap name
-            namespace: default # The namespace where configmap is located will override the global configuration of the namespace
-            preference: remote # Configuration priority, which will override the global configuration of preference
-            refreshable: true # Whether to enable dynamic update configuration, it will override the refresh-enabled global configuration
+          - name: my-configmap
+            preference: remote
+            refreshable: true
         secrets:
-          - name: my-secret # secret name
-            namespace: default # The namespace where the secret is located will override the global configuration of the namespace
-            preference: remote # Configuration priority, which will override the global configuration of preference
-            refreshable: false # Whether to enable dynamic update configuration will override the global configuration of refresh-enabled, because secrets generally do not require dynamic refresh, so the default value is false
+          - name: my-secret
+            namespace: secret-namespace
 ----
-
-=== Best Practices
-
-Spring Cloud provides the capability of dynamically refreshing the Environment at runtime, which mainly dynamically updates the properties of two types of beans:
-
-- Beans annotated with `@ConfigurationProperties`
-- Beans annotated with `@RefreshScope`
-
-A good practice is to use `@ConfigurationProperties` to organize your configurations.

@@ -28,5 +28,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "blacklist")
 public class BlacklistProperties {
+	private String header;
 	private Set<String> userIds;
 }

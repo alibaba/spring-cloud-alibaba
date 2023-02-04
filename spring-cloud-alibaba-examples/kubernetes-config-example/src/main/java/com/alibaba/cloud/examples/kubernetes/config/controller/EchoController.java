@@ -16,20 +16,26 @@
 
 package com.alibaba.cloud.examples.kubernetes.config.controller;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.alibaba.cloud.examples.kubernetes.config.filter.BlacklistFilter.HEADER_USER_ID;
 
 /**
  * @author Freeman
  */
 @RestController
+@RefreshScope
 public class EchoController {
 
+	@Value("${blacklist.header}")
+	private String userIdHeader;
+
 	@GetMapping("/echo")
-	public String echo(@RequestHeader(HEADER_USER_ID) String userId) {
+	public String echo(@RequestHeader HttpHeaders headers) {
+		String userId = headers.getFirst(userIdHeader);
 		return String.format("Hello, %s", userId);
 	}
 

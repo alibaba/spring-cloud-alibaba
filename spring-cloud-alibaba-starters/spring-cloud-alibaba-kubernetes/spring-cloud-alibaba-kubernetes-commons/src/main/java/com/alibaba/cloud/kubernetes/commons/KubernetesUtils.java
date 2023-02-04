@@ -36,8 +36,7 @@ public final class KubernetesUtils {
 	 * Get the kube config.
 	 *
 	 * <p>
-	 * <span color="red">NOTE: {@link Config} needs to be a singleton, do NOT modify
-	 * it.</span>
+	 * <strong>NOTE: {@link Config} needs to be a singleton, do NOT modify it.</strong>
 	 *
 	 * @return Config
 	 */

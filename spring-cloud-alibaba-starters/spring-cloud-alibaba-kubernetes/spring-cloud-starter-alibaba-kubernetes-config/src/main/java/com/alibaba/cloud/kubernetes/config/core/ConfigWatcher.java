@@ -75,7 +75,9 @@ public class ConfigWatcher
 	public void destroy() {
 		configmapInformers.values().forEach(SharedIndexInformer::close);
 		secretInformers.values().forEach(SharedIndexInformer::close);
-		log.info("ConfigMap and Secret informers closed");
+		if (log.isInfoEnabled()) {
+			log.info("[Kubernetes Config] ConfigMap and Secret informers closed");
+		}
 	}
 
 	private void watchRefreshableResources(KubernetesConfigProperties properties,
@@ -109,7 +111,7 @@ public class ConfigWatcher
 				.join(".", resourceKey.name(), resourceKey.namespace()))
 				.collect(Collectors.toList());
 		if (!names.isEmpty() && log.isInfoEnabled()) {
-			log.info("Start watching {}s: {}",
+			log.info("[Kubernetes Config] Start watching {}s: {}",
 					informers.keySet().iterator().next().type(), names);
 		}
 	}

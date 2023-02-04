@@ -48,8 +48,9 @@ class HasMetadataResourceEventHandler<T extends HasMetadata>
 	@Override
 	public void onAdd(HasMetadata obj) {
 		if (log.isDebugEnabled()) {
-			log.debug("{} '{}' added in namespace '{}'", obj.getKind(),
-					obj.getMetadata().getName(), obj.getMetadata().getNamespace());
+			log.debug("[Kubernetes Config] {} '{}' added in namespace '{}'",
+					obj.getKind(), obj.getMetadata().getName(),
+					obj.getMetadata().getNamespace());
 		}
 		// When application start up, the informer will trigger an onAdd event, but at
 		// this phase application is not
@@ -62,8 +63,9 @@ class HasMetadataResourceEventHandler<T extends HasMetadata>
 	@Override
 	public void onUpdate(HasMetadata oldObj, HasMetadata newObj) {
 		if (log.isDebugEnabled()) {
-			log.debug("{} '{}' updated in namespace '{}'", newObj.getKind(),
-					newObj.getMetadata().getName(), newObj.getMetadata().getNamespace());
+			log.debug("[Kubernetes Config] {} '{}' updated in namespace '{}'",
+					newObj.getKind(), newObj.getMetadata().getName(),
+					newObj.getMetadata().getNamespace());
 		}
 		refresh(newObj);
 	}
@@ -71,18 +73,21 @@ class HasMetadataResourceEventHandler<T extends HasMetadata>
 	@Override
 	public void onDelete(HasMetadata obj, boolean deletedFinalStateUnknown) {
 		if (log.isDebugEnabled()) {
-			log.debug("{} '{}' deleted in namespace '{}'", obj.getKind(),
-					obj.getMetadata().getName(), obj.getMetadata().getNamespace());
+			log.debug("[Kubernetes Config] {} '{}' deleted in namespace '{}'",
+					obj.getKind(), obj.getMetadata().getName(),
+					obj.getMetadata().getNamespace());
 		}
 		if (properties.isRefreshOnDelete()) {
 			deletePropertySourceOfResource(obj);
 			refresh(obj);
 		}
 		else {
-			log.info(
-					"{} '{}' was deleted in namespace '{}', refresh on delete is disabled, ignore the delete event",
-					obj.getKind(), obj.getMetadata().getName(),
-					obj.getMetadata().getNamespace());
+			if (log.isInfoEnabled()) {
+				log.info(
+						"[Kubernetes Config] {} '{}' was deleted in namespace '{}', refresh on delete is disabled, ignore the delete event",
+						obj.getKind(), obj.getMetadata().getName(),
+						obj.getMetadata().getNamespace());
+			}
 		}
 	}
 

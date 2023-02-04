@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-01
+  namespace: default
+data:
+  blacklist.yml: |
+    blacklist:
+      user-ids: 
+        - 1
+        - 2
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-01
+  namespace: default
+stringData:
+  blacklist.header: X-User-Id

@@ -97,7 +97,8 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 						.addLast(toPropertySource((Secret) resource));
 			}
 			else {
-				log.warn("Refreshed a unknown resource type: " + resource.getClass());
+				log.warn("[Kubernetes Config] Refreshed a unknown resource type: "
+						+ resource.getClass());
 			}
 		}
 		else {
@@ -125,7 +126,8 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 			ConfigurableEnvironment environment) {
 		properties.getConfigMaps().stream()
 				.map(configmap -> Optional
-						.ofNullable(propertySourceForConfigMap(configmap, properties))
+						.ofNullable(propertySourceForConfigMap(configmap,
+								properties.isFailOnMissingConfig()))
 						.map(ps -> Pair.of(configmap.getPreference(), ps)).orElse(null))
 				.filter(Objects::nonNull)
 				.collect(groupingBy(Pair::key, mapping(Pair::value, toList())))
@@ -139,7 +141,8 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 			ConfigurableEnvironment environment) {
 		properties.getSecrets().stream()
 				.map(secret -> Optional
-						.ofNullable(propertySourceForSecret(secret, properties))
+						.ofNullable(propertySourceForSecret(secret,
+								properties.isFailOnMissingConfig()))
 						.map(ps -> Pair.of(secret.getPreference(), ps)).orElse(null))
 				.filter(Objects::nonNull)
 				.collect(groupingBy(Pair::key, mapping(Pair::value, toList())))
@@ -171,59 +174,51 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 	}
 
 	private EnumerablePropertySource<?> propertySourceForConfigMap(
-			KubernetesConfigProperties.ConfigMap cm,
-			KubernetesConfigProperties properties) {
+			KubernetesConfigProperties.ConfigMap cm, boolean isFailOnMissingConfig) {
 		ConfigMap configMap;
 		try {
 			configMap = client.configMaps().inNamespace(cm.getNamespace())
 					.withName(cm.getName()).get();
 		}
 		catch (KubernetesClientException e) {
-			if (!isRefreshing()) {
-				throw kubernetesConfigException(ConfigMap.class, cm.getName(),
-						cm.getNamespace(), e);
-			}
-			log.warn(
-					"Kubernetes client exception while refreshing ConfigMap, so properties value won't change",
-					e);
+			processException(ConfigMap.class, cm.getName(), cm.getNamespace(), e);
 			return null;
 		}
 		if (configMap == null) {
-			log.warn(String.format("ConfigMap '%s' not found in namespace '%s'",
-					cm.getName(), cm.getNamespace()));
 			failApplicationStartUpIfNecessary(ConfigMap.class, cm.getName(),
-					cm.getNamespace(), properties);
+					cm.getNamespace(), isFailOnMissingConfig);
 			return null;
 		}
 		return toPropertySource(configMap);
 	}
 
 	private EnumerablePropertySource<?> propertySourceForSecret(
-			KubernetesConfigProperties.Secret secret,
-			KubernetesConfigProperties properties) {
+			KubernetesConfigProperties.Secret secret, boolean isFailOnMissingConfig) {
 		Secret secretInK8s;
 		try {
 			secretInK8s = client.secrets().inNamespace(secret.getNamespace())
 					.withName(secret.getName()).get();
 		}
 		catch (KubernetesClientException e) {
-			if (!isRefreshing()) {
-				throw kubernetesConfigException(Secret.class, secret.getName(),
-						secret.getNamespace(), e);
-			}
-			log.warn(
-					"Kubernetes client exception while refreshing Secret, so properties value won't change",
-					e);
+			processException(Secret.class, secret.getName(), secret.getNamespace(), e);
 			return null;
 		}
 		if (secretInK8s == null) {
-			log.warn(String.format("Secret '%s' not found in namespace '%s'",
-					secret.getName(), secret.getNamespace()));
 			failApplicationStartUpIfNecessary(Secret.class, secret.getName(),
-					secret.getNamespace(), properties);
+					secret.getNamespace(), isFailOnMissingConfig);
 			return null;
 		}
 		return toPropertySource(secretInK8s);
+	}
+
+	private void processException(Class<?> type, String name, String namespace,
+			KubernetesClientException e) {
+		if (!isRefreshing()) {
+			throw kubernetesConfigException(type, name, namespace, e);
+		}
+		log.warn(String.format(
+				"[Kubernetes Config] Kubernetes client exception while refreshing %s, so properties value won't change",
+				type.getSimpleName()), e);
 	}
 
 	private static AbstractKubernetesConfigException kubernetesConfigException(
@@ -245,11 +240,13 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 	 * @param type the type of the resource
 	 * @param name the name of the resource
 	 * @param namespace the namespace of the resource
-	 * @param properties {@link KubernetesConfigProperties}
+	 * @param isFailOnMissingConfig whether to fail the application start up
 	 */
-	private static void failApplicationStartUpIfNecessary(Class<?> type, String name,
-			String namespace, KubernetesConfigProperties properties) {
-		if (!isRefreshing() && properties.isFailOnMissingConfig()) {
+	private void failApplicationStartUpIfNecessary(Class<?> type, String name,
+			String namespace, boolean isFailOnMissingConfig) {
+		log.warn(String.format("[Kubernetes Config] %s '%s' not found in namespace '%s'",
+				type.getSimpleName(), name, namespace));
+		if (!isRefreshing() && isFailOnMissingConfig) {
 			throw new KubernetesConfigMissingException(type, name, namespace, null);
 		}
 	}

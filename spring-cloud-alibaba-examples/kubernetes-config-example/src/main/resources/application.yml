@@ -1,5 +1,7 @@
 server:
   port: 8080
+  error:
+    include-message: always
 spring:
   application:
     name: kubernetes-config-example
@@ -16,8 +18,4 @@ spring:
             namespace: default
             refreshable: false
         refresh-on-delete: false
-        fail-on-missing-config: false
-blacklist:
-  user-ids:
-    - 1
-    - 2
+        fail-on-missing-config: true

@@ -43,7 +43,7 @@ public class KubernetesConfigProperties implements InitializingBean {
 	private boolean enabled = true;
 
 	/**
-	 * Default namespace for configmaps and secrets.
+	 * Default namespace for ConfigMaps and Secrets.
 	 * <p>
 	 * If in Kubernetes environment, use the namespace of the current pod.
 	 * <p>
