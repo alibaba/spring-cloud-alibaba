@@ -1,0 +1,145 @@
+== Spring Cloud Alibaba Kubernetes Config
+
+link:kubernetes-config.adoc[English] | link:../asciidoc-zh/kubernetes-config.adoc[中文]
+
+该模块的目的是利用 Kubernetes ConfigMap/Secret 作为分布式配置中心，实现无需重启应用的动态配置更新。
+
+=== 快速开始
+
+参考 link:../../../../spring-cloud-alibaba-examples/kubernetes-config-example/README.md[example]，按照文档运行一下 demo，你可以的！
+
+=== 主要特性
+
+如果你有使用 `spring-cloud-starter-alibaba-nacos-config` 的经验，你会发现其用法非常相似。`spring-cloud-starter-alibaba-kubernetes-config` 提供了 `spring-cloud-starter-alibaba-nacos-config` 的所有核心功能，并提供了更容易使用的配置，更好的性能和云原生程序契合度。
+
+==== 配置动态刷新（ConfigMap/Secret）
+
+当配置更新时，不需要重新启动应用程序，应用程序可以实时地动态更新配置。
+
+NOTE: Spring Cloud 提供了在运行时动态刷新环境的能力，这主要是动态更新两类 Bean 的属性：`@ConfigurationProperties` 和 `@RefreshScope` Bean。
+
+*最佳实践：使用 `@ConfigurationProperties` 来组织你的配置！*
+
+相关配置：
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        refreshable: false # 全局默认配置，默认值为 false
+        config-maps:
+          - name: my-configmap
+            refreshable: true # my-configmap 将检测配置更改并刷新
+        secrets:
+          - name: my-secret # my-secret 不会检测配置更改和刷新
+----
+
+==== 配置优先级
+
+如果本地的 `application.yml` 和 ConfigMap/Secret 中有相同的配置，可以选择优先使用哪个配置。
+
+相关配置：
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        preference: remote # 全局默认配置，默认值为remote，表示远程配置会覆盖本地配置
+        config-maps:
+          - name: my-configmap
+            preference: local
+----
+
+==== 多种配置文件格式
+
+支持 `yaml`、`properties`、`json` 和键值对配置。
+
+NOTE: Secret 只支持键值对！
+
+Example:
+
+ConfigMap:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap
+data:
+  blacklist.yml: |
+    blacklist:
+      user-ids:
+        - 1
+        - 2
+----
+
+Secret:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+stringData:
+  blacklist.user-ids[0]: 1
+  blacklist.user-ids[1]: 2
+----
+
+上面的两个配置是等价的。
+
+==== 异常操作保护
+
+如果配置被错误地删除，你不希望你的应用程序崩溃，对吗？`spring-cloud-starter-alibaba-kubernetes-config` 提供了一个机制来保护应用程序免受异常操作的影响，比如误删配置。
+
+相关配置：
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        refresh-on-deleted: false # 当检测到配置被删除时，应用程序不会触发刷新。默认值为 false。
+----
+
+如果你的配置没有跨环境同步，你在 `dev` 环境中有 `import-config` 配置，但在 `prod` 环境中没有（有可能是你忘记同步到 `prod`），你可能希望有一个机制来帮助你发现这个问题，并提供快速失败的能力来阻止应用程序启动。
+
+相关配置：
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        fail-on-missing-config: true # 如果找不到配置，应用程序将无法启动。默认值为 true。
+----
+
+=== 核心配置
+
+[source,yaml]
+----
+spring:
+  cloud:
+    k8s:
+      config:
+        enabled: true
+        namespace: default # 配置所在的命名空间（全局配置）。如果在 Kubernetes 集群内部，则默认为当前 pod 所在的命名空间；如果在 Kubernetes 集群之外，则默认为当前 context 的命名空间。
+        preference: remote
+        refreshable: false
+        refresh-on-delete: false
+        fail-on-missing-config: true
+        config-maps:
+          - name: my-configmap
+            preference: remote
+            refreshable: true
+        secrets:
+          - name: my-secret
+            namespace: secret-namespace
+----

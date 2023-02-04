@@ -1,5 +1,7 @@
 == Spring Cloud Alibaba Kubernetes Config
 
+link:kubernetes-config.adoc[English] | link:../asciidoc-zh/kubernetes-config.adoc[中文]
+
 The purpose of this module is to use Kubernetes ConfigMap/Secret as a distributed configuration center to achieve dynamic configuration updates without restarting the application.
 
 === Quick Start

@@ -1,5 +1,7 @@
 ## Spring Cloud Starter Alibaba Kubernetes Config Example
 
+[English](README.md) | [中文](README-zh.md)
+
 This example demonstrates the use of `spring-cloud-starter-alibaba-kubernetes-config` to implement a dynamic blacklist.
 
 ### Procedure
