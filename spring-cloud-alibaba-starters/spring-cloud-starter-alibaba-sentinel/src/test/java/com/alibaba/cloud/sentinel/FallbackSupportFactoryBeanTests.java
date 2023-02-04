@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.circuitbreaker.sentinel.feign;
-
-import java.util.function.Function;
-import java.util.function.Supplier;
+package com.alibaba.cloud.sentinel;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
-import org.springframework.cloud.client.circuitbreaker.ConfigBuilder;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -46,34 +39,10 @@ public class FallbackSupportFactoryBeanTests {
 	private static final String ORIGINAL_FALLBACK_MESSAGE = "OriginalFeign fallback message";
 
 	private final ApplicationContextRunner runner = new ApplicationContextRunner()
-			.withBean(FactoryBeanFallbackFeignFallback.class).withBean(OriginalFeignFallback.class)
+			.withBean(FactoryBeanFallbackFeignFallback.class)
+			.withBean(OriginalFeignFallback.class)
 			.withConfiguration(AutoConfigurations.of(TestConfiguration.class, FeignAutoConfiguration.class))
-			.withBean(CircuitBreakerFactory.class, () -> new CircuitBreakerFactory() {
-				@Override
-				public CircuitBreaker create(String id) {
-					return new CircuitBreaker() {
-						@Override
-						public <T> T run(Supplier<T> toRun, Function<Throwable, T> fallback) {
-							try {
-								return toRun.get();
-							}
-							catch (Throwable t) {
-								return fallback.apply(t);
-							}
-						}
-					};
-				}
-
-				@Override
-				protected ConfigBuilder configBuilder(String id) {
-					return null;
-				}
-
-				@Override
-				public void configureDefault(Function defaultConfiguration) {
-
-				}
-			}).withPropertyValues("spring.cloud.openfeign.circuitbreaker.enabled=true");
+			.withPropertyValues("feign.sentinel.enabled=true");
 
 	@Test
 	public void shouldRunFallbackFromBeanOrFactoryBean() {
