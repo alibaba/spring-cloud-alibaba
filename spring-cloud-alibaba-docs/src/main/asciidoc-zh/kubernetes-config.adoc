@@ -1,12 +1,12 @@
 == Spring Cloud Alibaba Kubernetes Config
 
-link:kubernetes-config.adoc[English] | link:../asciidoc-zh/kubernetes-config.adoc[中文]
+link:../asciidoc/kubernetes-config.adoc[English] | link:kubernetes-config.adoc[中文]
 
 该模块的目的是利用 Kubernetes ConfigMap/Secret 作为分布式配置中心，实现无需重启应用的动态配置更新。
 
 === 快速开始
 
-参考 link:../../../../spring-cloud-alibaba-examples/kubernetes-config-example/README.md[example]，按照文档运行一下 demo，你可以的！
+参考 link:../../../../spring-cloud-alibaba-examples/kubernetes-config-example/README-zh.md[example]，按照文档运行一下 demo，你可以的！
 
 === 主要特性
 
