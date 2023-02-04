@@ -50,6 +50,8 @@ public class DataSourcePropertiesConfiguration {
 
 	private ConsulDataSourceProperties consul;
 
+	private OpenSergoDataSourceProperties opensergo;
+
 	public DataSourcePropertiesConfiguration() {
 	}
 
@@ -123,6 +125,14 @@ public class DataSourcePropertiesConfiguration {
 
 	public void setRedis(RedisDataSourceProperties redis) {
 		this.redis = redis;
+	}
+
+	public OpenSergoDataSourceProperties getOpensergo() {
+		return opensergo;
+	}
+
+	public void setOpensergo(OpenSergoDataSourceProperties opensergo) {
+		this.opensergo = opensergo;
 	}
 
 	@JsonIgnore
