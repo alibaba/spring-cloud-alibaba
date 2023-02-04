@@ -4,7 +4,7 @@ The purpose of this module is to use Kubernetes ConfigMap/Secret as a distribute
 
 === Quick Start
 
-Go to the [example](./example) and follow the docs to run the example.
+Go to the link:../../../../spring-cloud-alibaba-examples/kubernetes-config-example/README.md[example] and follow the docs to run the example.
 You got this!
 
 === Main Features
@@ -62,6 +62,7 @@ NOTE: Secret only supports key-value pair!
 Example:
 
 ConfigMap:
+
 [source,yaml]
 ----
 apiVersion: v1
@@ -77,6 +78,7 @@ data:
 ----
 
 Secret:
+
 [source,yaml]
 ----
 apiVersion: v1
@@ -85,7 +87,7 @@ metadata:
   name: my-secret
 stringData:
   blacklist.user-ids[0]: 1
-  blacklist.user-ids[1]: 1
+  blacklist.user-ids[1]: 2
 ----
 
 The two configurations above convey the same meaning.
