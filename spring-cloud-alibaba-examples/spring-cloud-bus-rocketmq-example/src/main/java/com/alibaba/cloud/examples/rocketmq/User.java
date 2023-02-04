@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.kubernetes.config;
+package com.alibaba.cloud.examples.rocketmq;
 
 /**
  * User Domain.
