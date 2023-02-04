@@ -40,7 +40,7 @@ import org.springframework.context.ApplicationContextAware;
 import static com.alibaba.cloud.kubernetes.config.util.ResourceKeyUtils.resourceKey;
 
 /**
- * Watcher for config resource changes.
+ * Watcher for config resources change.
  *
  * @author Freeman
  */

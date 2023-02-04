@@ -17,6 +17,8 @@
 package com.alibaba.cloud.kubernetes.config.util;
 
 /**
+ * Configuration preference.
+ *
  * @author Freeman
  */
 public enum Preference {

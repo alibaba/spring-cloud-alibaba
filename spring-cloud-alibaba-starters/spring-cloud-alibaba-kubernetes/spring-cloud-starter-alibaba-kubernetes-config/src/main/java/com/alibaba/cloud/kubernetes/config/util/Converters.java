@@ -36,6 +36,8 @@ import static com.alibaba.cloud.kubernetes.config.util.Processors.fileProcessors
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
+ * {@link Converters} use to convert ConfigMap/Secret to {@link EnumerablePropertySource}.
+ *
  * @author Freeman
  */
 public final class Converters {

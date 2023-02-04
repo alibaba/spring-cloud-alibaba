@@ -25,6 +25,8 @@ import com.alibaba.cloud.kubernetes.config.processor.PropertiesFileProcessor;
 import com.alibaba.cloud.kubernetes.config.processor.YamlFileProcessor;
 
 /**
+ * {@link Processors} holds all the {@link FileProcessor} instances.
+ *
  * @author Freeman
  */
 public final class Processors {

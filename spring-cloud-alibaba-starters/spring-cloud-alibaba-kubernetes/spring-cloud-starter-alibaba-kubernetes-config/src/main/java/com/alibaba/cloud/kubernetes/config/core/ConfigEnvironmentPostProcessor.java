@@ -45,7 +45,9 @@ import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
 
 import static com.alibaba.cloud.kubernetes.config.util.Converters.toPropertySource;
@@ -54,7 +56,28 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
 /**
+ * Kubernetes config {@link EnvironmentPostProcessor}.
+ *
+ * <p>
+ * There are two ways to use this post processor:
+ * <ul>
+ * <li>when application starts up</li>
+ * <li>when application triggers a {@link RefreshEvent}</li>
+ * </ul>
+ *
+ * <p>
+ * When application starts up, this processor will load all the ConfigMaps/Secrets.
+ * <p>
+ * When application triggers a {@link RefreshEvent}, Spring will copy a
+ * {@link Environment} and invoke all {@link EnvironmentPostProcessor}s, then replace the
+ * {@link PropertySource} if copied {@link Environment} has the same name
+ * {@link PropertySource}. So this processor only converts the refreshed resource to
+ * {@link PropertySource} and add it to the {@link Environment} when refresh event is
+ * triggered.
+ *
  * @author Freeman
+ * @see org.springframework.cloud.context.refresh.ContextRefresher
+ * @see org.springframework.cloud.context.refresh.ConfigDataContextRefresher
  */
 public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 	/**

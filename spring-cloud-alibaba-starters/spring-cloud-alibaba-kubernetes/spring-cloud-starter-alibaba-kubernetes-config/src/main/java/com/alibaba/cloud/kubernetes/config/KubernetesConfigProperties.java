@@ -28,6 +28,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
 /**
+ * Spring Cloud Alibaba Kubernetes Config properties.
+ *
  * @author Freeman
  */
 @ConfigurationProperties(KubernetesConfigProperties.PREFIX)

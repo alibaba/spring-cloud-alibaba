@@ -30,6 +30,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
+ * Spring Cloud Alibaba Kubernetes Config autoconfiguration.
+ *
  * @author Freeman
  */
 @Configuration(proxyBeanMethods = false)

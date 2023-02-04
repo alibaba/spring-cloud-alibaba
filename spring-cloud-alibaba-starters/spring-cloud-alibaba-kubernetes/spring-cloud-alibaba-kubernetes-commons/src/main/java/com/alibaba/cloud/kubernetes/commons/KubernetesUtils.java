@@ -22,6 +22,11 @@ import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
 /**
+ * Kubernetes utils.
+ *
+ * <p>
+ * Usually used to get kube config and create {@link KubernetesClient} instance.
+ *
  * @author Freeman
  */
 public final class KubernetesUtils {
@@ -59,7 +64,7 @@ public final class KubernetesUtils {
 	}
 
 	/**
-	 * New a KubernetesClient instance.
+	 * Create a KubernetesClient instance.
 	 *
 	 * @return new KubernetesClient instance
 	 */

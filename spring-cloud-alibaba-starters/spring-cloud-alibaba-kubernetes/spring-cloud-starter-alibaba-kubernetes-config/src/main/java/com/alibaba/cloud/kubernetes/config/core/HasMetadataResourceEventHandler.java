@@ -29,6 +29,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
+ * {@link HasMetadataResourceEventHandler} process {@link HasMetadata}(ConfigMap/Secret)
+ * events, trigger {@link RefreshEvent} when necessary.
+ *
  * @author Freeman
  */
 class HasMetadataResourceEventHandler<T extends HasMetadata>

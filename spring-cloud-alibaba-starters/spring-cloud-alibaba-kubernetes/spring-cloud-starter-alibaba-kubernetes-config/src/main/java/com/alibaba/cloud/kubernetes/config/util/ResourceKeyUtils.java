@@ -21,6 +21,8 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.Secret;
 
 /**
+ * {@link ResourceKeyUtils} used to generate {@link ResourceKey}.
+ *
  * @author Freeman
  */
 public final class ResourceKeyUtils {

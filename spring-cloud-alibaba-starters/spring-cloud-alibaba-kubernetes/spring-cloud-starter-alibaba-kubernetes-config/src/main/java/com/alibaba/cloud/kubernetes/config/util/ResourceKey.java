@@ -19,6 +19,8 @@ package com.alibaba.cloud.kubernetes.config.util;
 import java.util.Objects;
 
 /**
+ * {@link ResourceKey} represents identity of a resource.
+ *
  * @author Freeman
  */
 public final class ResourceKey {

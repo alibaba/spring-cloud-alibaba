@@ -17,6 +17,8 @@
 package com.alibaba.cloud.kubernetes.config.util;
 
 /**
+ * Utility class for holding a pair of values.
+ *
  * @author Freeman
  */
 public final class Pair<K, V> {
