@@ -126,7 +126,7 @@ public final class SentinelFeign {
 								"No %s instance of type %s found for feign client %s",
 								type, fallbackType, name));
 					}
-
+					// when fallback is a FactoryBean, should determine the type of instance
 					if (fallbackInstance instanceof FactoryBean<?> factoryBean) {
 						try {
 							fallbackInstance = factoryBean.getObject();
