@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author 黄学敏（huangxuemin)
  */
-public class FallbackSupportFactoryBeanTests {
+public class SentinelFallbackSupportFactoryBeanTests {
 
 	private static final String FACTORY_BEAN_FALLBACK_MESSAGE = "factoryBean fallback message";
 
@@ -53,8 +53,7 @@ public class FallbackSupportFactoryBeanTests {
 	}
 
 	@Configuration(proxyBeanMethods = false)
-	@EnableFeignClients(clients = { FallbackSupportFactoryBeanTests.OriginalFeign.class,
-			FallbackSupportFactoryBeanTests.FactoryBeanFallbackFeign.class })
+	@EnableFeignClients(clients = {OriginalFeign.class, FactoryBeanFallbackFeign.class })
 	@EnableAutoConfiguration
 	public static class TestConfiguration {
 
