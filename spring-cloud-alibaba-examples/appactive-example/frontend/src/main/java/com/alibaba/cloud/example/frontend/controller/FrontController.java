@@ -19,6 +19,7 @@ package com.alibaba.cloud.example.frontend.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -107,8 +108,25 @@ public class FrontController {
 			@RequestParam(required = false, defaultValue = "feign") String call,
 			Model model) {
 		// normal
-		ResultHolder<List<Product>> resultHolder = (call.equals("feign")
-				? productDAO.list() : productDAO.listTemplate());
+		ResultHolder<List<Product>> resultHolder;
+
+		// Determine the method of the request
+		switch (call) {
+		case "feign": {
+			resultHolder = productDAO.list();
+			break;
+		}
+		case "rest": {
+			resultHolder = productDAO.listTemplate();
+			break;
+		}
+		case "WebClient": {
+			resultHolder = productDAO.listWebClient();
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("The web request is malformed.");
+		}
 
 		model.addAttribute("result", JSON.toJSONString(resultHolder.getResult()));
 		model.addAttribute("products", resultHolder.getResult());
@@ -138,11 +156,32 @@ public class FrontController {
 
 	private ResultHolder<Product> getProductResultHolder(RPCType rpcType, String id,
 			Boolean hidden, String call) {
+
+		// normal
 		ResultHolder<Product> resultHolder;
-		resultHolder = hidden ? productDAO.detailHidden(id)
-				: (call.equals("feign")
-						? productDAO.detail(AppContextClient.getRouteId(), id)
-						: productDAO.detailTemplate(AppContextClient.getRouteId(), id));
+
+		if (Objects.equals(hidden, true)) {
+			return productDAO.detailHidden(id);
+		}
+
+		// Determine the method of the request
+		switch (call) {
+		case "feign": {
+			resultHolder = productDAO.detail(AppContextClient.getRouteId(), id);
+			break;
+		}
+		case "rest": {
+			resultHolder = productDAO.detailTemplate(AppContextClient.getRouteId(), id);
+			break;
+		}
+		case "WebClient": {
+			resultHolder = productDAO.detailWebClient(AppContextClient.getRouteId(), id);
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("The web request is malformed.");
+		}
+
 		return resultHolder;
 	}
 

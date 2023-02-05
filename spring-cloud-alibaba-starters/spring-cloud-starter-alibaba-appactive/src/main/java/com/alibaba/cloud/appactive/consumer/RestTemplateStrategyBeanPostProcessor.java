@@ -17,31 +17,36 @@
 package com.alibaba.cloud.appactive.consumer;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.client.RestTemplate;
 
 /**
- *@author: yuluo
+ * @author: yuluo
  */
 public class RestTemplateStrategyBeanPostProcessor implements BeanPostProcessor {
 
-	@Autowired
-	private RestTemplateInterceptor restTemplateInterceptor;
+	final ApplicationContext applicationContext;
+
+	public RestTemplateStrategyBeanPostProcessor(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessBeforeInitialization(Object bean, String beanName)
+			throws BeansException {
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessAfterInitialization(Object bean, String beanName)
+			throws BeansException {
 
 		if (bean instanceof RestTemplate) {
 			RestTemplate restTemplate = (RestTemplate) bean;
 
 			// add interceptor
-			restTemplate.getInterceptors().add(restTemplateInterceptor);
+			restTemplate.getInterceptors().add(new RestTemplateInterceptor());
 		}
 
 		return bean;

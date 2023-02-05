@@ -26,6 +26,7 @@ import javax.servlet.Filter;
 
 import com.alibaba.cloud.appactive.common.ServiceMetaEntity;
 import com.alibaba.cloud.appactive.common.ServiceMetaObject;
+import com.alibaba.cloud.appactive.consumer.ServerMeta;
 import com.alibaba.fastjson.JSON;
 import io.appactive.java.api.base.constants.ResourceActiveType;
 import io.appactive.support.lang.CollectionUtils;
@@ -85,7 +86,7 @@ public final class URIRegister {
 	}
 
 	/**
-	 * Initialize {@link #serviceMetaObject} based on {@link ServiceMeta} list.
+	 * Initialize {@link #serviceMetaObject} based on {@link ServerMeta} list.
 	 * @param serviceMetaList list needed for initialization
 	 */
 	private static void initServiceMetaObject(List<ServiceMetaEntity> serviceMetaList) {
@@ -99,13 +100,14 @@ public final class URIRegister {
 	}
 
 	/**
-	 * Collect {@link ServiceMetaEntity} into the given <i>serviceMetaList</i> according to each
-	 * item of the given <i>urlPatterns</i> and the given <i>resourceActiveType</i>,
-	 * finally determine whether <i>hasWildChar</i> is a new wildChar.
+	 * Collect {@link ServiceMetaEntity} into the given <i>serviceMetaList</i> according
+	 * to each item of the given <i>urlPatterns</i> and the given
+	 * <i>resourceActiveType</i>, finally determine whether <i>hasWildChar</i> is a new
+	 * wildChar.
 	 * @param serviceMetaList extended list
 	 * @param hasWildChar keyword to be determined
 	 * @param urlPatterns looped list
-	 * @param resourceActiveType attribute of {@link ServiceMeta}
+	 * @param resourceActiveType attribute of {@link ServerMeta}
 	 * @return is new wildChar
 	 */
 	private static boolean collectServiceMetas(List<ServiceMetaEntity> serviceMetaList,
@@ -121,15 +123,16 @@ public final class URIRegister {
 	}
 
 	/**
-	 * Collect {@link ServiceMetaEntity} into the given <i>serviceMetaList</i> according to the
-	 * given <i>urlPattern</i> and the given <i>resourceActiveType</i>.
+	 * Collect {@link ServiceMetaEntity} into the given <i>serviceMetaList</i> according
+	 * to the given <i>urlPattern</i> and the given <i>resourceActiveType</i>.
 	 * @param serviceMetaList extended list
 	 * @param urlPattern attribute of {@link ServiceMetaEntity}
 	 * @param resourceActiveType attribute of {@link ServiceMetaEntity}
 	 */
 	private static void collectServiceMeta(List<ServiceMetaEntity> serviceMetaList,
 			String urlPattern, String resourceActiveType) {
-		ServiceMetaEntity serviceMetaEntity = new ServiceMetaEntity(urlPattern, resourceActiveType);
+		ServiceMetaEntity serviceMetaEntity = new ServiceMetaEntity(urlPattern,
+				resourceActiveType);
 		serviceMetaList.add(serviceMetaEntity);
 	}
 

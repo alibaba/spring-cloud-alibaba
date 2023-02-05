@@ -23,6 +23,7 @@ import io.appactive.java.api.base.AppContextClient;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -31,33 +32,39 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 public class ReactiveRequestStrategyBeanPostProcessor implements BeanPostProcessor {
 
+	final ApplicationContext applicationContext;
+
+	public ReactiveRequestStrategyBeanPostProcessor(
+			ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessBeforeInitialization(Object bean, String beanName)
+			throws BeansException {
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(
-			@NotNull Object bean,
-			@NotNull String beanName
-	) {
+	public Object postProcessAfterInitialization(@NotNull Object bean,
+			@NotNull String beanName) {
 		if (bean instanceof WebClient || bean instanceof WebClient.Builder) {
 			assert bean instanceof WebClient;
 			WebClient webClient = (WebClient) bean;
 
 			// add filter
-			webClient.mutate()
-					.filter(
-							(request, next) -> {
-								ClientRequest clientRequest = ClientRequest.from(request)
-										.headers(headers -> headers.set(AppactiveConstants.ROUTER_ID_HEADER_KEY,
-												AppContextClient.getRouteId()))
-										.build();
-								return next.exchange(clientRequest);
-							}).build();
+			webClient.mutate().filter((request, next) -> {
+				ClientRequest clientRequest = ClientRequest.from(request)
+						.headers(headers -> headers.set(
+								AppactiveConstants.ROUTER_ID_HEADER_KEY,
+								AppContextClient.getRouteId()))
+						.build();
+				return next.exchange(clientRequest);
+			}).build();
 		}
 
 		return bean;
 
 	}
+
 }
