@@ -78,7 +78,6 @@
       - `appactive.dataId.trafficRouteRulePath`: 描述路由标和单元的映射关系
       - `appactive.dataId.dataScopeRuleDirectoryPath_mysql-product`: 描述数据库的属性
 
-   
 2. 启动 5 套应用，启动参数分别为：
 
 - frontend
@@ -132,9 +131,9 @@
 
    ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-16-25-989.png)
 
-    由于上述路径中的 `/listProduct` 在 product 应用中匹配到的是 `/*` 路径规则，根据规则内容，该服务属于普通应用做了未做单元化拆分，所以frontend 在从注册中心获取的 product 地址列表中不存在倾向性，会随机选择地址进行请求发送。因此多次请求上述路径，会看到请求在 product 的一般（Unit)和 中心（center）单元应用中来回切换。
+    由于上述路径中的 `/listProduct` 在 product 应用中匹配到的是 `/*` 路径规则，根据规则内容，该服务属于普通应用未做单元化拆分，所以frontend 在从注册中心获取的 product 地址列表中不存在倾向性，会随机选择地址进行请求发送。因此多次请求上述路径，会看到请求在 product 的一般（Unit)和 中心（center）单元应用中来回切换。
 
-2. 归属于 unit 单元的核心应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/detailProduct` 路径，由于上述路径中的 `/detailProduct` 在 product 应用中匹配到的是 `/detail/*` 路径规则，根据规则内容，该服务属于核心应用做了单元会拆分，其会根据请求中 Header, Cookie 或请求参数中的变量具体的值去判断该请求的下游单元类型，由于事先配置如下切流规则（具体可见 rule 目录下的 idUnitMapping.json 文件内容）：
+2. 归属于 unit 单元的核心应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/detailProduct` 路径，由于上述路径中的 `/detailProduct` 在 product 应用中匹配到的是 `/detail/*` 路径规则，根据规则内容，该服务属于核心应用做了单元化拆分，其会根据请求中 Header, Cookie 或请求参数中的变量具体的值去判断该请求的下游单元类型，由于事先配置如下切流规则（具体可见 rule 目录下的 idUnitMapping.json 文件内容）：
     ```
     {
       "itemType": "UnitRuleItem",
@@ -171,7 +170,7 @@
 
    ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-14-50-461.png)
 
-3. 归属于中心（Center）单元的全局应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8079/buyProduct` 路径，由于上述路径中的 `/buyProduct` 在 product 和 storage 应用中匹配到的是 `/buy/*` 路径规则，根据规则内容，该服务属于全局应用未做单元会拆分，其会直接将请求发送到下游的中心（Center）单元中全局应用实例。
+3. 归属于中心（Center）单元的全局应用服务调用演示。在浏览器中输入：`http://127.0.0.1:8875/buyProduct` 路径，由于上述路径中的 `/buyProduct` 在 product 和 storage 应用中匹配到的是 `/buy/*` 路径规则，根据规则内容，该服务属于全局应用未做单元会拆分，其会直接将请求发送到下游的中心（Center）单元中全局应用实例。
 
    ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-14-02-388.png)
 
@@ -179,7 +178,7 @@
     - 构建新的映射关系规则和禁写规则（手动）
     - 将禁写规则推送给应用
     - 等待数据追平后将新的映射关系规则推送给应用
-   接下来演示的切流规则，会将用户Id为 0 ~ 2999 的请求将发送给下游提供者中的一般（Unit）单元中的核心应用实例，用户Id为 3000 ~ 9999 的请求将发送给下游提供者中的中心（Center）单元中的全局应用实例。具体的规则详情见 idUnitMappingNext.json：
+     接下来演示的切流规则，会将用户Id为 0 ~ 2999 的请求将发送给下游提供者中的一般（Unit）单元中的核心应用实例，用户Id为 3000 ~ 9999 的请求将发送给下游提供者中的中心（Center）单元中的全局应用实例。具体的规则详情见 idUnitMappingNext.json：
         ```
         {
           "itemType": "UnitRuleItem",
@@ -212,7 +211,6 @@
 
         如下图，模拟一个用户Id为 3000 的请求，可见请求通过 frontend 发送到了下游中 product 的 center 单元中的全局应用实例，切流规则生效。
         ![](../../spring-cloud-alibaba-docs/src/main/asciidoc-zh/pic/image-2022-09-15-16-12-26-461.png)
-
 
 
 

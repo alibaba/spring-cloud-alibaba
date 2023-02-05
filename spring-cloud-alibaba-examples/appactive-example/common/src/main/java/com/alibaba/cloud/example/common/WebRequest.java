@@ -16,20 +16,23 @@
 
 package com.alibaba.cloud.example.common;
 
+import java.util.List;
+
+import com.alibaba.cloud.example.common.entity.Product;
+import com.alibaba.cloud.example.common.entity.ResultHolder;
+
 /**
- * @author raozihao, mageekchiu
- * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
+ * @author yuluo
  */
-public enum RPCType {
 
-	/**
-	 * Spring Cloud.
-	 */
-	SpringCloud,
+public interface WebRequest {
 
-	/**
-	 * Dubbo.
-	 */
-	Dubbo
+	ResultHolder<List<Product>> list();
+
+	ResultHolder<Product> detail(String rId, String pId);
+
+	ResultHolder<Product> detailHidden(String pId);
+
+	ResultHolder<String> buy(String rpcType, String rId, String pId, Integer number);
 
 }
