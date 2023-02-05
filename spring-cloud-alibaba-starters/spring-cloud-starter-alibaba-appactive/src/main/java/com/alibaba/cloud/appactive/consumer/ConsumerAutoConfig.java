@@ -67,4 +67,16 @@ public class ConsumerAutoConfig {
 		return new FeignRouterIdTransmissionRequestInterceptor();
 	}
 
+	@Bean
+	@ConditionalOnMissingBean(name = "restTemplateStrategyBeanPostProcessor ")
+	public BeanPostProcessor restTemplateStrategyBeanPostProcessor() {
+		return new RestTemplateStrategyBeanPostProcessor(context);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(name = "reactiveRequestStrategyBeanPostProcessor ")
+	public BeanPostProcessor reactiveRequestStrategyBeanPostProcessor() {
+		return new ReactiveRequestStrategyBeanPostProcessor(context);
+	}
+
 }
