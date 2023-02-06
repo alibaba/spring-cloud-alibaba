@@ -15,7 +15,7 @@
     <name>Spring Cloud Alibaba Sentinel DataSource</name>
 
     <properties>
-        <opensergo-datasource.version>2.0.0-SNAPSHOT</opensergo-datasource.version>
+        <opensergo-datasource.version>0.1.0-beta</opensergo-datasource.version>
     </properties>
 
     <dependencies>
