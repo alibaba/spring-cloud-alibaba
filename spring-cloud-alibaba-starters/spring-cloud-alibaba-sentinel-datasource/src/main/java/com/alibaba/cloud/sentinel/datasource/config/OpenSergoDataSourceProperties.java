@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.sentinel.datasource.config;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
@@ -46,7 +47,7 @@ public class OpenSergoDataSourceProperties extends AbstractDataSourceProperties 
 
 	private String app = AppNameUtil.getAppName();
 
-	private Set<String> enabledRules;
+	private Set<String> enabledRules = new HashSet<>();
 
 	public OpenSergoDataSourceProperties() {
 		super(OpenSergoDataSourceFactoryBean.class.getName());
