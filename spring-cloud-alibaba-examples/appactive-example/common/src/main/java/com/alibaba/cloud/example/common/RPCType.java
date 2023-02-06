@@ -25,11 +25,6 @@ public enum RPCType {
 	/**
 	 * Spring Cloud.
 	 */
-	SpringCloud,
-
-	/**
-	 * Dubbo.
-	 */
-	Dubbo
+	SpringCloud
 
 }

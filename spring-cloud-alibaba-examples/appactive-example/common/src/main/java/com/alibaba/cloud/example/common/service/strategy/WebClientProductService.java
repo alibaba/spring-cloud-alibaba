@@ -16,35 +16,36 @@
 
 package com.alibaba.cloud.example.common.service.strategy;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.alibaba.cloud.example.common.WebRequest;
+import com.alibaba.cloud.example.common.ProductService;
 import com.alibaba.cloud.example.common.entity.Product;
 import com.alibaba.cloud.example.common.entity.ResultHolder;
+import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * @author yuluo
  */
 
 @Component
-public class RestTemplateRequestStrategy implements WebRequest {
+public class WebClientProductService implements ProductService {
 
 	@Autowired(required = false)
-	RestTemplate restTemplate;
+	WebClient webClient;
 
 	@Autowired
-	private FeignRequestStrategy feignRequestStrategy;
+	private FeignProductService feignRequestStrategy;
 
 	@Override
 	public ResultHolder<List<Product>> list() {
-		if (restTemplate != null) {
-			return restTemplate.getForObject("http://product/list", ResultHolder.class);
+		if (webClient != null) {
+			Mono<ResultHolder> resultHolderMono = webClient.get()
+					.uri("http://product/list").retrieve().bodyToMono(ResultHolder.class);
+			return resultHolderMono.block();
 		}
 		return feignRequestStrategy.list();
 	}
@@ -52,12 +53,14 @@ public class RestTemplateRequestStrategy implements WebRequest {
 	@Override
 	public ResultHolder<Product> detail(String rId, String pId) {
 
-		if (restTemplate != null) {
-			Map<String, String> params = new HashMap<>(2);
-			params.put("rId", rId);
-			params.put("pId", pId);
-			return restTemplate.getForObject("http://product/detail", ResultHolder.class,
-					params);
+		if (webClient != null) {
+			Mono<ResultHolder> resultHolderMono = webClient.get()
+					.uri(uriBuilder -> uriBuilder.scheme("http").host("product")
+							.path("/detail").queryParam("rId", rId).queryParam("pId", pId)
+							.build())
+					.retrieve().bodyToMono(ResultHolder.class);
+
+			return resultHolderMono.block();
 		}
 
 		return feignRequestStrategy.detail(rId, pId);

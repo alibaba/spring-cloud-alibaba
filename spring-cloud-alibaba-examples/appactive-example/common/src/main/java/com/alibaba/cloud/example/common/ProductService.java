@@ -25,7 +25,7 @@ import com.alibaba.cloud.example.common.entity.ResultHolder;
  * @author yuluo
  */
 
-public interface WebRequest {
+public interface ProductService {
 
 	ResultHolder<List<Product>> list();
 

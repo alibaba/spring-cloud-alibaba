@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 
 @FeignClient(name = "product")
-public interface FeignRequestStrategy {
+public interface FeignProductService {
 
 	@RequestMapping("/list/")
 	ResultHolder<List<Product>> list();

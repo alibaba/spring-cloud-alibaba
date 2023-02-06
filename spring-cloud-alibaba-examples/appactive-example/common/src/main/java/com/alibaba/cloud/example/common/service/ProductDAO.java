@@ -21,9 +21,9 @@ import java.util.List;
 import com.alibaba.cloud.example.common.RPCType;
 import com.alibaba.cloud.example.common.entity.Product;
 import com.alibaba.cloud.example.common.entity.ResultHolder;
-import com.alibaba.cloud.example.common.service.strategy.FeignRequestStrategy;
-import com.alibaba.cloud.example.common.service.strategy.RestTemplateRequestStrategy;
-import com.alibaba.cloud.example.common.service.strategy.WebClientRequestStrategy;
+import com.alibaba.cloud.example.common.service.strategy.FeignProductService;
+import com.alibaba.cloud.example.common.service.strategy.RestTemplateProductService;
+import com.alibaba.cloud.example.common.service.strategy.WebClientProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,48 +36,48 @@ public class ProductDAO {
 	RestTemplate restTemplate;
 
 	@Autowired
-	private FeignRequestStrategy feignRequestStrategy;
+	private FeignProductService feignRequest;
 
 	@Autowired
-	private RestTemplateRequestStrategy restTemplateRequestStrategy;
+	private RestTemplateProductService restTemplateRequest;
 
 	@Autowired
-	private WebClientRequestStrategy webClientRequestStrategy;
+	private WebClientProductService webClientRequest;
 
 	public ResultHolder<List<Product>> list() {
-		return feignRequestStrategy.list();
+		return feignRequest.list();
 	}
 
 	public ResultHolder<Product> detail(String rId, String pId) {
-		return feignRequestStrategy.detail(rId, pId);
+		return feignRequest.detail(rId, pId);
 	}
 
 	public ResultHolder<Product> detailHidden(String pId) {
-		return feignRequestStrategy.detailHidden(pId);
+		return feignRequest.detailHidden(pId);
 	}
 
 	public ResultHolder<String> buy(String rId, String pId, Integer number) {
-		return feignRequestStrategy.buy(RPCType.SpringCloud.name(), rId, pId, number);
+		return feignRequest.buy(RPCType.SpringCloud.name(), rId, pId, number);
 	}
 
 	public ResultHolder<List<Product>> listTemplate() {
 
-		return restTemplateRequestStrategy.list();
+		return restTemplateRequest.list();
 	}
 
 	public ResultHolder<Product> detailTemplate(String rId, String pId) {
 
-		return restTemplateRequestStrategy.detail(rId, pId);
+		return restTemplateRequest.detail(rId, pId);
 	}
 
 	public ResultHolder<List<Product>> listWebClient() {
 
-		return webClientRequestStrategy.list();
+		return webClientRequest.list();
 	}
 
 	public ResultHolder<Product> detailWebClient(String rId, String pId) {
 
-		return webClientRequestStrategy.detail(rId, pId);
+		return webClientRequest.detail(rId, pId);
 	}
 
 }

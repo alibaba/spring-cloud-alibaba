@@ -104,7 +104,7 @@ public class FrontController {
 	@GetMapping("/listProduct")
 	public String listProduct(
 			@CookieValue(value = "rpc_type", required = false,
-					defaultValue = "Dubbo") RPCType rpcType,
+					defaultValue = "SpringCloud") RPCType rpcType,
 			@RequestParam(required = false, defaultValue = "feign") String call,
 			Model model) {
 		// normal
@@ -135,7 +135,7 @@ public class FrontController {
 	@GetMapping("/detailProduct")
 	public String detailProduct(
 			@CookieValue(value = "rpc_type", required = false,
-					defaultValue = "Dubbo") RPCType rpcType,
+					defaultValue = "SpringCloud") RPCType rpcType,
 			@RequestParam(required = false, defaultValue = "12") String id,
 			@RequestParam(required = false, defaultValue = "false") Boolean hidden,
 			@RequestParam(required = false, defaultValue = "feign") String call,
@@ -182,7 +182,7 @@ public class FrontController {
 	@RequestMapping("/buyProduct")
 	public String buyProduct(
 			@CookieValue(value = "rpc_type", required = false,
-					defaultValue = "Dubbo") RPCType rpcType,
+					defaultValue = "SpringCloud") RPCType rpcType,
 			@RequestParam(required = false, defaultValue = "12") String pId,
 			@RequestParam(required = false, defaultValue = "1") Integer number,
 			@RequestParam(required = false, defaultValue = "feign") String call,
