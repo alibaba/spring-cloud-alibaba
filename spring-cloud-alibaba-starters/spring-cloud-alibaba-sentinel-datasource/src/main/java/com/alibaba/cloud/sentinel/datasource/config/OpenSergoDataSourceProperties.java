@@ -38,7 +38,8 @@ import org.springframework.util.CollectionUtils;
  * @author <a href="liuziming@buaa.edu.cn"></a>
  */
 public class OpenSergoDataSourceProperties extends AbstractDataSourceProperties {
-
+	private static final String FLOW = "flow";
+	private static final String DEGRADE = "degrade";
 	private String host = "127.0.0.1";
 
 	private int port = 10246;
@@ -55,10 +56,10 @@ public class OpenSergoDataSourceProperties extends AbstractDataSourceProperties 
 
 	public void postRegister(OpenSergoDataSourceGroup dataSourceGroup) {
 		// TODO: SystemRule and ParamFlowRule
-		if (enabledRules.contains(OpenSergoSentinelConstants.KIND_PARAM_FLOW_RULE)) {
+		if (enabledRules.contains(FLOW)) {
 			FlowRuleManager.register2Property(dataSourceGroup.subscribeFlowRules());
 		}
-		if (enabledRules.contains(OpenSergoSentinelConstants.KIND_CIRCUIT_BREAKER_RULE)) {
+		if (enabledRules.contains(DEGRADE)) {
 			DegradeRuleManager.register2Property(dataSourceGroup.subscribeDegradeRules());
 		}
 		// When there is no enabled-rules, try ruleType
