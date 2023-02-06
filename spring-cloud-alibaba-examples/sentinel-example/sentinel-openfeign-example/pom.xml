@@ -11,8 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <artifactId>sentinel-feign-consumer-example</artifactId>
-    <name>Spring Cloud Starter Alibaba Sentinel x Feign - Consumer Example</name>
+    <artifactId>sentinel-openfeign-example</artifactId>
+    <name>Spring Cloud Starter Alibaba Sentinel x Feign - Example</name>
     <description>Example demonstrating how to use sentinel with feign</description>
     <packaging>jar</packaging>
 

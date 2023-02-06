@@ -26,22 +26,22 @@ public class HttpbinClientFallback implements HttpbinClient {
 
 	@Override
 	public String delay() {
-		return "delay fallback";
+		return "delay degrade by sentinel";
 	}
 
 	@Override
 	public String status404() {
-		return "404 fallback";
+		return "404 degrade by sentinel";
 	}
 
 	@Override
 	public String status500() {
-		return "500 fallback";
+		return "500 degrade by sentinel";
 	}
 
 	@Override
 	public String get() {
-		return "get fallback";
+		return "get degrade by sentinel";
 	}
 
 	private Throwable throwable;

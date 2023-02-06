@@ -24,8 +24,9 @@ import org.springframework.web.bind.annotation.GetMapping;
  * Provide the external exposure interface of the service calling client.
  *
  * @author raozihao
+ * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-@FeignClient(name = "service-provider", url = "https://httpbin.org", contextId = "service-provider", fallbackFactory = EchoServiceFallbackFactory.class)
+@FeignClient(name = "openfeign-example", url = "https://httpbin.org", contextId = "openfeign-example", fallbackFactory = EchoServiceFallbackFactory.class)
 public interface HttpbinClient {
 
 	/**

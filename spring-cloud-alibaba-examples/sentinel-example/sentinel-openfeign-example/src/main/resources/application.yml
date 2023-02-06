@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: service-consumer
+    name: openfeign-example
   cloud:
     sentinel:
       transport:

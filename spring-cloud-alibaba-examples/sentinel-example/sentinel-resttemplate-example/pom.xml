@@ -12,8 +12,8 @@
 
 
     <artifactId>sentinel-resttemplate-example</artifactId>
-    <name>Spring Cloud Starter Alibaba Sentinel x RestTemplate - Consumer Example</name>
-    <description>Example demonstrating how to use sentinel with feign</description>
+    <name>Spring Cloud Starter Alibaba Sentinel x RestTemplate - Example</name>
+    <description>Example demonstrating how to use sentinel with RestTemplate</description>
     <packaging>jar</packaging>
 
 
