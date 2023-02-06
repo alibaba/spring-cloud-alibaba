@@ -25,6 +25,7 @@ import com.alibaba.csp.sentinel.datasource.OpenSergoDataSourceGroup;
 import com.alibaba.csp.sentinel.datasource.OpenSergoSentinelConstants;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.csp.sentinel.util.AppNameUtil;
 
 import org.springframework.util.CollectionUtils;
 
@@ -43,7 +44,7 @@ public class OpenSergoDataSourceProperties extends AbstractDataSourceProperties 
 
 	private String namespace = "default";
 
-	private String app;
+	private String app = AppNameUtil.getAppName();
 
 	private Set<String> enabledRules;
 
@@ -68,17 +69,6 @@ public class OpenSergoDataSourceProperties extends AbstractDataSourceProperties 
 		case DEGRADE:
 			DegradeRuleManager.register2Property(dataSourceGroup.subscribeDegradeRules());
 			break;
-		}
-	}
-
-	@Override
-	public void preCheck(String dataSourceName) {
-		if (StringUtils.isEmpty(app)) {
-			throw new IllegalArgumentException("OpenSergoDataSource app is empty");
-		}
-		if (CollectionUtils.isEmpty(enabledRules)) {
-			throw new IllegalArgumentException(
-					"OpenSergoDataSource enabled-rules is empty");
 		}
 	}
 
