@@ -17,6 +17,7 @@
 package com.alibaba.cloud.sentinel;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
