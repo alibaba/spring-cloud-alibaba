@@ -68,13 +68,13 @@ public class ConsumerAutoConfig {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(name = "restTemplateStrategyBeanPostProcessor ")
+	@ConditionalOnMissingBean(name = "restTemplateStrategyBeanPostProcessor")
 	public BeanPostProcessor restTemplateStrategyBeanPostProcessor() {
 		return new RestTemplateStrategyBeanPostProcessor(context);
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(name = "reactiveRequestStrategyBeanPostProcessor ")
+	@ConditionalOnMissingBean(name = "reactiveRequestStrategyBeanPostProcessor")
 	public BeanPostProcessor reactiveRequestStrategyBeanPostProcessor() {
 		return new ReactiveRequestStrategyBeanPostProcessor(context);
 	}
