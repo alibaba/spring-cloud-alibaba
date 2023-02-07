@@ -16,19 +16,17 @@
 
 package com.alibaba.cloud.example.common.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.alibaba.cloud.example.common.RPCType;
 import com.alibaba.cloud.example.common.entity.Product;
 import com.alibaba.cloud.example.common.entity.ResultHolder;
+import com.alibaba.cloud.example.common.service.strategy.FeignProductService;
+import com.alibaba.cloud.example.common.service.strategy.RestTemplateProductService;
+import com.alibaba.cloud.example.common.service.strategy.WebClientProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -38,61 +36,48 @@ public class ProductDAO {
 	RestTemplate restTemplate;
 
 	@Autowired
-	private ProductService productService;
+	private FeignProductService feignProductService;
+
+	@Autowired
+	private RestTemplateProductService restTemplateProductService;
+
+	@Autowired
+	private WebClientProductService webClientProductService;
 
 	public ResultHolder<List<Product>> list() {
-		return productService.list();
+		return feignProductService.list();
 	}
 
 	public ResultHolder<Product> detail(String rId, String pId) {
-		return productService.detail(rId, pId);
+		return feignProductService.detail(rId, pId);
 	}
 
 	public ResultHolder<Product> detailHidden(String pId) {
-		return productService.detailHidden(pId);
+		return feignProductService.detailHidden(pId);
 	}
 
 	public ResultHolder<String> buy(String rId, String pId, Integer number) {
-		return productService.buy(RPCType.SpringCloud.name(), rId, pId, number);
+		return feignProductService.buy(RPCType.SpringCloud.name(), rId, pId, number);
 	}
 
-	public ResultHolder<List<Product>> listTemplate() {
-		if (restTemplate != null) {
-			return restTemplate.getForObject("http://product/list", ResultHolder.class);
-		}
-		return productService.list();
+	public ResultHolder<List<Product>> listByRestTemplate() {
+
+		return restTemplateProductService.list();
 	}
 
-	public ResultHolder<Product> detailTemplate(String rId, String pId) {
-		if (restTemplate != null) {
-			Map<String, String> params = new HashMap<>(2);
-			params.put("rId", rId);
-			params.put("pId", pId);
-			return restTemplate.getForObject("http://product/detail", ResultHolder.class,
-					params);
-		}
-		return productService.detail(rId, pId);
+	public ResultHolder<Product> detailByRestTemplate(String rId, String pId) {
+
+		return restTemplateProductService.detail(rId, pId);
 	}
 
-	@FeignClient(name = "product")
-	public interface ProductService {
+	public ResultHolder<List<Product>> listByWebClient() {
 
-		@RequestMapping("/list/")
-		ResultHolder<List<Product>> list();
+		return webClientProductService.list();
+	}
 
-		@RequestMapping("/detail/")
-		ResultHolder<Product> detail(@RequestParam(name = "rId") String rId,
-				@RequestParam(name = "pId") String pId);
+	public ResultHolder<Product> detailByWebClient(String rId, String pId) {
 
-		@RequestMapping("/detailHidden/")
-		ResultHolder<Product> detailHidden(@RequestParam(name = "pId") String pId);
-
-		@RequestMapping("/buy/")
-		ResultHolder<String> buy(@RequestParam(name = "rpcType") String rpcType,
-				@RequestParam(name = "rId") String rId,
-				@RequestParam(name = "pId") String pId,
-				@RequestParam(name = "number") Integer number);
-
+		return webClientProductService.detail(rId, pId);
 	}
 
 }

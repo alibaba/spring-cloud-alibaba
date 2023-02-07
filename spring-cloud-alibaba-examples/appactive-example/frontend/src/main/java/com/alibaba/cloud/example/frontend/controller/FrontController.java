@@ -19,10 +19,12 @@ package com.alibaba.cloud.example.frontend.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.alibaba.cloud.example.common.Constants;
 import com.alibaba.cloud.example.common.RPCType;
 import com.alibaba.cloud.example.common.entity.Product;
 import com.alibaba.cloud.example.common.entity.ResultHolder;
@@ -103,12 +105,26 @@ public class FrontController {
 	@GetMapping("/listProduct")
 	public String listProduct(
 			@CookieValue(value = "rpc_type", required = false,
-					defaultValue = "Dubbo") RPCType rpcType,
-			@RequestParam(required = false, defaultValue = "feign") String call,
+					defaultValue = "SpringCloud") RPCType rpcType,
+			@RequestParam(required = false, defaultValue = Constants.FEIGN) String call,
 			Model model) {
 		// normal
-		ResultHolder<List<Product>> resultHolder = (call.equals("feign")
-				? productDAO.list() : productDAO.listTemplate());
+		ResultHolder<List<Product>> resultHolder;
+
+		// Determine the method of the request
+		switch (call) {
+		case Constants.FEIGN:
+			resultHolder = productDAO.list();
+			break;
+		case Constants.REST_TEMPLATE:
+			resultHolder = productDAO.listByRestTemplate();
+			break;
+		case Constants.WEB_CLIENT:
+			resultHolder = productDAO.listByWebClient();
+			break;
+		default:
+			throw new IllegalArgumentException("The web request is malformed.");
+		}
 
 		model.addAttribute("result", JSON.toJSONString(resultHolder.getResult()));
 		model.addAttribute("products", resultHolder.getResult());
@@ -120,10 +136,10 @@ public class FrontController {
 	@GetMapping("/detailProduct")
 	public String detailProduct(
 			@CookieValue(value = "rpc_type", required = false,
-					defaultValue = "Dubbo") RPCType rpcType,
+					defaultValue = "SpringCloud") RPCType rpcType,
 			@RequestParam(required = false, defaultValue = "12") String id,
 			@RequestParam(required = false, defaultValue = "false") Boolean hidden,
-			@RequestParam(required = false, defaultValue = "feign") String call,
+			@RequestParam(required = false, defaultValue = Constants.FEIGN) String call,
 			Model model) {
 		// unit
 		ResultHolder<Product> resultHolder = getProductResultHolder(rpcType, id, hidden,
@@ -138,21 +154,39 @@ public class FrontController {
 
 	private ResultHolder<Product> getProductResultHolder(RPCType rpcType, String id,
 			Boolean hidden, String call) {
+
+		// normal
 		ResultHolder<Product> resultHolder;
-		resultHolder = hidden ? productDAO.detailHidden(id)
-				: (call.equals("feign")
-						? productDAO.detail(AppContextClient.getRouteId(), id)
-						: productDAO.detailTemplate(AppContextClient.getRouteId(), id));
+
+		if (Objects.equals(hidden, true)) {
+			return productDAO.detailHidden(id);
+		}
+
+		// Determine the method of the request
+		switch (call) {
+		case Constants.FEIGN:
+			resultHolder = productDAO.detail(AppContextClient.getRouteId(), id);
+			break;
+		case Constants.REST_TEMPLATE:
+			resultHolder = productDAO.detailByRestTemplate(AppContextClient.getRouteId(), id);
+			break;
+		case Constants.WEB_CLIENT:
+			resultHolder = productDAO.detailByWebClient(AppContextClient.getRouteId(), id);
+			break;
+		default:
+			throw new IllegalArgumentException("The web request is malformed.");
+		}
+
 		return resultHolder;
 	}
 
 	@RequestMapping("/buyProduct")
 	public String buyProduct(
 			@CookieValue(value = "rpc_type", required = false,
-					defaultValue = "Dubbo") RPCType rpcType,
+					defaultValue = "SpringCloud") RPCType rpcType,
 			@RequestParam(required = false, defaultValue = "12") String pId,
 			@RequestParam(required = false, defaultValue = "1") Integer number,
-			@RequestParam(required = false, defaultValue = "feign") String call,
+			@RequestParam(required = false, defaultValue = Constants.FEIGN) String call,
 			Model model) {
 		// unit
 		ResultHolder<String> resultHolder = productDAO.buy(AppContextClient.getRouteId(),

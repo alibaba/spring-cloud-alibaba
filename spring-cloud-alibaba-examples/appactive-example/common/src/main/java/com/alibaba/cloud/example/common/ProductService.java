@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021 the original author or authors.
+ * Copyright 2013-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,23 @@
 
 package com.alibaba.cloud.example.common;
 
+import java.util.List;
+
+import com.alibaba.cloud.example.common.entity.Product;
+import com.alibaba.cloud.example.common.entity.ResultHolder;
+
 /**
- * @author ChengPu raozihao
+ * @author yuluo
  */
-public final class Constants {
 
-	/**
-	 * center flag.
-	 */
-	public static final String CENTER_FLAG = "center";
+public interface ProductService {
 
-	/**
-	 * Feign.
-	 */
-	public static final String FEIGN = "Feign";
+	ResultHolder<List<Product>> list();
 
-	/**
-	 * RestTemplate.
-	 */
-	public static final String REST_TEMPLATE = "RestTemplate";
+	ResultHolder<Product> detail(String rId, String pId);
 
-	/**
-	 * WebClient.
-	 */
-	public static final String WEB_CLIENT = "WebClient";
+	ResultHolder<Product> detailHidden(String pId);
 
-	private Constants() {
-	}
+	ResultHolder<String> buy(String rpcType, String rId, String pId, Integer number);
 
 }
