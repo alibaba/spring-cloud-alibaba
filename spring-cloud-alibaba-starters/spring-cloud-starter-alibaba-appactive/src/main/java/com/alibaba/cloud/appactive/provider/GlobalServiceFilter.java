@@ -26,7 +26,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.cloud.appactive.constant.Constants;
+import com.alibaba.cloud.appactive.constant.AppactiveConstants;
 import io.appactive.java.api.base.AppContextClient;
 import io.appactive.java.api.bridge.servlet.ServletService;
 import io.appactive.java.api.rule.machine.AbstractMachineUnitRuleService;
@@ -60,7 +60,7 @@ public class GlobalServiceFilter implements Filter {
 		}
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String routerId = ServletService.getRouteIdFromHeader(httpRequest,
-				Constants.ROUTER_ID_HEADER_KEY);
+				AppactiveConstants.ROUTER_ID_HEADER_KEY);
 		if (StringUtils.isNotBlank(routerId)) {
 			AppContextClient.setUnitContext(routerId);
 		}

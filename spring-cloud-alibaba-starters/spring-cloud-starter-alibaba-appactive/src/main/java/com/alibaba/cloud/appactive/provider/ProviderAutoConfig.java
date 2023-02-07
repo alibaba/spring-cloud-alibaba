@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
  * @author mageekchiu
  */
 @Configuration
-public class NacosAutoConfig {
+public class ProviderAutoConfig {
 
 	@Autowired
 	private List<FilterRegistrationBean<? extends Filter>> beanList;

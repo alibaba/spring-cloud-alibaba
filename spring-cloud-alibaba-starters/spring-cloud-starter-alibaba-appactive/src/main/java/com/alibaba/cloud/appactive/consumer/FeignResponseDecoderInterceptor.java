@@ -17,40 +17,39 @@
 package com.alibaba.cloud.appactive.consumer;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Objects;
 
 import com.alibaba.cloud.appactive.common.UriContext;
-import com.alibaba.cloud.appactive.constant.Constants;
-import io.appactive.java.api.base.AppContextClient;
+import feign.FeignException;
+import feign.Response;
+import feign.codec.Decoder;
 import io.appactive.support.log.LogUtil;
 import org.slf4j.Logger;
-
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestExecution;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
 
 /**
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public class ReqResInterceptor implements ClientHttpRequestInterceptor {
+public class FeignResponseDecoderInterceptor implements Decoder {
 
 	private static final Logger logger = LogUtil.getLogger();
 
+	final Decoder delegate;
+
+	public FeignResponseDecoderInterceptor(Decoder delegate) {
+		Objects.requireNonNull(delegate, "Decoder must not be null. ");
+		this.delegate = delegate;
+	}
+
 	@Override
-	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
-			ClientHttpRequestExecution execution) throws IOException {
-
-		request.getHeaders().add(Constants.ROUTER_ID_HEADER_KEY,
-				AppContextClient.getRouteId());
-		UriContext.setUriPath(request.getURI().getPath());
-
-		ClientHttpResponse response = execution.execute(request, body);
-
-		logger.info("ReqResInterceptor uri {} for request {} got cleared",
-				UriContext.getUriPath(), request.getURI());
+	public Object decode(Response response, Type type)
+			throws IOException, FeignException {
+		Object object = delegate.decode(response, type);
+		logger.info("FeignResponseDecoderInterceptor uri {} for request {} got cleared by {}",
+				UriContext.getUriPath(), response.request().url(), delegate.getClass());
 		UriContext.clearContext();
-		return response;
+		return object;
 	}
 
 }

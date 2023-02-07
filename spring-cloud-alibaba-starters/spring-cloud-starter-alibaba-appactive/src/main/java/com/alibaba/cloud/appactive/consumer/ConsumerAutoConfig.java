@@ -16,15 +16,9 @@
 
 package com.alibaba.cloud.appactive.consumer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
 import feign.RequestInterceptor;
 import feign.codec.Decoder;
 import feign.optionals.OptionalDecoder;
-import io.appactive.support.lang.CollectionUtils;
 import io.appactive.support.log.LogUtil;
 import org.slf4j.Logger;
 
@@ -38,8 +32,6 @@ import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author raozihao, mageekchiu
@@ -51,10 +43,7 @@ public class ConsumerAutoConfig {
 	private static final Logger logger = LogUtil.getLogger();
 
 	@Autowired
-	ApplicationContext context;
-
-	@Autowired(required = false)
-	RestTemplate restTemplate;
+	private ApplicationContext context;
 
 	@Autowired
 	private ObjectFactory<HttpMessageConverters> messageConverters;
@@ -67,29 +56,27 @@ public class ConsumerAutoConfig {
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(name = "feignDecoderPostProcessor")
 	public BeanPostProcessor feignDecoderPostProcessor() {
 		return new FeignDecoderPostProcessor(context);
 	}
 
 	@Bean
-	public RequestInterceptor routerIdTransmissionRequestInterceptor() {
-		return new RouterIdTransmissionRequestInterceptor();
+	@ConditionalOnMissingBean(name = "feignRouterIdTransmissionRequestInterceptor")
+	public RequestInterceptor feignRouterIdTransmissionRequestInterceptor() {
+		return new FeignRouterIdTransmissionRequestInterceptor();
 	}
 
-	@PostConstruct
-	public void init() {
-		if (restTemplate != null) {
-			List<ClientHttpRequestInterceptor> interceptors = restTemplate
-					.getInterceptors();
-			if (CollectionUtils.isEmpty(interceptors)) {
-				interceptors = new ArrayList<>();
-			}
-			interceptors.add(new ReqResInterceptor());
-			logger.info(
-					"ConsumerAutoConfig adding interceptor for restTemplate[{}]......",
-					restTemplate.getClass());
-			restTemplate.setInterceptors(interceptors);
-		}
+	@Bean
+	@ConditionalOnMissingBean(name = "restTemplateStrategyBeanPostProcessor")
+	public BeanPostProcessor restTemplateStrategyBeanPostProcessor() {
+		return new RestTemplateStrategyBeanPostProcessor(context);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(name = "reactiveRequestStrategyBeanPostProcessor")
+	public BeanPostProcessor reactiveRequestStrategyBeanPostProcessor() {
+		return new ReactiveRequestStrategyBeanPostProcessor(context);
 	}
 
 }

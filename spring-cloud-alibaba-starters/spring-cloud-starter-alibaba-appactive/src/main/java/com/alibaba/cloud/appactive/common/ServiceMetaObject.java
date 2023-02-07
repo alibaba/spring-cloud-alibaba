@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class ServiceMetaObject {
 
-	private List<ServiceMeta> serviceMetaList;
+	private List<ServiceMetaEntity> serviceMetaList;
 
 	/**
 	 * string of serviceMetaList.
@@ -33,7 +33,7 @@ public class ServiceMetaObject {
 
 	private String md5OfList;
 
-	public ServiceMetaObject(List<ServiceMeta> serviceMetaList, String md5OfList) {
+	public ServiceMetaObject(List<ServiceMetaEntity> serviceMetaList, String md5OfList) {
 		this.serviceMetaList = serviceMetaList;
 		this.md5OfList = md5OfList;
 	}
@@ -41,11 +41,11 @@ public class ServiceMetaObject {
 	public ServiceMetaObject() {
 	}
 
-	public List<ServiceMeta> getServiceMetaList() {
+	public List<ServiceMetaEntity> getServiceMetaList() {
 		return serviceMetaList;
 	}
 
-	public void setServiceMetaList(List<ServiceMeta> serviceMetaList) {
+	public void setServiceMetaList(List<ServiceMetaEntity> serviceMetaList) {
 		this.serviceMetaList = serviceMetaList;
 	}
 
@@ -67,7 +67,7 @@ public class ServiceMetaObject {
 
 	@Override
 	public String toString() {
-		return "ServiceMetaObject{" + "serviceMetaList=" + serviceMetaList
+		return "ServiceMetaObject{" + "ServiceMetaEntityList=" + serviceMetaList
 				+ ", md5OfList='" + md5OfList + '\'' + '}';
 	}
 

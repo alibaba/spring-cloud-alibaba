@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.appactive.common.ServiceMeta;
+import com.alibaba.cloud.appactive.common.ServiceMetaEntity;
 import com.alibaba.cloud.appactive.common.UriContext;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
 import com.alibaba.fastjson.JSONObject;
@@ -81,10 +81,10 @@ public class AppactivePredicate extends AbstractServerPredicate {
 			return true;
 		}
 		String serviceType = null;
-		List<ServiceMeta> serviceMetas = JSONObject.parseArray(svcMeta,
-				ServiceMeta.class);
+		List<ServiceMetaEntity> serviceMetas = JSONObject.parseArray(svcMeta,
+				ServiceMetaEntity.class);
 		Map<String, String> matchingPatterns = new HashMap<>();
-		for (ServiceMeta sm : serviceMetas) {
+		for (ServiceMetaEntity sm : serviceMetas) {
 			if (antPathMatcher.match(sm.getUriPrefix(), uriPath)) {
 				matchingPatterns.put(sm.getUriPrefix(), sm.getRa());
 			}

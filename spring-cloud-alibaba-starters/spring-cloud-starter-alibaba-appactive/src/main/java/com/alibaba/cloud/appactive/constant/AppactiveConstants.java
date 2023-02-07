@@ -20,14 +20,29 @@ package com.alibaba.cloud.appactive.constant;
  * @author raozihao, mageekchiu
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-public final class Constants {
+public final class AppactiveConstants {
 
 	/**
 	 * Router Id header key.
 	 */
 	public static final String ROUTER_ID_HEADER_KEY = "appactive-router-id";
 
-	private Constants() {
+	/**
+	 * Unit type.
+	 */
+	public static final String UT = "ut";
+
+	/**
+	 * Meta.
+	 */
+	public static final String SVC_META = "svc_meta";
+
+	/**
+	 * Version.
+	 */
+	public static final String SVC_META_V = "svc_meta_v";
+
+	private AppactiveConstants() {
 	}
 
 }
