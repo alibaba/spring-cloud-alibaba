@@ -38,7 +38,7 @@ public class WebClientProductService implements ProductService {
 	WebClient webClient;
 
 	@Autowired
-	private FeignProductService feignRequestStrategy;
+	private FeignProductService feignProductService;
 
 	@Override
 	public ResultHolder<List<Product>> list() {
@@ -47,7 +47,7 @@ public class WebClientProductService implements ProductService {
 					.uri("http://product/list").retrieve().bodyToMono(ResultHolder.class);
 			return resultHolderMono.block();
 		}
-		return feignRequestStrategy.list();
+		return feignProductService.list();
 	}
 
 	@Override
@@ -63,20 +63,20 @@ public class WebClientProductService implements ProductService {
 			return resultHolderMono.block();
 		}
 
-		return feignRequestStrategy.detail(rId, pId);
+		return feignProductService.detail(rId, pId);
 	}
 
 	@Override
 	public ResultHolder<Product> detailHidden(String pId) {
 
-		return feignRequestStrategy.detailHidden(pId);
+		return feignProductService.detailHidden(pId);
 	}
 
 	@Override
 	public ResultHolder<String> buy(String rpcType, String rId, String pId,
 			Integer number) {
 
-		return feignRequestStrategy.buy(rpcType, rId, pId, number);
+		return feignProductService.buy(rpcType, rId, pId, number);
 	}
 
 }

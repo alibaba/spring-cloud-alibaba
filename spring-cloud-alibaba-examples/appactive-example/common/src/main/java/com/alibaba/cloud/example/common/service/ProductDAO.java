@@ -36,48 +36,48 @@ public class ProductDAO {
 	RestTemplate restTemplate;
 
 	@Autowired
-	private FeignProductService feignRequest;
+	private FeignProductService feignProductService;
 
 	@Autowired
-	private RestTemplateProductService restTemplateRequest;
+	private RestTemplateProductService restTemplateProductService;
 
 	@Autowired
-	private WebClientProductService webClientRequest;
+	private WebClientProductService webClientProductService;
 
 	public ResultHolder<List<Product>> list() {
-		return feignRequest.list();
+		return feignProductService.list();
 	}
 
 	public ResultHolder<Product> detail(String rId, String pId) {
-		return feignRequest.detail(rId, pId);
+		return feignProductService.detail(rId, pId);
 	}
 
 	public ResultHolder<Product> detailHidden(String pId) {
-		return feignRequest.detailHidden(pId);
+		return feignProductService.detailHidden(pId);
 	}
 
 	public ResultHolder<String> buy(String rId, String pId, Integer number) {
-		return feignRequest.buy(RPCType.SpringCloud.name(), rId, pId, number);
+		return feignProductService.buy(RPCType.SpringCloud.name(), rId, pId, number);
 	}
 
-	public ResultHolder<List<Product>> listTemplate() {
+	public ResultHolder<List<Product>> listByRestTemplate() {
 
-		return restTemplateRequest.list();
+		return restTemplateProductService.list();
 	}
 
-	public ResultHolder<Product> detailTemplate(String rId, String pId) {
+	public ResultHolder<Product> detailByRestTemplate(String rId, String pId) {
 
-		return restTemplateRequest.detail(rId, pId);
+		return restTemplateProductService.detail(rId, pId);
 	}
 
-	public ResultHolder<List<Product>> listWebClient() {
+	public ResultHolder<List<Product>> listByWebClient() {
 
-		return webClientRequest.list();
+		return webClientProductService.list();
 	}
 
-	public ResultHolder<Product> detailWebClient(String rId, String pId) {
+	public ResultHolder<Product> detailByWebClient(String rId, String pId) {
 
-		return webClientRequest.detail(rId, pId);
+		return webClientProductService.detail(rId, pId);
 	}
 
 }

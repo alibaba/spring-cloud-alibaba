@@ -39,14 +39,14 @@ public class RestTemplateProductService implements ProductService {
 	RestTemplate restTemplate;
 
 	@Autowired
-	private FeignProductService feignRequestStrategy;
+	private FeignProductService feignProductService;
 
 	@Override
 	public ResultHolder<List<Product>> list() {
 		if (restTemplate != null) {
 			return restTemplate.getForObject("http://product/list", ResultHolder.class);
 		}
-		return feignRequestStrategy.list();
+		return feignProductService.list();
 	}
 
 	@Override
@@ -60,20 +60,20 @@ public class RestTemplateProductService implements ProductService {
 					params);
 		}
 
-		return feignRequestStrategy.detail(rId, pId);
+		return feignProductService.detail(rId, pId);
 	}
 
 	@Override
 	public ResultHolder<Product> detailHidden(String pId) {
 
-		return feignRequestStrategy.detailHidden(pId);
+		return feignProductService.detailHidden(pId);
 	}
 
 	@Override
 	public ResultHolder<String> buy(String rpcType, String rId, String pId,
 			Integer number) {
 
-		return feignRequestStrategy.buy(rpcType, rId, pId, number);
+		return feignProductService.buy(rpcType, rId, pId, number);
 	}
 
 }

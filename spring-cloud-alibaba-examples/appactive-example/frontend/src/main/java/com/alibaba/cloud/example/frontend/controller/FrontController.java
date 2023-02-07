@@ -24,6 +24,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.alibaba.cloud.example.common.Constants;
 import com.alibaba.cloud.example.common.RPCType;
 import com.alibaba.cloud.example.common.entity.Product;
 import com.alibaba.cloud.example.common.entity.ResultHolder;
@@ -105,21 +106,21 @@ public class FrontController {
 	public String listProduct(
 			@CookieValue(value = "rpc_type", required = false,
 					defaultValue = "SpringCloud") RPCType rpcType,
-			@RequestParam(required = false, defaultValue = "feign") String call,
+			@RequestParam(required = false, defaultValue = Constants.FEIGN) String call,
 			Model model) {
 		// normal
 		ResultHolder<List<Product>> resultHolder;
 
 		// Determine the method of the request
 		switch (call) {
-		case "feign":
+		case Constants.FEIGN:
 			resultHolder = productDAO.list();
 			break;
-		case "rest":
-			resultHolder = productDAO.listTemplate();
+		case Constants.REST_TEMPLATE:
+			resultHolder = productDAO.listByRestTemplate();
 			break;
-		case "WebClient":
-			resultHolder = productDAO.listWebClient();
+		case Constants.WEB_CLIENT:
+			resultHolder = productDAO.listByWebClient();
 			break;
 		default:
 			throw new IllegalArgumentException("The web request is malformed.");
@@ -138,7 +139,7 @@ public class FrontController {
 					defaultValue = "SpringCloud") RPCType rpcType,
 			@RequestParam(required = false, defaultValue = "12") String id,
 			@RequestParam(required = false, defaultValue = "false") Boolean hidden,
-			@RequestParam(required = false, defaultValue = "feign") String call,
+			@RequestParam(required = false, defaultValue = Constants.FEIGN) String call,
 			Model model) {
 		// unit
 		ResultHolder<Product> resultHolder = getProductResultHolder(rpcType, id, hidden,
@@ -163,14 +164,14 @@ public class FrontController {
 
 		// Determine the method of the request
 		switch (call) {
-		case "feign":
+		case Constants.FEIGN:
 			resultHolder = productDAO.detail(AppContextClient.getRouteId(), id);
 			break;
-		case "rest":
-			resultHolder = productDAO.detailTemplate(AppContextClient.getRouteId(), id);
+		case Constants.REST_TEMPLATE:
+			resultHolder = productDAO.detailByRestTemplate(AppContextClient.getRouteId(), id);
 			break;
-		case "WebClient":
-			resultHolder = productDAO.detailWebClient(AppContextClient.getRouteId(), id);
+		case Constants.WEB_CLIENT:
+			resultHolder = productDAO.detailByWebClient(AppContextClient.getRouteId(), id);
 			break;
 		default:
 			throw new IllegalArgumentException("The web request is malformed.");
@@ -185,7 +186,7 @@ public class FrontController {
 					defaultValue = "SpringCloud") RPCType rpcType,
 			@RequestParam(required = false, defaultValue = "12") String pId,
 			@RequestParam(required = false, defaultValue = "1") Integer number,
-			@RequestParam(required = false, defaultValue = "feign") String call,
+			@RequestParam(required = false, defaultValue = Constants.FEIGN) String call,
 			Model model) {
 		// unit
 		ResultHolder<String> resultHolder = productDAO.buy(AppContextClient.getRouteId(),

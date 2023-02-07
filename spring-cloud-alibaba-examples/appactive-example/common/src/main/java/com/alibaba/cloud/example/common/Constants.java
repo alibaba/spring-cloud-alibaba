@@ -26,6 +26,21 @@ public final class Constants {
 	 */
 	public static final String CENTER_FLAG = "center";
 
+	/**
+	 * Feign.
+	 */
+	public static final String FEIGN = "Feign";
+
+	/**
+	 * RestTemplate.
+	 */
+	public static final String REST_TEMPLATE = "RestTemplate";
+
+	/**
+	 * WebClient.
+	 */
+	public static final String WEB_CLIENT = "WebClient";
+
 	private Constants() {
 	}
 
