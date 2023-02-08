@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.kubernetes.config;
-
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Configuration;
-
 /**
- * @author Freeman
+ * Package `it` is shorthand for integration testing.
+ *
+ * <p>
+ * The tests under this package will detect whether there is a Kubernetes environment, if
+ * there is, the tests will be executed, and if not, the tests will be skipped.
+ *
+ * <p>
+ * How to run integration tests:
+ * <p>
+ * You must have a Kubernetes cluster, and the current-context in ~/.kube/config has
+ * access rights to ConfigMap and Secret. Then you can run the following command:
+ * <p>
+ * ./mvnw clean test -pl com.alibaba.cloud:spring-cloud-starter-alibaba-kubernetes-config
+ * -am
+ *
  */
-@Configuration(proxyBeanMethods = false)
-@EnableAutoConfiguration
-public class Empty {
-}
+package com.alibaba.cloud.kubernetes.config.it;

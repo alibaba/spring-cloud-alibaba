@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.kubernetes.config;
+package com.alibaba.cloud.kubernetes.config.it;
 
 import com.alibaba.cloud.kubernetes.config.testsupport.KubernetesAvailable;
 import org.junit.jupiter.api.AfterAll;
@@ -27,7 +27,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 
 import static com.alibaba.cloud.kubernetes.config.testsupport.KubernetesTestUtil.createOrReplaceConfigMap;
+import static com.alibaba.cloud.kubernetes.config.testsupport.KubernetesTestUtil.createOrReplaceSecret;
 import static com.alibaba.cloud.kubernetes.config.testsupport.KubernetesTestUtil.deleteConfigMap;
+import static com.alibaba.cloud.kubernetes.config.testsupport.KubernetesTestUtil.deleteSecret;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
@@ -36,54 +38,53 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  */
 @KubernetesAvailable
 @SpringBootTest(classes = Empty.class, webEnvironment = NONE)
-@ActiveProfiles("not-refreshable")
-public class NotRefreshableIntegrationTests {
+@ActiveProfiles("secret")
+public class SecretIntegrationTests {
 
 	@BeforeAll
 	static void init() {
-		createOrReplaceConfigMap("not_refreshable/configmap-01.yaml");
-		createOrReplaceConfigMap("not_refreshable/configmap-02.yaml");
+		createOrReplaceConfigMap("secret/configmap.yaml");
+		createOrReplaceSecret("secret/secret.yaml");
+		createOrReplaceSecret("secret/secret-refreshable.yaml");
 	}
 
 	@AfterAll
 	static void recover() {
-		deleteConfigMap("not_refreshable/configmap-01-changed.yaml");
-		deleteConfigMap("not_refreshable/configmap-02-changed.yaml");
+		deleteConfigMap("secret/configmap.yaml");
+		deleteSecret("secret/secret.yaml");
+		deleteSecret("secret/secret-refreshable.yaml");
 	}
 
 	@Autowired
 	private Environment env;
 
 	@Test
-	void testNotRefreshable() throws InterruptedException {
-		assertThat(env.getProperty("username")).isEqualTo("admin");
-		assertThat(env.getProperty("password")).isEqualTo("666");
+	void testSecret() throws InterruptedException {
+		// secret win, configmap lose
+		assertThat(env.getProperty("username")).isNotEqualTo("admin");
+		assertThat(env.getProperty("username")).isNotEqualTo("cm9vdAo=");
+		assertThat(env.getProperty("username")).isEqualTo("root");
+		assertThat(env.getProperty("password")).isNotEqualTo("666");
+		assertThat(env.getProperty("password")).isNotEqualTo("MTEyMzIyMwo=");
+		assertThat(env.getProperty("password")).isEqualTo("1123223"); // MTEyMzIyMwo=
+
+		assertThat(env.getProperty("price")).isEqualTo("100");
+
 		assertThat(env.getProperty("hobbies[0]")).isEqualTo("reading");
 		assertThat(env.getProperty("hobbies[1]")).isEqualTo("writing");
 		assertThat(env.getProperty("hobbies[2]")).isNull();
 
-		// update configmap-01
-		createOrReplaceConfigMap("not_refreshable/configmap-01-changed.yaml");
+		createOrReplaceSecret("secret/secret-changed.yaml");
+		createOrReplaceSecret("secret/secret-refreshable-changed.yaml");
 
-		// context is refreshing
+		// make sure context is refreshed
 		Thread.sleep(1000);
 
-		assertThat(env.getProperty("username")).isEqualTo("admin");
-		assertThat(env.getProperty("password")).isEqualTo("888");
-		assertThat(env.getProperty("hobbies[0]")).isEqualTo("reading");
-		assertThat(env.getProperty("hobbies[1]")).isEqualTo("writing");
-		assertThat(env.getProperty("hobbies[2]")).isNull();
+		// secret refresh is disabled by default
+		assertThat(env.getProperty("username")).isNotEqualTo("root2");
+		assertThat(env.getProperty("username")).isEqualTo("root");
 
-		// update configmap-02
-		createOrReplaceConfigMap("not_refreshable/configmap-02-changed.yaml");
-
-		// context is refreshing
-		Thread.sleep(1000);
-
-		assertThat(env.getProperty("username")).isEqualTo("admin");
-		assertThat(env.getProperty("password")).isEqualTo("888");
-		assertThat(env.getProperty("hobbies[0]")).isEqualTo("reading");
-		assertThat(env.getProperty("hobbies[1]")).isNotEqualTo("singing");
-		assertThat(env.getProperty("hobbies[2]")).isNull();
+		// test refreshable secret
+		assertThat(env.getProperty("price")).isEqualTo("200");
 	}
 }

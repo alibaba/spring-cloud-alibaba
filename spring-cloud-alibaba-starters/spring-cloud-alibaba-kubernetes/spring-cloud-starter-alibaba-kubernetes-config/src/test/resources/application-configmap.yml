@@ -7,7 +7,7 @@ spring:
           - name: my-configmap
             refreshable: true
   application:
-    name: normal
+    name: configmap
 logging:
   level:
     com.alibaba.kubernetes.config: debug

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.kubernetes.config;
+package com.alibaba.cloud.kubernetes.config.it;
 
 import com.alibaba.cloud.kubernetes.config.testsupport.KubernetesAvailable;
-import com.alibaba.cloud.kubernetes.config.testsupport.KubernetesTestUtil;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 
+import static com.alibaba.cloud.kubernetes.config.testsupport.KubernetesTestUtil.createOrReplaceConfigMap;
+import static com.alibaba.cloud.kubernetes.config.testsupport.KubernetesTestUtil.deleteConfigMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
@@ -35,32 +36,34 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  */
 @KubernetesAvailable
 @SpringBootTest(classes = Empty.class, webEnvironment = NONE)
-@ActiveProfiles("normal")
-public class NormalIntegrationTests {
+@ActiveProfiles("not-refreshable")
+public class NotRefreshableIntegrationTests {
 
 	@BeforeAll
 	static void init() {
-		KubernetesTestUtil.createOrReplaceConfigMap("normal/configmap.yaml");
+		createOrReplaceConfigMap("not_refreshable/configmap-01.yaml");
+		createOrReplaceConfigMap("not_refreshable/configmap-02.yaml");
 	}
 
 	@AfterAll
 	static void recover() {
-		KubernetesTestUtil.deleteConfigMap("normal/configmap-changed.yaml");
+		deleteConfigMap("not_refreshable/configmap-01-changed.yaml");
+		deleteConfigMap("not_refreshable/configmap-02-changed.yaml");
 	}
 
 	@Autowired
 	private Environment env;
 
 	@Test
-	void testNormal() throws InterruptedException {
+	void testNotRefreshable() throws InterruptedException {
 		assertThat(env.getProperty("username")).isEqualTo("admin");
 		assertThat(env.getProperty("password")).isEqualTo("666");
 		assertThat(env.getProperty("hobbies[0]")).isEqualTo("reading");
 		assertThat(env.getProperty("hobbies[1]")).isEqualTo("writing");
 		assertThat(env.getProperty("hobbies[2]")).isNull();
 
-		// update configmap
-		KubernetesTestUtil.createOrReplaceConfigMap("normal/configmap-changed.yaml");
+		// update configmap-01
+		createOrReplaceConfigMap("not_refreshable/configmap-01-changed.yaml");
 
 		// context is refreshing
 		Thread.sleep(1000);
@@ -69,10 +72,10 @@ public class NormalIntegrationTests {
 		assertThat(env.getProperty("password")).isEqualTo("888");
 		assertThat(env.getProperty("hobbies[0]")).isEqualTo("reading");
 		assertThat(env.getProperty("hobbies[1]")).isEqualTo("writing");
-		assertThat(env.getProperty("hobbies[2]")).isEqualTo("coding");
+		assertThat(env.getProperty("hobbies[2]")).isNull();
 
-		// delete configmap, refresh on delete is disabled by default
-		KubernetesTestUtil.deleteConfigMap("normal/configmap-changed.yaml");
+		// update configmap-02
+		createOrReplaceConfigMap("not_refreshable/configmap-02-changed.yaml");
 
 		// context is refreshing
 		Thread.sleep(1000);
@@ -80,7 +83,7 @@ public class NormalIntegrationTests {
 		assertThat(env.getProperty("username")).isEqualTo("admin");
 		assertThat(env.getProperty("password")).isEqualTo("888");
 		assertThat(env.getProperty("hobbies[0]")).isEqualTo("reading");
-		assertThat(env.getProperty("hobbies[1]")).isEqualTo("writing");
-		assertThat(env.getProperty("hobbies[2]")).isEqualTo("coding");
+		assertThat(env.getProperty("hobbies[1]")).isNotEqualTo("singing");
+		assertThat(env.getProperty("hobbies[2]")).isNull();
 	}
 }

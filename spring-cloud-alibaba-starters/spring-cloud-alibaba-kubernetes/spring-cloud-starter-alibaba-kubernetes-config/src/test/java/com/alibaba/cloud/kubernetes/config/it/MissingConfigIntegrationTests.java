@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.kubernetes.config;
+package com.alibaba.cloud.kubernetes.config.it;
 
+import com.alibaba.cloud.kubernetes.config.KubernetesConfigProperties;
 import com.alibaba.cloud.kubernetes.config.exception.KubernetesConfigMissingException;
 import com.alibaba.cloud.kubernetes.config.testsupport.KubernetesAvailable;
 import org.junit.jupiter.api.Test;
@@ -30,11 +31,12 @@ import static org.assertj.core.api.Assertions.assertThatCode;
  */
 @KubernetesAvailable
 public class MissingConfigIntegrationTests {
+	private static final String PROFILE = "missing-config";
 
 	@Test
 	void testEnabledFailOnMissingConfig() {
 		assertThatCode(() -> new SpringApplicationBuilder(Empty.class)
-				.web(WebApplicationType.NONE).profiles("missing-config").run().close())
+				.web(WebApplicationType.NONE).profiles(PROFILE).run().close())
 						.isInstanceOf(KubernetesConfigMissingException.class);
 	}
 
@@ -44,6 +46,6 @@ public class MissingConfigIntegrationTests {
 				.web(WebApplicationType.NONE)
 				.properties(KubernetesConfigProperties.PREFIX
 						+ ".fail-on-missing-config=false")
-				.profiles("missing-config").run().close()).doesNotThrowAnyException();
+				.profiles(PROFILE).run().close()).doesNotThrowAnyException();
 	}
 }
