@@ -6,6 +6,9 @@ This example demonstrates the use of `spring-cloud-starter-alibaba-kubernetes-co
 
 ### Procedure
 
+*NOTE: Before reading this you need to know some basic [Kubernetes](https://kubernetes.io/docs/home/) knowledge and
+prepare a Kubernetes cluster with access rights (ConfigMap/Secret).*
+
 1. Apply the [deployments.yaml](./deployments.yaml) file
 
    Make sure you are in the `kubernetes-config-example` directory.

@@ -6,6 +6,9 @@
 
 ### 步骤
 
+*NOTE：在阅读之前你需要了解一些基本的 [Kubernetes](https://kubernetes.io/docs/home/) 知识，并准备一个有访问权限（ConfigMap/Secret）的
+Kubernetes 集群。*
+
 1. Apply [deployments.yaml](./deployments.yaml) 文件
 
    确保在 `kubernetes-config-example` 目录。
