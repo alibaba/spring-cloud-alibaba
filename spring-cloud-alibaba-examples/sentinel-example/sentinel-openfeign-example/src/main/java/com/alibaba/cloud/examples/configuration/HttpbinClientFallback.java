@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.feign;
+package com.alibaba.cloud.examples.configuration;
 
 
 /**
@@ -27,11 +27,6 @@ public class HttpbinClientFallback implements HttpbinClient {
 	@Override
 	public String delay() {
 		return "delay degrade by sentinel";
-	}
-
-	@Override
-	public String status404() {
-		return "404 degrade by sentinel";
 	}
 
 	@Override

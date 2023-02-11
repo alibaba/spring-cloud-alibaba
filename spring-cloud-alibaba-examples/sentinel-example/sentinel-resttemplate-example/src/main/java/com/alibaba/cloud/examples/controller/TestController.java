@@ -41,11 +41,6 @@ public class TestController {
 		return restTemplate.getForObject("https://httpbin.org/delay/3", String.class);
 	}
 
-	@GetMapping("/404")
-	public String f04() {
-		return restTemplate.getForObject("https://httpbin.org/status/404", String.class);
-	}
-
 	@GetMapping("/get")
 	public String get() {
 		return restTemplate.getForObject("https://httpbin.org/get", String.class);

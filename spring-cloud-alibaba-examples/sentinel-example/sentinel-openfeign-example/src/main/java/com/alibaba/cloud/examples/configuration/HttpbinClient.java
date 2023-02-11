@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.feign;
+package com.alibaba.cloud.examples.configuration;
 
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -29,16 +29,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient(name = "openfeign-example", url = "https://httpbin.org", contextId = "openfeign-example", fallbackFactory = EchoServiceFallbackFactory.class)
 public interface HttpbinClient {
 
-	/**
-	 * Call the echo method of the remote provider or roll back when the service is blown.
-	 *
-	 * @return {@link String}
-	 */
 	@GetMapping("/delay/3")
 	String delay();
-
-	@GetMapping("/status/404")
-	String status404();
 
 	@GetMapping("/status/500")
 	String status500();

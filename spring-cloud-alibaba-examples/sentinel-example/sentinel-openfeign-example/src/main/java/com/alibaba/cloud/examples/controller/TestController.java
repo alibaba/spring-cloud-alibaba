@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.examples.controller;
 
-import com.alibaba.cloud.examples.feign.HttpbinClient;
+import com.alibaba.cloud.examples.configuration.HttpbinClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,11 +40,6 @@ public class TestController {
 	@GetMapping("/exp")
 	public String exp() {
 		return httpbinClient.status500();
-	}
-
-	@GetMapping("/404")
-	public String f04() {
-		return httpbinClient.status404();
 	}
 
 	@GetMapping("/get")
