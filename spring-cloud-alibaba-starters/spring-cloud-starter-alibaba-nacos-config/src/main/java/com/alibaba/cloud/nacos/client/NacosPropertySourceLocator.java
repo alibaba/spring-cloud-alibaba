@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.CompositePropertySource;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.CollectionUtils;
@@ -45,7 +46,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private static final Logger log = LoggerFactory
 			.getLogger(NacosPropertySourceLocator.class);
 
-	private static final String NACOS_PROPERTY_SOURCE_NAME = "NACOS";
+	protected static final String NACOS_PROPERTY_SOURCE_NAME = "NACOS";
 
 	private static final String SEP1 = "-";
 
@@ -74,6 +75,14 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	@Override
 	public PropertySource<?> locate(Environment env) {
+		// org.springframework.cloud.bootstrap.config.PropertySourceBootstrapConfiguration.initialize
+		// env must be the instance of ConfigurableEnvironment
+		ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) env;
+		if (configurableEnvironment.getPropertySources()
+				.contains(NACOS_PROPERTY_SOURCE_NAME)) {
+			return null;
+		}
+
 		nacosConfigProperties.setEnvironment(env);
 		ConfigService configService = nacosConfigManager.getConfigService();
 
