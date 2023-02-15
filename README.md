@@ -18,7 +18,7 @@ With Spring Cloud Alibaba, you only need to add some annotations and a small amo
 ## Features
 
 * **Flow control and service degradation**: Flow control for HTTP services is supported by default. You can also customize flow control and service degradation rules using annotations. The rules can be changed dynamically.
-* **Service registration and discovery**: Service can be registered and clients can discover the instances using Spring-managed beans, auto integration Ribbon.
+* **Service registration and discovery**: Service can be registered and clients can discover the instances using Spring-managed beans. Load balancing is consistent with that supported by the corresponding Spring Cloud.
 * **Distributed configuration**: Support for externalized configuration in a distributed system, auto refresh when configuration changes.
 * **Event-driven**: Support for building highly scalable event-driven microservices connected with shared messaging systems.
 * **Distributed Transaction**: Support for distributed transaction solution with high performance and ease of use.
