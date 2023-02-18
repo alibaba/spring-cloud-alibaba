@@ -109,7 +109,7 @@ spring:
         refresh-on-deleted: false # when detect the config was deleted, the application will not trigger a refresh. Default value is false.
 ----
 
-If your configuration is not synchronized across environments, and you have the `import-config` configuration in the `dev` environment but not in the `prod` environment (it is possible that you forgot to synchronize to `prod`), you may want to have a mechanism to help you find this problem and provide fail-fast ability to prevent the application from starting.
+If your configuration is not synchronized across environments, and you have the `important-config` configuration in the `dev` environment but not in the `prod` environment (it is possible that you forgot to synchronize to `prod`), you may want to have a mechanism to help you find this problem and provide fail-fast ability to prevent the application from starting.
 
 Related configuration:
 
