@@ -96,7 +96,10 @@ public class InetIPv6Utils {
 	}
 
 	private String normalizeIPv6(String ip) {
-		return "[" + ip + "]";
+		// Remove the suffix of network card in IPv6 address, such as
+		// 2408:400a:8c:5400:6578:5c42:77b1:bc5d%eth0
+		int idx = ip.indexOf("%");
+		return idx != -1 ? "[" + ip.substring(0, idx) + "]" : "[" + ip + "]";
 	}
 
 	private boolean isPreferredAddress(InetAddress address) {
