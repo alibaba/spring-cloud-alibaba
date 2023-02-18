@@ -8,5 +8,5 @@ com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureAnalyzer
 org.springframework.boot.env.PropertySourceLoader=\
 com.alibaba.cloud.nacos.parser.NacosJsonPropertySourceLoader,\
 com.alibaba.cloud.nacos.parser.NacosXmlPropertySourceLoader
-org.springframework.context.ApplicationListener=\
-com.alibaba.cloud.nacos.logging.NacosLoggingListener
+org.springframework.boot.SpringApplicationRunListener=\
+com.alibaba.cloud.nacos.logging.NacosLoggingAppRunListener
