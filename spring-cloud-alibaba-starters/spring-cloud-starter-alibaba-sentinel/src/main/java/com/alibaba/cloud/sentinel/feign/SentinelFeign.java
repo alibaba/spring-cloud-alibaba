@@ -27,6 +27,7 @@ import feign.InvocationHandlerFactory;
 import feign.Target;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.cloud.openfeign.FeignClientFactory;
@@ -41,6 +42,7 @@ import org.springframework.util.StringUtils;
  * {@link Feign.Builder}.
  *
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author 黄学敏（huangxuemin)
  */
 public final class SentinelFeign {
 
@@ -136,6 +138,16 @@ public final class SentinelFeign {
 						throw new IllegalStateException(String.format(
 								"No %s instance of type %s found for feign client %s",
 								type, fallbackType, name));
+					}
+					// when fallback is a FactoryBean, should determine the type of instance
+					if (fallbackInstance instanceof FactoryBean<?> factoryBean) {
+						try {
+							fallbackInstance = factoryBean.getObject();
+						}
+						catch (Exception e) {
+							throw new IllegalStateException(type + " create fail", e);
+						}
+						fallbackType = fallbackInstance.getClass();
 					}
 
 					if (!targetType.isAssignableFrom(fallbackType)) {
