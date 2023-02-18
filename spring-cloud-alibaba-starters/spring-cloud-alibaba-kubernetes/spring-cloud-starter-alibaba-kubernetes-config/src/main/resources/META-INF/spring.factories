@@ -2,7 +2,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.alibaba.cloud.kubernetes.config.KubernetesConfigAutoConfiguration
 
 org.springframework.boot.env.EnvironmentPostProcessor=\
-  com.alibaba.cloud.kubernetes.config.core.ConfigEnvironmentPostProcessor
+  com.alibaba.cloud.kubernetes.config.core.KubernetesConfigEnvironmentPostProcessor
 
 org.springframework.boot.diagnostics.FailureAnalyzer=\
   com.alibaba.cloud.kubernetes.config.exception.KubernetesConfigMissingFailureAnalyzer,\

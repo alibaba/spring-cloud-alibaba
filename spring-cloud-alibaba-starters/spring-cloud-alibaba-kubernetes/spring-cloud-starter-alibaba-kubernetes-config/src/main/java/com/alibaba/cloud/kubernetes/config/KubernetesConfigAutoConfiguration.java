@@ -17,7 +17,7 @@
 package com.alibaba.cloud.kubernetes.config;
 
 import com.alibaba.cloud.kubernetes.commons.KubernetesClientConfiguration;
-import com.alibaba.cloud.kubernetes.config.core.ConfigWatcher;
+import com.alibaba.cloud.kubernetes.config.core.KubernetesConfigWatcher;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
@@ -43,8 +43,8 @@ public class KubernetesConfigAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public ConfigWatcher kubernetesConfigWatcher(KubernetesConfigProperties properties,
-			KubernetesClient kubernetesClient) {
-		return new ConfigWatcher(properties, kubernetesClient);
+	public KubernetesConfigWatcher kubernetesConfigWatcher(
+			KubernetesConfigProperties properties, KubernetesClient kubernetesClient) {
+		return new KubernetesConfigWatcher(properties, kubernetesClient);
 	}
 }

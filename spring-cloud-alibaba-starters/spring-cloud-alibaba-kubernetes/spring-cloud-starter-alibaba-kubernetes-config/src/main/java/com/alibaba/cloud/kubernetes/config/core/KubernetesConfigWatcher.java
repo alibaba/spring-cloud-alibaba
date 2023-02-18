@@ -44,9 +44,9 @@ import static com.alibaba.cloud.kubernetes.config.util.ResourceKeyUtils.resource
  *
  * @author Freeman
  */
-public class ConfigWatcher
+public class KubernetesConfigWatcher
 		implements SmartInitializingSingleton, ApplicationContextAware, DisposableBean {
-	private static final Logger log = LoggerFactory.getLogger(ConfigWatcher.class);
+	private static final Logger log = LoggerFactory.getLogger(KubernetesConfigWatcher.class);
 
 	private final Map<ResourceKey, SharedIndexInformer<ConfigMap>> configmapInformers = new LinkedHashMap<>();
 	private final Map<ResourceKey, SharedIndexInformer<Secret>> secretInformers = new LinkedHashMap<>();
@@ -55,7 +55,7 @@ public class ConfigWatcher
 
 	private ApplicationContext context;
 
-	public ConfigWatcher(KubernetesConfigProperties properties, KubernetesClient client) {
+	public KubernetesConfigWatcher(KubernetesConfigProperties properties, KubernetesClient client) {
 		this.properties = properties;
 		this.client = client;
 	}

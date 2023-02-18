@@ -23,11 +23,11 @@ package com.alibaba.cloud.kubernetes.config.util;
  */
 public final class Pair<K, V> {
 	private final K key;
-	private final V right;
+	private final V value;
 
-	private Pair(K key, V right) {
+	private Pair(K key, V value) {
 		this.key = key;
-		this.right = right;
+		this.value = value;
 	}
 
 	public K key() {
@@ -35,7 +35,7 @@ public final class Pair<K, V> {
 	}
 
 	public V value() {
-		return right;
+		return value;
 	}
 
 	public static <K, V> Pair<K, V> of(K key, V value) {

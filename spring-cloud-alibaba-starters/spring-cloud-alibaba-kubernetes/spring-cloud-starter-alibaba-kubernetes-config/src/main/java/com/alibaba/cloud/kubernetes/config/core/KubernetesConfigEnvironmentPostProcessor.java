@@ -79,7 +79,7 @@ import static java.util.stream.Collectors.toList;
  * @see org.springframework.cloud.context.refresh.ContextRefresher
  * @see org.springframework.cloud.context.refresh.ConfigDataContextRefresher
  */
-public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
+public class KubernetesConfigEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 	/**
 	 * Order of the post processor.
 	 */
@@ -88,7 +88,7 @@ public class ConfigEnvironmentPostProcessor implements EnvironmentPostProcessor,
 	private final Log log;
 	private final KubernetesClient client;
 
-	public ConfigEnvironmentPostProcessor(DeferredLogFactory logFactory) {
+	public KubernetesConfigEnvironmentPostProcessor(DeferredLogFactory logFactory) {
 		this.log = logFactory.getLog(getClass());
 		this.client = KubernetesClientHolder.getKubernetesClient();
 	}
