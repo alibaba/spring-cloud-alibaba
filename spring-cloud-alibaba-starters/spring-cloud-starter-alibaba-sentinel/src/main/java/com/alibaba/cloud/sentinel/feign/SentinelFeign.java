@@ -131,7 +131,7 @@ public final class SentinelFeign {
 					// when fallback is a FactoryBean, should determine the type of instance
 					if (fallbackInstance instanceof FactoryBean<?>) {
 						try {
-							fallbackInstance = ((FactoryBean<Object>)fallbackInstance).getObject();
+							fallbackInstance = ((FactoryBean<Object>) fallbackInstance).getObject();
 						}
 						catch (Exception e) {
 							throw new IllegalStateException(type + " create fail", e);
