@@ -9,8 +9,8 @@ com.alibaba.cloud.nacos.configdata.NacosConfigDataMissingEnvironmentPostProcesso
 org.springframework.boot.env.PropertySourceLoader=\
 com.alibaba.cloud.nacos.parser.NacosJsonPropertySourceLoader,\
 com.alibaba.cloud.nacos.parser.NacosXmlPropertySourceLoader
-org.springframework.context.ApplicationListener=\
-com.alibaba.cloud.nacos.logging.NacosLoggingListener
+org.springframework.boot.SpringApplicationRunListener=\
+com.alibaba.cloud.nacos.logging.NacosLoggingAppRunListener
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.alibaba.cloud.nacos.configdata.NacosConfigDataMissingEnvironmentPostProcessor
 
