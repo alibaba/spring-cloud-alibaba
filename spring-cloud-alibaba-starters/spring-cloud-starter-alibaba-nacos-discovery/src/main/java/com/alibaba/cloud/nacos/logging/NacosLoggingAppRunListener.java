@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos.logging;
 
 import com.alibaba.nacos.client.logging.NacosLogging;
 
+import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -36,7 +37,7 @@ public class NacosLoggingAppRunListener implements SpringApplicationRunListener,
 	}
 
 	@Override
-	public void environmentPrepared(ConfigurableEnvironment environment) {
+	public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
 		NacosLogging.getInstance().loadConfiguration();
 	}
 
