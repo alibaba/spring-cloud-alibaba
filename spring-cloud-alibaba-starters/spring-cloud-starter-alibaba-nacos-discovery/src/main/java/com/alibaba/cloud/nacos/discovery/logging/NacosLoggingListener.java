@@ -30,6 +30,7 @@ import org.springframework.core.ResolvableType;
  *
  * @author mai.jh
  */
+@Deprecated
 public class NacosLoggingListener implements GenericApplicationListener {
 
 	@Override
