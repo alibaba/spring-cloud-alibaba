@@ -18,38 +18,37 @@ package com.alibaba.cloud.nacos.logging;
 
 import com.alibaba.nacos.client.logging.NacosLogging;
 
-import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.event.GenericApplicationListener;
+import org.springframework.boot.ConfigurableBootstrapContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringApplicationRunListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
-import org.springframework.core.ResolvableType;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
- * Reload nacos log configuration file, after
- * {@link org.springframework.boot.context.logging.LoggingApplicationListener}.
+ * Reload nacos log configuration on spring application contextPrepared.
  *
- * @author mai.jh
+ * @author RuanSheng
  */
-@Deprecated
-public class NacosLoggingListener implements GenericApplicationListener {
+public class NacosLoggingAppRunListener implements SpringApplicationRunListener, Ordered {
 
-	@Override
-	public boolean supportsEventType(ResolvableType resolvableType) {
-		Class<?> type = resolvableType.getRawClass();
-		if (type != null) {
-			return ApplicationEnvironmentPreparedEvent.class.isAssignableFrom(type);
-		}
-		return false;
+	public NacosLoggingAppRunListener(SpringApplication application, String[] args) {
+
 	}
 
 	@Override
-	public void onApplicationEvent(ApplicationEvent applicationEvent) {
+	public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
+		NacosLogging.getInstance().loadConfiguration();
+	}
+
+	@Override
+	public void contextPrepared(ConfigurableApplicationContext context) {
 		NacosLogging.getInstance().loadConfiguration();
 	}
 
 	@Override
 	public int getOrder() {
-		return Ordered.HIGHEST_PRECEDENCE + 21;
+		return 1;
 	}
 
 }
