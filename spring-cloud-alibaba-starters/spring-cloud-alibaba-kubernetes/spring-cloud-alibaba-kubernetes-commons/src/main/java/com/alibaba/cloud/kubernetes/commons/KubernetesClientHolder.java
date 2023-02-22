@@ -39,15 +39,21 @@ public final class KubernetesClientHolder {
 
 	private static final AtomicReference<KubernetesClient> kubernetesClient = new AtomicReference<>();
 
-	public static synchronized KubernetesClient getKubernetesClient() {
-		KubernetesClient client = kubernetesClient.get();
-		if (client == null) {
-			kubernetesClient.set(KubernetesUtils.newKubernetesClient());
-		}
-		return kubernetesClient.get();
+	/**
+	 * Get or create a {@link KubernetesClient}.
+	 *
+	 * @return Kubernetes client
+	 */
+	public static KubernetesClient getKubernetesClient() {
+		return kubernetesClient.updateAndGet(cli -> {
+			return cli != null ? cli : KubernetesUtils.newKubernetesClient();
+		});
 	}
 
-	public static synchronized void remove() {
+	/**
+	 * Remove the {@link KubernetesClient} instance.
+	 */
+	public static void remove() {
 		kubernetesClient.set(null);
 	}
 }
