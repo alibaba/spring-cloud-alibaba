@@ -31,6 +31,11 @@ public class TestController {
 	@Autowired
 	RestTemplate restTemplate;
 
+	@GetMapping("/")
+	public String index() {
+		return "index";
+	}
+
 	@GetMapping("/exp")
 	public String exp() {
 		return restTemplate.getForObject("https://httpbin.org/status/500", String.class);

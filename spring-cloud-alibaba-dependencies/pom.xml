@@ -160,6 +160,11 @@
                 <artifactId>seata-spring-boot-starter</artifactId>
                 <version>${seata.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.seata</groupId>
+                <artifactId>seata-server</artifactId>
+                <version>${seata.version}</version>
+            </dependency>
 
             <!-- Own dependencies  -->
             <dependency>

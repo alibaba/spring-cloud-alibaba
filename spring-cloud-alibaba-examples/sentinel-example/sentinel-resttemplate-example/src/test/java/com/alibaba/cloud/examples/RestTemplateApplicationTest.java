@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.configuration;
+package com.alibaba.cloud.examples;
 
-
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
-
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * @author raozihao
- * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
+ * Test {@link RestTemplateApplication}.
+ *
+ * @author wangliang181230
  */
-@Configuration(proxyBeanMethods = false)
-public class RestTemplateConfiguration {
+@SpringBootTest
+@Disabled("For debugging")
+public class RestTemplateApplicationTest {
 
-	@LoadBalanced
-	@Bean
-	@SentinelRestTemplate
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
+	@Test
+	public void runWithSpringAotMode() throws Exception {
+		System.setProperty("spring.aot.enabled", "true");
+		RestTemplateApplication.main(new String[0]);
 	}
+
 }
