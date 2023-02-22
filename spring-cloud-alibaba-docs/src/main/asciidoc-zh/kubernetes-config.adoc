@@ -95,7 +95,7 @@ stringData:
 
 ==== 异常操作保护
 
-如果配置被错误地删除，你不希望你的应用程序崩溃，对吗？`spring-cloud-starter-alibaba-kubernetes-config` 提供了一个机制来保护应用程序免受异常操作的影响，比如误删配置。
+如果配置被错误地删除，你应该不希望应用程序触发配置刷新从而导致程序出现预期外的异常，`spring-cloud-starter-alibaba-kubernetes-config` 提供了一个机制来保护应用程序免受异常操作的影响，比如误删配置。
 
 相关配置：
 
