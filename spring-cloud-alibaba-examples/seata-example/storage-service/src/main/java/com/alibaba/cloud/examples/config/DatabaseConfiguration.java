@@ -32,12 +32,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @Configuration
 public class DatabaseConfiguration {
 
-	@Bean
+
+//  druid don't support GraalVM now because of there is CGlib proxy
+	/*@Bean
 	@Primary
 	@ConfigurationProperties("spring.datasource")
 	public DataSource storageDataSource() {
 		return new DruidDataSource();
-	}
+	}*/
 
 	@Bean
 	public JdbcTemplate jdbcTemplate(DataSource dataSource) {

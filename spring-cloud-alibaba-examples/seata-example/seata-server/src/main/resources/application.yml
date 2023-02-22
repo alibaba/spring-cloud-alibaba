@@ -52,6 +52,7 @@ seata:
       cluster: default
       username: nacos
       password: nacos
+      group: DEFAULT_GROUP
   store:
     # support: file 、 db 、 redis
     mode: db
