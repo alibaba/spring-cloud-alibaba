@@ -2,23 +2,11 @@
 
 ## Preparation
 
-### Environment Declaration
+If you have not installed docker or docker-compoe, please follow the official documentation to build the environment
 
-Before running the local example, you need to ensure that the following base environment is available locally. If you do not have a current environment locally, the following step-by-step build will be done to demonstrate the build process.
+- docker：https://docs.docker.com/desktop/install/linux-install/
+- docker-compose：https://docs.docker.com/compose/install/
 
-- Nacos server
-- Seata server
-- RocketMQ server
-- MySQL server
-
-### Component Service Versions
-
-For each component version of this project, please go to the release page of each community to download and unpack.
-
-- [Nacos: version 2.1.0](https://github.com/alibaba/nacos/releases)
-- [Seata: version 1.5.1](https://github.com/seata/seata/releases)
-- [RocketMQ: version 4.9.4](https://github.com/apache/rocketmq/releases)
-- MySQL: version 5.7
 
 ### host configuration
 
@@ -34,80 +22,8 @@ To ensure that the code can start properly, please configure the local host mapp
 127.0.0.1 integrated-frontend
 ```
 
-### Database configuration
-
-Before you start the database configuration, please make sure the MySQL server is on.
-
-#### Initialize business tables
-
-For the first scenario, the order, account, and inventory microservices all need their own databases, while the second scenario simulates a database for storing like information as well.
-
-Run the sql script `spring-cloud-alibaba-examples/integrated-example/init/sql/init.sql` to create the environment required for the business and the Seata-related tables in one click.
-
-### Nacos Configuration
-
-At this point, the database services are configured and you need to configure the Nacos configuration center for all the microservice configuration files.
-
-#### Nacos startup
-
-For the sake of example, here we use the ``standalone`` mode of Nacos, go to the unpacked directory of Nacos and execute the following command.
-
-```sh
-#Linux/Mac environment
-sh bin/startup.sh -m standalone
-#If you are in Ubuntu and the above command gives you an error [[symbol not found, you can run the following command
-bash bin/startup.sh -m standalone
-#Win environment
-. \bin\startup.cmd -m standalone
-````
-
-#### Adding configuration files
-
-Before bulk importing the configuration, please modify the datasource configuration (username and password) in `integrated-example/config/datasource-config.yaml`.
-
-After that, run `spring-cloud-alibaba-examples/integrated-example/scripts/nacos-config-quick.sh` to complete the one-click import of all microservice configurations.
-
-### Seata Configuration
-
-After the Nacos service registry and configuration center are deployed, here is the configuration of the Seata server.
-
-Seata's db mode requires additional configuration of database information and modification of the Seata Server configuration file, and the configuration file has been merged in the new version compared to the old version, so for demonstration purposes, Seata Server is started in `file` mode on Seata standalone.
-
-#### Start Seata Server
-
-Go to the seata directory after the release and execute the following command.
-
-```sh
-#Linux/Mac environment
-sh . /bin/seata-server.sh
-#Win environment
-bin\seata-server.bat
-```
-
-### RocketMQ configuration
-
-After the Seata service starts, you can start the RocketMQ NameServer and Broker services.
-
-Go to the unpacked rocketmq directory after the release and execute the following command.
-
-#### Start the NameServer
-
-```sh
-#Linux/Mac environment
-sh bin/mqnamesrv
-#Win environment
-. \bin\mqnamesrv.cmd
-```
-
-#### Start Broker
-
-```sh
-#Linux/Mac environment
-sh bin/mqbroker
-#Win environment
-. \bin\mqbroker.cmd
-```
-
+### Quickly start components
+Go to the `spring-cloud-alibaba-examplesintegrated-example` directory and execute the following command to execute `docker-compose -f compose-quickstart.yml up -d` to quickly deploy the component.
 ## Run the demo example
 
 After the preparation work is done, you can run the demo, mainly according to different usage scenarios, you can experience the user order (distributed transaction capability) and simulate the high traffic point (meltdown and limit the flow as well as the ability to cut the peak and fill the valley) respectively.
@@ -198,8 +114,8 @@ This example **is just a selection of typical features for each component to ser
 If you are interested or want to go deeper, you are welcome to study the individual example documentation for each component.
 
 - Nacos examples
-  - [Nacos config example](../../../nacos-example/nacos-config-example/readme.md)
-  - [Nacos discovery example](../../../nacos-example/nacos-discovery-example/readme.md)
+    - [Nacos config example](../../../nacos-example/nacos-config-example/readme.md)
+    - [Nacos discovery example](../../../nacos-example/nacos-discovery-example/readme.md)
 - [Sentinel core example](../../../sentinel-example/sentinel-core-example/readme.md)
 - [Seata example](../../../seata-example/readme.md)
 - [RocketMQ example](../../rocketmq-example/readme.md)

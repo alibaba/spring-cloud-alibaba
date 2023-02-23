@@ -78,8 +78,10 @@ By sending high volume like requests from the producer to the mq, the consumer m
 
 ## Release Notes
 
-This project provides a [local-deployment](local-deployment.md) and a [Kubernetes Helm-Chart version](kubernetes-deployment.md).
+This project provides a [local-deployment](local-deployment.md), [docker-compose local rapid deployment version](docker-compose-deployment.md) and a [Kubernetes Helm-Chart version](kubernetes-deployment.md).
 
 - To learn how to configure the components and build the complete environment, we recommend learning the [local-deployment](local-deployment.md).
+
+- If you only want to run the sample code, avoid the tedious local environment construction process, and do not want to use the K8S cluster. You can try using [docker-compose local rapid deployment version] (docker-compose-deployment.md).
 
 - If you want to quickly experience the components on a K8S cluster and skip the process of deploying each component, please check out the [Kubernetes Helm-Chart version](kubernetes-deployment.md).
