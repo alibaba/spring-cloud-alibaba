@@ -33,7 +33,7 @@ public class SeataFeignRequestInterceptor implements RequestInterceptor {
 	@Override
 	public void apply(RequestTemplate template) {
 		String xid = RootContext.getXID();
-		if (StringUtils.isEmpty(xid)) {
+		if (!StringUtils.hasLength(xid)) {
 			return;
 		}
 
