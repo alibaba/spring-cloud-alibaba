@@ -33,7 +33,6 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.StandardMethodMetadata;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -66,20 +65,29 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition,
 			Class<?> beanType, String beanName) {
-		if (checkSentinelProtect(beanDefinition, beanType, beanName)) {
-			SentinelRestTemplate sentinelRestTemplate;
-			if (beanDefinition.getSource() instanceof StandardMethodMetadata sentinelSource) {
-				sentinelRestTemplate = sentinelSource.getIntrospectedMethod()
-						.getAnnotation(SentinelRestTemplate.class);
-			}
-			else {
-				sentinelRestTemplate = beanDefinition.getResolvedFactoryMethod()
-						.getAnnotation(SentinelRestTemplate.class);
-			}
+		if (beanName == null || beanType != RestTemplate.class) {
+			return;
+		}
+
+		SentinelRestTemplate sentinelRestTemplate = this.getSentinelRestTemplateFromBeanDefinition(beanDefinition);
+		if (sentinelRestTemplate != null) {
 			// check class and method validation
 			checkSentinelRestTemplate(sentinelRestTemplate, beanName);
 			cache.put(beanName, sentinelRestTemplate);
 		}
+	}
+
+	private SentinelRestTemplate getSentinelRestTemplateFromBeanDefinition(RootBeanDefinition beanDefinition) {
+		SentinelRestTemplate sentinelRestTemplate = null;
+		if (beanDefinition.getSource() instanceof StandardMethodMetadata sentinelSource) {
+			sentinelRestTemplate = sentinelSource.getIntrospectedMethod().getAnnotation(SentinelRestTemplate.class);
+		}
+
+		if (sentinelRestTemplate == null && beanDefinition.getResolvedFactoryMethod() != null) {
+			sentinelRestTemplate = beanDefinition.getResolvedFactoryMethod().getAnnotation(SentinelRestTemplate.class);
+		}
+
+		return sentinelRestTemplate;
 	}
 
 	private void checkSentinelRestTemplate(SentinelRestTemplate sentinelRestTemplate,
@@ -162,18 +170,6 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 		else {
 			BlockClassRegistry.updateUrlCleanerFor(blockClass, blockMethod, foundMethod);
 		}
-	}
-
-	private boolean checkSentinelProtect(RootBeanDefinition beanDefinition,
-			Class<?> beanType, String beanName) {
-		return beanName != null && beanType == RestTemplate.class
-				&& checkMethodMetadataReadingVisitor(beanDefinition);
-	}
-
-	private boolean checkMethodMetadataReadingVisitor(RootBeanDefinition beanDefinition) {
-		return beanDefinition.getSource() instanceof MethodMetadata
-				&& ((MethodMetadata) beanDefinition.getSource())
-				.isAnnotated(SentinelRestTemplate.class.getName());
 	}
 
 	@Override
