@@ -18,19 +18,22 @@ package com.alibaba.cloud.examples;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * Test {@link RestTemplateApplication}.
  *
  * @author wangliang181230
  */
-@SpringBootTest
-@Disabled("For debugging")
 public class RestTemplateApplicationTest {
 
+	/**
+	 * Please run this test after execute `mvn clean install -Pnative -e` .
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
-	public void runWithSpringAotMode() throws Exception {
+	@Disabled("For debugging")
+	public void runWithSpringAotModeAfterProcessAot() throws Throwable {
 		System.setProperty("spring.aot.enabled", "true");
 		RestTemplateApplication.main(new String[0]);
 	}

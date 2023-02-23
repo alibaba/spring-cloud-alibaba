@@ -26,22 +26,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class RestTemplateApplication {
 
-	public static void main(String[] args) throws Exception {
-		try {
-			SpringApplication.run(RestTemplateApplication.class, args);
-		} catch (SpringApplication.AbandonedRunException e) {
-			System.out.println("Abandoned run `process-aot`.");
-			throw e;
-		} catch (Throwable t) {
-			// In the `native-image`, if an exception occurs prematurely during the startup process, the exception log will not be recorded,
-			// so here we sleep for 60 seconds to observe the exception information.
-			if (System.getProperty("org.graalvm.nativeimage.imagecode") != null) {
-				t.printStackTrace();
-				Thread.sleep(60000);
-			}
-
-			throw t;
-		}
+	public static void main(String[] args) {
+		SpringApplication.run(RestTemplateApplication.class, args);
 	}
 
 }
