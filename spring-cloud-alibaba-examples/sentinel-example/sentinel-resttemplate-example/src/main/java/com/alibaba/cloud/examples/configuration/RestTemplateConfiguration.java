@@ -28,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
  * @author raozihao
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public class RestTemplateConfiguration {
 
 	@LoadBalanced
