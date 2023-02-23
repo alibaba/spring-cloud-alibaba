@@ -16,23 +16,29 @@
 
 package com.alibaba.cloud.seata.feign;
 
-import com.alibaba.cloud.sentinel.feign.SentinelFeign;
-import feign.Feign;
-import feign.Retryer;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.beans.factory.BeanFactory;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import io.seata.core.context.RootContext;
+
+import org.springframework.util.StringUtils;
 
 /**
- * @author xiaojing
+ * @author wang.liang
  */
-final class SeataSentinelFeignBuilder {
+public class SeataFeignRequestInterceptor implements RequestInterceptor {
 
-	private SeataSentinelFeignBuilder() {
+	@Override
+	public void apply(RequestTemplate template) {
+		String xid = RootContext.getXID();
+		if (!StringUtils.hasLength(xid)) {
+			return;
+		}
+
+		List<String> seataXid = new ArrayList<>();
+		seataXid.add(xid);
+		template.header(RootContext.KEY_XID, xid);
 	}
-
-	static Feign.Builder builder(BeanFactory beanFactory) {
-		return SentinelFeign.builder().retryer(Retryer.NEVER_RETRY)
-				.client(new SeataFeignClient(beanFactory));
-	}
-
 }
