@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author wangliang181230
  */
+@Disabled("For debugging")
 public class RestTemplateApplicationTest {
 
 	/**
@@ -32,9 +33,11 @@ public class RestTemplateApplicationTest {
 	 * @throws Exception the exception
 	 */
 	@Test
-	@Disabled("For debugging")
-	public void runWithSpringAotModeAfterProcessAot() throws Throwable {
+	public void runWithSpringAotModeAfterProcessAot() throws Exception {
+		// Enable spring-aot-mode
 		System.setProperty("spring.aot.enabled", "true");
+
+		// Start the application
 		RestTemplateApplication.main(new String[0]);
 	}
 
