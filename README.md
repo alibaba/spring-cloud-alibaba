@@ -50,7 +50,7 @@ In addition to the above-mentioned features, for the needs of enterprise users' 
 For more features please refer to [Roadmap](https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/Roadmap.md).
 
 ## How to build
-* **2022.x branch**: Corresponds to Spring 2022 & Spring Boot 3.0.x, JDK 17 or later versions are supported.
+* **2022.x branch**: Corresponds to Spring Cloud 2022 & Spring Boot 3.0.x, JDK 17 or later versions are supported.
 * **2021.x branch**: Corresponds to Spring Cloud 2021 & Spring Boot 2.6.x. JDK 1.8 or later versions are supported.
 * **2020.0 branch**: Corresponds to Spring Cloud 2020 & Spring Boot 2.4.x. JDK 1.8 or later versions are supported.
 * **2.2.x branch**: Corresponds to Spring Cloud Hoxton & Spring Boot 2.2.x. JDK 1.8 or later versions are supported.
