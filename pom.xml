@@ -86,7 +86,7 @@
         <spring.cloud.version>2022.0.0</spring.cloud.version>
 
         <!-- Spring Boot -->
-        <spring-boot.version>3.0.0</spring-boot.version>
+        <spring-boot.version>3.0.2</spring-boot.version>
 
         <curator.version>4.0.1</curator.version>
 
