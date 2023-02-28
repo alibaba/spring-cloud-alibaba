@@ -127,13 +127,16 @@ public class InetIPv6Util implements Closeable {
 		if (!StringUtils.isEmpty(ip)) {
 			int index = ip.indexOf('%');
 			ip = index > 0 ? ip.substring(0, index) : ip;
-			return iPv6Format(ip);
+			return normalizeIPv6(ip);
 		}
 		return ip;
 	}
 
-	public String iPv6Format(String ip) {
-		return "[" + ip + "]";
+	private String normalizeIPv6(String ip) {
+		// Remove the suffix of network card in IPv6 address, such as
+		// 2408:400a:8c:5400:6578:5c42:77b1:bc5d%eth0
+		int idx = ip.indexOf("%");
+		return idx != -1 ? "[" + ip.substring(0, idx) + "]" : "[" + ip + "]";
 	}
 
 	boolean isPreferredAddress(InetAddress address) {
