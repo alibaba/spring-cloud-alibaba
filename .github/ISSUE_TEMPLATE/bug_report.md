@@ -16,6 +16,9 @@ eg. Nacos Discovery, Sentinel
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+**Simplest demo**
+The URL of the simplest demo to reproduce the problem.
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
