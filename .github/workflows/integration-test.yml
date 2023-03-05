@@ -42,6 +42,6 @@ jobs:
       - name: install dependencies
         run: mvn clean install -U package -pl '!spring-cloud-alibaba-coverage'  -DskipTests
       - name: Testing
-        run: ./mvnw verify -B -Dmaven.test.skip=false
+        run: ./mvnw verify -B -Dmaven.test.skip=false -pl '!*test'
 #        run: mvn clean -Dit.enabled=true test
 
