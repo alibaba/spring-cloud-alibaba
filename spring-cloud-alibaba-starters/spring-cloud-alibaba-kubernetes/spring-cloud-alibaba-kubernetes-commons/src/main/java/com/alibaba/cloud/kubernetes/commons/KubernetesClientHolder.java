@@ -45,9 +45,10 @@ public final class KubernetesClientHolder {
 	 * @return Kubernetes client
 	 */
 	public static KubernetesClient getKubernetesClient() {
-		return kubernetesClient.updateAndGet(cli -> {
-			return cli != null ? cli : KubernetesUtils.newKubernetesClient();
-		});
+		if (kubernetesClient.get() == null) {
+			kubernetesClient.compareAndSet(null, KubernetesUtils.newKubernetesClient());
+		}
+		return kubernetesClient.get();
 	}
 
 	/**
