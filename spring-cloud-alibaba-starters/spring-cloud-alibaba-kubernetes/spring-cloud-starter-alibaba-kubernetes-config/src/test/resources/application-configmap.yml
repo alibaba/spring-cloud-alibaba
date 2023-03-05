@@ -1,6 +1,6 @@
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         namespace: default
         configmaps:

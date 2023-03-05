@@ -27,7 +27,7 @@ Related configuration:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         refreshable: false # global default config, default value is false
         config-maps:
@@ -47,7 +47,7 @@ Related configuration:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes
       config:
         preference: remote # Global default config, default value is remote, means remote config will override local config
         config-maps:
@@ -104,7 +104,7 @@ Related configuration:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes
       config:
         refresh-on-deleted: false # when detect the config was deleted, the application will not trigger a refresh. Default value is false.
 ----
@@ -117,7 +117,7 @@ Related configuration:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes
       config:
         fail-on-missing-config: true # application will fail to start if the configs not found. Default value is true.
 ----
@@ -128,7 +128,7 @@ spring:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes
       config:
         enabled: true
         namespace: default # The namespace where the configuration is located (global configuration). If inside the Kubernetes cluster, it defaults to the namespace where the current pod is located; if outside the Kubernetes cluster, it defaults to the namespace of the current context.

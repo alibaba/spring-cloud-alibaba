@@ -37,7 +37,7 @@ public class KubernetesConfigProperties implements InitializingBean {
 	/**
 	 * Prefix of {@link KubernetesConfigProperties}.
 	 */
-	public static final String PREFIX = "spring.cloud.k8s.config";
+	public static final String PREFIX = "spring.cloud.alibaba-kubernetes.config";
 
 	/**
 	 * Whether to enable the kubernetes config feature.
@@ -235,19 +235,19 @@ public class KubernetesConfigProperties implements InitializingBean {
 		private String name;
 		/**
 		 * Namespace, using
-		 * <span color="orange">{@code spring.cloud.k8s.config.namespace}</span> if not
+		 * <span color="orange">{@code spring.cloud.alibaba-kubernetes.config.namespace}</span> if not
 		 * set.
 		 */
 		private String namespace;
 		/**
 		 * Whether to enable the auto refresh on current ConfigMap, using
-		 * <span color="orange">{@code spring.cloud.k8s.config.refreshable}</span> if not
+		 * <span color="orange">{@code spring.cloud.alibaba-kubernetes.config.refreshable}</span> if not
 		 * set.
 		 */
 		private Boolean refreshable;
 		/**
 		 * Config preference, using
-		 * <span color="orange">{@code spring.cloud.k8s.config.preference}</span> if not
+		 * <span color="orange">{@code spring.cloud.alibaba-kubernetes.config.preference}</span> if not
 		 * set.
 		 */
 		private Preference preference;
@@ -319,7 +319,7 @@ public class KubernetesConfigProperties implements InitializingBean {
 		private String name;
 		/**
 		 * Namespace, using
-		 * <span color="orange">{@code spring.cloud.k8s.config.namespace}</span> if not
+		 * <span color="orange">{@code spring.cloud.alibaba-kubernetes.config.namespace}</span> if not
 		 * set.
 		 */
 		private String namespace;
@@ -334,7 +334,7 @@ public class KubernetesConfigProperties implements InitializingBean {
 		private Boolean refreshable = false;
 		/**
 		 * Config preference, using
-		 * <span color="orange">{@code spring.cloud.k8s.config.preference}</span> if not
+		 * <span color="orange">{@code spring.cloud.alibaba-kubernetes.config.preference}</span> if not
 		 * set.
 		 */
 		private Preference preference;

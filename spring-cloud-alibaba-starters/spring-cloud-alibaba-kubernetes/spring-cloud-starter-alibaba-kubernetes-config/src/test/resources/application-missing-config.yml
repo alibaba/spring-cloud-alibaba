@@ -2,7 +2,7 @@ spring:
   application:
     name: missing-config
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         namespace: default
         configmaps:

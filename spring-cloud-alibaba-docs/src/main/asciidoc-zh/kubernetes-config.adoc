@@ -26,7 +26,7 @@ NOTE: Spring Cloud 提供了在运行时动态刷新环境的能力，这主要�
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         refreshable: false # 全局默认配置，默认值为 false
         config-maps:
@@ -46,7 +46,7 @@ spring:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         preference: remote # 全局默认配置，默认值为remote，表示远程配置会覆盖本地配置
         config-maps:
@@ -103,7 +103,7 @@ stringData:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         refresh-on-deleted: false # 当检测到配置被删除时，应用程序不会触发刷新。默认值为 false。
 ----
@@ -116,7 +116,7 @@ spring:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         fail-on-missing-config: true # 如果找不到配置，应用程序将无法启动。默认值为 true。
 ----
@@ -127,7 +127,7 @@ spring:
 ----
 spring:
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         enabled: true
         namespace: default # 配置所在的命名空间（全局配置）。如果在 Kubernetes 集群内部，则默认为当前 pod 所在的命名空间；如果在 Kubernetes 集群之外，则默认为当前 context 的命名空间。

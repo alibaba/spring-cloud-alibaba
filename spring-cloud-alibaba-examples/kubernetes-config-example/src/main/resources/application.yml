@@ -6,7 +6,7 @@ spring:
   application:
     name: kubernetes-config-example
   cloud:
-    k8s:
+    alibaba-kubernetes:
       config:
         config-maps:
           - name: configmap-01
