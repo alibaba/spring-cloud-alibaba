@@ -1,6 +1,6 @@
 ---
 name: Question
-about: how to ask an valid question
+about: how to ask a valid question
 title: ''
 labels: ''
 assignees: ''
