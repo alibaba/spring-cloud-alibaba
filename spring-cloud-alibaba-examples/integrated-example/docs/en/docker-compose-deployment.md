@@ -2,13 +2,13 @@
 
 ## Preparation
 
-If you have not installed docker or docker-compoe, please follow the official documentation to build the environment
+If you have not installed docker or docker-compose, please follow the official documentation to build the environment
 
 - docker：https://docs.docker.com/desktop/install/linux-install/
 - docker-compose：https://docs.docker.com/compose/install/
 
 
-### host configuration
+### Hosts configuration
 
 To ensure that the code can start properly, please configure the local host mapping first, add the following mapping to the configuration file.
 
@@ -23,14 +23,14 @@ To ensure that the code can start properly, please configure the local host mapp
 ```
 
 ### Quickly start components
-Go to the `spring-cloud-alibaba-examplesintegrated-example` directory and execute the following command to execute `docker-compose -f compose-quickstart.yml up -d` to quickly deploy the component.
+Go to the `spring-cloud-alibaba-examples-integrated-example` directory and execute the following command to execute `docker-compose -f compose-quickstart.yml up -d` to quickly deploy the component.
 ## Run the demo example
 
 After the preparation work is done, you can run the demo, mainly according to different usage scenarios, you can experience the user order (distributed transaction capability) and simulate the high traffic point (meltdown and limit the flow as well as the ability to cut the peak and fill the valley) respectively.
 
 First, you need to start the `integrated_frontend` and `integrated_gateway` projects separately.
 
-- The gateway module is the gateway to the entire best practice instance.
+- The gateway module is the gateway for the entire best practice example.
 - frontend is the simple front-end page for the best practice.
 
 ### Distributed Transaction Capabilities

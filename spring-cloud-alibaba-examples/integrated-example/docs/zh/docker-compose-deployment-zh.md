@@ -2,14 +2,14 @@
 
 ## 准备工作
 
-如果您还未安装docker或者docker-compoe环境，请移步官方文档进行环境搭建
+如果您还未安装docker或者docker-compose环境，请移步官方文档进行环境搭建
 
 - docker：https://docs.docker.com/desktop/install/linux-install/
 - docker-compose：https://docs.docker.com/compose/install/
 
 ### 环境声明
 
-### host配置
+### Host配置
 为了保证代码可以正常启动，请先配置好本机的 host 映射，在配置文件中新增如下的映射。
 ```sh
 # for integrated-example
@@ -28,10 +28,10 @@
 
 准备工作完成后可以运行 demo 示例，主要根据不同的使用场景，可以分别体验用户下单(分布式事务能力)以及模拟高流量点赞(熔断限流以及削峰填谷的能力)。
 
-首先需要分别启动`integrated_frontend`以及`integrated_gateway`的工程。
+首先需要分别启动`integrated_frontend`以及`integrated_gateway`应用。
 
-- gateway 模块是整个最佳实践实例的网关。
-- frontend 为最佳实践的简易前端页面。
+- `integrated_gateway` 模块是整个最佳实践示例的网关。
+- `integrated_frontend` 模块是最佳实践示例的简易前端页面。
 
 ### 分布式事务能力
 
@@ -45,11 +45,11 @@
 
 ##### 启动测试
 
-分别启动`integrated_storage`,`integrated_account`,`integrated_order`三个微服务。
+分别启动`integrated_storage`,`integrated_account`,`integrated_order`三个微服务模块。
 
 访问`http://integrated-frontend:8080/order` 来体验对应场景。
 
-直接点击下单按钮提交表单，我们模拟客户端向网关发送了一个创建订单的请求。
+直接点击下单按钮提交表单，模拟客户端向网关发送了一个创建订单的请求。
 
 - 用户的 userId 为 admin
 - 用户下单的商品编号为1号
@@ -59,7 +59,7 @@
 
 在本 demo 示例中，为了便于演示，每件商品的单价都为2。
 
-而在前面的准备工作中，**初始化业务数据库表**的时候我们新建了一个用户 userId = admin，余额为 3 元；同时新建了一个编号为 1 号的商品，库存为 100 件。
+而在前面的准备工作中，**初始化业务数据库表**的时候，新建了一个用户 userId = admin，余额为 3 元；同时新建了一个编号为 1 号的商品，库存为 100 件。
 
 因此通过上述的操作，我们会创建一个订单，扣减对应商品编号为 1 号的库存个数(100-1=99)，扣减 admin 用户的余额(3-2=1)。
 
