@@ -1,4 +1,4 @@
-# Spring Cloud Alibaba 容器化部署最佳实践 | 本地部署版本
+# Spring Cloud Alibaba 容器化部署最佳实践 | Docker-Compose版本
 
 ## 准备工作
 
@@ -23,6 +23,10 @@
 
 ### 快速启动组件
 进入到`spring-cloud-alibaba-examples/integrated-example` 目录下，执行如下命令执行`docker-compose -f compose-quickstart.yml up -d`快速部署组件
+
+#### 新增配置文件
+
+运行成功docker-compose文件之后，新增nacos配置：运行`spring-cloud-alibaba-examples/integrated-example/scripts/nacos-config-quick.sh` 来完成所有微服务配置的一键导入。
 
 ## 运行 Demo 示例
 

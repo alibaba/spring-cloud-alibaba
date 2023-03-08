@@ -1,4 +1,4 @@
-# Spring Cloud Alibaba Containerized Deployment Best Practices | Local Deployment Edition
+# Spring Cloud Alibaba Containerized Deployment Best Practices | Docker-Compose Edition
 
 ## Preparation
 
@@ -24,6 +24,11 @@ To ensure that the code can start properly, please configure the local host mapp
 
 ### Quickly start components
 Go to the `spring-cloud-alibaba-examples-integrated-example` directory and execute the following command to execute `docker-compose -f compose-quickstart.yml up -d` to quickly deploy the component.
+
+#### Add a new profile
+After successfully running the docker-compose file, add the nacos configuration: run `spring-cloud-alibaba-examples/integrated-example/scripts/nacos-config-quick.sh` to complete the one-click import of all microservice configurations.
+
+
 ## Run the demo example
 
 After the preparation work is done, you can run the demo, mainly according to different usage scenarios, you can experience the user order (distributed transaction capability) and simulate the high traffic point (meltdown and limit the flow as well as the ability to cut the peak and fill the valley) respectively.
