@@ -1,0 +1,81 @@
+version: "3"
+services:
+
+  # integrated example module
+  integrated-frontend:
+    image: integrated-frontend
+    hostname: integrated-frontend
+    build:
+      dockerfile: ../integrated-frontend/Dockerfile
+      context: .
+    container_name: integrated-frontend
+    ports:
+      - "8080:8080"
+
+  integrated-gateway:
+    image: integrated-gateway
+    hostname: gateway-service
+    build:
+      dockerfile: ../integrated-gateway/Dockerfile
+      context: .
+    container_name: integrated-gateway
+    ports:
+      - "30010:30010"
+    depends_on:
+      - integrated-frontend
+
+  integrated-account:
+    image: integrated-account
+    build:
+      dockerfile: ../integrated-account/Dockerfile
+      context: .
+    container_name: integrated-account
+    ports:
+      - "8012:8012"
+    depends_on:
+      - integrated-frontend
+
+  integrated-order:
+    image: integrated-order
+    build:
+      dockerfile: ../integrated-order/Dockerfile
+      context: .
+    container_name: integrated-order
+    ports:
+      - "8013:8013"
+    depends_on:
+      - integrated-frontend
+
+  integrated-storage:
+    image: integrated-storage
+    build:
+      dockerfile: ../integrated-storage/Dockerfile
+      context: .
+    container_name: integrated-storage
+    ports:
+      - "8011:8011"
+    depends_on:
+      - integrated-frontend
+
+  integrated-praise-provider:
+    image: integrated-praise-provider
+    build:
+      dockerfile: ../integrated-praise-provider/Dockerfile
+      context: .
+    container_name: integrated-praise-provider
+    ports:
+      - "8015:8015"
+    depends_on:
+      - integrated-frontend
+
+  integrated-praise-consumer:
+    image: integrated-praise-consumer
+    build:
+      dockerfile: ../integrated-praise-consumer/Dockerfile
+      context: .
+    container_name: integrated-praise-consumer
+    ports:
+      - "8014:8014"
+    depends_on:
+      - integrated-frontend
+      - integrated-praise-provider
