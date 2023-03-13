@@ -2,11 +2,12 @@
 
 ## Preparation
 
-If you have not installed docker or docker-compose, please follow the official documentation to build the environment
+If you have not installed Docker or Docker-Compose, please follow the official documentation to build the environment
 
-- docker：https://docs.docker.com/desktop/install/linux-install/
-- docker-compose：https://docs.docker.com/compose/install/
+> Note: When using Docker-Compose to experience the demo, please make sure that the local machine memory resource is >= 24G!
 
+- Docker：https://docs.docker.com/desktop/install/linux-install/
+- Docker-Compose：https://docs.docker.com/compose/install/
 
 ### Hosts configuration
 
@@ -30,14 +31,14 @@ Go to the `spring-cloud-alibaba-examples` directory and run the `mvn package` co
 
 ### Component start
 
-Enter `spring-cloud-alibaba-examples/integration-example/docker-compose` directory, run the following command in the terminal to quickly deploy the components required to run example: `docker-compose -f docker-compose-env.yml up -d`.
+Enter `spring-cloud-alibaba-examples/integration-example` directory, run the following command in the terminal to quickly deploy the components required to run example: `docker-compose -f ./docker-compose/docker-compose-env.yml up -d`.
 
 ### Add configuration
 
-After docker-compose-env is run successfully, add the nacos configuration:
+After docker-compose-env.yml is run successfully, add the Nacos configuration:
 
-- Enter `spring-cloud-alibaba-examples/integration-example/config-init/scripts` directory;
-- Execute the `nacos-config-quick.sh` script file in the terminal.
+- Enter `spring-cloud-alibaba-examples/integration-example` directory;
+- Execute the `config-init/scripts/nacos-config-quick.sh` script file in the terminal.
 
 The one-click import of all micro-service configurations is complete.
 
@@ -45,17 +46,17 @@ The one-click import of all micro-service configurations is complete.
 
 ### Service start
 
-Enter `spring-cloud-alibaba-examples/integration-example/docker-compose` directory, Run the following command in the terminal to quickly deploy the services required for running example: `docker-compose -f docker-compose-service.yml up -d`.
+Enter `spring-cloud-alibaba-examples/integration-example` directory, Run the following command in the terminal to quickly deploy the services required for running example: `docker-compose -f ./docker-compose/docker-compose-service.yml up -d`.
 
 ## Stop all containers
 
-### Stops the component container
-
-Enter `spring-cloud-alibaba-examples/integration-example/docker-compose` directory, Run the following command in the terminal to `docker-compose -f docker-compose-env.yml down` to stop the running example component container.
-
 ### Stops the service container
 
-Enter `spring-cloud-alibaba-examples/integration-example/docker-compose` directory, Run the following command in the terminal to `docker-compose -f docker-compose-service.yml down` to stop the running example service container.
+Enter `spring-cloud-alibaba-examples/integration-examplee` directory, Run the following command in the terminal to `docker-compose -f ./docker-compose/docker-compose-service.yml down` to stop the running example service container.
+
+### Stops the component container
+
+Enter `spring-cloud-alibaba-examples/integration-example` directory, Run the following command in the terminal to `docker-compose -f ./docker-compose/docker-compose-env.yml down` to stop the running example component container.
 
 > When the container starts, you can observe the startup process of the container through `docker-compose- f docker-compose-*.yml up`!
 
@@ -117,7 +118,7 @@ For service fusion limiting and peak and valley cutting in the context of high t
 
 #### Startup test
 
-Start the `integrated_provider` and `integrated_consumer` modules separately.
+Start the `integrated-praise-provider` and `integrated-praise-consumer` modules separately.
 
 - Sentinel service meltdown degradation
 
@@ -135,7 +136,7 @@ Therefore, we can see that Sentinel performs a service fusion on the Gateway sid
 
 Visit `http://integrated-frontend:8080/rocketmq` to experience the corresponding scenario.
 
-Since we previously configured the consumption rate and interval of the `integrated-consumer` consumer module in Nacos, we simulate 1000 requests for likes at the click of a button, and the `integrated_provider`
+Since we previously configured the consumption rate and interval of the `integrated-praise-consumer` consumer module in Nacos, we simulate 1000 requests for likes at the click of a button, and the `integrated-praise-provider`
 will deliver 1000 requests to the Broker, and the consumer module will consume them according to the configured consumption rate, and update the database with the product data of the likes, simulating the characteristics of RocketMQ to cut the peaks and fill the valleys under high traffic.
 
 You can see that the number of likes in the database is being dynamically updated.

@@ -8,11 +8,9 @@ services:
     build:
       dockerfile: ./integrated-frontend/Dockerfile
       context: ../
-      args:
-        SERVICE_VERSION: ${SERVICE_VERSION}
     env_file:
       - .env
-    container_name: integrated-frontend-${SERVICE_VERSION}
+    container_name: integrated-frontend
     ports:
       - ${FRONTEND_PORT}:${FRONTEND_PORT}
     depends_on:
@@ -29,11 +27,9 @@ services:
     build:
       dockerfile: ./integrated-gateway/Dockerfile
       context: ../
-      args:
-        SERVICE_VERSION: ${SERVICE_VERSION}
     env_file:
         - .env
-    container_name: integrated-gateway-${SERVICE_VERSION}
+    container_name: integrated-gateway
     ports:
       - ${GATEWAY_PORT}:${GATEWAY_PORT}
 
@@ -42,11 +38,9 @@ services:
     build:
       dockerfile: ./integrated-account/Dockerfile
       context: ../
-      args:
-        SERVICE_VERSION: ${SERVICE_VERSION}
     env_file:
         - .env
-    container_name: integrated-account-${SERVICE_VERSION}
+    container_name: integrated-account
     ports:
       - ${ACCOUNT_PORT}:${ACCOUNT_PORT}
 
@@ -55,11 +49,9 @@ services:
     build:
       dockerfile: ./integrated-order/Dockerfile
       context: ../
-      args:
-        SERVICE_VERSION: ${SERVICE_VERSION}
     env_file:
         - .env
-    container_name: integrated-order-${SERVICE_VERSION}
+    container_name: integrated-order
     ports:
       - ${ORDER_PORT}:${ORDER_PORT}
 
@@ -68,11 +60,9 @@ services:
     build:
       dockerfile: ./integrated-storage/Dockerfile
       context: ../
-      args:
-        SERVICE_VERSION: ${SERVICE_VERSION}
     env_file:
         - .env
-    container_name: integrated-storage-${SERVICE_VERSION}
+    container_name: integrated-storage
     ports:
       - ${STORAGE_PORT}:${STORAGE_PORT}
 
@@ -81,11 +71,9 @@ services:
     build:
       dockerfile: ./integrated-praise-provider/Dockerfile
       context: ../
-      args:
-        SERVICE_VERSION: ${SERVICE_VERSION}
     env_file:
         - .env
-    container_name: integrated-praise-provider-${SERVICE_VERSION}
+    container_name: integrated-praise-provider
     ports:
       - ${PRAISE_PROVIDER_PORT}:${PRAISE_PROVIDER_PORT}
 
@@ -94,11 +82,9 @@ services:
     build:
       dockerfile: ./integrated-praise-consumer/Dockerfile
       context: ../
-      args:
-        SERVICE_VERSION: ${SERVICE_VERSION}
     env_file:
         - .env
-    container_name: integrated-praise-consumer-${SERVICE_VERSION}
+    container_name: integrated-praise-consumer
     ports:
       - ${PRAISE_CONSUMER_PORT}:${PRAISE_CONSUMER_PORT}
     depends_on:

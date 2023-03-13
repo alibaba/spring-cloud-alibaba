@@ -120,8 +120,8 @@ sh bin/mqbroker
 
 首先需要分别启动`integrated-frontend`以及`integrated-gateway`微服务应用。
 
-- `integrated-frontend` 模块是整个最佳实践示例的网关。
-- `integrated-gateway` 为最佳实践示例的简易前端页面。
+- `integrated-gateway` 模块是整个最佳实践示例的网关。
+- `integrated-frontend` 为最佳实践示例的简易前端页面。
 
 ### 分布式事务能力
 
@@ -172,7 +172,7 @@ sh bin/mqbroker
 
 #### 启动测试
 
-分别启动`integrated-provider`以及`integrated-consumer`模块。
+分别启动`integrated-praise-provider`以及`integrated-praise-consumer`模块。
 
 - Sentinel 服务熔断降级
 
@@ -190,7 +190,7 @@ sh bin/mqbroker
 
 访问`http://integrated-frontend:8080/rocketmq` 体验对应场景。
 
-由于之前在 Nacos 中配置了`integrated-consumer`消费者模块的消费速率以及间隔，在点击按钮时应用模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-provider`
+由于之前在 Nacos 中配置了`integrated-praise-consumer`消费者模块的消费速率以及间隔，在点击按钮时应用模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-praise-provider`
 会将 1000 次请求都向 Broker 投递消息，而在消费者模块中会根据配置的消费速率进行消费，向数据库更新点赞的商品数据，模拟大流量下 RocketMQ 削峰填谷的特性。
 
 可以看到数据库中点赞的个数正在动态更新。

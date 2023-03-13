@@ -1,10 +1,7 @@
 FROM openjdk:8-jdk-alpine as builder
 
-ARG SERVICE_VERSION
-
 LABEL author="yuluo" \
-	email="yuluo829@aliyun.com" \
-	version=$SERVICE_VERSION
+	email="yuluo829@aliyun.com"
 
 ADD ./integrated-order/target/integrated-order-*.jar /app.jar
 

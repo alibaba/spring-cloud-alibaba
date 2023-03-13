@@ -7,13 +7,13 @@ This is the Spring Cloud Alibaba (hereinafter referred to as SCA) Best Practices
 - Kubernetes (We recommend using Docker Desktop's built-in integrated Kubernetes environment for this experience.)
 - Helm
 
-vIf the test machine does not already have the above environment, please go to the official documentation to build the environment.
+If the test machine does not already have the above environment, please go to the official documentation to build the environment.
 
 - [Helm Installation](https://helm.sh/zh/docs/intro/install/)
 - [Kubernetes Docker Desktop Quick Installation](https://docs.docker.com/desktop/kubernetes/)
 
 Here expose the services of the Pod in Kubernetes to the outside world by means of NodePort, and configure the ip mapping of the Kubernetes cluster node before starting the test.
-```sh
+```shell
 # Please adjust with the public ip of your K8S node
 120.24.xxx.xxx integrated-frontend
 120.24.xxx.xxx gateway-service
@@ -103,7 +103,7 @@ Visit `http://integrated-frontend:30080/rocketmq` to experience the correspondin
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016143342664.png)
 
-Since the consumption rate and interval of the `integrated-consumer` consumer module is configured in Nacos before, the application will simulate 1000 "like" requests when clicking the button, `integrated-provider`
+Since the consumption rate and interval of the `integrated-praise-consumer` consumer module is configured in Nacos before, the application will simulate 1000 "like" requests when clicking the button, `integrated-praise-provider`
 will deliver 1000 requests to the Broker, and the consumer module will consume them according to the configured consumption rate, and update the database with the product data of the likes, simulating the characteristics of RocketMQ to cut the peaks and fill the valleys under high traffic.
 
 You can see that the number of likes in the database is being dynamically updated.

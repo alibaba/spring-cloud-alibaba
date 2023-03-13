@@ -173,7 +173,7 @@ For service fusion limiting and peak and valley cutting in the context of high t
 
 #### Startup test
 
-Start the `integrated-provider` and `integrated-consumer` modules separately.
+Start the `integrated-praise-provider` and `integrated-praise-consumer` modules separately.
 
 - Sentinel service meltdown degradation
 
@@ -191,7 +191,7 @@ Therefore, we can see that Sentinel performs a service fusion on the Gateway sid
 
 Visit `http://integrated-frontend:8080/rocketmq` to experience the corresponding scenario.
 
-Since previously configured the consumption rate and interval of the `integrated-consumer` consumer module in Nacos, simulate 1000 requests for likes at the click of a button, and the `integrated-provider`
+Since previously configured the consumption rate and interval of the `integrated-praise-consumer` consumer module in Nacos, simulate 1000 requests for likes at the click of a button, and the `integrated-praise-provider`
 will deliver 1000 requests to the Broker, and the consumer module will consume them according to the configured consumption rate, and update the database with the product data of the likes, simulating the characteristics of RocketMQ to cut the peaks and fill the valleys under high traffic.
 
 You can see that the number of likes in the database is being dynamically updated.

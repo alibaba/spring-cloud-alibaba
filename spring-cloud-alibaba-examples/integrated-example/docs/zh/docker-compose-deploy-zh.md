@@ -2,10 +2,12 @@
 
 ## 准备工作
 
-如果您还没有安装docker和docker-compose，请按照官方文档来构建运行环境：
+> Note: 使用Docker-Compose方式体验Demo时，请确保本地机器内存资源 >= 24G！
 
-- docker：https://docs.docker.com/desktop/install/linux-install/
-- docker-compose：https://docs.docker.com/compose/install/
+如果您还没有安装Docker和Docker-Compose，请按照官方文档来构建运行环境：
+
+- Docker：https://docs.docker.com/desktop/install/linux-install/
+- Docker-Compose：https://docs.docker.com/compose/install/
 
 ### Hosts 配置
 
@@ -23,20 +25,20 @@
 
 ### 准备jar包
 
-进入`spring-cloud-alibaba-examples`目录下，执行`mvn package`命令编译项目生成jar包，为后续docker构建服务镜像做准备。
+进入`spring-cloud-alibaba-examples`目录下，执行`mvn package`命令编译项目生成jar包，为后续Docker构建服务镜像做准备。
 
 ## 快速启动
 
 ### 组件启动
 
-进入`spring-cloud-alibaba-examples/integrated-example/docker-compose`目录下，在终端中执行以下命令`docker-compose -f docker-compose-env.yml up -d`来快速部署运行example所需组件。
+进入`spring-cloud-alibaba-examples/integrated-example`目录下，在终端中执行以下命令`docker-compose -f ./docker-compose/docker-compose-env.yml up -d`来快速部署运行example所需组件。
 
 ### 添加配置
 
-docker-compose-env.yml文件运行成功之后，添加nacos配置：
+docker-compose-env.yml文件运行成功之后，添加Nacos配置：
 
-1. 进入`spring-cloud-alibaba-examples/integrated-example/config-init/scripts`目录下；
-2. 在终端中执行`nacos-config-quick.sh`脚本文件。
+1. 进入`spring-cloud-alibaba-examples/integrated-example`目录下；
+2. 在终端中执行`config-init/scripts/nacos-config-quick.sh`脚本文件。
 
 完成所有微服务配置的一键导入。
 
@@ -44,17 +46,18 @@ docker-compose-env.yml文件运行成功之后，添加nacos配置：
 
 ### 服务启动
 
-进入`spring-cloud-alibaba-examples/integrated-example/docker-compose`目录下，在终端中执行以下命令`docker-compose -f docker-compose-service.yml up -d`'来快速部署运行example所需服务。
+进入`spring-cloud-alibaba-examples/integrated-example`目录下，在终端中执行以下命令`docker-compose -f ./docker-compose/docker-compose-service.yml up -d`来快速部署运行example所需服务。
 
 ## 停止所有容器
 
-### 停止组件容器
-
-进入`spring-cloud-alibaba-examples/integrated-example/docker-compose`目录下，在终端中执行以下命令`docker-compose -f docker-compose-env.yml down`来停止正在运行的example组件容器。
-
 ### 停止服务容器
 
-进入`spring-cloud-alibaba-examples/integrated-example/docker-compose`目录下，在终端中执行以下命令`docker-compose -f docker-compose-service.yml down`来停止正在运行的example服务容器。
+进入`spring-cloud-alibaba-examples/integrated-example`目录下，在终端中执行以下命令`docker-compose -f ./docker-compose/docker-compose-service.yml down`来停止正在运行的example服务容器。
+
+
+### 停止组件容器
+
+进入`spring-cloud-alibaba-examples/integrated-example`目录下，在终端中执行以下命令`docker-compose -f ./docker-compose/docker-compose-env.yml down`来停止正在运行的example组件容器。
 
 > 在容器启动时，可以通过`docker-compose -f docker-compose-*.yml up`观察容器的启动过程！
 
@@ -64,8 +67,8 @@ docker-compose-env.yml文件运行成功之后，添加nacos配置：
 
 首先需要分别启动`integrated-frontend`以及`integrated-gateway`微服务应用。
 
-- `integrated-frontend` 模块是整个最佳实践示例的网关。
-- `integrated-gateway` 为最佳实践示例的简易前端页面。
+- `integrated-gateway` 模块是整个最佳实践示例的网关。
+- `integrated-frontend` 为最佳实践示例的简易前端页面。
 
 ### 分布式事务能力
 
@@ -116,7 +119,7 @@ docker-compose-env.yml文件运行成功之后，添加nacos配置：
 
 #### 启动测试
 
-分别启动`integrated-provider`以及`integrated-consumer`模块。
+分别启动`integrated-praise-provider`以及`integrated-praise-consumer`模块。
 
 - Sentinel 服务熔断降级
 
@@ -134,7 +137,7 @@ docker-compose-env.yml文件运行成功之后，添加nacos配置：
 
 访问`http://integrated-frontend:8080/rocketmq` 体验对应场景。
 
-由于之前在 Nacos 中配置了`integrated-consumer`消费者模块的消费速率以及间隔，在点击按钮时应用模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-provider`
+由于之前在 Nacos 中配置了`integrated-praise-consumer`消费者模块的消费速率以及间隔，在点击按钮时应用模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-praise-provider`
 会将 1000 次请求都向 Broker 投递消息，而在消费者模块中会根据配置的消费速率进行消费，向数据库更新点赞的商品数据，模拟大流量下 RocketMQ 削峰填谷的特性。
 
 可以看到数据库中点赞的个数正在动态更新。

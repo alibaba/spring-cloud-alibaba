@@ -105,7 +105,7 @@ helm uninstall integrated-example
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016143342664.png)
 
-由于之前在 Nacos 中配置了`integrated-consumer`消费者模块的消费速率以及间隔，在点击按钮时应用将会模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-provider`
+由于之前在 Nacos 中配置了`integrated-praise-consumer`消费者模块的消费速率以及间隔，在点击按钮时应用将会模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-praise-provider`
 会将 1000 次请求都向 Broker 投递消息，而在消费者模块中会根据配置的消费速率进行消费，向数据库更新点赞的商品数据，模拟大流量下 RocketMQ 削峰填谷的特性。
 
 可以看到数据库中点赞的个数正在动态更新。
