@@ -1,10 +1,12 @@
 FROM openjdk:8-jdk-alpine as builder
 
+ARG SERVICE_VERSION
+
 LABEL author="yuluo" \
 	email="yuluo829@aliyun.com" \
-	version="2.2.10-RC1"
+	version=$SERVICE_VERSION
 
-ADD ./integrated-order/target/integrated-order-2.2.10-RC1.jar /app.jar
+ADD ./integrated-order/target/integrated-order-*.jar /app.jar
 
 RUN sh -c 'touch /app.jar'
 EXPOSE 8013

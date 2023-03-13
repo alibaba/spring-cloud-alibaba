@@ -24,7 +24,7 @@ To ensure that the code can start properly, please configure the local host mapp
 
 ### Preparing jar packages
 
-Go to the `spring-cloud-alibaba-examples/integrated-example` directory and run the `mvn package` command to compile the project and generate the jar package, so as to prepare for the subsequent construction of the dockr service image.
+Go to the `spring-cloud-alibaba-examples` directory and run the `mvn package` command to compile the project and generate the jar package, so as to prepare for the subsequent construction of the docker service image.
 
 ## Quickly start 
 
@@ -36,7 +36,7 @@ Enter `spring-cloud-alibaba-examples/integration-example/docker-compose` directo
 
 After docker-compose-env is run successfully, add the nacos configuration:
 
-- Enter `spring-cloud-alibaba-examples/integration-example/docker-compose/nacos` directory;
+- Enter `spring-cloud-alibaba-examples/integration-example/config-init/scripts` directory;
 - Execute the `nacos-config-quick.sh` script file in the terminal.
 
 The one-click import of all micro-service configurations is complete.
@@ -49,9 +49,7 @@ Enter `spring-cloud-alibaba-examples/integration-example/docker-compose` directo
 
 ## Stop all containers
 
-#### Stops the component container
-
-#### Stops the component container
+### Stops the component container
 
 Enter `spring-cloud-alibaba-examples/integration-example/docker-compose` directory, Run the following command in the terminal to `docker-compose -f docker-compose-env.yml down` to stop the running example component container.
 
@@ -61,11 +59,11 @@ Enter `spring-cloud-alibaba-examples/integration-example/docker-compose` directo
 
 > When the container starts, you can observe the startup process of the container through `docker-compose- f docker-compose-*.yml up`!
 
-## Experience Demo example
+## Experience Demo
 
 After the preparation work is done, you can run the demo, mainly according to different usage scenarios, you can experience the user order (distributed transaction capability) and simulate the high traffic point (meltdown and limit the flow as well as the ability to cut the peak and fill the valley) respectively.
 
-First, you need to start the `integrated_frontend` and `integrated_gateway` projects separately.
+First, you need to start the `integrated-frontend` and `integrated-gateway` projects separately.
 
 - The gateway module is the gateway for the entire best practice example.
 - frontend is the simple front-end page for the best practice.
@@ -82,7 +80,7 @@ For the distributed transaction capability, we provide the scenario **where a us
 
 ##### Start test
 
-Start `integrated_storage`,`integrated_account`,`integrated_order` microservices respectively.
+Start `integrated-storage`,`integrated-account`,`integrated-order` microservices respectively.
 
 Visit `http://integrated-frontend:8080/order` to experience the corresponding scenario.
 

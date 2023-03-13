@@ -43,7 +43,7 @@ Before you start the database configuration, please make sure the MySQL server i
 
 For the first scenario, the order, account, and inventory microservices all need their own databases, while the second scenario simulates a database for storing like information as well.
 
-Run the sql script `spring-cloud-alibaba-examples/integrated-example/init/sql/init.sql` to create the environment required for the business and the Seata-related tables in one click.
+Run the sql script `spring-cloud-alibaba-examples/integrated-example/config-init/sql/init.sql` to create the environment required for the business and the Seata-related tables in one click.
 
 ### Nacos Configuration
 
@@ -64,9 +64,15 @@ bash bin/startup.sh -m standalone
 
 #### Adding configuration files
 
-Before bulk importing the configuration, please modify the datasource configuration (username and password) in `integrated-example/config/datasource-config.yaml`.
+Before bulk importing the configuration, please modify the datasource configuration (username and password) in `spring-cloud-alibaba-examples/integrated-example/config-init/config/datasource-config.yaml`.
 
-After that, run `spring-cloud-alibaba-examples/integrated-example/scripts/nacos-config-quick.sh` to complete the one-click import of all microservice configurations.
+After that, run `spring-cloud-alibaba-examples/integrated-example/config/scripts/nacos-config-quick.sh` to complete the one-click import of all microservice configurations.
+
+```shell
+# linux
+sh nacos-config-quick.sh
+# windows can use git bash to import the configuration, run the command as above
+```
 
 ### Seata Configuration
 

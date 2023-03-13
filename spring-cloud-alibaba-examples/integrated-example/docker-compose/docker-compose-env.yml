@@ -25,7 +25,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../config-init/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     command:
       [
         --character-set-server=utf8mb4,
@@ -50,7 +50,7 @@ services:
       - "10909:10909"
       - "10911:10911"
     volumes:
-      - ./rocketmq/broker.conf:/opt/rocketmq-4.9.4/conf/broker.conf
+      - ../config-init/rocketmq/broker.conf:/opt/rocketmq-4.9.4/conf/broker.conf
     environment:
       NAMESRV_ADDR: "rmqnamesrv:9876"
       JAVA_OPTS: " -Duser.home=/opt"

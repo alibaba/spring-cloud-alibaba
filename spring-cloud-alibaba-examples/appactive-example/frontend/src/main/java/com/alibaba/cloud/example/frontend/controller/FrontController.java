@@ -168,10 +168,12 @@ public class FrontController {
 			resultHolder = productDAO.detail(AppContextClient.getRouteId(), id);
 			break;
 		case Constants.REST_TEMPLATE:
-			resultHolder = productDAO.detailByRestTemplate(AppContextClient.getRouteId(), id);
+			resultHolder = productDAO.detailByRestTemplate(AppContextClient.getRouteId(),
+					id);
 			break;
 		case Constants.WEB_CLIENT:
-			resultHolder = productDAO.detailByWebClient(AppContextClient.getRouteId(), id);
+			resultHolder = productDAO.detailByWebClient(AppContextClient.getRouteId(),
+					id);
 			break;
 		default:
 			throw new IllegalArgumentException("The web request is malformed.");

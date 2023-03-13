@@ -43,7 +43,7 @@ helm uninstall integrated-example
 
 #### Scenario Description
 
-For the distributed transaction capability, SCA communityprovide a scenario **where a user places an order to purchase goods** and after placing the order.
+For the distributed transaction capability, SCA community provide a scenario **where a user places an order to purchase goods** and after placing the order.
 
 - First request the inventory module and deduct the inventory
 - Deduct the account balance
@@ -78,7 +78,7 @@ You can see that the database still has 99 records in stock because of the rollb
 
 #### Scenario Description
 
-For service fusion limiting and peak and valley cutting in the context of high traffic, SCA communityprovide a scenario** where users make likes for products**. In this scenario, we provide two ways to deal with high traffic.
+For service fusion limiting and peak and valley cutting in the context of high traffic, SCA community provide a scenario** where users make likes for products**. In this scenario, we provide two ways to deal with high traffic.
 
 - Sentinel binds specified gateway routes on the gateway side for fusion degradation of services.
 - RocketMQ performs traffic clipping, where the producer sends messages to RocketMQ under high traffic requests, while the consumer pulls and consumes through a configurable consumption rate, reducing the pressure of high traffic direct requests to the database to increase the number of likes requests.

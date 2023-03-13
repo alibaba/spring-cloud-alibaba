@@ -21,10 +21,10 @@
 - [RocketMQ: 4.9.4 版本](https://github.com/apache/rocketmq/releases)
 - MySQL: 5.7 版本
 
-### Host配置
+### Hosts配置
 
 为了保证代码可以正常启动，请先配置好本机的 host 映射，在配置文件中新增如下的映射。
-```sh
+```shell
 # for integrated-example
 127.0.0.1 integrated-mysql
 127.0.0.1 nacos-server
@@ -42,7 +42,7 @@
 
 针对第一个场景，订单、账户、库存微服务都需要各自的数据库，而第二个场景模拟点赞也需要存储点赞信息的数据库。
 
-运行 `spring-cloud-alibaba-examples/integrated-example/init/sql/init.sql` 的 sql 脚本一键创建业务所需的环境以及 Seata 相关的表。
+运行 `spring-cloud-alibaba-examples/integrated-example/config-init/sql/init.sql` 的 sql 脚本一键创建业务所需的环境以及 Seata 相关的表。
 
 ### Nacos配置
 
@@ -63,9 +63,15 @@ bash bin/startup.sh -m standalone
 
 #### 新增配置文件
 
-在批量导入配置之前，请先修改`integrated-example/config/datasource-config.yaml` 中的数据源配置**(用户名和密码)**。
+在批量导入配置之前，请先修改`spring-cloud-alibaba-examples/integrated-example/config-init/config/datasource-config.yaml` 中的数据源配置**(用户名和密码)**。
 
-之后运行`spring-cloud-alibaba-examples/integrated-example/scripts/nacos-config-quick.sh` 来完成所有微服务配置的一键导入。
+之后运行`spring-cloud-alibaba-examples/integrated-example/config-init/scripts/nacos-config-quick.sh` 来完成所有微服务配置的一键导入。
+
+```shell
+# linux
+sh nacos-config-quick.sh
+# windows 可以使用git bash来完成配置的导入 执行命令同上
+```
 
 ### Seata 配置
 
@@ -77,7 +83,7 @@ Seata 的 db 模式需要额外配置数据库信息以及修改 Seata 服务端
 
 进入到 release 解压后的 seata 目录中，执行如下命令。
 
-```sh
+```shell
 #Linux/Mac环境
 sh ./bin/seata-server.sh
 #Win环境

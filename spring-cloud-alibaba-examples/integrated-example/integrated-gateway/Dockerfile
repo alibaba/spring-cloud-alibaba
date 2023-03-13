@@ -1,10 +1,12 @@
 FROM openjdk:8-jdk-alpine as builder
 
-LABEL author="yuluo" \
-		email="yuluo829@aliyun.com" \
-		version="2.2.10-RC1"
+ARG SERVICE_VERSION
 
-ADD ./integrated-gateway/target/integrated-gateway-2.2.10-RC1.jar /app.jar
+LABEL author="yuluo" \
+	email="yuluo829@aliyun.com" \
+	version=$SERVICE_VERSION
+
+ADD ./integrated-gateway/target/integrated-gateway-*.jar /app.jar
 
 RUN sh -c 'touch /app.jar'
 EXPOSE 30010

@@ -2,7 +2,7 @@
 
 ## 准备工作
 
-如果您还没有安装docker或docker-compose，请按照官方文档来构建运行环境：
+如果您还没有安装docker和docker-compose，请按照官方文档来构建运行环境：
 
 - docker：https://docs.docker.com/desktop/install/linux-install/
 - docker-compose：https://docs.docker.com/compose/install/
@@ -21,21 +21,21 @@
 127.0.0.1 integrated-frontend
 ```
 
-### 准备ja包
+### 准备jar包
 
-进入`spring-cloud-alibaba-examples/integrated-example`目录下，执行`mvn package`命令编译项目生成jar包，为后续dockr构建服务镜像做准备。
+进入`spring-cloud-alibaba-examples`目录下，执行`mvn package`命令编译项目生成jar包，为后续docker构建服务镜像做准备。
 
 ## 快速启动
 
 ### 组件启动
 
-进入`spring-cloud-alibaba-examples/integrated-example/docker-compose`目录下，在终端中执行以下命令`docker-compose -f docker-compose-env.yml up -d`'来快速部署运行example所需组件。
+进入`spring-cloud-alibaba-examples/integrated-example/docker-compose`目录下，在终端中执行以下命令`docker-compose -f docker-compose-env.yml up -d`来快速部署运行example所需组件。
 
 ### 添加配置
 
-docker-compose-env文件运行成功之后，添加nacos配置：
+docker-compose-env.yml文件运行成功之后，添加nacos配置：
 
-1. 进入`spring-cloud-alibaba-examples/integrated-example/docker-compose/nacos`目录下；
+1. 进入`spring-cloud-alibaba-examples/integrated-example/config-init/scripts`目录下；
 2. 在终端中执行`nacos-config-quick.sh`脚本文件。
 
 完成所有微服务配置的一键导入。
@@ -48,17 +48,17 @@ docker-compose-env文件运行成功之后，添加nacos配置：
 
 ## 停止所有容器
 
-#### 停止组件容器
+### 停止组件容器
 
 进入`spring-cloud-alibaba-examples/integrated-example/docker-compose`目录下，在终端中执行以下命令`docker-compose -f docker-compose-env.yml down`来停止正在运行的example组件容器。
 
-#### 停止服务容器
+### 停止服务容器
 
 进入`spring-cloud-alibaba-examples/integrated-example/docker-compose`目录下，在终端中执行以下命令`docker-compose -f docker-compose-service.yml down`来停止正在运行的example服务容器。
 
 > 在容器启动时，可以通过`docker-compose -f docker-compose-*.yml up`观察容器的启动过程！
 
-## 体验Demo示例
+## 体验Demo
 
 准备工作完成后可以运行 demo 示例，主要根据不同的使用场景，可以分别体验用户下单(分布式事务能力)以及模拟高流量点赞(熔断限流以及削峰填谷的能力)。
 
