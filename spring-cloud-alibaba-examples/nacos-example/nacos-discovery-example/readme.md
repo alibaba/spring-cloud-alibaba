@@ -215,7 +215,7 @@ As shown in the figure above, NacosDiscoveryProperties is the configuration of N
 
 #### More configuration items
 Configuration item|key|default value|Description
-----|----|--|-----
+----|----|-----|-----
 server address|spring.cloud.nacos.discovery.server-addr||
 service|spring.cloud.nacos.discovery.service|${spring.application.name}|service id to registry
 weight|spring.cloud.nacos.discovery.weight|1|value from 1 to 100, The larger the value, the larger the weight
