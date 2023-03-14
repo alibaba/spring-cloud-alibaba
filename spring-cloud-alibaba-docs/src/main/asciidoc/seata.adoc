@@ -58,7 +58,7 @@ The project provides relevant https://github.com/alibaba/spring-cloud-alibaba/tr
 
 === Seata Dashboard
 
-- Seata 1.5.1 supports Seata console local access console address: `http://127.0.0.1:7091`。
+- Seata supports the Seata console since version 1.5.0, and the local access console address: 'http://127.0.0.1:7091'.
 - Through the Seata console, you can observe the executing transaction information and global lock information, and delete the relevant information when the transaction is completed.
 
 

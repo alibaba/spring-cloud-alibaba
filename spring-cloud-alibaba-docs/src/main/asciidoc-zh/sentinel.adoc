@@ -15,17 +15,18 @@ https://github.com/alibaba/Sentinel[Sentinel] 具有以下特征:
 
 如果要在您的项目中引入 Sentinel，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alibaba-sentinel` 的 starter。
 
-```xml
-[source,yaml]
+[source,xml]
+----
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
 </dependency>
-```
+----
 
 下面这个例子就是一个最简单的使用 Sentinel 的例子:
 
-```java
+[source,java]
+----
 @SpringBootApplication
 public class Application {
 
@@ -45,7 +46,7 @@ public class TestController {
     }
 
 }
-```
+----
 
 @SentinelResource 注解用来标识资源是否被限流、降级。上述例子上该注解的属性 'hello' 表示资源名。
 
@@ -53,7 +54,8 @@ public class TestController {
 
 以上例子都是在 WebServlet 环境下使用的，Sentinel 目前已经支持 WebFlux，需要配合 `spring-boot-starter-webflux` 依赖触发 sentinel-starter 中 WebFlux 相关的自动化配置。
 
-```java
+[source,java]
+----
 @SpringBootApplication
 public class Application {
 
@@ -74,11 +76,11 @@ public class TestController {
     }
 
 }
-```
+----
 
 ===== Sentinel 控制台
 
-Sentinel 控制台提供一个轻量级的控制台，它提供机器发现、单机资源实时监控、集群资源汇总，以及规则管理的功能。您只需要对应用进行简单的配置，就可以使用这些功能。
+Sentinel官方社区提供一个轻量级的控制台，它提供机器发现、单机资源实时监控、集群资源汇总，以及规则管理的功能。您只需要对应用进行简单的配置，就可以使用这些功能。
 
 *注意*: 集群资源汇总仅支持 500 台以下的应用集群，有大概 1 - 2 秒的延时。
 
@@ -101,9 +103,10 @@ image::https://github.com/alibaba/Sentinel/wiki/image/dashboard.png[]
 
 Sentinel 控制台是一个标准的 SpringBoot 应用，以 SpringBoot 的方式运行 jar 包即可。
 
-```shell
+[source,shell]
+----
 java -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar
-```
+----
 
 如若8080端口冲突，可使用 `-Dserver.port=新端口` 进行设置。
 
@@ -129,16 +132,19 @@ Sentinel 适配了 https://github.com/OpenFeign/feign[OpenFeign] 组件。如果
 
 * 配置文件打开 sentinel 对 feign 的支持：`feign.sentinel.enabled=true`
 * 加入 `openfeign starter` 依赖使 `sentinel starter` 中的自动化配置类生效：
-```xml
+
+[source,xml]
+----
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-openfeign</artifactId>
 </dependency>
-```
+----
 
 这是一个 `FeignClient` 的简单使用示例：
 
-```java
+[source,java]
+----
 @FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 public interface EchoService {
     @GetMapping(value = "/echo/{str}")
@@ -158,7 +164,7 @@ class EchoServiceFallback implements EchoService {
         return "echo fallback";
     }
 }
-```
+----
 
 NOTE: Feign 对应的接口中的资源名策略定义：httpmethod:protocol://requesturl。`@FeignClient` 注解中的所有属性，Sentinel 都做了兼容。
 
@@ -168,13 +174,14 @@ NOTE: Feign 对应的接口中的资源名策略定义：httpmethod:protocol://r
 
 Spring Cloud Alibaba Sentinel 支持对 `RestTemplate` 的服务调用使用 Sentinel 进行保护，在构造 `RestTemplate` bean的时候需要加上 `@SentinelRestTemplate` 注解。
 
-```java
+[source,java]
+----
 @Bean
 @SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 public RestTemplate restTemplate() {
     return new RestTemplate();
 }
-```
+----
 
 `@SentinelRestTemplate` 注解的属性支持限流(`blockHandler`, `blockHandlerClass`)和降级(`fallback`, `fallbackClass`)的处理。
 
@@ -184,13 +191,14 @@ public RestTemplate restTemplate() {
 
 比如上述 `@SentinelRestTemplate` 注解中 `ExceptionUtil` 的 `handleException` 属性对应的方法声明如下：
 
-```java
+[source,java]
+----
 public class ExceptionUtil {
     public static ClientHttpResponse handleException(HttpRequest request, byte[] body, ClientHttpRequestExecution execution, BlockException exception) {
         ...
     }
 }
-```
+----
 
 NOTE: 应用启动的时候会检查 `@SentinelRestTemplate` 注解对应的限流或降级方法是否存在，如不存在会抛出异常
 
@@ -205,6 +213,66 @@ Sentinel RestTemplate 限流的资源规则提供两种粒度：
 * `httpmethod:schema://host:port`：协议、主机和端口
 
 NOTE: 以 `https://www.taobao.com/test` 这个 url 并使用 GET 方法为例。对应的资源名有两种粒度，分别是 `GET:https://www.taobao.com` 以及 `GET:https://www.taobao.com/test`
+
+=== WebFlux 支持
+
+Sentinel社区 从1.5.0版本适配了对 WebFlux的支持，如果想要使用 WebFlux， 需要在项目中引入WebFlux依赖
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-webflux</artifactId>
+</dependency>
+----
+并且编写以下的配置类
+[source,java]
+----
+@Configuration
+public class MyConfiguration {
+
+	@Bean
+	public BlockRequestHandler blockRequestHandler() {
+		return new BlockRequestHandler() {
+			@Override
+			public Mono<ServerResponse> handleRequest(ServerWebExchange exchange,
+					Throwable t) {
+				return ServerResponse.status(HttpStatus.TOO_MANY_REQUESTS)
+						.contentType(MediaType.APPLICATION_JSON).body(fromValue("block"));
+			}
+		};
+	}
+
+	@Bean
+	public Customizer<ReactiveSentinelCircuitBreakerFactory> slowCustomizer() {
+		return factory -> {
+			factory.configure(builder -> builder.rules(Collections.singletonList(
+					new DegradeRule("slow_mono").setGrade(RuleConstant.DEGRADE_GRADE_RT)
+							.setCount(100).setTimeWindow(5))),
+					"slow_mono");
+			factory.configure(builder -> builder.rules(Collections.singletonList(
+					new DegradeRule("slow_flux").setGrade(RuleConstant.DEGRADE_GRADE_RT)
+							.setCount(100).setTimeWindow(5))),
+					"slow_flux");
+			factory.configureDefault(id -> new SentinelConfigBuilder().resourceName(id)
+					.rules(Collections.singletonList(new DegradeRule(id)
+							.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT)
+							.setCount(0.5).setTimeWindow(10)))
+					.build());
+		};
+	}
+
+}
+----
+
+Sentinel Reactor 适配分别针对 Mono 和 Flux 实现了对应的 Sentinel Operator，从而在各种事件触发时汇入 Sentinel 的相关逻辑。同时 Sentinel 在上层提供了 SentinelReactorTransformer 用于在组装期装入对应的 operator，用户使用时只需要通过 transform 操作符来进行变换即可：
+[source,java]
+----
+someService.doSomething() // return type: Mono<T> or Flux<T>
+   .transform(new SentinelReactorTransformer<>(resourceName)) // 在此处进行变换
+   .subscribe();
+----
+
+更多信息请参考 Spring Cloud Alibaba社区提供的 https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-webflux-example[entinel-webflux-example]
 
 === 动态数据源支持
 
@@ -260,7 +328,8 @@ https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[�
 
 若想跟 Sentinel Starter 配合使用，需要加上 `spring-cloud-alibaba-sentinel-gateway` 依赖，同时需要添加 `spring-cloud-starter-gateway` 依赖来让 `spring-cloud-alibaba-sentinel-gateway` 模块里的 Spring Cloud Gateway 自动化配置类生效：
 
-```xml
+[source,xml]
+----
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
@@ -275,7 +344,7 @@ https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[�
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-gateway</artifactId>
 </dependency>
-```
+----
 
 === Sentinel 对外暴露的 Endpoint
 
