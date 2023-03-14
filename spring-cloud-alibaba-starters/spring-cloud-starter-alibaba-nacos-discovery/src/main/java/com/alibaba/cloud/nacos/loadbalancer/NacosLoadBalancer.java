@@ -16,23 +16,30 @@
 
 package com.alibaba.cloud.nacos.loadbalancer;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.balancer.NacosBalancer;
+import com.alibaba.cloud.nacos.utils.InetIPv6Utils;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.DefaultResponse;
 import org.springframework.cloud.client.loadbalancer.EmptyResponse;
 import org.springframework.cloud.client.loadbalancer.Request;
 import org.springframework.cloud.client.loadbalancer.Response;
+import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
@@ -53,6 +60,66 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 	private ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
+
+	private static final String IPV4_REGEX = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
+
+	private static final String IPV6_KEY = "IPv6";
+
+	private String ipv4;
+
+	private String ipv6;
+
+	@Autowired
+	private InetIPv6Utils inetIPv6Utils;
+
+	@Autowired
+	private InetUtils inetUtils;
+
+	@PostConstruct
+	public void init() {
+		String ip = nacosDiscoveryProperties.getIp();
+		if (StringUtils.isNotEmpty(ip)) {
+			if (Pattern.matches(IPV4_REGEX, ip)) {
+				this.ipv4 = ip;
+				this.ipv6 = nacosDiscoveryProperties.getMetadata().get(IPV6_KEY);
+			}
+			else {
+				this.ipv6 = ip;
+			}
+		}
+		else {
+			this.ipv4 = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+			this.ipv6 = inetIPv6Utils.findIPv6Address();
+		}
+	}
+
+	private List<ServiceInstance> filterInstanceByIpType(List<ServiceInstance> instances) {
+		if (StringUtils.isNotEmpty(this.ipv6)) {
+			List<ServiceInstance> ipv6InstanceList = new ArrayList<>();
+			for (ServiceInstance instance : instances) {
+				if (Pattern.matches(IPV4_REGEX, instance.getHost())) {
+					if (StringUtils.isNotEmpty(instance.getMetadata().get(IPV6_KEY))) {
+						ipv6InstanceList.add(instance);
+					}
+				}
+				else {
+					ipv6InstanceList.add(instance);
+				}
+			}
+			// provider has no IPv6,should use Ipv4.
+			if (ipv6InstanceList.size() == 0) {
+				return instances.stream()
+						.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getHost()))
+						.collect(Collectors.toList());
+			}
+			else {
+				return ipv6InstanceList;
+			}
+		}
+		return instances.stream()
+				.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getHost()))
+				.collect(Collectors.toList());
+	}
 
 	public NacosLoadBalancer(
 			ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
@@ -96,6 +163,7 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 						"A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
 						serviceId, clusterName, serviceInstances);
 			}
+			instancesToChoose = this.filterInstanceByIpType(instancesToChoose);
 
 			ServiceInstance instance = NacosBalancer
 					.getHostByRandomWeight3(instancesToChoose);
