@@ -8,7 +8,9 @@
 === 升级步骤
 
 升级版本 (注意版本对应关系)
-```xml
+
+[source,xml]
+----
 <dependencyManagement>
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -32,7 +34,7 @@
         <scope>import</scope>
     </dependency>
 </dependencyManagement>
-```
+----
 
 *注意事项：* `spring-cloud-starter-alibaba-nacos-config` 模块移除了 `spring-cloud-starter-bootstrap` 依赖，如果你想以旧版的方式使用，你需要手动加上该依赖，现在推荐使用 `spring.config.import` 方式引入配置
 

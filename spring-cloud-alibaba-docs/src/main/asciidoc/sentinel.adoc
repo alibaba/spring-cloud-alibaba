@@ -16,16 +16,18 @@ https://github.com/alibaba/Sentinel[Sentinel] has the following features:
 
 If you want to use Sentinel in your project, please use the starter with the group ID as `com.alibaba.cloud` and the artifact ID as `spring-cloud-starter-alibaba-sentinel`.
 
-```xml
+[source,xml]
+----
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
 </dependency>
-```
+----
 
 The following is a simple example of how to use Sentinel:
 
-```java
+[source,java]
+----
 @SpringBootApplication
 public class Application {
 
@@ -45,7 +47,7 @@ public class TestController {
     }
 
 }
-```
+----
 
 The @SentinelResource annotation is used to identify if a resource is rate limited or degraded. In the above sample, the 'hello' attribute of the annotation refers to the resource name.
 
@@ -53,7 +55,8 @@ The @SentinelResource annotation is used to identify if a resource is rate limit
 
 The above examples are all used in the WebServlet environment. Sentinel currently supports WebFlux and needs to cooperate with the `spring-boot-starter-webflux` dependency to trigger the WebFlux-related automation configuration in sentinel starter.
 
-```java
+[source,java]
+----
 @SpringBootApplication
 public class Application {
 
@@ -74,12 +77,11 @@ public class TestController {
     }
 
 }
-```
+----
 
 ===== Sentinel Dashboard
 
-Sentinel dashboard is a lightweight console that provides functions such as machine discovery, single-server resource monitoring, overview of cluster resource data, as well as rule management. To use these features, you only need to complete a few steps.
-
+The Sentinel community provides a lightweight console that provides machine discovery, real-time monitoring of stand-alone resources, cluster resource aggregation, and rule management. All you need is a simple configuration of your app to use these features.
 *Note*: The statistics overview for clusters only supports clusters with less than 500 nodes, and has a latency of about 1 to 2 seconds.
 
 .Sentinel Dashboard
@@ -101,9 +103,10 @@ You can also get the latest source code to build your own Sentinel dashboard：
 
 Sentinel dashboard is a standard SpringBoot application, and you can run the JAR file in the Spring Boot mode.
 
-```shell
+[source,shell]
+----
 java -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard.jar
-```
+----
 
 If there is conflict with the 8080 port, you can use `-Dserver.port=new port` to define a new port.
 
@@ -130,16 +133,19 @@ Sentinel is compatible with the https://github.com/OpenFeign/feign[OpenFeign] co
 
 * Enable the Sentinel support for feign in the properties file. `feign.sentinel.enabled=true`
 * Add the `openfeign starter` dependency to trigger and enable `sentinel starter`:
-```xml
+
+[source,xml]
+----
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-openfeign</artifactId>
 </dependency>
-```
+----
 
 This is a simple usage of `FeignClient`:
 
-```java
+[source,java]
+----
 @FeignClient(name = "service-provider", fallback = EchoServiceFallback.class, configuration = FeignConfiguration.class)
 public interface EchoService {
     @GetMapping(value = "/echo/{str}")
@@ -159,7 +165,7 @@ class EchoServiceFallback implements EchoService {
         return "echo fallback";
     }
 }
-```
+----
 
 NOTE: The resource name policy in the corresponding interface of Feign is：httpmethod:protocol://requesturl. All the attributes in the `@FeignClient` annotation is supported by Sentinel.
 
@@ -169,13 +175,14 @@ The corresponding resource name of the `echo` method in the `EchoService` interf
 
 Spring Cloud Alibaba Sentinel supports the protection of `RestTemplate` service calls using Sentinel. To do this, you need to add the `@SentinelRestTemplate` annotation when constructing the `RestTemplate` bean.
 
-```java
+[source,java]
+----
 @Bean
 @SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 public RestTemplate restTemplate() {
     return new RestTemplate();
 }
-```
+----
 
 The attribute of the `@SentinelRestTemplate` annotation support flow control(`blockHandler`, `blockHandlerClass`) and circuit breaking(`fallback`, `fallbackClass`).
 
@@ -187,13 +194,14 @@ The parameter and return value of method in `@SentinelRestTemplate` is same as `
 
 The method signature of `handleException` in `ExceptionUtil` above should be like this:
 
-```java
+[source,java]
+----
 public class ExceptionUtil {
     public static ClientHttpResponse handleException(HttpRequest request, byte[] body, ClientHttpRequestExecution execution, BlockException exception) {
         ...
     }
 }
-```
+----
 
 NOTE: When the application starts, it will check if the `@SentinelRestTemplate` annotation corresponding to the flow control or circuit breaking method exists, if it does not exist, it will throw an exception.
 
@@ -261,7 +269,8 @@ Refer https://github.com/alibaba/Sentinel/wiki/API-Gateway-Flow-Control[API Gate
 
 If you want to use Sentinel Starter with Spring Cloud Gateway, you need to add the `spring-cloud-alibaba-sentinel-gateway` dependency and add the `spring-cloud-starter-gateway` dependency to let Spring Cloud Gateway AutoConfiguration class in the module takes effect:
 
-```xml
+[source,xml]
+----
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
@@ -276,7 +285,7 @@ If you want to use Sentinel Starter with Spring Cloud Gateway, you need to add t
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-gateway</artifactId>
 </dependency>
-```
+----
 
 include::circuitbreaker-sentinel.adoc[]
 
