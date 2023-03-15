@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: 'root'
-    password: '123456'
+    password: 'root'
   main:
     allow-bean-definition-overriding: true
 mybatis:
