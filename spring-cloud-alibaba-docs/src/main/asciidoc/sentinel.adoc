@@ -217,67 +217,6 @@ Sentinel RestTemplate provides two granularities for resource rate limiting:
 
 NOTE: Take Http GET `https://www.taobao.com/test` as an example. The corresponding resource names have two levels of granularities, `GET:https://www.taobao.com` and `GET:https://www.taobao.com/test`.
 
-=== WebFlux Support
-
-The Sentinel community has adapted support for WebFlux since version 1.5.0, and if you want to use WebFlux, you need to introduce WebFlux dependencies into your project
-[source,xml]
-----
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-webflux</artifactId>
-</dependency>
-----
-And write the following configuration class
-[source,java]
-----
-@Configuration
-public class MyConfiguration {
-
-	@Bean
-	public BlockRequestHandler blockRequestHandler() {
-		return new BlockRequestHandler() {
-			@Override
-			public Mono<ServerResponse> handleRequest(ServerWebExchange exchange,
-					Throwable t) {
-				return ServerResponse.status(HttpStatus.TOO_MANY_REQUESTS)
-						.contentType(MediaType.APPLICATION_JSON).body(fromValue("block"));
-			}
-		};
-	}
-
-	@Bean
-	public Customizer<ReactiveSentinelCircuitBreakerFactory> slowCustomizer() {
-		return factory -> {
-			factory.configure(builder -> builder.rules(Collections.singletonList(
-					new DegradeRule("slow_mono").setGrade(RuleConstant.DEGRADE_GRADE_RT)
-							.setCount(100).setTimeWindow(5))),
-					"slow_mono");
-			factory.configure(builder -> builder.rules(Collections.singletonList(
-					new DegradeRule("slow_flux").setGrade(RuleConstant.DEGRADE_GRADE_RT)
-							.setCount(100).setTimeWindow(5))),
-					"slow_flux");
-			factory.configureDefault(id -> new SentinelConfigBuilder().resourceName(id)
-					.rules(Collections.singletonList(new DegradeRule(id)
-							.setGrade(RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT)
-							.setCount(0.5).setTimeWindow(10)))
-					.build());
-		};
-	}
-
-}
-----
-
-The Sentinel Reactor adaptation implements the corresponding Sentinel Operator for Mono and Flux respectively, so as to import Sentinel's relevant logic when various events are triggered. At the same time, Sentinel provides SentinelReactorTransformer on the upper layer for loading the corresponding operator during assembly, and users only need to transform through the transform operator when using it:
-[source,java]
-----
-someService.doSomething() // return type: Mono<T> or Flux<T>
-   .transform(new SentinelReactorTransformer<>(resourceName)) // 在此处进行变换
-   .subscribe();
-----
-
-For more information, please refer to the provided by the Spring Cloud Alibaba community https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/sentinel-example/sentinel-webflux-example[sentinel-webflux-example]
-
-
 === Dynamic Data Source Support
 
 `SentinelProperties` provide `datasource` attribute to configure datasource.
