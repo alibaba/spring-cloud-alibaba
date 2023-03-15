@@ -1,0 +1,72 @@
+version: "3"
+services:
+
+  # nacos
+  nacos:
+    image: nacos/nacos-server:v2.1.0
+    hostname: nacos-server
+    restart: always
+    container_name: integrated-example-nacos
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+    ports:
+      - "8848:8848"
+
+  # mysql
+  mysql:
+    container_name: integrated-example-mysql
+    hostname: integrated-mysql
+    restart: always
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: integrated_storage
+    ports:
+      - "3306:3306"
+    volumes:
+      - ../config-init/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command:
+      [
+        --character-set-server=utf8mb4,
+        --collation-server=utf8mb4_unicode_ci
+      ]
+
+  # rocketMQ
+  rmqnamesrv:
+    image: apache/rocketmq:4.9.4
+    hostname: rocketmq
+    restart: always
+    container_name: integrated-example-rmqnamesrv
+    ports:
+      - "9876:9876"
+    command: sh mqnamesrv
+
+  rmqbroker:
+    image: apache/rocketmq:4.9.4
+    restart: always
+    container_name: integrated-example-rmqbroker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+    volumes:
+      - ../config-init/rocketmq/broker.conf:/opt/rocketmq-4.9.4/conf/broker.conf
+    environment:
+      NAMESRV_ADDR: "rmqnamesrv:9876"
+      JAVA_OPTS: " -Duser.home=/opt"
+      JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
+    command: sh mqbroker -c /opt/rocketmq-4.9.4/conf/broker.conf
+    depends_on:
+      - rmqnamesrv
+
+  # seata
+  seata-server:
+    image: seataio/seata-server:1.5.1
+    hostname: seata-server
+    restart: always
+    container_name: integrated-example-seata-server
+    ports:
+      - "8091:8091"
+    environment:
+      - SEATA_PORT=8091
+      - STORE_MODE=file
