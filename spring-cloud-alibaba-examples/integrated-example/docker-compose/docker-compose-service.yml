@@ -1,0 +1,91 @@
+version: "3"
+services:
+
+  # integrated example module
+  integrated-frontend:
+    image: integrated-frontend
+    hostname: integrated-frontend
+    build:
+      dockerfile: ./integrated-frontend/Dockerfile
+      context: ../
+    env_file:
+      - .env
+    container_name: integrated-frontend
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    depends_on:
+      - integrated-gateway
+      - integrated-account
+      - integrated-order
+      - integrated-storage
+      - integrated-praise-consumer
+      - integrated-praise-provider
+
+  integrated-gateway:
+    image: integrated-gateway
+    hostname: gateway-service
+    build:
+      dockerfile: ./integrated-gateway/Dockerfile
+      context: ../
+    env_file:
+        - .env
+    container_name: integrated-gateway
+    ports:
+      - ${GATEWAY_PORT}:${GATEWAY_PORT}
+
+  integrated-account:
+    image: integrated-account
+    build:
+      dockerfile: ./integrated-account/Dockerfile
+      context: ../
+    env_file:
+        - .env
+    container_name: integrated-account
+    ports:
+      - ${ACCOUNT_PORT}:${ACCOUNT_PORT}
+
+  integrated-order:
+    image: integrated-order
+    build:
+      dockerfile: ./integrated-order/Dockerfile
+      context: ../
+    env_file:
+        - .env
+    container_name: integrated-order
+    ports:
+      - ${ORDER_PORT}:${ORDER_PORT}
+
+  integrated-storage:
+    image: integrated-storage
+    build:
+      dockerfile: ./integrated-storage/Dockerfile
+      context: ../
+    env_file:
+        - .env
+    container_name: integrated-storage
+    ports:
+      - ${STORAGE_PORT}:${STORAGE_PORT}
+
+  integrated-praise-provider:
+    image: integrated-praise-provider
+    build:
+      dockerfile: ./integrated-praise-provider/Dockerfile
+      context: ../
+    env_file:
+        - .env
+    container_name: integrated-praise-provider
+    ports:
+      - ${PRAISE_PROVIDER_PORT}:${PRAISE_PROVIDER_PORT}
+
+  integrated-praise-consumer:
+    image: integrated-praise-consumer
+    build:
+      dockerfile: ./integrated-praise-consumer/Dockerfile
+      context: ../
+    env_file:
+        - .env
+    container_name: integrated-praise-consumer
+    ports:
+      - ${PRAISE_CONSUMER_PORT}:${PRAISE_CONSUMER_PORT}
+    depends_on:
+      - integrated-praise-provider
