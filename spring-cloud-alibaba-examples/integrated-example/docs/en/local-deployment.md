@@ -4,7 +4,8 @@
 
 ### Environment Declaration
 
-Before running the local example, you need to ensure that the following base environment is available locally. If you do not have a current environment locally, the following step-by-step build will be done to demonstrate the build process.
+Before running the local example, you need to ensure that the local machine has the following basic environment. If you do not have the current local environment, the following steps to demonstrate the construction process.
+You can also quickly launch the component through the docker-compose file provided by the Spring Cloud Alibaba (SCA) community.
 
 - Nacos server
 - Seata server
@@ -13,18 +14,18 @@ Before running the local example, you need to ensure that the following base env
 
 ### Component Service Versions
 
-For each component version of this project, please go to the release page of each community to download and unpack.
+For each component version of this project, please go to the release page of each community to download and decompression run.
 
 - [Nacos: version 2.1.0](https://github.com/alibaba/nacos/releases)
 - [Seata: version 1.5.1](https://github.com/seata/seata/releases)
 - [RocketMQ: version 4.9.4](https://github.com/apache/rocketmq/releases)
 - MySQL: version 5.7
 
-### host configuration
+### Hosts configuration
 
 To ensure that the code can start properly, please configure the local host mapping first, add the following mapping to the configuration file.
 
-```sh
+```shell
 # for integrated-example
 127.0.0.1 integrated-mysql
 127.0.0.1 nacos-server
@@ -42,7 +43,7 @@ Before you start the database configuration, please make sure the MySQL server i
 
 For the first scenario, the order, account, and inventory microservices all need their own databases, while the second scenario simulates a database for storing like information as well.
 
-Run the sql script `spring-cloud-alibaba-examples/integrated-example/sql/init.sql` to create the environment required for the business and the Seata-related tables in one click.
+Run the sql script `spring-cloud-alibaba-examples/integrated-example/config-init/sql/init.sql` to create the environment required for the business and the Seata-related tables in one click.
 
 ### Nacos Configuration
 
@@ -52,7 +53,7 @@ At this point, the database services are configured and you need to configure th
 
 For the sake of example, here we use the ``standalone`` mode of Nacos, go to the unpacked directory of Nacos and execute the following command.
 
-```sh
+```shell
 #Linux/Mac environment
 sh bin/startup.sh -m standalone
 #If you are in Ubuntu and the above command gives you an error [[symbol not found, you can run the following command
@@ -63,9 +64,15 @@ bash bin/startup.sh -m standalone
 
 #### Adding configuration files
 
-Before bulk importing the configuration, please modify the datasource configuration (username and password) in `integrated-example/config/datasource-config.yaml`.
+Before bulk importing the configuration, please modify the datasource configuration (username and password) in `spring-cloud-alibaba-examples/integrated-example/config-init/config/datasource-config.yaml`.
 
-After that, run `spring-cloud-alibaba-examples/integrated-example/scripts/nacos-config-quick.sh` to complete the one-click import of all microservice configurations.
+After that, run `spring-cloud-alibaba-examples/integrated-example/config/scripts/nacos-config-quick.sh` to complete the one-click import of all microservice configurations.
+
+```shell
+# linux
+sh nacos-config-quick.sh
+# windows can use git bash to import the configuration, run the command as above
+```
 
 ### Seata Configuration
 
@@ -77,7 +84,7 @@ Seata's db mode requires additional configuration of database information and mo
 
 Go to the seata directory after the release and execute the following command.
 
-```sh
+```shell
 #Linux/Mac environment
 sh . /bin/seata-server.sh
 #Win environment
@@ -92,7 +99,7 @@ Go to the unpacked rocketmq directory after the release and execute the followin
 
 #### Start the NameServer
 
-```sh
+```shell
 #Linux/Mac environment
 sh bin/mqnamesrv
 #Win environment
@@ -101,7 +108,7 @@ sh bin/mqnamesrv
 
 #### Start Broker
 
-```sh
+```shell
 #Linux/Mac environment
 sh bin/mqbroker
 #Win environment
@@ -112,10 +119,10 @@ sh bin/mqbroker
 
 After the preparation work is done, you can run the demo, mainly according to different usage scenarios, you can experience the user order (distributed transaction capability) and simulate the high traffic point (meltdown and limit the flow as well as the ability to cut the peak and fill the valley) respectively.
 
-First, you need to start the `integrated_frontend` and `integrated_gateway` projects separately.
+First, you need to start the `integrated-frontend` and `integrated-gateway` projects separately.
 
-- The gateway module is the gateway to the entire best practice instance.
-- frontend is the simple front-end page for the best practice.
+- `integrated-frontend` module is front page for best practice examples.
+- `integral-gateway` module is the gateway for the entire best practice example.
 
 ### Distributed Transaction Capabilities
 
@@ -129,11 +136,11 @@ For the distributed transaction capability, we provide the scenario **where a us
 
 ##### Start test
 
-Start `integrated_storage`,`integrated_account`,`integrated_order` microservices respectively.
+Start `integrated-storage`,`integrated-account`,`integrated-order` microservices respectively.
 
 Visit `http://integrated-frontend:8080/order` to experience the corresponding scenario.
 
-By clicking the order button directly to submit the form, we simulate the client sending a request to the gateway to create an order.
+By clicking the order button directly to submit the form, application simulate the client sending a request to the gateway to create an order.
 
 - The user's userId is admin
 - The item number of the user's order is 1
@@ -143,7 +150,7 @@ By clicking the order button directly to submit the form, we simulate the client
 
 In this demo example, the unit price of each item is 2 for demonstration purposes.
 
-And in the previous preparation, **initialize business database table** we created a new user userId = admin with a balance of $3, and a new item numbered 1 with 100 units in stock.
+And in the previous preparation, **initialize business database table** application created a new user, the user's userId is admin with a balance of $3, and a new item numbered 1 with 100 units in stock.
 
 So by doing the above, we will create an order, deduct the number of items in stock corresponding to item number 1 (100-1=99), and deduct the balance of the admin user (3-2=1).
 
@@ -159,14 +166,14 @@ You can see that the database still has 99 records in stock because of the rollb
 
 #### Scenario Description
 
-For service fusion limiting and peak and valley cutting in the context of high traffic, we provide a scenario **where users make likes for products**. In this scenario, we provide two ways to deal with high traffic.
+For service fusion limiting and peak and valley cutting in the context of high traffic, SCA community provide a scenario **where users make likes for products**. In this scenario, we provide two ways to deal with high traffic.
 
 - Sentinel binds specified gateway routes on the gateway side for fusion degradation of services.
 - RocketMQ performs traffic clipping, where the producer sends messages to RocketMQ under high traffic requests, while the consumer pulls and consumes through a configurable consumption rate, reducing the pressure of high traffic direct requests to the database to increase the number of likes requests.
 
 #### Startup test
 
-Start the `integrated_provider` and `integrated_consumer` modules separately.
+Start the `integrated-praise-provider` and `integrated-praise-consumer` modules separately.
 
 - Sentinel service meltdown degradation
 
@@ -184,7 +191,7 @@ Therefore, we can see that Sentinel performs a service fusion on the Gateway sid
 
 Visit `http://integrated-frontend:8080/rocketmq` to experience the corresponding scenario.
 
-Since we previously configured the consumption rate and interval of the `integrated-consumer` consumer module in Nacos, we simulate 1000 requests for likes at the click of a button, and the `integrated_provider`
+Since previously configured the consumption rate and interval of the `integrated-praise-consumer` consumer module in Nacos, simulate 1000 requests for likes at the click of a button, and the `integrated-praise-provider`
 will deliver 1000 requests to the Broker, and the consumer module will consume them according to the configured consumption rate, and update the database with the product data of the likes, simulating the characteristics of RocketMQ to cut the peaks and fill the valleys under high traffic.
 
 You can see that the number of likes in the database is being dynamically updated.

@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:mysql://integrated-mysql:3306/integrated_praise?useSSL=false&characterEncoding=utf8
+  cloud:
+    stream:
+      bindings:
+        praise-input:
+          destination: PRAISE-TOPIC-01
+          content-type: application/json
+          group: praise-consumer-group-PRAISE-TOPIC-01
+      rocketmq:
+        binder:
+          name-server: rocketmq:9876
+        bindings:
+          praise-input:
+            consumer:
+              pullInterval: 4000
+              pullBatchSize: 4

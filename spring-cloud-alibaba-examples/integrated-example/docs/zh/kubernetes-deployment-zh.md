@@ -2,17 +2,17 @@
 
 ## 准备工作
 
-此版本为 Spring Cloud Alibaba 最佳实践 Kubernetes 部署版本，其中需要您准备如下的环境。
+此版本为 Spring Cloud Alibaba （后文简称为SCA）最佳实践 Kubernetes 部署版本，运行示例需要准备如下环境：
 
 - Kubernetes（建议使用 Docker Desktop 内置集成的 Kubernetes 环境进行体验。）
 - Helm
 
-如果您还未具备如上的环境，请移步至对应官方文档进行环境搭建。
+如果测试机器上还未具备如上环境，请移步至对应官方文档进行环境搭建。
 
 - [Helm 安装](https://helm.sh/zh/docs/intro/install/)
 - [Kubernetes Docker Desktop 快捷安装](https://docs.docker.com/desktop/kubernetes/)
 
-在这里我们通过 NodePort 的方式来向外界暴露 Kubernetes 中 Pod 的服务，在启动测试前还需配置好 Kubernetes 集群节点的 ip 映射。
+在这里通过 NodePort 的方式来向外界暴露 Kubernetes 中 Pod 的服务，在启动测试前还需配置好 Kubernetes 集群节点的 ip 映射。
 
 ```sh
 # 实际情况请结合您的 K8S 节点的公网 ip 进行调整
@@ -31,9 +31,9 @@ helm package helm-chart
 
 helm install integrated-example integrated-example-1.0.0.tgz
 ```
-通过上述命令我们根据项目提供的 Helm Chart 文档通过 Helm 一键完成了最佳实践项目的部署。
+通过运行上述命令，根据SCA社区提供的 Helm Chart 文档通过 Helm 快速完成最佳实践示例的部署。
 
-可以通过 Kubernetes 提供的 `kubectl` 命令查看各容器资源部署的情况，耐心等待**所有容器完成启动后**即可到对应页面体验各个组件使用场景及能力。
+可以通过 Kubernetes 提供的 `kubectl` 命令查看各容器资源部署的情况，耐心等待**所有容器完成启动后**即可到对应页面体验各个组件的使用场景及能力。
 
 如果您想停止体验，输入如下命令。
 ```shell
@@ -44,7 +44,7 @@ helm uninstall integrated-example
 
 #### 场景说明
 
-针对分布式事务能力，我们提供了**用户下单购买货物的场景**，下单后：
+针对分布式事务能力，SCA社区提供了**用户下单购买货物的场景**，下单后：
 
 - 先请求库存模块，扣减库存
 - 扣减账户余额
@@ -54,7 +54,7 @@ helm uninstall integrated-example
 
 访问`http://integrated-frontend:30080/order` 来体验对应场景。
 
-直接点击下单按钮提交表单，我们模拟客户端向网关发送了一个创建订单的请求。
+直接点击下单按钮提交表单，模拟客户端向网关发送了一个创建订单的请求。
 
 - 用户的 userId 为 admin
 - 用户下单的商品编号为1号
@@ -64,9 +64,9 @@ helm uninstall integrated-example
 
 在本 demo 示例中，为了便于演示，每件商品的单价都为2。
 
-而在 `integrated-mysql` 容器的初始化时，**初始化业务数据库表**的时候新建了一个用户 userId = admin，余额为 3 元；同时新建了一个编号为 1 号的商品，库存为 100 件。
+而在 `integrated-mysql` 容器的初始化时，**初始化业务数据库表**的时候新建了一个用户，用户的userId为admin，余额为 3 元；同时新建了一个编号为 1 号的商品，库存为 100 件。
 
-因此通过上述的操作，我们会创建一个订单，扣减对应商品编号为 1 号的库存个数(100-1=99)，扣减 admin 用户的余额(3-2=1)。
+因此通过上述的操作，应用会创建一个订单，扣减对应商品编号为 1 号的库存个数(100-1=99)，扣减 admin 用户的余额(3-2=1)。
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016143057730.png)
 
@@ -80,7 +80,7 @@ helm uninstall integrated-example
 
 #### 场景说明
 
-针对大流量背景下的服务熔断限流，削峰填谷，我们提供了**用户为商品进行点赞的场景**。在此场景下，我们提供了两种应对大流量的处理方式。
+针对大流量背景下的服务熔断限流，削峰填谷，SCA社区提供了**用户为商品进行点赞的场景**。在此场景下，SCA社区提供了两种应对大流量的处理方式。
 
 - Sentinel 在网关侧绑定指定网关路由进行服务的熔断降级。
 - RocketMQ 进行流量削峰填谷，在大流量请求下，生产者向 RocketMQ 发送消息，而消费者则通过可配置的消费速率进行拉取消费，减少大流量直接请求数据库增加点赞请求的压力。
@@ -105,7 +105,7 @@ helm uninstall integrated-example
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016143342664.png)
 
-由于我们之前在 Nacos 中配置了`integrated-consumer`消费者模块的消费速率以及间隔，在点击按钮时我们模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated_provider`
+由于之前在 Nacos 中配置了`integrated-praise-consumer`消费者模块的消费速率以及间隔，在点击按钮时应用将会模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-praise-provider`
 会将 1000 次请求都向 Broker 投递消息，而在消费者模块中会根据配置的消费速率进行消费，向数据库更新点赞的商品数据，模拟大流量下 RocketMQ 削峰填谷的特性。
 
 可以看到数据库中点赞的个数正在动态更新。
@@ -116,7 +116,7 @@ helm uninstall integrated-example
 
 本示例**仅是针对各个组件选取出了较为典型的功能特性来服务应用场景**。
 
-当然各个组件的功能特性不仅仅只包含最佳实践中演示的这些，如果您感兴趣或是想要深入了解，欢迎学习各个组件的独立 example 相关文档。
+当然各个组件的功能特性不仅仅只包含最佳实践中演示的这些，如果您对SCA感兴趣或是想要深入了解SCA项目，欢迎阅览各个组件的独立 example 相关文档。
 
 - Nacos examples
     - [Nacos config example](../../../nacos-example/nacos-config-example/readme-zh.md)

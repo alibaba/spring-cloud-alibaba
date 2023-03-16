@@ -1,29 +1,18 @@
-# Spring Cloud Alibaba 容器化部署最佳实践 | 本地部署版本
+# Spring Cloud Alibaba容器化部署最佳实践 | Docker-Compose 版本
 
 ## 准备工作
 
-### 环境声明
+> Note: 使用Docker-Compose方式体验Demo时，请确保本地机器内存资源 >= 24G！
 
-在运行本地示例之前，需要保证本机具备以下的基础环境，如果您的本地没有当前的环境，下面会一步步进行搭建，演示搭建过程。
-当然您也可以通过 Spring Cloud Alibaba （下文简称为SCA）社区提供的docker-compose文件快速启动相应组件。
+如果您还没有安装Docker和Docker-Compose，请按照官方文档来构建运行环境：
 
-- Nacos 服务端
-- Seata 服务端
-- RocketMQ 服务端
-- MySQL 服务端
+- Docker：https://docs.docker.com/desktop/install/linux-install/
+- Docker-Compose：https://docs.docker.com/compose/install/
 
-### 组件服务版本
+### Hosts 配置
 
-本项目的各个组件版本请移步至各个社区的 release 页面进行下载并解压运行。
+为确保代码能够正常启动，请先配置本地主机映射，将以下映射添加到配置文件中。
 
-- [Nacos: 2.1.0 版本](https://github.com/alibaba/nacos/releases)
-- [Seata: 1.5.1 版本](https://github.com/seata/seata/releases)
-- [RocketMQ: 4.9.4 版本](https://github.com/apache/rocketmq/releases)
-- MySQL: 5.7 版本
-
-### Hosts配置
-
-为了保证代码可以正常启动，请先配置好本机的 host 映射，在配置文件中新增如下的映射。
 ```shell
 # for integrated-example
 127.0.0.1 integrated-mysql
@@ -34,87 +23,45 @@
 127.0.0.1 integrated-frontend
 ```
 
-### 数据库配置
+### 准备jar包
 
-下面开始本地环境搭建准备，在数据库配置开始之前，请确保 MySQL 的服务端开启。
+进入`spring-cloud-alibaba-examples`目录下，执行`mvn package`命令编译项目生成jar包，为后续Docker构建服务镜像做准备。
 
-#### 初始化业务表
+## 快速启动
 
-针对第一个场景，订单、账户、库存微服务都需要各自的数据库，而第二个场景模拟点赞也需要存储点赞信息的数据库。
+### 组件启动
 
-运行 `spring-cloud-alibaba-examples/integrated-example/config-init/sql/init.sql` 的 sql 脚本一键创建业务所需的环境以及 Seata 相关的表。
+进入`spring-cloud-alibaba-examples/integrated-example`目录下，在终端中执行以下命令`docker-compose -f ./docker-compose/docker-compose-env.yml up -d`来快速部署运行example所需组件。
 
-### Nacos配置
+### 添加配置
 
-至此，数据库的服务配置完毕，下面需要配置 Nacos 的配置中心有关所有的微服务配置文件。
+docker-compose-env.yml文件运行成功之后，添加Nacos配置：
 
-#### Nacos启动
+1. 进入`spring-cloud-alibaba-examples/integrated-example`目录下；
+2. 在终端中执行`config-init/scripts/nacos-config-quick.sh`脚本文件。
 
-为了便于 example 的演示，这里采用 Nacos 的`standalone`模式启动，进入到 Nacos 解压后的目录下，执行如下命令。
+完成所有微服务配置的一键导入。
 
-```shell
-#Linux/Mac环境
-sh bin/startup.sh -m standalone
-#如果您是Ubuntu环境，执行上述命令启动报错提示[[符号找不到，可以执行如下的命令
-bash bin/startup.sh -m standalone
-#Win环境
-.\bin\startup.cmd -m standalone
-```
+> 注意：windows操作系统可以通过`git bash`执行shell脚本文件完成配置导入。
 
-#### 新增配置文件
+### 服务启动
 
-在批量导入配置之前，请先修改`spring-cloud-alibaba-examples/integrated-example/config-init/config/datasource-config.yaml` 中的数据源配置**(用户名和密码)**。
+进入`spring-cloud-alibaba-examples/integrated-example`目录下，在终端中执行以下命令`docker-compose -f ./docker-compose/docker-compose-service.yml up -d`来快速部署运行example所需服务。
 
-之后运行`spring-cloud-alibaba-examples/integrated-example/config-init/scripts/nacos-config-quick.sh` 来完成所有微服务配置的一键导入。
+## 停止所有容器
 
-```shell
-# linux
-sh nacos-config-quick.sh
-# windows 可以使用git bash来完成配置的导入 执行命令同上
-```
+### 停止服务容器
 
-### Seata 配置
+进入`spring-cloud-alibaba-examples/integrated-example`目录下，在终端中执行以下命令`docker-compose -f ./docker-compose/docker-compose-service.yml down`来停止正在运行的example服务容器。
 
-Nacos 服务注册中心以及配置中心部署完毕之后，下面是 Seata 服务端的配置。
 
-Seata 的 db 模式需要额外配置数据库信息以及修改 Seata 服务端的配置文件，且在新版本中配置文件相较于旧版本进行了合并，因此这里为了便于演示方便，采用 Seata 单机的`file`模式启动 Seata Server。
+### 停止组件容器
 
-#### 启动 Seata Server
+进入`spring-cloud-alibaba-examples/integrated-example`目录下，在终端中执行以下命令`docker-compose -f ./docker-compose/docker-compose-env.yml down`来停止正在运行的example组件容器。
 
-进入到 release 解压后的 seata 目录中，执行如下命令。
+> 在容器启动时，可以通过`docker-compose -f docker-compose-*.yml up`观察容器的启动过程！
 
-```shell
-#Linux/Mac环境
-sh ./bin/seata-server.sh
-#Win环境
-bin\seata-server.bat
-```
-
-### RocketMQ 配置
-
-Seata 服务启动后可以启动 RocketMQ 的 NameServer 以及 Broker 服务。
-
-进入到 release 解压后的 rocketmq 目录中，执行如下命令。
-
-#### 启动 NameServer
-
-```shell
-#Linux/Mac环境
-sh bin/mqnamesrv
-#Win环境
-.\bin\mqnamesrv.cmd
-```
-
-#### 启动 Broker
-
-```shell
-#Linux/Mac环境
-sh bin/mqbroker
-#Win环境
-.\bin\mqbroker.cmd -n localhost:9876
-```
-
-## 运行 Demo 示例
+## 体验Demo
 
 准备工作完成后可以运行 demo 示例，主要根据不同的使用场景，可以分别体验用户下单(分布式事务能力)以及模拟高流量点赞(熔断限流以及削峰填谷的能力)。
 
@@ -209,3 +156,4 @@ sh bin/mqbroker
 - [Sentinel core example](../../../sentinel-example/sentinel-core-example/readme-zh.md)
 - [Seata example](../../../seata-example/readme-zh.md)
 - [RocketMQ example](../../../rocketmq-example/readme-zh.md)
+
