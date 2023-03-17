@@ -65,30 +65,19 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 
 	private static final String IPV6_KEY = "IPv6";
 
-	private String ipv4;
-
 	private String ipv6;
 
 	@Autowired
 	private InetIPv6Utils inetIPv6Utils;
 
-	@Autowired
-	private InetUtils inetUtils;
 
 	@PostConstruct
 	public void init() {
 		String ip = nacosDiscoveryProperties.getIp();
 		if (StringUtils.isNotEmpty(ip)) {
-			if (Pattern.matches(IPV4_REGEX, ip)) {
-				this.ipv4 = ip;
-				this.ipv6 = nacosDiscoveryProperties.getMetadata().get(IPV6_KEY);
-			}
-			else {
-				this.ipv6 = ip;
-			}
+			this.ipv6 = Pattern.matches(IPV4_REGEX, ip) ? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY) : ip;
 		}
 		else {
-			this.ipv4 = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 			this.ipv6 = inetIPv6Utils.findIPv6Address();
 		}
 	}
@@ -106,7 +95,7 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 					ipv6InstanceList.add(instance);
 				}
 			}
-			// provider has no IPv6,should use Ipv4.
+			// Provider has no IPv6, should use IPv4.
 			if (ipv6InstanceList.size() == 0) {
 				return instances.stream()
 						.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getHost()))
@@ -174,7 +163,6 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 			log.warn("NacosLoadBalancer error", e);
 			return null;
 		}
-
 	}
 
 }
