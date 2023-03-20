@@ -88,24 +88,9 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 	@RestController
 	protected static class Application {
 
-		@GetMapping("/slow")
-		public Mono<String> slow() {
-			return Mono.just("slow").delayElement(Duration.ofMillis(80));
-		}
-
-		@GetMapping("/normal")
-		public Mono<String> normal() {
-			return Mono.just("normal");
-		}
-
 		@GetMapping("/slow_flux")
 		public Flux<String> slowFlux() {
-			return Flux.just("slow", "flux").delayElements(Duration.ofMillis(80));
-		}
-
-		@GetMapping("normal_flux")
-		public Flux<String> normalFlux() {
-			return Flux.just("normal", "flux");
+			return Flux.just("slow", "flux").delayElements(Duration.ofMillis(150));
 		}
 
 		@Bean
