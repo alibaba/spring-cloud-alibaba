@@ -141,7 +141,7 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 						"slow_mono");
 				factory.configure(
 						builder -> builder.rules(Collections
-								.singletonList(new DegradeRule("slow_mono").setCount(50)
+								.singletonList(new DegradeRule("slow_flux").setCount(50)
 										.setSlowRatioThreshold(0.7).setMinRequestAmount(5)
 										.setStatIntervalMs(30000).setTimeWindow(5))),
 						"slow_flux");
