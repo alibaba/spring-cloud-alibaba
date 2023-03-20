@@ -139,7 +139,7 @@ EOF
 curl --location --request GET '${demo_ip}/auth' \
 --header 'User-Agent: PostmanRuntime/7.29.2'
 ```
-由于此请求由于携带了正确的HTTP Header信息，将会返回:
+由于此请求携带了正确的HTTP Header信息，将会返回:
 ```
 received request from ${from_ip}, local addr is ${local_ip}, local host is ${local_host}, request path is/auth
 ```
