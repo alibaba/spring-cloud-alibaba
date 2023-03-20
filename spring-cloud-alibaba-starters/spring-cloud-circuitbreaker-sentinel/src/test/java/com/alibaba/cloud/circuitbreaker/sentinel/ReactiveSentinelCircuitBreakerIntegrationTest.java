@@ -79,7 +79,7 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 		StepVerifier.create(service.slowFlux(idx)).expectNext("slowflux").verifyComplete();
 		StepVerifier.create(service.slowFlux(idx)).expectNext("slowflux").verifyComplete();
 		StepVerifier.create(service.slowFlux(idx)).expectNext("slowflux").verifyComplete();
-		Thread.sleep(300);
+		Thread.sleep(1000);
 		StepVerifier.create(service.slowFlux(idx)).expectNext("flux_fallback")
 				.verifyComplete();
 	}
