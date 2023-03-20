@@ -63,8 +63,10 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 	private static final String IPV4_REGEX = "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
 
 	private static final String IPV6_KEY = "IPv6";
-
-	private String ipv6;
+	/**
+	 * Storage local valid IPv6 address, it's a flag whether local machine support IPv6 address stack.
+	 */
+	public static String ipv6;
 
 	@Autowired
 	private InetIPv6Utils inetIPv6Utils;
@@ -74,15 +76,15 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 	public void init() {
 		String ip = nacosDiscoveryProperties.getIp();
 		if (StringUtils.isNotEmpty(ip)) {
-			this.ipv6 = Pattern.matches(IPV4_REGEX, ip) ? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY) : ip;
+			ipv6 = Pattern.matches(IPV4_REGEX, ip) ? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY) : ip;
 		}
 		else {
-			this.ipv6 = inetIPv6Utils.findIPv6Address();
+			ipv6 = inetIPv6Utils.findIPv6Address();
 		}
 	}
 
 	private List<ServiceInstance> filterInstanceByIpType(List<ServiceInstance> instances) {
-		if (StringUtils.isNotEmpty(this.ipv6)) {
+		if (StringUtils.isNotEmpty(ipv6)) {
 			List<ServiceInstance> ipv6InstanceList = new ArrayList<>();
 			for (ServiceInstance instance : instances) {
 				if (Pattern.matches(IPV4_REGEX, instance.getHost())) {

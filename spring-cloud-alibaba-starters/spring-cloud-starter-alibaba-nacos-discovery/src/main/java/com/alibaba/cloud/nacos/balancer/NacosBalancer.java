@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosServiceInstance;
+import com.alibaba.cloud.nacos.loadbalancer.NacosLoadBalancer;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.client.naming.core.Balancer;
 
@@ -73,7 +74,10 @@ public class NacosBalancer extends Balancer {
 
 		Instance instance = getHostByRandomWeight2(nacosInstance);
 		NacosServiceInstance nacosServiceInstance = (NacosServiceInstance) instanceMap.get(instance);
-		convertIPv4ToIPv6(nacosServiceInstance);
+		// When local support IPv6 address stack, referred to use IPv6 address.
+		if (StringUtils.isNotEmpty(NacosLoadBalancer.ipv6)) {
+			convertIPv4ToIPv6(nacosServiceInstance);
+		}
 		return nacosServiceInstance;
 	}
 
