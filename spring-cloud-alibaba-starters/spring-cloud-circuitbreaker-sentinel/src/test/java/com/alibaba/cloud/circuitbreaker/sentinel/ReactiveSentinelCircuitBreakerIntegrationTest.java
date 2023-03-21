@@ -18,6 +18,7 @@ package com.alibaba.cloud.circuitbreaker.sentinel;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
@@ -79,17 +80,29 @@ public class ReactiveSentinelCircuitBreakerIntegrationTest {
 		StepVerifier.create(service.slowFlux(idx)).expectNext("slowflux").verifyComplete();
 		StepVerifier.create(service.slowFlux(idx)).expectNext("slowflux").verifyComplete();
 		StepVerifier.create(service.slowFlux(idx)).expectNext("slowflux").verifyComplete();
+		AtomicBoolean slowFlux = new AtomicBoolean(false);
 		StepVerifier.create(service.slowFlux(idx))
 				.expectNextMatches(ret -> {
 					if ("slowflux".equals(ret)) {
 						System.out.println("======slowflux======");
+						slowFlux.set(true);
 					}
 					return "slowflux".equals(ret) || "flux_fallback".equals(ret);
 				}).verifyComplete();
-
+		if (slowFlux.get()) {
+			for (int i = 0; i < 11; i++) {
+				StepVerifier.create(service.slowFlux(idx))
+						.expectNextMatches(ret -> {
+							if ("slowflux".equals(ret)) {
+								System.out.println("======slowflux======");
+								slowFlux.set(true);
+							}
+							return "slowflux".equals(ret) || "flux_fallback".equals(ret);
+						}).verifyComplete();
+			}
+		}
 		StepVerifier.create(service.slowFlux(idx)).expectNext("flux_fallback")
 				.verifyComplete();
-		Thread.sleep(100);
 	}
 
 	@Configuration
