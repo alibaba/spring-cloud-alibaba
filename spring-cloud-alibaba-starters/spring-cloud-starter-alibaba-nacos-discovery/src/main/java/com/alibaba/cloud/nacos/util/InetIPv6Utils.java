@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.utils;
+package com.alibaba.cloud.nacos.util;
 
 import java.io.IOException;
 import java.net.Inet6Address;
@@ -72,7 +72,7 @@ public class InetIPv6Utils {
 									&& !inetAddress.isLinkLocalAddress()
 									// filter ::/128
 									&& !inetAddress.isAnyLocalAddress()
-									// filter fec0::/10,which was discarded,but some
+									// filter fec0::/10,which was discarded, but some
 									// address may be deployed.
 									&& !inetAddress.isSiteLocalAddress()
 									// filter fd00::/8
@@ -156,7 +156,7 @@ public class InetIPv6Utils {
 	 * If the address is Unique Local Address.
 	 *
 	 * @param inetAddress {@link InetAddress}
-	 * @return {@code true} if the address is Unique Local Address,otherwise {@code false}
+	 * @return {@code true} if the address is Unique Local Address, otherwise {@code false}
 	 */
 	private boolean isUniqueLocalAddress(InetAddress inetAddress) {
 		byte[] ip = inetAddress.getAddress();

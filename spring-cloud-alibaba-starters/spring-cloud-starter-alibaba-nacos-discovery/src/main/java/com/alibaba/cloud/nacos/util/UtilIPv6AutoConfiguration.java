@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.utils;
+package com.alibaba.cloud.nacos.util;
 
 import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
 
