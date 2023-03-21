@@ -80,11 +80,41 @@ Enter `http://127.0.0.1:8848/nacos/#/serviceDetail?name=service-provider&groupNa
 ### Service Discovery
 
 
-#### Integration Ribbon
+#### Integration Spring Cloud Loadbalancer
 
-For ease of use, NacosServerList implements the com.netflix.loadbalancer.ServerList<Server> interface and auto-injects under the @ConditionOnMissingBean condition. If you have customized requirements, you can implement your own ServerList yourself.
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-loadbalancer</artifactId>
+    </dependency>
+</dependencies>
+```
+Add the following configuration to use the load balancing strategy provided by the Spring Cloud Alibaba community for Spring Cloud Loadbalancer load balancing dependencies, so as to use all the capabilities provided by Spring Cloud Alibaba:
 
-Nacos Discovery Starter integrates Ribbon by default, so for components that use Ribbon for load balancing, you can use Nacos Service discovery directly.
+```properties
+spring.cloud.loadbalancer.ribbon.enabled=false
+spring.cloud.loadbalancer.nacos.enabled=true
+```
+
+#### IPv4 to IPv6 address migration scheme
+
+##### Both register IPv4 and IPv6 address
+After configuring above Spring Cloud Loadbalancer as the load balancing policy, the IPv4 address and IPv6 address of the microservice will be registered with the registry by default after the application is started, where the IPv4 address will be stored in the IP field of the Nacos service list, the IPv6 address will be in the metadata field of Nacos, and its corresponding Key will be IPv6. When a service consumer calls a service provider, it selects the appropriate IP address type to initiate a service call based on its IP address stack support. Specific rules:
+(1) If the service consumer itself supports IPv4 and IPv6 dual address stacks or only supports IPv6 address stacks, the service consumer will use the IPv6 address provided by the service to initiate a service call, and if the IPv6 address call fails, if it also supports the IPv4 address stack, it is temporarily not supported to switch to IPv4 and then initiate a retry call;
+(2) If the service consumer itself only supports IPv4 single-address stack, the service consumer will use the IPv4 address provided by the service to initiate service calls.
+
+##### Only Register IPv4 address
+If you only want to register IPv4 address.Config in application.properties as follows:
+```
+spring.cloud.nacos.discovery.ip-type=IPv4
+```
+
+##### Only Register IPv6 address
+If you only want to register IPv6 address.Config in application.properties as follows:
+```
+spring.cloud.nacos.discovery.ip-type=IPv6
+```
 
 
 #### Use RestTemplate and FeignClient
@@ -161,14 +191,6 @@ Spring Cloud Nacos Discovery follows the spring cloud common standard and implem
 During the startup phase of the spring cloud application, the WebServerInitializedEvent event is watched. When the WebServerInitializedEvent event is received after the Web container is initialized, the registration action is triggered, and the ServiceRegistry register method is called to register the service to the Nacos Server.
 
 
-
-### Service Discovery
-
-NacosServerList implements the com.netflix.loadbalancer.ServerList <Server> interface and auto-injects it under @ConditionOnMissingBean. The ribbon is integrated by default.
-
-If you need to be more customizable, you can use @Autowired to inject a NacosRegistration bean and call the Nacos API directly through the contents of the NamingService field it holds.
-
-
 ## Endpoint
 
 Nacos Discovery Starter also supports the implementation of Spring Boot actuator endpoints.
@@ -198,7 +220,7 @@ server address|spring.cloud.nacos.discovery.server-addr||
 service|spring.cloud.nacos.discovery.service|${spring.application.name}|service id to registry
 weight|spring.cloud.nacos.discovery.weight|1|value from 1 to 100, The larger the value, the larger the weight
 ip|spring.cloud.nacos.discovery.ip||ip address to registry, Highest priority
-ip type|spring.cloud.nacos.discovery.ip-type|IPv4|IPv4 and IPv6 can be configured, If there are multiple IP addresses of the same type of network card, and you want to specify a specific network segment address, you can use `spring.cloud.inetutils.preferred-networks` to configure the filter address.
+ip type|spring.cloud.nacos.discovery.ip-type|Dual Stack Address|IPv4 and IPv6 can be configured, If there are multiple IP addresses of the same type of network card, and you want to specify a specific network segment address, you can use `spring.cloud.inetutils.preferred-networks` to configure the filter address.
 network interface|spring.cloud.nacos.discovery.network-interface||When the IP is not configured, the registered IP address is the IP address corresponding to the network-interface. If this item is not configured, the address of the first network-interface is taken by default.
 port|spring.cloud.nacos.discovery.port|-1|port to registry, Automatically detect without configuration
 namesapce|spring.cloud.nacos.discovery.namespace||One of the common scenarios is the separation of the configuration of different environments, such as the development of the test environment and the resource isolation of the production environment.

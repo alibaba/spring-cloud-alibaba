@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.event.NacosDiscoveryInfoChangedEvent;
-import com.alibaba.cloud.nacos.utils.InetIPv6Util;
+import com.alibaba.cloud.nacos.util.InetIPv6Utils;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import com.alibaba.nacos.client.naming.utils.UtilAndComs;
@@ -79,6 +79,10 @@ public class NacosDiscoveryProperties {
 	public static final String PREFIX = "spring.cloud.nacos.discovery";
 
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
+
+	private static final String IPV4 = "IPv4";
+
+	private static final String IPV6 = "IPv6";
 
 	/**
 	 * nacos discovery server address.
@@ -169,7 +173,7 @@ public class NacosDiscoveryProperties {
 	 * When IPv6 is chosen but no IPv6 can be found, system will automatically find IPv4 to ensure there is an
 	 * available service address.
 	 */
-	private String ipType = "IPv4";
+	private String ipType;
 
 	/**
 	 * The port your want to register for your service instance, needn't to set it if the
@@ -230,7 +234,7 @@ public class NacosDiscoveryProperties {
 	private boolean failFast = true;
 
 	@Autowired
-	private InetIPv6Util inetIPv6Util;
+	private InetIPv6Utils inetIPv6Utils;
 
 	@Autowired
 	private InetUtils inetUtils;
@@ -261,13 +265,21 @@ public class NacosDiscoveryProperties {
 		logName = Objects.toString(logName, "");
 
 		if (StringUtils.isEmpty(ip)) {
-			// traversing network interfaces if didn't specify a interface
+			// traversing network interfaces if didn't specify an interface
 			if (StringUtils.isEmpty(networkInterface)) {
-				if ("IPv4".equalsIgnoreCase(ipType)) {
+				if (ipType == null) {
+					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
+					String ipv6Addr = inetIPv6Utils.findIPv6Address();
+					metadata.put(IPV6, ipv6Addr);
+					if (ipv6Addr != null) {
+						metadata.put(IPV6, ipv6Addr);
+					}
+				}
+				else if (IPV4.equalsIgnoreCase(ipType)) {
 					ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 				}
-				else if ("IPv6".equalsIgnoreCase(ipType)) {
-					ip = inetIPv6Util.findIPv6Address();
+				else if (IPV6.equalsIgnoreCase(ipType)) {
+					ip = inetIPv6Utils.findIPv6Address();
 					if (StringUtils.isEmpty(ip)) {
 						log.warn("There is no available IPv6 found. Spring Cloud Alibaba will automatically find IPv4.");
 						ip = inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
