@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    alibaba-kubernetes:
+      config:
+        namespace: default
+        configmaps:
+          - name: my-configmap
+            refreshable: true
+  application:
+    name: configmap
+logging:
+  level:
+    com.alibaba.kubernetes.config: debug
+
+username: freeman
+hobbies:
+  - coding

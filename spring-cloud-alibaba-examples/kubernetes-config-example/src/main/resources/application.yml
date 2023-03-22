@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+spring:
+  application:
+    name: kubernetes-config-example
+  cloud:
+    alibaba-kubernetes:
+      config:
+        config-maps:
+          - name: configmap-01
+            namespace: default
+            refreshable: true
+            preference: remote
+        secrets:
+          - name: secret-01
+            namespace: default
+            refreshable: false
+        refresh-on-delete: false
+        fail-on-missing-config: true

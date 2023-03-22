@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-02
+  namespace: default
+data:
+  application-default.yml: |
+    hobbies:
+      - reading
+      - singing
+      - coding
