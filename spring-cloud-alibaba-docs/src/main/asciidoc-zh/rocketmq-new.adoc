@@ -216,13 +216,14 @@ Consumer 基于 TAGS 订阅，多个 tag 以 `||` 分割。更多见 `com.alibab
 messageModel::
 Consumer 消费模式。如果想让每一个的订阅者都能接收到消息，可以使用广播模式。更多见 `org.apache.rocketmq.common.protocol.heartbeat.MessageModel`
 +
-默认值: `CLUSTERING`.
+默认值: `CLUSTERING`。
 consumeFromWhere::
 Consumer 从哪里开始消费。更多见 `org.apache.rocketmq.common.consumer.ConsumeFromWhere`
 +
-默认值: `CONSUME_FROM_LAST_OFFSET`.
+默认值: `CONSUME_FROM_LAST_OFFSET`。
 
-#下面的这些配置是 Consumer Push 模式相关的配置。#
+
+下面的这些配置是 Consumer Push 模式相关的配置：
  `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.push.`
 
 orderly::
@@ -243,7 +244,7 @@ suspendCurrentQueueTimeMillis::
 
 其他更多参数见 `com.alibaba.cloud.stream.binder.rocketmq.properties.RocketMQConsumerProperties.Push`
 
-#下面的这些配置是 Consumer Pull 模式相关的配置。#
+下面的这些配置是 Consumer Pull 模式相关的配置。
 `spring.cloud.stream.rocketmq.bindings.<channelName>.consumer.pull.`
 
 pullThreadNums::
