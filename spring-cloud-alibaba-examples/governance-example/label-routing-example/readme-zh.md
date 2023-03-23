@@ -46,33 +46,33 @@ spring.cloud.governance.routing.rule=RandomRule
 ```java
 @GetMapping("/add")
 public void getDataFromControlPlaneTest() {
-    List<RouteRule> routeRules = new ArrayList<>();
+    List<RoutingRule> routingRules = new ArrayList<>();
     List<MatchService> matchServices = new ArrayList<>();
     UnifiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
     unifiedRouteDataStructure.setTargetService("service-provider");
     LabelRouteRule labelRouteData = new LabelRouteRule();
     labelRouteData.setDefaultRouteVersion("v1");
-    RouteRule routeRule = new HeaderRule();
-    routeRule.setType("header");
-    routeRule.setCondition("=");
-    routeRule.setKey("tag");
-    routeRule.setValue("v2");
-    RouteRule routeRule1 = new UrlRule.Parameter();
-    routeRule1.setType("parameter");
-    routeRule1.setCondition(">");
-    routeRule1.setKey("id");
-    routeRule1.setValue("10");
-    RouteRule routeRule2 = new UrlRule.Path();
-    routeRule2.setType("path");
-    routeRule2.setCondition("=");
-    routeRule2.setValue("/router-test");
-    routeRules.add(routeRule);
-    routeRules.add(routeRule1);
-    routeRules.add(routeRule2);
+    RoutingRule routingRule = new HeaderRule();
+    routingRule.setType("header");
+    routingRule.setCondition("=");
+    routingRule.setKey("tag");
+    routingRule.setValue("v2");
+    RoutingRule routingRule1 = new UrlRule.Parameter();
+    routingRule1.setType("parameter");
+    routingRule1.setCondition(">");
+    routingRule1.setKey("id");
+    routingRule1.setValue("10");
+    RoutingRule routingRule2 = new UrlRule.Path();
+    routingRule2.setType("path");
+    routingRule2.setCondition("=");
+    routingRule2.setValue("/router-test");
+    routingRules.add(routingRule);
+    routingRules.add(routingRule1);
+    routingRules.add(routingRule2);
     MatchService matchService = new MatchService();
     matchService.setVersion("v2");
     matchService.setWeight(100);
-    matchService.setRuleList(routeRules);
+    matchService.setRuleList(routingRules);
     matchServices.add(matchService);
     labelRouteData.setMatchRouteList(matchServices);
     unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
@@ -88,36 +88,36 @@ public void getDataFromControlPlaneTest() {
 ```java
 @GetMapping("/add")
 public void getDataFromControlPlaneTest() {
-	List<RouteRule> routeRules = new ArrayList<>();
+	List<RoutingRule> routingRules = new ArrayList<>();
 	List<MatchService> matchServices = new ArrayList<>();
 	UntiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
 	unifiedRouteDataStructure.setTargetService("service-provider");
 	LabelRouteRule labelRouteData = new LabelRouteRule();
 	labelRouteData.setDefaultRouteVersion("v1");
 	
-	RouteRule routeRule = new HeaderRule();
-	routeRule.setType("header");
-	routeRule.setCondition("=");
-	routeRule.setKey("tag");
-	routeRule.setValue("v2");
-	RouteRule routeRule1 = new UrlRule.Parameter();
-	routeRule1.setType("parameter");
-	routeRule1.setCondition(">");
-	routeRule1.setKey("id");
-	routeRule1.setValue("10");
+	RoutingRule routingRule = new HeaderRule();
+	routingRule.setType("header");
+	routingRule.setCondition("=");
+	routingRule.setKey("tag");
+	routingRule.setValue("v2");
+	RoutingRule routingRule1 = new UrlRule.Parameter();
+	routingRule1.setType("parameter");
+	routingRule1.setCondition(">");
+	routingRule1.setKey("id");
+	routingRule1.setValue("10");
 	
-	RouteRule routeRule2 = new UrlRule.Path();
-	routeRule2.setType("path");
-	routeRule2.setCondition("=");
-	routeRule2.setValue("/router-test");
-	routeRules.add(routeRule);
-	routeRules.add(routeRule1);
-	routeRules.add(routeRule2);
+	RoutingRule routingRule2 = new UrlRule.Path();
+	routingRule2.setType("path");
+	routingRule2.setCondition("=");
+	routingRule2.setValue("/router-test");
+	routingRules.add(routingRule);
+	routingRules.add(routingRule1);
+	routingRules.add(routingRule2);
 	
 	MatchService matchService = new MatchService();
 	matchService.setVersion("v2");
 	matchService.setWeight(50);
-	matchService.setRuleList(routeRules);
+	matchService.setRuleList(routingRules);
 	matchServices.add(matchService);
 	labelRouteData.setMatchRouteList(matchServices);
 	unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
