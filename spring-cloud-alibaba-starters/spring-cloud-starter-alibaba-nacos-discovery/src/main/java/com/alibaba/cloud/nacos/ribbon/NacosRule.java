@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -67,12 +66,12 @@ public class NacosRule extends AbstractLoadBalancerRule {
 	@Autowired
 	private InetIPv6Utils inetIPv6Utils;
 
-
 	@PostConstruct
 	public void init() {
 		String ip = nacosDiscoveryProperties.getIp();
 		if (StringUtils.isNotEmpty(ip)) {
-			this.ipv6 = Pattern.matches(IPV4_REGEX, ip) ? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY) : ip;
+			this.ipv6 = Pattern.matches(IPV4_REGEX, ip)
+					? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY) : ip;
 		}
 		else {
 			this.ipv6 = getAppLocalIPv6Address();
