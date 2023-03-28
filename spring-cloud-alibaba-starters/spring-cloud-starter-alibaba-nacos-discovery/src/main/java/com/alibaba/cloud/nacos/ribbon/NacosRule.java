@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -56,8 +55,6 @@ public class NacosRule extends AbstractLoadBalancerRule {
 
 	private static final String IPV6_KEY = "IPv6";
 
-	private String ipv4;
-
 	private String ipv6;
 
 	@Autowired
@@ -69,23 +66,14 @@ public class NacosRule extends AbstractLoadBalancerRule {
 	@Autowired
 	private InetIPv6Utils inetIPv6Utils;
 
-	@Autowired
-	private InetUtils inetUtils;
-
 	@PostConstruct
 	public void init() {
 		String ip = nacosDiscoveryProperties.getIp();
 		if (StringUtils.isNotEmpty(ip)) {
-			if (Pattern.matches(IPV4_REGEX, ip)) {
-				this.ipv4 = ip;
-				this.ipv6 = nacosDiscoveryProperties.getMetadata().get(IPV6_KEY);
-			}
-			else {
-				this.ipv6 = ip;
-			}
+			this.ipv6 = Pattern.matches(IPV4_REGEX, ip)
+					? nacosDiscoveryProperties.getMetadata().get(IPV6_KEY) : ip;
 		}
 		else {
-			this.ipv4 = getAppLocalIPv4Address();
 			this.ipv6 = getAppLocalIPv6Address();
 		}
 	}
@@ -123,7 +111,10 @@ public class NacosRule extends AbstractLoadBalancerRule {
 			}
 
 			Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
-			convertIPv4ToIPv6(instance);
+			// When local support IPv6 address stack, referred to use IPv6 address.
+			if (StringUtils.isNotEmpty(this.ipv6)) {
+				convertIPv4ToIPv6(instance);
+			}
 
 			return new NacosServer(instance);
 		}
@@ -135,10 +126,6 @@ public class NacosRule extends AbstractLoadBalancerRule {
 
 	@Override
 	public void initWithNiwsConfig(IClientConfig iClientConfig) {
-	}
-
-	private String getAppLocalIPv4Address() {
-		return inetUtils.findFirstNonLoopbackHostInfo().getIpAddress();
 	}
 
 	private String getAppLocalIPv6Address() {
@@ -158,7 +145,7 @@ public class NacosRule extends AbstractLoadBalancerRule {
 					ipv6InstanceList.add(instance);
 				}
 			}
-			// provider has no IPv6,should use Ipv4.
+			// provider has no IPv6, should use IPv4.
 			if (ipv6InstanceList.size() == 0) {
 				return instances.stream()
 						.filter(instance -> Pattern.matches(IPV4_REGEX, instance.getIp()))
