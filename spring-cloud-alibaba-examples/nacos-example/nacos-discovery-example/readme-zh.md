@@ -78,11 +78,39 @@
 ### 服务发现
 
 
-#### 集成 Ribbon
-为了便于使用，NacosServerList 实现了 com.netflix.loadbalancer.ServerList<Server> 接口，并在 @ConditionOnMissingBean 的条件下进行自动注入。如果您有定制化的需求，可以自己实现自己的 ServerList。
+#### 集成 Spring Cloud Loadbalancer
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-loadbalancer</artifactId>
+    </dependency>
+</dependencies>
+```
+增加如下配置，使用 Spring Cloud Alibaba 社区针对 Spring Cloud Loadbalancer 负载均衡依赖提供的负载均衡策略，以便使用 Spring Cloud Alibaba 提供的所有的能力：
+```properties
+spring.cloud.loadbalancer.ribbon.enabled=false
+spring.cloud.loadbalancer.nacos.enabled=true
+```
 
-Nacos Discovery Starter 默认集成了 Ribbon ，所以对于使用了 Ribbon 做负载均衡的组件，可以直接使用 Nacos 的服务发现。
+#### IPv4至IPv6地址迁移方案
 
+##### IPv4和IPv6地址双注册
+在配置完成Spring Cloud Loadbalancer作为负载均衡策略后，应用启动后会默认将微服务的IPv4地址和IPv6地址注册到注册中心中，其中IPv4地址会存放在Nacos服务列表中的IP字段下，IPv6地址在Nacos的metadata字段中，其对应的Key为IPv6。当服务消费者调用服务提供者时，会根据自身的IP地址栈支持情况，选择合适的IP地址类型发起服务调用。具体规则：
+（1）服务消费者本身支持IPv4和IPv6双地址栈或仅支持IPv6地址栈的情况下，服务消费者会使用服务提供的IPv6地址发起服务调用，IPv6地址调用失败如本身还同事支持IPv4地址栈时，暂不支持切换到IPv4再发起重试调用；
+（2）服务消费者本身仅支持IPv4单地址栈的情况下，服务消费者会使用服务提供的IPv4地址发起服务调用。
+
+##### 仅注册IPv4
+如果您只想使用IPv4地址进行注册，可以在application.properties使用以下配置：
+```
+spring.cloud.nacos.discovery.ip-type=IPv4
+```
+
+##### 仅注册IPv6
+如果您只想使用IPv6地址，可以在application.properties使用以下配置：
+```
+spring.cloud.nacos.discovery.ip-type=IPv6
+```
 
 #### 使用 RestTemplate 和 FeignClient
 
@@ -158,11 +186,6 @@ Spring Cloud Nacos Discovery 遵循了 spring cloud common 标准，实现了 Au
 
 
 
-### 服务发现
-NacosServerList 实现了 com.netflix.loadbalancer.ServerList<Server> 接口，并在 @ConditionOnMissingBean 的条件下进行自动注入，默认集成了Ribbon。
-
-如果需要有更加自定义的可以使用 @Autowired 注入一个 NacosRegistration 实例，通过其持有的 NamingService 字段内容直接调用 Nacos API。
-
 
 ## Endpoint 信息查看
 
@@ -191,7 +214,7 @@ Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos-discove
 权重|spring.cloud.nacos.discovery.weight|1|取值范围 1 到 100，数值越大，权重越大
 网卡名|spring.cloud.nacos.discovery.network-interface||当IP未配置时，注册的IP为此网卡所对应的IP地址，如果此项也未配置，则默认取第一块网卡的地址
 注册的IP地址|spring.cloud.nacos.discovery.ip||优先级最高
-注册的IP地址类型|spring.cloud.nacos.discovery.ip-type|IPv4|可以配置IPv4和IPv6两种类型，如果网卡同类型IP地址存在多个，希望制定特定网段地址，可使用`spring.cloud.inetutils.preferred-networks`配置筛选地址
+注册的IP地址类型|spring.cloud.nacos.discovery.ip-type|双栈地址|可以配置IPv4和IPv6两种类型，如果网卡同类型IP地址存在多个，希望制定特定网段地址，可使用`spring.cloud.inetutils.preferred-networks`配置筛选地址
 注册的端口|spring.cloud.nacos.discovery.port|-1|默认情况下不用配置，会自动探测
 命名空间|spring.cloud.nacos.discovery.namespace||常用场景之一是不同环境的注册的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等。
 AccessKey|spring.cloud.nacos.discovery.access-key||

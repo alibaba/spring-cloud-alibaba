@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.nacos.utils;
+package com.alibaba.cloud.nacos.util;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -39,64 +33,55 @@ import org.springframework.cloud.commons.util.InetUtilsProperties;
 /**
  * @author HH
  */
-public class InetIPv6Util implements Closeable {
+public class InetIPv6Utils {
 
-	private final ExecutorService executorService;
-
-	private final Log log = LogFactory.getLog(InetIPv6Util.class);
+	private final static Log log = LogFactory.getLog(InetIPv6Utils.class);
 
 	private final InetUtilsProperties properties;
 
-	@Override
-	public void close() {
-		this.executorService.shutdown();
-	}
 
-	public InetIPv6Util(final InetUtilsProperties properties) {
+	public InetIPv6Utils(final InetUtilsProperties properties) {
 		this.properties = properties;
-		this.executorService = Executors.newSingleThreadExecutor((r) -> {
-			Thread thread = new Thread(r);
-			thread.setName("spring.cloud.alibaba.inetIPV6Util");
-			thread.setDaemon(true);
-			return thread;
-		});
 	}
 
-	public InetUtils.HostInfo findFirstNonLoopbackHostInfo() {
-		InetAddress address = this.findFirstNonLoopbackIPv6Address();
-		if (address != null) {
-			return this.convertAddress(address);
-		}
-		return null;
+	private InetUtils.HostInfo findFirstValidHostInfo() {
+		InetAddress address = this.findFirstValidIPv6Address();
+		return address != null ? this.getHostInfo(address) : null;
 	}
 
-	public InetAddress findFirstNonLoopbackIPv6Address() {
+	private InetAddress findFirstValidIPv6Address() {
 		InetAddress address = null;
 
 		try {
-			int lowest = Integer.MAX_VALUE;
 			for (Enumeration<NetworkInterface> nics = NetworkInterface
-					.getNetworkInterfaces(); nics.hasMoreElements();) {
+					.getNetworkInterfaces(); nics.hasMoreElements(); ) {
 				NetworkInterface ifc = nics.nextElement();
-				if (ifc.isUp()) {
-					log.trace("Testing interface:" + ifc.getDisplayName());
-					if (ifc.getIndex() < lowest || address == null) {
-						lowest = ifc.getIndex();
-					}
-					else if (address != null) {
-						continue;
+				if (ifc.isUp() || !ifc.isVirtual() || !ifc.isLoopback()) {
+					if (address != null) {
+						break;
 					}
 
 					if (!ignoreInterface(ifc.getDisplayName())) {
 						for (Enumeration<InetAddress> addrs = ifc
-								.getInetAddresses(); addrs.hasMoreElements();) {
+								.getInetAddresses(); addrs.hasMoreElements(); ) {
 							InetAddress inetAddress = addrs.nextElement();
 							if (inetAddress instanceof Inet6Address
+									// filter ::1
 									&& !inetAddress.isLoopbackAddress()
+									// filter fe80::/10
+									&& !inetAddress.isLinkLocalAddress()
+									// filter ::/128
+									&& !inetAddress.isAnyLocalAddress()
+									// filter fec0::/10,which was discarded, but some
+									// address may be deployed.
+									&& !inetAddress.isSiteLocalAddress()
+									// filter fd00::/8
+									&& !isUniqueLocalAddress(inetAddress)
 									&& isPreferredAddress(inetAddress)) {
 								log.trace("Found non-loopback interface: "
 										+ ifc.getDisplayName());
 								address = inetAddress;
+								break;
 							}
 						}
 					}
@@ -106,30 +91,12 @@ public class InetIPv6Util implements Closeable {
 		catch (IOException e) {
 			log.error("Cannot get first non-loopback address", e);
 		}
-		if (address == null) {
-			try {
-				InetAddress localHost = InetAddress.getLocalHost();
-				if (localHost instanceof Inet6Address && !localHost.isLoopbackAddress()
-						&& isPreferredAddress(localHost)) {
-					address = localHost;
-				}
-			}
-			catch (UnknownHostException e) {
-				log.warn("Unable to retrieve localhost");
-			}
-		}
 		return address;
 	}
 
 	public String findIPv6Address() {
-		InetUtils.HostInfo hostInfo = findFirstNonLoopbackHostInfo();
-		String ip = hostInfo != null ? hostInfo.getIpAddress() : "";
-		if (!StringUtils.isEmpty(ip)) {
-			int index = ip.indexOf('%');
-			ip = index > 0 ? ip.substring(0, index) : ip;
-			return normalizeIPv6(ip);
-		}
-		return ip;
+		InetUtils.HostInfo hostInfo = findFirstValidHostInfo();
+		return hostInfo != null ? normalizeIPv6(hostInfo.getIpAddress()) : null;
 	}
 
 	private String normalizeIPv6(String ip) {
@@ -139,7 +106,7 @@ public class InetIPv6Util implements Closeable {
 		return idx != -1 ? "[" + ip.substring(0, idx) + "]" : "[" + ip + "]";
 	}
 
-	boolean isPreferredAddress(InetAddress address) {
+	private boolean isPreferredAddress(InetAddress address) {
 		if (this.properties.isUseOnlySiteLocalInterfaces()) {
 			final boolean siteLocalAddress = address.isSiteLocalAddress();
 			if (!siteLocalAddress) {
@@ -157,35 +124,43 @@ public class InetIPv6Util implements Closeable {
 				return true;
 			}
 		}
-		log.trace("Ignoring address: " + address.getHostAddress());
 		return false;
 	}
 
 	boolean ignoreInterface(String interfaceName) {
 		for (String regex : this.properties.getIgnoredInterfaces()) {
 			if (interfaceName.matches(regex)) {
-				log.trace("Ignoring interface: " + interfaceName);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public InetUtils.HostInfo convertAddress(final InetAddress address) {
+	private InetUtils.HostInfo getHostInfo(final InetAddress address) {
 		InetUtils.HostInfo hostInfo = new InetUtils.HostInfo();
-		Future<String> result = this.executorService.submit(address::getHostName);
-
-		String hostname;
-		try {
-			hostname = result.get(this.properties.getTimeoutSeconds(), TimeUnit.SECONDS);
+		String hostName = address.getHostName();
+		if (hostName == null) {
+			hostName = "localhost";
 		}
-		catch (Exception e) {
-			log.info("Cannot determine local hostname");
-			hostname = "localhost";
+		hostInfo.setHostname(hostName);
+		if (StringUtils.isNotEmpty(address.getHostAddress())) {
+			hostInfo.setIpAddress(address.getHostAddress());
 		}
-		hostInfo.setHostname(hostname);
-		hostInfo.setIpAddress(address.getHostAddress());
+		else {
+			hostInfo.setIpAddress(StringUtils.EMPTY);
+		}
 		return hostInfo;
+	}
+
+	/**
+	 * If the address is Unique Local Address.
+	 *
+	 * @param inetAddress {@link InetAddress}
+	 * @return {@code true} if the address is Unique Local Address, otherwise {@code false}
+	 */
+	private boolean isUniqueLocalAddress(InetAddress inetAddress) {
+		byte[] ip = inetAddress.getAddress();
+		return (ip[0] & 0xff) == 0xfd;
 	}
 
 }
