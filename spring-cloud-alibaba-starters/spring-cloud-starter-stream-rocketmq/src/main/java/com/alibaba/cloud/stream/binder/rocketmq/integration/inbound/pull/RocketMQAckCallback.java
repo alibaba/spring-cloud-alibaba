@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.pull;
 
+import java.util.Collections;
+
 import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
@@ -25,8 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.util.Assert;
-
-import java.util.Collections;
 
 /**
  * A pollable {@link org.springframework.integration.core.MessageSource} for RocketMQ.
