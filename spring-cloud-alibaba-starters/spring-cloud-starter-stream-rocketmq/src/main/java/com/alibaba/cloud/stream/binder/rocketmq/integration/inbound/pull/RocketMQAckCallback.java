@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.util.Assert;
 
+import java.util.Collections;
+
 /**
  * A pollable {@link org.springframework.integration.core.MessageSource} for RocketMQ.
  *
@@ -79,7 +81,7 @@ public class RocketMQAckCallback implements AcknowledgmentCallback {
 				switch (status) {
 				case REJECT:
 				case ACCEPT:
-					consumer.committed(messageQueue);
+					consumer.commit(Collections.singleton(messageQueue), false);
 					break;
 				case REQUEUE:
 					consumer.seek(messageQueue, offset);
