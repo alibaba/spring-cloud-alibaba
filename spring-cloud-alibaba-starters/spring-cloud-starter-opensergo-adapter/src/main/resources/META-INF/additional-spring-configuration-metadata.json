@@ -7,6 +7,7 @@
   {
     "name": "spring.cloud.opensergo.namespace",
     "type": "java.lang.String",
+    "defaultValue": "default",
     "description": "Namespace Configuration about OpenSergo Config."
   }
 ]}
