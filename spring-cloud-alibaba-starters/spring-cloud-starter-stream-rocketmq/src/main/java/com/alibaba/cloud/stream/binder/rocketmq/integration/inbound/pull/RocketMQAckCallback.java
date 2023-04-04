@@ -16,6 +16,8 @@
 
 package com.alibaba.cloud.stream.binder.rocketmq.integration.inbound.pull;
 
+import java.util.Collections;
+
 import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
@@ -77,7 +79,7 @@ public class RocketMQAckCallback implements AcknowledgmentCallback {
 			try {
 				long offset = messageExt.getQueueOffset();
 				switch (status) {
-				case REJECT, ACCEPT -> consumer.committed(messageQueue);
+				case REJECT, ACCEPT -> consumer.commit(Collections.singleton(messageQueue), false);
 				case REQUEUE -> consumer.seek(messageQueue, offset);
 				}
 			}
