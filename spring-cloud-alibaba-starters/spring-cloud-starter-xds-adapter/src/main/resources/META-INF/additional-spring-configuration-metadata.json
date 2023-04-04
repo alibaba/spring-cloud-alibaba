@@ -1,0 +1,37 @@
+{"properties": [
+  {
+    "name": "spring.cloud.istio.config.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether to connect to Istio to obtain authentication configuration."
+  },
+  {
+    "name": "spring.cloud.istio.config.host",
+    "type": "java.lang.String",
+    "description": "Host of Istiod."
+  },
+  {
+    "name": "spring.cloud.istio.config.port",
+    "type": "java.lang.Integer",
+    "description": "Port of Istiod."
+  },
+  {
+    "name": "spring.cloud.istio.config.polling-pool-size",
+    "type": "java.lang.Integer",
+    "description": "Thread pool size for application to pull the config."
+  },
+  {
+    "name": "spring.cloud.istio.config.polling-time",
+    "type": "java.lang.Integer",
+    "description": "Time interval for application to pull the config."
+  },
+  {
+    "name": "spring.cloud.istio.config.istiod-token",
+    "type": "java.lang.String",
+    "description": "JWT token for application to connect to 15012 port."
+  },
+  {
+    "name": "spring.cloud.istio.config.log-xds",
+    "type": "java.lang.Boolean",
+    "description": "Whether to print logs about xDS."
+  }
+]}

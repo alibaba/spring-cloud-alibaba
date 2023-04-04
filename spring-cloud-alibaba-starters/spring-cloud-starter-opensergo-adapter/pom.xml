@@ -47,6 +47,11 @@
             <artifactId>opensergo-java-sdk</artifactId>
             <version>${opensergo.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!--  Only for unit test-->
         <dependency>

@@ -1,0 +1,7 @@
+{"properties": [
+  {
+    "name": "spring.cloud.governance.routing.rule",
+    "type": "java.lang.String",
+    "description": "Lodbalance rule for label routing, the following values are included: RoundRobinRule, RandomRule, WeightedResponseTimeRule, BestAvailableRule, RetryRule, ZoneAvoidanceRule, AvailabilityFilteringRule."
+  }
+]}

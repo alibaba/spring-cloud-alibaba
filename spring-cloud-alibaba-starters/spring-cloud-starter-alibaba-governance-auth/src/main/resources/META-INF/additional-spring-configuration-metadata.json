@@ -1,0 +1,7 @@
+{"properties": [
+  {
+    "name": "spring.cloud.governance.auth.enabled",
+    "type": "java.lang.Boolean",
+    "description": "enable authentication in governance module or not."
+  }
+]}
