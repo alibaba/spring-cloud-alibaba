@@ -6,4 +6,4 @@ com.alibaba.cloud.nacos.discovery.reactive.NacosReactiveDiscoveryClientConfigura
 com.alibaba.cloud.nacos.discovery.configclient.NacosConfigServerAutoConfiguration
 com.alibaba.cloud.nacos.loadbalancer.LoadBalancerNacosAutoConfiguration
 com.alibaba.cloud.nacos.NacosServiceAutoConfiguration
-com.alibaba.cloud.nacos.utils.UtilIPv6AutoConfiguration
+com.alibaba.cloud.nacos.util.UtilIPv6AutoConfiguration
