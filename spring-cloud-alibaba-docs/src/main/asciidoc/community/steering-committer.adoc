@@ -120,13 +120,13 @@ This page shows the development team members of Spring Cloud Alibaba. We are con
 |echooy.mxq@gmail.com
 |~
 
-|Cheng Xingyuan
+|Xingyuan Cheng
 |complone
 |Committer
 |yuluoxinsheng@gmail.com
 |~
 
-|Ruan Sheng
+|Sheng Ruan
 |ruansheng8
 |Committer
 |chrisruans@gmail.com
