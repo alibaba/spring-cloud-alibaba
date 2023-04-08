@@ -18,11 +18,17 @@ package com.alibaba.cloud.examples;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClients;
 
 /**
  * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
  */
+
 @SpringBootApplication
+@LoadBalancerClients({
+		@LoadBalancerClient("service-provider")
+})
 public class ConsumerReactiveApplication {
 
 	public static void main(String[] args) {
