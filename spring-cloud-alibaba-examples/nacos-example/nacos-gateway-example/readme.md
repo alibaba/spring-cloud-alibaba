@@ -15,42 +15,46 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 1. Add Nacos Discovery Starter、Spring Cloud Gateway Starter in the pom.xml file in your Spring Cloud project.
 
-```xml
-	    <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-        </dependency>
-```
+   ```xml
+   <dependency>
+       <groupId>com.alibaba.cloud</groupId>
+       <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+   </dependency>
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-gateway</artifactId>
+   </dependency>
+   ```
+
 2. Add Nacos server address configurations to file /src/main/resources/application.properties.
 	
-		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
-
+	```properties
+	spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+	```
+	
 3. Add Spring Cloud Gateway configurations to file /src/main/resources/application.properties.
 	
-```properties
-spring.cloud.gateway.routes[0].id=nacos-route
-spring.cloud.gateway.routes[0].uri=lb://service-gateway-provider
-spring.cloud.gateway.routes[0].predicates[0].name=Path
-spring.cloud.gateway.routes[0].predicates[0].args[pattern]=/nacos/**
-spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
-```	  
+	```properties
+	spring.cloud.gateway.routes[0].id=nacos-route
+	spring.cloud.gateway.routes[0].uri=lb://service-gateway-provider
+	spring.cloud.gateway.routes[0].predicates[0].name=Path
+	spring.cloud.gateway.routes[0].predicates[0].args[pattern]=/nacos/**
+	spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
+	```
+
 4. Use the @EnableDiscoveryClient annotation to turn on service registration and discovery.
-		
-```java
-    @SpringBootApplication
-    @EnableDiscoveryClient
-    public class GatewayApplication {
-    
-        public static void main(String[] args) {
-            SpringApplication.run(GatewayApplication.class, args);
+
+   ```java
+   @SpringBootApplication
+   @EnableDiscoveryClient
+   public class GatewayApplication {
+   
+       public static void main(String[] args) {
+           SpringApplication.run(GatewayApplication.class, args);
         }
-    
-    }
-```
+   
+   }
+   ```
 
 ### Start Nacos Server 
 
@@ -88,7 +92,8 @@ Start the application in IDE or by building a fatjar.
  
  hello Nacos Discovery hello-world⏎
 ```
-1. 
+2. 
+
 ```bash
  curl 'http://127.0.0.1:18085/nacos/divide?a=6&b=2' 
 

@@ -16,23 +16,23 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 
 1. Add dependency spring-cloud-starter-alibaba-nacos-config in the pom.xml file in your Spring Cloud project.
-```xml
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-</dependency>
-```
+   ```xml
+   <dependency>
+       <groupId>com.alibaba.cloud</groupId>
+       <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+   </dependency>
+   ```
 
 2. Add Nacos config metadata configurations to file /src/main/resources/application.yaml and import service config
-```yaml
-spring:
-  cloud:
-    nacos:
-      serverAddr: 127.0.0.1:8848
-  config:
-    import:
-      - nacos:nacos-config-example.properties?refresh=true
-```
+   ```yml
+   spring:
+     cloud:
+       nacos:
+         serverAddr: 127.0.0.1:8848
+     config:
+       import:
+         - nacos:nacos-config-example.properties?refresh=true
+   ```
 
 3. After completing the above two steps, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment. Suppose we save part of the configuration of Nacos through the Nacos configuration center, there are the following four examples:
 - BeanAutoRefreshConfigExample: An example that supports automatic refresh of configuration changes by configuring configuration information as beans
@@ -60,32 +60,32 @@ spring:
 		
 	**Note: You can also add it in other ways. If you are using the Nacos version with its own console, it is recommended to configure it directly using the console.**
 	
-	
 	Details of the added configuration are as follows
 	
-		dataId is nacos-config-example.properties
-		group is DEFAULT_GROUP
-		
-		content is:
-		
-   		spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
-	    spring.cloud.nacos.config.prefix=PREFIX
-        spring.cloud.nacos.config.group=GROUP
-        spring.cloud.nacos.config.namespace=NAMESPACE
-
+	```properties
+	dataId 为 nacos-config-example.properties
+	group 为 DEFAULT_GROUP
+	
+	content:
+   
+	  spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
+	  spring.cloud.nacos.config.prefix=PREFIX
+	  spring.cloud.nacos.config.group=GROUP
+	  spring.cloud.nacos.config.namespace=NAMESPACE
+	```
 
 ### Start Application
 
 1. Add necessary configurations to file /src/main/resources/application.properties
-```yaml
-server:
-  port: 18084
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-```
+   ```yml
+   server:
+     port: 18084
+   management:
+     endpoints:
+       web:
+         exposure:
+           include: '*'
+   ```
 
 2. Start the application in IDE or by building a fatjar.
 

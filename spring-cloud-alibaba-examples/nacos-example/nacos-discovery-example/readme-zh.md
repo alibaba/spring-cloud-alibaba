@@ -14,33 +14,39 @@
 
 1. 首先，修改 pom.xml 文件，引入 Nacos Discovery Starter。
 
-	    <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
+	```xml
+   <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+	 </dependency>
+	```
 	
 2. 在应用的 /src/main/resources/application.properties 配置文件中配置 Nacos Server 地址
 	
-		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
-		  
+	```properties
+	spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+	```
+	
 3. 使用 @EnableDiscoveryClient 注解开启服务注册与发现功能
 		
-		@SpringBootApplication
-		@EnableDiscoveryClient
-		public class ProviderApplication {
-
-			public static void main(String[] args) {
-				SpringApplication.run(ProviderApplication.class, args);
-			}
-
-			@RestController
-			class EchoController {
-				@GetMapping(value = "/echo/{string}")
-				public String echo(@PathVariable String string) {
-						return string;
-				}
+	```java
+	@SpringBootApplication
+	@EnableDiscoveryClient
+	public class ProviderApplication {
+	
+		public static void main(String[] args) {
+			SpringApplication.run(ProviderApplication.class, args);
+		}
+	
+		@RestController
+		class EchoController {
+			@GetMapping(value = "/echo/{string}")
+			public String echo(@PathVariable String string) {
+					return string;
 			}
 		}
+	}
+	```
 
 ### 启动 Nacos Server
 
@@ -58,10 +64,11 @@
 
 1. 增加配置，在 nacos-discovery-provider-example 项目的 /src/main/resources/application.properties 中添加基本配置信息
 	
-		spring.application.name=service-provider
-		server.port=18082
-
-		
+	```properties
+	spring.application.name=service-provider
+	server.port=18082
+	```
+	
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
 	1. IDE直接启动：找到 nacos-discovery-provider-example 项目的主类 `ProviderApplication`，执行 main 方法启动应用。
@@ -102,13 +109,13 @@ spring.cloud.loadbalancer.nacos.enabled=true
 
 ##### 仅注册IPv4
 如果您只想使用IPv4地址进行注册，可以在application.properties使用以下配置：
-```
+```properties
 spring.cloud.nacos.discovery.ip-type=IPv4
 ```
 
 ##### 仅注册IPv6
 如果您只想使用IPv6地址，可以在application.properties使用以下配置：
-```
+```properties
 spring.cloud.nacos.discovery.ip-type=IPv6
 ```
 
@@ -120,48 +127,56 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 
 1. 添加 @LoadBlanced 注解，使得 RestTemplate 接入 Ribbon 
 
-	    @Bean
-	    @LoadBalanced
-	    public RestTemplate restTemplate() {
-	        return new RestTemplate();
-	    }
+   ```java
+   @Bean
+   @LoadBalanced
+   public RestTemplate restTemplate() {
+       return new RestTemplate();
+   }
+   ```
 
 1. FeignClient 已经默认集成了 Ribbon ，此处演示如何配置一个 FeignClient。
 
-	    @FeignClient(name = "service-provider")
-	    public interface EchoService {
-	        @GetMapping(value = "/echo/{str}")
-	        String echo(@PathVariable("str") String str);
-	    }
-	    
+	```java
+	@FeignClient(name = "service-provider")
+	public interface EchoService {
+	    @GetMapping(value = "/echo/{str}")
+	    String echo(@PathVariable("str") String str);
+	}
+	```
+	
 	使用 @FeignClient 注解将 EchoService 这个接口包装成一个 FeignClient，属性 name 对应服务名 service-provider。
 	
 	echo 方法上的 @RequestMapping 注解将 echo 方法与 URL "/echo/{str}" 相对应，@PathVariable 注解将 URL 路径中的 `{str}` 对应成 echo 方法的参数 str。
 	
 1. 完成以上配置后，将两者自动注入到 TestController 中。
 
-		@RestController
-		public class TestController {
-		
-		    @Autowired
-		    private RestTemplate restTemplate;
-		    @Autowired
-		    private EchoService echoService;
-		
-		    @GetMapping(value = "/echo-rest/{str}")
-		    public String rest(@PathVariable String str) {
-		        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
-		    }
-		    @GetMapping(value = "/echo-feign/{str}")
-		    public String feign(@PathVariable String str) {
-		        return echoService.echo(str);
-		    }
-		}
+   ```java
+   @RestController
+   public class TestController {
+   
+       @Autowired
+       private RestTemplate restTemplate;
+       @Autowired
+       private EchoService echoService;
+   
+       @GetMapping(value = "/echo-rest/{str}")
+       public String rest(@PathVariable String str) {
+           return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
+       }
+       @GetMapping(value = "/echo-feign/{str}")
+       public String feign(@PathVariable String str) {
+           return echoService.echo(str);
+       }
+   }
+   ```
 
 1. 配置必要的配置，在 nacos-discovery-consumer-example 项目的 /src/main/resources/application.properties 中添加基本配置信息
 
-		spring.application.name=service-consumer
-		server.port=18083
+   ```properties
+   spring.application.name=service-consumer
+   server.port=18083
+   ```
 
 1. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
@@ -176,6 +191,79 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 1. 在浏览器地址栏中输入 http://127.0.0.1:18083/echo-feign/12345，点击跳转，可以看到浏览器显示 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 12345"，证明服务发现生效。
 
 ![feign](https://cdn.nlark.com/lark/0/2018/png/54319/1536986311685-6d0c1f9b-a453-4ec3-88ab-f7922d210f65.png)
+
+#### 使用WebClient
+
+下面将分析 nacos-reactivediscovery-consumer-example 项目中的代码，演示如何使用 WebClient。
+
+1. 添加 @LoadBlanced 注解，在项目中接入 WebClient。
+
+   ```java
+   public class WebClientConfiguration {
+   
+   	@Bean
+   	@LoadBalanced
+   	public WebClient.Builder webClient() {
+   		return WebClient.builder();
+   	}
+   }
+   ```
+
+2. 注入到项目中的 MyController 中。
+
+   ```java
+   @RestController
+   public class MyController {
+   
+   	@Resource
+   	private ReactiveDiscoveryClient reactiveDiscoveryClient;
+   
+   	@Resource
+   	private WebClient.Builder webClientBuilder;
+   
+   	@GetMapping("/all-services")
+   	public Flux<String> allServices() {
+   		return reactiveDiscoveryClient.getInstances("service-provider")
+   				.map(serviceInstance -> serviceInstance.getHost() + ":"
+   						+ serviceInstance.getPort());
+   	}
+   
+   	@GetMapping("/service-call/{name}")
+   	public Mono<String> serviceCall(@PathVariable("name") String name) {
+   		return webClientBuilder.build().get()
+   				.uri("http://service-provider/echo/" + name).retrieve()
+   				.bodyToMono(String.class);
+   	}
+   
+   }
+   ```
+
+3. 写入必要的项目配置信息在 /src/main/resources/application.properties 路径下。
+
+   ```properties
+   spring.application.name=service-consumer-reactive
+   server.port=18083
+   management.endpoints.web.exposure.include=*
+   spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+   
+   spring.cloud.nacos.username=nacos
+   spring.cloud.nacos.password=nacos
+   
+   spring.cloud.loadbalancer.ribbon.enabled=false
+   ```
+
+4. 启动项目
+
+      1. IDE直接启动：找到 nacos-reactivediscovery-consumer-example 项目的主类 `ConsumerReactiveApplication`，执行 main 方法启动应用。
+      2. 打包编译后启动：在 nacos-reactivediscovery-consumer-example 项目中执行 `mvn clean package` 将工程编译打包，然后执行 `java -jar nacos-discovery-consumer-example.jar`启动应用。
+      
+5. 验证
+
+      1. 确保已经成功启动 nacos-server 和 nacos-discovery-provider-example项目;
+      2. 浏览器地址栏输入 `http://localhost:18083/all-services`;
+      3. 浏览器地址栏输入 `http://localhost:18083/services-call/test`。
+
+
 ## 原理
 
 

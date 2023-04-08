@@ -21,17 +21,17 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 2. Add Nacos server address configurations to file /src/main/resources/application.properties.
 	
 		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
-		  
+	
 3. Use the @EnableDiscoveryClient annotation to turn on service registration and discovery.
 		
 		@SpringBootApplication
 		@EnableDiscoveryClient
 		public class ProviderApplication {
-
+		
 			public static void main(String[] args) {
 				SpringApplication.run(ProviderApplication.class, args);
 			}
-
+		
 			@RestController
 			class EchoController {
 				@GetMapping(value = "/echo/{string}")
@@ -62,7 +62,6 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		spring.application.name=service-provider
 		server.port=18082
 
-		
 2. Start the application in IDE or by building a fatjar.
 
 	1. Start in IDE: Find main class `ProviderApplication ` in project `nacos-discovery-provider-example`, and execute the main method.
@@ -138,7 +137,7 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 	        @GetMapping(value = "/echo/{str}")
 	        String echo(@PathVariable("str") String str);
 	    }
-	    
+	
 	Use the @FeignClient annotation to wrap the `EchoService` interface as a FeignClient with the attribute name corresponding to the service name `service-provider`.
 	
 	The `@RequestMapping` annotation on the `echo` method corresponds the echo method to the URL `/echo/{str}`, and the `@PathVariable` annotation maps `{str}` in the URL path to the argument `str` of the echo method.
@@ -182,6 +181,78 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 
 ![feign](https://cdn.nlark.com/lark/0/2018/png/54319/1536986311685-6d0c1f9b-a453-4ec3-88ab-f7922d210f65.png)
 
+#### Use WebClient
+
+The code in the nacos-reactivediscovery-consumer-example project is analyzed below to demonstrate how to use WebClient.
+
+1. Add the @LoadBlanced annotation to access the WebClient in the project.
+
+   ```java
+   public class WebClientConfiguration {
+   
+   	@Bean
+   	@LoadBalanced
+   	public WebClient.Builder webClient() {
+   		return WebClient.builder();
+   	}
+   }
+   ```
+
+2. Inject into the MyController in the project.
+
+   ```java
+   @RestController
+   public class MyController {
+   
+   	@Resource
+   	private ReactiveDiscoveryClient reactiveDiscoveryClient;
+   
+   	@Resource
+   	private WebClient.Builder webClientBuilder;
+   
+   	@GetMapping("/all-services")
+   	public Flux<String> allServices() {
+   		return reactiveDiscoveryClient.getInstances("service-provider")
+   				.map(serviceInstance -> serviceInstance.getHost() + ":"
+   						+ serviceInstance.getPort());
+   	}
+   
+   	@GetMapping("/service-call/{name}")
+   	public Mono<String> serviceCall(@PathVariable("name") String name) {
+   		return webClientBuilder.build().get()
+   				.uri("http://service-provider/echo/" + name).retrieve()
+   				.bodyToMono(String.class);
+   	}
+   
+   }
+   ```
+
+3. Write the necessary project configuration information in the/SRC/main/resources/application. The properties under the path.
+
+   ```java
+   spring.application.name=service-consumer-reactive
+   server.port=18083
+   management.endpoints.web.exposure.include=*
+   spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+   
+   spring.cloud.nacos.username=nacos
+   spring.cloud.nacos.password=nacos
+   
+   spring.cloud.loadbalancer.ribbon.enabled=false
+   ```
+
+4. Start Project
+
+   1. The IDE direct start find nacos - reactivediscovery - consumer - example project of the main class ` ConsumerReactiveApplication `, carry out the main method to start the application.
+
+   2. Start after packaging and compiling: Execute 'mvn clean package' in nacos-reactivediscovery-consumer-example project to compile and package the project. Then run 'java-jar nacos-discovery-consumer-example.jar' to launch the application.
+
+5. Verification
+
+   1. Ensure that the nacos-server and nacos-discovery-provider-example projects have been started successfully;
+   2. The browser address bar enter at http://localhost:18083/all-services;
+   3. The browser address bar enter at http://localhost:18083/services-call/test.
+
 ## Principle
 
 ### Service Registry
@@ -210,7 +281,7 @@ Spring Boot2.x: Nacos Discovery  Endpoint URL is http://127.0.0.1:18083/actuator
 
 As shown in the figure above, NacosDiscoveryProperties is the configuration of Nacos Discovery itself, and also includes the contents registered by the application, subscribe is the service information that the application has subscribed to.
 
-    	
+
 ## More
 
 #### More configuration items

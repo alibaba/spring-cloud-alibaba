@@ -16,43 +16,45 @@
 1. 首先，修改 pom.xml 文件，引入 Nacos Discovery Starter、Spring Cloud Gateway Starter。
 
 ```xml
-	    <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-        </dependency>
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+</dependency>
 ```
-	
+
 2. 在应用的 /src/main/resources/application.properties 配置文件中配置 Nacos Server 地址
 	
-		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
-
+	```properties
+	spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+	```
+	
 3. 在应用的 /src/main/resources/application.properties 配置文件中配置 Spring Cloud Gateway 路由
 
-```properties
-spring.cloud.gateway.routes[0].id=nacos-route
-spring.cloud.gateway.routes[0].uri=lb://service-gateway-provider
-spring.cloud.gateway.routes[0].predicates[0].name=Path
-spring.cloud.gateway.routes[0].predicates[0].args[pattern]=/nacos/**
-spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
-```
-		  
+   ```properties
+   spring.cloud.gateway.routes[0].id=nacos-route
+   spring.cloud.gateway.routes[0].uri=lb://service-gateway-provider
+   spring.cloud.gateway.routes[0].predicates[0].name=Path
+   spring.cloud.gateway.routes[0].predicates[0].args[pattern]=/nacos/**
+   spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
+   ```
+
 4. 使用 @EnableDiscoveryClient 注解开启服务注册与发现功能
-		
-```java
-    @SpringBootApplication
-    @EnableDiscoveryClient
-    public class GatewayApplication {
-    
-        public static void main(String[] args) {
-            SpringApplication.run(GatewayApplication.class, args);
-        }
-    
-    }
-```
+
+   ```JAVA
+   @SpringBootApplication
+   @EnableDiscoveryClient
+   public class GatewayApplication {
+   
+       public static void main(String[] args) {
+           SpringApplication.run(GatewayApplication.class, args);
+       }
+   
+   }
+   ```
 
 ### 启动 Nacos Server
 
@@ -84,11 +86,12 @@ spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
  
  hello Nacos Discovery hello-world⏎
 ```
-1. 
+2. 
+
 ```bash
  curl 'http://127.0.0.1:18085/nacos/divide?a=6&b=2' 
 
- 3⏎              
+ 3⏎             
 ```
 #### 更多介绍
 Nacos为用户提供包括动态服务发现，配置管理，服务管理等服务基础设施，帮助用户更灵活，更轻松地构建，交付和管理他们的微服务平台，基于Nacos, 用户可以更快速的构建以“服务”为中心的现代云原生应用。Nacos可以和Spring Cloud、Kubernetes/CNCF、Dubbo 等微服务生态无缝融合，为用户提供更卓越的体验。更多 Nacos 相关的信息，请参考 [Nacos 项目](https://github.com/alibaba/Nacos)。
