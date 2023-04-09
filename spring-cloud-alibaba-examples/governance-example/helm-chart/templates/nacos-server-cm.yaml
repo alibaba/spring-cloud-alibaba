@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  labels:
+    app: nacos-server
+  name: nacos-server-env
+data:
+  NAMESPACE_NAME: {{ .Release.Name }}
+  ISTIOD_ADDR: {{ .Values.istiod-addr }}
+  POLLING_TIME: {{ .Values.default-polling-time }}

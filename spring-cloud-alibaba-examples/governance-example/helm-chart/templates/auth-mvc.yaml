@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-mvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-mvc
+  template:
+    metadata:
+      labels:
+        appName: auth-mvc
+        app: auth-mvc
+    spec:
+      containers:
+        - name: auth-mvc
+          image: '{{ .Values.image-auth-mvc.repository }}:{{ .Values.image-auth-mvc.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: auth-mvc-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-mvc
+  labels:
+    app: auth-mvc
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      name: http-server
+  selector:
+    app: auth-mvc

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: default-provider-version
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: default-provider-version
+  template:
+    metadata:
+      labels:
+        appName: default-provider-version
+        app: default-provider-version
+    spec:
+      containers:
+        - name: default-provider-version
+          image: '{{ .Values.image-default-provider-version.repository }}:{{ .Values.image-default-provider-version.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - name: feign-port
+              containerPort: 18081
