@@ -8,3 +8,4 @@ data:
   NAMESPACE_NAME: {{ .Release.Namespace | quote }}
   ISTIOD_ADDR: {{ .Values.istiod_addr | quote }}
   POLLING_TIME: {{ .Values.default_polling_time | quote }}
+  MODE: "standalone"
