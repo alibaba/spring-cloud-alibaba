@@ -1,20 +1,20 @@
-image-auth-mvc:
+image_auth_mvc:
   repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/auth-demo-mvc
   tag: develop
-image-auth-webflux:
+image_auth_webflux:
   repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/auth-demo-webflux
   tag: develop
-image-default-provider-version:
+image_default_provider_version:
   repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/default-provider-version-example
   tag: develop
-image-provider-version:
+image_provider_version:
   repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/provider-version-example
   tag: develop
-image-istio-consumer:
+image_istio_consumer:
   repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/istio-consumer-example
   tag: develop
-image-nacos-server:
+image_nacos_server:
   repository: registry.cn-beijing.aliyuncs.com/wangtao-mse/nacos-server
   tag: latest
-istiod-addr: istiod.istio-system.svc.cluster.local
-default-polling-time: 60
+istiod_addr: istiod.istio-system.svc.cluster.local
+default_polling_time: 60

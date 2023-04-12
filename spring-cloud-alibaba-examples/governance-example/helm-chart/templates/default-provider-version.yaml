@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: default-provider-version
-          image: '{{ .Values.image-default-provider-version.repository }}:{{ .Values.image-default-provider-version.tag }}'
+          image: '{{ .Values.image_default_provider_version.repository }}:{{ .Values.image_default_provider_version.tag }}'
           imagePullPolicy: Always
           ports:
             - name: feign-port
