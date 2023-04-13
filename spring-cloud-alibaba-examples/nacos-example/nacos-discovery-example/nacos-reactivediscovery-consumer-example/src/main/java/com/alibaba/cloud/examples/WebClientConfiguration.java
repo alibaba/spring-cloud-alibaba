@@ -18,6 +18,7 @@ package com.alibaba.cloud.examples;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
@@ -25,6 +26,8 @@ import org.springframework.web.reactive.function.client.WebClient;
  *
  * @author fangjian0423, MieAh
  */
+
+@Configuration
 public class WebClientConfiguration {
 
 	@Bean
