@@ -14,7 +14,7 @@ image_istio_consumer:
   repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/istio-consumer-example
   tag: develop
 image_nacos_server:
-  repository: registry.cn-beijing.aliyuncs.com/wangtao-mse/nacos-server
-  tag: latest
+  repository: nacos/nacos-server
+  tag: v2.1.0
 istiod_addr: istiod.istio-system.svc.cluster.local
 default_polling_time: 60
