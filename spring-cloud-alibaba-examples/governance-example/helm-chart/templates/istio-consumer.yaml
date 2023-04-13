@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istio-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: istio-consumer
+  template:
+    metadata:
+      labels:
+        appName: istio-consumer
+        app: istio-consumer
+    spec:
+      containers:
+        - name: istio-consumer
+          image: '{{ .Values.image.istioConsumer.repository }}:{{ .Values.image.istioConsumer.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - name: feign-port
+              containerPort: 18084
+          envFrom:
+            - configMapRef:
+                name: istio-consumer-env
