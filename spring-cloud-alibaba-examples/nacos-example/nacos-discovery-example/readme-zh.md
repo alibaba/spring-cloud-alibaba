@@ -14,12 +14,12 @@
 
 1. 首先，修改 pom.xml 文件，引入 Nacos Discovery Starter。
 
-	```xml
+   ```xml
    <dependency>
         <groupId>com.alibaba.cloud</groupId>
         <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-	 </dependency>
-	```
+   </dependency>
+   ```
 	
 2. 在应用的 /src/main/resources/application.properties 配置文件中配置 Nacos Server 地址
 	
@@ -28,25 +28,18 @@
 	```
 	
 3. 使用 @EnableDiscoveryClient 注解开启服务注册与发现功能
-		
-	```java
-	@SpringBootApplication
-	@EnableDiscoveryClient
-	public class ProviderApplication {
-	
-		public static void main(String[] args) {
-			SpringApplication.run(ProviderApplication.class, args);
-		}
-	
-		@RestController
-		class EchoController {
-			@GetMapping(value = "/echo/{string}")
-			public String echo(@PathVariable String string) {
-					return string;
-			}
-		}
-	}
-	```
+
+  ```java
+  @EnableDiscoveryClient
+  @SpringBootApplication
+  public class ProviderApplication {
+  
+     public static void main(String[] args) {
+        SpringApplication.run(ProviderApplication.class, args);
+     }
+  
+  }
+  ```
 
 ### 启动 Nacos Server
 
@@ -79,7 +72,7 @@
 #### 查询服务
 在浏览器输入此地址 `http://127.0.0.1:8848/nacos/v1/ns/catalog/instances?serviceName=service-provider&clusterName=DEFAULT&pageSize=10&pageNo=1&namespaceId=`，并点击跳转，可以看到服务节点已经成功注册到 Nacos Server。
 
-![查询服务](https://cdn.nlark.com/lark/0/2018/png/54319/1536986288092-5cf96af9-9a26-466b-85f6-39ad1d92dfdc.png)
+![查询服务](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-01.png)
 
 
 ### 服务发现
@@ -186,11 +179,11 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 #### 验证
 1. 在浏览器地址栏中输入 http://127.0.0.1:18083/echo-rest/1234，点击跳转，可以看到浏览器显示了 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 1234"，证明服务发现生效。
 
-![rest](https://cdn.nlark.com/lark/0/2018/png/54319/1536986302124-ee27670d-bdcc-4210-9f5d-875acec6d3ea.png)
+![rest](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-02.png)
 
 1. 在浏览器地址栏中输入 http://127.0.0.1:18083/echo-feign/12345，点击跳转，可以看到浏览器显示 nacos-discovery-provider-example 返回的消息 "hello Nacos Discovery 12345"，证明服务发现生效。
 
-![feign](https://cdn.nlark.com/lark/0/2018/png/54319/1536986311685-6d0c1f9b-a453-4ec3-88ab-f7922d210f65.png)
+![feign](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-exmaple-03.png)
 
 #### 使用WebClient
 
@@ -199,6 +192,7 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 1. 添加 @LoadBlanced 注解，在项目中接入 WebClient。
 
    ```java
+   @Configuration
    public class WebClientConfiguration {
    
    	@Bean
@@ -260,9 +254,14 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 5. 验证
 
       1. 确保已经成功启动 nacos-server 和 nacos-discovery-provider-example项目;
+      
       2. 浏览器地址栏输入 `http://localhost:18083/all-services`;
-      3. 浏览器地址栏输入 `http://localhost:18083/services-call/test`。
-
+      
+         ![all-services](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-05.png)
+      
+      3. 浏览器地址栏输入 `http://localhost:18083/service-call/test`。
+         
+         ![all-services](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-06.png)
 
 ## 原理
 
@@ -271,8 +270,6 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 Spring Cloud Nacos Discovery 遵循了 spring cloud common 标准，实现了 AutoServiceRegistration、ServiceRegistry、Registration 这三个接口。
 
 在 spring cloud 应用的启动阶段，监听了 WebServerInitializedEvent 事件，当Web容器初始化完成后，即收到 WebServerInitializedEvent 事件后，会触发注册的动作，调用 ServiceRegistry 的 register 方法，将服务注册到 Nacos Server。
-
-
 
 
 ## Endpoint 信息查看
@@ -284,11 +281,11 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Nacos Discovery 
 * Spring Boot 1.x 中添加配置 management.security.enabled=false
 * Spring Boot 2.x 中添加配置 management.endpoints.web.exposure.include=*
 
-Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/nacos_discovery 来查看 Nacos Endpoint 的信息。
+Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/nacosdiscovery 来查看 Nacos Endpoint 的信息。
 
-Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos-discovery 来访问。
+Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacosdiscovery 来访问。
 
-![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986319285-d542dc5f-5dff-462a-9f52-7254776bcd99.png)
+![actuator](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-04.png)
 
 如上图所示，NacosDiscoveryProperties 则为 Spring Cloud Nacos Discovery 本身的配置，也包括本机注册的内容，subscribe 为本机已订阅的服务信息。
     	

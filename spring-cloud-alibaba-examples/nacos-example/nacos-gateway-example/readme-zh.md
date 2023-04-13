@@ -15,16 +15,16 @@
 
 1. 首先，修改 pom.xml 文件，引入 Nacos Discovery Starter、Spring Cloud Gateway Starter。
 
-```xml
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-gateway</artifactId>
-</dependency>
-```
+	```xml
+	<dependency>
+    	<groupId>com.alibaba.cloud</groupId>
+    	<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework.cloud</groupId>
+    	<artifactId>spring-cloud-starter-gateway</artifactId>
+	</dependency>
+	```
 
 2. 在应用的 /src/main/resources/application.properties 配置文件中配置 Nacos Server 地址
 	

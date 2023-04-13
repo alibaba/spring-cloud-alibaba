@@ -13,33 +13,31 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 1. Add dependency spring-cloud-starter-alibaba-nacos-discovery in the pom.xml file in your Spring Cloud project.
 
-	    <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
+	```xml
+   <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+	 </dependency>
+	```
 	
 2. Add Nacos server address configurations to file /src/main/resources/application.properties.
 	
-		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+	```properties
+	spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+	```
 	
 3. Use the @EnableDiscoveryClient annotation to turn on service registration and discovery.
-		
-		@SpringBootApplication
-		@EnableDiscoveryClient
-		public class ProviderApplication {
-		
-			public static void main(String[] args) {
-				SpringApplication.run(ProviderApplication.class, args);
-			}
-		
-			@RestController
-			class EchoController {
-				@GetMapping(value = "/echo/{string}")
-				public String echo(@PathVariable String string) {
-						return string;
-				}
-			}
-		}
+	```java
+	@EnableDiscoveryClient
+	@SpringBootApplication
+	public class ProviderApplication {
+	
+	   public static void main(String[] args) {
+	      SpringApplication.run(ProviderApplication.class, args);
+	   }
+	
+	}
+	```
 
 ### Start Nacos Server 
 
@@ -59,9 +57,11 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 1. Add necessary configurations to project `nacos-discovery-provider-example`, file /src/main/resources/application.properties.
 	
-		spring.application.name=service-provider
-		server.port=18082
-
+	```properties
+	spring.application.name=service-provider
+	server.port=18082
+	```
+	
 2. Start the application in IDE or by building a fatjar.
 
 	1. Start in IDE: Find main class `ProviderApplication ` in project `nacos-discovery-provider-example`, and execute the main method.
@@ -73,7 +73,7 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 Enter `http://127.0.0.1:8848/nacos/#/serviceDetail?name=service-provider&groupName=DEFAULT_GROUP` in the browser address bar and click Go to, we can see that the service node has been successfully registered to Nacos Server.
 
-![查询服务](https://cdn.nlark.com/lark/0/2018/png/54319/1536986288092-5cf96af9-9a26-466b-85f6-39ad1d92dfdc.png)
+![查询服务](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-01.png)
 
 
 ### Service Discovery
@@ -124,19 +124,23 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 
 1. Add the @LoadBlanced annotation to make RestTemplate accessible to the Ribbon
 
-	    @Bean
-	    @LoadBalanced
-	    public RestTemplate restTemplate() {
-	        return new RestTemplate();
-	    }
+   ```java
+   @Bean
+   @LoadBalanced
+   public RestTemplate restTemplate() {
+       return new RestTemplate();
+   }
+   ```
 
 1. FeignClient has integrated the Ribbon by default, which shows how to configure a FeignClient.
 
-	    @FeignClient(name = "service-provider")
-	    public interface EchoService {
-	        @GetMapping(value = "/echo/{str}")
-	        String echo(@PathVariable("str") String str);
-	    }
+	```java
+	@FeignClient(name = "service-provider")
+	public interface EchoService {
+	    @GetMapping(value = "/echo/{str}")
+	    String echo(@PathVariable("str") String str);
+	}
+	```
 	
 	Use the @FeignClient annotation to wrap the `EchoService` interface as a FeignClient with the attribute name corresponding to the service name `service-provider`.
 	
@@ -144,28 +148,32 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 	
 1. After completing the above configuration, injected them into the TestController.
 
-		@RestController
-		public class TestController {
-		
-		    @Autowired
-		    private RestTemplate restTemplate;
-		    @Autowired
-		    private EchoService echoService;
-		
-		    @GetMapping(value = "/echo-rest/{str}")
-		    public String rest(@PathVariable String str) {
-		        return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
-		    }
-		    @GetMapping(value = "/echo-feign/{str}")
-		    public String feign(@PathVariable String str) {
-		        return echoService.echo(str);
-		    }
-		}
+   ```java
+   @RestController
+   public class TestController {
+   
+       @Autowired
+       private RestTemplate restTemplate;
+       @Autowired
+       private EchoService echoService;
+   
+       @GetMapping(value = "/echo-rest/{str}")
+       public String rest(@PathVariable String str) {
+           return restTemplate.getForObject("http://service-provider/echo/" + str, String.class);
+       }
+       @GetMapping(value = "/echo-feign/{str}")
+       public String feign(@PathVariable String str) {
+           return echoService.echo(str);
+       }
+   }
+   ```
 
 1. Add necessary configurations to project `nacos-discovery-consumer-example` file /src/main/resources/application.properties.
 
-		spring.application.name=service-consumer
-		server.port=18083
+   ```properties
+   spring.application.name=service-consumer
+   server.port=18083
+   ```
 
 1. Start the application in IDE or by building a fatjar.
 
@@ -175,11 +183,11 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 #### Verification
 1. Enter `http://127.0.0.1:18083/echo-rest/1234` in the browser address bar and click Go to, we can see that the browser displays the message "hello Nacos Discovery 1234" returned by nacos-discovery-provider-example to prove that the service discovery is in effect.
 
-![rest](https://cdn.nlark.com/lark/0/2018/png/54319/1536986302124-ee27670d-bdcc-4210-9f5d-875acec6d3ea.png)
+![rest](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-02.png)
 
 1. Enter `http://127.0.0.1:18083/echo-feign/12345` in the browser address bar and click Go to, we can see that the browser displays the message "hello Nacos Discovery 12345" returned by nacos-discovery-provider-example to prove that the service discovery is in effect.
 
-![feign](https://cdn.nlark.com/lark/0/2018/png/54319/1536986311685-6d0c1f9b-a453-4ec3-88ab-f7922d210f65.png)
+![feign](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-exmaple-03.png)
 
 #### Use WebClient
 
@@ -188,6 +196,7 @@ The code in the nacos-reactivediscovery-consumer-example project is analyzed bel
 1. Add the @LoadBlanced annotation to access the WebClient in the project.
 
    ```java
+   @configuration
    public class WebClientConfiguration {
    
    	@Bean
@@ -229,7 +238,7 @@ The code in the nacos-reactivediscovery-consumer-example project is analyzed bel
 
 3. Write the necessary project configuration information in the/SRC/main/resources/application. The properties under the path.
 
-   ```java
+   ```properties
    spring.application.name=service-consumer-reactive
    server.port=18083
    management.endpoints.web.exposure.include=*
@@ -250,8 +259,14 @@ The code in the nacos-reactivediscovery-consumer-example project is analyzed bel
 5. Verification
 
    1. Ensure that the nacos-server and nacos-discovery-provider-example projects have been started successfully;
+   
    2. The browser address bar enter at http://localhost:18083/all-services;
-   3. The browser address bar enter at http://localhost:18083/services-call/test.
+   
+      ![all-services](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-05.png)
+   
+   3. The browser address bar enter at http://localhost:18083/service-call/test.
+   
+      ![all-services](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-discovery-example/nacos-discovery-example-06.png)
 
 ## Principle
 
