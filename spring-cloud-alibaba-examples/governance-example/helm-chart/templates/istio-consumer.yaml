@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: istio-consumer
-          image: '{{ .Values.image_istio_consumer.repository }}:{{ .Values.image_istio_consumer.tag }}'
+          image: '{{ .Values.image.istioConsumer.repository }}:{{ .Values.image.istioConsumer.tag }}'
           imagePullPolicy: Always
           ports:
             - name: feign-port

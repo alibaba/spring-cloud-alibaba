@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: auth-mvc
-          image: '{{ .Values.image_auth_mvc.repository }}:{{ .Values.image_auth_mvc.tag }}'
+          image: '{{ .Values.image.authMvc.repository }}:{{ .Values.image.authMvc.tag }}'
           imagePullPolicy: Always
           ports:
             - name: http-port

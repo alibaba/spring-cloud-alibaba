@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nacos-server
-          image: '{{ .Values.image_nacos_server.repository }}:{{ .Values.image_nacos_server.tag }}'
+          image: '{{ .Values.image.nacosServer.repository }}:{{ .Values.image.nacosServer.tag }}'
           imagePullPolicy: Always
           ports:
             - containerPort: 8848

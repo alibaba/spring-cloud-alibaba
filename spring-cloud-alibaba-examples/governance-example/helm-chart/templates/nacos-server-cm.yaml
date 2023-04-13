@@ -6,6 +6,6 @@ metadata:
   name: nacos-server-env
 data:
   NAMESPACE_NAME: {{ .Release.Namespace | quote }}
-  ISTIOD_ADDR: {{ .Values.istiod_addr | quote }}
-  POLLING_TIME: {{ .Values.default_polling_time | quote }}
+  ISTIOD_ADDR: {{ .Values.istiodAddr | quote }}
+  POLLING_TIME: {{ .Values.defaultPollingTime | quote }}
   MODE: "standalone"

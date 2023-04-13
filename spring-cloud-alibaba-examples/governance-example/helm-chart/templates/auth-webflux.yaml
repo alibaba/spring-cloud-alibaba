@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: auth-webflux
-          image: '{{ .Values.image_auth_webflux.repository }}:{{ .Values.image_auth_webflux.tag }}'
+          image: '{{ .Values.image.authWebflux.repository }}:{{ .Values.image.authWebflux.tag }}'
           imagePullPolicy: Always
           ports:
             - name: http-port
