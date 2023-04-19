@@ -58,7 +58,7 @@ public abstract class AbstractXdsProtocol<T>
 
 	protected XdsChannel xdsChannel;
 
-	protected final Node node = NodeBuilder.getNode();
+	protected final Node node;
 
 	protected XdsConfigProperties xdsConfigProperties;
 
@@ -92,6 +92,7 @@ public abstract class AbstractXdsProtocol<T>
 		this.xdsChannel = xdsChannel;
 		this.xdsScheduledThreadPool = xdsScheduledThreadPool;
 		this.xdsConfigProperties = xdsConfigProperties;
+		this.node = NodeBuilder.getNode(xdsConfigProperties);
 	}
 
 	@Override
@@ -167,7 +168,7 @@ public abstract class AbstractXdsProtocol<T>
 			return future.get(xdsConfigProperties.getPollingTime(), TimeUnit.SECONDS);
 		}
 		catch (Exception e) {
-			log.error("Failed to send Xds request", e);
+			log.error("Failed to send Xds request, timeout: ", e);
 			return Collections.emptyList();
 		}
 		finally {
@@ -295,6 +296,10 @@ public abstract class AbstractXdsProtocol<T>
 
 		@Override
 		public void onCompleted() {
+			CompletableFuture<List<T>> future = futureMap.get(id);
+			if (future != null) {
+				future.complete(null);
+			}
 			log.info("Xds connect completed");
 		}
 

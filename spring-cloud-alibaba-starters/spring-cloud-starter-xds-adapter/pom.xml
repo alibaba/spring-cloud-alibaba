@@ -16,6 +16,11 @@
         <java.version>1.8</java.version>
         <!-- Envoy Api Versions -->
         <envoy-api.version>0.1.32</envoy-api.version>
+        <bouncycastle_version>1.70</bouncycastle_version>
+        <grpc.version>1.34.1</grpc.version>
+        <protobuf.version>3.14.0</protobuf.version>
+        <os-plugin.version>1.6.2</os-plugin.version>
+        <pb-plugin.version>0.6.1</pb-plugin.version>
     </properties>
 
     <dependencies>
@@ -72,6 +77,11 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>${bouncycastle_version}</version>
+        </dependency>
 
 		<!--  Only for unit test-->
         <dependency>
@@ -98,5 +108,41 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>${os-plugin.version}</version>
+            </extension>
+        </extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>${pb-plugin.version}</version>
+                <configuration>
+                    <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
+                    </protocArtifact>
+                    <pluginId>grpc-java</pluginId>
+                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
+                    </pluginArtifact>
+                    <skip>false</skip>
+                    <useArgumentFile>true</useArgumentFile>
+                    <checkStaleness>true</checkStaleness>
+                    <staleMillis>10000</staleMillis>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -58,8 +58,11 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 				routes.add(route);
 			}
 			catch (Exception e) {
-				log.error("Unpack cluster failed", e);
+				log.error("Unpack route failed", e);
 			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("[xds]: Received {} routes", routes.size());
 		}
 		fireXdsFilters(routes);
 		return routes;

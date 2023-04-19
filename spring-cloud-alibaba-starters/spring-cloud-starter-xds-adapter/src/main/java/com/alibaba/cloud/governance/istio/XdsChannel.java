@@ -16,13 +16,12 @@
 
 package com.alibaba.cloud.governance.istio;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.ByteArrayInputStream;
 
-import com.alibaba.cloud.commons.io.FileUtils;
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.governance.istio.constant.IstioConstants;
+import com.alibaba.cloud.governance.istio.exception.XdsInitializationException;
+import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
+import com.alibaba.cloud.governance.istio.sds.CertPair;
 import io.envoyproxy.envoy.service.discovery.v3.AggregatedDiscoveryServiceGrpc;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -55,37 +54,40 @@ public class XdsChannel implements AutoCloseable {
 
 	private final XdsConfigProperties xdsConfigProperties;
 
-	public XdsChannel(XdsConfigProperties xdsConfigProperties) {
+	public XdsChannel(XdsConfigProperties xdsConfigProperties,
+			AbstractCertManager certManager) {
 		this.xdsConfigProperties = xdsConfigProperties;
 		try {
-			if (xdsConfigProperties.getPort() == ISTIOD_SECURE_PORT) {
-				// fetch token first
-				if (StringUtils.isNotEmpty(xdsConfigProperties.getIstiodToken())) {
-					istiodToken = xdsConfigProperties.getIstiodToken();
+			if (Boolean.FALSE.equals(xdsConfigProperties.getUseAgent())) {
+				if (xdsConfigProperties.getPort() == ISTIOD_SECURE_PORT) {
+					// fetch token first
+					this.refreshIstiodToken();
+					CertPair certPair = certManager.getCertPair();
+					SslContext sslcontext = GrpcSslContexts.forClient()
+							// if server's cert doesn't chain to a standard root
+							.trustManager(InsecureTrustManagerFactory.INSTANCE)
+							.keyManager(
+									new ByteArrayInputStream(
+											certPair.getRawCertificateChain()),
+									new ByteArrayInputStream(certPair.getRawPrivateKey()))
+							.build();
+					this.channel = NettyChannelBuilder
+							.forTarget(xdsConfigProperties.getHost() + ":"
+									+ xdsConfigProperties.getPort())
+							.negotiationType(NegotiationType.TLS).sslContext(sslcontext)
+							.build();
 				}
 				else {
-					this.refreshIstiodToken();
+					this.channel = NettyChannelBuilder
+							.forTarget(xdsConfigProperties.getHost() + ":"
+									+ xdsConfigProperties.getPort())
+							.negotiationType(NegotiationType.PLAINTEXT).build();
 				}
-				SslContext sslcontext = GrpcSslContexts.forClient()
-						// if server's cert doesn't chain to a standard root
-						.trustManager(InsecureTrustManagerFactory.INSTANCE)
-						// TODO: fill the publicKey and privateKey
-						.build();
-				this.channel = NettyChannelBuilder
-						.forTarget(xdsConfigProperties.getHost() + ":"
-								+ xdsConfigProperties.getPort())
-						.negotiationType(NegotiationType.TLS).sslContext(sslcontext)
-						.build();
-			}
-			else {
-				this.channel = NettyChannelBuilder
-						.forTarget(xdsConfigProperties.getHost() + ":"
-								+ xdsConfigProperties.getPort())
-						.negotiationType(NegotiationType.PLAINTEXT).build();
+				log.info("Xds channel connect to raw istio successfully!");
 			}
 		}
 		catch (Exception e) {
-			log.error("Create XdsChannel failed", e);
+			throw new XdsInitializationException("Init xds channel failed", e);
 		}
 	}
 
@@ -93,18 +95,8 @@ public class XdsChannel implements AutoCloseable {
 		if (xdsConfigProperties.getPort() != ISTIOD_SECURE_PORT) {
 			return;
 		}
-		File saFile = new File(IstioConstants.THIRD_PART_JWT_PATH);
-		if (saFile.canRead()) {
-			try {
-				this.istiodToken = FileUtils.readFileToString(saFile,
-						StandardCharsets.UTF_8);
-				return;
-			}
-			catch (IOException e) {
-				log.error("Unable to read token file", e);
-			}
-		}
-		if (this.istiodToken == null) {
+		this.istiodToken = xdsConfigProperties.getIstiodToken();
+		if (StringUtils.isEmpty(this.istiodToken)) {
 			throw new UnsupportedOperationException(
 					"Unable to found kubernetes service account token file. "
 							+ "Please check if work in Kubernetes and mount service account token file correctly.");
@@ -129,6 +121,8 @@ public class XdsChannel implements AutoCloseable {
 		Metadata.Key<String> key = Metadata.Key.of("authorization",
 				Metadata.ASCII_STRING_MARSHALLER);
 		header.put(key, "Bearer " + this.istiodToken);
+		key = Metadata.Key.of("ClusterID", Metadata.ASCII_STRING_MARSHALLER);
+		header.put(key, xdsConfigProperties.getIstioMetaClusterId());
 		stub = MetadataUtils.attachHeaders(stub, header);
 		return stub.streamAggregatedResources(observer);
 	}

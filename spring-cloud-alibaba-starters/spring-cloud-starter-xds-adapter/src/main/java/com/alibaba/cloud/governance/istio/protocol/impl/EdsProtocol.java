@@ -51,8 +51,11 @@ public class EdsProtocol extends AbstractXdsProtocol<ClusterLoadAssignment> {
 				endpoints.add(endpoint);
 			}
 			catch (Exception e) {
-				log.error("Unpack cluster failed", e);
+				log.error("Unpack endpoints failed", e);
 			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("[xds]: Received {} endpoints", endpoints.size());
 		}
 		fireXdsFilters(endpoints);
 		return endpoints;

@@ -31,6 +31,7 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
 /**
  * CdsProtocol contains information about service.
+ *
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  * @since 2.2.10-RC1
@@ -54,6 +55,9 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 			catch (Exception e) {
 				log.error("Unpack cluster failed", e);
 			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("[xds]: Received {} clusters", clusters.size());
 		}
 		fireXdsFilters(clusters);
 		return clusters;

@@ -66,7 +66,7 @@ Note that the application runs in the K8s environment, and the application in th
 |Environment variable name|K8s pod metadata name|
 |--|--|
 |POD_NAME|metadata.name|
-|NAMESPACE_NAME|metadata.namespace|
+|POD_NAMESPACE|metadata.namespace|
 
 **HINT：The POD in which your deployed application does not need to be automatically injected by Istio because the various governance modules of SCA will be used to replace the functions of the Envoy Proxy.**
 ### Demostration
@@ -79,7 +79,7 @@ apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
   name: from-ip-allow
-  namespace: ${namespace_name}
+  namespace: ${pod_namespace}
 spec:
   selector:
     matchLabels:
@@ -108,7 +108,7 @@ It indicates that the request has been authenticated by application and some met
 
 After that, we delete the authentication rule for the IP Blocks:
 ```shell
-kubectl delete AuthorizationPolicy from-ip-allow -n ${namespace_name}
+kubectl delete AuthorizationPolicy from-ip-allow -n ${pod_namespace}
 ```
 Then request the auth interface of this demo again, we can find that the application will return the following message because the authentication rule has been deleted:
 ```
@@ -123,7 +123,7 @@ apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
   name: http-headers-allow
-  namespace: ${namespace_name}
+  namespace: ${pod_namespace}
 spec:
   selector:
     matchLabels:
@@ -155,7 +155,7 @@ Auth failed, please check the request and auth rule
 
 After that, we remove the rule for requests header authentication:
 ```shell
-kubectl delete AuthorizationPolicy http-headers-allow -n ${namespace_name}
+kubectl delete AuthorizationPolicy http-headers-allow -n ${pod_namespace}
 ```
 Then request the auth interface of this demo again, we can find that the application will return the following message because the authentication rule has been deleted:
 ```
@@ -170,7 +170,7 @@ apiVersion: security.istio.io/v1beta1
 kind: RequestAuthentication
 metadata:
   name: jwt-jwks-uri
-  namespace: ${namespace_name}
+  namespace: ${pod_namespace}
 spec:
   selector:
     matchLabels:
@@ -200,7 +200,7 @@ Auth failed, please check the request and auth rule
 ```
 After that, we remove the rule for JWT authentication:
 ```shell
-kubectl delete RequestAuthentication jwt-jwks-uri -n ${namespace_name}
+kubectl delete RequestAuthentication jwt-jwks-uri -n ${pod_namespace}
 ```
 Then request the auth interface of this demo again, we can find that the application will return the following message because the authentication rule has been deleted:
 ```

@@ -60,7 +60,7 @@ Note that the application runs in the K8s environment, and the application in th
 |===
 |Environment variable name|K8s pod metadata name
 |POD_NAME|metadata.name
-|NAMESPACE_NAME|metadata.namespace
+|POD_NAMESPACE|metadata.namespace
 |===
 
 === Routing

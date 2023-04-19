@@ -59,7 +59,7 @@ spring:
 |===
 |环境变量名|K8s pod metadata name
 |POD_NAME|metadata.name
-|NAMESPACE_NAME|metadata.namespace
+|POD_NAMESPACE|metadata.namespace
 |===
 
 === 路由

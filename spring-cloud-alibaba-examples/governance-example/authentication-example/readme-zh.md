@@ -65,7 +65,7 @@ spring:
 |环境变量名|K8s pod metadata name|
 |--|--|
 |POD_NAME|metadata.name|
-|NAMESPACE_NAME|metadata.namespace|
+|POD_NAMESPACE|metadata.namespace|
 
 **注：您部署的应用所在的pod不需要被Istio执行自动注入，因为SCA的各个治理模块将会被用来替代Envoy Proxy的各种功能。**
 ### 效果演示
@@ -78,7 +78,7 @@ apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
   name: from-ip-allow
-  namespace: ${namespace_name}
+  namespace: ${pod_namespace}
 spec:
   selector:
     matchLabels:
@@ -107,7 +107,7 @@ received request from ${from_ip}, local addr is ${local_ip}, local host is ${loc
 
 在此之后，删除这条IP黑白名单的鉴权规则:
 ```shell
-kubectl delete AuthorizationPolicy from-ip-allow -n ${namespace_name}
+kubectl delete AuthorizationPolicy from-ip-allow -n ${pod_namespace}
 ```
 之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
 ```
@@ -122,7 +122,7 @@ apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
   name: http-headers-allow
-  namespace: ${namespace_name}
+  namespace: ${pod_namespace}
 spec:
   selector:
     matchLabels:
@@ -153,7 +153,7 @@ Auth failed, please check the request and auth rule
 ```
 在此之后，删除这条请求头认证的规则:
 ```shell
-kubectl delete AuthorizationPolicy http-headers-allow -n ${namespace_name}
+kubectl delete AuthorizationPolicy http-headers-allow -n ${pod_namespace}
 ```
 之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
 ```
@@ -168,7 +168,7 @@ apiVersion: security.istio.io/v1beta1
 kind: RequestAuthentication
 metadata:
   name: jwt-jwks-uri
-  namespace: ${namespace_name}
+  namespace: ${pod_namespace}
 spec:
   selector:
     matchLabels:
@@ -198,7 +198,7 @@ Auth failed, please check the request and auth rule
 ```
 在此之后，删除这条JWT认证的规则:
 ```shell
-kubectl delete RequestAuthentication jwt-jwks-uri -n ${namespace_name}
+kubectl delete RequestAuthentication jwt-jwks-uri -n ${pod_namespace}
 ```
 之后再次请求本demo的auth接口，可以发现，因为鉴权规则已被删除，所以本应用将会返回:
 ```

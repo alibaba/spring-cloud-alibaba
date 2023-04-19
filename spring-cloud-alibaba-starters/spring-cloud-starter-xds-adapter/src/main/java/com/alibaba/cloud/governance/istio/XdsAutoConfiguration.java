@@ -26,6 +26,7 @@ import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
+import com.alibaba.cloud.governance.istio.sds.IstioCertPairManager;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import org.slf4j.Logger;
@@ -66,13 +67,19 @@ public class XdsAutoConfiguration {
 	private XdsConfigProperties xdsConfigProperties;
 
 	@Bean
+	public IstioCertPairManager istioCertPairManager(
+			XdsConfigProperties xdsConfigProperties) {
+		return new IstioCertPairManager(xdsConfigProperties);
+	}
+
+	@Bean
 	public DummyGovernanceDataListener dummyGovernanceDataListener() {
 		return new DummyGovernanceDataListener();
 	}
 
 	@Bean
-	public XdsChannel xdsChannel() {
-		return new XdsChannel(xdsConfigProperties);
+	public XdsChannel xdsChannel(IstioCertPairManager istioCertPairManager) {
+		return new XdsChannel(xdsConfigProperties, istioCertPairManager);
 	}
 
 	@Bean

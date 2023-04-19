@@ -79,6 +79,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				log.error("Unpack listeners failed", e);
 			}
 		}
+		if (log.isDebugEnabled()) {
+			log.debug("[xds]: Received {} listeners", listeners.size());
+		}
 		fireXdsFilters(listeners);
 		return listeners;
 	}
