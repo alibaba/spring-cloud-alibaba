@@ -12,6 +12,11 @@ spring:
       discovery:
         locator:
           enabled: true
+    loadbalancer:
+      nacos:
+        enabled: true
+      ribbon:
+        enabled: false
 
   application:
     name: node-service
