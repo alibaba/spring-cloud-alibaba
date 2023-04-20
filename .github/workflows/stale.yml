@@ -20,3 +20,7 @@ jobs:
           close-issue-label: "wait-for-feedback"
           exempt-all-milestones: true
           operations-per-run: 10
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          exempt-issue-labels: discussion,bug,question,good first issue
+ 
