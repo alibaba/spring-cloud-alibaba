@@ -1,7 +1,7 @@
 name: "Stale bot of marking stale issues"
 on:
   schedule:
-    - cron: "50 9 * * *"
+    - cron: "50 18 * * *"
 
 permissions:
   issues: write
