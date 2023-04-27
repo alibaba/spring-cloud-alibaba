@@ -13,9 +13,9 @@ One of the biggest changes of Spring Boot 3.0 is the support for GraalVM native 
 * Without lazy class loading, everything in the executable will be loaded into memory at startup.
 * The supported Java applications have some limitations in some aspects. Therefore, it is not guaranteed that all the previous Java applications can directly use GraalVM technology for application construction, and there is a certain probability of incompatible exceptions.
 
-Part of the middleware clients included in Spring Cloud Alibaba 2022.0.0.0 version of this release have completed the adaptation of constructing GraalVM native applications. The following is a sample application related to service registration, discovery  module supported by the community. After upgrading to Spring Boot 3.0, GraalVM is used to build a native application image to test the startup speed and runtime usage. (Sentinel, Seata and RocketMQ are still being adapted. The following test process is simulated for 5 times respectively under the environment of MacOS 11.4, 2.6GHz 6-Core Intel Core i7 processor and 16G memory) :
+Part of the middleware clients included in Spring Cloud Alibaba 2022.0.0.0 version of this release have completed the adaptation of constructing GraalVM native applications. The following is a sample application related to service registration, discovery  module supported by the community. After upgrading to Spring Boot 3.0, GraalVM is used to build a native application image to test the startup speed and runtime usage. The following test process is simulated for 3 times respectively under the environment of MacOS 11.4, 2.6GHz 6-Core Intel Core i7 processor and 16G memory) :
 
-image::./pic/graalvm_performance.png[]
+image::https://sca-storage.oss-cn-hangzhou.aliyuncs.com/website/docs/en/graalvm-performance_en.jpg[]
 
 From the above comparison, we can see that the latest Spring Cloud Alibaba application that supports Spring Boot 3.0 based on GraalVM will reduce application's startup time, runtime memory usage and application package size. For example, Among them, the startup speed of the service registration consumption application is increased by nearly 10 times, and the running memory usage is reduced by nearly 2/3 compared with the original, which has a very obvious effect. This gives the cloud native era, hosting in the cloud application has brought significant advantages, so that it can be faster elastic expansion and contraction capacity and reduce the overall cost of the enterprise cloud!
 
@@ -23,29 +23,30 @@ From the above comparison, we can see that the latest Spring Cloud Alibaba appli
 
 ==== Build the project
 
-Among all the components supported by Spring Cloud Alibaba for Spring Boot 3.0 this time, Nacos 2.1.1-RC already supports GraalVM technology to build applications. Next, we'll look at the components that use GraalVM to compile and run the application
+Among all the components supported by Spring Cloud Alibaba for Spring Boot 3.0 this time, Nacos 2.1.1 already supports GraalVM technology to build applications. Next, we'll look at the components that use GraalVM to compile and run the application
 
 The project construction can be carried out according to the general Spring Cloud Alibaba application construction method. The following are the relevant dependencies that must be added:
 ```xml
 <parent>
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-parent</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.2</version>
   <relativePath/> <!-- lookup parent from repository -->
 </parent>
 <dependencies>
-<dependency>
-  <groupId>com.alibaba.cloud</groupId>
-  <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework.cloud</groupId>
-  <artifactId>spring-cloud-commons</artifactId>
-</dependency>
+	<dependency>
+		<groupId>com.alibaba.cloud</groupId>
+		<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-commons</artifactId>
+	</dependency>
+</dependencies>
 <dependencyManagement>
   <dependencies>
     <dependency>
@@ -58,7 +59,7 @@ The project construction can be carried out according to the general Spring Clou
     <dependency>
       <groupId>com.alibaba.cloud</groupId>
       <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-      <version>2022.0.0.0-RC1</version>
+      <version>2022.0.0.0-RC2</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -105,6 +106,8 @@ After running all the test cases, we found the following hint files are generate
 - proxy-config.json：Proxy hint file
 - jni-config.json：JNI hint file
 
+Note: During the generation of the hint file by the RocketMQ application through the above command, incomplete scanning of configuration information may occur, please refer to https://github.com/alibaba/spring-cloud-alibaba/issues/3101[related issues], During the generation of the hint file by the above command, the Sentinel application may encounter the following problems, please refer to https://github.com/alibaba/Sentinel/issues/3012[related issues].
+
 ==== Build native image
 After all the above steps are in place, use the following command to build the native image:
 ```shell
@@ -113,7 +116,7 @@ mvn -Pnative native:compile
 After that, we can see the executable we generated in the ``/target`` directory.
 
 ==== Run native image
-Like a normal executable file, launch this example with ``target/nacos-config-2.4.x-example``,
+Like a normal executable file, launch this example with ``target/nacos-config-example``,
 You can observe output similar to the following:
 ```shell
 2022-12-22T16:28:51.006+08:00  INFO 75439 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
