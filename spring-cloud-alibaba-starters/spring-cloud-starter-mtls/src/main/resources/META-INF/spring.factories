@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.alibaba.cloud.mtls.MtlsAutoConfiguration,\
+com.alibaba.cloud.mtls.client.rest.MtlsRestTemplateConfiguration

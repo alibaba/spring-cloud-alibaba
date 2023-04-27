@@ -143,6 +143,8 @@ public class AuthValidator {
 				return matcher.match(request.getMethod());
 			case PATHS:
 				return matcher.match(request.getPath());
+			case IDENTITY:
+				return matcher.match(request.getPrincipal());
 			case REQUEST_PRINCIPALS:
 			case AUTH_AUDIENCES:
 			case AUTH_PRESENTERS:
@@ -236,9 +238,11 @@ public class AuthValidator {
 
 		private JwtClaims jwtClaims;
 
+		private String principal;
+
 		private UnifiedHttpRequest(String sourceIp, String destIp, String remoteIp,
 				String host, int port, String method, String path, HttpHeaders headers,
-				MultiValueMap<String, String> params) {
+				MultiValueMap<String, String> params, String principal) {
 			this.sourceIp = sourceIp;
 			this.destIp = destIp;
 			this.remoteIp = remoteIp;
@@ -248,6 +252,7 @@ public class AuthValidator {
 			this.path = path;
 			this.headers = headers;
 			this.params = params;
+			this.principal = principal;
 		}
 
 		public String getSourceIp() {
@@ -290,6 +295,11 @@ public class AuthValidator {
 			return jwtClaims;
 		}
 
+		public String getPrincipal() {
+			return principal;
+		}
+
+
 		public static class UnifiedHttpRequestBuilder {
 
 			private String sourceIp;
@@ -307,6 +317,8 @@ public class AuthValidator {
 			private String path;
 
 			private HttpHeaders headers;
+
+			private String principal;
 
 			private MultiValueMap<String, String> params;
 
@@ -356,9 +368,18 @@ public class AuthValidator {
 				return this;
 			}
 
+			public String getPrincipal() {
+				return principal;
+			}
+
+			public UnifiedHttpRequestBuilder setPrincipal(String principal) {
+				this.principal = principal;
+				return this;
+			}
+
 			public UnifiedHttpRequest build() {
 				return new UnifiedHttpRequest(sourceIp, destIp, remoteIp, host, port,
-						method, path, headers, params);
+						method, path, headers, params, principal);
 			}
 
 		}
