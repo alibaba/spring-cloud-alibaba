@@ -2,7 +2,7 @@
 
 === GraalVM 介绍
 
-Spring Boot 3.0 本次带来最大的改动就是 GraalVM 原生镜像的支持，也是官方文档中强调的他们花费时间精力比较多的部分。 GraalVM 技术作为JRE的替代方案，其通过预先编译（Ahead Of Time，AOT）等技术对 Java 应用进行预先编译，让 Spring 在运行应用时掌握更多应用有关的信息，让整个应用启动速度更快。另外，通过编译工具在编译过程中通过消除一些不必要的内容可以让最终的应用更小，占用内存更低。对于一些对启动速度要求非常高的场景，比如 Serverless、FaaS 场景非常友好！ 本次 Spring Boot 3.0 直接将其正式从 Spring Native 迁入到 Spring Boot 中来，也预示着该项技术开始逐渐走向成熟，Spring生态开始迈入 GraalVM 阶段！
+Spring Boot 3.0 本次带来最大的改动就是 GraalVM 原生镜像的支持，也是官方文档中强调的他们花费时间精力比较多的部分。 GraalVM 技术作为JRE的替代方案，其通过预先编译（Ahead Of Time，AOT）等技术对 Java 应用进行预先编译，让 Spring 在运行应用时掌握更多应用有关的信息，让整个应用启动速度更快。另外，通过编译工具在编译过程中通过消除一些不必要的内容可以让最终的应用更小，占用内存更低。对于一些对启动速度要求非常高的场景，比如 Serverless、FaaS 场景非常友好！ 本次 Spring Boot 3.0 直接将其正式从 Spring Native 迁入到 Spring Boot 中来，也预示着该项技术开始逐渐走向成熟，Spring 生态开始迈入 GraalVM 阶段！
 
 *跟 JVM 编译部署方式相比，GraalVM 具有以下特点：*
 
@@ -13,17 +13,17 @@ Spring Boot 3.0 本次带来最大的改动就是 GraalVM 原生镜像的支持�
 * 没有惰性类加载，可执行文件中的所有内容都将在启动时加载到内存中。
 * 支持的 Java 应用程序在某些方面存在一些限制，因此目前并不能保证之前的 Java 应用都可直接使用 GraalVM 技术进行应用构建，有一定概率会存在不兼容的异常情况。
 
-本次发布的 Spring Cloud Alibaba 2022.0.0.0 版本所包含的部分中间件客户端已完成了构建 GraalVM 原生应用的适配，以下是社区对目前所支持的服务注册与发现模块相关示例应用在升级为 Spring Boot 3.0 以后，使用 GraalVM 构建原生应用镜像做的在启动速度和运行时占用内容相关的测试（Sentinel、Seata 和 RocketMQ 目前还在适配中，以下测试过程在 MacOS 11.4，2.6 GHz 6-Core Intel Core i7 处理器，16G 内存环境下分别模拟5次取平均值测得）：
+本次发布的 Spring Cloud Alibaba 2022.0.0.0 版本所包含的部分中间件客户端已完成了构建 GraalVM 原生应用的适配，以下是社区对目前所支持的服务注册与发现模块相关示例应用在升级为 Spring Boot 3.0 以后，使用 GraalVM 构建原生应用镜像做的在启动速度和运行时占用内容相关的测试，以下测试过程在 MacOS 11.4，2.6 GHz 6-Core Intel Core i7 处理器，16G 内存环境下分别模拟3次取平均值测得）：
 
-image::./pic/graalvm_performance.png[]
+image::https://sca-storage.oss-cn-hangzhou.aliyuncs.com/website/docs/zh/graalvm_performance.jpg[]
 
-从上述对比可发现，最新支持 Spring Boot 3.0 基于 GraalVM 的 Spring Cloud Alibaba 应用会在启动速度、运行时内存占用和应用包大小方面得到大幅度降低，例如，其中服务注册消费应用启动速度提升了近 10 倍，运行时内存占用比原来降低了近乎 2/3，效果非常明显。这给云原生时代，托管在云上的应用带来了显著优势，让其可以更快的进行弹性扩缩容以及降低企业整体用云成本！
+从上述对比可发现，最新支持 Spring Boot 3.0 基于 GraalVM 的 Spring Cloud Alibaba 应用会在启动速度、运行时内存占用和应用包大小方面得到大幅度降低，例如，其中服务注册消费应用启动速度提升了近 10 倍，运行时内存占用比原来降低了近乎 2/3，效果非常明显。这给云原生时代，托管在云上的应用带来了显著优势，让其可以更快地进行弹性扩缩容以及降低企业整体用云成本！
 
 === 使用 GraalVM 技术构建应用
 
 ==== 项目构建
 
-本次适配 Spring Boot 3.0 的 Spring Cloud Alibaba 所支持的所有组件中，Nacos 2.2.1-RC 已经支持 GraalVM 技术构建应用。接下来，将介绍一下相关组件使用 GraalVM 技术进行应用编译与运行测试
+本次适配 Spring Boot 3.0 的 Spring Cloud Alibaba 所支持的所有组件中都已经支持 GraalVM 技术构建应用。接下来，将介绍一下相关组件使用 GraalVM 技术进行应用编译与运行测试
 
 按照一般的 Spring Cloud Alibaba 应用构建方式进行项目构建即可，以下为相关必须添加的依赖内容：
 
@@ -31,22 +31,23 @@ image::./pic/graalvm_performance.png[]
 <parent>
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-parent</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.2</version>
   <relativePath/> <!-- lookup parent from repository -->
 </parent>
 <dependencies>
-<dependency>
-  <groupId>com.alibaba.cloud</groupId>
-  <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework.cloud</groupId>
-  <artifactId>spring-cloud-commons</artifactId>
-</dependency>
+	<dependency>
+		<groupId>com.alibaba.cloud</groupId>
+		<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-commons</artifactId>
+	</dependency>
+</dependencies>
 <dependencyManagement>
   <dependencies>
     <dependency>
@@ -59,7 +60,7 @@ image::./pic/graalvm_performance.png[]
     <dependency>
       <groupId>com.alibaba.cloud</groupId>
       <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-      <version>2022.0.0.0-RC1</version>
+      <version>2022.0.0.0-RC2</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -109,6 +110,8 @@ mvn -Pnative spring-boot:run
 - proxy-config.json：应用中Java代理相关内容hint文件
 - jni-config.json：应用中Java Native Interface（JNI）内容hint文件
 
+注意事项：RocketMQ 应用通过上述命令进行 hint 文件生成过程中，可能会出现配置信息扫描不全问题，可参考 https://github.com/alibaba/spring-cloud-alibaba/issues/3101[相关issue]，Sentinel应用通过上述命令进行 hint 文件生成过程中，可能会遇到如下问题，可参考 https://github.com/alibaba/Sentinel/issues/3012[相关issue]。
+
 ==== 构建原生镜像
 以上步骤一切准备就绪后，通过以下命令来构建原生镜像：
 
@@ -120,7 +123,7 @@ mvn -Pnative native:compile
 成功执行后，我们在``/target``目录可以看到我们生成的可执行文件。
 
 ==== 启动原生镜像
-与普通可执行文件无异，通过``target/nacos-config-2.4.x-example``启动本example, 可以观察到类似如下的输出:
+与普通可执行文件无异，通过``target/nacos-config-example``启动本example, 可以观察到类似如下的输出:
 
 [source,shell]
 ----
