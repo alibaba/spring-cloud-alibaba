@@ -177,42 +177,16 @@ public void getDataFromControlPlaneTest() {
     <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
-2. 在`src/main/resources/application.yml`配置文件中配置Istio控制面的相关信息:
-```YAML
+2. 参照[文档](https://github.com/alibaba/spring-cloud-alibaba/blob/2.2.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/governance.adoc)，实现与`Istio`控制面的对接
+      并在`application.yml`中配置默认路由规则
+```yml
 server:
-  port: 18084
+  port: ${SERVER_PORT:80}
 spring:
-  main:
-    allow-bean-definition-overriding: true
-  application:
-    name: service-consumer
   cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        fail-fast: true
-        username: nacos
-        password: nacos
     governance:
-      auth:
-        # 是否开启鉴权
-        enabled: ${ISTIO_AUTH_ENABLE:false}
-    istio:
-      config:
-        # 是否开启Istio配置转换
-        enabled: ${ISTIO_CONFIG_ENABLE:true}
-        # Istiod ip
-        host: ${ISTIOD_ADDR:127.0.0.1}
-        # Istiod 端口
-        port: ${ISTIOD_PORT:15010}
-        # 轮询Istio线程池大小
-        polling-pool-size: ${POLLING_POOL_SIZE:10}
-        # 轮询Istio时间间隔
-        polling-time: ${POLLING_TIME:10}
-        # Istiod鉴权token(访问Istiod 15012端口时可用)
-        istiod-token: ${ISTIOD_TOKEN:}
-        # 是否打印xds相关日志
-        log-xds: ${LOG_XDS:true}
+      routing:
+        rule: ${ROUTING_RULE:RandomRule}
 ```
 ### 应用启动
 启动三个模块的启动类，分别为IstioConsumerApplication，两个ProviderApplication，将其注入到Nacos注册中心中。

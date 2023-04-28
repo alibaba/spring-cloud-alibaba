@@ -10,7 +10,7 @@ image::pic/resource-transform.png[]
 
 The resource-transform adapter of Microservices Governance will uniformly transform the rules published by different control planes, like Istio and OperSergo, into the unified abstract data structure of Spring Cloud Alibaba for subsequent use.
 
-If you use Istio in your project to transform the rule, first of all, note that you need to build a Kubernetes cluster and deploy Istio in it. For details, refer to https://istio.io/latest/zh/docs/setup/install[Istio installation], you need to add a following starter dependency application(Generally added to service consumer application):
+If you use Istio in your project to transform the rule, first of all, note that you need to build a Kubernetes cluster and deploy Istio in it. For details, refer to https://istio.io/latest/zh/docs/setup/install[Istio installation], you need to add a following starter dependency application:
 [source,xml,indent=0]
 ----
 <dependency>
@@ -20,7 +20,41 @@ If you use Istio in your project to transform the rule, first of all, note that 
 ----
 If you want to use OpenSergo, you can refer to https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
 
-After that, configure the following configuration in the application.yml:
+There are two ways to connect to `Istio` control plane:
+
+==== Inject pilot-agent(recommend)
+
+Users can easily connect to the `Istio` control plane by injecting pilot-agent as a proxy for the xds protocol, simply by adding the following annotation to the workload:
+
+[source,yaml,indent=0]
+----
+template:
+    metadata:
+      annotations:
+        inject.istio.io/templates: grpc-agent
+        proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+----
+
+And enable `pilot-agent` in `application.yml`
+
+[source,yaml,indent=0]
+----
+server:
+  port: ${SERVER_PORT:80}
+spring:
+  cloud:
+    governance:
+      auth:
+        enabled: ${ISTIO_AUTH_ENABLE:true}
+    istio:
+      config:
+        enabled: ${ISTIO_CONFIG_ENABLE:true}
+        use-agent: ${USE_AGENT:true}
+----
+
+==== Connect to istio control plane directly
+
+Users who want to debug the code of the governance module locally can directly connect to the `Istio` control plane without injecting the pilot-agent. If `pilot-agent` is not injected, the user needs to set the following configuration contents in the `application.yml` configuration file:
 
 [source,yaml,indent=0]
 ----
@@ -36,10 +70,11 @@ spring:
         enabled: ${ISTIO_CONFIG_ENABLE:true}
         host: ${ISTIOD_ADDR:127.0.0.1}
         port: ${ISTIOD_PORT:15010}
-        polling-pool-size: ${POLLING_POOL_SIZE:10}
-        polling-time: ${POLLING_TIMEOUT:10}
+        pod-name: ${POD_NAME:auth-5ffd65b7b8-l8tpf}
+        namespace-name: ${NAMESPACE_NAME:default}
         istiod-token: ${ISTIOD_TOKEN:}
         log-xds: ${LOG_XDS:true}
+        use-agent: ${USE_AGENT:false}
 ----
 
 Here's an explanation of each field:
@@ -49,19 +84,37 @@ Here's an explanation of each field:
 |Whether to connect to Istio to obtain authentication configuration| spring.cloud.istio.config.enabled|true|
 |Host of Istiod| spring.cloud.istio.config.host|127.0.0.1|
 |Port of Istiod| spring.cloud.istio.config.port|15012|15010 port does not need TLS，but 15012 does
-|Thread pool size for application to pull the config| spring.cloud.istio.config.polling-pool-size|10|
-|Time interval for application to pull the config| spring.cloud.istio.config.polling-time|30|The unit is second
+|Pod name| spring.cloud.istio.config.pod-name|value of environment variable POD_NAME|
+|Namespace name| spring.cloud.istio.config.namespace-name|value of environment variable NAMESPACE_NAME|
 |JWT token for application to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `/var/run/secrets/tokens/istio-token` in the pod of application|
 |Whether to print logs about xDS| spring.cloud.istio.config.log-xds|true|
+|Whether to inject pilot-agent| spring.cloud.istio.config.use-agent|false|
 |===
 
-Note that the application runs in the K8s environment, and the application in the non-default namespace needs to receive the rules issued by Istiod, and needs to inject the meta information of the running application Kubernetes into the following environment variables. For the specific operation method, please refer to https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information[Kubernetes documentation]
+If you want to connect to port 15012 of the `Istio` control plane when directly connecting the istio control plane, you need to apply `serviceaccount` as `projected volumn` mount to k8s path `/ var/run/secrets/tokens/istio-token`:
 
-|===
-|Environment variable name|K8s pod metadata name
-|POD_NAME|metadata.name
-|NAMESPACE_NAME|metadata.namespace
-|===
+1.Apply a `projected volumn`
+[source,yaml,indent=0]
+----
+volumes:
+  - name: istio-token
+    projected:
+      defaultMode: 420
+      sources:
+        - serviceAccountToken:
+            audience: istio-ca
+            expirationSeconds: 43200
+            path: istio-token
+----
+
+2.Mount the `projected volumn` to path `/var/run/secrets/tokens/istio-token`
+[source,yaml,indent=0]
+----
+volumeMounts:
+  - mountPath: /var/run/secrets/tokens
+    name: istio-token
+----
+If you want to emulate the identity of other workloads when debugging locally, you can fill the `istio-token` field of `application.yml` with the tokens of other workloads.
 
 === Routing
 ==== Component support description

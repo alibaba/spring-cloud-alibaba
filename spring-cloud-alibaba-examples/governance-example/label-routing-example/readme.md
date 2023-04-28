@@ -178,42 +178,16 @@ Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapte
     <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
-2. Configure application.yml for Istio control plane:
-```YAML
+2. Connect to `Istio` control plane according to [doc](https://github.com/alibaba/spring-cloud-alibaba/blob/2.2.x/spring-cloud-alibaba-docs/src/main/asciidoc/governance.adoc),
+   and enable auth in `application.yml`.
+```yml
 server:
-  port: 18084
+  port: ${SERVER_PORT:80}
 spring:
-  main:
-    allow-bean-definition-overriding: true
-  application:
-    name: service-consumer
   cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        fail-fast: true
-        username: nacos
-        password: nacos
     governance:
       auth:
-        # Is authentication enabled
-        enabled: ${ISTIO_AUTH_ENABLE:false}
-    istio:
-      config:
-        # Is Istio resource transform enabled
-        enabled: ${ISTIO_CONFIG_ENABLE:true}
-        # Istiod ip
-        host: ${ISTIOD_ADDR:127.0.0.1}
-        # Istiod port
-        port: ${ISTIOD_PORT:15010}
-        # Istiod thread-pool size
-        polling-pool-size: ${POLLING_POOL_SIZE:10}
-        # Istiod polling gap
-        polling-time: ${POLLING_TIME:10}
-        # Istiod token(For Istio 15012 port)
-        istiod-token: ${ISTIOD_TOKEN:}
-        # Whether to print xds log
-        log-xds: ${LOG_XDS:true}
+        enabled: ${ISTIO_AUTH_ENABLE:true}
 ```
 ### Startup Application
 Start IstioConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.
