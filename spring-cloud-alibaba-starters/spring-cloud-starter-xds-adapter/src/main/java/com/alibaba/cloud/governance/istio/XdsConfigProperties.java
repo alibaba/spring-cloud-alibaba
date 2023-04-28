@@ -49,6 +49,10 @@ public class XdsConfigProperties {
 
 	private Boolean useAgent;
 
+	private String namespaceName;
+
+	private String podName;
+
 	@PostConstruct
 	public void init() {
 		if (this.port <= 0 || this.port > 65535) {
@@ -62,6 +66,12 @@ public class XdsConfigProperties {
 		}
 		if (useAgent == null) {
 			useAgent = false;
+		}
+		if (StringUtils.isEmpty(namespaceName)) {
+			namespaceName = System.getenv(IstioConstants.NAMESPACE_NAME);
+		}
+		if (StringUtils.isEmpty(podName)) {
+			podName = System.getenv(IstioConstants.POD_NAME);
 		}
 	}
 
@@ -103,6 +113,22 @@ public class XdsConfigProperties {
 
 	public void setUseAgent(Boolean useAgent) {
 		this.useAgent = useAgent;
+	}
+
+	public String getPodName() {
+		return podName;
+	}
+
+	public String getNamespaceName() {
+		return namespaceName;
+	}
+
+	public void setPodName(String podName) {
+		this.podName = podName;
+	}
+
+	public void setNamespaceName(String namespaceName) {
+		this.namespaceName = namespaceName;
 	}
 
 }

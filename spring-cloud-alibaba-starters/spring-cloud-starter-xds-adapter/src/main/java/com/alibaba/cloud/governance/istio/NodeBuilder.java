@@ -38,19 +38,18 @@ public final class NodeBuilder {
 	private static Node NODE;
 
 	private NodeBuilder() {
-
 	}
 
-	public static Node getNode() {
+	public static Node getNode(XdsConfigProperties xdsConfigProperties) {
 		try {
 			if (NODE != null) {
 				return NODE;
 			}
-			String podName = System.getenv(IstioConstants.POD_NAME);
+			String podName = xdsConfigProperties.getPodName();
 			if (podName == null) {
 				podName = IstioConstants.DEFAULT_POD_NAME;
 			}
-			String podNamespace = System.getenv(IstioConstants.NAMESPACE_NAME);
+			String podNamespace = xdsConfigProperties.getNamespaceName();
 			if (podNamespace == null) {
 				podNamespace = IstioConstants.DEFAULT_NAMESPACE;
 			}
