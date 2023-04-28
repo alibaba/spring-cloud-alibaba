@@ -93,7 +93,7 @@ public class XdsChannel implements AutoCloseable {
 									+ xdsConfigProperties.getPort())
 							.negotiationType(NegotiationType.PLAINTEXT).build();
 				}
-				this.node = NodeBuilder.getNode();
+				this.node = NodeBuilder.getNode(xdsConfigProperties);
 			}
 			else {
 				BootstrapperImpl bootstrapper = new BootstrapperImpl();
