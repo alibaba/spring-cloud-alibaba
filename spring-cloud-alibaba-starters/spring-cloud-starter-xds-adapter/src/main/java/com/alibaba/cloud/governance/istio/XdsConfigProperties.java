@@ -51,10 +51,6 @@ public class XdsConfigProperties {
 
 	private int port;
 
-	private int pollingPoolSize;
-
-	private int pollingTime;
-
 	/**
 	 * jwt token for istiod 15012 port.
 	 */
@@ -96,12 +92,6 @@ public class XdsConfigProperties {
 		}
 		if (StringUtils.isEmpty(host)) {
 			this.host = IstioConstants.DEFAULT_ISTIOD_ADDR;
-		}
-		if (pollingPoolSize <= 0) {
-			pollingPoolSize = IstioConstants.DEFAULT_POLLING_SIZE;
-		}
-		if (pollingTime <= 0) {
-			pollingTime = IstioConstants.DEFAULT_POLLING_TIME;
 		}
 		if (logXds == null) {
 			logXds = true;
@@ -187,22 +177,6 @@ public class XdsConfigProperties {
 
 	public void setPort(int port) {
 		this.port = port;
-	}
-
-	public int getPollingPoolSize() {
-		return pollingPoolSize;
-	}
-
-	public void setPollingPoolSize(int pollingPoolSize) {
-		this.pollingPoolSize = pollingPoolSize;
-	}
-
-	public int getPollingTime() {
-		return pollingTime;
-	}
-
-	public void setPollingTime(int pollingTime) {
-		this.pollingTime = pollingTime;
 	}
 
 	public String getIstiodToken() {
