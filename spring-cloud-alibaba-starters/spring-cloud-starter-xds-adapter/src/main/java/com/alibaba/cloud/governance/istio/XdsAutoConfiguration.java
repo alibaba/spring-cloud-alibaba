@@ -77,11 +77,6 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	public XdsScheduledThreadPool xdsScheduledThreadPool() {
-		return new XdsScheduledThreadPool(xdsConfigProperties);
-	}
-
-	@Bean
 	public XdsResolveFilter<List<Listener>> authXdsResolveFilter() {
 		return new AuthXdsResolveFilter();
 	}
