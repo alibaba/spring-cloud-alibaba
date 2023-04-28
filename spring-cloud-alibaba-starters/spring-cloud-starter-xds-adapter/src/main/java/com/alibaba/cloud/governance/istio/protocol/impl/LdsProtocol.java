@@ -24,9 +24,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
-import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.AggregateDiscoveryService;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
-import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
@@ -36,6 +35,8 @@ import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager;
 import io.envoyproxy.envoy.extensions.filters.network.http_connection_manager.v3.Rds;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
+
+import org.springframework.util.CollectionUtils;
 
 /**
  * LdsProtocol contains the authentication configuration and other configuration about
@@ -47,17 +48,19 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
  */
 public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 
-	public LdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			XdsConfigProperties xdsConfigProperties,
-			List<XdsResolveFilter<List<Listener>>> ldsFilters) {
-		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+	private final RdsProtocol rdsProtocol;
+
+	public LdsProtocol(XdsConfigProperties xdsConfigProperties,
+			List<XdsResolveFilter<List<Listener>>> ldsFilters, RdsProtocol rdsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		super(xdsConfigProperties, aggregateDiscoveryService);
 		// init filters
 		for (XdsResolveFilter<List<Listener>> filter : ldsFilters) {
 			if (IstioConstants.LDS_URL.equals(filter.getTypeUrl())) {
 				filters.add(filter);
 			}
 		}
+		this.rdsProtocol = rdsProtocol;
 	}
 
 	@Override
@@ -79,11 +82,19 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 				log.error("Unpack listeners failed", e);
 			}
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("[xds]: Received {} listeners", listeners.size());
-		}
-		fireXdsFilters(listeners);
 		return listeners;
+	}
+
+	@Override
+	public void onResponseDecoded(List<Listener> resources) {
+		if (CollectionUtils.isEmpty(resources)) {
+			return;
+		}
+		fireXdsFilters(resources);
+		Set<String> resourceName = getResourceNames();
+		if (!CollectionUtils.isEmpty(resourceName)) {
+			rdsProtocol.observeResource(resourceName);
+		}
 	}
 
 	@Override
