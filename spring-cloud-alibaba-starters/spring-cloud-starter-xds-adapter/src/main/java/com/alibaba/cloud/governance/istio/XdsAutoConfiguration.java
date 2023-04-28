@@ -38,6 +38,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * @author musi
@@ -91,37 +92,48 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	public PilotExchanger pilotExchanger(LdsProtocol ldsProtocol, CdsProtocol cdsProtocol,
-			EdsProtocol edsProtocol, RdsProtocol rdsProtocol) {
-		return new PilotExchanger(ldsProtocol, cdsProtocol, edsProtocol, rdsProtocol);
+	@Lazy
+	public AggregateDiscoveryService aggregateDiscoveryService(XdsChannel xdsChannel) {
+		return new AggregateDiscoveryService(xdsChannel, xdsConfigProperties);
 	}
 
 	@Bean
-	public LdsProtocol ldsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			List<XdsResolveFilter<List<Listener>>> filters) {
-		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
-				filters);
+	public LdsProtocol ldsProtocol(List<XdsResolveFilter<List<Listener>>> filters,
+			RdsProtocol rdsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		LdsProtocol ldsProtocol = new LdsProtocol(xdsConfigProperties, filters,
+				rdsProtocol, aggregateDiscoveryService);
+		aggregateDiscoveryService.addProtocol(ldsProtocol);
+		return ldsProtocol;
 	}
 
 	@Bean
-	public CdsProtocol cdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new CdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+	public CdsProtocol cdsProtocol(EdsProtocol edsProtocol, LdsProtocol ldsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		CdsProtocol cdsProtocol = new CdsProtocol(xdsConfigProperties, edsProtocol,
+				ldsProtocol, aggregateDiscoveryService);
+		aggregateDiscoveryService.addProtocol(cdsProtocol);
+		cdsProtocol.observeResource();
+		return cdsProtocol;
 	}
 
 	@Bean
-	public EdsProtocol edsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new EdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+	public EdsProtocol edsProtocol(LdsProtocol ldsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		EdsProtocol edsProtocol = new EdsProtocol(xdsConfigProperties, ldsProtocol,
+				aggregateDiscoveryService);
+		aggregateDiscoveryService.addProtocol(edsProtocol);
+		return edsProtocol;
 	}
 
 	@Bean
-	public RdsProtocol rdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			List<XdsResolveFilter<List<RouteConfiguration>>> filters) {
-		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
-				filters);
+	public RdsProtocol rdsProtocol(
+			List<XdsResolveFilter<List<RouteConfiguration>>> filters,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		RdsProtocol rdsProtocol = new RdsProtocol(xdsConfigProperties, filters,
+				aggregateDiscoveryService);
+		aggregateDiscoveryService.addProtocol(rdsProtocol);
+		return rdsProtocol;
 	}
 
 	/**

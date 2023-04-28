@@ -17,19 +17,11 @@
 package com.alibaba.cloud.governance.istio.protocol;
 
 import java.util.List;
-import java.util.Set;
 
-/**
- * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
- * @since 2.2.10-RC1
- */
-public interface XdsProtocol<T> {
+import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
-	String getTypeUrl();
+public interface XdsDecoder<T> {
 
-	void observeResource(Set<String> resourceNames);
-
-	void onResponseDecoded(List<T> resources);
+	List<T> decodeXdsResponse(DiscoveryResponse discoveryResponse);
 
 }

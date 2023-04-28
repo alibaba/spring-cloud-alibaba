@@ -51,6 +51,8 @@ public class XdsConfigProperties {
 
 	private Boolean logXds;
 
+	private Boolean useAgent;
+
 	@PostConstruct
 	public void init() {
 		if (this.port <= 0 || this.port > 65535) {
@@ -67,6 +69,9 @@ public class XdsConfigProperties {
 		}
 		if (logXds == null) {
 			logXds = true;
+		}
+		if (useAgent == null) {
+			useAgent = false;
 		}
 	}
 
@@ -116,6 +121,14 @@ public class XdsConfigProperties {
 
 	public void setLogXds(boolean logXds) {
 		this.logXds = logXds;
+	}
+
+	public Boolean getUseAgent() {
+		return useAgent;
+	}
+
+	public void setUseAgent(Boolean useAgent) {
+		this.useAgent = useAgent;
 	}
 
 }

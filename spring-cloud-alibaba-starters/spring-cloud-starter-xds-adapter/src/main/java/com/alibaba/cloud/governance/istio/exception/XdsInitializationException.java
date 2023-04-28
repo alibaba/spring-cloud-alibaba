@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.istio.protocol;
+package com.alibaba.cloud.governance.istio.exception;
 
-import java.util.List;
-import java.util.Set;
+public final class XdsInitializationException extends Exception {
 
-/**
- * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
- * @since 2.2.10-RC1
- */
-public interface XdsProtocol<T> {
+	public XdsInitializationException(String message) {
+		super(message);
+	}
 
-	String getTypeUrl();
-
-	void observeResource(Set<String> resourceNames);
-
-	void onResponseDecoded(List<T> resources);
+	public XdsInitializationException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
 }
