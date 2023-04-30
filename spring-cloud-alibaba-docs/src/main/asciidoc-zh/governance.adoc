@@ -17,13 +17,13 @@ Microservices Governance的规则转换模块会将不同控制面下发的规�
   <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ----
-OpenSergo请参考 https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
+OpenSergo请参考 https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]。
 
 其中，连接 `Istio` 控制面有如下两种手段：
 
 ==== 注入pilot-agent(推荐)
 
-用户可以通过注入 `pilot-agent` 作为 `xds` 协议的代理，以轻松地对接到 `Istio` 控制平面，只需要在工作负载中加上如下 `annotation`
+用户可以通过注入 `pilot-agent` 作为 `xds` 协议的代理，以轻松地对接到 `Istio` 控制平面，只需要在Spring Cloud Alibaba应用所在pod上加上如下 `annotation`：
 
 [source,yaml,indent=0]
 ----
@@ -34,7 +34,7 @@ template:
         proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
 ----
 
-并且在 `application.yml` 中启用 `pilot-agent`
+并且在 `application.yml` 中启用 `pilot-agent`：
 
 [source,yaml,indent=0]
 ----
@@ -91,28 +91,31 @@ spring:
 |===
 其中，若要在直连istio控制面时连接istio控制面的15012端口，需要将此应用的 `serviceaccount` 作为 `projected volumn` 挂载到k8s的 `/var/run/secrets/tokens/istio-token` 路径上，具体操作如下：
 
-1.声明一个 `projected volumn`：
+1.为Spring Cloud Alibaba应用所在pod声明一个 `projected volumn`：
 
 [source,yaml,indent=0]
 ----
-volumes:
-  - name: istio-token
-    projected:
-      defaultMode: 420
-      sources:
-        - serviceAccountToken:
-            audience: istio-ca
-            expirationSeconds: 43200
-            path: istio-token
+spec:
+  volumes:
+    - name: istio-token
+      projected:
+        defaultMode: 420
+        sources:
+          - serviceAccountToken:
+              audience: istio-ca
+              expirationSeconds: 43200
+              path: istio-token
 ----
 
 2.将这个 `projected volumn` 挂载到 `/var/run/secrets/tokens/istio-token` 路径上：
 
 [source,yaml,indent=0]
 ----
-volumeMounts:
-  - mountPath: /var/run/secrets/tokens
-    name: istio-token
+spec:
+  containers:
+    volumeMounts:
+      - mountPath: /var/run/secrets/tokens
+        name: istio-token
 ----
 在本地进行调试时，如果您想模拟其他工作负载的身份，可以在 `application.yml` 的 `istio-token` 字段中直接填入其他工作负载的token。
 
