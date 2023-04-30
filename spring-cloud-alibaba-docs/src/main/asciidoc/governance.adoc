@@ -18,13 +18,13 @@ If you use Istio in your project to transform the rule, first of all, note that 
   <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ----
-If you want to use OpenSergo, you can refer to https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples]
+If you want to use OpenSergo, you can refer to https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/governance-example/label-routing-example[Spring Cloud Alibaba Routing Examples].
 
 There are two ways to connect to `Istio` control plane:
 
 ==== Inject pilot-agent(recommend)
 
-Users can easily connect to the `Istio` control plane by injecting pilot-agent as a proxy for the xds protocol, simply by adding the following annotation to the workload:
+Users can easily connect to the `Istio` control plane by injecting pilot-agent as a proxy for the xds protocol, simply by adding the following annotation to the pod of Spring Cloud Alibaba workload:
 
 [source,yaml,indent=0]
 ----
@@ -35,7 +35,7 @@ template:
         proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
 ----
 
-And enable `pilot-agent` in `application.yml`
+And enable `pilot-agent` in `application.yml`:
 
 [source,yaml,indent=0]
 ----
@@ -86,33 +86,36 @@ Here's an explanation of each field:
 |Port of Istiod| spring.cloud.istio.config.port|15012|15010 port does not need TLS，but 15012 does
 |Pod name| spring.cloud.istio.config.pod-name|value of environment variable POD_NAME|
 |Namespace name| spring.cloud.istio.config.namespace-name|value of environment variable NAMESPACE_NAME|
-|JWT token for application to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `/var/run/secrets/tokens/istio-token` in the pod of application|
+|JWT token for application to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `/var/run/secrets/tokens/istio-token` in the pod of application.(Only support third-part-jwt now, first-part-jwt will be supported later)|
 |Whether to print logs about xDS| spring.cloud.istio.config.log-xds|true|
 |Whether to inject pilot-agent| spring.cloud.istio.config.use-agent|false|
 |===
 
 If you want to connect to port 15012 of the `Istio` control plane when directly connecting the istio control plane, you need to apply `serviceaccount` as `projected volumn` mount to k8s path `/ var/run/secrets/tokens/istio-token`:
 
-1.Apply a `projected volumn`
+1.Apply a `projected volumn` for the pod of Spring Cloud Alibaba workload:
 [source,yaml,indent=0]
 ----
-volumes:
-  - name: istio-token
-    projected:
-      defaultMode: 420
-      sources:
-        - serviceAccountToken:
-            audience: istio-ca
-            expirationSeconds: 43200
-            path: istio-token
+spec:
+  volumes:
+    - name: istio-token
+      projected:
+        defaultMode: 420
+        sources:
+          - serviceAccountToken:
+              audience: istio-ca
+              expirationSeconds: 43200
+              path: istio-token
 ----
 
-2.Mount the `projected volumn` to path `/var/run/secrets/tokens/istio-token`
+2.Mount the `projected volumn` to path `/var/run/secrets/tokens/istio-token`:
 [source,yaml,indent=0]
 ----
-volumeMounts:
-  - mountPath: /var/run/secrets/tokens
-    name: istio-token
+spec:
+  containers:
+    volumeMounts:
+      - mountPath: /var/run/secrets/tokens
+        name: istio-token
 ----
 If you want to emulate the identity of other workloads when debugging locally, you can fill the `istio-token` field of `application.yml` with the tokens of other workloads.
 
