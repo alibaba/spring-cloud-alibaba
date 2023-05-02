@@ -40,7 +40,7 @@ Gateway的新一代Sidecar，然而官方表示并没有该计划。详见：htt
 * 目前Mesh主要使用场景在Kubernetes领域（Istio、Linkerd
 2等，大多将Kubernetes作为First
 Class支持，虽然Istio也可部署在非Kubernetes环境），而目前业界，Spring
-Cloud应用未必有试试Mesh的环境；
+Cloud应用未必有 Service Mesh 的环境；
 * 使用Alibaba
 Sidecar一个小组件就能解决问题了（核心代码不超过200行），引入整套Mesh方案，颇有点屠龙刀杀黄鳝的意思。
 
@@ -66,7 +66,7 @@ Cloud本身就是基于HTTP的；
 === 使用示例
 
 * 如使用Nacos作为服务发现组件，详见`spring-cloud-alibaba-examples/spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example`
-* 如使用Consul作为服务发现组件，详见`spring-cloud-alibaba-examples/spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example`
+* 如使用Consul作为服务发现组件，详见`spring-cloud-alibaba-examples/spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example`
 
 ==== 示例代码（以Nacos服务发现为例）
 
@@ -178,7 +178,7 @@ Gateway还可以整合Sentinel或者Hystirx、Resilience4J，所以也带有了�
 === Alibaba Sidecar优缺点分析
 
 Alibaba
-Sidecar的设计和Sidecar基本一致，优缺点和Sidecar的优缺点也是一样的。
+Sidecar的设计和 Netfix Sidecar 基本一致，优缺点和 Netfix Sidecar 的优缺点也是一样的。
 
 优点：
 
