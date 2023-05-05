@@ -37,7 +37,7 @@ import org.springframework.util.StringUtils;
  * @author xiaojing
  * @author changjin wei(魏昌进)
  */
-public class NacosRegistration implements Registration, ServiceInstance {
+public class NacosRegistration implements Registration {
 
 	/**
 	 * The metadata key of management port.
