@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.governance.istio;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -26,6 +27,9 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.governance.istio.bootstrap.Bootstrapper;
 import com.alibaba.cloud.governance.istio.bootstrap.BootstrapperImpl;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
+import com.alibaba.cloud.governance.istio.exception.XdsInitializationException;
+import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
+import com.alibaba.cloud.governance.istio.sds.CertPair;
 import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.service.discovery.v3.AggregatedDiscoveryServiceGrpc;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
@@ -64,7 +68,8 @@ public class XdsChannel implements AutoCloseable {
 
 	private Node node;
 
-	public XdsChannel(XdsConfigProperties xdsConfigProperties) {
+	public XdsChannel(XdsConfigProperties xdsConfigProperties,
+			AbstractCertManager abstractCertManager) {
 		this.xdsConfigProperties = xdsConfigProperties;
 		try {
 			if (Boolean.FALSE.equals(xdsConfigProperties.getUseAgent())) {
@@ -76,9 +81,18 @@ public class XdsChannel implements AutoCloseable {
 					else {
 						this.refreshIstiodToken();
 					}
+					CertPair certPair = abstractCertManager.getCertPair();
+					if (certPair == null) {
+						throw new XdsInitializationException(
+								"Unable to init XdsChannel, failed to fetch certificate from CA");
+					}
 					SslContext sslcontext = GrpcSslContexts.forClient()
 							// if server's cert doesn't chain to a standard root
 							.trustManager(InsecureTrustManagerFactory.INSTANCE)
+							.keyManager(
+									new ByteArrayInputStream(
+											certPair.getRawCertificateChain()),
+									new ByteArrayInputStream(certPair.getRawPrivateKey()))
 							// TODO: fill the publicKey and privateKey
 							.build();
 					this.channel = NettyChannelBuilder
