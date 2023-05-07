@@ -20,9 +20,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import com.alibaba.cloud.governance.istio.AggregateDiscoveryService;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
+import com.alibaba.cloud.governance.istio.exception.XdsInitializationException;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 import org.slf4j.Logger;
@@ -50,21 +53,19 @@ public abstract class AbstractXdsProtocol<T>
 	private Set<String> resourceNames = new HashSet<>();
 
 	/**
-	 * does the protocol need polling.
-	 */
-	private boolean needPolling;
-
-	/**
 	 * send event to submodules.
 	 */
 	protected ApplicationContext applicationContext;
 
 	private final AggregateDiscoveryService aggregateDiscoveryService;
 
+	protected static CountDownLatch initCdl;
+
 	public AbstractXdsProtocol(XdsConfigProperties xdsConfigProperties,
 			AggregateDiscoveryService aggregateDiscoveryService) {
 		this.xdsConfigProperties = xdsConfigProperties;
 		this.aggregateDiscoveryService = aggregateDiscoveryService;
+		initCdl = new CountDownLatch(1);
 	}
 
 	@Override
@@ -73,12 +74,22 @@ public abstract class AbstractXdsProtocol<T>
 		this.applicationContext = applicationContext;
 	}
 
-	public void setNeedPolling(boolean needPolling) {
-		this.needPolling = needPolling;
-	}
-
 	public synchronized void observeResource() {
 		observeResource(null);
+	}
+
+	public synchronized void syncObserveResource() {
+		try {
+			observeResource();
+			boolean flag = initCdl.await(30, TimeUnit.SECONDS);
+			if (!flag) {
+				throw new XdsInitializationException(
+						"Timeout when init config from xds server");
+			}
+		}
+		catch (Exception e) {
+			throw new XdsInitializationException("Error on fetch xds config", e);
+		}
 	}
 
 	@Override

@@ -49,7 +49,6 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 		super(xdsConfigProperties, aggregateDiscoveryService);
 		this.edsProtocol = edsProtocol;
 		this.ldsProtocol = ldsProtocol;
-		setNeedPolling(true);
 	}
 
 	@Override

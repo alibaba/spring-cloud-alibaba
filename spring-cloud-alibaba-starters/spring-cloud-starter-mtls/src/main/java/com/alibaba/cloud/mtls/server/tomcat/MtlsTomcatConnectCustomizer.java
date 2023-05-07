@@ -16,22 +16,18 @@
 
 package com.alibaba.cloud.mtls.server.tomcat;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
-import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
+import com.alibaba.cloud.governance.istio.sds.IstioCertPairManager;
 import com.alibaba.cloud.mtls.MtlsSslStoreProvider;
 import com.alibaba.cloud.mtls.client.rest.ClientRequestFactoryProvider;
+import com.alibaba.cloud.mtls.server.ServerTlsModeHolder;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
 import org.apache.coyote.AbstractProtocol;
 import org.apache.coyote.ProtocolHandler;
-import org.apache.tomcat.util.net.AbstractEndpoint;
-import org.apache.tomcat.util.net.SSLHostConfig;
-import org.apache.tomcat.util.net.SSLHostConfigCertificate;
+import org.apache.coyote.http11.AbstractHttp11JsseProtocol;
+import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +35,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.server.Ssl;
-import org.springframework.boot.web.server.SslStoreProvider;
+import org.springframework.boot.web.server.WebServerException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 public class MtlsTomcatConnectCustomizer
@@ -50,47 +48,39 @@ public class MtlsTomcatConnectCustomizer
 	private static final Logger log = LoggerFactory
 			.getLogger(MtlsTomcatConnectCustomizer.class);
 
-	private final MtlsSslStoreProvider sslStoreProvider;
-
-	private final AbstractCertManager certManager;
+	private final IstioCertPairManager certManager;
 
 	private final ClientRequestFactoryProvider clientRequestFactoryProvider;
+
+	private final MtlsSslStoreProvider sslStoreProvider;
 
 	private ApplicationContext applicationContext;
 
 	public MtlsTomcatConnectCustomizer(MtlsSslStoreProvider sslStoreProvider,
-			AbstractCertManager certManager,
+			IstioCertPairManager certManager,
 			ClientRequestFactoryProvider clientRequestFactoryProvider) {
-		this.sslStoreProvider = sslStoreProvider;
 		this.certManager = certManager;
 		this.clientRequestFactoryProvider = clientRequestFactoryProvider;
+		this.sslStoreProvider = sslStoreProvider;
 	}
 
 	@Override
 	public void customize(Connector connector) {
+		if (!validateContext()) {
+			return;
+		}
 		// When the certificate is expired, we refresh the server certificate.
 		certManager.registerCallback(certPair -> {
 			try {
+				if (!validateContext()) {
+					return;
+				}
 				ProtocolHandler protocolHandler = connector.getProtocolHandler();
 				AbstractProtocol<?> abstractProtocol = (AbstractProtocol<?>) protocolHandler;
-				Method method = AbstractProtocol.class.getDeclaredMethod("getEndpoint");
-				method.setAccessible(true);
-				AbstractEndpoint<?, ?> endpoint = (AbstractEndpoint<?, ?>) method
-						.invoke(abstractProtocol);
-				Field configField = AbstractEndpoint.class
-						.getDeclaredField("sslHostConfigs");
-				configField.setAccessible(true);
-				ConcurrentMap<String, SSLHostConfig> config = (ConcurrentMap<String, SSLHostConfig>) configField
-						.get(endpoint);
-				for (SSLHostConfig hostConfig : config.values()) {
-					Set<SSLHostConfigCertificate> certificates = hostConfig
-							.getCertificates();
-					for (SSLHostConfigCertificate certificate : certificates) {
-						certificate
-								.setCertificateKeystore(sslStoreProvider.getKeyStore());
-					}
+				if (abstractProtocol instanceof AbstractHttp11Protocol<?>) {
+					AbstractHttp11Protocol<?> proto = ((AbstractHttp11Protocol<?>) abstractProtocol);
+					proto.reloadSslHostConfigs();
 				}
-				endpoint.reloadSslHostConfigs();
 			}
 			catch (Exception e) {
 				log.error("Failed to reload certificate of tomcat", e);
@@ -99,6 +89,9 @@ public class MtlsTomcatConnectCustomizer
 		// When the certificate is expired, we refresh the client certificate.
 		certManager.registerCallback(certPair -> {
 			try {
+				if (!validateContext()) {
+					return;
+				}
 				Map<String, RestTemplate> restTemplates = applicationContext
 						.getBeansOfType(RestTemplate.class);
 				for (RestTemplate restTemplate : restTemplates.values()) {
@@ -114,24 +107,74 @@ public class MtlsTomcatConnectCustomizer
 				log.error("Failed to refresh RestTemplate", e2);
 			}
 		});
+		if (!ServerTlsModeHolder.waitTlsModeInitialized()) {
+			log.warn("Fetch tls mode failed, use plaintext to transport");
+			return;
+		}
+		if (!ServerTlsModeHolder.getTlsMode()) {
+			return;
+		}
 		try {
-			Class<?> sslConnectorCustomizer = Class.forName(
-					"org.springframework.boot.web.embedded.tomcat.SslConnectorCustomizer");
-			Constructor<?> constructor = sslConnectorCustomizer
-					.getDeclaredConstructor(Ssl.class, SslStoreProvider.class);
-			constructor.setAccessible(true);
+			ProtocolHandler handler = connector.getProtocolHandler();
+			AbstractHttp11JsseProtocol<?> protocol = (AbstractHttp11JsseProtocol<?>) handler;
 			Ssl ssl = new Ssl();
 			ssl.setClientAuth(Ssl.ClientAuth.WANT);
-			Object sslCustomizerInstance = constructor.newInstance(ssl, sslStoreProvider);
-			Method custom = sslCustomizerInstance.getClass()
-					.getDeclaredMethod("customize", Connector.class);
-			custom.setAccessible(true);
-
-			custom.invoke(sslCustomizerInstance, connector);
-
+			protocol.setSSLEnabled(true);
+			protocol.setSslProtocol(ssl.getProtocol());
+			configureSslClientAuth(protocol, ssl);
+			protocol.setKeyAlias(ssl.getKeyAlias());
+			String ciphers = StringUtils.arrayToCommaDelimitedString(ssl.getCiphers());
+			if (StringUtils.hasText(ciphers)) {
+				protocol.setCiphers(ciphers);
+			}
+			TomcatURLStreamHandlerFactory tomcatURLStreamHandlerFactory = TomcatURLStreamHandlerFactory
+					.getInstance();
+			SslStoreProviderUrlStreamHandlerFactory sslStoreProviderUrlStreamHandlerFactory = new SslStoreProviderUrlStreamHandlerFactory(
+					sslStoreProvider);
+			TomcatURLStreamHandlerFactory.release(
+					sslStoreProviderUrlStreamHandlerFactory.getClass().getClassLoader());
+			tomcatURLStreamHandlerFactory
+					.addUserFactory(sslStoreProviderUrlStreamHandlerFactory);
+			try {
+				if (sslStoreProvider.getKeyStore() != null) {
+					protocol.setKeystorePass("");
+					protocol.setKeystoreFile(
+							SslStoreProviderUrlStreamHandlerFactory.KEY_STORE_URL);
+				}
+				if (sslStoreProvider.getTrustStore() != null) {
+					protocol.setTruststorePass("");
+					protocol.setTruststoreFile(
+							SslStoreProviderUrlStreamHandlerFactory.TRUST_STORE_URL);
+				}
+			}
+			catch (Exception ex) {
+				throw new WebServerException("Could not load store: " + ex.getMessage(),
+						ex);
+			}
+			connector.setScheme("https");
+			connector.setSecure(true);
 		}
 		catch (Exception e) {
 			log.error("Custom tomcat ssl failed!", e);
+		}
+	}
+
+	private boolean validateContext() {
+		if (applicationContext instanceof ConfigurableApplicationContext) {
+			ConfigurableApplicationContext context = (ConfigurableApplicationContext) applicationContext;
+			if (!context.isActive()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void configureSslClientAuth(AbstractHttp11JsseProtocol<?> protocol, Ssl ssl) {
+		if (ssl.getClientAuth() == Ssl.ClientAuth.NEED) {
+			protocol.setClientAuth(Boolean.TRUE.toString());
+		}
+		else if (ssl.getClientAuth() == Ssl.ClientAuth.WANT) {
+			protocol.setClientAuth("want");
 		}
 	}
 

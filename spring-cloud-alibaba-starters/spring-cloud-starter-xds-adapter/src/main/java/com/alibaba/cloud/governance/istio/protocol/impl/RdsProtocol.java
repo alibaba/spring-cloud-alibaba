@@ -73,6 +73,7 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 			log.debug("A Xds configuration update is finished");
 		}
 		fireXdsFilters(resources);
+		initCdl.countDown();
 	}
 
 }

@@ -26,6 +26,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PreDestroy;
+
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
@@ -55,14 +57,14 @@ public class AggregateDiscoveryService {
 
 	private final XdsChannel xdsChannel;
 
-	private static final ScheduledExecutorService retry = Executors
-			.newSingleThreadScheduledExecutor();
+	private final ScheduledExecutorService retry;
 
 	public AggregateDiscoveryService(XdsChannel xdsChannel,
 			XdsConfigProperties xdsConfigProperties) {
 		this.xdsChannel = xdsChannel;
 		this.xdsConfigProperties = xdsConfigProperties;
 		this.observer = xdsChannel.createDiscoveryRequest(new XdsObserver());
+		this.retry = Executors.newSingleThreadScheduledExecutor();
 	}
 
 	public void addProtocol(AbstractXdsProtocol abstractXdsProtocol) {
@@ -85,6 +87,11 @@ public class AggregateDiscoveryService {
 				.addAllResourceNames(ackResource).setTypeUrl(response.getTypeUrl())
 				.setResponseNonce(response.getNonce()).build();
 		observer.onNext(request);
+	}
+
+	@PreDestroy
+	public void close() {
+		retry.shutdownNow();
 	}
 
 	private class XdsObserver implements StreamObserver<DiscoveryResponse> {

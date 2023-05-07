@@ -95,6 +95,9 @@ public class LdsProtocol extends AbstractXdsProtocol<Listener> {
 		if (!CollectionUtils.isEmpty(resourceName)) {
 			rdsProtocol.observeResource(resourceName);
 		}
+		else {
+			initCdl.countDown();
+		}
 	}
 
 	@Override

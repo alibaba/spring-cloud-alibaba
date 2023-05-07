@@ -32,6 +32,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PreDestroy;
+
 import com.alibaba.cloud.commons.io.FileUtils;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
@@ -54,19 +56,24 @@ import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
 public class IstioCertPairManager extends AbstractCertManager {
 
-	private static final ScheduledExecutorService schedule = Executors
-			.newScheduledThreadPool(1);
+	private final ScheduledExecutorService schedule;
 
 	public IstioCertPairManager(XdsConfigProperties xdsConfigProperties) {
 		super(xdsConfigProperties);
+		schedule = Executors.newScheduledThreadPool(1);
 		schedule.scheduleAtFixedRate(() -> {
 			try {
-				certPair = getCertPair();
+				getCertPair();
 			}
 			catch (Exception e) {
 				log.error("Generate Cert from Istio failed.", e);
 			}
 		}, 0, 30, TimeUnit.SECONDS);
+	}
+
+	@PreDestroy
+	public void close() {
+		schedule.shutdownNow();
 	}
 
 	protected synchronized CertPair doGetCertPair() {
@@ -133,7 +140,8 @@ public class IstioCertPairManager extends AbstractCertManager {
 							newCertPair.setExpireTime(System.currentTimeMillis()
 									+ (long) (xdsConfigProperties.getSecretTTL()
 											* xdsConfigProperties
-													.getSecretGracePeriodRatio()));
+													.getSecretGracePeriodRatio())
+											* 1000);
 							newCertPair.setCertificateChain(certificates);
 							log.info(
 									"Send CSR to CA successfully, {} certificates received",

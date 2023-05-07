@@ -17,16 +17,13 @@
 package com.alibaba.cloud.governance.istio;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 
-import com.alibaba.cloud.commons.io.FileUtils;
+import javax.annotation.PreDestroy;
+
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.governance.istio.bootstrap.Bootstrapper;
 import com.alibaba.cloud.governance.istio.bootstrap.BootstrapperImpl;
-import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.exception.XdsInitializationException;
 import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
 import com.alibaba.cloud.governance.istio.sds.CertPair;
@@ -93,7 +90,6 @@ public class XdsChannel implements AutoCloseable {
 									new ByteArrayInputStream(
 											certPair.getRawCertificateChain()),
 									new ByteArrayInputStream(certPair.getRawPrivateKey()))
-							// TODO: fill the publicKey and privateKey
 							.build();
 					this.channel = NettyChannelBuilder
 							.forTarget(xdsConfigProperties.getHost() + ":"
@@ -126,20 +122,7 @@ public class XdsChannel implements AutoCloseable {
 	}
 
 	public void refreshIstiodToken() {
-		if (xdsConfigProperties.getPort() != ISTIOD_SECURE_PORT) {
-			return;
-		}
-		File saFile = new File(IstioConstants.THIRD_PART_JWT_PATH);
-		if (saFile.canRead()) {
-			try {
-				this.istiodToken = FileUtils.readFileToString(saFile,
-						StandardCharsets.UTF_8);
-				return;
-			}
-			catch (IOException e) {
-				log.error("Unable to read token file", e);
-			}
-		}
+		this.istiodToken = xdsConfigProperties.getIstiodToken();
 		if (this.istiodToken == null) {
 			throw new UnsupportedOperationException(
 					"Unable to found kubernetes service account token file. "
@@ -147,10 +130,11 @@ public class XdsChannel implements AutoCloseable {
 		}
 	}
 
+	@PreDestroy
 	@Override
 	public void close() {
 		if (channel != null) {
-			channel.shutdown();
+			channel.shutdownNow();
 		}
 	}
 

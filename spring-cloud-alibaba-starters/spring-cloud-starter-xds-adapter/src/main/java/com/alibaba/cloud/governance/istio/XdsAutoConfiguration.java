@@ -18,10 +18,14 @@ package com.alibaba.cloud.governance.istio;
 
 import java.util.List;
 
+import javax.annotation.PreDestroy;
+
+import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.commons.governance.event.GovernanceEvent;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.AuthXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.RoutingXdsResolveFilter;
+import com.alibaba.cloud.governance.istio.filter.impl.ServerTlsXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
@@ -34,12 +38,12 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 /**
  * @author musi
@@ -94,7 +98,11 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	@Lazy
+	public XdsResolveFilter<List<Listener>> serverTlsXdsResolveFilter() {
+		return new ServerTlsXdsResolveFilter();
+	}
+
+	@Bean
 	public AggregateDiscoveryService aggregateDiscoveryService(XdsChannel xdsChannel) {
 		return new AggregateDiscoveryService(xdsChannel, xdsConfigProperties);
 	}
@@ -115,7 +123,7 @@ public class XdsAutoConfiguration {
 		CdsProtocol cdsProtocol = new CdsProtocol(xdsConfigProperties, edsProtocol,
 				ldsProtocol, aggregateDiscoveryService);
 		aggregateDiscoveryService.addProtocol(cdsProtocol);
-		cdsProtocol.observeResource();
+		cdsProtocol.syncObserveResource();
 		return cdsProtocol;
 	}
 
@@ -136,6 +144,17 @@ public class XdsAutoConfiguration {
 				aggregateDiscoveryService);
 		aggregateDiscoveryService.addProtocol(rdsProtocol);
 		return rdsProtocol;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public ControlPlaneInitedBean controlPlaneInitedBean(CdsProtocol cdsProtocol) {
+		return new ControlPlaneInitedBean(TlsContext.isIsTls()) {
+			@PreDestroy
+			public void close() {
+				TlsContext.close();
+			}
+		};
 	}
 
 	/**
