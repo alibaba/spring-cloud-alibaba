@@ -65,7 +65,7 @@ public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublish
 		log.info("Start nacos heartBeat task scheduler.");
 		this.watchFuture = this.taskScheduler.scheduleWithFixedDelay(
 				this::publishHeartBeat, Duration.ofMillis(this.nacosDiscoveryProperties.getWatchDelay()));
-		this.running.compareAndExchange(false,true);
+		this.running.compareAndExchange(false, true);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublish
 			// then the other daemon-threads will terminate automatic.
 			this.taskScheduler.shutdown();
 			this.watchFuture.cancel(true);
-            this.running.compareAndExchange(true,false);
+			this.running.compareAndExchange(true, false);
 		}
 	}
 
