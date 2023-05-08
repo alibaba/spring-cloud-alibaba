@@ -95,8 +95,8 @@ public class DockingInterfaceExample {
 	 * @param group group
 	 * @return boolean
 	 */
-	@RequestMapping("/remoteConfig")
-	public boolean remoteConfig(@RequestParam("dataId") String dataId,
+	@RequestMapping("/removeConfig")
+	public boolean removeConfig(@RequestParam("dataId") String dataId,
 			@RequestParam(value = "group", required = false) String group)
 			throws NacosException {
 		if (StringUtils.isEmpty(group)) {
