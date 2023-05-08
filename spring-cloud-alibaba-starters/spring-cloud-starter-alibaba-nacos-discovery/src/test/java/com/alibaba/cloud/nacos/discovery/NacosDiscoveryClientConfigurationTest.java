@@ -77,18 +77,18 @@ public class NacosDiscoveryClientConfigurationTest {
 	}
 
 	@Test
-	public void testDefaultGatewayLocatorHeartBeatPublisher() {
+	public void testDefaultNacosDiscoveryHeartBeatPublisher() {
 		contextRunner.run(context ->
-				assertThat(context).doesNotHaveBean(GatewayLocatorHeartBeatPublisher.class)
+				assertThat(context).doesNotHaveBean(NacosDiscoveryHeartBeatPublisher.class)
 		);
 	}
 
 	@Test
-	public void testGatewayLocatorHeartBeatPublisherEnabled() {
+	public void testNacosDiscoveryHeartBeatPublisherEnabled() {
 		contextRunner
-				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
+				.withPropertyValues("spring.cloud.nacos.discovery.watch.enabled=true")
 				.run(context ->
-						assertThat(context).hasSingleBean(GatewayLocatorHeartBeatPublisher.class)
+						assertThat(context).hasSingleBean(NacosDiscoveryHeartBeatPublisher.class)
 				);
 	}
 
