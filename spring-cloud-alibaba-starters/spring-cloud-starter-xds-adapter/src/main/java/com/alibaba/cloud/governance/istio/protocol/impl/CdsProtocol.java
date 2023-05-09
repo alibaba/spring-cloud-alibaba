@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.alibaba.cloud.governance.istio.AggregateDiscoveryService;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
+import com.alibaba.cloud.governance.istio.exception.XdsInitializationException;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.cluster.v3.Cluster;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -95,6 +97,20 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 		else {
 			// lds
 			ldsProtocol.observeResource();
+		}
+	}
+
+	public synchronized void initAndObserve() {
+		try {
+			observeResource();
+			boolean flag = initCdl.await(30, TimeUnit.SECONDS);
+			if (!flag) {
+				throw new XdsInitializationException(
+						"Timeout when init config from xds server");
+			}
+		}
+		catch (Exception e) {
+			throw new XdsInitializationException("Error on fetch xds config", e);
 		}
 	}
 

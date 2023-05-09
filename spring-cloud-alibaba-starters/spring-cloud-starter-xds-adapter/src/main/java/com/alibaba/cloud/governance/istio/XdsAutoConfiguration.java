@@ -22,6 +22,8 @@ import javax.annotation.PreDestroy;
 
 import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.commons.governance.event.GovernanceEvent;
+import com.alibaba.cloud.governance.istio.bootstrap.Bootstrapper;
+import com.alibaba.cloud.governance.istio.bootstrap.BootstrapperImpl;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.AuthXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.RoutingXdsResolveFilter;
@@ -31,6 +33,7 @@ import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
 import com.alibaba.cloud.governance.istio.sds.IstioCertPairManager;
+import com.alibaba.cloud.governance.istio.sds.SdsCertPairManager;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import org.slf4j.Logger;
@@ -72,9 +75,19 @@ public class XdsAutoConfiguration {
 	private XdsConfigProperties xdsConfigProperties;
 
 	@Bean
+	@ConditionalOnProperty(name = "spring.cloud.istio.config.use-agent",
+			havingValue = "false")
 	public IstioCertPairManager istioCertPairManager(
 			XdsConfigProperties xdsConfigProperties) {
 		return new IstioCertPairManager(xdsConfigProperties);
+	}
+
+	@Bean
+	@ConditionalOnProperty(value = "spring.cloud.istio.config.use-agent",
+			havingValue = "true")
+	public SdsCertPairManager sdsCertPairManager(
+			Bootstrapper.BootstrapInfo bootstrapInfo) {
+		return new SdsCertPairManager(bootstrapInfo, xdsConfigProperties);
 	}
 
 	@Bean
@@ -83,8 +96,10 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	public XdsChannel xdsChannel(IstioCertPairManager istioCertPairManager) {
-		return new XdsChannel(xdsConfigProperties, istioCertPairManager);
+	public XdsChannel xdsChannel(
+			@Autowired(required = false) IstioCertPairManager certManager,
+			@Autowired(required = false) Bootstrapper.BootstrapInfo bootstrapInfo) {
+		return new XdsChannel(xdsConfigProperties, certManager, bootstrapInfo);
 	}
 
 	@Bean
@@ -108,6 +123,14 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
+	@ConditionalOnProperty(value = "spring.cloud.istio.config.use-agent",
+			havingValue = "true")
+	public Bootstrapper.BootstrapInfo bootstrapInfo() {
+		BootstrapperImpl bootstrapper = new BootstrapperImpl();
+		return bootstrapper.bootstrap();
+	}
+
+	@Bean
 	public LdsProtocol ldsProtocol(List<XdsResolveFilter<List<Listener>>> filters,
 			RdsProtocol rdsProtocol,
 			AggregateDiscoveryService aggregateDiscoveryService) {
@@ -123,7 +146,7 @@ public class XdsAutoConfiguration {
 		CdsProtocol cdsProtocol = new CdsProtocol(xdsConfigProperties, edsProtocol,
 				ldsProtocol, aggregateDiscoveryService);
 		aggregateDiscoveryService.addProtocol(cdsProtocol);
-		cdsProtocol.syncObserveResource();
+		cdsProtocol.initAndObserve();
 		return cdsProtocol;
 	}
 

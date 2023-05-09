@@ -21,11 +21,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import com.alibaba.cloud.governance.istio.AggregateDiscoveryService;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
-import com.alibaba.cloud.governance.istio.exception.XdsInitializationException;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 import org.slf4j.Logger;
@@ -76,20 +74,6 @@ public abstract class AbstractXdsProtocol<T>
 
 	public synchronized void observeResource() {
 		observeResource(null);
-	}
-
-	public synchronized void syncObserveResource() {
-		try {
-			observeResource();
-			boolean flag = initCdl.await(30, TimeUnit.SECONDS);
-			if (!flag) {
-				throw new XdsInitializationException(
-						"Timeout when init config from xds server");
-			}
-		}
-		catch (Exception e) {
-			throw new XdsInitializationException("Error on fetch xds config", e);
-		}
 	}
 
 	@Override

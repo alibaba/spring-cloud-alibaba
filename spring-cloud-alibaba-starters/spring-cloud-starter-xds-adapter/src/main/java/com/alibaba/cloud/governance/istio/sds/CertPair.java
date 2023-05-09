@@ -37,6 +37,8 @@ public class CertPair {
 
 	private byte[] rawPrivateKey;
 
+	private Certificate rootCA;
+
 	private long expireTime;
 
 	public CertPair() {
@@ -49,6 +51,10 @@ public class CertPair {
 
 	public Certificate[] getCertificateChain() {
 		return certificateChain;
+	}
+
+	public void setCertificateChain(Certificate[] certificateChain) {
+		this.certificateChain = certificateChain;
 	}
 
 	public void setCertificateChain(List<String> certificateChain) {
@@ -98,6 +104,17 @@ public class CertPair {
 
 	public byte[] getRawPrivateKey() {
 		return rawPrivateKey;
+	}
+
+	public Certificate getRootCA() {
+		if (rootCA == null) {
+			return certificateChain[certificateChain.length - 1];
+		}
+		return rootCA;
+	}
+
+	public void setRootCA(Certificate rootCA) {
+		this.rootCA = rootCA;
 	}
 
 }

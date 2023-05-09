@@ -18,7 +18,7 @@ package com.alibaba.cloud.mtls.server.tomcat;
 
 import java.util.Map;
 
-import com.alibaba.cloud.governance.istio.sds.IstioCertPairManager;
+import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
 import com.alibaba.cloud.mtls.MtlsSslStoreProvider;
 import com.alibaba.cloud.mtls.client.rest.ClientRequestFactoryProvider;
 import com.alibaba.cloud.mtls.server.ServerTlsModeHolder;
@@ -48,7 +48,7 @@ public class MtlsTomcatConnectCustomizer
 	private static final Logger log = LoggerFactory
 			.getLogger(MtlsTomcatConnectCustomizer.class);
 
-	private final IstioCertPairManager certManager;
+	private final AbstractCertManager certManager;
 
 	private final ClientRequestFactoryProvider clientRequestFactoryProvider;
 
@@ -57,7 +57,7 @@ public class MtlsTomcatConnectCustomizer
 	private ApplicationContext applicationContext;
 
 	public MtlsTomcatConnectCustomizer(MtlsSslStoreProvider sslStoreProvider,
-			IstioCertPairManager certManager,
+			AbstractCertManager certManager,
 			ClientRequestFactoryProvider clientRequestFactoryProvider) {
 		this.certManager = certManager;
 		this.clientRequestFactoryProvider = clientRequestFactoryProvider;
@@ -96,7 +96,7 @@ public class MtlsTomcatConnectCustomizer
 						.getBeansOfType(RestTemplate.class);
 				for (RestTemplate restTemplate : restTemplates.values()) {
 					restTemplate.setRequestFactory(clientRequestFactoryProvider
-							.getFactoryByTemplate(restTemplate));
+							.getFactoryByTemplate(restTemplate, certPair));
 				}
 			}
 			catch (BeanCreationException e1) {
@@ -162,9 +162,7 @@ public class MtlsTomcatConnectCustomizer
 	private boolean validateContext() {
 		if (applicationContext instanceof ConfigurableApplicationContext) {
 			ConfigurableApplicationContext context = (ConfigurableApplicationContext) applicationContext;
-			if (!context.isActive()) {
-				return false;
-			}
+			return context.isActive();
 		}
 		return true;
 	}

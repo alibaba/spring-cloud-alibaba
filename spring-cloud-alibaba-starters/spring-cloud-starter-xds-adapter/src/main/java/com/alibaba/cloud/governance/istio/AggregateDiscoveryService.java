@@ -91,7 +91,7 @@ public class AggregateDiscoveryService {
 
 	@PreDestroy
 	public void close() {
-		retry.shutdownNow();
+		retry.shutdown();
 	}
 
 	private class XdsObserver implements StreamObserver<DiscoveryResponse> {
@@ -120,12 +120,8 @@ public class AggregateDiscoveryService {
 			}
 
 			requestResource.clear();
-			// refresh token again
-			if (!xdsConfigProperties.getUseAgent() && xdsConfigProperties
-					.getPort() == IstioConstants.ISTIOD_SECURE_PORT) {
-				xdsChannel.refreshIstiodToken();
-			}
 			retry.schedule(() -> {
+				xdsChannel.restart();
 				observer = xdsChannel.createDiscoveryRequest(this);
 				sendXdsRequest(IstioConstants.CDS_URL, new HashSet<>());
 				log.info("Reconnecting to istio control plane!");

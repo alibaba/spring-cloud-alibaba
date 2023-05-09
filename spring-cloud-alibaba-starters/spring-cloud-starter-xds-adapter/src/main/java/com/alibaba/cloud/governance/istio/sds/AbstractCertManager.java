@@ -30,7 +30,7 @@ public abstract class AbstractCertManager implements CertUpdater, CertPairProvid
 	protected XdsConfigProperties xdsConfigProperties;
 
 	protected static final Logger log = LoggerFactory
-			.getLogger(IstioCertPairManager.class);
+			.getLogger(AbstractCertManager.class);
 
 	protected static final String CSR_REQUEST_BEGIN = "-----BEGIN CERTIFICATE REQUEST-----";
 
@@ -49,7 +49,7 @@ public abstract class AbstractCertManager implements CertUpdater, CertPairProvid
 		}
 		CertPair p = doGetCertPair();
 		certPair = p;
-		if (p.getExpireTime() != 0) {
+		if (p != null && p.getExpireTime() != 0) {
 			for (CertUpdateCallback callback : callbacks) {
 				callback.onUpdateCert(p);
 			}

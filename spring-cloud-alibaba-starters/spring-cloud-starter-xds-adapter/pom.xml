@@ -106,8 +106,12 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java-util</artifactId>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
 
     <build>
         <extensions>

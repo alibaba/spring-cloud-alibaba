@@ -94,6 +94,11 @@ public final class IstioConstants {
 	public static final String RDS_URL = "type.googleapis.com/envoy.config.route.v3.RouteConfiguration";
 
 	/**
+	 * Url of sds request.
+	 */
+	public static final String SDS_URL = "type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.Secret";
+
+	/**
 	 * Secure port of istiod.
 	 */
 	public static final int ISTIOD_SECURE_PORT = 15012;

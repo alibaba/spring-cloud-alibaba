@@ -18,6 +18,7 @@ package com.alibaba.cloud.mtls.client.rest;
 
 import javax.net.ssl.SSLContext;
 
+import com.alibaba.cloud.governance.istio.sds.CertPair;
 import com.alibaba.cloud.mtls.MtlsSslStoreProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -42,25 +43,45 @@ public class ClientRequestFactoryProvider {
 		this.mtlsSslStoreProvider = mtlsSslStoreProvider;
 	}
 
+	public ClientHttpRequestFactory getFactoryByTemplate(RestTemplate restTemplate, CertPair certPair) {
+		try {
+			SSLContext sslContext = new SSLContextBuilder()
+					.loadKeyMaterial(mtlsSslStoreProvider.getKeyStore(certPair), "".toCharArray())
+					.loadTrustMaterial(mtlsSslStoreProvider.getTrustStore(certPair), null)
+					.build();
+			return getFactoryByTemplate(restTemplate, sslContext);
+		}
+		catch (Exception e) {
+			log.error("Can not get factory by template, class name is {}",
+					restTemplate.getRequestFactory().getClass().getName(), e);
+		}
+		return null;
+	}
+
 	public ClientHttpRequestFactory getFactoryByTemplate(RestTemplate restTemplate) {
 		try {
 			SSLContext sslContext = new SSLContextBuilder()
 					.loadKeyMaterial(mtlsSslStoreProvider.getKeyStore(), "".toCharArray())
 					.loadTrustMaterial(mtlsSslStoreProvider.getTrustStore(), null)
 					.build();
-			ClientHttpRequestFactory factory = restTemplate.getRequestFactory();
-			if (factory instanceof SimpleClientHttpRequestFactory) {
-				return new MtlsSimpleClientHttpRequestFactory(sslContext);
-			}
-			if (factory instanceof HttpComponentsClientHttpRequestFactory) {
-				HttpClient client = HttpClients.custom().setSSLContext(sslContext)
-						.setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
-				return new HttpComponentsClientHttpRequestFactory(client);
-			}
+			return getFactoryByTemplate(restTemplate, sslContext);
 		}
 		catch (Exception e) {
 			log.error("Can not get factory by template, class name is {}",
 					restTemplate.getRequestFactory().getClass().getName(), e);
+		}
+		return null;
+	}
+
+	private ClientHttpRequestFactory getFactoryByTemplate(RestTemplate restTemplate, SSLContext sslContext) {
+		ClientHttpRequestFactory factory = restTemplate.getRequestFactory();
+		if (factory instanceof SimpleClientHttpRequestFactory) {
+			return new MtlsSimpleClientHttpRequestFactory(sslContext);
+		}
+		if (factory instanceof HttpComponentsClientHttpRequestFactory) {
+			HttpClient client = HttpClients.custom().setSSLContext(sslContext)
+					.setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+			return new HttpComponentsClientHttpRequestFactory(client);
 		}
 		return null;
 	}

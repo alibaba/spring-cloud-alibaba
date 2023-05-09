@@ -36,9 +36,7 @@ public class MtlsSslStoreProvider implements SslStoreProvider {
 		this.certManager = certManager;
 	}
 
-	@Override
-	public KeyStore getKeyStore() {
-		CertPair certPair = certManager.getCertPair();
+	public KeyStore getKeyStore(CertPair certPair) {
 		try {
 			KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 			keyStore.load(null, null);
@@ -54,20 +52,29 @@ public class MtlsSslStoreProvider implements SslStoreProvider {
 	}
 
 	@Override
-	public KeyStore getTrustStore() {
+	public KeyStore getKeyStore() {
 		CertPair certPair = certManager.getCertPair();
+		return getKeyStore(certPair);
+	}
+
+	public KeyStore getTrustStore(CertPair certPair) {
 		try {
 			KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 			keyStore.load(null, null);
 			keyStore.setCertificateEntry(MtlsConstants.MTLS_DEFAULT_TRUST_STORE_ALIAS,
-					certPair.getCertificateChain()[certPair.getCertificateChain().length
-							- 1]);
+					certPair.getRootCA());
 			return keyStore;
 		}
 		catch (Exception e) {
 			log.error("Unable to get trust store", e);
 		}
 		return null;
+	}
+
+	@Override
+	public KeyStore getTrustStore() {
+		CertPair certPair = certManager.getCertPair();
+		return getTrustStore(certPair);
 	}
 
 }

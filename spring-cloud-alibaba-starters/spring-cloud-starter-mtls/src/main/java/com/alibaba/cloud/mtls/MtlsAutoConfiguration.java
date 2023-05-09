@@ -17,7 +17,7 @@
 package com.alibaba.cloud.mtls;
 
 import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
-import com.alibaba.cloud.governance.istio.sds.IstioCertPairManager;
+import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
 import com.alibaba.cloud.mtls.client.rest.ClientRequestFactoryProvider;
 import com.alibaba.cloud.mtls.server.ApplicationRestarter;
 import com.alibaba.cloud.mtls.server.ServerTlsModeHolder;
@@ -41,14 +41,14 @@ public class MtlsAutoConfiguration {
 			.getLogger(MtlsAutoConfiguration.class);
 
 	@Bean
-	public MtlsSslStoreProvider mtlsSslStoreProvider(IstioCertPairManager certManager) {
+	public MtlsSslStoreProvider mtlsSslStoreProvider(AbstractCertManager certManager) {
 		return new MtlsSslStoreProvider(certManager);
 	}
 
 	@Bean
 	@ConditionalOnClass(Tomcat.class)
 	public TomcatConnectorCustomizer mtlsCustomizer(MtlsSslStoreProvider sslStoreProvider,
-			IstioCertPairManager certManager,
+			AbstractCertManager certManager,
 			ClientRequestFactoryProvider clientRequestFactoryProvider,
 			ServerTlsModeListener serverTlsModeListener,
 			ControlPlaneInitedBean controlPlaneInitedBean) {

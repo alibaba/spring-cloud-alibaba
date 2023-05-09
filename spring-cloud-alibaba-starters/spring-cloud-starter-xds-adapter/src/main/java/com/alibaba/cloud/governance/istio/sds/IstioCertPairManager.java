@@ -73,7 +73,7 @@ public class IstioCertPairManager extends AbstractCertManager {
 
 	@PreDestroy
 	public void close() {
-		schedule.shutdownNow();
+		schedule.shutdown();
 	}
 
 	protected synchronized CertPair doGetCertPair() {
