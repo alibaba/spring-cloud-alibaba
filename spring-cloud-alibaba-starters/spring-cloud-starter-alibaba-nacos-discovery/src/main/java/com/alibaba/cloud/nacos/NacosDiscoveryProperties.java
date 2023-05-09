@@ -199,7 +199,7 @@ public class NacosDiscoveryProperties {
 	/**
 	 * Heart beat interval. Time unit: millisecond.
 	 */
-	private Integer heartBeatInterval = 30000;
+	private Integer heartBeatInterval;
 
 	/**
 	 * Heart beat timeout. Time unit: millisecond.

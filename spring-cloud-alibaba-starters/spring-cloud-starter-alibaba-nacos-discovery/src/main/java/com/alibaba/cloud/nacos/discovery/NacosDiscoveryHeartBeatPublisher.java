@@ -65,7 +65,7 @@ public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublish
 		if (this.running.compareAndSet(false, true)) {
 			log.info("Start nacos heartBeat task scheduler.");
 			this.heartBeatFuture = this.taskScheduler.scheduleWithFixedDelay(
-					this::publishHeartBeat, Duration.ofMillis(this.nacosDiscoveryProperties.getHeartBeatInterval()));
+					this::publishHeartBeat, Duration.ofMillis(this.nacosDiscoveryProperties.getWatchDelay()));
 		}
 	}
 
