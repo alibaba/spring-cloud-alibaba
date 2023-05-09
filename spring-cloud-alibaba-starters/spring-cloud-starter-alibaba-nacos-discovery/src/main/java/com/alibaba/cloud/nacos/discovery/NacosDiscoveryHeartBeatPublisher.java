@@ -43,10 +43,10 @@ public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublish
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	private final ThreadPoolTaskScheduler taskScheduler;
-	private final AtomicLong nacosWatchIndex = new AtomicLong(0);
+	private final AtomicLong nacosHeartBeatIndex = new AtomicLong(0);
 	private final AtomicBoolean running = new AtomicBoolean(false);
 	private ApplicationEventPublisher publisher;
-	private ScheduledFuture<?> watchFuture;
+	private ScheduledFuture<?> heartBeatFuture;
 
 	public NacosDiscoveryHeartBeatPublisher(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
@@ -62,20 +62,22 @@ public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublish
 
 	@Override
 	public void start() {
-		log.info("Start nacos heartBeat task scheduler.");
-		this.watchFuture = this.taskScheduler.scheduleWithFixedDelay(
-				this::publishHeartBeat, Duration.ofMillis(this.nacosDiscoveryProperties.getWatchDelay()));
-		this.running.compareAndExchange(false, true);
+		if (this.running.compareAndSet(false, true)) {
+			log.info("Start nacos heartBeat task scheduler.");
+			this.heartBeatFuture = this.taskScheduler.scheduleWithFixedDelay(
+					this::publishHeartBeat, Duration.ofMillis(this.nacosDiscoveryProperties.getHeartBeatInterval()));
+		}
 	}
 
 	@Override
 	public void stop() {
-		if (this.watchFuture != null) {
-			// shutdown current user-thread,
-			// then the other daemon-threads will terminate automatic.
-			this.taskScheduler.shutdown();
-			this.watchFuture.cancel(true);
-			this.running.compareAndExchange(true, false);
+		if (this.running.compareAndSet(true, false)) {
+			if (this.heartBeatFuture != null) {
+				// shutdown current user-thread,
+				// then the other daemon-threads will terminate automatic.
+				this.taskScheduler.shutdown();
+				this.heartBeatFuture.cancel(true);
+			}
 		}
 	}
 
@@ -98,7 +100,7 @@ public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublish
 	 * nacos doesn't support watch now , publish an event every 30 seconds.
 	 */
 	public void publishHeartBeat() {
-		HeartbeatEvent event = new HeartbeatEvent(this, nacosWatchIndex.getAndIncrement());
+		HeartbeatEvent event = new HeartbeatEvent(this, nacosHeartBeatIndex.getAndIncrement());
 		this.publisher.publishEvent(event);
 	}
 }
