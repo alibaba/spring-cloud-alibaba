@@ -72,7 +72,7 @@ public class NacosDiscoveryClientConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.watch.enabled", matchIfMissing = false)
+	@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.heart-beat.enabled", matchIfMissing = false)
 	public NacosDiscoveryHeartBeatPublisher nacosDiscoveryHeartBeatPublisher(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		return new NacosDiscoveryHeartBeatPublisher(nacosDiscoveryProperties);
 	}
