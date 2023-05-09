@@ -86,7 +86,7 @@ public class NacosDiscoveryClientConfigurationTest {
 	@Test
 	public void testNacosDiscoveryHeartBeatPublisherEnabled() {
 		contextRunner
-				.withPropertyValues("spring.cloud.nacos.discovery.watch.enabled=true")
+				.withPropertyValues("spring.cloud.nacos.discovery.heart-beat.enabled=true")
 				.run(context ->
 						assertThat(context).hasSingleBean(NacosDiscoveryHeartBeatPublisher.class)
 				);
