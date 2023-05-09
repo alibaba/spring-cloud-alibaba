@@ -359,5 +359,5 @@ The following shows the other configurations of the starter of Nacos Discovery:
 |Endpoint|`spring.cloud.nacos.discovery.endpoint`||The domain name of a certain service in a specific region. You can retrieve the server address dynamically with this domain name
 |Integrate LoadBalancer or not|`spring.cloud.loadbalancer.nacos.enabled`|`false`|
 |Enable Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`false`|set to true to enable watch
+|Enable Nacos Discovery HeartBeat|`spring.cloud.nacos.discovery.heart-beat.enabled`|`false`|set to true to enable heart beat
 |===
-
