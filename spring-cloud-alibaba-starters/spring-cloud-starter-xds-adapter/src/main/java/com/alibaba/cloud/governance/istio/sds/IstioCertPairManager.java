@@ -28,11 +28,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PreDestroy;
 
 import com.alibaba.cloud.commons.io.FileUtils;
 import com.alibaba.cloud.commons.lang.StringUtils;
@@ -56,24 +51,8 @@ import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
 public class IstioCertPairManager extends AbstractCertManager {
 
-	private final ScheduledExecutorService schedule;
-
 	public IstioCertPairManager(XdsConfigProperties xdsConfigProperties) {
 		super(xdsConfigProperties);
-		schedule = Executors.newScheduledThreadPool(1);
-		schedule.scheduleAtFixedRate(() -> {
-			try {
-				getCertPair();
-			}
-			catch (Exception e) {
-				log.error("Generate Cert from Istio failed.", e);
-			}
-		}, 0, 30, TimeUnit.SECONDS);
-	}
-
-	@PreDestroy
-	public void close() {
-		schedule.shutdown();
 	}
 
 	protected synchronized CertPair doGetCertPair() {

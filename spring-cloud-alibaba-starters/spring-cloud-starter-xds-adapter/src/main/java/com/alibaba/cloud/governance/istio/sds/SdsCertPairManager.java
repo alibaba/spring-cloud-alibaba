@@ -83,7 +83,7 @@ public class SdsCertPairManager extends AbstractCertManager {
 		certPair.setRootCA(caCertificate);
 		certPair.setExpireTime(
 				duration.getSeconds() * 1000L + System.currentTimeMillis());
-		log.info("Received {} certificates, 1 private key", certificates.length);
+		log.info("Received {} certificates, from pilot-agent", certificates.length);
 		return certPair;
 	}
 

@@ -18,6 +18,11 @@ package com.alibaba.cloud.governance.istio.sds;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PreDestroy;
 
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import org.slf4j.Logger;
@@ -38,8 +43,19 @@ public abstract class AbstractCertManager implements CertUpdater, CertPairProvid
 
 	protected CertPair certPair = new CertPair();
 
+	protected final ScheduledExecutorService schedule;
+
 	public AbstractCertManager(XdsConfigProperties xdsConfigProperties) {
 		this.xdsConfigProperties = xdsConfigProperties;
+		schedule = Executors.newScheduledThreadPool(1);
+		schedule.scheduleAtFixedRate(() -> {
+			try {
+				getCertPair();
+			}
+			catch (Exception e) {
+				log.error("Generate Cert from Istio failed.", e);
+			}
+		}, 0, 10, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -64,6 +80,11 @@ public abstract class AbstractCertManager implements CertUpdater, CertPairProvid
 	@Override
 	public void registerCallback(CertUpdateCallback certUpdateCallback) {
 		callbacks.add(certUpdateCallback);
+	}
+
+	@PreDestroy
+	public void close() {
+		schedule.shutdown();
 	}
 
 }

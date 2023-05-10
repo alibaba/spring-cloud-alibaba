@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 
 import javax.annotation.PreDestroy;
+import javax.net.ssl.SSLException;
 
 import com.alibaba.cloud.governance.istio.bootstrap.Bootstrapper;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
@@ -66,27 +67,17 @@ public class XdsChannel implements AutoCloseable {
 
 	private final IstioCertPairManager istioCertPairManager;
 
+	private final Bootstrapper.BootstrapInfo bootstrapInfo;
+
 	public XdsChannel(XdsConfigProperties xdsConfigProperties,
 			IstioCertPairManager istioCertPairManager,
 			Bootstrapper.BootstrapInfo bootstrapInfo) {
 		this.xdsConfigProperties = xdsConfigProperties;
 		this.istioCertPairManager = istioCertPairManager;
+		this.bootstrapInfo = bootstrapInfo;
 		try {
 			if (Boolean.FALSE.equals(xdsConfigProperties.getUseAgent())) {
-				if (xdsConfigProperties.getPort() == ISTIOD_SECURE_PORT) {
-					this.refreshIstiodToken();
-					this.channel = createManagedChannel();
-					if (this.channel == null) {
-						throw new XdsInitializationException(
-								"Failed to create ManagedChannel while initializing");
-					}
-				}
-				else {
-					this.channel = NettyChannelBuilder
-							.forTarget(xdsConfigProperties.getHost() + ":"
-									+ xdsConfigProperties.getPort())
-							.negotiationType(NegotiationType.PLAINTEXT).build();
-				}
+				this.channel = createIstioManagedChannel();
 				this.node = NodeBuilder.getNode(xdsConfigProperties);
 			}
 			else {
@@ -94,12 +85,12 @@ public class XdsChannel implements AutoCloseable {
 					throw new XdsInitializationException(
 							"No bootstrap info while using pilot agent");
 				}
-				EpollEventLoopGroup elg = new EpollEventLoopGroup();
-				this.channel = NettyChannelBuilder.forAddress(new DomainSocketAddress(
-						URI.create(bootstrapInfo.servers().get(0).target()).getPath()))
-						.eventLoopGroup(elg).channelType(EpollDomainSocketChannel.class)
-						.usePlaintext().build();
+				this.channel = createPilotAgentManagedChannel();
 				this.node = bootstrapInfo.node();
+			}
+			if (this.channel == null) {
+				throw new XdsInitializationException(
+						"Failed to create ManagedChannel while initializing");
 			}
 		}
 		catch (Exception e) {
@@ -107,8 +98,9 @@ public class XdsChannel implements AutoCloseable {
 		}
 	}
 
-	private ManagedChannel createManagedChannel() {
-		try {
+	private ManagedChannel createIstioManagedChannel() throws SSLException {
+		if (xdsConfigProperties.getPort() == ISTIOD_SECURE_PORT) {
+			this.refreshIstiodToken();
 			CertPair certPair = istioCertPairManager.getCertPair();
 			if (certPair == null) {
 				throw new XdsInitializationException(
@@ -126,10 +118,25 @@ public class XdsChannel implements AutoCloseable {
 							+ xdsConfigProperties.getPort())
 					.negotiationType(NegotiationType.TLS).sslContext(sslcontext).build();
 		}
-		catch (Exception e) {
-			log.error("Failed to create managed channel", e);
+		else {
+			this.channel = NettyChannelBuilder
+					.forTarget(xdsConfigProperties.getHost() + ":"
+							+ xdsConfigProperties.getPort())
+					.negotiationType(NegotiationType.PLAINTEXT).build();
 		}
 		return null;
+	}
+
+	private ManagedChannel createPilotAgentManagedChannel() {
+		if (bootstrapInfo == null) {
+			return null;
+		}
+		EpollEventLoopGroup elg = new EpollEventLoopGroup();
+		return NettyChannelBuilder
+				.forAddress(new DomainSocketAddress(
+						URI.create(bootstrapInfo.servers().get(0).target()).getPath()))
+				.eventLoopGroup(elg).channelType(EpollDomainSocketChannel.class)
+				.usePlaintext().build();
 	}
 
 	private void refreshIstiodToken() {
@@ -145,19 +152,28 @@ public class XdsChannel implements AutoCloseable {
 	@Override
 	public void close() {
 		if (channel != null) {
+			log.warn("Xds channel closing!");
 			channel.shutdown();
 		}
 	}
 
 	public void restart() {
-		close();
-		// refresh token again
-		if (!xdsConfigProperties.getUseAgent()
-				&& xdsConfigProperties.getPort() == IstioConstants.ISTIOD_SECURE_PORT) {
-			refreshIstiodToken();
+		try {
+			close();
+			// refresh token again
+			if (!xdsConfigProperties.getUseAgent() && xdsConfigProperties
+					.getPort() == IstioConstants.ISTIOD_SECURE_PORT) {
+				refreshIstiodToken();
+			}
+			if (istioCertPairManager != null) {
+				this.channel = createIstioManagedChannel();
+			}
+			else if (bootstrapInfo != null) {
+				this.channel = createPilotAgentManagedChannel();
+			}
 		}
-		if (istioCertPairManager != null) {
-			this.channel = createManagedChannel();
+		catch (Exception e) {
+			log.error("Failed to restart xds channel", e);
 		}
 	}
 
