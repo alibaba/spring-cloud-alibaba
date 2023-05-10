@@ -39,21 +39,14 @@ public class PreparedEventRecorder
 
 	private static String[] args;
 
-	private static ApplicationPreparedEvent event;
-
 	@Override
 	public void onApplicationEvent(ApplicationPreparedEvent input) {
-		event = input;
-		if (context == null) {
-			context = event.getApplicationContext();
-			args = event.getArgs();
-			application = event.getSpringApplication();
+		synchronized (PreparedEventRecorder.class) {
+			context = input.getApplicationContext();
+			args = input.getArgs();
+			application = input.getSpringApplication();
 			application.addInitializers(new PostProcessorInitializer());
 		}
-	}
-
-	static ApplicationPreparedEvent getEvent() {
-		return event;
 	}
 
 	static ConfigurableApplicationContext getContext() {

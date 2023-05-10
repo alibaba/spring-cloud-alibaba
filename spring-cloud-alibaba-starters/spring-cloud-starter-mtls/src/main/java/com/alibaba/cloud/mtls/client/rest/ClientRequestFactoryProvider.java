@@ -43,10 +43,12 @@ public class ClientRequestFactoryProvider {
 		this.mtlsSslStoreProvider = mtlsSslStoreProvider;
 	}
 
-	public ClientHttpRequestFactory getFactoryByTemplate(RestTemplate restTemplate, CertPair certPair) {
+	public ClientHttpRequestFactory getFactoryByTemplate(RestTemplate restTemplate,
+			CertPair certPair) {
 		try {
 			SSLContext sslContext = new SSLContextBuilder()
-					.loadKeyMaterial(mtlsSslStoreProvider.getKeyStore(certPair), "".toCharArray())
+					.loadKeyMaterial(mtlsSslStoreProvider.getKeyStore(certPair),
+							"".toCharArray())
 					.loadTrustMaterial(mtlsSslStoreProvider.getTrustStore(certPair), null)
 					.build();
 			return getFactoryByTemplate(restTemplate, sslContext);
@@ -73,7 +75,8 @@ public class ClientRequestFactoryProvider {
 		return null;
 	}
 
-	private ClientHttpRequestFactory getFactoryByTemplate(RestTemplate restTemplate, SSLContext sslContext) {
+	private ClientHttpRequestFactory getFactoryByTemplate(RestTemplate restTemplate,
+			SSLContext sslContext) {
 		ClientHttpRequestFactory factory = restTemplate.getRequestFactory();
 		if (factory instanceof SimpleClientHttpRequestFactory) {
 			return new MtlsSimpleClientHttpRequestFactory(sslContext);
