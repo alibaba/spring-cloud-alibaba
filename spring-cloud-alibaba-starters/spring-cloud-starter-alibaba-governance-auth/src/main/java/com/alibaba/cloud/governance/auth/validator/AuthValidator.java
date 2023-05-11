@@ -19,6 +19,7 @@ package com.alibaba.cloud.governance.auth.validator;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.commons.governance.auth.condition.AuthCondition;
 import com.alibaba.cloud.commons.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.commons.governance.auth.rule.JwtRule;
@@ -49,8 +50,12 @@ public class AuthValidator {
 
 	private final AuthRepository authRepository;
 
-	public AuthValidator(AuthRepository authRepository) {
+	private final boolean isTls;
+
+	public AuthValidator(AuthRepository authRepository,
+			ControlPlaneInitedBean controlPlaneInitedBean) {
 		this.authRepository = authRepository;
+		this.isTls = controlPlaneInitedBean.isTls();
 	}
 
 	public boolean validate(UnifiedHttpRequest request) {
@@ -144,6 +149,9 @@ public class AuthValidator {
 			case PATHS:
 				return matcher.match(request.getPath());
 			case IDENTITY:
+				if (!isTls) {
+					return true;
+				}
 				return matcher.match(request.getPrincipal());
 			case REQUEST_PRINCIPALS:
 			case AUTH_AUDIENCES:
@@ -298,7 +306,6 @@ public class AuthValidator {
 		public String getPrincipal() {
 			return principal;
 		}
-
 
 		public static class UnifiedHttpRequestBuilder {
 

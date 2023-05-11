@@ -21,7 +21,6 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Enumeration;
 
-import javax.security.auth.x500.X500Principal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,16 +63,16 @@ public class AuthWebInterceptor implements HandlerInterceptor {
 		HttpHeaders headers = getHeaders(request);
 		MultiValueMap<String, String> params = getQueryParams(request);
 		String principal = "";
-		X509Certificate[] certs = (X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
+		X509Certificate[] certs = (X509Certificate[]) request
+				.getAttribute("javax.servlet.request.X509Certificate");
 		if (certs != null && certs.length > 0) {
-			principal = CertUtil.getCN(certs[0]);
+			principal = CertUtil.getIstioIdentity(certs[0]);
 		}
 		AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder builder = new AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder();
 		AuthValidator.UnifiedHttpRequest unifiedHttpRequest = builder.setDestIp(destIp)
 				.setRemoteIp(remoteIp).setSourceIp(sourceIp).setHost(host).setPort(port)
 				.setMethod(method).setPath(path).setHeaders(headers).setParams(params)
-				.setPrincipal(principal)
-				.build();
+				.setPrincipal(principal).build();
 		if (!authValidator.validate(unifiedHttpRequest)) {
 			return ret401(response);
 		}

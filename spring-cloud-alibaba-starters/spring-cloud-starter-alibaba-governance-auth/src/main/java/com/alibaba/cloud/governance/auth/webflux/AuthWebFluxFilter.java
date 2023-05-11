@@ -68,16 +68,17 @@ public class AuthWebFluxFilter implements WebFilter {
 		MultiValueMap<String, String> params = request.getQueryParams();
 		String principal = "";
 		if (exchange.getRequest().getSslInfo() != null) {
-			X509Certificate[] certs = exchange.getRequest().getSslInfo().getPeerCertificates();
+			X509Certificate[] certs = exchange.getRequest().getSslInfo()
+					.getPeerCertificates();
 			if (certs != null && certs.length > 0) {
-				principal = CertUtil.getCN(certs[0]);
+				principal = CertUtil.getIstioIdentity(certs[0]);
 			}
 		}
 		AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder builder = new AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder();
 		AuthValidator.UnifiedHttpRequest unifiedHttpRequest = builder.setDestIp(destIp)
 				.setRemoteIp(remoteIp).setSourceIp(sourceIp).setHost(host).setPort(port)
-				.setMethod(method).setPath(path).setHeaders(headers).setParams(params).setPrincipal(principal)
-				.build();
+				.setMethod(method).setPath(path).setHeaders(headers).setParams(params)
+				.setPrincipal(principal).build();
 
 		if (!authValidator.validate(unifiedHttpRequest)) {
 			return ret401(exchange);

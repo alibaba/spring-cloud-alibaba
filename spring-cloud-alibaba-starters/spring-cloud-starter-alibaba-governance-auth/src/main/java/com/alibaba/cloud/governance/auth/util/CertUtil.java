@@ -17,24 +17,29 @@
 package com.alibaba.cloud.governance.auth.util;
 
 import java.security.cert.X509Certificate;
-
-import javax.security.auth.x500.X500Principal;
+import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class CertUtil {
+
 	private static final Logger log = LoggerFactory.getLogger(CertUtil.class);
-	public static String getCN(X509Certificate x509Certificate) {
+
+	private CertUtil() {
+
+	}
+
+	public static String getIstioIdentity(X509Certificate x509Certificate) {
 		try {
-			X500Principal x500Principal = x509Certificate.getSubjectX500Principal();
-			String dn = x500Principal.getName();
-			X500Principal x500Name = new X500Principal(dn);
-			return x500Name.getName("CN");
+			Collection<List<?>> san = x509Certificate.getSubjectAlternativeNames();
+			return (String) san.iterator().next().get(1);
 		}
 		catch (Exception e) {
-			log.error("Failed to get common name from X509Certificate");
+			log.error("Failed to get istio SAN from X509Certificate", e);
 		}
 		return "";
 	}
+
 }
