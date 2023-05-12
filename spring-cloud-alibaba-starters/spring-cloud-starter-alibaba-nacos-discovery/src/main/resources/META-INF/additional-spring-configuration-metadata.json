@@ -48,6 +48,12 @@
       "description": "enable nacos discovery watch or not ."
     },
     {
+      "name": "spring.cloud.nacos.discovery.heart-beat.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "enable nacos discovery heart beat or not ."
+    },
+    {
       "name": "spring.cloud.nacos.discovery.username",
       "type": "java.lang.String",
       "defaultValue": "${spring.cloud.nacos.username}",
