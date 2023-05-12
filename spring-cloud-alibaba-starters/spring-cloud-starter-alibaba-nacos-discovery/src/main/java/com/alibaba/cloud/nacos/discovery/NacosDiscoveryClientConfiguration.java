@@ -64,17 +64,4 @@ public class NacosDiscoveryClientConfiguration {
 		return new NacosWatch(nacosServiceManager, nacosDiscoveryProperties);
 	}
 
-	/**
-	 * Nacos HeartBeat is no longer enabled by default .
-	 * publish an event every 30 seconds
-	 * see https://github.com/alibaba/spring-cloud-alibaba/issues/2868
-	 * see https://github.com/alibaba/spring-cloud-alibaba/issues/3258
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	@ConditionalOnProperty(value = "spring.cloud.nacos.discovery.heart-beat.enabled", matchIfMissing = false)
-	public NacosDiscoveryHeartBeatPublisher nacosDiscoveryHeartBeatPublisher(NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new NacosDiscoveryHeartBeatPublisher(nacosDiscoveryProperties);
-	}
-
 }
