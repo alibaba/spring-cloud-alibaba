@@ -46,7 +46,8 @@ public class FeignResponseDecoderInterceptor implements Decoder {
 	public Object decode(Response response, Type type)
 			throws IOException, FeignException {
 		Object object = delegate.decode(response, type);
-		logger.info("FeignResponseDecoderInterceptor uri {} for request {} got cleared by {}",
+		logger.info(
+				"FeignResponseDecoderInterceptor uri {} for request {} got cleared by {}",
 				UriContext.getUriPath(), response.request().url(), delegate.getClass());
 		UriContext.clearContext();
 		return object;
