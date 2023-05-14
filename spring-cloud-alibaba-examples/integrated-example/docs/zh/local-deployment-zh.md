@@ -50,7 +50,7 @@
 
 #### Nacos启动
 
-为了便于 example 的演示，这里采用 Nacos 的`standalone`模式启动，进入到 Nacos 解压后的目录下，执行如下命令。
+为了便于 example 的演示，这里采用 Nacos 的 `standalone` 模式启动，进入到 Nacos 解压后的目录下，执行如下命令。
 
 ```shell
 #Linux/Mac环境
@@ -63,9 +63,9 @@ bash bin/startup.sh -m standalone
 
 #### 新增配置文件
 
-在批量导入配置之前，请先修改`spring-cloud-alibaba-examples/integrated-example/config-init/config/datasource-config.yaml` 中的数据源配置**(用户名和密码)**。
+在批量导入配置之前，请先修改 `spring-cloud-alibaba-examples/integrated-example/config-init/config/datasource-config.yaml` 中的数据源配置**（用户名和密码）**。
 
-之后运行`spring-cloud-alibaba-examples/integrated-example/config-init/scripts/nacos-config-quick.sh` 来完成所有微服务配置的一键导入。
+之后运行 `spring-cloud-alibaba-examples/integrated-example/config-init/scripts/nacos-config-quick.sh` 来完成所有微服务配置的一键导入。
 
 ```shell
 # linux
@@ -116,9 +116,9 @@ sh bin/mqbroker
 
 ## 运行 Demo 示例
 
-准备工作完成后可以运行 demo 示例，主要根据不同的使用场景，可以分别体验用户下单(分布式事务能力)以及模拟高流量点赞(熔断限流以及削峰填谷的能力)。
+准备工作完成后可以运行 demo 示例，主要根据不同的使用场景，可以分别体验用户下单（分布式事务能力）以及模拟高流量点赞（熔断限流以及削峰填谷的能力）。
 
-首先需要分别启动`integrated-frontend`以及`integrated-gateway`微服务应用。
+首先需要分别启动 `integrated-frontend` 以及 `integrated-gateway` 微服务应用。
 
 - `integrated-gateway` 模块是整个最佳实践示例的网关。
 - `integrated-frontend` 为最佳实践示例的简易前端页面。
@@ -135,9 +135,9 @@ sh bin/mqbroker
 
 ##### 启动测试
 
-分别启动`integrated-storage`,`integrated-account`,`integrated-order`三个微服务应用。
+分别启动 `integrated-storage`，`integrated-account`，`integrated-order` 三个微服务应用。
 
-访问`http://integrated-frontend:8080/order` 来体验对应场景。
+访问 `http://integrated-frontend:8080/order` 来体验对应场景。
 
 直接点击下单按钮提交表单，应用模拟客户端向网关发送了一个创建订单的请求。
 
@@ -151,11 +151,11 @@ sh bin/mqbroker
 
 而在前面的准备工作中，**初始化业务数据库表**的时候应用新建了一个用户，用户userId 为 admin，余额为 3 元；同时新建了一个编号为 1 号的商品，库存为 100 件。
 
-因此通过上述的操作，应用会创建一个订单，扣减对应商品编号为 1 号的库存个数(100-1=99)，扣减 admin 用户的余额(3-2=1)。
+因此通过上述的操作，应用会创建一个订单，扣减对应商品编号为 1 号的库存个数（100-1=99），扣减 admin 用户的余额（3-2=1）。
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155429801.png)
 
-如果再次请求相同的接口，同样是先扣减库存(99-1=98)，但是会因为 admin 用户余额不足而抛出异常，并被 Seata 捕获，执行分布式事务二阶段提交，回滚事务。
+如果再次请求相同的接口，同样是先扣减库存（99-1=98），但是会因为 admin 用户余额不足而抛出异常，并被 Seata 捕获，执行分布式事务二阶段提交，回滚事务。
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155436112.png)
 
@@ -172,25 +172,25 @@ sh bin/mqbroker
 
 #### 启动测试
 
-分别启动`integrated-praise-provider`以及`integrated-praise-consumer`模块。
+分别启动 `integrated-praise-provider` 以及 `integrated-praise-consumer` 模块。
 
 - Sentinel 服务熔断降级
 
-访问`http://integrated-frontend:8080/sentinel` 体验对应场景。
+访问 `http://integrated-frontend:8080/sentinel` 体验对应场景。
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20221016155501290.png)
 
 网关路由点赞服务的限流规则为 5，而在前端通过异步处理模拟了 10 次并发请求。
 
-因此可以看到 Sentinel 在 Gateway 侧针对多出的流量进行了服务熔断返回 fallback 给客户端，同时数据库的点赞数进行了更新(+5)。
+因此可以看到 Sentinel 在 Gateway 侧针对多出的流量进行了服务熔断返回 fallback 给客户端，同时数据库的点赞数进行了更新（+5）。
 
 ![](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220914155755103.png)
 
 - RocketMQ 进行流量削峰填谷
 
-访问`http://integrated-frontend:8080/rocketmq` 体验对应场景。
+访问 `http://integrated-frontend:8080/rocketmq` 体验对应场景。
 
-由于之前在 Nacos 中配置了`integrated-praise-consumer`消费者模块的消费速率以及间隔，在点击按钮时应用模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-praise-provider`
+由于之前在 Nacos 中配置了 `integrated-praise-consumer` 消费者模块的消费速率以及间隔，在点击按钮时应用模拟 1000 个点赞请求，针对 1000 个点赞请求，`integrated-praise-provider`
 会将 1000 次请求都向 Broker 投递消息，而在消费者模块中会根据配置的消费速率进行消费，向数据库更新点赞的商品数据，模拟大流量下 RocketMQ 削峰填谷的特性。
 
 可以看到数据库中点赞的个数正在动态更新。
