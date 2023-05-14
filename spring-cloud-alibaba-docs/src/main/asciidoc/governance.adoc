@@ -22,7 +22,7 @@ If you want to use OpenSergo, you can refer to https://github.com/alibaba/spring
 
 There are two ways to connect to `Istio` control plane:
 
-==== Inject pilot-agent(recommend)
+==== Inject pilot-agent(Recommend)
 
 Users can easily connect to the `Istio` control plane by injecting pilot-agent as a proxy for the xds protocol, simply by adding the following annotation to the pod of Spring Cloud Alibaba workload:
 

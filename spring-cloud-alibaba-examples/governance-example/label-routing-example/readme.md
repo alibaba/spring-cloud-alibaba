@@ -187,7 +187,7 @@ spring:
   cloud:
     governance:
       auth:
-        enabled: ${ISTIO_AUTH_ENABLE:true}
+         rule: ${ROUTING_RULE:RandomRule}
 ```
 ### Startup Application
 Start IstioConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.
