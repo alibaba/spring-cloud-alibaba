@@ -16,11 +16,8 @@
 
 package com.alibaba.cloud.mtls.server.tomcat;
 
-import java.util.Map;
-
 import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
 import com.alibaba.cloud.mtls.MtlsSslStoreProvider;
-import com.alibaba.cloud.mtls.client.rest.ClientRequestFactoryProvider;
 import com.alibaba.cloud.mtls.server.ServerTlsModeHolder;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
@@ -32,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.server.Ssl;
 import org.springframework.boot.web.server.WebServerException;
@@ -40,7 +36,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 public class MtlsTomcatConnectCustomizer
 		implements TomcatConnectorCustomizer, ApplicationContextAware {
@@ -50,17 +45,13 @@ public class MtlsTomcatConnectCustomizer
 
 	private final AbstractCertManager certManager;
 
-	private final ClientRequestFactoryProvider clientRequestFactoryProvider;
-
 	private final MtlsSslStoreProvider sslStoreProvider;
 
 	private ApplicationContext applicationContext;
 
 	public MtlsTomcatConnectCustomizer(MtlsSslStoreProvider sslStoreProvider,
-			AbstractCertManager certManager,
-			ClientRequestFactoryProvider clientRequestFactoryProvider) {
+			AbstractCertManager certManager) {
 		this.certManager = certManager;
-		this.clientRequestFactoryProvider = clientRequestFactoryProvider;
 		this.sslStoreProvider = sslStoreProvider;
 	}
 
@@ -84,27 +75,6 @@ public class MtlsTomcatConnectCustomizer
 			}
 			catch (Exception e) {
 				log.error("Failed to reload certificate of tomcat", e);
-			}
-		});
-		// When the certificate is expired, we refresh the client certificate.
-		certManager.registerCallback(certPair -> {
-			try {
-				if (!validateContext()) {
-					return;
-				}
-				Map<String, RestTemplate> restTemplates = applicationContext
-						.getBeansOfType(RestTemplate.class);
-				for (RestTemplate restTemplate : restTemplates.values()) {
-					restTemplate.setRequestFactory(clientRequestFactoryProvider
-							.getFactoryByTemplate(restTemplate, certPair));
-				}
-			}
-			catch (BeanCreationException e1) {
-				log.warn(
-						"Spring is creating the RestTemplate bean, please try to refresh the client certificate later");
-			}
-			catch (Exception e2) {
-				log.error("Failed to refresh RestTemplate", e2);
 			}
 		});
 		if (!ServerTlsModeHolder.waitTlsModeInitialized()) {

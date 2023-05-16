@@ -16,9 +16,13 @@
 
 package com.alibaba.cloud.mtls;
 
+import java.util.List;
+
 import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
+import com.alibaba.cloud.governance.istio.sds.CertUpdateCallback;
 import com.alibaba.cloud.mtls.client.rest.ClientRequestFactoryProvider;
+import com.alibaba.cloud.mtls.client.rest.RestTemplateCallback;
 import com.alibaba.cloud.mtls.server.ApplicationRestarter;
 import com.alibaba.cloud.mtls.server.ServerTlsModeHolder;
 import com.alibaba.cloud.mtls.server.ServerTlsModeListener;
@@ -29,10 +33,12 @@ import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration(proxyBeanMethods = false)
 public class MtlsAutoConfiguration {
@@ -48,13 +54,10 @@ public class MtlsAutoConfiguration {
 	@Bean
 	@ConditionalOnClass(Tomcat.class)
 	public TomcatConnectorCustomizer mtlsCustomizer(MtlsSslStoreProvider sslStoreProvider,
-			AbstractCertManager certManager,
-			ClientRequestFactoryProvider clientRequestFactoryProvider,
-			ServerTlsModeListener serverTlsModeListener,
+			AbstractCertManager certManager, ServerTlsModeListener serverTlsModeListener,
 			ControlPlaneInitedBean controlPlaneInitedBean) {
 		ServerTlsModeHolder.setTlsMode(controlPlaneInitedBean.isTls());
-		return new MtlsTomcatConnectCustomizer(sslStoreProvider, certManager,
-				clientRequestFactoryProvider);
+		return new MtlsTomcatConnectCustomizer(sslStoreProvider, certManager);
 	}
 
 	@Bean
@@ -68,10 +71,18 @@ public class MtlsAutoConfiguration {
 		return new ServerTlsModeListener(applicationRestarter);
 	}
 
+	@Bean
+	public MtlsCertCallbackIniter mtlsClientCallbackIniter(
+			AbstractCertManager certManager,
+			@Autowired(required = false) List<CertUpdateCallback> callbacks) {
+		return new MtlsCertCallbackIniter(certManager, callbacks);
+	}
+
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass({ NacosRegistrationCustomizer.class, NacosRegistration.class })
-	static class NacosCustomizerConfiguration {
+	protected static class NacosCustomizerConfiguration {
 
+		@Bean
 		public NacosRegistrationCustomizer nacosTlsCustomizer() {
 			return registration -> {
 				if (!ServerTlsModeHolder.waitTlsModeInitialized()) {
@@ -80,7 +91,21 @@ public class MtlsAutoConfiguration {
 				}
 				registration.getNacosDiscoveryProperties()
 						.setSecure(ServerTlsModeHolder.getTlsMode());
+				registration.getNacosDiscoveryProperties().getMetadata().put("secure",
+						"true");
 			};
+		}
+
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass({ RestTemplate.class })
+	protected static class RestTemplateMtlsConfiguration {
+
+		@Bean
+		public RestTemplateCallback restTemplateCallback(
+				ClientRequestFactoryProvider clientRequestFactoryProvider) {
+			return new RestTemplateCallback(clientRequestFactoryProvider);
 		}
 
 	}
