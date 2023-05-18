@@ -355,5 +355,6 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 |接入点|`spring.cloud.nacos.discovery.endpoint`||地域的某个服务的入口域名，通过此域名可以动态地拿到服务端地址
 |是否集成LoadBalancer|`spring.cloud.loadbalancer.nacos.enabled`|`false`|
 |是否开启Nacos Watch|`spring.cloud.nacos.discovery.watch.enabled`|`false`|可以设置成 true 来开启 watch
+|是否开启Nacos Discovery HeartBeat|`spring.cloud.nacos.discovery.heart-beat.enabled`|`false`|可以设置成 true 来开启 heart beat
 |===
 
