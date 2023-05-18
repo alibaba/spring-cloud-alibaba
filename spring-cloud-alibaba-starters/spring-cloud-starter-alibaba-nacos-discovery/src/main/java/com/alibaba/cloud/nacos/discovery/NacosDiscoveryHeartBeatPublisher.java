@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.nacos.discovery;
 
+import java.time.Duration;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,19 +36,19 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  * @author yuhuangbin
  * @author ruansheng
  */
-public class GatewayLocatorHeartBeatPublisher implements ApplicationEventPublisherAware, SmartLifecycle {
+public class NacosDiscoveryHeartBeatPublisher implements ApplicationEventPublisherAware, SmartLifecycle {
 
-	private static final Logger log = LoggerFactory.getLogger(GatewayLocatorHeartBeatPublisher.class);
+	private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryHeartBeatPublisher.class);
 
 	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
 	private final ThreadPoolTaskScheduler taskScheduler;
-	private final AtomicLong nacosWatchIndex = new AtomicLong(0);
+	private final AtomicLong nacosHeartBeatIndex = new AtomicLong(0);
 	private final AtomicBoolean running = new AtomicBoolean(false);
 	private ApplicationEventPublisher publisher;
-	private ScheduledFuture<?> watchFuture;
+	private ScheduledFuture<?> heartBeatFuture;
 
-	public GatewayLocatorHeartBeatPublisher(NacosDiscoveryProperties nacosDiscoveryProperties) {
+	public NacosDiscoveryHeartBeatPublisher(NacosDiscoveryProperties nacosDiscoveryProperties) {
 		this.nacosDiscoveryProperties = nacosDiscoveryProperties;
 		this.taskScheduler = getTaskScheduler();
 	}
@@ -61,19 +62,22 @@ public class GatewayLocatorHeartBeatPublisher implements ApplicationEventPublish
 
 	@Override
 	public void start() {
-		log.info("Start nacos gateway locator heartBeat task scheduler.");
-		this.watchFuture = this.taskScheduler.scheduleWithFixedDelay(
-				this::publishHeartBeat, this.nacosDiscoveryProperties.getWatchDelay());
-
+		if (this.running.compareAndSet(false, true)) {
+			log.info("Start nacos heartBeat task scheduler.");
+			this.heartBeatFuture = this.taskScheduler.scheduleWithFixedDelay(
+					this::publishHeartBeat, Duration.ofMillis(this.nacosDiscoveryProperties.getWatchDelay()));
+		}
 	}
 
 	@Override
 	public void stop() {
-		if (this.watchFuture != null) {
-			// shutdown current user-thread,
-			// then the other daemon-threads will terminate automatic.
-			this.taskScheduler.shutdown();
-			this.watchFuture.cancel(true);
+		if (this.running.compareAndSet(true, false)) {
+			if (this.heartBeatFuture != null) {
+				// shutdown current user-thread,
+				// then the other daemon-threads will terminate automatic.
+				this.taskScheduler.shutdown();
+				this.heartBeatFuture.cancel(true);
+			}
 		}
 	}
 
@@ -96,7 +100,7 @@ public class GatewayLocatorHeartBeatPublisher implements ApplicationEventPublish
 	 * nacos doesn't support watch now , publish an event every 30 seconds.
 	 */
 	public void publishHeartBeat() {
-		HeartbeatEvent event = new HeartbeatEvent(this, nacosWatchIndex.getAndIncrement());
+		HeartbeatEvent event = new HeartbeatEvent(this, nacosHeartBeatIndex.getAndIncrement());
 		this.publisher.publishEvent(event);
 	}
 }
