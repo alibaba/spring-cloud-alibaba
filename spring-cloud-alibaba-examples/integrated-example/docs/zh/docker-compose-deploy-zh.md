@@ -73,7 +73,7 @@ docker-compose-env.yml文件运行成功之后，添加Nacos配置：
 - 扣减账户余额
 - 生成订单信息返回响应
 
-**开始测试**
+#### 启动测试
 
 访问 `http://integrated-frontend:8080/order` 来体验对应场景。
 
@@ -108,7 +108,7 @@ docker-compose-env.yml文件运行成功之后，添加Nacos配置：
 - Sentinel 在网关侧绑定指定网关路由进行服务的熔断降级。
 - RocketMQ 进行流量削峰填谷，在大流量请求下，生产者向 RocketMQ 发送消息，而消费者则通过可配置的消费速率进行拉取消费，减少大流量直接请求数据库增加点赞请求的压力。
 
-**开始测试**
+#### 启动测试
 
 - Sentinel 服务熔断降级
 
