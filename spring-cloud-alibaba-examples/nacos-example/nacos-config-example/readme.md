@@ -3,11 +3,18 @@
 ## Project Instruction
 
 This example illustrates how to use Nacos Config Starter implement externalized configuration for Spring Cloud applications.
-Note: Applicable to spring boot version lower than 2.4.0
-
-***<font color=red>Note: Applicable to spring boot versions lower than 2.4.0, if the version is higher than 2.4.0, consider using import to import the configuration.</font>***
 
 [Nacos](https://github.com/alibaba/Nacos) an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.
+
+***<font color=red>Note: Starting from version 2021.0.1.0, spring-cloud-alibaba imports the configuration using spring.config.import by default. If you want to continue to load the configuration using bootstrap, you can add the following dependencies to the project root pom.xml file:</font>***
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bootstrap</artifactId>
+    <version>3.1.1</version>
+</dependency>
+```
 
 ## Demo
 
@@ -16,31 +23,32 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 
 
 1. Add dependency spring-cloud-starter-alibaba-nacos-config in the pom.xml file in your Spring Cloud project.
-```xml
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-</dependency>
-```
+   ```xml
+   <dependency>
+       <groupId>com.alibaba.cloud</groupId>
+       <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+   </dependency>
+   ```
 
 2. Add Nacos config metadata configurations to file /src/main/resources/application.yaml and import service config
-```yaml
-spring:
-  cloud:
-    nacos:
-      serverAddr: 127.0.0.1:8848
-  config:
-    import:
-      - nacos:nacos-config-example.properties?refresh=true
-```
+   ```yml
+   spring:
+     cloud:
+       nacos:
+         serverAddr: 127.0.0.1:8848
+     config:
+       import:
+         - nacos:nacos-config-example.properties?refresh=true
+   ```
 
 3. After completing the above two steps, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment. Suppose we save part of the configuration of Nacos through the Nacos configuration center, there are the following four examples:
-- BeanAutoRefreshConfigExample: An example that supports automatic refresh of configuration changes by configuring configuration information as beans
-- ConfigListenerExample: Example of listening configuration information
-- DockingInterfaceExample: An example of docking the nacos interface and completing the addition, deletion, modification and checking of configuration information through the interface
-- ValueAnnotationExample: An example of obtaining configuration information through @Value annotation
-- SharedConfigExample:           Example of shared configuration
-- ExtensionConfigExample:        Example of extended configuration
+
+   - BeanAutoRefreshConfigExample: An example that supports automatic refresh of configuration changes by configuring configuration information as beans
+   - ConfigListenerExample: Example of listening configuration information
+   - DockingInterfaceExample: An example of docking the nacos interface and completing the addition, deletion, modification and checking of configuration information through the interface
+   - ValueAnnotationExample: An example of obtaining configuration information through @Value annotation
+   - SharedConfigExample:           Example of shared configuration
+   - ExtensionConfigExample:        Example of extended configuration
 
 ### Start Nacos Server 
 
@@ -57,35 +65,35 @@ spring:
 3. Execute the following command to add a configuration to Nacos Server.
 
    	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serverAddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
-		
-	**Note: You can also add it in other ways. If you are using the Nacos version with its own console, it is recommended to configure it directly using the console.**
 	
+	**Note: You can also add it in other ways. If you are using the Nacos version with its own console, it is recommended to configure it directly using the console.**
 	
 	Details of the added configuration are as follows
 	
-		dataId is nacos-config-example.properties
-		group is DEFAULT_GROUP
-		
-		content is:
-		
-   		spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
-	    spring.cloud.nacos.config.prefix=PREFIX
-        spring.cloud.nacos.config.group=GROUP
-        spring.cloud.nacos.config.namespace=NAMESPACE
-
+	```properties
+	dataId is nacos-config-example.properties
+	grou is DEFAULT_GROUP
+	
+	content:
+   
+	  spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
+	  spring.cloud.nacos.config.prefix=PREFIX
+	  spring.cloud.nacos.config.group=GROUP
+	  spring.cloud.nacos.config.namespace=NAMESPACE
+	```
 
 ### Start Application
 
 1. Add necessary configurations to file /src/main/resources/application.properties
-```yaml
-server:
-  port: 18084
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-```
+   ```yml
+   server:
+     port: 18084
+   management:
+     endpoints:
+       web:
+         exposure:
+           include: '*'
+   ```
 
 2. Start the application in IDE or by building a fatjar.
 
@@ -97,16 +105,16 @@ management:
 #### Automatic Injection
 Enter `http://127.0.0.1:18084/nacos/bean` in the browser address bar and click Go to, we can see the data successfully obtained from Nacos Config Server.
 
-![get](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gbowleyrj20o40bo753.jpg)
+![get](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-config-example/nacos-config-bean.png)
 
 #### Dynamic Refresh
 1. Run the following command to modify the configuration data on the Nacos Server side.
 
-   	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=DEFAULT_GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
+   	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=NACOS_CONFIG_GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
 
-2. Enter `http://127.0.0.1:18084/nacos/bean` in the address bar of the browser, and click Flip, you can see that the application has obtained the latest data from Nacos Server, and the group has become DEFAULT_GROUP.
+2. Enter `http://127.0.0.1:18084/nacos/bean` in the address bar of the browser, and click Flip, you can see that the application has obtained the latest data from Nacos Server, and the group has become NACOS_CONFIG_GROUP.
 
-![refresh](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gbpram9rj20nq0ccmxz.jpg)
+![refresh](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-config-example/nacos-config-example-group.png)
 
 
 ## Principle
@@ -153,7 +161,7 @@ If you need to dynamically refresh a bean, please refer to the Spring and Spring
 
 Please refer to [ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
 
-	
+​	
 
 
 ## Endpoint
@@ -171,10 +179,9 @@ To view the endpoint information, visit the following URLS:
 Spring Boot 1.x: Nacos Config  Endpoint URL is http://127.0.0.1:18084/nacos_config.
 Spring Boot 2.x: Nacos Config  Endpoint URL is http://127.0.0.1:18084/actuator/nacosconfig.
 
-![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
+![actuator](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-config-example/nacos-config-example-endpoint.png)
 
-As shown in the figure above, Sources indicates which Nacos Config configuration items the client has obtained information, RefreshHistory indicates the dynamic refresh history, and up to 20, and NacosConfigProperties is the configuration of Nacos Config Starter itself.
-    	
+As shown in the figure above, Sources indicates which Nacos Config configuration items the client has obtained information, RefreshHistory indicates the dynamic refresh history, and up to 20, and NacosConfigProperties is the configuration of Nacos Config Starter itself.	
 ## More
 
 #### More configuration items

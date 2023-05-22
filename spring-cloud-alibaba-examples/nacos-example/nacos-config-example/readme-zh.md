@@ -4,8 +4,17 @@
 
 本项目演示如何使用 Nacos Config Starter 完成 Spring Cloud 应用的配置管理。
 
-
 [Nacos](https://github.com/alibaba/Nacos) 是阿里巴巴开源的一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+
+***<font color=red>Note: spring-cloud-alibaba从2021.0.1.0版本开始，默认使用spring.config.import方式引入配置，如果您想继续使用bootstrap 方式加载配置，您可以在项目根pom.xml文件中加入以下依赖：</font>***
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bootstrap</artifactId>
+    <version>3.1.1</version>
+</dependency>
+```
 
 ## 示例
 
@@ -14,29 +23,32 @@
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
 
 1. 首先，修改 pom.xml 文件，引入 Nacos Config Starter。
-```xml
-<dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-</dependency>
-```
+
+   ```xml
+   <dependency>
+       <groupId>com.alibaba.cloud</groupId>
+       <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+   </dependency>
+   ```
 
 2. 在应用的 /src/main/resources/application.yaml 配置文件中配置 Nacos Config 地址并引入服务配置
-```yaml
-spring:
-  cloud:
-    nacos:
-      serverAddr: 127.0.0.1:8848
-  config:
-    import:
-      - nacos:nacos-config-example.properties?refresh=true
-```
-		  
+
+   ```yml
+   spring:
+     cloud:
+       nacos:
+         serverAddr: 127.0.0.1:8848
+     config:
+       import:
+         - nacos:nacos-config-example.properties?refresh=true
+   ```
+
 3. 完成上述两步后，应用会从 Nacos Config 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中。假设我们通过 Nacos 配置中心保存 Nacos 的部分配置,有以下四种例子:
-- BeanAutoRefreshConfigExample:  通过将配置信息配置为bean，支持配置变自动刷新的例子
-- ConfigListenerExample:         监听配置信息的例子
-- DockingInterfaceExample:       对接 nacos 接口，通过接口完成对配置信息增删改查的例子
-- ValueAnnotationExample:        通过 @Value 注解进行配置信息获取的例子
+
+   - BeanAutoRefreshConfigExample:  通过将配置信息配置为bean，支持配置变自动刷新的例子
+   - ConfigListenerExample:         监听配置信息的例子
+   - DockingInterfaceExample:       对接 nacos 接口，通过接口完成对配置信息增删改查的例子
+   - ValueAnnotationExample:        通过 @Value 注解进行配置信息获取的例子
 
 ### 启动 Nacos Server 并添加配置
 
@@ -53,35 +65,37 @@ spring:
 3. 在命令行执行如下命令，向 Nacos Server 中添加一条配置。
 	
 		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serverAddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
-		
+	
 	**注：你也可以使用其他方式添加，遵循 HTTP API 规范即可，若您使用的 Nacos 版本自带控制台，建议直接使用控制台进行配置**
 	
 	添加的配置的详情如下
 	
-		dataId 为 nacos-config-example.properties
-		group 为 DEFAULT_GROUP
-		
-		内容如下:
-		
-   		spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
-	    spring.cloud.nacos.config.prefix=PREFIX
-        spring.cloud.nacos.config.group=GROUP
-        spring.cloud.nacos.config.namespace=NAMESPACE
-
+	```properties
+	dataId 为 nacos-config-example.properties
+	group 为 DEFAULT_GROUP
+	
+	内容为:
+   
+     spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
+     spring.cloud.nacos.config.prefix=PREFIX
+     spring.cloud.nacos.config.group=GROUP
+     spring.cloud.nacos.config.namespace=NAMESPACE
+   ```
 
 ### 应用启动
 
 1. 增加配置，在应用的 /src/main/resources/application.yaml 中添加基本配置信息
-```yaml
-server:
-  port: 18084
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-```
-		
+
+   ```yml
+   server:
+     port: 18084
+   management:
+     endpoints:
+       web:
+         exposure:
+           include: '*'
+   ```
+
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
 	1. IDE直接启动：找到主类 `NacosConfigApplication`，执行 main 方法启动应用。
@@ -92,16 +106,16 @@ management:
 #### 验证自动注入
 在浏览器地址栏输入 `http://127.0.0.1:18084/nacos/bean`，并点击调转，可以看到成功从 Nacos Config Server 中获取了数据。
 
-![get](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gbowleyrj20o40bo753.jpg)
+![get](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-config-example/nacos-config-example-bean.png)
 
 #### 验证动态刷新
 1. 执行如下命令，修改 Nacos Server 端的配置数据
 
-		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=DEFAULT_GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
+   	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=DEFAULT_GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE" 
 
 2. 在浏览器地址栏输入 `http://127.0.0.1:18084/nacos/bean`，并点击调转，可以看到应用从 Nacos Server 中获取了最新的数据，group 变成了 DEFAULT_GROUP。
 
-![refresh](https://tva1.sinaimg.cn/large/e6c9d24ely1h2gbpram9rj20nq0ccmxz.jpg)
+![refresh](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-config-example/nacos-config-example-group.png)
 
 
 ## 原理
@@ -148,7 +162,7 @@ Nacos Config Starter 默认为所有获取数据成功的 Nacos 的配置项添�
 
 更多详情请参考 [ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html)。
 
-	
+​	
 
 
 ## Endpoint 信息查看
@@ -164,10 +178,9 @@ Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos_config 来查看
 
 Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacosconfig 来访问。
 
-![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
+![actuator](https://sca-storage.oss-cn-hangzhou.aliyuncs.com/sca-example/nacos-example/nacos-config-example/nacos-config-example-endpoint.png)
 
-如上图所示，Sources 表示此客户端从哪些 Nacos Config 配置项中获取了信息，RefreshHistory 表示动态刷新的历史记录，最多保存20条，NacosConfigProperties 则为 Nacos Config Starter 本身的配置。
-    	
+如上图所示，Sources 表示此客户端从哪些 Nacos Config 配置项中获取了信息，RefreshHistory 表示动态刷新的历史记录，最多保存20条，NacosConfigProperties 则为 Nacos Config Starter 本身的配置。	
 ## More
 
 #### 更多配置项
