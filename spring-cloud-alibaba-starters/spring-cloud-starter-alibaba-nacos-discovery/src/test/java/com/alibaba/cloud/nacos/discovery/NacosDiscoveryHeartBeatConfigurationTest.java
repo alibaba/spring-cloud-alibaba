@@ -19,19 +19,29 @@ package com.alibaba.cloud.nacos.discovery;
 import com.alibaba.cloud.nacos.NacosServiceAutoConfiguration;
 import com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration;
 import com.alibaba.cloud.nacos.util.UtilIPv6AutoConfiguration;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.commons.util.UtilAutoConfiguration;
 import org.springframework.cloud.netflix.zuul.ZuulProxyMarkerConfiguration;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * @author <a href="mailto:echooy.mxq@gmail.com">echooymxq</a>
  **/
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = NacosDiscoveryHeartBeatConfigurationTest.TestConfig.class,
+		webEnvironment = RANDOM_PORT)
 public class NacosDiscoveryHeartBeatConfigurationTest {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -73,7 +83,7 @@ public class NacosDiscoveryHeartBeatConfigurationTest {
 				.withConfiguration(
 						AutoConfigurations.of(ZuulProxyMarkerConfiguration.class))
 				.run(context -> assertThat(context)
-						.hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
+						.hasSingleBean(NacosDiscoveryHeartBeatPublisher.class));
 	}
 
 	@Test
@@ -83,7 +93,15 @@ public class NacosDiscoveryHeartBeatConfigurationTest {
 				.withConfiguration(
 						AutoConfigurations.of(ZuulProxyMarkerConfiguration.class))
 				.run(context -> assertThat(context)
-						.hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
+						.hasSingleBean(NacosDiscoveryHeartBeatPublisher.class));
+	}
+
+	@Configuration
+	@EnableAutoConfiguration
+	@ImportAutoConfiguration({ NacosDiscoveryAutoConfiguration.class,
+			NacosDiscoveryHeartBeatConfiguration.class })
+	public static class TestConfig {
+
 	}
 
 }
