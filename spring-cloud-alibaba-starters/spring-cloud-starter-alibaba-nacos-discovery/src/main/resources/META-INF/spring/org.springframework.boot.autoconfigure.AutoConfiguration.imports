@@ -2,6 +2,7 @@ com.alibaba.cloud.nacos.discovery.NacosDiscoveryAutoConfiguration
 com.alibaba.cloud.nacos.endpoint.NacosDiscoveryEndpointAutoConfiguration
 com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration
 com.alibaba.cloud.nacos.discovery.NacosDiscoveryClientConfiguration
+com.alibaba.cloud.nacos.discovery.NacosDiscoveryHeartBeatConfiguration
 com.alibaba.cloud.nacos.discovery.reactive.NacosReactiveDiscoveryClientConfiguration
 com.alibaba.cloud.nacos.discovery.configclient.NacosConfigServerAutoConfiguration
 com.alibaba.cloud.nacos.loadbalancer.LoadBalancerNacosAutoConfiguration

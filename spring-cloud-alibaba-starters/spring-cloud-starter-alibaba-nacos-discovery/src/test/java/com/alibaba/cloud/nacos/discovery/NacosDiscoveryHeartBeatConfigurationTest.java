@@ -23,19 +23,15 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.commons.util.UtilAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author <a href="mailto:echooy.mxq@gmail.com">echooymxq</a>
+ * @author <a href="mailto:zhangbin1010@qq.com">zhangbin</a>
  **/
-public class NacosDiscoveryClientConfigurationTest {
+public class NacosDiscoveryHeartBeatConfigurationTest {
 
 	private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
 			.withConfiguration(AutoConfigurations.of(
@@ -45,35 +41,32 @@ public class NacosDiscoveryClientConfigurationTest {
 					UtilIPv6AutoConfiguration.class,
 					NacosServiceAutoConfiguration.class,
 					NacosDiscoveryAutoConfiguration.class,
-					NacosDiscoveryClientConfiguration.class, this.getClass()));
+					NacosDiscoveryClientConfiguration.class,
+					NacosDiscoveryHeartBeatConfiguration.class, this.getClass()));
 
-	@Bean
-	public TaskScheduler taskScheduler() {
-		return new ThreadPoolTaskScheduler();
+	@Test
+	public void testDefaultNacosDiscoveryHeartBeatPublisher() {
+		contextRunner.run(context ->
+				assertThat(context).doesNotHaveBean(NacosDiscoveryHeartBeatPublisher.class)
+		);
 	}
 
 	@Test
-	public void testDefaultInitialization() {
-		contextRunner.run(context -> {
-			assertThat(context).hasSingleBean(DiscoveryClient.class);
-			// NacosWatch is no longer enabled by default
-			assertThat(context).doesNotHaveBean(NacosWatch.class);
-		});
+	public void testNacosDiscoveryHeartBeatPublisherEnabledForGateway() {
+		contextRunner
+				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
+				.run(context ->
+						assertThat(context).hasSingleBean(NacosDiscoveryHeartBeatPublisher.class)
+				);
 	}
 
 	@Test
-	public void testDiscoveryBlockingDisabled() {
-		contextRunner.withPropertyValues("spring.cloud.discovery.blocking.enabled=false")
-				.run(context -> {
-					assertThat(context).doesNotHaveBean(DiscoveryClient.class);
-					assertThat(context).doesNotHaveBean(NacosWatch.class);
-				});
-	}
-
-	@Test
-	public void testNacosWatchEnabled() {
-		contextRunner.withPropertyValues("spring.cloud.nacos.discovery.watch.enabled=true")
-				.run(context -> assertThat(context).hasSingleBean(NacosWatch.class));
+	public void testNacosDiscoveryHeartBeatPublisherEnabledForProperties() {
+		contextRunner
+				.withPropertyValues("spring.cloud.nacos.discovery.heart-beat.enabled=true")
+				.run(context ->
+						assertThat(context).hasSingleBean(NacosDiscoveryHeartBeatPublisher.class)
+				);
 	}
 
 }
