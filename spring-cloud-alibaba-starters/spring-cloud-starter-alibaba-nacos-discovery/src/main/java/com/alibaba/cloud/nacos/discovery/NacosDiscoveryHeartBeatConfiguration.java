@@ -26,7 +26,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.ConditionalOnBlockingDiscoveryEnabled;
 import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
-import org.springframework.cloud.netflix.zuul.ZuulProxyMarkerConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -41,10 +40,9 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnDiscoveryEnabled
 @ConditionalOnBlockingDiscoveryEnabled
 @ConditionalOnNacosDiscoveryEnabled
-@AutoConfigureAfter(
-		value = { NacosDiscoveryAutoConfiguration.class,
-				ZuulProxyMarkerConfiguration.class },
-		name = "de.codecentric.boot.admin.server.cloud.config.AdminServerDiscoveryAutoConfiguration")
+@AutoConfigureAfter(value = { NacosDiscoveryAutoConfiguration.class }, name = {
+		"org.springframework.cloud.netflix.zuul.ZuulProxyMarkerConfiguration",
+		"de.codecentric.boot.admin.server.cloud.config.AdminServerDiscoveryAutoConfiguration" })
 public class NacosDiscoveryHeartBeatConfiguration {
 
 	/**
