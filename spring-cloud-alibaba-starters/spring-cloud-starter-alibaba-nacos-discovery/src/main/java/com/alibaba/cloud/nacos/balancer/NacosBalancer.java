@@ -30,6 +30,8 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.client.naming.core.Balancer;
 
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.DefaultServiceInstance;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author itmuch.com XuDaojie
@@ -66,30 +68,41 @@ public class NacosBalancer extends Balancer {
 			Instance instance = new Instance();
 			instance.setIp(serviceInstance.getHost());
 			instance.setPort(serviceInstance.getPort());
-			instance.setWeight(Double.parseDouble(metadata.get("nacos.weight")));
-			instance.setHealthy(Boolean.parseBoolean(metadata.get("nacos.healthy")));
+			if(!CollectionUtils.isEmpty(metadata) && metadata.containsKey("nacos.weight")) {
+				instance.setWeight(Double.parseDouble(metadata.get("nacos.weight")));
+			}
+			if(!CollectionUtils.isEmpty(metadata) && metadata.containsKey("nacos.healthy")) {
+				instance.setHealthy(Boolean.parseBoolean(metadata.get("nacos.healthy")));
+			}
 			instanceMap.put(instance, serviceInstance);
 			return instance;
 		}).collect(Collectors.toList());
 
 		Instance instance = getHostByRandomWeight2(nacosInstance);
-		NacosServiceInstance nacosServiceInstance = (NacosServiceInstance) instanceMap.get(instance);
+		ServiceInstance serviceInstance =  instanceMap.get(instance);
 		// When local support IPv6 address stack, referred to use IPv6 address.
 		if (StringUtils.isNotEmpty(NacosLoadBalancer.ipv6)) {
-			convertIPv4ToIPv6(nacosServiceInstance);
+			convertIPv4ToIPv6(serviceInstance);
 		}
-		return nacosServiceInstance;
+		return serviceInstance;
 	}
 
 	/**
 	 * There is two type Ip,using IPv6 should use IPv6 in metadata to replace IPv4 in IP
 	 * field.
 	 */
-	private static void convertIPv4ToIPv6(NacosServiceInstance instance) {
+	private static void convertIPv4ToIPv6(ServiceInstance instance) {
+		if(!(instance instanceof NacosServiceInstance) && !(instance instanceof DefaultServiceInstance)) {
+			return;
+		}
 		if (Pattern.matches(IPV4_REGEX, instance.getHost())) {
 			String ip = instance.getMetadata().get(IPV6_KEY);
 			if (StringUtils.isNotEmpty(ip)) {
-				instance.setHost(ip);
+				if(instance instanceof NacosServiceInstance){
+					((NacosServiceInstance)instance).setHost(ip);
+				}else{
+					((DefaultServiceInstance)instance).setHost(ip);
+				}
 			}
 		}
 	}
