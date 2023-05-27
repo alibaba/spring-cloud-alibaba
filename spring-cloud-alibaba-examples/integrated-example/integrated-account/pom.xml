@@ -15,20 +15,22 @@
 
 	<properties>
 		<mysql.version>8.0.28</mysql.version>
-		<durid.version>1.1.10</durid.version>
-		<mybatis.version>3.0.0</mybatis.version>
+		<durid.version>1.2.16</durid.version>
+		<mybatis.version>3.0.1</mybatis.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+            <version>3.1.0</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
+            <version>3.0.4</version>
+        </dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

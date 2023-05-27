@@ -27,6 +27,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-bus</artifactId>
+            <version>4.0.1</version>
         </dependency>
 
     </dependencies>
