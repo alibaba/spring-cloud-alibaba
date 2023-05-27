@@ -42,25 +42,29 @@ public class SentinelFallbackSupportFactoryBeanTests {
 	private final ApplicationContextRunner runner = new ApplicationContextRunner()
 			.withBean(FactoryBeanFallbackFeignFallback.class)
 			.withBean(OriginalFeignFallback.class)
-			.withConfiguration(AutoConfigurations.of(TestConfiguration.class, FeignAutoConfiguration.class))
+			.withConfiguration(AutoConfigurations.of(TestConfiguration.class,
+					FeignAutoConfiguration.class))
 			.withPropertyValues("feign.sentinel.enabled=true");
 
 	@Test
 	public void shouldRunFallbackFromBeanOrFactoryBean() {
 		runner.run(ctx -> {
-			assertThat(ctx.getBean(OriginalFeign.class).get()).isEqualTo(ORIGINAL_FALLBACK_MESSAGE);
-			assertThat(ctx.getBean(FactoryBeanFallbackFeign.class).get()).isEqualTo(FACTORY_BEAN_FALLBACK_MESSAGE);
+			assertThat(ctx.getBean(OriginalFeign.class).get())
+					.isEqualTo(ORIGINAL_FALLBACK_MESSAGE);
+			assertThat(ctx.getBean(FactoryBeanFallbackFeign.class).get())
+					.isEqualTo(FACTORY_BEAN_FALLBACK_MESSAGE);
 		});
 	}
 
 	@Configuration(proxyBeanMethods = false)
-	@EnableFeignClients(clients = {OriginalFeign.class, FactoryBeanFallbackFeign.class })
+	@EnableFeignClients(clients = { OriginalFeign.class, FactoryBeanFallbackFeign.class })
 	@EnableAutoConfiguration
 	public static class TestConfiguration {
 
 	}
 
-	@FeignClient(name = "original", url = "https://original", fallback = OriginalFeignFallback.class)
+	@FeignClient(name = "original", url = "https://original",
+			fallback = OriginalFeignFallback.class)
 	interface OriginalFeign {
 
 		@GetMapping("/")
@@ -68,7 +72,8 @@ public class SentinelFallbackSupportFactoryBeanTests {
 
 	}
 
-	@FeignClient(name = "factoryBean", url = "https://factoryBean", fallback = FactoryBeanFallbackFeignFallback.class)
+	@FeignClient(name = "factoryBean", url = "https://factoryBean",
+			fallback = FactoryBeanFallbackFeignFallback.class)
 	interface FactoryBeanFallbackFeign {
 
 		@GetMapping("/")
@@ -76,7 +81,8 @@ public class SentinelFallbackSupportFactoryBeanTests {
 
 	}
 
-	private static class FactoryBeanFallbackFeignFallback implements FactoryBean<FactoryBeanFallbackFeign> {
+	private static class FactoryBeanFallbackFeignFallback
+			implements FactoryBean<FactoryBeanFallbackFeign> {
 
 		@Override
 		public FactoryBeanFallbackFeign getObject() {

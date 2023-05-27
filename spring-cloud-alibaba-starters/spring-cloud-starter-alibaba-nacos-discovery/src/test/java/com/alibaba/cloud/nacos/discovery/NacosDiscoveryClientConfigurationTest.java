@@ -26,7 +26,6 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration;
 import org.springframework.cloud.commons.util.UtilAutoConfiguration;
-import org.springframework.cloud.netflix.zuul.ZuulProxyMarkerConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -46,8 +45,7 @@ public class NacosDiscoveryClientConfigurationTest {
 							UtilAutoConfiguration.class, UtilIPv6AutoConfiguration.class,
 							NacosServiceAutoConfiguration.class,
 							NacosDiscoveryAutoConfiguration.class,
-							NacosDiscoveryClientConfiguration.class,
-							ZuulGatewayLocatorAutoConfiguration.class, this.getClass()));
+							NacosDiscoveryClientConfiguration.class, this.getClass()));
 
 	@Bean
 	public TaskScheduler taskScheduler() {
@@ -77,39 +75,6 @@ public class NacosDiscoveryClientConfigurationTest {
 		contextRunner
 				.withPropertyValues("spring.cloud.nacos.discovery.watch.enabled=true")
 				.run(context -> assertThat(context).hasSingleBean(NacosWatch.class));
-	}
-
-	@Test
-	public void testDefaultGatewayLocatorHeartBeatPublisher() {
-		contextRunner.run(context -> assertThat(context)
-				.doesNotHaveBean(GatewayLocatorHeartBeatPublisher.class));
-	}
-
-	@Test
-	public void testSpringCloudGatewayLocatorHeartBeatPublisherEnabled() {
-		contextRunner
-				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
-				.run(context -> assertThat(context)
-						.hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
-	}
-
-	@Test
-	public void testZuulGatewayLocatorHeartBeatPublisherEnabled() {
-		contextRunner
-				.withConfiguration(
-						AutoConfigurations.of(ZuulProxyMarkerConfiguration.class))
-				.run(context -> assertThat(context)
-						.hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
-	}
-
-	@Test
-	public void testZuulAndSpringCloudGatewayLocatorHeartBeatPublisherEnabled() {
-		contextRunner
-				.withPropertyValues("spring.cloud.gateway.discovery.locator.enabled=true")
-				.withConfiguration(
-						AutoConfigurations.of(ZuulProxyMarkerConfiguration.class))
-				.run(context -> assertThat(context)
-						.hasSingleBean(GatewayLocatorHeartBeatPublisher.class));
 	}
 
 }

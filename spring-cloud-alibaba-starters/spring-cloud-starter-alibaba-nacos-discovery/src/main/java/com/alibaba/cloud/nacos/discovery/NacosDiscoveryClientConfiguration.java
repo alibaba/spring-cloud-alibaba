@@ -67,18 +67,4 @@ public class NacosDiscoveryClientConfiguration {
 		return new NacosWatch(nacosServiceManager, nacosDiscoveryProperties);
 	}
 
-	/**
-	 * Spring Cloud Gateway HeartBeat . publish an event every 30 seconds.
-	 * https://github.com/alibaba/spring-cloud-alibaba/issues/2868
-	 * @param nacosDiscoveryProperties nacosDiscoveryProperties
-	 * @return nacosWatch.
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	@ConditionalOnProperty("spring.cloud.gateway.discovery.locator.enabled")
-	public GatewayLocatorHeartBeatPublisher gatewayLocatorHeartBeatPublisher(
-			NacosDiscoveryProperties nacosDiscoveryProperties) {
-		return new GatewayLocatorHeartBeatPublisher(nacosDiscoveryProperties);
-	}
-
 }

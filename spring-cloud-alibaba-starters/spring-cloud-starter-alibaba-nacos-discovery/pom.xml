@@ -102,6 +102,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-netflix-zuul</artifactId>
             <optional>true</optional>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
