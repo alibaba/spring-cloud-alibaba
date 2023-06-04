@@ -317,10 +317,10 @@ spring.cloud.loadbalancer.nacos.enabled=true
 
 === IPv4 to IPv6 address migration scheme
 
-==== Both register IPv4 and IPv6 address
-After configuring above Spring Cloud LoadBalancer as the load balancing policy, the IPv4 address and IPv6 address of the microservice will be registered with the registry by default after the application is started, where the IPv4 address will be stored in the IP field of the Nacos service list, the IPv6 address will be in the metadata field of Nacos, and its corresponding Key will be IPv6. When a service consumer calls a service provider, it selects the appropriate IP address type to initiate a service call based on its IP address stack support. Specific rules:
-(1) If the service consumer itself supports IPv4 and IPv6 dual address stacks or only supports IPv6 address stacks, the service consumer will use the IPv6 address provided by the service to initiate a service call, and if the IPv6 address call fails, if it also supports the IPv4 address stack, it is temporarily not supported to switch to IPv4 and then initiate a retry call;
-(2) If the service consumer itself only supports IPv4 single-address stack, the service consumer will use the IPv4 address provided by the service to initiate service calls.
+==== IPv4 and IPv6 address dual registration
+After configuring the above Spring Cloud LoadBalancer as the load balancing strategy, after the application starts, the IPv4 address and IPv6 address of the microservice will be registered in the registration center by default, and the IPv4 address will be stored in the IP field in the Nacos service list, and the IPv6 address In the metadata field of Nacos, the corresponding Key is IPv6. When a service consumer calls a service provider, it will select an appropriate IP address type to initiate a service call according to its own IP address stack support. Specific rules:
+(1) If the service consumer itself supports IPv4 and IPv6 dual address stacks or only supports the IPv6 address stack, the service consumer will use the IPv6 address provided by the service to initiate a service call. If the IPv6 address call fails, it also supports the IPv4 address stack at the same time. , it does not support switching to IPv4 and then initiating a retry call;
+(2) When the service consumer itself only supports IPv4 single-address stack, the service consumer will use the IPv4 address provided by the service to initiate a service call.
 
 ==== Only Register IPv4 address
 If you only want to register IPv4 address.Config in application.properties as follows:
