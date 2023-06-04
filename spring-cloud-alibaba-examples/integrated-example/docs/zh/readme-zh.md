@@ -2,7 +2,7 @@
 
 ## 项目说明
 
-本项目为 Spring Cloud Alibaba （后文简称为SCA）容器化部署最佳实践的 Demo 演示项目，是整合了 SCA 相关组件( Nacos, Sentinel, Seata, RocketMQ)的 Example 示例项目。
+本项目为 Spring Cloud Alibaba （后文简称为 SCA）容器化部署最佳实践的 Demo 演示项目，是整合了 SCA 相关组件(Nacos, Sentinel, Seata, RocketMQ)的 Example 示例项目。
 
 主要使用的组件及及其使用特性如下：
 
@@ -18,7 +18,7 @@
 
 ## 应用场景说明
 
-在本 demo 示例中，SCA社区提供了两种业务场景。
+在本 demo 示例中，SCA 社区提供了两种业务场景。
 
 1) 用户下单购买货物的场景，下单后：
 
@@ -28,7 +28,7 @@
 
 - 生成订单信息返回响应
 
-2) 用户为商品进行点赞（模拟MQ的生产者消费者应用场景）返回商品点赞后的详细信息（点赞数等）。
+2) 用户为商品进行点赞（模拟 MQ 的生产者消费者应用场景）返回商品点赞后的详细信息（点赞数等）。
 
 ### 组件详细说明
 
@@ -41,7 +41,7 @@
    - RocketMQ 进行流量削峰填谷，在大流量请求下，生产者向 RocketMQ 发送消息，而消费者则通过可配置的消费速率进行拉取消费，减少大流量直接请求数据库增加点赞请求的压力。
 
 
-#### SpringCloud Gateway
+#### Spring Cloud Gateway
 
 微服务模块的网关。
 
@@ -58,7 +58,7 @@ Spring Cloud GateWay 整合 Nacos,实现动态路由配置。
 
 - 注册中心
   - 所有的微服务模块都注册到 Nacos 中进行服务注册与发现。
-  - 整合 SpringCloud Gateway 网关。
+  - 整合 Spring Cloud Gateway 网关。
 
 #### Seata
 
@@ -76,14 +76,14 @@ Spring Cloud GateWay 整合 Nacos,实现动态路由配置。
 
 用于进行点赞服务流量的削峰填谷。
 
-通过将大流量的点赞请求从生产者发送到mq，消费者模块从mq中拉取进行一定频率的消费，不是简单的直接服务熔断限流降级，实现 RocketMQ 针对大流量的削峰填谷能力。
+通过将大流量的点赞请求从生产者发送到 mq，消费者模块从 mq 中拉取进行一定频率的消费，不是简单的直接服务熔断限流降级，实现 RocketMQ 针对大流量的削峰填谷能力。
 
 ## 版本说明
 
-本项目提供了[本地部署运行版本](local-deployment-zh.md)、[docker-compose版本](docker-compose-deployment-zh.md)以及[Kubernetes Helm-Chart 版本](kubernetes-deployment-zh.md)。
+本项目提供了[本地部署运行版本](local-deployment-zh.md)、[docker-compose 版本](docker-compose-deployment-zh.md)以及 [Kubernetes Helm-Chart 版本](kubernetes-deployment-zh.md)。
 
 - 如果想要了解具体如何配置各项组件以及完整环境搭建，推荐学习[本地部署运行版本](local-deployment-zh.md)。
 
-- 如果只想运行示例代码，避免繁琐的本地环境搭建过程，又不想使用k8s集群。您可以尝试使用[docker-compose版本](docker-compose-deployment-zh.md)。
+- 如果只想运行示例代码，避免繁琐的本地环境搭建过程，又不想使用 k8s 集群。您可以尝试使用 [docker-compose 版本](docker-compose-deployment-zh.md)。
 
-- 如果想要在K8S集群上快速体验组件效果，跳过各个组件环境部署等过程，请查看[Kubernetes Helm-Chart 版本](kubernetes-deployment-zh.md)。
+- 如果想要在 K8S 集群上快速体验组件效果，跳过各个组件环境部署等过程，请查看 [Kubernetes Helm-Chart 版本](kubernetes-deployment-zh.md)。
