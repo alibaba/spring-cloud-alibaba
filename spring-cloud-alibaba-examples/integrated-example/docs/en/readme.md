@@ -6,12 +6,12 @@ This project is a demo of Spring Cloud Alibaba (hereinafter referred to as SCA) 
 
 The main components used and their usage features are as follows.
 
-- Spring Cloud Gateway:gateway
-- Nacos:configuration centre and service registry
-- Sentinel:fusion flow limiting
-- Seata:Distributed Transactions
-- RocketMQ:message queues for peak and valley reduction
-- Docker:Microservices Containerized Deployment
+- Spring Cloud Gateway: gateway
+- Nacos: configuration centre and service registry
+- Sentinel: fusion flow limiting
+- Seata: Distributed Transactions
+- RocketMQ: message queues for peak and valley reduction
+- Docker: Microservices Containerized Deployment
 - Kubernetes Helm Chart
 
 ![Overall Overview](https://my-img-1.oss-cn-hangzhou.aliyuncs.com/image-20220816004541921.png)
@@ -39,7 +39,7 @@ In this demo, SCA community provide two business scenarios.
 - Sentinel binds a specified gateway route on the gateway side for service fusion degradation.
 - RocketMQ performs peak-shaving, where producers send messages to RocketMQ and consumers pull and consume at configurable consumption rates, reducing the pressure of high traffic direct requests to the database and increasing the number of likes.
 
-#### SpringCloud Gateway
+#### Spring Cloud Gateway
 
 A gateway to the microservices module.
 
@@ -56,7 +56,7 @@ The configuration centre for each microservice, the service registry.
 
 - Registration Centre
   - All microservice modules are registered to Nacos for service registration and discovery.
-  - Integration with SpringCloud Gateway gateway.
+  - Integration with Spring Cloud Gateway gateway.
 
 #### Seata
 
