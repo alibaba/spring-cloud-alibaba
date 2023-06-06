@@ -1,10 +1,10 @@
-# Spring Cloud Alibaba容器化部署最佳实践 | Docker-Compose 版本
+# Spring Cloud Alibaba 容器化部署最佳实践 | Docker-Compose 版本
 
 ## 准备工作
 
-> Note: 使用Docker-Compose方式体验Demo时，请确保本地机器内存资源 >= 24G！
+> Note: 使用 Docker-Compose 方式体验 Demo 时，请确保本地机器内存资源 >= 24G！
 
-如果您还没有安装Docker和Docker-Compose，请按照官方文档来构建运行环境：
+如果您还没有安装 Docker 和 Docker-Compose，请按照官方文档来构建运行环境：
 
 - Docker：https://docs.docker.com/desktop/install/linux-install/
 - Docker-Compose：https://docs.docker.com/compose/install/
@@ -23,51 +23,51 @@
 127.0.0.1 integrated-frontend
 ```
 
-### 准备jar包
+### 准备 jar 包
 
-进入 `spring-cloud-alibaba-examples` 目录下，执行 `mvn package` 命令编译项目生成jar包，为后续Docker构建服务镜像做准备。
+进入 `spring-cloud-alibaba-examples` 目录下，执行 `mvn package` 命令编译项目生成 jar 包，为后续 Docker 构建服务镜像做准备。
 
 ## 快速启动
 
 ### 组件启动
 
-进入 `spring-cloud-alibaba-examples/integrated-example` 目录下，在终端中执行以下命令 `docker-compose -f ./docker-compose/docker-compose-env.yml up -d` 来快速部署运行example所需组件。
+进入 `spring-cloud-alibaba-examples/integrated-example` 目录下，在终端中执行以下命令 `docker-compose -f ./docker-compose/docker-compose-env.yml up -d` 来快速部署运行 example 所需组件。
 
 ### 添加配置
 
-docker-compose-env.yml文件运行成功之后，添加Nacos配置：
+docker-compose-env.yml 文件运行成功之后，添加 Nacos 配置：
 
 1. 进入 `spring-cloud-alibaba-examples/integrated-example` 目录下；
 2. 在终端中执行 `config-init/scripts/nacos-config-quick.sh` 脚本文件。
 
 完成所有微服务配置的一键导入。
 
-> 注意：windows操作系统可以通过 `git bash` 执行shell脚本文件完成配置导入。
+> 注意：windows 操作系统可以通过 `git bash` 执行 shell 脚本文件完成配置导入。
 
 ### 服务启动
 
-进入 `spring-cloud-alibaba-examples/integrated-example` 目录下，在终端中执行以下命令 `docker-compose -f ./docker-compose/docker-compose-service.yml up -d` 来快速部署运行example所需服务。
+进入 `spring-cloud-alibaba-examples/integrated-example` 目录下，在终端中执行以下命令 `docker-compose -f ./docker-compose/docker-compose-service.yml up -d` 来快速部署运行 example 所需服务。
 
 ## 停止所有容器
 
 ### 停止服务容器
 
-进入 `spring-cloud-alibaba-examples/integrated-example` 目录下，在终端中执行以下命令 `docker-compose -f ./docker-compose/docker-compose-service.yml down` 来停止正在运行的example服务容器。
+进入 `spring-cloud-alibaba-examples/integrated-example` 目录下，在终端中执行以下命令 `docker-compose -f ./docker-compose/docker-compose-service.yml down` 来停止正在运行的 example 服务容器。
 
 
 ### 停止组件容器
 
-进入 `spring-cloud-alibaba-examples/integrated-example` 目录下，在终端中执行以下命令 `docker-compose -f ./docker-compose/docker-compose-env.yml down` 来停止正在运行的example组件容器。
+进入 `spring-cloud-alibaba-examples/integrated-example` 目录下，在终端中执行以下命令 `docker-compose -f ./docker-compose/docker-compose-env.yml down` 来停止正在运行的 example 组件容器。
 
 > 在容器启动时，可以通过 `docker-compose -f docker-compose-*.yml up` 观察容器的启动过程！
 
-## 体验Demo
+## 体验 Demo
 
 ### 分布式事务能力
 
 #### 场景说明
 
-针对分布式事务能力，SCA社区提供了**用户下单购买货物的场景**，下单后：
+针对分布式事务能力，SCA 社区提供了**用户下单购买货物的场景**，下单后：
 
 - 先请求库存模块，扣减库存
 - 扣减账户余额
@@ -87,7 +87,7 @@ docker-compose-env.yml文件运行成功之后，添加Nacos配置：
 
 在本 demo 示例中，为了便于演示，每件商品的单价都为2。
 
-而在前面的准备工作中，**初始化业务数据库表**的时候应用新建了一个用户，用户userId 为 admin，余额为 3 元；同时新建了一个编号为 1 号的商品，库存为 100 件。
+而在前面的准备工作中，**初始化业务数据库表**的时候应用新建了一个用户，用户 userId 为 admin，余额为 3 元；同时新建了一个编号为 1 号的商品，库存为 100 件。
 
 因此通过上述的操作，应用会创建一个订单，扣减对应商品编号为 1 号的库存个数（100-1=99），扣减 admin 用户的余额（3-2=1）。
 
@@ -103,7 +103,7 @@ docker-compose-env.yml文件运行成功之后，添加Nacos配置：
 
 #### 场景说明
 
-针对大流量背景下的服务熔断限流，削峰填谷，SCA社区提供了**用户为商品进行点赞的场景**。在此场景下，SCA社区提供了两种应对大流量的处理方式。
+针对大流量背景下的服务熔断限流，削峰填谷，SCA 社区提供了**用户为商品进行点赞的场景**。在此场景下，SCA 社区提供了两种应对大流量的处理方式。
 
 - Sentinel 在网关侧绑定指定网关路由进行服务的熔断降级。
 - RocketMQ 进行流量削峰填谷，在大流量请求下，生产者向 RocketMQ 发送消息，而消费者则通过可配置的消费速率进行拉取消费，减少大流量直接请求数据库增加点赞请求的压力。
