@@ -156,11 +156,36 @@ public class NacosProviderDemoApplication {
 
 ==== Consumer 应用
 
-Consumer 应用可能还没像启动一个 Provider 应用那么简单。因为在 Consumer 端需要去调用 Provider 端提供的REST 服务。例子中我们使用最原始的一种方式，
-即显示的使用 LoadBalanceClient 和 RestTemplate 结合的方式来访问。
-pom.xml 和 application.properties 的配置可以参考 1.2 小结。启动一个 Consumer应用的示例代码如下所示：
+Consumer 应用可能还没像启动一个 Provider 应用那么简单。因为在 Consumer 端需要去调用 Provider 端提供的 REST 服务。
+在 2.2.x 分支的 Spring Cloud Alibaba 项目中使用的客户端负载均衡组件为：
+[xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+</dependency>
+----
+对于使用 2.2.x 分支的外部用户，引入 spring-cloud-starter-alibaba-nacos-discovery 即可正常调用下游服务。
 
-NOTE: 通过带有负载均衡的RestTemplate 和 FeignClient 也是可以访问的。
+但是在 2021.x 分支中的 spring-cloud-alibaba-nacos-discovery 相关分支中，因为 Spring Cloud 从 2020.0.0 版本中移除了 Ribbon 组件。所以我们做了一些调整。
+将客户端负载均衡组件由 Ribbon 替换为了 loadbalancer，如下所示：
+[xml]
+----
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+    <optional>true</optional>
+</dependency>
+----
+
+**需要注意的是，在 Spring Cloud Alibaba 2021.x+ 分支中并没有默认引入此 loadbalancer 依赖，需要用户自己在 pom.xml 文件中加入。否则可能会调用下游服务失败！**
+
+例子中我们使用最原始的一种方式，
+即显式的使用 LoadBalanceClient 和 RestTemplate 结合的方式来访问。
+pom.xml 和 application.properties 的配置可以参考 1.2 小结。启动一个 Consumer 应用的示例代码如下所示：
+
+
+NOTE: 通过带有负载均衡的 RestTemplate 和 FeignClient 也是可以访问的。
 
 [source,java,indent=0]
 ----
