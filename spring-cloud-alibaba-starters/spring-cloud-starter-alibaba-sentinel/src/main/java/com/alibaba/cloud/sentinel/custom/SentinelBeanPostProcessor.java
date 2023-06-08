@@ -65,7 +65,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition,
 			Class<?> beanType, String beanName) {
-		if (beanName == null || beanType != RestTemplate.class) {
+		if (beanName == null || !RestTemplate.class.isAssignableFrom(beanType)) {
 			return;
 		}
 
