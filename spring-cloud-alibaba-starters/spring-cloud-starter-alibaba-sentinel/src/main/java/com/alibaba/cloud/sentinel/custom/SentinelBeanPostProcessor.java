@@ -167,7 +167,8 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 
 	private boolean checkSentinelProtect(RootBeanDefinition beanDefinition,
 			Class<?> beanType, String beanName) {
-		return beanName != null && beanType == RestTemplate.class
+		// Fixes #3329: Support custom RestTemplate
+		return beanName != null && RestTemplate.class.isAssignableFrom(beanType)
 				&& checkMethodMetadataReadingVisitor(beanDefinition);
 	}
 
