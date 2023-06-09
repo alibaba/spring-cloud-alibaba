@@ -102,7 +102,7 @@ public class NacosBalancer extends Balancer {
 					NacosServiceInstance nacosServiceInstance = (NacosServiceInstance)instance;
 					nacosServiceInstance.setHost(ip);
 				}else{
-					DefaultServiceInstance defaultServiceInstance = (NacosServiceInstance)instance;
+					DefaultServiceInstance defaultServiceInstance = (DefaultServiceInstance)instance;
 					defaultServiceInstance.setHost(ip);
 				}
 			}
