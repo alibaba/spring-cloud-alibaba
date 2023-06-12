@@ -224,6 +224,8 @@ Endpoint 暴露的 json 中包含了两种属性:
 
 2. NacosDiscoveryProperties: 当前应用 Nacos 的基础配置信息
 
+Note：如果使用的 Spring Boot 版本为 2.x，当在配置文件中添加如上配置之后，会泄露相关的节点配置信息。**生产环境使用建议关闭此配置项。** 3.X 版本中 Spring Boot Actuator 根据类型以及单词判断是否为敏感配置，从而进行脱敏处理，**一些用户个性化的敏感数据可能不会被脱敏。**
+
 这是 Endpoint 暴露的 json 示例:
 
 [source,json,indent=0]

@@ -281,6 +281,8 @@ https://github.com/alibaba/Sentinel/wiki/%E7%BD%91%E5%85%B3%E9%99%90%E6%B5%81[�
 
 Sentinel 内部提供了一个 Endpoint, 对应的 endpoint id 为 `sentinel`。
 
+Note：如果使用的 Spring Boot 版本为 2.x，当在配置文件中添加如上配置之后，会泄露相关的节点配置信息。**生产环境使用建议关闭此配置项。** 3.X 版本中 Spring Boot Actuator 根据类型以及单词判断是否为敏感配置，从而进行脱敏处理，**一些用户个性化的敏感数据可能不会被脱敏。**
+
 Endpoint 暴露的 json 中包含了多种属性:
 
 1. appName: 应用名

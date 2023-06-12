@@ -57,7 +57,7 @@ spring:
 3. Execute the following command to add a configuration to Nacos Server.
 
    	curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serverAddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
-		
+	
 	**Note: You can also add it in other ways. If you are using the Nacos version with its own console, it is recommended to configure it directly using the console.**
 	
 	
@@ -69,9 +69,9 @@ spring:
 		content is:
 		
    		spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
-	    spring.cloud.nacos.config.prefix=PREFIX
-        spring.cloud.nacos.config.group=GROUP
-        spring.cloud.nacos.config.namespace=NAMESPACE
+		spring.cloud.nacos.config.prefix=PREFIX
+   	 spring.cloud.nacos.config.group=GROUP
+   	 spring.cloud.nacos.config.namespace=NAMESPACE
 
 
 ### Start Application
@@ -153,7 +153,7 @@ If you need to dynamically refresh a bean, please refer to the Spring and Spring
 
 Please refer to [ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html) for more details. 
 
-	
+​	
 
 
 ## Endpoint
@@ -164,8 +164,11 @@ Nacos Config starter also supports the implementation of Spring Boot actuator en
 
 Add dependency spring-boot-starter-actuator to your pom.xml file, and configure your endpoint security strategy.
 
-Spring Boot 1.x: Add configuration management.security.enabled=false
-Spring Boot 2.x: Add configuration management.endpoints.web.exposure.include=*
+- Spring Boot 1.x: Add configuration management.security.enabled=false
+- Spring Boot 2.x: Add configuration management.endpoints.web.exposure.include=*
+
+> Note: If the Spring Boot version used is 2.x, when the above configuration is added to the configuration file, the relevant node configuration information will be leaked. **It is recommended to close this configuration item for production environment. ** In version 3.X, Spring Boot Actuator judges whether it is a sensitive configuration based on the type and word, so as to perform desensitization processing. ** Some sensitive data personalized by users may not be desensitized. **
+
 To view the endpoint information, visit the following URLS:
 
 Spring Boot 1.x: Nacos Config  Endpoint URL is http://127.0.0.1:18084/nacos_config.

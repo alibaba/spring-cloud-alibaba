@@ -22,17 +22,17 @@
 2. 在应用的 /src/main/resources/application.properties 配置文件中配置 Nacos Server 地址
 	
 		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
-		  
+	
 3. 使用 @EnableDiscoveryClient 注解开启服务注册与发现功能
 		
 		@SpringBootApplication
 		@EnableDiscoveryClient
 		public class ProviderApplication {
-
+		
 			public static void main(String[] args) {
 				SpringApplication.run(ProviderApplication.class, args);
 			}
-
+		
 			@RestController
 			class EchoController {
 				@GetMapping(value = "/echo/{string}")
@@ -61,7 +61,6 @@
 		spring.application.name=service-provider
 		server.port=18082
 
-		
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
 	1. IDE直接启动：找到 nacos-discovery-provider-example 项目的主类 `ProviderApplication`，执行 main 方法启动应用。
@@ -133,7 +132,7 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 	        @GetMapping(value = "/echo/{str}")
 	        String echo(@PathVariable("str") String str);
 	    }
-	    
+	
 	使用 @FeignClient 注解将 EchoService 这个接口包装成一个 FeignClient，属性 name 对应服务名 service-provider。
 	
 	echo 方法上的 @RequestMapping 注解将 echo 方法与 URL "/echo/{str}" 相对应，@PathVariable 注解将 URL 路径中的 `{str}` 对应成 echo 方法的参数 str。
@@ -191,10 +190,12 @@ Spring Cloud Nacos Discovery 遵循了 spring cloud common 标准，实现了 Au
 
 Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Nacos Discovery Starter 也支持这一点。
 
-在使用之前需要在 maven 中添加 `spring-boot-starter-actuator`依赖，并在配置中允许 Endpoints 的访问。
+在使用之前需要在 maven 中添加 `spring-boot-starter-actuator `依赖，并在配置中允许 Endpoints 的访问。
 
 * Spring Boot 1.x 中添加配置 management.security.enabled=false
 * Spring Boot 2.x 中添加配置 management.endpoints.web.exposure.include=*
+
+> Note：如果使用的 Spring Boot 版本为 2.x，当在配置文件中添加如上配置之后，会泄露相关的节点配置信息。**生产环境使用建议关闭此配置项。** 3.X 版本中 Spring Boot Actuator 根据类型以及单词判断是否为敏感配置，从而进行脱敏处理，**一些用户个性化的敏感数据可能不会被脱敏。**
 
 Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/nacos_discovery 来查看 Nacos Endpoint 的信息。
 
