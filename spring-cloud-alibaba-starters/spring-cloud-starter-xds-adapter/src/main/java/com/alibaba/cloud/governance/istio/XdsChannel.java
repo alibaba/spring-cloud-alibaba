@@ -119,12 +119,11 @@ public class XdsChannel implements AutoCloseable {
 					.negotiationType(NegotiationType.TLS).sslContext(sslcontext).build();
 		}
 		else {
-			this.channel = NettyChannelBuilder
+			return NettyChannelBuilder
 					.forTarget(xdsConfigProperties.getHost() + ":"
 							+ xdsConfigProperties.getPort())
 					.negotiationType(NegotiationType.PLAINTEXT).build();
 		}
-		return null;
 	}
 
 	private ManagedChannel createPilotAgentManagedChannel() {
