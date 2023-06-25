@@ -346,6 +346,7 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 |注册的IP地址|`spring.cloud.nacos.discovery.ip`||优先级最高
 |注册的IP地址类型|`spring.cloud.nacos.discovery.ip-type`|`双栈地址`|可以配置IPv4和IPv6两种类型，如果网卡同类型IP地址存在多个，希望制定特定网段地址，可使用`spring.cloud.inetutils.preferred-networks`配置筛选地址
 |注册的端口|`spring.cloud.nacos.discovery.port`|`-1`|默认情况下不用配置，会自动探测
+|使用hostname注册服务|`spring.cloud.nacos.discovery.prefer-hostname`|false|如果想使用hostname注册服务，将些配置设置为true, 如果从ip转换到hostname失败，则仍然使用ip注册
 |命名空间|`spring.cloud.nacos.discovery.namespace`||常用场景之一是不同环境的注册的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等
 |AccessKey|`spring.cloud.nacos.discovery.access-key`||当要上阿里云时，阿里云上面的一个云账号名
 |SecretKey|`spring.cloud.nacos.discovery.secret-key`||当要上阿里云时，阿里云上面的一个云账号密码
