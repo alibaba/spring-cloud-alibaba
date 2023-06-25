@@ -156,13 +156,38 @@ Now you can see the registered services on the Nacos console.
 
 NOTE: Before you start the provider application, please start Nacos first. Refer to https://nacos.io/zh-cn/docs/quick-start.html[Naco Website] for more details.
 
-==== Start a Consumer Application
+==== Consumer Application
 
-It might not be as easy as starting a provider application, because the consumer needs to call the RESTful service of the provider. In this example, we will use the most primitive way, that is,
-combining the LoadBalanceClient and RestTemplate explicitly to access the RESTful service.
-You can refer to section 1.2 for pom.xml and application.properties configurations. The following is the sample code for starting a consumer application.
+Consumer applications may not be as simple as launching a Provider application. Because the Consumer side needs to call the REST service provided by the Provider side.
+The client load balancing components used in the Spring Cloud Alibaba project of the 2.2.x branch are:
+[xml]
+----
+<dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+</dependency>
+----
 
-NOTE: You can also access the service by using RestTemplate and FeignClient with load balancing.
+For external users using the 2.2.x branch, import spring-cloud-starter-alibaba-nacos-discovery to call downstream services normally.
+But in the spring-cloud-alibaba-nacos-discovery related branch in the 2021.x branch, because Spring Cloud removed the Ribbon component from the 2020.0.0 version. So we made some adjustments.
+Replace the client load balancing component from Ribbon with loadbalancer, as follows:
+[xml]
+----
+<dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+     <optional>true</optional>
+</dependency>
+----
+
+**It should be noted that this loadbalancer dependency is not introduced by default in the Spring Cloud Alibaba 2021.x+ branch, and users need to add it in the pom.xml file. Otherwise, the downstream service call may fail! **
+
+In the example we use the most primitive way,
+That is, explicitly use the combination of LoadBalanceClient and RestTemplate to access.
+The configuration of pom.xml and application.properties can refer to 1.2 Summary. The sample code to start a Consumer application is as follows:
+
+
+NOTE: It is also accessible through RestTemplate and FeignClient with load balancing.
 
 [source, java]
 ----
