@@ -98,8 +98,7 @@ public class NacosBalancer extends Balancer {
 		if (Pattern.matches(IPV4_REGEX, instance.getHost())) {
 			String ip = instance.getMetadata().get(IPV6_KEY);
 			if (StringUtils.isNotEmpty(ip)) {
-				if(instance instanceof NacosServiceInstance){
-					NacosServiceInstance nacosServiceInstance = (NacosServiceInstance)instance;
+				if(instance instanceof NacosServiceInstance nacosServiceInstance){
 					nacosServiceInstance.setHost(ip);
 				}else{
 					DefaultServiceInstance defaultServiceInstance = (DefaultServiceInstance)instance;
