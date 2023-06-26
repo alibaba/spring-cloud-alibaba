@@ -205,29 +205,29 @@
                 </configuration>
             </plugin>
 
-            <!-- todo spring boot 3.0 upgrade: disable checkstyle temporarily -->
-            <!--<plugin>-->
-            <!--    <groupId>org.apache.maven.plugins</groupId>-->
-            <!--    <artifactId>maven-checkstyle-plugin</artifactId>-->
-            <!--    <executions>-->
-            <!--        <execution>-->
-            <!--            <id>checkstyle-validation</id>-->
-            <!--            <phase>validate</phase>-->
-            <!--            <goals>-->
-            <!--                <goal>check</goal>-->
-            <!--            </goals>-->
-            <!--            <configuration>-->
-            <!--                &lt;!&ndash; Checkstyle rules inherited from spring-cloud-build &ndash;&gt;-->
-            <!--                <suppressionsLocation>${maven.multiModuleProjectDirectory}/eclipse/checkstyle-suppressions.xml</suppressionsLocation>-->
-            <!--                <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
-            <!--                <consoleOutput>true</consoleOutput>-->
-            <!--                <failsOnError>true</failsOnError>-->
-            <!--                <failOnViolation>true</failOnViolation>-->
-            <!--                <violationSeverity>warning</violationSeverity>-->
-            <!--            </configuration>-->
-            <!--        </execution>-->
-            <!--    </executions>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>checkstyle-validation</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Checkstyle rules inherited from spring-cloud-build -->
+                            <suppressionsLocation>${maven.multiModuleProjectDirectory}/eclipse/checkstyle-suppressions.xml</suppressionsLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <failOnViolation>true</failOnViolation>
+                            <violationSeverity>warning</violationSeverity>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

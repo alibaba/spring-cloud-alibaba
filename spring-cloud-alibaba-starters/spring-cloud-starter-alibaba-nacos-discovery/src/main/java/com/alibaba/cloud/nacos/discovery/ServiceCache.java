@@ -87,8 +87,8 @@ public final class ServiceCache {
 
 	/**
 	 * Get all services.
-	 * @deprecated since 2021.0.1.1, use {@link #getServiceIds()} instead.
 	 * @return all services
+	 * @deprecated since 2021.0.1.1, use {@link #getServiceIds()} instead.
 	 */
 	@Deprecated
 	public static List<String> get() {

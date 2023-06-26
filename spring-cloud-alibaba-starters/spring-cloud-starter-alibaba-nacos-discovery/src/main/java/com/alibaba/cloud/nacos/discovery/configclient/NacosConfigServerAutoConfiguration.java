@@ -18,8 +18,8 @@ package com.alibaba.cloud.nacos.discovery.configclient;
 
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-
 import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,7 +34,7 @@ import org.springframework.util.StringUtils;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties
-@ConditionalOnClass({ NacosDiscoveryProperties.class, ConfigServerProperties.class })
+@ConditionalOnClass({NacosDiscoveryProperties.class, ConfigServerProperties.class})
 public class NacosConfigServerAutoConfiguration {
 
 	@Autowired(required = false)

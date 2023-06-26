@@ -20,13 +20,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
-
 import jakarta.annotation.PostConstruct;
+
 import org.springframework.cloud.client.DefaultServiceInstance;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ApplicationContext;

@@ -16,12 +16,6 @@
 
 package com.alibaba.cloud.sentinel;
 
-import java.util.Arrays;
-
-import com.alibaba.csp.sentinel.slots.block.RuleConstant;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
