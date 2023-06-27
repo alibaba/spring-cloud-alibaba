@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.alibaba.cloud.nacos.parser;
 
 import java.io.IOException;
@@ -36,8 +37,8 @@ public class NacosJsonPropertySourceLoaderTests {
 	public void testJsonPropWithComment() throws IOException {
 		String propJsonStr = """
 				{
-				  // test comment
-				  "name": "jack"
+					// test comment
+					"name": "jack"
 				}
 				""";
 		ByteArrayResource resource = new ByteArrayResource(propJsonStr.getBytes());
