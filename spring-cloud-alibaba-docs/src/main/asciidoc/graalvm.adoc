@@ -26,7 +26,9 @@ From the above comparison, we can see that the latest Spring Cloud Alibaba appli
 Among all the components supported by Spring Cloud Alibaba for Spring Boot 3.0 this time, Nacos 2.1.1 already supports GraalVM technology to build applications. Next, we'll look at the components that use GraalVM to compile and run the application
 
 The project construction can be carried out according to the general Spring Cloud Alibaba application construction method. The following are the relevant dependencies that must be added:
-```xml
+
+[source,xml]
+----
 <parent>
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-parent</artifactId>
@@ -65,7 +67,7 @@ The project construction can be carried out according to the general Spring Clou
     </dependency>
   </dependencies>
 </dependencyManagement>
-```
+----
 
 The above are necessary dependencies for registering Nacos through Spring Cloud Alibaba. Please adjust other dependencies according to your own needs. Please note that It is critical to use the GraalVM `spring-boot-starter-parent` parent module, which declares a native profile that contains the necessary information to create and run GraalVM native images. There are two ways to build a Spring Boot native image application:
 
@@ -110,29 +112,37 @@ Note: During the generation of the hint file by the RocketMQ application through
 
 ==== Build native image
 After all the above steps are in place, use the following command to build the native image:
-```shell
+
+[source,shell]
+----
 mvn -Pnative native:compile
-```
+----
 After that, we can see the executable we generated in the ``/target`` directory.
 
 ==== Run native image
 Like a normal executable file, launch this example with ``target/nacos-config-example``,
 You can observe output similar to the following:
-```shell
+
+[source,shell]
+----
 2022-12-22T16:28:51.006+08:00  INFO 75439 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
 2022-12-22T16:28:51.008+08:00  INFO 75439 --- [           main] c.a.cloud.imports.examples.Application   : Started Application in 0.653 seconds (process running for 0.662)
-```
+----
 You can see that the application starts up much faster.
 We can see the memory usage through ` vmmap pid | grep Physical ` command
 The memory usage of applications started using native image is as follows
-```
+
+[source]
+----
 Physical footprint:         59.2M
 Physical footprint (peak):  59.2M
-```
+----
 The memory usage of starting normal Java applications is as follows
-```
+
+[source]
+----
 Physical footprint:         214.0M
 Physical footprint (peak):  256.8M
-```
+----
 As you can see, the memory usage is greatly reduced when the Java application is launched using the native image.
 After the application is started, its abilities are the same as if it were started through a jar.

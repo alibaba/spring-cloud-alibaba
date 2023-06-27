@@ -24,7 +24,8 @@ https://rocketmq.apache.org[RocketMQ] 是一款开源的分布式消息系统，
 
 解压后的目录结构如下：
 
-```
+[source]
+----
 apache-rocketmq
 ├── LICENSE
 ├── NOTICE
@@ -33,46 +34,51 @@ apache-rocketmq
 ├── bin
 ├── conf
 └── lib
-```
+----
 
 * 启动 NameServer
 
-```bash
+[source,bash]
+----
 nohup sh bin/mqnamesrv &
 tail -f ~/logs/rocketmqlogs/namesrv.log
-```
+----
 
 * 启动 Broker
 
-```bash
+[source,bash]
+----
 nohup sh bin/mqbroker -n localhost:9876 &
 tail -f ~/logs/rocketmqlogs/broker.log
-```
+----
 
 * 发送、接收消息
 
 发送消息：
 
-```bash
+[source,bash]
+----
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
-```
+----
 
 发送成功后显示：`SendResult [sendStatus=SEND_OK, msgId= ...`
 
 接收消息：
 
-```bash
+[source,bash]
+----
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Consumer
-```
+----
 
 接收成功后显示：`ConsumeMessageThread_%d Receive New Messages: [MessageExt...`
 
 * 关闭 Server
 
-```bash
+[source,bash]
+----
 sh bin/mqshutdown broker
 sh bin/mqshutdown namesrv
-```
+----
 
 === Spring Cloud Stream 介绍
 
@@ -95,7 +101,8 @@ image::https://docs.spring.io/spring-cloud-stream/docs/current/reference/htmlsin
 
 使用 Spring Cloud Stream 完成一段简单的消息发送和消息接收代码：
 
-```java
+[source,java]
+----
 MessageChannel messageChannel = new DirectChannel();
 
 // 消息订阅
@@ -108,7 +115,7 @@ MessageChannel messageChannel = new DirectChannel();
 
 // 消息发送
 messageChannel.send(MessageBuilder.withPayload("simple msg").build());
-```
+----
 
 这段代码所有的消息类都是 `spring-messaging` 模块里提供的。屏蔽具体消息中间件的底层实现，如果想用更换消息中间件，在配置文件里配置相关消息中间件信息以及修改 binder 依赖即可。
 
@@ -119,21 +126,23 @@ messageChannel.send(MessageBuilder.withPayload("simple msg").build());
 
 如果要在您的项目中引入 RocketMQ Binder，需要引入如下 maven 依赖：
 
-```xml
+[source,xml]
+----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
   <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
 </dependency>
-```
+----
 
 或者可以使用 Spring Cloud Stream RocketMQ Starter：
 
-```xml
+[source,xml]
+----
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
 </dependency>
-```
+----
 
 === Spring Cloud Alibaba RocketMQ Binder 实现
 
@@ -162,20 +171,22 @@ NOTE: 在使用 RocketMQ Binder 的同时也可以配置 rocketmq.** 用于触�
 
 比如 `TAGS`、`DELAY`、`TRANSACTIONAL_ARG`、`KEYS`、`WAIT_STORE_MSG_OK`、`FLAG` 表示 RocketMQ 消息对应的标签，
 
-```java
+[source,java]
+----
 MessageBuilder builder = MessageBuilder.withPayload(msg)
     .setHeader(RocketMQHeaders.TAGS, "binder")
     .setHeader(RocketMQHeaders.KEYS, "my-key")
     .setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, "1");
 Message message = builder.build();
 output().send(message);
-```
+----
 
 === MessageSource 支持
 
 SCS RocketMQ Binder 支持 `MessageSource`，可以进行消息的拉取，例子如下：
 
-```java
+[source,java]
+----
 @SpringBootApplication
 @EnableBinding(MQApplication.PolledProcessor.class)
 public class MQApplication {
@@ -221,7 +232,7 @@ public class MQApplication {
   }
 
 }
-```
+----
 
 
 
@@ -347,12 +358,13 @@ retryNextServer::
 
 NOTE: 0.1.2 & 0.2.2 & 0.9.0 才支持该功能
 
-```properties
+[source,properties]
+----
 spring.cloud.stream.rocketmq.binder.access-key=YourAccessKey
 spring.cloud.stream.rocketmq.binder.secret-key=YourSecretKey
 spring.cloud.stream.rocketmq.binder.name-server=NameServerInMQ
 spring.cloud.stream.rocketmq.binder.access-channel=CLOUD
-```
+----
 
 NOTE: topic 和 group 请以 实例id% 为前缀进行配置。比如 topic 为 "test"，需要配置成 "实例id%test"
 

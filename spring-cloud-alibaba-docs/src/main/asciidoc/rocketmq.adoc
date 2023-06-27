@@ -24,7 +24,8 @@ Download https://www.apache.org/dyn/closer.cgi?path=rocketmq/4.3.2/rocketmq-all-
 
 The decompressed directory is as follows:
 
-```
+[source]
+----
 apache-rocketmq
 ├── LICENSE
 ├── NOTICE
@@ -33,46 +34,51 @@ apache-rocketmq
 ├── bin
 ├── conf
 └── lib
-```
+----
 
 * Start NameServer
 
-```bash
+[source,bash]
+----
 nohup sh bin/mqnamesrv &
 tail -f ~/logs/rocketmqlogs/namesrv.log
-```
+----
 
 * Start Broker
 
-```bash
+[source,bash]
+----
 nohup sh bin/mqbroker -n localhost:9876 &
 tail -f ~/logs/rocketmqlogs/broker.log
-```
+----
 
 * Send and Receive Messages
 
 Send messages:
 
-```bash
+[source,bash]
+----
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
-```
+----
 
 Output when the message is successfully sent: `SendResult [sendStatus=SEND_OK, msgId= ...`
 
 Receive messages:
 
-```bash
+[source,bash]
+----
 sh bin/tools.sh org.apache.rocketmq.example.quickstart.Consumer
-```
+----
 
 Output when the message is successfully received： `ConsumeMessageThread_%d Receive New Messages: [MessageExt...`
 
 * Disable Server
 
-```bash
+[source,bash]
+----
 sh bin/mqshutdown broker
 sh bin/mqshutdown namesrv
-```
+----
 
 === Introduction of Spring Cloud Stream
 
@@ -95,7 +101,8 @@ image::https://docs.spring.io/spring-cloud-stream/docs/current/reference/htmlsin
 
 Now let’s use Spring Cloud Stream to write a simple code for sending and receiving messages:
 
-```java
+[source,java]
+----
 MessageChannel messageChannel = new DirectChannel();
 
 // Message subscription
@@ -108,7 +115,7 @@ MessageChannel messageChannel = new DirectChannel();
 
 // Message sending
 messageChannel.send(MessageBuilder.withPayload("simple msg").build());
-```
+----
 
 All the message types in this code are provided by the `spring-messaging`module. It shields the lower-layer implementations of message middleware. If you would like to change the message middleware, you only need to configure the related message middleware information in the configuration file and modify the binder dependency.
 
@@ -118,21 +125,23 @@ All the message types in this code are provided by the `spring-messaging`module.
 
 For using the Spring Cloud Alibaba RocketMQ Binder, you just need to add it to your Spring Cloud Stream application, using the following Maven coordinates:
 
-```xml
+[source,xml]
+----
 <dependency>
   <groupId>com.alibaba.cloud</groupId>
   <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
 </dependency>
-```
+----
 
 Alternatively, you can also use the Spring Cloud Stream RocketMQ Starter:
 
-```xml
+[source,xml]
+----
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
 </dependency>
-```
+----
 
 === How Spring Cloud Alibaba RocketMQ Binder Works
 
@@ -161,23 +170,26 @@ Currently Binder supports setting the relevant key in `Header` to set the proper
 
 For example, `TAGS`, `DELAY`, `TRANSACTIONAL_ARG`, `KEYS`, `WAIT_STORE_MSG_OK`, `FLAG` represent the labels corresponding to the RocketMQ message.
 
-```java
+[source,java]
+----
 MessageBuilder builder = MessageBuilder.withPayload(msg)
     .setHeader(RocketMQHeaders.TAGS, "binder")
     .setHeader(RocketMQHeaders.KEYS, "my-key")
     .setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, "1");
 Message message = builder.build();
 output().send(message);
-```
+----
 Or use StreamBridge
-```java
+
+[source,java]
+----
 MessageBuilder builder = MessageBuilder.withPayload(msg)
     .setHeader(RocketMQHeaders.TAGS, "binder")
     .setHeader(RocketMQHeaders.KEYS, "my-key")
     .setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, "1");
 Message message = builder.build();
 streamBridge.send("producer-out-0", message);
-```
+----
 
 NOTE: More Examples: https://github.com/alibaba/spring-cloud-alibaba/tree/2021.x/spring-cloud-alibaba-examples/rocketmq-example[RocketMQ Example]
 

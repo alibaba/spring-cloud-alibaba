@@ -27,7 +27,8 @@ image::https://sca-storage.oss-cn-hangzhou.aliyuncs.com/website/docs/zh/graalvm_
 
 按照一般的 Spring Cloud Alibaba 应用构建方式进行项目构建即可，以下为相关必须添加的依赖内容：
 
-```xml
+[source,xml]
+----
 <parent>
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-parent</artifactId>
@@ -66,7 +67,7 @@ image::https://sca-storage.oss-cn-hangzhou.aliyuncs.com/website/docs/zh/graalvm_
     </dependency>
   </dependencies>
 </dependencyManagement>
-```
+----
 
 以上为本次通过 Spring Cloud Alibaba 使用 Nacos 进行服务注册所需要的必要依赖，其他依赖请根据自身需求进行调整，请注意，使用 GraalVM `spring-boot-starter-parent` 父模块是非常关键的，其声明一个 native profile，其中包含了创建、运行 GraalVM 原生映像的必要信息。 构建 Spring Boot 原生镜像应用主要有两种方式：
 
@@ -133,16 +134,18 @@ mvn -Pnative native:compile
 
 可以发现应用的启动速度大大加快。 再通过``vmmap pid | grep Physical``命令查看运行过程中的内存占用情况 通过原生镜像启动的应用内存占用情况如下：
 
-```
+[source]
+----
 Physical footprint:         59.2M
 Physical footprint (peak):  59.2M
-```
+----
 
 通过普通的方式启动Java应用的内存占用情况如下：
 
-```
+[source]
+----
 Physical footprint:         214.0M
 Physical footprint (peak):  256.8M
-```
+----
 
 可以看到，通过原生镜像启动Java应用后，内存占用大大减少。 应用启动后各项功能与通过jar启动无异。

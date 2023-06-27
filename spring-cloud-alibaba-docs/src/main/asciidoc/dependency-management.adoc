@@ -2,7 +2,8 @@
 
 If you’re a Maven Central user, add our BOM to your pom.xml <dependencyManagement> section. This will allow you to omit versions for any of the Maven dependencies and instead delegate versioning to the BOM.
 
-```xml
+[source,xml]
+----
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -14,6 +15,6 @@ If you’re a Maven Central user, add our BOM to your pom.xml <dependencyManagem
         </dependency>
     </dependencies>
 </dependencyManagement>
-```
+----
 
 In the following sections, it will be assumed you are using the Spring Cloud Alibaba BOM and the dependency snippets will not contain versions.

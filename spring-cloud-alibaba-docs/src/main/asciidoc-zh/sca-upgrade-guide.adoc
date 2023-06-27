@@ -8,7 +8,9 @@
 === 升级步骤
 
 升级版本 (注意版本对应关系)
-```xml
+
+[source,xml]
+----
 <dependencyManagement>
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -32,7 +34,7 @@
         <scope>import</scope>
     </dependency>
 </dependencyManagement>
-```
+----
 
 *注意事项：* `spring-cloud-starter-alibaba-nacos-config` 模块移除了 `spring-cloud-starter-bootstrap` 依赖，如果你想以旧版的方式使用，你需要手动加上该依赖，现在推荐使用 `spring.config.import` 方式引入配置
 
@@ -43,7 +45,9 @@
 ==== 支持 spring.config.import
 
 这里假设有一个配置文件(`bootstrap.yml`)，升级到新版本应该怎么配置呢
-```yaml
+
+[source,yaml]
+----
 # bootstrap.yml
 spring:
   cloud:
@@ -58,11 +62,12 @@ spring:
           - dataId: test02.yml
             group: group_02
             refresh: false
-```
+----
 
 这两个配置是等价的
 
-```yaml
+[source,yaml]
+----
 # application.yml
 spring:
   cloud:
@@ -76,7 +81,7 @@ spring:
       - optional:nacos:test01.yml?group=group_01 # 覆盖默认 group，监听 group_01:test01.yml
       - optional:nacos:test02.yml?group=group_02&refreshEnabled=false # 不开启动态刷新
       - nacos:test03.yml # 在拉取nacos配置异常时会快速失败，会导致 spring 容器启动失败
-```
+----
 注意事项:
 
 - 如果使用 `spring.config.import` 就不能使用 bootstrap.yml/properties 引入配置的方式了 !!!
@@ -110,15 +115,19 @@ Add a spring.config.import=nacos: property to your configuration.
 当 Sentinel 作为 Spring Cloud 断路器实现时，支持为每个 FeignClient 添加断路器配置
 
 添加依赖
-```xml
+
+[source,xml]
+----
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-circuitbreaker-sentinel</artifactId>
 </dependency>
-```
+----
 
 这里有两个 FeignClient
-```java
+
+[source,java]
+----
 @FeignClient(value = "user", fallback = UserFallback.class)
 public interface UserClient {
     @GetMapping("/{success}")
@@ -132,7 +141,7 @@ public interface OrderClient {
     @GetMapping("/{success}")
     String error(@PathVariable Boolean success);
 }
-```
+----
 
 现在有这些需求:
 
@@ -141,7 +150,9 @@ public interface OrderClient {
 3. 我想要对 order FeignClient 的指定方法(error)配置熔断规则
 
 添加以下配置
-```yaml
+
+[source,yaml]
+----
 feign:
    circuitbreaker:
       enabled: true
@@ -172,7 +183,7 @@ feign:
               timeWindow: 1
               statIntervalMs: 1000
               minRequestAmount: 5
-```
+----
 
 该功能还支持从配置中心动态刷新，可以将上述配置放入配置中心(nacos，consul)，修改规则会立刻生效，如果不需要该功能可以通过 `feign.sentinel.enable-refresh-rules=false` 来禁用它
 

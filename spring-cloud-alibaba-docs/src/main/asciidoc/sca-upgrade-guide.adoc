@@ -7,7 +7,9 @@ Starting from 2021.0.1.0, the SCA version will correspond to the Spring Cloud ve
 === Upgrade Steps
 
 Upgrade version (note the version correspondence)
-```xml
+
+[source,xml]
+----
 <dependencyManagement>
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -31,7 +33,7 @@ Upgrade version (note the version correspondence)
         <scope>import</scope>
     </dependency>
 </dependencyManagement>
-```
+----
 
 *Note:* The `spring-cloud-starter-alibaba-nacos-config` module removes the `spring-cloud-starter-bootstrap` dependency. If you want to use with the bootstrap way, you need to manually add this dependency, now recommended to import configuration using `spring.config.import`.
 
@@ -43,7 +45,8 @@ After completing the above steps, you can smoothly switch to the `Spring Cloud A
 
 Suppose there is a configuration file (`bootstrap.yml`) here, how should it be configured to upgrade to a new version?
 
-```yaml
+[source,yaml]
+----
 # bootstrap.yml
 spring:
   cloud:
@@ -58,11 +61,12 @@ spring:
           - dataId: test02.yml
             group: group_02
             refresh: false
-```
+----
 
 The two configurations are equivalent.
 
-```yaml
+[source,yaml]
+----
 # application.yml
 spring:
   cloud:
@@ -76,7 +80,7 @@ spring:
       - optional:nacos:test01.yml?group=group_01 # Override default group，listening group_01:test01.yml
       - optional:nacos:test02.yml?group=group_02&refreshEnabled=false # Do not enable dynamic refresh
       - nacos:test03.yml # When the nacos configuration is pulled abnormally, it will fail quickly, which will cause the Spring container to fail to start.
-```
+----
 
 Note:
 
@@ -109,15 +113,19 @@ Add new configuration item `spring.cloud.nacos.discovery.failure-tolerance-enabl
 When Sentinel is implemented as a Spring Cloud circuit breaker, support for adding circuit breaker configuration for each FeignClient.
 
 Add dependency.
-```xml
+
+[source,xml]
+----
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-circuitbreaker-sentinel</artifactId>
 </dependency>
-```
+----
 
 And here are two FeignClient
-```java
+
+[source,java]
+----
 @FeignClient(value = "user", fallback = UserFallback.class)
 public interface UserClient {
     @GetMapping("/{success}")
@@ -131,7 +139,7 @@ public interface OrderClient {
     @GetMapping("/{success}")
     String error(@PathVariable Boolean success);
 }
-```
+----
 
 Now there are these requirements:
 
@@ -140,7 +148,9 @@ Now there are these requirements:
 3. I want to configure a circuit breaker for the specified method (error) of order FeignClient.
 
 Add the following configuration.
-```yaml
+
+[source,yaml]
+----
 feign:
    circuitbreaker:
       enabled: true
@@ -171,7 +181,7 @@ feign:
               timeWindow: 1
               statIntervalMs: 1000
               minRequestAmount: 5
-```
+----
 
 This feature also supports dynamic refresh from the configuration center. You can put the above configuration into the configuration center (nacos, consul), and the modified rules will take effect immediately. If you do not need this feature, you can set `feign.sentinel.enable-refresh-rules=false` to disable it.
 
