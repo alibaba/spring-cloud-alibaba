@@ -16,14 +16,18 @@
 
 package com.alibaba.cloud.examples;
 
+import com.alibaba.cloud.examples.aot.hint.SentinelProtectInterceptorHints;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ImportRuntimeHints;
 
 /**
  * @author raozihao
  * @author <a href="mailto:zihaorao@gmail.com">Steve</a>
  */
 @SpringBootApplication
+@ImportRuntimeHints(SentinelProtectInterceptorHints.class)
 public class RestTemplateApplication {
 
 	public static void main(String[] args) {
