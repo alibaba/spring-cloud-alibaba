@@ -247,6 +247,11 @@ public class NacosConfigProperties {
 	 */
 	private boolean refreshEnabled = true;
 
+	/**
+	 *this master switch for save configuration content snapshot, it default opened(true);
+	 */
+	private boolean snapshotEnabled = true;
+
 	// todo sts support
 
 	public String getServerAddr() {
@@ -439,6 +444,14 @@ public class NacosConfigProperties {
 
 	public void setRefreshEnabled(boolean refreshEnabled) {
 		this.refreshEnabled = refreshEnabled;
+	}
+
+	public boolean isSnapshotEnabled() {
+		return snapshotEnabled;
+	}
+
+	public void setSnapshotEnabled(boolean snapshotEnabled) {
+		this.snapshotEnabled = snapshotEnabled;
 	}
 
 	/**
