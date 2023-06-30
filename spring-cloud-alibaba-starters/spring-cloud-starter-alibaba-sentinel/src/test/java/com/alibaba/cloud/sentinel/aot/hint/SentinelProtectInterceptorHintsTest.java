@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples.aot.hint;
+package com.alibaba.cloud.sentinel.aot.hint;
 
 import java.lang.reflect.Constructor;
 
 import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import com.alibaba.cloud.sentinel.custom.SentinelProtectInterceptor;
+import org.junit.jupiter.api.Test;
 
-import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.RuntimeHints;
-import org.springframework.aot.hint.RuntimeHintsRegistrar;
+import org.springframework.aot.hint.predicate.RuntimeHintsPredicates;
 import org.springframework.web.client.RestTemplate;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author ruansheneg
  */
-public class SentinelProtectInterceptorHints implements RuntimeHintsRegistrar {
-	@Override
-	public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+public class SentinelProtectInterceptorHintsTest {
+
+	@Test
+	public void shouldRegisterHints() {
 		Constructor<SentinelProtectInterceptor> constructor;
 		try {
 			constructor = SentinelProtectInterceptor.class.getConstructor(SentinelRestTemplate.class, RestTemplate.class);
@@ -39,6 +42,10 @@ public class SentinelProtectInterceptorHints implements RuntimeHintsRegistrar {
 		catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
-		hints.reflection().registerConstructor(constructor, ExecutableMode.INVOKE);
+		RuntimeHints hints = new RuntimeHints();
+		new SentinelProtectInterceptorHints().registerHints(hints, getClass().getClassLoader());
+		assertThat(RuntimeHintsPredicates.reflection().onConstructor(constructor)).accepts(hints);
 	}
+
 }
+
