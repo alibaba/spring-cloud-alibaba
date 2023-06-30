@@ -49,7 +49,7 @@ public class NacosConfigManager {
 	 */
 	static ConfigService createConfigService(
 			NacosConfigProperties nacosConfigProperties) {
-		if (!nacosConfigProperties.isSnapshotEnabled()){
+		if (!nacosConfigProperties.isSnapshotEnabled()) {
 			SnapShotSwitch.setIsSnapShot(false);
 		}
 		if (Objects.isNull(service)) {

@@ -248,7 +248,7 @@ public class NacosConfigProperties {
 	private boolean refreshEnabled = true;
 
 	/**
-	 *this master switch for save configuration content snapshot, it default opened(true);
+	 * this master switch for save configuration content snapshot, it default opened(true).
 	 */
 	private boolean snapshotEnabled = true;
 
