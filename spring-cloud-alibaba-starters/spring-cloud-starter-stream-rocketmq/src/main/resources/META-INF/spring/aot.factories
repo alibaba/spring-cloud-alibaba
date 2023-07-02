@@ -1,0 +1,3 @@
+org.springframework.aot.hint.RuntimeHintsRegistrar=\
+com.alibaba.cloud.stream.binder.rocketmq.aot.hint.RocketMQSpecificPropertiesProviderHints,\
+com.alibaba.cloud.stream.binder.rocketmq.aot.hint.RocketMQConsumerPropertiesHints
