@@ -90,8 +90,7 @@
 
         <curator.version>4.0.1</curator.version>
 
-        <!-- Apache RocketMQ -->
-        <rocketmq.version>4.9.4</rocketmq.version>
+
 
         <!-- Maven Plugin Versions -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -144,16 +143,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-client</artifactId>
-                <version>${rocketmq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-acl</artifactId>
-                <version>${rocketmq.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
