@@ -675,6 +675,17 @@ public class RocketMQSqlConsumeApplication {
 }
 ```
 
+#### 常见问题
+
+- MQClientException: The broker does not support consumer to filter message by SQL92
+1. Modify RocketMQ server configuration file.
+   In the `conf/2m-2s-async/broker-a.properties` configuration file, add `enablePropertyFilter=true`.
+2. Restart mqbroker and specify the configuration file.
+   Specify the configuration file when `mqbroker` starts: `conf/2m-2s-async/broker-a.properties`, for example:
+```shell
+bin/mqbroker -n 127.0.0.1:9876 -c conf/2m-2s-async/broker-a.properties autoCreateTopicEnable=true  
+```
+
 ## Transaction example
 
 ### What is transactional message?

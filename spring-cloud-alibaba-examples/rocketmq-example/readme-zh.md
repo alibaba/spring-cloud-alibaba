@@ -681,6 +681,17 @@ public class RocketMQSqlConsumeApplication {
 }
 ```
 
+#### 常见问题
+
+- MQClientException: The broker does not support consumer to filter message by SQL92  
+1. 修改 RocketMQ 服务端配置文件。
+在 `conf/2m-2s-async/broker-a.properties` 配置文件末尾添加 `enablePropertyFilter=true`  
+2. 重启 mqbroker 并指定配置文件。
+`mqbroker` 启动时指定配置文件：`conf/2m-2s-async/broker-a.properties`，例如：
+```shell
+bin/mqbroker -n 127.0.0.1:9876 -c conf/2m-2s-async/broker-a.properties autoCreateTopicEnable=true  
+```
+
 ## 事务消息示例
 
 ### 什么是事务消息?

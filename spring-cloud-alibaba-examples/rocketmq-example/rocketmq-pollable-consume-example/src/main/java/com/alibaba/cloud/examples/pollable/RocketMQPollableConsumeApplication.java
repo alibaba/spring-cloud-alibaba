@@ -30,6 +30,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.binder.PollableMessageSource;
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.messaging.Message;
@@ -48,7 +49,24 @@ public class RocketMQPollableConsumeApplication {
 	private StreamBridge streamBridge;
 
 	public static void main(String[] args) {
-		SpringApplication.run(RocketMQPollableConsumeApplication.class, args);
+		ConfigurableApplicationContext context = SpringApplication.run(RocketMQPollableConsumeApplication.class, args);
+		PollableMessageSource destIn = context.getBean(PollableMessageSource.class);
+		new Thread(() -> {
+			while (true) {
+				try {
+					if (!destIn.poll((m) -> {
+						SimpleMsg newPayload = (SimpleMsg) m.getPayload();
+						System.out.println(newPayload.getMsg());
+					}, new ParameterizedTypeReference<SimpleMsg>() {
+					})) {
+						Thread.sleep(1000);
+					}
+				}
+				catch (Exception e) {
+					// handle failure
+				}
+			}
+		}).start();
 	}
 
 	@Bean
@@ -65,22 +83,4 @@ public class RocketMQPollableConsumeApplication {
 		};
 	}
 
-	@Bean
-	public ApplicationRunner pollableRunner(PollableMessageSource destIn) {
-		return args -> {
-			while (true) {
-				try {
-					if (!destIn.poll((m) -> {
-						SimpleMsg newPayload = (SimpleMsg) m.getPayload();
-						System.out.println(newPayload.getMsg());
-					}, new ParameterizedTypeReference<SimpleMsg>() { })) {
-						Thread.sleep(1000);
-					}
-				}
-				catch (Exception e) {
-					// handle failure
-				}
-			}
-		};
-	}
 }
