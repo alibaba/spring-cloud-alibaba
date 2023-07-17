@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.istio;
+package com.alibaba.cloud.governance.istio.protocol;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.List;
 
-/**
- * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
- * @since 2.2.10-RC1
- */
-public class XdsScheduledThreadPool extends ScheduledThreadPoolExecutor {
+import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
-	public XdsScheduledThreadPool(XdsConfigProperties xdsConfigProperties) {
-		this(xdsConfigProperties.getPollingPoolSize());
-	}
+public interface XdsDecoder<T> {
 
-	public XdsScheduledThreadPool(int corePoolSize) {
-		super(corePoolSize);
-	}
+	List<T> decodeXdsResponse(DiscoveryResponse discoveryResponse);
 
 }

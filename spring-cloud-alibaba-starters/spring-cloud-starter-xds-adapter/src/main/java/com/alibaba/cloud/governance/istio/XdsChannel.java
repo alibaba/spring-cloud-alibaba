@@ -18,11 +18,15 @@ package com.alibaba.cloud.governance.istio;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 import com.alibaba.cloud.commons.io.FileUtils;
 import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.governance.istio.bootstrap.Bootstrapper;
+import com.alibaba.cloud.governance.istio.bootstrap.BootstrapperImpl;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
+import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.service.discovery.v3.AggregatedDiscoveryServiceGrpc;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
@@ -31,6 +35,9 @@ import io.grpc.Metadata;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.grpc.netty.NegotiationType;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.shaded.io.netty.channel.epoll.EpollDomainSocketChannel;
+import io.grpc.netty.shaded.io.netty.channel.epoll.EpollEventLoopGroup;
+import io.grpc.netty.shaded.io.netty.channel.unix.DomainSocketAddress;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.netty.shaded.io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.grpc.stub.MetadataUtils;
@@ -55,33 +62,48 @@ public class XdsChannel implements AutoCloseable {
 
 	private final XdsConfigProperties xdsConfigProperties;
 
+	private Node node;
+
 	public XdsChannel(XdsConfigProperties xdsConfigProperties) {
 		this.xdsConfigProperties = xdsConfigProperties;
 		try {
-			if (xdsConfigProperties.getPort() == ISTIOD_SECURE_PORT) {
-				// fetch token first
-				if (StringUtils.isNotEmpty(xdsConfigProperties.getIstiodToken())) {
-					istiodToken = xdsConfigProperties.getIstiodToken();
+			if (Boolean.FALSE.equals(xdsConfigProperties.getUseAgent())) {
+				if (xdsConfigProperties.getPort() == ISTIOD_SECURE_PORT) {
+					// fetch token first
+					if (StringUtils.isNotEmpty(xdsConfigProperties.getIstiodToken())) {
+						istiodToken = xdsConfigProperties.getIstiodToken();
+					}
+					else {
+						this.refreshIstiodToken();
+					}
+					SslContext sslcontext = GrpcSslContexts.forClient()
+							// if server's cert doesn't chain to a standard root
+							.trustManager(InsecureTrustManagerFactory.INSTANCE)
+							// TODO: fill the publicKey and privateKey
+							.build();
+					this.channel = NettyChannelBuilder
+							.forTarget(xdsConfigProperties.getHost() + ":"
+									+ xdsConfigProperties.getPort())
+							.negotiationType(NegotiationType.TLS).sslContext(sslcontext)
+							.build();
 				}
 				else {
-					this.refreshIstiodToken();
+					this.channel = NettyChannelBuilder
+							.forTarget(xdsConfigProperties.getHost() + ":"
+									+ xdsConfigProperties.getPort())
+							.negotiationType(NegotiationType.PLAINTEXT).build();
 				}
-				SslContext sslcontext = GrpcSslContexts.forClient()
-						// if server's cert doesn't chain to a standard root
-						.trustManager(InsecureTrustManagerFactory.INSTANCE)
-						// TODO: fill the publicKey and privateKey
-						.build();
-				this.channel = NettyChannelBuilder
-						.forTarget(xdsConfigProperties.getHost() + ":"
-								+ xdsConfigProperties.getPort())
-						.negotiationType(NegotiationType.TLS).sslContext(sslcontext)
-						.build();
+				this.node = NodeBuilder.getNode(xdsConfigProperties);
 			}
 			else {
-				this.channel = NettyChannelBuilder
-						.forTarget(xdsConfigProperties.getHost() + ":"
-								+ xdsConfigProperties.getPort())
-						.negotiationType(NegotiationType.PLAINTEXT).build();
+				BootstrapperImpl bootstrapper = new BootstrapperImpl();
+				Bootstrapper.BootstrapInfo bootstrapInfo = bootstrapper.bootstrap();
+				EpollEventLoopGroup elg = new EpollEventLoopGroup();
+				this.channel = NettyChannelBuilder.forAddress(new DomainSocketAddress(
+						URI.create(bootstrapInfo.servers().get(0).target()).getPath()))
+						.eventLoopGroup(elg).channelType(EpollDomainSocketChannel.class)
+						.usePlaintext().build();
+				this.node = bootstrapInfo.node();
 			}
 		}
 		catch (Exception e) {
@@ -131,6 +153,10 @@ public class XdsChannel implements AutoCloseable {
 		header.put(key, "Bearer " + this.istiodToken);
 		stub = MetadataUtils.attachHeaders(stub, header);
 		return stub.streamAggregatedResources(observer);
+	}
+
+	public Node getNode() {
+		return node;
 	}
 
 }

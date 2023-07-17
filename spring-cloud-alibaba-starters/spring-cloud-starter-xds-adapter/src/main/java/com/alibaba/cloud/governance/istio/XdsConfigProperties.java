@@ -40,16 +40,18 @@ public class XdsConfigProperties {
 
 	private int port;
 
-	private int pollingPoolSize;
-
-	private int pollingTime;
-
 	/**
 	 * jwt token for istiod 15012 port.
 	 */
 	private String istiodToken;
 
 	private Boolean logXds;
+
+	private Boolean useAgent;
+
+	private String namespaceName;
+
+	private String podName;
 
 	@PostConstruct
 	public void init() {
@@ -59,14 +61,17 @@ public class XdsConfigProperties {
 		if (StringUtils.isEmpty(host)) {
 			this.host = IstioConstants.DEFAULT_ISTIOD_ADDR;
 		}
-		if (pollingPoolSize <= 0) {
-			pollingPoolSize = IstioConstants.DEFAULT_POLLING_SIZE;
-		}
-		if (pollingTime <= 0) {
-			pollingTime = IstioConstants.DEFAULT_POLLING_TIME;
-		}
 		if (logXds == null) {
 			logXds = true;
+		}
+		if (useAgent == null) {
+			useAgent = false;
+		}
+		if (StringUtils.isEmpty(namespaceName)) {
+			namespaceName = System.getenv(IstioConstants.NAMESPACE_NAME);
+		}
+		if (StringUtils.isEmpty(podName)) {
+			podName = System.getenv(IstioConstants.POD_NAME);
 		}
 	}
 
@@ -86,22 +91,6 @@ public class XdsConfigProperties {
 		this.port = port;
 	}
 
-	public int getPollingPoolSize() {
-		return pollingPoolSize;
-	}
-
-	public void setPollingPoolSize(int pollingPoolSize) {
-		this.pollingPoolSize = pollingPoolSize;
-	}
-
-	public int getPollingTime() {
-		return pollingTime;
-	}
-
-	public void setPollingTime(int pollingTime) {
-		this.pollingTime = pollingTime;
-	}
-
 	public String getIstiodToken() {
 		return istiodToken;
 	}
@@ -116,6 +105,30 @@ public class XdsConfigProperties {
 
 	public void setLogXds(boolean logXds) {
 		this.logXds = logXds;
+	}
+
+	public Boolean getUseAgent() {
+		return useAgent;
+	}
+
+	public void setUseAgent(Boolean useAgent) {
+		this.useAgent = useAgent;
+	}
+
+	public String getPodName() {
+		return podName;
+	}
+
+	public String getNamespaceName() {
+		return namespaceName;
+	}
+
+	public void setPodName(String podName) {
+		this.podName = podName;
+	}
+
+	public void setNamespaceName(String namespaceName) {
+		this.namespaceName = namespaceName;
 	}
 
 }

@@ -19,9 +19,8 @@ package com.alibaba.cloud.governance.istio.protocol.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.AggregateDiscoveryService;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
-import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
@@ -37,11 +36,10 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
  */
 public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 
-	public RdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			XdsConfigProperties xdsConfigProperties,
-			List<XdsResolveFilter<List<RouteConfiguration>>> rdsFilters) {
-		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+	public RdsProtocol(XdsConfigProperties xdsConfigProperties,
+			List<XdsResolveFilter<List<RouteConfiguration>>> rdsFilters,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		super(xdsConfigProperties, aggregateDiscoveryService);
 		for (XdsResolveFilter<List<RouteConfiguration>> filter : rdsFilters) {
 			if (IstioConstants.RDS_URL.equals(filter.getTypeUrl())) {
 				filters.add(filter);
@@ -61,13 +59,20 @@ public class RdsProtocol extends AbstractXdsProtocol<RouteConfiguration> {
 				log.error("Unpack cluster failed", e);
 			}
 		}
-		fireXdsFilters(routes);
 		return routes;
 	}
 
 	@Override
 	public String getTypeUrl() {
 		return IstioConstants.RDS_URL;
+	}
+
+	@Override
+	public void onResponseDecoded(List<RouteConfiguration> resources) {
+		if (log.isDebugEnabled()) {
+			log.debug("A Xds configuration update is finished");
+		}
+		fireXdsFilters(resources);
 	}
 
 }
