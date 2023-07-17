@@ -29,37 +29,17 @@ Before launching the example for demonstration, let's look at how a Spring Cloud
     <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
-2. Configure Istio related metadata in the `src/main/resources/application` yml configuration file:
-
+2. Connect to `Istio` control plane according to [doc](https://github.com/alibaba/spring-cloud-alibaba/blob/2.2.x/spring-cloud-alibaba-docs/src/main/asciidoc/governance.adoc),
+   and set default route algorithm in `application.yml`.
 ```yml
 server:
-  port: ${SERVER_PORT:80}
+   port: ${SERVER_PORT:80}
 spring:
-  cloud:
-    governance:
-      auth:
-        enabled: ${ISTIO_AUTH_ENABLE:true}
-    istio:
-      config:
-        enabled: ${ISTIO_CONFIG_ENABLE:true}
-        host: ${ISTIOD_ADDR:127.0.0.1}
-        port: ${ISTIOD_PORT:15010}
-        polling-pool-size: ${POLLING_POOL_SIZE:10}
-        polling-time: ${POLLING_TIMEOUT:10}
-        istiod-token: ${ISTIOD_TOKEN:}
-        log-xds: ${LOG_XDS:true}
+   cloud:
+      governance:
+         auth:
+            enabled: ${ISTIO_AUTH_ENABLE:true}
 ```
-Here's an explanation of each field:
-|Configuration Item|key|Default Value|Description
-|--|--|--|--|
-|Whether to enable authentication| spring.cloud.governance.auth.enabled|true|
-|Whether to connect to Istio to obtain authentication configuration| spring.cloud.istio.config.enabled|true|
-|Host of Istiod| spring.cloud.istio.config.host|127.0.0.1|
-|Port of Istiod| spring.cloud.istio.config.port|15012|15010 port does not need TLS，but 15012 does
-|Thread pool size for application to pull the config| spring.cloud.istio.config.polling-pool-size|10|
-|Time interval for application to pull the config| spring.cloud.istio.config.polling-time|30|The unit is second|
-|JWT token for application to connect to 15012 port| spring.cloud.istio.config.istiod-token|Content of file `/var/run/secrets/tokens/istio-token` in the pod of application|
-|Whether to print logs about xDS| spring.cloud.istio.config.log-xds|true|
 
 ### Run the application
 Note that the application runs in the K8s environment, and the application in the non-default namespace needs to receive the rules issued by Istiod, and needs to inject the meta information of the running application Kubernetes into the following environment variables. For the specific operation method, please refer to [Kubernetes documentation](https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information):
