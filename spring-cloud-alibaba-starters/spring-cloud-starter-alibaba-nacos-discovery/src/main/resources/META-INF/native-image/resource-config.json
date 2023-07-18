@@ -2,11 +2,15 @@
   "resources":{
   "includes":[
     {
+      "condition":{"typeReachable":"com.alibaba.nacos.client.config.filter.impl.ConfigFilterChainManager"},
+      "pattern":"\\QMETA-INF/services/com.alibaba.nacos.api.config.filter.IConfigFilter\\E"
+    }, 
+    {
       "condition":{"typeReachable":"com.alibaba.nacos.common.remote.PayloadRegistry"},
       "pattern":"\\QMETA-INF/services/com.alibaba.nacos.api.remote.Payload\\E"
     }, 
     {
-      "condition":{"typeReachable":"com.alibaba.nacos.plugin.auth.spi.client.ClientAuthPluginManager"},
+      "condition":{"typeReachable":"com.alibaba.nacos.client.config.impl.ConfigTransportClient"},
       "pattern":"\\QMETA-INF/services/com.alibaba.nacos.plugin.auth.spi.client.AbstractClientAuthService\\E"
     }, 
     {

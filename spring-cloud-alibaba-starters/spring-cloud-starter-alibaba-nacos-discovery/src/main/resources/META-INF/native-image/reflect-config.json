@@ -1,699 +1,1938 @@
 [
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.api.grpc.auto.Metadata"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Metadata",
-  "methods":[
-    {"name":"getClientIp","parameterTypes":[] }, 
-    {"name":"getClientIpBytes","parameterTypes":[] }, 
-    {"name":"getType","parameterTypes":[] }, 
-    {"name":"getTypeBytes","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$MapFieldAccessor"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Metadata",
-  "methods":[{"name":"getDefaultInstance","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Metadata",
-  "methods":[{"name":"newBuilder","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.TextFormat$Printer"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Metadata",
-  "methods":[
-    {"name":"getClientIp","parameterTypes":[] }, 
-    {"name":"getType","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.api.grpc.auto.Metadata"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Metadata$Builder",
-  "methods":[
-    {"name":"clearClientIp","parameterTypes":[] }, 
-    {"name":"clearType","parameterTypes":[] }, 
-    {"name":"getClientIp","parameterTypes":[] }, 
-    {"name":"getClientIpBytes","parameterTypes":[] }, 
-    {"name":"getType","parameterTypes":[] }, 
-    {"name":"getTypeBytes","parameterTypes":[] }, 
-    {"name":"setClientIp","parameterTypes":["java.lang.String"] }, 
-    {"name":"setClientIpBytes","parameterTypes":["com.alibaba.nacos.shaded.com.google.protobuf.ByteString"] }, 
-    {"name":"setType","parameterTypes":["java.lang.String"] }, 
-    {"name":"setTypeBytes","parameterTypes":["com.alibaba.nacos.shaded.com.google.protobuf.ByteString"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularFieldAccessor$ReflectionInvoker"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Payload",
-  "methods":[
-    {"name":"hasBody","parameterTypes":[] }, 
-    {"name":"hasMetadata","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Payload",
-  "methods":[
-    {"name":"getBody","parameterTypes":[] }, 
-    {"name":"getMetadata","parameterTypes":[] }, 
-    {"name":"hasBody","parameterTypes":[] }, 
-    {"name":"hasMetadata","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.TextFormat$Printer"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Payload",
-  "methods":[
-    {"name":"getBody","parameterTypes":[] }, 
-    {"name":"getMetadata","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor"},
-  "name":"com.alibaba.nacos.api.grpc.auto.Payload$Builder",
-  "methods":[
-    {"name":"clearBody","parameterTypes":[] }, 
-    {"name":"clearMetadata","parameterTypes":[] }, 
-    {"name":"getBody","parameterTypes":[] }, 
-    {"name":"getBodyBuilder","parameterTypes":[] }, 
-    {"name":"getMetadata","parameterTypes":[] }, 
-    {"name":"getMetadataBuilder","parameterTypes":[] }, 
-    {"name":"hasBody","parameterTypes":[] }, 
-    {"name":"hasMetadata","parameterTypes":[] }, 
-    {"name":"setBody","parameterTypes":["com.alibaba.nacos.shaded.com.google.protobuf.Any"] }, 
-    {"name":"setMetadata","parameterTypes":["com.alibaba.nacos.api.grpc.auto.Metadata"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.cache.ServiceInfoHolder"},
-  "name":"com.alibaba.nacos.api.naming.pojo.Instance",
-  "methods":[
-    {"name":"getClusterName","parameterTypes":[] }, 
-    {"name":"getInstanceHeartBeatInterval","parameterTypes":[] }, 
-    {"name":"getInstanceHeartBeatTimeOut","parameterTypes":[] }, 
-    {"name":"getInstanceId","parameterTypes":[] }, 
-    {"name":"getInstanceIdGenerator","parameterTypes":[] }, 
-    {"name":"getIp","parameterTypes":[] }, 
-    {"name":"getIpDeleteTimeout","parameterTypes":[] }, 
-    {"name":"getMetadata","parameterTypes":[] }, 
-    {"name":"getPort","parameterTypes":[] }, 
-    {"name":"getServiceName","parameterTypes":[] }, 
-    {"name":"getWeight","parameterTypes":[] }, 
-    {"name":"isEnabled","parameterTypes":[] }, 
-    {"name":"isEphemeral","parameterTypes":[] }, 
-    {"name":"isHealthy","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.pojo.Instance",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"getClusterName","parameterTypes":[] }, 
-    {"name":"getInstanceHeartBeatInterval","parameterTypes":[] }, 
-    {"name":"getInstanceHeartBeatTimeOut","parameterTypes":[] }, 
-    {"name":"getInstanceId","parameterTypes":[] }, 
-    {"name":"getInstanceIdGenerator","parameterTypes":[] }, 
-    {"name":"getIp","parameterTypes":[] }, 
-    {"name":"getIpDeleteTimeout","parameterTypes":[] }, 
-    {"name":"getMetadata","parameterTypes":[] }, 
-    {"name":"getPort","parameterTypes":[] }, 
-    {"name":"getServiceName","parameterTypes":[] }, 
-    {"name":"getWeight","parameterTypes":[] }, 
-    {"name":"isEnabled","parameterTypes":[] }, 
-    {"name":"isEphemeral","parameterTypes":[] }, 
-    {"name":"isHealthy","parameterTypes":[] }, 
-    {"name":"setClusterName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setEnabled","parameterTypes":["boolean"] }, 
-    {"name":"setEphemeral","parameterTypes":["boolean"] }, 
-    {"name":"setHealthy","parameterTypes":["boolean"] }, 
-    {"name":"setIp","parameterTypes":["java.lang.String"] }, 
-    {"name":"setMetadata","parameterTypes":["java.util.Map"] }, 
-    {"name":"setPort","parameterTypes":["int"] }, 
-    {"name":"setServiceName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setWeight","parameterTypes":["double"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"},
-  "name":"com.alibaba.nacos.api.naming.pojo.Instance",
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"setClusterName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setEnabled","parameterTypes":["boolean"] }, 
-    {"name":"setEphemeral","parameterTypes":["boolean"] }, 
-    {"name":"setHealthy","parameterTypes":["boolean"] }, 
-    {"name":"setIp","parameterTypes":["java.lang.String"] }, 
-    {"name":"setMetadata","parameterTypes":["java.util.Map"] }, 
-    {"name":"setPort","parameterTypes":["int"] }, 
-    {"name":"setServiceName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setWeight","parameterTypes":["double"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.cache.ServiceInfoHolder"},
-  "name":"com.alibaba.nacos.api.naming.pojo.ServiceInfo",
-  "methods":[
-    {"name":"getCacheMillis","parameterTypes":[] }, 
-    {"name":"getChecksum","parameterTypes":[] }, 
-    {"name":"getClusters","parameterTypes":[] }, 
-    {"name":"getGroupName","parameterTypes":[] }, 
-    {"name":"getHosts","parameterTypes":[] }, 
-    {"name":"getLastRefTime","parameterTypes":[] }, 
-    {"name":"getName","parameterTypes":[] }, 
-    {"name":"isAllIPs","parameterTypes":[] }, 
-    {"name":"isReachProtectionThreshold","parameterTypes":[] }, 
-    {"name":"isValid","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.NamingClientProxyDelegate"},
-  "name":"com.alibaba.nacos.api.naming.pojo.ServiceInfo",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.pojo.ServiceInfo",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"setAllIPs","parameterTypes":["boolean"] }, 
-    {"name":"setCacheMillis","parameterTypes":["long"] }, 
-    {"name":"setChecksum","parameterTypes":["java.lang.String"] }, 
-    {"name":"setClusters","parameterTypes":["java.lang.String"] }, 
-    {"name":"setGroupName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setHosts","parameterTypes":["java.util.List"] }, 
-    {"name":"setLastRefTime","parameterTypes":["long"] }, 
-    {"name":"setName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setReachProtectionThreshold","parameterTypes":["boolean"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"},
-  "name":"com.alibaba.nacos.api.naming.pojo.ServiceInfo",
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"setAllIPs","parameterTypes":["boolean"] }, 
-    {"name":"setCacheMillis","parameterTypes":["long"] }, 
-    {"name":"setChecksum","parameterTypes":["java.lang.String"] }, 
-    {"name":"setClusters","parameterTypes":["java.lang.String"] }, 
-    {"name":"setGroupName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setHosts","parameterTypes":["java.util.List"] }, 
-    {"name":"setLastRefTime","parameterTypes":["long"] }, 
-    {"name":"setName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setReachProtectionThreshold","parameterTypes":["boolean"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.remote.request.AbstractNamingRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.RpcClient"},
-  "name":"com.alibaba.nacos.api.naming.remote.request.AbstractNamingRequest",
-  "methods":[
-    {"name":"getGroupName","parameterTypes":[] }, 
-    {"name":"getModule","parameterTypes":[] }, 
-    {"name":"getNamespace","parameterTypes":[] }, 
-    {"name":"getServiceName","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.remote.request.InstanceRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"getInstance","parameterTypes":[] }, 
-    {"name":"getType","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"},
-  "name":"com.alibaba.nacos.api.naming.remote.request.NotifySubscriberRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"setServiceInfo","parameterTypes":["com.alibaba.nacos.api.naming.pojo.ServiceInfo"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.remote.request.ServiceListRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"getPageNo","parameterTypes":[] }, 
-    {"name":"getPageSize","parameterTypes":[] }, 
-    {"name":"getSelector","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.remote.request.SubscribeServiceRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"getClusters","parameterTypes":[] }, 
-    {"name":"isSubscribe","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.remote.response.InstanceResponse",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"setType","parameterTypes":["java.lang.String"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcUtils"},
-  "name":"com.alibaba.nacos.api.naming.remote.response.NotifySubscriberResponse",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.remote.response.ServiceListResponse",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"setCount","parameterTypes":["int"] }, 
-    {"name":"setServiceNames","parameterTypes":["java.util.List"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.naming.remote.response.SubscribeServiceResponse",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"setServiceInfo","parameterTypes":["com.alibaba.nacos.api.naming.pojo.ServiceInfo"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.remote.Payload",
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.RpcClient"},
-  "name":"com.alibaba.nacos.api.remote.Payload",
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient"},
-  "name":"com.alibaba.nacos.api.remote.Payload",
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"},
-  "name":"com.alibaba.nacos.api.remote.Payload",
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"},
-  "name":"com.alibaba.nacos.api.remote.Payload",
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcUtils"},
-  "name":"com.alibaba.nacos.api.remote.Payload",
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"},
-  "name":"com.alibaba.nacos.api.remote.request.ConnectionSetupRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"getAbilities","parameterTypes":[] }, 
-    {"name":"getClientVersion","parameterTypes":[] }, 
-    {"name":"getLabels","parameterTypes":[] }, 
-    {"name":"getTenant","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.RpcClient"},
-  "name":"com.alibaba.nacos.api.remote.request.HealthCheckRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.RpcClient"},
-  "name":"com.alibaba.nacos.api.remote.request.InternalRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getModule","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient"},
-  "name":"com.alibaba.nacos.api.remote.request.InternalRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getModule","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"},
-  "name":"com.alibaba.nacos.api.remote.request.InternalRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getModule","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.remote.request.Request",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.RpcClient"},
-  "name":"com.alibaba.nacos.api.remote.request.Request",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient"},
-  "name":"com.alibaba.nacos.api.remote.request.Request",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"},
-  "name":"com.alibaba.nacos.api.remote.request.Request",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[{"name":"setRequestId","parameterTypes":["java.lang.String"] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"},
-  "name":"com.alibaba.nacos.api.remote.request.Request",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcUtils"},
-  "name":"com.alibaba.nacos.api.remote.request.Request",
-  "methods":[
-    {"name":"getHeaders","parameterTypes":[] }, 
-    {"name":"getRequestId","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient"},
-  "name":"com.alibaba.nacos.api.remote.request.ServerCheckRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"},
-  "name":"com.alibaba.nacos.api.remote.request.ServerRequest",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.RpcClient"},
-  "name":"com.alibaba.nacos.api.remote.response.HealthCheckResponse",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"},
-  "name":"com.alibaba.nacos.api.remote.response.Response",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[{"name":"setMessage","parameterTypes":["java.lang.String"] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.RpcClient"},
-  "name":"com.alibaba.nacos.api.remote.response.Response",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient"},
-  "name":"com.alibaba.nacos.api.remote.response.Response",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"setErrorCode","parameterTypes":["int"] }, 
-    {"name":"setResultCode","parameterTypes":["int"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"},
-  "name":"com.alibaba.nacos.api.remote.response.Response",
-  "methods":[
-    {"name":"setErrorCode","parameterTypes":["int"] }, 
-    {"name":"setResultCode","parameterTypes":["int"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcUtils"},
-  "name":"com.alibaba.nacos.api.remote.response.Response",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"getErrorCode","parameterTypes":[] }, 
-    {"name":"getMessage","parameterTypes":[] }, 
-    {"name":"getRequestId","parameterTypes":[] }, 
-    {"name":"getResultCode","parameterTypes":[] }, 
-    {"name":"isSuccess","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient"},
-  "name":"com.alibaba.nacos.api.remote.response.ServerCheckResponse",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true,
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
-    {"name":"setConnectionId","parameterTypes":["java.lang.String"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.spi.NacosServiceLoader"},
-  "name":"com.alibaba.nacos.client.logging.logback.NacosLogbackConfiguratorAdapterV1",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.api.naming.NamingFactory"},
-  "name":"com.alibaba.nacos.client.naming.NacosNamingService",
-  "methods":[{"name":"<init>","parameterTypes":["java.util.Properties"] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.notify.NotifyCenter"},
-  "name":"com.alibaba.nacos.common.notify.DefaultPublisher",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient"},
-  "name":"com.alibaba.nacos.common.remote.TlsConfig",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"getCertChainFile","parameterTypes":[] }, 
-    {"name":"getCertPrivateKey","parameterTypes":[] }, 
-    {"name":"getCertPrivateKeyPassword","parameterTypes":[] }, 
-    {"name":"getCiphers","parameterTypes":[] }, 
-    {"name":"getEnableTls","parameterTypes":[] }, 
-    {"name":"getMutualAuthEnable","parameterTypes":[] }, 
-    {"name":"getProtocols","parameterTypes":[] }, 
-    {"name":"getSslProvider","parameterTypes":[] }, 
-    {"name":"getTrustAll","parameterTypes":[] }, 
-    {"name":"getTrustCollectionCertFile","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.common.remote.client.grpc.GrpcClient"},
-  "name":"com.alibaba.nacos.common.remote.client.RpcClientTlsConfig",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queryAllDeclaredConstructors":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper"},
-  "name":"com.alibaba.nacos.shaded.com.google.common.util.concurrent.AbstractFuture",
-  "fields":[
-    {"name":"listeners"}, 
-    {"name":"value"}, 
-    {"name":"waiters"}
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper"},
-  "name":"com.alibaba.nacos.shaded.com.google.common.util.concurrent.AbstractFuture$Waiter",
-  "fields":[
-    {"name":"next"}, 
-    {"name":"thread"}
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.Any"},
-  "name":"com.alibaba.nacos.shaded.com.google.protobuf.Any",
-  "methods":[
-    {"name":"getTypeUrl","parameterTypes":[] }, 
-    {"name":"getTypeUrlBytes","parameterTypes":[] }, 
-    {"name":"getValue","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor"},
-  "name":"com.alibaba.nacos.shaded.com.google.protobuf.Any",
-  "methods":[{"name":"newBuilder","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.TextFormat$Printer"},
-  "name":"com.alibaba.nacos.shaded.com.google.protobuf.Any",
-  "methods":[
-    {"name":"getTypeUrl","parameterTypes":[] }, 
-    {"name":"getValue","parameterTypes":[] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.Any"},
-  "name":"com.alibaba.nacos.shaded.com.google.protobuf.Any$Builder",
-  "methods":[
-    {"name":"clearTypeUrl","parameterTypes":[] }, 
-    {"name":"clearValue","parameterTypes":[] }, 
-    {"name":"getTypeUrl","parameterTypes":[] }, 
-    {"name":"getTypeUrlBytes","parameterTypes":[] }, 
-    {"name":"getValue","parameterTypes":[] }, 
-    {"name":"setTypeUrl","parameterTypes":["java.lang.String"] }, 
-    {"name":"setTypeUrlBytes","parameterTypes":["com.alibaba.nacos.shaded.com.google.protobuf.ByteString"] }, 
-    {"name":"setValue","parameterTypes":["com.alibaba.nacos.shaded.com.google.protobuf.ByteString"] }
-  ]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.com.google.protobuf.ExtensionRegistryFactory"},
-  "name":"com.alibaba.nacos.shaded.com.google.protobuf.ExtensionRegistry",
-  "methods":[{"name":"getEmptyRegistry","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.internal.ManagedChannelImplBuilder"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.census.InternalCensusStatsAccessor"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.internal.ManagedChannelImplBuilder"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.census.InternalCensusTracingAccessor"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.NameResolverRegistry"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.internal.DnsNameResolverProvider"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.internal.DnsNameResolver"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.internal.JndiResourceResolverFactory"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.LoadBalancerRegistry"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.internal.PickFirstLoadBalancerProvider"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.ManagedChannelRegistry"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.NettyChannelProvider"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.ManagedChannelRegistry"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.UdsNettyChannelProvider"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.buffer.AbstractByteBufAllocator"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.buffer.AbstractByteBufAllocator",
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.ReferenceCountUpdater"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.buffer.AbstractReferenceCountedByteBuf",
-  "fields":[{"name":"refCnt"}]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.grpc.netty.Utils"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.channel.epoll.Epoll"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.channel.ReflectiveChannelFactory"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.ReferenceCountUtil"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.ReferenceCountUtil",
-  "queryAllDeclaredMethods":true
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueColdProducerFields"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueColdProducerFields",
-  "fields":[{"name":"producerLimit"}]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields",
-  "fields":[{"name":"consumerIndex"}]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields",
-  "fields":[{"name":"producerIndex"}]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
-  "fields":[{"name":"consumerIndex"}]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField",
-  "fields":[{"name":"producerIndex"}]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField",
-  "fields":[{"name":"producerLimit"}]
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.ManagedChannelRegistry"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.okhttp.OkHttpChannelProvider"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.Context$LazyStorage"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.override.ContextStorageOverride"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.grpc.LoadBalancerRegistry"},
-  "name":"com.alibaba.nacos.shaded.io.grpc.util.SecretRoundRobinLoadBalancerProvider$Provider"
-},
-{
-  "condition":{"typeReachable":"com.alibaba.nacos.shaded.io.perfmark.PerfMark"},
-  "name":"com.alibaba.nacos.shaded.io.perfmark.impl.SecretPerfMarkImpl$PerfMarkImpl"
-}
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.api.grpc.auto.Metadata"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Metadata",
+    "methods": [
+      {
+        "name": "getClientIp",
+        "parameterTypes": []
+      },
+      {
+        "name": "getClientIpBytes",
+        "parameterTypes": []
+      },
+      {
+        "name": "getType",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTypeBytes",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$MapFieldAccessor"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Metadata",
+    "methods": [
+      {
+        "name": "getDefaultInstance",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Metadata",
+    "methods": [
+      {
+        "name": "newBuilder",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.TextFormat$Printer"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Metadata",
+    "methods": [
+      {
+        "name": "getClientIp",
+        "parameterTypes": []
+      },
+      {
+        "name": "getType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.api.grpc.auto.Metadata"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Metadata$Builder",
+    "methods": [
+      {
+        "name": "clearClientIp",
+        "parameterTypes": []
+      },
+      {
+        "name": "clearType",
+        "parameterTypes": []
+      },
+      {
+        "name": "getClientIp",
+        "parameterTypes": []
+      },
+      {
+        "name": "getClientIpBytes",
+        "parameterTypes": []
+      },
+      {
+        "name": "getType",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTypeBytes",
+        "parameterTypes": []
+      },
+      {
+        "name": "setClientIp",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setClientIpBytes",
+        "parameterTypes": [
+          "com.alibaba.nacos.shaded.com.google.protobuf.ByteString"
+        ]
+      },
+      {
+        "name": "setType",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setTypeBytes",
+        "parameterTypes": [
+          "com.alibaba.nacos.shaded.com.google.protobuf.ByteString"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularFieldAccessor$ReflectionInvoker"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Payload",
+    "methods": [
+      {
+        "name": "hasBody",
+        "parameterTypes": []
+      },
+      {
+        "name": "hasMetadata",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Payload",
+    "methods": [
+      {
+        "name": "getBody",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMetadata",
+        "parameterTypes": []
+      },
+      {
+        "name": "hasBody",
+        "parameterTypes": []
+      },
+      {
+        "name": "hasMetadata",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.TextFormat$Printer"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Payload",
+    "methods": [
+      {
+        "name": "getBody",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMetadata",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor"
+    },
+    "name": "com.alibaba.nacos.api.grpc.auto.Payload$Builder",
+    "methods": [
+      {
+        "name": "clearBody",
+        "parameterTypes": []
+      },
+      {
+        "name": "clearMetadata",
+        "parameterTypes": []
+      },
+      {
+        "name": "getBody",
+        "parameterTypes": []
+      },
+      {
+        "name": "getBodyBuilder",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMetadata",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMetadataBuilder",
+        "parameterTypes": []
+      },
+      {
+        "name": "hasBody",
+        "parameterTypes": []
+      },
+      {
+        "name": "hasMetadata",
+        "parameterTypes": []
+      },
+      {
+        "name": "setBody",
+        "parameterTypes": [
+          "com.alibaba.nacos.shaded.com.google.protobuf.Any"
+        ]
+      },
+      {
+        "name": "setMetadata",
+        "parameterTypes": [
+          "com.alibaba.nacos.api.grpc.auto.Metadata"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.cache.ServiceInfoHolder"
+    },
+    "name": "com.alibaba.nacos.api.naming.pojo.Instance",
+    "methods": [
+      {
+        "name": "getClusterName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstanceHeartBeatInterval",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstanceHeartBeatTimeOut",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstanceId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstanceIdGenerator",
+        "parameterTypes": []
+      },
+      {
+        "name": "getIp",
+        "parameterTypes": []
+      },
+      {
+        "name": "getIpDeleteTimeout",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMetadata",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPort",
+        "parameterTypes": []
+      },
+      {
+        "name": "getServiceName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getWeight",
+        "parameterTypes": []
+      },
+      {
+        "name": "isEnabled",
+        "parameterTypes": []
+      },
+      {
+        "name": "isEphemeral",
+        "parameterTypes": []
+      },
+      {
+        "name": "isHealthy",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.pojo.Instance",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "getClusterName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstanceHeartBeatInterval",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstanceHeartBeatTimeOut",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstanceId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInstanceIdGenerator",
+        "parameterTypes": []
+      },
+      {
+        "name": "getIp",
+        "parameterTypes": []
+      },
+      {
+        "name": "getIpDeleteTimeout",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMetadata",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPort",
+        "parameterTypes": []
+      },
+      {
+        "name": "getServiceName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getWeight",
+        "parameterTypes": []
+      },
+      {
+        "name": "isEnabled",
+        "parameterTypes": []
+      },
+      {
+        "name": "isEphemeral",
+        "parameterTypes": []
+      },
+      {
+        "name": "isHealthy",
+        "parameterTypes": []
+      },
+      {
+        "name": "setClusterName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setEnabled",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setEphemeral",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setHealthy",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setIp",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setMetadata",
+        "parameterTypes": [
+          "java.util.Map"
+        ]
+      },
+      {
+        "name": "setPort",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setServiceName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setWeight",
+        "parameterTypes": [
+          "double"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"
+    },
+    "name": "com.alibaba.nacos.api.naming.pojo.Instance",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setClusterName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setEnabled",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setEphemeral",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setHealthy",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setIp",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setMetadata",
+        "parameterTypes": [
+          "java.util.Map"
+        ]
+      },
+      {
+        "name": "setPort",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setServiceName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setWeight",
+        "parameterTypes": [
+          "double"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.cache.ServiceInfoHolder"
+    },
+    "name": "com.alibaba.nacos.api.naming.pojo.ServiceInfo",
+    "methods": [
+      {
+        "name": "getCacheMillis",
+        "parameterTypes": []
+      },
+      {
+        "name": "getChecksum",
+        "parameterTypes": []
+      },
+      {
+        "name": "getClusters",
+        "parameterTypes": []
+      },
+      {
+        "name": "getGroupName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getHosts",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLastRefTime",
+        "parameterTypes": []
+      },
+      {
+        "name": "getName",
+        "parameterTypes": []
+      },
+      {
+        "name": "isAllIPs",
+        "parameterTypes": []
+      },
+      {
+        "name": "isReachProtectionThreshold",
+        "parameterTypes": []
+      },
+      {
+        "name": "isValid",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.NamingClientProxyDelegate"
+    },
+    "name": "com.alibaba.nacos.api.naming.pojo.ServiceInfo",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.pojo.ServiceInfo",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAllIPs",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setCacheMillis",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setChecksum",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setClusters",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setGroupName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setHosts",
+        "parameterTypes": [
+          "java.util.List"
+        ]
+      },
+      {
+        "name": "setLastRefTime",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setReachProtectionThreshold",
+        "parameterTypes": [
+          "boolean"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"
+    },
+    "name": "com.alibaba.nacos.api.naming.pojo.ServiceInfo",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAllIPs",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setCacheMillis",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setChecksum",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setClusters",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setGroupName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setHosts",
+        "parameterTypes": [
+          "java.util.List"
+        ]
+      },
+      {
+        "name": "setLastRefTime",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setReachProtectionThreshold",
+        "parameterTypes": [
+          "boolean"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.request.AbstractNamingRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.RpcClient"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.request.AbstractNamingRequest",
+    "methods": [
+      {
+        "name": "getGroupName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getModule",
+        "parameterTypes": []
+      },
+      {
+        "name": "getNamespace",
+        "parameterTypes": []
+      },
+      {
+        "name": "getServiceName",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.request.InstanceRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "getInstance",
+        "parameterTypes": []
+      },
+      {
+        "name": "getType",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.request.NotifySubscriberRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setServiceInfo",
+        "parameterTypes": [
+          "com.alibaba.nacos.api.naming.pojo.ServiceInfo"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.request.ServiceListRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "getPageNo",
+        "parameterTypes": []
+      },
+      {
+        "name": "getPageSize",
+        "parameterTypes": []
+      },
+      {
+        "name": "getSelector",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.request.SubscribeServiceRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "getClusters",
+        "parameterTypes": []
+      },
+      {
+        "name": "isSubscribe",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.response.InstanceResponse",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setType",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcUtils"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.response.NotifySubscriberResponse",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.response.ServiceListResponse",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setCount",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setServiceNames",
+        "parameterTypes": [
+          "java.util.List"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.naming.remote.response.SubscribeServiceResponse",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setServiceInfo",
+        "parameterTypes": [
+          "com.alibaba.nacos.api.naming.pojo.ServiceInfo"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.remote.Payload",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.RpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.Payload",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.Payload",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"
+    },
+    "name": "com.alibaba.nacos.api.remote.Payload",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"
+    },
+    "name": "com.alibaba.nacos.api.remote.Payload",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcUtils"
+    },
+    "name": "com.alibaba.nacos.api.remote.Payload",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.ConnectionSetupRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "getAbilities",
+        "parameterTypes": []
+      },
+      {
+        "name": "getClientVersion",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLabels",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTenant",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.RpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.HealthCheckRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.RpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.InternalRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "getModule",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.InternalRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "getModule",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.InternalRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "getModule",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.Request",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.RpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.Request",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.Request",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.Request",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "setRequestId",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.Request",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcUtils"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.Request",
+    "methods": [
+      {
+        "name": "getHeaders",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRequestId",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.ServerCheckRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient$1"
+    },
+    "name": "com.alibaba.nacos.api.remote.request.ServerRequest",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.RpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.response.HealthCheckResponse",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.gprc.NamingGrpcClientProxy"
+    },
+    "name": "com.alibaba.nacos.api.remote.response.Response",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "setMessage",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.RpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.response.Response",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.response.Response",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "setErrorCode",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setResultCode",
+        "parameterTypes": [
+          "int"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcConnection"
+    },
+    "name": "com.alibaba.nacos.api.remote.response.Response",
+    "methods": [
+      {
+        "name": "setErrorCode",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setResultCode",
+        "parameterTypes": [
+          "int"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcUtils"
+    },
+    "name": "com.alibaba.nacos.api.remote.response.Response",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "getErrorCode",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMessage",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRequestId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getResultCode",
+        "parameterTypes": []
+      },
+      {
+        "name": "isSuccess",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient"
+    },
+    "name": "com.alibaba.nacos.api.remote.response.ServerCheckResponse",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setConnectionId",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.spi.NacosServiceLoader"
+    },
+    "name": "com.alibaba.nacos.client.logging.logback.NacosLogbackConfiguratorAdapterV1",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.api.naming.NamingFactory"
+    },
+    "name": "com.alibaba.nacos.client.naming.NacosNamingService",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.util.Properties"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.notify.NotifyCenter"
+    },
+    "name": "com.alibaba.nacos.common.notify.DefaultPublisher",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient"
+    },
+    "name": "com.alibaba.nacos.common.remote.TlsConfig",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "getCertChainFile",
+        "parameterTypes": []
+      },
+      {
+        "name": "getCertPrivateKey",
+        "parameterTypes": []
+      },
+      {
+        "name": "getCertPrivateKeyPassword",
+        "parameterTypes": []
+      },
+      {
+        "name": "getCiphers",
+        "parameterTypes": []
+      },
+      {
+        "name": "getEnableTls",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMutualAuthEnable",
+        "parameterTypes": []
+      },
+      {
+        "name": "getProtocols",
+        "parameterTypes": []
+      },
+      {
+        "name": "getSslProvider",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTrustAll",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTrustCollectionCertFile",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.common.remote.client.grpc.GrpcClient"
+    },
+    "name": "com.alibaba.nacos.common.remote.client.RpcClientTlsConfig",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper"
+    },
+    "name": "com.alibaba.nacos.shaded.com.google.common.util.concurrent.AbstractFuture",
+    "fields": [
+      {
+        "name": "listeners"
+      },
+      {
+        "name": "value"
+      },
+      {
+        "name": "waiters"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper"
+    },
+    "name": "com.alibaba.nacos.shaded.com.google.common.util.concurrent.AbstractFuture$Waiter",
+    "fields": [
+      {
+        "name": "next"
+      },
+      {
+        "name": "thread"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.Any"
+    },
+    "name": "com.alibaba.nacos.shaded.com.google.protobuf.Any",
+    "methods": [
+      {
+        "name": "getTypeUrl",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTypeUrlBytes",
+        "parameterTypes": []
+      },
+      {
+        "name": "getValue",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.GeneratedMessageV3$FieldAccessorTable$SingularMessageFieldAccessor"
+    },
+    "name": "com.alibaba.nacos.shaded.com.google.protobuf.Any",
+    "methods": [
+      {
+        "name": "newBuilder",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.TextFormat$Printer"
+    },
+    "name": "com.alibaba.nacos.shaded.com.google.protobuf.Any",
+    "methods": [
+      {
+        "name": "getTypeUrl",
+        "parameterTypes": []
+      },
+      {
+        "name": "getValue",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.Any"
+    },
+    "name": "com.alibaba.nacos.shaded.com.google.protobuf.Any$Builder",
+    "methods": [
+      {
+        "name": "clearTypeUrl",
+        "parameterTypes": []
+      },
+      {
+        "name": "clearValue",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTypeUrl",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTypeUrlBytes",
+        "parameterTypes": []
+      },
+      {
+        "name": "getValue",
+        "parameterTypes": []
+      },
+      {
+        "name": "setTypeUrl",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setTypeUrlBytes",
+        "parameterTypes": [
+          "com.alibaba.nacos.shaded.com.google.protobuf.ByteString"
+        ]
+      },
+      {
+        "name": "setValue",
+        "parameterTypes": [
+          "com.alibaba.nacos.shaded.com.google.protobuf.ByteString"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.protobuf.ExtensionRegistryFactory"
+    },
+    "name": "com.alibaba.nacos.shaded.com.google.protobuf.ExtensionRegistry",
+    "methods": [
+      {
+        "name": "getEmptyRegistry",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.internal.ManagedChannelImplBuilder"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.census.InternalCensusStatsAccessor"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.internal.ManagedChannelImplBuilder"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.census.InternalCensusTracingAccessor"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.NameResolverRegistry"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.internal.DnsNameResolverProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.internal.DnsNameResolver"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.internal.JndiResourceResolverFactory"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.LoadBalancerRegistry"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.internal.PickFirstLoadBalancerProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.ManagedChannelRegistry"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.NettyChannelProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.ManagedChannelRegistry"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.UdsNettyChannelProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.buffer.AbstractByteBufAllocator"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.buffer.AbstractByteBufAllocator",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.ReferenceCountUpdater"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.buffer.AbstractReferenceCountedByteBuf",
+    "fields": [
+      {
+        "name": "refCnt"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.grpc.netty.Utils"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.channel.epoll.Epoll"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.channel.ReflectiveChannelFactory"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.ReferenceCountUtil"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.ReferenceCountUtil",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueColdProducerFields"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueColdProducerFields",
+    "fields": [
+      {
+        "name": "producerLimit"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields",
+    "fields": [
+      {
+        "name": "consumerIndex"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields",
+    "fields": [
+      {
+        "name": "producerIndex"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
+    "fields": [
+      {
+        "name": "consumerIndex"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerIndexField",
+    "fields": [
+      {
+        "name": "producerIndex"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueProducerLimitField",
+    "fields": [
+      {
+        "name": "producerLimit"
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.ManagedChannelRegistry"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.okhttp.OkHttpChannelProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.Context$LazyStorage"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.override.ContextStorageOverride"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.grpc.LoadBalancerRegistry"
+    },
+    "name": "com.alibaba.nacos.shaded.io.grpc.util.SecretRoundRobinLoadBalancerProvider$Provider"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.io.perfmark.PerfMark"
+    },
+    "name": "com.alibaba.nacos.shaded.io.perfmark.impl.SecretPerfMarkImpl$PerfMarkImpl"
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "getConfigAbility",
+        "parameterTypes": []
+      },
+      {
+        "name": "getNamingAbility",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRemoteAbility",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.ability.ClientAbilities",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "isSupportRemoteMetrics",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.config.ability.ClientConfigAbility",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "getModule",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.config.remote.request.AbstractConfigRequest",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.gson.Gson"
+    },
+    "name": "com.alibaba.nacos.api.config.remote.request.AbstractConfigRequest"
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "getConfigListenContexts",
+        "parameterTypes": []
+      },
+      {
+        "name": "isListen",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.config.remote.request.ConfigBatchListenRequest",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "getDataId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getGroup",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMd5",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTenant",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.config.remote.request.ConfigBatchListenRequest$ConfigListenContext",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.shaded.com.google.gson.internal.bind.CollectionTypeAdapterFactory"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.config.remote.request.ConfigBatchListenRequest$ConfigListenContext"
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "getDataId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getGroup",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTag",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTenant",
+        "parameterTypes": []
+      },
+      {
+        "name": "isNotify",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.config.remote.request.ConfigQueryRequest",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setChangedConfigs",
+        "parameterTypes": [
+          "java.util.List"
+        ]
+      }
+    ],
+    "name": "com.alibaba.nacos.api.config.remote.response.ConfigChangeBatchListenResponse",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "name": "com.alibaba.nacos.api.config.remote.response.ConfigChangeBatchListenResponse$ConfigContext",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setBeta",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setContent",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setContentType",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setEncryptedDataKey",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setLastModified",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setMd5",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ],
+    "name": "com.alibaba.nacos.api.config.remote.response.ConfigQueryResponse",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "isSupportDeltaPush",
+        "parameterTypes": []
+      },
+      {
+        "name": "isSupportRemoteMetric",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.naming.ability.ClientNamingAbility",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "allDeclaredFields": true,
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.config.impl.ClientWorker$ConfigRpcTransportClient"
+    },
+    "methods": [
+      {
+        "name": "isSupportRemoteConnection",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.api.remote.ability.ClientRemoteAbility",
+    "queryAllDeclaredConstructors": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.NamingClientProxyDelegate"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.client.auth.impl.NacosClientAuthServiceImpl"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.remote.NamingClientProxyDelegate"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ],
+    "name": "com.alibaba.nacos.client.auth.ram.RamClientAuthServiceImpl"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.api.config.ConfigFactory"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.util.Properties"
+        ]
+      }
+    ],
+    "name": "com.alibaba.nacos.client.config.NacosConfigService"
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.nacos.client.naming.NacosNamingService"
+    },
+    "name": "com.alibaba.nacos.api.naming.pojo.Instance",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "setInstanceId",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  }
 ]
