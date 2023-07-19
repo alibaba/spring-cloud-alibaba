@@ -1,0 +1,18 @@
+[
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationCache"
+    },
+    "interfaces": [
+      "io.seata.config.Configuration"
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.spring.boot.autoconfigure.provider.SpringBootConfigurationProvider"
+    },
+    "interfaces": [
+      "io.seata.config.Configuration"
+    ]
+  }
+]

@@ -1,0 +1,528 @@
+[
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationCache"
+    },
+    "name": "io.seata.config.Configuration"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationCache$$Lambda$494/0x00000008010e8000"
+    },
+    "name": "io.seata.config.Configuration"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.event.GuavaEventBus"
+    },
+    "name": "io.seata.config.ConfigurationChangeListener",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationFactory"
+    },
+    "name": "io.seata.config.apollo.ApolloConfigurationProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationFactory"
+    },
+    "name": "io.seata.config.consul.ConsulConfigurationProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationFactory"
+    },
+    "name": "io.seata.config.custom.CustomConfigurationProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationFactory"
+    },
+    "name": "io.seata.config.etcd3.EtcdConfigurationProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.common.loader.EnhancedServiceLoader$InnerEnhancedServiceLoader"
+    },
+    "name": "io.seata.config.file.SimpleFileConfig",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.common.loader.EnhancedServiceLoader$InnerEnhancedServiceLoader"
+    },
+    "name": "io.seata.config.file.YamlFileConfig"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationFactory"
+    },
+    "name": "io.seata.config.nacos.NacosConfigurationProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.processor.ConfigProcessor"
+    },
+    "name": "io.seata.config.processor.ProcessorProperties",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.processor.ConfigProcessor"
+    },
+    "name": "io.seata.config.processor.ProcessorYaml"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationFactory"
+    },
+    "name": "io.seata.config.springcloud.SpringCloudConfigurationProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationFactory"
+    },
+    "name": "io.seata.config.zk.ZookeeperConfigurationProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.rpc.netty.TmNettyRemotingClient"
+    },
+    "name": "io.seata.core.auth.DefaultAuthSigner",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.context.ContextCoreLoader$ContextCoreHolder"
+    },
+    "name": "io.seata.core.context.FastThreadLocalContextCore",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.context.ContextCoreLoader$ContextCoreHolder"
+    },
+    "name": "io.seata.core.context.ThreadLocalContextCore"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.rpc.netty.AbstractNettyRemoting"
+    },
+    "name": "io.seata.core.rpc.hook.StatusRpcHook",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.rpc.netty.NettyClientBootstrap"
+    },
+    "name": "io.seata.core.rpc.netty.AbstractNettyRemotingClient$ClientHandler",
+    "methods": [
+      {
+        "name": "channelInactive",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "channelRead",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "channelWritabilityChanged",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext"
+        ]
+      },
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "userEventTriggered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.rpc.netty.NettyClientBootstrap"
+    },
+    "name": "io.seata.core.rpc.netty.NettyClientBootstrap$1"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.rpc.netty.NettyClientBootstrap$1"
+    },
+    "name": "io.seata.core.rpc.netty.v1.ProtocolV1Decoder"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.rpc.netty.NettyClientBootstrap$1"
+    },
+    "name": "io.seata.core.rpc.netty.v1.ProtocolV1Encoder"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.FileRegistryProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.consul.ConsulRegistryProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.custom.CustomRegistryProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.etcd3.EtcdRegistryProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.eureka.EurekaRegistryProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.nacos.NacosRegistryProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.redis.RedisRegistryProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.sofa.SofaRegistryProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+    },
+    "name": "io.seata.discovery.registry.zk.ZookeeperRegistryProvider"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.spring.annotation.GlobalTransactionScanner"
+    },
+    "name": "io.seata.integration.http.JakartaSeataWebMvcConfigurer",
+    "queryAllPublicMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.DefaultRMHandler"
+    },
+    "name": "io.seata.rm.RMHandlerAT",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.DefaultRMHandler"
+    },
+    "name": "io.seata.rm.RMHandlerXA",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.DefaultResourceManager"
+    },
+    "name": "io.seata.rm.datasource.DataSourceManager",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.DefaultResourceManager"
+    },
+    "name": "io.seata.rm.datasource.xa.ResourceManagerXA",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.DefaultRMHandler"
+    },
+    "name": "io.seata.rm.tcc.RMHandlerTCC",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.DefaultResourceManager"
+    },
+    "name": "io.seata.rm.tcc.TCCResourceManager",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.tcc.remoting.parser.DefaultRemotingParser"
+    },
+    "name": "io.seata.rm.tcc.remoting.parser.DubboRemotingParser",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.tcc.remoting.parser.DefaultRemotingParser"
+    },
+    "name": "io.seata.rm.tcc.remoting.parser.HSFRemotingParser",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.tcc.remoting.parser.DefaultRemotingParser"
+    },
+    "name": "io.seata.rm.tcc.remoting.parser.LocalTCCRemotingParser",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.tcc.remoting.parser.DefaultRemotingParser"
+    },
+    "name": "io.seata.rm.tcc.remoting.parser.SofaRpcRemotingParser",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.DefaultRMHandler"
+    },
+    "name": "io.seata.saga.rm.RMHandlerSaga",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.rm.DefaultResourceManager"
+    },
+    "name": "io.seata.saga.rm.SagaResourceManager",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.serializer.SerializerServiceLoader"
+    },
+    "name": "io.seata.serializer.fst.FstSerializer"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.serializer.SerializerServiceLoader"
+    },
+    "name": "io.seata.serializer.hessian.HessianSerializer"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.serializer.SerializerServiceLoader"
+    },
+    "name": "io.seata.serializer.kryo.KryoSerializer"
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.serializer.SerializerServiceLoader"
+    },
+    "name": "io.seata.serializer.seata.SeataSerializer",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.event.GuavaEventBus"
+    },
+    "name": "io.seata.spring.annotation.GlobalTransactionalInterceptor",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.core.event.GuavaEventBus"
+    },
+    "name": "io.seata.spring.annotation.SeataInterceptor",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.spring.boot.autoconfigure.SeataAutoConfiguration"
+    },
+    "name": "io.seata.spring.annotation.scannercheckers.ConfigBeansScannerChecker",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.spring.boot.autoconfigure.SeataAutoConfiguration"
+    },
+    "name": "io.seata.spring.annotation.scannercheckers.PackageScannerChecker",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.spring.boot.autoconfigure.SeataAutoConfiguration"
+    },
+    "name": "io.seata.spring.annotation.scannercheckers.ScopeBeansScannerChecker",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.config.ConfigurationFactory"
+    },
+    "name": "io.seata.spring.boot.autoconfigure.provider.SpringBootConfigurationProvider",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "io.seata.tm.TransactionManagerHolder$SingletonHolder"
+    },
+    "name": "io.seata.tm.DefaultTransactionManager",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  }
+]

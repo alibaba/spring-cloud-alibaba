@@ -1,0 +1,151 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.nacos.NacosConfiguration"
+        },
+        "pattern": "\\QMETA-INF/services/com.alibaba.nacos.api.config.filter.IConfigFilter\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.nacos.NacosConfiguration"
+        },
+        "pattern": "\\QMETA-INF/services/com.alibaba.nacos.api.remote.Payload\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.nacos.NacosConfiguration"
+        },
+        "pattern": "\\QMETA-INF/services/com.alibaba.nacos.plugin.auth.spi.client.AbstractClientAuthService\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.nacos.NacosConfiguration"
+        },
+        "pattern": "\\QMETA-INF/services/com.alibaba.nacos.shaded.io.grpc.LoadBalancerProvider\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.nacos.NacosConfiguration"
+        },
+        "pattern": "\\QMETA-INF/services/com.alibaba.nacos.shaded.io.grpc.ManagedChannelProvider\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.nacos.NacosConfiguration"
+        },
+        "pattern": "\\QMETA-INF/services/com.alibaba.nacos.shaded.io.grpc.NameResolverProvider\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.ConfigurationFactory"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.config.ConfigurationProvider\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.ConfigurationFactory"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.config.ExtConfigurationProvider\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.common.loader.EnhancedServiceLoader$InnerEnhancedServiceLoader"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.config.file.FileConfig\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.processor.ConfigProcessor"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.config.processor.Processor\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.core.rpc.netty.TmNettyRemotingClient"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.core.auth.AuthSigner\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.core.context.ContextCoreLoader$ContextCoreHolder"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.core.context.ContextCore\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.rm.DefaultResourceManager"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.core.model.ResourceManager\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.tm.TransactionManagerHolder$SingletonHolder"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.core.model.TransactionManager\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.core.rpc.netty.AbstractNettyRemoting"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.core.rpc.hook.RpcHook\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.core.serializer.SerializerServiceLoader"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.core.serializer.Serializer\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.discovery.registry.RegistryFactory"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.discovery.registry.RegistryProvider\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.rm.DefaultRMHandler"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.rm.AbstractRMHandler\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.rm.tcc.remoting.parser.DefaultRemotingParser"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.rm.tcc.remoting.RemotingParser\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.spring.boot.autoconfigure.SeataAutoConfiguration"
+        },
+        "pattern": "\\QMETA-INF/services/io.seata.spring.annotation.ScannerChecker\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.FileConfiguration"
+        },
+        "pattern": "\\Q\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.config.nacos.NacosConfiguration"
+        },
+        "pattern": "\\Qnacos-version.txt\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.spring.annotation.GlobalTransactionalInterceptor$2"
+        },
+        "pattern": "\\Qorg/springframework/cloud/loadbalancer/annotation/LoadBalancerClientConfiguration$BlockingRetryConfiguration.class\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "io.seata.spring.annotation.GlobalTransactionalInterceptor$2"
+        },
+        "pattern": "\\Qorg/springframework/cloud/loadbalancer/annotation/LoadBalancerClientConfiguration$BlockingSupportConfiguration.class\\E"
+      }
+    ]
+  },
+  "bundles": []
+}
