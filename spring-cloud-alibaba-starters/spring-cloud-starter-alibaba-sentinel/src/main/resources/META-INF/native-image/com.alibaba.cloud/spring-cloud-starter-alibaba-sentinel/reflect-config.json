@@ -1,0 +1,943 @@
+[
+  {
+    "condition": {
+      "typeReachable": "org.springframework.beans.factory.support.DefaultListableBeanFactory$2"
+    },
+    "name": "com.alibaba.csp.sentinel.Entry"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext"
+    },
+    "name": "com.alibaba.csp.sentinel.SphU"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler"
+    },
+    "name": "com.alibaba.csp.sentinel.SphU"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.reactor.SentinelReactorTransformer"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.beans.factory.support.DefaultListableBeanFactory$2"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.AbstractSentinelInterceptor",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "afterCompletion",
+        "parameterTypes": [
+          "jakarta.servlet.http.HttpServletRequest",
+          "jakarta.servlet.http.HttpServletResponse",
+          "java.lang.Object",
+          "java.lang.Exception"
+        ]
+      },
+      {
+        "name": "postHandle",
+        "parameterTypes": [
+          "jakarta.servlet.http.HttpServletRequest",
+          "jakarta.servlet.http.HttpServletResponse",
+          "java.lang.Object",
+          "org.springframework.web.servlet.ModelAndView"
+        ]
+      },
+      {
+        "name": "preHandle",
+        "parameterTypes": [
+          "jakarta.servlet.http.HttpServletRequest",
+          "jakarta.servlet.http.HttpServletResponse",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.AbstractSentinelInterceptor",
+    "methods": [
+      {
+        "name": "afterCompletion",
+        "parameterTypes": [
+          "jakarta.servlet.http.HttpServletRequest",
+          "jakarta.servlet.http.HttpServletResponse",
+          "java.lang.Object",
+          "java.lang.Exception"
+        ]
+      },
+      {
+        "name": "postHandle",
+        "parameterTypes": [
+          "jakarta.servlet.http.HttpServletRequest",
+          "jakarta.servlet.http.HttpServletResponse",
+          "java.lang.Object",
+          "org.springframework.web.servlet.ModelAndView"
+        ]
+      },
+      {
+        "name": "preHandle",
+        "parameterTypes": [
+          "jakarta.servlet.http.HttpServletRequest",
+          "jakarta.servlet.http.HttpServletResponse",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.beans.factory.support.DefaultListableBeanFactory$2"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.beans.factory.support.DefaultListableBeanFactory$2"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.beans.factory.support.DefaultListableBeanFactory$2"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.beans.factory.support.DefaultListableBeanFactory$2"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.UrlCleaner"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.beans.factory.support.DefaultListableBeanFactory$2"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.config.BaseWebMvcConfig",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "getBlockExceptionHandler",
+        "parameterTypes": []
+      },
+      {
+        "name": "getOriginParser",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRequestAttributeName",
+        "parameterTypes": []
+      },
+      {
+        "name": "getRequestRefName",
+        "parameterTypes": []
+      },
+      {
+        "name": "setBlockExceptionHandler",
+        "parameterTypes": [
+          "com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler"
+        ]
+      },
+      {
+        "name": "setOriginParser",
+        "parameterTypes": [
+          "com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser"
+        ]
+      },
+      {
+        "name": "setRequestAttributeName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.beans.factory.support.DefaultListableBeanFactory$2"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcConfig",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "methods": [
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext"
+    },
+    "name": "com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcConfig",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.aspectj.weaver.patterns.ExactAnnotationTypePattern"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.SentinelResource"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.aspectj.weaver.reflect.Java15ReflectionBasedReferenceTypeDelegate"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.AbstractSentinelAspectSupport"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.AbstractSentinelAspectSupport",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.aspectj.internal.lang.reflect.AjTypeImpl"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.aspectj.weaver.tools.PointcutParser"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.aop.aspectj.annotation.AbstractAspectJAdvisorFactory"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect",
+    "allDeclaredFields": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.aop.aspectj.annotation.AspectMetadata"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.aop.aspectj.annotation.BeanFactoryAspectInstanceFactory"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.aop.aspectj.annotation.BeanFactoryAspectJAdvisorsBuilder"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.aop.aspectj.annotation.ReflectiveAspectJAdvisorFactory"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext"
+    },
+    "name": "com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.init.InitExecutor"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.client.init.DefaultClusterClientInitFunc",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.cluster.server.TokenServiceProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.flow.DefaultTokenService",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.FetchClusterFlowRulesCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.FetchClusterMetricCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.FetchClusterParamFlowRulesCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.FetchClusterServerConfigHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.FetchClusterServerInfoCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.ModifyClusterFlowRulesCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.ModifyClusterParamFlowRulesCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.ModifyClusterServerFlowConfigHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.ModifyClusterServerTransportConfigHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.command.handler.ModifyServerNamespaceSetHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.init.InitExecutor"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.init.DefaultClusterServerInitFunc",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.cluster.server.processor.RequestProcessorProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.processor.FlowRequestProcessor",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.cluster.server.processor.RequestProcessorProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.cluster.server.processor.ParamFlowRequestProcessor",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.ApiCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.BasicInfoCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchActiveRuleCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchClusterClientConfigHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchClusterNodeByIdCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchClusterNodeHumanCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchJsonTreeCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchOriginCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchSimpleClusterNodeCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchSystemStatusCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.FetchTreeCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.GetParamFlowRulesCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.ModifyClusterClientConfigHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.ModifyParamFlowRulesCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.ModifyRulesCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.OnOffGetCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.OnOffSetCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.SendMetricCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.VersionCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.cluster.FetchClusterModeCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandHandlerProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.command.handler.cluster.ModifyClusterModeCommandHandler",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext"
+    },
+    "name": "com.alibaba.csp.sentinel.datasource.Converter",
+    "queryAllDeclaredMethods": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.init.InitExecutor"
+    },
+    "name": "com.alibaba.csp.sentinel.init.ParamFlowStatisticSlotCallbackInit",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.init.InitExecutor"
+    },
+    "name": "com.alibaba.csp.sentinel.metric.extension.MetricCallbackInit",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.DefaultSlotChainBuilder",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.fasterxml.jackson.databind.deser.std.CollectionDeserializer"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.block.AbstractRule",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "com.fasterxml.jackson.databind.deser.std.CollectionDeserializer"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.block.Rule",
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.block.authority.AuthoritySlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.fasterxml.jackson.databind.deser.std.CollectionDeserializer"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.block.degrade.DegradeSlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.block.flow.FlowSlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowSlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.slots.DefaultSlotChainBuilder"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.clusterbuilder.ClusterBuilderSlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.clusterbuilder.ClusterBuilderSlot"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.logger.LogSlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.slots.DefaultSlotChainBuilder"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.nodeselector.NodeSelectorSlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.nodeselector.NodeSelectorSlot"
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.statistic.StatisticSlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "org.apache.tomcat.websocket.server.WsFilter"
+    },
+    "name": "com.alibaba.csp.sentinel.slots.system.SystemSlot",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.command.CommandCenterProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.transport.command.SimpleHttpCommandCenter",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.heartbeat.HeartbeatSenderProvider"
+    },
+    "name": "com.alibaba.csp.sentinel.transport.heartbeat.SimpleHttpHeartbeatSender",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.init.InitExecutor"
+    },
+    "name": "com.alibaba.csp.sentinel.transport.init.CommandCenterInitFunc",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "condition": {
+      "typeReachable": "com.alibaba.csp.sentinel.init.InitExecutor"
+    },
+    "name": "com.alibaba.csp.sentinel.transport.init.HeartbeatSenderInitFunc",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  }
+]

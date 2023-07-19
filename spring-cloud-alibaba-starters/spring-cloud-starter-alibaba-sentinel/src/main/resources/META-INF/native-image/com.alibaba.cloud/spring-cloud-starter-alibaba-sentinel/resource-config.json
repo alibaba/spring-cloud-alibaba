@@ -1,0 +1,32 @@
+{
+  "resources": {
+    "includes": [
+    ],
+    "excludes": [
+      {
+        "pattern": "\\QMETA-INF/services/com.alibaba.csp.sentinel.cluster.TokenService\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.alibaba.csp.sentinel.cluster.server.processor.RequestProcessor\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.alibaba.csp.sentinel.command.CommandHandler\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.alibaba.csp.sentinel.init.InitFunc\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.alibaba.csp.sentinel.slotchain.ProcessorSlot\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.alibaba.csp.sentinel.slotchain.SlotChainBuilder\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.alibaba.csp.sentinel.transport.CommandCenter\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/com.alibaba.csp.sentinel.transport.HeartbeatSender\\E"
+      }
+    ]
+  }
+}
