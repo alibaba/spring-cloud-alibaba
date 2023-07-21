@@ -22,6 +22,7 @@ import com.alibaba.cloud.nacos.diagnostics.analyzer.NacosConnectionFailureExcept
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.client.config.impl.LocalConfigInfoProcessor;
 import com.alibaba.nacos.client.config.utils.SnapShotSwitch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +50,12 @@ public class NacosConfigManager {
 	 */
 	static ConfigService createConfigService(
 			NacosConfigProperties nacosConfigProperties) {
+		SnapShotSwitch.setIsSnapShot(nacosConfigProperties.isSnapshotEnabled());
 		if (!nacosConfigProperties.isSnapshotEnabled()) {
-			SnapShotSwitch.setIsSnapShot(false);
+			if (log.isDebugEnabled()) {
+				log.debug("Clean all snapshot");
+			}
+			LocalConfigInfoProcessor.cleanAllSnapshot();
 		}
 		if (Objects.isNull(service)) {
 			synchronized (NacosConfigManager.class) {
