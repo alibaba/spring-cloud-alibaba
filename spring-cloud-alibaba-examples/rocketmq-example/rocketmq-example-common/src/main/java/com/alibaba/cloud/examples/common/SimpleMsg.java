@@ -23,6 +23,9 @@ public class SimpleMsg {
 
 	private String msg;
 
+	public SimpleMsg() {
+	}
+
 	public SimpleMsg(String msg) {
 		this.msg = msg;
 	}
