@@ -209,22 +209,27 @@
     "allDeclaredFields": true
   },
   {
-    "name":"org.apache.rocketmq.common.protocol.body.CheckClientRequestBody",
-    "allDeclaredFields":true,
-    "allPublicMethods":true
+    "name": "org.apache.rocketmq.common.protocol.body.CheckClientRequestBody",
+    "allDeclaredFields": true,
+    "allPublicMethods": true
   },
   {
-    "name":"org.apache.rocketmq.common.protocol.header.QueryConsumerOffsetRequestHeader",
-    "allDeclaredFields":true
+    "name": "org.apache.rocketmq.common.protocol.header.QueryConsumerOffsetRequestHeader",
+    "allDeclaredFields": true
   },
   {
-    "name":"org.apache.rocketmq.common.protocol.header.QueryConsumerOffsetResponseHeader",
-    "allDeclaredFields":true,
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "org.apache.rocketmq.common.protocol.header.QueryConsumerOffsetResponseHeader",
+    "allDeclaredFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"org.apache.rocketmq.client.consumer.store.OffsetSerializeWrapper",
-    "allPublicMethods":true
+    "name": "org.apache.rocketmq.client.consumer.store.OffsetSerializeWrapper",
+    "allPublicMethods": true
   },
   {
     "name": "org.springframework.integration.config.ConverterRegistrar$IntegrationConverterRegistration",
