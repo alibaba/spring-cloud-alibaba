@@ -1,0 +1,266 @@
+[
+  {
+    "name": "org.apache.rocketmq.client.consumer.store.OffsetSerializeWrapper",
+    "allDeclaredFields": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.consumer.ConsumeFromWhere",
+    "allPublicFields": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.message.MessageQueue",
+    "allDeclaredFields": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.GetMaxOffsetRequestHeader",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.GetMaxOffsetResponseHeader",
+    "allDeclaredFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.NotifyConsumerIdsChangedRequestHeader",
+    "allDeclaredFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.PullMessageRequestHeader",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.PullMessageResponseHeader",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.SendMessageRequestHeaderV2",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.SendMessageResponseHeader",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.UnregisterClientRequestHeader",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.namesrv.GetRouteInfoRequestHeader",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.heartbeat.ConsumeType",
+    "allPublicFields": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.heartbeat.ConsumerData",
+    "allDeclaredFields": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.heartbeat.HeartbeatData",
+    "allDeclaredFields": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.heartbeat.MessageModel",
+    "allPublicFields": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.heartbeat.ProducerData",
+    "allDeclaredFields": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.heartbeat.SubscriptionData",
+    "allDeclaredFields": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.route.BrokerData",
+    "allDeclaredFields": true,
+    "allPublicMethods": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.route.QueueData",
+    "allDeclaredFields": true,
+    "allPublicMethods": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.route.TopicRouteData",
+    "allDeclaredFields": true,
+    "allPublicMethods": true,
+    "allPublicConstructors": true
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.netty.NettyDecoder"
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.netty.NettyEncoder"
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.netty.NettyRemotingClient$4"
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.netty.NettyRemotingClient$NettyClientHandler"
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.netty.NettyRemotingClient$NettyConnectManageHandler",
+    "methods": [
+      {
+        "name": "close",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "connect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.net.SocketAddress",
+          "java.net.SocketAddress",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "disconnect",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "io.netty.channel.ChannelPromise"
+        ]
+      },
+      {
+        "name": "exceptionCaught",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Throwable"
+        ]
+      },
+      {
+        "name": "userEventTriggered",
+        "parameterTypes": [
+          "io.netty.channel.ChannelHandlerContext",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.protocol.LanguageCode",
+    "allPublicFields": true,
+    "queryAllPublicMethods": true,
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.protocol.RemotingCommand",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "queryAllPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.protocol.RemotingSerializable",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.rocketmq.remoting.protocol.SerializeType",
+    "allPublicFields": true,
+    "queryAllPublicMethods": true,
+    "queryAllDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.GetConsumerListByGroupResponseBody",
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.GetConsumerListByGroupRequestHeader",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.body.CheckClientRequestBody",
+    "allDeclaredFields": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.QueryConsumerOffsetRequestHeader",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.apache.rocketmq.common.protocol.header.QueryConsumerOffsetResponseHeader",
+    "allDeclaredFields": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.rocketmq.client.consumer.store.OffsetSerializeWrapper",
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.springframework.integration.config.ConverterRegistrar$IntegrationConverterRegistration",
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "converter",
+        "parameterTypes": []
+      },
+      {
+        "name": "equals",
+        "parameterTypes": [
+          "java.lang.Object"
+        ]
+      },
+      {
+        "name": "hashCode",
+        "parameterTypes": []
+      },
+      {
+        "name": "toString",
+        "parameterTypes": []
+      }
+    ]
+  }
+]
