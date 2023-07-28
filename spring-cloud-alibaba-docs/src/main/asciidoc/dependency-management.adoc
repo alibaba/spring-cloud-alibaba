@@ -8,7 +8,7 @@ If you’re a Maven Central user, add our BOM to your pom.xml <dependencyManagem
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-            <version>2022.0.0.0-RC2</version>
+            <version>2022.0.0.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
