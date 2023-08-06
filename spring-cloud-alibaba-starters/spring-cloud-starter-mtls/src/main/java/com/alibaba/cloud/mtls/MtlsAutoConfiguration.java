@@ -52,15 +52,6 @@ public class MtlsAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnClass(Tomcat.class)
-	public TomcatConnectorCustomizer mtlsCustomizer(MtlsSslStoreProvider sslStoreProvider,
-			AbstractCertManager certManager, ServerTlsModeListener serverTlsModeListener,
-			ControlPlaneInitedBean controlPlaneInitedBean) {
-		ServerTlsModeHolder.setTlsMode(controlPlaneInitedBean.isTls());
-		return new MtlsTomcatConnectCustomizer(sslStoreProvider, certManager);
-	}
-
-	@Bean
 	public ApplicationRestarter applicationRestarter() {
 		return new ApplicationRestarter();
 	}
@@ -79,8 +70,23 @@ public class MtlsAutoConfiguration {
 	}
 
 	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass({ Tomcat.class })
+	static class TomcatConnectionCustomizerConfiguration {
+
+		@Bean
+		public TomcatConnectorCustomizer mtlsCustomizer(
+				MtlsSslStoreProvider sslStoreProvider, AbstractCertManager certManager,
+				ServerTlsModeListener serverTlsModeListener,
+				ControlPlaneInitedBean controlPlaneInitedBean) {
+			ServerTlsModeHolder.setTlsMode(controlPlaneInitedBean.isTls());
+			return new MtlsTomcatConnectCustomizer(sslStoreProvider, certManager);
+		}
+
+	}
+
+	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass({ NacosRegistrationCustomizer.class, NacosRegistration.class })
-	protected static class NacosCustomizerConfiguration {
+	static class NacosCustomizerConfiguration {
 
 		@Bean
 		public NacosRegistrationCustomizer nacosTlsCustomizer() {
@@ -100,7 +106,7 @@ public class MtlsAutoConfiguration {
 
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass({ RestTemplate.class })
-	protected static class RestTemplateMtlsConfiguration {
+	static class RestTemplateMtlsConfiguration {
 
 		@Bean
 		public RestTemplateCallback restTemplateCallback(
