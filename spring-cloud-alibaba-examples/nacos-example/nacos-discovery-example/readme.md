@@ -21,17 +21,17 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 2. Add Nacos server address configurations to file /src/main/resources/application.properties.
 	
 		spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
-		  
+	
 3. Use the @EnableDiscoveryClient annotation to turn on service registration and discovery.
 		
 		@SpringBootApplication
 		@EnableDiscoveryClient
 		public class ProviderApplication {
-
+		
 			public static void main(String[] args) {
 				SpringApplication.run(ProviderApplication.class, args);
 			}
-
+		
 			@RestController
 			class EchoController {
 				@GetMapping(value = "/echo/{string}")
@@ -62,7 +62,6 @@ Before we start the demo, let's learn how to connect Nacos Config to a Spring Cl
 		spring.application.name=service-provider
 		server.port=18082
 
-		
 2. Start the application in IDE or by building a fatjar.
 
 	1. Start in IDE: Find main class `ProviderApplication ` in project `nacos-discovery-provider-example`, and execute the main method.
@@ -138,7 +137,7 @@ The code of `nacos-discovery-consumer-example` project will be analyzed below, d
 	        @GetMapping(value = "/echo/{str}")
 	        String echo(@PathVariable("str") String str);
 	    }
-	    
+	
 	Use the @FeignClient annotation to wrap the `EchoService` interface as a FeignClient with the attribute name corresponding to the service name `service-provider`.
 	
 	The `@RequestMapping` annotation on the `echo` method corresponds the echo method to the URL `/echo/{str}`, and the `@PathVariable` annotation maps `{str}` in the URL path to the argument `str` of the echo method.
@@ -199,8 +198,11 @@ Nacos Discovery Starter also supports the implementation of Spring Boot actuator
 
 Add dependency spring-boot-starter-actuator to your pom.xml file, and configure your endpoint security strategy.
 
-Spring Boot 1.x: Add configuration management.security.enabled=false
-Spring Boot 2.x: Add configuration management.endpoints.web.exposure.include=*
+- Spring Boot 1.x: Add configuration management.security.enabled=false
+- Spring Boot 2.x: Add configuration management.endpoints.web.exposure.include=*
+
+> Note: If the Spring Boot version used is 2.x, when the above configuration is added to the configuration file, the relevant node configuration information will be leaked. **It is recommended to close this configuration item for production environment. ** In version 3.X, Spring Boot Actuator judges whether it is a sensitive configuration based on the type and word, so as to perform desensitization processing. ** Some sensitive data personalized by users may not be desensitized. **
+
 To view the endpoint information, visit the following URLS:
 
 Spring Boot1.x: Nacos Discovery  Endpoint URL is http://127.0.0.1:18083/nacos_discovery.
@@ -210,7 +212,7 @@ Spring Boot2.x: Nacos Discovery  Endpoint URL is http://127.0.0.1:18083/actuator
 
 As shown in the figure above, NacosDiscoveryProperties is the configuration of Nacos Discovery itself, and also includes the contents registered by the application, subscribe is the service information that the application has subscribed to.
 
-    	
+
 ## More
 
 #### More configuration items

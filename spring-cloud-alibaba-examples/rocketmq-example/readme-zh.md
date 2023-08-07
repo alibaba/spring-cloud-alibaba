@@ -826,9 +826,11 @@ public class RocketMQTxApplication {
 
 Spring Boot 应用支持通过 Endpoint 来暴露相关信息，RocketMQ Stream Starter 也支持这一点。
 
-在使用之前需要在 Maven 中添加 `spring-boot-starter-actuator`依赖，并在配置中允许 Endpoints 的访问。
+在使用之前需要在 Maven 中添加 `spring-boot-starter-actuator` 依赖，并在配置中允许 Endpoints 的访问。
 * Spring Boot 1.x 中添加配置 `management.security.enabled=false`
 * Spring Boot 2.x 中添加配置 `management.endpoints.web.exposure.include=*`
+
+> Note：如果使用的 Spring Boot 版本为 2.x，当在配置文件中添加如上配置之后，会泄露相关的节点配置信息。**生产环境使用建议关闭此配置项。** 3.X 版本中 Spring Boot Actuator 根据类型以及单词判断是否为敏感配置，从而进行脱敏处理，**一些用户个性化的敏感数据可能不会被脱敏。**
 
 Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/rocketmq_binder 来查看 RocketMQ Binder Endpoint 的信息。Spring Boot 2.x 可以通过访问 http://127.0.0.1:28081/actuator/rocketmq-binder 来访问。
 

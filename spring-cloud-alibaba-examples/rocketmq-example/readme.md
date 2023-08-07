@@ -823,6 +823,8 @@ Add dependency `spring-cloud-starter-stream-rocketmq` to your pom.xml file, and 
 * Spring Boot1.x: Add configuration `management.security.enabled=false`    
 * Spring Boot2.x: Add configuration `management.endpoints.web.exposure.include=*`
 
+> Note: If the Spring Boot version used is 2.x, when the above configuration is added to the configuration file, the relevant node configuration information will be leaked. **It is recommended to close this configuration item for production environment. ** In version 3.X, Spring Boot Actuator judges whether it is a sensitive configuration based on the type and word, so as to perform desensitization processing. ** Some sensitive data personalized by users may not be desensitized. **
+
 To view the endpoint information, visit the following URLS:
 * Spring Boot1.x: Sentinel Endpoint URL is http://127.0.0.1:18083/rocketmq_binder.
 * Spring Boot2.x: Sentinel Endpoint URL is http://127.0.0.1:18083/actuator/rocketmq-binder.

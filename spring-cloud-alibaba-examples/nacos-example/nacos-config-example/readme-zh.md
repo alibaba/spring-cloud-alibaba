@@ -31,7 +31,7 @@ spring:
     import:
       - nacos:nacos-config-example.properties?refresh=true
 ```
-		  
+
 3. 完成上述两步后，应用会从 Nacos Config 中获取相应的配置，并添加在 Spring Environment 的 PropertySources 中。假设我们通过 Nacos 配置中心保存 Nacos 的部分配置,有以下四种例子:
 - BeanAutoRefreshConfigExample:  通过将配置信息配置为bean，支持配置变自动刷新的例子
 - ConfigListenerExample:         监听配置信息的例子
@@ -53,7 +53,7 @@ spring:
 3. 在命令行执行如下命令，向 Nacos Server 中添加一条配置。
 	
 		curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serverAddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
-		
+	
 	**注：你也可以使用其他方式添加，遵循 HTTP API 规范即可，若您使用的 Nacos 版本自带控制台，建议直接使用控制台进行配置**
 	
 	添加的配置的详情如下
@@ -64,9 +64,9 @@ spring:
 		内容如下:
 		
    		spring.cloud.nacos.config.serveraddr=127.0.0.1:8848
-	    spring.cloud.nacos.config.prefix=PREFIX
-        spring.cloud.nacos.config.group=GROUP
-        spring.cloud.nacos.config.namespace=NAMESPACE
+		spring.cloud.nacos.config.prefix=PREFIX
+   	 spring.cloud.nacos.config.group=GROUP
+   	 spring.cloud.nacos.config.namespace=NAMESPACE
 
 
 ### 应用启动
@@ -81,7 +81,7 @@ management:
       exposure:
         include: '*'
 ```
-		
+
 2. 启动应用，支持 IDE 直接启动和编译打包后启动。
 
 	1. IDE直接启动：找到主类 `NacosConfigApplication`，执行 main 方法启动应用。
@@ -148,17 +148,19 @@ Nacos Config Starter 默认为所有获取数据成功的 Nacos 的配置项添�
 
 更多详情请参考 [ContextRefresher Java Doc](http://static.javadoc.io/org.springframework.cloud/spring-cloud-context/2.0.0.RELEASE/org/springframework/cloud/context/refresh/ContextRefresher.html)。
 
-	
+​	
 
 
 ## Endpoint 信息查看
 
 Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Nacos Config Starter 也支持这一点。
 
-在使用之前需要在 maven 中添加 `spring-boot-starter-actuator`依赖，并在配置中允许 Endpoints 的访问。
+在使用之前需要在 maven 中添加 `spring-boot-starter-actuator` 依赖，并在配置中允许 Endpoints 的访问。
 
 * Spring Boot 1.x 中添加配置 management.security.enabled=false
 * Spring Boot 2.x 中添加配置 management.endpoints.web.exposure.include=*
+
+> Note：如果使用的 Spring Boot 版本为 2.x，当在配置文件中添加如上配置之后，会泄露相关的节点配置信息。**生产环境使用建议关闭此配置项。** 3.X 版本中 Spring Boot Actuator 根据类型以及单词判断是否为敏感配置，从而进行脱敏处理，**一些用户个性化的敏感数据可能不会被脱敏。**
 
 Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos_config 来查看 Nacos Endpoint 的信息。
 

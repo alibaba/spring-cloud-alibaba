@@ -227,6 +227,8 @@ Endpoint exposed json contains two properties:
 
 2. NacosDiscoveryProperties: Shows the current basic Nacos configurations of the current service
 
+Note: If the Spring Boot version used is 2.x, when the above configuration is added to the configuration file, the relevant node configuration information will be leaked. **It is recommended to close this configuration item for production environment. ** In version 3.X, Spring Boot Actuator judges whether it is a sensitive configuration based on the type and word, so as to perform desensitization processing. ** Some sensitive data personalized by users may not be desensitized. **
+
 The followings shows how a service instance accesses the Endpoint:
 
 [source, json]
