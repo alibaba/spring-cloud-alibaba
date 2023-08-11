@@ -41,6 +41,11 @@
 			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 </project>
