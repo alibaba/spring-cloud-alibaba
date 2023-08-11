@@ -123,7 +123,8 @@ public class MtlsAutoConfiguration {
 	public class NettyCustomizerConfiguration {
 
 		@Bean
-		public MtlsNettyServerCustomizer mtlsNettyCustomizer(AbstractCertManager certManager, MtlsSslStoreProvider sslStoreProvider){
+		public MtlsNettyServerCustomizer mtlsNettyCustomizer(
+				AbstractCertManager certManager, MtlsSslStoreProvider sslStoreProvider) {
 			return new MtlsNettyServerCustomizer(certManager, sslStoreProvider);
 		}
 
