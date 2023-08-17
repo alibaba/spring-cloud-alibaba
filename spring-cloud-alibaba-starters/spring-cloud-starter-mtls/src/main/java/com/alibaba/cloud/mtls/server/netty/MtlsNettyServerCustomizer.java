@@ -42,7 +42,6 @@ import io.netty.handler.ssl.SslContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.netty.http.server.HttpServer;
-import reactor.netty.tcp.SslProvider;
 
 import org.springframework.boot.web.embedded.netty.NettyServerCustomizer;
 import org.springframework.boot.web.server.Ssl;
@@ -58,6 +57,8 @@ public class MtlsNettyServerCustomizer implements NettyServerCustomizer {
 
 	private final MtlsSslStoreProvider sslStoreProvider;
 
+	private SslContextDelegate context;
+
 	public MtlsNettyServerCustomizer(AbstractCertManager certManager,
 			MtlsSslStoreProvider sslStoreProvider) {
 		this.certManager = certManager;
@@ -66,15 +67,25 @@ public class MtlsNettyServerCustomizer implements NettyServerCustomizer {
 
 	@Override
 	public HttpServer apply(HttpServer httpServer) {
-		// todo:validateContext()
 
-		// todo：证书过期，回调
+		// update certificate
+		certManager.registerCallback(certPair -> {
+			if (context != null) {
+				try {
+					context.setContext(getContextBuilder().build());
+				}
+				catch (Exception ex) {
+					throw new IllegalStateException(ex);
+				}
+			}
+		});
 
 		try {
-			return httpServer.secure((contextSpec) -> {
-				SslProvider.DefaultConfigurationSpec spec = contextSpec
-						.sslContext(getContextBuilder());
-			});
+			if (context == null) {
+				context = new SslContextDelegate(getContextBuilder().build());
+			}
+			return httpServer
+					.secure(sslContextSpec -> sslContextSpec.sslContext(context));
 		}
 		catch (Exception ex) {
 			throw new IllegalStateException(ex);
