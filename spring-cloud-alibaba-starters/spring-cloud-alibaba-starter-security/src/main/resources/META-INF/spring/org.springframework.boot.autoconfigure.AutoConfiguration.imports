@@ -1,0 +1,2 @@
+com.alibaba.cloud.security.SecurityAutoConfiguration
+com.alibaba.cloud.security.trust.ApplicationPreparedEventListener
