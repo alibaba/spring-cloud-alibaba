@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationListener=\
+com.alibaba.cloud.security.trust.ApplicationPreparedEventListener
