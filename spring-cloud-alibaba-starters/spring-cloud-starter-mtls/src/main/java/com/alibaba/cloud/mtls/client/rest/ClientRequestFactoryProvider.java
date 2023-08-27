@@ -20,15 +20,17 @@ import javax.net.ssl.SSLContext;
 
 import com.alibaba.cloud.governance.istio.sds.CertPair;
 import com.alibaba.cloud.mtls.MtlsSslStoreProvider;
+import okhttp3.OkHttpClient;
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -82,9 +84,24 @@ public class ClientRequestFactoryProvider {
 			return new MtlsSimpleClientHttpRequestFactory(sslContext);
 		}
 		if (factory instanceof HttpComponentsClientHttpRequestFactory) {
-			HttpClient client = HttpClients.custom().setSSLContext(sslContext)
-					.setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+			HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = (HttpComponentsClientHttpRequestFactory) factory;
+			HttpClient client = httpComponentsClientHttpRequestFactory.getHttpClient();
+			client.getConnectionManager().getSchemeRegistry()
+					.register(new Scheme("https", 443, new SSLSocketFactory(sslContext)));
 			return new HttpComponentsClientHttpRequestFactory(client);
+		}
+		if (factory instanceof OkHttp3ClientHttpRequestFactory) {
+			try {
+				OkHttp3ClientHttpRequestFactory okHttp3ClientHttpRequestFactory = (OkHttp3ClientHttpRequestFactory) factory;
+				OkHttpClient client = (OkHttpClient) okHttp3ClientHttpRequestFactory
+						.getClass().getDeclaredField("client")
+						.get(okHttp3ClientHttpRequestFactory);
+				client.newBuilder().sslSocketFactory(sslContext.getSocketFactory());
+				return new OkHttp3ClientHttpRequestFactory(client);
+			}
+			catch (Throwable t) {
+				log.error("Failed to get okhttp3 request factory", t);
+			}
 		}
 		return null;
 	}

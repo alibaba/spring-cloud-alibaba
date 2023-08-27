@@ -11,6 +11,11 @@
 	<artifactId>spring-cloud-starter-mtls</artifactId>
 	<name>Spring Cloud Starter Alibaba Governance MTLS</name>
 
+	<properties>
+		<okhttp-version>3.10.0</okhttp-version>
+	</properties>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
@@ -35,7 +40,16 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
+			<optional>true</optional>
 		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>${okhttp-version}</version>
+			<optional>true</optional>
+		</dependency>
+
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>

@@ -33,10 +33,10 @@ import com.alibaba.cloud.nacos.registry.NacosRegistrationCustomizer;
 import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.netty.http.server.HttpServer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.web.embedded.netty.NettyWebServer;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -119,7 +119,7 @@ public class MtlsAutoConfiguration {
 	}
 
 	@Configuration(proxyBeanMethods = false)
-	@ConditionalOnClass(NettyWebServer.class)
+	@ConditionalOnClass(HttpServer.class)
 	public class NettyCustomizerConfiguration {
 
 		@Bean
