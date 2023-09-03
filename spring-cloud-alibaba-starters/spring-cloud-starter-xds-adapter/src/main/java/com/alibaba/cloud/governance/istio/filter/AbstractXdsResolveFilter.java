@@ -59,6 +59,10 @@ public abstract class AbstractXdsResolveFilter<T>
 
 	protected static final String HEADER_NAME_METHOD = ":method";
 
+	protected static final String RAW_BUFFER = "raw_buffer";
+
+	protected static final String TLS = "tls";
+
 	protected static final int MIN_PORT = 0;
 
 	protected static final int MAX_PORT = 65535;

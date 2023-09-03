@@ -18,14 +18,22 @@ package com.alibaba.cloud.governance.istio;
 
 import java.util.List;
 
+import javax.annotation.PreDestroy;
+
+import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.commons.governance.event.GovernanceEvent;
+import com.alibaba.cloud.governance.istio.bootstrap.Bootstrapper;
+import com.alibaba.cloud.governance.istio.bootstrap.BootstrapperImpl;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.AuthXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.RoutingXdsResolveFilter;
+import com.alibaba.cloud.governance.istio.filter.impl.ServerTlsXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
+import com.alibaba.cloud.governance.istio.sds.IstioCertPairManager;
+import com.alibaba.cloud.governance.istio.sds.SdsCertPairManager;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import org.slf4j.Logger;
@@ -33,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationListener;
@@ -66,18 +75,31 @@ public class XdsAutoConfiguration {
 	private XdsConfigProperties xdsConfigProperties;
 
 	@Bean
+	@ConditionalOnProperty(name = "spring.cloud.istio.config.use-agent",
+			havingValue = "false")
+	public IstioCertPairManager istioCertPairManager(
+			XdsConfigProperties xdsConfigProperties) {
+		return new IstioCertPairManager(xdsConfigProperties);
+	}
+
+	@Bean
+	@ConditionalOnProperty(value = "spring.cloud.istio.config.use-agent",
+			havingValue = "true")
+	public SdsCertPairManager sdsCertPairManager(
+			Bootstrapper.BootstrapInfo bootstrapInfo) {
+		return new SdsCertPairManager(bootstrapInfo, xdsConfigProperties);
+	}
+
+	@Bean
 	public DummyGovernanceDataListener dummyGovernanceDataListener() {
 		return new DummyGovernanceDataListener();
 	}
 
 	@Bean
-	public XdsChannel xdsChannel() {
-		return new XdsChannel(xdsConfigProperties);
-	}
-
-	@Bean
-	public XdsScheduledThreadPool xdsScheduledThreadPool() {
-		return new XdsScheduledThreadPool(xdsConfigProperties);
+	public XdsChannel xdsChannel(
+			@Autowired(required = false) IstioCertPairManager certManager,
+			@Autowired(required = false) Bootstrapper.BootstrapInfo bootstrapInfo) {
+		return new XdsChannel(xdsConfigProperties, certManager, bootstrapInfo);
 	}
 
 	@Bean
@@ -91,37 +113,71 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	public PilotExchanger pilotExchanger(LdsProtocol ldsProtocol, CdsProtocol cdsProtocol,
-			EdsProtocol edsProtocol, RdsProtocol rdsProtocol) {
-		return new PilotExchanger(ldsProtocol, cdsProtocol, edsProtocol, rdsProtocol);
+	public XdsResolveFilter<List<Listener>> serverTlsXdsResolveFilter() {
+		return new ServerTlsXdsResolveFilter();
 	}
 
 	@Bean
-	public LdsProtocol ldsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			List<XdsResolveFilter<List<Listener>>> filters) {
-		return new LdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
-				filters);
+	public AggregateDiscoveryService aggregateDiscoveryService(XdsChannel xdsChannel) {
+		return new AggregateDiscoveryService(xdsChannel, xdsConfigProperties);
 	}
 
 	@Bean
-	public CdsProtocol cdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new CdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+	@ConditionalOnProperty(value = "spring.cloud.istio.config.use-agent",
+			havingValue = "true")
+	public Bootstrapper.BootstrapInfo bootstrapInfo() {
+		BootstrapperImpl bootstrapper = new BootstrapperImpl();
+		return bootstrapper.bootstrap();
 	}
 
 	@Bean
-	public EdsProtocol edsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool) {
-		return new EdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+	public LdsProtocol ldsProtocol(List<XdsResolveFilter<List<Listener>>> filters,
+			RdsProtocol rdsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		LdsProtocol ldsProtocol = new LdsProtocol(xdsConfigProperties, filters,
+				rdsProtocol, aggregateDiscoveryService);
+		aggregateDiscoveryService.addProtocol(ldsProtocol);
+		return ldsProtocol;
 	}
 
 	@Bean
-	public RdsProtocol rdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			List<XdsResolveFilter<List<RouteConfiguration>>> filters) {
-		return new RdsProtocol(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties,
-				filters);
+	public CdsProtocol cdsProtocol(EdsProtocol edsProtocol, LdsProtocol ldsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		CdsProtocol cdsProtocol = new CdsProtocol(xdsConfigProperties, edsProtocol,
+				ldsProtocol, aggregateDiscoveryService);
+		aggregateDiscoveryService.addProtocol(cdsProtocol);
+		cdsProtocol.initAndObserve();
+		return cdsProtocol;
+	}
+
+	@Bean
+	public EdsProtocol edsProtocol(LdsProtocol ldsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		EdsProtocol edsProtocol = new EdsProtocol(xdsConfigProperties, ldsProtocol,
+				aggregateDiscoveryService);
+		aggregateDiscoveryService.addProtocol(edsProtocol);
+		return edsProtocol;
+	}
+
+	@Bean
+	public RdsProtocol rdsProtocol(
+			List<XdsResolveFilter<List<RouteConfiguration>>> filters,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		RdsProtocol rdsProtocol = new RdsProtocol(xdsConfigProperties, filters,
+				aggregateDiscoveryService);
+		aggregateDiscoveryService.addProtocol(rdsProtocol);
+		return rdsProtocol;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public ControlPlaneInitedBean controlPlaneInitedBean(CdsProtocol cdsProtocol) {
+		return new ControlPlaneInitedBean(TlsContext.isIsTls()) {
+			@PreDestroy
+			public void close() {
+				TlsContext.close();
+			}
+		};
 	}
 
 	/**

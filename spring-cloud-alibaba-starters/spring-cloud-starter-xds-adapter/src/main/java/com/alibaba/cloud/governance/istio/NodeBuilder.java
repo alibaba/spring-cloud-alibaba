@@ -38,22 +38,16 @@ public final class NodeBuilder {
 	private static Node NODE;
 
 	private NodeBuilder() {
-
 	}
 
-	public static Node getNode() {
+	public static Node getNode(XdsConfigProperties xdsConfigProperties) {
 		try {
 			if (NODE != null) {
 				return NODE;
 			}
-			String podName = System.getenv(IstioConstants.POD_NAME);
-			if (podName == null) {
-				podName = IstioConstants.DEFAULT_POD_NAME;
-			}
-			String podNamespace = System.getenv(IstioConstants.NAMESPACE_NAME);
-			if (podNamespace == null) {
-				podNamespace = IstioConstants.DEFAULT_NAMESPACE;
-			}
+			String podName = xdsConfigProperties.getPodName();
+			String podNamespace = xdsConfigProperties.getNamespaceName();
+			String svcName = xdsConfigProperties.getIstioMetaClusterId();
 			String ip = "127.0.0.1";
 			try {
 				InetAddress local = InetAddress.getLocalHost();
@@ -70,7 +64,7 @@ public final class NodeBuilder {
 					.setId(String.format(
 							"sidecar~%s~%s.%s~%s" + IstioConstants.SVC_CLUSTER_LOCAL, ip,
 							podName, podNamespace, podNamespace))
-					.setMetadata(metaBuilder.build()).build();
+					.setCluster(svcName).setMetadata(metaBuilder.build()).build();
 			return NODE;
 		}
 		catch (Exception e) {
