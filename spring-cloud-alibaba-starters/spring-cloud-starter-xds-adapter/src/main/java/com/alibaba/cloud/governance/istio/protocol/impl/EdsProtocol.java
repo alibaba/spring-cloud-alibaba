@@ -19,9 +19,8 @@ package com.alibaba.cloud.governance.istio.protocol.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.AggregateDiscoveryService;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
-import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.endpoint.v3.ClusterLoadAssignment;
@@ -36,14 +35,16 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
  */
 public class EdsProtocol extends AbstractXdsProtocol<ClusterLoadAssignment> {
 
-	public EdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			XdsConfigProperties xdsConfigProperties) {
-		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+	private final LdsProtocol ldsProtocol;
+
+	public EdsProtocol(XdsConfigProperties xdsConfigProperties, LdsProtocol ldsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		super(xdsConfigProperties, aggregateDiscoveryService);
+		this.ldsProtocol = ldsProtocol;
 	}
 
 	@Override
-	protected List<ClusterLoadAssignment> decodeXdsResponse(DiscoveryResponse response) {
+	public List<ClusterLoadAssignment> decodeXdsResponse(DiscoveryResponse response) {
 		List<ClusterLoadAssignment> endpoints = new ArrayList<>();
 		for (com.google.protobuf.Any res : response.getResourcesList()) {
 			try {
@@ -54,13 +55,18 @@ public class EdsProtocol extends AbstractXdsProtocol<ClusterLoadAssignment> {
 				log.error("Unpack cluster failed", e);
 			}
 		}
-		fireXdsFilters(endpoints);
 		return endpoints;
 	}
 
 	@Override
 	public String getTypeUrl() {
 		return IstioConstants.EDS_URL;
+	}
+
+	@Override
+	public void onResponseDecoded(List<ClusterLoadAssignment> resources) {
+		fireXdsFilters(resources);
+		ldsProtocol.observeResource();
 	}
 
 }

@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.governance.auth;
 
+import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.auth.validator.AuthValidator;
 
@@ -33,8 +34,9 @@ import org.springframework.context.annotation.Configuration;
 public class AuthValidatorAutoConfiguration {
 
 	@Bean
-	public AuthValidator authValidator(AuthRepository authRepository) {
-		return new AuthValidator(authRepository);
+	public AuthValidator authValidator(AuthRepository authRepository,
+			ControlPlaneInitedBean controlPlaneInitedBean) {
+		return new AuthValidator(authRepository, controlPlaneInitedBean);
 	}
 
 }

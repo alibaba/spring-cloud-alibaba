@@ -101,6 +101,11 @@ public class XdsRulesTests {
 		if (listeners == null) {
 			throw new Exception("Can not parse listeners from xds response");
 		}
+		try {
+			ldsProtocol.onResponseDecoded(listeners);
+		}
+		catch (Exception ignore) {
+		}
 		log.info("Auth rules are {}", objectMapper.writeValueAsString(authRepository));
 		Assert.assertEquals(authRepository.getAllowAuthRules().size(), 1);
 		Assert.assertEquals(authRepository.getDenyAuthRules().size(), 1);
@@ -113,6 +118,11 @@ public class XdsRulesTests {
 				"src/test/resources/RdsResponse.in");
 		List<RouteConfiguration> routeConfigurations = rdsProtocol
 				.decodeXdsResponse(discoveryResponse);
+		try {
+			rdsProtocol.onResponseDecoded(routeConfigurations);
+		}
+		catch (Exception ignore) {
+		}
 		if (routeConfigurations == null) {
 			throw new Exception("Can not parse route configurations from xds response");
 		}
