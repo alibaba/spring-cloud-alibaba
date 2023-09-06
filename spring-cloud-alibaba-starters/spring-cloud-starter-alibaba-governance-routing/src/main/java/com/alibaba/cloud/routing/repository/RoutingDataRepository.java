@@ -34,21 +34,22 @@ import org.springframework.util.CollectionUtils;
  * @author HH
  * @since 2.2.10-RC1
  */
+
 public class RoutingDataRepository {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RoutingDataRepository.class);
 
 	/**
-	 * Key is service name,value is hashmap,which key is single RoutingRule key,value is
-	 * match service. Use double hash index to parse route rule.
+	 * Key is service name,value is hashmap,which key is single RoutingColoringRule
+	 * key,value is match service. Use double hash index to parse route rule.
 	 */
 	private ConcurrentHashMap<String, HashMap<String, List<MatchService>>> routeCache = new ConcurrentHashMap<>();
 
 	/**
 	 * The default version of each service.
 	 */
-	private ConcurrentHashMap<String, String> defaultRoutingVersion = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, String> defaultRoutingVersion = new ConcurrentHashMap<>();
 
 	/**
 	 * Sign of path.
@@ -61,7 +62,7 @@ public class RoutingDataRepository {
 	private ConcurrentHashMap<String, List<MatchService>> pathRuleMap = new ConcurrentHashMap<>();
 
 	/**
-	 * If do not set weight value,it will be set 100 by default.
+	 * If you do not set weight value,it will be set 100 by default.
 	 */
 	private static final int DEFAULT_WEIGHT = 100;
 
@@ -76,6 +77,7 @@ public class RoutingDataRepository {
 	public static final int MIN_WEIGHT = 0;
 
 	public void updateRouteData(final List<UnifiedRoutingDataStructure> routeDataList) {
+
 		ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache = new ConcurrentHashMap<>();
 		ConcurrentHashMap<String, List<MatchService>> newPathRuleMap = new ConcurrentHashMap<>();
 		for (UnifiedRoutingDataStructure routeData : routeDataList) {

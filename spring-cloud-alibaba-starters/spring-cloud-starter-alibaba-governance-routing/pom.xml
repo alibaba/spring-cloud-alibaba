@@ -12,6 +12,7 @@
     <name>Spring Cloud Starter Alibaba Governance Label Routing</name>
 
     <dependencies>
+
         <dependency>
             <groupId>com.netflix.ribbon</groupId>
             <artifactId>ribbon-loadbalancer</artifactId>
@@ -53,6 +54,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

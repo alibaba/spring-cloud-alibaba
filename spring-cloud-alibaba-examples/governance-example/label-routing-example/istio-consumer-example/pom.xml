@@ -13,7 +13,7 @@
 	<artifactId>label-routing-istio-consumer-example</artifactId>
 	<name>Spring Cloud Starter Alibaba Istio Label Routing Consumer Example</name>
 	<description>Example demonstrating how to use Istio label routing consumer</description>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<dependencies>
 		<dependency>

@@ -23,20 +23,27 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.cloud.commons.governance.routing.MatchService;
 import com.alibaba.cloud.commons.governance.routing.rule.Rule;
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
-import com.alibaba.cloud.routing.RoutingProperties;
+import com.alibaba.cloud.routing.constant.RoutingConstants;
+import com.alibaba.cloud.routing.context.RoutingContext;
+import com.alibaba.cloud.routing.properties.RoutingProperties;
 import com.alibaba.cloud.routing.publish.TargetServiceChangedPublisher;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
 import com.alibaba.cloud.routing.util.ConditionMatchUtil;
 import com.alibaba.cloud.routing.util.LoadBalanceUtil;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.loadbalancer.AbstractServerPredicate;
@@ -47,6 +54,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -59,36 +69,6 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RoutingLoadBalanceRule.class);
-
-	/**
-	 * Support Parsing Rules from path,only URI at present.
-	 */
-	private static final String PATH = "path";
-
-	/**
-	 * Support Parsing Rules from header.
-	 */
-	private static final String HEADER = "header";
-
-	/**
-	 * Support Parsing Rules from parameter.
-	 */
-	private static final String PARAMETER = "parameter";
-
-	/**
-	 * Filter base on version metadata.
-	 */
-	private static final String VERSION = "version";
-
-	/**
-	 * Sign of no match any rule.
-	 */
-	private static final int NO_MATCH = -1;
-
-	/**
-	 * Avoid loss of accuracy.
-	 */
-	private static final double KEEP_ACCURACY = 1.0;
 
 	/**
 	 * Composite route. todo
@@ -110,30 +90,29 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 	@Autowired
 	private TargetServiceChangedPublisher targetServiceChangedPublisher;
 
+	DynamicServerListLoadBalancer loadBalancer = null;
+
+	@Value("${" + RoutingConstants.ZONE_AVOIDANCE_RULE_ENABLED + ":true}")
+	private boolean zoneAvoidanceRuleEnabled;
+
 	@Override
 	public Server choose(Object key) {
+
 		try {
-			final DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
-			String targetServiceName = loadBalancer.getName();
+			loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
+			String targetServiceName = getTargetServiceName();
 			targetServiceChangedPublisher.addTargetService(targetServiceName);
 
 			// If routeData isn't present, use normal load balance rule.
 			final HashMap<String, List<MatchService>> routeData = routingDataRepository
 					.getRouteRule(targetServiceName);
+
 			if (routeData == null) {
 				return LoadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
 						routingProperties.getRule());
 			}
 
-			// Get instances from register-center.
-			String group = this.nacosDiscoveryProperties.getGroup();
-			final NamingService namingService = nacosServiceManager.getNamingService();
-			final List<Instance> instances = namingService
-					.selectInstances(targetServiceName, group, true);
-			if (CollectionUtils.isEmpty(instances)) {
-				LOG.warn("no instance in service {} ", targetServiceName);
-				return null;
-			}
+			List<Instance> instances = getInstanceFromNacos(targetServiceName);
 
 			// Filter by route rules,the result will be kept in versionSet and weightMap.
 			HashSet<String> versionSet = new HashSet<>();
@@ -141,14 +120,14 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			HashSet<String> fallbackVersionSet = new HashSet<>();
 			HashMap<String, Integer> fallbackWeightMap = new HashMap<>();
 
-			serviceFilter(targetServiceName, versionSet, weightMap, fallbackVersionSet,
-					fallbackWeightMap);
+			serviceFilterStrategy(targetServiceName, versionSet, weightMap,
+					fallbackVersionSet, fallbackWeightMap);
 
 			// Filter instances by versionSet and weightMap.
 			double[] weightArray = new double[instances.size()];
 			HashMap<String, List<Instance>> instanceMap = new HashMap<>();
 			for (Instance instance : instances) {
-				String version = instance.getMetadata().get(VERSION);
+				String version = instance.getMetadata().get(RoutingConstants.VERSION);
 				if (versionSet.contains(version)) {
 					List<Instance> instanceList = instanceMap.get(version);
 					if (instanceList == null) {
@@ -163,7 +142,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			if (CollectionUtils.isEmpty(instanceMap)) {
 				LOG.warn("no instance match route rule");
 				for (Instance instance : instances) {
-					String version = instance.getMetadata().get(VERSION);
+					String version = instance.getMetadata().get(RoutingConstants.VERSION);
 					if (fallbackVersionSet.contains(version)) {
 						List<Instance> instanceList = instanceMap.get(version);
 						if (instanceList == null) {
@@ -173,6 +152,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 						instanceMap.put(version, instanceList);
 					}
 				}
+
 				return chooseServerByWeight(instanceMap, fallbackWeightMap, weightArray);
 			}
 
@@ -186,19 +166,69 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		}
 	}
 
+	/**
+	 * Get targetServiceName.
+	 * @return String
+	 */
+	protected String getTargetServiceName() {
+		return loadBalancer.getName();
+	}
+
+	/**
+	 * Get instances from register-center.
+	 * @param targetServiceName target service.
+	 * @return Instance list.
+	 */
+	protected List<Instance> getInstanceFromNacos(String targetServiceName) {
+		List<Instance> instances = null;
+		String group = this.nacosDiscoveryProperties.getGroup();
+		final NamingService namingService = nacosServiceManager.getNamingService();
+
+		try {
+			instances = namingService.selectInstances(targetServiceName, group, true);
+		}
+		catch (NacosException e) {
+			LOG.warn("no instance in service {} ", targetServiceName);
+		}
+
+		if (CollectionUtils.isEmpty(instances)) {
+			LOG.warn("no instance in service {} ", targetServiceName);
+			return null;
+		}
+		return instances;
+	}
+
 	@Override
 	public AbstractServerPredicate getPredicate() {
+
 		return this.predicate;
 	}
 
-	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
-			HashMap<String, Integer> weightMap, HashSet<String> fallbackVersionSet,
-			HashMap<String, Integer> fallbackWeightMap) {
-		// Get request metadata.
-		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-				.getRequestAttributes()).getRequest();
+	private HashMap<String, String> getHeaderNames(ServerHttpRequest request) {
+
+		HttpHeaders headers = request.getHeaders();
+		Map<String, String> map = headers.toSingleValueMap();
+
+		HashMap<String, String> resMap = new HashMap<>();
+
+		Set<String> strings = map.keySet();
+		for (String string : strings) {
+			resMap.put(string, map.get(string));
+		}
+
+		return resMap;
+	}
+
+	private String getRequestURI(ServerHttpRequest request) {
+
+		return request.getPath().toString();
+	}
+
+	private Map<String, String> getHeaderNames(HttpServletRequest request) {
+
 		final Enumeration<String> headerNames = request.getHeaderNames();
 		HashMap<String, String> requestHeaders = new HashMap<>();
+
 		if (headerNames != null) {
 			while (headerNames.hasMoreElements()) {
 				String name = headerNames.nextElement();
@@ -206,7 +236,59 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 				requestHeaders.put(name, value);
 			}
 		}
-		final Map<String, String[]> parameterMap = request.getParameterMap();
+
+		return requestHeaders;
+	}
+
+	private void serviceFilterStrategy(String targetServiceName,
+			HashSet<String> versionSet, HashMap<String, Integer> weightMap,
+			HashSet<String> fallbackVersionSet,
+			HashMap<String, Integer> fallbackWeightMap) {
+
+		if (Objects.nonNull(RequestContextHolder.getRequestAttributes())) {
+
+			final HttpServletRequest request = ((ServletRequestAttributes) Objects
+					.requireNonNull(RequestContextHolder.getRequestAttributes()))
+							.getRequest();
+
+			if (Objects.nonNull(request)) {
+				serviceFilter(targetServiceName, versionSet, weightMap,
+						fallbackVersionSet, fallbackWeightMap, request);
+			}
+		}
+		else {
+			serviceFilter(targetServiceName, versionSet, weightMap, fallbackVersionSet,
+					fallbackWeightMap,
+					RoutingContext.getCurrentContext().getServerHttpRequest());
+
+		}
+	}
+
+	/**
+	 * For ServerHttpRequest.
+	 * @param targetServiceName target service
+	 * @param versionSet version
+	 * @param weightMap weight
+	 * @param fallbackVersionSet fallback version
+	 * @param fallbackWeightMap fallback weight
+	 * @param request ServerHttpRequest Object
+	 */
+	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
+			HashMap<String, Integer> weightMap, HashSet<String> fallbackVersionSet,
+			HashMap<String, Integer> fallbackWeightMap, ServerHttpRequest request) {
+
+		// Get request metadata.
+		HashMap<String, String> requestHeaders = getHeaderNames(request);
+
+		Map<String, String> parameterMap = request.getQueryParams().toSingleValueMap();
+
+		Map<String, String[]> buildParameterMap = new HashMap<>();
+
+		Set<String> strings = parameterMap.keySet();
+		for (String string : strings) {
+			buildParameterMap.put(string, new String[] { parameterMap.get(string) });
+		}
+
 		int defaultVersionWeight = RoutingDataRepository.SUM_WEIGHT;
 		boolean isMatch = false;
 
@@ -214,9 +296,9 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		if (requestHeaders.size() > 0) {
 			for (String keyName : requestHeaders.keySet()) {
 				int weight = matchRule(targetServiceName, keyName, requestHeaders,
-						parameterMap, request, versionSet, weightMap, fallbackVersionSet,
-						fallbackWeightMap);
-				if (weight != NO_MATCH) {
+						buildParameterMap, getRequestURI(request), versionSet, weightMap,
+						fallbackVersionSet, fallbackWeightMap);
+				if (weight != RoutingConstants.NO_MATCH) {
 					isMatch = true;
 					defaultVersionWeight -= weight;
 					break;
@@ -227,9 +309,82 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		if (!isMatch && parameterMap != null) {
 			for (String keyName : parameterMap.keySet()) {
 				int weight = matchRule(targetServiceName, keyName, requestHeaders,
-						parameterMap, request, versionSet, weightMap, fallbackVersionSet,
-						fallbackWeightMap);
-				if (weight != NO_MATCH) {
+						buildParameterMap, getRequestURI(request), versionSet, weightMap,
+						fallbackVersionSet, fallbackWeightMap);
+				if (weight != RoutingConstants.NO_MATCH) {
+					isMatch = true;
+					defaultVersionWeight -= weight;
+					break;
+				}
+			}
+		}
+
+		final List<MatchService> pathRules = routingDataRepository
+				.getPathRules(targetServiceName);
+		if (!isMatch && pathRules != null) {
+			for (MatchService matchService : pathRules) {
+				if (matchService.getRuleList().get(0).getValue()
+						.equals(getRequestURI(request))) {
+					String version = matchService.getVersion();
+					Integer weight = matchService.getWeight();
+					versionSet.add(version);
+					weightMap.put(version, weight);
+					defaultVersionWeight -= weight;
+				}
+			}
+		}
+
+		// Add default route
+		if (defaultVersionWeight > RoutingDataRepository.MIN_WEIGHT) {
+			String defaultRouteVersion = routingDataRepository
+					.getDefaultRouteVersion(targetServiceName);
+			versionSet.add(defaultRouteVersion);
+			weightMap.put(defaultRouteVersion, defaultVersionWeight);
+		}
+
+	}
+
+	/**
+	 * For HttpServletRequest.
+	 * @param targetServiceName target service
+	 * @param versionSet version
+	 * @param weightMap weight
+	 * @param fallbackVersionSet fallback version
+	 * @param fallbackWeightMap fallback weight
+	 * @param request httpServletRequest Object
+	 */
+	private void serviceFilter(String targetServiceName, HashSet<String> versionSet,
+			HashMap<String, Integer> weightMap, HashSet<String> fallbackVersionSet,
+			HashMap<String, Integer> fallbackWeightMap, HttpServletRequest request) {
+
+		// Get request metadata.
+		HashMap<String, String> requestHeaders = (HashMap<String, String>) getHeaderNames(
+				request);
+
+		final Map<String, String[]> parameterMap = request.getParameterMap();
+		int defaultVersionWeight = RoutingDataRepository.SUM_WEIGHT;
+		boolean isMatch = false;
+
+		// Parse rule.
+		if (requestHeaders.size() > 0) {
+			for (String keyName : requestHeaders.keySet()) {
+				int weight = matchRule(targetServiceName, keyName, requestHeaders,
+						parameterMap, request.getRequestURI(), versionSet, weightMap,
+						fallbackVersionSet, fallbackWeightMap);
+				if (weight != RoutingConstants.NO_MATCH) {
+					isMatch = true;
+					defaultVersionWeight -= weight;
+					break;
+				}
+			}
+		}
+
+		if (!isMatch && parameterMap != null) {
+			for (String keyName : parameterMap.keySet()) {
+				int weight = matchRule(targetServiceName, keyName, requestHeaders,
+						parameterMap, request.getRequestURI(), versionSet, weightMap,
+						fallbackVersionSet, fallbackWeightMap);
+				if (weight != RoutingConstants.NO_MATCH) {
 					isMatch = true;
 					defaultVersionWeight -= weight;
 					break;
@@ -264,14 +419,14 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 
 	private int matchRule(String targetServiceName, String keyName,
 			final HashMap<String, String> requestHeaders,
-			final Map<String, String[]> parameterMap, final HttpServletRequest request,
+			final Map<String, String[]> parameterMap, final String uri,
 			HashSet<String> versionSet, HashMap<String, Integer> weightMap,
 			HashSet<String> fallbackVersionSet,
 			HashMap<String, Integer> fallbackWeightMap) {
 		final List<MatchService> matchServiceList = routingDataRepository
 				.getRouteRule(targetServiceName).get(keyName);
 		if (matchServiceList == null) {
-			return NO_MATCH;
+			return RoutingConstants.NO_MATCH;
 		}
 		for (MatchService matchService : matchServiceList) {
 			final List<Rule> ruleList = matchService.getRuleList();
@@ -282,13 +437,13 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			for (Rule routeRule : ruleList) {
 				String type = routeRule.getType();
 				switch (type) {
-				case PATH:
-					isMatchRule = parseRequestPath(routeRule, request);
+				case RoutingConstants.PATH:
+					isMatchRule = parseRequestPath(routeRule, uri);
 					break;
-				case HEADER:
+				case RoutingConstants.HEADER:
 					isMatchRule = parseRequestHeader(routeRule, requestHeaders);
 					break;
-				case PARAMETER:
+				case RoutingConstants.PARAMETER:
 					isMatchRule = parseRequestParameter(routeRule, parameterMap);
 					break;
 				default:
@@ -308,14 +463,13 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			weightMap.put(version, weight);
 			return weight;
 		}
-		return NO_MATCH;
+		return RoutingConstants.NO_MATCH;
 	}
 
-	private boolean parseRequestPath(final Rule routeRule,
-			final HttpServletRequest request) {
+	private boolean parseRequestPath(final Rule routeRule, final String uri) {
 		String condition = routeRule.getCondition();
 		String value = routeRule.getValue();
-		String uri = request.getRequestURI();
+
 		return conditionMatch(condition, value, uri);
 	}
 
@@ -365,8 +519,14 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		}
 	}
 
-	private Server chooseServerByWeight(final HashMap<String, List<Instance>> instanceMap,
-			final HashMap<String, Integer> weightMap, final double[] weightArray) {
+	private Server chooseServerByWeight(HashMap<String, List<Instance>> instanceMap,
+			HashMap<String, Integer> weightMap, double[] weightArray) {
+
+		if (zoneAvoidanceRuleEnabled) {
+
+			instanceMap = chooseServerByRegionalAffinity(instanceMap);
+		}
+
 		int index = 0;
 		double sum = 0.0D;
 		List<Instance> instances = new ArrayList<>();
@@ -376,10 +536,17 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			List<Instance> instanceList = instanceMap.get(version);
 			for (Instance instance : instanceList) {
 				instances.add(instance);
-				weightArray[index] = KEEP_ACCURACY * weight / instanceList.size() + sum;
+
+				weightArray[index] = RoutingConstants.KEEP_ACCURACY * weight
+						/ instanceList.size() + sum;
 				sum = weightArray[index];
+
 				index++;
 			}
+		}
+
+		if (instances.size() == 1) {
+			return new NacosServer(instances.get(0));
 		}
 
 		if (sum > RoutingDataRepository.SUM_WEIGHT) {
@@ -388,12 +555,106 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 
 		double random = ThreadLocalRandom.current().nextDouble(
 				RoutingDataRepository.MIN_WEIGHT, RoutingDataRepository.SUM_WEIGHT);
+
 		int chooseServiceIndex = Arrays.binarySearch(weightArray, random);
 		if (chooseServiceIndex < 0) {
 			chooseServiceIndex = -chooseServiceIndex - 1;
 		}
 
 		return new NacosServer(instances.get(chooseServiceIndex));
+	}
+
+	private HashMap<String, List<Instance>> chooseServerByRegionalAffinity(
+			HashMap<String, List<Instance>> map) {
+
+		Map<String, String> regionalAffinityLabels = getRegionalAffinityLabels();
+
+		if (CollectionUtils.isEmpty(regionalAffinityLabels)) {
+
+				return map;
+		}
+
+		String region = getRegionalAffinityLabels().get(RoutingConstants.REGION);
+		String zone = getRegionalAffinityLabels().get(RoutingConstants.ZONE);
+
+		if (StringUtils.isEmpty(region) && StringUtils.isEmpty(zone)) {
+
+			return map;
+		}
+
+		HashMap<String, List<Instance>> serverMap = new HashMap<>();
+		List<Instance> serverList = new ArrayList<>();
+		for (String version : map.keySet()) {
+			List<Instance> instances = map.get(version);
+			for (Instance instance : instances) {
+				Map<String, String> metadata = instance.getMetadata();
+				String serverRegion = metadata.get(RoutingConstants.REGION);
+				String serverZone = metadata.get(RoutingConstants.ZONE);
+				if (StringUtils.isNotEmpty(serverRegion)
+						&& StringUtils.isNotEmpty(serverZone)) {
+					if (Objects.equals(region, serverRegion)) {
+						if (Objects.equals(zone, serverZone)) {
+							serverList.add(instance);
+						}
+					}
+				}
+			}
+			serverMap.put(version, serverList);
+		}
+
+		// If there is no suitable instance, route the whole service instance
+		if (checkMap(serverMap)) {
+
+			LOG.warn(
+					"The Region Affinity Route Label Selection Service instance is empty.");
+			return map;
+		}
+
+		RoutingContext.clearCurrentContext();
+		return new HashMap<>(serverMap);
+	}
+
+	private Map<String, String> getRegionalAffinityLabels() {
+
+		Map<String, String> resMap = new ConcurrentHashMap<>();
+
+		String region = RoutingContext.getCurrentContext().getRegion();
+		String zone = RoutingContext.getCurrentContext().getZone();
+
+		if (StringUtils.isNotEmpty(region) && StringUtils.isNotEmpty(zone)) {
+
+			resMap.put(RoutingConstants.REGION, region);
+			resMap.put(RoutingConstants.ZONE, zone);
+		}
+		else {
+
+			LOG.warn("Regional affinity labels is null.");
+			return null;
+		}
+
+		return resMap;
+	}
+
+	private static boolean checkMap(Map<String, List<Instance>> map) {
+
+		if (CollectionUtils.isEmpty(map) || CollectionUtils.isEmpty(map.values())) {
+			return true;
+		}
+
+		for (List<Instance> instanceList : map.values()) {
+			if (Objects.isNull(instanceList)) {
+				return true;
+			} else {
+				for (Instance instance : instanceList) {
+					if (Objects.isNull(instance)) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+
 	}
 
 }

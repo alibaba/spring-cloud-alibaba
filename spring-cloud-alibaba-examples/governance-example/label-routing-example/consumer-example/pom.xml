@@ -8,14 +8,20 @@
 		<version>${revision}</version>
 		<relativePath>../../../pom.xml</relativePath>
 	</parent>
+	<modules>
+		<module>reactive-consumer-example</module>
+		<module>feign-consumer-example</module>
+	</modules>
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>consumer-example</artifactId>
 	<name>Spring Cloud Starter Alibaba Label Routing Consumer Example</name>
 	<description>Example demonstrating how to use label routing consumer</description>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -27,14 +33,20 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -42,6 +54,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
