@@ -1,0 +1,43 @@
+version: "3"
+services:
+
+  # nacos
+  routing-service-nacos:
+    image: nacos/nacos-server:v2.1.0
+    restart: always
+    container_name: ${DOCKER_PREFIX}-nacos-server
+    env_file:
+      - .env
+    environment:
+      - MODE=standalone
+    ports:
+      - ${NACOS_PORT}:${NACOS_PORT}
+      - ${NACOS_GRPC_PORT}:${NACOS_GRPC_PORT}
+
+  # routing provider example
+  routing-service-provider:
+    image: ${DOCKER_PREFIX}-service-provider
+    env_file:
+      - .env
+    build:
+      dockerfile: ./routing-service-provider-example/DockerFile
+      context: .
+      args:
+        APP_HOME: ${APP_HOME}
+    container_name: ${DOCKER_PREFIX}-service-provider
+    restart: on-failure
+    volumes:
+      - ./routing-service-provider-example:${APP_HOME}
+      - /etc/localtime:/etc/localtime
+    expose:
+      - ${PROVIDER_PORT_A1}
+      - ${PROVIDER_PORT_A2}
+      - ${PROVIDER_PORT_A3}
+      - ${PROVIDER_PORT_A4}
+    ports:
+      - ${PROVIDER_PORT_A1}:${PROVIDER_PORT_A1}
+      - ${PROVIDER_PORT_A2}:${PROVIDER_PORT_A3}
+      - ${PROVIDER_PORT_A3}:${PROVIDER_PORT_A3}
+      - ${PROVIDER_PORT_A4}:${PROVIDER_PORT_A4}
+    depends_on:
+      - routing-service-nacos

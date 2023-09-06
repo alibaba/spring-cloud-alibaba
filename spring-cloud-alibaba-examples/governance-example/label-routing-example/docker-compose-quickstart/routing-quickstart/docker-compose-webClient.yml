@@ -1,0 +1,62 @@
+version: "3"
+services:
+
+  # routing web client consumer example
+  routing-feign-consumer:
+    image: ${DOCKER_PREFIX}-feign-consumer
+    env_file:
+      - .env
+    build:
+      dockerfile: ./routing-webClient-consumer-example/DockerFile
+      context: .
+      args:
+        APP_HOME: ${APP_HOME}
+    container_name: ${DOCKER_PREFIX}-feign-consumer
+    restart: on-failure
+    volumes:
+      - ./routing-webClient-consumer-example/routing-feign-consumer-example:${APP_HOME}
+      - /etc/localtime:/etc/localtime
+    expose:
+      - ${FEIGN_CONSUMER_PORT}
+    ports:
+      - ${FEIGN_CONSUMER_PORT}:${FEIGN_CONSUMER_PORT}
+
+  # routing provider example
+  routing-rest-consumer:
+    image: ${DOCKER_PREFIX}-rest-consumer
+    env_file:
+      - .env
+    build:
+      dockerfile: ./routing-webClient-consumer-example/DockerFile
+      context: .
+      args:
+        APP_HOME: ${APP_HOME}
+    container_name: ${DOCKER_PREFIX}-rest-consumer
+    restart: on-failure
+    volumes:
+      - ./routing-webClient-consumer-example/routing-rest-consumer-example:${APP_HOME}
+      - /etc/localtime:/etc/localtime
+    expose:
+      - ${REST_CONSUMER_PORT}
+    ports:
+      - ${REST_CONSUMER_PORT}:${REST_CONSUMER_PORT}
+
+  # routing provider example
+  routing-reactive-consumer:
+    image: ${DOCKER_PREFIX}-reactive-consumer
+    env_file:
+      - .env
+    build:
+      dockerfile: ./routing-webClient-consumer-example/DockerFile
+      context: .
+      args:
+        APP_HOME: ${APP_HOME}
+    container_name: ${DOCKER_PREFIX}-reactive-consumer
+    restart: on-failure
+    volumes:
+      - ./routing-webClient-consumer-example/routing-reactive-consumer-example:${APP_HOME}
+      - /etc/localtime:/etc/localtime
+    expose:
+      - ${REACTIVE_CONSUMER_PORT}
+    ports:
+      - ${REACTIVE_CONSUMER_PORT}:${REACTIVE_CONSUMER_PORT}
