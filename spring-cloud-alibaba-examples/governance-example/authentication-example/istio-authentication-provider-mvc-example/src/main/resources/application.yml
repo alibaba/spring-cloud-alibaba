@@ -1,0 +1,15 @@
+server:
+  port: ${SERVER_PORT:80}
+spring:
+  cloud:
+    governance:
+      auth:
+        enabled: ${ISTIO_AUTH_ENABLE:true}
+    istio:
+      config:
+        enabled: ${ISTIO_CONFIG_ENABLE:true}
+        host: ${ISTIOD_ADDR:127.0.0.1}
+        port: ${ISTIOD_PORT:15010}
+        polling-pool-size: ${POLLING_POOL_SIZE:10}
+        polling-time: ${POLLING_TIME:10}
+        istiod-token: ${ISTIOD_TOKEN:}

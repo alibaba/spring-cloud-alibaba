@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-alibaba-examples</artifactId>
+        <version>${revision}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <artifactId>nacos-gateway-example</artifactId>
+    <name>Spring Cloud Starter Alibaba Nacos Discovery x Gateway Examples</name>
+    <description>Example demonstrating how to use gateway with nacos</description>
+    <packaging>pom</packaging>
+
+
+    <modules>
+        <module>nacos-gateway-discovery-example</module>
+        <module>nacos-gateway-provider-example</module>
+    </modules>
+</project>

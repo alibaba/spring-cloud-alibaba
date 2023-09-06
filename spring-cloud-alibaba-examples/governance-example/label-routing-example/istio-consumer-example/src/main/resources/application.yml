@@ -1,0 +1,25 @@
+server:
+  port: 18084
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: service-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        fail-fast: true
+        username: 'nacos'
+        password: 'nacos'
+    governance:
+      auth:
+        enabled: ${ISTIO_AUTH_ENABLE:false}
+    istio:
+      config:
+        enabled: ${ISTIO_CONFIG_ENABLE:true}
+        host: ${ISTIOD_ADDR:127.0.0.1}
+        port: ${ISTIOD_PORT:15010}
+        polling-pool-size: ${POLLING_POOL_SIZE:10}
+        polling-time: ${POLLING_TIME:10}
+        istiod-token: ${ISTIOD_TOKEN:}

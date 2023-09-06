@@ -1,0 +1,43 @@
+server:
+  port: 18085
+spring:
+  application:
+    name: sentinel-spring-cloud-gateway
+  cloud:
+    gateway:
+      enabled: true
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+      # Add your routes here.
+      - id: aliyun_route
+        uri: https://www.aliyun.com/
+        predicates:
+        - Path=/product/**
+      - id: httpbin_route
+        uri: https://httpbin.org
+        predicates:
+        - Path=/httpbin/**
+        filters:
+        - RewritePath=/httpbin/(?<segment>.*), /$\{segment}
+
+    sentinel:
+      datasource.ds2.file:
+        file: "classpath: gateway.json"
+        ruleType: gw-flow
+      datasource.ds1.file:
+        file: "classpath: api.json"
+        ruleType: gw-api-group
+      transport:
+        dashboard: localhost:8080
+      filter:
+        enabled: true
+      scg.fallback:
+          mode: response
+          response-status: 444
+          response-body: 1234
+      scg:
+        order: -100
+
+management.endpoints.web.exposure.include: "*"

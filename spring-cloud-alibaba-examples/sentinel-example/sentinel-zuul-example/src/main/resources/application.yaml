@@ -1,0 +1,40 @@
+server:
+  port: 18086
+spring:
+  application:
+    name: sentinel-zuul
+  cloud:
+    sentinel:
+      datasource.ds2.file:
+        file: "classpath: gateway.json"
+        ruleType: gw-flow
+      datasource.ds1.file:
+        file: "classpath: api.json"
+        ruleType: gw-api-group
+      transport:
+        dashboard: localhost:8080
+      filter:
+        enabled: false
+
+management.endpoints.web.exposure.include: "*"
+
+
+zuul.routes.my-service.path: "/product/foo/**"
+zuul.routes.my-service.service-id: "my-service"
+
+zuul.routes.my-service2.path: "/my-service2/**"
+zuul.routes.my-service2.service-id: "my-service2"
+
+zuul.routes.my-service3.path: "/my-service3/**"
+zuul.routes.my-service3.service-id: "my-service3"
+
+zuul.routes.my-service4.path: "/my-service4/**"
+zuul.routes.my-service4.service-id: "my-service4"
+
+
+spring.cloud.sentinel.zuul.order.pre: 2000
+spring.cloud.sentinel.zuul.order.post: 500
+spring.cloud.sentinel.zuul.order.error: -100
+
+
+spring.cloud.sentinel.zuul.enabled: true

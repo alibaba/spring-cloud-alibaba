@@ -1,0 +1,21 @@
+image:
+  authMvc:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/auth-demo-mvc
+    tag: develop
+  authWebflux:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/auth-demo-webflux
+    tag: develop
+  defaultProviderVersion:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/default-provider-version-example
+    tag: develop
+  providerVersion:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/provider-version-example
+    tag: develop
+  istioConsumer:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/istio-consumer-example
+    tag: develop
+  nacosServer:
+    repository: nacos/nacos-server
+    tag: v2.1.0
+istiodAddr: istiod.istio-system.svc.cluster.local
+defaultPollingTime: 60

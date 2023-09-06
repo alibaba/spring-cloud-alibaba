@@ -1,0 +1,16 @@
+[
+  {
+    "resource": "hotResource",
+    "count": 0,
+    "grade": 1,
+    "limitApp": "default",
+    "paramIdx": 0,
+    "paramFlowItemList": [
+      {
+        "object": "2",
+        "classType": "int",
+        "count": 1
+      }
+    ]
+  }
+]

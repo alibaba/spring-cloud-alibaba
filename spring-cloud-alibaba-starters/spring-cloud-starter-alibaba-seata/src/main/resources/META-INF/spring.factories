@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.alibaba.cloud.seata.rest.SeataRestTemplateAutoConfiguration,\
+com.alibaba.cloud.seata.web.SeataHandlerInterceptorConfiguration,\
+com.alibaba.cloud.seata.feign.SeataFeignClientAutoConfiguration,\
+com.alibaba.cloud.seata.feign.hystrix.SeataHystrixAutoConfiguration
+

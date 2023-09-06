@@ -1,0 +1,72 @@
+{
+  "allowAuthRules": {
+    "ns[default]-policy[method-allow]-rule[0]]": {
+      "op": "AND",
+      "children": [
+        {
+          "op": "OR",
+          "children": [
+            {
+              "op": "AND",
+              "children": [
+                {
+                  "op": "OR",
+                  "children": [
+                    {
+                      "children": [],
+                      "condition": {
+                        "matcher": {
+                          "className": "com.alibaba.cloud.commons.matcher.StringMatcher",
+                          "ignoreCase": true,
+                          "matcher": "GET",
+                          "type": "EXACT"
+                        },
+                        "type": "METHODS"
+                      },
+                      "empty": false,
+                      "leaf": true,
+                      "not": false,
+                      "op": "UNKNOWN"
+                    },
+                    {
+                      "children": [],
+                      "condition": {
+                        "matcher": {
+                          "className": "com.alibaba.cloud.commons.matcher.StringMatcher",
+                          "ignoreCase": true,
+                          "matcher": "HEAD",
+                          "type": "EXACT"
+                        },
+                        "type": "METHODS"
+                      },
+                      "empty": false,
+                      "leaf": true,
+                      "not": false,
+                      "op": "UNKNOWN"
+                    }
+                  ],
+                  "condition": null,
+                  "not": false,
+                  "leaf": false,
+                  "empty": false
+                }
+              ],
+              "condition": null,
+              "not": false,
+              "leaf": false,
+              "empty": false
+            }
+          ],
+          "condition": null,
+          "not": false,
+          "leaf": false,
+          "empty": false
+        }
+      ],
+      "condition": null,
+      "not": false,
+      "leaf": false,
+      "empty": false
+    }
+  }
+}

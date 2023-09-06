@@ -1,0 +1,41 @@
+<!--
+  ~ Copyright 2013-2023 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="header.html :: commonHead"></head>
+<body>
+<header th:replace="header.html :: pageHeader"></header>
+<div class="container" id="welcome-page">
+    <div class="row align-items-center m-auto">
+        <div class="col m-auto">
+            <div class="card m-auto" style="width: 8rem; align-self: center">
+                <img class="card-img-top" th:src="${product.img}" width="90%">
+                <div class="card-body" th:id="${product.id}">
+                    <h5 class="card-title" style="text-align: center" th:text="${product.name}"></h5>
+                    <p class="card-text" style="text-align: center" th:text="${product.description}"></p>
+                    <p class="card-text">
+                        <span>价格: </span><span class="badge text-bg-success" th:text="${product.price}"></span>
+                        <span>库存: </span><span class="badge text-bg-info" th:text="${product.number}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<header th:replace="header.html :: pageTraffic"></header>
+</body>
+</html>

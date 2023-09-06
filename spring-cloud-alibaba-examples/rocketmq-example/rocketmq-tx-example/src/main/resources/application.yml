@@ -1,0 +1,27 @@
+server:
+  port: 28088
+spring:
+  application:
+    name: rocketmq-tx-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          producer-out-0:
+            producer:
+              group: output_1
+              transactionListener: myTransactionListener
+              producerType: Trans
+      bindings:
+        producer-out-0:
+          destination: tx
+        consumer-in-0:
+          destination: tx
+          group: tx-group
+logging:
+  level:
+    org.springframework.context.support: debug

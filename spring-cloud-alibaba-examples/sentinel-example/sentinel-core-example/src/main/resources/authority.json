@@ -1,0 +1,17 @@
+[
+  {
+    "resource": "good",
+    "limitApp": "abc",
+    "strategy": 0
+  },
+  {
+    "resource": "bad",
+    "limitApp": "bcd",
+    "strategy": 1
+  },
+  {
+    "resource": "terrible",
+    "limitApp": "aaa",
+    "strategy": 1
+  }
+]

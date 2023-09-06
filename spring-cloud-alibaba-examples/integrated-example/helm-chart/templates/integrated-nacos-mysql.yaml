@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos-mysql
+  labels:
+    name: nacos-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nacos-mysql
+  template:
+    metadata:
+      labels:
+        name: nacos-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: registry.cn-hangzhou.aliyuncs.com/sca-community/integrated-nacos-mysql
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: 'root'
+            - name: MYSQL_DATABASE
+              value: 'nacos_config'
+            - name: MYSQL_USER
+              value: 'nacos'
+            - name: MYSQL_PASSWORD
+              value: 'nacos'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-mysql
+  labels:
+    name: nacos-mysql
+spec:
+  ports:
+    - port: 3307
+      targetPort: 3306
+  selector:
+    name: nacos-mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-mysql-web
+spec:
+  ports:
+    - name: nacos-mysql-port
+      protocol: TCP
+      port: 3307
+      targetPort: 3306
+      nodePort: 30307
+  type: NodePort
+  selector:
+    name: nacos-mysql

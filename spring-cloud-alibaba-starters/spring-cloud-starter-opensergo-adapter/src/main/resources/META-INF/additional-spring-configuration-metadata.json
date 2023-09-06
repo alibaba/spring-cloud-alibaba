@@ -1,0 +1,13 @@
+{"properties": [
+  {
+    "name": "spring.cloud.opensergo.endpoint",
+    "type": "java.lang.String",
+    "description": "Endpoint of OpenSergo control plane."
+  },
+  {
+    "name": "spring.cloud.opensergo.namespace",
+    "type": "java.lang.String",
+    "defaultValue": "default",
+    "description": "Namespace Configuration about OpenSergo Config."
+  }
+]}

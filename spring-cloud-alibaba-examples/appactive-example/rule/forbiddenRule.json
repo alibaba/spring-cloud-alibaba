@@ -1,0 +1,15 @@
+{
+  "itemType": "ForbiddenRuleItem",
+  "items": [
+    {
+      "name": "between",
+      "conditions": [
+        {
+          "@userIdBetween": [
+            "2000~2999"
+          ]
+        }
+      ]
+    }
+  ]
+}

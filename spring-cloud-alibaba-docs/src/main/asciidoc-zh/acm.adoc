@@ -1,0 +1,176 @@
+== Spring Cloud AliCloud ACM
+
+Spring Cloud AliCloud ACM 是阿里云提供的商业版应用配置管理(Application Configuration Management) 产品 在 Spring Cloud 应用侧的客户端实现，且目前完全免费。
+
+使用 Spring Cloud AliCloud ACM，可基于 Spring Cloud 的编程模型快速接入 ACM 配置管理功能。
+
+NOTE: 目前 EDAS 已经支持直接部署 Nacos Config 应用
+
+=== 如何引入 Spring Cloud AliCloud ACM
+
+如果要在您的项目中引入 ACM，使用 group ID 为 `com.alibaba.cloud` 和 artifact ID 为 `spring-cloud-starter-alicloud-acm` 的 starter。
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alicloud-acm</artifactId>
+</dependency>
+----
+
+=== 使用 ACM 进行配置管理
+
+当客户端引入了 Spring Cloud AliCloud ACM Starter 以后，应用启动时会自动从配置管理的服务端获取配置信息，并注入到 Spring 的 Environment 中。
+
+以下是一个简单的应用示例。
+
+[source,java]
+----
+@SpringBootApplication
+public class ProviderApplication {
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(ProviderApplication.class, args);
+        String userName = applicationContext.getEnvironment().getProperty("user.name");
+        String userAge = applicationContext.getEnvironment().getProperty("user.age");
+        System.err.println("user name :"+userName+"; age: "+userAge);
+    }
+}
+----
+
+在从配置中心服务端获取配置信息之前，还需要配置服务端的地址，在 bootstrap.properties 中，还需要配置以下信息。
+
+[source,properties]
+----
+# 必选，应用名会被作为从服务端获取配置 key 的关键词组成部分
+spring.application.name=acm-config
+server.port=18081
+# 以下就是配置中心服务端的IP和端口配置
+spring.cloud.alicloud.acm.server-list=127.0.0.1
+spring.cloud.alicloud.acm.server-port=8080
+----
+
+NOTE: 此时没有启动配置中心，启动应用会报错，因此在应用启动之前，应当首先启动配置中心。
+
+
+==== 启动配置中心
+
+ACM 使用的配置中心有两种，一种是本地运行的轻量版配置中心，主要用于开发和本地调试，一种是阿里云产品 ACM。通常情况下，可以使用轻量版配置中心作为开发和测试环境，使用云上的 ACM 作为灰度和生产环境。
+
+===== 使用轻量版配置中心
+
+轻量版配置中心的下载和启动方式可参考 https://help.aliyun.com/document_detail/44163.html[这里]
+
+NOTE: 只需要执行文档中的第1步 (下载轻量配置中心) 和第2步 (启动轻量配置中心)。
+
+
+===== 使用阿里云配置中心
+
+使用云上 ACM ，可以省去服务端的维护工作，同时稳定性也会更有保障。当使用云上配置中心时，代码部分和使用轻量配置中心并没有区别，但是配置上会有一些区别。
+
+以下是一个简单的使用云上配置中心的配置示例，配置详情需要在 https://acm.console.aliyun.com[ACM控制台查询]
+
+[source,properties]
+----
+# 应用名会被作为从服务端获取配置 key 的关键词组成部分，因此是必选
+spring.application.name=acm-config
+# 端口配置自由配置即可
+server.port=18081
+# 以下就是配置中心的IP和端口配置
+spring.cloud.alicloud.acm.server-mode=EDAS
+spring.cloud.alicloud.access-key=你的阿里云AK
+spring.cloud.alicloud.secret-key=你的阿里云SK
+spring.cloud.alicloud.acm.endpoint=acm.aliyun.com
+spring.cloud.alicloud.acm.namespace=你的 ACM namespace，需要在 ACM 控制台查询
+----
+
+NOTE: EDAS 提供应用托管服务，如果你将应用托管到 EDAS，那么 EDAS 将会自动为你填充所有与业务无关的配置。
+
+==== 在配置中心添加配置
+
+1. 启动好轻量版配置中心之后，在控制台中添加如下的配置。
+
+[source,subs="normal"]
+----
+Group:      DEFAULT_GROOUP
+
+DataId:     acm-config.properties
+
+Content:    user.name=james
+            user.age=18
+----
+
+NOTE: DataId 的格式为 `{prefix}.{file-extension}`,prefix 默认从配置 spring.application.name 中取值，file-extension 默认的值为 "properties"。
+
+==== 启动应用验证
+
+启动这个Example，可以在控制台看到打印出的值正是我们在轻量版配置中心上预先配置的值。
+
+[source,subs="normal"]
+----
+user name :james; age: 18
+----
+
+=== 更改配置文件扩展名
+
+spring-cloud-starter-alicloud-acm 中 DataId 默认的文件扩展名是 properties。除去 properties 格式之外，也支持 yaml 格式。
+支持通过 spring.cloud.alicloud.acm.file-extension 来配置文件的扩展名，yaml 格式可以配置成 `yaml` 或 `yml`。
+
+NOTE: 修改文件扩展名后，在配置中心中的 DataID 以及 Content 的格式都必须做相应的修改。
+
+=== 动态更新
+
+spring-cloud-starter-alicloud-acm 默认支持配置的动态更新，当您在配置中心修改配置的内容时，会发布 Spring 中的 RefreshEvent 事件。
+带有 @RefreshScope 和 @ConfigurationProperties 注解的类会自动刷新。
+
+NOTE: 你可以通过配置 spring.cloud.alicloud.acm.refresh.enabled=false 来关闭动态刷新。
+
+=== Profile 粒度的配置
+
+spring-cloud-starter-alicloud-acm 在加载配置的时候，首先会加载 DataId 为{spring.application.name}.{file-extension}的配置，当 spring.profiles.active 中配置有内容时，还会依次去加载 spring.profile 对应的内容， DataId 的格式为{spring.application.name}-{profile}.{file-extension}的配置，且后者的优先级高于前者。
+
+spring.profiles.active 属于配置的元数据，所以也必须配置在 bootstrap.properties 或 bootstrap.yaml 中。比如可以在 bootstrap.properties 中增加如下内容。
+
+[sources,properties]
+----
+spring.profiles.active={profile-name}
+----
+
+Note: 也可以通过 JVM 参数 -Dspring.profiles.active=develop 或者 --spring.profiles.active=develop 这类优先级更高的方式来配置，只需遵循 Spring Boot 规范即可。
+
+
+=== 自定义配置中心超时时间
+
+ACM Client 与 Server 通信的超时时间默认是 3000ms，可以通过 `spring.cloud.alicloud.acm.timeout` 来修改超时时间，单位为 ms 。
+
+=== 自定义 Group 的配置
+
+在没有明确指定 `{spring.cloud.alicloud.acm.group}` 配置的情况下， 默认使用的是 DEFAULT_GROUP 。如果需要自定义自己的 Group，可以通过以下配置来实现：
+
+[source,properties]
+----
+spring.cloud.alicloud.acm.group=DEVELOP_GROUP
+----
+
+NOTE: 该配置必须放在 bootstrap.properties 文件中。并且在添加配置时 Group 的值要和 `spring.cloud.alicloud.acm.group` 的配置值一致。
+
+=== 共享配置
+
+ACM 提供了一种多个应用之间共享配置中心的同一个配置的推荐方式，供多个应用共享一些配置时使用，您在使用的时候需要添加在 bootstrap 中添加一个配置项 `spring.application.group`。
+
+[source,properties]
+----
+spring.application.group=company.department.team
+----
+
+这时应用在获取上文提到的自身所独有的配置之前，会先依次从这些 DataId 去获取，分别是 company:application.properties, company.department:application.properties, company.department.team:application.properties。
+然后，还会从 {spring.application.group}:{spring.application.name}.{file-extension} 中获取，越往后优先级越高，最高的仍然是应用自身所独有的配置。
+
+
+NOTE: 共享配置中 DataId 默认后缀为 properties，可以通过 spring.cloud.alicloud.acm.file-extension 配置. `{spring.application.group}:{spring.application.name}.{file-extension}` 。
+
+NOTE: 如果设置了 `spring.profiles.active` ，DataId 的格式还支持 `{spring.application.group}:{spring.application.name}-{spring.profiles.active}.{file-extension}`。优先级高于 `{spring.application.group}:{spring.application.name}.{file-extension}`
+
+=== Actuator 监控
+
+ACM 对应的 Actuator 监控地址为 `/acm`，其中 `config` 代表了 ACM 元数据配置的信息，`runtime.sources` 对应的是从 ACM 服务端获取的配置的信息及最后刷新时间， `runtime.refreshHistory` 对应的是动态刷新的历史记录。

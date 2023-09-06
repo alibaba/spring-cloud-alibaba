@@ -1,0 +1,23 @@
+server:
+  port: 28084
+spring:
+  application:
+    name: rocketmq-broadcast-consumer1-example
+  cloud:
+    stream:
+      function:
+        definition: consumer;
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        bindings:
+          consumer-in-0:
+            consumer:
+              messageModel: BROADCASTING
+      bindings:
+        consumer-in-0:
+          destination: broadcast
+          group: broadcast-consumer
+logging:
+  level:
+    org.springframework.context.support: debug

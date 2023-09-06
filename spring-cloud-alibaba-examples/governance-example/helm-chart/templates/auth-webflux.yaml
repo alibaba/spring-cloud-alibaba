@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-webflux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-webflux
+  template:
+    metadata:
+      labels:
+        appName: auth-webflux
+        app: auth-webflux
+    spec:
+      containers:
+        - name: auth-webflux
+          image: '{{ .Values.image.authWebflux.repository }}:{{ .Values.image.authWebflux.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: auth-webflux-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-webflux
+  labels:
+    app: auth-webflux
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      name: http-server
+  selector:
+    app: auth-webflux

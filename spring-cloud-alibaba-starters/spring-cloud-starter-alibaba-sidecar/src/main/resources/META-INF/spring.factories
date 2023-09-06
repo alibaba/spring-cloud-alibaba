@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.alibaba.cloud.sidecar.nacos.SidecarNacosAutoConfiguration,\
+  com.alibaba.cloud.sidecar.SidecarAutoConfiguration,\
+  com.alibaba.cloud.sidecar.consul.SidecarConsulAutoConfiguration

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-alibaba</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>spring-cloud-alibaba-examples</artifactId>
+    <packaging>pom</packaging>
+    <name>Spring Cloud Alibaba Examples</name>
+    <description>Example showing how to use features of Spring Cloud Alibaba</description>
+
+    <modules>
+        <module>sentinel-example/sentinel-core-example</module>
+        <module>sentinel-example/sentinel-feign-example/sentinel-feign-consumer-example</module>
+        <module>sentinel-example/sentinel-feign-example/sentinel-feign-provider-example</module>
+        <module>sentinel-example/sentinel-webflux-example</module>
+        <module>sentinel-example/sentinel-spring-cloud-gateway-example</module>
+        <module>sentinel-example/sentinel-zuul-example</module>
+        <module>appactive-example/common</module>
+        <module>appactive-example/frontend</module>
+        <module>appactive-example/product</module>
+        <module>appactive-example/storage</module>
+        <module>nacos-example/nacos-discovery-example</module>
+        <module>nacos-example/nacos-config-example</module>
+        <module>nacos-example/nacos-gateway-example</module>
+        <module>seata-example/business-service</module>
+        <module>seata-example/order-service</module>
+        <module>seata-example/seata-server</module>
+        <module>seata-example/storage-service</module>
+        <module>seata-example/account-service</module>
+        <module>rocketmq-example/rocketmq-comprehensive-example</module>
+        <module>rocketmq-example/rocketmq-orderly-consume-example</module>
+        <module>rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-producer-example</module>
+        <module>rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-consumer1-example</module>
+        <module>rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-consumer2-example</module>
+        <module>rocketmq-example/rocketmq-delay-consume-example</module>
+        <module>rocketmq-example/rocketmq-sql-consume-example</module>
+        <module>rocketmq-example/rocketmq-example-common</module>
+        <module>rocketmq-example/rocketmq-tx-example</module>
+        <module>rocketmq-example/rocketmq-pollable-consume-example</module>
+        <module>rocketmq-example/rocketmq-retrieable-consume-example</module>
+
+        <module>spring-cloud-bus-rocketmq-example</module>
+        <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-nacos-example</module>
+        <module>spring-cloud-alibaba-sidecar-examples/spring-cloud-alibaba-sidecar-consul-example</module>
+        <module>integrated-example/integrated-storage</module>
+        <module>integrated-example/integrated-account</module>
+        <module>integrated-example/integrated-order</module>
+        <module>integrated-example/integrated-gateway</module>
+        <module>integrated-example/integrated-praise-provider</module>
+        <module>integrated-example/integrated-praise-consumer</module>
+        <module>integrated-example/integrated-common</module>
+		<module>integrated-example/integrated-frontend</module>
+        <module>governance-example/label-routing-example/istio-consumer-example</module>
+        <module>governance-example/label-routing-example/opensergo-consumer-example</module>
+        <module>governance-example/label-routing-example/consumer-example</module>
+        <module>governance-example/label-routing-example/provider-example</module>
+        <module>governance-example/authentication-example/istio-authentication-provider-mvc-example</module>
+        <module>governance-example/authentication-example/istio-authentication-provider-webflux-example</module>
+
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!--Exclude javadoc jars-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!--Exclude sources jars-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <skipSource>true</skipSource>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

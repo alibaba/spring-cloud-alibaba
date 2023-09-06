@@ -1,0 +1,26 @@
+[
+  {
+    "resource": "GET:http://service-provider/test",
+    "count": 0.5,
+    "grade": 1,
+    "timeWindow": 30
+  },
+  {
+    "resource": "GET:http://service-provider",
+    "count": 0.5,
+    "grade": 1,
+    "timeWindow": 10
+  },
+  {
+    "resource": "GET:http://service-provider/sleep",
+    "count": 20.0,
+    "grade": 0,
+    "timeWindow": 30
+  },
+  {
+    "resource": "GET:http://service-provider/divide",
+    "count": 0.5,
+    "grade": 1,
+    "timeWindow": 30
+  }
+]
