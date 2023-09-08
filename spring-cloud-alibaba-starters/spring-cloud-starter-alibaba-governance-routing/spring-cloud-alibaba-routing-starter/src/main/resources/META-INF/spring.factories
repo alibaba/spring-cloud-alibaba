@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.alibaba.cloud.routing.configuration.RoutingAutoConfiguration,\
+  com.alibaba.cloud.routing.properties.RoutingPropertiesAutoConfiguration

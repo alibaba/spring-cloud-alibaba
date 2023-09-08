@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.alibaba.cloud.routing.RoutingAutoConfiguration,\
-  com.alibaba.cloud.routing.feign.RoutingFeignInterceptorAutoConfiguration,\
-  com.alibaba.cloud.routing.ribbon.RoutingLoadBalanceRuleAutoConfiguration,\
-  com.alibaba.cloud.routing.RoutingPropertiesAutoConfiguration

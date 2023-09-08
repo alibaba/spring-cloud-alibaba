@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "spring.cloud.governance.routing.gateway.filter.order",
+      "type": "java.lang.Integer",
+      "defaultValue": 9000,
+      "description": "Strategy gateway route filter order."
+    },
+    {
+      "name": "spring.cloud.governance.routing.gateway.header.priority",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether strategy gateway header priority is enabled."
+    }
+  ]
+}
