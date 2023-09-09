@@ -14,26 +14,15 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.consumer.feign.constant;
+package com.alibaba.cloud.consumer.reactive.util;
 
 /**
  * @author yuluo
  * @author 1481556636@qq.com
  */
+public final class ReactiveConsumerUtil {
 
-public final class FeignConsumerConstants {
-
-	private FeignConsumerConstants() {
+	private ReactiveConsumerUtil() {
 	}
-
-	/**
-	 * Application name.
-	 */
-	public static final String APPLICATION_NAME = "routing-feign-consumer-example";
-
-	/**
-	 * Http Ok status code.
-	 */
-	public static final int PASS_STATUS = 200;
 
 }

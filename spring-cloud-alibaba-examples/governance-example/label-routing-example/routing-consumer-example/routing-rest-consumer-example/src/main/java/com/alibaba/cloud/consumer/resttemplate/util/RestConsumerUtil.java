@@ -14,53 +14,46 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.consumer.feign.util;
+package com.alibaba.cloud.consumer.resttemplate.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
-
-import feign.Response;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author yuluo
  * @author 1481556636@qq.com
  */
+public final class RestConsumerUtil {
 
-public final class FeignConsumerUtil {
+	public static String getResult(InputStream inputStream) {
 
-	private FeignConsumerUtil() {
-	}
-
-	public static String toString(Response response) {
-
-		Reader reader = null;
-		StringBuilder to = new StringBuilder();
-		CharBuffer charBuf = CharBuffer.allocate(2048);
-
+		InputStreamReader isr = null;
 		try {
-			reader = response.body().asReader(StandardCharsets.UTF_8);
+			isr = new InputStreamReader(inputStream, "UTF-8");
 		}
-		catch (IOException e) {
+		catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
-
+		BufferedReader bf = new BufferedReader(isr);
+		StringBuilder results = new StringBuilder();
+		String newLine = "";
 		while (true) {
 			try {
-				if (reader.read(charBuf) == -1) {
+				newLine = bf.readLine();
+				if (newLine == null) {
 					break;
 				}
 			}
 			catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			charBuf.flip();
-			to.append(charBuf);
-			charBuf.clear();
+			results.append(newLine).append("\n");
 		}
 
-		return to.toString();
+		return results.toString();
 	}
 
 }

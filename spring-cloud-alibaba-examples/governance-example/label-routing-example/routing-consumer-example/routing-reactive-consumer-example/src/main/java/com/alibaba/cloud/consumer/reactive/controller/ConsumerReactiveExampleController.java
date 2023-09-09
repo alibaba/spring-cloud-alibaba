@@ -17,7 +17,10 @@
 package com.alibaba.cloud.consumer.reactive.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -28,6 +31,8 @@ import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
 import com.alibaba.cloud.commons.governance.routing.rule.Rule;
 import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
+import com.alibaba.cloud.consumer.reactive.configuration.WebClientConfiguration;
+import com.alibaba.cloud.consumer.reactive.entity.NodeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -35,6 +40,8 @@ import reactor.core.publisher.Mono;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -63,6 +70,43 @@ public class ConsumerReactiveExampleController implements ApplicationContextAwar
 
 	@Resource
 	private WebClient.Builder webClientBuilder;
+
+	@Resource
+	private WebClientConfiguration webClientConfiguration;
+
+	@Autowired
+	private DiscoveryClient discoveryClient;
+
+	@GetMapping("/nodeInfo")
+	public Map<String, List<Map<String, List<String>>>> getNodeInfo() {
+
+		String serverPort = webClientConfiguration.getServerPort();
+
+		List<String> services = discoveryClient.getServices();
+		for (String service : services) {
+			List<ServiceInstance> instances = discoveryClient.getInstances(service);
+			for (ServiceInstance instance : instances) {
+				if ((instance.getPort() + "").equals(serverPort)) {
+					String server = instance.getServiceId();
+					Map<String, String> metadata = instance.getMetadata();
+					List<Map<String, List<String>>> metaList = new ArrayList<>();
+					Map<String, List<String>> nmap = new HashMap<>();
+					for (String s : metadata.keySet()) {
+						nmap.put(s, Collections.singletonList(metadata.get(s)));
+					}
+					nmap.put("port", Collections.singletonList(instance.getPort() + ""));
+					nmap.put("host", Collections.singletonList(instance.getHost()));
+					nmap.put("instanceId",
+							Collections.singletonList(instance.getInstanceId()));
+					metaList.add(nmap);
+
+					NodeInfo.set(server, metaList);
+				}
+			}
+		}
+
+		return NodeInfo.getNodeIno();
+	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)

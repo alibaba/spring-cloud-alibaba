@@ -16,9 +16,13 @@
 
 package com.alibaba.cloud.consumer.resttemplate.configuration;
 
+import com.alibaba.cloud.consumer.resttemplate.interceptor.RestRequestInterceptor;
+
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -33,7 +37,15 @@ public class RestTemplateConfiguration {
 	@LoadBalanced
 	public RestTemplate restTemplate() {
 
-		return new RestTemplate();
+		// Resolve an issue where the response stream can only be read once.
+		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+		BufferingClientHttpRequestFactory simpleBufferingClientHttpRequest = new BufferingClientHttpRequestFactory(
+				requestFactory);
+
+		RestTemplate restTemplate = new RestTemplate(simpleBufferingClientHttpRequest);
+		restTemplate.getInterceptors().add(new RestRequestInterceptor());
+
+		return restTemplate;
 	}
 
 }

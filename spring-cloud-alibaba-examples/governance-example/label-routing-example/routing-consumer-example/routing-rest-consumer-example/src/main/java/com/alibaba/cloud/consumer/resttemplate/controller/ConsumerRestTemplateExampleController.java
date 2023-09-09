@@ -17,7 +17,10 @@
 package com.alibaba.cloud.consumer.resttemplate.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.routing.MatchService;
@@ -26,11 +29,15 @@ import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
 import com.alibaba.cloud.commons.governance.routing.rule.Rule;
 import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
+import com.alibaba.cloud.consumer.resttemplate.entity.NodeInfo;
+import com.alibaba.cloud.consumer.resttemplate.interceptor.RestRequestInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,11 +63,54 @@ public class ConsumerRestTemplateExampleController implements ApplicationContext
 	@Autowired
 	private RestTemplate restTemplate;
 
+	@Autowired
+	private DiscoveryClient discoveryClient;
+
+	@Autowired
+	private RestRequestInterceptor restRequestInterceptor;
+
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 
 		this.applicationContext = applicationContext;
+	}
+
+	@GetMapping("/nodeInfo")
+	public Map<String, List<Map<String, List<String>>>> getNodeInfo() {
+
+		String serverPort = restRequestInterceptor.getServerPort();
+
+		List<String> services = discoveryClient.getServices();
+		for (String service : services) {
+			List<ServiceInstance> instances = discoveryClient.getInstances(service);
+			for (ServiceInstance instance : instances) {
+				if ((instance.getPort() + "").equals(serverPort)) {
+					String server = instance.getServiceId();
+					Map<String, String> metadata = instance.getMetadata();
+					List<Map<String, List<String>>> metaList = new ArrayList<>();
+					Map<String, List<String>> nmap = new HashMap<>();
+					for (String s : metadata.keySet()) {
+						nmap.put(s, Collections.singletonList(metadata.get(s)));
+					}
+					nmap.put("port", Collections.singletonList(instance.getPort() + ""));
+					nmap.put("host", Collections.singletonList(instance.getHost()));
+					nmap.put("instanceId",
+							Collections.singletonList(instance.getInstanceId()));
+					metaList.add(nmap);
+
+					NodeInfo.set(server, metaList);
+				}
+			}
+		}
+
+		return NodeInfo.getNodeIno();
+	}
+
+	@GetMapping("/service")
+	public Object getServices() {
+
+		return discoveryClient.getServices();
 	}
 
 	@GetMapping("/router-test")

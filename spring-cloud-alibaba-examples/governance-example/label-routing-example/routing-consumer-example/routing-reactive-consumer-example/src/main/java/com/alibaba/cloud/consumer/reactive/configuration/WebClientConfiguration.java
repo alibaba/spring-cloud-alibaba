@@ -16,9 +16,13 @@
 
 package com.alibaba.cloud.consumer.reactive.configuration;
 
+import reactor.core.publisher.Mono;
+
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.BodyExtractors;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
@@ -29,11 +33,38 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfiguration {
 
+	private static String serverPort = null;
+
 	@Bean
 	@LoadBalanced
 	public WebClient.Builder webClient() {
 
-		return WebClient.builder();
+		return WebClient.builder().filter(response());
+	}
+
+	// private ExchangeFilterFunction request() {
+	//
+	// return ((clientRequest, exchangeFunction) -> {
+	//
+	// HttpHeaders headers = clientRequest.headers();
+	// return exchangeFunction.exchange(clientRequest);
+	// });
+	// }
+
+	private ExchangeFilterFunction response() {
+
+		return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+
+			Object body = clientResponse.body(BodyExtractors.toDataBuffers());
+			serverPort = body.toString().substring(45, 50);
+
+			return Mono.just(clientResponse);
+		});
+	}
+
+	public String getServerPort() {
+
+		return serverPort;
 	}
 
 }

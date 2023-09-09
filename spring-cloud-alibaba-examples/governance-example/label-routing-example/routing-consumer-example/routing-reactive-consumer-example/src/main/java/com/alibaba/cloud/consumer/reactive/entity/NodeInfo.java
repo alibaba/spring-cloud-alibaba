@@ -14,26 +14,40 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.consumer.feign.constant;
+package com.alibaba.cloud.consumer.reactive.entity;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.stereotype.Component;
 
 /**
  * @author yuluo
  * @author 1481556636@qq.com
  */
 
-public final class FeignConsumerConstants {
+@Component
+public final class NodeInfo {
 
-	private FeignConsumerConstants() {
+	private static Map<String, List<Map<String, List<String>>>> nodeIno = new ConcurrentHashMap<>();
+
+	private NodeInfo() {
 	}
 
-	/**
-	 * Application name.
-	 */
-	public static final String APPLICATION_NAME = "routing-feign-consumer-example";
+	public static void set(String var1, List<Map<String, List<String>>> var2) {
 
-	/**
-	 * Http Ok status code.
-	 */
-	public static final int PASS_STATUS = 200;
+		nodeIno.put(var1, var2);
+	}
+
+	public static List<Map<String, List<String>>> get(String var) {
+
+		return nodeIno.get(var);
+	}
+
+	public static Map<String, List<Map<String, List<String>>>> getNodeIno() {
+
+		return nodeIno;
+	}
 
 }
