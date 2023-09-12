@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.consumer.feign.api;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
-import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClients;
+import com.alibaba.cloud.consumer.constants.WebClientConsumerConstants;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author yuluo-yx
+ * @author <a href="1481556636@qq.com"></a>
  */
 
-@SpringBootApplication
-@LoadBalancerClients({ @LoadBalancerClient("service-provider") })
-public class ConsumerReactiveApplication {
+@FeignClient(name = WebClientConsumerConstants.SERVICE_PROVIDER_NAME)
+public interface ConsumerFeignService {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ConsumerReactiveApplication.class, args);
-	}
+	/**
+	 * Feign test api.
+	 * @return String type.
+	 */
+	@GetMapping("/test-a1")
+	String routerTest();
 
 }

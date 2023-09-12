@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.examples;
+package com.alibaba.cloud.consumer.resttemplate;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
-import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClients;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
- * @author <a href="mailto:fangjian0423@gmail.com">Jim</a>
+ * @author yuluo-yx
+ * @author <a href="1481556636@qq.com"></a>
  */
 
 @SpringBootApplication
-@LoadBalancerClients({ @LoadBalancerClient("service-provider") })
-public class ConsumerReactiveApplication {
+@EnableDiscoveryClient
+public class ConsumerRestTemplateApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ConsumerReactiveApplication.class, args);
+
+		SpringApplication.run(ConsumerRestTemplateApplication.class, args);
 	}
 
 }

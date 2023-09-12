@@ -235,11 +235,7 @@
                 <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
                 <version>${revision}</version>
             </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
-                <version>${revision}</version>
-            </dependency>
+
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-governance-auth</artifactId>
@@ -255,6 +251,19 @@
                 <groupId>com.alibaba.spring</groupId>
                 <artifactId>spring-context-support</artifactId>
                 <version>${spring.context.support.version}</version>
+            </dependency>
+
+            <!-- Label Routing Dependencies -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>web-client-consumer-common</artifactId>
+                <version>${revision}</version>
             </dependency>
 
             <!-- Testing Dependencies -->

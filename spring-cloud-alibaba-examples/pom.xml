@@ -60,11 +60,10 @@
 		<module>integrated-example/integrated-frontend</module>
         <module>governance-example/label-routing-example/istio-consumer-example</module>
         <module>governance-example/label-routing-example/opensergo-consumer-example</module>
-        <module>governance-example/label-routing-example/consumer-example</module>
-        <module>governance-example/label-routing-example/default-provider-version-example</module>
-        <module>governance-example/label-routing-example/provider-version-example</module>
         <module>governance-example/authentication-example/istio-authentication-provider-mvc-example</module>
         <module>governance-example/authentication-example/istio-authentication-provider-webflux-example</module>
+		<module>governance-example/label-routing-example/web-client-consumer-example</module>
+        <module>governance-example/label-routing-example/routing-service-provider-example</module>
 
     </modules>
 
