@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.routing.ribbon;
+package com.alibaba.cloud.routing.properties;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,12 +26,14 @@ import org.springframework.context.annotation.Configuration;
  * @since 2.2.10-RC1
  */
 @Configuration(proxyBeanMethods = false)
-public class RoutingLoadBalanceRuleAutoConfiguration {
+@EnableConfigurationProperties({ LabelRoutingProperties.class })
+public class RoutingPropertiesAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public RoutingLoadBalanceRule routingLoadBalanceRule() {
-		return new RoutingLoadBalanceRule();
+	public LabelRoutingProperties routingProperties() {
+
+		return new LabelRoutingProperties();
 	}
 
 }

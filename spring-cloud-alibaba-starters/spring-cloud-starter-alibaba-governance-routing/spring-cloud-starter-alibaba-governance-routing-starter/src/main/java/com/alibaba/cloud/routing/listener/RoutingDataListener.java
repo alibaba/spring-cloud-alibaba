@@ -23,28 +23,38 @@ import java.util.stream.Collectors;
 
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
+import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
 import com.alibaba.cloud.routing.repository.FilterService;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.annotation.Order;
 
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  * @since 2.2.10-RC1
  */
+
+@Order(LabelRoutingConstants.LISTENER_ORDER)
 public class RoutingDataListener implements ApplicationListener<RoutingDataChangedEvent> {
 
-	private static final Logger log = LoggerFactory.getLogger(RoutingDataListener.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(RoutingDataListener.class);
 
-	private RoutingDataRepository routingDataRepository;
+	private final RoutingDataRepository routingDataRepository;
 
-	private FilterService filterService;
+	private final FilterService filterService;
+
+	private List<UnifiedRoutingDataStructure> routeDatalist;
+
+	private HashSet<String> definitionService;
 
 	public RoutingDataListener(RoutingDataRepository routeDataRepository,
 			FilterService filterService) {
+
 		this.routingDataRepository = routeDataRepository;
 		this.filterService = filterService;
 	}
@@ -57,18 +67,22 @@ public class RoutingDataListener implements ApplicationListener<RoutingDataChang
 
 			// Filter service.
 			// todo can cache the result
-			HashSet<String> definitionFeignService = filterService
-					.getDefinitionFeignService(unifiedRoutingDataStructureList.size());
-			List<UnifiedRoutingDataStructure> routeDatalist = unifiedRoutingDataStructureList
-					.stream()
-					.filter(unifiedRouteDataStructure -> definitionFeignService
+			definitionService = filterService
+					.getDefinitionService(unifiedRoutingDataStructureList.size());
+
+			routeDatalist = unifiedRoutingDataStructureList.stream()
+					.filter(unifiedRouteDataStructure -> definitionService
 							.contains(unifiedRouteDataStructure.getTargetService()))
 					.collect(Collectors.toList());
+
+			if (routeDatalist.isEmpty()) {
+				routeDatalist.addAll(unifiedRoutingDataStructureList);
+			}
 
 			routingDataRepository.updateRouteData(routeDatalist);
 		}
 		catch (Exception e) {
-			log.error("Failed to update route data", e);
+			logger.error("Failed to update route data", e);
 		}
 	}
 

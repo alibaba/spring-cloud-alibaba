@@ -25,6 +25,7 @@ import com.alibaba.cloud.commons.governance.routing.MatchService;
 import com.alibaba.cloud.commons.governance.routing.RoutingRule;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.commons.governance.routing.rule.Rule;
+import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,26 +35,22 @@ import org.springframework.util.CollectionUtils;
  * @author HH
  * @since 2.2.10-RC1
  */
+
 public class RoutingDataRepository {
 
-	private static final Logger LOG = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(RoutingDataRepository.class);
 
 	/**
-	 * Key is service name,value is hashmap,which key is single RoutingRule key,value is
-	 * match service. Use double hash index to parse route rule.
+	 * Key is service name,value is hashmap,which key is single RoutingColoringRule
+	 * key,value is match service. Use double hash index to parse route rule.
 	 */
 	private ConcurrentHashMap<String, HashMap<String, List<MatchService>>> routeCache = new ConcurrentHashMap<>();
 
 	/**
 	 * The default version of each service.
 	 */
-	private ConcurrentHashMap<String, String> defaultRoutingVersion = new ConcurrentHashMap<>();
-
-	/**
-	 * Sign of path.
-	 */
-	private static final String PATH = "path";
+	private final ConcurrentHashMap<String, String> defaultRoutingVersion = new ConcurrentHashMap<>();
 
 	/**
 	 * Contain rule of single path rule.
@@ -61,7 +58,7 @@ public class RoutingDataRepository {
 	private ConcurrentHashMap<String, List<MatchService>> pathRuleMap = new ConcurrentHashMap<>();
 
 	/**
-	 * If do not set weight value,it will be set 100 by default.
+	 * If you do not set weight value,it will be set 100 by default.
 	 */
 	private static final int DEFAULT_WEIGHT = 100;
 
@@ -76,6 +73,7 @@ public class RoutingDataRepository {
 	public static final int MIN_WEIGHT = 0;
 
 	public void updateRouteData(final List<UnifiedRoutingDataStructure> routeDataList) {
+
 		ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache = new ConcurrentHashMap<>();
 		ConcurrentHashMap<String, List<MatchService>> newPathRuleMap = new ConcurrentHashMap<>();
 		for (UnifiedRoutingDataStructure routeData : routeDataList) {
@@ -92,7 +90,7 @@ public class RoutingDataRepository {
 	private void nonNullCheck(UnifiedRoutingDataStructure unifiedRoutingDataStructure) {
 		String targetService = unifiedRoutingDataStructure.getTargetService();
 		if (targetService == null) {
-			LOG.error("Lose target Service name.");
+			log.error("Lose target Service name.");
 		}
 		final RoutingRule labelRouteData = unifiedRoutingDataStructure
 				.getLabelRouteRule();
@@ -102,17 +100,17 @@ public class RoutingDataRepository {
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
 			if (CollectionUtils.isEmpty(ruleList)) {
-				LOG.error("Rule is empty in version = {} ", version);
+				log.error("Rule is empty in version = {} ", version);
 			}
 			if (version == null) {
-				LOG.error("Target service = {} lose version,please check it. ",
+				log.error("Target service = {} lose version,please check it. ",
 						targetService);
 			}
 			if (weight == null) {
 				weight = DEFAULT_WEIGHT;
 			}
 			if (weight < MIN_WEIGHT || weight > SUM_WEIGHT) {
-				LOG.error(
+				log.error(
 						"The weight of provider = {} version = {} had set error,please check it. ",
 						targetService, version);
 			}
@@ -130,8 +128,8 @@ public class RoutingDataRepository {
 			List<Rule> ruleList = matchService.getRuleList();
 
 			// Take out the path label separately, because there is no key for hash index.
-			if (ruleList.size() == 1
-					&& PATH.equalsIgnoreCase(ruleList.get(0).getType())) {
+			if (ruleList.size() == 1 && LabelRoutingConstants.PATH
+					.equalsIgnoreCase(ruleList.get(0).getType())) {
 				List<MatchService> matchServiceList = newPathRuleMap
 						.get(routerData.getTargetService());
 				if (matchServiceList == null) {
@@ -157,6 +155,7 @@ public class RoutingDataRepository {
 	}
 
 	public HashMap<String, List<MatchService>> getRouteRule(String targetService) {
+
 		return routeCache.get(targetService);
 	}
 

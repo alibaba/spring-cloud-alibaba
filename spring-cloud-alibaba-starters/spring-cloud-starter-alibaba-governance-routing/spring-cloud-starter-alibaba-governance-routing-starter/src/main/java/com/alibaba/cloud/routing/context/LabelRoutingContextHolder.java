@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.routing.feign;
+package com.alibaba.cloud.routing.context;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.server.reactive.ServerHttpRequest;
 
 /**
- * @author HH
- * @since 2.2.10-RC1
+ * @author yuluo
+ * @author <a href="1481556636@qq.com"></a>
  */
-@Configuration(proxyBeanMethods = false)
-public class RoutingFeignInterceptorAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean
-	public RoutingFeignInterceptor routingFeignInterceptor() {
-		return new RoutingFeignInterceptor();
-	}
+public interface LabelRoutingContextHolder {
+
+	String getLabelRouteRegion();
+
+	String getLabelRoutZone();
+
+	ServerHttpRequest getServerHttpRequest();
+
+	HttpServletRequest getgHttpServletRequest();
 
 }

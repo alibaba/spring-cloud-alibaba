@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.routing;
+package com.alibaba.cloud.routing.properties;
+
+import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
+import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
 import com.alibaba.cloud.routing.util.LoadBalanceUtil;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author HH
- * @since 2.2.10-RC1
+ * @author yuluo
+ * @author <a href="1481556636@qq.com"></a>
  */
-@ConfigurationProperties(prefix = RoutingProperties.PROPERTY_PREFIX)
-public class RoutingProperties {
 
-	/**
-	 * Properties prefix.
-	 */
-	public static final String PROPERTY_PREFIX = "spring.cloud.governance.routing";
+@ConfigurationProperties(prefix = LabelRoutingConstants.PROPERTY_PREFIX)
+public class LabelRoutingProperties implements Serializable {
+
+	private static final long serialVersionUID = 7157091468155324299L;
 
 	/**
 	 * Load Balance Rule.
@@ -53,6 +54,32 @@ public class RoutingProperties {
 
 	public void setRule(String rule) {
 		this.rule = rule;
+	}
+
+	/**
+	 * Region staining.
+	 */
+	private String region;
+
+	/**
+	 * Zone staining.
+	 */
+	private String zone;
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public String getZone() {
+		return zone;
+	}
+
+	public void setZone(String zone) {
+		this.zone = zone;
 	}
 
 }
