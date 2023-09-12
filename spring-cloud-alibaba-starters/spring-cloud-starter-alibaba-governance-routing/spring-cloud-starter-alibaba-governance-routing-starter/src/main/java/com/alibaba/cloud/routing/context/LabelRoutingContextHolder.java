@@ -29,7 +29,7 @@ public interface LabelRoutingContextHolder {
 
 	String getLabelRouteRegion();
 
-	String getLabelRoutZone();
+	String getLabelRouteZone();
 
 	ServerHttpRequest getServerHttpRequest();
 

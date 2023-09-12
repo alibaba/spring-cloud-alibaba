@@ -286,6 +286,12 @@
 
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
+                <artifactId>gateway-consumer-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>web-client-consumer-common</artifactId>
                 <version>${revision}</version>
             </dependency>

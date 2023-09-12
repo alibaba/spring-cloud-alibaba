@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.routing.properties;
+package com.alibaba.cloud.routing.configuration;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.alibaba.cloud.routing.properties.LabelRoutingProperties;
+
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author HH
  * @since 2.2.10-RC1
  */
+
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ LabelRoutingProperties.class })
-public class RoutingPropertiesAutoConfiguration {
-
-	@Bean
-	@ConditionalOnMissingBean
-	public LabelRoutingProperties routingProperties() {
-
-		return new LabelRoutingProperties();
-	}
+public class LabelPropertiesAutoConfiguration {
 
 }

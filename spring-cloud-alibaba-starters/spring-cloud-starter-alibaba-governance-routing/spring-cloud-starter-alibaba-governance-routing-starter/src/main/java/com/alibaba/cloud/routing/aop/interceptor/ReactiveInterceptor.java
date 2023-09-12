@@ -58,14 +58,14 @@ public class ReactiveInterceptor implements ExchangeFilterFunction {
 
 		ClientRequest.Builder requestBuilder = ClientRequest.from(request);
 
-		applyHeader(requestBuilder);
+		applyRequestHeader(requestBuilder);
 
 		ClientRequest newRequest = requestBuilder.build();
 
 		return next.exchange(newRequest);
 	}
 
-	private void applyHeader(ClientRequest.Builder requestBuilder) {
+	private void applyRequestHeader(ClientRequest.Builder requestBuilder) {
 
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,
 				properties.getZone());

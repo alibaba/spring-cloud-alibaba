@@ -37,7 +37,7 @@ public abstract class AbstractLabelRoutingContextHolder
 	}
 
 	@Override
-	public String getLabelRoutZone() {
+	public String getLabelRouteZone() {
 
 		return LabelRoutingConstants.DEFAULT;
 	}

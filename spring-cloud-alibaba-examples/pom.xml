@@ -64,8 +64,11 @@
         <module>governance-example/authentication-example/istio-authentication-provider-webflux-example</module>
 		<module>governance-example/label-routing-example/web-client-consumer-example</module>
         <module>governance-example/label-routing-example/routing-service-provider-example</module>
+        <module>governance-example/label-routing-example/gateway-consumer-example/gateway-consumer-example</module>
+		<module>governance-example/label-routing-example/gateway-consumer-example/zuul-consumer-example</module>
+		<module>governance-example/label-routing-example/gateway-consumer-example/gateway-consumer-common</module>
 
-    </modules>
+	</modules>
 
     <build>
         <plugins>

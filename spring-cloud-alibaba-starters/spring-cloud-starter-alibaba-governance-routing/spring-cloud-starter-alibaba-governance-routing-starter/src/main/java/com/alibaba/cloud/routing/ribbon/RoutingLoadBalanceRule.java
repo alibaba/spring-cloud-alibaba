@@ -639,20 +639,20 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 
 		// Get the regional affinity route label from the service
 		String region = labelRoutingContextHolder.getLabelRouteRegion();
-		String zone = labelRoutingContextHolder.getLabelRoutZone();
+		String zone = labelRoutingContextHolder.getLabelRouteZone();
 
 		// Get the regional affinity route label from the gateway
 		if (StringUtils.isEmpty(region) && StringUtils.isEmpty(zone)) {
 
 			region = labelRoutingGatewayContextHolder.getLabelRouteRegion();
-			zone = labelRoutingGatewayContextHolder.getLabelRoutZone();
+			zone = labelRoutingGatewayContextHolder.getLabelRouteZone();
 		}
 
 		// Get the regional affinity route label from the zuul
 		if (StringUtils.isEmpty(region) && StringUtils.isEmpty(zone)) {
 
 			region = labelRoutingZuulGatewayContextHolder.getLabelRouteRegion();
-			zone = labelRoutingZuulGatewayContextHolder.getLabelRoutZone();
+			zone = labelRoutingZuulGatewayContextHolder.getLabelRouteZone();
 		}
 
 		if (StringUtils.isEmpty(region) && StringUtils.isEmpty(zone)) {

@@ -12,7 +12,7 @@
 	</parent>
 
 	<artifactId>restTemplate-consumer-example</artifactId>
-	<name> Label Routing RestTemaple Consumer Example</name>
+	<name> Label Routing RestTemplate Consumer Example</name>
 
 	<dependencies>
 		<dependency>

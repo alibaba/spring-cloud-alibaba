@@ -36,7 +36,7 @@ public class DefaultLabelLabelRoutingContextHolder
 	}
 
 	@Override
-	public String getLabelRoutZone() {
+	public String getLabelRouteZone() {
 
 		return LabelRoutingContext.getCurrentContext().getRoutingZone();
 	}
