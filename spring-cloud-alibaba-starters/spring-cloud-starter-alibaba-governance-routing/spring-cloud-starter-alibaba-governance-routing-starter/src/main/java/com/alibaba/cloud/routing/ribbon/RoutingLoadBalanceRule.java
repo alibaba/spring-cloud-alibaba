@@ -38,7 +38,6 @@ import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
 import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
-import com.alibaba.cloud.routing.context.LabelRoutingContext;
 import com.alibaba.cloud.routing.context.LabelRoutingContextHolder;
 import com.alibaba.cloud.routing.exception.LabelRoutingException;
 import com.alibaba.cloud.routing.properties.LabelRoutingProperties;
@@ -629,7 +628,6 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			return map;
 		}
 
-		LabelRoutingContext.clearCurrentContext();
 		return new HashMap<>(serverMap);
 	}
 

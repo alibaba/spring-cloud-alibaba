@@ -13,5 +13,6 @@
 
 	<artifactId>web-client-consumer-common</artifactId>
 	<name> Label Routing Consumer Example Common Module </name>
+	<packaging>jar</packaging>
 
 </project>

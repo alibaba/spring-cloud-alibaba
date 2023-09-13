@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * @author yuluo
- * @author 1481556636@qq.com
+ * @author <a href="1481556636@qq.com"></a>
  */
 
 public class LabelRoutingContext {

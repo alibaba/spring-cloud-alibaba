@@ -1,0 +1,343 @@
+{
+	"info": {
+		"_postman_id": "15318bb7-4dee-4a05-af0c-373dc73b80b1",
+		"name": "客户端消费者",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16212773"
+	},
+	"item": [
+		{
+			"name": "feign",
+			"item": [
+				{
+					"name": "V1版本测试",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:18085/router-test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18085",
+							"path": [
+								"router-test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V2版本测试",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "tag",
+								"value": "v2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:19095/router-test?id=11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19095",
+							"path": [
+								"router-test"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加路由配置信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19095/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19095",
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新路由规则信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19095/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19095",
+							"path": [
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取节点信息",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "resttemplate",
+			"item": [
+				{
+					"name": "V!版本测试",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:18087/router-test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18087",
+							"path": [
+								"router-test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V2版本测试",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "tag",
+								"value": "v2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:19097/router-test?id=11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19097",
+							"path": [
+								"router-test"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加路由配置信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19097/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19097",
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新路由规则信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19097/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19097",
+							"path": [
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取节点信息",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "webclient",
+			"item": [
+				{
+					"name": "V!版本测试",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19098/router-test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19098",
+							"path": [
+								"router-test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V2版本测试",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "tag",
+								"value": "v2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:19098/router-test?id=11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19098",
+							"path": [
+								"router-test"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加路由配置信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:18086/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18086",
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新路由规则信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:18086/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18086",
+							"path": [
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取所有服务实例",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:18086/all-services",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18086",
+							"path": [
+								"all-services"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取节点信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:18086/nodeInfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "18086",
+							"path": [
+								"nodeInfo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

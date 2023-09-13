@@ -18,7 +18,7 @@ package com.alibaba.cloud.routing.constant;
 
 /**
  * @author yuluo
- * @author 1481556636@qq.com
+ * @author <a href="1481556636@qq.com"></a>
  */
 
 public final class LabelRoutingConstants {

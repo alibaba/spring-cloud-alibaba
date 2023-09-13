@@ -24,7 +24,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 
 /**
  * @author yuluo
- * @author 1481556636@qq.com
+ * @author <a href="1481556636@qq.com"></a>
  */
 
 public abstract class AbstractLabelRoutingContextHolder

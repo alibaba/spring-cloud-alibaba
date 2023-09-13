@@ -21,9 +21,8 @@ spring:
     gateway:
       routes:
         - id: label-routing-test-route
-          uri: lb://service-provider
+          uri: lb://routing-service-provider
           predicates:
             - Path=/routing-service-provider/**
           filters:
             - StripPrefix=1
-

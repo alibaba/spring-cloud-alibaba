@@ -27,6 +27,7 @@ import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
 import com.alibaba.cloud.commons.governance.routing.rule.Rule;
 import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 import com.alibaba.cloud.example.gateway.service.UpdateGatewayRoutingRuleService;
+import com.alibaba.cloud.routing.gateway.common.GatewayConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,8 @@ public class UpdateGatewayRoutingRuleServiceImpl
 		List<MatchService> matchServices = new ArrayList<>();
 
 		UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-		unifiedRouteDataStructure.setTargetService("service-provider");
+		unifiedRouteDataStructure
+				.setTargetService(GatewayConstants.SERVICE_PROVIDER_NAME);
 
 		RoutingRule labelRouteData = new RoutingRule();
 		labelRouteData.setDefaultRouteVersion("v1");

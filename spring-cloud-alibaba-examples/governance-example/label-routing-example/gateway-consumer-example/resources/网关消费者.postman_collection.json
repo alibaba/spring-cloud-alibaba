@@ -1,0 +1,224 @@
+{
+	"info": {
+		"_postman_id": "5b1fe8e3-9334-40b1-978c-bf7ba146b3dc",
+		"name": "网关消费者",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16212773"
+	},
+	"item": [
+		{
+			"name": "sc-gw",
+			"item": [
+				{
+					"name": "添加路由规则",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19098/addRule",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19098",
+							"path": [
+								"addRule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新路由规则",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19098/updateRule",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19098",
+							"path": [
+								"updateRule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V1版本测试",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19098/routing-service-provider/test-a1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19098",
+							"path": [
+								"routing-service-provider",
+								"test-a1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V2版本测试",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "tag",
+								"value": "v2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:19098/routing-service-provider/test-a1?id=11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19098",
+							"path": [
+								"routing-service-provider",
+								"test-a1"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "11"
+								},
+								{
+									"key": "tag",
+									"value": "v2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取服务列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19098/services",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19098",
+							"path": [
+								"services"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "zuul",
+			"item": [
+				{
+					"name": "V1版本测试",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19099/routing-service-provider/test-a1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19099",
+							"path": [
+								"routing-service-provider",
+								"test-a1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V2版本测试",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "tag",
+								"value": "v2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:19099/routing-service-provider/test-a1?id=11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19099",
+							"path": [
+								"routing-service-provider",
+								"test-a1"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加路由规则",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19099/addRule",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19099",
+							"path": [
+								"addRule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新路由规则",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:19099/updateRule",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "19099",
+							"path": [
+								"updateRule"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

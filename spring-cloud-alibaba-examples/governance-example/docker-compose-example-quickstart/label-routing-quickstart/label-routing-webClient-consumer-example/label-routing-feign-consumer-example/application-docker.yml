@@ -1,0 +1,21 @@
+server:
+  port: 19095
+
+spring:
+  application:
+    name: openfeign-service-consumer
+
+  cloud:
+
+    # register center configuration
+    nacos:
+      discovery:
+        fail-fast: true
+        server-addr: sca-label-routing-nacos-server:8848
+
+    # label routing configuration
+    governance:
+      routing:
+        region: dev
+        zone: zone1
+      # rule: RandomRule

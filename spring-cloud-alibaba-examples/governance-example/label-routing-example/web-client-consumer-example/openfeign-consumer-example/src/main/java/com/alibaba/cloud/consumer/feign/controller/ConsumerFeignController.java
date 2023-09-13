@@ -67,6 +67,7 @@ public class ConsumerFeignController implements ApplicationContextAware {
 
 	@GetMapping("/router-test")
 	public String notFound() {
+
 		return consumerFeignService.routerTest();
 	}
 
