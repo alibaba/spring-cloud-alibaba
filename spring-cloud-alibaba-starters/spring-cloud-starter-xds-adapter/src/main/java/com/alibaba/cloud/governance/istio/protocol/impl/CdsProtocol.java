@@ -101,6 +101,9 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 	}
 
 	public synchronized void initAndObserve() {
+		if (xdsConfigProperties.isSkipXdsRequest()) {
+			return;
+		}
 		try {
 			observeResource();
 			boolean flag = initCdl.await(30, TimeUnit.SECONDS);

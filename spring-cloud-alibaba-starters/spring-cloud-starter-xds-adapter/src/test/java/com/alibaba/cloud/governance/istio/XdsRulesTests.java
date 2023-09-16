@@ -59,6 +59,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		properties = { "spring.cloud.istio.config.port=15010",
 				"spring.cloud.istio.config.enabled=true",
 				"spring.cloud.istio.config.log-xds=false",
+				"spring.cloud.istio.config.skip-xds-request=true",
 				"spring.cloud.nacos.discovery.watch.enabled=false" },
 		webEnvironment = NONE)
 public class XdsRulesTests {
