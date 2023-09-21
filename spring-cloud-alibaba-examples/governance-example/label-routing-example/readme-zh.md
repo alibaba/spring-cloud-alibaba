@@ -6,7 +6,7 @@
 
 ## 模块结构
 
-本模块包括一个消费者实例和一个提供者集群，该集群包含着两个实例。
+本模块包括一个消费者实例和一个提供者集群，该集群包含着4个实例。
 
 ## 组件支持说明
 目前，路由模块只支持了部分组件：
@@ -49,9 +49,8 @@
 > Note: 本章节演示提供了 Docker-Compose 快速启动版本，点击此处查看 (Docker-Compose QuickStart)[./docker-compose-example-quickstart/label-routing-quickstart/README-zh.md]
 
 1. 分别进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example/resources` 和 `spring-cloud-alibaba-examples/governance-example/label-routing-example/gateway-consumer-example/resources`文件夹将脚本导入到 postman；
-2. 进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/wen-client-consumer-example` 文件夹分别启动三个模块的启动类，分别为 ConsumerFeignApplication，ConsumerReactiveApplication 和 ConsumerRestApplication；
-
-3. 逐个点击 v1 和 v2 版本请求，查看四个服务实例是否可以被正常消费**（不设置任务路由规则）**。
+2. 进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example` 文件夹分别启动三个模块的启动类，分别为 ConsumerFeignApplication，ConsumerReactiveApplication 和 ConsumerRestApplication；
+3. 逐个点击 v1 和 v2 版本请求，查看四个服务实例是否可以被正常消费**（不设置任何路由规则）**。
 
 #### 规则说明
 服务消费者实例中设置的路由规则如下：
@@ -234,11 +233,11 @@ public void getDataFromControlPlaneTest() {
 
 1. 进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/gateway-consumer-example` 文件夹分别启动两个网关模块的启动类，分别为 ConsumerZuulApplication，和ConsumerGatewayApplication
 
-3. 逐个点击 v1 和 v2 版本请求，查看四个服务实例是否可以被正常消费**（不设置任务路由规则）**。
+3. 逐个点击 v1 和 v2 版本请求，查看四个服务实例是否可以被正常消费**（不设置任何路由规则）**。
 
 #### 规则说明
 
-网关消费者中的标签路由规则如下
+网关消费者中的标签路由规则如下：
 
 ```java
 @Override
