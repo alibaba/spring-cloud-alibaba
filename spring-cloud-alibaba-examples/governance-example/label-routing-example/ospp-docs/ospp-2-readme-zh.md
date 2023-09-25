@@ -26,7 +26,9 @@
 
 ## 项目结构
 
-在此项目中，项目分为 starter 项目和 example 测试项目。
+在此项目中，项目分为 starter 项目和 example 功能测试项目。
+
+> Note: 如果文中没有特殊说明，出现的子级目录都在 `spring-cloud-alibaba-examples/governance-example/label-routing-example` 目录下！
 
 ### Example 测试项目
 
@@ -63,7 +65,10 @@
 
 ### 导入 postman 启动脚本
 
-分别进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example/resources` 和 `spring-cloud-alibaba-examples/governance-example/label-routing-example/gateway-consumer-example/resources` 文件夹将脚本导入到 postman；
+1. 进入 `web-client-consumer-example/resources`文件夹将**客户端**功能请求测试脚本导入到 postman ；
+2. gateway-consumer-example/resources` 文件夹将**网关**功能请求测试脚本导入到 postman；
+
+完成以上步骤，方便后续的功能测试。
 
 ### 应用启动
 
@@ -73,120 +78,12 @@
 
 ### 启动服务提供者
 
-进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/routing-service-provider-example` 文件夹，启动四个服务实例，分别为 A1ProviderApplication 到 A4ProviderApplication 将其注入到 Nacos 注册中心中。
+进入 `routing-service-provider-example` 文件夹，启动四个服务实例，分别为 A1ProviderApplication 到 A4ProviderApplication 将其注入到 Nacos 注册中心中。
 
-### 客户端消费者测试（以 Feign 客户端为例，其他类似。）
+### 客户端消费者测试（以 Feign 客户端为例，其他客户端类似。）
 
-1. 进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example` 文件夹分别启动三个模块的启动类，分别为 ConsumerFeignApplication，ConsumerReactiveApplication 和 ConsumerRestApplication。
+1. 进入 `/web-client-consumer-example` 文件夹启动三个模块的启动类，分别为 ConsumerFeignApplication，ConsumerReactiveApplication 和 ConsumerRestApplication。
 2. 逐个点击 v1 和 v2 版本请求，查看四个服务实例是否可以被正常消费 **（不设置任何路由规则情况下）**。
-
-#### 流量规则说明
-
-服务消费者实例中设置的路由规则如下：
-
-```java
-@GetMapping("/add")
-public void getDataFromControlPlaneTest() {
-    List<RoutingRule> routingRules = new ArrayList<>();
-    List<MatchService> matchServices = new ArrayList<>();
-    UnifiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
-    unifiedRouteDataStructure.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
-    LabelRouteRule labelRouteData = new LabelRouteRule();
-    labelRouteData.setDefaultRouteVersion("v1");
-    RoutingRule routingRule = new HeaderRule();
-    routingRule.setType("header");
-    routingRule.setCondition("=");
-    routingRule.setKey("tag");
-    routingRule.setValue("v2");
-    RoutingRule routingRule1 = new UrlRule.Parameter();
-    routingRule1.setType("parameter");
-    routingRule1.setCondition(">");
-    routingRule1.setKey("id");
-    routingRule1.setValue("10");
-    RoutingRule routingRule2 = new UrlRule.Path();
-    routingRule2.setType("path");
-    routingRule2.setCondition("=");
-    routingRule2.setValue("/router-test");
-    routingRules.add(routingRule);
-    routingRules.add(routingRule1);
-    routingRules.add(routingRule2);
-    MatchService matchService = new MatchService();
-    matchService.setVersion("v2");
-    matchService.setWeight(100);
-    matchService.setRuleList(routingRules);
-    matchServices.add(matchService);
-    labelRouteData.setMatchRouteList(matchServices);
-    unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-    List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-    unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-    controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
-}
-```
-
-代码对应的路由规则如下：
-
-> 若同时满足请求参数中含有`tag=v2`，请求头中含有 id 且值小于10，uri 为`/router-test`则流量全部路由到 v2 版本中，若有一条不满足，则流量路由到 v1 版本中。
-
-规则也支持动态修改，测试动态修改的规则如下：
-
-```java
-@GetMapping("/add")
-public void getDataFromControlPlaneTest() {
-	List<RoutingRule> routingRules = new ArrayList<>();
-	List<MatchService> matchServices = new ArrayList<>();
-	UntiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
-	unifiedRouteDataStructure.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
-	LabelRouteRule labelRouteData = new LabelRouteRule();
-	labelRouteData.setDefaultRouteVersion("v1");
-	
-	RoutingRule routingRule = new HeaderRule();
-	routingRule.setType("header");
-	routingRule.setCondition("=");
-	routingRule.setKey("tag");
-	routingRule.setValue("v2");
-	RoutingRule routingRule1 = new UrlRule.Parameter();
-	routingRule1.setType("parameter");
-	routingRule1.setCondition(">");
-	routingRule1.setKey("id");
-	routingRule1.setValue("10");
-	
-	RoutingRule routingRule2 = new UrlRule.Path();
-	routingRule2.setType("path");
-	routingRule2.setCondition("=");
-	routingRule2.setValue("/router-test");
-	routingRules.add(routingRule);
-	routingRules.add(routingRule1);
-	routingRules.add(routingRule2);
-	
-	MatchService matchService = new MatchService();
-	matchService.setVersion("v2");
-	matchService.setWeight(50);
-	matchService.setRuleList(routingRules);
-	matchServices.add(matchService);
-	labelRouteData.setMatchRouteList(matchServices);
-	unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-	List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-	unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-	controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
-}
-```
-
-代码对应的规则如下：
-
-> 若同时满足请求参数中含有 `tag=v2`，请 求头中含有 id 且值小于10，uri 为`/router-test`，则 50% 流量路由到 v2 版本中，剩下的流量路由到 v1 版本中，若有一条不满足，则流量路由到 v1 版本中。
-
-区域亲和性路由规则如下：
-
-```yml
-    # label routing configuration
-    governance:
-      routing:
-      # region: dev
-      # zone: zone1
-      # rule: RandomRule
-```
-
-> 当服务实例满足所设置的 `region=dev`, `zone=zone1` 规则时，路由到指定服务实例。
 
 #### 功能测试
 
@@ -196,11 +93,11 @@ public void getDataFromControlPlaneTest() {
 
    ```shell
    # 预期结果：
-   # v1：不满足路由规则，路由到v1版本中，且区域亲和性路由规则为 regnion=dev，zone=zone1，预期结果为：
-   # 	 Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+   # v1：不满足路由规则，路由到v1版本中，且区域亲和性路由规则为 region=dev，zone=zone1，预期结果为：
+   # 	 Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
    # v2：观察 service-provider 的元数据发现，没有 region=dev，zone=zone1，version=v2 的服务实例，因此区域亲和性路由会退化为标签路由效果，预期为以下结果：
-   # 	 Route in 192.168.2.9:18082, region: qa, zone: zone2, version: v2
-   #	 Route in 192.168.2.9:18084, region: dev, zone: zone2, version: v2
+   # 	 Route in 192.168.2.9:19092, region: qa, zone: zone2, version: v2
+   #	 Route in 192.168.2.9:19094, region: dev, zone: zone2, version: v2
    
    # 测试发现和预期结果匹配！
    ```
@@ -209,17 +106,17 @@ public void getDataFromControlPlaneTest() {
 
    ```shell
    # 预期结果：
-   # v1：不满足路由规则，路由到 v1 版本中，且区域亲和性路由规则为 regnion=dev，zone=zone1，实例打印返回如下结果：
-   #	 Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+   # v1：不满足路由规则，路由到 v1 版本中，且区域亲和性路由规则为 region=dev，zone=zone1，实例打印返回如下结果：
+   #	 Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
    # v2：因为设置了区域亲和性路由规则，所以即使 v1 和 v2 版本各自 50% 的权重，但是还是会根据区域亲和性路由规则选取服务实例, 预期结果为：
-   # 	 Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+   # 	 Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
    
    # 测试发现和预期结果匹配！
    ```
 
 ##### 当区域亲和性路由不存在时
 
-进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example/openfeign-consumer-example/src/main/resources/application.yml` 文件中，注释以下配置，再次启动 ConsumerFeignApplication；
+进入 `web-client-consumer-example/openfeign-consumer-example/src/main/resources/application.yml` 文件中，注释以下配置，再次启动 ConsumerFeignApplication；
 
 ```yml
     # label routing configuration
@@ -262,156 +159,11 @@ public void getDataFromControlPlaneTest() {
    # 测试发现，符合预期结果
    ```
 
-### 网关消费者效果演示 （以 gateway 为例。）
+### 网关消费者效果演示 （以 spring-cloud-gateway 网关为例。）
 
-1. 进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/gateway-consumer-example` 文件夹分别启动两个网关模块的启动类，分别为 ConsumerZuulApplication，和ConsumerGatewayApplication
+1. 进入 `gateway-consumer-example` 文件夹分别启动两个网关模块的启动类，分别为 ConsumerZuulApplication 和 ConsumerGatewayApplication。
 
 2. 逐个点击 v1 和 v2 版本请求，查看四个服务实例是否可以被正常消费**（不设置任何路由规则情况下）**。
-
-#### 流量规则说明
-
-网关消费者中的标签路由规则如下：
-
-```java
-@Override
-public void getDataFromControlPlaneTest() {
-
-    log.info("请求 /add 接口，发布路由规则");
-
-    List<Rule> routeRules = new ArrayList<>();
-    List<MatchService> matchServices = new ArrayList<>();
-
-    UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-
-    // set target service
-    unifiedRouteDataStructure.setTargetService(GatewayConstants.SERVICE_PROVIDER_NAME);
-
-    RoutingRule labelRouteData = new RoutingRule();
-
-    // set default service version
-    labelRouteData.setDefaultRouteVersion("v1");
-
-    // set request header routing rule
-    Rule routeRule = new HeaderRoutingRule();
-    routeRule.setCondition("=");
-    routeRule.setKey("tag");
-    routeRule.setValue("v2");
-
-    // set request url routing rule
-    Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-    routeRule1.setCondition(">");
-    routeRule1.setKey("id");
-    routeRule1.setValue("10");
-
-    // set request url routing rule
-    Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-    routeRule2.setCondition("=");
-    routeRule2.setValue("/test-a1");
-
-    // add routing rule to routeRules#List<Rule>
-    routeRules.add(routeRule);
-    routeRules.add(routeRule1);
-    routeRules.add(routeRule2);
-
-    // If the preceding conditions are met, the route is routed to the v2 instance and
-    // the weight is set to 100
-    MatchService matchService = new MatchService();
-    matchService.setVersion("v2");
-    matchService.setWeight(100);
-    matchService.setRuleList(routeRules);
-    matchServices.add(matchService);
-
-    labelRouteData.setMatchRouteList(matchServices);
-
-    unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-
-    List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-    unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-
-    RoutingDataChangedEvent routingDataChangedEvent = new RoutingDataChangedEvent(
-        this, unifiedRouteDataStructureList);
-
-    // Publish routing rules
-    applicationContext.publishEvent(routingDataChangedEvent);
-
-    log.info("请求 /add 接口，发布路由规则完成！");
-
-}
-```
-
-代码对应的路由规则如下：
-
-> 若同时满足请求参数中含有`tag=v2`，请求头中含有 id 且值小于10，uri 为`/test-a1`则流量全部路由到 v2 版本中，若有一条不满足，则流量路由到 v1 版本中。
-
-更新路由规则：
-
-```java
-public void updateDataFromControlPlaneTest() {
-
-    log.info("请求 /update 接口，更新路由规则");
-
-    List<Rule> routeRules = new ArrayList<>();
-    List<MatchService> matchServices = new ArrayList<>();
-
-    UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-    unifiedRouteDataStructure.setTargetService(GatewayConstants.SERVICE_PROVIDER_NAME);
-
-    RoutingRule labelRouteData = new RoutingRule();
-    labelRouteData.setDefaultRouteVersion("v1");
-
-    Rule routeRule = new HeaderRoutingRule();
-    routeRule.setCondition("=");
-    routeRule.setKey("tag");
-    routeRule.setValue("v2");
-    Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-    routeRule1.setCondition(">");
-    routeRule1.setKey("id");
-    routeRule1.setValue("10");
-    Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-    routeRule2.setCondition("=");
-    routeRule2.setValue("/test-a1");
-    routeRules.add(routeRule);
-    routeRules.add(routeRule1);
-    routeRules.add(routeRule2);
-
-    // set weight 50
-    MatchService matchService = new MatchService();
-    matchService.setVersion("v2");
-    matchService.setWeight(50);
-    matchService.setRuleList(routeRules);
-    matchServices.add(matchService);
-
-    labelRouteData.setMatchRouteList(matchServices);
-
-    unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-
-    List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-    unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-
-    applicationContext.publishEvent(
-        new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
-
-    log.info("请求 /update 接口，更新路由规则完成！");
-
-}
-```
-
-代码对应的规则如下：
-
-> 若同时满足请求参数中含有 `tag=v2`，请 求头中含有 id 且值小于10，uri 为`/test-a1`，则 50% 流量路由到 v2 版本中，剩下的流量路由到 v1 版本中，若有一条不满足，则流量路由到 v1 版本中。
-
-区域亲和性路由规则如下：
-
-```yml
-    # label routing configuration
-    governance:
-      routing:
-        region: dev
-        zone: zone1
-      # rule: RandomRule
-```
-
-> 当服务实例满足所设置的 `region=dev`, `zone=zone1` 规则时，路由到指定服务实例。
 
 #### 功能测试
 
@@ -421,11 +173,11 @@ public void updateDataFromControlPlaneTest() {
 
    ```shell
    # 预期结果：
-   # v1：不满足路由规则，路由到v1版本中，且区域亲和性路由规则为 regnion=dev，zone=zone1，预期结果为：
-   # 	 Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+   # v1：不满足路由规则，路由到v1版本中，且区域亲和性路由规则为 region=dev，zone=zone1，预期结果为：
+   # 	 Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
    # v2：观察 service-provider 的元数据发现，没有 region=dev，zone=zone1，version=v2 的服务实例，因此区域亲和性路由会退化为标签路由效果，预期为以下结果：
-   # 	 Route in 192.168.2.9:18082, region: qa, zone: zone2, version: v2
-   #	 Route in 192.168.2.9:18084, region: dev, zone: zone2, version: v2
+   # 	 Route in 192.168.2.9:19092, region: qa, zone: zone2, version: v2
+   #	 Route in 192.168.2.9:19094, region: dev, zone: zone2, version: v2
    
    # 测试发现和预期结果匹配！
    ```
@@ -435,16 +187,16 @@ public void updateDataFromControlPlaneTest() {
    ```shell
    # 预期结果：
    # v1：不满足标签路由规则，路由到v1版本中，从两个 v1 版本实例中根据区域亲和性标签选择服务实例，实例打印返回如下结果：
-   #	 Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+   #	 Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
    # v2：因为设置了区域亲和性路由规则，所以即使 v1 和 v2 版本各自 50% 的权重，但是还是会根据区域亲和性路由规则选取服务实例, 预期结果为：
-   # 	 Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+   # 	 Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
    
    # 测试发现和预期结果匹配！
    ```
 
 ##### 当区域亲和性路由不存在时
 
-进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example/routing-feign-consumer-example/src/main/resources/application.yml` 文件中，注释以下配置，再次启动 ConsumerFeignApplication；
+进入 `web-client-consumer-example/routing-feign-consumer-example/src/main/resources/application.yml` 文件中，注释以下配置，再次启动 ConsumerFeignApplication；
 
 ```yml
     # label routing configuration
@@ -489,12 +241,12 @@ public void updateDataFromControlPlaneTest() {
 
 ## 项目总结
 
-在本项目中，流量治理功能的流程是：从控制面拉取流量治理规则，通过 spring-cloud-alibaba-routing sdk 进行规则解析并应用流量规则，达到流量治理的目的，其中使用的注册中心组件是 nacos，负载均衡组件为 ribbon。经过三个月时间的准备和开发，已经完成了题目要求的功能并编写了测试用的 example 应用和测试说明文档。
+在本项目中，流量治理功能的流程是：从控制面拉取流量治理规则，通过 `spring-cloud-alibaba-routing` sdk 进行规则解析并应用流量规则，达到流量治理的目的，其中使用的注册中心组件是 `nacos`，负载均衡组件为 `ribbon`。经过三个月时间的调研和开发，已经完成了题目要求的功能并编写了测试用的 example 应用和测试说明文档。
 
-在本项目中，还存在许多可以进一步扩展的地方。
+在本项目中，还存在许多可以进一步扩展的地方：
 
 - 在区域亲和性路由标签中：选择了 region 和 zone 为路由标签。标签可以进一步扩展加入 version，env 和以 git 区分的应用版本等标签；
-- 在注册中心方面：除了现有的 nacos 注册中心，还可以适配 eureka 和 zookeeper 等注册中心，为用户提供更多选择；
-- 在负载均衡方面：因为 netflix 不在维护 ribbon 组件的原因，ribbon 社区逐渐落寞。spring cloud 社区维护了 spring-cloud-loadbalancer，后续还可以支持其作为负载均衡工具。
+- 在注册中心方面：除了现有的 `nacos` 注册中心，还可以适配 `eureka` 和 `zookeeper` 等注册中心，为用户提供更多选择；
+- 在负载均衡方面：因为 netflix 不在维护 `ribbon` 组件的原因，ribbon 社区逐渐落寞。Spring Cloud 社区维护了 `spring-cloud-loadbalancer`，后续还可以支持其作为负载均衡工具。
 
-通过这次在开源之夏的项目中，我认识了许多优秀的同学和导师，并从中受益良多。感谢[阮胜](https://github.com/ruansheng8)老师在做项目时的悉心指导。让我对服务治理中的的区域亲和性路由和流量治理以及负载均衡工具 ribbon 有了更加清晰的认知。感谢 spring-cloud-alibaba 社区[铖朴](https://github.com/steverao) 老师在项目上的指导，让我对 spring-cloud-alibaba 微服务开发框架的了解更加深入和透彻。感谢[肖倩文](https://github.com/why-ohh)同学在一些服务治理和 ribbon 的观点想法上和我进行的讨论，在讨论过程中，让我意识到了自己的不足，同时解答了我很多疑惑的疑惑。
+通过这次在开源之夏的项目中，我认识了许多优秀的同学和导师，并从中受益良多。感谢[阮胜](https://github.com/ruansheng8)老师在做项目时的悉心指导。让我对服务治理中的的区域亲和性路由和流量治理以及负载均衡工具 `ribbon` 有了更加清晰的认知。感谢 `spring-cloud-alibaba` 社区[铖朴](https://github.com/steverao) 老师在项目上的指导，让我对 `spring-cloud-alibaba` 微服务开发框架的了解更加深入和透彻。感谢[肖倩文](https://github.com/why-ohh)同学在一些服务治理和 `ribbon` 的观点想法上和我进行的讨论，在讨论过程中，让我意识到了自己的不足，同时解答了我很多问题。

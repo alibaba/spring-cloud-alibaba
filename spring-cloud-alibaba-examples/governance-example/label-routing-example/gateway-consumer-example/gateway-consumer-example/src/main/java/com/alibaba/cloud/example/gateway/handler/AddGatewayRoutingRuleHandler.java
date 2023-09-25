@@ -44,7 +44,7 @@ public class AddGatewayRoutingRuleHandler implements HandlerFunction<ServerRespo
 		routingRuleService.getDataFromControlPlaneTest();
 
 		return ServerResponse.status(HttpStatus.OK)
-				.body(BodyInserters.fromValue("添加路由规则成功！"));
+				.body(BodyInserters.fromValue("Add routing rule success！"));
 
 	}
 

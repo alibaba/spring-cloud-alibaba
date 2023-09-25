@@ -43,10 +43,10 @@ public class A2ProviderApplication {
 	NacosRegistration nacosRegistration;
 
 	@RestController
-	class Controller {
+	class A2Controller {
 
 		@GetMapping("/test-a2")
-		public String test() {
+		public String testA2() {
 
 			String host = nacosRegistration.getHost();
 			int port = nacosRegistration.getPort();

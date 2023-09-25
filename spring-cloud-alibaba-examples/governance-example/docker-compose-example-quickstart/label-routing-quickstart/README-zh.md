@@ -14,11 +14,11 @@
    # linux/mac 直接执行
    ./move-example-jar.sh
    
-   # windwos 下使用 githu bash 执行
+   # windows 下使用 github bash 执行
    ,/move-example-jar.sh
    ```
 
-3. 分别进入 `label-routing-gateway-consumer-example`  `label-routing-service-provider-example` `label-routing-webClient-consumer-example`（label-routing-quickstart 子级目录） 目录下查看 `app.jar` 是否存在。如果不存在手动移动即可；
+3. 分别进入 `label-routing-gateway-consumer-example` `label-routing-service-provider-example` `label-routing-webClient-consumer-example`（label-routing-quickstart 子级目录） 目录下查看 `app.jar` 是否存在。如果不存在手动移动即可；
 
 4. 检查 `application-docker.yml` 配置文件是否准确。
 
@@ -31,7 +31,7 @@
 
 ### 1.3 目录说明
 
-```md
+```markdown
 └─label-routing-quickstart
     │  .env													# Docker env 设置
     │  .gitignore							
@@ -80,16 +80,12 @@
                 application-docker.yml
 ```
 
-
-
 ### 1.4 Postman 测试脚本
 
 1. 进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/gateway-consumer-example/resources` 文件夹下，将网关消费者请求脚本导入 postman 中；
 2. 进入 `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example/resources` 文件夹下，将客户端消费者请求脚本导入 postman 中。
 
-
-
-## 2. 启动服务提供者和 nacos server
+## 2. 启动服务提供者和 nacos-server
 
 1. 进入 `spring-cloud-alibaba-examples/governance-example/docker-compose-example-quickstart/label-routing-quickstart` 文件夹下，在 terminal 中输入以下命令以启动 label-routing-service-provider-example 和 nacos-server；
 
@@ -159,122 +155,105 @@
 
 > **确保四个服务提供者均能被消费者正常调用！**
 
-1. 标签路由规则解析
+服务消费者（openfeign-consumer-example，restTemplate-consumer-example，webClient-consumer-example）实例中设置的路由规则如下：
 
-   ```java
-   // 添加路由规则
-   @GetMapping("/add")
-   public void getDataFromControlPlaneTest() {
-       List<Rule> routeRules = new ArrayList<>();
-       List<MatchService> matchServices = new ArrayList<>();
-   
-       UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-       unifiedRouteDataStructure.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);		# service-provider，设置的规则只对此应用名的服务生效
-   
-       RoutingRule labelRouteData = new RoutingRule();
-       labelRouteData.setDefaultRouteVersion("v1");						# 设置路由的默认服务版本
-   
-       Rule routeRule = new HeaderRoutingRule();							# 设置请求头路由规则 tag=v2，当存在这样的请求头时路由到 v2 服务实例
-       routeRule.setCondition("=");				
-       routeRule.setKey("tag");
-       routeRule.setValue("v2");
-       Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();		# 请求参数路由规则，当 id>10 时，路由到 v2 服务实例
-       routeRule1.setCondition(">");
-       routeRule1.setKey("id");
-       routeRule1.setValue("10");
-       Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();				# 当请求时 /router-test 时，路由到 v2 服务实例
-       routeRule2.setCondition("=");
-       routeRule2.setValue("/router-test");
-       routeRules.add(routeRule);
-       routeRules.add(routeRule1);
-       routeRules.add(routeRule2);
-   
-       MatchService matchService = new MatchService();						# 匹配规则，设置当满足以上条件时，路由到 v2 版本，服务权重为 100
-       matchService.setVersion("v2");
-       matchService.setWeight(100);
-       matchService.setRuleList(routeRules);
-       matchServices.add(matchService);
-   
-       labelRouteData.setMatchRouteList(matchServices);
-   
-       unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-   
-       List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-       unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-       applicationContext.publishEvent(
-           new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
+```json
+[
+  {
+    "targetService": "routing-service-provider",
+    "labelRouteRule": {
+      "matchRouteList": [
+        {
+          "ruleList": [
+            {
+              "type": "header",
+              "condition": "=",
+              "key": "tag",
+              "value": "v2"
+            },
+            {
+              "type": "parameter",
+              "condition": ">",
+              "key": "id",
+              "value": "10"
+            },
+            {
+              "type": "path",
+              "condition": "=",
+              "value": "/router-test",
+              "key": null
+            }
+          ],
+          "version": "v2",
+          "weight": 100,
+          "fallback": null
+        }
+      ],
+      "defaultRouteVersion": "v1"
+    }
+  }
+]
+```
+
+代码对应的路由规则如下：
+
+> 若同时满足请求参数中含有`tag=v2`，请求头中含有 id 且值小于10，uri 为`/router-test`则流量全部路由到 v2 版本中，若有一条不满足，则流量路由到 v1 版本中。
+
+规则也支持动态修改，测试动态修改的规则如下：
+
+```json 
+[
+   {
+      "targetService": "routing-service-provider",
+      "labelRouteRule": {
+         "matchRouteList": [
+            {
+               "ruleList": [
+                  {
+                     "type": "header",
+                     "condition": "=",
+                     "key": "tag",
+                     "value": "v2"
+                  },
+                  {
+                     "type": "parameter",
+                     "condition": ">",
+                     "key": "id",
+                     "value": "10"
+                  },
+                  {
+                     "type": "path",
+                     "condition": "=",
+                     "value": "/router-test",
+                     "key": null
+                  }
+               ],
+               "version": "v2",
+               "weight": 50,
+               "fallback": null
+            }
+         ],
+         "defaultRouteVersion": "v1"
+      }
    }
-   
-   // 更新路由规则
-   @GetMapping("/update")
-   public void updateDataFromControlPlaneTest() {
-       List<Rule> routeRules = new ArrayList<>();
-       List<MatchService> matchServices = new ArrayList<>();
-   
-       UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-       unifiedRouteDataStructure.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
-   
-       RoutingRule labelRouteData = new RoutingRule();
-       labelRouteData.setDefaultRouteVersion("v1");
-   
-       Rule routeRule = new HeaderRoutingRule();
-       routeRule.setCondition("=");
-       routeRule.setKey("tag");
-       routeRule.setValue("v2");
-       Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-       routeRule1.setCondition(">");
-       routeRule1.setKey("id");
-       routeRule1.setValue("10");
-       Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-       routeRule2.setCondition("=");
-       routeRule2.setValue("/router-test");
-       routeRules.add(routeRule);
-       routeRules.add(routeRule1);
-       routeRules.add(routeRule2);
-   
-       MatchService matchService = new MatchService();						# 其他路由规则相同，只是将 v2 的权重调整为 50，即一半路由到 v1，一半路由到 v2 版本
-       matchService.setVersion("v2");
-       matchService.setWeight(50);
-       matchService.setRuleList(routeRules);
-       matchServices.add(matchService);
-   
-       labelRouteData.setMatchRouteList(matchServices);
-   
-       unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-   
-       List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-       unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-       applicationContext.publishEvent(
-           new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
-   }
-   ```
+]
+```
+代码对应的规则如下：
 
-2. 区域亲和性路由解析
+> 若同时满足请求参数中含有`tag=v2`，请 求头中含有 id 且值小于10，uri 为`/router-test`，则 50% 流量路由到 v2 版本中，剩下的流量路由到 v1 版本中，若有一条不满足，则流量路由到 v1 版本中。
 
-   ```yml
-   server:
-     port: 19095
-   
-   spring:
-     application:
-       name: openfeign-service-consumer
-   
-     cloud:
-   
-       # register center configuration
-       nacos:
-         discovery:
-           fail-fast: true
-           server-addr: 127.0.0.1:8848
-   
-       # label routing configuration
-       governance:
-         routing:
-           region: dev
-           zone: zone1
-         # rule: RandomRule
-   
-   ```
+区域亲和性路由规则如下：
+
+```yml
+    # label routing configuration
+    governance:
+      routing:
+        region: dev
+        zone: zone1
+      # rule: RandomRule
+```
+
+> 当服务实例满足所设置的 `region=dev`, `zone=zone1` 规则时，路由到指定服务实例。
 
 #### 3.2.2 区域亲和性路由规则存在时
 
@@ -318,19 +297,19 @@
       # rule: RandomRule
 ```
 
-重新 构建 和 启动容器。
+重新 **构建** 和 **启动** 容器。
 
 1. 添加路由规则
 
    ```shell
    # 预期结果：
    # v1：因为没有区域亲和性路由限制，所以会在实例之间按照 ribbon 的规则进行负载均衡
-   #	Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
-   #	Route in 172.18.0.3:18081, region: qa, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19091, region: qa, zone: zone1, version: v1
    
    # v2：因为没有区域亲和性路由限制，所以会在实例之间按照 ribbon 的规则进行负载均衡
-   #	Route in 172.18.0.3:18084, region: qa, zone: zone2, version: v2
-   #	Route in 172.18.0.3:18082, region: dev, zone: zone2, version: v2
+   #	Route in 172.18.0.3:19094, region: qa, zone: zone2, version: v2
+   #	Route in 172.18.0.3:19092, region: dev, zone: zone2, version: v2
    
    # 测试发现，符合预期结果
    ```
@@ -340,14 +319,14 @@
    ```properties
    # 预期结果
    # v1：因为没有区域亲和性路由限制，路由结果按照标签路由选择服务实例，所以会在两个实例之间按照 ribbon 的规则进行负载均衡
-   #	Route in 172.18.0.3:18081, region: qa, zone: zone1, version: v1
-   # 	Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19091, region: qa, zone: zone1, version: v1
+   # 	Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
      
-   # v2：v1 和 v2 权重各占 50，所以四种服务实例的调用结果都会出现
-   #	Route in 172.18.0.3:18082, region: qa, zone: zone2, version: v2
-   #	Route in 172.18.0.3:18084, region: dev, zone: zone2, version: v2
-   #	Route in 172.18.0.3:18081, region: qa, zone: zone1, version: v1
-   #	Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+   # v2：v1 和 v2 权重各占 50%，所以四种服务实例的调用结果都会出现
+   #	Route in 172.18.0.3:19092, region: qa, zone: zone2, version: v2
+   #	Route in 172.18.0.3:19094, region: dev, zone: zone2, version: v2
+   #	Route in 172.18.0.3:19091, region: qa, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
    
    # 测试发现，符合预期结果
    ```
@@ -379,15 +358,20 @@ docker-compose -f docker-compose-web-client-consumer.yml stop
 
 2. 去往 nacos 查看服务注册情况，等待服务上线之后，出现以下信息证明容器启动成功：
 
+
    <img src="./assets/img/nacos-gateway-consumer.png">
+
 
 3. 进入 postman 中，发起请求，查看服务之间是否可以正常通信**（不添加任务路由规则，只依靠 ribbon 进行负载均衡）**；
 
+
    分别进入 `sc-gw` `zuul` 文件中点击 `v1版本测试` 和 `v2版本测试` 在不添加路由配置信息时发送请求，查看四种服务提供者是否均可以被消费者正常消费
+
 
    <img src="./assets/img/postman-gateway-consumer.png" style="zoom:67%;" >
 
-​	分别点击查看响应值是否四种实例均被调用到，确认成功之后进入下一步。**（默认的 ribbon 负载均衡规则为 RandomRule ）**
+
+​	分别点击请求查看响应值，服务提供者的四个实例均被调用到，确认成功之后进入下一步。**（默认的 ribbon 负载均衡规则为 RandomRule ）**
 
 ### 4.2 发布路由规则测试标签路由
 
@@ -395,136 +379,107 @@ docker-compose -f docker-compose-web-client-consumer.yml stop
 
 #### 4.1.1 发布路由规则
 
-1. 标签路由规则解析
+网关消费者中的标签路由规则如下：
 
-   ```java
-   @Override
-   public void getDataFromControlPlaneTest() {
-   
-       log.info("请求 /add 接口，发布路由规则");
-   
-       List<Rule> routeRules = new ArrayList<>();
-       List<MatchService> matchServices = new ArrayList<>();
-   
-       UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-   
-       // set target service
-       unifiedRouteDataStructure.setTargetService(GatewayConstants.SERVICE_PROVIDER_NAME);
-   
-       RoutingRule labelRouteData = new RoutingRule();
-   
-       // set default service version
-       labelRouteData.setDefaultRouteVersion("v1");
-   
-       // set request header routing rule
-       Rule routeRule = new HeaderRoutingRule();
-       routeRule.setCondition("=");
-       routeRule.setKey("tag");
-       routeRule.setValue("v2");
-   
-       // set request url routing rule
-       Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-       routeRule1.setCondition(">");
-       routeRule1.setKey("id");
-       routeRule1.setValue("10");
-   
-       // set request url routing rule
-       Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-       routeRule2.setCondition("=");
-       routeRule2.setValue("/test-a1");								# 和之前规则相同，不过是因为根据网关调用服务进行消费。所以需要指定服务提供者的资源 uri
-   
-       // add routing rule to routeRules#List<Rule>
-       routeRules.add(routeRule);
-       routeRules.add(routeRule1);
-       routeRules.add(routeRule2);
-   
-       // If the preceding conditions are met, the route is routed to the v2 instance and
-       // the weight is set to 100
-       MatchService matchService = new MatchService();
-       matchService.setVersion("v2");
-       matchService.setWeight(100);
-       matchService.setRuleList(routeRules);
-       matchServices.add(matchService);
-   
-       labelRouteData.setMatchRouteList(matchServices);
-   
-       unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-   
-       List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-       unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-   
-       RoutingDataChangedEvent routingDataChangedEvent = new RoutingDataChangedEvent(
-           this, unifiedRouteDataStructureList);
-   
-       // Publish routing rules
-       applicationContext.publishEvent(routingDataChangedEvent);
-   
-       log.info("请求 /add 接口，发布路由规则完成！");
-   
+```json
+[
+   {
+      "targetService": "routing-service-provider",
+      "labelRouteRule": {
+         "matchRouteList": [
+            {
+               "ruleList": [
+                  {
+                     "type": "header",
+                     "condition": "=",
+                     "key": "tag",
+                     "value": "v2"
+                  },
+                  {
+                     "type": "parameter",
+                     "condition": ">",
+                     "key": "id",
+                     "value": "10"
+                  },
+                  {
+                     "type": "path",
+                     "condition": "=",
+                     "value": "/test-a1",
+                     "key": null
+                  }
+               ],
+               "version": "v2",
+               "weight": 100,
+               "fallback": null
+            }
+         ],
+         "defaultRouteVersion": "v1"
+      }
    }
-   
-   // 更新规则和 请求客户端 的路由规则定义相同
-   public void updateDataFromControlPlaneTest() {
-   
-       log.info("请求 /update 接口，更新路由规则");
-   
-       List<Rule> routeRules = new ArrayList<>();
-       List<MatchService> matchServices = new ArrayList<>();
-   
-       UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-       unifiedRouteDataStructure.setTargetService(GatewayConstants.SERVICE_PROVIDER_NAME);
-   
-       RoutingRule labelRouteData = new RoutingRule();
-       labelRouteData.setDefaultRouteVersion("v1");
-   
-       Rule routeRule = new HeaderRoutingRule();
-       routeRule.setCondition("=");
-       routeRule.setKey("tag");
-       routeRule.setValue("v2");
-       Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-       routeRule1.setCondition(">");
-       routeRule1.setKey("id");
-       routeRule1.setValue("10");
-       Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-       routeRule2.setCondition("=");
-       routeRule2.setValue("/test-a1");
-       routeRules.add(routeRule);
-       routeRules.add(routeRule1);
-       routeRules.add(routeRule2);
-   
-       // set weight 50
-       MatchService matchService = new MatchService();
-       matchService.setVersion("v2");
-       matchService.setWeight(50);
-       matchService.setRuleList(routeRules);
-       matchServices.add(matchService);
-   
-       labelRouteData.setMatchRouteList(matchServices);
-   
-       unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-   
-       List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-       unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-   
-       applicationContext.publishEvent(
-           new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
-   
-       log.info("请求 /update 接口，更新路由规则完成！");
-   
+]
+```
+
+代码对应的路由规则如下：
+
+> 若同时满足请求参数中含有`tag=v2`，请求头中含有 id 且值小于10，uri 为`/test-a1`则流量全部路由到 v2 版本中，若有一条不满足，则流量路由到 v1 版本中。
+
+更新路由规则：
+
+```json
+[
+   {
+      "targetService": "routing-service-provider",
+      "labelRouteRule": {
+         "matchRouteList": [
+            {
+               "ruleList": [
+                  {
+                     "type": "header",
+                     "condition": "=",
+                     "key": "tag",
+                     "value": "v2"
+                  },
+                  {
+                     "type": "parameter",
+                     "condition": ">",
+                     "key": "id",
+                     "value": "10"
+                  },
+                  {
+                     "type": "path",
+                     "condition": "=",
+                     "value": "/test-a1",
+                     "key": null
+                  }
+               ],
+               "version": "v2",
+               "weight": 50,
+               "fallback": null
+            }
+         ],
+         "defaultRouteVersion": "v1"
+      }
    }
-   ```
+]
 
-2. 区域亲和性路由解析
+```
 
-   ```yml
-   # Regional affinity routing configuration
-   governance:
+代码对应的规则如下：
+
+> 若同时满足请求参数中含有`tag=v2`，请 求头中含有 id 且值小于10，uri 为`/test-a1`，则 50% 流量路由到 v2 版本中，剩下的流量路由到 v1 版本中，若有一条不满足，则流量路由到 v1 版本中。
+
+区域亲和性路由规则如下：
+
+```yml
+    # label routing configuration
+    governance:
       routing:
-        # Set the region parameter called by the service consumer to dev and the available zone to zone1
         region: dev
         zone: zone1
       # rule: RandomRule
-   ```
+```
+
+> 当服务实例满足所设置的 `region=dev`, `zone=zone1` 规则时，路由到指定服务实例。
 
 #### 4.1.2 区域亲和性路由规则存在时
 
@@ -534,8 +489,8 @@ docker-compose -f docker-compose-web-client-consumer.yml stop
    # 预期结果：
    # v1：Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
    # v2：观察 service-provider 的元数据发现，没有 region=dev，zone=zone1，version=v2 的服务实例，因此区域亲和性路由会退化为标签路由效果，预期为以下结果：
-   # 	 Route in 172.18.0.3:18082, region: qa, zone: zone2, version: v2
-   #	 Route in 172.18.0.3:18084, region: dev, zone: zone2, version: v2
+   # 	 Route in 172.18.0.3:19092, region: qa, zone: zone2, version: v2
+   #	 Route in 172.18.0.3:19094, region: dev, zone: zone2, version: v2
    
    # 测试发现和预期结果匹配！
    ```
@@ -544,9 +499,9 @@ docker-compose -f docker-compose-web-client-consumer.yml stop
 
    ```shell
    # 预期结果：
-   # v1：Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+   # v1：Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
    # v2：因为设置了区域亲和性路由规则，所以即使 v1 和 v2 版本各自 50 的权重，但是还是会根据区域亲和性路由规则选取服务实例, 预期结果为：
-   # 	 Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+   # 	 Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
    
    # 测试发现和预期结果匹配！
    ```
@@ -568,19 +523,19 @@ docker-compose -f docker-compose-web-client-consumer.yml stop
         # rule: RandomRule
 ```
 
-重新 构建 和 启动容器。
+重新 **构建** 和 **启动** 容器。
 
 1. 添加路由规则
 
    ```shell
    # 预期结果：
    # v1：因为没有区域亲和性路由限制，所以会在实例之间按照 ribbon 的规则进行负载均衡
-   #	Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
-   #	Route in 172.18.0.3:18081, region: qa, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19091, region: qa, zone: zone1, version: v1
    
    # v2：因为没有区域亲和性路由限制，所以会在实例之间按照 ribbon 的规则进行负载均衡
-   #	Route in 172.18.0.3:18084, region: qa, zone: zone2, version: v2
-   #	Route in 172.18.0.3:18082, region: dev, zone: zone2, version: v2
+   #	Route in 172.18.0.3:19094, region: qa, zone: zone2, version: v2
+   #	Route in 172.18.0.3:19092, region: dev, zone: zone2, version: v2
    
    # 测试发现，符合预期结果
    ```
@@ -590,14 +545,14 @@ docker-compose -f docker-compose-web-client-consumer.yml stop
    ```properties
    # 预期结果
    # v1：因为没有区域亲和性路由限制，路由结果按照标签路由选择服务实例，所以会在两个实例之间按照 ribbon 的规则进行负载均衡
-   #	Route in 172.18.0.3:18081, region: qa, zone: zone1, version: v1
-   # 	Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19091, region: qa, zone: zone1, version: v1
+   # 	Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
      
    # v2：v1 和 v2 权重各占 50，所以四种服务实例的调用结果都会出现
-   #	Route in 172.18.0.3:18082, region: qa, zone: zone2, version: v2
-   #	Route in 172.18.0.3:18084, region: dev, zone: zone2, version: v2
-   #	Route in 172.18.0.3:18081, region: qa, zone: zone1, version: v1
-   #	Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19092, region: qa, zone: zone2, version: v2
+   #	Route in 172.18.0.3:19094, region: dev, zone: zone2, version: v2
+   #	Route in 172.18.0.3:19091, region: qa, zone: zone1, version: v1
+   #	Route in 172.18.0.3:19093, region: dev, zone: zone1, version: v1
    
    # 测试发现，符合预期结果
    ```

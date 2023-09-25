@@ -16,8 +16,8 @@
 
 package com.alibaba.cloud.routing.aop.interceptor;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -48,8 +48,6 @@ public class ReactiveInterceptor implements ExchangeFilterFunction {
 	@Value("${" + LabelRoutingConstants.WEB_CLIENT_HEADER_TRANSMISSION_ENABLED + ":true}")
 	protected Boolean webClientHeaderTransmissionEnabled;
 
-	private static Map<String, String> routingPropertiesMap = new ConcurrentHashMap<>();
-
 	@Resource
 	private LabelRoutingProperties properties;
 
@@ -67,6 +65,7 @@ public class ReactiveInterceptor implements ExchangeFilterFunction {
 
 	private void applyRequestHeader(ClientRequest.Builder requestBuilder) {
 
+		Map<String, String> routingPropertiesMap = new HashMap<>();
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,
 				properties.getZone());
 		LabelRoutingContext.getCurrentContext().setRoutingZone(properties.getZone());

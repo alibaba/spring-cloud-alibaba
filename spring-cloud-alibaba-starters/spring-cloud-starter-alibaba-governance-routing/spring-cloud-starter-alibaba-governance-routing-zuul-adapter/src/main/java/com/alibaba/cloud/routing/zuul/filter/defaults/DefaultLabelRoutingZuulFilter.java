@@ -16,8 +16,8 @@
 
 package com.alibaba.cloud.routing.zuul.filter.defaults;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.annotation.Resource;
 
@@ -47,8 +47,6 @@ public class DefaultLabelRoutingZuulFilter extends LabelRoutingZuulFilter {
 	// Gateway rule priority switch.
 	@Value("${" + RoutingZuulConstants.ZUUL_HEADER_PRIORITY + ":true}")
 	protected Boolean zuulHeaderPriority;
-
-	private static Map<String, String> routingPropertiesMap = new ConcurrentSkipListMap<>();
 
 	@Resource
 	private LabelRoutingProperties properties;
@@ -80,6 +78,8 @@ public class DefaultLabelRoutingZuulFilter extends LabelRoutingZuulFilter {
 
 	private void applyRequestHeader(RequestContext context) {
 
+		// Use map to simplify if... else statement
+		Map<String, String> routingPropertiesMap = new HashMap<>();
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,
 				properties.getZone());
 		LabelRoutingZuulContext.getCurrentContext().setZone(properties.getZone());
@@ -90,8 +90,8 @@ public class DefaultLabelRoutingZuulFilter extends LabelRoutingZuulFilter {
 		LabelRoutingZuulContext.getCurrentContext()
 				.setHttpServletRequest(context.getRequest());
 
-		routingPropertiesMap.forEach((k, v) -> LabelRoutingZuulFilterResolver.setHeader(context, k, v,
-				zuulHeaderPriority));
+		routingPropertiesMap.forEach((k, v) -> LabelRoutingZuulFilterResolver
+				.setHeader(context, k, v, zuulHeaderPriority));
 
 	}
 

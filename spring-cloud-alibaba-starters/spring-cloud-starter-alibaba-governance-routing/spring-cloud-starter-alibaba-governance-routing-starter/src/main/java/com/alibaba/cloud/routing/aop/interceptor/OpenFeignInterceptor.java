@@ -16,8 +16,8 @@
 
 package com.alibaba.cloud.routing.aop.interceptor;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -48,8 +48,6 @@ public class OpenFeignInterceptor implements RequestInterceptor {
 	@Resource
 	private LabelRoutingProperties properties;
 
-	private static Map<String, String> routingPropertiesMap = new ConcurrentHashMap<>();
-
 	@Override
 	public void apply(RequestTemplate request) {
 
@@ -59,6 +57,7 @@ public class OpenFeignInterceptor implements RequestInterceptor {
 
 	private void applyRequestHeader(RequestTemplate request) {
 
+		Map<String, String> routingPropertiesMap = new HashMap<>();
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,
 				properties.getZone());
 		LabelRoutingContext.getCurrentContext().setRoutingZone(properties.getZone());

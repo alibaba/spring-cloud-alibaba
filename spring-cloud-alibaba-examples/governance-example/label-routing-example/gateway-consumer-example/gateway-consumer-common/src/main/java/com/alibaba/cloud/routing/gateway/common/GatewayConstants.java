@@ -47,4 +47,14 @@ public final class GatewayConstants {
 	public static final String SERVICE_PROVIDER_ADDRESS = "http://"
 			+ SERVICE_PROVIDER_NAME;
 
+	/**
+	 * Routing rule description.
+	 */
+	public static final String ADD_RULE_DESCRIPTION = "If the request parameters contain `tag=v2`, the request header contains id and the value is less than 10, and the uri is `/test-a1`, then all traffic will be routed to the v2 version. If one of them is not satisfied, the traffic will be routed to In v1 version.";
+
+	/**
+	 * Routing rule description.
+	 */
+	public static final String UPDATE_RULE_DESCRIPTION = "If the request parameters contain `tag=v2`, the request header contains id and the value is less than 10, and the uri is `/test-a1`, then 50% of the traffic is routed to the v2 version, and the remaining traffic is routed to the v1 version. If any one of them is not satisfied, the traffic will be routed to version v1.";
+
 }

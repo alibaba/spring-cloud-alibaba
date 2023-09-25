@@ -26,7 +26,8 @@ import com.alibaba.cloud.routing.zuul.context.LabelRoutingZuulContext;
  * @author <a href="1481556636@qq.com"></a>
  */
 
-public class DefaultLabelRoutingZuulContextHolder extends AbstractLabelRoutingContextHolder {
+public class DefaultLabelRoutingZuulContextHolder
+		extends AbstractLabelRoutingContextHolder {
 
 	@Override
 	public String getLabelRouteRegion() {

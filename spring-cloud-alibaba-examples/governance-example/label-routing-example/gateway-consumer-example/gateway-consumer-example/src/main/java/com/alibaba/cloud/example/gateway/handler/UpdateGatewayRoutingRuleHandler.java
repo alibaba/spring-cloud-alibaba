@@ -44,7 +44,7 @@ public class UpdateGatewayRoutingRuleHandler implements HandlerFunction<ServerRe
 		routingRuleService.updateDataFromControlPlaneTest();
 
 		return ServerResponse.status(HttpStatus.OK)
-				.body(BodyInserters.fromValue("更新路由规则成功！"));
+				.body(BodyInserters.fromValue("Updating routing rule success！"));
 
 	}
 

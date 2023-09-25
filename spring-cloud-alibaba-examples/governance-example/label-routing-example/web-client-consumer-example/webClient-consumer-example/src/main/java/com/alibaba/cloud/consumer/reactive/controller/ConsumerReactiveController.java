@@ -16,6 +16,7 @@
 
 package com.alibaba.cloud.consumer.reactive.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,15 +26,12 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.routing.MatchService;
-import com.alibaba.cloud.commons.governance.routing.RoutingRule;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
-import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
-import com.alibaba.cloud.commons.governance.routing.rule.Rule;
-import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 import com.alibaba.cloud.consumer.constants.WebClientConsumerConstants;
+import com.alibaba.cloud.consumer.converter.Converter;
 import com.alibaba.cloud.consumer.entity.ConsumerNodeInfo;
 import com.alibaba.cloud.consumer.reactive.configuration.ConsumerWebClientConfiguration;
+import com.alibaba.cloud.consumer.util.ReadJsonFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -46,6 +44,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -75,6 +74,29 @@ public class ConsumerReactiveController implements ApplicationContextAware {
 
 	@Autowired
 	private DiscoveryClient discoveryClient;
+
+	private static String addRoutingRulePath;
+
+	private static String updateRoutingRulePath;
+
+	static {
+		org.springframework.core.io.Resource resource1 = new ClassPathResource(
+				"add-routing-rule.json");
+		org.springframework.core.io.Resource resource2 = new ClassPathResource(
+				"update-routing-rule.json");
+
+		try {
+			addRoutingRulePath = resource1.getFile().getPath();
+			updateRoutingRulePath = resource2.getFile().getPath();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+	@Autowired
+	private Converter<String, List<UnifiedRoutingDataStructure>> jsonConverter;
 
 	@GetMapping("/info4node")
 	public Map<String, List<Map<String, List<String>>>> getInfo4Node() {
@@ -136,94 +158,35 @@ public class ConsumerReactiveController implements ApplicationContextAware {
 	@GetMapping("/add")
 	public void getDataFromControlPlaneTest() {
 
-		log.info("执行 /add 请求，添加路由规则！");
+		log.info("Access /add routing rule interface, add routing rule..." + "\n"
+				+ WebClientConsumerConstants.ADD_RULE_DESCRIPTION);
 
-		List<Rule> routeRules = new ArrayList<>();
-		List<MatchService> matchServices = new ArrayList<>();
+		String content = ReadJsonFileUtils.convertFile2String(addRoutingRulePath);
+		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = jsonConverter
+				.convert(content);
 
-		UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-		unifiedRouteDataStructure
-				.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
-
-		RoutingRule labelRouteData = new RoutingRule();
-		labelRouteData.setDefaultRouteVersion("v1");
-
-		Rule routeRule = new HeaderRoutingRule();
-		routeRule.setCondition("=");
-		routeRule.setKey("tag");
-		routeRule.setValue("v2");
-		Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-		routeRule1.setCondition(">");
-		routeRule1.setKey("id");
-		routeRule1.setValue("10");
-		Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-		routeRule2.setCondition("=");
-		routeRule2.setValue("/router-test");
-		routeRules.add(routeRule);
-		routeRules.add(routeRule1);
-		routeRules.add(routeRule2);
-
-		MatchService matchService = new MatchService();
-		matchService.setVersion("v2");
-		matchService.setWeight(100);
-		matchService.setRuleList(routeRules);
-		matchServices.add(matchService);
-
-		labelRouteData.setMatchRouteList(matchServices);
-
-		unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-
-		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-		unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
 		applicationContext.publishEvent(
 				new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
 
-		log.info("/add 请求执行完毕，添加路由规则成功！");
+		log.info("Add routing rule success!");
 	}
 
 	@GetMapping("/update")
 	public void updateDataFromControlPlaneTest() {
-		List<Rule> routeRules = new ArrayList<>();
-		List<MatchService> matchServices = new ArrayList<>();
 
-		UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-		unifiedRouteDataStructure
-				.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
+		log.info("Access /update routing rule interface, update routing rule..." + "\n"
+				+ WebClientConsumerConstants.UPDATE_RULE_DESCRIPTION);
 
-		RoutingRule labelRouteData = new RoutingRule();
-		labelRouteData.setDefaultRouteVersion("v1");
-
-		Rule routeRule = new HeaderRoutingRule();
-		routeRule.setCondition("=");
-		routeRule.setKey("tag");
-		routeRule.setValue("v2");
-		Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-		routeRule1.setCondition(">");
-		routeRule1.setKey("id");
-		routeRule1.setValue("10");
-		Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-		routeRule2.setCondition("=");
-		routeRule2.setValue("/router-test");
-		routeRules.add(routeRule);
-		routeRules.add(routeRule1);
-		routeRules.add(routeRule2);
-
-		MatchService matchService = new MatchService();
-		matchService.setVersion("v2");
-		matchService.setWeight(50);
-		matchService.setRuleList(routeRules);
-		matchServices.add(matchService);
-
-		labelRouteData.setMatchRouteList(matchServices);
-
-		unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-
-		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-		unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
+		String content = ReadJsonFileUtils.convertFile2String(updateRoutingRulePath);
+		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = jsonConverter
+				.convert(content);
 
 		applicationContext.publishEvent(
 				new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
+		applicationContext.publishEvent(
+				new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
 
+		log.info("Update routing rule success!");
 	}
 
 }

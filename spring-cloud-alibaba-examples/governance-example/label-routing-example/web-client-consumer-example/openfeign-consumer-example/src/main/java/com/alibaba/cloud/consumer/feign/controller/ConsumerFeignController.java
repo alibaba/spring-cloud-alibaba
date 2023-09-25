@@ -16,25 +16,25 @@
 
 package com.alibaba.cloud.consumer.feign.controller;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
-import com.alibaba.cloud.commons.governance.routing.MatchService;
-import com.alibaba.cloud.commons.governance.routing.RoutingRule;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
-import com.alibaba.cloud.commons.governance.routing.rule.HeaderRoutingRule;
-import com.alibaba.cloud.commons.governance.routing.rule.Rule;
-import com.alibaba.cloud.commons.governance.routing.rule.UrlRoutingRule;
 import com.alibaba.cloud.consumer.constants.WebClientConsumerConstants;
+import com.alibaba.cloud.consumer.converter.Converter;
 import com.alibaba.cloud.consumer.entity.ConsumerNodeInfo;
 import com.alibaba.cloud.consumer.feign.api.ConsumerFeignService;
+import com.alibaba.cloud.consumer.util.ReadJsonFileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,11 +46,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ConsumerFeignController implements ApplicationContextAware {
 
+	private static final Logger log = LoggerFactory
+			.getLogger(ConsumerFeignController.class);
+
 	@Autowired
 	private ApplicationContext applicationContext;
 
 	@Autowired
 	private ConsumerFeignService consumerFeignService;
+
+	@Autowired
+	private Converter<String, List<UnifiedRoutingDataStructure>> jsonConverter;
+
+	private static String addRoutingRulePath;
+
+	private static String updateRoutingRulePath;
+
+	static {
+		org.springframework.core.io.Resource resource1 = new ClassPathResource(
+				"add-routing-rule.json");
+		org.springframework.core.io.Resource resource2 = new ClassPathResource(
+				"update-routing-rule.json");
+
+		try {
+			addRoutingRulePath = resource1.getFile().getPath();
+			updateRoutingRulePath = resource2.getFile().getPath();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
@@ -73,89 +99,34 @@ public class ConsumerFeignController implements ApplicationContextAware {
 
 	@GetMapping("/add")
 	public void getDataFromControlPlaneTest() {
-		List<Rule> routeRules = new ArrayList<>();
-		List<MatchService> matchServices = new ArrayList<>();
 
-		UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-		unifiedRouteDataStructure
-				.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
+		log.info("Access /add routing rule interface, add routing rule..." + "\n"
+				+ WebClientConsumerConstants.ADD_RULE_DESCRIPTION);
 
-		RoutingRule labelRouteData = new RoutingRule();
-		labelRouteData.setDefaultRouteVersion("v1");
+		String content = ReadJsonFileUtils.convertFile2String(addRoutingRulePath);
+		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = jsonConverter
+				.convert(content);
 
-		Rule routeRule = new HeaderRoutingRule();
-		routeRule.setCondition("=");
-		routeRule.setKey("tag");
-		routeRule.setValue("v2");
-		Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-		routeRule1.setCondition(">");
-		routeRule1.setKey("id");
-		routeRule1.setValue("10");
-		Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-		routeRule2.setCondition("=");
-		routeRule2.setValue("/router-test");
-		routeRules.add(routeRule);
-		routeRules.add(routeRule1);
-		routeRules.add(routeRule2);
-
-		MatchService matchService = new MatchService();
-		matchService.setVersion("v2");
-		matchService.setWeight(100);
-		matchService.setRuleList(routeRules);
-		matchServices.add(matchService);
-
-		labelRouteData.setMatchRouteList(matchServices);
-
-		unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-
-		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-		unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
 		applicationContext.publishEvent(
 				new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
+
+		log.info("Add routing rule success!");
 	}
 
 	@GetMapping("/update")
 	public void updateDataFromControlPlaneTest() {
-		List<Rule> routeRules = new ArrayList<>();
-		List<MatchService> matchServices = new ArrayList<>();
 
-		UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-		unifiedRouteDataStructure
-				.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
+		log.info("Access /update routing rule interface, update routing rule..." + "\n"
+				+ WebClientConsumerConstants.UPDATE_RULE_DESCRIPTION);
 
-		RoutingRule labelRouteData = new RoutingRule();
-		labelRouteData.setDefaultRouteVersion("v1");
-
-		Rule routeRule = new HeaderRoutingRule();
-		routeRule.setCondition("=");
-		routeRule.setKey("tag");
-		routeRule.setValue("v2");
-		Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-		routeRule1.setCondition(">");
-		routeRule1.setKey("id");
-		routeRule1.setValue("10");
-		Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-		routeRule2.setCondition("=");
-		routeRule2.setValue("/router-test");
-		routeRules.add(routeRule);
-		routeRules.add(routeRule1);
-		routeRules.add(routeRule2);
-
-		MatchService matchService = new MatchService();
-		matchService.setVersion("v2");
-		matchService.setWeight(50);
-		matchService.setRuleList(routeRules);
-		matchServices.add(matchService);
-
-		labelRouteData.setMatchRouteList(matchServices);
-
-		unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-
-		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-		unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
+		String content = ReadJsonFileUtils.convertFile2String(updateRoutingRulePath);
+		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = jsonConverter
+				.convert(content);
 
 		applicationContext.publishEvent(
 				new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
+
+		log.info("Update routing rule success!");
 
 	}
 

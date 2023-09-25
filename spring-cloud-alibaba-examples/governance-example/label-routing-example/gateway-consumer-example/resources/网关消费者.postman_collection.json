@@ -53,7 +53,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:19098/routing-service-provider/test-a1",
+							"raw": "http://localhost:19098/routing-service-provider/test",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -61,7 +61,7 @@
 							"port": "19098",
 							"path": [
 								"routing-service-provider",
-								"test-a1"
+								"test"
 							]
 						}
 					},
@@ -79,7 +79,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:19098/routing-service-provider/test-a1?id=11",
+							"raw": "http://localhost:19098/routing-service-provider/test?id=11",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -87,7 +87,7 @@
 							"port": "19098",
 							"path": [
 								"routing-service-provider",
-								"test-a1"
+								"test"
 							],
 							"query": [
 								{
@@ -134,7 +134,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:19099/routing-service-provider/test-a1",
+							"raw": "http://localhost:19099/routing-service-provider/test",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -142,7 +142,7 @@
 							"port": "19099",
 							"path": [
 								"routing-service-provider",
-								"test-a1"
+								"test"
 							]
 						}
 					},
@@ -160,7 +160,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:19099/routing-service-provider/test-a1?id=11",
+							"raw": "http://localhost:19099/routing-service-provider/test?id=11",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -168,7 +168,7 @@
 							"port": "19099",
 							"path": [
 								"routing-service-provider",
-								"test-a1"
+								"test"
 							],
 							"query": [
 								{

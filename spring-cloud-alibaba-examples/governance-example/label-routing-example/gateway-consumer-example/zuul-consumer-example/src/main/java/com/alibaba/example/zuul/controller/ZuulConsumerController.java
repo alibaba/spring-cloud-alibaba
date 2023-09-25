@@ -39,19 +39,15 @@ public class ZuulConsumerController {
 	private UpdateZuulRoutingRuleService updateZuulRoutingRuleService;
 
 	@GetMapping("/addRule")
-	public String getDataFromControlPlaneTest() {
+	public void getDataFromControlPlaneTest() {
 
 		addZuulRoutingRuleService.getDataFromControlPlaneTest();
-
-		return "添加路由规则完成";
 	}
 
 	@GetMapping("/updateRule")
-	public String updateDataFromControlPlaneTest() {
+	public void updateDataFromControlPlaneTest() {
 
 		updateZuulRoutingRuleService.updateDataFromControlPlaneTest();
-
-		return "更新路由规则完成";
 	}
 
 }

@@ -30,6 +30,12 @@
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-governance-routing-gateway-adapter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.alibaba.cloud</groupId>
+					<artifactId>spring-cloud-alibaba-commons</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>

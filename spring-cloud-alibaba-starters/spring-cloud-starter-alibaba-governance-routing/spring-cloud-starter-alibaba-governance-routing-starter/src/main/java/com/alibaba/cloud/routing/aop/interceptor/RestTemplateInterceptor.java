@@ -17,8 +17,8 @@
 package com.alibaba.cloud.routing.aop.interceptor;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -49,8 +49,6 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 	@Value("${" + LabelRoutingConstants.REST_HEADER_TRANSMISSION_ENABLED + ":true}")
 	protected Boolean restTemplateCoreHeaderTransmissionEnabled;
 
-	private Map<String, String> routingPropertiesMap = new ConcurrentHashMap<>();
-
 	@Resource
 	private LabelRoutingProperties properties;
 
@@ -65,6 +63,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
 	private void applyHeader(HttpRequest request) {
 
+		Map<String, String> routingPropertiesMap = new HashMap<>();
 		HttpHeaders headers = request.getHeaders();
 
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,

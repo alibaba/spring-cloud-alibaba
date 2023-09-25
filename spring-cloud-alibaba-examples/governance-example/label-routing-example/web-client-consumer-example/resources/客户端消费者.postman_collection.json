@@ -15,12 +15,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:18085/router-test",
+							"raw": "http://localhost:19095/router-test",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "18085",
+							"port": "19095",
 							"path": [
 								"router-test"
 							]
@@ -116,12 +116,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:18087/router-test",
+							"raw": "http://localhost:19097/router-test",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "18087",
+							"port": "19097",
 							"path": [
 								"router-test"
 							]
@@ -217,12 +217,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:19098/router-test",
+							"raw": "http://localhost:19096/router-test",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "19098",
+							"port": "19096",
 							"path": [
 								"router-test"
 							]
@@ -242,12 +242,12 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:19098/router-test?id=11",
+							"raw": "http://localhost:19096/router-test?id=11",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "19098",
+							"port": "19096",
 							"path": [
 								"router-test"
 							],
@@ -267,12 +267,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:18086/add",
+							"raw": "http://localhost:19096/add",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "18086",
+							"port": "19096",
 							"path": [
 								"add"
 							]
@@ -286,12 +286,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:18086/update",
+							"raw": "http://localhost:19096/update",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "18086",
+							"port": "19096",
 							"path": [
 								"update"
 							]
@@ -305,12 +305,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:18086/all-services",
+							"raw": "http://localhost:19096/all-services",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "18086",
+							"port": "19096",
 							"path": [
 								"all-services"
 							]
@@ -324,12 +324,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:18086/nodeInfo",
+							"raw": "http://localhost:19096/nodeInfo",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "18086",
+							"port": "19096",
 							"path": [
 								"nodeInfo"
 							]
