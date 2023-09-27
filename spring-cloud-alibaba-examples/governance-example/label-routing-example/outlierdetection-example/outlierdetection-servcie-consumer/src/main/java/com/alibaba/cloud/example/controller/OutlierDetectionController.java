@@ -16,10 +16,10 @@
 
 package com.alibaba.cloud.example.controller;
 
-
 import javax.annotation.Resource;
 
 import com.alibaba.cloud.example.api.FeignService;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
