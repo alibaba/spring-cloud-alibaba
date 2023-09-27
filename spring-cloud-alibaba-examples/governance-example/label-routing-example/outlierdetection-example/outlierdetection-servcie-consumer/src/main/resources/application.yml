@@ -1,0 +1,22 @@
+server:
+  port: 17070
+
+spring:
+  application:
+    name: outlierdetection-service-consumer-example
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+    governance:
+      routing:
+        # enable outlier detected
+        enableOutlierDetected: true
+        # 最小健康比，摘除上限
+        minHealthPercent: 0.5
+        # 恢复时间间隔
+        recoverInterval: 3000
+        # 恢复时间累加值
+        baseEjectionTime: 3000

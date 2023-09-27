@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,10 +34,14 @@ import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
 import com.alibaba.cloud.routing.RoutingProperties;
+import com.alibaba.cloud.routing.cache.GlobalInstanceStatusListCache;
+import com.alibaba.cloud.routing.model.ServiceInstanceInfo;
 import com.alibaba.cloud.routing.publish.TargetServiceChangedPublisher;
+import com.alibaba.cloud.routing.recover.OutlierDetectionRecover;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
 import com.alibaba.cloud.routing.util.ConditionMatchUtil;
 import com.alibaba.cloud.routing.util.LoadBalanceUtil;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.netflix.loadbalancer.AbstractServerPredicate;
@@ -105,6 +110,9 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 	private RoutingDataRepository routingDataRepository;
 
 	@Autowired
+	private OutlierDetectionRecover recover;
+
+	@Autowired
 	private RoutingProperties routingProperties;
 
 	@Autowired
@@ -121,19 +129,24 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			final HashMap<String, List<MatchService>> routeData = routingDataRepository
 					.getRouteRule(targetServiceName);
 			if (routeData == null) {
+
+				// if outlier detection function is enabled.
+				if (routingProperties.isEnableOutlierDetected()) {
+
+					return chooseServerByOutlierDetectionPolicy(targetServiceName);
+				}
+
 				return LoadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
 						routingProperties.getRule());
 			}
 
-			// Get instances from register-center.
-			String group = this.nacosDiscoveryProperties.getGroup();
-			final NamingService namingService = nacosServiceManager.getNamingService();
-			final List<Instance> instances = namingService
-					.selectInstances(targetServiceName, group, true);
-			if (CollectionUtils.isEmpty(instances)) {
-				LOG.warn("no instance in service {} ", targetServiceName);
-				return null;
-			}
+			List<Instance> instances = getInsanceList(targetServiceName);
+
+			// set instance cache
+			setGlobalInstanceCache(targetServiceName, instances);
+
+			// instance recover
+			recover.updateInstanceStatus(targetServiceName);
 
 			// Filter by route rules,the result will be kept in versionSet and weightMap.
 			HashSet<String> versionSet = new HashSet<>();
@@ -173,17 +186,96 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 						instanceMap.put(version, instanceList);
 					}
 				}
-				return chooseServerByWeight(instanceMap, fallbackWeightMap, weightArray);
+				return chooseServerByWeight(targetServiceName, instanceMap,
+						fallbackWeightMap, weightArray);
 			}
 
 			// Routing with Weight algorithm.
-			return chooseServerByWeight(instanceMap, weightMap, weightArray);
+			return chooseServerByWeight(targetServiceName, instanceMap, weightMap,
+					weightArray);
 
 		}
 		catch (Exception e) {
 			LOG.warn("LabelRouteRule error", e);
 			return null;
 		}
+	}
+
+	private Server chooseServerByOutlierDetectionPolicy(String targetServiceName) {
+
+		try {
+
+			List<Instance> insanceList = getInsanceList(targetServiceName);
+
+			// set instance cache
+			setGlobalInstanceCache(targetServiceName, insanceList);
+
+			// instance recover
+			recover.updateInstanceStatus(targetServiceName);
+
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		// return instance called for health instance list
+		return new NacosServer(Objects.requireNonNull(getInstance(targetServiceName)));
+
+	}
+
+	/**
+	 * Get instance from global instance cache.
+	 * @param targetServiceName service name.
+	 */
+	private Instance getInstance(String targetServiceName) {
+
+		List<Map<String, ServiceInstanceInfo>> instanceList = GlobalInstanceStatusListCache
+				.getInstanceByServiceName(targetServiceName);
+		List<ServiceInstanceInfo> instanceInfos = new ArrayList<>();
+
+		instanceList.forEach(k -> k.forEach((k1, v1) -> {
+			if (v1.isStatus()) {
+				instanceInfos.add(v1);
+			}
+		}));
+
+		if (instanceInfos.isEmpty()) {
+			LOG.warn(
+					"The number of available instances in the global service instance cache list is 0, "
+							+ "no instance called. please check instance status!");
+			System.out.println(GlobalInstanceStatusListCache.getAll());
+			return null;
+		}
+
+		int randomInt = ThreadLocalRandom.current().nextInt(instanceInfos.size());
+		return instanceInfos.get(randomInt).getInstance();
+	}
+
+	/**
+	 * Get instance from global instance cache.
+	 * @param targetServiceName service name.
+	 */
+	private List<Instance> getInstanceList(String targetServiceName) {
+
+		List<Map<String, ServiceInstanceInfo>> instanceList = GlobalInstanceStatusListCache
+				.getInstanceByServiceName(targetServiceName);
+		List<Instance> instances = new ArrayList<>();
+
+		instanceList.forEach(k -> k.forEach((k1, v1) -> {
+			if (v1.isStatus()) {
+				instances.add(v1.getInstance());
+			}
+		}));
+
+		if (instances.isEmpty()) {
+			LOG.warn(
+					"The number of available instances in the global service instance cache list is 0, "
+							+ "no instance called. please check instance status!");
+			System.out.println(GlobalInstanceStatusListCache.getAll());
+			return null;
+		}
+
+		return instances;
 	}
 
 	@Override
@@ -365,8 +457,12 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		}
 	}
 
-	private Server chooseServerByWeight(final HashMap<String, List<Instance>> instanceMap,
+	private Server chooseServerByWeight(String targetServiceName,
+			final HashMap<String, List<Instance>> instanceMap,
 			final HashMap<String, Integer> weightMap, final double[] weightArray) {
+
+		getInstanceList(targetServiceName);
+
 		int index = 0;
 		double sum = 0.0D;
 		List<Instance> instances = new ArrayList<>();
@@ -394,6 +490,38 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		}
 
 		return new NacosServer(instances.get(chooseServiceIndex));
+	}
+
+	/**
+	 * Set instance cache.
+	 */
+	private void setGlobalInstanceCache(String target, List<Instance> instances) {
+		for (Instance instance : instances) {
+			if (!GlobalInstanceStatusListCache.checkContainersInstance(target,
+					instance)) {
+				ServiceInstanceInfo serviceInstanceInfo = new ServiceInstanceInfo();
+				serviceInstanceInfo.setInstance(instance);
+				serviceInstanceInfo.setStatus(true);
+				serviceInstanceInfo.setRemovalRatio(0.0);
+				GlobalInstanceStatusListCache.set(target, instance, serviceInstanceInfo);
+			}
+		}
+	}
+
+	private List<Instance> getInsanceList(String targetServiceName)
+			throws NacosException {
+
+		// Get instances from register-center.
+		String group = this.nacosDiscoveryProperties.getGroup();
+		NamingService namingService = nacosServiceManager.getNamingService();
+		List<Instance> instances = namingService.selectInstances(targetServiceName, group,
+				true);
+		if (CollectionUtils.isEmpty(instances)) {
+			LOG.warn("no instance in service {} ", targetServiceName);
+			return null;
+		}
+
+		return instances;
 	}
 
 }

@@ -40,11 +40,51 @@ public class RoutingProperties {
 	 */
 	private String rule;
 
+	private boolean enableOutlierDetected;
+
+	private long baseEjectionTime;
+
+	private double minHealthPercent;
+
+	private int recoverInterval;
+
 	@PostConstruct
 	public void init() {
 		if (StringUtils.isEmpty(rule)) {
 			rule = LoadBalanceUtil.ZONE_AVOIDANCE_RULE;
 		}
+	}
+
+	public boolean isEnableOutlierDetected() {
+		return enableOutlierDetected;
+	}
+
+	public void setEnableOutlierDetected(boolean enableOutlierDetected) {
+		this.enableOutlierDetected = enableOutlierDetected;
+	}
+
+	public long getBaseEjectionTime() {
+		return baseEjectionTime;
+	}
+
+	public void setBaseEjectionTime(long baseEjectionTime) {
+		this.baseEjectionTime = baseEjectionTime;
+	}
+
+	public double getMinHealthPercent() {
+		return minHealthPercent;
+	}
+
+	public void setMinHealthPercent(double minHealthPercent) {
+		this.minHealthPercent = minHealthPercent;
+	}
+
+	public int getRecoverInterval() {
+		return recoverInterval;
+	}
+
+	public void setRecoverInterval(int recoverInterval) {
+		this.recoverInterval = recoverInterval;
 	}
 
 	public String getRule() {
