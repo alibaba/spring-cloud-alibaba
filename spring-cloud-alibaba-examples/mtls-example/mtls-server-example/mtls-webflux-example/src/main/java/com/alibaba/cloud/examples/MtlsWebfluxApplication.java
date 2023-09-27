@@ -22,10 +22,12 @@ public class MtlsWebfluxApplication {
 
 		@GetMapping("/webflux/get")
 		public Mono<String> get(ServerWebExchange exchange) {
-			// 获取X509证书
 			X509Certificate[] certs = exchange.getRequest().getSslInfo().getPeerCertificates();
-			System.out.println("client certificate：\n" + certs[0].toString());
-			// 构建响应消息并返回
+			if(certs != null){
+				for(int i=0;i<certs.length;i++){
+					System.out.println("client certificate_"+i+": \n" + certs[i].toString());
+				}
+			}
 			return Mono.just("webflux-server received request from client");
 		}
 	}

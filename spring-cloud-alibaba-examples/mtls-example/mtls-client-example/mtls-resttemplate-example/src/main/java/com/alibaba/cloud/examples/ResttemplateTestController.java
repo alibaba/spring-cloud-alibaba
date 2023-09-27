@@ -40,49 +40,17 @@ public class ResttemplateTestController {
 
 	@GetMapping("/resttemplate/getMvc")
 	public String getMvc(HttpServletRequest httpServletRequest) {
-		X509Certificate[] certs = (X509Certificate[]) httpServletRequest.getAttribute("javax.servlet.request.X509Certificate");
 		return restTemplate.getForObject("https://mtls-mvc-example/mvc/get", String.class);
 	}
 
 	@GetMapping("/resttemplate/getWebflux")
 	public String getWebflux(HttpServletRequest httpServletRequest) {
-		X509Certificate[] certs = (X509Certificate[]) httpServletRequest.getAttribute("javax.servlet.request.X509Certificate");
 		return restTemplate.getForObject("https://mtls-webflux-example/webflux/get", String.class);
 	}
 
 	@GetMapping("/checkpreload")
 	public String checkpreload() {
 		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().setSSLContext(mtlsSSLContext.getSslContext()).setSSLHostnameVerifier(mtlsSSLContext.getHostnameVerifier()).build()));
-		return "success";
-	}
-
-	@RequestMapping("/reload")
-	public String reload() throws IOException, NoSuchFieldException, IllegalAccessException {
-		CertPair newCert = new CertPair();
-		newCert.setExpireTime(Long.MAX_VALUE);
-		newCert.setPrivateKey(KeyStoreUtil.loadPrivateKey(FileUtils.readFileToString(new File(
-						"./cert/dname.key"),
-				StandardCharsets.UTF_8), "EC"));
-		List<String> list = new ArrayList<>();
-		list.add(FileUtils.readFileToString(
-				new File(
-						"./cert/dname.crt"),
-				StandardCharsets.UTF_8));
-		list.add(FileUtils.readFileToString(
-				new File(
-						"./cert/dname.crt"),
-				StandardCharsets.UTF_8));
-
-		newCert.setCertificateChain(list);
-		Field field = AbstractCertManager.class.getDeclaredField("certPair");
-		field.setAccessible(true);
-		field.set(abstractCertManager, newCert);
-		Field callbacks = AbstractCertManager.class.getDeclaredField("callbacks");
-		callbacks.setAccessible(true);
-		List<CertUpdateCallback> callbackList = (List<CertUpdateCallback>) callbacks.get(abstractCertManager);
-		for (CertUpdateCallback callback : callbackList) {
-			callback.onUpdateCert(newCert);
-		}
 		return "success";
 	}
 

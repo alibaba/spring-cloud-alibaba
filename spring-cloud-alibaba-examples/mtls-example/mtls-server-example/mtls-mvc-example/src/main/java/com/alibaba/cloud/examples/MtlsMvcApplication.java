@@ -21,7 +21,11 @@ public class MtlsMvcApplication {
 		@GetMapping("/mvc/get")
 		public String get(HttpServletRequest httpServletRequest) {
 			X509Certificate[] certs = (X509Certificate[]) httpServletRequest.getAttribute("javax.servlet.request.X509Certificate");
-			System.out.println("client certificate: \n" + certs[0].toString());
+			if(certs != null){
+				for(int i=0;i<certs.length;i++){
+					System.out.println("client certificate_"+i+": \n" + certs[i].toString());
+				}
+			}
 			return "mvc-server received request from client";
 		}
 	}

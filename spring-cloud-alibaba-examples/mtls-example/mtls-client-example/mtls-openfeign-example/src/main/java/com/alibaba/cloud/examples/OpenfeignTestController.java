@@ -20,13 +20,11 @@ public class OpenfeignTestController {
 
 	@GetMapping("/openfeign/getMvc")
 	public String getB(HttpServletRequest httpServletRequest) {
-		//X509Certificate[] certs = (X509Certificate[]) httpServletRequest.getAttribute("javax.servlet.request.X509Certificate");
 		return mvcClient.getMvc();
 	}
 
 	@GetMapping("/openfeign/getWebflux")
 	public String getC(HttpServletRequest httpServletRequest) {
-		//X509Certificate[] certs = (X509Certificate[]) httpServletRequest.getAttribute("javax.servlet.request.X509Certificate");
 		return webfluxClient.getWebflux();
 	}
 
