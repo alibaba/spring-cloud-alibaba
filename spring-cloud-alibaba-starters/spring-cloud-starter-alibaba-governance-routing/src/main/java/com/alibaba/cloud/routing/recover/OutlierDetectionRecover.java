@@ -21,6 +21,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.alibaba.cloud.routing.RoutingProperties;
+import com.alibaba.cloud.routing.cache.GlobalInstanceStatusListCache;
 import com.alibaba.cloud.routing.model.ServiceInstanceInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

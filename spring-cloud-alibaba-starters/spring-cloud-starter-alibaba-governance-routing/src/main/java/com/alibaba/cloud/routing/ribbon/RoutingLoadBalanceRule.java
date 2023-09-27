@@ -34,6 +34,7 @@ import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
 import com.alibaba.cloud.routing.RoutingProperties;
+import com.alibaba.cloud.routing.cache.GlobalInstanceStatusListCache;
 import com.alibaba.cloud.routing.model.ServiceInstanceInfo;
 import com.alibaba.cloud.routing.publish.TargetServiceChangedPublisher;
 import com.alibaba.cloud.routing.recover.OutlierDetectionRecover;
