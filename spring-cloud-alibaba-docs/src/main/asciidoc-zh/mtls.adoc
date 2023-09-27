@@ -1,0 +1,63 @@
+== Spring Cloud Alibaba Mtls
+
+image::pic/mtls-architecture.png[width=50%,align=center]
+
+Spring Cloud Alibaba Mtls 的目的是基于 Istio 为 Spring Cloud Alibaba 提供零信任安全能力，即在不受信任的网络上构建安全解决方案。
+
+Istio 提供两种类型的认证，Peer authentication 及 Request authentication，并以双向TLS作为 Peer authentication 的全栈解决方案，包括为每个服务提供代表其角色的身份，以及提供密钥管理系统，自动进行密钥和证书的生成，分发和轮转，具体参考 https://istio.io/latest/docs/concepts/security/#authentication[Istio安全]。
+
+Spring Cloud Alibaba 已经实现了 Request authentication，因此，Spring Cloud Alibaba Mtls 关注 Peer authentication，即服务到服务的认证。通过添加特定的Starter模块，就可以为 Spring Cloud Alibaba 应用实现双向TLS能力。
+
+=== 向Istio申请证书
+
+连接 Istio 控制面有两种方式，具体实现方法请参考文档 https://github.com/alibaba/spring-cloud-alibaba/blob/2.2.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/governance.adoc[Spring Cloud Alibaba Governance]的配置转换部分。在需要实现mtls能力的应用中添加如下starter依赖：
+
+[source,xml,indent=0]
+----
+<dependency>
+  <groupId>com.alibaba.cloud</groupId>
+  <artifactId>spring-cloud-starter-xds-adapter</artifactId>
+</dependency>
+----
+
+==== 注入pilot-agent
+
+image::pic/pilot-agent-as-agent.svg[width=70%,align=center]
+
+如上图所示，参考 https://istio.io/latest/blog/2021/proxyless-grpc/[Istio / gRPC Proxyless Service Mesh] 的实现方式，可以将 pilot-agent 作为xDS协议的统一代理，在添加 inject.istio.io/templates: grpc-agent 注解之后，Spring Cloud Alibaba应用将会获取到 pilot-agent 生成的bootstrap文件，文件中将会保存证书相关的路径以及证书过期时间。
+
+==== 直连Istio控制面
+
+image::pic/connect-directly-to-Istiod.png[width=50%,align=center]
+
+对于Proxyless模式的Spring Cloud Alibaba应用，无需使用envoy proxy，Spring Cloud Alibaba的SDK可以直接扮演 istio-agent 的角色，直接在SDK里为此应用生成私钥，以及向Istio控制面申请证书。
+
+=== 获取证书
+
+通过向控制面Istiod发送证书签名请求（Certificate Signing Request，CSR），可以获取到Istiod签发的证书，一般来说，Istiod会返回两张证书：
+
+* CA根证书
+
+* Istiod签发的服务端证书，证书中包含应用的身份信息
+
+=== 为应用加载证书
+
+为Spring Cloud Alibaba应用实现双向TLS能力，需要为应用装载证书，并实现证书的热更新。在应用中添加如下依赖：
+
+[source,xml,indent=0]
+----
+<dependency>
+  <groupId>com.alibaba.cloud</groupId>
+  <artifactId>spring-cloud-starter-mtls</artifactId>
+</dependency>
+----
+
+==== 服务端
+
+针对Spring MVC(tomcat)，以及Spring Webflux(Netty)提供了istio证书的自动加载以及热更新。
+
+==== 客户端
+
+针对feign，resttemplate等客户端的实现，提供了具有热更新能力的ssl上下文，用户配置后可自动进行istio证书的更新。
+
+具体使用方式可以参考以下示例：
