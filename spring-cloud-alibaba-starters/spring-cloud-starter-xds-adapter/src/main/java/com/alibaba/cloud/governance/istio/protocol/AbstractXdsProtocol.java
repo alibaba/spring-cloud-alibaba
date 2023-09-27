@@ -104,7 +104,8 @@ public abstract class AbstractXdsProtocol<T>
 		}
 		for (XdsResolveFilter<List<T>> filter : filters) {
 			try {
-				if (!filter.resolve(resources)) {
+				if (!filter.resolve(resources)) { // 如果过滤器返回
+													// false，则意味着过滤器不接受这些资源，代码会直接退出循环
 					return;
 				}
 			}

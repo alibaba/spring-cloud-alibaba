@@ -87,13 +87,15 @@ public class XdsRulesTests {
 		File file = new File(path);
 		FileInputStream stream = FileUtils.openInputStream(file);
 		byte[] bytes = new byte[(int) file.length()];
-		int readBytes = stream.read(bytes);
+		int readBytes = stream.read(bytes); // 读取到的字节数
 		if (readBytes == -1) {
 			throw new Exception("Unreadable response file");
 		}
-		return DiscoveryResponse.parseFrom(bytes);
+		return DiscoveryResponse.parseFrom(bytes); // 将序列化的 Protocol Buffers
+													// 消息还原为DiscoveryResponse对象
 	}
 
+	// 测试认证规则Auth的转换逻辑
 	@Test
 	public void testAuthTransform() throws Exception {
 		DiscoveryResponse discoveryResponse = decodeResponse(
