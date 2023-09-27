@@ -32,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableDiscoveryClient
 @SpringBootApplication
-public class OutlierDetectionProvider1Application {
+public class OutlierDetectionProvider3Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OutlierDetectionProvider1Application.class, args);
+		SpringApplication.run(OutlierDetectionProvider3Application.class, args);
 	}
 
 	@Autowired

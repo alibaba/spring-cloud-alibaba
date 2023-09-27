@@ -76,7 +76,8 @@ public final class GlobalInstanceStatusListCache {
 					else {
 						List<Map<String, ServiceInstanceInfo>> serviceInstanceList = new ArrayList<>();
 						Map<String, ServiceInstanceInfo> instanceInfoMap = new HashMap<>();
-						instanceInfoMap.put(instance.getIp() + ":" + instance.getPort(), sif);
+						instanceInfoMap.put(instance.getIp() + ":" + instance.getPort(),
+								sif);
 						serviceInstanceList.add(instanceInfoMap);
 						Map<String, List<Map<String, ServiceInstanceInfo>>> serviceMapTmp = new HashMap<>();
 						serviceMapTmp.put(targetName, serviceInstanceList);
@@ -182,10 +183,12 @@ public final class GlobalInstanceStatusListCache {
 
 	/**
 	 * getServiceUpperLimitRatioNum.
+	 * @param targetServiceName target service name.
 	 * @param minHealthPercent minHealthPercent
 	 * @return max remove instance num
 	 */
-	public static int getServiceUpperLimitRatioNum(String targetServiceName, double minHealthPercent) {
+	public static int getServiceUpperLimitRatioNum(String targetServiceName,
+			double minHealthPercent) {
 
 		int serviceInstanceTotal = 0;
 
@@ -199,6 +202,7 @@ public final class GlobalInstanceStatusListCache {
 
 	/**
 	 * Get all instance nums.
+	 * @param targetServiceName target service name.
 	 * @return remove instance num
 	 */
 	public static int getInstanceNumByTargetServiceName(String targetServiceName) {
@@ -215,6 +219,7 @@ public final class GlobalInstanceStatusListCache {
 
 	/**
 	 * Get no health nums.
+	 * @param targetServiceName target service name.
 	 * @return remove instance num
 	 */
 	public static int getRemoveInstanceNum(String targetServiceName) {
@@ -227,7 +232,7 @@ public final class GlobalInstanceStatusListCache {
 				for (String val : instanceInfoMap.keySet()) {
 					ServiceInstanceInfo serviceInstanceInfo = instanceInfoMap.get(val);
 					if (!(serviceInstanceInfo.isStatus())) {
-						serviceInstanceTotal ++;
+						serviceInstanceTotal++;
 					}
 				}
 			}
@@ -238,7 +243,8 @@ public final class GlobalInstanceStatusListCache {
 
 	public static void setInstanceInfoByInstanceNames(ServiceInstanceInfo sif) {
 
-		String instanceName = sif.getInstance().getIp() + ":" + sif.getInstance().getPort();
+		String instanceName = sif.getInstance().getIp() + ":"
+				+ sif.getInstance().getPort();
 		for (Map<String, List<Map<String, ServiceInstanceInfo>>> maps : globalServiceList) {
 			for (String key : maps.keySet()) {
 				List<Map<String, ServiceInstanceInfo>> list = maps.get(key);
