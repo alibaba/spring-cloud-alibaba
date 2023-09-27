@@ -19,6 +19,7 @@ package com.alibaba.cloud.governance.auth;
 import java.io.File;
 import java.nio.charset.Charset;
 
+import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.commons.io.FileUtils;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.auth.validator.AuthValidator;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -93,6 +95,11 @@ public class AuthenticationTest {
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ AuthValidatorAutoConfiguration.class })
 	public static class TestConfig {
+
+		@Bean
+		public ControlPlaneInitedBean dummyControlPlaneInitedBean() {
+			return new ControlPlaneInitedBean(false);
+		}
 
 	}
 

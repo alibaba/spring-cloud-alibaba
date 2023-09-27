@@ -82,6 +82,8 @@ public class XdsConfigProperties {
 
 	private String serviceAccountName;
 
+	private boolean skipXdsRequest = false;
+
 	@Value("${spring.application.name:}")
 	private String applicationName;
 
@@ -321,6 +323,14 @@ public class XdsConfigProperties {
 
 	public String getApplicationName() {
 		return applicationName;
+	}
+
+	public boolean isSkipXdsRequest() {
+		return skipXdsRequest;
+	}
+
+	public void setSkipXdsRequest(boolean skipXdsRequest) {
+		this.skipXdsRequest = skipXdsRequest;
 	}
 
 }
