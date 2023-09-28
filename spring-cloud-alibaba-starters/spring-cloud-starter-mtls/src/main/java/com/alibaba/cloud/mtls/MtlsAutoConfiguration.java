@@ -19,12 +19,11 @@ package com.alibaba.cloud.mtls;
 import java.util.List;
 
 import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
+import com.alibaba.cloud.commons.governance.tls.ServerTlsModeHolder;
 import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
 import com.alibaba.cloud.governance.istio.sds.CertUpdateCallback;
 import com.alibaba.cloud.mtls.client.MtlsClientSSLContext;
 import com.alibaba.cloud.mtls.server.ApplicationRestarter;
-import com.alibaba.cloud.mtls.server.ServerTlsModeHolder;
-import com.alibaba.cloud.mtls.server.ServerTlsModeListener;
 import com.alibaba.cloud.mtls.server.netty.MtlsNettyServerCustomizer;
 import com.alibaba.cloud.mtls.server.tomcat.MtlsTomcatConnectCustomizer;
 import com.alibaba.cloud.nacos.registry.NacosRegistration;
@@ -36,15 +35,22 @@ import reactor.netty.http.server.HttpServer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(value = "spring.cloud.mtls.config.enabled", matchIfMissing = true)
+@EnableConfigurationProperties(MtlsConfigProperties.class)
 public class MtlsAutoConfiguration {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(MtlsAutoConfiguration.class);
+
+	@Autowired
+	private MtlsConfigProperties mtlsConfigProperties;
 
 	@Bean
 	public MtlsSslStoreProvider mtlsSslStoreProvider(AbstractCertManager certManager) {
@@ -54,12 +60,6 @@ public class MtlsAutoConfiguration {
 	@Bean
 	public ApplicationRestarter applicationRestarter() {
 		return new ApplicationRestarter();
-	}
-
-	@Bean
-	public ServerTlsModeListener serverTlsModeListener(
-			ApplicationRestarter applicationRestarter) {
-		return new ServerTlsModeListener(applicationRestarter);
 	}
 
 	@Bean
@@ -82,9 +82,7 @@ public class MtlsAutoConfiguration {
 		@Bean
 		public TomcatConnectorCustomizer mtlsCustomizer(
 				MtlsSslStoreProvider sslStoreProvider, AbstractCertManager certManager,
-				ServerTlsModeListener serverTlsModeListener,
 				ControlPlaneInitedBean controlPlaneInitedBean) {
-			ServerTlsModeHolder.setTlsMode(controlPlaneInitedBean.isTls());
 			return new MtlsTomcatConnectCustomizer(sslStoreProvider, certManager);
 		}
 
@@ -97,7 +95,7 @@ public class MtlsAutoConfiguration {
 		@Bean
 		public NacosRegistrationCustomizer nacosTlsCustomizer() {
 			return registration -> {
-				if (!ServerTlsModeHolder.waitTlsModeInitialized()) {
+				if (!ServerTlsModeHolder.getTlsMode()) {
 					log.warn("Fetch tls mode failed, use plaintext to transport");
 					return;
 				}

@@ -23,6 +23,7 @@ import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.commons.governance.auth.condition.AuthCondition;
 import com.alibaba.cloud.commons.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.commons.governance.auth.rule.JwtRule;
+import com.alibaba.cloud.commons.governance.tls.ServerTlsModeHolder;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.Matcher;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
@@ -55,7 +56,7 @@ public class AuthValidator {
 	public AuthValidator(AuthRepository authRepository,
 			ControlPlaneInitedBean controlPlaneInitedBean) {
 		this.authRepository = authRepository;
-		this.isTls = controlPlaneInitedBean.isTls();
+		this.isTls = ServerTlsModeHolder.getTlsMode();
 	}
 
 	public boolean validate(UnifiedHttpRequest request) {

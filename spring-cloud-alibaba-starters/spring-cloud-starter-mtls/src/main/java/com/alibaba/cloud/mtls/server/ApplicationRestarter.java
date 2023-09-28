@@ -65,7 +65,6 @@ public class ApplicationRestarter {
 		}
 	}
 
-	// @ManagedOperation
 	private synchronized void doRestart() {
 		if (this.context != null) {
 			this.application.setEnvironment(this.context.getEnvironment());

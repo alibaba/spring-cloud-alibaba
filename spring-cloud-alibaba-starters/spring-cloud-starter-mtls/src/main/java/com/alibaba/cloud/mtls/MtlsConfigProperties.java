@@ -14,24 +14,43 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.commons.governance.event;
+package com.alibaba.cloud.mtls;
+
+import javax.annotation.PostConstruct;
+
+import com.alibaba.cloud.commons.governance.tls.ServerTlsModeHolder;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  * @since 2.2.10-RC1
  */
-public class ServerProtoChangedEvent extends GovernanceEvent {
+@ConfigurationProperties(MtlsConfigProperties.PREFIX)
+public class MtlsConfigProperties {
 
-	private final boolean isTls;
+	private Boolean serverTls;
 
-	public ServerProtoChangedEvent(Object source, boolean isTls) {
-		super(source);
-		this.isTls = isTls;
+	/**
+	 * Prefix for mtls config.
+	 */
+	public static final String PREFIX = "spring.cloud.mtls.config";
+
+	public void setServerTls(boolean serverTls) {
+		this.serverTls = serverTls;
 	}
 
-	public boolean isTls() {
-		return isTls;
+	public boolean isServerTls() {
+		return serverTls;
+	}
+
+	@PostConstruct
+	public void postConstruct() {
+		if (serverTls == null) {
+			serverTls = true;
+		}
+		ServerTlsModeHolder.init(serverTls);
 	}
 
 }

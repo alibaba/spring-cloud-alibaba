@@ -98,7 +98,7 @@ public class AuthenticationTest {
 
 		@Bean
 		public ControlPlaneInitedBean dummyControlPlaneInitedBean() {
-			return new ControlPlaneInitedBean(false);
+			return new ControlPlaneInitedBean();
 		}
 
 	}

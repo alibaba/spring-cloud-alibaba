@@ -23,14 +23,7 @@ package com.alibaba.cloud.commons.governance;
  */
 public class ControlPlaneInitedBean {
 
-	private boolean isTls;
-
-	public ControlPlaneInitedBean(boolean isTls) {
-		this.isTls = isTls;
-	}
-
-	public boolean isTls() {
-		return isTls;
+	public ControlPlaneInitedBean() {
 	}
 
 }
