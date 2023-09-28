@@ -1,10 +1,19 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 server:
   port: ${SERVER_PORT:8555}
 spring:
   cloud:
+    mtls:
+      config:
+        enabled: ${MTLS_ENABLE:true}
+        server-tls: ${SERVER_TLS:true}
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
         enabled: true
     governance:
       auth:
