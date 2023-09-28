@@ -14,37 +14,49 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.istio;
+package com.alibaba.cloud.commons.governance.tls;
 
+import java.util.Objects;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public final class TlsContext {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	private static boolean isTls;
+public final class ServerTlsModeHolder {
+
+	private static final Logger log = LoggerFactory.getLogger(ServerTlsModeHolder.class);
+
+	private static volatile Boolean isTls;
 
 	private static final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 
-	private static volatile boolean once = false;
-
-	private TlsContext() {
+	private ServerTlsModeHolder() {
 
 	}
 
-	public static void setIsTls(boolean isTls) {
-		if (once) {
-			return;
-		}
+	public static void init(boolean initValue) {
 		try {
 			rwLock.writeLock().lock();
-			once = true;
-			TlsContext.isTls = isTls;
+			if (isTls == null) {
+				isTls = initValue;
+			}
 		}
 		finally {
 			rwLock.writeLock().unlock();
 		}
 	}
 
-	public static boolean isIsTls() {
+	public static void setTlsMode(boolean isTls) {
+		try {
+			rwLock.writeLock().lock();
+			ServerTlsModeHolder.isTls = isTls;
+		}
+		finally {
+			rwLock.writeLock().unlock();
+		}
+	}
+
+	public static Boolean getTlsMode() {
 		try {
 			rwLock.readLock().lock();
 			return isTls;
@@ -54,18 +66,16 @@ public final class TlsContext {
 		}
 	}
 
-	public static boolean isOnce() {
+	// Verify whether the tls mode is initialized and also updated.
+	public static boolean canModeUpdate(boolean isTls) {
 		try {
 			rwLock.readLock().lock();
-			return once;
+			return ServerTlsModeHolder.isTls != null
+					&& !Objects.equals(ServerTlsModeHolder.isTls, isTls);
 		}
 		finally {
 			rwLock.readLock().unlock();
 		}
-	}
-
-	public static void close() {
-		once = false;
 	}
 
 }

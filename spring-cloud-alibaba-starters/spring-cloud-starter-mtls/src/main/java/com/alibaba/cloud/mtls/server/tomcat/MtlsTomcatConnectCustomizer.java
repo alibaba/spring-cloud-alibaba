@@ -16,11 +16,11 @@
 
 package com.alibaba.cloud.mtls.server.tomcat;
 
+import com.alibaba.cloud.commons.governance.tls.ServerTlsModeHolder;
 import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
 import com.alibaba.cloud.governance.istio.sds.CertPair;
 import com.alibaba.cloud.governance.istio.sds.CertUpdateCallback;
 import com.alibaba.cloud.mtls.MtlsSslStoreProvider;
-import com.alibaba.cloud.mtls.server.ServerTlsModeHolder;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
 import org.apache.coyote.AbstractProtocol;
@@ -82,7 +82,7 @@ public class MtlsTomcatConnectCustomizer
 				}
 			}
 		});
-		if (!ServerTlsModeHolder.waitTlsModeInitialized()) {
+		if (!ServerTlsModeHolder.getTlsMode()) {
 			log.warn("Fetch tls mode failed, use plaintext to transport");
 			return;
 		}

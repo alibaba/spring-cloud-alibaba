@@ -18,8 +18,6 @@ package com.alibaba.cloud.governance.istio;
 
 import java.util.List;
 
-import javax.annotation.PreDestroy;
-
 import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.commons.governance.event.GovernanceEvent;
 import com.alibaba.cloud.governance.istio.bootstrap.Bootstrapper;
@@ -27,7 +25,6 @@ import com.alibaba.cloud.governance.istio.bootstrap.BootstrapperImpl;
 import com.alibaba.cloud.governance.istio.filter.XdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.AuthXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.filter.impl.RoutingXdsResolveFilter;
-import com.alibaba.cloud.governance.istio.filter.impl.ServerTlsXdsResolveFilter;
 import com.alibaba.cloud.governance.istio.protocol.impl.CdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.EdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
@@ -113,11 +110,6 @@ public class XdsAutoConfiguration {
 	}
 
 	@Bean
-	public XdsResolveFilter<List<Listener>> serverTlsXdsResolveFilter() {
-		return new ServerTlsXdsResolveFilter();
-	}
-
-	@Bean
 	public AggregateDiscoveryService aggregateDiscoveryService(XdsChannel xdsChannel) {
 		return new AggregateDiscoveryService(xdsChannel, xdsConfigProperties);
 	}
@@ -172,12 +164,7 @@ public class XdsAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ControlPlaneInitedBean controlPlaneInitedBean(CdsProtocol cdsProtocol) {
-		return new ControlPlaneInitedBean(TlsContext.isIsTls()) {
-			@PreDestroy
-			public void close() {
-				TlsContext.close();
-			}
-		};
+		return new ControlPlaneInitedBean();
 	}
 
 	/**

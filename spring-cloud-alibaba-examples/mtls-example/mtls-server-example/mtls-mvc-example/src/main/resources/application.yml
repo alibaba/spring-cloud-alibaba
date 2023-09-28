@@ -1,10 +1,19 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 server:
   port: ${SERVER_PORT:8222}
 spring:
   cloud:
+    mtls:
+      config:
+        enabled: ${MTLS_ENABLE:true}
+        server-tls: ${SERVER_TLS:true}
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
         enabled: true
     governance:
       auth:
@@ -17,7 +26,7 @@ spring:
         polling-pool-size: ${POLLING_POOL_SIZE:10}
         polling-time: ${POLLING_TIME:10}
         use-agent: ${USE_AGENT:false}
-        service-account-name: auth
-        istiod-token: ${ISTIOD_TOKEN:eyJhbGciOiJSUzI1NiIsImtpZCI6IlFNd2NTQUNVOXk5X18yQ3d0WkZwTVNhQnJPeDkyRGFkdHJ0d3lPb0dwRU0ifQ.eyJhdWQiOlsiaXN0aW8tY2EiXSwiZXhwIjoxNjk1NjcxNTU4LCJpYXQiOjE2OTU2MjgzNTgsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2YyIsImt1YmVybmV0ZXMuaW8iOnsibmFtZXNwYWNlIjoiZGVmYXVsdCIsInBvZCI6eyJuYW1lIjoiZGV0YWlscy12MS01OGM4ODg3OTRiLTRwNmJsIiwidWlkIjoiYzlmOTA5YTAtZDNkNy00ODA2LTljYzktMWU2MzI1NjcxMzAzIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJib29raW5mby1kZXRhaWxzIiwidWlkIjoiNGY4NTg2OTYtODBmMy00NDM0LWJjMjEtZmFiN2IyODZhZWQzIn19LCJuYmYiOjE2OTU2MjgzNTgsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmJvb2tpbmZvLWRldGFpbHMifQ.CIe5dqwuP5ZbTYDffHGKEtYWpoXpeFP4QSFd1gfSqlIcduZZrMXi8mfcxbIBQjrvvZfHrgk9SAaod8AVVHy4gTQ-NWcTaQAE2eoGOQkzC1rBWLbH77DmYeyGzwr8coNlej-T3NrkU4g4km2VmrjdAwmCLrnIebP3NcUvKHLe5ntuUhqHOAN_7bbRshfzC7CQRncBDi8DgA865hbGcM610Xq2YyCikqugBmB82r607bN271kgu8-VQjfAHYKMOvnJd-W_ArP8dzDtELVrQ5VwkQ4NqJmG8MfWU_s-HMaUsxGyoS9_UVNNZZFfNzI-xgAic9BAWN8nOk-QBRafkAEjmA}
+        service-account-name: default
+        istiod-token: ${ISTIOD_TOKEN:eyJhbGciOiJSUzI1NiIsImtpZCI6IlFNd2NTQUNVOXk5X18yQ3d0WkZwTVNhQnJPeDkyRGFkdHJ0d3lPb0dwRU0ifQ.eyJhdWQiOlsiaXN0aW8tY2EiXSwiZXhwIjoxNjk1OTA4MzQ1LCJpYXQiOjE2OTU4NjUxNDUsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2YyIsImt1YmVybmV0ZXMuaW8iOnsibmFtZXNwYWNlIjoiZGVmYXVsdCIsInBvZCI6eyJuYW1lIjoibXRscy1tdmMtZXhhbXBsZS01OTU3NDZmY2Q1LWRuZ24yIiwidWlkIjoiZDFjYTIzYzMtMjlkYS00NjM1LWJjMWUtNWRkMjkwNjhlN2VhIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJkZWZhdWx0IiwidWlkIjoiNmIwYjU1MDktYzBiNC00MTk1LWE2NzAtZTI4NGI1NWNmMDIzIn19LCJuYmYiOjE2OTU4NjUxNDUsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.Tnbeb3q8pzj5vCZUBhVHGJ4sMRmKZa5S7f-wi9g5Q-FlqQgeUtruZjlT-YNnGpEtWxwJoFtx6WT2MoQXWSurgatNrvk6bH2zFQIX7TKNaUalMRKy34CN1j_XNMNVSBPTc0rGdCHS4LpxkeDzKRVuVoY66iwRj6IegJlEdR5Tb7prccrxBxxi34Aggz6-Go9v0vFwGDi3gnGJV7H_Mrkwc9pmhMI-ZQmqIkUbhIry_Ju2DfPJ7BmdSJR1pjrSuFu4CFnEmrxmGd_wA9oNmDAv33d6TqGNroD1jaOnIuUVhi7q3MClZONeloJZFqWJbIuBpJtcNu9c-yr_zNWXtcdgvg}
   application:
     name: mtls-mvc-example
