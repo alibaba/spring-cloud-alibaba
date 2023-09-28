@@ -19,7 +19,6 @@ package com.alibaba.cloud.governance.auth.validator;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
 import com.alibaba.cloud.commons.governance.auth.condition.AuthCondition;
 import com.alibaba.cloud.commons.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.commons.governance.auth.rule.JwtRule;
@@ -53,8 +52,7 @@ public class AuthValidator {
 
 	private final boolean isTls;
 
-	public AuthValidator(AuthRepository authRepository,
-			ControlPlaneInitedBean controlPlaneInitedBean) {
+	public AuthValidator(AuthRepository authRepository) {
 		this.authRepository = authRepository;
 		this.isTls = ServerTlsModeHolder.getTlsMode();
 	}
