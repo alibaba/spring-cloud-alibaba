@@ -14,23 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.istio;
+package com.alibaba.cloud.governance.istio.sds;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+public interface CertUpdater {
 
-/**
- * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
- * @since 2.2.10-RC1
- */
-public class XdsScheduledThreadPool extends ScheduledThreadPoolExecutor {
-
-	public XdsScheduledThreadPool(XdsConfigProperties xdsConfigProperties) {
-		this(xdsConfigProperties.getPollingPoolSize());
-	}
-
-	public XdsScheduledThreadPool(int corePoolSize) {
-		super(corePoolSize);
-	}
+	void registerCallback(CertUpdateCallback certUpdateCallback);
 
 }

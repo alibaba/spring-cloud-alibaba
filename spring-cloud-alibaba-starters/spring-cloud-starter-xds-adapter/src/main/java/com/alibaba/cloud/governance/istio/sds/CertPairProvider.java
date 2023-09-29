@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.istio.protocol;
+package com.alibaba.cloud.governance.istio.sds;
 
-import java.util.List;
-import java.util.Set;
+public interface CertPairProvider {
 
-/**
- * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
- * @since 2.2.10-RC1
- */
-public interface XdsProtocol<T> {
-
-	String getTypeUrl();
-
-	void observeResource(Set<String> resourceNames);
-
-	void onResponseDecoded(List<T> resources);
+	CertPair getCertPair();
 
 }

@@ -17,12 +17,14 @@
 package com.alibaba.cloud.governance.auth.webmvc;
 
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.cloud.governance.auth.util.CertUtil;
 import com.alibaba.cloud.governance.auth.util.IpUtil;
 import com.alibaba.cloud.governance.auth.validator.AuthValidator;
 import org.slf4j.Logger;
@@ -60,11 +62,17 @@ public class AuthWebInterceptor implements HandlerInterceptor {
 		int port = request.getLocalPort();
 		HttpHeaders headers = getHeaders(request);
 		MultiValueMap<String, String> params = getQueryParams(request);
+		String principal = "";
+		X509Certificate[] certs = (X509Certificate[]) request
+				.getAttribute("javax.servlet.request.X509Certificate");
+		if (certs != null && certs.length > 0) {
+			principal = CertUtil.getIstioIdentity(certs[0]);
+		}
 		AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder builder = new AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder();
 		AuthValidator.UnifiedHttpRequest unifiedHttpRequest = builder.setDestIp(destIp)
 				.setRemoteIp(remoteIp).setSourceIp(sourceIp).setHost(host).setPort(port)
 				.setMethod(method).setPath(path).setHeaders(headers).setParams(params)
-				.build();
+				.setPrincipal(principal).build();
 		if (!authValidator.validate(unifiedHttpRequest)) {
 			return ret401(response);
 		}

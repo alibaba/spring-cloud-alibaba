@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.istio.protocol;
-
-import java.util.List;
-import java.util.Set;
+package com.alibaba.cloud.commons.governance;
 
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
- * @since 2.2.10-RC1
+ * @since 2.2.10-RC1 It means Spring Cloud Alibaba has got the config from control plane.
  */
-public interface XdsProtocol<T> {
+public class ControlPlaneInitedBean {
 
-	String getTypeUrl();
+	private boolean isTls;
 
-	void observeResource(Set<String> resourceNames);
+	public ControlPlaneInitedBean(boolean isTls) {
+		this.isTls = isTls;
+	}
 
-	void onResponseDecoded(List<T> resources);
+	public boolean isTls() {
+		return isTls;
+	}
 
 }

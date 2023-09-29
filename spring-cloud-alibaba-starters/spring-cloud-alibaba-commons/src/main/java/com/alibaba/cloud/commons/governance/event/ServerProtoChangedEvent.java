@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.istio.protocol;
-
-import java.util.List;
-import java.util.Set;
+package com.alibaba.cloud.commons.governance.event;
 
 /**
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
  * @since 2.2.10-RC1
  */
-public interface XdsProtocol<T> {
+public class ServerProtoChangedEvent extends GovernanceEvent {
 
-	String getTypeUrl();
+	private final boolean isTls;
 
-	void observeResource(Set<String> resourceNames);
+	public ServerProtoChangedEvent(Object source, boolean isTls) {
+		super(source);
+		this.isTls = isTls;
+	}
 
-	void onResponseDecoded(List<T> resources);
+	public boolean isTls() {
+		return isTls;
+	}
 
 }
