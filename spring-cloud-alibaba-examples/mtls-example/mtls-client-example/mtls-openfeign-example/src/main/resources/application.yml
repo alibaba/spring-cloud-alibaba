@@ -1,0 +1,21 @@
+server:
+  port: ${SERVER_PORT:8444}
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        enabled: true
+    governance:
+      auth:
+        enabled: ${ISTIO_AUTH_ENABLE:true}
+    istio:
+      config:
+        enabled: ${ISTIO_CONFIG_ENABLE:true}
+        host: ${ISTIOD_ADDR:123.56.137.232}
+        port: ${ISTIOD_PORT:15012}
+        use-agent: ${USE_AGENT:false}
+        istiod-token: ${ISTIOD_TOKEN:eyJhbGciOiJSUzI1NiIsImtpZCI6IlFNd2NTQUNVOXk5X18yQ3d0WkZwTVNhQnJPeDkyRGFkdHJ0d3lPb0dwRU0ifQ.eyJhdWQiOlsiaXN0aW8tY2EiXSwiZXhwIjoxNjk1NjcxNTU4LCJpYXQiOjE2OTU2MjgzNTgsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2YyIsImt1YmVybmV0ZXMuaW8iOnsibmFtZXNwYWNlIjoiZGVmYXVsdCIsInBvZCI6eyJuYW1lIjoiZGV0YWlscy12MS01OGM4ODg3OTRiLTRwNmJsIiwidWlkIjoiYzlmOTA5YTAtZDNkNy00ODA2LTljYzktMWU2MzI1NjcxMzAzIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJib29raW5mby1kZXRhaWxzIiwidWlkIjoiNGY4NTg2OTYtODBmMy00NDM0LWJjMjEtZmFiN2IyODZhZWQzIn19LCJuYmYiOjE2OTU2MjgzNTgsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmJvb2tpbmZvLWRldGFpbHMifQ.CIe5dqwuP5ZbTYDffHGKEtYWpoXpeFP4QSFd1gfSqlIcduZZrMXi8mfcxbIBQjrvvZfHrgk9SAaod8AVVHy4gTQ-NWcTaQAE2eoGOQkzC1rBWLbH77DmYeyGzwr8coNlej-T3NrkU4g4km2VmrjdAwmCLrnIebP3NcUvKHLe5ntuUhqHOAN_7bbRshfzC7CQRncBDi8DgA865hbGcM610Xq2YyCikqugBmB82r607bN271kgu8-VQjfAHYKMOvnJd-W_ArP8dzDtELVrQ5VwkQ4NqJmG8MfWU_s-HMaUsxGyoS9_UVNNZZFfNzI-xgAic9BAWN8nOk-QBRafkAEjmA}
+        namespace-name: default
+  application:
+    name: mtls-openfeign-example

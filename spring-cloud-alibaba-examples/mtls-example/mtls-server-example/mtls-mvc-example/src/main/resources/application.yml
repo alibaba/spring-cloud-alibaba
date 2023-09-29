@@ -1,0 +1,23 @@
+server:
+  port: ${SERVER_PORT:8222}
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        enabled: true
+    governance:
+      auth:
+        enabled: ${ISTIO_AUTH_ENABLE:true}
+    istio:
+      config:
+        enabled: ${ISTIO_CONFIG_ENABLE:true}
+        host: ${ISTIOD_ADDR:123.56.137.232}
+        port: ${ISTIOD_PORT:15012}
+        polling-pool-size: ${POLLING_POOL_SIZE:10}
+        polling-time: ${POLLING_TIME:10}
+        use-agent: ${USE_AGENT:false}
+        service-account-name: auth
+        istiod-token: ${ISTIOD_TOKEN:eyJhbGciOiJSUzI1NiIsImtpZCI6IlFNd2NTQUNVOXk5X18yQ3d0WkZwTVNhQnJPeDkyRGFkdHJ0d3lPb0dwRU0ifQ.eyJhdWQiOlsiaXN0aW8tY2EiXSwiZXhwIjoxNjk1ODQ0NTExLCJpYXQiOjE2OTU4MDEzMTEsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2YyIsImt1YmVybmV0ZXMuaW8iOnsibmFtZXNwYWNlIjoiZGVmYXVsdCIsInBvZCI6eyJuYW1lIjoiZGV0YWlscy12MS01OGM4ODg3OTRiLTRwNmJsIiwidWlkIjoiYzlmOTA5YTAtZDNkNy00ODA2LTljYzktMWU2MzI1NjcxMzAzIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJib29raW5mby1kZXRhaWxzIiwidWlkIjoiNGY4NTg2OTYtODBmMy00NDM0LWJjMjEtZmFiN2IyODZhZWQzIn19LCJuYmYiOjE2OTU4MDEzMTEsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmJvb2tpbmZvLWRldGFpbHMifQ.bz3feEK3yqV73TLlTcLwW6Eyqcv93HWdZ7bCkTOwbcYB7-TOhTOuVymxRWVhCrAiAWCWo4KFTodxaA5NhPvL3UHgkOuJobeT9UTq0X_X6Dd1HKDvXA3LJr8z_7VjiWNgPfDSjdar89wRXNtJV4L_RvHohkRpNX-6WAPeivhy3Aozj2jJTM-NABuYprrJKUhccX8N8hhUvj2ck0Put-ibygS7dNOE6Ve00I5TmSGOig3mB0fsoyrTfboU9SZLI46nHXsns4rY_MmUPMmIOQgyb_EknhtYYH3W6HUirYcTK_mgzPL3XWkS7mA6iUhKCs1TAYscWVp1tmkFJk8a5zTVsA}
+  application:
+    name: mtls-mvc-example
