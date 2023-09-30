@@ -5,4 +5,6 @@
 <suppressions>
     <suppress files="[\\/]spring-cloud-alibaba-examples[\\/]" checks="HideUtilityClassConstructorCheck" />
     <suppress files=".*" checks="LineLength" />
+    <suppress files="[\\/]build[\\/]generated[\\/]source[\\/]proto" checks=".*"/>
+    <suppress files="[\\/]target[\\/]generated-sources[\\/]protobuf" checks=".*"/>
 </suppressions>
