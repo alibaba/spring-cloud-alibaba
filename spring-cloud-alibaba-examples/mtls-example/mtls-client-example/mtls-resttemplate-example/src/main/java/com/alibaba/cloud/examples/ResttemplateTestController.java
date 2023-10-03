@@ -36,12 +36,6 @@ public class ResttemplateTestController {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Autowired
-	private AbstractCertManager abstractCertManager;
-
-	@Autowired
-	private MtlsClientSSLContext mtlsSSLContext;
-
 	@GetMapping("/resttemplate/getMvc")
 	public String getMvc(HttpServletRequest httpServletRequest) {
 		return restTemplate.getForObject("https://mtls-mvc-example/mvc/get",
@@ -52,21 +46,6 @@ public class ResttemplateTestController {
 	public String getWebflux(HttpServletRequest httpServletRequest) {
 		return restTemplate.getForObject("https://mtls-webflux-example/webflux/get",
 				String.class);
-	}
-
-	@GetMapping("/checkpreload")
-	public String checkpreload() {
-		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(
-				HttpClientBuilder.create().setSSLContext(mtlsSSLContext.getSslContext())
-						.setSSLHostnameVerifier(mtlsSSLContext.getHostnameVerifier())
-						.build()));
-		return "success";
-	}
-
-	@Bean
-	@LoadBalanced
-	RestTemplate restTemplate() {
-		return new RestTemplate();
 	}
 
 }
