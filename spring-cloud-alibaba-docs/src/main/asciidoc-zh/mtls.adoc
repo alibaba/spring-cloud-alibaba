@@ -255,8 +255,8 @@ spec:
 |===
 |配置项|key|说明
 |认证策略| kind| 对等认证策略:PeerAuthentication; 请求认证策略:RequestAuthentication
-|策略适用的命名空间| metadata.namespace| 允许:ALLOW； 拒绝:DENY
-|允许还是拒绝请求| spec.action|
+|策略适用的命名空间| metadata.namespace|
+|允许还是拒绝请求| spec.action| 允许:ALLOW； 拒绝:DENY
 |何时触发动作| spec.rules|
 |请求的来源| spec.rules.from|
 |===
