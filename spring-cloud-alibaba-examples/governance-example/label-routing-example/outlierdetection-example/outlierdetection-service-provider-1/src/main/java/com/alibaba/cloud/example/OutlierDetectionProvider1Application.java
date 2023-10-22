@@ -45,10 +45,6 @@ public class OutlierDetectionProvider1Application {
 	public String test() {
 
 		throw new RuntimeException("mock service-provider-1 exception.");
-
-//		String host = nacosRegistration.getHost();
-//		int port = nacosRegistration.getPort();
-//		return "Route in " + host + ": " + port + ". ";
 	}
 
 }

@@ -11,32 +11,26 @@
 		<relativePath>../../../../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>outlierdetection-servcie-consumer</artifactId>
-
+	<artifactId>outlierdetection-service-consumer</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
-
 	</dependencies>
 
 	<build>

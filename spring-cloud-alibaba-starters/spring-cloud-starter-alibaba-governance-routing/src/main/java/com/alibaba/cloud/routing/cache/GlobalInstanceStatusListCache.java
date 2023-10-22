@@ -79,7 +79,7 @@ public final class GlobalInstanceStatusListCache {
 						instanceInfoMap.put(instance.getIp() + ":" + instance.getPort(),
 								sif);
 						serviceInstanceList.add(instanceInfoMap);
-						Map<String, List<Map<String, ServiceInstanceInfo>>> serviceMapTmp = new HashMap<>();
+						Map<String, List<Map<String, ServiceInstanceInfo>>> serviceMapTmp = new ConcurrentHashMap<>();
 						serviceMapTmp.put(targetName, serviceInstanceList);
 						globalServiceList.add(serviceMapTmp);
 					}
@@ -97,11 +97,10 @@ public final class GlobalInstanceStatusListCache {
 	public static boolean checkContainersInstance(String target, Instance instance) {
 		AtomicBoolean res = new AtomicBoolean(false);
 
-		globalServiceList.forEach(val -> val.forEach((var9, var10) -> {
+		globalServiceList.forEach(val -> val.forEach((serviceKey, serviceList) -> {
 			if (val.containsKey(target)) {
-				var10.forEach(var1 -> {
-					if (var1.containsKey(instance.getIp() + ":" + instance.getPort())) {
-
+				serviceList.forEach(instanceInfoMap -> {
+					if (instanceInfoMap.containsKey(instance.getIp() + ":" + instance.getPort())) {
 						res.set(true);
 					}
 				});
@@ -262,22 +261,22 @@ public final class GlobalInstanceStatusListCache {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder var16 = new StringBuilder();
-		var16.append("{\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("{\n");
 		for (Map<String, List<Map<String, ServiceInstanceInfo>>> map : globalServiceList) {
-			var16.append("  ").append(map.keySet().iterator().next()).append(": [\n");
+			sb.append("  ").append(map.keySet().iterator().next()).append(": [\n");
 			for (Map<String, ServiceInstanceInfo> innerMap : map
 					.get(map.keySet().iterator().next())) {
-				var16.append("    ").append(innerMap.keySet().iterator().next())
+				sb.append("    ").append(innerMap.keySet().iterator().next())
 						.append(": ")
 						.append(innerMap.get(innerMap.keySet().iterator().next()))
 						.append("\n");
 			}
-			var16.append("  ").append("],\n");
+			sb.append("  ").append("],\n");
 		}
-		var16.append("}");
+		sb.append("}");
 
-		return var16.toString();
+		return sb.toString();
 	}
 
 }

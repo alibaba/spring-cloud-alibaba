@@ -72,7 +72,7 @@ public class OutlierDetectionRecover {
 		int unHealthInstanceNum = GlobalInstanceStatusListCache.getRemoveInstanceNum(targetServiceName);
 		long baseEjectionTime = routingProperties.getBaseEjectionTime();
 
-		System.out.println(
+		log.info(
 				"最大移除上限数：" + removeUpperLimitNum +
 				"，不健康实例数：" + unHealthInstanceNum +
 				"，缓存中 " + targetServiceName + " 的服务实例数："
@@ -82,23 +82,22 @@ public class OutlierDetectionRecover {
 
 			// 判断错误率是否合格？ use metrics!
 			if (sif.getConsecutiveErrors().get() == 2) {
-				System.out.println("错误次数达到上限，进入摘除逻辑...");
+				log.error("错误次数达到上限，进入摘除逻辑...");
 
 				// 判断是否达到上限比
 				if (!(removeUpperLimitNum == unHealthInstanceNum)) {
-					System.out.println("通过摘除上限比判断，准备摘除...");
+					log.info("通过摘除上限比判断，准备摘除...");
 					// 摘除
 					sif.setStatus(false);
 					sif.setRemoveTime(System.currentTimeMillis());
-					System.err.println("成功摘除：" + GlobalInstanceStatusListCache.getAll());
+					log.info("成功摘除：" + GlobalInstanceStatusListCache.getAll());
 				}
 
 				GlobalInstanceStatusListCache.setInstanceInfoByInstanceNames(sif);
-				System.err.println("");
 			}
 			else {
 
-				System.out.println("错误率条件不成立，进入实例恢复....");
+				log.info("错误率条件不成立，进入实例恢复....");
 
 				System.out.println(sif);
 

@@ -133,7 +133,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 				// if outlier detection function is enabled.
 				if (routingProperties.isEnableOutlierDetected()) {
 
-					return chooseServerByOutlierDetectionPolicy(targetServiceName);
+					return chooseServerByOutlier(targetServiceName);
 				}
 
 				return LoadBalanceUtil.loadBalanceByOrdinaryRule(loadBalancer, key,
@@ -201,7 +201,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		}
 	}
 
-	private Server chooseServerByOutlierDetectionPolicy(String targetServiceName) {
+	private Server chooseServerByOutlier(String targetServiceName) {
 
 		try {
 

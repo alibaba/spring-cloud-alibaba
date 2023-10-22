@@ -35,29 +35,29 @@ public final class OutlierDetectionConstants {
 	public enum ResponseCode {
 
 		/**
-		 * 访问成功.
+		 * Access successful.
 		 */
-		_200(200, "访问成功"),
+		_200(200, "Access successful"),
 		/**
-		 * 收数据的数据类型不匹配.
+		 * The data types do not match.
 		 */
-		_400(400, "收数据的数据类型不匹配"),
+		_400(400, "The data types do not match"),
 		/**
-		 * 服务器拒绝请求.
+		 * The server rejected the request.
 		 */
-		_403(403, "服务器拒绝请求"),
+		_403(403, "The server rejected the request"),
 		/**
-		 * 服务器找不到请求的网页，输入链接有误.
+		 * The server could not find the requested web page and entered the link incorrectly.
 		 */
-		_404(404, "服务器找不到请求的网页，输入链接有误"),
+		_404(404, "The server could not find the requested web page and entered the link incorrectly"),
 		/**
-		 * 服务器遇到错误，无法完成请求.
+		 * The server encountered an error and could not complete the request.
 		 */
-		_500(500, "服务器遇到错误，无法完成请求"),
+		_500(500, "The server encountered an error and could not complete the request"),
 		/**
-		 * 服务器作为网关或代理，从上游服务器收到无效响应.
+		 * The server, acting as a gateway or proxy, receives an invalid response from the upstream server.
 		 */
-		_502(502, "服务器作为网关或代理，从上游服务器收到无效响应");
+		_502(502, "The server, acting as a gateway or proxy, receives an invalid response from the upstream server");
 
 		/**
 		 * Code.
