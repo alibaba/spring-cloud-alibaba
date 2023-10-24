@@ -25,6 +25,7 @@ import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
 import com.alibaba.cloud.routing.context.LabelRoutingContextHolder;
 import com.alibaba.cloud.routing.context.defaults.DefaultLabelLabelRoutingContextHolder;
 import com.alibaba.cloud.routing.listener.RoutingDataListener;
+import com.alibaba.cloud.routing.properties.LabelRoutingProperties;
 import com.alibaba.cloud.routing.publish.TargetServiceChangedPublisher;
 import com.alibaba.cloud.routing.repository.FilterService;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
@@ -36,6 +37,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -47,6 +49,7 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 
 @Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties({ LabelRoutingProperties.class })
 @AutoConfigureOrder(LabelRoutingAutoConfiguration.ROUTING_AUTO_CONFIG_ORDER)
 public class LabelRoutingAutoConfiguration {
 
@@ -107,7 +110,8 @@ public class LabelRoutingAutoConfiguration {
 	protected static class RoutingFeignConfiguration {
 
 		@Bean
-		@ConditionalOnProperty(value = LabelRoutingConstants.FEIGN_INTERCEPT_ENABLED,
+		@ConditionalOnProperty(
+				value = LabelRoutingConstants.WebClient.FEIGN_INTERCEPT_ENABLED,
 				matchIfMissing = true)
 		public OpenFeignInterceptor feignRequestInterceptor() {
 			return new OpenFeignInterceptor();
@@ -119,7 +123,8 @@ public class LabelRoutingAutoConfiguration {
 	protected static class RoutingRestTemplateConfiguration {
 
 		@Bean
-		@ConditionalOnProperty(value = LabelRoutingConstants.REST_INTERCEPT_ENABLED,
+		@ConditionalOnProperty(
+				value = LabelRoutingConstants.WebClient.REST_INTERCEPT_ENABLED,
 				matchIfMissing = true)
 		public RestTemplateInterceptor restTemplateInterceptor() {
 			return new RestTemplateInterceptor();
@@ -127,7 +132,8 @@ public class LabelRoutingAutoConfiguration {
 
 		@Bean
 		@ConditionalOnMissingBean
-		@ConditionalOnProperty(value = LabelRoutingConstants.REST_INTERCEPT_ENABLED,
+		@ConditionalOnProperty(
+				value = LabelRoutingConstants.WebClient.REST_INTERCEPT_ENABLED,
 				matchIfMissing = true)
 		public RestBeanPostProcessor restBeanPostProcessor() {
 			return new RestBeanPostProcessor();
@@ -140,7 +146,8 @@ public class LabelRoutingAutoConfiguration {
 	protected static class RoutingWebClientConfiguration {
 
 		@Bean
-		@ConditionalOnProperty(value = LabelRoutingConstants.REACTIVE_INTERCEPT_ENABLED,
+		@ConditionalOnProperty(
+				value = LabelRoutingConstants.WebClient.REACTIVE_INTERCEPT_ENABLED,
 				matchIfMissing = true)
 		public ReactiveInterceptor reactiveInterceptor() {
 			return new ReactiveInterceptor();
@@ -148,7 +155,8 @@ public class LabelRoutingAutoConfiguration {
 
 		@Bean
 		@ConditionalOnMissingBean
-		@ConditionalOnProperty(value = LabelRoutingConstants.REACTIVE_INTERCEPT_ENABLED,
+		@ConditionalOnProperty(
+				value = LabelRoutingConstants.WebClient.REACTIVE_INTERCEPT_ENABLED,
 				matchIfMissing = true)
 		public ReactiveBeanPostProcessor reactiveBeanPostProcessor() {
 			return new ReactiveBeanPostProcessor();

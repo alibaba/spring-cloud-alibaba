@@ -22,12 +22,11 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
+import com.alibaba.cloud.routing.context.LabelRoutingContext;
 import com.alibaba.cloud.routing.properties.LabelRoutingProperties;
-import com.alibaba.cloud.routing.zuul.constants.RoutingZuulConstants;
-import com.alibaba.cloud.routing.zuul.context.LabelRoutingZuulContext;
 import com.alibaba.cloud.routing.zuul.filter.LabelRoutingZuulFilter;
-import com.alibaba.cloud.routing.zuul.util.LabelRoutingZuulFilterResolver;
 import com.netflix.zuul.context.RequestContext;
+import org.apache.commons.lang.StringUtils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
@@ -40,12 +39,12 @@ import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 public class DefaultLabelRoutingZuulFilter extends LabelRoutingZuulFilter {
 
 	// Zuul filter order.
-	@Value("${" + RoutingZuulConstants.ZUUL_ROUTE_FILTER_ORDER + ":"
-			+ RoutingZuulConstants.ZUUL_ROUTE_FILTER_ORDER_VALUE + "}")
+	@Value("${" + LabelRoutingConstants.Zuul.ZUUL_ROUTE_FILTER_ORDER + ":"
+			+ LabelRoutingConstants.Zuul.ZUUL_ROUTE_FILTER_ORDER_VALUE + "}")
 	protected Integer zuulFilterOrder;
 
 	// Gateway rule priority switch.
-	@Value("${" + RoutingZuulConstants.ZUUL_HEADER_PRIORITY + ":true}")
+	@Value("${" + LabelRoutingConstants.Zuul.ZUUL_HEADER_PRIORITY + ":true}")
 	protected Boolean zuulHeaderPriority;
 
 	@Resource
@@ -82,17 +81,39 @@ public class DefaultLabelRoutingZuulFilter extends LabelRoutingZuulFilter {
 		Map<String, String> routingPropertiesMap = new HashMap<>();
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,
 				properties.getZone());
-		LabelRoutingZuulContext.getCurrentContext().setZone(properties.getZone());
+		LabelRoutingContext.getCurrentContext().setRoutingZone(properties.getZone());
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_REGION,
 				properties.getRegion());
-		LabelRoutingZuulContext.getCurrentContext().setRegion(properties.getRegion());
+		LabelRoutingContext.getCurrentContext().setRoutingRegion(properties.getRegion());
 
-		LabelRoutingZuulContext.getCurrentContext()
+		LabelRoutingContext.getCurrentContext()
 				.setHttpServletRequest(context.getRequest());
 
-		routingPropertiesMap.forEach((k, v) -> LabelRoutingZuulFilterResolver
-				.setHeader(context, k, v, zuulHeaderPriority));
+		routingPropertiesMap
+				.forEach((k, v) -> setHeader(context, k, v, zuulHeaderPriority));
 
+	}
+
+	private void setHeader(RequestContext context, String headerName, String headerValue,
+			Boolean zuulHeaderPriority) {
+		if (StringUtils.isEmpty(headerValue)) {
+			return;
+		}
+
+		if (zuulHeaderPriority) {
+
+			context.addZuulRequestHeader(headerName, headerValue);
+		}
+		else {
+
+			String header = context.getRequest().getHeader(headerName);
+
+			if (StringUtils.isEmpty(header)) {
+
+				context.addZuulRequestHeader(headerName, headerValue);
+			}
+
+		}
 	}
 
 }

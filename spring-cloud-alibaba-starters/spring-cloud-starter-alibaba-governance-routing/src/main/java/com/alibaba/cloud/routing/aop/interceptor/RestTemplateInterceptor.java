@@ -46,7 +46,8 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 	 * is started, you can disable the core policy header delivery, which can save the
 	 * size of the transmitted data and improve performance to certain extent
 	 */
-	@Value("${" + LabelRoutingConstants.REST_HEADER_TRANSMISSION_ENABLED + ":true}")
+	@Value("${" + LabelRoutingConstants.WebClient.REST_HEADER_TRANSMISSION_ENABLED
+			+ ":true}")
 	protected Boolean restTemplateCoreHeaderTransmissionEnabled;
 
 	@Resource
@@ -55,9 +56,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body,
 			ClientHttpRequestExecution execution) throws IOException {
-
 		applyHeader(request);
-
 		return execution.execute(request, body);
 	}
 
@@ -65,7 +64,6 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
 		Map<String, String> routingPropertiesMap = new HashMap<>();
 		HttpHeaders headers = request.getHeaders();
-
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,
 				properties.getZone());
 		LabelRoutingContext.getCurrentContext().setRoutingZone(properties.getZone());
@@ -76,11 +74,9 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 		routingPropertiesMap.forEach((k, v) -> {
 			if (StringUtils.isNotEmpty(k)
 					&& !StringUtils.equals(k, LabelRoutingConstants.DEFAULT)) {
-
 				headers.add(k, v);
 			}
 		});
-
 	}
 
 }

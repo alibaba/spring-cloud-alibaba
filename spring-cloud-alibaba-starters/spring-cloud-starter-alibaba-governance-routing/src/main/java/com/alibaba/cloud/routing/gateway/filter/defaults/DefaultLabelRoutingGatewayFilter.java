@@ -21,11 +21,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
-import com.alibaba.cloud.routing.gateway.constants.LabelRoutingGatewayConstants;
-import com.alibaba.cloud.routing.gateway.context.LabelRoutingGatewayContext;
+import com.alibaba.cloud.routing.context.LabelRoutingContext;
 import com.alibaba.cloud.routing.gateway.filter.LabelRoutingGatewayFilter;
-import com.alibaba.cloud.routing.gateway.util.LabelRoutingGatewayFilterResolver;
 import com.alibaba.cloud.routing.properties.LabelRoutingProperties;
 import reactor.core.publisher.Mono;
 
@@ -42,12 +41,12 @@ import org.springframework.web.server.ServerWebExchange;
 public class DefaultLabelRoutingGatewayFilter implements LabelRoutingGatewayFilter {
 
 	// Filter order.
-	@Value("${" + LabelRoutingGatewayConstants.GATEWAY_ROUTE_FILTER_ORDER + ":"
-			+ LabelRoutingGatewayConstants.GATEWAY_ROUTE_FILTER_ORDER_VALUE + "}")
+	@Value("${" + LabelRoutingConstants.Gateway.GATEWAY_ROUTE_FILTER_ORDER + ":"
+			+ LabelRoutingConstants.Gateway.GATEWAY_ROUTE_FILTER_ORDER_VALUE + "}")
 	protected Integer filterOrderNum;
 
 	// Gateway rule priority switch.
-	@Value("${" + LabelRoutingGatewayConstants.GATEWAY_HEADER_PRIORITY + ":true}")
+	@Value("${" + LabelRoutingConstants.Gateway.GATEWAY_HEADER_PRIORITY + ":true}")
 	protected Boolean gatewayRequestHeaderPriority;
 
 	@Resource
@@ -56,7 +55,7 @@ public class DefaultLabelRoutingGatewayFilter implements LabelRoutingGatewayFilt
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-		LabelRoutingGatewayContext.getCurrentContext().setExchange(exchange);
+		LabelRoutingContext.getCurrentContext().setExchange(exchange);
 
 		ServerHttpRequest request = exchange.getRequest();
 		ServerHttpRequest.Builder requestBuilder = request.mutate();
@@ -66,7 +65,7 @@ public class DefaultLabelRoutingGatewayFilter implements LabelRoutingGatewayFilt
 		ServerHttpRequest newRequest = requestBuilder.build();
 		ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
 
-		LabelRoutingGatewayContext.getCurrentContext().setExchange(newExchange);
+		LabelRoutingContext.getCurrentContext().setExchange(newExchange);
 
 		return chain.filter(newExchange);
 	}
@@ -78,15 +77,14 @@ public class DefaultLabelRoutingGatewayFilter implements LabelRoutingGatewayFilt
 		Map<String, String> propertiesMap = new HashMap<>();
 		propertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,
 				properties.getZone());
-		LabelRoutingGatewayContext.getCurrentContext().setZone(properties.getZone());
+		LabelRoutingContext.getCurrentContext().setRoutingZone(properties.getZone());
 		propertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_REGION,
 				properties.getRegion());
-		LabelRoutingGatewayContext.getCurrentContext().setRegion(properties.getRegion());
-		LabelRoutingGatewayContext.getCurrentContext().setServerHttpRequest(request);
+		LabelRoutingContext.getCurrentContext().setRoutingRegion(properties.getRegion());
+		LabelRoutingContext.getCurrentContext().setServerHttpRequest(request);
 
-		propertiesMap.forEach(
-				(k, v) -> LabelRoutingGatewayFilterResolver.setRequestHeader(request,
-						requestBuilder, k, v, gatewayRequestHeaderPriority));
+		propertiesMap.forEach((k, v) -> setRequestHeader(request, requestBuilder, k, v,
+				gatewayRequestHeaderPriority));
 
 	}
 
@@ -94,6 +92,36 @@ public class DefaultLabelRoutingGatewayFilter implements LabelRoutingGatewayFilt
 	public int getOrder() {
 
 		return filterOrderNum;
+	}
+
+	private void setRequestHeader(ServerHttpRequest request,
+			ServerHttpRequest.Builder requestBuilder, String requestHeaderName,
+			String requestHeaderValue, Boolean gatewayRequestHeaderPriority) {
+
+		if (StringUtils.isEmpty(requestHeaderValue)) {
+			return;
+		}
+
+		if (gatewayRequestHeaderPriority) {
+
+			// Under the gateway priority condition, clear all external headers.
+			requestBuilder.headers(headers -> headers.remove(requestHeaderName));
+
+			// Add the header set by the gateway.
+			requestBuilder.headers(
+					headers -> headers.add(requestHeaderName, requestHeaderValue));
+		}
+		else {
+			/**
+			 * If the gateway is not prioritized, determine whether the external request
+			 * contains headers. If it does, the built-in header is not added.
+			 */
+			if (!request.getHeaders().containsKey(requestHeaderName)) {
+				requestBuilder.headers(
+						headers -> headers.add(requestHeaderName, requestHeaderValue));
+			}
+		}
+
 	}
 
 }

@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.routing.zuul.configuration;
 
-import com.alibaba.cloud.routing.context.LabelRoutingContextHolder;
-import com.alibaba.cloud.routing.zuul.context.defaults.DefaultLabelRoutingZuulContextHolder;
 import com.alibaba.cloud.routing.zuul.filter.LabelRoutingZuulFilter;
 import com.alibaba.cloud.routing.zuul.filter.defaults.DefaultLabelRoutingZuulFilter;
 import com.netflix.zuul.ZuulFilter;
@@ -35,16 +33,9 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-@ConditionalOnClass({ZuulFilter.class})
+@ConditionalOnClass({ ZuulFilter.class })
 @AutoConfigureBefore(RibbonClientConfiguration.class)
 public class LabelRoutingZuulConfiguration {
-
-	@Bean
-	@ConditionalOnMissingBean
-	public LabelRoutingContextHolder routingZuulContextHolder() {
-
-		return new DefaultLabelRoutingZuulContextHolder();
-	}
 
 	@Bean
 	@ConditionalOnMissingBean

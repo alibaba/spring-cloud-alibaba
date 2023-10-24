@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.routing.context;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
 
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -40,12 +38,6 @@ public abstract class AbstractLabelRoutingContextHolder
 	public String getLabelRouteZone() {
 
 		return LabelRoutingConstants.DEFAULT;
-	}
-
-	@Override
-	public HttpServletRequest getgHttpServletRequest() {
-
-		return null;
 	}
 
 	@Override

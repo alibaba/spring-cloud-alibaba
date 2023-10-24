@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.routing.gateway.configuration;
 
-import com.alibaba.cloud.routing.context.LabelRoutingContextHolder;
-import com.alibaba.cloud.routing.gateway.context.defaults.DefaultLabelRoutingGatewayContextHolder;
 import com.alibaba.cloud.routing.gateway.filter.LabelRoutingGatewayClearFilter;
 import com.alibaba.cloud.routing.gateway.filter.LabelRoutingGatewayFilter;
 import com.alibaba.cloud.routing.gateway.filter.defaults.DefaultLabelRoutingGatewayClearFilter;
@@ -37,7 +35,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-@ConditionalOnClass({GlobalFilter.class})
+@ConditionalOnClass({ GlobalFilter.class })
 @AutoConfigureBefore(RibbonClientConfiguration.class)
 public class LabelRoutingGatewayConfiguration {
 
@@ -53,13 +51,6 @@ public class LabelRoutingGatewayConfiguration {
 	public LabelRoutingGatewayClearFilter labelRoutingGatewayClearFilter() {
 
 		return new DefaultLabelRoutingGatewayClearFilter();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public LabelRoutingContextHolder labelRoutingContextHolder() {
-
-		return new DefaultLabelRoutingGatewayContextHolder();
 	}
 
 }

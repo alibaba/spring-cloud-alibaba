@@ -39,7 +39,6 @@ import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.ribbon.NacosServer;
 import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
 import com.alibaba.cloud.routing.context.LabelRoutingContextHolder;
-import com.alibaba.cloud.routing.exception.LabelRoutingException;
 import com.alibaba.cloud.routing.properties.LabelRoutingProperties;
 import com.alibaba.cloud.routing.publish.TargetServiceChangedPublisher;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
@@ -79,12 +78,6 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 
 	@Resource
 	private LabelRoutingContextHolder labelRoutingContextHolder;
-
-	@Resource
-	private LabelRoutingContextHolder labelRoutingGatewayContextHolder;
-
-	@Resource
-	private LabelRoutingContextHolder labelRoutingZuulGatewayContextHolder;
 
 	@Autowired
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
@@ -274,7 +267,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		}
 		else {
 
-			ServerHttpRequest serverHttpRequest = labelRoutingGatewayContextHolder
+			ServerHttpRequest serverHttpRequest = labelRoutingContextHolder
 					.getServerHttpRequest();
 
 			serviceFilter(targetServiceName, versionSet, weightMap, fallbackVersionSet,
@@ -533,7 +526,7 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		case ConditionMatchUtil.NOT_EQUAL:
 			return ConditionMatchUtil.noEqualMatch(str, comparator);
 		default:
-			throw new LabelRoutingException("unsupported string compare operation");
+			throw new RuntimeException("unsupported string compare operation");
 		}
 	}
 
@@ -638,20 +631,6 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 		// Get the regional affinity route label from the service
 		String region = labelRoutingContextHolder.getLabelRouteRegion();
 		String zone = labelRoutingContextHolder.getLabelRouteZone();
-
-		// Get the regional affinity route label from the gateway
-		if (StringUtils.isEmpty(region) && StringUtils.isEmpty(zone)) {
-
-			region = labelRoutingGatewayContextHolder.getLabelRouteRegion();
-			zone = labelRoutingGatewayContextHolder.getLabelRouteZone();
-		}
-
-		// Get the regional affinity route label from the zuul
-		if (StringUtils.isEmpty(region) && StringUtils.isEmpty(zone)) {
-
-			region = labelRoutingZuulGatewayContextHolder.getLabelRouteRegion();
-			zone = labelRoutingZuulGatewayContextHolder.getLabelRouteZone();
-		}
 
 		if (StringUtils.isEmpty(region) && StringUtils.isEmpty(zone)) {
 

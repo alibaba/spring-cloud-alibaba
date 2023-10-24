@@ -45,7 +45,8 @@ public class ReactiveInterceptor implements ExchangeFilterFunction {
 	 * subscription is started, you can disable the core policy header delivery, which can
 	 * save the size of the transmitted data and improve performance to a certain extent
 	 */
-	@Value("${" + LabelRoutingConstants.WEB_CLIENT_HEADER_TRANSMISSION_ENABLED + ":true}")
+	@Value("${" + LabelRoutingConstants.WebClient.WEB_CLIENT_HEADER_TRANSMISSION_ENABLED
+			+ ":true}")
 	protected Boolean webClientHeaderTransmissionEnabled;
 
 	@Resource
@@ -53,13 +54,9 @@ public class ReactiveInterceptor implements ExchangeFilterFunction {
 
 	@Override
 	public Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next) {
-
 		ClientRequest.Builder requestBuilder = ClientRequest.from(request);
-
 		applyRequestHeader(requestBuilder);
-
 		ClientRequest newRequest = requestBuilder.build();
-
 		return next.exchange(newRequest);
 	}
 
@@ -72,7 +69,6 @@ public class ReactiveInterceptor implements ExchangeFilterFunction {
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_REGION,
 				properties.getRegion());
 		LabelRoutingContext.getCurrentContext().setRoutingRegion(properties.getRegion());
-
 		routingPropertiesMap.forEach((k, v) -> {
 			if (StringUtils.isNotEmpty(k)
 					&& !StringUtils.equals(k, LabelRoutingConstants.DEFAULT)) {

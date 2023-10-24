@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.routing.context.defaults;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.alibaba.cloud.routing.context.AbstractLabelRoutingContextHolder;
 import com.alibaba.cloud.routing.context.LabelRoutingContext;
 
@@ -39,12 +37,6 @@ public class DefaultLabelLabelRoutingContextHolder
 	public String getLabelRouteZone() {
 
 		return LabelRoutingContext.getCurrentContext().getRoutingZone();
-	}
-
-	@Override
-	public HttpServletRequest getgHttpServletRequest() {
-
-		return LabelRoutingContext.getCurrentContext().getServletRequest();
 	}
 
 }

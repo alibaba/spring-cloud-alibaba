@@ -42,7 +42,8 @@ public class OpenFeignInterceptor implements RequestInterceptor {
 	 * started, you can disable the core policy header delivery, which can save the size
 	 * of the transmitted data and improve performance to certain extent.
 	 */
-	@Value("${" + LabelRoutingConstants.FEIGN_HEADER_TRANSMISSION_ENABLED + ":true}")
+	@Value("${" + LabelRoutingConstants.WebClient.FEIGN_HEADER_TRANSMISSION_ENABLED
+			+ ":true}")
 	protected Boolean feignCoreHeaderTransmissionEnabled;
 
 	@Resource
@@ -50,13 +51,11 @@ public class OpenFeignInterceptor implements RequestInterceptor {
 
 	@Override
 	public void apply(RequestTemplate request) {
-
 		applyRequestHeader(request);
 
 	}
 
 	private void applyRequestHeader(RequestTemplate request) {
-
 		Map<String, String> routingPropertiesMap = new HashMap<>();
 		routingPropertiesMap.put(LabelRoutingConstants.SCA_ROUTING_SERVICE_ZONE,
 				properties.getZone());
@@ -68,11 +67,9 @@ public class OpenFeignInterceptor implements RequestInterceptor {
 		routingPropertiesMap.forEach((k, v) -> {
 			if (StringUtils.isNotEmpty(k)
 					&& !StringUtils.equals(k, LabelRoutingConstants.DEFAULT)) {
-
 				request.header(k, v);
 			}
 		});
-
 	}
 
 }

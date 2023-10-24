@@ -16,8 +16,6 @@
 
 package com.alibaba.cloud.routing.context;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
 /**
@@ -32,7 +30,5 @@ public interface LabelRoutingContextHolder {
 	String getLabelRouteZone();
 
 	ServerHttpRequest getServerHttpRequest();
-
-	HttpServletRequest getgHttpServletRequest();
 
 }

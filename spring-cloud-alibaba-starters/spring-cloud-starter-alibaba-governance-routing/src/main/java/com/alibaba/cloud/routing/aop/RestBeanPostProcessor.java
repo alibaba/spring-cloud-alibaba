@@ -36,19 +36,16 @@ public class RestBeanPostProcessor implements BeanPostProcessor {
 	@Override
 	public Object postProcessBeforeInitialization(Object targetBean, String beanName)
 			throws BeansException {
-
 		return targetBean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object targetBean, String beanName)
 			throws BeansException {
-
 		if (targetBean instanceof RestTemplate) {
 			RestTemplate restTemplate = (RestTemplate) targetBean;
 			restTemplate.getInterceptors().add(restTemplateInterceptor);
 		}
-
 		return targetBean;
 	}
 

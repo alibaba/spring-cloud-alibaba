@@ -36,20 +36,16 @@ public class ReactiveBeanPostProcessor implements BeanPostProcessor {
 	@Override
 	public Object postProcessBeforeInitialization(Object targetBean, String beanName)
 			throws BeansException {
-
 		return targetBean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object targetBean, String beanName)
 			throws BeansException {
-
 		if (targetBean instanceof WebClient.Builder) {
 			WebClient.Builder webClientBuilder = (WebClient.Builder) targetBean;
-
 			webClientBuilder.filter(webClientInterceptor);
 		}
-
 		return targetBean;
 	}
 

@@ -16,7 +16,7 @@
 
 package com.alibaba.cloud.routing.gateway.filter.defaults;
 
-import com.alibaba.cloud.routing.gateway.context.LabelRoutingGatewayContext;
+import com.alibaba.cloud.routing.context.LabelRoutingContext;
 import com.alibaba.cloud.routing.gateway.filter.LabelRoutingGatewayClearFilter;
 import reactor.core.publisher.Mono;
 
@@ -40,7 +40,7 @@ public class DefaultLabelRoutingGatewayClearFilter
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-		LabelRoutingGatewayContext.clearCurrentContext();
+		LabelRoutingContext.clearCurrentContext();
 
 		return chain.filter(exchange);
 	}

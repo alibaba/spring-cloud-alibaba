@@ -23,6 +23,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.web.server.ServerWebExchange;
+
 /**
  * @author yuluo
  * @author <a href="1481556636@qq.com"></a>
@@ -39,12 +42,32 @@ public class LabelRoutingContext {
 
 	private HttpServletRequest servletRequest;
 
-	public HttpServletRequest getServletRequest() {
+	private ServerHttpRequest serverHttpRequest;
 
+	private ServerWebExchange exchange;
+
+	public ServerWebExchange getExchange() {
+		return exchange;
+	}
+
+	public ServerHttpRequest getServerHttpRequest() {
+
+		return serverHttpRequest;
+	}
+
+	public void setServerHttpRequest(ServerHttpRequest serverHttpRequest) {
+		this.serverHttpRequest = serverHttpRequest;
+	}
+
+	public void setExchange(ServerWebExchange exchange) {
+		this.exchange = exchange;
+	}
+
+	public HttpServletRequest getHttpServletRequest() {
 		return servletRequest;
 	}
 
-	public void setServletRequest(HttpServletRequest servletRequest) {
+	public void setHttpServletRequest(HttpServletRequest servletRequest) {
 		this.servletRequest = servletRequest;
 	}
 
