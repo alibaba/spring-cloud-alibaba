@@ -205,6 +205,14 @@
 						"header": []
 					},
 					"response": []
+				},
+				{
+					"name": "获取服务列表",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},

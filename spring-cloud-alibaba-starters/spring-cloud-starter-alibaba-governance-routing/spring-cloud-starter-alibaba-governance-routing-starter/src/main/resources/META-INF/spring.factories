@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.alibaba.cloud.routing.configuration.LabelRoutingAutoConfiguration,\
-  com.alibaba.cloud.routing.configuration.LabelPropertiesAutoConfiguration

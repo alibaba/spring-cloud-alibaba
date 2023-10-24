@@ -33,7 +33,7 @@
 
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-governance-routing-zuul-adapter</artifactId>
+			<artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>com.alibaba.cloud</groupId>
