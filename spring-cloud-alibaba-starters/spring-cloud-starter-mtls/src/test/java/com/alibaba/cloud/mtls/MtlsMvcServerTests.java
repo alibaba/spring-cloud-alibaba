@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.mtls.server.webflux;
+package com.alibaba.cloud.mtls;
 
 import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
+import com.alibaba.cloud.governance.istio.XdsAutoConfiguration;
 import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
-import com.alibaba.cloud.mtls.MockCertManager;
-import com.alibaba.cloud.mtls.NoVerifyHttpClientFactory;
-import com.alibaba.cloud.mtls.server.netty.MtlsNettyServerCustomizer;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@ExtendWith(SpringExtension.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		properties = { "spring.main.web-application-type=reactive",
+		properties = { "spring.main.web-application-type=servlet",
 				"spring.cloud.nacos.discovery.enabled=false" },
-		classes = { MtlsWebfluxApplication.class,
-				MtlsWebfluxServerTest.CertificateConfiguration.class })
-public class MtlsWebfluxServerTest {
+		classes = { MtlsClientTests.TestConfig.class })
+public class MtlsMvcServerTests {
 
 	@Value("${local.server.port}")
 	private int port;
@@ -51,20 +49,17 @@ public class MtlsWebfluxServerTest {
 	@Test
 	public void testStatusCode() throws Exception {
 		boolean flag = false;
-		CloseableHttpResponse response;
-		try {
-			response = client.execute(new HttpGet("http://127.0.0.1:" + port + "/echo"));
-		}
-		catch (Throwable t) {
-			flag = true;
-		}
-		Assertions.assertTrue(flag);
+		CloseableHttpResponse response = client
+				.execute(new HttpGet("http://127.0.0.1:" + port + "/echo"));
+		Assert.assertEquals(400, response.getStatusLine().getStatusCode());
 		response = client.execute(new HttpGet("https://127.0.0.1:" + port + "/echo"));
-		Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
+		Assert.assertEquals(404, response.getStatusLine().getStatusCode());
 	}
 
-	@TestConfiguration
-	static class CertificateConfiguration {
+	@Configuration
+	@EnableAutoConfiguration(exclude = XdsAutoConfiguration.class)
+	@ImportAutoConfiguration(MtlsAutoConfiguration.class)
+	public static class TestConfig {
 
 		@Bean
 		public AbstractCertManager mockCertManager() {
@@ -74,14 +69,6 @@ public class MtlsWebfluxServerTest {
 		@Bean
 		public ControlPlaneInitedBean mockInitBean() {
 			return new ControlPlaneInitedBean();
-		}
-
-		@Bean
-		public NettyReactiveWebServerFactory nettyFactory(
-				MtlsNettyServerCustomizer customizer) {
-			NettyReactiveWebServerFactory nettyReactiveWebServerFactory = new NettyReactiveWebServerFactory();
-			nettyReactiveWebServerFactory.addServerCustomizers(customizer);
-			return nettyReactiveWebServerFactory;
 		}
 
 	}

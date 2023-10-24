@@ -14,36 +14,40 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.mtls.client;
+package com.alibaba.cloud.mtls;
 
 import com.alibaba.cloud.commons.governance.ControlPlaneInitedBean;
+import com.alibaba.cloud.governance.istio.XdsAutoConfiguration;
 import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
-import com.alibaba.cloud.mtls.MockCertManager;
-import com.alibaba.cloud.mtls.NoVerifyHttpClientFactory;
+import com.alibaba.cloud.mtls.client.MtlsClientSSLContext;
 import com.alibaba.cloud.mtls.server.netty.MtlsNettyServerCustomizer;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.reactive.SslInfo;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
-@ExtendWith(SpringExtension.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		properties = { "spring.main.web-application-type=reactive",
 				"spring.cloud.nacos.discovery.enabled=false" },
-		classes = { MtlsApplication.class,
-				MtlsClientTest.CertificateConfiguration.class })
-public class MtlsClientTest {
+		classes = { MtlsClientTests.TestConfig.class })
+public class MtlsClientTests {
 
 	@Value("${local.server.port}")
 	private int port;
@@ -55,7 +59,6 @@ public class MtlsClientTest {
 	@Autowired
 	private MtlsClientSSLContext context;
 
-	@BeforeEach
 	public void init() {
 		if (client == null) {
 			client = NoVerifyHttpClientFactory.getClient(context.getSslContext());
@@ -67,16 +70,19 @@ public class MtlsClientTest {
 
 	@Test
 	public void testStatusCode() throws Exception {
+		init();
 		CloseableHttpResponse response = client
 				.execute(new HttpGet("https://127.0.0.1:" + port + "/echo"));
-		Assertions.assertEquals(response.getStatusLine().getStatusCode(), 200);
+		Assert.assertEquals(response.getStatusLine().getStatusCode(), 200);
 		response = noCertClient
 				.execute(new HttpGet("https://127.0.0.1:" + port + "/echo"));
-		Assertions.assertEquals(response.getStatusLine().getStatusCode(), 500);
+		Assert.assertEquals(response.getStatusLine().getStatusCode(), 500);
 	}
 
-	@TestConfiguration
-	static class CertificateConfiguration {
+	@Configuration
+	@EnableAutoConfiguration(exclude = XdsAutoConfiguration.class)
+	@ImportAutoConfiguration(MtlsAutoConfiguration.class)
+	public static class TestConfig {
 
 		@Bean
 		public AbstractCertManager mockCertManager() {
@@ -94,6 +100,22 @@ public class MtlsClientTest {
 			NettyReactiveWebServerFactory nettyReactiveWebServerFactory = new NettyReactiveWebServerFactory();
 			nettyReactiveWebServerFactory.addServerCustomizers(customizer);
 			return nettyReactiveWebServerFactory;
+		}
+
+		@RestController
+		public static class EchoController {
+
+			@RequestMapping("/echo")
+			public String echo(ServerWebExchange exchange) {
+				if (exchange.getRequest().getSslInfo() != null) {
+					SslInfo sslInfo = exchange.getRequest().getSslInfo();
+					if (sslInfo.getPeerCertificates() != null) {
+						return "success";
+					}
+				}
+				throw new RuntimeException("No client certificate");
+			}
+
 		}
 
 	}

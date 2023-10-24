@@ -23,7 +23,6 @@ import com.alibaba.cloud.governance.istio.XdsConfigProperties;
 import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
 import com.alibaba.cloud.governance.istio.sds.CertPair;
 import com.alibaba.cloud.governance.istio.util.CertificateUtil;
-import com.alibaba.cloud.mtls.server.webflux.MtlsWebfluxServerTest;
 
 public class MockCertManager extends AbstractCertManager {
 
@@ -38,9 +37,9 @@ public class MockCertManager extends AbstractCertManager {
 	@Override
 	public synchronized CertPair getCertPair() {
 		Certificate[] certificate = CertificateUtil.loadCertificateFromPath(
-				MtlsWebfluxServerTest.class.getResource("/cert/mtls.crt").getPath());
+				MockCertManager.class.getResource("/cert/mtls.crt").getPath());
 		PrivateKey privateKey = CertificateUtil.loadPrivateKeyFromPath(
-				MtlsWebfluxServerTest.class.getResource("/cert/mtls.key").getPath());
+				MockCertManager.class.getResource("/cert/mtls.key").getPath());
 		CertPair p = new CertPair();
 		p.setCertificateChain(certificate);
 		p.setPrivateKey(privateKey);
