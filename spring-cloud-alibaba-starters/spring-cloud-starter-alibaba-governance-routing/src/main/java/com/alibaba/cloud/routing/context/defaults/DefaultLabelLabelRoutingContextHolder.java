@@ -19,6 +19,8 @@ package com.alibaba.cloud.routing.context.defaults;
 import com.alibaba.cloud.routing.context.AbstractLabelRoutingContextHolder;
 import com.alibaba.cloud.routing.context.LabelRoutingContext;
 
+import org.springframework.http.server.reactive.ServerHttpRequest;
+
 /**
  * @author yuluo
  * @author <a href="1481556636@qq.com"></a>
@@ -37,6 +39,12 @@ public class DefaultLabelLabelRoutingContextHolder
 	public String getLabelRouteZone() {
 
 		return LabelRoutingContext.getCurrentContext().getRoutingZone();
+	}
+
+	@Override
+	public ServerHttpRequest getServerHttpRequest() {
+
+		return LabelRoutingContext.getCurrentContext().getServerHttpRequest();
 	}
 
 }

@@ -255,24 +255,19 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 			HashMap<String, Integer> fallbackWeightMap) {
 
 		if (Objects.nonNull(RequestContextHolder.getRequestAttributes())) {
-
 			final HttpServletRequest request = ((ServletRequestAttributes) Objects
 					.requireNonNull(RequestContextHolder.getRequestAttributes()))
 							.getRequest();
-
 			if (Objects.nonNull(request)) {
 				serviceFilter(targetServiceName, versionSet, weightMap,
 						fallbackVersionSet, fallbackWeightMap, request);
 			}
 		}
 		else {
-
 			ServerHttpRequest serverHttpRequest = labelRoutingContextHolder
 					.getServerHttpRequest();
-
 			serviceFilter(targetServiceName, versionSet, weightMap, fallbackVersionSet,
 					fallbackWeightMap, serverHttpRequest);
-
 		}
 	}
 

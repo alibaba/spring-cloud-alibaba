@@ -130,7 +130,7 @@ public class ConsumerRestTemplateController implements ApplicationContextAware {
 		return ConsumerNodeInfo.getNodeIno();
 	}
 
-	@GetMapping("/service")
+	@GetMapping("/services")
 	public Object getAllServices() {
 
 		return discoveryClient.getServices();
