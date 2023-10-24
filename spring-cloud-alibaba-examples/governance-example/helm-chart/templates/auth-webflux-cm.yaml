@@ -7,4 +7,3 @@ metadata:
 data:
   NAMESPACE_NAME: {{ .Release.Namespace | quote }}
   ISTIOD_ADDR: {{ .Values.istiodAddr | quote }}
-  POLLING_TIME: {{ .Values.defaultPollingTime | quote }}

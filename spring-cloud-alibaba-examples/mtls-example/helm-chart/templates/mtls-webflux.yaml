@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    account: sa-mtls-webflux
+  name: sa-mtls-webflux
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mtls-webflux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mtls-webflux
+  template:
+    metadata:
+      annotations:
+        inject.istio.io/templates: grpc-agent
+      labels:
+        appName: mtls-webflux
+        app: mtls-webflux
+    spec:
+      serviceAccountName: sa-mtls-webflux
+      containers:
+        - name: mtls-webflux
+          image: '{{ .Values.image.mtlsWebflux.repository }}:{{ .Values.image.mtlsWebflux.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: mtls-webflux-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mtls-webflux
+  labels:
+    app: mtls-webflux
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http-server
+  selector:
+    app: mtls-webflux

@@ -320,7 +320,7 @@ spec:
  rules:
  - from:
    - source:
-       principals: ["cluster.local/ns/default/sa/mtls-openfeign-example"]
+       principals: ["cluster.local/ns/default/sa/mtls-openfeign.yaml-example"]
 ```
 
 再次向Webflux(Netty)服务器发送请求，请求失败，查看客户端应用日志，可以看到请求未授权。

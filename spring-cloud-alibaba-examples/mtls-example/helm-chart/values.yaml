@@ -1,0 +1,21 @@
+image:
+  mtlsMvc:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/mtls-mvc-example
+    tag: latest
+  mtlsOpenfeign:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/mtls-openfeign-example
+    tag: latest
+  mtlsRest:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/mtls-resttemplate-example
+    tag: latest
+  mtlsWebClient:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/mtls-webclient-example
+    tag: latest
+  mtlsWebflux:
+    repository: registry.cn-shenzhen.aliyuncs.com/sca-demo/mtls-webflux-example
+    tag: latest
+  nacosServer:
+    repository: nacos/nacos-server
+    tag: v2.1.0
+nacosServerAddr: nacos-server:8848
+useAgent: true

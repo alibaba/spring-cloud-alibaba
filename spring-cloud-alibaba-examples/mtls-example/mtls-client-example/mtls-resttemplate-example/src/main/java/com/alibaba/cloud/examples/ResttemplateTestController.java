@@ -18,14 +18,7 @@ package com.alibaba.cloud.examples;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.cloud.governance.istio.sds.AbstractCertManager;
-import com.alibaba.cloud.mtls.client.MtlsClientSSLContext;
-import org.apache.http.impl.client.HttpClientBuilder;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;

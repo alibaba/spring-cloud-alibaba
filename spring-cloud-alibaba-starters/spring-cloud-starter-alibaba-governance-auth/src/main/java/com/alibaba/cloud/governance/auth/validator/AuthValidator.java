@@ -35,10 +35,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 
 /**
- * Use a abstract rule tree to validate the request. First, if the rules are all empty, we
- * just return true. Secondly, if any deny rule matches the request, we just return false.
- * Thirdly, if the allow rules are empty, we just return true. Last, if any allow rule
- * matches the request, we just return true, or we return false.
+ * Use an abstract rule tree to validate the request. First, if the rules are all empty,
+ * we just return true. Secondly, if any deny rule matches the request, we just return
+ * false. Thirdly, if the allow rules are empty, we just return true. Last, if any allow
+ * rule matches the request, we just return true, or we return false.
  *
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
@@ -54,7 +54,7 @@ public class AuthValidator {
 
 	public AuthValidator(AuthRepository authRepository) {
 		this.authRepository = authRepository;
-		this.isTls = ServerTlsModeHolder.getTlsMode();
+		this.isTls = ServerTlsModeHolder.getTlsMode() != null;
 	}
 
 	public boolean validate(UnifiedHttpRequest request) {

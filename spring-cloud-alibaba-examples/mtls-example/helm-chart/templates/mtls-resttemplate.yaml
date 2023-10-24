@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    account: sa-mtls-test
+  name: sa-mtls-test
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mtls-rest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mtls-rest
+  template:
+    metadata:
+      annotations:
+        inject.istio.io/templates: grpc-agent
+      labels:
+        appName: mtls-rest
+        app: mtls-rest
+    spec:
+      serviceAccountName: sa-mtls-test
+      containers:
+        - name: mtls-rest
+          image: '{{ .Values.image.mtlsRest.repository }}:{{ .Values.image.mtlsRest.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: mtls-rest-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mtls-rest
+  labels:
+    app: mtls-rest
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http-server
+  selector:
+    app: mtls-rest

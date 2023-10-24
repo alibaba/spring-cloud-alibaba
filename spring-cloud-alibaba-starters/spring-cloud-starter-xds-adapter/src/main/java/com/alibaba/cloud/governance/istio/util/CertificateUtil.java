@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -95,6 +96,9 @@ public final class CertificateUtil {
 			Object o = pemParser.readObject();
 			if (o instanceof PEMKeyPair) {
 				return converter.getPrivateKey(((PEMKeyPair) o).getPrivateKeyInfo());
+			}
+			if (o instanceof PrivateKeyInfo) {
+				return converter.getPrivateKey((PrivateKeyInfo) o);
 			}
 		}
 		catch (Exception e) {
