@@ -1,42 +1,42 @@
 # Mtls Example
 
-## 项目说明
+## Project Instruction
 
-本项目演示如何利用 Istio 下发的证书实现Spring Cloud Alibaba（下文简称：SCA）应用之间的双向TLS能力。目前对于服务端支持Spring MVC以及Spring WebFlux应用的适配，并针对feign，resttemplate等客户端的实现，提供了具有热更新能力的ssl上下文，配置后可自动进行istio证书的更新。
+This project demonstrates how to utilize Istio issued certificates to achieve mutual TLS capability between Spring Cloud Alibaba (hereinafter referred to as: SCA) applications. Currently for the server-side support for Spring MVC and Spring WebFlux application adaptation , and for feign, resttemplate and other client-side implementation , provides a hot update capability of the ssl context , the configuration can be automatically updated istio certificate.
 
-## 准备
+## Preparation
 
-### 安装K8s环境
+### Install K8s
 
-请参考K8s的[安装工具](https://kubernetes.io/zh-cn/docs/tasks/tools/)小节。
+Please refer to [tools](https://kubernetes.io/docs/tasks/tools/) chapter of K8s document.
 
-### 安装Helm
+### Install Helm
 
-请参考Helm[[安装指南]](https://helm.sh/docs/intro/install/)。
+Refer to the Helm [[Installation Guide]](https://helm.sh/docs/intro/install/).
 
-### 在K8s上安装并启用Istio
+### Enable Istio on K8s
 
-请参考Istio官方文档的[安装](https://istio.io/latest/zh/docs/setup/install/)小节。
+Please refer to [install](https://istio.io/latest/docs/setup/install/) chapter of Istio document.
 
-### 应用部署
+### Application Deployment
 
-通过以下命令在K8s中部署示例项目mtls-example：
+Deploy the sample project mtls-example in K8s with the following command:
 
 ```shell
 helm install mtls-demo .
 ```
 
-部署成功后，查看pod信息如下：
+After successful deployment, view the pod information as follows:
 
 ![pods](pic/pods.png)
 
-## 示例
+## Demo
 
-### 如何接入
+### Connect to Istio
 
-在启动示例进行演示之前，先了解一下应用如何接入Istio并及加载证书。 注意本章节只是为了便于理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。
+Before launching the example for demonstration, let's look at how a Spring Cloud application accesses Istio and provides authentication. This section is only for you to understand how to use it. The config has been filled in this example and you may not need to modify it.
 
-1. 修改`pom.xml`文件，引入Istio规则adapter、mtls模块、governance-auth模块以及actuator依赖
+1. Modify the `pom.xml` file to introduce the Istio rules adapter, the mtls module, the governance-auth module, and the actuator dependency:
 
 ```xml
 <dependency>
@@ -57,19 +57,19 @@ helm install mtls-demo .
 </dependency>
 ```
 
-2. 参照[文档](https://github.com/alibaba/spring-cloud-alibaba/blob/2.2.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/mtls.adoc)，实现与`Istio`控制面的对接以及 ServiceAccount 的配置
+2. Refer to the [documentation](https://github.com/alibaba/spring-cloud-alibaba/blob/2.2.x/spring-cloud-alibaba-docs/src/main/asciidoc/mtls.adoc) for the implementation of the interface with the ` Istio` control plane and Service Account configuration.
 
-### 快速入门
+### Quick Start
 
-#### 查看证书
+#### View Certificates
 
-将示例应用部署至K8s，并配置好应用的 ServiceAccount 后，在应用所在pod内，通过如下命令可查看为当前应用下发的证书：
+After deploying the sample application to K8s and configuring the Service Account of the application, in the pod where the application resides, you can view the certificates issued for the current application with the following command:
 
 ```shell
 openssl s_client -connect 127.0.0.1:${port} </dev/null 2>/dev/null | openssl x509 -inform pem -text
 ```
 
-以SpringMVC(Tomcat)服务器为例，可以看到 spiffe 编码的 ServiceAccount 内容来作为 Subject Alternative Name：
+Taking the SpringMVC (Tomcat) server as an example, you can see the spiffe encoded ServiceAccount content to be used as the Subject Alternative Name:
 
 ```
 Certificate:
@@ -156,29 +156,29 @@ hCUYHWx/m01t2gaNMKZ9+Y0kKEUXUJjJ4xOuRPjfB3vzmtHgeoA=
 -----END CERTIFICATE-----
 ```
 
-#### 双向TLS
+#### Mutual TLS
 
-下面以RestTemplate客户端及SpringMVC(Tomcat)服务器为例，给出简单的使用示例。
+The following RestTemplate client and SpringMVC (Tomcat) server as an example, to give a simple example of use.
 
-将示例应用部署至K8s，并通过如下命令进入RestTemplate应用：
+Deploy the sample application to K8s and enter the RestTemplate application with the following command:
 
 ```shell
 kubectl exec -c istio-proxy -it ${resttemplate_pod_name} -- bash
 ```
 
-在容器内使用如下命令通过RestTemplate客户端向Tomcat服务器发送请求：
+Use the following command within the container to send a request to the Tomcat server via the RestTemplate client:
 
 ```shell
 curl -k https://localhost:${port}/resttemplate/getMvc
 ```
 
-请求成功，SpringMVC(Tomcat)服务器将会收到客户端所携带的证书。证书中包含应用的身份信息，即 ServiceAccount 。通过如下命令查看服务器所在pod的日志，可以发现所收到的客户端证书：
+After a successful request, the SpringMVC (Tomcat) server will receive the certificate carried by the client. The certificate contains information about the identity of the application, i.e. ServiceAccount. The client certificate received can be found by viewing the logs of the pod where the server is located with the following command:
 
 ```shell
 kubectl logs ${springmvc_pod_name}
 ```
 
-某次请求中收到的客户端证书如下，从证书中的SubjectAlternativeName字段可以识别出证书来自 ServiceAccount 为“mtls-resttemplate-example”的应用：
+The client certificate received in one of the requests is as follows. From the SubjectAlternativeName field in the certificate, you can identify that the certificate is from the application with ServiceAccount "mtls-resttemplate-example":
 
 ```
 [
@@ -251,32 +251,32 @@ SubjectAlternativeName [
 ]
 ```
 
-#### 流量模式切换
+#### Traffic Mode Switching
 
-通过如下命令可以实现动态地将流量模式切换为http：
+Dynamically switching the traffic mode to http can be achieved with the following command:
 
 ```shell
 curl -k 'https://localhost:${port}/actuator/sds' --header 'Content-Type: application/json' --data '{ "isTls":false }'
 ```
 
-通过观察应用日志，可以看到应用以http模式启动：
+Observing the application logs, you can see that the application was started in http mode:
 
 ![changeToHttp](pic/changeToHttp.png)
 
-将流量模式切换为https：
+Switch the traffic pattern to https:
 
 ```shell
 curl -k 'http://localhost:${port}/actuator/sds' --header 'Content-Type: 
 application/json' --data '{ "isTls":true }'
 ```
 
-观察应用日志，可以看到应用以https模式启动：
+Observing the application logs, you can see that the application was started in https mode:
 
 ![changeToHttps](pic/changeToHttps.png)
 
-### AuthorizationPolicy principal策略
+### AuthorizationPolicy principal
 
-以Openfeign客户端请求Webflux(Netty)服务器为例，为Webflux(Netty)应用所在pod上应用配置如下授权策略，即允许服务账户为"cluster.local/ns/default/sa/mtls-openfeign-example"的服务访问：
+Take the example of an Openfeign client requesting a Webflux (Netty) server, and configure the following authorization policy for the application on the pod where the Webflux (Netty) application resides, i.e., allow access to the service with the service account "cluster.local/ns/default/sa/mtls-openfeign-example":
 
 ```yaml
 apiVersion: security.istio.io/v1beta1
@@ -292,19 +292,19 @@ spec:
        principals: ["cluster.local/ns/default/sa/mtls-openfeign-example"]
 ```
 
-在容器内使用如下命令通过Openfeign客户端向Webflux(Netty)服务器发送请求：
+Use the following command within the container to send a request to the Webflux (Netty) server via the Openfeign client:
 
 ```shell
 curl -k https://localhost:${port}/openfeign/getWebflux
 ```
 
-服务器响应：
+Server Response:
 
 ```
 webflux-server received request from client
 ```
 
-更新授权策略如下，拒绝服务账户为"cluster.local/ns/default/sa/mtls-openfeign-example"的服务访问：
+Update the authorization policy as follows to deny access from services with service account "cluster.local/ns/default/sa/mtls-openfeign-example":
 
 ```yaml
 apiVersion: security.istio.io/v1beta1
@@ -320,6 +320,6 @@ spec:
        principals: ["cluster.local/ns/default/sa/mtls-openfeign-example"]
 ```
 
-再次向Webflux(Netty)服务器发送请求，请求失败，查看客户端应用日志，可以看到请求未授权。
+Send the request to the Webflux (Netty) server again, the request fails, check the client application logs and you can see that the request is not authorized.
 
 ![401Unauthorized](pic/401Unauthorized.png)

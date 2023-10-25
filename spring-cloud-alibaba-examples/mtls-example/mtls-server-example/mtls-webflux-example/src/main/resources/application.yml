@@ -21,10 +21,6 @@ spring:
     istio:
       config:
         enabled: ${ISTIO_CONFIG_ENABLE:true}
-        host: ${ISTIOD_ADDR:123.56.137.232}
-        port: ${ISTIOD_PORT:15012}
-        use-agent: ${USE_AGENT:false}
-        istiod-token: ${ISTIOD_TOKEN:eyJhbGciOiJSUzI1NiIsImtpZCI6IlFNd2NTQUNVOXk5X18yQ3d0WkZwTVNhQnJPeDkyRGFkdHJ0d3lPb0dwRU0ifQ.eyJhdWQiOlsiaXN0aW8tY2EiXSwiZXhwIjoxNjk1OTQ4Mjc5LCJpYXQiOjE2OTU5MDUwNzksImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2YyIsImt1YmVybmV0ZXMuaW8iOnsibmFtZXNwYWNlIjoiZGVmYXVsdCIsInBvZCI6eyJuYW1lIjoiZGV0YWlscy12MS01OGM4ODg3OTRiLTRwNmJsIiwidWlkIjoiYzlmOTA5YTAtZDNkNy00ODA2LTljYzktMWU2MzI1NjcxMzAzIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJib29raW5mby1kZXRhaWxzIiwidWlkIjoiNGY4NTg2OTYtODBmMy00NDM0LWJjMjEtZmFiN2IyODZhZWQzIn19LCJuYmYiOjE2OTU5MDUwNzksInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmJvb2tpbmZvLWRldGFpbHMifQ.fDBc7j56yz_R6Fr5m5U7b7xgeBy0M34IBOfSDibsgsj1UCWyoacDEqxKvJ8pF_aXu7SwJ49G2V2VpFhMosSfxAeeYC93lrAaZTO_Os_SjR5XrmG23vX8ioZUa4hWOI7tWGMU09BFQX_qNZ045PK6Zbhr5bbECOuTJ8HUxqB65mnS6LcWyi2QA1Uv9sZRxlcBj-vADVJSJaD-1HOV50CTEreMMEwMj99tg9aUlSev-f7FldW4KB4tNT0ZiG1Jht3Iyg7F3xp598qgL0GYf2IvkSQhix_Y-SeMNbaae8izCs3WeTErKg4IBEGGTQC1bEmHLuJuGAHc7FdEFrJMsGUZVQ}
-        namespace-name: default
+        use-agent: ${USE_AGENT:true}
   application:
     name: mtls-webflux-example
