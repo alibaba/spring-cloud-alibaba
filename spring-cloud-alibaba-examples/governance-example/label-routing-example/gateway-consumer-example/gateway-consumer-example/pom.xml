@@ -41,6 +41,7 @@
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>gateway-consumer-common</artifactId>
+			<version>${revision}</version>
 		</dependency>
 	</dependencies>
 
