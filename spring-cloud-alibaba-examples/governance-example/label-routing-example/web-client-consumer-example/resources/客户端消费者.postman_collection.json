@@ -111,7 +111,7 @@
 			"name": "resttemplate",
 			"item": [
 				{
-					"name": "V!版本测试",
+					"name": "V1版本测试",
 					"request": {
 						"method": "GET",
 						"header": [],
