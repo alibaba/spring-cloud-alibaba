@@ -41,12 +41,12 @@ import org.springframework.core.annotation.Order;
 @Order(LabelRoutingConstants.LISTENER_ORDER)
 public class RoutingDataListener implements ApplicationListener<RoutingDataChangedEvent> {
 
-	private static final Logger logger = LoggerFactory
+	private static final Logger log = LoggerFactory
 			.getLogger(RoutingDataListener.class);
 
-	private final RoutingDataRepository routingDataRepository;
+	private RoutingDataRepository routingDataRepository;
 
-	private final FilterService filterService;
+	private FilterService filterService;
 
 	private List<UnifiedRoutingDataStructure> routeDatalist;
 
@@ -69,7 +69,6 @@ public class RoutingDataListener implements ApplicationListener<RoutingDataChang
 			// todo can cache the result
 			definitionService = filterService
 					.getDefinitionService(unifiedRoutingDataStructureList.size());
-
 			routeDatalist = unifiedRoutingDataStructureList.stream()
 					.filter(unifiedRouteDataStructure -> definitionService
 							.contains(unifiedRouteDataStructure.getTargetService()))
@@ -82,7 +81,7 @@ public class RoutingDataListener implements ApplicationListener<RoutingDataChang
 			routingDataRepository.updateRouteData(routeDatalist);
 		}
 		catch (Exception e) {
-			logger.error("Failed to update route data", e);
+			log.error("Failed to update route data", e);
 		}
 	}
 

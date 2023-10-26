@@ -38,12 +38,12 @@ import org.springframework.util.CollectionUtils;
 
 public class RoutingDataRepository {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger LOG = LoggerFactory
 			.getLogger(RoutingDataRepository.class);
 
 	/**
-	 * Key is service name,value is hashmap,which key is single RoutingColoringRule
-	 * key,value is match service. Use double hash index to parse route rule.
+	 * Key is service name,value is hashmap,which key is single RoutingRule key,value is
+	 * match service. Use double hash index to parse route rule.
 	 */
 	private ConcurrentHashMap<String, HashMap<String, List<MatchService>>> routeCache = new ConcurrentHashMap<>();
 
@@ -53,12 +53,17 @@ public class RoutingDataRepository {
 	private final ConcurrentHashMap<String, String> defaultRoutingVersion = new ConcurrentHashMap<>();
 
 	/**
+	 * Sign of path.
+	 */
+	private static final String PATH = "path";
+
+	/**
 	 * Contain rule of single path rule.
 	 */
 	private ConcurrentHashMap<String, List<MatchService>> pathRuleMap = new ConcurrentHashMap<>();
 
 	/**
-	 * If you do not set weight value,it will be set 100 by default.
+	 * If do not set weight value,it will be set 100 by default.
 	 */
 	private static final int DEFAULT_WEIGHT = 100;
 
@@ -90,7 +95,7 @@ public class RoutingDataRepository {
 	private void nonNullCheck(UnifiedRoutingDataStructure unifiedRoutingDataStructure) {
 		String targetService = unifiedRoutingDataStructure.getTargetService();
 		if (targetService == null) {
-			log.error("Lose target Service name.");
+			LOG.error("Lose target Service name.");
 		}
 		final RoutingRule labelRouteData = unifiedRoutingDataStructure
 				.getLabelRouteRule();
@@ -100,17 +105,17 @@ public class RoutingDataRepository {
 			String version = matchService.getVersion();
 			Integer weight = matchService.getWeight();
 			if (CollectionUtils.isEmpty(ruleList)) {
-				log.error("Rule is empty in version = {} ", version);
+				LOG.error("Rule is empty in version = {} ", version);
 			}
 			if (version == null) {
-				log.error("Target service = {} lose version,please check it. ",
+				LOG.error("Target service = {} lose version,please check it. ",
 						targetService);
 			}
 			if (weight == null) {
 				weight = DEFAULT_WEIGHT;
 			}
 			if (weight < MIN_WEIGHT || weight > SUM_WEIGHT) {
-				log.error(
+				LOG.error(
 						"The weight of provider = {} version = {} had set error,please check it. ",
 						targetService, version);
 			}
@@ -155,7 +160,6 @@ public class RoutingDataRepository {
 	}
 
 	public HashMap<String, List<MatchService>> getRouteRule(String targetService) {
-
 		return routeCache.get(targetService);
 	}
 

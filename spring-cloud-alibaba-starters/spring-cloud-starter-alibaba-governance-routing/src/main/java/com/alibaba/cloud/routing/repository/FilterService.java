@@ -18,8 +18,6 @@ package com.alibaba.cloud.routing.repository;
 
 import java.util.HashSet;
 
-import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -47,12 +45,12 @@ public class FilterService implements ApplicationContextAware {
 	/**
 	 * Feign bean name start char.
 	 */
-	public static final String BEAN_START = "${";
+	public static final String FEIGN_CLIENT_BEAN_START = "${";
 
 	/**
 	 * Feign bean name end char.
 	 */
-	public static final String BEAN_END = "}";
+	public static final String FEIGN_CLIENT_BEAN_END = "}";
 
 	/**
 	 * Spring bean Container.
@@ -112,11 +110,11 @@ public class FilterService implements ApplicationContextAware {
 					&& !beanName.startsWith(beanSpecification)) {
 				String feignName = beanName.substring(0,
 						beanName.indexOf(beanSpecification));
-				if (feignName.startsWith(BEAN_START)) {
-					String resolveFeignName = feignName.replace(BEAN_START,
-							LabelRoutingConstants.EMPTY_STRING);
-					resolveFeignName = resolveFeignName.replace(BEAN_END,
-							LabelRoutingConstants.EMPTY_STRING);
+				if (feignName.startsWith(FEIGN_CLIENT_BEAN_START)) {
+					String resolveFeignName = feignName.replace(FEIGN_CLIENT_BEAN_START,
+							"");
+					resolveFeignName = resolveFeignName.replace(FEIGN_CLIENT_BEAN_END,
+							"");
 					feignName = resolveFeignName;
 				}
 				serviceSet.add(feignName);
