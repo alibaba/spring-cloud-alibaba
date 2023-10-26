@@ -45,7 +45,7 @@ Before launching the example for demonstration, let's look at how a Spring Cloud
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-mtls</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-governance-mtls</artifactId>
 </dependency>
 <dependency>
 	<groupId>com.alibaba.cloud</groupId>

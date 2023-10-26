@@ -34,9 +34,9 @@ Istio offers mutual TLS as a full stack solution for PeerAuthentication, which i
 
 === Spring Cloud Alibaba Mtls Module Introduction
 
-Spring Cloud Alibaba Mtls focuses on service-to-service authentication. By adding the spring-cloud-starter-mtls module, you can implement mutual TLS capabilities for Spring Cloud Alibaba applications.
+Spring Cloud Alibaba Mtls focuses on service-to-service authentication. By adding the spring-cloud-starter-alibaba-governance-mtls module, you can implement mutual TLS capabilities for Spring Cloud Alibaba applications.
 
-As shown in the figure below, the spring-cloud-starter-mtls module provides certificate management, traffic pattern switching, support for AuthorizationPolicy principals configuration, and the ability to use mutual TLS interactions for a variety of client/server implementations.
+As shown in the figure below, the spring-cloud-starter-alibaba-governance-mtls module provides certificate management, traffic pattern switching, support for AuthorizationPolicy principals configuration, and the ability to use mutual TLS interactions for a variety of client/server implementations.
 
 image::pic/mtls-architecture.png[width=60%,align=center]
 
@@ -91,7 +91,7 @@ As shown in the above figure, referring to the implementation of https://istio.i
 
 ===== Certificate Rotation
 
-The spring-cloud-starter-mtls module will update the certificate periodically to ensure the validity of the certificate, and users do not need to do it manually.
+The spring-cloud-starter-alibaba-governance-mtls module will update the certificate periodically to ensure the validity of the certificate, and users do not need to do it manually.
 
 ==== Traffic Mode Switching
 
@@ -143,7 +143,7 @@ spring:
         enabled: ${ISTIO_AUTH_ENABLE:true}
 ----
 
-After ensuring that the spring-cloud-starter-mtls module has been introduced and TLS traffic mode have been enabled, you can then apply specific authorization policy configurations on the pod where the Spring Cloud Alibaba application resides, refer to https://istio.io/latest/docs/reference/config/security/authorization-policy/[istio / authorization-policy] and https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/mtls-example[Spring Cloud Alibaba Mtls Examples].
+After ensuring that the spring-cloud-starter-alibaba-governance-mtls module has been introduced and TLS traffic mode have been enabled, you can then apply specific authorization policy configurations on the pod where the Spring Cloud Alibaba application resides, refer to https://istio.io/latest/docs/reference/config/security/authorization-policy/[istio / authorization-policy] and https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/mtls-example[Spring Cloud Alibaba Mtls Examples].
 
 ==== Framework Adaptation
 

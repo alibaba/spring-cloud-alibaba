@@ -34,9 +34,9 @@ Istio提供了双向TLS作为PeerAuthentication的全栈解决方案，其包括
 
 === Spring Cloud Alibaba Mtls模块简介
 
-Spring Cloud Alibaba Mtls 关注服务到服务的认证，通过添加spring-cloud-starter-mtls模块，就可以为 Spring Cloud Alibaba 应用实现双向TLS能力。
+Spring Cloud Alibaba Mtls 关注服务到服务的认证，通过添加spring-cloud-starter-alibaba-governance-mtls模块，就可以为 Spring Cloud Alibaba 应用实现双向TLS能力。
 
-如下图所示，spring-cloud-starter-mtls模块提供了证书管理、流量模式切换的功能，支持 AuthorizationPolicy principals 授权策略配置，并为多种客户端/服务器实现提供了使用双向TLS交互的能力。
+如下图所示，spring-cloud-starter-alibaba-governance-mtls模块提供了证书管理、流量模式切换的功能，支持 AuthorizationPolicy principals 授权策略配置，并为多种客户端/服务器实现提供了使用双向TLS交互的能力。
 
 image::pic/mtls-architecture.png[width=60%,align=center]
 
@@ -90,7 +90,7 @@ image::pic/pilot-agent-as-agent.svg[width=70%,align=center]
 
 ===== 证书轮转
 
-spring-cloud-starter-mtls模块会定期更新证书，保证证书的有效性，用户不需要手动操作。
+spring-cloud-starter-alibaba-governance-mtls模块会定期更新证书，保证证书的有效性，用户不需要手动操作。
 
 ==== 流量模式切换
 
@@ -142,7 +142,7 @@ spring:
         enabled: ${ISTIO_AUTH_ENABLE:true}
 ----
 
-在确保引入了spring-cloud-starter-mtls模块，并启用TLS流量模式后，接下来即可在Spring Cloud Alibaba应用所在pod上应用具体的授权策略配置，具体可参考 https://istio.io/latest/zh/docs/reference/config/security/authorization-policy/[istio / authorization-policy] 及示例 https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/mtls-example[Spring Cloud Alibaba Mtls Examples]。
+在确保引入了spring-cloud-starter-alibaba-governance-mtls模块，并启用TLS流量模式后，接下来即可在Spring Cloud Alibaba应用所在pod上应用具体的授权策略配置，具体可参考 https://istio.io/latest/zh/docs/reference/config/security/authorization-policy/[istio / authorization-policy] 及示例 https://github.com/alibaba/spring-cloud-alibaba/tree/2.2.x/spring-cloud-alibaba-examples/mtls-example[Spring Cloud Alibaba Mtls Examples]。
 
 ==== 框架适配
 

@@ -8,7 +8,7 @@
 		<version>${revision}</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>spring-cloud-starter-mtls</artifactId>
+	<artifactId>spring-cloud-starter-alibaba-governance-mtls</artifactId>
 	<name>Spring Cloud Starter Alibaba Governance MTLS</name>
 
 	<properties>

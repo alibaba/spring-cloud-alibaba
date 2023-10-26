@@ -45,7 +45,7 @@ helm install mtls-demo .
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-mtls</artifactId>
+    <artifactId>spring-cloud-starter-alibaba-governance-mtls</artifactId>
 </dependency>
 <dependency>
 	<groupId>com.alibaba.cloud</groupId>
