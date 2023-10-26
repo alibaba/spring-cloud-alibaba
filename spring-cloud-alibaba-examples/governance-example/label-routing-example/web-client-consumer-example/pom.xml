@@ -19,7 +19,7 @@
 	<modules>
 		<module>openfeign-consumer-example</module>
 		<module>restTemplate-consumer-example</module>
-		<module>webClient-consumer-example</module>
+		<module>reactive-consumer-example</module>
 		<module>web-client-consumer-common</module>
 	</modules>
 

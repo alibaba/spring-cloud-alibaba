@@ -11,7 +11,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>webClient-consumer-example</artifactId>
+	<artifactId>reactive-consumer-example</artifactId>
 	<name> Label Routing WebClient Consumer Example</name>
 
 	<dependencies>

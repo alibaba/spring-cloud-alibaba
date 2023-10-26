@@ -95,7 +95,7 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 
 #### 规则说明
 
-服务消费者（openfeign-consumer-example，restTemplate-consumer-example，webClient-consumer-example）实例中设置的路由规则如下：
+服务消费者（openfeign-consumer-example，restTemplate-consumer-example，reactive-consumer-example）实例中设置的路由规则如下：
 
 ```json
 [

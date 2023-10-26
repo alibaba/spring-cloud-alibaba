@@ -98,7 +98,7 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 
 #### Rule description
 
-The routing rules set in the service consumer (openfeign-consumer-example, restTemplate-consumer-example, webClient-consumer-example) instance are as follows:
+The routing rules set in the service consumer (openfeign-consumer-example, restTemplate-consumer-example, reactive-consumer-example) instance are as follows:
 
 
 ```json
