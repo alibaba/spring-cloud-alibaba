@@ -50,8 +50,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ LabelRoutingProperties.class })
-@AutoConfigureOrder(LabelRoutingAutoConfiguration.ROUTING_AUTO_CONFIG_ORDER)
-public class LabelRoutingAutoConfiguration {
+@AutoConfigureOrder(RoutingAutoConfiguration.ROUTING_AUTO_CONFIG_ORDER)
+public class RoutingAutoConfiguration {
 
 	/**
 	 * Order of label routing auto config.

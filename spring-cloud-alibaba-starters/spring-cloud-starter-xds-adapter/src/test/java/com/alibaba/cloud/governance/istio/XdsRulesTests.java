@@ -27,7 +27,7 @@ import com.alibaba.cloud.governance.auth.AuthenticationAutoConfiguration;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
-import com.alibaba.cloud.routing.configuration.LabelRoutingAutoConfiguration;
+import com.alibaba.cloud.routing.configuration.RoutingAutoConfiguration;
 import com.alibaba.cloud.routing.repository.FilterService;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -133,7 +133,7 @@ public class XdsRulesTests {
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration({ XdsAutoConfiguration.class,
-			AuthenticationAutoConfiguration.class, LabelRoutingAutoConfiguration.class })
+			AuthenticationAutoConfiguration.class, RoutingAutoConfiguration.class })
 	public static class TestConfig {
 
 		@Bean(name = TARGET_SERVICE + FilterService.FEIGN_CLIENT_BEAN_SPECIFICATION)

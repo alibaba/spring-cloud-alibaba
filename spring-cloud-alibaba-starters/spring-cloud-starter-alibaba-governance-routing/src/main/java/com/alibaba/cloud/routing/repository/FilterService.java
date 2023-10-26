@@ -42,7 +42,7 @@ public class FilterService implements ApplicationContextAware {
 	/**
 	 * Feign bean name prefix.
 	 */
-	public static final String BEAN_DEFAULT = "default.";
+	public static final String FEIGN_CLIENT_BEAN_DEFAULT  = "default.";
 
 	/**
 	 * Feign bean name start char.
