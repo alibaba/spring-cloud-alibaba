@@ -17,12 +17,12 @@
 package com.alibaba.cloud.routing.cache;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.alibaba.cloud.routing.model.ServiceInstanceInfo;
 import com.alibaba.nacos.api.naming.pojo.Instance;
@@ -39,84 +39,74 @@ public final class GlobalInstanceStatusListCache {
 
 	/**
 	 * Global instance cache.
+	 * String: service name.
+	 * String: ip + port.
+	 * ServiceInstanceInfo: 服务实例信息.
 	 */
-	private static final List<Map<String, List<Map<String, ServiceInstanceInfo>>>> globalServiceList = new ArrayList<>();
+	private static final Map<String, Map<String, ServiceInstanceInfo>> globalServiceCache = new ConcurrentHashMap<>();
 
 	/**
 	 * Set instance cache.
+	 *
 	 * @param targetName service name.
-	 * @param instance service instance object.
+	 * @param instance service instance object {ip + port}.
 	 * @param sif service instance info.
 	 */
 	public static void set(String targetName, Instance instance,
 			ServiceInstanceInfo sif) {
-
-		if (globalServiceList.isEmpty()) {
-			List<Map<String, ServiceInstanceInfo>> serviceInstanceList = new ArrayList<>();
-			Map<String, ServiceInstanceInfo> instanceInfoMap = new HashMap<>();
+		if (globalServiceCache.isEmpty()) {
+			Map<String, ServiceInstanceInfo> instanceInfoMap = new ConcurrentHashMap<>();
 			instanceInfoMap.put(instance.getIp() + ":" + instance.getPort(), sif);
-			serviceInstanceList.add(instanceInfoMap);
-			Map<String, List<Map<String, ServiceInstanceInfo>>> serviceMap = new ConcurrentHashMap<>();
-			serviceMap.put(targetName, serviceInstanceList);
-			globalServiceList.add(serviceMap);
+			globalServiceCache.put(targetName, instanceInfoMap);
 		}
 		else {
-			for (Map<String, List<Map<String, ServiceInstanceInfo>>> serviceMap : globalServiceList) {
-				for (String key : serviceMap.keySet()) {
-					if (Objects.equals(key, targetName)) {
-
-						List<Map<String, ServiceInstanceInfo>> serviceInstanceList = serviceMap
-								.get(targetName);
-						Map<String, ServiceInstanceInfo> infoHashMap = new HashMap<>();
-						infoHashMap.put(instance.getIp() + ":" + instance.getPort(), sif);
-						serviceInstanceList.add(infoHashMap);
-
-						serviceMap.replace(targetName, serviceInstanceList);
-					}
-					else {
-						List<Map<String, ServiceInstanceInfo>> serviceInstanceList = new ArrayList<>();
-						Map<String, ServiceInstanceInfo> instanceInfoMap = new HashMap<>();
-						instanceInfoMap.put(instance.getIp() + ":" + instance.getPort(),
-								sif);
-						serviceInstanceList.add(instanceInfoMap);
-						Map<String, List<Map<String, ServiceInstanceInfo>>> serviceMapTmp = new ConcurrentHashMap<>();
-						serviceMapTmp.put(targetName, serviceInstanceList);
-						globalServiceList.add(serviceMapTmp);
-					}
+			globalServiceCache.forEach((serviceName, instanceMap) -> {
+				Map<String, ServiceInstanceInfo> instanceInfoMap;
+				if (serviceName == targetName) {
+					// serviceName is exist.
+					instanceInfoMap = globalServiceCache.get(targetName);
+					instanceInfoMap.put(instance.getIp() + ":" + instance.getIp(), sif);
 				}
-			}
+				else {
+					instanceInfoMap = new ConcurrentHashMap<>();
+					instanceInfoMap.put(instance.getIp() + ":" + instance.getPort(), sif);
+				}
+				globalServiceCache.put(targetName, instanceInfoMap);
+			});
 		}
 	}
 
 	/**
 	 * Check instance in cache.
-	 * @param target target.
-	 * @param instance instance object.
+	 *
+	 * @param target    target.
+	 * @param instance  instance object.
 	 * @return boolean
 	 */
 	public static boolean checkContainersInstance(String target, Instance instance) {
-		AtomicBoolean res = new AtomicBoolean(false);
 
-		globalServiceList.forEach(val -> val.forEach((serviceKey, serviceList) -> {
-			if (val.containsKey(target)) {
-				serviceList.forEach(instanceInfoMap -> {
-					if (instanceInfoMap.containsKey(instance.getIp() + ":" + instance.getPort())) {
-						res.set(true);
-					}
-				});
-			}
-		}));
+		AtomicBoolean flag = new AtomicBoolean(false);
 
-		return res.get();
+		Map<String, ServiceInstanceInfo> instanceInfoMap = globalServiceCache.get(target);
+		if (instanceInfoMap.isEmpty()) {
+			return flag.get();
+		}
+		else {
+			instanceInfoMap.forEach((instanceName, sif) -> {
+				flag.set(instanceName == instance.getPort() + ":" + instance.getIp());
+			});
+		}
+
+		return flag.get();
 	}
 
 	/**
 	 * Return GlobalCache Object.
 	 * @return return global instance cache
 	 */
-	public static List<Map<String, List<Map<String, ServiceInstanceInfo>>>> getAll() {
+	public static Map<String, Map<String, ServiceInstanceInfo>> getAll() {
 
-		return globalServiceList;
+		return globalServiceCache;
 	}
 
 	/**
@@ -124,16 +114,15 @@ public final class GlobalInstanceStatusListCache {
 	 * @param targetServiceName service name.
 	 * @return instance list.
 	 */
-	public static List<Map<String, ServiceInstanceInfo>> getInstanceByServiceName(
+	public static Map<String, ServiceInstanceInfo> getInstanceByServiceName(
 			String targetServiceName) {
 
-		for (Map<String, List<Map<String, ServiceInstanceInfo>>> map : globalServiceList) {
-			if (map.containsKey(targetServiceName)) {
-				return map.get(targetServiceName);
-			}
+		Map<String, ServiceInstanceInfo> instanceInfoMap = globalServiceCache.get(targetServiceName);
+		if (instanceInfoMap.isEmpty()) {
+			return null;
 		}
 
-		return null;
+		return instanceInfoMap;
 	}
 
 	/**
@@ -143,45 +132,41 @@ public final class GlobalInstanceStatusListCache {
 	 */
 	public static ServiceInstanceInfo getInstanceByInstanceName(String instanceName) {
 
-		for (Map<String, List<Map<String, ServiceInstanceInfo>>> map : globalServiceList) {
-			for (String serviceName : map.keySet()) {
-				for (Map<String, ServiceInstanceInfo> instanceInfoMap : map
-						.get(serviceName)) {
-					return instanceInfoMap.get(instanceName);
-				}
-			}
-		}
+		AtomicReference<ServiceInstanceInfo> sif = null;
 
-		return null;
+		globalServiceCache.keySet().forEach((serviceName) -> {
+			Map<String, ServiceInstanceInfo> instanceInfoMap = globalServiceCache.get(serviceName);
+			sif.set(instanceInfoMap.get(instanceName));
+		});
+
+		return sif.get();
 	}
 
 	/**
 	 * Get no health instance list.
+	 *
 	 * @return list
 	 */
 	public static List<ServiceInstanceInfo> getCalledErrorInstance() {
 
 		List<ServiceInstanceInfo> res = new ArrayList<>();
-		for (Map<String, List<Map<String, ServiceInstanceInfo>>> map : globalServiceList) {
-			for (String serviceName : map.keySet()) {
-				List<Map<String, ServiceInstanceInfo>> maps = map.get(serviceName);
-				for (Map<String, ServiceInstanceInfo> instanceInfoMap : maps) {
-					for (String instanceName : instanceInfoMap.keySet()) {
-						ServiceInstanceInfo serviceInstanceInfo = instanceInfoMap
-								.get(instanceName);
-						if (Objects.nonNull(serviceInstanceInfo.getConsecutiveErrors())) {
-							res.add(serviceInstanceInfo);
-						}
-					}
+
+		globalServiceCache.forEach((serviceName, instanceMap) -> {
+			Map<String, ServiceInstanceInfo> instanceInfoMap = globalServiceCache.get(serviceName);
+			instanceInfoMap.forEach((instanceName, sif) -> {
+				ServiceInstanceInfo serviceInstanceInfo = instanceInfoMap.get(instanceName);
+				if (serviceInstanceInfo.getConsecutiveErrors() != null) {
+					res.add(serviceInstanceInfo);
 				}
-			}
-		}
+			});
+		});
 
 		return res;
 	}
 
 	/**
 	 * getServiceUpperLimitRatioNum.
+	 *
 	 * @param targetServiceName target service name.
 	 * @param minHealthPercent minHealthPercent
 	 * @return max remove instance num
@@ -189,12 +174,9 @@ public final class GlobalInstanceStatusListCache {
 	public static int getServiceUpperLimitRatioNum(String targetServiceName,
 			double minHealthPercent) {
 
-		int serviceInstanceTotal = 0;
-
-		for (Map<String, List<Map<String, ServiceInstanceInfo>>> map : globalServiceList) {
-			List<Map<String, ServiceInstanceInfo>> list = map.get(targetServiceName);
-			serviceInstanceTotal = list.size();
-		}
+		int serviceInstanceTotal;
+		Map<String, ServiceInstanceInfo> instanceInfoMap = globalServiceCache.get(targetServiceName);
+		serviceInstanceTotal = instanceInfoMap.size();
 
 		return (int) Math.floor(serviceInstanceTotal * minHealthPercent);
 	}
@@ -206,12 +188,9 @@ public final class GlobalInstanceStatusListCache {
 	 */
 	public static int getInstanceNumByTargetServiceName(String targetServiceName) {
 
-		int serviceInstanceTotal = 0;
-
-		for (Map<String, List<Map<String, ServiceInstanceInfo>>> map : globalServiceList) {
-			List<Map<String, ServiceInstanceInfo>> maps = map.get(targetServiceName);
-			serviceInstanceTotal = maps.size();
-		}
+		int serviceInstanceTotal;
+		Map<String, ServiceInstanceInfo> instanceInfoMap = globalServiceCache.get(targetServiceName);
+		serviceInstanceTotal = instanceInfoMap.size();
 
 		return serviceInstanceTotal;
 	}
@@ -223,60 +202,47 @@ public final class GlobalInstanceStatusListCache {
 	 */
 	public static int getRemoveInstanceNum(String targetServiceName) {
 
-		int serviceInstanceTotal = 0;
+		AtomicInteger serviceInstanceTotal = new AtomicInteger();
 
-		for (Map<String, List<Map<String, ServiceInstanceInfo>>> map : globalServiceList) {
-			List<Map<String, ServiceInstanceInfo>> maps = map.get(targetServiceName);
-			for (Map<String, ServiceInstanceInfo> instanceInfoMap : maps) {
-				for (String val : instanceInfoMap.keySet()) {
-					ServiceInstanceInfo serviceInstanceInfo = instanceInfoMap.get(val);
-					if (!(serviceInstanceInfo.isStatus())) {
-						serviceInstanceTotal++;
-					}
-				}
+		Map<String, ServiceInstanceInfo> instanceInfoMap = globalServiceCache.get(targetServiceName);
+		instanceInfoMap.forEach((instanceName, sif) -> {
+			ServiceInstanceInfo serviceInstanceInfo = instanceInfoMap.get(instanceName);
+			if (!(serviceInstanceInfo.isStatus())) {
+				serviceInstanceTotal.getAndIncrement();
 			}
-		}
+		});
 
-		return serviceInstanceTotal;
+		return serviceInstanceTotal.get();
 	}
 
 	public static void setInstanceInfoByInstanceNames(ServiceInstanceInfo sif) {
 
 		String instanceName = sif.getInstance().getIp() + ":"
 				+ sif.getInstance().getPort();
-		for (Map<String, List<Map<String, ServiceInstanceInfo>>> maps : globalServiceList) {
-			for (String key : maps.keySet()) {
-				List<Map<String, ServiceInstanceInfo>> list = maps.get(key);
-				for (Map<String, ServiceInstanceInfo> instanceInfoMap : list) {
-					instanceInfoMap.replace(instanceName, sif);
-				}
-			}
-		}
+
+		globalServiceCache.forEach((serviceName, instanceMap) -> {
+			Map<String, ServiceInstanceInfo> instanceInfoMap = globalServiceCache.get(serviceName);
+			instanceInfoMap.put(instanceName, sif);
+		});
 
 	}
 
-	/**
-	 * ToString method.
-	 * @return str
-	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{\n");
-		for (Map<String, List<Map<String, ServiceInstanceInfo>>> map : globalServiceList) {
-			sb.append("  ").append(map.keySet().iterator().next()).append(": [\n");
-			for (Map<String, ServiceInstanceInfo> innerMap : map
-					.get(map.keySet().iterator().next())) {
-				sb.append("    ").append(innerMap.keySet().iterator().next())
-						.append(": ")
-						.append(innerMap.get(innerMap.keySet().iterator().next()))
-						.append("\n");
-			}
-			sb.append("  ").append("],\n");
-		}
-		sb.append("}");
+		StringBuilder stringBuilder = new StringBuilder();
 
-		return sb.toString();
+		for (String serviceName : globalServiceCache.keySet()) {
+			stringBuilder.append("Service: ").append(serviceName).append("\n");
+			Map<String, ServiceInstanceInfo> innerMap = globalServiceCache.get(serviceName);
+
+			for (String instanceId : innerMap.keySet()) {
+				ServiceInstanceInfo instanceInfo = innerMap.get(instanceId);
+				stringBuilder.append("  Instance: ").append(instanceInfo).append("\n");
+			}
+
+			stringBuilder.append("\n");
+		}
+		return stringBuilder.toString();
 	}
 
 }

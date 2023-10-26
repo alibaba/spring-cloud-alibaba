@@ -225,19 +225,20 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 
 	/**
 	 * Get instance from global instance cache.
+	 * 
 	 * @param targetServiceName service name.
 	 */
 	private Instance getInstance(String targetServiceName) {
 
-		List<Map<String, ServiceInstanceInfo>> instanceList = GlobalInstanceStatusListCache
+		Map<String, ServiceInstanceInfo> instanceByServiceName = GlobalInstanceStatusListCache
 				.getInstanceByServiceName(targetServiceName);
 		List<ServiceInstanceInfo> instanceInfos = new ArrayList<>();
 
-		instanceList.forEach(k -> k.forEach((k1, v1) -> {
+		instanceByServiceName.forEach((k1, v1) -> {
 			if (v1.isStatus()) {
 				instanceInfos.add(v1);
 			}
-		}));
+		});
 
 		if (instanceInfos.isEmpty()) {
 			LOG.warn(
@@ -257,15 +258,15 @@ public class RoutingLoadBalanceRule extends PredicateBasedRule {
 	 */
 	private List<Instance> getInstanceList(String targetServiceName) {
 
-		List<Map<String, ServiceInstanceInfo>> instanceList = GlobalInstanceStatusListCache
+		Map<String, ServiceInstanceInfo> instanceByServiceName = GlobalInstanceStatusListCache
 				.getInstanceByServiceName(targetServiceName);
 		List<Instance> instances = new ArrayList<>();
 
-		instanceList.forEach(k -> k.forEach((k1, v1) -> {
+		instanceByServiceName.forEach((k1, v1) -> {
 			if (v1.isStatus()) {
 				instances.add(v1.getInstance());
 			}
-		}));
+		});
 
 		if (instances.isEmpty()) {
 			LOG.warn(
