@@ -12,7 +12,7 @@
 	</parent>
 
 	<artifactId>reactive-consumer-example</artifactId>
-	<name> Label Routing WebClient Consumer Example</name>
+	<name> Label Routing Reactive Consumer Example</name>
 
 	<dependencies>
 		<dependency>
