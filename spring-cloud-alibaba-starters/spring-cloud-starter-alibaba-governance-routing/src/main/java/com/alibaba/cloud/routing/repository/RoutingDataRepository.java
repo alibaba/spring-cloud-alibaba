@@ -25,7 +25,6 @@ import com.alibaba.cloud.commons.governance.routing.MatchService;
 import com.alibaba.cloud.commons.governance.routing.RoutingRule;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.commons.governance.routing.rule.Rule;
-import com.alibaba.cloud.routing.constant.LabelRoutingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,6 @@ import org.springframework.util.CollectionUtils;
  * @author HH
  * @since 2.2.10-RC1
  */
-
 public class RoutingDataRepository {
 
 	private static final Logger LOG = LoggerFactory
@@ -50,7 +48,7 @@ public class RoutingDataRepository {
 	/**
 	 * The default version of each service.
 	 */
-	private final ConcurrentHashMap<String, String> defaultRoutingVersion = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, String> defaultRoutingVersion = new ConcurrentHashMap<>();
 
 	/**
 	 * Sign of path.
@@ -78,7 +76,6 @@ public class RoutingDataRepository {
 	public static final int MIN_WEIGHT = 0;
 
 	public void updateRouteData(final List<UnifiedRoutingDataStructure> routeDataList) {
-
 		ConcurrentHashMap<String, HashMap<String, List<MatchService>>> newRouteCache = new ConcurrentHashMap<>();
 		ConcurrentHashMap<String, List<MatchService>> newPathRuleMap = new ConcurrentHashMap<>();
 		for (UnifiedRoutingDataStructure routeData : routeDataList) {
@@ -133,8 +130,8 @@ public class RoutingDataRepository {
 			List<Rule> ruleList = matchService.getRuleList();
 
 			// Take out the path label separately, because there is no key for hash index.
-			if (ruleList.size() == 1 && LabelRoutingConstants.PATH
-					.equalsIgnoreCase(ruleList.get(0).getType())) {
+			if (ruleList.size() == 1
+					        && PATH.equalsIgnoreCase(ruleList.get(0).getType())) {
 				List<MatchService> matchServiceList = newPathRuleMap
 						.get(routerData.getTargetService());
 				if (matchServiceList == null) {

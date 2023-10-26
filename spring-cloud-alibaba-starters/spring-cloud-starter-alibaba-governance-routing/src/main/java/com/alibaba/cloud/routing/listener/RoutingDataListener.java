@@ -41,8 +41,7 @@ import org.springframework.core.annotation.Order;
 @Order(LabelRoutingConstants.LISTENER_ORDER)
 public class RoutingDataListener implements ApplicationListener<RoutingDataChangedEvent> {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(RoutingDataListener.class);
+	private static final Logger log = LoggerFactory.getLogger(RoutingDataListener.class);
 
 	private RoutingDataRepository routingDataRepository;
 
@@ -54,7 +53,6 @@ public class RoutingDataListener implements ApplicationListener<RoutingDataChang
 
 	public RoutingDataListener(RoutingDataRepository routeDataRepository,
 			FilterService filterService) {
-
 		this.routingDataRepository = routeDataRepository;
 		this.filterService = filterService;
 	}
