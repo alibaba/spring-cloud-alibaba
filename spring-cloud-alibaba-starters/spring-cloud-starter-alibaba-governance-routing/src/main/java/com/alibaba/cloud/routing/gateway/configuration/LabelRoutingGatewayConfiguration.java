@@ -18,8 +18,6 @@ package com.alibaba.cloud.routing.gateway.configuration;
 
 import com.alibaba.cloud.routing.gateway.filter.LabelRoutingGatewayClearFilter;
 import com.alibaba.cloud.routing.gateway.filter.LabelRoutingGatewayFilter;
-import com.alibaba.cloud.routing.gateway.filter.defaults.DefaultLabelRoutingGatewayClearFilter;
-import com.alibaba.cloud.routing.gateway.filter.defaults.DefaultLabelRoutingGatewayFilter;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -43,14 +41,14 @@ public class LabelRoutingGatewayConfiguration {
 	@ConditionalOnMissingBean
 	public LabelRoutingGatewayFilter labelRoutingGatewayFilter() {
 
-		return new DefaultLabelRoutingGatewayFilter();
+		return new LabelRoutingGatewayFilter();
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
 	public LabelRoutingGatewayClearFilter labelRoutingGatewayClearFilter() {
 
-		return new DefaultLabelRoutingGatewayClearFilter();
+		return new LabelRoutingGatewayClearFilter();
 	}
 
 }

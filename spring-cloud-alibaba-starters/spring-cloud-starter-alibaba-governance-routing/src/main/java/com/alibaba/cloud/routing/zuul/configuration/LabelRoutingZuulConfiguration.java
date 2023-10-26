@@ -17,7 +17,6 @@
 package com.alibaba.cloud.routing.zuul.configuration;
 
 import com.alibaba.cloud.routing.zuul.filter.LabelRoutingZuulFilter;
-import com.alibaba.cloud.routing.zuul.filter.defaults.DefaultLabelRoutingZuulFilter;
 import com.netflix.zuul.ZuulFilter;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -41,7 +40,7 @@ public class LabelRoutingZuulConfiguration {
 	@ConditionalOnMissingBean
 	public LabelRoutingZuulFilter routingZuulFilter() {
 
-		return new DefaultLabelRoutingZuulFilter();
+		return new LabelRoutingZuulFilter();
 	}
 
 }

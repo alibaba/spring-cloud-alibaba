@@ -16,11 +16,33 @@
 
 package com.alibaba.cloud.routing.gateway.filter;
 
+import com.alibaba.cloud.routing.context.LabelRoutingContext;
+import reactor.core.publisher.Mono;
+
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
+import org.springframework.web.server.ServerWebExchange;
+
 /**
  * @author yuluo
  * @author 1481556636@qq.com
  */
 
-public interface LabelRoutingGatewayClearFilter extends LabelRoutingGatewayFilter {
+public class LabelRoutingGatewayClearFilter
+		implements GlobalFilter, Ordered {
+
+	@Override
+	public int getOrder() {
+		return Ordered.LOWEST_PRECEDENCE - 1;
+	}
+
+	@Override
+	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+		LabelRoutingContext.clearCurrentContext();
+
+		return chain.filter(exchange);
+	}
 
 }
