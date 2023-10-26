@@ -6,7 +6,11 @@ This project demonstrates how to use the Spring Cloud Alibaba Governance Routing
 
 ## Module structure
 
-This module includes a consumer instance and a provider cluster that contains two instances.
+This module includes a consumer instance and a provider cluster, which contains four instances.
+
+- The sample modules mentioned in this article are in the `spring-cloud-alibaba/spring-cloud-alibaba-examples/governance-example/label-routing-example/` directory;
+- The starter dependent module is in the `spring-cloud-alibaba/spring-cloud-alibaba-starters/spring-cloud-starter-alibaba-governance-routing` directory.
+- Unless otherwise specified, all paths mentioned below are based on the parent path above.
 
 ## Component support description
 Currently, the routing module supports only a few components:
@@ -17,7 +21,7 @@ Load balancing component: Ribbon;
 
 Gateway components: Spring Netflix Zuul, Spring Cloud Gateway;
 
-More components, such as Spring Cloud LoadBalabcer, will be supported in the future.
+More components, such as Spring Cloud LoadBalancer, will be supported in the future.
 
 ## Examples
 
@@ -25,13 +29,13 @@ More components, such as Spring Cloud LoadBalabcer, will be supported in the fut
 
 **Note that this section is only for your convenience to understand the access method. The access work has been completed in this sample code, and you do not need to modify it.**
 
-1. First, modify the `pom.xml` file that needs routing service and introduce `spring-cloud-alibaba-routing-service-adapter` dependencies. Different adapter modules can be introduced as required.
+1. First, modify the `pom.xml` file that needs routing service and introduce `spring-cloud-starter-alibaba-governance-routing` dependencies.
 
 
    ```xml
    <dependency>
        <groupId>com.alibaba.cloud</groupId>
-       <artifactId>spring-cloud-alibaba-routing-service-adapter</artifactId>
+       <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
    </dependency>
    ```
 
@@ -44,58 +48,95 @@ More components, such as Spring Cloud LoadBalabcer, will be supported in the fut
 
 ### The application starts
 
-Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-example/routing-service-provider-example` folder, start four service instances, namely A1Provider Application, and inject them into the Nacos registry at A4Provider Application.
+Enter the `routing-service-provider-example` folder, start four service instances, namely A1Provider Application, and inject them into the Nacos registry at A4Provider Application.
 
 ### Client consumer effect demonstration (take feign as an example)
 
-> Note: This chapter demo provides a quick start version of Docker-Compose. Click here to view (docker-compose QuickStart) [./docker-composition-example-quickstart/label-routing-quickstart/README.md]
+> Note: This chapter demo provides a quick start version of Docker-Compose. Click here to view (docker-compose QuickStart) [./docker-composition-example-quickstart/label-routing-quickstart/README-zh. MD]
 
-1. Import the script to postman in `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example/resources` the and `spring-cloud-alibaba-examples/governance-example/label-routing-example/gateway-consumer-example/resources` folders respectively;
-2. Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-example/wen-client-consumer-example` folder to start the startup classes of the three modules respectively, which are ConsumerFeign Application, ConsumerReactive Application and ConsumerRestApplication;
+1. Enter `web-client-consumer-example/resources` the folder to import the script required by the request client into postman, and send the request for use during verification;
+   1. The location of the request script for the `feign` consumer client in postman is in the `客户端消费者/feign` directory; (RestTemplate is the same as WebClient)
+2. Enter the `web-client-consumer-example` folder to start the startup classes of the three modules respectively, which are ConsumerFeign Application, ConsumerReactive Application and ConsumerRestApplication;
+3. Click the v1 and v2 version requests one by one to see if the four service instances can be consumed **(No routing rules are set)** normally.
 
-3. Click the v1 and v2 version requests one by one to see if the four service instances can be consumed **(Do not set task routing rules)** normally.
+#### Description of expected results of service provider
 
-#### Rule description
-The routing rules set in the service consumer instance are as follows:
-
+Enter `routing-service-provider-example` the path, view the startup class file, and you can find the following code:
 
 ```java
-@GetMapping("/add")
-public void getDataFromControlPlaneTest() {
-    List<RoutingRule> routingRules = new ArrayList<>();
-    List<MatchService> matchServices = new ArrayList<>();
-    UnifiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
-    unifiedRouteDataStructure.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
-    LabelRouteRule labelRouteData = new LabelRouteRule();
-    labelRouteData.setDefaultRouteVersion("v1");
-    RoutingRule routingRule = new HeaderRule();
-    routingRule.setType("header");
-    routingRule.setCondition("=");
-    routingRule.setKey("tag");
-    routingRule.setValue("v2");
-    RoutingRule routingRule1 = new UrlRule.Parameter();
-    routingRule1.setType("parameter");
-    routingRule1.setCondition(">");
-    routingRule1.setKey("id");
-    routingRule1.setValue("10");
-    RoutingRule routingRule2 = new UrlRule.Path();
-    routingRule2.setType("path");
-    routingRule2.setCondition("=");
-    routingRule2.setValue("/router-test");
-    routingRules.add(routingRule);
-    routingRules.add(routingRule1);
-    routingRules.add(routingRule2);
-    MatchService matchService = new MatchService();
-    matchService.setVersion("v2");
-    matchService.setWeight(100);
-    matchService.setRuleList(routingRules);
-    matchServices.add(matchService);
-    labelRouteData.setMatchRouteList(matchServices);
-    unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-    List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-    unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-    controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
+@RestController
+class A1Controller {
+
+   @GetMapping("/test-a1")
+   public String testA1() {
+	   
+      String host = nacosRegistration.getHost();
+      int port = nacosRegistration.getPort();
+      String zone = nacosRegistration.getMetadata().get("zone");
+      String region = nacosRegistration.getMetadata().get("region");
+      String version = nacosRegistration.getMetadata().get("version");
+      return "Route in " + host + ":" + port + ", region: " + region + ", zone: "
+              + zone + ", version: " + version;
+   }
+
 }
+```
+
+It can be seen that the data returned by the service provider is as follows:
+
+- Returns the host, IP address of the service instance;
+- Returns the port of the service instance;
+- The region and zone labels set in the service during the region affinity routing;
+- The nacos metadata tag version set in the service
+
+Service Provider Return Sample:
+
+
+```shell
+Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
+```
+
+#### Rule description
+
+The routing rules set in the service consumer (openfeign-consumer-example, restTemplate-consumer-example, webClient-consumer-example) instance are as follows:
+
+
+```json
+[
+  {
+    "targetService": "routing-service-provider",
+    "labelRouteRule": {
+      "matchRouteList": [
+        {
+          "ruleList": [
+            {
+              "type": "header",
+              "condition": "=",
+              "key": "tag",
+              "value": "v2"
+            },
+            {
+              "type": "parameter",
+              "condition": ">",
+              "key": "id",
+              "value": "10"
+            },
+            {
+              "type": "path",
+              "condition": "=",
+              "value": "/router-test",
+              "key": null
+            }
+          ],
+          "version": "v2",
+          "weight": 100,
+          "fallback": null
+        }
+      ],
+      "defaultRouteVersion": "v1"
+    }
+  }
+]
 ```
 
 The routing rule corresponding to the code is as follows:
@@ -104,46 +145,43 @@ The routing rule corresponding to the code is as follows:
 
 The rules also support dynamic modification, and the rules for testing dynamic modification are as follows:
 
-```java
-@GetMapping("/add")
-public void getDataFromControlPlaneTest() {
-	List<RoutingRule> routingRules = new ArrayList<>();
-	List<MatchService> matchServices = new ArrayList<>();
-	UntiedRouteDataStructure unifiedRouteDataStructure = new UntiedRouteDataStructure();
-	unifiedRouteDataStructure.setTargetService(WebClientConsumerConstants.SERVICE_PROVIDER_NAME);
-	LabelRouteRule labelRouteData = new LabelRouteRule();
-	labelRouteData.setDefaultRouteVersion("v1");
-	
-	RoutingRule routingRule = new HeaderRule();
-	routingRule.setType("header");
-	routingRule.setCondition("=");
-	routingRule.setKey("tag");
-	routingRule.setValue("v2");
-	RoutingRule routingRule1 = new UrlRule.Parameter();
-	routingRule1.setType("parameter");
-	routingRule1.setCondition(">");
-	routingRule1.setKey("id");
-	routingRule1.setValue("10");
-	
-	RoutingRule routingRule2 = new UrlRule.Path();
-	routingRule2.setType("path");
-	routingRule2.setCondition("=");
-	routingRule2.setValue("/router-test");
-	routingRules.add(routingRule);
-	routingRules.add(routingRule1);
-	routingRules.add(routingRule2);
-	
-	MatchService matchService = new MatchService();
-	matchService.setVersion("v2");
-	matchService.setWeight(50);
-	matchService.setRuleList(routingRules);
-	matchServices.add(matchService);
-	labelRouteData.setMatchRouteList(matchServices);
-	unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-	List<UntiedRouteDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-	unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-	controlPlaneConnection.pushRouteData(unifiedRouteDataStructureList);
-}
+
+```json 
+[
+   {
+      "targetService": "routing-service-provider",
+      "labelRouteRule": {
+         "matchRouteList": [
+            {
+               "ruleList": [
+                  {
+                     "type": "header",
+                     "condition": "=",
+                     "key": "tag",
+                     "value": "v2"
+                  },
+                  {
+                     "type": "parameter",
+                     "condition": ">",
+                     "key": "id",
+                     "value": "10"
+                  },
+                  {
+                     "type": "path",
+                     "condition": "=",
+                     "value": "/router-test",
+                     "key": null
+                  }
+               ],
+               "version": "v2",
+               "weight": 50,
+               "fallback": null
+            }
+         ],
+         "defaultRouteVersion": "v1"
+      }
+   }
+]
 ```
 The rules corresponding to the codes are as follows:
 
@@ -151,12 +189,13 @@ The rules corresponding to the codes are as follows:
 
 The area affinity routing rules are as follows:
 
+
 ```yml
     # label routing configuration
     governance:
       routing:
-      # region: dev
-      # zone: zone1
+        region: dev
+        zone: zone1
       # rule: RandomRule
 ```
 
@@ -166,35 +205,32 @@ The area affinity routing rules are as follows:
 
 1. Adds a routing rule and pushes the routing rule from the control plane interface into the routing rule repository.
 
-
    ```shell
     # expected outcome:
     # v1: The routing rules are not satisfied, and the route is routed to the v1 version, and the regional affinity routing rules are regnion=dev, zone=zone1. The expected result is:
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
     # v2: Observing the metadata of service-provider, it is found that there is no service instance with region=dev, zone=zone1, and version=v2. Therefore, regional affinity routing will degenerate into label routing effect. The following results are expected:
-    # Route in 192.168.2.9:18082, region: qa, zone: zone2, version: v2
-    # Route in 192.168.2.9:18084, region: dev, zone: zone2, version: v2
+    # Route in 192.168.2.9:19092, region: qa, zone: zone2, version: v2
+    # Route in 192.168.2.9:19094, region: dev, zone: zone2, version: v2
    
     # The test results match the expected results!
    ```
 
 2. Updating routing rules and simulating dynamic modification of routing rules.
 
-
    ```shell
     # expected outcome:
-    # v1: The routing rules are not satisfied, and the route is routed to the v1 version, and the regional affinity routing rules are regnion=dev, zone=zone1. The instance print returns the following results:
-    # Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+    # v1: The routing rules are not satisfied, and the route is routed to the v1 version, and the regional affinity routing rules are region=dev, zone=zone1. The example print returns the following results:
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
     # v2: Because the regional affinity routing rules are set, even if the v1 and v2 versions each have a weight of 50%, the service instance will still be selected based on the regional affinity routing rules. The expected result is:
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
    
     # The test results match the expected results!
    ```
 
 #### When an area affinity route does not exist
 
-Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example/openfeign-consumer-example/src/main/resources/application.yml` file, comment the following configuration, and start ConsumerFeignApplication again;
-
+Enter the `web-client-consumer-example/openfeign-consumer-example/src/main/resources/application.yml` file, comment the following configuration, and start ConsumerFeignApplication again;
 
 ```yml
     # label routing configuration
@@ -211,12 +247,12 @@ Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-exampl
    ```shell
     # expected outcome:
     # v1: Because there are no regional affinity routing restrictions, load balancing will be performed among v1 instances according to ribbon rules.
-    # Route in 192.168.2.9:18081, region: qa, zone: zone1, version: v1
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19091, region: qa, zone: zone1, version: v1
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
    
     # v2: Since there are no regional affinity routing restrictions, load balancing will be performed between v2 instances according to ribbon rules.
-    # Route in 192.168.2.9:18084, region: dev, zone: zone2, version: v2
-    # Route in 192.168.2.9:18082, region: qa, zone: zone2, version: v2
+    # Route in 192.168.2.9:19094, region: dev, zone: zone2, version: v2
+    # Route in 192.168.2.9:19092, region: qa, zone: zone2, version: v2
    
     # The test found that it met the expected results
    ```
@@ -227,94 +263,65 @@ Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-exampl
    ```shell
     # expected outcome
     # v1: Because there are no regional affinity routing restrictions, the routing results select service instances based on label routing, so load balancing is performed between the two v1 instances according to ribbon rules.
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
-    # Route in 192.168.2.9:18081, region: qa, zone: zone1, version: v1
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19091, region: qa, zone: zone1, version: v1
      
     # v2: The weights of v1 and v2 each account for 50, so the calling results of the four service instances will appear.
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
-    # Route in 192.168.2.9:18082, region: qa, zone: zone2, version: v2
-    # Route in 192.168.2.9:18084, region: dev, zone: zone2, version: v2
-    # Route in 192.168.2.9:18081, region: qa, zone: zone1, version: v1
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19092, region: qa, zone: zone2, version: v2
+    # Route in 192.168.2.9:19094, region: dev, zone: zone2, version: v2
+    # Route in 192.168.2.9:19091, region: qa, zone: zone1, version: v1
    
-    # The test found that it met the expected results
+    # The test found that it met the expected results 
    ```
 
 ### Demonstration of gateway consumer effect (taking gateway as an example)
 
-1. Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-example/gateway-consumer-example` folder to start the startup classes of the two gateway modules respectively, which are ConsumerZuulApplication and ConsumerGateway Application
-
-3. Click the v1 and v2 version requests one by one to see if the four service instances can be consumed **(Do not set task routing rules)** normally.
+1. Enter the `gateway-consumer-example` folder to start the startup classes of the two gateway modules respectively, which are ConsumerZuulApplication and ConsumerGateway Application
+2. Enter the `gateway-consumer-example/resources` folder to import the request script required by the gateway sample into postman;
+3. Click the v1 and v2 version requests one by one to see if the four service instances can be consumed **(No routing rules are set)** normally.
 
 #### Rule description
 
-The label routing rules in the gateway consumer are as follows
+The tag routing rules in the gateway consumer are as follows:
 
 
-```java
-@Override
-public void getDataFromControlPlaneTest() {
-
-    log.info("请求 /add 接口，发布路由规则");
-
-    List<Rule> routeRules = new ArrayList<>();
-    List<MatchService> matchServices = new ArrayList<>();
-
-    UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-
-    // set target service
-    unifiedRouteDataStructure.setTargetService(GatewayConstants.SERVICE_PROVIDER_NAME);
-
-    RoutingRule labelRouteData = new RoutingRule();
-
-    // set default service version
-    labelRouteData.setDefaultRouteVersion("v1");
-
-    // set request header routing rule
-    Rule routeRule = new HeaderRoutingRule();
-    routeRule.setCondition("=");
-    routeRule.setKey("tag");
-    routeRule.setValue("v2");
-
-    // set request url routing rule
-    Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-    routeRule1.setCondition(">");
-    routeRule1.setKey("id");
-    routeRule1.setValue("10");
-
-    // set request url routing rule
-    Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-    routeRule2.setCondition("=");
-    routeRule2.setValue("/test-a1");
-
-    // add routing rule to routeRules#List<Rule>
-    routeRules.add(routeRule);
-    routeRules.add(routeRule1);
-    routeRules.add(routeRule2);
-
-    // If the preceding conditions are met, the route is routed to the v2 instance and
-    // the weight is set to 100
-    MatchService matchService = new MatchService();
-    matchService.setVersion("v2");
-    matchService.setWeight(100);
-    matchService.setRuleList(routeRules);
-    matchServices.add(matchService);
-
-    labelRouteData.setMatchRouteList(matchServices);
-
-    unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-
-    List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-    unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-
-    RoutingDataChangedEvent routingDataChangedEvent = new RoutingDataChangedEvent(
-        this, unifiedRouteDataStructureList);
-
-    // Publish routing rules
-    applicationContext.publishEvent(routingDataChangedEvent);
-
-    log.info("请求 /add 接口，发布路由规则完成！");
-
-}
+```json
+[
+   {
+      "targetService": "routing-service-provider",
+      "labelRouteRule": {
+         "matchRouteList": [
+            {
+               "ruleList": [
+                  {
+                     "type": "header",
+                     "condition": "=",
+                     "key": "tag",
+                     "value": "v2"
+                  },
+                  {
+                     "type": "parameter",
+                     "condition": ">",
+                     "key": "id",
+                     "value": "10"
+                  },
+                  {
+                     "type": "path",
+                     "condition": "=",
+                     "value": "/test-a1",
+                     "key": null
+                  }
+               ],
+               "version": "v2",
+               "weight": 100,
+               "fallback": null
+            }
+         ],
+         "defaultRouteVersion": "v1"
+      }
+   }
+]
 ```
 
 The routing rule corresponding to the code is as follows:
@@ -324,55 +331,43 @@ The routing rule corresponding to the code is as follows:
 Update routing rules:
 
 
-```java
-public void updateDataFromControlPlaneTest() {
+```json
+[
+   {
+      "targetService": "routing-service-provider",
+      "labelRouteRule": {
+         "matchRouteList": [
+            {
+               "ruleList": [
+                  {
+                     "type": "header",
+                     "condition": "=",
+                     "key": "tag",
+                     "value": "v2"
+                  },
+                  {
+                     "type": "parameter",
+                     "condition": ">",
+                     "key": "id",
+                     "value": "10"
+                  },
+                  {
+                     "type": "path",
+                     "condition": "=",
+                     "value": "/test-a1",
+                     "key": null
+                  }
+               ],
+               "version": "v2",
+               "weight": 50,
+               "fallback": null
+            }
+         ],
+         "defaultRouteVersion": "v1"
+      }
+   }
+]
 
-    log.info("请求 /update 接口，更新路由规则");
-
-    List<Rule> routeRules = new ArrayList<>();
-    List<MatchService> matchServices = new ArrayList<>();
-
-    UnifiedRoutingDataStructure unifiedRouteDataStructure = new UnifiedRoutingDataStructure();
-    unifiedRouteDataStructure.setTargetService(GatewayConstants.SERVICE_PROVIDER_NAME);
-
-    RoutingRule labelRouteData = new RoutingRule();
-    labelRouteData.setDefaultRouteVersion("v1");
-
-    Rule routeRule = new HeaderRoutingRule();
-    routeRule.setCondition("=");
-    routeRule.setKey("tag");
-    routeRule.setValue("v2");
-    Rule routeRule1 = new UrlRoutingRule.ParameterRoutingRule();
-    routeRule1.setCondition(">");
-    routeRule1.setKey("id");
-    routeRule1.setValue("10");
-    Rule routeRule2 = new UrlRoutingRule.PathRoutingRule();
-    routeRule2.setCondition("=");
-    routeRule2.setValue("/test-a1");
-    routeRules.add(routeRule);
-    routeRules.add(routeRule1);
-    routeRules.add(routeRule2);
-
-    // set weight 50
-    MatchService matchService = new MatchService();
-    matchService.setVersion("v2");
-    matchService.setWeight(50);
-    matchService.setRuleList(routeRules);
-    matchServices.add(matchService);
-
-    labelRouteData.setMatchRouteList(matchServices);
-
-    unifiedRouteDataStructure.setLabelRouteRule(labelRouteData);
-
-    List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = new ArrayList<>();
-    unifiedRouteDataStructureList.add(unifiedRouteDataStructure);
-
-    applicationContext.publishEvent(
-        new RoutingDataChangedEvent(this, unifiedRouteDataStructureList));
-
-    log.info("请求 /update 接口，更新路由规则完成！");
-
-}
 ```
 
 The rules corresponding to the codes are as follows:
@@ -400,11 +395,11 @@ The area affinity routing rules are as follows:
 
    ```shell
     # expected outcome:
-    # v1: The routing rules are not satisfied, and the route is routed to the v1 version, and the regional affinity routing rules are regnion=dev, zone=zone1. The expected result is:
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+    # v1: The routing rules are not satisfied, and the route is routed to the v1 version, and the regional affinity routing rules are region=dev, zone=zone1. The expected result is:
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
     # v2: Observing the metadata of service-provider, it is found that there is no service instance with region=dev, zone=zone1, and version=v2. Therefore, regional affinity routing will degenerate into label routing effect. The following results are expected:
-    # Route in 192.168.2.9:18082, region: qa, zone: zone2, version: v2
-    # Route in 192.168.2.9:18084, region: dev, zone: zone2, version: v2
+    # Route in 192.168.2.9:19092, region: qa, zone: zone2, version: v2
+    # Route in 192.168.2.9:19094, region: dev, zone: zone2, version: v2
    
     # The test results match the expected results!
    ```
@@ -415,25 +410,25 @@ The area affinity routing rules are as follows:
    ```shell
     # expected outcome:
     # v1: The label routing rules are not satisfied, and the route is routed to the v1 version. The service instance is selected from the two v1 version instances based on the regional affinity label. The instance printing returns the following results:
-    # Route in 172.18.0.3:18083, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
     # v2: Because the regional affinity routing rules are set, even if the v1 and v2 versions each have a weight of 50%, the service instance will still be selected based on the regional affinity routing rules. The expected result is:
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
    
     # The test results match the expected results!
    ```
 
 #### When an area affinity route does not exist
 
-Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-example/web-client-consumer-example/routing-feign-consumer-example/src/main/resources/application.yml` file, comment the following configuration, and start ConsumerFeignApplication again;
+Enter the `gateway-consumer-example/gateway-consumer-example/src/main/resources/application.yml` file, comment the following configuration, and start the GatewayConsumerApplication again;
 
 
 ```yml
-    # label routing configuration
+    # Regional affinity routing configuration
     governance:
-      routing:
-        # region: dev
-        # zone: zone1
-      # rule: RandomRule
+       routing:
+#        region: dev
+#        zone: zone1
+       # rule: RandomRule
 ```
 
 1. Adds a routing rule and pushes the routing rule from the control plane interface into the routing rule repository.
@@ -442,12 +437,12 @@ Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-exampl
    ```shell
     # expected outcome:
     # v1: Because there are no regional affinity routing restrictions, load balancing will be performed between instances according to ribbon rules.
-    # Route in 192.168.2.9:18081, region: qa, zone: zone1, version: v1
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19091, region: qa, zone: zone1, version: v1
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
    
     # v2: Because there are no regional affinity routing restrictions, load balancing will be performed between instances according to ribbon rules.
-    # Route in 192.168.2.9:18084, region: dev, zone: zone2, version: v2
-    # Route in 192.168.2.9:18082, region: qa, zone: zone2, version: v2
+    # Route in 192.168.2.9:19094, region: dev, zone: zone2, version: v2
+    # Route in 192.168.2.9:19092, region: qa, zone: zone2, version: v2
    
     # The test found that it met the expected results
    ```
@@ -456,14 +451,16 @@ Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-exampl
 
 
    ```shell
-    # expected outcome:
-    # v1: Because there are no regional affinity routing restrictions, load balancing will be performed between instances according to ribbon rules.
-    # Route in 192.168.2.9:18081, region: qa, zone: zone1, version: v1
-    # Route in 192.168.2.9:18083, region: dev, zone: zone1, version: v1
-   
-    # v2: Because there are no regional affinity routing restrictions, load balancing will be performed between instances according to ribbon rules.
-    # Route in 192.168.2.9:18084, region: dev, zone: zone2, version: v2
-    # Route in 192.168.2.9:18082, region: qa, zone: zone2, version: v2
+    # expected outcome
+    # v1: Because there are no regional affinity routing restrictions, the routing results select service instances based on label routing, so load balancing is performed between the two instances according to ribbon rules.
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19091, region: qa, zone: zone1, version: v1
+     
+    # v2: The weights of v1 and v2 each account for 50, so the calling results of the four service instances will appear.
+    # Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
+    # Route in 192.168.2.9:19092, region: qa, zone: zone2, version: v2
+    # Route in 192.168.2.9:19094, region: dev, zone: zone2, version: v2
+    # Route in 192.168.2.9:19091, region: qa, zone: zone1, version: v1
    
     # The test found that it met the expected results
    ```
@@ -472,26 +469,29 @@ Enter the `spring-cloud-alibaba-examples/governance-example/label-routing-exampl
 
 **Note that this section is only for your convenience to understand the access method. The access work has been completed in this sample code, and you do not need to modify it.**
 ### Install the K8s environment
-Refer to [Install Tools](https://kubernetes.io/zh-cn/docs/tasks/tools/) section K8s.
+Refer to [install tools](https://kubernetes.io/zh-cn/docs/tasks/tools/) section K8s.
 ### Install and enable Istio on K8s
-Please refer to the section of the official Istio documentation [Install](https://istio.io/latest/zh/docs/setup/install/).
+Please refer to the section of the official Istio documentation [install](https://istio.io/latest/zh/docs/setup/install/).
 ### Introduction to Istio Traffic Governance Rules
 - [VirtualService](https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/)
 - [DestinationRule](https://istio.io/latest/zh/docs/reference/config/networking/destination-rule/)
 ### Configuration
-1. First, modify the POM. XML file to introduce `spring-cloud-starter-alibaba-governance-routing-starter` dependencies. At the same time, the module of Spring Cloud Alibaba `spring-cloud-starter-xds-adapter` is introduced.
+1. First, modify the POM. XML file to introduce `spring-cloud-starter-alibaba-governance-routing` dependencies. At the same time, the module of Spring Cloud Alibaba `spring-cloud-starter-xds-adapter` is introduced.
+
 
 ```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
-   <artifactId>spring-cloud-starter-alibaba-governance-routing-starter</artifactId>
+   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
+
 2. To configure information about the Istio control plane in the `src/main/resources/application.yml` configuration file:
+
 
 ```YAML
 server:
@@ -529,11 +529,15 @@ spring:
         # 是否打印xds相关日志
         log-xds: ${LOG_XDS:true}
 ```
+
 ### The application starts
+
 Start the startup classes of the three modules, IstioConsumerApplication and the two ProviderApplications, and inject them into the Nacos registry.
 
 ### Distribute configuration
+
 Issue the label routing rule through the Istio control plane. Issue the DestinationRule rule first:
+
 
 ```YAML
 kubectl apply -f - << EOF
@@ -552,7 +556,9 @@ spec:
       version: v2
 EOF
 ```
+
 This rule splits the backend service into two versions. After the pod with label v1 is assigned to version v1, and the pod with label v2 is assigned to version v2, the Virtual Service rule is issued:
+
 
 ```YAML
 kubectl apply -f - << EOF
@@ -580,9 +586,12 @@ spec:
         subset: v1
 EOF
 ```
+
 This Virtual Service specifies the simplest tag routing rule, which routes HTTP requests with a request header tag of v2 and a request path `/istio-label-routing` of to the v2 version, and the rest of the traffic to the v1 version:
 ### Effect demonstration
+
 Send an HTTP request to IstioConsumerApplication without a request header:
+
 
 ```
 curl --location --request GET '127.0.0.1:18084/istio-label-routing'
@@ -612,12 +621,12 @@ After deleting the rule, it can be seen that the routing strategy will not be de
 
 ## Integrate OpenSergo
 **Note that this section is only for your convenience to understand the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-1. First, modify the POM. XML file to introduce `spring-cloud-starter-alibaba-governance-routing-starter` dependencies. At the same time, the module of Spring Cloud Alibaba `spring-cloud-starter-opensergo-adapter` is introduced.
+1. First, modify the POM. XML file to introduce `spring-cloud-starter-alibaba-governance-routing` dependencies. At the same time, the module of Spring Cloud Alibaba `spring-cloud-starter-opensergo-adapter` is introduced.
 
 ```XML
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
-   <artifactId>spring-cloud-starter-alibaba-governance-routing-starter</artifactId>
+   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
 <dependency>
    <groupId>com.alibaba.cloud</groupId>

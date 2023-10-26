@@ -9,7 +9,7 @@
 本模块包括一个消费者实例和一个提供者集群，该集群包含着4个实例。
 
 - 本文中提到的示例模块都在 `spring-cloud-alibaba/spring-cloud-alibaba-examples/governance-example/label-routing-example/` 目录下；
-- starter 起步依赖模块都在 `spring-cloud-alibaba/spring-cloud-alibaba-starters/spring-cloud-starter-alibaba-governance-routing` 目录下。
+- starter 起步依赖模块在 `spring-cloud-alibaba/spring-cloud-alibaba-starters/spring-cloud-starter-alibaba-governance-routing` 目录下。
 - 如无特殊说明，下文中提到的所有路径都以其上为父路径。
 
 ## 组件支持说明
@@ -29,12 +29,12 @@
 
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
 
-1. 首先，修改需要进行路由服务的 `pom.xml` 文件，引入 `spring-cloud-alibaba-routing-service-adapter` 依赖，可以根据需要引入不同的适配器模块（提供 gateway 和 zuul 网关的适配）。
+1. 首先，修改需要进行路由服务的 `pom.xml` 文件，引入 `spring-cloud-starter-alibaba-governance-routing` 依赖。
 
    ```xml
    <dependency>
        <groupId>com.alibaba.cloud</groupId>
-       <artifactId>spring-cloud-alibaba-routing-service-adapter</artifactId>
+       <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
    </dependency>
    ```
 
@@ -62,12 +62,12 @@
 进入 `routing-service-provider-example` 路径下，查看启动类文件，可以发现如下代码：
 
 ```java
-	@RestController
+@RestController
 class A1Controller {
 
    @GetMapping("/test-a1")
    public String testA1() {
-	   
+       
       String host = nacosRegistration.getHost();
       int port = nacosRegistration.getPort();
       String zone = nacosRegistration.getMetadata().get("zone");
@@ -137,7 +137,7 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 
 代码对应的路由规则如下：
 
-> 若同时满足请求参数中含有`tag=v2`，请求头中含有 id 且值小于10，uri 为`/router-test`则流量全部路由到 v2 版本中，若有一条不满足，则流量路由到 v1 版本中。
+> 若同时满足请求参数中含有`tag=v2`，请求头中含有 id 且值小于10，uri 为 `/router-test` 则流量全部路由到 v2 版本中，若有一条不满足，则流量路由到 v1 版本中。
 
 规则也支持动态修改，测试动态修改的规则如下：
 
@@ -180,7 +180,7 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 ```
 代码对应的规则如下：
 
-> 若同时满足请求参数中含有`tag=v2`，请 求头中含有 id 且值小于10，uri 为`/router-test`，则 50% 流量路由到 v2 版本中，剩下的流量路由到 v1 版本中，若有一条不满足，则流量路由到 v1 版本中。
+> 若同时满足请求参数中含有 `tag=v2`，请 求头中含有 id 且值小于10，uri 为 `/router-test`，则 50% 流量路由到 v2 版本中，剩下的流量路由到 v1 版本中，若有一条不满足，则流量路由到 v1 版本中。
 
 区域亲和性路由规则如下：
 
@@ -317,7 +317,7 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 
 代码对应的路由规则如下：
 
-> 若同时满足请求参数中含有`tag=v2`，请求头中含有 id 且值小于10，uri 为`/test-a1`则流量全部路由到 v2 版本中，若有一条不满足，则流量路由到 v1 版本中。
+> 若同时满足请求参数中含有 `tag=v2`，请求头中含有 id 且值小于10，uri 为 `/test-a1` 则流量全部路由到 v2 版本中，若有一条不满足，则流量路由到 v1 版本中。
 
 更新路由规则：
 
@@ -362,7 +362,7 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 
 代码对应的规则如下：
 
-> 若同时满足请求参数中含有`tag=v2`，请 求头中含有 id 且值小于10，uri 为`/test-a1`，则 50% 流量路由到 v2 版本中，剩下的流量路由到 v1 版本中，若有一条不满足，则流量路由到 v1 版本中。
+> 若同时满足请求参数中含有 `tag=v2`，请 求头中含有 id 且值小于10，uri 为 `/test-a1`，则 50% 流量路由到 v2 版本中，剩下的流量路由到 v1 版本中，若有一条不满足，则流量路由到 v1 版本中。
 
 区域亲和性路由规则如下：
 
@@ -460,12 +460,12 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 - [VirtualService](https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/)
 - [DestinationRule](https://istio.io/latest/zh/docs/reference/config/networking/destination-rule/)
 ### 配置
-1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing-starter`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-xds-adapter`模块
+1. 首先，修改pom.xml 文件，引入 `spring-cloud-starter-alibaba-governance-routing` 依赖。同时引入Spring Cloud Alibaba的 `spring-cloud-starter-xds-adapter` 模块
 
 ```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
-   <artifactId>spring-cloud-starter-alibaba-governance-routing-starter</artifactId>
+   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
 <dependency>
     <groupId>com.alibaba.cloud</groupId>
@@ -596,11 +596,11 @@ kubectl delete DestinationRule my-destination-rule
 
 ## 集成OpenSergo
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing-starter`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-opensergo-adapter`模块
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-opensergo-adapter`模块
 ```XML
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
-   <artifactId>spring-cloud-starter-alibaba-governance-routing-starter</artifactId>
+   <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
 </dependency>
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
