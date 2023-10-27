@@ -138,12 +138,7 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 
 		Instance instance = getNacosInstanceFromRegistration(registration);
 
-		if (STATUS_DOWN.equalsIgnoreCase(status)) {
-			instance.setEnabled(false);
-		}
-		else {
-			instance.setEnabled(true);
-		}
+        instance.setEnabled(!STATUS_DOWN.equalsIgnoreCase(status));
 
 		try {
 			Properties nacosProperties = nacosDiscoveryProperties.getNacosProperties();
