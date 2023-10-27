@@ -59,10 +59,10 @@ public class NacosServiceRegistryAutoConfiguration {
 	@Bean
 	@ConditionalOnBean(AutoServiceRegistrationProperties.class)
 	public NacosRegistration nacosRegistration(
-			ObjectProvider<List<NacosRegistrationCustomizer>> registrationCustomizers,
+			ObjectProvider<NacosRegistrationCustomizer> registrationCustomizers,
 			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
-		return new NacosRegistration(registrationCustomizers.getIfAvailable(),
+		return new NacosRegistration(registrationCustomizers,
 				nacosDiscoveryProperties, context);
 	}
 

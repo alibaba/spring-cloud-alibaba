@@ -16,20 +16,20 @@
 
 package com.alibaba.cloud.nacos.registry;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.api.naming.PreservedMetadataKeys;
 import jakarta.annotation.PostConstruct;
-
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.discovery.ManagementServerPortUtils;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaojing
@@ -57,13 +57,13 @@ public class NacosRegistration implements Registration {
 	 */
 	public static final String MANAGEMENT_ENDPOINT_BASE_PATH = "management.endpoints.web.base-path";
 
-	private List<NacosRegistrationCustomizer> registrationCustomizers;
+	private final ObjectProvider<NacosRegistrationCustomizer> registrationCustomizers;
 
-	private NacosDiscoveryProperties nacosDiscoveryProperties;
+	private final NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	private ApplicationContext context;
+	private final ApplicationContext context;
 
-	public NacosRegistration(List<NacosRegistrationCustomizer> registrationCustomizers,
+	public NacosRegistration(ObjectProvider<NacosRegistrationCustomizer> registrationCustomizers,
 			NacosDiscoveryProperties nacosDiscoveryProperties,
 			ApplicationContext context) {
 		this.registrationCustomizers = registrationCustomizers;
@@ -108,16 +108,7 @@ public class NacosRegistration implements Registration {
 			metadata.put(PreservedMetadataKeys.IP_DELETE_TIMEOUT,
 					nacosDiscoveryProperties.getIpDeleteTimeout().toString());
 		}
-		customize(registrationCustomizers);
-	}
-
-	protected void customize(
-			List<NacosRegistrationCustomizer> registrationCustomizers) {
-		if (registrationCustomizers != null) {
-			for (NacosRegistrationCustomizer customizer : registrationCustomizers) {
-				customizer.customize(this);
-			}
-		}
+        registrationCustomizers.orderedStream().forEach(customizer -> customizer.customize(this));
 	}
 
 	@Override
