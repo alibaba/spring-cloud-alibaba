@@ -22,11 +22,11 @@ import java.util.Map;
 
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
-import com.alibaba.cloud.consumer.constants.WebClientConsumerConstants;
-import com.alibaba.cloud.consumer.converter.Converter;
-import com.alibaba.cloud.consumer.entity.ConsumerNodeInfo;
 import com.alibaba.cloud.consumer.feign.api.ConsumerFeignService;
-import com.alibaba.cloud.consumer.util.ReadJsonFileUtils;
+import com.alibaba.cloud.routing.consumer.constants.ConsumerConstants;
+import com.alibaba.cloud.routing.consumer.converter.Converter;
+import com.alibaba.cloud.routing.consumer.entity.ConsumerNodeInfo;
+import com.alibaba.cloud.routing.consumer.util.ReadJsonFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +101,7 @@ public class ConsumerFeignController implements ApplicationContextAware {
 	public void getDataFromControlPlaneTest() {
 
 		log.info("Access /add routing rule interface, add routing rule..." + "\n"
-				+ WebClientConsumerConstants.ADD_RULE_DESCRIPTION);
+				+ ConsumerConstants.ADD_RULE_DESCRIPTION);
 
 		String content = ReadJsonFileUtils.convertFile2String(addRoutingRulePath);
 		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = jsonConverter
@@ -117,7 +117,7 @@ public class ConsumerFeignController implements ApplicationContextAware {
 	public void updateDataFromControlPlaneTest() {
 
 		log.info("Access /update routing rule interface, update routing rule..." + "\n"
-				+ WebClientConsumerConstants.UPDATE_RULE_DESCRIPTION);
+				+ ConsumerConstants.UPDATE_RULE_DESCRIPTION);
 
 		String content = ReadJsonFileUtils.convertFile2String(updateRoutingRulePath);
 		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = jsonConverter

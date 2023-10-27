@@ -14,26 +14,40 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.consumer.feign.api;
+package com.alibaba.cloud.routing.consumer.entity;
 
-import com.alibaba.cloud.routing.consumer.constants.ConsumerConstants;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Component;
 
 /**
  * @author yuluo-yx
  * @author <a href="1481556636@qq.com"></a>
  */
 
-@FeignClient(name = ConsumerConstants.SERVICE_PROVIDER_NAME)
-public interface ConsumerFeignService {
+@Component
+public final class ConsumerNodeInfo {
 
-	/**
-	 * Feign test api.
-	 * @return String type.
-	 */
-	@GetMapping("/test-a1")
-	String routerTest();
+	private static Map<String, List<Map<String, List<String>>>> nodeIno = new ConcurrentHashMap<>();
+
+	private ConsumerNodeInfo() {
+	}
+
+	public static void set(String var1, List<Map<String, List<String>>> var2) {
+
+		nodeIno.put(var1, var2);
+	}
+
+	public static List<Map<String, List<String>>> get(String var) {
+
+		return nodeIno.get(var);
+	}
+
+	public static Map<String, List<Map<String, List<String>>>> getNodeIno() {
+
+		return nodeIno;
+	}
 
 }

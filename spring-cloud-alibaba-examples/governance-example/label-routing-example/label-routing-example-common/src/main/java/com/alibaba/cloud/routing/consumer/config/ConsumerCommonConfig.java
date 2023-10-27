@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.consumer.feign.api;
+package com.alibaba.cloud.routing.consumer.config;
 
-import com.alibaba.cloud.routing.consumer.constants.ConsumerConstants;
+import com.alibaba.cloud.routing.consumer.converter.Converter;
+import com.alibaba.cloud.routing.consumer.converter.JsonConverter;
 
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author yuluo-yx
- * @author <a href="1481556636@qq.com"></a>
+ * @author yuluo
+ * @author 1481556636@qq.com
  */
 
-@FeignClient(name = ConsumerConstants.SERVICE_PROVIDER_NAME)
-public interface ConsumerFeignService {
+@Configuration(proxyBeanMethods = false)
+public class ConsumerCommonConfig {
 
-	/**
-	 * Feign test api.
-	 * @return String type.
-	 */
-	@GetMapping("/test-a1")
-	String routerTest();
+	@Bean
+	public Converter jsonConverter() {
+
+		return new JsonConverter();
+	}
 
 }

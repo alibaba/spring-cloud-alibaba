@@ -29,8 +29,7 @@ import org.springframework.web.server.ServerWebExchange;
  * @author 1481556636@qq.com
  */
 
-public class LabelRoutingGatewayClearFilter
-		implements GlobalFilter, Ordered {
+public class LabelRoutingGatewayClearFilter implements GlobalFilter, Ordered {
 
 	@Override
 	public int getOrder() {

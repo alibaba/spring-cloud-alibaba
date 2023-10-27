@@ -131,7 +131,7 @@ public class RoutingDataRepository {
 
 			// Take out the path label separately, because there is no key for hash index.
 			if (ruleList.size() == 1
-					        && PATH.equalsIgnoreCase(ruleList.get(0).getType())) {
+					&& PATH.equalsIgnoreCase(ruleList.get(0).getType())) {
 				List<MatchService> matchServiceList = newPathRuleMap
 						.get(routerData.getTargetService());
 				if (matchServiceList == null) {

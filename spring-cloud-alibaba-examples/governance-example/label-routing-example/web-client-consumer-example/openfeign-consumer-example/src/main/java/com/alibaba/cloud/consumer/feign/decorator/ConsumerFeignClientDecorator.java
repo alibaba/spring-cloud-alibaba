@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.cloud.consumer.constants.WebClientConsumerConstants;
-import com.alibaba.cloud.consumer.entity.ConsumerNodeInfo;
+import com.alibaba.cloud.routing.consumer.constants.ConsumerConstants;
+import com.alibaba.cloud.routing.consumer.entity.ConsumerNodeInfo;
 import feign.Client;
 import feign.Request;
 import feign.Response;
@@ -56,7 +56,9 @@ public class ConsumerFeignClientDecorator implements Client {
 			headerMap.put(k, headerValue);
 			list.add(headerMap);
 		});
-		ConsumerNodeInfo.set(WebClientConsumerConstants.FEIGN_APPLICATION_NAME, list);
+		ConsumerNodeInfo.set(
+				ConsumerConstants.WebClientConsumerConstants.FEIGN_APPLICATION_NAME,
+				list);
 
 		return response;
 	}

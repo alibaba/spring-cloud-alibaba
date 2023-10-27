@@ -14,26 +14,15 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.consumer.feign.api;
-
-import com.alibaba.cloud.routing.consumer.constants.ConsumerConstants;
-
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+package com.alibaba.cloud.routing.consumer.converter;
 
 /**
- * @author yuluo-yx
- * @author <a href="1481556636@qq.com"></a>
+ * @author yuluo
+ * @author 1481556636@qq.com
  */
 
-@FeignClient(name = ConsumerConstants.SERVICE_PROVIDER_NAME)
-public interface ConsumerFeignService {
+public interface Converter<S, T> {
 
-	/**
-	 * Feign test api.
-	 * @return String type.
-	 */
-	@GetMapping("/test-a1")
-	String routerTest();
+	T convert(S val);
 
 }

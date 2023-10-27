@@ -43,7 +43,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>gateway-consumer-common</artifactId>
+			<artifactId>label-routing-example-common</artifactId>
 			<version>${revision}</version>
 		</dependency>
 	</dependencies>

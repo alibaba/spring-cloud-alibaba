@@ -29,8 +29,8 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.alibaba.cloud.consumer.constants.WebClientConsumerConstants;
-import com.alibaba.cloud.consumer.entity.ConsumerNodeInfo;
+import com.alibaba.cloud.routing.consumer.constants.ConsumerConstants;
+import com.alibaba.cloud.routing.consumer.entity.ConsumerNodeInfo;
 import feign.FeignException;
 import feign.Response;
 import feign.Util;
@@ -92,11 +92,11 @@ public class ConsumerFeignResponseDecoder extends SpringDecoder {
 					for (String s : metadata.keySet()) {
 						map.put(s, Collections.singletonList(metadata.get(s)));
 					}
-					map.put(WebClientConsumerConstants.PORT,
+					map.put(ConsumerConstants.PORT,
 							Collections.singletonList(instance.getPort() + ""));
-					map.put(WebClientConsumerConstants.HOST,
+					map.put(ConsumerConstants.HOST,
 							Collections.singletonList(instance.getHost()));
-					map.put(WebClientConsumerConstants.INSTANCE_ID,
+					map.put(ConsumerConstants.INSTANCE_ID,
 							Collections.singletonList(instance.getInstanceId()));
 					metaList.add(map);
 

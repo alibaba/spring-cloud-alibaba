@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>web-client-consumer-common</artifactId>
+			<artifactId>label-routing-example-common</artifactId>
 			<version>${revision}</version>
 		</dependency>
 	</dependencies>

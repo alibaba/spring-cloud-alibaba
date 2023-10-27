@@ -42,15 +42,6 @@ public class ConsumerWebClientConfiguration {
 		return WebClient.builder().filter(response());
 	}
 
-	// private ExchangeFilterFunction request() {
-	//
-	// return ((clientRequest, exchangeFunction) -> {
-	//
-	// HttpHeaders headers = clientRequest.headers();
-	// return exchangeFunction.exchange(clientRequest);
-	// });
-	// }
-
 	private ExchangeFilterFunction response() {
 
 		return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {

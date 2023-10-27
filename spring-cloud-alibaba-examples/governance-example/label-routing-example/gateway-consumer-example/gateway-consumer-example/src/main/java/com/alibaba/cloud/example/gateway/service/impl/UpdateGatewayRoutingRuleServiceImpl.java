@@ -22,9 +22,9 @@ import java.util.List;
 import com.alibaba.cloud.commons.governance.event.RoutingDataChangedEvent;
 import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
 import com.alibaba.cloud.example.gateway.service.UpdateGatewayRoutingRuleService;
-import com.alibaba.cloud.routing.gateway.common.GatewayConstants;
-import com.alibaba.cloud.routing.gateway.converter.Converter;
-import com.alibaba.cloud.routing.gateway.util.ReadJsonFileUtils;
+import com.alibaba.cloud.routing.consumer.constants.ConsumerConstants;
+import com.alibaba.cloud.routing.consumer.converter.Converter;
+import com.alibaba.cloud.routing.consumer.util.ReadJsonFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public class UpdateGatewayRoutingRuleServiceImpl
 	public void updateDataFromControlPlaneTest() {
 
 		log.info("Access /updateRule interface，update routing rule success..." + "\n"
-				+ GatewayConstants.UPDATE_RULE_DESCRIPTION);
+				+ ConsumerConstants.UPDATE_RULE_DESCRIPTION);
 
 		String content = ReadJsonFileUtils.convertFile2String(updateRoutingRulePath);
 		List<UnifiedRoutingDataStructure> unifiedRouteDataStructureList = jsonConverter

@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.consumer.feign.api;
+package com.alibaba.cloud.routing.consumer.converter;
 
-import com.alibaba.cloud.routing.consumer.constants.ConsumerConstants;
+import java.util.List;
 
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.alibaba.cloud.commons.governance.routing.UnifiedRoutingDataStructure;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 
 /**
- * @author yuluo-yx
- * @author <a href="1481556636@qq.com"></a>
+ * @author yuluo
+ * @author 1481556636@qq.com
  */
 
-@FeignClient(name = ConsumerConstants.SERVICE_PROVIDER_NAME)
-public interface ConsumerFeignService {
+public class JsonConverter
+		implements Converter<String, List<UnifiedRoutingDataStructure>> {
 
-	/**
-	 * Feign test api.
-	 * @return String type.
-	 */
-	@GetMapping("/test-a1")
-	String routerTest();
+	@Override
+	public List<UnifiedRoutingDataStructure> convert(String val) {
+
+		return JSON.parseObject(val,
+				new TypeReference<List<UnifiedRoutingDataStructure>>() {
+				});
+	}
 
 }
