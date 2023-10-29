@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package com.alibaba.cloud.governance.istio;
+package com.alibaba.cloud.example.controller;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import javax.annotation.Resource;
+
+import com.alibaba.cloud.example.api.FeignService;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author musi
- * @author <a href="liuziming@buaa.edu.cn"></a>
- * @since 2.2.10-RC1
+ * @author xqw
  */
-public class XdsScheduledThreadPool extends ScheduledThreadPoolExecutor {
 
-	public XdsScheduledThreadPool(XdsConfigProperties xdsConfigProperties) {
-		this(xdsConfigProperties.getPollingPoolSize());
-	}
+@RestController
+public class OutlierDetectionController {
 
-	public XdsScheduledThreadPool(int corePoolSize) {
-		super(corePoolSize);
+	@Resource
+	private FeignService feignService;
+
+	@GetMapping("/test")
+	public String test() {
+
+		return feignService.test();
 	}
 
 }

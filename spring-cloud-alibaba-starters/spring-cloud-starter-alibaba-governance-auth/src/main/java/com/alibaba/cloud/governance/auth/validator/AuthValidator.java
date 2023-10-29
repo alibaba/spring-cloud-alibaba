@@ -22,6 +22,7 @@ import java.util.Map;
 import com.alibaba.cloud.commons.governance.auth.condition.AuthCondition;
 import com.alibaba.cloud.commons.governance.auth.rule.AuthRule;
 import com.alibaba.cloud.commons.governance.auth.rule.JwtRule;
+import com.alibaba.cloud.commons.governance.tls.ServerTlsModeHolder;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.commons.matcher.Matcher;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
@@ -34,10 +35,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 
 /**
- * Use a abstract rule tree to validate the request. First, if the rules are all empty, we
- * just return true. Secondly, if any deny rule matches the request, we just return false.
- * Thirdly, if the allow rules are empty, we just return true. Last, if any allow rule
- * matches the request, we just return true, or we return false.
+ * Use an abstract rule tree to validate the request. First, if the rules are all empty,
+ * we just return true. Secondly, if any deny rule matches the request, we just return
+ * false. Thirdly, if the allow rules are empty, we just return true. Last, if any allow
+ * rule matches the request, we just return true, or we return false.
  *
  * @author musi
  * @author <a href="liuziming@buaa.edu.cn"></a>
@@ -49,8 +50,11 @@ public class AuthValidator {
 
 	private final AuthRepository authRepository;
 
+	private final boolean isTls;
+
 	public AuthValidator(AuthRepository authRepository) {
 		this.authRepository = authRepository;
+		this.isTls = ServerTlsModeHolder.getTlsMode() != null;
 	}
 
 	public boolean validate(UnifiedHttpRequest request) {
@@ -143,6 +147,11 @@ public class AuthValidator {
 				return matcher.match(request.getMethod());
 			case PATHS:
 				return matcher.match(request.getPath());
+			case IDENTITY:
+				if (!isTls) {
+					return true;
+				}
+				return matcher.match(request.getPrincipal());
 			case REQUEST_PRINCIPALS:
 			case AUTH_AUDIENCES:
 			case AUTH_PRESENTERS:
@@ -236,9 +245,11 @@ public class AuthValidator {
 
 		private JwtClaims jwtClaims;
 
+		private String principal;
+
 		private UnifiedHttpRequest(String sourceIp, String destIp, String remoteIp,
 				String host, int port, String method, String path, HttpHeaders headers,
-				MultiValueMap<String, String> params) {
+				MultiValueMap<String, String> params, String principal) {
 			this.sourceIp = sourceIp;
 			this.destIp = destIp;
 			this.remoteIp = remoteIp;
@@ -248,6 +259,7 @@ public class AuthValidator {
 			this.path = path;
 			this.headers = headers;
 			this.params = params;
+			this.principal = principal;
 		}
 
 		public String getSourceIp() {
@@ -290,6 +302,10 @@ public class AuthValidator {
 			return jwtClaims;
 		}
 
+		public String getPrincipal() {
+			return principal;
+		}
+
 		public static class UnifiedHttpRequestBuilder {
 
 			private String sourceIp;
@@ -307,6 +323,8 @@ public class AuthValidator {
 			private String path;
 
 			private HttpHeaders headers;
+
+			private String principal;
 
 			private MultiValueMap<String, String> params;
 
@@ -356,9 +374,18 @@ public class AuthValidator {
 				return this;
 			}
 
+			public String getPrincipal() {
+				return principal;
+			}
+
+			public UnifiedHttpRequestBuilder setPrincipal(String principal) {
+				this.principal = principal;
+				return this;
+			}
+
 			public UnifiedHttpRequest build() {
 				return new UnifiedHttpRequest(sourceIp, destIp, remoteIp, host, port,
-						method, path, headers, params);
+						method, path, headers, params, principal);
 			}
 
 		}

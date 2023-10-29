@@ -460,7 +460,8 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 - [VirtualService](https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/)
 - [DestinationRule](https://istio.io/latest/zh/docs/reference/config/networking/destination-rule/)
 ### 配置
-1. 首先，修改pom.xml 文件，引入 `spring-cloud-starter-alibaba-governance-routing` 依赖。同时引入Spring Cloud Alibaba的 `spring-cloud-starter-xds-adapter` 模块
+
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-xds-adapter`模块：
 
 ```xml
 <dependency>
@@ -473,43 +474,16 @@ Route in 192.168.2.9:19093, region: dev, zone: zone1, version: v1
 </dependency>
 ```
 
-2. 在`src/main/resources/application.yml`配置文件中配置Istio控制面的相关信息:
-
-```YAML
+2. 参照[文档](https://github.com/alibaba/spring-cloud-alibaba/blob/2.2.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/governance.adoc)，实现与`Istio`控制面的对接
+      并在`application.yml`中配置默认路由规则：
+```yml
 server:
-  port: 18084
+  port: ${SERVER_PORT:80}
 spring:
-  main:
-    allow-bean-definition-overriding: true
-  application:
-    name: service-consumer
   cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        fail-fast: true
-        username: nacos
-        password: nacos
     governance:
-      auth:
-        # 是否开启鉴权
-        enabled: ${ISTIO_AUTH_ENABLE:false}
-    istio:
-      config:
-        # 是否开启Istio配置转换
-        enabled: ${ISTIO_CONFIG_ENABLE:true}
-        # Istiod ip
-        host: ${ISTIOD_ADDR:127.0.0.1}
-        # Istiod 端口
-        port: ${ISTIOD_PORT:15010}
-        # 轮询Istio线程池大小
-        polling-pool-size: ${POLLING_POOL_SIZE:10}
-        # 轮询Istio时间间隔
-        polling-time: ${POLLING_TIME:10}
-        # Istiod鉴权token(访问Istiod 15012端口时可用)
-        istiod-token: ${ISTIOD_TOKEN:}
-        # 是否打印xds相关日志
-        log-xds: ${LOG_XDS:true}
+      routing:
+        rule: ${ROUTING_RULE:RandomRule}
 ```
 
 ### 应用启动
@@ -596,7 +570,7 @@ kubectl delete DestinationRule my-destination-rule
 
 ## 集成OpenSergo
 **注意 本章节只是为了便于您理解接入方式，本示例代码中已经完成接入工作，您无需再进行修改。**
-1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-opensergo-adapter`模块
+1. 首先，修改pom.xml 文件，引入`spring-cloud-starter-alibaba-governance-routing`依赖。同时引入Spring Cloud Alibaba的`spring-cloud-starter-opensergo-adapter`模块：
 ```XML
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
@@ -607,7 +581,7 @@ kubectl delete DestinationRule my-destination-rule
    <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
 </dependency>
 ```
-2. 在application.properties配置文件中配置OpenSergo控制面的相关信息
+2. 在application.properties配置文件中配置OpenSergo控制面的相关信息：
 ```
 # OpenSergo 控制面 endpoint
 spring.cloud.opensergo.endpoint=127.0.0.1:10246
@@ -617,7 +591,7 @@ spring.cloud.opensergo.endpoint=127.0.0.1:10246
 
 ### 下发配置
 
-[启动 OpenSergo 控制面](https://opensergo.io/zh-cn/docs/quick-start/opensergo-control-plane/) ，并通过 OpenSergo 控制面下发流量路由规则
+[启动 OpenSergo 控制面](https://opensergo.io/zh-cn/docs/quick-start/opensergo-control-plane/) ，并通过 OpenSergo 控制面下发流量路由规则：
 
 ```YAML
 kubectl apply -f - << EOF
@@ -652,23 +626,23 @@ EOF
 这条[TrafficRouter](https://github.com/opensergo/opensergo-specification/blob/main/specification/zh-Hans/traffic-routing.md) 指定了一条最简单的流量路由规则，将请求头tag为v2的HTTP请求路由到v2版本，其余的流量都路由到v1版本。
 如果v2版本没有对应的节点，则将流量fallback至v1版本。
 ### 效果演示
-发送一条不带请求头的HTTP请求至OpenSergoConsumerApplication
+发送一条不带请求头的HTTP请求至OpenSergoConsumerApplication：
 ```
 curl --location --request GET '127.0.0.1:18083/router-test'
 ```
-因为请求头不为v2，所以请求将会被路由到v1版本，返回如下
+因为请求头不为v2，所以请求将会被路由到v1版本，返回如下：
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
-之后发送一条请求头tag为v2的HTTP请求
+之后发送一条请求头tag为v2的HTTP请求：
 ```
 curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
-因为满足路由规则，所以请求会被路由至v2版本
+因为满足路由规则，所以请求会被路由至v2版本：
 ```
 Route in 30.221.132.228: 18082,version is v2.
 ```
-停止v2版本的ProviderApplication后，继续发送一条请求头tag为v2的HTTP请求
+停止v2版本的ProviderApplication后，继续发送一条请求头tag为v2的HTTP请求：
 ```
 curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```

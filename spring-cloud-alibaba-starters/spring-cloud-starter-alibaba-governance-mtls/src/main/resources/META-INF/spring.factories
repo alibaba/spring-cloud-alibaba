@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.alibaba.cloud.mtls.MtlsAutoConfiguration,\
+com.alibaba.cloud.mtls.endpoint.MtlsEndpointAutoConfiguration
+org.springframework.context.ApplicationListener=\
+com.alibaba.cloud.mtls.server.PreparedEventRecorder

@@ -1,4 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.alibaba.cloud.routing.configuration.RoutingAutoConfiguration,\
   com.alibaba.cloud.routing.gateway.configuration.LabelRoutingGatewayConfiguration,\
-  com.alibaba.cloud.routing.zuul.configuration.LabelRoutingZuulConfiguration
+  com.alibaba.cloud.routing.zuul.configuration.LabelRoutingZuulConfiguration,\
+  com.alibaba.cloud.routing.ribbon.RoutingLoadBalanceRuleAutoConfiguration,\
+  com.alibaba.cloud.routing.configuration.OutlierDetectionConfiguration

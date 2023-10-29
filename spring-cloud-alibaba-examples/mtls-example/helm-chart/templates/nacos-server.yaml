@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos-server
+  template:
+    metadata:
+      labels:
+        appName: nacos-server
+        app: nacos-server
+    spec:
+      containers:
+        - name: nacos-server
+          image: '{{ .Values.image.nacosServer.repository }}:{{ .Values.image.nacosServer.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8848
+              name: "nacos-8848"
+            - containerPort: 9848
+              name: "nacos-9848"
+            - containerPort: 9849
+              name: "nacos-9849"
+          envFrom:
+            - configMapRef:
+                name: nacos-server-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-server
+  labels:
+    app: nacos-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8848
+      name: "nacos-8848"
+    - port: 9848
+      name: "nacos-9848"
+    - port: 9849
+      name: "nacos-9849"
+  selector:
+    app: nacos-server

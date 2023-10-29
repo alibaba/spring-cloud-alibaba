@@ -18,4 +18,3 @@ image:
     repository: nacos/nacos-server
     tag: v2.1.0
 istiodAddr: istiod.istio-system.svc.cluster.local
-defaultPollingTime: 60

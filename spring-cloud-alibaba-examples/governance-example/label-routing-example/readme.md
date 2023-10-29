@@ -465,20 +465,18 @@ Enter the `gateway-consumer-example/gateway-consumer-example/src/main/resources/
     # The test found that it met the expected results
    ```
 
-## Integrate Istio
-
-**Note that this section is only for your convenience to understand the access method. The access work has been completed in this sample code, and you do not need to modify it.**
-### Install the K8s environment
-Refer to [install tools](https://kubernetes.io/zh-cn/docs/tasks/tools/) section K8s.
-### Install and enable Istio on K8s
-Please refer to the section of the official Istio documentation [install](https://istio.io/latest/zh/docs/setup/install/).
-### Introduction to Istio Traffic Governance Rules
-- [VirtualService](https://istio.io/latest/zh/docs/reference/config/networking/virtual-service/)
-- [DestinationRule](https://istio.io/latest/zh/docs/reference/config/networking/destination-rule/)
-### Configuration
-1. First, modify the POM. XML file to introduce `spring-cloud-starter-alibaba-governance-routing` dependencies. At the same time, the module of Spring Cloud Alibaba `spring-cloud-starter-xds-adapter` is introduced.
-
-
+3. If you don't push rule,it will load balance by common rule you set.
+## Integrating Istio
+**Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
+## Preparation
+### Install K8s
+Please refer to [tools](https://kubernetes.io/zh-cn/docs/tasks/tools/) chapter of K8s document.
+### Enable Istio on K8s
+Please refer to [install](https://istio.io/latest/zh/docs/setup/install/) chapter of Istio document.
+### Introduction to Istio traffic control rules
+- [Istio Authorization Overview](https://istio.io/latest/zh/docs/concepts/security/#authorization)
+- [Istio Security Detail](https://istio.io/latest/zh/docs/reference/config/security/)
+1. First, modify the pom.xml file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-xds-adapter` dependency
 ```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
@@ -489,44 +487,31 @@ Please refer to the section of the official Istio documentation [install](https:
     <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
-
-2. To configure information about the Istio control plane in the `src/main/resources/application.yml` configuration file:
-
-
+2. Configure application.yml for Istio control plane:
 ```YAML
 server:
-  port: 18084
+  port: ${SERVER_PORT:80}
 spring:
-  main:
-    allow-bean-definition-overriding: true
-  application:
-    name: service-consumer
   cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        fail-fast: true
-        username: nacos
-        password: nacos
     governance:
       auth:
-        # 是否开启鉴权
+        # Is authentication enabled
         enabled: ${ISTIO_AUTH_ENABLE:false}
     istio:
       config:
-        # 是否开启Istio配置转换
+        # Is Istio resource transform enabled
         enabled: ${ISTIO_CONFIG_ENABLE:true}
         # Istiod ip
         host: ${ISTIOD_ADDR:127.0.0.1}
-        # Istiod 端口
+        # Istiod port
         port: ${ISTIOD_PORT:15010}
-        # 轮询Istio线程池大小
+        # Istiod thread-pool size
         polling-pool-size: ${POLLING_POOL_SIZE:10}
-        # 轮询Istio时间间隔
+        # Istiod polling gap
         polling-time: ${POLLING_TIME:10}
-        # Istiod鉴权token(访问Istiod 15012端口时可用)
+        # Istiod token(For Istio 15012 port)
         istiod-token: ${ISTIOD_TOKEN:}
-        # 是否打印xds相关日志
+        # Whether to print xds log
         log-xds: ${LOG_XDS:true}
 ```
 
@@ -623,7 +608,11 @@ After deleting the rule, it can be seen that the routing strategy will not be de
 **Note that this section is only for your convenience to understand the access method. The access work has been completed in this sample code, and you do not need to modify it.**
 1. First, modify the POM. XML file to introduce `spring-cloud-starter-alibaba-governance-routing` dependencies. At the same time, the module of Spring Cloud Alibaba `spring-cloud-starter-opensergo-adapter` is introduced.
 
-```XML
+## Integrating OpenSergo
+**Note that this section is only for your convenience in understanding the access method. The access work has been completed in this sample code, and you do not need to modify it.**
+### Configuration
+1. First, modify the `pom.xml` file to introduce the `spring-cloud-starter-alibaba-governance-routing` and `spring-cloud-starter-opensergo-adapter` dependency
+```xml
 <dependency>
    <groupId>com.alibaba.cloud</groupId>
    <artifactId>spring-cloud-starter-alibaba-governance-routing</artifactId>
@@ -633,20 +622,15 @@ After deleting the rule, it can be seen that the routing strategy will not be de
    <artifactId>spring-cloud-starter-opensergo-adapter</artifactId>
 </dependency>
 ```
-2. Configure information about the OpenSergo control plane in the application. Properties configuration films
-
+2. Configure `application.yml` for OpenSergo control plane
 ```
 # OpenSergo 控制面 endpoint
 spring.cloud.opensergo.endpoint=127.0.0.1:10246
 ```
-### The application starts
-Start the startup classes of the three modules, OpenSergoConsumer Application and two ProviderApplications, and inject them into the Nacos registry.
-
-### Distribute configuration
-
-[Start the OpenSergo control surface](https://opensergo.io/zh-cn/docs/quick-start/opensergo-control-plane/) And send the traffic routing rules through the OpenSergo control plane
-
-
+### Startup Application
+Start OpenSergoConsumerApplication and two ProviderApplications, and inject it into the Nacos registry center.
+### Publish Configuration
+[First start OpenSergo control plan](https://opensergo.io/docs/quick-start/opensergo-control-plane/) , Then we publish the label routing rules through the OpenSergo control plane. We publish a TrafficRouter rule.
 ```YAML
 kubectl apply -f - << EOF
 apiVersion: traffic.opensergo.io/v1alpha1
@@ -677,15 +661,14 @@ spec:
             subset: v1
 EOF
 ```
-This [TrafficRouter](https://github.com/opensergo/opensergo-specification/blob/main/specification/zh-Hans/traffic-routing.md) specifies a simple traffic routing rule that routes HTTP requests with a request header tag of v2 to version v2, and the rest of the traffic to version v1. If the v2 version does not have a corresponding node, the traffic is fallback to the v1 version.
-### Effect demonstration
-Send an HTTP request to OpenSergoConsumer Application without a request header
-
+This [TrafficRouter](https://github.com/opensergo/opensergo-specification/blob/main/specification/en/traffic-routing.md)  specifies the simplest label routing rule. HTTP requests with a v2 header are routed to v2, and the rest of the traffic is routed to v1.
+If the version v2 does not have a corresponding instance, the HTTP request will fall back to the version v1.
+### Demonstrate effect
+We send an HTTP request without a request header to OpenSergoConsumerApplication
 ```
 curl --location --request GET '127.0.0.1:18083/router-test'
 ```
-Because the request header is not v2, the request will be routed to the v1 version and returned as follows
-
+Since the request header is not v2, the request will be routed to version v1 with the following result
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```
@@ -694,18 +677,15 @@ Then send an HTTP request with a request header tag of v2
 ```
 curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
-Because the routing rules are met, the request is routed to v2
-
+The request is routed to version v2 because the routing rule is matched by the request.
 ```
 Route in 30.221.132.228: 18082,version is v2.
 ```
-After stopping the v2 Provider Application, continue to send an HTTP request with a request header tag of v2
-
+After we stop the ProviderApplication of the version v2, we send an HTTP request with the request header tag v2.
 ```
 curl --location --request GET '127.0.0.1:18083/router-test' --header 'tag: v2'
 ```
-Because the v2 version does not have a service provider, traffic is fallback to the v1 version.
-
+because the version v2 does not have a corresponding instance, so the Http requesr is fallback to the version v1.
 ```
 Route in 30.221.132.228: 18081,version is v1.
 ```

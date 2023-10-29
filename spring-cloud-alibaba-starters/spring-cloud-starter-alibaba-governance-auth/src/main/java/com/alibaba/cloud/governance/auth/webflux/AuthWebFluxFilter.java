@@ -17,7 +17,9 @@
 package com.alibaba.cloud.governance.auth.webflux;
 
 import java.nio.charset.StandardCharsets;
+import java.security.cert.X509Certificate;
 
+import com.alibaba.cloud.governance.auth.util.CertUtil;
 import com.alibaba.cloud.governance.auth.util.IpUtil;
 import com.alibaba.cloud.governance.auth.validator.AuthValidator;
 import reactor.core.publisher.Mono;
@@ -64,11 +66,19 @@ public class AuthWebFluxFilter implements WebFilter {
 		String path = request.getPath().value();
 		HttpHeaders headers = request.getHeaders();
 		MultiValueMap<String, String> params = request.getQueryParams();
+		String principal = "";
+		if (exchange.getRequest().getSslInfo() != null) {
+			X509Certificate[] certs = exchange.getRequest().getSslInfo()
+					.getPeerCertificates();
+			if (certs != null && certs.length > 0) {
+				principal = CertUtil.getIstioIdentity(certs[0]);
+			}
+		}
 		AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder builder = new AuthValidator.UnifiedHttpRequest.UnifiedHttpRequestBuilder();
 		AuthValidator.UnifiedHttpRequest unifiedHttpRequest = builder.setDestIp(destIp)
 				.setRemoteIp(remoteIp).setSourceIp(sourceIp).setHost(host).setPort(port)
 				.setMethod(method).setPath(path).setHeaders(headers).setParams(params)
-				.build();
+				.setPrincipal(principal).build();
 
 		if (!authValidator.validate(unifiedHttpRequest)) {
 			return ret401(exchange);
