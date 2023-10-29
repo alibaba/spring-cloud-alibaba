@@ -55,6 +55,18 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba.middleware</groupId>
+            <artifactId>metrics-core-api</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.middleware</groupId>
+            <artifactId>metrics-core-impl</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
     </dependencies>
 
 </project>
