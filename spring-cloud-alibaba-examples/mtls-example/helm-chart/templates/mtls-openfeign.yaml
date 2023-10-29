@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    account: sa-mtls-openfeign
+  name: sa-mtls-openfeign
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mtls-openfeign
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mtls-openfeign
+  template:
+    metadata:
+      annotations:
+        inject.istio.io/templates: grpc-agent
+      labels:
+        appName: mtls-openfeign
+        app: mtls-openfeign
+    spec:
+      serviceAccountName: sa-mtls-openfeign
+      containers:
+        - name: mtls-openfeign
+          image: '{{ .Values.image.mtlsOpenfeign.repository }}:{{ .Values.image.mtlsOpenfeign.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: mtls-openfeign-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mtls-openfeign
+  labels:
+    app: mtls-openfeign
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http-server
+  selector:
+    app: mtls-openfeign

@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    account: sa-mtls-webclient
+  name: sa-mtls-webclient
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mtls-webclient
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mtls-webclient
+  template:
+    metadata:
+      annotations:
+        inject.istio.io/templates: grpc-agent
+      labels:
+        appName: mtls-webclient
+        app: mtls-webclient
+    spec:
+      serviceAccountName: sa-mtls-webclient
+      containers:
+        - name: mtls-webclient
+          image: '{{ .Values.image.mtlsWebClient.repository }}:{{ .Values.image.mtlsWebClient.tag }}'
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: mtls-webclient-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mtls-webclient
+  labels:
+    app: mtls-webclient
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http-server
+  selector:
+    app: mtls-webclient

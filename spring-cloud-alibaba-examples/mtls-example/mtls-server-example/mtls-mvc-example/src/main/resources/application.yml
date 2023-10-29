@@ -1,0 +1,26 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+server:
+  port: ${SERVER_PORT:8222}
+spring:
+  cloud:
+    mtls:
+      config:
+        enabled: ${MTLS_ENABLE:true}
+        server-tls: ${SERVER_TLS:true}
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        enabled: true
+    governance:
+      auth:
+        enabled: ${ISTIO_AUTH_ENABLE:true}
+    istio:
+      config:
+        enabled: ${ISTIO_CONFIG_ENABLE:true}
+        use-agent: ${USE_AGENT:true}
+  application:
+    name: mtls-mvc-example

@@ -59,6 +59,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		properties = { "spring.cloud.istio.config.port=15010",
 				"spring.cloud.istio.config.enabled=true",
 				"spring.cloud.istio.config.log-xds=false",
+				"spring.cloud.istio.config.skip-xds-request=true",
 				"spring.cloud.nacos.discovery.watch.enabled=false" },
 		webEnvironment = NONE)
 public class XdsRulesTests {
@@ -101,6 +102,11 @@ public class XdsRulesTests {
 		if (listeners == null) {
 			throw new Exception("Can not parse listeners from xds response");
 		}
+		try {
+			ldsProtocol.onResponseDecoded(listeners);
+		}
+		catch (Exception ignore) {
+		}
 		log.info("Auth rules are {}", objectMapper.writeValueAsString(authRepository));
 		Assert.assertEquals(authRepository.getAllowAuthRules().size(), 1);
 		Assert.assertEquals(authRepository.getDenyAuthRules().size(), 1);
@@ -113,6 +119,11 @@ public class XdsRulesTests {
 				"src/test/resources/RdsResponse.in");
 		List<RouteConfiguration> routeConfigurations = rdsProtocol
 				.decodeXdsResponse(discoveryResponse);
+		try {
+			rdsProtocol.onResponseDecoded(routeConfigurations);
+		}
+		catch (Exception ignore) {
+		}
 		if (routeConfigurations == null) {
 			throw new Exception("Can not parse route configurations from xds response");
 		}

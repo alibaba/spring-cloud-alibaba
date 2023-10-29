@@ -29,8 +29,8 @@
     <artifactId>spring-cloud-starter-xds-adapter</artifactId>
 </dependency>
 ```
-2. 在应用的 `src/main/resources/application.yml` 配置文件中配置Istio相关元数据:
-
+2. 参照[文档](https://github.com/alibaba/spring-cloud-alibaba/blob/2.2.x/spring-cloud-alibaba-docs/src/main/asciidoc-zh/governance.adoc)，实现与`Istio`控制面的对接
+并在`application.yml`中打开鉴权开关：
 ```yml
 server:
   port: ${SERVER_PORT:80}
@@ -39,35 +39,7 @@ spring:
     governance:
       auth:
         enabled: ${ISTIO_AUTH_ENABLE:true}
-    istio:
-      config:
-        enabled: ${ISTIO_CONFIG_ENABLE:true}
-        host: ${ISTIOD_ADDR:127.0.0.1}
-        port: ${ISTIOD_PORT:15010}
-        polling-pool-size: ${POLLING_POOL_SIZE:10}
-        polling-time: ${POLLING_TIMEOUT:10}
-        istiod-token: ${ISTIOD_TOKEN:}
-        log-xds: ${LOG_XDS:true}
 ```
-下面解释一下各字段的含义:
-|配置项|key|默认值|说明
-|--|--|--|--|
-|是否开启鉴权| spring.cloud.governance.auth.enabled|true|
-|是否连接Istio获取鉴权配置| spring.cloud.istio.config.enabled|true|
-|Istiod的地址| spring.cloud.istio.config.host|127.0.0.1|
-|Istiod的端口| spring.cloud.istio.config.port|15012|注：连接15010端口无需TLS，连接15012端口需TLS认证|
-|SCA去Istio拉取配置的线程池大小| spring.cloud.istio.config.polling-pool-size|10|
-|SCA去Istio拉取配置的间隔时间| spring.cloud.istio.config.polling-time|30|单位为秒
-|连接Istio<br>15012端口时使用的JWT token| spring.cloud.istio.config.istiod-token|应用所在pod的`/var/run/secrets/tokens/istio-token`文件的内容|
-|是否打印xDS相关日志| spring.cloud.istio.config.log-xds|true|
-### 运行应用
-注意，应用运行在K8s环境中，在非默认命名空间下的应用，需要接收Istiod下发的规则，需要将运行的应用K8s的元信息注入以下环境变量中，具体操作方式可参考 [Kubernetes文档](https://kubernetes.io/zh-cn/docs/tasks/inject-data-application/environment-variable-expose-pod-information)
-|环境变量名|K8s pod metadata name|
-|--|--|
-|POD_NAME|metadata.name|
-|NAMESPACE_NAME|metadata.namespace|
-
-**注：您部署的应用所在的pod不需要被Istio执行自动注入，因为SCA的各个治理模块将会被用来替代Envoy Proxy的各种功能。**
 ### 效果演示
 下面给出几个简单的鉴权规则配置的示例:
 #### IP黑白名单

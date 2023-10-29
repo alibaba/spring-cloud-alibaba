@@ -20,14 +20,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-import com.alibaba.cloud.governance.istio.XdsChannel;
+import com.alibaba.cloud.governance.istio.AggregateDiscoveryService;
 import com.alibaba.cloud.governance.istio.XdsConfigProperties;
-import com.alibaba.cloud.governance.istio.XdsScheduledThreadPool;
 import com.alibaba.cloud.governance.istio.constant.IstioConstants;
+import com.alibaba.cloud.governance.istio.exception.XdsInitializationException;
 import com.alibaba.cloud.governance.istio.protocol.AbstractXdsProtocol;
 import io.envoyproxy.envoy.config.cluster.v3.Cluster;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
+
+import org.springframework.util.CollectionUtils;
 
 /**
  * CdsProtocol contains information about service.
@@ -38,14 +41,20 @@ import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
  */
 public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 
-	public CdsProtocol(XdsChannel xdsChannel,
-			XdsScheduledThreadPool xdsScheduledThreadPool,
-			XdsConfigProperties xdsConfigProperties) {
-		super(xdsChannel, xdsScheduledThreadPool, xdsConfigProperties);
+	private final EdsProtocol edsProtocol;
+
+	private final LdsProtocol ldsProtocol;
+
+	public CdsProtocol(XdsConfigProperties xdsConfigProperties, EdsProtocol edsProtocol,
+			LdsProtocol ldsProtocol,
+			AggregateDiscoveryService aggregateDiscoveryService) {
+		super(xdsConfigProperties, aggregateDiscoveryService);
+		this.edsProtocol = edsProtocol;
+		this.ldsProtocol = ldsProtocol;
 	}
 
 	@Override
-	protected List<Cluster> decodeXdsResponse(DiscoveryResponse response) {
+	public List<Cluster> decodeXdsResponse(DiscoveryResponse response) {
 		List<Cluster> clusters = new ArrayList<>();
 		for (com.google.protobuf.Any res : response.getResourcesList()) {
 			try {
@@ -56,7 +65,6 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 				log.error("Unpack cluster failed", e);
 			}
 		}
-		fireXdsFilters(clusters);
 		return clusters;
 	}
 
@@ -76,6 +84,37 @@ public class CdsProtocol extends AbstractXdsProtocol<Cluster> {
 	@Override
 	public String getTypeUrl() {
 		return IstioConstants.CDS_URL;
+	}
+
+	@Override
+	public void onResponseDecoded(List<Cluster> resources) {
+		fireXdsFilters(resources);
+		Set<String> resourceName = getResourceNames();
+		if (!CollectionUtils.isEmpty(resourceName)) {
+			// eds
+			edsProtocol.observeResource(resourceName);
+		}
+		else {
+			// lds
+			ldsProtocol.observeResource();
+		}
+	}
+
+	public synchronized void initAndObserve() {
+		if (xdsConfigProperties.isSkipXdsRequest()) {
+			return;
+		}
+		try {
+			observeResource();
+			boolean flag = initCdl.await(30, TimeUnit.SECONDS);
+			if (!flag) {
+				throw new XdsInitializationException(
+						"Timeout when init config from xds server");
+			}
+		}
+		catch (Exception e) {
+			throw new XdsInitializationException("Error on fetch xds config", e);
+		}
 	}
 
 }
