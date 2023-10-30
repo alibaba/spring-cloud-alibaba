@@ -74,6 +74,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 				"spring.cloud.sentinel.eager=true",
 				"spring.cloud.sentinel.log.switchPid=true",
 				"spring.cloud.sentinel.transport.dashboard=http://localhost:8080,http://localhost:8081",
+				"spring.cloud.sentinel.transport.apiPath=/sentinel/registry/machine",
 				"spring.cloud.sentinel.transport.port=9999",
 				"spring.cloud.sentinel.transport.clientIp=1.1.1.1",
 				"spring.cloud.sentinel.transport.heartbeatIntervalMs=20000" },
@@ -172,6 +173,8 @@ public class SentinelAutoConfigurationTests {
 		assertThat(sentinelProperties.getTransport().getPort()).isEqualTo("9999");
 		assertThat(sentinelProperties.getTransport().getDashboard())
 				.isEqualTo("http://localhost:8080,http://localhost:8081");
+		assertThat(sentinelProperties.getTransport().getApiPath())
+				.isEqualTo("/sentinel/registry/machine");
 		assertThat(sentinelProperties.getTransport().getClientIp()).isEqualTo("1.1.1.1");
 		assertThat(sentinelProperties.getTransport().getHeartbeatIntervalMs())
 				.isEqualTo("20000");
@@ -197,6 +200,8 @@ public class SentinelAutoConfigurationTests {
 		assertThat(TransportConfig.getHeartbeatIntervalMs().longValue())
 				.isEqualTo(20000L);
 		assertThat(TransportConfig.getHeartbeatClientIp()).isEqualTo("1.1.1.1");
+		assertThat(TransportConfig.getHeartbeatApiPath())
+				.isEqualTo("/sentinel/registry/machine");
 		assertThat(SentinelConfig.singleMetricFileSize()).isEqualTo(9999);
 		assertThat(SentinelConfig.totalMetricFileCount()).isEqualTo(100);
 		assertThat(SentinelConfig.charset()).isEqualTo("UTF-8");

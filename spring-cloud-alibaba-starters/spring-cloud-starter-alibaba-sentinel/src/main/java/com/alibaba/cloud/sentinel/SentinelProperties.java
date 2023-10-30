@@ -302,6 +302,12 @@ public class SentinelProperties {
 		private String dashboard = "";
 
 		/**
+		 * Sentinel dashboard heartbeat api path, default value is '/registry/machine'.
+		 * {@link TransportConfig#HEARTBEAT_API_PATH}.
+		 */
+		private String apiPath;
+
+		/**
 		 * Send heartbeat interval millisecond
 		 * {@link TransportConfig#HEARTBEAT_INTERVAL_MS}.
 		 */
@@ -335,6 +341,14 @@ public class SentinelProperties {
 
 		public void setDashboard(String dashboard) {
 			this.dashboard = dashboard;
+		}
+
+		public String getApiPath() {
+			return apiPath;
+		}
+
+		public void setApiPath(String apiPath) {
+			this.apiPath = apiPath;
 		}
 
 		public String getClientIp() {
