@@ -14,6 +14,10 @@
     <artifactId>spring-cloud-alibaba-sentinel-datasource</artifactId>
     <name>Spring Cloud Alibaba Sentinel DataSource</name>
 
+    <properties>
+        <opensergo-datasource.version>0.1.0-beta</opensergo-datasource.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -79,6 +83,12 @@
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-consul</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-opensergo</artifactId>
+            <version>${opensergo-datasource.version}</version>
         </dependency>
 
         <dependency>

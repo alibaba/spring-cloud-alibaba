@@ -25,9 +25,11 @@ import java.util.Optional;
 
 import com.alibaba.cloud.sentinel.SentinelProperties;
 import com.alibaba.cloud.sentinel.datasource.config.AbstractDataSourceProperties;
+import com.alibaba.cloud.sentinel.datasource.config.OpenSergoDataSourceProperties;
 import com.alibaba.cloud.sentinel.datasource.converter.JsonConverter;
 import com.alibaba.cloud.sentinel.datasource.converter.XmlConverter;
 import com.alibaba.csp.sentinel.datasource.AbstractDataSource;
+import com.alibaba.csp.sentinel.datasource.OpenSergoDataSourceGroup;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,11 +208,26 @@ public class SentinelDataSourceHandler implements SmartInitializingSingleton {
 		this.beanFactory.registerBeanDefinition(dataSourceName,
 				builder.getBeanDefinition());
 		// init in Spring
-		AbstractDataSource newDataSource = (AbstractDataSource) this.beanFactory
-				.getBean(dataSourceName);
-
-		// register property in RuleManager
-		dataSourceProperties.postRegister(newDataSource);
+		Object newDataSource = this.beanFactory.getBean(dataSourceName);
+		if (newDataSource instanceof AbstractDataSource) {
+			// register property in RuleManager
+			dataSourceProperties.postRegister((AbstractDataSource) newDataSource);
+		}
+		if (newDataSource instanceof OpenSergoDataSourceGroup) {
+			// Properties must be OpenSergoDataSourceProperties
+			if (!(dataSourceProperties instanceof OpenSergoDataSourceProperties)) {
+				return;
+			}
+			OpenSergoDataSourceProperties openSergoDataSourceProperties = (OpenSergoDataSourceProperties) dataSourceProperties;
+			try {
+				OpenSergoDataSourceGroup dataSourceGroup = (OpenSergoDataSourceGroup) newDataSource;
+				dataSourceGroup.start();
+				openSergoDataSourceProperties.postRegister(dataSourceGroup);
+			}
+			catch (Exception e) {
+				log.error("Error on register to OpenSergo data source", e);
+			}
+		}
 	}
 
 }
