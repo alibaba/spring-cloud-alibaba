@@ -1,0 +1,25 @@
+server:
+  port: 19099
+
+spring:
+  application:
+    name: zuul-consumer-example
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: sca-label-routing-nacos-server:8848
+
+    # Regional affinity routing configuration
+    governance:
+      routing:
+        region: dev
+        zone: zone1
+        # rule: RandomRule
+
+# Zuul route config
+zuul:
+  routes:
+    my-service:
+      serviceId: routing-service-provider
+      path: /routing-service-provider/**

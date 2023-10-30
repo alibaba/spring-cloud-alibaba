@@ -27,7 +27,7 @@ import com.alibaba.cloud.governance.auth.AuthenticationAutoConfiguration;
 import com.alibaba.cloud.governance.auth.repository.AuthRepository;
 import com.alibaba.cloud.governance.istio.protocol.impl.LdsProtocol;
 import com.alibaba.cloud.governance.istio.protocol.impl.RdsProtocol;
-import com.alibaba.cloud.routing.RoutingAutoConfiguration;
+import com.alibaba.cloud.routing.configuration.RoutingAutoConfiguration;
 import com.alibaba.cloud.routing.repository.FilterService;
 import com.alibaba.cloud.routing.repository.RoutingDataRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,0 +1,46 @@
+version: "3"
+services:
+
+  # routing gateway consumer example
+  routing-gateway-consumer:
+    image: ${DOCKER_PREFIX}-gateway-consumer
+    env_file:
+      - .env
+    build:
+      dockerfile: label-routing-gateway-consumer-example/DockerFile
+      context: .
+      args:
+        APP_HOME: ${APP_HOME}
+    container_name: ${DOCKER_PREFIX}-gateway-consumer
+    restart: on-failure
+    environment:
+      - SERVER_PORT=${GATEWAY_CONSUMER_PORT}
+    volumes:
+      - ./label-routing-gateway-consumer-example/label-routing-gateway-consumer-example:${APP_HOME}
+      - /etc/localtime:/etc/localtime
+    expose:
+      - ${GATEWAY_CONSUMER_PORT}
+    ports:
+      - ${GATEWAY_CONSUMER_PORT}:${GATEWAY_CONSUMER_PORT}
+
+  # routing provider example
+  routing-zuul-consumer:
+    image: ${DOCKER_PREFIX}-zuul-consumer
+    env_file:
+      - .env
+    build:
+      dockerfile: label-routing-gateway-consumer-example/DockerFile
+      context: .
+      args:
+        APP_HOME: ${APP_HOME}
+    container_name: ${DOCKER_PREFIX}-zuul-consumer
+    restart: on-failure
+    environment:
+      - SERVER_PORT=${ZUUL_CONSUMER_PORT}
+    volumes:
+      - ./label-routing-gateway-consumer-example/label-routing-zuul-consumer-example:${APP_HOME}
+      - /etc/localtime:/etc/localtime
+    expose:
+      - ${ZUUL_CONSUMER_PORT}
+    ports:
+      - ${ZUUL_CONSUMER_PORT}:${ZUUL_CONSUMER_PORT}

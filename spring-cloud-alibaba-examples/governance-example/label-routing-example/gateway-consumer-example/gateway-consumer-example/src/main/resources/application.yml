@@ -1,0 +1,28 @@
+server:
+  port: 19098
+
+spring:
+  application:
+    name: gateway-consumer-example
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+    # Regional affinity routing configuration
+    governance:
+      routing:
+        region: dev
+        zone: zone1
+        # rule: RandomRule
+
+    # Gateway route config
+    gateway:
+      routes:
+        - id: label-routing-test-route
+          uri: lb://routing-service-provider
+          predicates:
+            - Path=/routing-service-provider/**
+          filters:
+            - StripPrefix=1

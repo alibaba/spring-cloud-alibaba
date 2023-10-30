@@ -1,0 +1,17 @@
+server:
+  port: 19097
+
+spring:
+  application:
+    name: restTemplate-service-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+    # label routing configuration
+    governance:
+      routing:
+        region: dev
+        zone: zone1
+      # rule: RandomRule

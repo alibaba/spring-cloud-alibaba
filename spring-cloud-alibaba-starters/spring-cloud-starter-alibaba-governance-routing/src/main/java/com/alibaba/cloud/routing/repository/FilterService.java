@@ -33,6 +33,11 @@ public class FilterService implements ApplicationContextAware {
 	public static final String FEIGN_CLIENT_BEAN_SPECIFICATION = ".FeignClientSpecification";
 
 	/**
+	 * WebClient bean name suffix.
+	 */
+	public static final String REACTIVE_CLIENT_BEAN_SPECIFICATION = ".LoadBalancerClientSpecification";
+
+	/**
 	 * Feign bean name prefix.
 	 */
 	public static final String FEIGN_CLIENT_BEAN_DEFAULT = "default.";
@@ -50,21 +55,60 @@ public class FilterService implements ApplicationContextAware {
 	/**
 	 * Spring bean Container.
 	 */
-	private ApplicationContext applicationContext;
+	private static ApplicationContext applicationContext;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
+		FilterService.applicationContext = applicationContext;
 	}
 
-	public HashSet<String> getDefinitionFeignService(int size) {
+	/**
+	 * Find service.
+	 * @param size params
+	 * @return service name set
+	 */
+	public HashSet<String> getDefinitionService(int size) {
+
+		HashSet<String> serviceSet = new HashSet<>();
+
+		HashSet<String> serviceSet4Feign = getDefinitionFeignService(size);
+		HashSet<String> serviceSet4WebClient = getDefinitionWebClientService(size);
+
+		serviceSet.addAll(serviceSet4Feign);
+		serviceSet.addAll(serviceSet4WebClient);
+
+		return serviceSet;
+	}
+
+	/**
+	 * Find the Defined Diversity Service Provider for Feign Client.
+	 * @param size params
+	 * @return service name set
+	 */
+	private static HashSet<String> getDefinitionFeignService(int size) {
+
+		return findDefinitionService(size, FEIGN_CLIENT_BEAN_SPECIFICATION);
+	}
+
+	/**
+	 * Find the Defined Diversity Service Provider For WebClient.
+	 * @param size params
+	 * @return service name set
+	 */
+	private static HashSet<String> getDefinitionWebClientService(int size) {
+
+		return findDefinitionService(size, REACTIVE_CLIENT_BEAN_SPECIFICATION);
+	}
+
+	private static HashSet<String> findDefinitionService(int size,
+			String beanSpecification) {
 		String[] allBeanNames = applicationContext.getBeanDefinitionNames();
 		HashSet<String> serviceSet = new HashSet<>(size);
 		for (String beanName : allBeanNames) {
-			if (beanName.contains(FEIGN_CLIENT_BEAN_SPECIFICATION)
-					&& !beanName.startsWith(FEIGN_CLIENT_BEAN_DEFAULT)) {
+			if (beanName.contains(beanSpecification)
+					&& !beanName.startsWith(beanSpecification)) {
 				String feignName = beanName.substring(0,
-						beanName.indexOf(FEIGN_CLIENT_BEAN_SPECIFICATION));
+						beanName.indexOf(beanSpecification));
 				if (feignName.startsWith(FEIGN_CLIENT_BEAN_START)) {
 					String resolveFeignName = feignName.replace(FEIGN_CLIENT_BEAN_START,
 							"");

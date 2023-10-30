@@ -1,0 +1,17 @@
+server:
+  port: 19091
+
+spring:
+  # spring application configuration
+  application:
+    name: routing-service-provider
+
+  # register center configuration
+  cloud:
+    nacos:
+      discovery:
+        server-addr: sca-label-routing-nacos-server:8848
+        metadata:
+          version: v1
+          region: qa
+          zone: zone1

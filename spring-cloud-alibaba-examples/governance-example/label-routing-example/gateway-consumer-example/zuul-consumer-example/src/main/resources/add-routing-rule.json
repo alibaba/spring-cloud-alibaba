@@ -1,0 +1,35 @@
+[
+  {
+    "targetService": "routing-service-provider",
+    "labelRouteRule": {
+      "matchRouteList": [
+        {
+          "ruleList": [
+            {
+              "type": "header",
+              "condition": "=",
+              "key": "tag",
+              "value": "v2"
+            },
+            {
+              "type": "parameter",
+              "condition": ">",
+              "key": "id",
+              "value": "10"
+            },
+            {
+              "type": "path",
+              "condition": "=",
+              "value": "/routing-service-provider/test-a1",
+              "key": null
+            }
+          ],
+          "version": "v2",
+          "weight": 100,
+          "fallback": null
+        }
+      ],
+      "defaultRouteVersion": "v1"
+    }
+  }
+]
