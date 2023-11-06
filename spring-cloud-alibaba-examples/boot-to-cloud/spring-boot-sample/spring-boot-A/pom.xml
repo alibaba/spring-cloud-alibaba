@@ -8,7 +8,7 @@
         <version>3.0.9</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>com.alibaba.cloud</groupId>
     <artifactId>spring-boot-A</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-boot-A</name>
