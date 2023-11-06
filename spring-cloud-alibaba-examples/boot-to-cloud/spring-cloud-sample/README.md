@@ -216,37 +216,32 @@ public class SpringGatewayApplication {
 ### 路由配置
 ```yaml
 spring:
-  cloud:
-    gateway:
-      # 路由数组：指当请求满足什么样的断言时，转发到哪个服务上
-      routes:
-        # 路由标识，要求唯一，名称任意
-        - id: service-a
-          # 请求最终被转发到的目标地址
-          uri: http://service-a:18000
-          # 设置断言
-          predicates:
-            - Path=/service-a/test/**
-          filters:
-            # StripPrefix：去除原始请求路径中的前1级路径，即/service-a
-            - StripPrefix=1            
-            
-        - id: service-b
-          # 请求最终被转发到的目标地址
-          uri: http://service-b:18001
-          # 设置断言
-          predicates:
-            - Path=/service-b/test-service-b/**
-          filters:
-            # StripPrefix：去除原始请求路径中的前1级路径，即/service-b
-            - StripPrefix=1            
+  cloud:
+    gateway:
+      routes:
+        - id: service-a
+          uri: lb://service-a
+          predicates:
+            - Path=/service-a/test/**
+          filters:
+            - StripPrefix=1
 
+        - id: service-b
+          uri: lb://service-b
+          predicates:
+            - Path=/service-b/test-service-b/**
+          filters:
+            - StripPrefix=1
 ```
 
 ## 启动与验证
-依次启动 A、B、Gateway 三个应用。
-访问：http://service.example.com/service-a/test 可以看到，请求正常被转发到 service-a、service-b，并实现多实例地址自动发现、负载均衡。
+在本地 `/etc/hosts` 配置如下 hostname 映射
+```shell
+127.0.0.1  service.example.com
+```
 
-## 完整示例源码
-spring-boot-example
-spring-cloud-example
+依次启动 A、B、Gateway 三个应用。
+
+访问：`http://service.example.com/service-a/test-servicer-b`
+
+ 可以看到，请求正常被转发到 service-a、service-b，并实现多实例地址自动发现、负载均衡。
