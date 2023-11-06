@@ -7,5 +7,4 @@ spring:
   cloud:
     nacos:
       discovery: #启用 spring cloud nacos discovery
-        serverAddr: 127.0.0.1:8848
         server-addr: 127.0.0.1:8848

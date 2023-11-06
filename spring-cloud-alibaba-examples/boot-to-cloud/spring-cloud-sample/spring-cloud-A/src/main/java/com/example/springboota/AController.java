@@ -27,7 +27,7 @@ public class AController {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	private static final String SERVICE_PROVIDER_ADDRESS = "http://service.example.com:18001/service-b";
+	private static final String SERVICE_PROVIDER_ADDRESS = "http://service-b";
 
 	@GetMapping("/test")
 	public String callServiceB() {

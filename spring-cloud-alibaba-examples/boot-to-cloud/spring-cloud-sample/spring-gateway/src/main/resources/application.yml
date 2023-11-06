@@ -11,15 +11,15 @@ spring:
     gateway:
       routes:
         - id: service-a
-          uri: lb://service-a:18000
+          uri: lb://service-a
           predicates:
-            - Path=/service-a/test-service-b/**
+            - Path=/service-a/test/**
           filters:
             - StripPrefix=1
 
         - id: service-b
-          uri: lb://service-b:18001
+          uri: lb://service-b
           predicates:
-            - Path=/service-b/test/**
+            - Path=/service-b/test-service-b/**
           filters:
             - StripPrefix=1
