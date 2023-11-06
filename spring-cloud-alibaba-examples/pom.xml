@@ -53,6 +53,8 @@
         <module>integrated-example/integrated-praise-consumer</module>
         <module>integrated-example/integrated-common</module>
 		<module>integrated-example/integrated-frontend</module>
+        <module>boot-to-cloud/spring-boot-sample</module>
+        <module>boot-to-cloud/spring-cloud-sample</module>
 	</modules>
 
 

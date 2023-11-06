@@ -1,0 +1,11 @@
+server:
+  port: 18000
+
+spring:
+  application:
+    name: service-a #项目名称必填，在注册中心唯一；最好和之前域名保持一致，第四步会讲到原因
+  cloud:
+    nacos:
+      discovery: #启用 spring cloud nacos discovery
+        serverAddr: 127.0.0.1:8848
+        server-addr: 127.0.0.1:8848

@@ -1,0 +1,25 @@
+server:
+  port: 18002
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: service-a
+          uri: lb://service-a:18000
+          predicates:
+            - Path=/service-a/test-service-b/**
+          filters:
+            - StripPrefix=1
+
+        - id: service-b
+          uri: lb://service-b:18001
+          predicates:
+            - Path=/service-b/test/**
+          filters:
+            - StripPrefix=1

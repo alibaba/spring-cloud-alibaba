@@ -1,0 +1,12 @@
+server:
+  port: 18001
+
+spring:
+  application:
+    #项目名称必填，在注册中心唯一
+    #最好和之前域名规范、kubernetes service名等保持一致（会作为调用）
+    name: service-b
+  cloud:
+    nacos:
+      discovery: #启用 spring cloud nacos discovery
+        server-addr: 127.0.0.1:8848
