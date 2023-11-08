@@ -80,10 +80,10 @@ Spring Cloud GateWay 整合 Nacos,实现动态路由配置。
 
 ## 版本说明
 
-本项目提供了[本地部署运行版本](local-deployment-zh.md)、[docker-compose 版本](docker-compose-deployment-zh.md)以及 [Kubernetes Helm-Chart 版本](kubernetes-deployment-zh.md)。
+本项目提供了[本地部署运行版本](local-deployment-zh.md)、[docker-compose 版本](docker-compose-deploy-zh.md)以及 [Kubernetes Helm-Chart 版本](kubernetes-deployment-zh.md)。
 
 - 如果想要了解具体如何配置各项组件以及完整环境搭建，推荐学习[本地部署运行版本](local-deployment-zh.md)。
 
-- 如果只想运行示例代码，避免繁琐的本地环境搭建过程，又不想使用 k8s 集群。您可以尝试使用 [docker-compose 版本](docker-compose-deployment-zh.md)。
+- 如果只想运行示例代码，避免繁琐的本地环境搭建过程，又不想使用 k8s 集群。您可以尝试使用 [docker-compose 版本](docker-compose-deploy-zh.md)。
 
 - 如果想要在 K8S 集群上快速体验组件效果，跳过各个组件环境部署等过程，请查看 [Kubernetes Helm-Chart 版本](kubernetes-deployment-zh.md)。
