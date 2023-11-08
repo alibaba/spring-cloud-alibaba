@@ -109,7 +109,6 @@
     <modules>
         <module>spring-cloud-alibaba-dependencies</module>
         <module>spring-cloud-alibaba-examples</module>
-        <module>spring-cloud-alibaba-docs</module>
         <module>spring-cloud-alibaba-starters</module>
         <module>spring-cloud-alibaba-coverage</module>
         <module>spring-cloud-alibaba-tests</module>
