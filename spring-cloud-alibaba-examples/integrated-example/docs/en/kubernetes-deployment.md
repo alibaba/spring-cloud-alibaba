@@ -121,4 +121,4 @@ Of course, there is more to each component than just what is demonstrated in the
   - [Nacos discovery example](../../../nacos-example/nacos-discovery-example/readme.md)
 - [Sentinel core example](../../../sentinel-example/sentinel-core-example/readme.md)
 - [Seata example](../../../seata-example/readme.md)
-- [RocketMQ example](../../rocketmq-example/readme.md)
+- [RocketMQ example](../../../rocketmq-example/readme.md)

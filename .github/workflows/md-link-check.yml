@@ -1,0 +1,49 @@
+name: 'Link Checker'
+
+# **What it does**: Renders the content of every page and check all internal links.
+# **Why we have it**: To make sure all links connect correctly.
+# **Who does it impact**: Docs content.
+
+on:
+  workflow_dispatch:
+  push:
+    # branches: [master, 'release/**']
+    paths:
+      - '**/*.md'
+      - '**/link-check.yml'
+  pull_request:
+    branches: [master, "release/**"]
+    paths:
+      - '**/*.md'
+      - '**/link-check.yml'
+
+permissions:
+  contents: read
+  # Needed for the 'trilom/file-changes-action' action
+  pull-requests: read
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get script
+        run: |
+          wget https://raw.githubusercontent.com/xuruidong/markdown-link-checker/main/link_checker.py
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Link check (critical, all files)
+        run: |
+          # python link_checker.py ./ --enable-external --ignore "http://apisix.iresty.com" "https://www.upyun.com" "https://github.com/apache/apisix/actions/workflows/build.yml/badge.svg" "https://httpbin.org/" "https://en.wikipedia.org/wiki/Cache"
+          python link_checker.py ./
