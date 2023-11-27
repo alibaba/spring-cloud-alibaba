@@ -89,6 +89,9 @@ public class NacosConfigProperties {
 	 */
 	public static final String DEFAULT_NAMESPACE = "public";
 
+    /**
+     * Nacos default server and port
+     */
 	public static final String DEFAULT_ADDRESS = "127.0.0.1:8848";
 
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
