@@ -89,6 +89,8 @@ public class NacosConfigProperties {
 	 */
 	public static final String DEFAULT_NAMESPACE = "public";
 
+	public static final String DEFAULT_ADDRESS = "127.0.0.1:8848";
+
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	private static final Logger log = LoggerFactory
@@ -561,7 +563,7 @@ public class NacosConfigProperties {
 	 */
 	public Properties assembleConfigServiceProperties() {
 		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
+		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, DEFAULT_ADDRESS));
 		properties.put(USERNAME, Objects.toString(this.username, ""));
 		properties.put(PASSWORD, Objects.toString(this.password, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
