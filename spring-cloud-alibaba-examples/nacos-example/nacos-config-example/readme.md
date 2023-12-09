@@ -31,7 +31,7 @@ spring:
       serverAddr: 127.0.0.1:8848
   config:
     import:
-      - nacos:nacos-config-example.properties?refresh=true
+      - nacos:nacos-config-example.properties?refresh=true&group=DEFAULT_GROUP
 ```
 
 3. After completing the above two steps, the application will obtain the corresponding configuration from Nacos Config and add it to the PropertySources of Spring Environment. Suppose we save part of the configuration of Nacos through the Nacos configuration center, there are the following four examples:
