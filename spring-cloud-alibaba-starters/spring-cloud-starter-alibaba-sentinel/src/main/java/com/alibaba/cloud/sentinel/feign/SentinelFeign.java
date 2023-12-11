@@ -78,7 +78,7 @@ public final class SentinelFeign {
 		}
 
 		@Override
-		public Feign build() {
+		public Feign internalBuild() {
 			super.invocationHandlerFactory(new InvocationHandlerFactory() {
 				@Override
 				public InvocationHandler create(Target target,

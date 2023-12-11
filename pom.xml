@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
-        <version>4.0.0</version>
+        <version>4.1.0</version>
         <relativePath/>
     </parent>
 
@@ -86,7 +86,7 @@
         <spring.cloud.version>2022.0.0</spring.cloud.version>
 
         <!-- Spring Boot -->
-        <spring-boot.version>3.0.2</spring-boot.version>
+        <spring-boot.version>3.2.0</spring-boot.version>
 
         <curator.version>4.0.1</curator.version>
 
