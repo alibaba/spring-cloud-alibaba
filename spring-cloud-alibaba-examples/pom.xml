@@ -30,7 +30,6 @@
         <module>seata-example/order-service</module>
         <module>seata-example/storage-service</module>
         <module>seata-example/account-service</module>
-        <module>seata-example/seata-server</module>
         <module>rocketmq-example/rocketmq-comprehensive-example</module>
         <module>rocketmq-example/rocketmq-orderly-consume-example</module>
         <module>rocketmq-example/rocketmq-broadcast-example/rocketmq-broadcast-producer-example</module>
