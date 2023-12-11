@@ -12,6 +12,10 @@
     <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
     <name>Spring Cloud Starter Alibaba Nacos Discovery</name>
 
+    <properties>
+        <mockito-inline.version>4.8.1</mockito-inline.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -103,6 +107,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
+            <version>${mockito-inline.version}</version>
             <scope>test</scope>
         </dependency>
 

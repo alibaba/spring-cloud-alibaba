@@ -16,6 +16,10 @@
     <name>Spring Cloud Alibaba Examples</name>
     <description>Example showing how to use features of Spring Cloud Alibaba</description>
 
+    <properties>
+        <mysql.version>8.0.28</mysql.version>
+    </properties>
+
     <modules>
         <module>sentinel-example/sentinel-core-example</module>
         <module>sentinel-example/sentinel-openfeign-example</module>
