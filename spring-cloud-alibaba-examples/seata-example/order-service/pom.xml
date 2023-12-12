@@ -13,10 +13,6 @@
     <name>Spring Cloud Starter Alibaba Seata Example - Order Service</name>
     <packaging>jar</packaging>
 
-    <properties>
-        <mysql.version>8.0.28</mysql.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -40,9 +36,8 @@
         </dependency>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

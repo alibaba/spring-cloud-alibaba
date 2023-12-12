@@ -14,9 +14,8 @@
     <name>Spring Cloud Alibaba Integrated Order Example</name>
 
     <properties>
-        <mysql.version>8.0.28</mysql.version>
         <druid.version>1.1.10</druid.version>
-        <mybatis.version>3.0.0</mybatis.version>
+        <mybatis.version>3.0.3</mybatis.version>
     </properties>
 
     <dependencies>
@@ -30,9 +29,8 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
         </dependency>
 
         <dependency>
