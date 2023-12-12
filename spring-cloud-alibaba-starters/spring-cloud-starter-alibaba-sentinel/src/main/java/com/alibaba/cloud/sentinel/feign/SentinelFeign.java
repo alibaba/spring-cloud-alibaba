@@ -160,7 +160,7 @@ public final class SentinelFeign {
 			});
 
 			super.contract(new SentinelContractHolder(contract));
-			return super.build();
+			return super.internalBuild();
 		}
 
 		private Object getFieldValue(Object instance, String fieldName) {
