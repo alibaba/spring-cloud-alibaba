@@ -3,8 +3,10 @@ spring:
     url: jdbc:mysql://integrated-mysql:3306/integrated_praise?useSSL=false&characterEncoding=utf8
   cloud:
     stream:
+      function:
+        definition: consumer;
       bindings:
-        praise-input:
+        consumer-in-0:
           destination: PRAISE-TOPIC-01
           content-type: application/json
           group: praise-consumer-group-PRAISE-TOPIC-01
@@ -12,7 +14,7 @@ spring:
         binder:
           name-server: rocketmq:9876
         bindings:
-          praise-input:
+          consumer-in-0:
             consumer:
               pullInterval: 4000
               pullBatchSize: 4
