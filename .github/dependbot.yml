@@ -1,10 +1,18 @@
-# Set update schedule for GitHub Actions
+# `dependabot.yml` file with
+# maven version update.
 
 version: 2
 updates:
 
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: "maven"
     directory: "/"
+    open-pull-requests-limit: 20
+    # Ignore major version updates
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     schedule:
-      # Check for updates to GitHub Actions every weekday
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+      timezone: "US/Eastern"
