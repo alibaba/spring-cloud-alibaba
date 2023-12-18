@@ -238,12 +238,7 @@ Spring Boot applications support the use of Endpoints to expose relevant informa
 
 Before using it, you need to add `spring-boot-starter-actuator` a dependency in Maven and allow Endpoints access in the configuration.
 
-* Configuration management. Security. Enabled = false added in Spring Boot 1.x
-* Configuration management. Endpoints. Web. Exposure. Include added in Spring Boot 2.x = *
-
-Spring Boot 1.x can view Nacos Endpoint information by visiting http://127.0.0.1:18084/nacos_config .
-
-Spring Boot 2.x can be accessed by visiting http://127.0.0.1:18084/actuator/nacosconfig .
+Spring Boot 3.x can be accessed by visiting http://127.0.0.1:18084/actuator/nacosconfig .
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 
@@ -464,9 +459,9 @@ Here's a look at the code for the nacos-discovery-consumer-example project to sh
 
 ##### Service registration
 
-The Spring Cloud Alibaba Nacos Discovery follows the spring cloud common standard. The three interfaces of AutoService Registration, Service Registry and Registration are implemented.
+The Spring Cloud Alibaba Nacos Discovery follows the Spring cloud Common standard. The three interfaces of AutoService Registration, Service Registry and Registration are implemented.
 
-In the startup phase of the spring cloud application, the WebServerInitializedEvent event is monitored. After the Web container is initialized, that is, after the WebServerInitializedEvent event is received, the registration action is triggered. Call the register method of the Service Registry to register the service with the Nacos Server.
+In the startup phase of the Spring Cloud application, the WebServerInitializedEvent event is monitored. After the Web container is initialized, that is, after the WebServerInitializedEvent event is received, the registration action is triggered. Call the register method of the Service Registry to register the service with the Nacos Server.
 
 #### Endpoint information viewing
 
@@ -474,12 +469,7 @@ Spring Boot applications support the use of Endpoints to expose relevant informa
 
 Before using it, you need to add `spring-boot-starter-actuator` a dependency in Maven and allow Endpoints access in the configuration.
 
-* Configuration management. Security. Enabled = false added in Spring Boot 1.x
-* Configuration management. Endpoints. Web. Exposure. Include added in Spring Boot 2.x = *
-
-Spring Boot 1.x can view Nacos Endpoint information by visiting http://127.0.0.1:18083/nacos_discovery .
-
-Spring Boot 2.x can be accessed by visiting http://127.0.0.1:18083/actuator/nacos-discovery .
+Spring Boot 3.x can be accessed by visiting http://127.0.0.1:18083/actuator/nacos-discovery .
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986319285-d542dc5f-5dff-462a-9f52-7254776bcd99.png)
 

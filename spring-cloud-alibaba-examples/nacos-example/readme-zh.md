@@ -242,12 +242,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Spring Cloud Ali
 
 在使用之前需要在 maven 中添加 `spring-boot-starter-actuator`依赖，并在配置中允许 Endpoints 的访问。
 
-* Spring Boot 1.x 中添加配置 management.security.enabled=false
-* Spring Boot 2.x 中添加配置 management.endpoints.web.exposure.include=*
-
-Spring Boot 1.x 可以通过访问 http://127.0.0.1:18084/nacos_config 来查看 Nacos Endpoint 的信息。
-
-Spring Boot 2.x 可以通过访问 http://127.0.0.1:18084/actuator/nacosconfig 来访问。
+Spring Boot 3.x 可以通过访问 http://127.0.0.1:18084/actuator/nacosconfig 来访问。
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986344822-279e1edc-ebca-4201-8362-0ddeff240b85.png)
 
@@ -470,9 +465,9 @@ spring.cloud.nacos.discovery.ip-type=IPv6
 
 ##### 服务注册
 
-Spring Cloud Alibaba Nacos Discovery 遵循了 spring cloud common 标准，实现了 AutoServiceRegistration、ServiceRegistry、Registration 这三个接口。
+Spring Cloud Alibaba Nacos Discovery 遵循了 Spring Cloud Common 标准，实现了 AutoServiceRegistration、ServiceRegistry、Registration 这三个接口。
 
-在 spring cloud 应用的启动阶段，监听了 WebServerInitializedEvent 事件，当 Web 容器初始化完成后，即收到 WebServerInitializedEvent 事件后，会触发注册的动作，调用 ServiceRegistry 的 register 方法，将服务注册到 Nacos Server。
+在 Spring Cloud 应用的启动阶段，监听了 WebServerInitializedEvent 事件，当 Web 容器初始化完成后，即收到 WebServerInitializedEvent 事件后，会触发注册的动作，调用 ServiceRegistry 的 register 方法，将服务注册到 Nacos Server。
 
 #### Endpoint 信息查看
 
@@ -480,12 +475,7 @@ Spring Boot 应用支持通过 Endpoint 来暴露相关信息，Spring Cloud Ali
 
 在使用之前需要在 maven 中添加 `spring-boot-starter-actuator`依赖，并在配置中允许 Endpoints 的访问。
 
-* Spring Boot 1.x 中添加配置 management.security.enabled=false
-* Spring Boot 2.x 中添加配置 management.endpoints.web.exposure.include=*
-
-Spring Boot 1.x 可以通过访问 http://127.0.0.1:18083/nacos_discovery 来查看 Nacos Endpoint 的信息。
-
-Spring Boot 2.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos-discovery 来访问。
+Spring Boot 3.x 可以通过访问 http://127.0.0.1:18083/actuator/nacos-discovery 来访问。
 
 ![actuator](https://cdn.nlark.com/lark/0/2018/png/54319/1536986319285-d542dc5f-5dff-462a-9f52-7254776bcd99.png)
 
@@ -564,7 +554,7 @@ Metadata|spring.cloud.nacos.discovery.metadata||使用Map格式配置
        }
    
    }
-   ```
+   ```c
 
 #### Spring Cloud Gateway 应用启动
 
