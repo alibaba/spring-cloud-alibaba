@@ -119,8 +119,8 @@ helm uninstall integrated-example
 当然各个组件的功能特性不仅仅只包含最佳实践中演示的这些，如果您对SCA感兴趣或是想要深入了解SCA项目，欢迎阅览各个组件的独立 example 相关文档。
 
 - Nacos examples
-    - [Nacos config example](../../../nacos-example/nacos-config-example/readme-zh.md)
-    - [Nacos discovery example](../../../nacos-example/nacos-discovery-example/readme-zh.md)
+    - [Nacos config example](../../../nacos-example/readme-zh.md)
+    - [Nacos discovery example](../../../nacos-example/readme-zh.md)
 - [Sentinel core example](../../../sentinel-example/sentinel-core-example/readme-zh.md)
 - [Seata example](../../../seata-example/readme-zh.md)
 - [RocketMQ example](../../../rocketmq-example/readme-zh.md)
