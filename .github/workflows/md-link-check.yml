@@ -12,7 +12,7 @@ on:
       - '**/*.md'
       - '**/link-check.yml'
   pull_request:
-    branches: [master, "release/**"]
+    branches: [2022.x, "release/**"]
     paths:
       - '**/*.md'
       - '**/link-check.yml'
