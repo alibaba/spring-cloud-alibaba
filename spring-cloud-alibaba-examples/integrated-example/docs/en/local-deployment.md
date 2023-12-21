@@ -205,8 +205,8 @@ This example **is just a selection of typical features for each component to ser
 If you are interested or want to go deeper, you are welcome to study the individual example documentation for each component.
 
 - Nacos examples
-  - [Nacos config example](../../../nacos-example/nacos-config-example/readme.md)
-  - [Nacos discovery example](../../../nacos-example/nacos-discovery-example/readme.md)
+  - [Nacos config example](../../../nacos-example/readme.md)
+  - [Nacos discovery example](../../../nacos-example/readme.md)
 - [Sentinel core example](../../../sentinel-example/sentinel-core-example/readme.md)
 - [Seata example](../../../seata-example/readme.md)
 - [RocketMQ example](../../../rocketmq-example/readme.md)
