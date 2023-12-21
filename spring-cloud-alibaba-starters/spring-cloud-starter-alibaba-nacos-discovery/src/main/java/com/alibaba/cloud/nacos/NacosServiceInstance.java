@@ -76,10 +76,10 @@ public class NacosServiceInstance implements ServiceInstance {
 		return metadata;
 	}
 
-    @Override
-    public String getScheme() {
-        return getUri().getScheme();
-    }
+	@Override
+	public String getScheme() {
+		return getUri().getScheme();
+	}
 
 	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
