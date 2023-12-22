@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * @author freeman
+ * @author yuxin.wang
  * @since 2021.0.1.0
  */
 public class NacosConfigDataResource extends ConfigDataResource {
@@ -36,6 +37,8 @@ public class NacosConfigDataResource extends ConfigDataResource {
 
 	private final boolean optional;
 
+	private final String profile;
+
 	private final Profiles profiles;
 
 	private final Log log;
@@ -43,10 +46,11 @@ public class NacosConfigDataResource extends ConfigDataResource {
 	private final NacosItemConfig config;
 
 	public NacosConfigDataResource(NacosConfigProperties properties, boolean optional,
-			Profiles profiles, Log log, NacosItemConfig config) {
+			Profiles profiles, String profile, Log log, NacosItemConfig config) {
 		this.properties = properties;
 		this.optional = optional;
 		this.profiles = profiles;
+		this.profile = profile;
 		this.log = log;
 		this.config = config;
 	}
@@ -61,6 +65,10 @@ public class NacosConfigDataResource extends ConfigDataResource {
 
 	public String getProfiles() {
 		return StringUtils.collectionToCommaDelimitedString(getAcceptedProfiles());
+	}
+
+	public String getProfile() {
+		return profile;
 	}
 
 	List<String> getAcceptedProfiles() {
@@ -97,7 +105,7 @@ public class NacosConfigDataResource extends ConfigDataResource {
 	@Override
 	public String toString() {
 		return "NacosConfigDataResource{" + "properties=" + properties + ", optional="
-				+ optional + ", profiles=" + profiles + ", config=" + config + '}';
+				+ optional + ", profiles=" + profiles + ", profile=" + profile + ", config=" + config + '}';
 	}
 
 	public static class NacosItemConfig {

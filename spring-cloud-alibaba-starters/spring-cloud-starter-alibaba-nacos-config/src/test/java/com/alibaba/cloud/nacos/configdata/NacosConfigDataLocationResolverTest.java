@@ -45,6 +45,7 @@ import static org.mockito.Mockito.when;
  * NacosConfigDataLocationResolver Tester.
  *
  * @author freeman
+ * @author yuxin.wang
  */
 public class NacosConfigDataLocationResolverTest {
 
@@ -237,4 +238,31 @@ public class NacosConfigDataLocationResolverTest {
 		return resources.get(0);
 	}
 
+	@Test
+	void testGetProfileConfigDataLocationIsOK() {
+		String[] locations = new String[]{
+				"nacos:nacos.yaml",
+				"optional:nacos:nacos.yaml",
+				"optional:nacos:nacos.yaml?group=DEFAULT_GROUP",
+				"optional:nacos:nacos.yaml?group=DEFAULT.GROUP",
+				"optional:nacos:nacos",
+				"optional:nacos:nacos?group=DEFAULT_GROUP",
+				"optional:nacos:nacos?group=DEFAULT.GROUP"
+		};
+		String[][] profileLocations = new String[][]{
+				new String[]{"nacos:nacos-profile.yaml", "false"},
+				new String[]{"nacos:nacos-profile.yaml", "true"},
+				new String[]{"nacos:nacos-profile.yaml?group=DEFAULT_GROUP", "true"},
+				new String[]{"nacos:nacos-profile.yaml?group=DEFAULT.GROUP", "true"},
+				new String[]{"nacos:nacos-profile", "true"},
+				new String[]{"nacos:nacos-profile?group=DEFAULT_GROUP", "true"},
+				new String[]{"nacos:nacos-profile?group=DEFAULT.GROUP", "true"},
+		};
+		for (int i = 0; i < locations.length; i++) {
+			ConfigDataLocation configDataLocation = ConfigDataLocation.of(locations[i]);
+			ConfigDataLocation profileConfigDataLocation = this.resolver.getProfileConfigDataLocation(configDataLocation, "profile");
+			assertThat(profileConfigDataLocation.getValue()).isEqualTo(profileLocations[i][0]);
+			assertThat(profileConfigDataLocation.isOptional()).isEqualTo(Boolean.parseBoolean(profileLocations[i][1]));
+		}
+	}
 }
