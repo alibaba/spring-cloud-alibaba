@@ -3,6 +3,7 @@
 [![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2022.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2022.x)
 [![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![actions](https://github.com/alibaba/spring-cloud-alibaba/workflows/Integration%20Testing/badge.svg)](https://github.com/alibaba/spring-cloud-alibaba/actions)
 [![Leaderboard](https://img.shields.io/badge/SCA-Check%20Your%20Contribution-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=sca)
 
 A project maintained by Alibaba.
