@@ -75,6 +75,22 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
 
 ** When using the Nacos service discovery and configuration function, be sure to configure `username` and `password` attribute, otherwise the user will not be found! **
 
+#### Open API authentication
+
+Authentication is required when using the Open api interface in nacos server 2.2.x: For more details, please refer to: [Nacos api authentication](https://nacos.io/zh-cn/docs/auth.html)
+
+1. Obtain accessToken: Use username and password to log in to the nacos server:
+
+   `curl -X POST '127.0.0.1:8848/nacos/v1/auth/login' -d 'username=nacos&password=nacos'`
+
+   If the username and password are correct, the returned information is as follows:
+
+   `{"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTYwNTYyOTE2Nn0.2TogGhhr11_vLEjqKko1HJHUJEmsPuCxkur-CfNojDo", "tokenTtl": 18000, "globalAdmin": true}`
+
+2. Use accessToken to request the nacos api interface:
+
+   `curl -X GET '127.0.0.1:8848/nacos/v1/cs/configs?accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTYwNTYyMzkyM30.O-s2yWfDSUZ7Svd3Vs7jy9tsfDNHs1SuebJB4KlNY8Q&dataId=nacos.example.1&group=nacos_group'`
+
 ### Start the Nacos Server
 
 1. Start Nacos Server, enter the folder after downloading to the local and decompressing (enter the folder after compiling and packaging by using the source code construction method), then enter its relative folder `nacos/bin`, and execute the following command according to the actual situation of the operating system. [详情参考此文档](https://nacos.io/zh-cn/docs/quick-start.html)。
@@ -135,7 +151,7 @@ Before starting the application sample to demonstrate the project function, firs
 Add a configuration to the Nacos Server by executing the following command from the command line. **Can be injected directly through the Nacos console!**
 
 ```shell
-$ curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serverAddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
+$ curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?accessToken=XXXXXXXXXXXXXXXXXXXXXXXXXXX&dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serverAddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
 ```
 
 Details of the added configuration are as follows:
@@ -184,7 +200,7 @@ Enter `http://127.0.0.1:18084/nacos/bean` in the browser address bar and click t
 1. Execute the following command to modify the configuration data on the Nacos Server side
 
    ```shell
-   $ curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=DEFAULT_GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
+   $ curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?accessToken=XXXXXXXXXXXXXXXXXXXXXXXXXXX&dataId=nacos-config-example.properties&group=DEFAULT_GROUP&content=spring.cloud.nacos.config.serveraddr=127.0.0.1:8848%0Aspring.cloud.nacos.config.prefix=PREFIX%0Aspring.cloud.nacos.config.group=DEFAULT_GROUP%0Aspring.cloud.nacos.config.namespace=NAMESPACE"
    ```
 
 2. Type `http://127.0.0.1:18084/nacos/bean` in the address bar of the browser and click Turn, and you can see that the application obtains the latest data from the Nacos Server, and the group becomes the DEFAULT _ GROUP.
