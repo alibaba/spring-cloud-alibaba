@@ -2,9 +2,9 @@
 
 [![CircleCI](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2022.x.svg?style=svg)](https://circleci.com/gh/alibaba/spring-cloud-alibaba/tree/2022.x)
 [![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.cloud/spring-cloud-alibaba-dependencies.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:com.alibaba.cloud%20AND%20a:spring-cloud-alibaba-dependencies)
-[![Codecov](https://codecov.io/gh/alibaba/spring-cloud-alibaba/branch/2022.x/graph/badge.svg)](https://codecov.io/gh/alibaba/spring-cloud-alibaba)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Leaderboard](https://img.shields.io/badge/SCA-%E6%9F%A5%E7%9C%8B%E8%B4%A1%E7%8C%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=sca)
+[![actions](https://github.com/alibaba/spring-cloud-alibaba/workflows/Integration%20Testing/badge.svg)](https://github.com/alibaba/spring-cloud-alibaba/actions)
+[![Leaderboard](https://img.shields.io/badge/SCA-Check%20Your%20Contribution-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=sca)
 
 Spring Cloud Alibaba 致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
 
