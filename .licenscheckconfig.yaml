@@ -5,19 +5,33 @@ header:
 
   paths-ignore:
     - '.gitignore'
-    - '.github'
-    - '*.md'
-    - '*.yml'
+    - '.gitattributes'
+    - '.travis.yml'
+    - 'codecov.yml'
+    - 'CONTRIBUTING.md'
+    - 'CONTRIBUTING_CN.md'
+    - 'CODE_OF_CONDUCT.md'
+    - 'README.md'
     - 'LICENSE'
-    - 'eclipse'
-    - '.circlecl'
-    - '.mvn'
-    - '*.xml'
-    - '*.adoc'
+    - 'NOTICE'
+    - '**/*.md'
+    - '.github/**'
+    #SPI、spring.factories、spring-configuration-metadata.json、additional-spring-configuration-metadata.json
+    - '**/src/test/resources/META-INF/**'
+    - '**/src/main/resources/META-INF/**'
+    - '**/target/**'
+    - '**/*.iml'
     - 'mvnw'
     - 'mvnw.cmd'
+    - '*.sh'
+    - '.mvn/**'
+    - 'sessionStore/**'
+    - 'distribution/LICENSE-BIN'
+    - 'distribution/NOTICE-BIN'
+    - 'test/src/test/resources/**'
+    - '**/src/test/resources/statelang/**'
 
   comment: on-failure
 dependency:
   files:
-    - go.mod
+    - pom.xml
