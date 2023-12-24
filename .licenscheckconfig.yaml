@@ -32,14 +32,15 @@ header:
     - '.github/**'
     - '*.yaml'
     - "*.yml"
-    - '*.conf'
+    - '**/*.conf'
     - '*.sql'
     - '*.adoc'
     - 'eclipse'
     - '**/Dockerfile'
-    - '*.properties'
-    - '*.json'
-    - '*.js'
+    - '**/pom.xml'
+    - '**/*.properties'
+    - '**/*.json'
+    - '**/*.js'
     - "spring-cloud-alibaba-examples/integrated-example/docker-compose/.env"
     #SPI、spring.factories、spring-configuration-metadata.json、additional-spring-configuration-metadata.json
     - '**/src/test/resources/META-INF/**'
