@@ -1,0 +1,22 @@
+header:
+  license:
+    spdx-id: Apache-2.0
+    copyright-owner: alibaba
+
+  paths-ignore:
+    - '.gitignore'
+    - '*.md'
+    - '*.yml'
+    - 'LICENSE'
+    - 'eclipse'
+    - '.circlecl'
+    - '.mvn'
+    - '*.xml'
+    - '*.adoc'
+    - 'mvnw'
+    - 'mvnw.cmd'
+
+  comment: on-failure
+dependency:
+  files:
+    - go.mod
