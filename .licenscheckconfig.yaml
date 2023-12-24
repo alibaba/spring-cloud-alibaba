@@ -32,6 +32,7 @@ header:
     - '.github/**'
     - '**/*.yaml'
     - "**/*.yml"
+    - '**/*.xml'
     - '**/*.conf'
     - '**/*.sql'
     - '*.adoc'
