@@ -30,10 +30,10 @@ header:
     - 'NOTICE'
     - '**/*.md'
     - '.github/**'
-    - '*.yaml'
-    - "*.yml"
+    - '**/*.yaml'
+    - "**/*.yml"
     - '**/*.conf'
-    - '*.sql'
+    - '**/*.sql'
     - '*.adoc'
     - 'eclipse'
     - '**/Dockerfile'
@@ -41,6 +41,7 @@ header:
     - '**/*.properties'
     - '**/*.json'
     - '**/*.js'
+    - '**/*.html'
     - "spring-cloud-alibaba-examples/integrated-example/docker-compose/.env"
     #SPI、spring.factories、spring-configuration-metadata.json、additional-spring-configuration-metadata.json
     - '**/src/test/resources/META-INF/**'
@@ -49,7 +50,7 @@ header:
     - '**/*.iml'
     - 'mvnw'
     - 'mvnw.cmd'
-    - '*.sh'
+    - '**/*.sh'
     - '.mvn/**'
     - 'sessionStore/**'
     - 'distribution/LICENSE-BIN'
