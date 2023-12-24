@@ -30,6 +30,17 @@ header:
     - 'NOTICE'
     - '**/*.md'
     - '.github/**'
+    - '*.yaml'
+    - "*.yml"
+    - '*.conf'
+    - '*.sql'
+    - '*.adoc'
+    - 'eclipse'
+    - '**/Dockerfile'
+    - '*.properties'
+    - '*.json'
+    - '*.js'
+    - "spring-cloud-alibaba-examples/integrated-example/docker-compose/.env"
     #SPI、spring.factories、spring-configuration-metadata.json、additional-spring-configuration-metadata.json
     - '**/src/test/resources/META-INF/**'
     - '**/src/main/resources/META-INF/**'
