@@ -33,5 +33,5 @@ jobs:
         uses: apache/skywalking-eyes/dependency@8fc52baabc14c86294d96034bcc194cfa7f76b05
         with:
           log: info
-          config: ..licenscheckconfig.yaml
+          config: .licenscheckconfig.yaml
           mode: check
