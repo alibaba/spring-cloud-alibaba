@@ -199,6 +199,7 @@ public class NacosConfigDataLocationResolverTest {
 	private List<NacosConfigDataResource> testUri(String locationUri,
 			String... activeProfiles) {
 		Profiles profiles = mock(Profiles.class);
+		when(profiles.iterator()).thenReturn(Collections.emptyIterator());
 		when(profiles.getActive()).thenReturn(Arrays.asList(activeProfiles));
 		return this.resolver.resolveProfileSpecific(context,
 				ConfigDataLocation.of(locationUri), profiles);
@@ -210,8 +211,10 @@ public class NacosConfigDataLocationResolverTest {
 				.thenReturn(false);
 		when(bootstrapContext.get(eq(NacosConfigProperties.class)))
 				.thenReturn(new NacosConfigProperties());
+		Profiles profiles = mock(Profiles.class);
+		when(profiles.iterator()).thenReturn(Collections.emptyIterator());
 		List<NacosConfigDataResource> resources = this.resolver.resolveProfileSpecific(
-				context, ConfigDataLocation.of("nacos:test.yml"), mock(Profiles.class));
+				context, ConfigDataLocation.of("nacos:test.yml"), profiles);
 		assertThat(resources).hasSize(1);
 		verify(bootstrapContext, times(0)).get(eq(NacosConfigProperties.class));
 		NacosConfigDataResource resource = resources.get(0);
@@ -225,6 +228,7 @@ public class NacosConfigDataLocationResolverTest {
 
 	private NacosConfigDataResource testResolveProfileSpecific(String activeProfile) {
 		Profiles profiles = mock(Profiles.class);
+		when(profiles.iterator()).thenReturn(Collections.emptyIterator());
 		if (activeProfile != null) {
 			when(profiles.getActive())
 					.thenReturn(Collections.singletonList(activeProfile));
