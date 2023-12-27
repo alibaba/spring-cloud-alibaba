@@ -1,0 +1,37 @@
+# This action is used to check if the correct license has been added in the code file.
+
+name: License checker
+
+on:
+  pull_request:
+    branches: [ 2022.x ]
+
+jobs:
+  check-license:
+    runs-on: ubuntu-latest
+    steps:
+      # step 1 clear cache
+      - name: Clear cache directory first before trying to restore from cache
+        run: sudo rm -rf $(go env GOMODCACHE) && sudo rm -rf $(go env GOCACHE)
+        shell: bash
+      # step 2 checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+      # step 3 https://github.blog/changelog/2022-09-22-github-actions-all-actions-will-begin-running-on-node16-instead-of-node12/
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14.x'
+      # step 4 check license
+      - name: Check License Header
+        uses: apache/skywalking-eyes/header@8fc52baabc14c86294d96034bcc194cfa7f76b05
+        with:
+          log: info
+          config: .licenscheckconfig.yaml
+          mode: check
+      # step 5 check dependencies
+      - name: Check Dependencies' License
+        uses: apache/skywalking-eyes/dependency@8fc52baabc14c86294d96034bcc194cfa7f76b05
+        with:
+          log: info
+          config: .licenscheckconfig.yaml
+          mode: check
