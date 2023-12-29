@@ -84,13 +84,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		long timeout = nacosConfigProperties.getTimeout();
 		nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService,
 				timeout);
-		String name = nacosConfigProperties.getName();
 
 		String dataIdPrefix = nacosConfigProperties.getPrefix();
-		if (StringUtils.isEmpty(dataIdPrefix)) {
-			dataIdPrefix = name;
-		}
-
 		if (StringUtils.isEmpty(dataIdPrefix)) {
 			dataIdPrefix = env.getProperty("spring.application.name");
 		}
@@ -138,7 +133,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		String fileExtension = properties.getFileExtension();
 		String nacosGroup = properties.getGroup();
 		// load directly once by default
-		loadNacosDataIfPresent(compositePropertySource, dataIdPrefix, nacosGroup,
+		loadNacosDataIfPresent(compositePropertySource, nacosConfigProperties.getName(), nacosGroup,
 				fileExtension, true);
 		// load with suffix, which have a higher priority than the default
 		loadNacosDataIfPresent(compositePropertySource,
