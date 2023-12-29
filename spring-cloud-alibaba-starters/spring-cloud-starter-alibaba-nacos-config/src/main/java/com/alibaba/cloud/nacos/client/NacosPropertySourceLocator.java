@@ -133,7 +133,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		String fileExtension = properties.getFileExtension();
 		String nacosGroup = properties.getGroup();
 		// load directly once by default
-		loadNacosDataIfPresent(compositePropertySource, nacosConfigProperties.getName(), nacosGroup,
+		loadNacosDataIfPresent(compositePropertySource, properties.getName(), nacosGroup,
 				fileExtension, true);
 		// load with suffix, which have a higher priority than the default
 		loadNacosDataIfPresent(compositePropertySource,
