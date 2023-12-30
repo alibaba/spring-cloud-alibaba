@@ -38,7 +38,6 @@ header:
     - '*.adoc'
     - 'eclipse'
     - '**/Dockerfile'
-    - '**/*.properties'
     - '**/*.json'
     - '**/*.js'
     - '**/*.html'
