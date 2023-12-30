@@ -34,7 +34,6 @@ header:
     - "**/*.yml"
     - '**/*.xml'
     - '**/*.conf'
-    - '**/*.sql'
     - '*.adoc'
     - 'eclipse'
     - '**/Dockerfile'
