@@ -89,6 +89,11 @@ public class NacosConfigProperties {
 	 */
 	public static final String DEFAULT_NAMESPACE = "public";
 
+	/**
+	 * Nacos default server and port.
+	 */
+	public static final String DEFAULT_ADDRESS = "127.0.0.1:8848";
+
 	private static final Pattern PATTERN = Pattern.compile("-(\\w)");
 
 	private static final Logger log = LoggerFactory
@@ -452,7 +457,7 @@ public class NacosConfigProperties {
 	public String getSharedDataids() {
 		return null == getSharedConfigs() ? null
 				: getSharedConfigs().stream().map(Config::getDataId)
-						.collect(Collectors.joining(COMMAS));
+				.collect(Collectors.joining(COMMAS));
 	}
 
 	/**
@@ -482,7 +487,7 @@ public class NacosConfigProperties {
 	public String getRefreshableDataids() {
 		return null == getSharedConfigs() ? null
 				: getSharedConfigs().stream().filter(Config::isRefresh)
-						.map(Config::getDataId).collect(Collectors.joining(COMMAS));
+				.map(Config::getDataId).collect(Collectors.joining(COMMAS));
 	}
 
 	/**
@@ -561,7 +566,7 @@ public class NacosConfigProperties {
 	 */
 	public Properties assembleConfigServiceProperties() {
 		Properties properties = new Properties();
-		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, ""));
+		properties.put(SERVER_ADDR, Objects.toString(this.serverAddr, DEFAULT_ADDRESS));
 		properties.put(USERNAME, Objects.toString(this.username, ""));
 		properties.put(PASSWORD, Objects.toString(this.password, ""));
 		properties.put(ENCODE, Objects.toString(this.encode, ""));
