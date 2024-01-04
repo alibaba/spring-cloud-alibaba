@@ -146,10 +146,7 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
 					instancesToChoose = sameClusterInstances;
 				}
-			}
-			else {
-				log.warn(
-						"A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
+				log.warn("A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
 						serviceId, clusterName, serviceInstances);
 			}
 			instancesToChoose = this.filterInstanceByIpType(instancesToChoose);
