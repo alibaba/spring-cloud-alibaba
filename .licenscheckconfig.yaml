@@ -36,6 +36,7 @@ header:
     - '**/*.sql'
     - '*.adoc'
     - 'eclipse'
+    - '**/*.properties'
     - '**/Dockerfile'
     - '**/*.json'
     - '**/*.html'
