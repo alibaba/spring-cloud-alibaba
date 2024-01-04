@@ -33,6 +33,7 @@ header:
     - '**/*.yaml'
     - "**/*.yml"
     - '**/*.xml'
+    - '**/*.conf'
     - '**/*.sql'
     - '*.adoc'
     - 'eclipse'
