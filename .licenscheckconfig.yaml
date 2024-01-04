@@ -33,13 +33,12 @@ header:
     - '**/*.yaml'
     - "**/*.yml"
     - '**/*.xml'
-    - '**/*.conf'
     - '**/*.sql'
     - '*.adoc'
     - 'eclipse'
     - '**/*.properties'
+    - '**/Dockerfile'
     - '**/*.json'
-    - '**/*.js'
     - '**/*.html'
     - "spring-cloud-alibaba-examples/integrated-example/docker-compose/.env"
     #SPI、spring.factories、spring-configuration-metadata.json、additional-spring-configuration-metadata.json
