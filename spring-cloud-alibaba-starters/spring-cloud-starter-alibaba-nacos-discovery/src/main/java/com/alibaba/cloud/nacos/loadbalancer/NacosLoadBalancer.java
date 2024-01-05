@@ -148,6 +148,8 @@ public class NacosLoadBalancer implements ReactorServiceInstanceLoadBalancer {
 							serviceId, clusterName, serviceInstances);
 				} else {
 					instancesToChoose = sameClusterInstances;
+					log.info("Calling to filter cluster instance nodes, name = {}, clusterName = {}, instance = {}",
+							serviceId, clusterName, serviceInstances);
 				}
 			}
 			instancesToChoose = this.filterInstanceByIpType(instancesToChoose);
