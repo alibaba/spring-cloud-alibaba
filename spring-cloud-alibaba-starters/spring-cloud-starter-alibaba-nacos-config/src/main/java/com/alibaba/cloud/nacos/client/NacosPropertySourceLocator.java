@@ -18,6 +18,7 @@ package com.alibaba.cloud.nacos.client;
 
 import java.util.List;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosPropertySourceRepository;
@@ -33,7 +34,6 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * @author xiaojing
@@ -84,13 +84,8 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		long timeout = nacosConfigProperties.getTimeout();
 		nacosPropertySourceBuilder = new NacosPropertySourceBuilder(configService,
 				timeout);
-		String name = nacosConfigProperties.getName();
 
 		String dataIdPrefix = nacosConfigProperties.getPrefix();
-		if (StringUtils.isEmpty(dataIdPrefix)) {
-			dataIdPrefix = name;
-		}
-
 		if (StringUtils.isEmpty(dataIdPrefix)) {
 			dataIdPrefix = env.getProperty("spring.application.name");
 		}
@@ -138,7 +133,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		String fileExtension = properties.getFileExtension();
 		String nacosGroup = properties.getGroup();
 		// load directly once by default
-		loadNacosDataIfPresent(compositePropertySource, dataIdPrefix, nacosGroup,
+		loadNacosDataIfPresent(compositePropertySource, properties.getName(), nacosGroup,
 				fileExtension, true);
 		// load with suffix, which have a higher priority than the default
 		loadNacosDataIfPresent(compositePropertySource,
