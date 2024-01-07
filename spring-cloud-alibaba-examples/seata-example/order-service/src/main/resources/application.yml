@@ -5,7 +5,7 @@ base:
       dbname: seata #your database name for test
       port: 3306 #your mysql server listening port
       username: 'root' #your mysql server username
-      password: 'root' #your mysql server password
+      password: '082916' #your mysql server password
 server:
   port: 18083
 
