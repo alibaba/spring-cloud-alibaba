@@ -6,9 +6,9 @@ This project demonstrates how to use Spring Cloud Alibaba Nacos related Starters
 
 [Nacos](https://github.com/alibaba/Nacos) It is Alibaba's open source dynamic service discovery, configuration management and service management platform that is easier to build cloud-native applications.
 
-## Nacos Server 2.2.x is properly configured and started
+## Nacos Server 2.3.0 is properly configured and started
 
-In Nacos 2.2.x, functions related to user authentication are added. When starting Nacos Server for the first time, it needs to be configured correctly to avoid the problem of startup failure.
+In Nacos 2.3.0, functions related to user authentication are added. When starting Nacos Server for the first time, it needs to be configured correctly to avoid the problem of startup failure.
 
 ### Download Nacos Server
 
@@ -49,7 +49,7 @@ db.pool.config.minimumIdle=2
 
 #### Turn on authentication
 
-**Note: If it is not enabled, login failure exception will occur in 2.2.x!**
+**Note: If it is not enabled, login failure exception will occur in 2.3.0!**
 
 ```properties
 ### The auth system to use, currently only 'nacos' and 'ldap' is supported:
@@ -77,7 +77,7 @@ nacos.core.auth.plugin.nacos.token.secret.key=SecretKey0123456789012345678901234
 
 #### Open API authentication
 
-Authentication is required when using the Open api interface in nacos server 2.2.x: For more details, please refer to: [Nacos api authentication](https://nacos.io/zh-cn/docs/auth.html)
+Authentication is required when using the Open api interface in nacos server 2.3.0: For more details, please refer to: [Nacos api authentication](https://nacos.io/zh-cn/docs/auth.html)
 
 1. Obtain accessToken: Use username and password to log in to the nacos server:
 
@@ -339,7 +339,7 @@ Before launching the Nacos Discovery sample for demonstration, take a look at ho
 
 #### Query service validation
 
-Enter this address `http://127.0.0.1:8848/nacos/v1/ns/catalog/instances?serviceName=service-provider&clusterName=DEFAULT&pageSize=10&pageNo=1&namespaceId=` in the browser and click Jump to see that the service node has been successfully registered to the Nacos Server.
+Enter this address `http://127.0.0.1:8848/nacos/v1/ns/catalog/instances?accessToken=XXXXXXXXXXXXXXXXXXXXXXXXXXX&serviceName=service-provider&clusterName=DEFAULT&pageSize=10&pageNo=1&namespaceId=` in the browser and click Jump to see that the service node has been successfully registered to the Nacos Server.
 
 ![查询服务](https://cdn.nlark.com/lark/0/2018/png/54319/1536986288092-5cf96af9-9a26-466b-85f6-39ad1d92dfdc.png)
 
