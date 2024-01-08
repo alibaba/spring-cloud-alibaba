@@ -4,7 +4,7 @@ name: License checker
 
 on:
   pull_request:
-    branches: [ 2022.x ]
+    branches: [ 2023.x ]
 
 jobs:
   check-license:
